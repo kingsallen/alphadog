@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -29,7 +28,7 @@ import com.moseeker.common.email.mail.Message;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
-import com.moseeker.mq.server.MqServer;
+import com.moseeker.mq.MqServer;
 import com.moseeker.mq.service.WarnService;
 
 /**

@@ -13,6 +13,7 @@ import com.moseeker.thrift.gen.useraccounts.struct.BindAccountStruct;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -38,7 +39,7 @@ import java.util.List;
  * @author wjf
  * @version
  */
-@Service
+@Repository
 public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, HrThirdPartyAccountRecord> {
 
     public HRThirdPartyAccountDao() {
@@ -55,8 +56,7 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
 		logger.info("HRThirdPartyAccountDao upsertResource");
 		logger.info("HRThirdPartyAccountDao upsertResource channel:{}, company_id:{}",record.getChannel(), record.getCompanyId());
 		logger.info("HRThirdPartyAccountDao upsertResource record:{}",record);
-		int count = 0;
-		count = create.execute(UPSERT_SQL, record.getChannel(), record.getUsername(), record.getPassword(),
+        int count = create.execute(UPSERT_SQL, record.getChannel(), record.getUsername(), record.getPassword(),
 				record.getMembername(), record.getBinding(), record.getCompanyId().intValue(),
 				record.getRemainNum().intValue(), record.getSyncTime(), record.getChannel(),
 				record.getCompanyId().intValue());
@@ -138,6 +138,35 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
             DateTime dt = new DateTime(now.getTime());
             map.put("sync_time", dt.toString("yyyy-MM-dd HH:mm:ss"));
             logger.info("upsertThirdPartyAccount result:{}", map);
+            return ResponseUtils.success(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+        } finally {
+
+        }
+    }
+
+    public Response createThirdPartyAccount(BindAccountStruct account) throws TException {
+
+        try {
+            HrThirdPartyAccountRecord record = new HrThirdPartyAccountRecord();
+            record.setBinding((short) account.getBinding());
+            record.setChannel((short) account.getChannel());
+            record.setCompanyId((int)(account.getCompany_id()));
+            Timestamp now = new Timestamp(System.currentTimeMillis());
+            record.setCreateTime(now);
+            record.setMembername(account.getMember_name());
+            record.setPassword(account.getPassword());
+            record.setRemainNum((int)(account.getRemainNum()));
+            record.setSyncTime(now);
+            record.setUsername(account.getUsername());
+            addRecord(record);
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("remain_num", account.getRemainNum());
+            DateTime dt = new DateTime(now.getTime());
+            map.put("sync_time", dt.toString("yyyy-MM-dd HH:mm:ss"));
             return ResponseUtils.success(map);
         } catch (Exception e) {
             e.printStackTrace();

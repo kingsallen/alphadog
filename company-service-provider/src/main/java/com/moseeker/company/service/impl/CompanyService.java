@@ -164,8 +164,7 @@ public class CompanyService{
 		//查找第三方帐号
 		Query.QueryBuilder qu = new Query.QueryBuilder();
 		qu.setPageSize(Integer.MAX_VALUE);
-		qu.where("company_id", String.valueOf(id));
-		qu.where("channel", String.valueOf(channel));
+		qu.where("company_id", String.valueOf(id)).and("channel", String.valueOf(channel));
 		try {
 			long startGetAccountData=System.currentTimeMillis();
 			ThirdPartAccountData data = hrThirdPartyAccountDao.getData(qu.buildQuery(), ThirdPartAccountData.class);
@@ -233,8 +232,7 @@ public class CompanyService{
 	public Response ifSynchronizePosition(int companyId, int channel) {
 		Response response = ResultMessage.PROGRAM_EXHAUSTED.toResponse();
 		Query.QueryBuilder qu = new Query.QueryBuilder();
-		qu.where("company_id", String.valueOf(companyId));
-		qu.where("channel", String.valueOf(channel));
+		qu.where("company_id", String.valueOf(companyId)).and("channel", String.valueOf(channel));
 		try {
 			ThirdPartAccountData data = hrThirdPartyAccountDao.getData(qu.buildQuery(), ThirdPartAccountData.class);
 			if(data.getId() == 0 || data.getBinding() != 1) {

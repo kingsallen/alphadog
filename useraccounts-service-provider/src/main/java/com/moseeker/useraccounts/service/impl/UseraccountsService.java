@@ -2,48 +2,51 @@ package com.moseeker.useraccounts.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
+import com.moseeker.baseorm.dao.profiledb.ProfileDao;
+import com.moseeker.baseorm.dao.userdb.UserFavPositionDao;
+import com.moseeker.baseorm.dao.userdb.UserSettingsDao;
+import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserFavPositionRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
+import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.*;
 import com.moseeker.common.exception.RedisException;
-import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.providerutils.daoutils.BaseDao;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.common.weixin.AccountMng;
 import com.moseeker.common.weixin.QrcodeType;
 import com.moseeker.common.weixin.WeixinTicketBean;
-import com.moseeker.db.hrdb.tables.records.HrWxWechatRecord;
-import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
-import com.moseeker.db.userdb.tables.records.UserFavPositionRecord;
-import com.moseeker.db.userdb.tables.records.UserUserRecord;
-import com.moseeker.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.struct.UserUserDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.BindType;
 import com.moseeker.thrift.gen.useraccounts.struct.User;
 import com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition;
 import com.moseeker.thrift.gen.useraccounts.struct.Userloginreq;
-import com.moseeker.useraccounts.dao.*;
 import com.moseeker.useraccounts.pojo.MessageTemplate;
 import com.moseeker.useraccounts.service.BindOnAccountService;
+import java.sql.Timestamp;
+import java.util.*;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.sql.Timestamp;
-import java.util.*;
 
 /**
  * 用户登陆， 注册，合并等api的实现
@@ -63,25 +66,25 @@ public class UseraccountsService {
 			.getService(com.moseeker.thrift.gen.dao.service.UserDBDao.Iface.class);
 
 	@Autowired
-	protected BaseDao<UserWxUserRecord> wxuserdao;
+	protected UserWxUserDao wxuserdao;
 
 	@Autowired
-	protected UserDao userdao;
+	protected UserUserDao userdao;
 
 	@Autowired
 	protected ProfileDao profileDao;
 
 	@Autowired
-	protected UsersettingDao userSettingDao;
+	protected UserSettingsDao userSettingDao;
 
 	@Autowired
-	protected UserFavoritePositionDao userFavoritePositionDao;
+	protected UserFavPositionDao userFavoritePositionDao;
 	
 	@Autowired
 	protected SmsSender smsSender;
 	
 	@Autowired
-	protected WechatDao wechatDao;
+	protected HrWxWechatDao wechatDao;
 	
 	@Autowired
 	protected Map<String, BindOnAccountService> bindOnAccount;
@@ -91,39 +94,33 @@ public class UseraccountsService {
 	 */
 	public Response postuserlogin(Userloginreq userloginreq) throws TException {
 		// TODO to add login log
-		QueryUtil query = new QueryUtil();
+        Query.QueryBuilder query = new Query.QueryBuilder();
 		int parentid = 0;
-		Map<String, String> filters = new HashMap<>();
-
 		String code = userloginreq.getCode();
 		if (code != null) {
 			// 存在验证码,就是手机号+验证码登陆.
 			String mobile = userloginreq.getMobile();
 			if (validateCode(mobile, code, 1)) {
-				filters.put("username", mobile);
+				query.where("username", mobile);
 			} else {
 				return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);
 			}
 		} else if (userloginreq.getUnionid() != null) {
-			filters.put("unionid", userloginreq.getUnionid());
+			query.where("unionid", userloginreq.getUnionid());
 		} else {
-			filters.put("username", userloginreq.getMobile());
-			filters.put("password", MD5Util.encryptSHA(userloginreq.getPassword()));
+			query.where("username", userloginreq.getMobile()).and("password", MD5Util.encryptSHA(userloginreq.getPassword()));
 		}
 
-		query.setEqualFilter(filters);
 		try {
-			UserUserRecord user = userdao.getResource(query);
+			UserUserRecord user = userdao.getRecord(query.buildQuery());
 			if (user != null) {
 				// login success
 				parentid = user.getParentid().intValue();
 				if (parentid > 0) {
 					// 当前帐号已经被合并到 parentid.
-					query = new QueryUtil();
-					filters = new HashMap<>();
-					filters.put("id", String.valueOf(parentid));
-					query.setEqualFilter(filters);
-					user = userdao.getResource(query);
+                    query.clear();
+					query.where("id", String.valueOf(parentid));
+					user = userdao.getRecord(query.buildQuery());
 				}
 
 				if (user != null) {
@@ -145,7 +142,7 @@ public class UseraccountsService {
 					user.setLastLoginTime(new Timestamp(new Date().getTime()));
 					user.setLoginCount(user.getLoginCount() + 1);
 
-					userdao.putResource(user);
+					userdao.updateRecord(user);
 
 					return ResponseUtils.success(resp);
 				} else {
@@ -348,31 +345,27 @@ public class UseraccountsService {
 		if(StringUtils.isNullOrEmpty(password) || StringUtils.isNullOrEmpty(old_password)) {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
 		}
-		QueryUtil query = new QueryUtil();
-		Map<String, String> filters = new HashMap<>();
-		filters.put("id", String.valueOf(user_id));
-		filters.put("password", MD5Util.encryptSHA(old_password));
-		query.setEqualFilter(filters);
+
+		Query.QueryBuilder query = new Query.QueryBuilder();
+		query.where("id", String.valueOf(user_id)).and("password", MD5Util.encryptSHA(old_password));
 
 		int result = 0;
 		try {
-			UserUserRecord user = userdao.getResource(query);
+			UserUserRecord user = userdao.getRecord(query.buildQuery());
 
 			if (user != null) {
 				// login success
 				int parentid = user.getParentid().intValue();
 				if (parentid > 0) {
 					// 当前帐号已经被合并到 parentid.
-					query = new QueryUtil();
-					filters = new HashMap<>();
-					filters.put("id", String.valueOf(parentid));
-					query.setEqualFilter(filters);
-					UserUserRecord userParent = userdao.getResource(query);
+					query.clear();
+					query.where("id", String.valueOf(parentid));
+					UserUserRecord userParent = userdao.getRecord(query.buildQuery());
 					userParent.setPassword(MD5Util.encryptSHA(password));
-					result = userdao.putResource(userParent);
+					result = userdao.updateRecord(userParent);
 				}
 				user.setPassword(MD5Util.encryptSHA(password));
-				result = userdao.putResource(user);
+				result = userdao.updateRecord(user);
 				if (result > 0) {
 					return ResponseUtils.success(null);
 				}
@@ -396,14 +389,12 @@ public class UseraccountsService {
 	 */
 	public Response postusersendpasswordforgotcode(String mobile) throws TException {
 		// TODO 只有已经存在的用户才能发验证码。
-		QueryUtil query = new QueryUtil();
-		Map<String, String> filters = new HashMap<>();
+		Query.QueryBuilder query = new Query.QueryBuilder();
 
 		if (mobile.length() > 0) {
-			filters.put("username", mobile);
-			query.setEqualFilter(filters);
+			query.where("username", mobile);
 			try {
-				UserUserRecord user = userdao.getResource(query);
+				UserUserRecord user = userdao.getRecord(query.buildQuery());
 				if (user == null) {
 					return ResponseUtils.fail(ConstantErrorCodeMessage.LOGIN_MOBILE_NOTEXIST);
 				}
@@ -434,15 +425,12 @@ public class UseraccountsService {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);
 		}
 
-
-		QueryUtil query = new QueryUtil();
-		Map<String, String> filters = new HashMap<>();
-		filters.put("username", mobile);
-		query.setEqualFilter(filters);
+		Query.QueryBuilder query = new Query.QueryBuilder();
+		query.where("username", mobile);
 
 		int result = 0;
 		try {
-			UserUserRecord user = userdao.getResource(query);
+			UserUserRecord user = userdao.getRecord(query.buildQuery());
 
 			if (user != null) {
 				// login success
@@ -450,22 +438,20 @@ public class UseraccountsService {
 				String newPassword = MD5Util.encryptSHA(password);
 				if (parentid > 0) {
 					// 当前帐号已经被合并到 parentid.
-					query = new QueryUtil();
-					filters = new HashMap<>();
-					filters.put("id", String.valueOf(parentid));
-					query.setEqualFilter(filters);
-					UserUserRecord userParent = userdao.getResource(query);
+					query.clear();
+					query.where("id", String.valueOf(parentid));
+					UserUserRecord userParent = userdao.getRecord(query.buildQuery());
 					if(newPassword.equals(userParent.getPassword())) {
 						return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_PASSWORD_REPEATPASSWORD);
 					}
 					userParent.setPassword(newPassword);
-					result = userdao.putResource(userParent);
+					result = userdao.updateRecord(userParent);
 				}
 				if(newPassword.equals(user.getPassword())) {
 					return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_PASSWORD_REPEATPASSWORD);
 				}
 				user.setPassword(newPassword);
-				result = userdao.putResource(user);
+				result = userdao.updateRecord(user);
 				if (result > 0) {
 					return ResponseUtils.success(null);
 				}
@@ -510,14 +496,7 @@ public class UseraccountsService {
 	
 	public Response getUsers(CommonQuery query) throws TException {
 		try {
-			List<User> users = new ArrayList<>();
-			List<UserUserRecord> records = userdao.getResources(query);
-			if(records != null) {
-				records.forEach(record -> {
-					users.add(record.into(User.class));
-				});
-			}
-			//record.in
+			List<User> users = userdao.getDatas(QueryConvert.commonQueryConvertToQuery(query), User.class);
 			return ResponseUtils.success(users);
 		} catch (Exception e) {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
@@ -541,7 +520,7 @@ public class UseraccountsService {
 				UserUserRecord userUserRecord = (UserUserRecord) BeanUtils.structToDB(user, UserUserRecord.class);
 				Timestamp updateTime = new Timestamp(System.currentTimeMillis());
 				userUserRecord.setUpdateTime(updateTime);
-				if (userdao.putResource(userUserRecord) > 0) {
+				if (userdao.updateRecord(userUserRecord) > 0) {
 					if (user.isSetUsername() || user.isSetMobile() || user.isSetEmail() || user.isSetName()
 							|| user.isSetHeadimg()) {
 						profileDao.updateUpdateTimeByUserId((int) user.getId());
@@ -568,13 +547,11 @@ public class UseraccountsService {
 	 * @throws TException
 	 */
 	public Response getismobileregisted(String mobile) throws TException {
-		QueryUtil query = new QueryUtil();
-		Map<String, String> filters = new HashMap<>();
+		Query.QueryBuilder query = new Query.QueryBuilder();
 		if (mobile != null && mobile.length() > 0) {
-			filters.put("username", mobile);
-			query.setEqualFilter(filters);
+			query.where("username", mobile);
 			try {
-				UserUserRecord user = userdao.getResource(query);
+				UserUserRecord user = userdao.getRecord(query.buildQuery());
 				Map<String, Boolean> hashmap = new HashMap<>();
 				if (user == null) {
 					hashmap.put("exist", false);
@@ -596,14 +573,12 @@ public class UseraccountsService {
 	 */
 	public Response postsendchangemobilecode(String oldmobile) throws TException {
 		// TODO 只有已经存在的用户才能发验证码。
-		QueryUtil query = new QueryUtil();
-		Map<String, String> filters = new HashMap<>();
+		Query.QueryBuilder query = new Query.QueryBuilder();
 
 		if (oldmobile.length() > 0) {
-			filters.put("username", oldmobile);
-			query.setEqualFilter(filters);
+			query.where("username", oldmobile);
 			try {
-				UserUserRecord user = userdao.getResource(query);
+				UserUserRecord user = userdao.getRecord(query.buildQuery());
 				if (user == null) {
 					return ResponseUtils.fail(ConstantErrorCodeMessage.LOGIN_MOBILE_NOTEXIST);
 				}
@@ -639,14 +614,12 @@ public class UseraccountsService {
 	 *
 	 */
 	public Response postsendresetmobilecode(String newmobile) throws TException {
-		QueryUtil query = new QueryUtil();
-		Map<String, String> filters = new HashMap<>();
+		Query.QueryBuilder query = new Query.QueryBuilder();
 
 		if (newmobile.length() > 0) {
-			filters.put("username", newmobile);
-			query.setEqualFilter(filters);
+			query.where("username", newmobile);
 			try {
-				UserUserRecord user = userdao.getResource(query);
+				UserUserRecord user = userdao.getRecord(query.buildQuery());
 				if (user != null) {
 					return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_EXIST);
 				}
@@ -679,33 +652,29 @@ public class UseraccountsService {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);
 		}
 
-		QueryUtil query = new QueryUtil();
-		Map<String, String> filters = new HashMap<>();
-		filters.put("id", String.valueOf(user_id));
-		query.setEqualFilter(filters);
+		Query.QueryBuilder query = new Query.QueryBuilder();
+		query.where("id", String.valueOf(user_id));
 
 		int result = 0;
 		try {
-			UserUserRecord user = userdao.getResource(query);
+			UserUserRecord user = userdao.getRecord(query.buildQuery());
 
 			if (user != null) {
 				// login success
 				int parentid = user.getParentid().intValue();
 				if (parentid > 0) {
 					// 当前帐号已经被合并到 parentid.
-					query = new QueryUtil();
-					filters = new HashMap<>();
-					filters.put("id", String.valueOf(parentid));
-					query.setEqualFilter(filters);
-					UserUserRecord userParent = userdao.getResource(query);
+					query.clear();
+					query.where("id", String.valueOf(parentid));
+					UserUserRecord userParent = userdao.getRecord(query.buildQuery());
 					userParent.setMobile(Long.parseLong(newmobile));
 					userParent.setUsername(newmobile);
-					result = userdao.putResource(userParent);
+					result = userdao.updateRecord(userParent);
 				}
 				user.setMobile(Long.parseLong(newmobile));
 				user.setUsername(newmobile);
 
-				result = userdao.putResource(user);
+				result = userdao.updateRecord(user);
 				if (result > 0) {
 					return ResponseUtils.success(null);
 				}
@@ -767,7 +736,7 @@ public class UseraccountsService {
 			UserFavPositionRecord userFavPositionRecord = (UserFavPositionRecord) BeanUtils
 					.structToDB(userFavoritePosition, UserFavPositionRecord.class);
 
-			int userFavoritePositionId = userFavoritePositionDao.postResource(userFavPositionRecord);
+			int userFavoritePositionId = userFavoritePositionDao.addRecord(userFavPositionRecord).getId();
 			if (userFavoritePositionId > 0) {
 				Map<String, Object> hashmap = new HashMap<>();
 				hashmap.put("userFavoritePositionId", userFavoritePositionId);
@@ -818,7 +787,7 @@ public class UseraccountsService {
 		MessageTemplate messageTemplate = null;
 		try {
 			JobPositionRecord position = userFavoritePositionDao.getUserFavPositiond(positionId);
-			com.moseeker.useraccounts.pojo.User user = userdao.getUserById(userId);
+			User user = userdao.getUserById(userId);
 			if(position != null && user != null) {
 				messageTemplate = new MessageTemplate();
 				messageTemplate.setPositionTitle(position.getTitle());
@@ -947,11 +916,10 @@ public class UseraccountsService {
 	}
 
 	public Response checkEmail(String email) throws TException {
-		QueryUtil qu = new QueryUtil();
-		qu.addEqualFilter("email", email);
-		qu.addEqualFilter("email_verified", "1");
+		Query.QueryBuilder qu = new Query.QueryBuilder();
+		qu.where("email", email).and("email_verified", "1");
 		try {
-			UserUserRecord record = userdao.getResource(qu);
+			UserUserRecord record = userdao.getRecord(qu.buildQuery());
 			if(record == null) {
 				return ResponseUtils.success(1);
 			} else {
@@ -971,9 +939,9 @@ public class UseraccountsService {
 	public Response cerateQrcode(int wechatId, long sceneId, int expireSeconds, int action_name) throws TException {
 		
 		try {
-			QueryUtil qu = new QueryUtil();
-			qu.addEqualFilter("id", String.valueOf(wechatId));
-			HrWxWechatRecord record = wechatDao.getResource(qu);
+			Query.QueryBuilder qu = new Query.QueryBuilder();
+			qu.where("id", String.valueOf(wechatId));
+			HrWxWechatRecord record = wechatDao.getRecord(qu.buildQuery());
 			if(record == null) {
 				return RespnoseUtil.USERACCOUNT_WECHAT_NOTEXISTS.toResponse();
 			} else {
@@ -1047,14 +1015,13 @@ public class UseraccountsService {
 		return RespnoseUtil.SUCCESS.toResponse();
 	}
 	
-	public UserUserDO ifExistUser(String mobile) {
-		UserUserDO user = new UserUserDO();
-		QueryUtil qu = new QueryUtil();
-		qu.addEqualFilter("mobile", mobile);
-		qu.addEqualFilter("source", String.valueOf(UserSource.RETRIEVE_PROFILE.getValue()));
+	public com.moseeker.thrift.gen.dao.struct.UserUserDO ifExistUser(String mobile) {
+        com.moseeker.thrift.gen.dao.struct.UserUserDO user = new com.moseeker.thrift.gen.dao.struct.UserUserDO();
+		Query.QueryBuilder qu = new Query.QueryBuilder();
+		qu.where("mobile", mobile).and("source", String.valueOf(UserSource.RETRIEVE_PROFILE.getValue()));
 		try {
-			user = userDao.getUser(qu);
-		} catch (TException e) {
+			user = userdao.getData(qu.buildQuery(), com.moseeker.thrift.gen.dao.struct.UserUserDO.class);
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			logger.error(e.getMessage(), e);
@@ -1064,44 +1031,38 @@ public class UseraccountsService {
 		return user;
 	}
 
-	public int createRetrieveProfileUser(UserUserDO user) {
+	public int createRetrieveProfileUser(com.moseeker.thrift.gen.dao.struct.UserUserDO user) {
+	    int userId = 0;
 		if(user.getMobile() == 0) {
 			return 0;
 		}
 		user.setSource((byte)UserSource.RETRIEVE_PROFILE.getValue());
 		try {
-			user = userDao.saveUser(user);
-		} catch (TException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			logger.error(e.getMessage(), e);
-		} finally {
-			//do nothing
-		}
-		return (int)user.getId();
+            UserUserRecord userUserRecord = userdao.addRecord(BeanUtils.structToDB(user, UserUserRecord.class));
+            userId = userUserRecord.getId();
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+		return userId;
 	}
 
 	public boolean ifExistProfile(String mobile) {
-		QueryUtil qu = new QueryUtil();
-		qu.addEqualFilter("username", mobile);
+		Query.QueryBuilder qu = new Query.QueryBuilder();
+		qu.where("username", mobile);
 		try {
-			UserUserDO user = userDao.getUser(qu);
-			if(user == null || user.getId() == 0) {
-				QueryUtil autoCreate = new QueryUtil();
-				autoCreate.addEqualFilter("mobile", mobile);
-				autoCreate.addEqualFilter("source", String.valueOf(UserSource.RETRIEVE_PROFILE.getValue()));
-				user = userDao.getUser(autoCreate);
-			}
-			if(user != null && user.getId() > 0) {
-				ProfileProfileRecord record = profileDao.getProfileByUserId((int)user.getId());
-				if(record != null) {
-					return true;
-				}
-			}
-		} catch (TException e) {
-			e.printStackTrace();
-			logger.error(e.getMessage(), e);
-		} catch (Exception e) {
+            UserUserDO user = userdao.getData(qu.buildQuery());
+            if (user == null || user.getId() == 0) {
+                qu.clear();
+                qu.where("mobile", mobile).and("source", String.valueOf(UserSource.RETRIEVE_PROFILE.getValue()));
+                user = userdao.getData(qu.buildQuery());
+            }
+            if (user != null && user.getId() > 0) {
+                ProfileProfileRecord record = profileDao.getProfileByUserId((int) user.getId());
+                if (record != null) {
+                    return true;
+                }
+            }
+        } catch (Exception e) {
 			e.printStackTrace();
 			logger.error(e.getMessage(), e);
 		} finally {
@@ -1110,51 +1071,5 @@ public class UseraccountsService {
 		return false;
 	}
 
-	public BaseDao<UserWxUserRecord> getWxuserdao() {
-		return wxuserdao;
-	}
 
-	public void setWxuserdao(BaseDao<UserWxUserRecord> wxuserdao) {
-		this.wxuserdao = wxuserdao;
-	}
-
-	public UserDao getUserdao() {
-		return userdao;
-	}
-
-	public void setUserdao(UserDao userdao) {
-		this.userdao = userdao;
-	}
-
-	public ProfileDao getProfileDao() {
-		return profileDao;
-	}
-
-	public void setProfileDao(ProfileDao profileDao) {
-		this.profileDao = profileDao;
-	}
-
-	public UsersettingDao getUserSettingDao() {
-		return userSettingDao;
-	}
-
-	public void setUserSettingDao(UsersettingDao userSettingDao) {
-		this.userSettingDao = userSettingDao;
-	}
-
-	public UserFavoritePositionDao getUserFavoritePositionDao() {
-		return userFavoritePositionDao;
-	}
-
-	public void setUserFavoritePositionDao(UserFavoritePositionDao userFavoritePositionDao) {
-		this.userFavoritePositionDao = userFavoritePositionDao;
-	}
-
-	public WechatDao getWechatDao() {
-		return wechatDao;
-	}
-
-	public void setWechatDao(WechatDao wechatDao) {
-		this.wechatDao = wechatDao;
-	}
 }

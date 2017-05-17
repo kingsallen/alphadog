@@ -110,7 +110,8 @@ public class UserDBDaoThriftService implements Iface {
 
 	@Override
 	public List<UserFavPositionDO> getUserFavPositions(CommonQuery query) throws TException {
-		return favPositionDao.getUserFavPositions(QueryConvert.commonQueryConvertToQuery(query));
+//		return favPositionDao.getUserFavPositions(QueryConvert.commonQueryConvertToQuery(query));
+        return null;
 	}
 
 	@Override

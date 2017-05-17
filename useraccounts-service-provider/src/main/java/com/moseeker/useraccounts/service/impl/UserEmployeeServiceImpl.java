@@ -1,6 +1,8 @@
 package com.moseeker.useraccounts.service.impl;
 
+import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
+import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.BeanUtils;
@@ -24,7 +26,7 @@ public class UserEmployeeServiceImpl {
     org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    com.moseeker.baseorm.dao.userdb.UserEmployeeDao userEmployeeDao;
+    private UserEmployeeDao userEmployeeDao;
 
     public Response getUserEmployee(CommonQuery query) throws TException {
         return getResource(query);
@@ -48,7 +50,7 @@ public class UserEmployeeServiceImpl {
 
     public Response getResource(CommonQuery query) throws TException {
         try {
-            UserEmployeeRecord result = userEmployeeDao.getResource(query);
+            UserEmployeeRecord result = userEmployeeDao.getRecord(QueryConvert.commonQueryConvertToQuery(query));
             if (result != null) {
                 return ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(result.into(UserEmployeeStruct.class)));
             } else {
@@ -62,7 +64,7 @@ public class UserEmployeeServiceImpl {
 
     public Response getResources(CommonQuery query) throws TException {
         try {
-            List<UserEmployeeRecord> result = userEmployeeDao.getResources(query);
+            List<UserEmployeeRecord> result = userEmployeeDao.getRecords(QueryConvert.commonQueryConvertToQuery(query));
             if (result != null) {
                 List<UserEmployeeStruct> userEmployeeStructs = new ArrayList<>(result.size());
                 for (UserEmployeeRecord uer : result) {
@@ -80,7 +82,7 @@ public class UserEmployeeServiceImpl {
 
     public Response getResourceCount(CommonQuery query) throws TException {
         try {
-            int count = userEmployeeDao.getResourceCount(query);
+            int count = userEmployeeDao.getCount(QueryConvert.commonQueryConvertToQuery(query));
             return ResponseUtils.success(count);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -90,7 +92,7 @@ public class UserEmployeeServiceImpl {
 
     public Response postResource(UserEmployeeStruct record) throws TException {
         try {
-            int result = userEmployeeDao.postResource(BeanUtils.structToDB(record, UserEmployeeRecord.class));
+            int result = userEmployeeDao.addRecord(BeanUtils.structToDB(record, UserEmployeeRecord.class)).getId();
             if (result > 0) {
                 return ResponseUtils.success(result);
             } else {
@@ -111,8 +113,8 @@ public class UserEmployeeServiceImpl {
 
     public Response postResources(List<UserEmployeeStruct> records) throws TException {
         try {
-            int result = userEmployeeDao.postResources(convertDB(records));
-            return ResponseUtils.success(result);
+            List<UserEmployeeRecord> employeeRecords = userEmployeeDao.addAllRecord(convertDB(records));
+            return ResponseUtils.success(employeeRecords);
         } catch (Exception e) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
@@ -120,7 +122,7 @@ public class UserEmployeeServiceImpl {
 
     public Response putResource(UserEmployeeStruct record) throws TException {
         try {
-            int result = userEmployeeDao.putResource(BeanUtils.structToDB(record, UserEmployeeRecord.class));
+            int result = userEmployeeDao.updateRecord(BeanUtils.structToDB(record, UserEmployeeRecord.class));
             if (result > 0) {
                 return ResponseUtils.success(result);
             } else {
@@ -133,7 +135,7 @@ public class UserEmployeeServiceImpl {
 
     public Response putResources(List<UserEmployeeStruct> records) throws TException {
         try {
-            int result = userEmployeeDao.putResources(convertDB(records));
+            int[] result = userEmployeeDao.updateRecords(convertDB(records));
             return ResponseUtils.success(result);
         } catch (Exception e) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
@@ -142,7 +144,7 @@ public class UserEmployeeServiceImpl {
 
     public Response delResource(CommonQuery query) throws TException {
         try {
-            int result = userEmployeeDao.delResource(query);
+            int result = userEmployeeDao.delResource(QueryConvert.commonQueryConvertToQuery(query));
             if (result > 0) {
                 return ResponseUtils.success(result);
             } else {

@@ -3,15 +3,11 @@ package com.moseeker.baseorm.dao.wordpressdb;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.wordpressdb.tables.WordpressUserPost;
 import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressUserPostRecord;
-import com.moseeker.common.dbutils.DBConnHelper;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.dao.struct.wordpressdb.WordpressUserPostDO;
-import org.jooq.DSLContext;
+import org.apache.thrift.TException;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 
 @Repository
 public class WordpressUserPostDao
@@ -39,4 +35,23 @@ public class WordpressUserPostDao
 		}
 		return count;
 	}
+
+    public long getReadedPostId(int userId) throws TException {
+        long postId = 0;
+        Query.QueryBuilder qu = new Query.QueryBuilder();
+        qu.where("user_id", String.valueOf(userId));
+        try {
+            WordpressUserPostRecord record = getRecord(qu.buildQuery());
+            if(record != null) {
+                postId = record.getObjectId().longValue();
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+        } finally {
+            //do nothing
+        }
+        return postId;
+    }
 }

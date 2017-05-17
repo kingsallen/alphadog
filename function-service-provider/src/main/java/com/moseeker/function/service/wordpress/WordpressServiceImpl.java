@@ -1,53 +1,65 @@
 package com.moseeker.function.service.wordpress;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.thrift.TException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-
+import com.moseeker.baseorm.dao.wordpressdb.WordpressPostmetaDao;
+import com.moseeker.baseorm.dao.wordpressdb.WordpressPostsDao;
+import com.moseeker.baseorm.dao.wordpressdb.WordpressUserPostDao;
+import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressPostsRecord;
+import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.rpccenter.client.ServiceManager;
-import com.moseeker.thrift.gen.dao.service.UserHrAccountDao;
-import com.moseeker.thrift.gen.dao.service.WordpressDao;
 import com.moseeker.thrift.gen.dao.struct.PostExt;
 import com.moseeker.thrift.gen.dao.struct.WordpressPosts;
 import com.moseeker.thrift.gen.foundation.wordpress.struct.NewsletterData;
 import com.moseeker.thrift.gen.foundation.wordpress.struct.NewsletterForm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class WordpressServiceImpl {
 
 	Logger logger = LoggerFactory.getLogger(WordpressServiceImpl.class);
 
-	WordpressDao.Iface wordpressDao = ServiceManager.SERVICEMANAGER.getService(WordpressDao.Iface.class);
+    @Autowired
+    private WordpressPostsDao wordpressPostsDao;
 
-	UserHrAccountDao.Iface hraccountDao = ServiceManager.SERVICEMANAGER.getService(UserHrAccountDao.Iface.class);
+    @Autowired
+    private WordpressPostmetaDao wordpressPostmetaDao;
+
+    @Autowired
+    private WordpressUserPostDao wordpressUserPostDao;
 
 	/**
 	 * 查询用户的新版本通知消息
-	 * 
+	 *
 	 * @param newsletter
 	 * @return
 	 */
-	public NewsletterData getNewsletter(NewsletterForm newsletter) {
+	@CounterIface
+	@Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+	public NewsletterData getNewsletter(NewsletterForm newsletter) throws Exception {
 		//
 		NewsletterData data = new NewsletterData();
 		try {
 			// todo 缺少其他平台的查询
 			/*WordpressTermRelationships relationships = wordpressDao
 					.getLastRelationships(Constant.WORDPRESS_NEWSLETTER_VALUE);*/
-			WordpressPosts post = wordpressDao.getReleaseVersionPost();
+            WordpressPostsRecord postsRecord = wordpressPostsDao.getReleaseVersionPost();
+            WordpressPosts post = postsRecord == null ? null : BeanUtils.DBToStruct(WordpressPosts.class, postsRecord);
 			if (post != null && post.getId() > 0) {
-				long readedPostId = wordpressDao.getReadedPostId(newsletter.getAccount_id());
+				long readedPostId = wordpressUserPostDao.getReadedPostId(newsletter.getAccount_id());
 				//如果用户之前读的文章的编号小于最新文章编号，则表示用户未读过新版本
 				if(readedPostId < post.getId()) {
 					data.setShow_new_version((byte) 1);
 					//更新用户浏览过的版本更新文章
-					wordpressDao.upsertUserPost(newsletter.getAccount_id(), post.getId());
+					wordpressUserPostDao.upsertUserPost(newsletter.getAccount_id(), post.getId());
 				} else {
 					data.setShow_new_version((byte) 0);
 				}
@@ -58,21 +70,20 @@ public class WordpressServiceImpl {
 				try {
 					configUtils.loadResource("chaos.properties");
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.error(e.getMessage(), e);
 				}
 				String domain = configUtils.get("wordpress.domain", String.class);
 				data.setUrl(domain + post.getPostName());
 				data.setTitle(post.getPostTitle());
-				PostExt postExt = wordpressDao.getPostExt(post.getId());
+				PostExt postExt = wordpressPostmetaDao.getPostExt(post.getId());
 				if (postExt != null && postExt.getObjectId() > 0) {
 					data.setVersion(postExt.getVersion());
 				}
 				return data;
 			}
-		} catch (TException e) {
-			e.printStackTrace();
-			logger.error(e.getMessage(), e);
+		} catch (Exception e) {
+            logger.error("rollback transactional ...", e);
+            throw e;
 		} finally {
 			// do nothing
 		}
@@ -81,7 +92,7 @@ public class WordpressServiceImpl {
 
 	/**
 	 * 抽取出摘要
-	 * 
+	 *
 	 * @param postContent
 	 * @return
 	 */
@@ -115,7 +126,7 @@ public class WordpressServiceImpl {
 
 	/**
 	 * 替换html标签
-	 * 
+	 *
 	 * @param summary
 	 * @return
 	 */

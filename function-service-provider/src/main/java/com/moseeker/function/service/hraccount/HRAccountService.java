@@ -1,26 +1,31 @@
 package com.moseeker.function.service.hraccount;
 
-import org.apache.thrift.TException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
+import com.moseeker.baseorm.dao.userdb.UserHRAccountDao;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.rpccenter.client.ServiceManager;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.service.UserHrAccountDao;
 import com.moseeker.thrift.gen.useraccounts.struct.BindAccountStruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class HRAccountService {
 	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	UserHrAccountDao.Iface hraccountDao = ServiceManager.SERVICEMANAGER.getService(UserHrAccountDao.Iface.class);
+
+	@Autowired
+    private UserHRAccountDao hraccountDao;
+
+    @Autowired
+    private HRThirdPartyAccountDao hrThirdPartyAccountDao;
 
 	/**
 	 * 是否允许执行绑定
@@ -33,26 +38,27 @@ public class HRAccountService {
 		try {
 			Response response = null;
 			if(companyId > 0) {
-				QueryUtil qu = new QueryUtil();
-				qu.addEqualFilter("company_id", String.valueOf(companyId));
-				qu.addEqualFilter("channel", String.valueOf(channelType));
-				response = hraccountDao.getThirdPartyAccount(qu);
+                Query.QueryBuilder qu = new Query.QueryBuilder();
+				qu.where("company_id", String.valueOf(companyId)).and("channel", String.valueOf(channelType));
+                HrThirdPartyAccountRecord record = hrThirdPartyAccountDao.getRecord(qu.buildQuery());
+                if (record != null) {
+                    response = ResponseUtils.success(record.intoMap());
+                } else {
+                    response = ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+                }
 			} else {
-				QueryUtil qu = new QueryUtil();
-				qu.addEqualFilter("id", String.valueOf(userId));
-				Response hraccountResponse = hraccountDao.getAccount(qu);
-				if(hraccountResponse.getStatus() == 0) {
-					JSONObject hraccount = JSONObject.parseObject(hraccountResponse.getData());
-					if(hraccount.getInteger("company_id") != null) {
-						int companyId1 = hraccount.getInteger("company_id");
-						QueryUtil qu1 = new QueryUtil();
-						qu1.addEqualFilter("company_id", String.valueOf(companyId1));
-						qu1.addEqualFilter("channel", String.valueOf(channelType));
-						response = hraccountDao.getThirdPartyAccount(qu1);
-					} else {
-						//数据异常
-						return ResponseUtils.fail(ConstantErrorCodeMessage.HRACCOUNT_ELLEGLE_DATA);
-					}
+				Query.QueryBuilder qu = new Query.QueryBuilder();
+				qu.where("id", String.valueOf(userId));
+                UserHrAccountRecord accountRecord = hraccountDao.getRecord(qu.buildQuery());
+                if(accountRecord != null && accountRecord.getCompanyId() != null) {
+                    Query.QueryBuilder qu1 = new Query.QueryBuilder();
+                    qu1.where("company_id", accountRecord.getCompanyId()).and("channel", String.valueOf(channelType));
+                    HrThirdPartyAccountRecord record = hrThirdPartyAccountDao.getRecord(qu1.buildQuery());
+                    if (record != null) {
+                        response = ResponseUtils.success(record.intoMap());
+                    } else {
+                        response = ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+                    }
 				} else {
 					//请求不到数据
 					return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
@@ -72,7 +78,7 @@ public class HRAccountService {
 					return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 				}
 			}
-		} catch (TException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error(e.getMessage(), e);
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
@@ -82,15 +88,8 @@ public class HRAccountService {
 		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 	}
 
+	@CounterIface
 	public Response createThirdPartyAccount(BindAccountStruct account) {
-		
-		try {
-			return hraccountDao.upsertThirdPartyAccount(account);
-		} catch (TException e) {
-			e.printStackTrace();
-			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-		} finally {
-			//do nothing
-		}
+        return hrThirdPartyAccountDao.upsertThirdPartyAccount(account);
 	}
 }

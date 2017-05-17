@@ -9,6 +9,7 @@ import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.service.UserHrAccountDao.Iface;
@@ -45,7 +46,15 @@ public class HRAccountDaoThriftService implements Iface {
     @Autowired
     private HRThirdPartyAccountDao hrThirdPartyAccountDao;
 
+    /**
+     *
+     * @param query
+     * @return
+     * @throws TException
+     * @see UserHRAccountDao#getRecord(Query)
+     */
     @Override
+    @Deprecated
     public Response getAccount(CommonQuery query) throws TException {
         try {
             UserHrAccountRecord record = hraccountDao.getRecord(QueryConvert.commonQueryConvertToQuery(query));
@@ -63,7 +72,15 @@ public class HRAccountDaoThriftService implements Iface {
         }
     }
 
+    /**
+     *
+     * @param query
+     * @return
+     * @throws TException
+     * @see HRThirdPartyAccountDao#getRecord(Query)
+     */
     @Override
+    @Deprecated
     public Response getThirdPartyAccount(CommonQuery query) throws TException {
         try {
             HrThirdPartyAccountRecord record = hrThirdPartyAccountDao.getRecord(QueryConvert.commonQueryConvertToQuery(query));
@@ -80,6 +97,13 @@ public class HRAccountDaoThriftService implements Iface {
         }
     }
 
+    /**
+     *
+     * @param account
+     * @return
+     * @throws TException
+     * @see HRThirdPartyAccountDao#createThirdPartyAccount(BindAccountStruct)
+     */
     @Override
     public Response createThirdPartyAccount(BindAccountStruct account) throws TException {
 
@@ -110,6 +134,13 @@ public class HRAccountDaoThriftService implements Iface {
         }
     }
 
+    /**
+     *
+     * @param account
+     * @return
+     * @throws TException
+     * @see HRThirdPartyAccountDao#upsertThirdPartyAccount(BindAccountStruct)
+     */
     @Override
     public Response upsertThirdPartyAccount(BindAccountStruct account) throws TException {
         try {
@@ -149,7 +180,15 @@ public class HRAccountDaoThriftService implements Iface {
         }
     }
 
+    /**
+     *
+     * @param query
+     * @return
+     * @throws TException
+     * @see UserHRAccountDao#getDatas(Query, Class)
+     */
     @Override
+    @Deprecated
     public Response getAccounts(CommonQuery query) throws TException {
         try {
             List<UserHrAccountRecord> records = hraccountDao.getRecords(QueryConvert.commonQueryConvertToQuery(query));
