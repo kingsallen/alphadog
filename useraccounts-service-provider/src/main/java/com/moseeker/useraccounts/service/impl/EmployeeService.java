@@ -624,6 +624,7 @@ public class EmployeeService {
 				BindingParams bindingParams = JSONObject.parseObject(value, BindingParams.class);
 				response = updateEmployee(bindingParams, Integer.valueOf(employeeId));
 				if (response.success) {
+				    response.setEmployeeId(Integer.valueOf(employeeId));
 					client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, employeeId);
 				}
 			} 
