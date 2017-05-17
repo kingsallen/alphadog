@@ -7,6 +7,7 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.Pagination;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,9 +21,9 @@ import java.util.List;
 public class BaseProfileService<S, R> {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public Response getResources(Crud<?, R> dao, CommonQuery query,Class clazz) throws TException {
+    public Response getResources(Crud<?, R> dao, CommonQuery query, Class clazz) throws TException {
         try {
-            List<S> structs = dao.getDatas(QueryConvert.commonQueryConvertToQuery(query),clazz);
+            List<S> structs = dao.getDatas(QueryConvert.commonQueryConvertToQuery(query), clazz);
 
             if (!structs.isEmpty()) {
                 return ResponseUtils.success(structs);
@@ -40,8 +41,8 @@ public class BaseProfileService<S, R> {
     public Response postResources(Crud<?, R> dao, List<S> structs) throws TException {
         try {
             List<R> rs = new ArrayList<>();
-            if(structs!=null){
-                structs.forEach(struct->{
+            if (structs != null) {
+                structs.forEach(struct -> {
                     rs.add(dao.dataToRecord(struct));
                 });
             }
@@ -64,14 +65,15 @@ public class BaseProfileService<S, R> {
     public Response putResources(Crud<?, R> dao, List<S> structs) throws TException {
         try {
             List<R> rs = new ArrayList<>();
-            if(structs!=null){
-                structs.forEach(struct->{
+            if (structs != null) {
+                structs.forEach(struct -> {
                     rs.add(dao.dataToRecord(struct));
                 });
             }
             int[] updateStatus = dao.updateRecords(rs);
-            if (updateStatus.length > 0 && updateStatus[0] > 0) {
-                return ResponseUtils.success(String.valueOf(updateStatus[0]));
+
+            if (updateStatus.length > 0 && ArrayUtils.contains(updateStatus, 1)) {
+                return ResponseUtils.success(updateStatus);
             }
         } catch (Exception e) {
             logger.error("putResources error", e);
@@ -86,14 +88,14 @@ public class BaseProfileService<S, R> {
     public Response delResources(Crud<?, R> dao, List<S> structs) throws TException {
         try {
             List<R> rs = new ArrayList<>();
-            if(structs!=null){
-                structs.forEach(struct->{
+            if (structs != null) {
+                structs.forEach(struct -> {
                     rs.add(dao.dataToRecord(struct));
                 });
             }
             int[] deleteStatus = dao.deleteRecords(rs);
-            if (deleteStatus.length > 0 && deleteStatus[0] > 0) {
-                return ResponseUtils.success(String.valueOf(deleteStatus[0]));
+            if (deleteStatus.length > 0 && ArrayUtils.contains(deleteStatus, 1)) {
+                return ResponseUtils.success(deleteStatus);
             }
         } catch (Exception e) {
             logger.error("delResources error", e);
@@ -105,9 +107,9 @@ public class BaseProfileService<S, R> {
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DEL_FAILED);
     }
 
-    public Response getResource(Crud<?, R> dao, CommonQuery query,Class<S> sClass) throws TException {
+    public Response getResource(Crud<?, R> dao, CommonQuery query, Class<S> sClass) throws TException {
         try {
-            S s = dao.getData(QueryConvert.commonQueryConvertToQuery(query),sClass);
+            S s = dao.getData(QueryConvert.commonQueryConvertToQuery(query), sClass);
             if (s != null) {
                 return ResponseUtils.success(s);
             }
@@ -184,23 +186,23 @@ public class BaseProfileService<S, R> {
         }
     }
 
-    public Response getPagination(Crud<?, R> dao, CommonQuery query,Class<?> clazz) throws TException {
+    public Response getPagination(Crud<?, R> dao, CommonQuery query, Class<?> clazz) throws TException {
         try {
             Pagination pagination = new Pagination();
             int totalRow = dao.getCount(QueryConvert.commonQueryConvertToQuery(query));
             int pageNo = 1;
             int pageSize = 10;
-            if(query.getPage() > 1) {
+            if (query.getPage() > 1) {
                 pageNo = query.getPage();
             }
-            if(query.getPer_page() > 0) {
+            if (query.getPer_page() > 0) {
                 pageSize = query.getPer_page();
             }
             int totalPage = (int) (totalRow / pageSize);
             if (totalRow % pageSize != 0) {
                 totalPage++;
             }
-            List<?> datas = dao.getDatas(QueryConvert.commonQueryConvertToQuery(query),clazz);
+            List<?> datas = dao.getDatas(QueryConvert.commonQueryConvertToQuery(query), clazz);
 
             pagination.setPageNo(pageNo);
             pagination.setPageSize(pageSize);
@@ -212,7 +214,7 @@ public class BaseProfileService<S, R> {
 
         } catch (Exception e) {
             logger.error("getPagination error", e);
-            return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 
         } finally {
             //do nothing

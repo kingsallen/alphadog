@@ -44,7 +44,7 @@ public class ProfileBasicServicesImpl implements Iface {
 
 	@Override
 	public Response postResources(List<Basic> structs) throws TException {
-		return postResources(structs);
+		return service.postResources(structs);
 	}
 
 	@Override

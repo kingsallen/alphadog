@@ -54,7 +54,7 @@ public class ProfileBasicService extends BaseProfileService<Basic, ProfileBasicR
 
     public Response getResources(CommonQuery query) throws TException {
         try {
-            List<Basic> basics = profileBasicDao.getDatas(QueryConvert.commonQueryConvertToQuery(query),Basic.class);
+            List<Basic> basics = profileBasicDao.getDatas(QueryConvert.commonQueryConvertToQuery(query), Basic.class);
             if (basics != null && basics.size() > 0) {
                 List<Integer> profileIds = new ArrayList<>();
                 List<Integer> cityCodes = new ArrayList<>();
@@ -117,7 +117,7 @@ public class ProfileBasicService extends BaseProfileService<Basic, ProfileBasicR
 
     public Response getResource(CommonQuery query) throws TException {
         try {
-            Basic basic = profileBasicDao.getData(QueryConvert.commonQueryConvertToQuery(query),Basic.class);
+            Basic basic = profileBasicDao.getData(QueryConvert.commonQueryConvertToQuery(query), Basic.class);
             if (basic != null) {
                 if (basic.getCity_code() > 0 && StringUtils.isNullOrEmpty(basic.getCity_name())) {
                     DictCityRecord city = cityDao.getCityByCode(basic.getCity_code());
@@ -170,17 +170,20 @@ public class ProfileBasicService extends BaseProfileService<Basic, ProfileBasicR
             if (repeat != null) {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_REPEAT_DATA);
             }
-            ProfileBasicRecord record = profileBasicDao.addRecord(profileBasicDao.dataToRecord(struct));
-            if (record != null) {
+            if (struct.getProfile_id() > 0) {
+                ProfileBasicRecord record = profileBasicDao.addRecord(profileBasicDao.dataToRecord(struct));
 
-                updateUpdateTime(struct);
+                if (record.getProfileId() > 0) {
 
-                if (!StringUtils.isNullOrEmpty(struct.getName())) {
-                    profileDao.updateRealName(record.getProfileId(), struct.getName());
-                }
+                    updateUpdateTime(struct);
+
+                    if (!StringUtils.isNullOrEmpty(struct.getName())) {
+                        profileDao.updateRealName(record.getProfileId(), struct.getName());
+                    }
                 /* 计算用户基本信息的简历完整度 */
-                completenessImpl.reCalculateUserUser(struct.getProfile_id());
-                return ResponseUtils.success(String.valueOf(1));
+                    completenessImpl.reCalculateUserUser(struct.getProfile_id());
+                    return ResponseUtils.success(String.valueOf(1));
+                }
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -324,7 +327,7 @@ public class ProfileBasicService extends BaseProfileService<Basic, ProfileBasicR
     }
 
     public Response reCalculateBasicCompleteness(int userId) throws TException {
-        return null;
+        return ResponseUtils.success(0);
     }
 
     private void updateUpdateTime(Basic basic) {
@@ -334,6 +337,6 @@ public class ProfileBasicService extends BaseProfileService<Basic, ProfileBasicR
     }
 
     public Response getPagination(CommonQuery query) throws TException {
-        return super.getPagination(profileBasicDao, query,Basic.class);
+        return super.getPagination(profileBasicDao, query, Basic.class);
     }
 }

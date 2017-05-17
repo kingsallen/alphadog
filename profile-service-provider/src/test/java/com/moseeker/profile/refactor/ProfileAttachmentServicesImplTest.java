@@ -22,6 +22,12 @@ public class ProfileAttachmentServicesImplTest{
 	public void init(){
 		service = ServiceManager.SERVICEMANAGER.getService(AttachmentServices.Iface.class);
 	}
+
+	Response response;
+	@After
+	public void printResponse(){
+		System.out.println(JSON.toJSONString(response));
+	}
 	
 	@Test
 	public void getResources() throws TException {
@@ -100,12 +106,9 @@ public class ProfileAttachmentServicesImplTest{
 
 	@Test
 	public void getResource() throws TException {
-		response = service.getResource(null);
-	}
-
-	Response response;
-	@After
-	public void printResponse(){
-		System.out.println(JSON.toJSONString(response));
+		CommonQuery commonQuery = new CommonQuery();
+		commonQuery.setEqualFilter(new HashMap<>());
+		commonQuery.getEqualFilter().put("id","1");
+		response = service.getResource(commonQuery);
 	}
 }
