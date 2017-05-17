@@ -195,7 +195,7 @@ public class JobPositionDao extends StructDaoImpl<JobPositionDO, JobPositionReco
                     jp.SOURCE.as("source"), jp.HB_STATUS.as("hbStatus"), jp.CHILD_COMPANY_ID.as("childCompanyId"), jp.AGE.as("age"), jp.MAJOR_REQUIRED.as("majorRequired"), jp.WORK_ADDRESS.as("workAddress"),
                     jp.KEYWORD.as("keyword"), jp.REPORTING_TO.as("reportingTo"), jp.IS_HIRING.as("isHiring"), jp.UNDERLINGS.as("underlings"), jp.LANGUAGE_REQUIRED.as("languageRequired"), jp.TARGET_INDUSTRY.as("targetIndustry"),
                     jp.CURRENT_STATUS.as("currentStatus"), jp.POSITION_CODE.as("positionCode"), ht.ID.as("teamId"), ht.NAME.as("teamName"), ht.DESCRIPTION.as("teamDescription")
-            ).from(jp).leftJoin(ht).on(jp.TEAM_ID.equal(ht.ID)).and(jp.STATUS.equal((byte) 0));
+            ).from(jp).leftJoin(ht).on(jp.TEAM_ID.equal(ht.ID));
 
             Map hashMap = commonQuery.getEqualFilter();
             // 通过CompanyId查询职位列表
@@ -204,7 +204,7 @@ public class JobPositionDao extends StructDaoImpl<JobPositionDO, JobPositionReco
                 fields.add(jp.PRIORITY.asc());
                 fields.add(jp.IS_RECOM.asc());
                 fields.add(jp.UPDATE_TIME.desc());
-                record.where(jp.COMPANY_ID.equal(UInteger.valueOf(commonQuery.getEqualFilter().get("company_id")))).orderBy(fields);
+                record.where(jp.COMPANY_ID.equal(UInteger.valueOf(commonQuery.getEqualFilter().get("company_id")))).and(jp.STATUS.equal((byte) 0)).orderBy(fields);
             }
             // 分页
             int page = 1;
