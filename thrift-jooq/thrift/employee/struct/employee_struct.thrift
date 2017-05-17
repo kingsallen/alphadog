@@ -48,7 +48,8 @@ struct EmployeeVerificationConfResponse {
 
 struct Result {
     1: required bool success,
-    2: optional string message
+    2: optional string message,
+    3: optional i32 employeeId
 }
 
 struct EmployeeCustomFieldsConf {
