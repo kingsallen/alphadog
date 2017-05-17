@@ -6,7 +6,9 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileWorksRecord;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.profile.struct.Credentials;
 import com.moseeker.thrift.gen.profile.struct.Works;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -35,6 +37,17 @@ public class ProfileWorksService extends BaseProfileService<Works, ProfileWorksR
     @Autowired
     private ProfileCompletenessImpl completenessImpl;
 
+    public Response getResource(CommonQuery query) throws TException {
+        return super.getResource(dao, query, Works.class);
+    }
+
+    public Response getResources(CommonQuery query) throws TException {
+        return super.getResources(dao, query, Credentials.class);
+    }
+
+    public Response getPagination(CommonQuery query) throws TException {
+        return super.getPagination(dao, query,Works.class);
+    }
 
     public Response postResources(List<Works> structs) throws TException {
         Response response = super.postResources(dao, structs);

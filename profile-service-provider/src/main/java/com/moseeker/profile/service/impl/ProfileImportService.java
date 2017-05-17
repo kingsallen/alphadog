@@ -145,6 +145,6 @@ public class ProfileImportService extends BaseProfileService<ProfileImport, Prof
     }
 
     public Response getPagination(CommonQuery query) throws TException {
-        return super.getPagination(dao, query);
+        return super.getPagination(dao, query,ProfileImport.class);
     }
 }

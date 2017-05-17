@@ -17,43 +17,50 @@ public class WholeProfileServicesImplTest {
 
     @Test
     public void testgetResource() throws TException {
-        Response response =  service.getResource(0, 0, "");
+        Response response =  service.getResource(0, 4337, "");
+        System.out.print("----"+response.toString());
     }
 
 
     @Test
     public void testpostResource() throws TException {
         Response response = service.postResource(null, 0);
+        System.out.print("----"+response.toString());
     }
 
 
     @Test
     public void testimportCV() throws TException {
         Response response =  service.importCV("", 0);
+        System.out.print("----"+response.toString());
     }
 
 
     @Test
     public void testverifyRequires() throws TException {
-        Response response =  service.verifyRequires(0, 0);
+        Response response =  service.verifyRequires(3731, 124604);
+        System.out.print("----"+response.toString());
     }
 
 
     @Test
     public void testcreateProfile() throws TException {
         Response response =  service.createProfile("");
+        System.out.print("----"+response.toString());
     }
 
 
     @Test
     public void testimproveProfile() throws TException {
         Response response =  service.improveProfile("");
+        System.out.print("----"+response.toString());
     }
 
 
     @Test
     public void testmoveProfile()
             throws TException {
-        Response response =  service.moveProfile(0, 0);
+        Response response =  service.moveProfile(7, 2);
+        System.out.println(response);
     }
 }

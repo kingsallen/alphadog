@@ -21,6 +21,7 @@ import com.moseeker.baseorm.db.profiledb.tables.records.ProfileIntentionPosition
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileIntentionRecord;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.profile.struct.Credentials;
 import com.moseeker.thrift.gen.profile.struct.Intention;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -65,6 +66,9 @@ public class ProfileIntentionService extends BaseProfileService<Intention, Profi
 	@Autowired
 	private ProfileCompletenessImpl completenessImpl;
 
+	public Response getPagination(CommonQuery query) throws TException {
+		return super.getPagination(dao, query,Intention.class);
+	}
 
 	public Response getResources(CommonQuery query) throws TException {
 		try {

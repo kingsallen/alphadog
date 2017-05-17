@@ -187,6 +187,6 @@ public class ProfileSkillService extends BaseProfileService<Skill, ProfileSkillR
     }
 
     public Response getPagination(CommonQuery query) throws TException {
-        return super.getPagination(dao, query);
+        return super.getPagination(dao, query,Skill.class);
     }
 }

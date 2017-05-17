@@ -9,7 +9,9 @@ import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.profile.constants.ValidationMessage;
 import com.moseeker.profile.utils.ProfileValidation;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.profile.struct.Credentials;
 import com.moseeker.thrift.gen.profile.struct.CustomizeResume;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -33,6 +35,18 @@ public class ProfileCustomizeResumeService extends BaseProfileService<CustomizeR
 
     @Autowired
     private ProfileProfileDao profileDao;
+
+    public Response getResource(CommonQuery query) throws TException {
+        return super.getResource(dao, query, CustomizeResume.class);
+    }
+
+    public Response getResources(CommonQuery query) throws TException {
+        return super.getResources(dao, query, Credentials.class);
+    }
+
+    public Response getPagination(CommonQuery query) throws TException {
+        return super.getPagination(dao, query,CustomizeResume.class);
+    }
 
     public Response postResources(List<CustomizeResume> structs) throws TException {
         if (structs != null && structs.size() > 0) {

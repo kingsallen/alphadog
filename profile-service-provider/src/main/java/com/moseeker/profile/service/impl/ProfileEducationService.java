@@ -336,6 +336,6 @@ public class ProfileEducationService extends BaseProfileService<Education, Profi
 	}
 
 	public Response getPagination(CommonQuery query) throws TException {
-		return super.getPagination(dao, query);
+		return super.getPagination(dao, query,Education.class);
 	}
 }

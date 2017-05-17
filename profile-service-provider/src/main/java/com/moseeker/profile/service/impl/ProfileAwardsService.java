@@ -164,6 +164,6 @@ public class ProfileAwardsService extends BaseProfileService<Awards, ProfileAwar
     }
 
     public Response getPagination(CommonQuery query) throws TException {
-        return super.getPagination(dao, query);
+        return super.getPagination(dao, query,Awards.class);
     }
 }

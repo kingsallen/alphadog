@@ -334,6 +334,6 @@ public class ProfileBasicService extends BaseProfileService<Basic, ProfileBasicR
     }
 
     public Response getPagination(CommonQuery query) throws TException {
-        return super.getPagination(profileBasicDao, query);
+        return super.getPagination(profileBasicDao, query,Basic.class);
     }
 }

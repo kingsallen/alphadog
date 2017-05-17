@@ -184,9 +184,9 @@ public class BaseProfileService<S, R> {
         }
     }
 
-    public Response getPagination(Crud<?, R> dao, CommonQuery query) throws TException {
+    public Response getPagination(Crud<?, R> dao, CommonQuery query,Class<?> clazz) throws TException {
         try {
-            Pagination<R> pagination = new Pagination<>();
+            Pagination pagination = new Pagination();
             int totalRow = dao.getCount(QueryConvert.commonQueryConvertToQuery(query));
             int pageNo = 1;
             int pageSize = 10;
@@ -200,14 +200,14 @@ public class BaseProfileService<S, R> {
             if (totalRow % pageSize != 0) {
                 totalPage++;
             }
-            List<R> records = dao.getRecords(QueryConvert.commonQueryConvertToQuery(query));
+            List<?> datas = dao.getDatas(QueryConvert.commonQueryConvertToQuery(query),clazz);
 
             pagination.setPageNo(pageNo);
             pagination.setPageSize(pageSize);
             pagination.setTotalPage(totalPage);
             pagination.setTotalRow(totalRow);
-            pagination.setResults(records);
-            return ResponseUtils.success(String.valueOf(pagination));
+            pagination.setResults(datas);
+            return ResponseUtils.success(pagination);
 
 
         } catch (Exception e) {

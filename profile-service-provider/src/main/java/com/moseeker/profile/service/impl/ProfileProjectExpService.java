@@ -16,6 +16,7 @@ import com.moseeker.profile.constants.ValidationMessage;
 import com.moseeker.profile.utils.ProfileValidation;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.profile.struct.Credentials;
 import com.moseeker.thrift.gen.profile.struct.ProjectExp;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -41,6 +42,13 @@ public class ProfileProjectExpService extends BaseProfileService<ProjectExp, Pro
     @Autowired
     private ProfileCompletenessImpl completenessImpl;
 
+    public Response getResource(CommonQuery query) throws TException {
+        return super.getResource(dao, query, ProjectExp.class);
+    }
+
+    public Response getPagination(CommonQuery query) throws TException {
+        return super.getPagination(dao, query,ProjectExp.class);
+    }
 
     public Response getResources(CommonQuery query) throws TException {
         try {

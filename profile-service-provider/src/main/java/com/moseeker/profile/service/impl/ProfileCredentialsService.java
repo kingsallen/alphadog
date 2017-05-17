@@ -46,9 +46,8 @@ public class ProfileCredentialsService extends BaseProfileService<Credentials, P
         return super.getResources(dao, query, Credentials.class);
     }
 
-    @Override
-    public Response getPagination(Crud<?, ProfileCredentialsRecord> dao, CommonQuery query) throws TException {
-        return super.getPagination(dao, query);
+    public Response getPagination(CommonQuery query) throws TException {
+        return super.getPagination(dao, query,Credentials.class);
     }
 
     public Response postResources(List<Credentials> structs) throws TException {
@@ -199,7 +198,4 @@ public class ProfileCredentialsService extends BaseProfileService<Credentials, P
         updateUpdateTime(credentials);
     }
 
-    public Response getPagination(CommonQuery query) throws TException {
-        return super.getPagination(dao, query);
-    }
 }

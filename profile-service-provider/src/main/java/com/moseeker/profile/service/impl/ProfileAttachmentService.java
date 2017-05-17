@@ -105,6 +105,6 @@ public class ProfileAttachmentService extends BaseProfileService<Attachment, Pro
 	}
 
 	public Response getPagination(CommonQuery query) throws TException {
-		return super.getPagination(profileAttachmentDao, query);
+		return super.getPagination(profileAttachmentDao, query,Attachment.class);
 	}
 }

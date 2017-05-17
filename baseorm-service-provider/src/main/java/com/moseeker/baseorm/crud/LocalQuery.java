@@ -44,6 +44,7 @@ class LocalQuery<R extends Record> {
     /**
      * 获取页码。
      * 如果大于0，则返回页码，否则返回 1
+     *
      * @return 当前有效地页码
      */
     public int getPage() {
@@ -53,6 +54,7 @@ class LocalQuery<R extends Record> {
     /**
      * 返回每页显示的信息数量
      * 如果大于0，则返回当前的每页显示的数量；否则返回10
+     *
      * @return
      */
     public int getPageSize() {
@@ -65,7 +67,8 @@ class LocalQuery<R extends Record> {
                     .map(select -> {
                         Field<?> field = table.field(select.getField());
                         if (field == null) {
-                            throw new OrmException("field '" + select.getField() + "' not found in table " + table.getName());
+                            logger.error("field '" + select.getField() + "' not found in table " + table.getName());
+                            return null;
                         } else {
                             switch (select.getSelectOp()) {
                                 case AVG:
@@ -95,6 +98,7 @@ class LocalQuery<R extends Record> {
                             }
                         }
                     })
+                    .filter(field -> field != null)
                     .collect(Collectors.toList());
         } else {
             return null;
@@ -103,6 +107,7 @@ class LocalQuery<R extends Record> {
 
     /**
      * 生成group条件
+     *
      * @return
      */
     public Collection<? extends Field<?>> buildGroup() {
@@ -111,11 +116,13 @@ class LocalQuery<R extends Record> {
                     .map(groupField -> {
                         Field<?> field = table.field(groupField);
                         if (field == null) {
-                            throw new OrmException("field '" + groupField + "' not found in table " + table.getName());
+                            logger.error("field '" + groupField + "' not found in table " + table.getName());
+                            return null;
                         } else {
                             return field;
                         }
                     })
+                    .filter(filed -> filed != null)
                     .collect(Collectors.toList());
         } else {
             return null;
@@ -142,7 +149,8 @@ class LocalQuery<R extends Record> {
                     .map(orderBy -> {
                         Field<?> field = table.field(orderBy.getField());
                         if (field == null) {
-                            throw new OrmException("field '" + orderBy.getField() + "' not found in table " + table.getName());
+                            logger.error("field '" + orderBy.getField() + "' not found in table " + table.getName());
+                            return null;
                         } else {
                             switch (orderBy.getOrder()) {
                                 case DESC:
@@ -152,6 +160,7 @@ class LocalQuery<R extends Record> {
                             }
                         }
                     })
+                    .filter(filed -> filed != null)
                     .collect(Collectors.toList());
         } else {
             return null;
@@ -161,6 +170,7 @@ class LocalQuery<R extends Record> {
     /**
      * 返回解析的查询条件。
      * 该条件过滤了order条件和limit条件
+     *
      * @return
      */
     public SelectJoinStep<Record1<Integer>> convertForCount() {
@@ -179,6 +189,7 @@ class LocalQuery<R extends Record> {
 
     /**
      * 返回解析的查询条件。解析条件包括查询的字段，过滤条件，分组条件，排序条件
+     *
      * @return
      */
     public SelectJoinStep<Record> convertToResultQuery() {
@@ -201,7 +212,7 @@ class LocalQuery<R extends Record> {
         if (orders != null && orders.size() > 0) {
             select.orderBy(orders);
         }
-        select.limit((getPage()-1) * getPageSize(), getPageSize());
+        select.limit((getPage() - 1) * getPageSize(), getPageSize());
         logger.info(select.getSQL());
         return select;
     }

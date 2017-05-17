@@ -11,57 +11,50 @@ import java.util.List;
  * @version
  * @param <S>
  */
-public class Pagination<S> {
-	
-	public Pagination() {}
-	
-	public Pagination(int pageNo, int pageSize) {
-		this.pageNo = pageNo;
-		this.pageSize = pageSize;
-	}
-	
-	public Pagination(int pageNo, int pageSize, int totalPage, int totalRow, List<S> results) {
-		this.pageNo = pageNo;
-		this.pageSize = pageSize;
-		this.totalPage = totalPage;
-		this.totalRow = totalRow;
-		this.results = results;
-	}
-
+public class Pagination {
 	private int pageNo;
 	private int pageSize;
 	private int totalPage;
 	private int totalRow;
-	private List<S> results;
-	
-	public int getPageNo() {
-		return pageNo;
-	}
-	public void setPageNo(int pageNo) {
-		this.pageNo = pageNo;
-	}
-	public int getPageSize() {
-		return pageSize;
-	}
-	public void setPageSize(int pageSize) {
-		this.pageSize = pageSize;
-	}
-	public int getTotalPage() {
-		return totalPage;
-	}
-	public void setTotalPage(int totalPage) {
-		this.totalPage = totalPage;
-	}
-	public int getTotalRow() {
-		return totalRow;
-	}
-	public void setTotalRow(int totalRow) {
-		this.totalRow = totalRow;
-	}
-	public List<S> getResults() {
-		return results;
-	}
-	public void setResults(List<S> results) {
-		this.results = results;
-	}
+	private Object results;
+
+    public int getPageNo() {
+        return pageNo;
+    }
+
+    public void setPageNo(int pageNo) {
+        this.pageNo = pageNo;
+    }
+
+    public int getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
+    }
+
+    public int getTotalPage() {
+        return totalPage;
+    }
+
+    public void setTotalPage(int totalPage) {
+        this.totalPage = totalPage;
+    }
+
+    public int getTotalRow() {
+        return totalRow;
+    }
+
+    public void setTotalRow(int totalRow) {
+        this.totalRow = totalRow;
+    }
+
+    public Object getResults() {
+        return results;
+    }
+
+    public void setResults(Object results) {
+        this.results = results;
+    }
 }

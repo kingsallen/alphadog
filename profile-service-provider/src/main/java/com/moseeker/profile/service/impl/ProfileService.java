@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -133,5 +134,34 @@ public class ProfileService extends BaseProfileService<Profile, ProfileProfileRe
             logger.error(e1.getMessage(), e1);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
+    }
+
+
+    public Response getResources(CommonQuery query) throws TException {
+        return super.getResources(dao, query, Profile.class);
+    }
+
+    public Response getPagination(CommonQuery query) throws TException {
+        return super.getPagination(dao, query,Profile.class);
+    }
+
+    public Response postResources(List<Profile> resources) throws TException {
+        return super.postResources(dao, resources);
+    }
+
+    public Response putResources(List<Profile> resources) throws TException {
+        return super.putResources(dao, resources);
+    }
+
+    public Response delResources(List<Profile> resources) throws TException {
+        return super.delResources(dao, resources);
+    }
+
+    public Response putResource(Profile profile) throws TException {
+        return super.putResource(dao, profile);
+    }
+
+    public Response delResource(Profile profile) throws TException {
+        return super.delResource(dao, profile);
     }
 }

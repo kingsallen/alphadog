@@ -199,6 +199,6 @@ public class ProfileLanguageService extends BaseProfileService<Language, Profile
 	}
 
 	public Response getPagination(CommonQuery query) throws TException {
-		return super.getPagination(dao, query);
+		return super.getPagination(dao, query,Language.class);
 	}
 }

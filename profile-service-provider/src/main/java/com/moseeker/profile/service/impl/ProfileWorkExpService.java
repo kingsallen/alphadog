@@ -449,4 +449,8 @@ public class ProfileWorkExpService extends BaseProfileService<WorkExp, ProfileWo
         workExps.add(workExp);
         updateUpdateTime(workExps);
     }
+
+    public Response getPagination(CommonQuery query) throws TException {
+        return super.getPagination(dao, query,WorkExp.class);
+    }
 }

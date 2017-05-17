@@ -23,9 +23,6 @@ public class ProfileProjectExpServicesImpl implements Iface {
 	@Autowired
 	private ProfileProjectExpService service;
 
-	@Autowired
-	private ProfileCompletenessImpl completenessImpl;
-
 
 	@Override
 	public Response postResources(List<ProjectExp> structs) throws TException {
