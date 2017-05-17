@@ -1,6 +1,7 @@
 package com.moseeker.profile.thrift;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -53,8 +54,8 @@ public class ProfileServicesImpl implements Iface {
 	}
 
 	@Override
-	public Response getProfileByApplication(int companyId, int sourceId, int ats_status, boolean recommender, boolean dl_url_required) throws TException {
-		return service.getProfileByApplication(companyId,sourceId,ats_status,recommender,dl_url_required);
+	public Response getProfileByApplication(int companyId, int sourceId, int ats_status, boolean recommender, boolean dl_url_required, Map<String,List<String>> filter) throws TException {
+		return service.getProfileByApplication(companyId,sourceId,ats_status,recommender,dl_url_required,filter);
 	}
 
 	@Override
