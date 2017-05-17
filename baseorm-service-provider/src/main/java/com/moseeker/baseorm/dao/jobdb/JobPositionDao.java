@@ -306,7 +306,10 @@ public class JobPositionDao extends StructDaoImpl<JobPositionDO, JobPositionReco
                             departmentIds.add(company_id);
                             condition = condition.and(StJobSimilarity.ST_JOB_SIMILARITY.DEPARTMENT_ID.in(departmentIds));
                         }
-                        recomResults = create.select().from(StJobSimilarity.ST_JOB_SIMILARITY).where(condition).fetch();
+                        // 安装匹配度排序
+                        List<SortField<?>> fields = new ArrayList<>(2);
+                        fields.add(StJobSimilarity.ST_JOB_SIMILARITY.REC_SIM.asc());
+                        recomResults = create.select().from(StJobSimilarity.ST_JOB_SIMILARITY).where(condition).orderBy(fields).fetch();
                         List<Integer> pids = new ArrayList<>();
                         for (Record recomResult : recomResults) {
                             Integer positionId = ((Integer) recomResult.getValue("recom_id")).intValue();
