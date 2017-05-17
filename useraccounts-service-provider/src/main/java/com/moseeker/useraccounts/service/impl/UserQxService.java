@@ -291,12 +291,19 @@ public class UserQxService {
         JSONObject jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.SUCCESS);
         try {
             if (userId > 0 && positionId > 0 ){
-                UserViewedPositionDO entity = new UserViewedPositionDO();
-                entity.setUserId(userId);
-                entity.setPositionId(positionId);
-                UserViewedPositionDO viewedPositionDO = userDao.saveUserViewedPosition(entity);
-                if (viewedPositionDO == null || viewedPositionDO.getId() <= 0) {
-                    jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+                CommonQuery query = new CommonQuery();
+                query.setEqualFilter(new HashMap<>());
+                query.getEqualFilter().put("user_id", String.valueOf(userId));
+                query.getEqualFilter().put("position_id", String.valueOf(positionId));
+                UserViewedPositionDO userViewedPosition = userDao.getUserViewedPosition(query);
+                if (userViewedPosition == null || userViewedPosition.getId() == 0 ) {
+                    UserViewedPositionDO entity = new UserViewedPositionDO();
+                    entity.setUserId(userId);
+                    entity.setPositionId(positionId);
+                    UserViewedPositionDO viewedPositionDO = userDao.saveUserViewedPosition(entity);
+                    if (viewedPositionDO == null || viewedPositionDO.getId() <= 0) {
+                        jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+                    }
                 }
             } else {
                 logger.error("userViewedPosition 请求参数为空，请检查相关参数, userId={}, positionId={}", userId, positionId);
