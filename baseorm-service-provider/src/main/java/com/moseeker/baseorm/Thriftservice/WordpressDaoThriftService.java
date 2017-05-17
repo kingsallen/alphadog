@@ -13,6 +13,8 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.Update;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.service.WordpressDao.Iface;
@@ -48,8 +50,10 @@ public class WordpressDaoThriftService implements Iface{
 	
 	/**
 	 * 通用查询方法查询文章信息
+     * @see WordpressPostsDao#getRecord(Query)
 	 */
 	@Override
+    @Deprecated
 	public WordpressPosts getPost(CommonQuery query) throws TException {
 		WordpressPosts posts = new WordpressPosts();
 		try {
@@ -133,8 +137,10 @@ public class WordpressDaoThriftService implements Iface{
 
 	/**
 	 * 查询文章的版本号和平台类别
+     * @see WordpressPostmetaDao#getPostExt(long)
 	 */
 	@Override
+    @Deprecated
 	public PostExt getPostExt(long objectId) throws TException {
 		PostExt postExt = new PostExt();
 		try {
@@ -165,8 +171,10 @@ public class WordpressDaoThriftService implements Iface{
 	 * 获取最新的处于发布状态的版本更新文章
 	 * @return
 	 * @throws TException
+     * @see WordpressPostsDao#getReleaseVersionPost()
 	 */
 	@Override
+    @Deprecated
 	public WordpressPosts getReleaseVersionPost() throws TException {
 		WordpressPosts posts = new WordpressPosts();
 		try {
@@ -197,8 +205,10 @@ public class WordpressDaoThriftService implements Iface{
 	 * @param userId
 	 * @return
 	 * @throws TException
+     * @see WordpressUserPostDao#getReadedPostId(int)
 	 */
 	@Override
+    @Deprecated
 	public long getReadedPostId(int userId) throws TException {
 		long postId = 0;
 		QueryUtil qu = new QueryUtil();
@@ -224,8 +234,10 @@ public class WordpressDaoThriftService implements Iface{
 	 * @param postId
 	 * @return
 	 * @throws TException
+     * @see WordpressUserPostDao#upsertUserPost(int, long)
 	 */
 	@Override
+    @Deprecated
 	public Response upsertUserPost(int userId, long postId) throws TException {
 		int count = wordpressUserPostDao.upsertUserPost(userId, postId);
 		if(count > 0) {

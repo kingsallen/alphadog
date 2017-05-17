@@ -1,24 +1,35 @@
 package com.moseeker.useraccounts.service.impl.biztools;
 
+import com.moseeker.baseorm.dao.candidatedb.CandidatePositionDao;
+import com.moseeker.baseorm.dao.candidatedb.CandidateRecomRecordDao;
+import com.moseeker.baseorm.dao.configdb.AwardConfigTplDao;
+import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
+import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.dao.userdb.UserFavPositionDao;
+import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.common.constants.AbleFlag;
-import com.moseeker.common.providerutils.QueryUtil;
-import com.moseeker.common.util.StringUtils;
-import com.moseeker.rpccenter.client.ServiceManager;
+import com.moseeker.common.util.query.Condition;
+import com.moseeker.common.util.query.Order;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
-import com.moseeker.thrift.gen.dao.service.*;
-import com.moseeker.thrift.gen.dao.struct.*;
+import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionDO;
+import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateRecomRecordDO;
+import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysPointsConfTplDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
-import com.moseeker.thrift.gen.useraccounts.struct.RecommendationVO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserFavPositionDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 个人中心片段业务处理类
@@ -30,29 +41,47 @@ public class UserCenterBizTools {
 
 	Logger logger = LoggerFactory.getLogger(UserCenterBizTools.class);
 	
-	JobDBDao.Iface jobDBDao = ServiceManager.SERVICEMANAGER.getService(JobDBDao.Iface.class);
-	ConfigDBDao.Iface configDBDao = ServiceManager.SERVICEMANAGER.getService(ConfigDBDao.Iface.class);
-	CompanyDao.Iface companyDao = ServiceManager.SERVICEMANAGER.getService(CompanyDao.Iface.class);
-	UserDBDao.Iface userDBDao = ServiceManager.SERVICEMANAGER.getService(UserDBDao.Iface.class);
-	CandidateDBDao.Iface candidateDBDao = ServiceManager.SERVICEMANAGER.getService(CandidateDBDao.Iface.class);
-	HrDBDao.Iface hrDBDao = ServiceManager.SERVICEMANAGER.getService(HrDBDao.Iface.class);
-	
-	/**
+    @Autowired
+    private JobApplicationDao applicationDao;
+
+    @Autowired
+    private JobPositionDao positionDao;
+
+    @Autowired
+    private AwardConfigTplDao awardConfigTplDao;
+
+    @Autowired
+    private UserUserDao userDao;
+
+    @Autowired
+    private CandidatePositionDao candidatePositionDao;
+
+
+    @Autowired
+    private CandidateRecomRecordDao candidateRecomRecordDao;
+
+    @Autowired
+    private HrOperationRecordDao hrOperationRecordDao;
+
+    @Autowired
+    private com.moseeker.baseorm.dao.hrdb.CompanyDao companyDao;
+
+    @Autowired
+    private UserFavPositionDao favPositionDao;
+
+    /**
 	 * 查找用户的申请记录
 	 * @param userId 用户编号
 	 * @return 申请记录集合
 	 * @throws TException thrift异常
 	 */
 	public List<JobApplicationDO> getAppsForUser(int userId) throws TException {
-		QueryUtil qu = new QueryUtil();
-		qu.addEqualFilter("applier_id", String.valueOf(userId));
-		qu.addEqualFilter("disable", AbleFlag.OLDENABLE.getValueStr());
-		qu.addEqualFilter("email_status", AbleFlag.OLDENABLE.getValueStr());
-		qu.setOrder("desc");
-		qu.setSortby("submit_time");
+        Query.QueryBuilder qu = new Query.QueryBuilder();
+		qu.where("applier_id", String.valueOf(userId)).and("disable", AbleFlag.OLDENABLE.getValueStr()).and("email_status", AbleFlag.OLDENABLE.getValueStr());
+		qu.orderBy("submit_time", Order.DESC);
 		try {
-			return jobDBDao.getApplications(qu);
-		} catch (CURDException e) {
+		    return applicationDao.getDatas(qu.buildQuery(), JobApplicationDO.class);
+		} catch (Exception e) {
 			return null;
 		}
 	}
@@ -64,9 +93,9 @@ public class UserCenterBizTools {
 	 * @throws TException thrift异常信息
 	 */
 	public List<JobPositionDO> getPositions(int... ids) throws TException {
-		QueryUtil qu = new QueryUtil();
-		qu.addEqualFilter("id", arrayToString(ids));
-		return jobDBDao.getPositions(qu);
+		Query.QueryBuilder qu = new Query.QueryBuilder();
+		qu.where("id", arrayToString(ids));
+		return positionDao.getDatas(qu.buildQuery(), JobPositionDO.class);
 	}
 
 	/**
@@ -76,9 +105,9 @@ public class UserCenterBizTools {
 	 * @throws TException thrift异常信息
 	 */
 	public List<Hrcompany> getCompanies(int... ids) throws TException {
-		QueryUtil qu = new QueryUtil();
-		qu.addEqualFilter("id", arrayToString(ids));
-		return companyDao.getCompanies(qu);
+		Query.QueryBuilder qu = new Query.QueryBuilder();
+		qu.where(new Condition("id", Arrays.asList(ids), ValueOp.IN));
+		return companyDao.getCompanies(qu.buildQuery());
 	}
 
 	/**
@@ -87,8 +116,8 @@ public class UserCenterBizTools {
 	 * @return 聘进度积分配置模板集合
 	 * @throws TException
 	 */
-	public List<ConfigSysPointConfTplDO> getAwardConfigTpls() throws TException {
-		return configDBDao.getAwardConfigTpls(null);
+	public List<ConfigSysPointsConfTplDO> getAwardConfigTpls() throws TException {
+		return awardConfigTplDao.getAwardConfigTpls(new Query.QueryBuilder().buildQuery());
 	}
 	
 	/**
@@ -99,10 +128,9 @@ public class UserCenterBizTools {
 	 * @throws TException thrift异常信息
 	 */
 	public List<UserFavPositionDO> getFavPositions(int userId, int favorite) throws TException {
-		QueryUtil qu = new QueryUtil();
-		qu.addEqualFilter("sysuser_id", String.valueOf(userId));
-		qu.addEqualFilter("favorite", String.valueOf(favorite));
-		return userDBDao.getUserFavPositions(qu);
+		Query.QueryBuilder qu = new Query.QueryBuilder();
+		qu.where("sysuser_id", String.valueOf(userId)).and("favorite", String.valueOf(favorite));
+		return favPositionDao.getUserFavPositions(qu.buildQuery());
 	}
 
 	/**
@@ -118,24 +146,22 @@ public class UserCenterBizTools {
 		List<CandidateRecomRecordDO> recomRecordDOList = null;
 		switch (type) {
 			case 1:			//查找所有相关的职位转发记录
-				QueryUtil qu = new QueryUtil();
-				qu.addSelectAttribute("id").addSelectAttribute("app_id").addSelectAttribute("repost_user_id")
-						.addSelectAttribute("click_time").addSelectAttribute("recom_time").addSelectAttribute("is_recom")
-						.addSelectAttribute("presentee_user_id").addSelectAttribute("position_id");
-				qu.addEqualFilter("post_user_id", userId).addEqualFilter("position_id",
-						StringUtils.converToArrayStr(positionIdList));
-				qu.addGroup("presentee_user_id").addGroup("position_id");
-				qu.setSortby("id");
-				qu.setOrder("desc");
-				qu.setPage(pageNo);
-				qu.setPer_page(pageSize);
-				recomRecordDOList = candidateDBDao.listCandidateRecomRecords(qu);
+				Query.QueryBuilder qu = new Query.QueryBuilder();
+				qu.select("id").select("app_id").select("repost_user_id")
+						.select("click_time").select("recom_time").select("is_recom")
+						.select("presentee_user_id").select("position_id");
+				qu.where("post_user_id", userId).and(new Condition("position_id", positionIdList, ValueOp.IN));
+				qu.groupBy("presentee_user_id").groupBy("position_id");
+				qu.orderBy("id", Order.DESC);
+				qu.setPageNum(pageNo);
+				qu.setPageSize(pageSize);
+				recomRecordDOList = candidateRecomRecordDao.getDatas(qu.buildQuery());
 				break;
 			case 2:			//查找被推荐的职位转发记录
-				recomRecordDOList = candidateDBDao.listInterestedCandidateRecomRecordByUserPositions(userId, positionIdList, pageNo, pageSize);
+				recomRecordDOList = candidateRecomRecordDao.listInterestedCandidateRecomRecordByUserPositions(userId, positionIdList, pageNo, pageSize);
 				break;
 			case 3:			//查找申请的职位转发记录
-				recomRecordDOList = candidateDBDao.listCandidateRecomRecordsForAppliedByUserPositions(userId, positionIdList, pageNo, pageSize);
+				recomRecordDOList = candidateRecomRecordDao.listCandidateRecomRecordsForAppliedByUserPositions(userId, positionIdList, pageNo, pageSize);
 				break;
 			default:
 		}
@@ -159,8 +185,8 @@ public class UserCenterBizTools {
 	public int countCandidateRecomRecord(int userId, List<Integer> positionIdList) {
 		int count = 0;
 		try {
-			count = candidateDBDao.countCandidateRecomRecordDistinctPresenteePosition(userId, positionIdList);
-		} catch (TException e) {
+			count = candidateRecomRecordDao.countCandidateRecomRecordDistinctPresenteePosition(userId, positionIdList);
+		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
 		return count;
@@ -173,11 +199,11 @@ public class UserCenterBizTools {
 	 */
 	public int countRecommendedCandidateRecomRecord(int userId) {
 		int count = 0;
-		QueryUtil qu = new QueryUtil();
-		qu.addEqualFilter("post_user_id", userId).addEqualFilter("is_recom", 0);
+        Query.QueryBuilder qu = new Query.QueryBuilder();
+        qu.where("post_user_id", userId).and("is_recom", 0);
 		try {
-			count = candidateDBDao.countCandidateRecomRecord(qu);
-		} catch (TException e) {
+			count = candidateRecomRecordDao.getCount(qu.buildQuery());
+		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
 		return count;
@@ -192,8 +218,8 @@ public class UserCenterBizTools {
 	public int countInterestedCandidateRecomRecord(int userId, List<Integer> positionIdList) {
 		int count = 0;
 		try {
-			count = candidateDBDao.countInterestedCandidateRecomRecordByUserPosition(userId, positionIdList);
-		} catch (TException e) {
+			count = candidateRecomRecordDao.countInterestedCandidateRecomRecordByUserPosition(userId, positionIdList);
+		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
 		return count;
@@ -207,11 +233,11 @@ public class UserCenterBizTools {
 	 */
 	public int countAppliedCandidateRecomRecord(int userId, List<Integer> positionIdList) {
 		int count = 0;
-		QueryUtil qu = new QueryUtil();
-		qu.addEqualFilter("post_user_id", userId);
+		Query.QueryBuilder qu = new Query.QueryBuilder();
+		qu.where("post_user_id", userId);
 		try {
-			count = candidateDBDao.countAppliedCandidateRecomRecordByUserPosition(userId, positionIdList);
-		} catch (TException e) {
+			count = candidateRecomRecordDao.countAppliedCandidateRecomRecordByUserPosition(userId, positionIdList);
+		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
 		return count;
@@ -242,12 +268,12 @@ public class UserCenterBizTools {
 	public List<JobPositionDO> listJobPositions(Set<Integer> positionIDSet) {
 		List<JobPositionDO> positionList = new ArrayList<>();
 		if(positionIDSet != null && positionIDSet.size() > 0) {
-			QueryUtil queryUtil = new QueryUtil();
-			queryUtil.addEqualFilter("id", StringUtils.converToArrayStr(positionIDSet));
-			queryUtil.addSelectAttribute("id").addSelectAttribute("title");
+			Query.QueryBuilder queryUtil = new Query.QueryBuilder();
+            queryUtil.select("id").select("title");
+            queryUtil.where(new Condition("id", positionIDSet, ValueOp.IN));
 			try {
-				positionList = jobDBDao.getPositions(queryUtil);
-			} catch (TException e) {
+				positionList = positionDao.getDatas(queryUtil.buildQuery(), JobPositionDO.class);
+			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}
 		}
@@ -264,12 +290,12 @@ public class UserCenterBizTools {
 		List<UserUserDO> users = new ArrayList<>();
 
 		if(presenteeIDSet != null && presenteeIDSet.size() > 0) {
-			QueryUtil queryUtil = new QueryUtil();
-			queryUtil.addEqualFilter("id", StringUtils.converToArrayStr(presenteeIDSet));
-			queryUtil.addSelectAttribute("id").addSelectAttribute("name").addSelectAttribute("nickname").addSelectAttribute("headimg");
+			Query.QueryBuilder queryUtil = new Query.QueryBuilder();
+            queryUtil.select("id").select("name").select("nickname").select("headimg");
+            queryUtil.where(new Condition("id", presenteeIDSet, ValueOp.IN));
 			try {
-				users = userDBDao.listUser(queryUtil);
-			} catch (TException e) {
+				users = userDao.getDatas(queryUtil.buildQuery());
+			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}
 		}
@@ -285,12 +311,12 @@ public class UserCenterBizTools {
 	public List<UserUserDO> listReposts(Set<Integer> repostIDSet) {
 		List<UserUserDO> users = new ArrayList<>();
 		if(repostIDSet != null && repostIDSet.size() > 0) {
-			QueryUtil queryUtil = new QueryUtil();
-			queryUtil.addEqualFilter("id", StringUtils.converToArrayStr(repostIDSet));
-			queryUtil.addSelectAttribute("id").addSelectAttribute("name").addSelectAttribute("nickname");
+            Query.QueryBuilder queryUtil = new Query.QueryBuilder();
+            queryUtil.select("id").select("name").select("nickname");
+            queryUtil.where(new Condition("id", repostIDSet, ValueOp.IN));
 			try {
-				users = userDBDao.listUser(queryUtil);
-			} catch (TException e) {
+				users = userDao.getDatas(queryUtil.buildQuery());
+			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}
 		}
@@ -307,12 +333,12 @@ public class UserCenterBizTools {
 		List<JobApplicationDO> apps = new ArrayList<>();
 
 		if(appIDSet != null && appIDSet.size() > 0) {
-			QueryUtil queryUtil = new QueryUtil();
-			queryUtil.addEqualFilter("id", StringUtils.converToArrayStr(appIDSet));
-			queryUtil.addSelectAttribute("id").addSelectAttribute("applier_name").addSelectAttribute("submit_time").addSelectAttribute("app_tpl_id");
-			try {
-				apps = jobDBDao.getApplications(queryUtil);
-			} catch (TException e) {
+			Query.QueryBuilder queryUtil = new Query.QueryBuilder();
+            queryUtil.where(new Condition("id", appIDSet, ValueOp.IN));
+            queryUtil.select("id").select("applier_name").select("submit_time").select("app_tpl_id");
+            try {
+				apps = applicationDao.getDatas(queryUtil.buildQuery());
+			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}
 		}
@@ -327,8 +353,8 @@ public class UserCenterBizTools {
 	 */
 	public List<CandidatePositionDO> listCandidatePositionsByPositionIDUserID(List<Map<Integer, Integer>> cps) {
 		try {
-			return candidateDBDao.listCandidatePositionsByPositionIDUserID(cps);
-		} catch (TException e) {
+			return candidatePositionDao.listCandidatePositionsByPositionIDUserID(cps);
+		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			return new ArrayList<>();
 		}
@@ -345,8 +371,8 @@ public class UserCenterBizTools {
 
 		if(rejectAppIdSet != null && rejectAppIdSet.size() > 0) {
 			try {
-				hrOperationRecordDOList = hrDBDao.listLatestOperationRecordByAppIdSet(rejectAppIdSet);
-			} catch (TException e) {
+				hrOperationRecordDOList = hrOperationRecordDao.listLatestOperationRecordByAppIdSet(rejectAppIdSet);
+			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}
 		}
@@ -362,13 +388,13 @@ public class UserCenterBizTools {
 	 * @throws TException thrift异常
 	 */
 	public JobApplicationDO getApplication(int appId) throws TException {
-		QueryUtil qu = new QueryUtil();
-		qu.addEqualFilter("id", appId).addEqualFilter("disable", AbleFlag.OLDENABLE.getValueStr());
+		Query.QueryBuilder qu = new Query.QueryBuilder();
+        qu.select("id").select("applier_id").select("email_status")
+                .select("apply_type").select("app_tpl_id").select("position_id")
+                .select("company_id");
+        qu.where("id", appId).and("disable", AbleFlag.OLDENABLE.getValueStr());
 
-		qu.addSelectAttribute("id").addSelectAttribute("applier_id").addSelectAttribute("email_status")
-				.addSelectAttribute("apply_type").addSelectAttribute("app_tpl_id").addSelectAttribute("position_id")
-				.addSelectAttribute("company_id");
-		return jobDBDao.getApplication(qu);
+		return applicationDao.getData(qu.buildQuery());
 	}
 
 	/**
@@ -377,12 +403,12 @@ public class UserCenterBizTools {
 	 * @return 职位信息
 	 */
 	public JobPositionDO getPosition(int positionId) {
-		QueryUtil qu = new QueryUtil();
-		qu.addEqualFilter("id", positionId);
-		qu.addSelectAttribute("id").addSelectAttribute("title");
+	    Query.QueryBuilder qu = new Query.QueryBuilder();
+        qu.select("id").select("title");
+        qu.where("id", positionId);
 		try {
-			return jobDBDao.getPosition(qu);
-		} catch (TException e) {
+			return positionDao.getData(qu.buildQuery());
+		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			return null;
 		}
@@ -394,12 +420,12 @@ public class UserCenterBizTools {
 	 * @return
 	 */
 	public HrCompanyDO getCompany(int companyId) {
-		QueryUtil qu = new QueryUtil();
-		qu.addEqualFilter("id", companyId);
-		qu.addSelectAttribute("id").addSelectAttribute("name").addSelectAttribute("abbreviation");
+		Query.QueryBuilder qu = new Query.QueryBuilder();
+        qu.select("id").select("name").select("abbreviation");
+        qu.where("id", companyId);
 		try {
-			return hrDBDao.getCompany(qu);
-		} catch (TException e) {
+			return companyDao.getCompany(qu.buildQuery());
+		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			return null;
 		}
@@ -411,15 +437,15 @@ public class UserCenterBizTools {
 	 * @return 操作记录
 	 */
 	public List<HrOperationRecordDO> listHrOperationRecord(int appId) {
-		QueryUtil queryUtil = new QueryUtil();
-		queryUtil.addEqualFilter("app_id", appId);
-		queryUtil.addSelectAttribute("id").addSelectAttribute("app_id").addSelectAttribute("opt_time");
-		queryUtil.setSortby("opt_time");
-		queryUtil.setPage(0);
-		queryUtil.setPer_page(Integer.MAX_VALUE);
+		Query.QueryBuilder queryUtil = new Query.QueryBuilder();
+		queryUtil.where("app_id", appId);
+		queryUtil.select("id").select("app_id").select("opt_time");
+		queryUtil.orderBy("opt_time");
+		queryUtil.setPageNum(0);
+		queryUtil.setPageSize(Integer.MAX_VALUE);
 		try {
-			return hrDBDao.listHrOperationRecord(queryUtil);
-		} catch (TException e) {
+			return hrOperationRecordDao.getDatas(queryUtil.buildQuery());
+		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			return null;
 		}
@@ -432,8 +458,8 @@ public class UserCenterBizTools {
 	 */
 	public List<Integer> listPositionIdByUserId(int userId) {
 		try {
-			return jobDBDao.listPositionIdByUserId(userId);
-		} catch (TException e) {
+			return positionDao.listPositionIdByUserId(userId);
+		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			return null;
 		}

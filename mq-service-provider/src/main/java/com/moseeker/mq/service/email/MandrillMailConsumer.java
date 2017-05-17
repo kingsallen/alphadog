@@ -1,9 +1,6 @@
 package com.moseeker.mq.service.email;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,23 +18,16 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
 import com.microtripit.mandrillapp.lutung.MandrillApi;
-import com.microtripit.mandrillapp.lutung.model.MandrillApiError;
 import com.microtripit.mandrillapp.lutung.view.MandrillMessage;
 import com.microtripit.mandrillapp.lutung.view.MandrillMessageStatus;
 import com.microtripit.mandrillapp.lutung.view.MandrillMessage.MergeVar;
 import com.microtripit.mandrillapp.lutung.view.MandrillMessage.MergeVarBucket;
 import com.microtripit.mandrillapp.lutung.view.MandrillMessage.Recipient;
 import com.moseeker.common.constants.Constant;
-import com.moseeker.common.email.config.EmailContent;
-import com.moseeker.common.email.config.EmailSessionConfig;
-import com.moseeker.common.email.mail.Mail;
-import com.moseeker.common.email.mail.Mail.MailBuilder;
-import com.moseeker.common.email.mail.Message;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.mq.server.MqServer;
 import com.moseeker.thrift.gen.mq.struct.MandrillEmailStruct;
 
 /**

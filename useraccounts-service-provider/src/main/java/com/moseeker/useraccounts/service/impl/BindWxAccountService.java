@@ -1,17 +1,13 @@
 package com.moseeker.useraccounts.service.impl;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import com.moseeker.common.providerutils.QueryUtil;
+import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.useraccounts.service.BindOnAccountService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
-import com.moseeker.common.util.StringUtils;
-import com.moseeker.db.userdb.tables.records.UserUserRecord;
-import com.moseeker.useraccounts.service.BindOnAccountService;
 
 /**
  * 微信账号绑定
@@ -27,13 +23,11 @@ public class BindWxAccountService extends BindOnAccountService{
 	
 	@Override
 	protected UserUserRecord getUserByUnionId(String unionId) {
-		QueryUtil query = new QueryUtil();
-		Map<String, String> filters = new HashMap<>();
-		filters.put("unionid", unionId);
-		query.setEqualFilter(filters);
+        Query.QueryBuilder query = new Query.QueryBuilder();
+		query.where("unionid", unionId);
 		UserUserRecord userUnionid = null;
 		try {
-			userUnionid = userdao.getResource(query);
+			userUnionid = userdao.getRecord(query.buildQuery());
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
@@ -68,7 +62,7 @@ public class BindWxAccountService extends BindOnAccountService{
 				userMobile.setUnionid(userUnionid.getUnionid());
 			}
 			userUnionid.setUnionid("");
-			if (userdao.putResource(userUnionid) > 0) {
+			if (userdao.updateRecord(userUnionid) > 0) {
 				consummateUserAccount(userMobile, userUnionid);
 			}
 			doSomthing(userMobile.getId().intValue(), userUnionid.getId().intValue());
@@ -82,7 +76,7 @@ public class BindWxAccountService extends BindOnAccountService{
 		// TODO Auto-generated method stub
 		userMobile.setUnionid(unionid);
 		try {
-			userdao.putResource(userMobile);
+			userdao.updateRecord(userMobile);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}

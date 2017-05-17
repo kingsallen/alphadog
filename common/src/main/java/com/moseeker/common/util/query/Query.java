@@ -246,6 +246,16 @@ public class Query {
             return query;
         }
 
+        public void clear() {
+            this.attributes = null; // optional
+            this.conditions = null; // optional
+            this.orders = null; // optional
+            this.groups = null; // optional
+            this.pageSize = 0; // optional
+            this.pageNum = 0; // optional
+            this.extras = null; // optional
+        }
+
         private void setConditions(Condition conditions) throws ConditionNotExist {
             if(conditions == null || StringUtils.isNullOrEmpty(conditions.getField()) || conditions.getValue() == null
                     || conditions.getValueOp() == null) {
@@ -283,4 +293,5 @@ public class Query {
     public Map<String, String> getExtras() {
         return extras;
     }
+
 }

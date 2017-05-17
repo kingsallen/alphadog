@@ -1,29 +1,26 @@
 package com.moseeker.useraccounts.service;
 
+import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
+import com.moseeker.baseorm.dao.userdb.UserSettingsDao;
+import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.dao.userdb.WxUserDao;
+import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.DateUtils;
+import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.thrift.gen.common.struct.Response;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-
-import com.moseeker.common.providerutils.QueryUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.DateUtils;
-import com.moseeker.common.util.StringUtils;
-import com.moseeker.db.userdb.tables.records.UserUserRecord;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.useraccounts.dao.ProfileDao;
-import com.moseeker.useraccounts.dao.UserDao;
-import com.moseeker.useraccounts.dao.UsersettingDao;
-import com.moseeker.useraccounts.dao.impl.WxuserDaoImpl;
 
 /**
  * @author ltf
@@ -38,16 +35,16 @@ public abstract class BindOnAccountService {
 	protected ExecutorService taskPool = new ThreadPoolExecutor(5, 10, 60L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 	
 	@Autowired
-	protected UserDao userdao;
+	protected UserUserDao userdao;
 
 	@Autowired
-	protected ProfileDao profileDao;
+	protected ProfileProfileDao profileDao;
 
 	@Autowired
-	protected UsersettingDao userSettingDao;
+	protected UserSettingsDao userSettingDao;
 	
 	@Autowired
-	protected WxuserDaoImpl wxUserDao;
+	protected WxUserDao wxUserDao;
 	
 	/**
 	 * 账号绑定操作
@@ -60,11 +57,10 @@ public abstract class BindOnAccountService {
 			
 			UserUserRecord userUnionid = getUserByUnionId(unionid);
 
-			QueryUtil query = new QueryUtil();
+            Query.QueryBuilder query = new Query.QueryBuilder();
 			Map<String, String> filters = new HashMap<>();
-			filters.put("username", mobile);
-			query.setEqualFilter(filters);
-			UserUserRecord userMobile = userdao.getResource(query);
+			query.where("username", mobile);
+			UserUserRecord userMobile = userdao.getRecord(query.buildQuery());
 
 			if (userUnionid == null && userMobile == null) {
 				// post, 都为空的情况, 需要事先调用 user_
@@ -75,7 +71,7 @@ public abstract class BindOnAccountService {
 			} else if (userUnionid != null && userMobile == null) {
 				userUnionid.setMobile(Long.valueOf(mobile));
 				userUnionid.setUsername(mobile);
-				if (userdao.putResource(userUnionid) > 0) {
+				if (userdao.updateRecord(userUnionid) > 0) {
 					Map<String, Object> map = new HashMap<String, Object>();
 					resultFull(userUnionid, map);
 					return ResponseUtils.success(map);
@@ -223,7 +219,7 @@ public abstract class BindOnAccountService {
 			userMobile.setPosition(userUnionid.getPosition());
 		}
 		try {
-			userdao.putResource(userMobile);
+			userdao.updateRecord(userMobile);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}

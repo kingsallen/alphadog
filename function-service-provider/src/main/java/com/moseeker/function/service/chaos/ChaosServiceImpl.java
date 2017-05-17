@@ -1,34 +1,27 @@
 package com.moseeker.function.service.chaos;
 
-import java.net.ConnectException;
-import java.util.List;
-
-import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
-import org.apache.thrift.TException;
-import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.moseeker.common.constants.AppId;
-import com.moseeker.common.constants.ChannelType;
-import com.moseeker.common.constants.Constant;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.constants.KeyIdentifier;
-import com.moseeker.common.constants.PositionRefreshType;
+import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.common.constants.*;
 import com.moseeker.common.exception.CacheConfigNotExistException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.UrlUtil;
-import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.service.PositionDao;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 import com.moseeker.thrift.gen.foundation.chaos.struct.ThirdPartyAccountStruct;
+import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
+import java.net.ConnectException;
+import java.util.List;
+import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * 
@@ -44,8 +37,9 @@ public class ChaosServiceImpl {
 	
 	Logger logger = LoggerFactory.getLogger(ChaosServiceImpl.class);
 	
-	
-	PositionDao.Iface positionDao = ServiceManager.SERVICEMANAGER.getService(PositionDao.Iface.class);
+
+    @Autowired
+    HRThirdPartyPositionDao thirdpartyPositionDao;
 
 	public Response bind(String username, String password, String memberName, byte channel) {
 		logger.info("ChaosServiceImpl bind");
@@ -181,14 +175,14 @@ public class ChaosServiceImpl {
 			p.setPosition_id(Integer.valueOf(position.getPosition_id()));
 			p.setIs_refresh((byte)PositionRefreshType.refreshing.getValue());
 			p.setRefresh_time((new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
-			positionDao.upsertThirdPartyPositions(p);
+            thirdpartyPositionDao.upsertThirdPartyPosition(p);
 			
 			DateTime dt = new DateTime();
 			int second = dt.getSecondOfDay();
 			if(second < 60*60*24) {
 				redisClient.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH.toString(), String.valueOf(position.getPosition_id()), String.valueOf(position.getChannel()), "1", 60*60*24-second);
 			}
-		} catch (TException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error(e.getMessage(), e);
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXHAUSTED);

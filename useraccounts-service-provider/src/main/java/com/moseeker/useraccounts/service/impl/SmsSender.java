@@ -1,25 +1,23 @@
 package com.moseeker.useraccounts.service.impl;
 
-import java.util.HashMap;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.dao.logdb.LogSmsSendrecordDao;
+import com.moseeker.baseorm.db.logdb.tables.records.LogSmsSendrecordRecord;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CacheConfigNotExistException;
 import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.util.ConfigPropertiesUtil;
-import com.moseeker.db.logdb.tables.records.LogSmsSendrecordRecord;
-import com.moseeker.useraccounts.dao.SMSRecordDao;
 import com.taobao.api.ApiException;
 import com.taobao.api.DefaultTaobaoClient;
 import com.taobao.api.TaobaoClient;
 import com.taobao.api.request.AlibabaAliqinFcSmsNumSendRequest;
 import com.taobao.api.response.AlibabaAliqinFcSmsNumSendResponse;
+import java.util.HashMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * 短信发送客户端
@@ -33,7 +31,7 @@ public class SmsSender {
     private static Logger logger = LoggerFactory.getLogger(SmsSender.class);
     
     @Autowired
-	protected SMSRecordDao smsRecordDao;
+	protected LogSmsSendrecordDao smsRecordDao;
 
     public static TaobaoClient initTaobaoClientInstance() {
         if (taobaoclient == null) {
@@ -93,7 +91,7 @@ public class SmsSender {
             	json.put("template_code", templateCode);
             	json.put("params", params);
             	record.setMsg(json.toJSONString());
-            	smsRecordDao.postResource(record);
+            	smsRecordDao.addRecord(record);
             	logger.info(json.toJSONString());
                 return true;
             }

@@ -105,28 +105,31 @@ public class CandidateDaoThriftService implements CandidateDBDao.Iface {
 
     @Override
     public CandidatePositionDO getCandidatePosition(CommonQuery query) throws TException {
-        return candidatePositionDao.getData(QueryConvert.commonQueryConvertToQuery(query));
+//        return candidatePositionDao.getData(QueryConvert.commonQueryConvertToQuery(query));
+        return null;
     }
 
     @Override
     public List<CandidatePositionDO> listCandidatePositions(CommonQuery query) throws TException {
-        return candidatePositionDao.getDatas(QueryConvert.commonQueryConvertToQuery(query));
+//        return candidatePositionDao.getDatas(QueryConvert.commonQueryConvertToQuery(query));
+        return null;
     }
 
     @Override
     public List<CandidatePositionDO> listCandidatePositionsByPositionIDUserID(List<Map<Integer, Integer>> companyPositionIds) throws TException {
-        return candidatePositionDao.listCandidatePositionsByPositionIDUserID(companyPositionIds);
+//        return candidatePositionDao.listCandidatePositionsByPositionIDUserID(companyPositionIds);
+        return null;
     }
 
     @Override
     public CandidatePositionDO updateCandidatePosition(CandidatePositionDO candidatePosition) throws TException {
-        candidatePositionDao.updateData(candidatePosition);
+//        candidatePositionDao.updateData(candidatePosition);
         return candidatePosition;
     }
 
     @Override
     public CandidatePositionDO saveCandidatePosition(CandidatePositionDO candidatePosition) throws com.moseeker.thrift.gen.common.struct.CURDException, TException {
-        candidatePositionDao.addData(candidatePosition);
+//        candidatePositionDao.addData(candidatePosition);
         return candidatePosition;
     }
 
@@ -158,52 +161,62 @@ public class CandidateDaoThriftService implements CandidateDBDao.Iface {
 
     @Override
     public CandidateRecomRecordDO getCandidateRecomRecord(CommonQuery query) throws TException {
-        return candidateRecomRecordDao.getData(QueryConvert.commonQueryConvertToQuery(query));
+//        return candidateRecomRecordDao.getData(QueryConvert.commonQueryConvertToQuery(query));
+        return null;
     }
 
     @Override
     public List<CandidateRecomRecordDO> listCandidateRecomRecord(int postUserId, String clickTime, List<Integer> recoms) throws com.moseeker.thrift.gen.common.struct.CURDException, TException {
-        return candidateRecomRecordDao.listCandidateRecomRecord(postUserId, clickTime, recoms);
+//        return candidateRecomRecordDao.listCandidateRecomRecord(postUserId, clickTime, recoms);
+        return null;
     }
 
     @Override
     public List<CandidateRecomRecordDO> listCandidateRecomRecordExceptId(int id, int postUserId, String clickTime, List<Integer> recoms) throws com.moseeker.thrift.gen.common.struct.CURDException, TException {
-        return candidateRecomRecordDao.listCandidateRecomRecordExceptId(id, postUserId, clickTime, recoms);
+//        return candidateRecomRecordDao.listCandidateRecomRecordExceptId(id, postUserId, clickTime, recoms);
+        return null;
     }
 
     @Override
     public int countCandidateRecomRecordCustom(int postUserId, String clickTime, List<Integer> recoms) throws com.moseeker.thrift.gen.common.struct.CURDException, TException {
-        return candidateRecomRecordDao.countCandidateRecomRecordCustom(postUserId, clickTime, recoms);
+//        return candidateRecomRecordDao.countCandidateRecomRecordCustom(postUserId, clickTime, recoms);
+        return 0;
     }
 
     @Override
     public List<CandidateRecomRecordDO> listCandidateRecomRecords(CommonQuery query) throws TException {
-        return candidateRecomRecordDao.getDatas(QueryConvert.commonQueryConvertToQuery(query));
+//        return candidateRecomRecordDao.getDatas(QueryConvert.commonQueryConvertToQuery(query));
+        return null;
     }
 
     @Override
     public List<CandidateRecomRecordDO> listCandidateRecomRecordsForApplied(int userId, int pageNo, int pageSize) throws TException {
-        return candidateRecomRecordDao.listCandidateRecomRecordsForApplied(userId, pageNo, pageSize);
+//        return candidateRecomRecordDao.listCandidateRecomRecordsForApplied(userId, pageNo, pageSize);
+        return null;
     }
 
     @Override
     public List<CandidateRecomRecordDO> listCandidateRecomRecordsForAppliedByUserPositions(int userId, List<Integer> positionIdList, int pageNo, int pageSize) throws TException {
-        return candidateRecomRecordDao.listCandidateRecomRecordsForAppliedByUserPositions(userId, positionIdList, pageNo, pageSize);
+//        return candidateRecomRecordDao.listCandidateRecomRecordsForAppliedByUserPositions(userId, positionIdList, pageNo, pageSize);
+        return null;
     }
 
     @Override
     public List<CandidateRecomRecordDO> listInterestedCandidateRecomRecord(int userId, int pageNo, int pageSize) throws TException {
-        return candidateRecomRecordDao.listInterestedCandidateRecomRecord(userId, pageNo, pageSize);
+//        return candidateRecomRecordDao.listInterestedCandidateRecomRecord(userId, pageNo, pageSize);
+        return null;
     }
 
     @Override
     public List<CandidateRecomRecordDO> listInterestedCandidateRecomRecordByUserPositions(int userId, List<Integer> positionIdList, int pageNo, int pageSize) throws TException {
-        return candidateRecomRecordDao.listInterestedCandidateRecomRecordByUserPositions(userId, positionIdList, pageNo, pageSize);
+//        return candidateRecomRecordDao.listInterestedCandidateRecomRecordByUserPositions(userId, positionIdList, pageNo, pageSize);
+        return null;
     }
 
     @Override
     public List<CandidateRecomRecordDO> listCandidateRecomRecordsByPositionSetAndPresenteeId(Set<Integer> positionIdSet, int presenteeId, int pageNo, int pageSize) throws TException {
-        return candidateRecomRecordDao.listCandidateRecomRecordsByPositionSetAndPresenteeId(positionIdSet, presenteeId, pageNo, pageSize);
+//        return candidateRecomRecordDao.listCandidateRecomRecordsByPositionSetAndPresenteeId(positionIdSet, presenteeId, pageNo, pageSize);
+        return null;
     }
 
     @Override
@@ -252,7 +265,7 @@ public class CandidateDaoThriftService implements CandidateDBDao.Iface {
 
     @Override
     public CandidateRecomRecordDO updateCandidateRecomRecords(CandidateRecomRecordDO candidateRecomRecord) throws TException {
-        candidateRecomRecordDao.updateData(candidateRecomRecord);
+//        candidateRecomRecordDao.updateData(candidateRecomRecord);
         return candidateRecomRecord;
     }
 
