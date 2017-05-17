@@ -1,6 +1,10 @@
 package com.moseeker.profile.refactor;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.profile.conf.AppConfig;
+import com.moseeker.profile.service.impl.ProfileCredentialsService;
+import com.moseeker.profile.thrift.ProfileCredentialsServicesImpl;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -10,20 +14,22 @@ import org.apache.thrift.TException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-@Service
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = AppConfig.class)
 public class ProfileCredentialsServicesImplTest {
 
-	CredentialsServices.Iface service;
-
-	@Before
-	public void init() {
-		service = ServiceManager.SERVICEMANAGER.getService(CredentialsServices.Iface.class);
-	}
+	@Autowired
+	ProfileCredentialsService service;
 
 	Response response;
 
@@ -31,8 +37,23 @@ public class ProfileCredentialsServicesImplTest {
 	public void printResponse() {
 		System.out.println(JSON.toJSONString(response));
 	}
-	
-	
+
+	@Test
+	public void getResource() throws TException {
+
+		CommonQuery commonQuery = new CommonQuery();
+		commonQuery.setEqualFilter(new HashMap<String,String>(){{put("profile_id","170");}});
+
+		response = service.getResource(commonQuery);
+	}
+
+	@Test
+	public void getResources() throws TException {
+		CommonQuery commonQuery = new CommonQuery();
+		commonQuery.setEqualFilter(new HashMap<String,String>(){{put("profile_id","170");}});
+		response = service.getResources(commonQuery);
+	}
+
 	@Test
 	public void postResources() throws TException {
 
@@ -72,17 +93,8 @@ public class ProfileCredentialsServicesImplTest {
 	}
 
 	@Test
-	public void getResources() throws TException {
-		response = service.getResources(null);
-	}
-
-	@Test
 	public void getPagination() throws TException {
 		response = service.getPagination(null);
 	}
 
-	@Test
-	public void getResource() throws TException {
-		response = service.getResource(null);
-	}
 }

@@ -1,29 +1,28 @@
 package com.moseeker.profile.refactor;
 
 import com.alibaba.fastjson.JSON;
-import com.moseeker.rpccenter.client.ServiceManager;
+import com.moseeker.profile.conf.AppConfig;
+import com.moseeker.profile.thrift.ProfileBasicServicesImpl;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.profile.service.BasicServices;
 import com.moseeker.thrift.gen.profile.struct.Basic;
 import org.apache.thrift.TException;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import org.springframework.stereotype.Service;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-@Service
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = AppConfig.class)
 public class ProfileBasicServicesImplTest {
 
-	BasicServices.Iface service;
-
-	@Before
-	public void init() {
-		service = ServiceManager.SERVICEMANAGER.getService(BasicServices.Iface.class);
-	}
+	@Autowired
+	ProfileBasicServicesImpl service;
 
 	Response response;
 

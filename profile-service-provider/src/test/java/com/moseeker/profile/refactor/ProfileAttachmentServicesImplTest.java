@@ -1,6 +1,8 @@
 package com.moseeker.profile.refactor;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.profile.conf.AppConfig;
+import com.moseeker.profile.thrift.ProfileAttachmentServicesImpl;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -10,18 +12,20 @@ import org.apache.thrift.TException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = AppConfig.class)
 public class ProfileAttachmentServicesImplTest{
 
-	AttachmentServices.Iface service;
-
-	@Before
-	public void init(){
-		service = ServiceManager.SERVICEMANAGER.getService(AttachmentServices.Iface.class);
-	}
+	@Autowired
+	ProfileAttachmentServicesImpl service;
 
 	Response response;
 	@After

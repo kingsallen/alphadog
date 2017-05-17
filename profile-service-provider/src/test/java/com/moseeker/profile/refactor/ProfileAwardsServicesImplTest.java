@@ -1,28 +1,28 @@
 package com.moseeker.profile.refactor;
 
 import com.alibaba.fastjson.JSON;
-import com.moseeker.rpccenter.client.ServiceManager;
+import com.moseeker.profile.conf.AppConfig;
+import com.moseeker.profile.thrift.ProfileAwardsServicesImpl;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.profile.service.AwardsServices;
 import com.moseeker.thrift.gen.profile.struct.Awards;
 import org.apache.thrift.TException;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = AppConfig.class)
 public class ProfileAwardsServicesImplTest {
 
-    AwardsServices.Iface service;
-
-    @Before
-    public void init() {
-        service = ServiceManager.SERVICEMANAGER.getService(AwardsServices.Iface.class);
-    }
+    @Autowired
+    ProfileAwardsServicesImpl service;
 
     Response response;
 
