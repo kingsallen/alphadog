@@ -82,7 +82,7 @@ public class ChatThriftServiceTest {
 
     //@Test
     public void enterRoom() throws Exception {
-        ResultOfSaveRoomVO resultOfSaveRoomVO = chatService.enterRoom(1, 1, 1, 17);
+        ResultOfSaveRoomVO resultOfSaveRoomVO = chatService.enterRoom(1, 1, 1, 17, false);
         System.out.println("roomId : "+resultOfSaveRoomVO.getRoomId());
         System.out.println(resultOfSaveRoomVO.getHr());
         System.out.println(resultOfSaveRoomVO.getPosition());

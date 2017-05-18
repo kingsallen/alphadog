@@ -37,8 +37,8 @@ public class ChatService {
     private ChatDao chaoDao = new ChatDao();
     private ThreadPool pool = ThreadPool.Instance;
 
-//    private static String AUTO_CONTENT_WITH_HR_NOTEXIST = "我是{companyName}HR，我可以推荐您或者您的朋友加入我们！";
-//    private static String AUTO_CONTENT_WITH_HR_EXIST = "我是{hrName}，{companyName}HR，我可以推荐您或者您的朋友加入我们！";
+    private static String AUTO_CONTENT_WITH_HR_NOTEXIST = "我是{companyName}HR，我可以推荐您或者您的朋友加入我们！";
+    private static String AUTO_CONTENT_WITH_HR_EXIST = "我是{hrName}，{companyName}HR，我可以推荐您或者您的朋友加入我们！";
 
     /** 聊天页面欢迎语 **/
     private static String WELCOMES_CONTER = "亲爱的%s：\n" +
@@ -305,7 +305,7 @@ public class ChatService {
      * @param roomId 聊天室编号
      * @return ResultOfSaveRoomVO
      */
-    public ResultOfSaveRoomVO enterChatRoom(int userId, int hrId, int positionId, int roomId) {
+    public ResultOfSaveRoomVO enterChatRoom(int userId, int hrId, int positionId, int roomId, boolean is_gamma) {
         logger.info("enterChatRoom userId:{} hrId:{}, positionId:{} roomId:{}", userId, hrId, positionId, roomId);
         final ResultOfSaveRoomVO resultOfSaveRoomVO;
 
@@ -324,7 +324,7 @@ public class ChatService {
         if(chatRoom != null) {
             resultOfSaveRoomVO = searchResult(chatRoom, positionId);
             if(chatDebut) {
-                pool.startTast(() -> createChat(resultOfSaveRoomVO));
+                pool.startTast(() -> createChat(resultOfSaveRoomVO, is_gamma));
                 resultOfSaveRoomVO.setChatDebut(chatDebut);
 
                 HrChatUnreadCountDO unreadCountDO = new HrChatUnreadCountDO();
@@ -441,7 +441,7 @@ public class ChatService {
      * @param resultOfSaveRoomVO 进入聊天室返回的结果
      * @return 聊天记录
      */
-    private HrWxHrChatDO createChat(ResultOfSaveRoomVO resultOfSaveRoomVO) {
+    private HrWxHrChatDO createChat(ResultOfSaveRoomVO resultOfSaveRoomVO, boolean is_gamma) {
 
         logger.info("createChat ResultOfSaveRoomVO:{}", resultOfSaveRoomVO);
         //1.如果HR的名称不存在，则存储 "我是{companyName}HR，我可以推荐您或者您的朋友加入我们！"
@@ -451,7 +451,18 @@ public class ChatService {
         chatDO.setSpeaker((byte)1);
         String createTime = new DateTime().toString("yyyy-MM-dd HH:mm:ss");
         chatDO.setCreateTime(createTime);
-        String content = String.format(WELCOMES_CONTER, resultOfSaveRoomVO.getUser().getUserName());
+        String content;
+        if(is_gamma) {
+            content = String.format(WELCOMES_CONTER, resultOfSaveRoomVO.getUser().getUserName());
+        } else {
+            if(resultOfSaveRoomVO.getHr() != null && resultOfSaveRoomVO.getPosition() != null) {
+                content = AUTO_CONTENT_WITH_HR_EXIST.replace("{hrName}", resultOfSaveRoomVO.getHr()
+                        .getHrName()).replace("{companyName}", resultOfSaveRoomVO.getPosition().getCompanyName());
+            } else {
+                content = AUTO_CONTENT_WITH_HR_NOTEXIST
+                        .replace("{companyName}", resultOfSaveRoomVO.getPosition().getCompanyName());
+            }
+        }
         chatDO.setContent(content);
         if(resultOfSaveRoomVO.getPosition() != null) {
             chatDO.setPid(resultOfSaveRoomVO.getPosition().getPositionId());

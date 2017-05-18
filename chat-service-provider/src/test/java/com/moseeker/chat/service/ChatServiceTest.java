@@ -407,7 +407,7 @@ public class ChatServiceTest {
     @Test
     public void enterChatRoom() throws Exception {
 
-        ResultOfSaveRoomVO result = chatService.enterChatRoom(1, 1, 1, 1);
+        ResultOfSaveRoomVO result = chatService.enterChatRoom(1, 1, 1, 1, false);
         assertEquals(1, result.getRoomId());
         assertEquals(false, result.isChatDebut());
 
