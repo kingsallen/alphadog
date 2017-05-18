@@ -19,8 +19,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UByte;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -36,7 +34,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrChildCompany extends TableImpl<HrChildCompanyRecord> {
 
-	private static final long serialVersionUID = -415765390;
+	private static final long serialVersionUID = 1761730716;
 
 	/**
 	 * The reference instance of <code>hrdb.hr_child_company</code>
@@ -69,7 +67,7 @@ public class HrChildCompany extends TableImpl<HrChildCompanyRecord> {
 	/**
 	 * The column <code>hrdb.hr_child_company.status</code>. 0:onuse 1:unused
 	 */
-	public final TableField<HrChildCompanyRecord, UByte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "0:onuse 1:unused");
+	public final TableField<HrChildCompanyRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "0:onuse 1:unused");
 
 	/**
 	 * The column <code>hrdb.hr_child_company.CEO</code>. CEO
@@ -119,7 +117,7 @@ public class HrChildCompany extends TableImpl<HrChildCompanyRecord> {
 	/**
 	 * The column <code>hrdb.hr_child_company.parent_id</code>. 上级公司
 	 */
-	public final TableField<HrChildCompanyRecord, UInteger> PARENT_ID = createField("parent_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "上级公司");
+	public final TableField<HrChildCompanyRecord, Integer> PARENT_ID = createField("parent_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "上级公司");
 
 	/**
 	 * The column <code>hrdb.hr_child_company.homepage</code>. company home page
@@ -129,7 +127,7 @@ public class HrChildCompany extends TableImpl<HrChildCompanyRecord> {
 	/**
 	 * The column <code>hrdb.hr_child_company.company_id</code>. hr_company.id
 	 */
-	public final TableField<HrChildCompanyRecord, UInteger> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "hr_company.id");
+	public final TableField<HrChildCompanyRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "hr_company.id");
 
 	/**
 	 * Create a <code>hrdb.hr_child_company</code> table reference

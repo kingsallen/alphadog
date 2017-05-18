@@ -12,8 +12,6 @@ import javax.annotation.Generated;
 
 import org.jooq.Record1;
 import org.jooq.impl.UpdatableRecordImpl;
-import org.jooq.types.UByte;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -29,48 +27,48 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxWechatRecord extends UpdatableRecordImpl<HrWxWechatRecord> {
 
-	private static final long serialVersionUID = 1032874061;
+	private static final long serialVersionUID = -1309213948;
 
 	/**
 	 * Setter for <code>hrdb.hr_wx_wechat.id</code>.
 	 */
-	public void setId(UInteger value) {
+	public void setId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
 	 * Getter for <code>hrdb.hr_wx_wechat.id</code>.
 	 */
-	public UInteger getId() {
-		return (UInteger) getValue(0);
+	public Integer getId() {
+		return (Integer) getValue(0);
 	}
 
 	/**
 	 * Setter for <code>hrdb.hr_wx_wechat.company_id</code>. 所属公司id, company.id
 	 */
-	public void setCompanyId(UInteger value) {
+	public void setCompanyId(Integer value) {
 		setValue(1, value);
 	}
 
 	/**
 	 * Getter for <code>hrdb.hr_wx_wechat.company_id</code>. 所属公司id, company.id
 	 */
-	public UInteger getCompanyId() {
-		return (UInteger) getValue(1);
+	public Integer getCompanyId() {
+		return (Integer) getValue(1);
 	}
 
 	/**
 	 * Setter for <code>hrdb.hr_wx_wechat.type</code>. 公众号类型, 0:订阅号, 1:服务号
 	 */
-	public void setType(UByte value) {
+	public void setType(Byte value) {
 		setValue(2, value);
 	}
 
 	/**
 	 * Getter for <code>hrdb.hr_wx_wechat.type</code>. 公众号类型, 0:订阅号, 1:服务号
 	 */
-	public UByte getType() {
-		return (UByte) getValue(2);
+	public Byte getType() {
+		return (Byte) getValue(2);
 	}
 
 	/**
@@ -228,14 +226,14 @@ public class HrWxWechatRecord extends UpdatableRecordImpl<HrWxWechatRecord> {
 	}
 
 	/**
-	 * Setter for <code>hrdb.hr_wx_wechat.passive_seeker</code>. 被动求职者开关，0：开启，1：不开启
+	 * Setter for <code>hrdb.hr_wx_wechat.passive_seeker</code>. 被动求职者开关，0= 开启, 1=不开启
 	 */
 	public void setPassiveSeeker(Byte value) {
 		setValue(14, value);
 	}
 
 	/**
-	 * Getter for <code>hrdb.hr_wx_wechat.passive_seeker</code>. 被动求职者开关，0：开启，1：不开启
+	 * Getter for <code>hrdb.hr_wx_wechat.passive_seeker</code>. 被动求职者开关，0= 开启, 1=不开启
 	 */
 	public Byte getPassiveSeeker() {
 		return (Byte) getValue(14);
@@ -424,14 +422,14 @@ public class HrWxWechatRecord extends UpdatableRecordImpl<HrWxWechatRecord> {
 	}
 
 	/**
-	 * Setter for <code>hrdb.hr_wx_wechat.show_custom_theme</code>. show_custom_theme,用于表示是否可以开启企业自定义颜色配置 0是否 1是开启
+	 * Setter for <code>hrdb.hr_wx_wechat.show_custom_theme</code>. show_custom_theme, 用于表示是否可以开启企业自定义颜色配置 0是否 1是开启
 	 */
 	public void setShowCustomTheme(Integer value) {
 		setValue(28, value);
 	}
 
 	/**
-	 * Getter for <code>hrdb.hr_wx_wechat.show_custom_theme</code>. show_custom_theme,用于表示是否可以开启企业自定义颜色配置 0是否 1是开启
+	 * Getter for <code>hrdb.hr_wx_wechat.show_custom_theme</code>. show_custom_theme, 用于表示是否可以开启企业自定义颜色配置 0是否 1是开启
 	 */
 	public Integer getShowCustomTheme() {
 		return (Integer) getValue(28);
@@ -445,7 +443,7 @@ public class HrWxWechatRecord extends UpdatableRecordImpl<HrWxWechatRecord> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Record1<UInteger> key() {
+	public Record1<Integer> key() {
 		return (Record1) super.key();
 	}
 
@@ -463,7 +461,7 @@ public class HrWxWechatRecord extends UpdatableRecordImpl<HrWxWechatRecord> {
 	/**
 	 * Create a detached, initialised HrWxWechatRecord
 	 */
-	public HrWxWechatRecord(UInteger id, UInteger companyId, UByte type, String signature, String name, String alias, String username, String password, String token, String appid, String secret, Integer welcome, Integer default_, String qrcode, Byte passiveSeeker, Byte thirdOauth, Byte hrRegister, Integer accessTokenCreateTime, Integer accessTokenExpired, String accessToken, String jsapiTicket, Byte authorized, Integer unauthorizedTime, String authorizerRefreshToken, Timestamp createTime, Timestamp updateTime, Byte hrChat, Integer showQxQrcode, Integer showCustomTheme) {
+	public HrWxWechatRecord(Integer id, Integer companyId, Byte type, String signature, String name, String alias, String username, String password, String token, String appid, String secret, Integer welcome, Integer default_, String qrcode, Byte passiveSeeker, Byte thirdOauth, Byte hrRegister, Integer accessTokenCreateTime, Integer accessTokenExpired, String accessToken, String jsapiTicket, Byte authorized, Integer unauthorizedTime, String authorizerRefreshToken, Timestamp createTime, Timestamp updateTime, Byte hrChat, Integer showQxQrcode, Integer showCustomTheme) {
 		super(HrWxWechat.HR_WX_WECHAT);
 
 		setValue(0, id);

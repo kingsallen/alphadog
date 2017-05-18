@@ -20,7 +20,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -36,7 +35,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyAccount extends TableImpl<HrThirdPartyAccountRecord> {
 
-	private static final long serialVersionUID = -1527901653;
+	private static final long serialVersionUID = -972199518;
 
 	/**
 	 * The reference instance of <code>hrdb.hr_third_party_account</code>
@@ -77,19 +76,19 @@ public class HrThirdPartyAccount extends TableImpl<HrThirdPartyAccountRecord> {
 	public final TableField<HrThirdPartyAccountRecord, String> MEMBERNAME = createField("membername", org.jooq.impl.SQLDataType.VARCHAR.length(60).defaulted(true), this, "会员名称");
 
 	/**
-	 * The column <code>hrdb.hr_third_party_account.binding</code>. 0=未绑定,1=绑定,2=绑定中，3=绑定失败
+	 * The column <code>hrdb.hr_third_party_account.binding</code>. 0=未绑定,1=绑定
 	 */
-	public final TableField<HrThirdPartyAccountRecord, Short> BINDING = createField("binding", org.jooq.impl.SQLDataType.SMALLINT.defaulted(true), this, "0=未绑定,1=绑定,2=绑定中，3=绑定失败");
+	public final TableField<HrThirdPartyAccountRecord, Short> BINDING = createField("binding", org.jooq.impl.SQLDataType.SMALLINT.defaulted(true), this, "0=未绑定,1=绑定");
 
 	/**
 	 * The column <code>hrdb.hr_third_party_account.company_id</code>. hrdb.hr_company.id
 	 */
-	public final TableField<HrThirdPartyAccountRecord, UInteger> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "hrdb.hr_company.id");
+	public final TableField<HrThirdPartyAccountRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "hrdb.hr_company.id");
 
 	/**
 	 * The column <code>hrdb.hr_third_party_account.remain_num</code>. 点数
 	 */
-	public final TableField<HrThirdPartyAccountRecord, UInteger> REMAIN_NUM = createField("remain_num", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "点数");
+	public final TableField<HrThirdPartyAccountRecord, Integer> REMAIN_NUM = createField("remain_num", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "点数");
 
 	/**
 	 * The column <code>hrdb.hr_third_party_account.sync_time</code>. 同步时间

@@ -20,7 +20,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -36,7 +35,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxImageReply extends TableImpl<HrWxImageReplyRecord> {
 
-	private static final long serialVersionUID = 1136018281;
+	private static final long serialVersionUID = -1710786548;
 
 	/**
 	 * The reference instance of <code>hrdb.hr_wx_image_reply</code>
@@ -59,7 +58,7 @@ public class HrWxImageReply extends TableImpl<HrWxImageReplyRecord> {
 	/**
 	 * The column <code>hrdb.hr_wx_image_reply.rid</code>. wx_rule.id, 规则ID
 	 */
-	public final TableField<HrWxImageReplyRecord, UInteger> RID = createField("rid", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "wx_rule.id, 规则ID");
+	public final TableField<HrWxImageReplyRecord, Integer> RID = createField("rid", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "wx_rule.id, 规则ID");
 
 	/**
 	 * The column <code>hrdb.hr_wx_image_reply.image</code>. 回复图片的相对路径

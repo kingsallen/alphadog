@@ -20,7 +20,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -36,7 +35,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrTopic extends TableImpl<HrTopicRecord> {
 
-	private static final long serialVersionUID = -1835955339;
+	private static final long serialVersionUID = -1744295946;
 
 	/**
 	 * The reference instance of <code>hrdb.hr_topic</code>
@@ -59,7 +58,7 @@ public class HrTopic extends TableImpl<HrTopicRecord> {
 	/**
 	 * The column <code>hrdb.hr_topic.company_id</code>. company.id, 部门ID
 	 */
-	public final TableField<HrTopicRecord, UInteger> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "company.id, 部门ID");
+	public final TableField<HrTopicRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "company.id, 部门ID");
 
 	/**
 	 * The column <code>hrdb.hr_topic.share_title</code>. 分享标题
@@ -79,12 +78,12 @@ public class HrTopic extends TableImpl<HrTopicRecord> {
 	/**
 	 * The column <code>hrdb.hr_topic.style_id</code>. wx_group_user.id， 推荐者微信ID
 	 */
-	public final TableField<HrTopicRecord, UInteger> STYLE_ID = createField("style_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "wx_group_user.id， 推荐者微信ID");
+	public final TableField<HrTopicRecord, Integer> STYLE_ID = createField("style_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "wx_group_user.id， 推荐者微信ID");
 
 	/**
 	 * The column <code>hrdb.hr_topic.creator</code>. hr_account.id
 	 */
-	public final TableField<HrTopicRecord, UInteger> CREATOR = createField("creator", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "hr_account.id");
+	public final TableField<HrTopicRecord, Integer> CREATOR = createField("creator", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "hr_account.id");
 
 	/**
 	 * The column <code>hrdb.hr_topic.disable</code>. 是否有效  0：有效 1：无效

@@ -352,6 +352,7 @@ public class CandidateDBDao {
         QueryUtil queryUtil = new QueryUtil();
         queryUtil.addSelectAttribute("id");
         queryUtil.addEqualFilter("company_id", companyId).addEqualFilter("disable", Constant.ENABLE_OLD).addEqualFilter("activation", EmployeeType.AUTH_SUCCESS.getValue());
+        queryUtil.setPer_page(Integer.MAX_VALUE);
         try {
             return userDBDao.getUserEmployeesDO(queryUtil);
         } catch (TException e) {

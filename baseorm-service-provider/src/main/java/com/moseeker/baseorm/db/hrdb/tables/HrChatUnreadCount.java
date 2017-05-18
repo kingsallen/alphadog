@@ -18,7 +18,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -34,7 +33,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrChatUnreadCount extends TableImpl<HrChatUnreadCountRecord> {
 
-	private static final long serialVersionUID = -1526976660;
+	private static final long serialVersionUID = -577689416;
 
 	/**
 	 * The reference instance of <code>hrdb.hr_chat_unread_count</code>
@@ -52,7 +51,17 @@ public class HrChatUnreadCount extends TableImpl<HrChatUnreadCountRecord> {
 	/**
 	 * The column <code>hrdb.hr_chat_unread_count.room_id</code>. 聊天室编号
 	 */
-	public final TableField<HrChatUnreadCountRecord, UInteger> ROOM_ID = createField("room_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "聊天室编号");
+	public final TableField<HrChatUnreadCountRecord, Integer> ROOM_ID = createField("room_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "聊天室编号");
+
+	/**
+	 * The column <code>hrdb.hr_chat_unread_count.hr_id</code>. HR编号 userdb.user_hr_account
+	 */
+	public final TableField<HrChatUnreadCountRecord, Integer> HR_ID = createField("hr_id", org.jooq.impl.SQLDataType.INTEGER, this, "HR编号 userdb.user_hr_account");
+
+	/**
+	 * The column <code>hrdb.hr_chat_unread_count.user_id</code>. 用户编号 userdb.user_user.id
+	 */
+	public final TableField<HrChatUnreadCountRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER, this, "用户编号 userdb.user_user.id");
 
 	/**
 	 * The column <code>hrdb.hr_chat_unread_count.hr_unread_count</code>. hr未读消息数量
@@ -60,9 +69,9 @@ public class HrChatUnreadCount extends TableImpl<HrChatUnreadCountRecord> {
 	public final TableField<HrChatUnreadCountRecord, Integer> HR_UNREAD_COUNT = createField("hr_unread_count", org.jooq.impl.SQLDataType.INTEGER.defaulted(true), this, "hr未读消息数量");
 
 	/**
-	 * The column <code>hrdb.hr_chat_unread_count.user_unread_count</code>. 员工未读消息数量
+	 * The column <code>hrdb.hr_chat_unread_count.user_unread_count</code>. C端用户未读消息数量
 	 */
-	public final TableField<HrChatUnreadCountRecord, Integer> USER_UNREAD_COUNT = createField("user_unread_count", org.jooq.impl.SQLDataType.INTEGER.defaulted(true), this, "员工未读消息数量");
+	public final TableField<HrChatUnreadCountRecord, Integer> USER_UNREAD_COUNT = createField("user_unread_count", org.jooq.impl.SQLDataType.INTEGER.defaulted(true), this, "C端用户未读消息数量");
 
 	/**
 	 * Create a <code>hrdb.hr_chat_unread_count</code> table reference
