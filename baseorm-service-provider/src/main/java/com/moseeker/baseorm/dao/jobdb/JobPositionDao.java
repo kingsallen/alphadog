@@ -142,7 +142,7 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
 		}
 		Record positionAndCompanyRecord = positionAndCompanyRecords.get(0);
 		int company_id = positionAndCompanyRecord.getValue(JobPosition.JOB_POSITION.COMPANY_ID);
-		int company_type = (int) positionAndCompanyRecord.getValue("type"); // 公司区分(其它:2,免费用户:1,企业用户:0)
+		int company_type = Integer.parseInt(positionAndCompanyRecord.getValue("type").toString()); // 公司区分(其它:2,免费用户:1,企业用户:0)
 
 		// get recom
 		Result<? extends Record> recomResults;

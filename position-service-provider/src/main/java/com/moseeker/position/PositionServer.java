@@ -1,4 +1,4 @@
-package com.moseeker.position.server;
+package com.moseeker.position;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +48,7 @@ public class PositionServer {
         AnnotationConfigApplicationContext acac = new AnnotationConfigApplicationContext();
         acac.scan("com.moseeker.position");
         acac.scan("com.moseeker.common.aop.iface");
+        acac.scan("com.moseeker.baseorm");
         acac.refresh();
         return acac;
     }

@@ -1,21 +1,17 @@
 package com.moseeker.position.utils;
 
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.moseeker.common.providerutils.QueryUtil;
+import com.moseeker.baseorm.dao.hrdb.CompanyDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.common.util.BeanUtils;
-import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
-import com.moseeker.position.dao.JobPositionDao;
-import com.moseeker.position.service.fundationbs.PositionService;
-import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.company.service.CompanyServices;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
-import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import java.util.List;
 import java.util.Map;
 
@@ -24,23 +20,17 @@ import java.util.Map;
  * Created by yuyunfeng on 2017/3/14.
  */
 public class UpdateESThread implements Runnable {
-
     Logger logger = LoggerFactory.getLogger(this.getClass());
-
     private com.moseeker.thrift.gen.searchengine.service.SearchengineServices.Iface searchengineServices;
-
-    private com.moseeker.thrift.gen.company.service.CompanyServices.Iface companyServices;
-
-    private JobPositionDao jobPositionDao;
-
     @Autowired
-    private PositionService positionService;
+    private JobPositionDao jobPositionDao;
+    @Autowired
+    private CompanyDao companyDao;
 
     private List<Integer> list;
 
-    public UpdateESThread(SearchengineServices.Iface searchengineServices, CompanyServices.Iface companyServices, List<Integer> list, JobPositionDao jobPositionDao) {
+    public UpdateESThread(SearchengineServices.Iface searchengineServices, List<Integer> list, JobPositionDao jobPositionDao) {
         this.searchengineServices = searchengineServices;
-        this.companyServices = companyServices;
         this.list = list;
         this.jobPositionDao = jobPositionDao;
     }
@@ -52,25 +42,21 @@ public class UpdateESThread implements Runnable {
             logger.info("需要更新ES总条数：" + list.size());
             logger.info("需要更新ESJobPostionIDs：" + list.toString());
             for (Integer jobPositionId : list) {
-                JobPositionRecord jobPositionRecord = jobPositionDao.getPositionById(jobPositionId);
+            	Query qu=new Query.QueryBuilder().where("id", jobPositionId).buildQuery();
+                JobPositionRecord jobPositionRecord = jobPositionDao.getRecord(qu);
                 Integer companyId = jobPositionRecord.getCompanyId().intValue();
-
-                QueryUtil query = new QueryUtil();
-                query.addEqualFilter("id", String.valueOf(companyId));
-                Response company_resp = null;
+                Query query = new Query.QueryBuilder().where("id",companyId).buildQuery();
+                List<Hrcompany> company_maps = null;
                 try {
-                    company_resp = companyServices.getAllCompanies(query);
-                } catch (TException e) {
+                	company_maps=companyDao.getCompanies(query);
+                } catch (Exception e) {
                     logger.error(e.getMessage(), e);
                 }
 
-                String company = company_resp.data;
-                logger.info("company:" + company);
-
-                List company_maps = (List) JSON.parse(company);
-                Map company_map = (Map) company_maps.get(0);
-                String company_name = (String) company_map.get("name");
-                String scale = (String) company_map.get("scale");
+                logger.info("company:" + company_maps);
+                Hrcompany company_map=company_maps.get(0);
+                String company_name =company_map.getName();
+                String scale =company_map.getScale();
                 try {
                     Map map = jobPositionRecord.intoMap();
                     map.put("company_name", company_name);

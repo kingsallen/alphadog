@@ -10,6 +10,7 @@ dependencies {
     testCompile deps["junit"]
     compile deps["spring-core"]
     compile deps["spring-context"]
+    compile deps["spring-tx"]
     compile deps["jetty-support"]
 }
 

@@ -1,13 +1,9 @@
 package test.com.moseeker.position.service;
 
-import com.alibaba.fastjson.JSON;
-import com.moseeker.rpccenter.client.ServiceManager;
-import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.position.service.PositionServices;
-import com.moseeker.thrift.gen.position.struct.Position;
+
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 public class PositionService {
     /*private PositionServices.Iface positionService;
@@ -30,4 +26,5 @@ public class PositionService {
             e.printStackTrace();
         }
     }*/
+
 }
