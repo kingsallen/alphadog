@@ -23,7 +23,6 @@ import com.moseeker.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.position.struct.Position;
-
 import org.apache.thrift.TException;
 import org.jooq.Condition;
 import org.jooq.Record;
@@ -31,6 +30,9 @@ import org.jooq.Record1;
 import org.jooq.Result;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -254,4 +256,33 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
 		return position;
 	}
 
+
+
+    public JobPositionRecord getPositionById(int positionId) {
+        JobPositionRecord record = null;
+        Connection conn = null;
+        try {
+            if(positionId > 0) {
+                Result<JobPositionRecord> result = create.selectFrom(JobPosition.JOB_POSITION)
+                        .where(JobPosition.JOB_POSITION.ID.equal(positionId))
+                        .limit(1).fetch();
+                if(result != null && result.size() > 0) {
+                    record = result.get(0);
+                }
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        } finally {
+            try {
+                if(conn != null && !conn.isClosed()) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                logger.error(e.getMessage(), e);
+            } finally {
+                //do nothing
+            }
+        }
+        return record;
+    }
 }

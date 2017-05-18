@@ -9,7 +9,7 @@ import com.moseeker.thrift.gen.profile.struct.Basic;
 
 /**
  * Profile basic信息客户端 测试类
- *
+ * <p>
  * Created by zzh on 16/7/5.
  */
 public class ProfileBasicServicesImplTest {
@@ -44,11 +44,11 @@ public class ProfileBasicServicesImplTest {
         }
     }
 
-    public static Basic getProfileBasic(){
+    public static Basic getProfileBasic() {
         Basic basic = new Basic();
         basic.setProfile_id(1);
         basic.setName("name");
-        basic.setGender((short)2);
+        basic.setGender((short) 2);
         basic.setNationality_code(2);
         basic.setNationality_name("阿富汗伊斯兰国");
         basic.setCity_code(110000);
@@ -62,11 +62,11 @@ public class ProfileBasicServicesImplTest {
     }
 
 
-    public static Basic getProfileBasic1(){
+    public static Basic getProfileBasic1() {
         Basic basic = new Basic();
         basic.setProfile_id(1);
         basic.setName("name1");
-        basic.setGender((short)1);
+        basic.setGender((short) 1);
         basic.setNationality_code(2);
         basic.setNationality_name("阿富汗伊斯兰国");
         basic.setCity_code(110000);
@@ -77,12 +77,6 @@ public class ProfileBasicServicesImplTest {
         basic.setMotto("motto");
         basic.setSelf_introduction("self introduction");
         return basic;
-    }
-
-    public static CommonQuery getCommonQuery(){
-        QueryUtil queryUtil = new QueryUtil();
-        queryUtil.addEqualFilter("profile_id", "1");
-        return queryUtil;
     }
 
 }

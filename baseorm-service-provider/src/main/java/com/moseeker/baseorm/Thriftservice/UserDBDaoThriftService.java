@@ -45,7 +45,7 @@ public class UserDBDaoThriftService implements Iface {
 	private UserHRAccountDao userHRAccountDao;
 
 	@Autowired
-	private WxUserDao wxUserDao;
+	private UserWxUserDao wxUserDao;
 
 	@Autowired
 	private UserEmployeePointsDao userEmployeePointsDao;
@@ -110,7 +110,8 @@ public class UserDBDaoThriftService implements Iface {
 
 	@Override
 	public List<UserFavPositionDO> getUserFavPositions(CommonQuery query) throws TException {
-		return favPositionDao.getUserFavPositions(QueryConvert.commonQueryConvertToQuery(query));
+//		return favPositionDao.getUserFavPositions(QueryConvert.commonQueryConvertToQuery(query));
+        return null;
 	}
 
 	@Override
@@ -182,12 +183,12 @@ public class UserDBDaoThriftService implements Iface {
 
 	@Override
 	public List<UserWxUserDO> listUserWxUserDO(CommonQuery query) throws CURDException, TException {
-		return wxUserDao.getDatas(QueryConvert.commonQueryConvertToQuery(query));
+		return wxUserDao.getDatas(QueryConvert.commonQueryConvertToQuery(query),UserWxUserDO.class);
 	}
 
 	@Override
 	public UserWxUserDO getUserWxUserDO(CommonQuery query) throws CURDException, TException {
-		return wxUserDao.getData(QueryConvert.commonQueryConvertToQuery(query));
+		return wxUserDao.getData(QueryConvert.commonQueryConvertToQuery(query),UserWxUserDO.class);
 	}
 	
 	@Override

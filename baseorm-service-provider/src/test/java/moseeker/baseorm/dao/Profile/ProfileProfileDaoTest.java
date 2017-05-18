@@ -1,7 +1,6 @@
 package moseeker.baseorm.dao.Profile;
 
 import com.alibaba.fastjson.JSON;
-import com.moseeker.baseorm.Thriftservice.ProfileProfileDaoThriftService;
 import com.moseeker.common.util.HttpClient;
 import com.moseeker.thrift.gen.common.struct.Response;
 import org.apache.thrift.TException;
@@ -17,14 +16,14 @@ import java.util.Map;
  */
 public class ProfileProfileDaoTest {
 
-    ProfileProfileDaoThriftService service;
-
-    public void init() {
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
-        context.scan("com.moseeker.baseorm");
-        context.refresh();
-        service = context.getBean(ProfileProfileDaoThriftService.class);
-    }
+//    ProfileProfileDaoThriftService service;
+//
+//    public void init() {
+//        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+//        context.scan("com.moseeker.baseorm");
+//        context.refresh();
+//        service = context.getBean(ProfileProfileDaoThriftService.class);
+//    }
 
     @Test
     public void testJoin(){

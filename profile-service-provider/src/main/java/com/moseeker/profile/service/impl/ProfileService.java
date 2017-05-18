@@ -1,54 +1,46 @@
 package com.moseeker.profile.service.impl;
 
-import java.net.ConnectException;
-import java.text.ParseException;
-import java.util.UUID;
-
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.moseeker.common.constants.RespnoseUtil;
+import com.moseeker.baseorm.dao.profiledb.ProfileCompletenessDao;
+import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
+import com.moseeker.baseorm.dao.userdb.UserSettingsDao;
+import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserSettingsRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
+import com.moseeker.baseorm.tool.QueryConvert;
+import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.QueryUtil;
+import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
-import com.moseeker.common.util.UrlUtil;
-import com.moseeker.rpccenter.client.ServiceManager;
-import com.moseeker.thrift.gen.dao.service.ProfileProfileDao;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.profile.struct.Profile;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.constants.Constant;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.providerutils.QueryUtil;
-import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
-import com.moseeker.common.util.BeanUtils;
-import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
-import com.moseeker.db.userdb.tables.records.UserSettingsRecord;
-import com.moseeker.db.userdb.tables.records.UserUserRecord;
-import com.moseeker.profile.dao.CompletenessDao;
-import com.moseeker.profile.dao.ProfileDao;
-import com.moseeker.profile.dao.UserDao;
-import com.moseeker.profile.dao.UserSettingsDao;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.profile.struct.Profile;
+import java.text.ParseException;
+import java.util.UUID;
 
 @Service
 @CounterIface
-public class ProfileService extends JOOQBaseServiceImpl<Profile, ProfileProfileRecord> {
+public class ProfileService extends BaseProfileService<Profile, ProfileProfileRecord> {
 
     Logger logger = LoggerFactory.getLogger(ProfileProjectExpService.class);
 
     @Autowired
-    protected ProfileDao dao;
+    protected ProfileProfileDao dao;
 
     @Autowired
-    protected UserDao userDao;
+    protected UserUserDao userDao;
 
     @Autowired
-    protected CompletenessDao completenessDao;
+    protected ProfileCompletenessDao completenessDao;
 
     @Autowired
     private UserSettingsDao settingDao;
@@ -56,42 +48,10 @@ public class ProfileService extends JOOQBaseServiceImpl<Profile, ProfileProfileR
     @Autowired
     private ProfileCompletenessImpl completenessImpl;
 
-    @Override
-    protected void initDao() {
-        super.dao = this.dao;
-    }
-
-    public ProfileDao getDao() {
-        return dao;
-    }
-
-    public void setDao(ProfileDao dao) {
-        this.dao = dao;
-    }
-
-    public UserSettingsDao getSettingDao() {
-        return settingDao;
-    }
-
-    public void setSettingDao(UserSettingsDao settingDao) {
-        this.settingDao = settingDao;
-    }
-
-    public ProfileCompletenessImpl getCompletenessImpl() {
-        return completenessImpl;
-    }
-
-    public void setCompletenessImpl(ProfileCompletenessImpl completenessImpl) {
-        this.completenessImpl = completenessImpl;
-    }
-
     public Response getResource(CommonQuery query) throws TException {
-        if (dao == null) {
-            initDao();
-        }
         ProfileProfileRecord record = null;
         try {
-            record = dao.getResource(query);
+            record = dao.getRecord(QueryConvert.commonQueryConvertToQuery(query));
             if (record != null) {
                 Profile s = DBToStruct(record);
                 if (record.getCompleteness().intValue() == 0 || record.getCompleteness().intValue() == 10) {
@@ -122,7 +82,7 @@ public class ProfileService extends JOOQBaseServiceImpl<Profile, ProfileProfileR
         } else {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_USER_NOTEXIST);
         }
-        return super.postResource(struct);
+        return super.postResource(dao, struct);
     }
 
     public Response getCompleteness(int userId, String uuid, int profileId) throws TException {
@@ -140,7 +100,7 @@ public class ProfileService extends JOOQBaseServiceImpl<Profile, ProfileProfileR
         QueryUtil qu = new QueryUtil();
         qu.addEqualFilter("id", String.valueOf(id));
         try {
-            UserSettingsRecord record = settingDao.getResource(qu);
+            UserSettingsRecord record = settingDao.getRecord(qu);
             if (record != null) {
                 completenessImpl.reCalculateUserUserByUserIdOrMobile(record.getUserId().intValue(), null);
                 int totalComplementness = completenessImpl.getCompleteness(record.getUserId().intValue(), null, 0);
@@ -162,35 +122,16 @@ public class ProfileService extends JOOQBaseServiceImpl<Profile, ProfileProfileR
         return (ProfileProfileRecord) BeanUtils.structToDB(profile, ProfileProfileRecord.class);
     }
 
-    public UserDao getUserDao() {
-        return userDao;
-    }
-
-    public void setUserDao(UserDao userDao) {
-        this.userDao = userDao;
-    }
-
-    public CompletenessDao getCompletenessDao() {
-        return completenessDao;
-    }
-
-    public void setCompletenessDao(CompletenessDao completenessDao) {
-        this.completenessDao = completenessDao;
-    }
-
-    ProfileProfileDao.Iface profileProfileDao = ServiceManager.SERVICEMANAGER
-            .getService(ProfileProfileDao.Iface.class);
-
-
     public Response getProfileByApplication(int companyId, int sourceId, int ats_status, boolean recommender, boolean dl_url_required) throws TException {
         ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil.getInstance();
         try {
             propertiesUtils.loadResource("setting.properties");
+            String downloadUrl = propertiesUtils.get("GENERATE_USER_ID", String.class);
+            String password = propertiesUtils.get("GENERATE_USER_PASSWORD", String.class);
+            return dao.getResourceByApplication(downloadUrl, password, companyId, sourceId, ats_status, recommender, dl_url_required);
         } catch (Exception e1) {
             logger.error(e1.getMessage(), e1);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
-        String downloadUrl = propertiesUtils.get("GENERATE_USER_ID", String.class);
-        String password = propertiesUtils.get("GENERATE_USER_PASSWORD", String.class);
-        return profileProfileDao.getResourceByApplication(downloadUrl, password, companyId, sourceId, ats_status, recommender, dl_url_required);
     }
 }

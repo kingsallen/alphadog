@@ -5,9 +5,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.moseeker.baseorm.dao.dictdb.DictCityDao;
+import com.moseeker.baseorm.dao.dictdb.DictIndustryDao;
+import com.moseeker.baseorm.dao.dictdb.DictPositionDao;
+import com.moseeker.baseorm.dao.profiledb.*;
+import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
+import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.log.ELKLog;
 import com.moseeker.common.log.LogVO;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.profile.constants.StatisticsForChannelmportVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,38 +24,29 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.db.dictdb.tables.records.DictCityRecord;
-import com.moseeker.db.dictdb.tables.records.DictConstantRecord;
-import com.moseeker.db.dictdb.tables.records.DictIndustryRecord;
-import com.moseeker.db.dictdb.tables.records.DictPositionRecord;
-import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileAttachmentRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileAwardsRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileBasicRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileCredentialsRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileEducationRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileImportRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileIntentionCityRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileIntentionIndustryRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileIntentionPositionRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileIntentionRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileLanguageRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileOtherRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileProjectexpRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileSkillRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileWorksRecord;
-import com.moseeker.db.userdb.tables.records.UserUserRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictConstantRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictIndustryRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictPositionRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileAttachmentRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileAwardsRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileBasicRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileCredentialsRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileEducationRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileImportRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileIntentionCityRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileIntentionIndustryRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileIntentionPositionRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileIntentionRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileLanguageRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileOtherRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProjectexpRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileSkillRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileWorksRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.profile.constants.ValidationMessage;
-import com.moseeker.profile.dao.CityDao;
-import com.moseeker.profile.dao.IndustryDao;
-import com.moseeker.profile.dao.IntentionCityDao;
-import com.moseeker.profile.dao.IntentionDao;
-import com.moseeker.profile.dao.IntentionIndustryDao;
-import com.moseeker.profile.dao.IntentionPositionDao;
-import com.moseeker.profile.dao.PositionDao;
-import com.moseeker.profile.dao.entity.ProfileWorkexpEntity;
-import com.moseeker.profile.dao.impl.IntentionRecord;
 import com.moseeker.profile.utils.ProfileValidation;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 
@@ -477,19 +475,19 @@ public class ProfileUtils {
 		return record;
 	}
 
-	public List<Map<String, Object>> buildsIntentions(ProfileProfileRecord profileRecord, CommonQuery query,
-			List<DictConstantRecord> constantRecords, IntentionDao intentionDao, IntentionCityDao intentionCityDao,
-			IntentionIndustryDao intentionIndustryDao, IntentionPositionDao intentionPositionDao, CityDao dictCityDao,
-			IndustryDao dictIndustryDao, PositionDao dictPositionDao) {
+	public List<Map<String, Object>> buildsIntentions(ProfileProfileRecord profileRecord, Query query,
+													  List<DictConstantRecord> constantRecords, ProfileIntentionDao intentionDao, ProfileIntentionCityDao intentionCityDao,
+													  ProfileIntentionIndustryDao intentionIndustryDao, ProfileIntentionPositionDao intentionPositionDao, DictCityDao dictCityDao,
+													  DictIndustryDao dictIndustryDao, DictPositionDao dictPositionDao) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		try {
-			List<ProfileIntentionRecord> records = intentionDao.getResources(query);
+			List<ProfileIntentionRecord> records = intentionDao.getRecords(query);
 			if (records != null && records.size() > 0) {
 				QueryUtil dictQuery = new QueryUtil();
 				dictQuery.setPageSize(Integer.MAX_VALUE);
-				List<DictCityRecord> dictCities = dictCityDao.getResources(dictQuery);
-				List<DictIndustryRecord> dictIndustries = dictIndustryDao.getResources(dictQuery);
-				List<DictPositionRecord> dictPositions = dictPositionDao.getResources(dictQuery);
+				List<DictCityRecord> dictCities = dictCityDao.getRecords(dictQuery);
+				List<DictIndustryRecord> dictIndustries = dictIndustryDao.getRecords(dictQuery);
+				List<DictPositionRecord> dictPositions = dictPositionDao.getRecords(dictQuery);
 				List<Integer> intentionIds = new ArrayList<>();
 				records.forEach(record -> {
 					Map<String, Object> map = new HashMap<String, Object>();

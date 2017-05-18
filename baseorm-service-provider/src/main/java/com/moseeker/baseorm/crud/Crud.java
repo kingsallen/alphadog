@@ -28,9 +28,11 @@ public abstract class Crud<S, R> implements CrudAdd<R>, CrudDelete<R>, CrudUpdat
         this.rClass = (Class<R>) params[1];
     }
 
-    public abstract R dataToRecord(S s);
+    public abstract R dataToRecord(Object s);
 
     public abstract S recordToData(R r);
+
+    public abstract <T> T recordToData(R r,Class<T> tClass);
 
     public S addData(S s) {
         R r = dataToRecord(s);

@@ -1,5 +1,7 @@
 package com.moseeker.function.thrift.service;
 
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.ResponseUtils;
 import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,8 +33,8 @@ public class HRAccountThriftService implements Iface{
 
 	@Override
 	public Response createThirdPartyAccount(BindAccountStruct account) throws TException {
-		return accountService.createThirdPartyAccount(account);
-	}
+        return accountService.createThirdPartyAccount(account);
+    }
 	
 	
 }

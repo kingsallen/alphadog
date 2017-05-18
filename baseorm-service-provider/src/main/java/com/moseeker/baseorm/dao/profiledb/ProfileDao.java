@@ -9,8 +9,6 @@ import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserThirdpartyUser;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.HttpClient;
@@ -23,18 +21,16 @@ import com.moseeker.thrift.gen.position.struct.JobPositionExt;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.profile.struct.*;
 import com.moseeker.thrift.gen.profile.struct.ProfileImport;
-import com.moseeker.thrift.gen.profile.struct.ProfileOther;
 import com.moseeker.thrift.gen.useraccounts.struct.ThirdPartyUser;
 import com.moseeker.thrift.gen.useraccounts.struct.User;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
+import java.net.ConnectException;
+import java.sql.Timestamp;
+import java.util.*;
+import java.util.stream.Collectors;
 import org.jooq.DSLContext;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Service;
-
-import java.net.ConnectException;
-import java.sql.Connection;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Created by moseeker on 2017/3/13.
@@ -351,5 +347,20 @@ public class ProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfileProfileRec
                 .collect(Collectors.toSet());
         return ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(datas));
     }
+
+
+    public ProfileProfileRecord getProfileByUserId(int userId) {
+        return create.selectFrom(ProfileProfile.PROFILE_PROFILE)
+                .where(ProfileProfile.PROFILE_PROFILE.USER_ID.equal((int)(userId)))
+                .fetchAny();
+    }
+
+	public int updateUpdateTimeByUserId(int userId) {
+        Timestamp updateTime = new Timestamp(System.currentTimeMillis());
+		return create.update(ProfileProfile.PROFILE_PROFILE)
+                .set(ProfileProfile.PROFILE_PROFILE.UPDATE_TIME, updateTime)
+                .where(ProfileProfile.PROFILE_PROFILE.USER_ID.eq((int)(userId)))
+                .execute();
+	}
 
 }

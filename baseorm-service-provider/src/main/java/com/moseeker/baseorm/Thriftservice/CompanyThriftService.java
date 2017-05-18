@@ -1,9 +1,9 @@
 package com.moseeker.baseorm.Thriftservice;
 
 import com.alibaba.fastjson.JSON;
-import com.moseeker.baseorm.dao.hrdb.CompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
 import com.moseeker.baseorm.service.HrCompanyService;
 import com.moseeker.baseorm.tool.QueryConvert;
@@ -43,7 +43,7 @@ public class CompanyThriftService implements Iface {
 	private HRThirdPartyPositionDao thirdPartyPositionDao;
 	
 	@Autowired
-	private CompanyDao companyDao;
+	private HrCompanyDao companyDao;
 
 	@Autowired
 	private HrCompanyService hrCompanyService;
@@ -114,7 +114,7 @@ public class CompanyThriftService implements Iface {
 	
 	@Override
 	public HrCompanyDO getCompany(CommonQuery query) throws TException {
-		return companyDao.getCompany(QueryConvert.commonQueryConvertToQuery(query));
+		return companyDao.getData(QueryConvert.commonQueryConvertToQuery(query));
 	}
 
 	@Override
@@ -149,14 +149,6 @@ public class CompanyThriftService implements Iface {
 
 	public void setThirdPartyPositionDao(HRThirdPartyPositionDao thirdPartyPositionDao) {
 		this.thirdPartyPositionDao = thirdPartyPositionDao;
-	}
-
-	public CompanyDao getCompanyDao() {
-		return companyDao;
-	}
-
-	public void setCompanyDao(CompanyDao companyDao) {
-		this.companyDao = companyDao;
 	}
     /*
      * (non-Javadoc)

@@ -81,7 +81,7 @@ java -classpath profile-service-provider.jar com.moseeker.profile.server.Profile
 sleep 10
 
 
-java -classpath profile-service-provider.jar com.moseeker.profile.server.ProfileServer -port 19111 &
+java -classpath profile-service-provider.jar com.moseeker.profile.ProfileServer -port 19111 &
 
 sleep 10
 
@@ -102,7 +102,7 @@ java -classpath profile-service-provider.jar com.moseeker.profile.server.Profile
 
 sleep 10
 # useraccounts-service-provider
-java -classpath useraccounts-service-provider.jar com.moseeker.useraccounts.server.UseraccountsServer -port 19000 &
+java -classpath useraccounts-service-provider.jar UseraccountsServer -port 19000 &
 
 sleep 10
 

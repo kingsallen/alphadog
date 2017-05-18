@@ -3,10 +3,18 @@ package com.moseeker.baseorm.dao.dictdb;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.dictdb.tables.DictIndustry;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictIndustryRecord;
+import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictIndustryDO;
+import org.jooq.DSLContext;
+import org.jooq.Result;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectWhereStep;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,5 +36,66 @@ public class DictIndustryDao extends JooqCrudImpl<DictIndustryDO, DictIndustryRe
     public List<DictIndustryRecord> getIndustriesByType(int type) {
         return create.selectFrom(DictIndustry.DICT_INDUSTRY)
                 .where(DictIndustry.DICT_INDUSTRY.TYPE.equal((int)(type))).fetch();
+    }
+
+    public List<DictIndustryRecord> getIndustriesByCodes(List<Integer> industryCodes) {
+        List<DictIndustryRecord> records = new ArrayList<>();
+        Connection conn = null;
+        try {
+            conn = DBConnHelper.DBConn.getConn();
+            DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+            SelectWhereStep<DictIndustryRecord> select = create.selectFrom(DictIndustry.DICT_INDUSTRY);
+            SelectConditionStep<DictIndustryRecord> selectCondition = null;
+            if(industryCodes != null && industryCodes.size() > 0) {
+                for(int i=0; i<industryCodes.size(); i++) {
+                    if(i == 0) {
+                        selectCondition = select.where(DictIndustry.DICT_INDUSTRY.CODE.equal((int)(industryCodes.get(i))));
+                    } else {
+                        selectCondition.or(DictIndustry.DICT_INDUSTRY.CODE.equal((int)(industryCodes.get(i))));
+                    }
+                }
+                records = selectCondition.fetch();
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        } finally {
+            try {
+                if(conn != null && !conn.isClosed()) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                logger.error(e.getMessage(), e);
+            } finally {
+                //do nothing
+            }
+        }
+
+        return records;
+    }
+
+    public DictIndustryRecord getIndustryByCode(int intValue) {
+        DictIndustryRecord record = null;
+        Connection conn = null;
+        try {
+            conn = DBConnHelper.DBConn.getConn();
+            DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+            Result<DictIndustryRecord> result= create.selectFrom(DictIndustry.DICT_INDUSTRY).where(DictIndustry.DICT_INDUSTRY.CODE.equal((int)(intValue))).limit(1).fetch();
+            if(result != null && result.size() > 0) {
+                record = result.get(0);
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        } finally {
+            try {
+                if(conn != null && !conn.isClosed()) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                logger.error(e.getMessage(), e);
+            } finally {
+                //do nothing
+            }
+        }
+        return record;
     }
 }

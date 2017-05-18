@@ -1,6 +1,7 @@
 # file: profile_service.thrift
 
 include "../struct/profile_struct.thrift"
+include "../../dao/struct/db/profiledb_struct.thrift"
 include "../../common/struct/common_struct.thrift"
 namespace java com.moseeker.thrift.gen.profile.service
 
@@ -8,6 +9,15 @@ namespace java com.moseeker.thrift.gen.profile.service
  * TODO:list what notation this dateTime represents. eg ISO-8601
  * or if its in the format like YYYY-mm-DD you mentioned.
  */
+
+service ProfileOtherThriftService {
+    //查询HR标记的候选人信息
+    list<profiledb_struct.ProfileOtherDO> listProfileOther (1:common_struct.CommonQuery query) throws (1:common_struct.CURDException e)
+    profiledb_struct.ProfileOtherDO getProfileOther (1:common_struct.CommonQuery query) throws (1:common_struct.CURDException e)
+    profiledb_struct.ProfileOtherDO updateProfileOther (1:profiledb_struct.ProfileOtherDO profileOther) throws (1:common_struct.CURDException e)
+    profiledb_struct.ProfileOtherDO saveProfileOther (1:profiledb_struct.ProfileOtherDO profileOther) throws (1:common_struct.CURDException e)
+    i32 deleteProfileOther (1:profiledb_struct.ProfileOtherDO profileOther) throws (1:common_struct.CURDException e)
+}
  
 service WholeProfileServices {
     common_struct.Response getResource(1:i32 userId, 2:i32 profileId, 3:string uuid);

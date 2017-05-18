@@ -1,19 +1,17 @@
 package com.moseeker.profile.thrift;
 
-import java.util.List;
-
+import com.moseeker.profile.service.impl.ProfileCredentialsService;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.profile.service.CredentialsServices.Iface;
+import com.moseeker.thrift.gen.profile.struct.Credentials;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.moseeker.profile.service.impl.ProfileCompletenessImpl;
-import com.moseeker.profile.service.impl.ProfileCredentialsService;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.profile.service.CredentialsServices.Iface;
-import com.moseeker.thrift.gen.profile.struct.Credentials;
+import java.util.List;
 
 @Service
 public class ProfileCredentialsServicesImpl implements Iface {
@@ -22,9 +20,6 @@ public class ProfileCredentialsServicesImpl implements Iface {
 
 	@Autowired
 	private ProfileCredentialsService service;
-
-	@Autowired
-	private ProfileCompletenessImpl completenessImpl;
 
 	@Override
 	public Response postResources(List<Credentials> structs) throws TException {

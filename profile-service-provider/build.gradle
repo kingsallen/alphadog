@@ -2,12 +2,7 @@ apply plugin: 'idea'
 apply plugin: 'eclipse'
   
 dependencies {
-    compile project(":rpc-center")
-    compile project(":thrift-jooq")
-    //testCompile deps["junit"]
-    compile deps["spring-core"]
-    compile deps["spring-context"]
-    //compile deps["jetty-support"]
+    compile project(":baseorm-service-provider")
 }
 
 //compileJava.dependsOn(":thrift-jooq:copyGeneratedFile")

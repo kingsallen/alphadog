@@ -1,15 +1,5 @@
 package com.moseeker.profile;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.Test;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import com.alibaba.fastjson.JSONObject;
-import com.moseeker.profile.service.impl.WholeProfileService;
-import com.moseeker.thrift.gen.common.struct.Response;
-
-
 public class CompletenessTest {
 	/*private WholeProfileService service;
 	public void init() {

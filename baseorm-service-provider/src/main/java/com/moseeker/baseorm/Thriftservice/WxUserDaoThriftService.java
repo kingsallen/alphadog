@@ -1,22 +1,21 @@
 package com.moseeker.baseorm.Thriftservice;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.baseorm.tool.QueryConvert;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.service.WxUserDao.Iface;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.moseeker.baseorm.dao.userdb.WxUserDao;
-import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.service.WxUserDao.Iface;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class WxUserDaoThriftService implements Iface {
@@ -24,7 +23,7 @@ public class WxUserDaoThriftService implements Iface {
 	Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
-	private WxUserDao dao;
+	private UserWxUserDao dao;
 	
 	@Override
 	public Response getResource(CommonQuery query) throws TException {

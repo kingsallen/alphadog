@@ -1,117 +1,65 @@
 package com.moseeker.profile.service.impl;
 
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import com.moseeker.thrift.gen.common.struct.Order;
-import com.moseeker.thrift.gen.common.struct.OrderBy;
+import com.moseeker.baseorm.dao.dictdb.DictCollegeDao;
+import com.moseeker.baseorm.dao.dictdb.DictMajorDao;
+import com.moseeker.baseorm.dao.profiledb.ProfileEducationDao;
+import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictCollegeRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictMajorRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileEducationRecord;
+import com.moseeker.baseorm.tool.QueryConvert;
+import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.QueryUtil;
+import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Order;
+import com.moseeker.common.util.query.OrderBy;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.profile.constants.ValidationMessage;
+import com.moseeker.profile.utils.ProfileValidation;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.profile.struct.Education;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.providerutils.QueryUtil;
-import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
-import com.moseeker.common.util.BeanUtils;
-import com.moseeker.common.util.StringUtils;
-import com.moseeker.db.dictdb.tables.records.DictCollegeRecord;
-import com.moseeker.db.dictdb.tables.records.DictMajorRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileEducationRecord;
-import com.moseeker.profile.constants.ValidationMessage;
-import com.moseeker.profile.dao.CollegeDao;
-import com.moseeker.profile.dao.EducationDao;
-import com.moseeker.profile.dao.MajorDao;
-import com.moseeker.profile.dao.ProfileDao;
-import com.moseeker.profile.utils.ProfileValidation;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.profile.struct.Education;
+import java.text.ParseException;
+import java.util.*;
 
 @Service
 @CounterIface
-public class ProfileEducationService extends JOOQBaseServiceImpl<Education, ProfileEducationRecord> {
+public class ProfileEducationService extends BaseProfileService<Education, ProfileEducationRecord> {
 
 	Logger logger = LoggerFactory.getLogger(ProfileEducationService.class);
 
 	@Autowired
-	private EducationDao dao;
+	private ProfileEducationDao dao;
 
 	@Autowired
-	private CollegeDao collegeDao;
+	private DictCollegeDao collegeDao;
 
 	@Autowired
-	private MajorDao majorDao;
+	private DictMajorDao majorDao;
 	
 	@Autowired
-	private ProfileDao profileDao;
+	private ProfileProfileDao profileDao;
 
 	@Autowired
 	private ProfileCompletenessImpl completenessImpl;
 
-	public EducationDao getDao() {
-		return dao;
-	}
-
-	public void setDao(EducationDao dao) {
-		this.dao = dao;
-	}
-
-	public CollegeDao getCollegeDao() {
-		return collegeDao;
-	}
-
-	public void setCollegeDao(CollegeDao collegeDao) {
-		this.collegeDao = collegeDao;
-	}
-
-	public MajorDao getMajorDao() {
-		return majorDao;
-	}
-
-	public void setMajorDao(MajorDao majorDao) {
-		this.majorDao = majorDao;
-	}
-
-	public ProfileDao getProfileDao() {
-		return profileDao;
-	}
-
-	public void setProfileDao(ProfileDao profileDao) {
-		this.profileDao = profileDao;
-	}
-
-	public ProfileCompletenessImpl getCompletenessImpl() {
-		return completenessImpl;
-	}
-
-	public void setCompletenessImpl(ProfileCompletenessImpl completenessImpl) {
-		this.completenessImpl = completenessImpl;
-	}
-
-	@Override
-	protected void initDao() {
-		super.dao = this.dao;
-	}
-
-	@Override
 	public Response getResources(CommonQuery query) throws TException {
 		try {
 			// 按照结束时间倒序
-			query.addToOrders(new OrderBy("end_until_now", Order.DESC));
-			query.addToOrders(new OrderBy("start", Order.DESC));
+			Query query1 = QueryConvert.commonQueryConvertToQuery(query);
+			query1.getOrders().add(new OrderBy("end_until_now", Order.DESC));
+			query1.getOrders().add(new OrderBy("start", Order.DESC));
 
-			List<ProfileEducationRecord> educationRecords = dao.getResources(query);
-			List<Education> educations = DBsToStructs(educationRecords);
+			List<Education> educations = dao.getDatas(query1,Education.class);
 			if (educations != null && educations.size() > 0) {
 				List<Integer> collegeCodes = new ArrayList<>();
 				List<String> majorCodes = new ArrayList<>();
@@ -161,10 +109,9 @@ public class ProfileEducationService extends JOOQBaseServiceImpl<Education, Prof
 		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
 	}
 
-	@Override
 	public Response getResource(CommonQuery query) throws TException {
 		try {
-			ProfileEducationRecord educationRecord = dao.getResource(query);
+			ProfileEducationRecord educationRecord = dao.getRecord(QueryConvert.commonQueryConvertToQuery(query));
 			if (educationRecord != null) {
 				Education education = DBToStruct(educationRecord);
 				DictCollegeRecord college = collegeDao.getCollegeByID(educationRecord.getCollegeCode().intValue());
@@ -187,7 +134,6 @@ public class ProfileEducationService extends JOOQBaseServiceImpl<Education, Prof
 		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
 	}
 
-	@Override
 	public Response postResource(Education education) throws TException {
 		try {
 			//添加信息校验
@@ -213,8 +159,8 @@ public class ProfileEducationService extends JOOQBaseServiceImpl<Education, Prof
 				}
 			}
 			ProfileEducationRecord record = structToDB(education);
-			int id = dao.postResource(record);
-			if (id > 0) {
+			record = dao.addRecord(record);
+			if (record.getId() > 0) {
 				
 				Set<Integer> profileIds = new HashSet<>();
 				profileIds.add(education.getProfile_id());
@@ -222,7 +168,7 @@ public class ProfileEducationService extends JOOQBaseServiceImpl<Education, Prof
 				
 				/* 计算profile完整度 */
 				completenessImpl.reCalculateProfileEducation(education.getProfile_id(), 0);
-				return ResponseUtils.success(String.valueOf(id));
+				return ResponseUtils.success(String.valueOf(record.getId()));
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -234,7 +180,6 @@ public class ProfileEducationService extends JOOQBaseServiceImpl<Education, Prof
 		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
 	}
 
-	@Override
 	public Response putResource(Education education) throws TException {
 		if (education.getCollege_code() > 0) {
 			DictCollegeRecord college = collegeDao.getCollegeByID(education.getCollege_code());
@@ -253,7 +198,7 @@ public class ProfileEducationService extends JOOQBaseServiceImpl<Education, Prof
 				return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_MAJOR_NOTEXIST);
 			}
 		}
-		Response response = super.putResource(education);
+		Response response = super.putResource(dao,education);
 		if (response.getStatus() == 0) {
 			updateUpdateTime(education);
 			/* 计算profile完整度 */
@@ -262,7 +207,6 @@ public class ProfileEducationService extends JOOQBaseServiceImpl<Education, Prof
 		return response;
 	}
 
-	@Override
 	public Response postResources(List<Education> structs) throws TException {
 		//添加信息校验
 		if(structs != null && structs.size() > 0) {
@@ -275,7 +219,7 @@ public class ProfileEducationService extends JOOQBaseServiceImpl<Education, Prof
 				}
 			}
 		}
-		Response response = super.postResources(structs);
+		Response response = super.postResources(dao,structs);
 		if (response.getStatus() == 0) {
 			if (structs != null && structs.size() > 0) {
 				Set<Integer> profileIds = new HashSet<>();
@@ -296,9 +240,8 @@ public class ProfileEducationService extends JOOQBaseServiceImpl<Education, Prof
 		return response;
 	}
 
-	@Override
 	public Response putResources(List<Education> structs) throws TException {
-		Response response = super.putResources(structs);
+		Response response = super.putResources(dao,structs);
 		if (response.getStatus() == 0 && structs != null && structs.size() > 0) {
 			updateUpdateTime(structs);
 			structs.forEach(struct -> {
@@ -309,7 +252,6 @@ public class ProfileEducationService extends JOOQBaseServiceImpl<Education, Prof
 		return response;
 	}
 
-	@Override
 	public Response delResources(List<Education> structs) throws TException {
 		QueryUtil qu = new QueryUtil();
 		StringBuffer sb = new StringBuffer("[");
@@ -323,7 +265,7 @@ public class ProfileEducationService extends JOOQBaseServiceImpl<Education, Prof
 
 		List<ProfileEducationRecord> educationRecords = null;
 		try {
-			educationRecords = dao.getResources(qu);
+			educationRecords = dao.getRecords(qu);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
@@ -333,7 +275,7 @@ public class ProfileEducationService extends JOOQBaseServiceImpl<Education, Prof
 				profileIds.add(education.getProfileId().intValue());
 			});
 		}
-		Response response = super.delResources(structs);
+		Response response = super.delResources(dao,structs);
 		if (response.getStatus() == 0 && profileIds != null && profileIds.size() > 0) {
 			updateUpdateTime(structs);
 			profileIds.forEach(profileId -> {
@@ -344,17 +286,16 @@ public class ProfileEducationService extends JOOQBaseServiceImpl<Education, Prof
 		return response;
 	}
 
-	@Override
 	public Response delResource(Education struct) throws TException {
 		QueryUtil qu = new QueryUtil();
 		qu.addEqualFilter("id", String.valueOf(struct.getId()));
 		ProfileEducationRecord education = null;
 		try {
-			education = dao.getResource(qu);
+			education = dao.getRecord(qu);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
-		Response response = super.delResource(struct);
+		Response response = super.delResource(dao,struct);
 		if (response.getStatus() == 0 && education != null) {
 			
 			updateUpdateTime(struct);
@@ -366,7 +307,6 @@ public class ProfileEducationService extends JOOQBaseServiceImpl<Education, Prof
 		return response;
 	}
 	
-	@Override
 	protected Education DBToStruct(ProfileEducationRecord r) {
 		Map<String, String> equalRules = new HashMap<>();
 		equalRules.put("start", "start_date");
@@ -374,7 +314,6 @@ public class ProfileEducationService extends JOOQBaseServiceImpl<Education, Prof
 		return (Education) BeanUtils.DBToStruct(Education.class, r, equalRules);
 	}
 
-	@Override
 	protected ProfileEducationRecord structToDB(Education attachment) throws ParseException {
 		Map<String, String> equalRules = new HashMap<>();
 		equalRules.put("start", "start_date");
@@ -394,5 +333,9 @@ public class ProfileEducationService extends JOOQBaseServiceImpl<Education, Prof
 		List<Education> educations = new ArrayList<>();
 		educations.add(education);
 		updateUpdateTime(educations);
+	}
+
+	public Response getPagination(CommonQuery query) throws TException {
+		return super.getPagination(dao, query);
 	}
 }
