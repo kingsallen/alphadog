@@ -212,10 +212,10 @@ public class HRAccountDaoThriftService implements Iface {
     public void copyToRecord(BindAccountStruct account, HrThirdPartyAccountRecord record) {
         record.setBinding((short) account.getBinding());
         record.setChannel((short) account.getChannel());
-        record.setCompanyId(Integer.valueOf(account.getCompany_id()));
+        record.setCompanyId(account.getCompany_id());
         record.setMembername(account.getMember_name());
         record.setPassword(account.getPassword());
-        record.setRemainNum(Integer.valueOf(account.getRemainNum()));
+        record.setRemainNum(account.getRemainNum());
         record.setRemainProfileNum(account.getRemainProfileNum());
         record.setBinding((short) 1);
         record.setUsername(account.getUsername());

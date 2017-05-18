@@ -186,7 +186,9 @@ struct JobPositionExt{
     1:i32 job_custom_id,
     2:Timestamp create_time,
     3:Timestamp update_time,
-    4:i32 job_occupation_id
+    4:i32 job_occupation_id,
+    5:i32 pid
+    6:string extra
 }
 
 
