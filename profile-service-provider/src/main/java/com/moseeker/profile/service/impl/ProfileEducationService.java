@@ -123,7 +123,7 @@ public class ProfileEducationService extends BaseProfileService<Education, Profi
 				if (major != null) {
 					education.setMajor_name(major.getName());
 				}
-				return ResponseUtils.success(educationRecord);
+				return ResponseUtils.success(educationRecord.into(Education.class));
 			}
 		} catch (Exception e) {
 			logger.error("getResources error", e);

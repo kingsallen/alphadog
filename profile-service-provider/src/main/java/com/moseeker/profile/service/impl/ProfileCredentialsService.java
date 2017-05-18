@@ -1,6 +1,5 @@
 package com.moseeker.profile.service.impl;
 
-import com.moseeker.baseorm.crud.Crud;
 import com.moseeker.baseorm.dao.profiledb.ProfileCredentialsDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileCredentialsRecord;
