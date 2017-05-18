@@ -34,37 +34,26 @@ public class ProfileIntentionPositionDao extends JooqCrudImpl<ProfileIntentionPo
 
     public List<ProfileIntentionPositionRecord> getIntentionPositions(List<Integer> cityCodes) {
 
-        List<ProfileIntentionPositionRecord> records = new ArrayList<>();
-        Connection conn = null;
-        try {
-            conn = DBConnHelper.DBConn.getConn();
-            DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-            SelectWhereStep<ProfileIntentionPositionRecord> select = create.selectFrom(ProfileIntentionPosition.PROFILE_INTENTION_POSITION);
-            SelectConditionStep<ProfileIntentionPositionRecord> selectCondition = null;
-            if(cityCodes != null && cityCodes.size() > 0) {
-                for(int i=0; i<cityCodes.size(); i++) {
-                    if(i == 0) {
-                        selectCondition = select.where(ProfileIntentionPosition.PROFILE_INTENTION_POSITION.PROFILE_INTENTION_ID.equal((int)(cityCodes.get(i))));
-                    } else {
-                        selectCondition.or(ProfileIntentionPosition.PROFILE_INTENTION_POSITION.PROFILE_INTENTION_ID.equal((int)(cityCodes.get(i))));
-                    }
+    List<ProfileIntentionPositionRecord> records = new ArrayList<>();
+        SelectWhereStep<ProfileIntentionPositionRecord> select = create.selectFrom(ProfileIntentionPosition.PROFILE_INTENTION_POSITION);
+        SelectConditionStep<ProfileIntentionPositionRecord> selectCondition = null;
+        if(cityCodes != null && cityCodes.size() > 0) {
+            for(int i=0; i<cityCodes.size(); i++) {
+                if(i == 0) {
+                    selectCondition = select.where(ProfileIntentionPosition.PROFILE_INTENTION_POSITION.PROFILE_INTENTION_ID.equal((int)(cityCodes.get(i))));
+                } else {
+                    selectCondition.or(ProfileIntentionPosition.PROFILE_INTENTION_POSITION.PROFILE_INTENTION_ID.equal((int)(cityCodes.get(i))));
                 }
-            }
-            records = selectCondition.fetch();
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        } finally {
-            try {
-                if(conn != null && !conn.isClosed()) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                logger.error(e.getMessage(), e);
-            } finally {
-                //do nothing
             }
         }
+        records = selectCondition.fetch();
 
-        return records;
+    return records;
+    }
+
+    public void deleteByIntentionId(int intentionId) {
+        create.deleteFrom(ProfileIntentionPosition.PROFILE_INTENTION_POSITION)
+                .where(ProfileIntentionPosition.PROFILE_INTENTION_POSITION.PROFILE_INTENTION_ID.eq(intentionId))
+                .execute();
     }
 }

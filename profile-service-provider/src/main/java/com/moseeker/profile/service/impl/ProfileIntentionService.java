@@ -4,6 +4,13 @@ import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.baseorm.dao.dictdb.DictIndustryDao;
 import com.moseeker.baseorm.dao.dictdb.DictPositionDao;
 import com.moseeker.baseorm.dao.profiledb.*;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictIndustryRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictPositionRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileIntentionCityRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileIntentionIndustryRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileIntentionPositionRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileIntentionRecord;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
@@ -12,22 +19,15 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
-import com.moseeker.baseorm.db.dictdb.tables.records.DictIndustryRecord;
-import com.moseeker.baseorm.db.dictdb.tables.records.DictPositionRecord;
-import com.moseeker.baseorm.db.profiledb.tables.records.ProfileIntentionCityRecord;
-import com.moseeker.baseorm.db.profiledb.tables.records.ProfileIntentionIndustryRecord;
-import com.moseeker.baseorm.db.profiledb.tables.records.ProfileIntentionPositionRecord;
-import com.moseeker.baseorm.db.profiledb.tables.records.ProfileIntentionRecord;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.profile.struct.Credentials;
 import com.moseeker.thrift.gen.profile.struct.Intention;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.util.*;
@@ -35,7 +35,7 @@ import java.util.Map.Entry;
 
 @Service
 @CounterIface
-public class ProfileIntentionService extends BaseProfileService<Intention, ProfileIntentionRecord> {
+public class ProfileIntentionService {
 
 	Logger logger = LoggerFactory.getLogger(ProfileIntentionService.class);
 
@@ -175,6 +175,7 @@ public class ProfileIntentionService extends BaseProfileService<Intention, Profi
 	}
 
 
+	@Transactional
 	public Response postResource(Intention struct) throws TException {
 		ProfileIntentionRecord record = null;
 		try {
@@ -215,6 +216,7 @@ public class ProfileIntentionService extends BaseProfileService<Intention, Profi
 	}
 
 
+	@Transactional
 	public Response putResource(Intention struct) throws TException {
 		ProfileIntentionRecord record = null;
 		try {
@@ -240,33 +242,33 @@ public class ProfileIntentionService extends BaseProfileService<Intention, Profi
 	}
 
 
+	@Transactional
 	public Response delResource(Intention struct) throws TException {
 		ProfileIntentionRecord record = null;
 		try {
-			record = structToDB(struct);
-
 			QueryUtil qu = new QueryUtil();
-			qu.addEqualFilter("id", String.valueOf(struct.getProfile_id()));
-			ProfileIntentionRecord intentionRecord = dao.getRecord(qu);
-
-			int intentionId = dao.deleteRecord(record);
-			if(intentionId > 0) {
-				ProfileIntentionCityRecord intentionCityRecord = new ProfileIntentionCityRecord();
-				intentionCityRecord.setProfileIntentionId((int)(struct.getId()));
-				intentionCityDao.deleteRecord(intentionCityRecord);
-				ProfileIntentionPositionRecord intentionPositionRecord = new ProfileIntentionPositionRecord();
-				intentionPositionRecord.setProfileIntentionId((int)(struct.getId()));
-				intentionPositionDao.deleteRecord(intentionPositionRecord);
-				ProfileIntentionIndustryRecord intentionIndustryRecord = new ProfileIntentionIndustryRecord();
-				intentionIndustryRecord.setProfileIntentionId((int)(struct.getId()));
-				intentionIndustryDao.deleteRecord(intentionIndustryRecord);
-				
-				/* 计算profile完整度 */
-				completenessImpl.reCalculateProfileIntention(intentionRecord.getProfileId().intValue(), intentionRecord.getId().intValue());
-				/* 更新profile的更新时间 */
-				updateUpdateTime(struct);
-				return ResponseUtils.success(String.valueOf(intentionId));
+			if (struct.getId() > 0) {
+				qu.addEqualFilter("id", String.valueOf(struct.getId()));
+			} else if (struct.getProfile_id() > 0) {
+				qu.addEqualFilter("profile_id", String.valueOf(struct.getProfile_id()));
 			}
+			record = dao.getRecord(qu);
+
+			if (record != null) {
+				int intentionId = dao.deleteRecord(record);
+				if(intentionId > 0) {
+					intentionCityDao.deleteByIntentionId(record.getId());
+					intentionPositionDao.deleteByIntentionId(record.getId());
+					intentionIndustryDao.deleteByIntentionId(record.getId());
+
+				/* 计算profile完整度 */
+					completenessImpl.reCalculateProfileIntention(record.getProfileId().intValue(), record.getId().intValue());
+				/* 更新profile的更新时间 */
+					updateUpdateTime(struct);
+					return ResponseUtils.success(String.valueOf(intentionId));
+				}
+			}
+
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
@@ -282,9 +284,11 @@ public class ProfileIntentionService extends BaseProfileService<Intention, Profi
 	}
 
 
+	@Transactional
 	public Response postResources(List<Intention> structs) throws TException {
 		Response response = super.postResources(dao,structs);
 		if(response.getStatus() == 0 && structs != null && structs.size() > 0) {
+
 			 Set<Integer> profileIds = new HashSet<>();
 			 structs.forEach(struct -> {
 				 profileIds.add(struct.getProfile_id());
@@ -298,7 +302,7 @@ public class ProfileIntentionService extends BaseProfileService<Intention, Profi
 		return response;
 	}
 
-
+	@Transactional
 	public Response putResources(List<Intention> structs) throws TException {
 		Response response = super.putResources(dao,structs);
 		if(response.getStatus() == 0 && structs != null && structs.size() > 0) {
@@ -311,7 +315,7 @@ public class ProfileIntentionService extends BaseProfileService<Intention, Profi
 		return response;
 	}
 
-
+	@Transactional
 	public Response delResources(List<Intention> structs) throws TException {
 		QueryUtil qu = new QueryUtil();
 		StringBuffer sb = new StringBuffer("[");
