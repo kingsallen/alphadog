@@ -67,34 +67,51 @@ public class ProfileCredentialsServicesImplTest {
 	@Test
 	public void putResources() throws TException {
 		Credentials credentials = new Credentials();
-		credentials.setProfile_id(170);
+		credentials.setId(24184);
 		credentials.setName("test credentials 2");
-		response = service.putResources(null);
+		Credentials credentials2 = new Credentials();
+		credentials2.setId(24185);
+		credentials2.setName("test credentials 2");
+		response = service.putResources(new ArrayList<Credentials>(){{add(credentials);add(credentials2);}});
 	}
 
 	@Test
 	public void delResources() throws TException {
-		response = service.delResources(null);
+		Credentials credentials = new Credentials();
+		credentials.setId(24182);
+		Credentials credentials2 = new Credentials();
+		credentials2.setId(24183);
+		response = service.delResources(new ArrayList<Credentials>(){{add(credentials);add(credentials2);}});
 	}
 
 	@Test
 	public void postResource() throws TException {
-		response = service.postResource(null);
+		Credentials credentials = new Credentials();
+		credentials.setProfile_id(170);
+		credentials.setName("test credentials  180");
+		response = service.postResource(credentials);
 	}
 
 	@Test
 	public void putResource() throws TException {
+		Credentials credentials = new Credentials();
+		credentials.setId(24184);
+		credentials.setName("test credentials 24184");
 		response = service.putResource(null);
 	}
 
 	@Test
 	public void delResource() throws TException {
-		response = service.delResource(null);
+		Credentials credentials = new Credentials();
+		credentials.setId(24186);
+		response = service.delResource(credentials);
 	}
 
 	@Test
 	public void getPagination() throws TException {
-		response = service.getPagination(null);
+		CommonQuery commonQuery = new CommonQuery();
+		commonQuery.setEqualFilter(new HashMap<String,String>(){{put("profile_id","170");}});
+		response = service.getPagination(commonQuery);
 	}
 
 }

@@ -34,11 +34,10 @@ public class ProfileAwardsServicesImplTest {
     @Test
     public void postResources() throws TException {
         Awards awards = new Awards();
-        awards.setName("testAwards");
+        awards.setName("testAwards-");
         awards.setDescription("testAwardsDescription");
         awards.setLevel("testLevle");
         awards.setProfile_id(170);
-        awards.setId(20263);
         response = service.postResources(new ArrayList<Awards>(){{add(awards);}});
     }
 
@@ -74,7 +73,7 @@ public class ProfileAwardsServicesImplTest {
         awards.setName("testAwards");
         awards.setDescription("testAwardsDescription");
         awards.setLevel("testLevle");
-        awards.setId(20262);
+        awards.setProfile_id(170);
         response = service.postResource(awards);
     }
 
