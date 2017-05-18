@@ -1242,7 +1242,7 @@ public class BeanUtils {
         return serializer.toString(tobj, "utf8");
     }
 
-    static PropertyFilter profilter = new PropertyFilter() {
+    public static final PropertyFilter profilter = new PropertyFilter() {
 
         @Override
         public boolean apply(Object object, String name, Object value) {
