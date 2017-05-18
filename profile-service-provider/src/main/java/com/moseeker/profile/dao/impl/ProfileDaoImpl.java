@@ -1171,7 +1171,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
         }
 
         if (((UInteger) application.get("applier_id")).intValue() != 0) {
-            if (dl_url_required && !filter.containsKey("download_url")) {
+            if (dl_url_required) {
                 String url = getDownloadUrlByUserId(downloadApi, password, ((UInteger) application.get("applier_id")).intValue());
                 map.put("download_url", url == null ? "" : url);
             }
