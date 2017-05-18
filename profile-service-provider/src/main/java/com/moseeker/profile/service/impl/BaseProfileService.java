@@ -19,6 +19,7 @@ import java.util.List;
 * 这个类JOOQBaseDaoImpl改造过来的
 * */
 public class BaseProfileService<S, R> {
+
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public Response getResources(Crud<?, R> dao, CommonQuery query, Class clazz) throws TException {
@@ -63,24 +64,16 @@ public class BaseProfileService<S, R> {
     }
 
     public Response putResources(Crud<?, R> dao, List<S> structs) throws TException {
-        try {
-            List<R> rs = new ArrayList<>();
-            if (structs != null) {
-                structs.forEach(struct -> {
-                    rs.add(dao.dataToRecord(struct));
-                });
-            }
-            int[] updateStatus = dao.updateRecords(rs);
+        List<R> rs = new ArrayList<>();
+        if (structs != null) {
+            structs.forEach(struct -> {
+                rs.add(dao.dataToRecord(struct));
+            });
+        }
+        int[] updateStatus = dao.updateRecords(rs);
 
-            if (updateStatus.length > 0 && ArrayUtils.contains(updateStatus, 1)) {
-                return ResponseUtils.success(updateStatus);
-            }
-        } catch (Exception e) {
-            logger.error("putResources error", e);
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-
-        } finally {
-            //do nothing
+        if (updateStatus.length > 0 && ArrayUtils.contains(updateStatus, 1)) {
+            return ResponseUtils.success(updateStatus);
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
     }
