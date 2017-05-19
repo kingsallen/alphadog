@@ -1,10 +1,7 @@
 package com.moseeker.useraccounts.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
-import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
-import com.moseeker.baseorm.dao.hrdb.HrSearchConditionDao;
-import com.moseeker.baseorm.dao.hrdb.HrTalentpoolDao;
+import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.userdb.UserHRAccountDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrSearchConditionRecord;
@@ -68,29 +65,12 @@ public class UserHrAccountService {
 
     ChaosServices.Iface chaosService = ServiceManager.SERVICEMANAGER.getService(ChaosServices.Iface.class);
 
-    com.moseeker.thrift.gen.dao.service.UserHrAccountDao.Iface hraccountDao = ServiceManager.SERVICEMANAGER
-            .getService(com.moseeker.thrift.gen.dao.service.UserHrAccountDao.Iface.class);
-
     HRAccountFoundationServices.Iface hrAccountService = ServiceManager.SERVICEMANAGER
             .getService(HRAccountFoundationServices.Iface.class);
 
-//    CompanyDao.Iface companyDao = ServiceManager.SERVICEMANAGER.getService(CompanyDao.Iface.class);
-
-//    SearcheConditionDao.Iface searchConditionDao = ServiceManager.SERVICEMANAGER.getService(SearcheConditionDao.Iface.class);
-
-//    TalentpoolDao.Iface talentpoolDao = ServiceManager.SERVICEMANAGER.getService(TalentpoolDao.Iface.class);
 
     @Autowired
     private UserHRAccountDao userHrAccountDao;
-
-    @Autowired
-    private HRThirdPartyAccountDao thirdPartyAccountDao;
-
-    @Autowired
-    private HRThirdPartyPositionDao thirdPartyPositionDao;
-
-    @Autowired
-    private CompanyDao companyDao;
 
     @Autowired
     private HrSearchConditionDao hrSearchConditionDao;

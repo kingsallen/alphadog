@@ -32,7 +32,7 @@ public class HrDBThriftService implements Iface {
 	private HrOperationRecordDao hrOperationRecordDao;
 
 	@Autowired
-	private CompanyDao companyDao;
+	private HrCompanyDao companyDao;
 
 	@Autowired
 	private HrWxHrChatDao chatDao;
@@ -86,7 +86,7 @@ public class HrDBThriftService implements Iface {
 
 	@Override
 	public HrCompanyDO getCompany(CommonQuery query) throws TException {
-		return companyDao.getCompany(QueryConvert.commonQueryConvertToQuery(query));
+		return companyDao.getData(QueryConvert.commonQueryConvertToQuery(query));
 	}
 
 	@Override

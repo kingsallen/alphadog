@@ -34,6 +34,7 @@ import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -73,7 +74,7 @@ public class EmployeeService {
     private WxUserDao wxUserDao;
 
     @Autowired
-    private CompanyDao companyDao;
+    private HrCompanyDao companyDao;
 
     @Autowired
     private HRCompanyConfDao hrCompanyConfDao;
@@ -167,7 +168,7 @@ public class EmployeeService {
 				evc.setQuestions(questions);
 				evc.setCustomHint(employeeCertConf.getCustomHint());
                 HrCompanyConfDO hrCompanyConfig = hrCompanyConfDao.getData(query.buildQuery());
-				evc.setBindSuccessMessage(hrCompanyConfig.getEmployeeBinding());
+				evc.setBindSuccessMessage(hrCompanyConfig == null ? "":hrCompanyConfig.getEmployeeBinding());
 				response.setEmployeeVerificationConf(evc);
 				log.info("EmployeeVerificationConfResponse: {}", response.getEmployeeVerificationConf());
 				response.setExists(true);
@@ -270,7 +271,7 @@ public class EmployeeService {
 				// step 1: 发送认证邮件 step 2：将信息存入redis
 				query.clear();
 				query.where("id", String.valueOf(bindingParams.getCompanyId()));
-				HrCompanyDO companyDO = companyDao.getCompany(query.buildQuery());
+				HrCompanyDO companyDO = companyDao.getData(query.buildQuery());
 				query.clear();
 				query.where("company_id", String.valueOf(bindingParams.getCompanyId()));
                 HrWxWechatDO hrwechatResult = hrWxWechatDao.getData(query.buildQuery());

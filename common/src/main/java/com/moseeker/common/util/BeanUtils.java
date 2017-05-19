@@ -438,12 +438,14 @@ public class BeanUtils {
 	}
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    private static List<Object> converToList(Object value) {
+    public static List<Object> converToList(Object value) {
         List<Object> result = new ArrayList<>();
         if (value instanceof JSONArray) {
             Collections.addAll(result, ((JSONArray) value).toArray());
-        } else if (value instanceof ArrayList) {
+        } else if (value instanceof ArrayList || value.getClass().getTypeName().equals("java.util.Arrays$ArrayList")) {
             return (List) value;
+        } else if (value instanceof Set) {
+            result.addAll((Set) value);
         } else {
             Object[] params = (Object[]) value;
             Collections.addAll(result, params);

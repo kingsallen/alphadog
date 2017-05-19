@@ -8,7 +8,10 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import org.jooq.Record1;
 import org.jooq.Result;
@@ -87,5 +90,21 @@ public class HrCompanyDao extends JooqCrudImpl<HrCompanyDO, HrCompanyRecord> {
             scaleIllegal = true;
         }
         return scaleIllegal;
+    }
+
+    public List<Hrcompany> getCompanies(Query query) {
+        List<Hrcompany> companies = new ArrayList<>();
+
+        try {
+            List<HrCompanyRecord> records = getRecords(query);
+            if(records != null && records.size() > 0) {
+                companies = BeanUtils.DBToStruct(Hrcompany.class, records);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+        }
+
+        return companies;
     }
 }
