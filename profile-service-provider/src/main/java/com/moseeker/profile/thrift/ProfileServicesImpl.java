@@ -1,19 +1,20 @@
 package com.moseeker.profile.thrift;
 
-import java.util.List;
-
+import com.moseeker.baseorm.tool.QueryConvert;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.profile.service.impl.ProfileService;
+import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.profile.service.ProfileServices.Iface;
+import com.moseeker.thrift.gen.profile.struct.Profile;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.moseeker.profile.service.impl.ProfileCompletenessImpl;
-import com.moseeker.profile.service.impl.ProfileService;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.profile.service.ProfileServices.Iface;
-import com.moseeker.thrift.gen.profile.struct.Profile;
+import java.util.List;
 
 @Service
 public class ProfileServicesImpl implements Iface {
@@ -23,72 +24,134 @@ public class ProfileServicesImpl implements Iface {
 	@Autowired
 	private ProfileService service;
 
-	@Autowired
-	private ProfileCompletenessImpl completenessImpl;
-
 
 	@Override
 	public Response getResource(CommonQuery query) throws TException {
-		return service.getResource(query);
+		try{return service.getResource(QueryConvert.commonQueryConvertToQuery(query));
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
 	}
 
 	@Override
 	public Response postResource(Profile struct) throws TException {
-		return service.postResource(struct);
+		try{return service.postResource(struct);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
 	}
 
 	@Override
 	public Response getCompleteness(int userId, String uuid, int profileId) throws TException {
-		return service.getCompleteness(userId, uuid, profileId);
+		try{return service.getCompleteness(userId, uuid, profileId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
 	}
 
 	@Override
 	public Response reCalculateUserCompleteness(int userId, String mobile) throws TException {
-		return service.reCalculateUserCompleteness(userId, mobile);
+		try{return service.reCalculateUserCompleteness(userId, mobile);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
 	}
 
 	@Override
 	public Response reCalculateUserCompletenessBySettingId(int id) throws TException {
-		return service.reCalculateUserCompletenessBySettingId(id);
+		try{return service.reCalculateUserCompletenessBySettingId(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
 	}
 
 	@Override
 	public Response getProfileByApplication(int companyId, int sourceId, int ats_status, boolean recommender, boolean dl_url_required) throws TException {
-		return service.getProfileByApplication(companyId,sourceId,ats_status,recommender,dl_url_required);
+		try{return service.getProfileByApplication(companyId,sourceId,ats_status,recommender,dl_url_required);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
 	}
 
 	@Override
 	public Response getResources(CommonQuery query) throws TException {
-		return service.getResources(query);
+		try{return service.getResources(QueryConvert.commonQueryConvertToQuery(query));
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
 	}
 
 	@Override
 	public Response getPagination(CommonQuery query) throws TException {
-		return service.getPagination(query);
+		try{return service.getPagination(QueryConvert.commonQueryConvertToQuery(query));
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
 	}
 
 	@Override
 	public Response postResources(List<Profile> resources) throws TException {
-		return service.postResources(resources);
+		try{return service.postResources(resources);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
 	}
 
 	@Override
 	public Response putResources(List<Profile> resources) throws TException {
-		return service.putResources(resources);
+		try{return service.putResources(resources);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
 	}
 
 	@Override
 	public Response delResources(List<Profile> resources) throws TException {
-		return service.delResources(resources);
+		try{return service.delResources(resources);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
 	}
 
 	@Override
 	public Response putResource(Profile profile) throws TException {
-		return service.putResource(profile);
+		try{return service.putResource(profile);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
 	}
 
 	@Override
 	public Response delResource(Profile profile) throws TException {
-		return service.delResource(profile);
+		try{return service.delResource(profile);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
 	}
 }

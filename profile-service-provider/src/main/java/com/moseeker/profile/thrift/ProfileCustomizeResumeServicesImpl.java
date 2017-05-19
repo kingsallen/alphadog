@@ -1,70 +1,166 @@
 package com.moseeker.profile.thrift;
 
-import java.util.List;
-
+import com.moseeker.baseorm.tool.QueryConvert;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.Pagination;
+import com.moseeker.profile.service.impl.ProfileCustomizeResumeService;
+import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.profile.service.CustomizeResumeServices.Iface;
+import com.moseeker.thrift.gen.profile.struct.CustomizeResume;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.moseeker.profile.service.impl.ProfileCustomizeResumeService;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.profile.service.CustomizeResumeServices.Iface;
-import com.moseeker.thrift.gen.profile.struct.CustomizeResume;
+import java.util.List;
 
 @Service
 public class ProfileCustomizeResumeServicesImpl implements Iface {
-	
-	Logger logger = LoggerFactory.getLogger(ProfileCustomizeResumeServicesImpl.class);
 
-	@Autowired
-	private ProfileCustomizeResumeService service;
+    Logger logger = LoggerFactory.getLogger(ProfileCustomizeResumeServicesImpl.class);
+
+    @Autowired
+    private ProfileCustomizeResumeService service;
 
 
-	@Override
-	public Response postResources(List<CustomizeResume> structs) throws TException {
-		return service.postResources(structs);
-	}
+    @Override
+    public Response getResources(CommonQuery query) throws TException {
+        try {
+            List<CustomizeResume> datas = service.getResources(QueryConvert.commonQueryConvertToQuery(query));
+            if (datas != null && datas.size() > 0) {
+                return ResponseUtils.success(datas);
+            } else {
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
+    }
 
-	@Override
-	public Response putResources(List<CustomizeResume> structs) throws TException {
-		return service.putResources(structs);
-	}
+    @Override
+    public Response postResources(List<CustomizeResume> structs) throws TException {
+        try {
+            List<CustomizeResume> result = service.postResources(structs);
+            return ResponseUtils.success(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
+    }
 
-	@Override
-	public Response delResources(List<CustomizeResume> structs) throws TException {
-		return service.delResources(structs);
-	}
+    @Override
+    public Response putResources(List<CustomizeResume> structs) throws TException {
+        try {
+            int[] result = service.putResources(structs);
+            if (result != null && ArrayUtils.contains(result, 1)) {
+                return ResponseUtils.success("1");
+            } else {
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
+    }
 
-	@Override
-	public Response delResource(CustomizeResume struct) throws TException {
-		return service.delResource(struct);
-	}
+    @Override
+    public Response delResources(List<CustomizeResume> structs) throws TException {
+        try {
+            int[] result = service.delResources(structs);
+            if (result != null && ArrayUtils.contains(result, 1)) {
+                return ResponseUtils.success("1");
+            } else {
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DEL_FAILED);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
+    }
 
-	@Override
-	public Response postResource(CustomizeResume struct) throws TException {
-		return service.postResource(struct);
-	}
+    @Override
+    public Response postResource(CustomizeResume struct) throws TException {
+        try {
+            CustomizeResume result = service.postResource(struct);
+            if (result != null) {
+                return ResponseUtils.success("1");
+            } else {
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
+    }
 
-	@Override
-	public Response putResource(CustomizeResume struct) throws TException {
-		return service.putResource(struct);
-	}
+    @Override
+    public Response putResource(CustomizeResume struct) throws TException {
+        try {
+            int result = service.putResource(struct);
+            if (result > 0) {
+                return ResponseUtils.success("1");
+            } else {
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
+    }
 
-	@Override
-	public Response getResources(CommonQuery query) throws TException {
-		return service.getResources(query);
-	}
+    @Override
+    public Response delResource(CustomizeResume struct) throws TException {
+        try {
+            int result = service.delResource(struct);
+            if (result > 0) {
+                return ResponseUtils.success("1");
+            } else {
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
+    }
 
-	@Override
-	public Response getPagination(CommonQuery query) throws TException {
-		return service.getPagination(query);
-	}
+    @Override
+    public Response getPagination(CommonQuery query) throws TException {
+        try {
+            Pagination pagination = service.getPagination(QueryConvert.commonQueryConvertToQuery(query));
+            return ResponseUtils.success(pagination);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
+    }
 
-	@Override
-	public Response getResource(CommonQuery query) throws TException {
-		return service.getResource(query);
-	}
+    @Override
+    public Response getResource(CommonQuery query) throws TException {
+        try {
+            CustomizeResume data = service.getResource(QueryConvert.commonQueryConvertToQuery(query));
+            if (data != null) {
+                return ResponseUtils.success(data);
+            } else {
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
+    }
 }

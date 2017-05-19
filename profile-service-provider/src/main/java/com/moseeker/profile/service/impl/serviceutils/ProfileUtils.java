@@ -652,7 +652,7 @@ public class ProfileUtils {
 		}
 	}
 
-	public Pagination getPagination(int totalRow, int pageNo1, int pageSize1, List list) {
+	public static Pagination getPagination(int totalRow, int pageNo1, int pageSize1, List list) {
 		Pagination pagination = new Pagination();
 		int pageNo = 1;
 		int pageSize = 10;

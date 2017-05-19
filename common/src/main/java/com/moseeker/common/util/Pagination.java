@@ -1,6 +1,5 @@
 package com.moseeker.common.util;
 
-import java.util.List;
 /**
  * 
  * 分页的数据结构 

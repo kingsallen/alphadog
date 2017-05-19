@@ -11,7 +11,6 @@ import org.jooq.SelectWhereStep;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;

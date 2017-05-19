@@ -3,16 +3,12 @@ package com.moseeker.baseorm.dao.profiledb;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileIntentionPosition;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileIntentionPositionRecord;
-import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileIntentionPositionDO;
-import org.jooq.DSLContext;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 

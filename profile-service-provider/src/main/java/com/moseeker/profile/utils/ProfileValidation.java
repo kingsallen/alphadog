@@ -4,12 +4,15 @@ import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.baseorm.db.profiledb.tables.records.*;
 import com.moseeker.profile.constants.ValidationMessage;
+import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileCredentialsDO;
+import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileEducationDO;
+import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileOtherDO;
 import com.moseeker.thrift.gen.profile.struct.*;
 
 public class ProfileValidation {
 
 	public static ValidationMessage<Credentials> verifyCredential(Credentials credentials) {
-		ValidationMessage<Credentials> vm = new ValidationMessage<Credentials>();
+		ValidationMessage<Credentials> vm = new ValidationMessage<>();
 		if(StringUtils.isNullOrEmpty(credentials.getName())) {
 			vm.addFailedElement("证书名称", "未填写证书名称");
 		}
@@ -23,9 +26,9 @@ public class ProfileValidation {
 		}
 		return vm;
 	}
-	
-	public static ValidationMessage<CustomizeResume> verifyCustomizeResume(CustomizeResume customizeResume) {
-		ValidationMessage<CustomizeResume> vm = new ValidationMessage<>();
+
+	public static ValidationMessage<ProfileOtherDO> verifyCustomizeResume(ProfileOtherDO customizeResume) {
+		ValidationMessage<ProfileOtherDO> vm = new ValidationMessage<>();
 		if(StringUtils.isNullOrEmpty(customizeResume.getOther())) {
 			vm.addFailedElement("其他字段", "未填写其他字段的内容");
 		}
@@ -40,15 +43,15 @@ public class ProfileValidation {
 		return vm;
 	}
 	
-	public static ValidationMessage<Education> verifyEducation(Education education) {
-		ValidationMessage<Education> vm = new ValidationMessage<>();
-		if(education.getCollege_code() == 0 && StringUtils.isNullOrEmpty(education.getCollege_name())) {
+	public static ValidationMessage<ProfileEducationDO> verifyEducation(ProfileEducationDO education) {
+		ValidationMessage<ProfileEducationDO> vm = new ValidationMessage<>();
+		if(education.getCollegeCode() == 0 && StringUtils.isNullOrEmpty(education.getCollegeName())) {
 			vm.addFailedElement("院校", "未选择院校");
 		}
 		if(education.getDegree() == 0) {
 			vm.addFailedElement("学历", "未选择学历");
 		}
-		if(StringUtils.isNullOrEmpty(education.getStart_date())) {
+		if(StringUtils.isNullOrEmpty(education.getStartTime())) {
 			vm.addFailedElement("开始时间", "未选择开始时间");
 		}
 		return vm;

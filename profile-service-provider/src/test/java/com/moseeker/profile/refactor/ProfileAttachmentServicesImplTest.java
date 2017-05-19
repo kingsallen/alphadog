@@ -3,14 +3,11 @@ package com.moseeker.profile.refactor;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.profile.conf.AppConfig;
 import com.moseeker.profile.thrift.ProfileAttachmentServicesImpl;
-import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.profile.service.AttachmentServices;
-import com.moseeker.thrift.gen.profile.struct.Attachment;
+import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileAttachmentDO;
 import org.apache.thrift.TException;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,48 +40,48 @@ public class ProfileAttachmentServicesImplTest{
 
 	@Test
 	public void postResources() throws TException {
-		Attachment attachment = new Attachment();
+		ProfileAttachmentDO attachment = new ProfileAttachmentDO();
 		attachment.setDescription("test");
 		attachment.setName("testname");
-		attachment.setProfile_id(170);
+		attachment.setProfileId(170);
 
-		response = service.postResources(new ArrayList<Attachment>(){{add(attachment);}});
+		response = service.postResources(new ArrayList<ProfileAttachmentDO>(){{add(attachment);}});
 	}
 
 	@Test
 	public void putResources() throws TException {
-		Attachment attachment = new Attachment();
+		ProfileAttachmentDO attachment = new ProfileAttachmentDO();
 		attachment.setDescription("test----------");
 		attachment.setName("testname-------------");
 		attachment.setId(19413);
 
-		response = service.putResources(new ArrayList<Attachment>(){{add(attachment);}});
+		response = service.putResources(new ArrayList<ProfileAttachmentDO>(){{add(attachment);}});
 
 
 	}
 
 	@Test
 	public void delResources() throws TException {
-		Attachment attachment = new Attachment();
+		ProfileAttachmentDO attachment = new ProfileAttachmentDO();
 		attachment.setDescription("test----------");
 		attachment.setName("testname-------------");
 		attachment.setId(19413);
 
-		response = service.delResources(new ArrayList<Attachment>(){{add(attachment);}});
+		response = service.delResources(new ArrayList<ProfileAttachmentDO>(){{add(attachment);}});
 	}
 	
 	@Test
 	public void postResource() throws TException {
-		Attachment attachment = new Attachment();
+		ProfileAttachmentDO attachment = new ProfileAttachmentDO();
 		attachment.setDescription("test");
 		attachment.setName("testname");
-		attachment.setProfile_id(170);
+		attachment.setProfileId(170);
 		response = service.postResource(attachment);
 	}
 
 	@Test
 	public void putResource() throws TException {
-		Attachment attachment = new Attachment();
+		ProfileAttachmentDO attachment = new ProfileAttachmentDO();
 		attachment.setDescription("test----------");
 		attachment.setName("testname-------------");
 		attachment.setId(19415);
@@ -93,7 +90,7 @@ public class ProfileAttachmentServicesImplTest{
 
 	@Test
 	public void delResource() throws TException {
-		Attachment attachment = new Attachment();
+		ProfileAttachmentDO attachment = new ProfileAttachmentDO();
 		attachment.setDescription("test----------");
 		attachment.setName("testname-------------");
 		attachment.setId(19415);
