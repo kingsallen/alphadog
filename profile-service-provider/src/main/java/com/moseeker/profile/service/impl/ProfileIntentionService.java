@@ -78,105 +78,98 @@ public class ProfileIntentionService {
     }
 
     public Response getResources(CommonQuery query) throws TException {
-        try {
-            List<Map<String, Object>> intentionsMap = new ArrayList<>();
-            List<ProfileIntentionRecord> records = dao.getRecords(QueryConvert.commonQueryConvertToQuery(query));
-            if (records != null && records.size() > 0) {
-                List<Integer> intentionIds = new ArrayList<>();
-                records.forEach(record -> {
-                    intentionIds.add(record.getId().intValue());
-                });
-                //List<Intention> intentions = DBsToStructs(records);
-                if (intentionIds.size() > 0) {
-                    List<ProfileIntentionCityRecord> cities = intentionCityDao.getIntentionCities(intentionIds);
-                    List<ProfileIntentionIndustryRecord> industries = intentionIndustryDao
-                            .getIntentionIndustries(intentionIds);
-                    List<ProfileIntentionPositionRecord> positions = intentionPositionDao
-                            .getIntentionPositions(intentionIds);
-                    for (ProfileIntentionRecord intention : records) {
-                        Map<String, Object> intentionMap = new HashMap<>();
-                        intentionMap.put("id", intention.getId().intValue());
-                        intentionMap.put("profile_id", intention.getProfileId().intValue());
-                        if (intention.getWorktype() != null) {
-                            intentionMap.put("worktype", intention.getWorktype().intValue());
-                        } else {
-                            intentionMap.put("worktype", null);
-                        }
-                        if (intention.getWorkstate() != null) {
-                            intentionMap.put("workstate", intention.getWorkstate().intValue());
-                        } else {
-                            intentionMap.put("workstate", null);
-                        }
-                        if (intention.getSalaryCode() != null) {
-                            intentionMap.put("salary_code", intention.getSalaryCode().intValue());
-                        } else {
-                            intentionMap.put("salary_code", null);
-                        }
-                        intentionMap.put("tag", intention.getTag());
-                        if (intention.getConsiderVentureCompanyOpportunities() != null) {
-                            intentionMap.put("consider_venture_company_opportunities", intention.getConsiderVentureCompanyOpportunities().intValue());
-                        } else {
-                            intentionMap.put("consider_venture_company_opportunities", null);
-                        }
-                        if (intention.getCreateTime() != null) {
-                            intentionMap.put("create_time", DateUtils.dateToShortTime(intention.getCreateTime()));
-                        } else {
-                            intentionMap.put("create_time", null);
-                        }
-                        if (intention.getUpdateTime() != null) {
-                            intentionMap.put("update_time", DateUtils.dateToShortTime(intention.getUpdateTime()));
-                        } else {
-                            intentionMap.put("update_time", null);
-                        }
-                        List<Map<String, Object>> cityMaps = new ArrayList<>();
-                        if (cities != null && cities.size() > 0) {
-                            for (ProfileIntentionCityRecord record : cities) {
-                                if (intention.getId().intValue() == record.getProfileIntentionId().intValue()) {
-                                    Map<String, Object> cityMap = new HashMap<>();
-                                    cityMap.put("city_code", record.getCityCode().intValue());
-                                    cityMap.put("city_name", record.getCityName());
-                                    cityMaps.add(cityMap);
-                                }
-                            }
-                        }
-                        intentionMap.put("cities", cityMaps);
-
-                        List<Map<String, Object>> industryMaps = new ArrayList<>();
-                        if (industries != null && industries.size() > 0) {
-                            Map<String, Object> industryMap = new HashMap<>();
-                            for (ProfileIntentionIndustryRecord record : industries) {
-                                if (intention.getId().intValue() == record.getProfileIntentionId().intValue()) {
-                                    industryMap.put("industry_code", record.getIndustryCode().intValue());
-                                    industryMap.put("industry_name", record.getIndustryName());
-                                    industryMaps.add(industryMap);
-                                }
-                            }
-                        }
-                        intentionMap.put("industries", industryMaps);
-
-                        List<Map<String, Object>> positionMaps = new ArrayList<>();
-                        if (positions != null && positions.size() > 0) {
-                            for (ProfileIntentionPositionRecord record : positions) {
-                                if (intention.getId().intValue() == record.getProfileIntentionId().intValue()) {
-                                    Map<String, Object> positionMap = new HashMap<>();
-                                    positionMap.put("position_code", record.getPositionCode().intValue());
-                                    positionMap.put("position_name", record.getPositionName());
-                                    positionMaps.add(positionMap);
-                                }
-                            }
-                        }
-                        intentionMap.put("positions", positionMaps);
-
-                        intentionsMap.add(intentionMap);
+        List<Map<String, Object>> intentionsMap = new ArrayList<>();
+        List<ProfileIntentionRecord> records = dao.getRecords(QueryConvert.commonQueryConvertToQuery(query));
+        if (records != null && records.size() > 0) {
+            List<Integer> intentionIds = new ArrayList<>();
+            records.forEach(record -> {
+                intentionIds.add(record.getId().intValue());
+            });
+            //List<Intention> intentions = DBsToStructs(records);
+            if (intentionIds.size() > 0) {
+                List<ProfileIntentionCityRecord> cities = intentionCityDao.getIntentionCities(intentionIds);
+                List<ProfileIntentionIndustryRecord> industries = intentionIndustryDao
+                        .getIntentionIndustries(intentionIds);
+                List<ProfileIntentionPositionRecord> positions = intentionPositionDao
+                        .getIntentionPositions(intentionIds);
+                for (ProfileIntentionRecord intention : records) {
+                    Map<String, Object> intentionMap = new HashMap<>();
+                    intentionMap.put("id", intention.getId().intValue());
+                    intentionMap.put("profile_id", intention.getProfileId().intValue());
+                    if (intention.getWorktype() != null) {
+                        intentionMap.put("worktype", intention.getWorktype().intValue());
+                    } else {
+                        intentionMap.put("worktype", null);
                     }
-                    return ResponseUtils.success(intentionsMap);
+                    if (intention.getWorkstate() != null) {
+                        intentionMap.put("workstate", intention.getWorkstate().intValue());
+                    } else {
+                        intentionMap.put("workstate", null);
+                    }
+                    if (intention.getSalaryCode() != null) {
+                        intentionMap.put("salary_code", intention.getSalaryCode().intValue());
+                    } else {
+                        intentionMap.put("salary_code", null);
+                    }
+                    intentionMap.put("tag", intention.getTag());
+                    if (intention.getConsiderVentureCompanyOpportunities() != null) {
+                        intentionMap.put("consider_venture_company_opportunities", intention.getConsiderVentureCompanyOpportunities().intValue());
+                    } else {
+                        intentionMap.put("consider_venture_company_opportunities", null);
+                    }
+                    if (intention.getCreateTime() != null) {
+                        intentionMap.put("create_time", DateUtils.dateToShortTime(intention.getCreateTime()));
+                    } else {
+                        intentionMap.put("create_time", null);
+                    }
+                    if (intention.getUpdateTime() != null) {
+                        intentionMap.put("update_time", DateUtils.dateToShortTime(intention.getUpdateTime()));
+                    } else {
+                        intentionMap.put("update_time", null);
+                    }
+                    List<Map<String, Object>> cityMaps = new ArrayList<>();
+                    if (cities != null && cities.size() > 0) {
+                        for (ProfileIntentionCityRecord record : cities) {
+                            if (intention.getId().intValue() == record.getProfileIntentionId().intValue()) {
+                                Map<String, Object> cityMap = new HashMap<>();
+                                cityMap.put("city_code", record.getCityCode().intValue());
+                                cityMap.put("city_name", record.getCityName());
+                                cityMaps.add(cityMap);
+                            }
+                        }
+                    }
+                    intentionMap.put("cities", cityMaps);
+
+                    List<Map<String, Object>> industryMaps = new ArrayList<>();
+                    if (industries != null && industries.size() > 0) {
+                        Map<String, Object> industryMap = new HashMap<>();
+                        for (ProfileIntentionIndustryRecord record : industries) {
+                            if (intention.getId().intValue() == record.getProfileIntentionId().intValue()) {
+                                industryMap.put("industry_code", record.getIndustryCode().intValue());
+                                industryMap.put("industry_name", record.getIndustryName());
+                                industryMaps.add(industryMap);
+                            }
+                        }
+                    }
+                    intentionMap.put("industries", industryMaps);
+
+                    List<Map<String, Object>> positionMaps = new ArrayList<>();
+                    if (positions != null && positions.size() > 0) {
+                        for (ProfileIntentionPositionRecord record : positions) {
+                            if (intention.getId().intValue() == record.getProfileIntentionId().intValue()) {
+                                Map<String, Object> positionMap = new HashMap<>();
+                                positionMap.put("position_code", record.getPositionCode().intValue());
+                                positionMap.put("position_name", record.getPositionName());
+                                positionMaps.add(positionMap);
+                            }
+                        }
+                    }
+                    intentionMap.put("positions", positionMaps);
+
+                    intentionsMap.add(intentionMap);
                 }
+                return ResponseUtils.success(intentionsMap);
             }
-        } catch (Exception e) {
-            logger.error("getResources error", e);
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-        } finally {
-            // do nothing
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
     }
@@ -185,39 +178,32 @@ public class ProfileIntentionService {
     @Transactional
     public Response postResource(Intention struct) throws TException {
         ProfileIntentionRecord record = null;
-        try {
-            record = structToDB(struct);
-            ProfileIntentionRecord repeatIntention = null;
-            if (struct.isSetProfile_id()) {
-                QueryUtil query = new QueryUtil();
-                query.setPageNo(1);
-                query.setPageSize(1);
-                query.addEqualFilter("profile_id", String.valueOf(struct.getProfile_id()));
-                repeatIntention = dao.getRecord(query);
-            }
-            if (repeatIntention != null) {
-                return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_REPEAT_DATA);
-            }
-            record = dao.addRecord(record);
-            if (record.getId() > 0) {
-                updateIntentionCity(struct, record.getId());
-                updateIntentionIndustry(struct, record.getId());
-                updateIntentionPosition(struct, record.getId());
+        record = structToDB(struct);
+        ProfileIntentionRecord repeatIntention = null;
+        if (struct.isSetProfile_id()) {
+            QueryUtil query = new QueryUtil();
+            query.setPageNo(1);
+            query.setPageSize(1);
+            query.addEqualFilter("profile_id", String.valueOf(struct.getProfile_id()));
+            repeatIntention = dao.getRecord(query);
+        }
+        if (repeatIntention != null) {
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_REPEAT_DATA);
+        }
+        record = dao.addRecord(record);
+        if (record.getId() > 0) {
+            updateIntentionCity(struct, record.getId());
+            updateIntentionIndustry(struct, record.getId());
+            updateIntentionPosition(struct, record.getId());
 
 				/* 计算profile完整度 */
-                completenessImpl.reCalculateProfileIntention(struct.getProfile_id(), record.getId());
+            completenessImpl.reCalculateProfileIntention(struct.getProfile_id(), record.getId());
 
-                Set<Integer> profileIds = new HashSet<>();
-                profileIds.add(struct.getProfile_id());
-                profileDao.updateUpdateTime(profileIds);
+            Set<Integer> profileIds = new HashSet<>();
+            profileIds.add(struct.getProfile_id());
+            profileDao.updateUpdateTime(profileIds);
 
-                return ResponseUtils.success(String.valueOf(record.getId()));
-            }
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-        } finally {
-            // do nothing
+            return ResponseUtils.success(String.valueOf(record.getId()));
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
     }
@@ -226,24 +212,17 @@ public class ProfileIntentionService {
     @Transactional
     public Response putResource(Intention struct) throws TException {
         ProfileIntentionRecord record = null;
-        try {
-            record = structToDB(struct);
-            int intentionId = dao.updateRecord(record);
-            if (intentionId > 0) {
-                updateIntentionCity(struct, record.getId().intValue());
-                updateIntentionIndustry(struct, record.getId().intValue());
-                updateIntentionPosition(struct, record.getId().intValue());
+        record = structToDB(struct);
+        int intentionId = dao.updateRecord(record);
+        if (intentionId > 0) {
+            updateIntentionCity(struct, record.getId().intValue());
+            updateIntentionIndustry(struct, record.getId().intValue());
+            updateIntentionPosition(struct, record.getId().intValue());
 
 				/* 计算profile完整度 */
-                completenessImpl.reCalculateProfileIntention(struct.getProfile_id(), intentionId);
-                updateUpdateTime(struct);
-                return ResponseUtils.success(String.valueOf(intentionId));
-            }
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-        } finally {
-            // do nothing
+            completenessImpl.reCalculateProfileIntention(struct.getProfile_id(), intentionId);
+            updateUpdateTime(struct);
+            return ResponseUtils.success(String.valueOf(intentionId));
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
     }
@@ -252,35 +231,27 @@ public class ProfileIntentionService {
     @Transactional
     public Response delResource(Intention struct) throws TException {
         ProfileIntentionRecord record = null;
-        try {
-            QueryUtil qu = new QueryUtil();
-            if (struct.getId() > 0) {
-                qu.addEqualFilter("id", String.valueOf(struct.getId()));
-            } else if (struct.getProfile_id() > 0) {
-                qu.addEqualFilter("profile_id", String.valueOf(struct.getProfile_id()));
-            }
-            record = dao.getRecord(qu);
+        QueryUtil qu = new QueryUtil();
+        if (struct.getId() > 0) {
+            qu.addEqualFilter("id", String.valueOf(struct.getId()));
+        } else if (struct.getProfile_id() > 0) {
+            qu.addEqualFilter("profile_id", String.valueOf(struct.getProfile_id()));
+        }
+        record = dao.getRecord(qu);
 
-            if (record != null) {
-                int intentionId = dao.deleteRecord(record);
-                if (intentionId > 0) {
-                    intentionCityDao.deleteByIntentionId(record.getId());
-                    intentionPositionDao.deleteByIntentionId(record.getId());
-                    intentionIndustryDao.deleteByIntentionId(record.getId());
+        if (record != null) {
+            int intentionId = dao.deleteRecord(record);
+            if (intentionId > 0) {
+                intentionCityDao.deleteByIntentionId(record.getId());
+                intentionPositionDao.deleteByIntentionId(record.getId());
+                intentionIndustryDao.deleteByIntentionId(record.getId());
 
 				/* 计算profile完整度 */
-                    completenessImpl.reCalculateProfileIntention(record.getProfileId().intValue(), record.getId().intValue());
-				/* 更新profile的更新时间 */
-                    updateUpdateTime(struct);
-                    return ResponseUtils.success(String.valueOf(intentionId));
-                }
+                completenessImpl.reCalculateProfileIntention(record.getProfileId().intValue(), record.getId().intValue());
+                /* 更新profile的更新时间 */
+                updateUpdateTime(struct);
+                return ResponseUtils.success(String.valueOf(intentionId));
             }
-
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-        } finally {
-            // do nothing
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
     }
@@ -310,7 +281,7 @@ public class ProfileIntentionService {
             profileIds.add(struct.getProfile_id());
         });
         profileIds.forEach(profileId -> {
-				 /* 计算profile完整度 */
+                 /* 计算profile完整度 */
             completenessImpl.reCalculateProfileIntention(profileId, 0);
         });
         profileDao.updateUpdateTime(profileIds);
@@ -325,10 +296,10 @@ public class ProfileIntentionService {
         }
         int[] result = dao.updateRecords(records);
 
-        if (ArrayUtils.contains(result,1)) {
+        if (ArrayUtils.contains(result, 1)) {
             updateUpdateTime(structs);
             structs.forEach(struct -> {
-				 /* 计算profile完整度 */
+                 /* 计算profile完整度 */
                 completenessImpl.reCalculateProfileIntention(struct.getProfile_id(), struct.getId());
             });
             return ResponseUtils.success("1");
@@ -367,10 +338,10 @@ public class ProfileIntentionService {
         }
 
         int[] delteResult = dao.deleteRecords(records);
-        if (ArrayUtils.contains(delteResult,1)) {
+        if (ArrayUtils.contains(delteResult, 1)) {
             updateUpdateTime(structs);
             profileIds.forEach(profileId -> {
-				 /* 计算profile完整度 */
+                 /* 计算profile完整度 */
                 completenessImpl.reCalculateProfileIntention(profileId, 0);
             });
             return ResponseUtils.success("1");
@@ -378,7 +349,7 @@ public class ProfileIntentionService {
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DEL_FAILED);
     }
 
-    private void updateIntentionPosition(Intention struct, int intentionId) throws Exception {
+    private void updateIntentionPosition(Intention struct, int intentionId) {
         QueryUtil positionQuery = new QueryUtil();
         positionQuery.setPageNo(1);
         positionQuery.setPageSize(Integer.MAX_VALUE);
@@ -453,7 +424,7 @@ public class ProfileIntentionService {
         }
     }
 
-    private void updateIntentionIndustry(Intention struct, int intentionId) throws Exception {
+    private void updateIntentionIndustry(Intention struct, int intentionId) {
         QueryUtil industryQuery = new QueryUtil();
         industryQuery.setPageNo(1);
         industryQuery.setPageSize(Integer.MAX_VALUE);
@@ -535,7 +506,7 @@ public class ProfileIntentionService {
      * @param intentionId
      * @throws Exception
      */
-    private void updateIntentionCity(Intention struct, int intentionId) throws Exception {
+    private void updateIntentionCity(Intention struct, int intentionId) throws TException {
         QueryUtil cityQuery = new QueryUtil();
         cityQuery.setPageNo(1);
         cityQuery.setPageSize(Integer.MAX_VALUE);
@@ -662,7 +633,7 @@ public class ProfileIntentionService {
     }
 
 
-    protected ProfileIntentionRecord structToDB(Intention intention) throws ParseException {
+    protected ProfileIntentionRecord structToDB(Intention intention) {
         return (ProfileIntentionRecord) BeanUtils.structToDB(intention, ProfileIntentionRecord.class);
     }
 

@@ -8,7 +8,6 @@ import com.moseeker.profile.service.impl.ProfileImportService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileImport;
 import com.moseeker.thrift.gen.profile.service.ProfileImportServices.Iface;
 import com.moseeker.thrift.gen.profile.struct.ProfileImport;
 import org.apache.commons.lang.ArrayUtils;

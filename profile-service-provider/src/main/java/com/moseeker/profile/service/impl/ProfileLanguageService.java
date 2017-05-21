@@ -32,14 +32,14 @@ public class ProfileLanguageService extends BaseProfileService<Language, Profile
 
 	@Autowired
 	private ProfileLanguageDao dao;
-	
+
 	@Autowired
 	private ProfileProfileDao profileDao;
-	
+
 	@Autowired
 	private ProfileCompletenessImpl completenessImpl;
-	
-	
+
+
 	public Response postResources(List<Language> structs) throws TException {
 		if(structs != null && structs.size() > 0) {
 			Iterator<Language> ic = structs.iterator();
@@ -57,18 +57,18 @@ public class ProfileLanguageService extends BaseProfileService<Language, Profile
 			structs.forEach(struct -> {
 				profileIds.add(struct.getProfile_id());
 			});
-			
+
 			profileIds.forEach(profileId -> {
 				//计算profile完整度
 				completenessImpl.recalculateprofileLanguage(profileId, 0);
 			});
-			
+
 			profileDao.updateUpdateTime(profileIds);
 		}
 		return response;
 	}
 
-	
+
 	public Response putResources(List<Language> structs) throws TException {
 		Response response = super.putResources(dao,structs);
 		if(response.getStatus() == 0 && structs != null && structs.size() > 0) {
@@ -81,7 +81,7 @@ public class ProfileLanguageService extends BaseProfileService<Language, Profile
 		return response;
 	}
 
-	
+
 	public Response delResources(List<Language> structs) throws TException {
 		//dao.fetchProfileIds(structs);
 		if(structs != null && structs.size() > 0) {
@@ -95,7 +95,7 @@ public class ProfileLanguageService extends BaseProfileService<Language, Profile
 				sb.deleteCharAt(sb.length()-1);
 				sb.append("]");
 				qu.addEqualFilter("id", sb.toString());
-				
+
 				List<ProfileLanguageRecord> languageRecords = dao.getRecords(qu);
 				Set<Integer> profileIds = new HashSet<>();
 				if(languageRecords != null && languageRecords.size() > 0) {
@@ -116,11 +116,11 @@ public class ProfileLanguageService extends BaseProfileService<Language, Profile
 				logger.error(e.getMessage(), e);
 			}
 		}
-		
+
 		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
 	}
 
-	
+
 	public Response postResource(Language struct) throws TException {
 		ValidationMessage<Language> vm = ProfileValidation.verifyLanguage(struct);
 		if(!vm.isPass()) {
@@ -128,17 +128,17 @@ public class ProfileLanguageService extends BaseProfileService<Language, Profile
 		}
 		Response response = super.postResource(dao,struct);
 		if(response.getStatus() == 0) {
-			
+
 			Set<Integer> profileIds = new HashSet<>();
 			profileIds.add(struct.getProfile_id());
 			profileDao.updateUpdateTime(profileIds);
-			
+
 			completenessImpl.recalculateprofileLanguage(struct.getProfile_id(), struct.getId());
 		}
 		return response;
 	}
 
-	
+
 	public Response putResource(Language struct) throws TException {
 		Response response = super.putResource(dao,struct);
 		if(response.getStatus() == 0) {
@@ -148,7 +148,7 @@ public class ProfileLanguageService extends BaseProfileService<Language, Profile
 		return response;
 	}
 
-	
+
 	public Response delResource(Language struct) throws TException {
 		QueryUtil qu = new QueryUtil();
 		qu.addEqualFilter("id", String.valueOf(struct.getId()));
@@ -165,17 +165,17 @@ public class ProfileLanguageService extends BaseProfileService<Language, Profile
 		}
 		return response;
 	}
-	
-	
+
+
 	protected Language DBToStruct(ProfileLanguageRecord r) {
 		return (Language) BeanUtils.DBToStruct(Language.class, r);
 	}
 
-	
+
 	protected ProfileLanguageRecord structToDB(Language language) throws ParseException {
 		return (ProfileLanguageRecord) BeanUtils.structToDB(language, ProfileLanguageRecord.class);
 	}
-	
+
 	private void updateUpdateTime(List<Language> languages) {
 		Set<Integer> languageIds = new HashSet<>();
 		languages.forEach(language -> {

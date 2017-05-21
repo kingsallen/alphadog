@@ -146,7 +146,7 @@ public class ProfileCredentialsService {
             if (!vm.isPass()) {
                 throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", vm.getResult()));
             }
-            result = dao.addData(struct);
+            result = dao.addRecord(BeanUtils.structToDB(struct,ProfileCredentialsRecord.class)).into(Credentials.class);
         /* 计算profile完整度 */
             Set<Integer> profileIds = new HashSet<>();
             profileIds.add(result.getProfile_id());
@@ -162,11 +162,10 @@ public class ProfileCredentialsService {
         int result = 0;
 
         if (struct != null) {
-            result = dao.updateData(struct);
+            result = dao.updateRecord(BeanUtils.structToDB(struct,ProfileCredentialsRecord.class));
         /* 计算profile完整度 */
             if (result > 0) {
                 updateUpdateTime(struct);
-
             }
         }
         return result;
@@ -180,15 +179,15 @@ public class ProfileCredentialsService {
                     .QueryBuilder()
                     .where(Condition.buildCommonCondition("id", struct.getId())).buildQuery();
             //找到要删除的数据
-            Credentials deleteData = dao.getData(query);
+            ProfileCredentialsDO deleteData = dao.getData(query);
             if (deleteData != null) {
                 //正式删除数据
-                result = dao.deleteData(struct);
+                result = dao.deleteData(deleteData);
                 if (result > 0) {
                     profileDao.updateUpdateTime(new HashSet<Integer>() {{
-                        add(deleteData.getProfile_id());
+                        add(deleteData.getProfileId());
                     }});
-                    completenessImpl.recalculateProfileCredential(deleteData.getProfile_id(), 0);
+                    completenessImpl.recalculateProfileCredential(deleteData.getProfileId(), 0);
                 }
             }
         }

@@ -2,16 +2,19 @@ package com.moseeker.profile.service.impl;
 
 import com.moseeker.baseorm.dao.profiledb.ProfileImportDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileImportRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.QueryUtil;
+import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.Pagination;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileImportDO;
+import com.moseeker.thrift.gen.profile.struct.ProfileImport;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,12 +40,12 @@ public class ProfileImportService {
     @Autowired
     private ProfileProfileDao profileDao;
 
-    public ProfileImportDO getResource(Query query) throws TException {
-        return dao.getData(query);
+    public ProfileImport getResource(Query query) throws TException {
+        return dao.getData(query,ProfileImport.class);
     }
 
-    public List<ProfileImportDO> getResources(Query query) throws TException {
-        return dao.getDatas(query);
+    public List<ProfileImport> getResources(Query query) throws TException {
+        return dao.getDatas(query,ProfileImport.class);
     }
 
     public Pagination getPagination(Query query) throws TException {
@@ -53,11 +56,16 @@ public class ProfileImportService {
     }
 
     @Transactional
-    public List<ProfileImportDO> postResources(List<ProfileImportDO> structs) throws TException {
-        List<ProfileImportDO> resultDatas = new ArrayList<>();
+    public List<ProfileImport> postResources(List<ProfileImport> structs) throws TException {
+        List<ProfileImport> resultDatas = new ArrayList<>();
 
         if (structs != null && structs.size() > 0) {
-            resultDatas = dao.addAllData(structs);
+
+            List<ProfileImportRecord> records = BeanUtils.structToDB(structs, ProfileImportRecord.class);
+
+            records = dao.addAllRecord(records);
+
+            resultDatas = BeanUtils.DBToStruct(ProfileImport.class,records);
 
             updateUpdateTime(resultDatas);
         }
@@ -65,12 +73,12 @@ public class ProfileImportService {
     }
 
     @Transactional
-    public int[] putResources(List<ProfileImportDO> structs) throws TException {
+    public int[] putResources(List<ProfileImport> structs) throws TException {
         int[] result = new int[0];
         if (structs != null && structs.size() > 0) {
-            result = dao.updateDatas(structs);
+            result = dao.updateRecords(BeanUtils.structToDB(structs,ProfileImportRecord.class));
 
-            List<ProfileImportDO> updatedDatas = new ArrayList<>();
+            List<ProfileImport> updatedDatas = new ArrayList<>();
 
             for (int i : result) {
                 if (i > 0) updatedDatas.add(structs.get(i));
@@ -83,20 +91,20 @@ public class ProfileImportService {
     }
 
     @Transactional
-    public int[] delResources(List<ProfileImportDO> structs) throws TException {
+    public int[] delResources(List<ProfileImport> structs) throws TException {
         if (structs != null && structs.size() > 0) {
             Query query = new Query
                     .QueryBuilder()
                     .where(Condition.buildCommonCondition("profile_id",
                             structs.stream()
-                                    .map(struct -> struct.getProfileId())
+                                    .map(struct -> struct.getProfile_id())
                                     .collect(Collectors.toList()),
                             ValueOp.IN)).buildQuery();
             //找到要删除的数据
             List<ProfileImportDO> deleteDatas = dao.getDatas(query);
 
             //正式删除数据
-            int[] result = dao.deleteDatas(structs);
+            int[] result = dao.deleteRecords(BeanUtils.structToDB(structs,ProfileImportRecord.class));
 
             if (deleteDatas != null && deleteDatas.size() > 0) {
                 //更新对应的profile更新时间
@@ -109,17 +117,17 @@ public class ProfileImportService {
     }
 
     @Transactional
-    public int delResource(ProfileImportDO struct) throws TException {
+    public int delResource(ProfileImport struct) throws TException {
         int result = 0;
         if (struct != null) {
             Query query = new Query
                     .QueryBuilder()
-                    .where(Condition.buildCommonCondition("profile_id", struct.getProfileId())).buildQuery();
+                    .where(Condition.buildCommonCondition("profile_id", struct.getProfile_id())).buildQuery();
             //找到要删除的数据
-            ProfileImportDO deleteData = dao.getData(query);
+            ProfileImport deleteData = dao.getData(query,ProfileImport.class);
             if (deleteData != null) {
                 //正式删除数据
-                result = dao.deleteData(struct);
+                result = dao.deleteRecord(BeanUtils.structToDB(deleteData,ProfileImportRecord.class));
                 if (result > 0) {
                     updateUpdateTime(deleteData);
                 }
@@ -130,26 +138,26 @@ public class ProfileImportService {
     }
 
     @Transactional
-    public ProfileImportDO postResource(ProfileImportDO struct) throws TException {
-        ProfileImportDO result = null;
+    public ProfileImport postResource(ProfileImport struct) throws TException {
+        ProfileImport result = null;
         if(struct != null) {
             QueryUtil qu = new QueryUtil();
-            qu.addEqualFilter("profile_id", String.valueOf(struct.getProfileId()));
-            ProfileImportDO repeat = dao.getData(qu);
+            qu.addEqualFilter("profile_id", String.valueOf(struct.getProfile_id()));
+            ProfileImport repeat = dao.getData(qu,ProfileImport.class);
             if (repeat != null) {
                 throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_REPEAT_DATA);
             }
-            result = dao.addData(struct);
+            result = dao.addRecord(BeanUtils.structToDB(struct,ProfileImportRecord.class)).into(ProfileImport.class);
             updateUpdateTime(result);
         }
         return result;
     }
 
     @Transactional
-    public int putResource(ProfileImportDO struct) throws TException {
+    public int putResource(ProfileImport struct) throws TException {
         int result = 0;
         if(struct != null){
-            result = dao.updateData(struct);
+            result = dao.updateRecord(BeanUtils.structToDB(struct,ProfileImportRecord.class));
             if(result > 0){
                 updateUpdateTime(struct);
             }
@@ -158,24 +166,24 @@ public class ProfileImportService {
     }
 
 
-    private void updateUpdateTime(ProfileImportDO profileImport) {
+    private void updateUpdateTime(ProfileImport profileImport) {
 
         if (profileImport == null) return;
 
-        List<ProfileImportDO> profileImports = new ArrayList<>();
+        List<ProfileImport> profileImports = new ArrayList<>();
 
         profileImports.add(profileImport);
         updateUpdateTime(profileImports);
     }
 
-    private void updateUpdateTime(List<ProfileImportDO> profileImports) {
+    private void updateUpdateTime(List<ProfileImport> profileImports) {
 
         if (profileImports == null || profileImports.size() == 0) return;
 
         HashSet<Integer> profileIds = new HashSet<>();
 
         profileImports.forEach(profileImport -> {
-            profileIds.add(profileImport.getProfileId());
+            profileIds.add(profileImport.getProfile_id());
         });
 
         profileDao.updateUpdateTime(profileIds);

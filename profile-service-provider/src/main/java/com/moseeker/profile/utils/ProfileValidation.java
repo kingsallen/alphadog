@@ -27,8 +27,8 @@ public class ProfileValidation {
 		return vm;
 	}
 
-	public static ValidationMessage<ProfileOtherDO> verifyCustomizeResume(ProfileOtherDO customizeResume) {
-		ValidationMessage<ProfileOtherDO> vm = new ValidationMessage<>();
+	public static ValidationMessage<CustomizeResume> verifyCustomizeResume(CustomizeResume customizeResume) {
+		ValidationMessage<CustomizeResume> vm = new ValidationMessage<>();
 		if(StringUtils.isNullOrEmpty(customizeResume.getOther())) {
 			vm.addFailedElement("其他字段", "未填写其他字段的内容");
 		}
@@ -43,15 +43,15 @@ public class ProfileValidation {
 		return vm;
 	}
 	
-	public static ValidationMessage<ProfileEducationDO> verifyEducation(ProfileEducationDO education) {
-		ValidationMessage<ProfileEducationDO> vm = new ValidationMessage<>();
-		if(education.getCollegeCode() == 0 && StringUtils.isNullOrEmpty(education.getCollegeName())) {
+	public static ValidationMessage<Education> verifyEducation(Education education) {
+		ValidationMessage<Education> vm = new ValidationMessage<>();
+		if(education.getCollege_code() == 0 && StringUtils.isNullOrEmpty(education.getCollege_name())) {
 			vm.addFailedElement("院校", "未选择院校");
 		}
 		if(education.getDegree() == 0) {
 			vm.addFailedElement("学历", "未选择学历");
 		}
-		if(StringUtils.isNullOrEmpty(education.getStartTime())) {
+		if(StringUtils.isNullOrEmpty(education.getStart_date())) {
 			vm.addFailedElement("开始时间", "未选择开始时间");
 		}
 		return vm;
