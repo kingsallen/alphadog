@@ -86,6 +86,8 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -1257,61 +1259,51 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                 // 通过 pid 列表查询 position 信息
                 JSONObject jobj = JSON.parseObject(ret.getData());
 
-                JSONArray pidsJson = jobj.getJSONArray("jd_id_list");
-
-                logger.info("pidsJson: " + pidsJson);
-
-                ArrayList<Integer> pids = new ArrayList<>();
-                if (pidsJson != null) {
-                    int len = pidsJson.size();
-                    for (int i = 0; i < len; i++) {
-                        pids.add(pidsJson.getInteger(i));
-                    }
-                }
+                JSONArray jdIdJsonArray = jobj.getJSONArray("jd_id_list");
+                List<Integer> jdIdList = jdIdJsonArray.stream().map(m -> Integer.valueOf(String.valueOf(m))).collect(Collectors.toList());
+                logger.info("jdIdList: " + jdIdList);
 
                 QueryUtil q = new QueryUtil();
-                q.addEqualFilter("id", "[" + org.apache.commons.lang.StringUtils.join(pids.toArray(), ",") + "]");
+                q.addEqualFilter("id", Arrays.toString(jdIdList.toArray()));
                 List<JobPositionRecord> jobRecords = jobPositionDao.getResources(q);
 
-                for (Integer pid : pids) {
+                jobRecords.sort(Comparator.comparing(
+                        c -> { return jdIdList.indexOf(c.getId()); }
+                ));
 
-                    logger.info("pid: " + String.valueOf(pid));
+                for (JobPositionRecord jr : jobRecords) {
+                    logger.info("pid: " + String.valueOf(jr.getId()));
 
-                    List<JobPositionRecord> jrList = jobRecords.stream().filter(p -> p.getId().equals(pid)).collect(Collectors.toList());
-                    if (jrList != null && !jrList.isEmpty()) {
-                        logger.info("jrList: " + jrList.toString());
 
-                        JobPositionRecord jr = jrList.get(0);
+                    WechatPositionListData e = new WechatPositionListData();
+                    e.setTitle(jr.getTitle());
+                    e.setId(jr.getId());
 
-                        WechatPositionListData e = new WechatPositionListData();
-                        e.setTitle(jr.getTitle());
-                        e.setId(jr.getId());
-
-                        // 数据库的 salary_top 和 salary_bottom 默认是 NULL 不是 0
-                        // 所以这里需要对这两个字段做 null pointer 检查
-                        if (jr.getSalaryTop() == null) {
-                            e.setSalary_top(0);
-                        } else {
-                            e.setSalary_top(jr.getSalaryTop());
-                        }
-
-                        if (jr.getSalaryBottom() == null) {
-                            e.setSalary_bottom(0);
-                        } else {
-                            e.setSalary_bottom(jr.getSalaryBottom());
-                        }
-
-                        e.setPublish_date(new SimpleDateFormat("YYYY-MM-dd HH:mm:ss").format(jr.getUpdateTime()));
-                        e.setDepartment(jr.getDepartment());
-                        e.setVisitnum(jr.getVisitnum());
-                        e.setIn_hb(jr.getHbStatus() > 0);
-                        e.setCount(jr.getCount());
-                        e.setCity(jr.getCity());
-                        e.setPriority(jr.getPriority());
-                        e.setPublisher(jr.getPublisher()); // will be used for fetching sub company info
-
-                        dataList.add(e);
+                    // 数据库的 salary_top 和 salary_bottom 默认是 NULL 不是 0
+                    // 所以这里需要对这两个字段做 null pointer 检查
+                    if (jr.getSalaryTop() == null) {
+                        e.setSalary_top(0);
+                    } else {
+                        e.setSalary_top(jr.getSalaryTop());
                     }
+
+                    if (jr.getSalaryBottom() == null) {
+                        e.setSalary_bottom(0);
+                    } else {
+                        e.setSalary_bottom(jr.getSalaryBottom());
+                    }
+
+                    e.setPublish_date(new SimpleDateFormat("YYYY-MM-dd HH:mm:ss").format(jr.getUpdateTime()));
+                    e.setDepartment(jr.getDepartment());
+                    e.setVisitnum(jr.getVisitnum());
+                    e.setIn_hb(jr.getHbStatus() > 0);
+                    e.setCount(jr.getCount());
+                    e.setCity(jr.getCity());
+                    e.setPriority(jr.getPriority());
+                    e.setPublisher(jr.getPublisher()); // will be used for fetching sub company info
+
+                    dataList.add(e);
+
                 }
 
                 logger.info(dataList.toString());
