@@ -31,7 +31,7 @@ public class ProfileAwardsServicesImplTest {
         System.out.println(JSON.toJSONString(response));
     }
 
-    @Test
+    //@Test
     public void postResources() throws TException {
         Awards awards = new Awards();
         awards.setName("testAwards-");
@@ -41,33 +41,33 @@ public class ProfileAwardsServicesImplTest {
         response = service.postResources(new ArrayList<Awards>(){{add(awards);}});
     }
 
-    @Test
+    //@Test
     public void putResources() throws TException {
         Awards awards = new Awards();
         awards.setName("testAwards-----");
         awards.setDescription("testAwardsDescription----");
         awards.setLevel("testLevle---");
-        awards.setId(20263);
+        awards.setId(20266);
 
         Awards awards1 = new Awards();
         awards1.setName("testAwards-----");
         awards1.setDescription("testAwardsDescription----");
         awards1.setLevel("testLevle---");
-        awards1.setId(20264);
+        awards1.setId(20267);
 
         response = service.putResources(new ArrayList<Awards>(){{add(awards);add(awards1);}});
     }
 
-    @Test
+    //@Test
     public void delResources() throws TException {
         Awards awards = new Awards();
-        awards.setId(20258);
+        awards.setId(20266);
         Awards awards1 = new Awards();
-        awards1.setId(20263);
+        awards1.setId(20267);
         response = service.delResources(new ArrayList<Awards>(){{add(awards);add(awards1);}});
     }
 
-    @Test
+    //@Test
     public void postResource() throws TException {
         Awards awards = new Awards();
         awards.setName("testAwards");
@@ -77,38 +77,44 @@ public class ProfileAwardsServicesImplTest {
         response = service.postResource(awards);
     }
 
-    @Test
+    //@Test
     public void putResource() throws TException {
         Awards awards = new Awards();
-        awards.setName("testAwards");
-        awards.setDescription("testAwardsDescription");
-        awards.setLevel("testLevle");
-        awards.setProfile_id(170);
+        awards.setName("testAwards---");
+        awards.setDescription("testAwardsDescription---");
+        awards.setLevel("testLevle---");
+        awards.setId(20268);
         response = service.putResource(awards);
     }
 
-    @Test
+    //@Test
     public void delResource() throws TException {
         Awards awards1 = new Awards();
-        awards1.setId(20264);
+        awards1.setId(20268);
         response = service.delResource(awards1);
     }
 
-    @Test
+    //@Test
     public void getResources() throws TException {
         CommonQuery commonQuery = new CommonQuery();
         commonQuery.setEqualFilter(new HashMap<>());
-        commonQuery.getEqualFilter().put("id","20265");
-        response = service.getResources(null);
+        commonQuery.getEqualFilter().put("profile_id","-1");
+        response = service.getResources(commonQuery);
     }
 
-    @Test
+    //@Test
     public void getPagination() throws TException {
-        response = service.getPagination(null);
+        CommonQuery commonQuery = new CommonQuery();
+        commonQuery.setEqualFilter(new HashMap<>());
+        commonQuery.getEqualFilter().put("profile_id","11");
+        response = service.getPagination(commonQuery);
     }
 
-    @Test
+    //@Test
     public void getResource() throws TException {
-        response = service.getResource(null);
+        CommonQuery commonQuery = new CommonQuery();
+        commonQuery.setEqualFilter(new HashMap<>());
+        commonQuery.getEqualFilter().put("profile_id","11");
+        response = service.getResource(commonQuery);
     }
 }

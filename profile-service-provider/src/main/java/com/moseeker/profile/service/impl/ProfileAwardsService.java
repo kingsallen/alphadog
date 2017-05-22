@@ -85,8 +85,8 @@ public class ProfileAwardsService {
 
             List<Awards> updatedList = new ArrayList<>();
 
-            for (int i : updateResult) {
-                if (i > 0) updatedList.add(structs.get(i));
+            for (int i = 0; i < updateResult.length; i++) {
+                if (updateResult[i] > 0) updatedList.add(structs.get(i));
             }
 
             updateUpdateTime(updatedList);
@@ -183,7 +183,7 @@ public class ProfileAwardsService {
             List<ProfileAwardsDO> deleteDatas = dao.getDatas(query);
 
             //正式删除数据
-            int[] result = dao.deleteRecords(BeanUtils.structToDB(structs,ProfileAwardsRecord.class));
+            int[] result = dao.deleteRecords(BeanUtils.structToDB(structs, ProfileAwardsRecord.class));
 
 
             if (deleteDatas != null && deleteDatas.size() > 0) {

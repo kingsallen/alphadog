@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.moseeker.profile.conf.AppConfig;
 import com.moseeker.profile.service.impl.ProfileCredentialsService;
 import com.moseeker.profile.service.impl.ProfileCustomizeResumeService;
+import com.moseeker.profile.thrift.ProfileCustomizeResumeServicesImpl;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.struct.CustomizeResume;
@@ -24,7 +25,7 @@ import java.util.HashMap;
 public class ProfileCustomizeResumeServicesImplTest{
 
 	@Autowired
-	ProfileCustomizeResumeService service;
+	ProfileCustomizeResumeServicesImpl service;
 
 	Response response;
 
@@ -33,7 +34,7 @@ public class ProfileCustomizeResumeServicesImplTest{
 		System.out.println(JSON.toJSONString(response));
 	}
 
-	@Test
+	//@Test
 	public void postResources() throws TException {
 
 		CustomizeResume customizeResume = new CustomizeResume();
@@ -47,7 +48,7 @@ public class ProfileCustomizeResumeServicesImplTest{
 		response = service.postResources(new ArrayList<CustomizeResume>(){{add(customizeResume);add(customizeResume1);}});
 	}
 
-	@Test
+//	@Test
 	public void putResources() throws TException {
 
 		CustomizeResume customizeResume = new CustomizeResume();
@@ -62,7 +63,7 @@ public class ProfileCustomizeResumeServicesImplTest{
 		response = service.putResources(new ArrayList<CustomizeResume>(){{add(customizeResume);add(customizeResume1);}});
 	}
 
-	@Test
+//	@Test
 	public void delResources() throws TException {
 		CustomizeResume customizeResume = new CustomizeResume();
 		customizeResume.setProfile_id(170);
@@ -72,22 +73,27 @@ public class ProfileCustomizeResumeServicesImplTest{
 		response = service.delResources(new ArrayList<CustomizeResume>(){{add(customizeResume);add(customizeResume1);}});
 	}
 
-	@Test
+//	@Test
 	public void delResource() throws TException {
 		CustomizeResume customizeResume = new CustomizeResume();
 		customizeResume.setProfile_id(170);
 		response = service.delResource(customizeResume);
 	}
 
-	@Test
+//	@Test
 	public void postResource() throws TException {
 		CustomizeResume customizeResume = new CustomizeResume();
 		customizeResume.setProfile_id(170);
 		customizeResume.setOther("{\"basicinfo\": {}}");
 		response = service.postResource(customizeResume);
+
+		CustomizeResume customizeResume1 = new CustomizeResume();
+		customizeResume1.setProfile_id(171);
+		customizeResume1.setOther("{\"basicinfo\": {}}");
+		response = service.postResource(customizeResume1);
 	}
 
-	@Test
+//	@Test
 	public void putResource() throws TException {
 		CustomizeResume customizeResume = new CustomizeResume();
 		customizeResume.setProfile_id(170);
@@ -95,21 +101,21 @@ public class ProfileCustomizeResumeServicesImplTest{
 		response = service.putResource(customizeResume);
 	}
 
-	@Test
+//	@Test
 	public void getResources() throws TException {
 		CommonQuery commonQuery = new CommonQuery();
 		commonQuery.setEqualFilter(new HashMap<String,String>(){{put("profile_id","170");}});
 		response = service.getResources(commonQuery);
 	}
 
-	@Test
+//	@Test
 	public void getPagination() throws TException {
 		CommonQuery commonQuery = new CommonQuery();
 		commonQuery.setEqualFilter(new HashMap<String,String>(){{put("profile_id","170");}});
 		response = service.getPagination(commonQuery);
 	}
 
-	@Test
+//	@Test
 	public void getResource() throws TException {
 		CommonQuery commonQuery = new CommonQuery();
 		commonQuery.setEqualFilter(new HashMap<String,String>(){{put("profile_id","170");}});

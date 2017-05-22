@@ -146,6 +146,7 @@ class LocalQuery<R extends Record> {
     public Collection<? extends SortField<?>> buildOrder() {
         if (query != null && query.getOrders() != null) {
             return query.getOrders().stream()
+                    .filter(orderBy -> orderBy != null)
                     .map(orderBy -> {
                         Field<?> field = table.field(orderBy.getField());
                         if (field == null) {

@@ -42,11 +42,11 @@ public class ProfileCredentialsService {
     private ProfileCompletenessImpl completenessImpl;
 
     public Credentials getResource(Query query) throws TException {
-        return dao.getData(query,Credentials.class);
+        return dao.getData(query, Credentials.class);
     }
 
     public List<Credentials> getResources(Query query) throws TException {
-        return dao.getDatas(query,Credentials.class);
+        return dao.getDatas(query, Credentials.class);
     }
 
     public Pagination getPagination(Query query) throws TException {
@@ -70,9 +70,9 @@ public class ProfileCredentialsService {
                     ic.remove();
                 }
             }
-            List<ProfileCredentialsRecord> records = BeanUtils.structToDB(structs,ProfileCredentialsRecord.class);
+            List<ProfileCredentialsRecord> records = BeanUtils.structToDB(structs, ProfileCredentialsRecord.class);
             records = dao.addAllRecord(records);
-            resultDatas = BeanUtils.DBToStruct(Credentials.class,records);
+            resultDatas = BeanUtils.DBToStruct(Credentials.class, records);
         /* 重新计算profile完整度 */
             Set<Integer> profileIds = new HashSet<>();
             structs.forEach(struct -> {
@@ -91,13 +91,15 @@ public class ProfileCredentialsService {
     @Transactional
     public int[] putResources(List<Credentials> structs) throws TException {
         if (structs != null && structs.size() > 0) {
-            int[] updateResult = dao.updateRecords(BeanUtils.structToDB(structs,ProfileCredentialsRecord.class));
+            int[] updateResult = dao.updateRecords(BeanUtils.structToDB(structs, ProfileCredentialsRecord.class));
         /* 计算profile完整度 */
             List<Credentials> updatedDatas = new ArrayList<>();
             Set<Integer> profileIds = new HashSet<>();
-            for (int i : updateResult) {
-                updatedDatas.add(structs.get(i));
-                profileIds.add(structs.get(i).getProfile_id());
+            for (int i = 0; i < updateResult.length; i++) {
+                if (updateResult[i] > 0) {
+                    updatedDatas.add(structs.get(i));
+                    profileIds.add(structs.get(i).getProfile_id());
+                }
             }
             updateUpdateTime(updatedDatas);
             updatedDatas.forEach(data -> {
@@ -123,7 +125,7 @@ public class ProfileCredentialsService {
             List<ProfileCredentialsDO> deleteDatas = dao.getDatas(query);
 
             //正式删除数据
-            int[] result = dao.deleteRecords(BeanUtils.structToDB(structs,ProfileCredentialsRecord.class));
+            int[] result = dao.deleteRecords(BeanUtils.structToDB(structs, ProfileCredentialsRecord.class));
 
             if (deleteDatas != null && deleteDatas.size() > 0) {
                 //更新对应的profile更新时间
@@ -146,7 +148,7 @@ public class ProfileCredentialsService {
             if (!vm.isPass()) {
                 throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", vm.getResult()));
             }
-            result = dao.addRecord(BeanUtils.structToDB(struct,ProfileCredentialsRecord.class)).into(Credentials.class);
+            result = dao.addRecord(BeanUtils.structToDB(struct, ProfileCredentialsRecord.class)).into(Credentials.class);
         /* 计算profile完整度 */
             Set<Integer> profileIds = new HashSet<>();
             profileIds.add(result.getProfile_id());
@@ -162,7 +164,7 @@ public class ProfileCredentialsService {
         int result = 0;
 
         if (struct != null) {
-            result = dao.updateRecord(BeanUtils.structToDB(struct,ProfileCredentialsRecord.class));
+            result = dao.updateRecord(BeanUtils.structToDB(struct, ProfileCredentialsRecord.class));
         /* 计算profile完整度 */
             if (result > 0) {
                 updateUpdateTime(struct);

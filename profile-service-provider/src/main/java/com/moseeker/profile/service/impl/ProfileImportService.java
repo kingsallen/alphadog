@@ -41,11 +41,11 @@ public class ProfileImportService {
     private ProfileProfileDao profileDao;
 
     public ProfileImport getResource(Query query) throws TException {
-        return dao.getData(query,ProfileImport.class);
+        return dao.getData(query, ProfileImport.class);
     }
 
     public List<ProfileImport> getResources(Query query) throws TException {
-        return dao.getDatas(query,ProfileImport.class);
+        return dao.getDatas(query, ProfileImport.class);
     }
 
     public Pagination getPagination(Query query) throws TException {
@@ -65,7 +65,7 @@ public class ProfileImportService {
 
             records = dao.addAllRecord(records);
 
-            resultDatas = BeanUtils.DBToStruct(ProfileImport.class,records);
+            resultDatas = BeanUtils.DBToStruct(ProfileImport.class, records);
 
             updateUpdateTime(resultDatas);
         }
@@ -76,12 +76,12 @@ public class ProfileImportService {
     public int[] putResources(List<ProfileImport> structs) throws TException {
         int[] result = new int[0];
         if (structs != null && structs.size() > 0) {
-            result = dao.updateRecords(BeanUtils.structToDB(structs,ProfileImportRecord.class));
+            result = dao.updateRecords(BeanUtils.structToDB(structs, ProfileImportRecord.class));
 
             List<ProfileImport> updatedDatas = new ArrayList<>();
 
-            for (int i : result) {
-                if (i > 0) updatedDatas.add(structs.get(i));
+            for (int i = 0; i < result.length; i++) {
+                if (result[i] > 0) updatedDatas.add(structs.get(i));
             }
 
             updateUpdateTime(updatedDatas);
@@ -104,7 +104,7 @@ public class ProfileImportService {
             List<ProfileImportDO> deleteDatas = dao.getDatas(query);
 
             //正式删除数据
-            int[] result = dao.deleteRecords(BeanUtils.structToDB(structs,ProfileImportRecord.class));
+            int[] result = dao.deleteRecords(BeanUtils.structToDB(structs, ProfileImportRecord.class));
 
             if (deleteDatas != null && deleteDatas.size() > 0) {
                 //更新对应的profile更新时间
@@ -124,12 +124,12 @@ public class ProfileImportService {
                     .QueryBuilder()
                     .where(Condition.buildCommonCondition("profile_id", struct.getProfile_id())).buildQuery();
             //找到要删除的数据
-            ProfileImport deleteData = dao.getData(query,ProfileImport.class);
+            ProfileImportRecord deleteData = dao.getRecord(query);
             if (deleteData != null) {
                 //正式删除数据
-                result = dao.deleteRecord(BeanUtils.structToDB(deleteData,ProfileImportRecord.class));
+                result = dao.deleteRecord(deleteData);
                 if (result > 0) {
-                    updateUpdateTime(deleteData);
+                    updateUpdateTime(struct);
                 }
             }
         }
@@ -140,14 +140,14 @@ public class ProfileImportService {
     @Transactional
     public ProfileImport postResource(ProfileImport struct) throws TException {
         ProfileImport result = null;
-        if(struct != null) {
+        if (struct != null) {
             QueryUtil qu = new QueryUtil();
             qu.addEqualFilter("profile_id", String.valueOf(struct.getProfile_id()));
-            ProfileImport repeat = dao.getData(qu,ProfileImport.class);
+            ProfileImport repeat = dao.getData(qu, ProfileImport.class);
             if (repeat != null) {
                 throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_REPEAT_DATA);
             }
-            result = dao.addRecord(BeanUtils.structToDB(struct,ProfileImportRecord.class)).into(ProfileImport.class);
+            result = dao.addRecord(BeanUtils.structToDB(struct, ProfileImportRecord.class)).into(ProfileImport.class);
             updateUpdateTime(result);
         }
         return result;
@@ -156,9 +156,9 @@ public class ProfileImportService {
     @Transactional
     public int putResource(ProfileImport struct) throws TException {
         int result = 0;
-        if(struct != null){
-            result = dao.updateRecord(BeanUtils.structToDB(struct,ProfileImportRecord.class));
-            if(result > 0){
+        if (struct != null) {
+            result = dao.updateRecord(BeanUtils.structToDB(struct, ProfileImportRecord.class));
+            if (result > 0) {
                 updateUpdateTime(struct);
             }
         }

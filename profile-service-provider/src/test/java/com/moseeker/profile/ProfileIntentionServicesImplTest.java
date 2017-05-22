@@ -3,6 +3,7 @@ package com.moseeker.profile;
 import com.moseeker.profile.conf.AppConfig;
 import com.moseeker.profile.service.impl.ProfileCompletenessImpl;
 import com.moseeker.profile.service.impl.ProfileIntentionService;
+import com.moseeker.profile.thrift.ProfileIntentionServicesImpl;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.struct.Intention;
@@ -29,7 +30,7 @@ public class ProfileIntentionServicesImplTest {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    ProfileIntentionService profileIntentionService;
+    ProfileIntentionServicesImpl profileIntentionService;
 
     @Autowired
     private ProfileCompletenessImpl completenessImpl;

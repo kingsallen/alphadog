@@ -103,10 +103,10 @@ public class ProfileUtils {
 										.setIntroduction(BeanUtils.converToString(company.get("company_introduction")));
 							}
 							if (company.get("company_scale") != null) {
-								hrCompany.setScale((Byte) company.get("company_scale"));
+								hrCompany.setScale(BeanUtils.converToByte(company.get("company_scale")));
 							}
 							if (company.get("company_property") != null) {
-								hrCompany.setProperty((Byte) company.get("company_property"));
+								hrCompany.setProperty(BeanUtils.converToByte(company.get("company_property")));
 							}
 							hrCompany.setType((byte)(Constant.COMPANY_TYPE_FREE));
 							switch(source) {

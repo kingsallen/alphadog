@@ -14,79 +14,86 @@ import org.springframework.stereotype.Service;
 @Service
 public class WholeProfileServicesImpl implements Iface {
 
-	Logger logger = LoggerFactory.getLogger(WholeProfileServicesImpl.class);
+    Logger logger = LoggerFactory.getLogger(WholeProfileServicesImpl.class);
 
-	@Autowired
-	private WholeProfileService service;
+    @Autowired
+    private WholeProfileService service;
 
-	@Override
-	public Response getResource(int userId, int profileId, String uuid) throws TException {
-		try{return service.getResource(userId, profileId, uuid);
+    @Override
+    public Response getResource(int userId, int profileId, String uuid) throws TException {
+        try {
+            return service.getResource(userId, profileId, uuid);
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
-	}
+    }
 
-	@Override
-	public Response postResource(String profile, int userId) throws TException {
-		try{return service.postResource(profile, userId);
+    @Override
+    public Response postResource(String profile, int userId) throws TException {
+        try {
+            return service.postResource(profile, userId);
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
-	}
+    }
 
-	@Override
-	public Response importCV(String profile, int userId) throws TException {
-		try{return service.importCV(profile, userId);
+    @Override
+    public Response importCV(String profile, int userId) throws TException {
+        try {
+            return service.importCV(profile, userId);
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
-	}
+    }
 
-	@Override
-	public Response verifyRequires(int userId, int positionId) throws TException {
-		try{return service.verifyRequires(userId, positionId);
+    @Override
+    public Response verifyRequires(int userId, int positionId) throws TException {
+        try {
+            return service.verifyRequires(userId, positionId);
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
-	}
+    }
 
-	@Override
-	public Response createProfile(String profile) throws TException {
-		try{return service.createProfile(profile);
+    @Override
+    public Response createProfile(String profile) throws TException {
+        try {
+            return service.createProfile(profile);
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
-	}
+    }
 
-	@Override
-	public Response improveProfile(String profile) throws TException {
-		try{return service.improveProfile(profile);
+    @Override
+    public Response improveProfile(String profile) throws TException {
+        try {
+            return service.improveProfile(profile);
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
-	}
+    }
 
-	@Override
-	public Response moveProfile(int destUserId, int originUserId)
-			throws TException {
-		try{return service.improveProfile(destUserId, originUserId);
+    @Override
+    public Response moveProfile(int destUserId, int originUserId)
+            throws TException {
+        try {
+            return service.improveProfile(destUserId, originUserId);
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
-	}
+    }
 }

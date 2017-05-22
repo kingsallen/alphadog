@@ -29,7 +29,7 @@ import java.util.List;
 public class ProfileCredentialsServicesImplTest {
 
 	@Autowired
-	ProfileCredentialsService service;
+	ProfileCredentialsServicesImpl service;
 
 	Response response;
 
@@ -38,7 +38,7 @@ public class ProfileCredentialsServicesImplTest {
 		System.out.println(JSON.toJSONString(response));
 	}
 
-	@Test
+	//@Test
 	public void getResource() throws TException {
 
 		CommonQuery commonQuery = new CommonQuery();
@@ -47,14 +47,14 @@ public class ProfileCredentialsServicesImplTest {
 		response = service.getResource(commonQuery);
 	}
 
-	@Test
+	//@Test
 	public void getResources() throws TException {
 		CommonQuery commonQuery = new CommonQuery();
 		commonQuery.setEqualFilter(new HashMap<String,String>(){{put("profile_id","170");}});
 		response = service.getResources(commonQuery);
 	}
 
-	@Test
+	//@Test
 	public void postResources() throws TException {
 
 		Credentials credentials = new Credentials();
@@ -64,27 +64,27 @@ public class ProfileCredentialsServicesImplTest {
 		response = service.postResources(new ArrayList<Credentials>(){{add(credentials);}});
 	}
 
-	@Test
+	//@Test
 	public void putResources() throws TException {
 		Credentials credentials = new Credentials();
-		credentials.setId(24184);
+		credentials.setId(69406);
 		credentials.setName("test credentials 2");
 		Credentials credentials2 = new Credentials();
-		credentials2.setId(24185);
-		credentials2.setName("test credentials 2");
+		credentials2.setId(69407);
+		credentials2.setName("test credentials 3");
 		response = service.putResources(new ArrayList<Credentials>(){{add(credentials);add(credentials2);}});
 	}
 
-	@Test
+	//@Test
 	public void delResources() throws TException {
 		Credentials credentials = new Credentials();
-		credentials.setId(24182);
+		credentials.setId(69406);
 		Credentials credentials2 = new Credentials();
-		credentials2.setId(24183);
+		credentials2.setId(69407);
 		response = service.delResources(new ArrayList<Credentials>(){{add(credentials);add(credentials2);}});
 	}
 
-	@Test
+	//@Test
 	public void postResource() throws TException {
 		Credentials credentials = new Credentials();
 		credentials.setProfile_id(170);
@@ -92,22 +92,22 @@ public class ProfileCredentialsServicesImplTest {
 		response = service.postResource(credentials);
 	}
 
-	@Test
+	//@Test
 	public void putResource() throws TException {
 		Credentials credentials = new Credentials();
-		credentials.setId(24184);
+		credentials.setId(69406);
 		credentials.setName("test credentials 24184");
-		response = service.putResource(null);
+		response = service.putResource(credentials);
 	}
 
-	@Test
+	//@Test
 	public void delResource() throws TException {
 		Credentials credentials = new Credentials();
-		credentials.setId(24186);
+		credentials.setId(69408);
 		response = service.delResource(credentials);
 	}
 
-	@Test
+	//@Test
 	public void getPagination() throws TException {
 		CommonQuery commonQuery = new CommonQuery();
 		commonQuery.setEqualFilter(new HashMap<String,String>(){{put("profile_id","170");}});

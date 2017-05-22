@@ -6,6 +6,7 @@ import com.moseeker.profile.thrift.ProfileAttachmentServicesImpl;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileAttachmentDO;
+import com.moseeker.thrift.gen.profile.struct.Attachment;
 import org.apache.thrift.TException;
 import org.junit.After;
 import org.junit.Test;
@@ -30,7 +31,7 @@ public class ProfileAttachmentServicesImplTest{
 		System.out.println(JSON.toJSONString(response));
 	}
 	
-	@Test
+	//@Test
 	public void getResources() throws TException {
 		CommonQuery commonQuery = new CommonQuery();
 		commonQuery.setEqualFilter(new HashMap<>());
@@ -38,66 +39,64 @@ public class ProfileAttachmentServicesImplTest{
 		response = service.getResources(commonQuery);
 	}
 
-	@Test
+	//@Test
 	public void postResources() throws TException {
-		ProfileAttachmentDO attachment = new ProfileAttachmentDO();
+		Attachment attachment = new Attachment();
 		attachment.setDescription("test");
 		attachment.setName("testname");
-		attachment.setProfileId(170);
+		attachment.setProfile_id(170);
 
-		response = service.postResources(new ArrayList<ProfileAttachmentDO>(){{add(attachment);}});
+		response = service.postResources(new ArrayList<Attachment>(){{add(attachment);}});
 	}
 
-	@Test
+	//@Test
 	public void putResources() throws TException {
-		ProfileAttachmentDO attachment = new ProfileAttachmentDO();
+		Attachment attachment = new Attachment();
 		attachment.setDescription("test----------");
 		attachment.setName("testname-------------");
-		attachment.setId(19413);
+		attachment.setId(19417);
 
-		response = service.putResources(new ArrayList<ProfileAttachmentDO>(){{add(attachment);}});
-
-
+		response = service.putResources(new ArrayList<Attachment>(){{add(attachment);}});
 	}
 
-	@Test
+//	@Test
 	public void delResources() throws TException {
-		ProfileAttachmentDO attachment = new ProfileAttachmentDO();
+		Attachment attachment = new Attachment();
 		attachment.setDescription("test----------");
 		attachment.setName("testname-------------");
-		attachment.setId(19413);
+		attachment.setId(19417);
 
-		response = service.delResources(new ArrayList<ProfileAttachmentDO>(){{add(attachment);}});
+		response = service.delResources(new ArrayList<Attachment>(){{add(attachment);}});
 	}
 	
-	@Test
+	//@Test
 	public void postResource() throws TException {
-		ProfileAttachmentDO attachment = new ProfileAttachmentDO();
+		Attachment attachment = new Attachment();
 		attachment.setDescription("test");
 		attachment.setName("testname");
-		attachment.setProfileId(170);
+		attachment.setProfile_id(170);
 		response = service.postResource(attachment);
 	}
 
-	@Test
+	//@Test
 	public void putResource() throws TException {
-		ProfileAttachmentDO attachment = new ProfileAttachmentDO();
+		Attachment attachment = new Attachment();
 		attachment.setDescription("test----------");
 		attachment.setName("testname-------------");
-		attachment.setId(19415);
+		attachment.setId(19418);
 		response = service.putResource(attachment);
 	}
 
-	@Test
+	//@Test
 	public void delResource() throws TException {
-		ProfileAttachmentDO attachment = new ProfileAttachmentDO();
+		Attachment attachment = new Attachment();
 		attachment.setDescription("test----------");
 		attachment.setName("testname-------------");
 		attachment.setId(19415);
 		response = service.delResource(attachment);
 	}
 
-	@Test
+	//@Test
 	public void getPagination() throws TException {
 		CommonQuery commonQuery = new CommonQuery();
 		commonQuery.setEqualFilter(new HashMap<>());
@@ -105,7 +104,7 @@ public class ProfileAttachmentServicesImplTest{
 		response = service.getPagination(commonQuery);
 	}
 
-	@Test
+	//@Test
 	public void getResource() throws TException {
 		CommonQuery commonQuery = new CommonQuery();
 		commonQuery.setEqualFilter(new HashMap<>());

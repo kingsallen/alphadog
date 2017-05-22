@@ -76,8 +76,8 @@ public class ProfileAttachmentService {
 
             List<Attachment> updatedDatas = new ArrayList<>();
 
-            for (int i : result) {
-                if (i > 0) updatedDatas.add(structs.get(i));
+            for (int i = 0; i < result.length; i++) {
+                if (result[i] > 0) updatedDatas.add(structs.get(i));
             }
 
             updateUpdateTime(updatedDatas);
@@ -158,7 +158,7 @@ public class ProfileAttachmentService {
 
         int i = 0;
         if (struct != null) {
-            i = dao.updateRecord(BeanUtils.structToDB(struct,ProfileAttachmentRecord.class));
+            i = dao.updateRecord(BeanUtils.structToDB(struct, ProfileAttachmentRecord.class));
             if (i > 0) {
                 updateUpdateTime(struct);
             }

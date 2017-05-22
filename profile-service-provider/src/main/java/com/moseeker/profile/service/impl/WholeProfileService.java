@@ -451,7 +451,7 @@ public class WholeProfileService {
             ((Map<String, Object>) resume.get("profile")).put("origin", profileDB.getOrigin());
             ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord);
             int profileId = profileDB.getId().intValue();
-            improveUser(profilePojo.getUserRecord());
+            improveUser(userRecord);
             improveProfile(profilePojo.getProfileRecord(), profileDB);
             improveBasic(profilePojo.getBasicRecord(), profileId);
             improveAttachment(profilePojo.getAttachmentRecords(), profileId);
@@ -493,9 +493,10 @@ public class WholeProfileService {
             if (originProfile != null && destProfile != null) {
                 QueryUtil queryUtil = new QueryUtil();
                 HashMap<String, String> eqs = new HashMap<String, String>();
-                queryUtil.setEqualFilter(eqs);
-                // dest 简历信息查询
                 eqs.put("profile_id", String.valueOf(destProfile.getId()));
+                queryUtil.setEqualFilter(eqs);
+                queryUtil.setPageSize(Integer.MAX_VALUE);
+                // dest 简历信息查询
                 ProfileBasicRecord destRecord = profileBasicDao.getRecord(queryUtil);
                 List<ProfileAttachmentRecord> destAttachments = attachmentDao.getRecords(queryUtil);
                 List<ProfileAwardsRecord> destAwards = awardsDao.getRecords(queryUtil);
@@ -566,13 +567,16 @@ public class WholeProfileService {
     }
 
     private void improveUser(UserUserRecord userRecord) {
-        userDao.updateRecord(userRecord);
+        if (userRecord != null) {
+            userDao.updateRecord(userRecord);
+        }
     }
 
     private void improveWorks(List<ProfileWorksRecord> worksRecords, int profileId) {
         if (worksRecords != null && worksRecords.size() > 0) {
             worksDao.delWorksByProfileId(profileId);
             worksRecords.forEach(skill -> {
+                skill.setId(null);
                 skill.setProfileId((int) (profileId));
             });
             worksDao.addAllRecord(worksRecords);
@@ -585,6 +589,7 @@ public class WholeProfileService {
             List<ProfileWorkexpEntity> records = new ArrayList<>();
 
             workexpRecords.forEach(skill -> {
+                skill.setId(null);
                 skill.setProfileId((int) (profileId));
                 records.add(skill);
             });
@@ -596,6 +601,7 @@ public class WholeProfileService {
         if (skillRecords != null && skillRecords.size() > 0) {
             skillDao.delSkillByProfileId(profileId);
             skillRecords.forEach(skill -> {
+                skill.setId(null);
                 skill.setProfileId((int) (profileId));
             });
             skillDao.addAllRecord(skillRecords);
@@ -606,6 +612,7 @@ public class WholeProfileService {
         if (projectExps != null && projectExps.size() > 0) {
             projectExpDao.delProjectExpByProfileId(profileId);
             projectExps.forEach(language -> {
+                language.setId(null);
                 language.setProfileId((int) (profileId));
             });
             projectExpDao.addAllRecord(projectExps);
@@ -628,6 +635,7 @@ public class WholeProfileService {
         if (languageRecords != null && languageRecords.size() > 0) {
             languageDao.delLanguageByProfileId(profileId);
             languageRecords.forEach(language -> {
+                language.setId(null);
                 language.setProfileId((int) (profileId));
             });
             languageDao.addAllRecord(languageRecords);
@@ -638,6 +646,7 @@ public class WholeProfileService {
         if (intentionRecords != null && intentionRecords.size() > 0) {
             intentionDao.delIntentionsByProfileId(profileId);
             intentionRecords.forEach(intention -> {
+                intention.setId(null);
                 intention.setProfileId((int) (profileId));
             });
             intentionDao.postIntentions(intentionRecords);
@@ -648,6 +657,7 @@ public class WholeProfileService {
         if (educationRecords != null && educationRecords.size() > 0) {
             educationDao.delEducationsByProfileId(profileId);
             educationRecords.forEach(education -> {
+                education.setId(null);
                 education.setProfileId((int) (profileId));
             });
 
@@ -659,6 +669,7 @@ public class WholeProfileService {
         if (credentialsRecords != null && credentialsRecords.size() > 0) {
             credentialsDao.delCredentialsByProfileId(profileId);
             credentialsRecords.forEach(credential -> {
+                credential.setId(null);
                 credential.setProfileId((int) (profileId));
             });
             credentialsDao.addAllRecord(credentialsRecords);
@@ -669,6 +680,7 @@ public class WholeProfileService {
         if (awardsRecords != null && awardsRecords.size() > 0) {
             awardsDao.delAwardsByProfileId(profileId);
             awardsRecords.forEach(award -> {
+                award.setId(null);
                 award.setProfileId((int) (profileId));
             });
             awardsDao.addAllRecord(awardsRecords);
@@ -679,6 +691,7 @@ public class WholeProfileService {
         if (attachmentRecords != null && attachmentRecords.size() > 0) {
             attachmentDao.delAttachmentsByProfileId(profileId);
             attachmentRecords.forEach(attachment -> {
+                attachment.setId(null);
                 attachment.setProfileId((int) (profileId));
             });
             attachmentDao.addAllRecord(attachmentRecords);

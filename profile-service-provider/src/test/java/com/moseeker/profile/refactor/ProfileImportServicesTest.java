@@ -3,7 +3,12 @@ package com.moseeker.profile.refactor;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.profile.conf.AppConfig;
 import com.moseeker.profile.service.impl.ProfileEducationService;
+import com.moseeker.profile.thrift.ProfileEducationServicesImpl;
+import com.moseeker.profile.thrift.ProfileImportServicesImpl;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.profile.struct.Education;
+import com.moseeker.thrift.gen.profile.struct.ProfileImport;
 import org.apache.thrift.TException;
 import org.junit.After;
 import org.junit.Test;
@@ -12,12 +17,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = AppConfig.class)
 public class ProfileImportServicesTest{
 
 	@Autowired
-	ProfileEducationService service;
+	ProfileImportServicesImpl service;
 
 	Response response;
 
@@ -26,48 +34,70 @@ public class ProfileImportServicesTest{
 		System.out.println(JSON.toJSONString(response));
 	}
 
-	@Test
+//	@Test
 	public void postResources() throws TException {
-		response = service.postResources(null);
+		ProfileImport profileImport = new ProfileImport();
+		profileImport.setProfile_id(170);
+		profileImport.setAccount_id("test add imports");
+		response = service.postResources(new ArrayList<ProfileImport>(){{add(profileImport);}});
 	}
 
-	@Test
+//	@Test
 	public void putResources() throws TException {
-		response = service.putResources(null);
+		ProfileImport profileImport = new ProfileImport();
+		profileImport.setProfile_id(170);
+		profileImport.setAccount_id("test update imports");
+		response = service.putResources(new ArrayList<ProfileImport>(){{add(profileImport);}});
 	}
 
-	@Test
+//	@Test
 	public void delResources() throws TException {
-		response = service.delResources(null);
+		ProfileImport profileImport = new ProfileImport();
+		profileImport.setProfile_id(170);
+		response = service.delResources(new ArrayList<ProfileImport>(){{add(profileImport);}});
 	}
 
-	@Test
+//	@Test
 	public void delResource() throws TException {
-		response = service.delResource(null);
+		ProfileImport profileImport = new ProfileImport();
+		profileImport.setProfile_id(170);
+		response = service.delResource(profileImport);
 	}
 
-	@Test
+//	@Test
 	public void postResource() throws TException {
-		response = service.postResource(null);
+		ProfileImport profileImport = new ProfileImport();
+		profileImport.setProfile_id(170);
+		profileImport.setAccount_id("test add imports");
+		response = service.postResource(profileImport);
 	}
 
-	@Test
+//	@Test
 	public void putResource() throws TException {
-		response = service.putResource(null);
+		ProfileImport profileImport = new ProfileImport();
+		profileImport.setProfile_id(170);
+		profileImport.setAccount_id("test add imports");
+		response = service.putResource(profileImport);
 	}
 
-	@Test
+//	@Test
 	public void getResources() throws TException {
-		response = service.getResources(null);
+		CommonQuery commonQuery = new CommonQuery();
+		commonQuery.setEqualFilter(new HashMap<String,String>(){{put("profile_id","170");}});
+		response = service.getResources(commonQuery);
 	}
 
-	@Test
+//	@Test
 	public void getPagination() throws TException {
-		response = service.getPagination(null);
+		CommonQuery commonQuery = new CommonQuery();
+		commonQuery.setEqualFilter(new HashMap<String,String>(){{put("profile_id","170");}});
+		response = service.getPagination(commonQuery);
 	}
 
-	@Test
+//	@Test
 	public void getResource() throws TException {
-		response = service.getResource(null);
+		CommonQuery commonQuery = new CommonQuery();
+		commonQuery.setEqualFilter(new HashMap<String,String>(){{put("profile_id","170");}});
+		response = service.getResource(commonQuery);
 	}
 }

@@ -57,7 +57,7 @@ public class ProfileBasicService {
     private ProfileCompletenessImpl completenessImpl;
 
     public List<Basic> getResources(Query query) {
-        List<Basic> basics = dao.getDatas(query,Basic.class);
+        List<Basic> basics = dao.getDatas(query, Basic.class);
         if (basics != null && basics.size() > 0) {
             List<Integer> profileIds = new ArrayList<>();
             List<Integer> cityCodes = new ArrayList<>();
@@ -111,7 +111,7 @@ public class ProfileBasicService {
     }
 
     public Basic getResource(Query query) {
-        Basic basic = dao.getData(query,Basic.class);
+        Basic basic = dao.getData(query, Basic.class);
         if (basic != null) {
             if (basic.getCity_code() > 0 && StringUtils.isNullOrEmpty(basic.getCity_name())) {
                 DictCityRecord city = cityDao.getCityByCode(basic.getCity_code());
@@ -160,7 +160,7 @@ public class ProfileBasicService {
                 throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_REPEAT_DATA);
             }
             if (struct.getProfile_id() > 0) {
-                resultStruct = dao.addRecord(BeanUtils.structToDB(struct,ProfileBasicRecord.class)).into(Basic.class);
+                resultStruct = dao.addRecord(BeanUtils.structToDB(struct, ProfileBasicRecord.class)).into(Basic.class);
 
                 if (resultStruct.getProfile_id() > 0) {
 
@@ -205,7 +205,7 @@ public class ProfileBasicService {
             if (repeat == null) {
                 throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_DATA_NULL);
             }
-            i = dao.updateRecord(BeanUtils.structToDB(struct,ProfileBasicRecord.class));
+            i = dao.updateRecord(BeanUtils.structToDB(struct, ProfileBasicRecord.class));
             if (i > 0) {
 
                 updateUpdateTime(struct);
@@ -228,11 +228,11 @@ public class ProfileBasicService {
 
         if (structs != null && structs.size() > 0) {
 
-            List<ProfileBasicRecord> records = BeanUtils.structToDB(structs,ProfileBasicRecord.class);
+            List<ProfileBasicRecord> records = BeanUtils.structToDB(structs, ProfileBasicRecord.class);
 
             records = dao.addAllRecord(records);
 
-            resultDatas = BeanUtils.DBToStruct(Basic.class,records);
+            resultDatas = BeanUtils.DBToStruct(Basic.class, records);
 
             HashSet<Integer> profileIds = new HashSet<>();
             for (Basic basic : structs) {
@@ -255,12 +255,12 @@ public class ProfileBasicService {
     public int[] putResources(List<Basic> structs) throws TException {
 
         if (structs != null && structs.size() > 0) {
-            int[] putResult = dao.updateRecords(BeanUtils.structToDB(structs,ProfileBasicRecord.class));
+            int[] putResult = dao.updateRecords(BeanUtils.structToDB(structs, ProfileBasicRecord.class));
 
             HashSet<Integer> profileIds = new HashSet<>();
 
-            for (int i : putResult) {
-                if (i > 0) {
+            for (int i = 0; i < putResult.length; i++) {
+                if (putResult[i] > 0) {
                     profileIds.add(structs.get(i).getProfile_id());
                 }
             }
@@ -288,7 +288,7 @@ public class ProfileBasicService {
             ProfileBasicDO deleteData = dao.getData(query);
             if (deleteData != null) {
                 //正式删除数据
-                result = dao.deleteRecord(BeanUtils.structToDB(struct,ProfileBasicRecord.class));
+                result = dao.deleteRecord(BeanUtils.structToDB(struct, ProfileBasicRecord.class));
                 if (result > 0) {
                     updateUpdateTime(struct);
 
@@ -317,7 +317,7 @@ public class ProfileBasicService {
             List<ProfileBasicDO> deleteDatas = dao.getDatas(query);
 
             //正式删除数据
-            int[] result = dao.deleteRecords(BeanUtils.structToDB(structs,ProfileBasicRecord.class));
+            int[] result = dao.deleteRecords(BeanUtils.structToDB(structs, ProfileBasicRecord.class));
 
 
             if (deleteDatas != null && deleteDatas.size() > 0) {

@@ -695,7 +695,7 @@ public class ProfileCompletenessImpl {
             qu.addEqualFilter("profile_id", String.valueOf(profileId));
             Date birth = null;
             ProfileBasicRecord basicRecord = null;
-            try {
+            if (userRecord != null) {
                 basicRecord = basicDao.getRecord(qu);
                 int basicCompleteness = completenessCalculator.calculateProfileBasic(basicRecord, userRecord.getMobile());
                 completenessRecord.setProfileBasic(basicCompleteness);
@@ -703,9 +703,6 @@ public class ProfileCompletenessImpl {
                 if (basicRecord != null) {
                     birth = basicRecord.getBirth();
                 }
-
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
             }
             List<ProfileEducationRecord> educations = null;
             try {

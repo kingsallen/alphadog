@@ -126,7 +126,7 @@ public class ProfileImportServicesImpl implements Iface {
             if (result > 0) {
                 return ResponseUtils.success("1");
             } else {
-                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DEL_FAILED);
             }
         } catch (Exception e) {
             e.printStackTrace();

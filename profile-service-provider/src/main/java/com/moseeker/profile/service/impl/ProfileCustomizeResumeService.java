@@ -89,8 +89,8 @@ public class ProfileCustomizeResumeService {
 
             List<CustomizeResume> updatedDatas = new ArrayList<>();
 
-            for (int i : result) {
-                if (i > 0) updatedDatas.add(structs.get(i));
+            for (int i = 0; i < result.length; i++) {
+                if (result[i] > 0) updatedDatas.add(structs.get(i));
             }
 
             updateUpdateTime(updatedDatas);
