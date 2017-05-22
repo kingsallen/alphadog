@@ -8,6 +8,15 @@ struct HrChatUnreadCountDO {
 	2: optional i32 hrId,	//HR编号 userdb.user_hr_account
 	3: optional i32 userId,	//用户编号 userdb.user_user.id
 	4: optional i32 hrUnreadCount,	//hr未读消息数量
+<<<<<<< HEAD
 	5: optional i32 userUnreadCount	//员工未读消息数量
+=======
+	5: optional i32 userUnreadCount,	//员工未读消息数量
+	6: optional i8 status,	//状态，0：有效，1：无效
+	7: optional string wxChatTime,	//sysuser最近一次聊天时间
+	8: optional string hrChatTime,	//HR最近一次聊天时间
+	9: optional i8 hrHaveUnreadMsg,	//HR是否有未读消息，0：没有，1有未读消息
+	10: optional i8 userHaveUnreadMsg	//user是否有未读消息 ，0：没有，1有未读消息
+>>>>>>> feature/chat_unread_count
 
 }

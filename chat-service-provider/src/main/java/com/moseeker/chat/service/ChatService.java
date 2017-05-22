@@ -151,6 +151,9 @@ public class ChatService {
                 int[] roomIdArray = chatUnreadCountDOlist.stream().mapToInt(chatUnreadCountDO -> chatUnreadCountDO.getRoomId()).toArray();
                 int[] hrIdArray = chatUnreadCountDOlist.stream().mapToInt(chatUnreadCountDO -> chatUnreadCountDO.getHrId()).toArray();
 
+                logger.info("roomIdArray:{}", roomIdArray);
+                logger.info("hrIdArray:{}", hrIdArray);
+
                 /** 异步查找聊天室内容，HR信息，HR所属的公司信息 */
                 Future chatRoomsFuture = pool.startTast(() -> chaoDao.listChatRoom(roomIdArray));
                 Future hrsFuture = pool.startTast(() -> chaoDao.listHr(hrIdArray));
@@ -212,6 +215,7 @@ public class ChatService {
                     } catch (InterruptedException | ExecutionException e) {
                         logger.error(e.getMessage(), e);
                     }
+                    logger.info("userChatRoomVO:{}", userChatRoomVO);
                     userChatRoomVOList.add(userChatRoomVO);
                 });
                 userChatRoomsVO.setRooms(userChatRoomVOList);
@@ -270,7 +274,7 @@ public class ChatService {
     }
 
     /**
-     * 添加聊天内容
+     * 添加聊天内容，并修改未读消息数量
      * @param roomId 聊天室编号
      * @param content 聊天内容
      * @param positionId 职位编号
@@ -291,6 +295,9 @@ public class ChatService {
         chatRoomDO.setId(roomId);
         chatRoomDO.setUpdateTime(date);
         chaoDao.updateChatRoom(chatRoomDO);
+
+        //修改未读消息数量
+        pool.startTast(() -> chaoDao.addUnreadCount(roomId, speaker, date));
     }
 
     /**
@@ -299,6 +306,7 @@ public class ChatService {
      * 创建聊天室时，需要默认添加一条聊天内容，规则如下：
      *  1.如果HR的名称不存在，则存储 "我是{companyName}HR，我可以推荐您或者您的朋友加入我们！"
      *  2.如果HR的名称存在，则存储 "我是{hrName}，{companyName}HR，我可以推荐您或者您的朋友加入我们！"
+     *  默认是c端账号进入聊天室，需要清空聊天该聊天室的未读消息
      * @param userId 用户编号
      * @param hrId HR编号
      * @param positionId 职位编号
@@ -321,21 +329,17 @@ public class ChatService {
             chatRoom = chaoDao.saveChatRoom(chatRoom);
             chatDebut = true;
         }
+
         if(chatRoom != null) {
             resultOfSaveRoomVO = searchResult(chatRoom, positionId);
             if(chatDebut) {
                 pool.startTast(() -> createChat(resultOfSaveRoomVO, is_gamma));
                 resultOfSaveRoomVO.setChatDebut(chatDebut);
-
-                HrChatUnreadCountDO unreadCountDO = new HrChatUnreadCountDO();
-                unreadCountDO.setHrId(hrId);
-                unreadCountDO.setUserId(userId);
-                unreadCountDO.setHrUnreadCount(0);
-                unreadCountDO.setUserUnreadCount(1);
-                unreadCountDO.setRoomId(chatRoom.getId());
-                chaoDao.saveUnreadCount(unreadCountDO);
-                pool.startTast(() -> chaoDao.saveUnreadCount(unreadCountDO));
             }
+
+            //默认清空C端账号的未读消息
+            int chatRoomId = chatRoom.getId();
+            pool.startTast(() -> chaoDao.clearUserUnreadCount(chatRoomId, hrId, userId));
         } else {
             resultOfSaveRoomVO = new ResultOfSaveRoomVO();
         }

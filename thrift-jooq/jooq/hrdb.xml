@@ -3,7 +3,7 @@
 <!-- Configure the database connection here -->
 <jdbc>
 <driver>com.mysql.jdbc.Driver</driver>
-<url>jdbc:mysql://localhost:3306/candidatedb</url>
+<url>jdbc:mysql://localhost:3306/hrdb</url>
 <user>root</user>
 <password>wjf</password>
 </jdbc>

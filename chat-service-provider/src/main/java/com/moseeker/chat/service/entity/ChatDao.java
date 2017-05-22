@@ -50,13 +50,13 @@ public class ChatDao {
         switch (type) {
             case HR:
                 queryUtil.addSelectAttribute("user_unread_count").addSelectAttribute("hr_unread_count").addSelectAttribute("user_id");
-                queryUtil.setSortby("hr_unread_count,room_id");
+                queryUtil.setSortby("hr_have_unread_msg,wx_chat_time");
                 queryUtil.addEqualFilter("hr_id", id);
                 queryUtil.setOrder("desc, desc");
                 break;
             case USER:
                 queryUtil.addSelectAttribute("user_unread_count").addSelectAttribute("hr_unread_count").addSelectAttribute("hr_id");
-                queryUtil.setSortby("user_unread_count,room_id");
+                queryUtil.setSortby("user_have_unread_msg,hr_chat_time");
                 queryUtil.addEqualFilter("user_id", id);
                 queryUtil.setOrder("desc,desc");
                 break;
@@ -609,6 +609,67 @@ public class ChatDao {
     public HrChatUnreadCountDO saveUnreadCount(HrChatUnreadCountDO unreadCountDO) {
         try {
             return hrDBDao.saveChatUnreadCount(unreadCountDO);
+        } catch (TException e) {
+            logger.error(e.getMessage(), e);
+            return null;
+        }
+    }
+
+    /**
+     * 清空C端账号未读消息
+     * @param chatRoomId
+     * @param hrId
+     * @param userId
+     * @return
+     */
+    public HrChatUnreadCountDO clearUserUnreadCount(int chatRoomId, int hrId, int userId) {
+        QueryUtil queryUtil = new QueryUtil();
+        queryUtil.addEqualFilter("room_id", chatRoomId);
+        try {
+            HrChatUnreadCountDO hrChatUnreadCountDO =  hrDBDao.getChatUnreadCount(queryUtil);
+
+            if(hrChatUnreadCountDO.getRoomId() > 0) {
+                hrChatUnreadCountDO.setUserUnreadCount(0);
+                hrChatUnreadCountDO = hrDBDao.updateChatUnreadCount(hrChatUnreadCountDO);
+            } else {
+                hrChatUnreadCountDO.setRoomId(chatRoomId);
+                hrChatUnreadCountDO.setHrId(hrId);
+                hrChatUnreadCountDO.setUserId(userId);
+                hrChatUnreadCountDO.setHrUnreadCount(0);
+                hrChatUnreadCountDO.setUserUnreadCount(0);
+                hrChatUnreadCountDO.setUserHaveUnreadMsg((byte)0);
+                hrChatUnreadCountDO = hrDBDao.saveChatUnreadCount(hrChatUnreadCountDO);
+            }
+            return hrChatUnreadCountDO;
+        } catch (TException e) {
+            logger.error(e.getMessage(), e);
+            return null;
+        }
+    }
+
+    public HrChatUnreadCountDO addUnreadCount(int roomId, byte speaker, String date) {
+        QueryUtil queryUtil = new QueryUtil();
+        queryUtil.addEqualFilter("room_id", roomId);
+        try {
+            HrChatUnreadCountDO hrChatUnreadCountDO =  hrDBDao.getChatUnreadCount(queryUtil);
+
+            if(hrChatUnreadCountDO.getRoomId() > 0) {
+                switch (speaker) {
+                    case 1:
+                        hrChatUnreadCountDO.setWxChatTime(date);
+                        hrChatUnreadCountDO.setUserHaveUnreadMsg((byte)1);
+                        hrChatUnreadCountDO.setUserUnreadCount(hrChatUnreadCountDO.getUserUnreadCount()+1);
+                        break;
+                    case 0:
+                        hrChatUnreadCountDO.setHrChatTime(date);
+                        hrChatUnreadCountDO.setHrHaveUnreadMsg((byte)1);
+                        hrChatUnreadCountDO.setHrUnreadCount(hrChatUnreadCountDO.getHrUnreadCount()+1);
+                        break;
+                    default:
+                }
+                hrChatUnreadCountDO = hrDBDao.updateChatUnreadCount(hrChatUnreadCountDO);
+            }
+            return hrChatUnreadCountDO;
         } catch (TException e) {
             logger.error(e.getMessage(), e);
             return null;
