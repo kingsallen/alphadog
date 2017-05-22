@@ -4,7 +4,7 @@ import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidatePosition;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidatePositionRecord;
 import com.moseeker.thrift.gen.dao.struct.CURDException;
-import com.moseeker.thrift.gen.dao.struct.CandidatePositionDO;
+import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionDO;
 import org.jooq.Condition;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;

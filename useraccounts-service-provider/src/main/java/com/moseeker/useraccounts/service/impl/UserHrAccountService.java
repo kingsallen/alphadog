@@ -1,21 +1,15 @@
 package com.moseeker.useraccounts.service.impl;
 
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Stream;
-
-import org.apache.thrift.TException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
+import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
+import com.moseeker.baseorm.dao.hrdb.HrSearchConditionDao;
+import com.moseeker.baseorm.dao.hrdb.HrTalentpoolDao;
+import com.moseeker.baseorm.dao.userdb.UserHRAccountDao;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrSearchConditionRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrTalentpoolRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.annotation.notify.UpdateEs;
 import com.moseeker.common.constants.Constant;
@@ -29,23 +23,32 @@ import com.moseeker.common.sms.SmsSender;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.common.validation.ValidateUtil;
-import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
-import com.moseeker.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.rpccenter.client.ServiceManager;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.service.CompanyDao;
 import com.moseeker.thrift.gen.dao.service.SearcheConditionDao;
 import com.moseeker.thrift.gen.dao.service.TalentpoolDao;
 import com.moseeker.thrift.gen.dao.struct.Talentpool;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrTalentpoolDO;
 import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
 import com.moseeker.thrift.gen.foundation.passport.service.HRAccountFoundationServices;
 import com.moseeker.thrift.gen.useraccounts.struct.BindAccountStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.DownloadReport;
 import com.moseeker.thrift.gen.useraccounts.struct.SearchCondition;
 import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
-import com.moseeker.useraccounts.dao.UserHrAccountDao;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * HR账号服务
@@ -71,14 +74,29 @@ public class UserHrAccountService {
     HRAccountFoundationServices.Iface hrAccountService = ServiceManager.SERVICEMANAGER
             .getService(HRAccountFoundationServices.Iface.class);
 
-    CompanyDao.Iface companyDao = ServiceManager.SERVICEMANAGER.getService(CompanyDao.Iface.class);
+//    CompanyDao.Iface companyDao = ServiceManager.SERVICEMANAGER.getService(CompanyDao.Iface.class);
 
-    SearcheConditionDao.Iface searchConditionDao = ServiceManager.SERVICEMANAGER.getService(SearcheConditionDao.Iface.class);
+//    SearcheConditionDao.Iface searchConditionDao = ServiceManager.SERVICEMANAGER.getService(SearcheConditionDao.Iface.class);
 
-    TalentpoolDao.Iface talentpoolDao = ServiceManager.SERVICEMANAGER.getService(TalentpoolDao.Iface.class);
+//    TalentpoolDao.Iface talentpoolDao = ServiceManager.SERVICEMANAGER.getService(TalentpoolDao.Iface.class);
 
     @Autowired
-    private UserHrAccountDao userHrAccountDao;
+    private UserHRAccountDao userHrAccountDao;
+
+    @Autowired
+    private HRThirdPartyAccountDao thirdPartyAccountDao;
+
+    @Autowired
+    private HRThirdPartyPositionDao thirdPartyPositionDao;
+
+    @Autowired
+    private CompanyDao companyDao;
+
+    @Autowired
+    private HrSearchConditionDao hrSearchConditionDao;
+
+    @Autowired
+    private HrTalentpoolDao hrTalentpoolDao;
 
     /**
      * HR在下载行业报告是注册
@@ -202,7 +220,7 @@ public class UserHrAccountService {
             UserHrAccountRecord userHrAccountRecord = (UserHrAccountRecord) BeanUtils.structToDB(userHrAccount,
                     UserHrAccountRecord.class);
 
-            int userHrAccountId = userHrAccountDao.putResource(userHrAccountRecord);
+            int userHrAccountId = userHrAccountDao.updateRecord(userHrAccountRecord);
             if (userHrAccountId > 0) {
                 return ResponseUtils.success(new HashMap<String, Object>() {
                     private static final long serialVersionUID = -5929607838950864392L;
@@ -293,15 +311,10 @@ public class UserHrAccountService {
             logger.info("bindThirdAccount");
             // 判断是否需要进行帐号绑定
             if (account.getCompany_id() == 0 && account.getUser_id() != 0) {
-                QueryUtil qu = new QueryUtil();
-                qu.addEqualFilter("id", String.valueOf(account.getUser_id()));
+                Query.QueryBuilder qu = new Query.QueryBuilder();
+                qu.where("id", String.valueOf(account.getUser_id()));
                 logger.info("search third party account");
-                Response response = hraccountDao.getAccount(qu);
-                if (response.getStatus() == 0) {
-                    logger.info("thirdPartyAccount:" + response.getData());
-                    JSONObject json = JSONObject.parseObject(response.getData());
-                    account.setCompany_id(json.getIntValue("company_id"));
-                }
+                account.setCompany_id(userHrAccountDao.getRecord(qu.buildQuery()).getCompanyId());
             }
             logger.info("search allowBind");
             Response allowBindResponse = hrAccountService.allowBind(account.getUser_id(), account.getCompany_id(),
@@ -381,15 +394,12 @@ public class UserHrAccountService {
      */
     public Response getSearchCondition(int hrAccountId, int type) {
         logger.info("UserHrAccountService - getSearchCondition ");
-        QueryUtil query = new QueryUtil();
-        Map<String, String> param = new HashMap<String, String>();
-        query.setEqualFilter(param);
-        param.put("hr_account_id", String.valueOf(hrAccountId));
-        param.put("type", String.valueOf(type));
+        Query.QueryBuilder query = new Query.QueryBuilder();
+        query.where("hr_account_id", String.valueOf(hrAccountId)).and("type", String.valueOf(type));
         List<SearchCondition> list;
         List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
         try {
-            list = searchConditionDao.getResources(query);
+            list = hrSearchConditionDao.getDatas(query.buildQuery(), SearchCondition.class);
             logger.info("UserHrAccountService - getSearchCondition  list:{}", list);
             list.forEach(sc -> {
                 Map<String, Object> map = new HashMap<>();
@@ -418,7 +428,7 @@ public class UserHrAccountService {
             });
             logger.info("UserHrAccountService - getSearchCondition  result:{}", result);
             return ResponseUtils.success(result);
-        } catch (TException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
             logger.info("UserHrAccountService - getSearchCondition  error:{}", e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
@@ -433,31 +443,28 @@ public class UserHrAccountService {
      */
     public Response postSearchCondition(SearchCondition searchCondition) {
         try {
-            QueryUtil query = new QueryUtil();
-            Map<String, String> param = new HashMap<String, String>();
-            query.setEqualFilter(param);
-            param.put("hr_account_id", String.valueOf(searchCondition.getHr_account_id()));
-            param.put("type", String.valueOf(searchCondition.getType()));
-            int row = searchConditionDao.getResourceCount(query);
+            Query.QueryBuilder query = new Query.QueryBuilder();
+            query.where("hr_account_id", String.valueOf(searchCondition.getHr_account_id())).and("type", String.valueOf(searchCondition.getType()));
+            int row = hrSearchConditionDao.getCount(query.buildQuery());
             // 每个hr最多只能添加10条常用筛选
             if (row >= 10) {
                 logger.warn("保存常用筛选失败，hr={}，已拥有{}条常用筛选项", searchCondition.getHr_account_id(), row);
                 return ResponseUtils.fail("{'status':42004,'message':'添加失败，最多只能添加10条筛选项'}");
             }
             // 筛选项名字保证不重复
-            param.put("name", searchCondition.getName());
-            row = searchConditionDao.getResourceCount(query);
+            query.and("name", searchCondition.getName());
+            row = hrSearchConditionDao.getCount(query.buildQuery());
             if (row > 0) {
                 logger.warn("保存常用筛选失败，筛选项名称={}，已存在", searchCondition.getName());
                 return ResponseUtils.fail("{'status':42004,'message':'保存失败，改筛选项名称已存在'}");
             }
-            int primaryKey = searchConditionDao.postResource(searchCondition);
+            int primaryKey = hrSearchConditionDao.addRecord(BeanUtils.structToDB(searchCondition, HrSearchConditionRecord.class)).getId();
             if (primaryKey > 0) {
                 return ResponseUtils.success(primaryKey);
             } else {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.THIRD_PARTY_POSITION_UPSERT_FAILED);
             }
-        } catch (TException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
@@ -473,13 +480,13 @@ public class UserHrAccountService {
     public Response delSearchCondition(int hrAccountId, int id) {
         int resultRow = 0;
         try {
-            resultRow = searchConditionDao.delResource(hrAccountId, id);
+            resultRow = hrSearchConditionDao.delResource(hrAccountId, id);
             if (resultRow > 0) {
                 return ResponseUtils.success("");
             } else {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.THIRD_PARTY_POSITION_UPSERT_FAILED);
             }
-        } catch (TException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
@@ -493,36 +500,30 @@ public class UserHrAccountService {
      * @return
      */
     @UpdateEs(tableName = "hr_talentpool", argsIndex = 1, argsName = "user_id")
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public Response joinTalentpool(int hrAccountId, List<Integer> applierIds) {
-        QueryUtil query = new QueryUtil();
-        Map<String, String> param = new HashMap<String, String>();
-        query.setEqualFilter(param);
-        param.put("hr_account_id", String.valueOf(hrAccountId));
+        Query.QueryBuilder query = new Query.QueryBuilder();
+        query.where("hr_account_id", String.valueOf(hrAccountId));
         int resultRow = 0;
-        try {
-            for (Integer applierId : applierIds) {
-                param.put("applier_id", String.valueOf(applierId));
-                Talentpool talentpool = talentpoolDao.getResource(query);
-                if (talentpool == null || talentpool.getId() == 0) {
-                    // 将用户加入人才库
-                    talentpool = new Talentpool();
-                    talentpool.setApplier_id(Integer.valueOf(applierId));
-                    talentpool.setHr_account_id(hrAccountId);
-                    resultRow += talentpoolDao.postResource(talentpool);
-                } else {
-                    // 将状态改为正常
-                    talentpool.setStatus(0);
-                    resultRow += talentpoolDao.putResource(talentpool);
-                }
-            }
-            if (resultRow > 0) {
-                return ResponseUtils.success("");
+        for (Integer applierId : applierIds) {
+            query.and("applier_id", String.valueOf(applierId));
+            HrTalentpoolDO talentpool = hrTalentpoolDao.getData(query.buildQuery());
+            if (talentpool == null || talentpool.getId() == 0) {
+                // 将用户加入人才库
+                talentpool = new HrTalentpoolDO();
+                talentpool.setApplierId(Integer.valueOf(applierId));
+                talentpool.setHrAccountId(hrAccountId);
+                resultRow += hrTalentpoolDao.addData(talentpool).getId();
             } else {
-                return ResponseUtils.fail(ConstantErrorCodeMessage.THIRD_PARTY_POSITION_UPSERT_FAILED);
+                // 将状态改为正常
+                talentpool.setStatus(0);
+                resultRow += hrTalentpoolDao.updateData(talentpool);
             }
-        } catch (TException e) {
-            logger.error(e.getMessage(), e);
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+        }
+        if (resultRow > 0) {
+            return ResponseUtils.success("");
+        } else {
+            return ResponseUtils.fail(ConstantErrorCodeMessage.THIRD_PARTY_POSITION_UPSERT_FAILED);
         }
     }
 
@@ -535,19 +536,17 @@ public class UserHrAccountService {
      */
     @UpdateEs(tableName = "hr_talentpool", argsIndex = 1, argsName = "user_id")
     public Response shiftOutTalentpool(int hrAccountId, List<Integer> applierIds) {
-        QueryUtil query = new QueryUtil();
-        Map<String, String> param = new HashMap<String, String>();
-        query.setEqualFilter(param);
-        param.put("hr_account_id", String.valueOf(hrAccountId));
+        Query.QueryBuilder query = new Query.QueryBuilder();
+        query.where("hr_account_id", String.valueOf(hrAccountId));
         try {
             int resultRow = 0;
             for (Integer applierId : applierIds) {
-                param.put("applier_id", String.valueOf(applierId));
-                Talentpool talentpool = talentpoolDao.getResource(query);
+                query.and("applier_id", String.valueOf(applierId));
+                HrTalentpoolDO talentpool = hrTalentpoolDao.getData(query.buildQuery());
                 if (talentpool != null && talentpool.getId() > 0) {
                     // 将状态改为删除
                     talentpool.setStatus(1);
-                    resultRow += talentpoolDao.putResource(talentpool);
+                    resultRow += hrTalentpoolDao.updateData(talentpool);
                 }
             }
             if (resultRow <= 0) {
@@ -555,7 +554,7 @@ public class UserHrAccountService {
             } else {
                 return ResponseUtils.success("");
             }
-        } catch (TException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
@@ -571,16 +570,12 @@ public class UserHrAccountService {
      */
     public Response userHrAccount(int companyId, int disable, int page, int per_age) {
         try {
-            QueryUtil commonQuery = new QueryUtil();
-            Map<String, String> param = new HashMap<String, String>();
-            param.put("company_id", String.valueOf(companyId));
-            param.put("disable", String.valueOf(disable));
-            commonQuery.setEqualFilter(param);
-            commonQuery.setPage(page);
-            commonQuery.setPer_page(per_age);
-            Response response = hraccountDao.getAccounts(commonQuery);
-            return response;
-        } catch (TException e) {
+            Query.QueryBuilder query = new Query.QueryBuilder();
+            query.where("company_id", String.valueOf(companyId)).and("disable", String.valueOf(disable));
+            query.setPageNum(page);
+            query.setPageSize(per_age);
+            return ResponseUtils.success(userHrAccountDao.getDatas(query.buildQuery(), UserHrAccount.class));
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
