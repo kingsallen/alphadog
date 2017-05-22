@@ -1278,7 +1278,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 
                     logger.info("pid: " + String.valueOf(pid));
 
-                    List<JobPositionRecord> jrList = jobRecords.stream().filter(p -> p.getId() == pid).collect(Collectors.toList());
+                    List<JobPositionRecord> jrList = jobRecords.stream().filter(p -> p.getId().equals(pid)).collect(Collectors.toList());
                     if (jrList != null && !jrList.isEmpty()) {
                         logger.info("jrList: " + jrList.toString());
 
