@@ -2,7 +2,7 @@ package com.moseeker.position.utils;
 
 
 import com.alibaba.fastjson.JSONObject;
-import com.moseeker.baseorm.dao.hrdb.CompanyDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.common.util.BeanUtils;
@@ -25,7 +25,7 @@ public class UpdateESThread implements Runnable {
     @Autowired
     private JobPositionDao jobPositionDao;
     @Autowired
-    private CompanyDao companyDao;
+    private HrCompanyDao hrCompanyDao;
 
     private List<Integer> list;
 
@@ -48,7 +48,7 @@ public class UpdateESThread implements Runnable {
                 Query query = new Query.QueryBuilder().where("id",companyId).buildQuery();
                 List<Hrcompany> company_maps = null;
                 try {
-                	company_maps=companyDao.getCompanies(query);
+                	company_maps=hrCompanyDao.getCompanies(query);
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);
                 }

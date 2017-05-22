@@ -7,10 +7,10 @@ import com.alibaba.fastjson.serializer.ValueFilter;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.baseorm.dao.dictdb.DictCityPostcodeDao;
 import com.moseeker.baseorm.dao.dictdb.DictConstantDao;
-import com.moseeker.baseorm.dao.hrdb.CompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrHbConfigDao;
 import com.moseeker.baseorm.dao.hrdb.HrHbItemsDao;
 import com.moseeker.baseorm.dao.hrdb.HrHbPositionBindingDao;
@@ -114,7 +114,7 @@ public class PositionService {
     @Autowired
     private DictCityPostcodeDao dictCityPostcodeDao;
     @Autowired
-    private CompanyDao companyDao;
+    private HrCompanyDao hrCompanyDao;
     @Autowired
     private HrHbConfigDao hrHbConfigDao;
     @Autowired
@@ -1087,7 +1087,7 @@ public class PositionService {
                 Query qu=new Query.QueryBuilder()
                 		.where("parent_id",companyId)
                 		.buildQuery();
-                List<Hrcompany> companies = companyDao.getCompanies(qu);
+                List<Hrcompany> companies = hrCompanyDao.getCompanies(qu);
 
                 List<Integer> cIds = new ArrayList<>();
                 if (companies.size() > 0) {
@@ -1184,7 +1184,7 @@ public class PositionService {
 
                     // 获取子公司info
                     hrm.where("id", query.getDid());
-                    HrCompanyDO subCompanyInfo = companyDao.getCompany(hrm.buildQuery());
+                    HrCompanyDO subCompanyInfo = hrCompanyDao.getData(hrm.buildQuery(),HrCompanyDO.class);
 
                     // 获取 hr_company_account
                     hrm = new Query.QueryBuilder();
@@ -1208,7 +1208,7 @@ public class PositionService {
                     for (HrCompanyAccountDO hrCompanyAccount : companyAccountList) {
                         hrm = new Query.QueryBuilder();
                         hrm.where("id", hrCompanyAccount.getCompanyId());
-                        HrCompanyDO companyInfo = companyDao.getCompany(hrm.buildQuery());
+                        HrCompanyDO companyInfo = hrCompanyDao.getData(hrm.buildQuery(),HrCompanyDO.class);
                         publisherCompanyMap.put(hrCompanyAccount.accountId, companyInfo);
 
                     }
@@ -1458,7 +1458,7 @@ public class PositionService {
             qu = new Query.QueryBuilder().where("id", hbConfigId).buildQuery();
             Integer companyId = hrHbConfigDao.getData(qu,HrHbConfigDO.class).getCompanyId();
             qu = new Query.QueryBuilder().where("id", companyId).buildQuery();
-            HrCompanyDO company = companyDao.getCompany(qu);
+            HrCompanyDO company = hrCompanyDao.getData(qu,HrCompanyDO.class);
             result.forEach(s -> {
                 s.setCompany_abbr(company.getAbbreviation());
                 s.setCompany_logo(company.getLogo());
@@ -1519,7 +1519,7 @@ public class PositionService {
                     String company_id = BeanUtils.converToString(position_map.get("company_id"));
                     Query query = new Query.QueryBuilder().where("id", company_id).buildQuery();
 
-                    List<Hrcompany> company_maps = companyDao.getDatas(query, Hrcompany.class);
+                    List<Hrcompany> company_maps = hrCompanyDao.getDatas(query, Hrcompany.class);
                     if (company_maps!=null&&company_maps.size()>0) {
                     
                     	Hrcompany company_map =  company_maps.get(0);
