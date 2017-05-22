@@ -47,7 +47,7 @@ public class ProfileBasicServicesImpl implements Iface {
     public Response postResources(List<Basic> structs) throws TException {
         try {
             List<Basic> result = service.postResources(structs);
-            return ResponseUtils.success(result);
+            return ResponseUtils.success("1");
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);

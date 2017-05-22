@@ -186,7 +186,7 @@ public class ProfileCompletenessImpl {
         return useruserCompleteness;
     }
 
-    public int reCalculateUserUserByUserIdOrMobile(int userId, String mobile) throws Exception {
+    public int reCalculateUserUserByUserIdOrMobile(int userId, String mobile) {
         int result = 0;
         ProfileProfileRecord profileRecord = null;
         if (userId == 0 && StringUtils.isNotNullOrEmpty(mobile)) {
@@ -829,7 +829,7 @@ public class ProfileCompletenessImpl {
         return completeness;
     }
 
-    private void reCalculateProfileCompleteness(ProfileCompletenessRecord completenessRecord) throws Exception {
+    private void reCalculateProfileCompleteness(ProfileCompletenessRecord completenessRecord) {
         int totalComplementness = completenessRecord.getUserUser()
                 + completenessRecord.getProfileBasic() + completenessRecord.getProfileWorkexp()
                 + completenessRecord.getProfileEducation() + completenessRecord.getProfileProjectexp()

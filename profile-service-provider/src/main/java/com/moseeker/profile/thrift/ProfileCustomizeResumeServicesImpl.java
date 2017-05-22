@@ -48,7 +48,7 @@ public class ProfileCustomizeResumeServicesImpl implements Iface {
     public Response postResources(List<CustomizeResume> structs) throws TException {
         try {
             List<CustomizeResume> result = service.postResources(structs);
-            return ResponseUtils.success(result);
+            return ResponseUtils.success("1");
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);

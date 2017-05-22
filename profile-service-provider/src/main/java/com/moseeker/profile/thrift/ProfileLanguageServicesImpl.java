@@ -97,7 +97,7 @@ public class ProfileLanguageServicesImpl implements Iface {
     @Override
     public Response getResources(CommonQuery query) throws TException {
         try {
-            return service.getResources(query);
+            return service.getResources(QueryConvert.commonQueryConvertToQuery(query));
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
@@ -108,7 +108,7 @@ public class ProfileLanguageServicesImpl implements Iface {
     @Override
     public Response getPagination(CommonQuery query) throws TException {
         try {
-            return service.getPagination(query);
+            return service.getPagination(QueryConvert.commonQueryConvertToQuery(query));
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
@@ -119,7 +119,7 @@ public class ProfileLanguageServicesImpl implements Iface {
     @Override
     public Response getResource(CommonQuery query) throws TException {
         try {
-            return service.getResource(query);
+            return service.getResource(QueryConvert.commonQueryConvertToQuery(query));
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);

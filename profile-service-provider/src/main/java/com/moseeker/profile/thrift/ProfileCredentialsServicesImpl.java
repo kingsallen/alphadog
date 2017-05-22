@@ -47,7 +47,7 @@ public class ProfileCredentialsServicesImpl implements Iface {
     public Response postResources(List<Credentials> structs) throws TException {
         try {
             List<Credentials> result = service.postResources(structs);
-            return ResponseUtils.success(result);
+            return ResponseUtils.success("1");
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);

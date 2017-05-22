@@ -2,14 +2,17 @@ package com.moseeker.profile.service.impl;
 
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileWorksDao;
-import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.providerutils.QueryUtil;
-import com.moseeker.common.util.BeanUtils;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileWorksRecord;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.QueryUtil;
+import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.profile.struct.Credentials;
 import com.moseeker.thrift.gen.profile.struct.Works;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +27,7 @@ import java.util.Set;
 
 @Service
 @CounterIface
-public class ProfileWorksService extends BaseProfileService<Works, ProfileWorksRecord> {
+public class ProfileWorksService {
 
     Logger logger = LoggerFactory.getLogger(ProfileWorksService.class);
 
@@ -37,48 +40,61 @@ public class ProfileWorksService extends BaseProfileService<Works, ProfileWorksR
     @Autowired
     private ProfileCompletenessImpl completenessImpl;
 
-    public Response getResource(CommonQuery query) throws TException {
-        return super.getResource(dao, query, Works.class);
+    public Response getResource(Query query) throws TException {
+        Works data = dao.getData(query, Works.class);
+        if (data != null) {
+            return ResponseUtils.success(data);
+        } else {
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+        }
     }
 
-    public Response getResources(CommonQuery query) throws TException {
-        return super.getResources(dao, query, Credentials.class);
+    public Response getResources(Query query) throws TException {
+        Works data = dao.getData(query, Works.class);
+        if (data != null) {
+            return ResponseUtils.success(data);
+        } else {
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+        }
     }
 
-    public Response getPagination(CommonQuery query) throws TException {
-        return super.getPagination(dao, query,Works.class);
+    public Response getPagination(Query query) throws TException {
+        int totalRow = dao.getCount(query);
+        List<?> datas = dao.getDatas(query);
+
+        return ResponseUtils.success(ProfileUtils.getPagination(totalRow, query.getPageNum(), query.getPageSize(), datas));
     }
 
     public Response postResources(List<Works> structs) throws TException {
-        Response response = super.postResources(dao, structs);
+        List<ProfileWorksRecord> records = BeanUtils.structToDB(structs, ProfileWorksRecord.class);
+        records = dao.addAllRecord(records);
         /* 重新计算profile完整度 */
-        if (response.getStatus() == 0 && structs != null && structs.size() > 0) {
-            updateUpdateTime(structs);
-            Set<Integer> profileIds = new HashSet<>();
-            structs.forEach(struct -> {
-                if (struct.getProfile_id() > 0) {
-                    profileIds.add(struct.getProfile_id());
-                }
-            });
-            profileIds.forEach(profileId -> {
-                completenessImpl.reCalculateProfileWorks(profileId, 0);
-            });
-            profileDao.updateUpdateTime(profileIds);
-        }
-        return response;
+        updateUpdateTime(structs);
+        Set<Integer> profileIds = new HashSet<>();
+        structs.forEach(struct -> {
+            if (struct.getProfile_id() > 0) {
+                profileIds.add(struct.getProfile_id());
+            }
+        });
+        profileIds.forEach(profileId -> {
+            completenessImpl.reCalculateProfileWorks(profileId, 0);
+        });
+        profileDao.updateUpdateTime(profileIds);
+        return ResponseUtils.success("1");
     }
 
 
     public Response putResources(List<Works> structs) throws TException {
-        Response response = super.putResources(dao, structs);
+        int[] result = dao.updateRecords(BeanUtils.structToDB(structs, ProfileWorksRecord.class));
         /* 重新计算profile完整度 */
-        if (response.getStatus() == 0 && structs != null && structs.size() > 0) {
+        if (ArrayUtils.contains(result, 1)) {
             updateUpdateTime(structs);
             structs.forEach(struct -> {
                 completenessImpl.reCalculateProfileWorks(struct.getProfile_id(), struct.getId());
             });
+            return ResponseUtils.success("1");
         }
-        return response;
+        return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
     }
 
 
@@ -94,61 +110,60 @@ public class ProfileWorksService extends BaseProfileService<Works, ProfileWorksR
         qu.addEqualFilter("id", sb.toString());
 
         List<ProfileWorksRecord> worksRecords = null;
-        try {
-            worksRecords = dao.getRecords(qu);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
+        worksRecords = dao.getRecords(qu);
         Set<Integer> profileIds = new HashSet<>();
         if (worksRecords != null && worksRecords.size() > 0) {
             worksRecords.forEach(works -> {
                 profileIds.add(works.getProfileId().intValue());
             });
         }
-        Response response = super.delResources(dao, structs);
+        if (worksRecords != null && worksRecords.size() > 0) {
+            int[] result = dao.deleteRecords(BeanUtils.structToDB(structs, ProfileWorksRecord.class));
         /* 重新计算profile完整度 */
-        if (response.getStatus() == 0 && profileIds != null && profileIds.size() > 0) {
-            updateUpdateTime(structs);
-            profileIds.forEach(profileId -> {
-                completenessImpl.reCalculateProfileWorks(profileId, 0);
-            });
+            if (ArrayUtils.contains(result, 1)) {
+                updateUpdateTime(structs);
+                profileIds.forEach(profileId -> {
+                    completenessImpl.reCalculateProfileWorks(profileId, 0);
+                });
+                return ResponseUtils.success("1");
+            }
         }
-        return response;
+        return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DEL_FAILED);
     }
 
 
     public Response postResource(Works struct) throws TException {
-        Response response = super.postResource(dao, struct);
-		/* 重新计算profile完整度 */
-        if (response.getStatus() == 0 && struct != null) {
-            Set<Integer> profileIds = new HashSet<>();
-            profileIds.add(struct.getProfile_id());
-            profileDao.updateUpdateTime(profileIds);
-            completenessImpl.reCalculateProfileWorks(struct.getProfile_id(), struct.getId());
-        }
-        return response;
+        ProfileWorksRecord record = dao.addRecord(BeanUtils.structToDB(struct, ProfileWorksRecord.class));
+        /* 重新计算profile完整度 */
+        Set<Integer> profileIds = new HashSet<>();
+        profileIds.add(struct.getProfile_id());
+        profileDao.updateUpdateTime(profileIds);
+        completenessImpl.reCalculateProfileWorks(struct.getProfile_id(), struct.getId());
+        return ResponseUtils.success("1");
     }
 
 
     public Response putResource(Works struct) throws TException {
-        Response response = super.putResource(dao, struct);
-		/* 重新计算profile完整度 */
-        if (response.getStatus() == 0 && struct != null) {
+        int result = dao.updateRecord(BeanUtils.structToDB(struct, ProfileWorksRecord.class));
+        /* 重新计算profile完整度 */
+        if (result > 0) {
             updateUpdateTime(struct);
             completenessImpl.reCalculateProfileWorks(struct.getProfile_id(), struct.getId());
+            return ResponseUtils.success("1");
         }
-        return response;
+        return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
     }
 
 
     public Response delResource(Works struct) throws TException {
-        Response response = super.delResource(dao, struct);
-		/* 重新计算profile完整度 */
-        if (response.getStatus() == 0 && struct != null) {
+        int result = dao.deleteRecord(BeanUtils.structToDB(struct, ProfileWorksRecord.class));
+        /* 重新计算profile完整度 */
+        if (result > 0) {
             updateUpdateTime(struct);
             completenessImpl.reCalculateProfileWorks(struct.getProfile_id(), struct.getId());
+            return ResponseUtils.success("1");
         }
-        return response;
+        return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DEL_FAILED);
     }
 
     protected Works DBToStruct(ProfileWorksRecord r) {

@@ -47,7 +47,7 @@ public class ProfileAwardsServicesImpl implements Iface {
     public Response postResources(List<Awards> structs) throws TException {
         try {
             List<Awards> result = service.postResources(structs);
-            return ResponseUtils.success(result);
+            return ResponseUtils.success("1");
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
