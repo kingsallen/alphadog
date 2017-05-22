@@ -300,6 +300,9 @@ public class ProfileIntentionService {
             updateUpdateTime(structs);
             structs.forEach(struct -> {
                  /* 计算profile完整度 */
+                updateIntentionCity(struct, struct.getId());
+                updateIntentionIndustry(struct, struct.getId());
+                updateIntentionPosition(struct, struct.getId());
                 completenessImpl.reCalculateProfileIntention(struct.getProfile_id(), struct.getId());
             });
             return ResponseUtils.success("1");
@@ -320,31 +323,30 @@ public class ProfileIntentionService {
         qu.addEqualFilter("id", sb.toString());
 
         List<ProfileIntentionRecord> intentionRecords = null;
-        try {
-            intentionRecords = dao.getRecords(qu);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
+        intentionRecords = dao.getRecords(qu);
         Set<Integer> profileIds = new HashSet<>();
         if (intentionRecords != null && intentionRecords.size() > 0) {
             intentionRecords.forEach(intention -> {
                 profileIds.add(intention.getProfileId().intValue());
             });
-        }
-
-        List<ProfileIntentionRecord> records = new ArrayList<>();
-        for (Intention intention : structs) {
-            records.add(dao.dataToRecord(intention));
-        }
-
-        int[] delteResult = dao.deleteRecords(records);
-        if (ArrayUtils.contains(delteResult, 1)) {
-            updateUpdateTime(structs);
-            profileIds.forEach(profileId -> {
+            List<ProfileIntentionRecord> records = new ArrayList<>();
+            for (Intention intention : structs) {
+                records.add(dao.dataToRecord(intention));
+            }
+            for (ProfileIntentionRecord record : intentionRecords) {
+                intentionCityDao.deleteByIntentionId(record.getId());
+                intentionPositionDao.deleteByIntentionId(record.getId());
+                intentionIndustryDao.deleteByIntentionId(record.getId());
+            }
+            int[] delteResult = dao.deleteRecords(records);
+            if (ArrayUtils.contains(delteResult, 1)) {
+                updateUpdateTime(structs);
+                profileIds.forEach(profileId -> {
                  /* 计算profile完整度 */
-                completenessImpl.reCalculateProfileIntention(profileId, 0);
-            });
-            return ResponseUtils.success("1");
+                    completenessImpl.reCalculateProfileIntention(profileId, 0);
+                });
+                return ResponseUtils.success("1");
+            }
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DEL_FAILED);
     }
@@ -506,7 +508,7 @@ public class ProfileIntentionService {
      * @param intentionId
      * @throws Exception
      */
-    private void updateIntentionCity(Intention struct, int intentionId) throws TException {
+    private void updateIntentionCity(Intention struct, int intentionId) {
         QueryUtil cityQuery = new QueryUtil();
         cityQuery.setPageNo(1);
         cityQuery.setPageSize(Integer.MAX_VALUE);

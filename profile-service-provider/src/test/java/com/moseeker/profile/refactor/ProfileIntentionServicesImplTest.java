@@ -1,4 +1,4 @@
-package com.moseeker.profile;
+package com.moseeker.profile.refactor;
 
 import com.moseeker.profile.conf.AppConfig;
 import com.moseeker.profile.service.impl.ProfileCompletenessImpl;
@@ -35,11 +35,11 @@ public class ProfileIntentionServicesImplTest {
     @Autowired
     private ProfileCompletenessImpl completenessImpl;
 
-    @Test
+//    @Test
     public void testGetResources() {
         CommonQuery query = new CommonQuery();
         Map<String, String> equelFilter = new HashMap<>();
-        equelFilter.put("profile_id", "3");
+        equelFilter.put("profile_id", "170");
         query.setEqualFilter(equelFilter);
         try {
             Response response = profileIntentionService.getResources(query);
@@ -49,7 +49,7 @@ public class ProfileIntentionServicesImplTest {
         }
     }
 
-    @Test
+//    @Test
     public void testGetPagination() {
         CommonQuery query = new CommonQuery();
         query.setPage(2);
@@ -63,10 +63,10 @@ public class ProfileIntentionServicesImplTest {
 
 
 
-    @Test
+//    @Test
     public void testPostResource() {
         Intention intention = new Intention();
-        intention.setProfile_id(3);
+        intention.setProfile_id(170);
         intention.setCities(new HashMap<String, Integer>(){{
             this.put("石家庄1", 130100);
             this.put("秦皇岛1", 130300);
@@ -92,10 +92,10 @@ public class ProfileIntentionServicesImplTest {
         }
     }
 
-    @Test
+//    @Test
     public void testPutResource() {
         Intention intention = new Intention();
-        intention.setProfile_id(3);
+        intention.setProfile_id(170);
         intention.setCities(new HashMap<String, Integer>(){{
             this.put("石家庄1", 130100);
             this.put("秦皇岛1", 130300);
@@ -109,7 +109,7 @@ public class ProfileIntentionServicesImplTest {
         }});
         intention.setSalary_code(2);
         intention.setSalary_type((short)0);
-        intention.setId(94887);
+        intention.setId(94968);
         try {
             Response response = profileIntentionService.putResource(intention);
             System.out.println(response);
@@ -118,10 +118,10 @@ public class ProfileIntentionServicesImplTest {
         }
     }
 
-    @Test
+//    @Test
     public void testDelResource() {
         Intention intention = new Intention();
-        intention.setProfile_id(3);
+        intention.setProfile_id(170);
         try {
             Response response = profileIntentionService.delResource(intention);
             System.out.println(response);
@@ -130,11 +130,11 @@ public class ProfileIntentionServicesImplTest {
         }
     }
 
-    @Test
+//    @Test
     public void testGetResource() {
         CommonQuery query = new CommonQuery();
         query.setEqualFilter(new HashMap<String, String>(){{
-            put("profile_id", "3");
+            put("profile_id", "170");
         }});
         try {
             Response response = profileIntentionService.getResource(query);
@@ -144,12 +144,12 @@ public class ProfileIntentionServicesImplTest {
         }
     }
 
-    @Test
+//    @Test
     public void testPostResources() {
         List<Intention> structs = new ArrayList<Intention>(){{
 
             Intention intention2 = new Intention();
-            intention2.setProfile_id(56926);
+            intention2.setProfile_id(170);
             intention2.setCities(new HashMap<String, Integer>(){{
                 this.put("石家庄1", 130100);
             }});
@@ -161,7 +161,7 @@ public class ProfileIntentionServicesImplTest {
             this.add(intention2);
 
             Intention intention1 = new Intention();
-            intention1.setProfile_id(55563);
+            intention1.setProfile_id(171);
             intention1.setCities(new HashMap<String, Integer>(){{
                 this.put("石家庄1", 130100);
                 this.put("秦皇岛1", 130300);
@@ -178,7 +178,7 @@ public class ProfileIntentionServicesImplTest {
             this.add(intention1);
 
             Intention intention = new Intention();
-            intention.setProfile_id(56429);
+            intention.setProfile_id(172);
             intention.setCities(new HashMap<String, Integer>(){{
                 this.put("石家庄1", 130100);
                 this.put("秦皇岛1", 130300);
@@ -205,12 +205,13 @@ public class ProfileIntentionServicesImplTest {
         }
     }
 
-    @Test
+//    @Test
     public void testPutResources() {
         List<Intention> structs = new ArrayList<Intention>(){{
 
             Intention intention2 = new Intention();
-            intention2.setId(94899);
+            intention2.setProfile_id(170);
+            intention2.setId(94972);
             intention2.setCities(new HashMap<String, Integer>(){{
                 this.put("石家庄1", 130100);
             }});
@@ -222,14 +223,13 @@ public class ProfileIntentionServicesImplTest {
             this.add(intention2);
 
             Intention intention1 = new Intention();
-            intention1.setId(94900);
+            intention1.setProfile_id(171);
+            intention1.setId(94973);
             intention1.setCities(new HashMap<String, Integer>(){{
                 this.put("石家庄1", 130100);
-                this.put("秦皇岛1", 130300);
             }});
             intention1.setIndustries(new HashMap<String ,Integer>(){{
                 this.put("计算机软件1", 1101);
-                this.put("网络游戏1", 1107);
             }});
             intention1.setPositions(new HashMap<String, Integer>(){{
                 this.put("高级软件工程师1", 110101);
@@ -239,20 +239,16 @@ public class ProfileIntentionServicesImplTest {
             this.add(intention1);
 
             Intention intention = new Intention();
-            intention.setId(94898);
+            intention.setProfile_id(172);
+            intention.setId(94974);
             intention.setCities(new HashMap<String, Integer>(){{
                 this.put("石家庄1", 130100);
-                this.put("秦皇岛1", 130300);
-                this.put("邢台1", 130500);
             }});
             intention.setIndustries(new HashMap<String ,Integer>(){{
                 this.put("计算机软件1", 1101);
-                this.put("通信/电信/网络设备1", 1104);
-                this.put("网络游戏1", 1107);
             }});
             intention.setPositions(new HashMap<String, Integer>(){{
                 this.put("高级软件工程师1", 110101);
-                this.put("系统工程师1", 110106);
             }});
             intention.setSalary_code(3);
             intention.setSalary_type((short)0);
