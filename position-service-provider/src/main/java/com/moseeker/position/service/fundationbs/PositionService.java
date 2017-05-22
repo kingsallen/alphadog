@@ -5,7 +5,11 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.ValueFilter;
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.constants.*;
+import com.moseeker.common.constants.AccountSync;
+import com.moseeker.common.constants.AppId;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.constants.KeyIdentifier;
+import com.moseeker.common.constants.PositionSync;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
@@ -15,13 +19,31 @@ import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.db.dictdb.tables.records.DictCityPostcodeRecord;
 import com.moseeker.db.dictdb.tables.records.DictCityRecord;
-import com.moseeker.db.dictdb.tables.records.DictPositionRecord;
 import com.moseeker.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.db.hrdb.tables.records.HrTeamRecord;
-import com.moseeker.db.jobdb.tables.JobOccupation;
-import com.moseeker.db.jobdb.tables.records.*;
-import com.moseeker.position.dao.*;
-import com.moseeker.position.pojo.*;
+import com.moseeker.db.jobdb.tables.records.JobCustomRecord;
+import com.moseeker.db.jobdb.tables.records.JobOccupationRecord;
+import com.moseeker.db.jobdb.tables.records.JobOccupationRelRecord;
+import com.moseeker.db.jobdb.tables.records.JobPositionCityRecord;
+import com.moseeker.db.jobdb.tables.records.JobPositionExtRecord;
+import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
+import com.moseeker.position.dao.DictCityPostCodeDao;
+import com.moseeker.position.dao.DictConstantDao;
+import com.moseeker.position.dao.DictPositionDao;
+import com.moseeker.position.dao.HrTeamDao;
+import com.moseeker.position.dao.JobCustomDao;
+import com.moseeker.position.dao.JobOccupationDao;
+import com.moseeker.position.dao.JobOccupationRelDao;
+import com.moseeker.position.dao.JobPositionCityDao;
+import com.moseeker.position.dao.JobPositionDao;
+import com.moseeker.position.dao.JobPositonExtDao;
+import com.moseeker.position.dao.PositionDao;
+import com.moseeker.position.pojo.DictConstantPojo;
+import com.moseeker.position.pojo.JobPositionFailMess;
+import com.moseeker.position.pojo.JobPositionPojo;
+import com.moseeker.position.pojo.JobPostionResponse;
+import com.moseeker.position.pojo.PositionForSynchronizationPojo;
+import com.moseeker.position.pojo.RecommendedPositonPojo;
 import com.moseeker.position.service.position.PositionChangeUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
@@ -34,12 +56,26 @@ import com.moseeker.thrift.gen.dao.service.UserHrAccountDao;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.*;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyAccountDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrHbConfigDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrHbItemsDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrHbPositionBindingDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrTeamStruct;
 import com.moseeker.thrift.gen.dict.service.DictOccupationDao;
-import com.moseeker.thrift.gen.position.struct.*;
+import com.moseeker.thrift.gen.position.struct.BatchHandlerJobPostion;
+import com.moseeker.thrift.gen.position.struct.City;
+import com.moseeker.thrift.gen.position.struct.JobPostrionObj;
+import com.moseeker.thrift.gen.position.struct.Position;
+import com.moseeker.thrift.gen.position.struct.RpExtInfo;
+import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
+import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
+import com.moseeker.thrift.gen.position.struct.WechatPositionListData;
+import com.moseeker.thrift.gen.position.struct.WechatPositionListQuery;
+import com.moseeker.thrift.gen.position.struct.WechatRpPositionListData;
+import com.moseeker.thrift.gen.position.struct.WechatShareData;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.mysql.jdbc.StringUtils;
-
 import org.apache.thrift.TException;
 import org.jooq.Field;
 import org.jooq.types.UInteger;
@@ -49,7 +85,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -1147,13 +1187,19 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             String childCompanyId = "";
             String companyId = "";
 
+            logger.info("----- in getPositionList ");
+            logger.info("query.getDid() :" + String.valueOf(query.getDid()));
+            logger.info("query.getCompany_id() :" + String.valueOf(query.getCompany_id()));
+
+
             if (query.isSetDid() && query.getDid() != 0) {
                 // 如果有did, 赋值 childCompanyId
                 childCompanyId = String.valueOf(query.getDid());
 
-            } else {
+            } else
+            {
                 QueryUtil qu = new QueryUtil();
-                qu.addEqualFilter("parent_id", companyId);
+                qu.addEqualFilter("parent_id", query.getCompany_id());
                 List<Hrcompany> companies = companyDao.getCompanies(qu);
 
                 List<Integer> cIds = new ArrayList<>();
@@ -1162,7 +1208,29 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                 }
                 cIds.add(query.getCompany_id());
                 companyId = org.apache.commons.lang.StringUtils.join(cIds.toArray(), ",");
+
+                logger.info("companyId:" + companyId);
             }
+
+            logger.info("<><><><><><><><><><><>");
+            logger.info("companyId: " + companyId);
+            logger.info("childCompanyId: " + childCompanyId);
+            logger.info("<><><><><><><><><><><>");
+            logger.info("query.getKeywords():" + query.getKeywords());
+            logger.info("query.getCities():" + query.getCities());
+            logger.info("query.getIndustries():" + query.getIndustries());
+            logger.info("query.getOccupations():" + query.getOccupations());
+            logger.info("query.getScale():" + query.getScale());
+            logger.info("query.getEmployment_type(): " + query.getEmployment_type());
+            logger.info("query.getCandidate_source():" + query.getCandidate_source());
+            logger.info("query.getExperience():" + query.getExperience());
+            logger.info("query.getDegree():" + query.getDegree());
+            logger.info("query.getSalary():" + query.getSalary());
+            logger.info("query.getPage_from(): " + query.getPage_from());
+            logger.info("query.getPage_size(): " + query.getPage_size());
+            logger.info("query.getDepartment(): " + query.getDepartment());
+            logger.info("query.getCustom(): " + query.getCustom());
+            logger.info("<><><><><><><><><><><>");
 
             //获取 pid list
             Response ret = searchEngineService.query(
@@ -1203,40 +1271,47 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 
                 QueryUtil q = new QueryUtil();
                 q.addEqualFilter("id", "[" + org.apache.commons.lang.StringUtils.join(pids.toArray(), ",") + "]");
-                q.setSortby("priority");
-                q.setOrder("asc");
                 List<JobPositionRecord> jobRecords = jobPositionDao.getResources(q);
 
-                // 内容拼装和返回
-                for (JobPositionRecord jr : jobRecords) {
-                    WechatPositionListData e = new WechatPositionListData();
-                    e.setTitle(jr.getTitle());
-                    e.setId(jr.getId());
+                for (Integer pid : pids) {
 
-                    // 数据库的 salary_top 和 salary_bottom 默认是 NULL 不是 0
-                    // 所以这里需要对这两个字段做 null pointer 检查
-                    if (jr.getSalaryTop() == null) {
-                        e.setSalary_top(0);
-                    } else {
-                        e.setSalary_top(jr.getSalaryTop());
+                    logger.info("pid: " + String.valueOf(pid));
+
+                    List<JobPositionRecord> jrList = jobRecords.stream().filter(p -> p.getId() == pid).collect(Collectors.toList());
+                    if (jrList != null && !jrList.isEmpty()) {
+                        logger.info("jrList: " + jrList.toString());
+
+                        JobPositionRecord jr = jrList.get(0);
+
+                        WechatPositionListData e = new WechatPositionListData();
+                        e.setTitle(jr.getTitle());
+                        e.setId(jr.getId());
+
+                        // 数据库的 salary_top 和 salary_bottom 默认是 NULL 不是 0
+                        // 所以这里需要对这两个字段做 null pointer 检查
+                        if (jr.getSalaryTop() == null) {
+                            e.setSalary_top(0);
+                        } else {
+                            e.setSalary_top(jr.getSalaryTop());
+                        }
+
+                        if (jr.getSalaryBottom() == null) {
+                            e.setSalary_bottom(0);
+                        } else {
+                            e.setSalary_bottom(jr.getSalaryBottom());
+                        }
+
+                        e.setPublish_date(new SimpleDateFormat("YYYY-MM-dd HH:mm:ss").format(jr.getUpdateTime()));
+                        e.setDepartment(jr.getDepartment());
+                        e.setVisitnum(jr.getVisitnum());
+                        e.setIn_hb(jr.getHbStatus() > 0);
+                        e.setCount(jr.getCount());
+                        e.setCity(jr.getCity());
+                        e.setPriority(jr.getPriority());
+                        e.setPublisher(jr.getPublisher()); // will be used for fetching sub company info
+
+                        dataList.add(e);
                     }
-
-                    if (jr.getSalaryBottom() == null) {
-                        e.setSalary_bottom(0);
-                    } else {
-                        e.setSalary_bottom(jr.getSalaryBottom());
-                    }
-
-                    e.setPublish_date(new SimpleDateFormat("YYYY-MM-dd HH:mm:ss").format(jr.getUpdateTime()));
-                    e.setDepartment(jr.getDepartment());
-                    e.setVisitnum(jr.getVisitnum());
-                    e.setIn_hb(jr.getHbStatus() > 0);
-                    e.setCount(jr.getCount());
-                    e.setCity(jr.getCity());
-                    e.setPriority(jr.getPriority());
-                    e.setPublisher(jr.getPublisher()); // will be used for fetching sub company info
-
-                    dataList.add(e);
                 }
 
                 logger.info(dataList.toString());
@@ -1287,7 +1362,6 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 
                     }
                 }
-
 
                 //拼装 company 相关内容
                 dataList = dataList.stream().map(s -> {
