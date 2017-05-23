@@ -46,7 +46,7 @@ public class ProfileEducationServicesImplTest{
 		response = service.getResource(commonQuery);
 	}
 
-	@Test
+//	@Test
 	public void postResource() throws TException {
 		Education education = new Education();
 		education.setProfile_id(170);

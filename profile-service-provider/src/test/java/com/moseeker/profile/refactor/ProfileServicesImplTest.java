@@ -44,7 +44,7 @@ public class ProfileServicesImplTest {
     }
 
 
-    @Test
+    //@Test
     public void getResource() throws TException {
         try {
             CommonQuery commonQuery = new CommonQuery();
@@ -59,7 +59,7 @@ public class ProfileServicesImplTest {
         }
     }
 
-    @Test
+    //@Test
     public void getResources() throws TException {
         try {
             CommonQuery commonQuery = new CommonQuery();
@@ -74,7 +74,7 @@ public class ProfileServicesImplTest {
         }
     }
 
-    @Test
+    //@Test
     public void getPagination() throws TException {
         try {
             CommonQuery commonQuery = new CommonQuery();
@@ -89,7 +89,7 @@ public class ProfileServicesImplTest {
         }
     }
 
-    @Test
+    //@Test
     public void postResource() throws TException {
         try {
             //165890	5d311bd8-53fa-4064-8324-eac6299675d4	1	0	80	2113186	1	2017-05-15 19:30:03	2017-05-15 19:29:47	1000000000000000
@@ -108,7 +108,7 @@ public class ProfileServicesImplTest {
         }
     }
 
-    @Test
+    //@Test
     public void postResources() throws TException {
         try {
             Profile profile = new Profile();
@@ -128,7 +128,7 @@ public class ProfileServicesImplTest {
         }
     }
 
-    @Test
+    //@Test
     public void getCompleteness() throws TException {
         try {
             response = service.getCompleteness(2113186, null, 165992);
@@ -139,7 +139,7 @@ public class ProfileServicesImplTest {
         }
     }
 
-    @Test
+    //@Test
     public void reCalculateUserCompleteness() throws TException {
         try {
             response = service.reCalculateUserCompleteness(2, null);
@@ -150,7 +150,7 @@ public class ProfileServicesImplTest {
         }
     }
 
-    @Test
+    //@Test
     public void reCalculateUserCompletenessBySettingId() throws TException {
         try {
             response = service.reCalculateUserCompletenessBySettingId(2);
@@ -161,7 +161,7 @@ public class ProfileServicesImplTest {
         }
     }
 
-    @Test
+    //@Test
     public void getProfileByApplication() throws TException {
         try {
 
@@ -172,7 +172,7 @@ public class ProfileServicesImplTest {
         }
     }
 
-    @Test
+    //@Test
     public void putResources() throws TException {
         try {
             Profile profile = new Profile();
@@ -188,7 +188,7 @@ public class ProfileServicesImplTest {
         }
     }
 
-    @Test
+    //@Test
     public void putResource() throws TException {
         try {
             Profile profile = new Profile();
@@ -202,7 +202,7 @@ public class ProfileServicesImplTest {
         }
     }
 
-    @Test
+    //@Test
     public void delResources() throws TException {
         try {
             Profile profile = new Profile();
@@ -217,7 +217,7 @@ public class ProfileServicesImplTest {
         }
     }
 
-    @Test
+    //@Test
     public void delResource() throws TException {
         try {
             Profile profile = new Profile();

@@ -41,21 +41,21 @@ public class ProfileOtherThriftServiceImplTest {
         System.out.println(JSON.toJSONString(response));
     }
 
-    @Test
+    //@Test
     public void getResources() throws TException {
         CommonQuery commonQuery = new CommonQuery();
         commonQuery.setEqualFilter(new HashMap<String,String>(){{put("profile_id","170");}});
         response = service.getResources(commonQuery);
     }
 
-    @Test
+    //@Test
     public void getResource() throws TException {
         CommonQuery commonQuery = new CommonQuery();
         commonQuery.setEqualFilter(new HashMap<String,String>(){{put("profile_id","170");}});
         response = service.getResource(commonQuery);
     }
 
-    @Test
+    //@Test
     public void postResources() throws TException {
         ProfileOtherDO profileOtherDO = new ProfileOtherDO();
         profileOtherDO.setProfileId(171);
@@ -65,7 +65,7 @@ public class ProfileOtherThriftServiceImplTest {
 
     }
 
-    @Test
+    //@Test
     public void postResource() throws TException {
         ProfileOtherDO profileOtherDO = new ProfileOtherDO();
         profileOtherDO.setProfileId(170);
@@ -74,7 +74,7 @@ public class ProfileOtherThriftServiceImplTest {
         response = service.postResource(profileOtherDO);
     }
 
-    @Test
+    //@Test
     public void putResources() throws TException {
         ProfileOtherDO profileOtherDO = new ProfileOtherDO();
         profileOtherDO.setProfileId(170);
@@ -82,7 +82,7 @@ public class ProfileOtherThriftServiceImplTest {
         response = service.putResources(new ArrayList<ProfileOtherDO>(){{add(profileOtherDO);}});
     }
 
-    @Test
+    //@Test
     public void putResource() throws TException {
         ProfileOtherDO profileOtherDO = new ProfileOtherDO();
         profileOtherDO.setProfileId(170);
@@ -90,14 +90,14 @@ public class ProfileOtherThriftServiceImplTest {
         response = service.putResource(profileOtherDO);
     }
 
-    @Test
+    //@Test
     public void delResources() throws TException {
         ProfileOtherDO profileOtherDO = new ProfileOtherDO();
         profileOtherDO.setProfileId(170);
         response = service.delResources(new ArrayList<ProfileOtherDO>(){{add(profileOtherDO);}});
     }
 
-    @Test
+    //@Test
     public void delResource() throws TException {
         ProfileOtherDO profileOtherDO = new ProfileOtherDO();
         profileOtherDO.setProfileId(171);
