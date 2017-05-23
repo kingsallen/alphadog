@@ -2,7 +2,6 @@ package com.moseeker.baseorm.server;
 
 import com.moseeker.baseorm.Thriftservice.*;
 import com.moseeker.rpccenter.main.MoServer;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -44,7 +43,6 @@ public class BaseOrmServer {
                     acac.getBean(LogDBDaoThriftService.class),
                     acac.getBean(ThirdPartyUserDaoThriftService.class),
                     acac.getBean(UserEmployeeDaoThriftService.class),
-                    acac.getBean(ProfileProfileDaoThriftService.class),
                     acac.getBean(TalentpoolDaoThriftService.class),
                     acac.getBean(CampaignDaoThriftService.class));
             server.startServer();

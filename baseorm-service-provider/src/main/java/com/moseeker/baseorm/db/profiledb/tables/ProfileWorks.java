@@ -20,7 +20,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -36,7 +35,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileWorks extends TableImpl<ProfileWorksRecord> {
 
-	private static final long serialVersionUID = 2129638144;
+	private static final long serialVersionUID = -1076855575;
 
 	/**
 	 * The reference instance of <code>profiledb.profile_works</code>
@@ -54,12 +53,12 @@ public class ProfileWorks extends TableImpl<ProfileWorksRecord> {
 	/**
 	 * The column <code>profiledb.profile_works.id</code>. 主key
 	 */
-	public final TableField<ProfileWorksRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
+	public final TableField<ProfileWorksRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "主key");
 
 	/**
 	 * The column <code>profiledb.profile_works.profile_id</code>. profile.id
 	 */
-	public final TableField<ProfileWorksRecord, UInteger> PROFILE_ID = createField("profile_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "profile.id");
+	public final TableField<ProfileWorksRecord, Integer> PROFILE_ID = createField("profile_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "profile.id");
 
 	/**
 	 * The column <code>profiledb.profile_works.name</code>. 作品名称
@@ -117,7 +116,7 @@ public class ProfileWorks extends TableImpl<ProfileWorksRecord> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Identity<ProfileWorksRecord, UInteger> getIdentity() {
+	public Identity<ProfileWorksRecord, Integer> getIdentity() {
 		return Keys.IDENTITY_PROFILE_WORKS;
 	}
 
@@ -134,7 +133,7 @@ public class ProfileWorks extends TableImpl<ProfileWorksRecord> {
 	 */
 	@Override
 	public List<UniqueKey<ProfileWorksRecord>> getKeys() {
-		return Arrays.<UniqueKey<ProfileWorksRecord>>asList(Keys.KEY_PROFILE_WORKS_PRIMARY);
+		return Arrays.<UniqueKey<ProfileWorksRecord>>asList(Keys.KEY_PROFILE_WORKS_PRIMARY, Keys.KEY_PROFILE_WORKS_IDX_PROFILEID);
 	}
 
 	/**

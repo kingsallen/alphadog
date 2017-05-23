@@ -335,6 +335,7 @@ public class CandidateEntity implements Candidate {
 
     @Override
     public SortResult getRecommendatorySorting(int postUserId, int companyId) throws BIZException {
+        logger.info("CandidateEntity getRecommendatorySorting postUserId:{}, companyId:{}", postUserId, companyId);
         /** 参数校验 */
         ValidateUtil vu = ParamCheckTool.checkRecommendatorySorting(postUserId, companyId);
         String message = vu.validate();
@@ -343,12 +344,14 @@ public class CandidateEntity implements Candidate {
         }
         /** 是否开启被动求职者 */
         boolean passiveSeeker = CandidateDBDao.isStartPassiveSeeker(companyId);
+        logger.info("CandidateEntity getRecommendatorySorting passiveSeeker:{}", passiveSeeker);
         if(!passiveSeeker) {
             throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_NOT_START);
         }
 
         /** 查找员工信息 */
         List<UserEmployeeDO> employeeDOList = CandidateDBDao.listUserEmployee(companyId);
+        logger.info("CandidateEntity getRecommendatorySorting employeeDOList:{}", employeeDOList);
         if(employeeDOList == null || employeeDOList.size() == 0) {
             throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_SORT_COLLEAGUE_NOT_EXIST);
         }
@@ -358,7 +361,7 @@ public class CandidateEntity implements Candidate {
         if(sortingDOList == null || sortingDOList.size() == 0) {
             throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_SORT_USER_NOT_EXIST);
         }
-
+        logger.info("CandidateEntity getRecommendatorySorting sortingDOList:{}", sortingDOList);
         return assembleSortingResult(sortingDOList, postUserId);
     }
 
@@ -421,6 +424,7 @@ public class CandidateEntity implements Candidate {
         }
         sortResult.setRank(rank);
         sortResult.setHongbao(Constant.BONUS*sortResult.getCount());
+        logger.info("CandidateEntity getRecommendatorySorting assembleSortingResult:{}", sortResult);
         return sortResult;
     }
 

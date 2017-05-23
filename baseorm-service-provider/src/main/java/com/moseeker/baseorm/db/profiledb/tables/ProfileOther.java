@@ -19,7 +19,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -35,7 +34,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileOther extends TableImpl<ProfileOtherRecord> {
 
-	private static final long serialVersionUID = 1649465213;
+	private static final long serialVersionUID = 1890247370;
 
 	/**
 	 * The reference instance of <code>profiledb.profile_other</code>
@@ -53,7 +52,7 @@ public class ProfileOther extends TableImpl<ProfileOtherRecord> {
 	/**
 	 * The column <code>profiledb.profile_other.profile_id</code>. profile.id
 	 */
-	public final TableField<ProfileOtherRecord, UInteger> PROFILE_ID = createField("profile_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "profile.id");
+	public final TableField<ProfileOtherRecord, Integer> PROFILE_ID = createField("profile_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "profile.id");
 
 	/**
 	 * The column <code>profiledb.profile_other.other</code>. profile默认不显示字段
