@@ -150,6 +150,7 @@ public class CompanyThriftService implements Iface {
 	public void setThirdPartyPositionDao(HRThirdPartyPositionDao thirdPartyPositionDao) {
 		this.thirdPartyPositionDao = thirdPartyPositionDao;
 	}
+
     /*
      * (non-Javadoc)
      * @see com.moseeker.thrift.gen.dao.service.CompanyDao.Iface#getHrCompanyConfig(com.moseeker.thrift.gen.common.struct.Query)

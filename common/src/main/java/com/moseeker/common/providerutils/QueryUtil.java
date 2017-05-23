@@ -101,6 +101,11 @@ public class QueryUtil extends Query {
         return this;
     }
 
+    public QueryUtil putToExtras(String name, String value) {
+        extras.put(name, value);
+        return this;
+    }
+
     private Condition buildCondition(String key, Object value) {
         Condition condition = null;
         if (value != null && value instanceof String && ((String) value).startsWith("[") && ((String) value).endsWith("]")) {

@@ -5,7 +5,7 @@ import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxHrChatDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxHrChatListDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
-import com.moseeker.baseorm.dao.userdb.UserHRAccountDao;
+import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.chat.constant.ChatSpeakerType;
@@ -51,7 +51,7 @@ public class ChatDao {
     UserWxUserDao userWxUserDao;
 
     @Autowired
-    UserHRAccountDao userHRAccountDao;
+    UserHrAccountDao userHrAccountDao;
 
     @Autowired
     HrCompanyDao hrCompanyDao;
@@ -183,7 +183,7 @@ public class ChatDao {
         queryUtil.addSelectAttribute("company_id");
         queryUtil.addEqualFilter("id", idStr);
         List<UserHrAccountDO> userHrAccountDOList = null;
-        userHrAccountDOList = userHRAccountDao.getDatas(queryUtil);
+        userHrAccountDOList = userHrAccountDao.getDatas(queryUtil);
         if(userHrAccountDOList != null && userHrAccountDOList.size() > 0) {
             int[] companyIds = userHrAccountDOList.stream().filter(hr -> hr.getCompanyId() > 0).mapToInt(hr -> hr.getCompanyId()).toArray();
 
@@ -222,7 +222,7 @@ public class ChatDao {
                 .addSelectAttribute("headimgurl").addSelectAttribute("wxuser_id");
         queryUtil.addEqualFilter("id", idStr);
         List<UserHrAccountDO> userHrAccountDOList = null;
-        userHrAccountDOList = userHRAccountDao.getDatas(queryUtil);
+        userHrAccountDOList = userHrAccountDao.getDatas(queryUtil);
 
         /** 需要检查HR的头像是否存在，如果不存在则使用HR绑定的微信账号的头像；如果还是没有，则使用公司的logo */
         if(userHrAccountDOList != null && userHrAccountDOList.size() > 0) {
@@ -383,7 +383,7 @@ public class ChatDao {
                 .addSelectAttribute("company_id").addSelectAttribute("headimgurl");
         findHR.addEqualFilter("id", hrId);
 
-        UserHrAccountDO userHrAccountDO = userHRAccountDao.getData(findHR);
+        UserHrAccountDO userHrAccountDO = userHrAccountDao.getData(findHR);
 
         /** 如果HR没有头像信息，则查找微信的头像信息；如果没有微信信息或者微信信息的头像不存在，则查找公司的logo */
         if(userHrAccountDO != null && userHrAccountDO.getId() > 0

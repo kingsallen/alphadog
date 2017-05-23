@@ -60,11 +60,6 @@ public class UseraccountsService {
 
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	MqService.Iface mqService = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
-	
-	com.moseeker.thrift.gen.dao.service.UserDBDao.Iface userDao = ServiceManager.SERVICEMANAGER
-			.getService(com.moseeker.thrift.gen.dao.service.UserDBDao.Iface.class);
-
 	@Autowired
 	protected UserWxUserDao wxuserdao;
 
@@ -349,7 +344,7 @@ public class UseraccountsService {
 		Query.QueryBuilder query = new Query.QueryBuilder();
 		query.where("id", String.valueOf(user_id)).and("password", MD5Util.encryptSHA(old_password));
 
-		int result = 0;
+		int result;
 		try {
 			UserUserRecord user = userdao.getRecord(query.buildQuery());
 
@@ -362,7 +357,7 @@ public class UseraccountsService {
 					query.where("id", String.valueOf(parentid));
 					UserUserRecord userParent = userdao.getRecord(query.buildQuery());
 					userParent.setPassword(MD5Util.encryptSHA(password));
-					result = userdao.updateRecord(userParent);
+					userdao.updateRecord(userParent);
 				}
 				user.setPassword(MD5Util.encryptSHA(password));
 				result = userdao.updateRecord(user);
@@ -428,7 +423,7 @@ public class UseraccountsService {
 		Query.QueryBuilder query = new Query.QueryBuilder();
 		query.where("username", mobile);
 
-		int result = 0;
+		int result;
 		try {
 			UserUserRecord user = userdao.getRecord(query.buildQuery());
 
@@ -445,7 +440,7 @@ public class UseraccountsService {
 						return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_PASSWORD_REPEATPASSWORD);
 					}
 					userParent.setPassword(newPassword);
-					result = userdao.updateRecord(userParent);
+					userdao.updateRecord(userParent);
 				}
 				if(newPassword.equals(user.getPassword())) {
 					return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_PASSWORD_REPEATPASSWORD);
@@ -655,7 +650,7 @@ public class UseraccountsService {
 		Query.QueryBuilder query = new Query.QueryBuilder();
 		query.where("id", String.valueOf(user_id));
 
-		int result = 0;
+		int result;
 		try {
 			UserUserRecord user = userdao.getRecord(query.buildQuery());
 
@@ -669,7 +664,7 @@ public class UseraccountsService {
 					UserUserRecord userParent = userdao.getRecord(query.buildQuery());
 					userParent.setMobile(Long.parseLong(newmobile));
 					userParent.setUsername(newmobile);
-					result = userdao.updateRecord(userParent);
+					userdao.updateRecord(userParent);
 				}
 				user.setMobile(Long.parseLong(newmobile));
 				user.setUsername(newmobile);

@@ -3,6 +3,7 @@ package com.moseeker.useraccounts.service.impl.biztools;
 import com.moseeker.baseorm.dao.candidatedb.CandidatePositionDao;
 import com.moseeker.baseorm.dao.candidatedb.CandidateRecomRecordDao;
 import com.moseeker.baseorm.dao.configdb.AwardConfigTplDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
@@ -64,7 +65,7 @@ public class UserCenterBizTools {
     private HrOperationRecordDao hrOperationRecordDao;
 
     @Autowired
-    private com.moseeker.baseorm.dao.hrdb.CompanyDao companyDao;
+    private HrCompanyDao companyDao;
 
     @Autowired
     private UserFavPositionDao favPositionDao;
@@ -92,9 +93,9 @@ public class UserCenterBizTools {
 	 * @return 职位数据集合
 	 * @throws TException thrift异常信息
 	 */
-	public List<JobPositionDO> getPositions(int... ids) throws TException {
+	public List<JobPositionDO> getPositions(Collection ids) throws TException {
 		Query.QueryBuilder qu = new Query.QueryBuilder();
-		qu.where("id", arrayToString(ids));
+		qu.where(new Condition("id", ids, ValueOp.IN));
 		return positionDao.getDatas(qu.buildQuery(), JobPositionDO.class);
 	}
 
@@ -104,9 +105,9 @@ public class UserCenterBizTools {
 	 * @return 公司信息集合
 	 * @throws TException thrift异常信息
 	 */
-	public List<Hrcompany> getCompanies(int... ids) throws TException {
+	public List<Hrcompany> getCompanies(Collection ids) throws TException {
 		Query.QueryBuilder qu = new Query.QueryBuilder();
-		qu.where(new Condition("id", Arrays.asList(ids), ValueOp.IN));
+		qu.where(new Condition("id", ids, ValueOp.IN));
 		return companyDao.getCompanies(qu.buildQuery());
 	}
 
@@ -143,7 +144,7 @@ public class UserCenterBizTools {
 	 * @throws TException
 	 */
 	public List<CandidateRecomRecordDO> listCandidateRecomRecords(int userId, int type, List<Integer> positionIdList, int pageNo, int pageSize) throws TException {
-		List<CandidateRecomRecordDO> recomRecordDOList = null;
+		List<CandidateRecomRecordDO> recomRecordDOList = new ArrayList<>();
 		switch (type) {
 			case 1:			//查找所有相关的职位转发记录
 				Query.QueryBuilder qu = new Query.QueryBuilder();
@@ -424,7 +425,7 @@ public class UserCenterBizTools {
         qu.select("id").select("name").select("abbreviation");
         qu.where("id", companyId);
 		try {
-			return companyDao.getCompany(qu.buildQuery());
+			return companyDao.getData(qu.buildQuery());
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			return null;

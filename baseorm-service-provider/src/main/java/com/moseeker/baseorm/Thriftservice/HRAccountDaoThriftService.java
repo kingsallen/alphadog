@@ -1,7 +1,7 @@
 package com.moseeker.baseorm.Thriftservice;
 
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
-import com.moseeker.baseorm.dao.userdb.UserHRAccountDao;
+import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.baseorm.tool.QueryConvert;
@@ -40,8 +40,8 @@ public class HRAccountDaoThriftService implements Iface {
 
     private Logger logger = LoggerFactory.getLogger(ChannelType.class);
 
-    @Autowired
-    private UserHRAccountDao hraccountDao;
+    @Autowired(required = false)
+    private UserHrAccountDao hraccountDao;
 
     @Autowired
     private HRThirdPartyAccountDao hrThirdPartyAccountDao;
@@ -51,7 +51,7 @@ public class HRAccountDaoThriftService implements Iface {
      * @param query
      * @return
      * @throws TException
-     * @see UserHRAccountDao#getRecord(Query)
+     * @see UserHrAccountDao#getRecord(Query)
      */
     @Override
     @Deprecated
@@ -185,7 +185,7 @@ public class HRAccountDaoThriftService implements Iface {
      * @param query
      * @return
      * @throws TException
-     * @see UserHRAccountDao#getDatas(Query, Class)
+     * @see UserHrAccountDao#getDatas(Query, Class)
      */
     @Override
     @Deprecated

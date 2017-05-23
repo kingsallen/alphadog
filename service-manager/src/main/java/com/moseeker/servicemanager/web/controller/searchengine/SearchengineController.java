@@ -1,5 +1,6 @@
 package com.moseeker.servicemanager.web.controller.searchengine;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -59,8 +60,8 @@ public class SearchengineController {
             Map position_map =JSON.parseObject(position,Map.class);
             
             String company_id = BeanUtils.converToString(position_map.get("company_id"));
-            QueryUtil query = new QueryUtil();
-            query.addEqualFilter("id", company_id);
+            CommonQuery query = new CommonQuery();
+            query.setEqualFilter(new HashMap<String, String>(){{put("id", company_id);}});
             Response company_resp = companyServices.getAllCompanies(query);
             String company = company_resp.data;
             logger.info("======"+company);
@@ -176,8 +177,8 @@ public class SearchengineController {
 	          Map position_map = (Map) JSON.parse(position);
 	          
 	          String company_id = BeanUtils.converToString(position_map.get("company_id"));
-	          QueryUtil query = new QueryUtil();
-	          query.addEqualFilter("id", company_id);
+	          CommonQuery query = new CommonQuery();
+	          query.setEqualFilter(new HashMap<String, String>(){{put("id", company_id);}});
 	          Response company_resp = companyServices.getAllCompanies(query);
 	          String company = company_resp.data;
 	          List company_maps = (List) JSON.parse(company);

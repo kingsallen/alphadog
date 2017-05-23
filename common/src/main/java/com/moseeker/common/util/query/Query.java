@@ -4,6 +4,7 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.exception.ConditionNotExist;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,11 +20,12 @@ public class Query {
     protected List<String> groups; // optional
     protected int pageSize; // optional
     protected int pageNum; // optional
-    private Map<String,String> extras; // optional
+    protected Map<String,String> extras; // optional
 
     protected Query() {
         this.attributes = new ArrayList<>();
         this.orders = new ArrayList<>();
+        this.extras = new HashMap<>();
     }
 
 
@@ -43,6 +45,7 @@ public class Query {
             this.attributes = new ArrayList<>();
             this.orders = new ArrayList<>();
             this.groups = new ArrayList<>();
+            this.extras = new HashMap<>();
         }
 
         public QueryBuilder select(String field) {
@@ -247,13 +250,13 @@ public class Query {
         }
 
         public void clear() {
-            this.attributes = null; // optional
+            this.attributes = new ArrayList<>(); // optional
             this.conditions = null; // optional
-            this.orders = null; // optional
-            this.groups = null; // optional
+            this.orders = new ArrayList<>(); // optional
+            this.groups = new ArrayList<>(); // optional
             this.pageSize = 0; // optional
             this.pageNum = 0; // optional
-            this.extras = null; // optional
+            this.extras = new HashMap<>(); // optional
         }
 
         private void setConditions(Condition conditions) throws ConditionNotExist {
