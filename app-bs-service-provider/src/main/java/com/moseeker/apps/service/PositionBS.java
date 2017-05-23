@@ -3,7 +3,6 @@ package com.moseeker.apps.service;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.position.struct.Position;
@@ -13,15 +12,20 @@ import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.alibaba.fastjson.JSON;
 import com.moseeker.apps.constants.ResultMessage;
 import com.moseeker.apps.service.position.PositionSyncResultPojo;
+import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
+import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.common.constants.PositionRefreshType;
 import com.moseeker.common.constants.PositionSync;
-import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.Query.QueryBuilder;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
@@ -45,19 +49,19 @@ import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 public class PositionBS {
 
 	Logger logger = LoggerFactory.getLogger(this.getClass());
-
-	PositionDao.Iface positionDao = ServiceManager.SERVICEMANAGER.getService(PositionDao.Iface.class);
-
 	UserHrAccountService.Iface userHrAccountService = ServiceManager.SERVICEMANAGER
 			.getService(UserHrAccountService.Iface.class);
-
 	CompanyServices.Iface companyService = ServiceManager.SERVICEMANAGER.getService(CompanyServices.Iface.class);
-
 	PositionServices.Iface positionServices = ServiceManager.SERVICEMANAGER.getService(PositionServices.Iface.class);
-
-	CompanyDao.Iface CompanyDao = ServiceManager.SERVICEMANAGER.getService(CompanyDao.Iface.class);
-
 	ChaosServices.Iface chaosService = ServiceManager.SERVICEMANAGER.getService(ChaosServices.Iface.class);
+	@Autowired
+	private JobPositionDao jobPositionDao;
+	@Autowired
+	private HRThirdPartyAccountDao hRThirdPartyAccountDao;
+	@Autowired
+	private HrCompanyDao hrCompanyDao;
+	@Autowired
+	private HRThirdPartyPositionDao hRThirdPartyPositionDao;
 
 	/**
 	 * 
@@ -67,10 +71,9 @@ public class PositionBS {
 	public Response synchronizePositionToThirdPartyPlatform(ThirdPartyPositionForm position) {
 		Response response = null;
 		// 职位数据是否存在
-		QueryUtil qu = new QueryUtil();
-		qu.addEqualFilter("id", String.valueOf(position.getPosition_id()));
+		Query query=new QueryBuilder().where("id", position.getPosition_id()).buildQuery();
 		try {
-			com.moseeker.thrift.gen.position.struct.Position positionStruct = positionDao.getPositionWithCityCode(qu);
+			com.moseeker.thrift.gen.position.struct.Position positionStruct=jobPositionDao.getPositionWithCityCode(query);
 			logger.info("position:" + JSON.toJSONString(positionStruct));
 			// 如果职位数据存在，并且是在招职位
 			if (positionStruct.getId() > 0 && positionStruct.getStatus() == 0) {
@@ -78,11 +81,8 @@ public class PositionBS {
 				List<PositionSyncResultPojo> results = new ArrayList<>();
 				// 是否可以同步职位
 				List<ThirdPartyPosition> positionFroms = new ArrayList<>(); // 可同步的职位
-
-				CommonQuery query = new CommonQuery();
-				query.addEqualFilter("company_id", String.valueOf(positionStruct.getCompany_id()));
-				List<ThirdPartAccountData> thirdPartyAccounts = CompanyDao
-						.getThirdPartyBindingAccounts(ThirdPartyBindingAccounts);
+				Query ThirdPartyBindingAccounts=new QueryBuilder().where("company_id", positionStruct.getCompany_id()).buildQuery();			
+				List<ThirdPartAccountData> thirdPartyAccounts =hRThirdPartyAccountDao.getDatas(ThirdPartyBindingAccounts, ThirdPartAccountData.class);
 				if (thirdPartyAccounts != null && thirdPartyAccounts.size() > 0) {
 					setCompanyAddress(position.getChannels(), positionStruct.getCompany_id());
 					for (ThirdPartyPosition p : position.getChannels()) {
@@ -163,7 +163,7 @@ public class PositionBS {
 						});
 						// 回写数据到第三方职位表表
 						logger.info("write back to thirdpartyposition:" + JSON.toJSONString(pds));
-						CompanyDao.upsertThirdPartyPositions(pds);
+						hRThirdPartyPositionDao.upsertThirdPartyPositions(pds);
 
 						ThirdPartyPositionForSynchronization p = positions.get(positions.size() - 1);
 						boolean needWriteBackToPositin = false;
@@ -181,7 +181,7 @@ public class PositionBS {
 						}
 						if (needWriteBackToPositin) {
 							logger.info("needWriteBackToPositin :" + JSON.toJSONString(positionStruct));
-							positionDao.updatePosition(positionStruct);
+							jobPositionDao.updatePosition(positionStruct);
 						}
 						response = ResultMessage.SUCCESS.toResponse(results);
 					} else {
@@ -218,15 +218,14 @@ public class PositionBS {
 		}
 		if(useCompanyAddress) {
 			try {
-				QueryUtil qu = new QueryUtil();
-				qu.addEqualFilter("id", String.valueOf(companyId));
-				HrCompanyDO company = CompanyDao.getCompany(qu);
+				Query query=new QueryBuilder().where("id",companyId).buildQuery();
+				HrCompanyDO company =hrCompanyDao.getData(query,HrCompanyDO.class);
 				for(ThirdPartyPosition channel : channels) {
 					if(channel.isUse_company_address()) {
 						channel.setAddress(company.getAddress());
 					}
 				}
-			} catch (TException e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				logger.error(e.getMessage(), e);
@@ -289,7 +288,7 @@ public class PositionBS {
 			Position job = new Position();
 			job.setId(positionId);
 			job.setUpdate_time((new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
-			positionDao.updatePosition(job);
+			jobPositionDao.updatePosition(job);
 		} catch (TException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -298,14 +297,6 @@ public class PositionBS {
 		}
 	}
 	
-	public PositionDao.Iface getPositionDao() {
-		return positionDao;
-	}
-
-	public void setPositionDao(PositionDao.Iface positionDao) {
-		this.positionDao = positionDao;
-	}
-
 	public UserHrAccountService.Iface getUserHrAccountService() {
 		return userHrAccountService;
 	}
@@ -330,13 +321,6 @@ public class PositionBS {
 		this.positionServices = positionServices;
 	}
 
-	public CompanyDao.Iface getCompanyDao() {
-		return CompanyDao;
-	}
-
-	public void setCompanyDao(CompanyDao.Iface companyDao) {
-		CompanyDao = companyDao;
-	}
 
 	public ChaosServices.Iface getChaosService() {
 		return chaosService;

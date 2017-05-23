@@ -11,13 +11,17 @@ import com.moseeker.thrift.gen.position.struct.WechatPositionListQuery;
 import com.moseeker.thrift.gen.position.struct.WechatRpPositionListData;
 import com.moseeker.thrift.gen.position.struct.WechatShareData;
 import com.moseeker.thrift.gen.position.struct.*;
-
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
+import com.moseeker.baseorm.tool.QueryConvert;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.BeanUtils;
 import com.moseeker.position.service.JobOccupationService;
 import com.moseeker.position.service.fundationbs.PositionService;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
@@ -30,12 +34,12 @@ import com.moseeker.thrift.gen.position.service.PositionServices.Iface;
 public class PositionServicesImpl implements Iface {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
-
     @Autowired
     private PositionService service;
     @Autowired
     private JobOccupationService customService;
-
+    @Autowired
+    private JobPositionDao jobPositionDao;
     /**
      * 获取推荐职位
      * <p></p>
@@ -60,9 +64,23 @@ public class PositionServicesImpl implements Iface {
 
     @Override
     public Response getResources(CommonQuery query) throws TException {
-        return service.getResources(query);
+    	try {
+    		List<JobPositionRecord> list=jobPositionDao.getRecords(QueryConvert.commonQueryConvertToQuery(query));
+			List<Position> structs = BeanUtils.DBToStruct(Position.class, list);
+			
+			if (!structs.isEmpty()){
+				return ResponseUtils.success(structs);
+			}
+			
+		} catch (Exception e) {
+			logger.error("getResources error", e);
+			return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+		} finally {
+			//do nothing
+		}
+		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
     }
-
+ 
     /**
      * @return response
      * @throws TException time 2016-11-21

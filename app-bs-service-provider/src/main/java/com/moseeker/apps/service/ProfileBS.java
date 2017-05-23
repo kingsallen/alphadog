@@ -2,10 +2,12 @@ package com.moseeker.apps.service;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.apps.constants.ResultMessage;
+import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.common.constants.UserSource;
-import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
@@ -19,6 +21,7 @@ import com.mysql.jdbc.StringUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -30,20 +33,18 @@ public class ProfileBS {
 	UseraccountsServices.Iface useraccountsServices = ServiceManager.SERVICEMANAGER
 			.getService(UseraccountsServices.Iface.class);
 	
-	com.moseeker.thrift.gen.dao.service.UserDBDao.Iface userDao = ServiceManager.SERVICEMANAGER
-			.getService(com.moseeker.thrift.gen.dao.service.UserDBDao.Iface.class);
-	
 	WholeProfileServices.Iface wholeProfileService = ServiceManager.SERVICEMANAGER
 			.getService(WholeProfileServices.Iface.class);
 	
 	JobApplicationServices.Iface applicationService = ServiceManager.SERVICEMANAGER
 			.getService(JobApplicationServices.Iface.class);
 	
-	PositionDao.Iface positionDao = ServiceManager.SERVICEMANAGER
-			.getService(PositionDao.Iface.class);
 	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+	@Autowired
+	private JobPositionDao jobPositionDao;
+	@Autowired
+	private UserUserDao userUserDao;
 
 	@SuppressWarnings("unchecked")
 	public Response retrieveProfile(int positionId, String profile, int channel) {
@@ -51,12 +52,13 @@ public class ProfileBS {
 		if(positionId == 0 || StringUtils.isNullOrEmpty(profile)) {
 			return ResultMessage.PROGRAM_PARAM_NOTEXIST.toResponse();
 		}
-		QueryUtil qu = new QueryUtil();
-		qu.addEqualFilter("id", String.valueOf(positionId));
+//		QueryUtil qu = new QueryUtil();
+//		qu.addEqualFilter("id", String.valueOf(positionId));
+		Query qu=new Query.QueryBuilder().where("id",positionId).buildQuery();
 		Position position = new Position();
 		try {
-			position = positionDao.getPosition(qu);
-		} catch (TException e1) {
+			position =jobPositionDao.getData(qu, Position.class);
+		} catch (Exception e1) {
 			e1.printStackTrace();
 			logger.error(e1.getMessage(), e1);
 			return ResultMessage.PROGRAM_EXCEPTION.toResponse();
@@ -77,10 +79,11 @@ public class ProfileBS {
 		resume.put("channel", channel);
 		try {
 			//查询是否存在相同手机号码的C端帐号
-			QueryUtil findRetrieveUserQU = new QueryUtil();
-			findRetrieveUserQU.addEqualFilter("mobile", mobile);
-			findRetrieveUserQU.addEqualFilter("source", String.valueOf(UserSource.RETRIEVE_PROFILE.getValue()));
-			UserUserDO user = userDao.getUser(findRetrieveUserQU);
+//			QueryUtil findRetrieveUserQU = new QueryUtil();
+//			findRetrieveUserQU.addEqualFilter("mobile", mobile);
+//			findRetrieveUserQU.addEqualFilter("source", String.valueOf(UserSource.RETRIEVE_PROFILE.getValue()));
+			Query findRetrieveUserQU=new Query.QueryBuilder().where("mobile", mobile).and("source",UserSource.RETRIEVE_PROFILE.getValue()).buildQuery();
+			com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO user =userUserDao.getData(findRetrieveUserQU); //userDao.getUser(findRetrieveUserQU);
 			if(user.getId() > 0) {
 				//查找该帐号是否有profile
 				JobApplication application = initApplication((int)user.getId(), positionId, position.getCompany_id());

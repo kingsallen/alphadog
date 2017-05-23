@@ -59,7 +59,6 @@ public class PositionBS1Test {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		positionBS.setPositionDao(positionDao);
 		//Mockito.when(positionServices.createRefreshPosition(positionId, channel)).thenReturn(account);
 	}
 	
