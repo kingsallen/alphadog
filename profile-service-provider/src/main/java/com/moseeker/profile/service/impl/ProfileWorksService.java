@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -66,6 +67,7 @@ public class ProfileWorksService {
         return ResponseUtils.success(ProfileUtils.getPagination(totalRow, query.getPageNum(), query.getPageSize(), datas));
     }
 
+    @Transactional
     public Response postResources(List<Works> structs) throws TException {
         List<ProfileWorksRecord> records = BeanUtils.structToDB(structs, ProfileWorksRecord.class);
         records = dao.addAllRecord(records);
@@ -84,7 +86,7 @@ public class ProfileWorksService {
         return ResponseUtils.success("1");
     }
 
-
+    @Transactional
     public Response putResources(List<Works> structs) throws TException {
         int[] result = dao.updateRecords(BeanUtils.structToDB(structs, ProfileWorksRecord.class));
         /* 重新计算profile完整度 */
@@ -98,7 +100,7 @@ public class ProfileWorksService {
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
     }
 
-
+    @Transactional
     public Response delResources(List<Works> structs) throws TException {
         QueryUtil qu = new QueryUtil();
         StringBuffer sb = new StringBuffer("[");
@@ -132,7 +134,7 @@ public class ProfileWorksService {
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DEL_FAILED);
     }
 
-
+    @Transactional
     public Response postResource(Works struct) throws TException {
         ProfileWorksRecord record = dao.addRecord(BeanUtils.structToDB(struct, ProfileWorksRecord.class));
         /* 重新计算profile完整度 */
@@ -143,7 +145,7 @@ public class ProfileWorksService {
         return ResponseUtils.success(String.valueOf(record.getId()));
     }
 
-
+    @Transactional
     public Response putResource(Works struct) throws TException {
         int result = dao.updateRecord(BeanUtils.structToDB(struct, ProfileWorksRecord.class));
         /* 重新计算profile完整度 */
@@ -155,7 +157,7 @@ public class ProfileWorksService {
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
     }
 
-
+    @Transactional
     public Response delResource(Works struct) throws TException {
         int result = dao.deleteRecord(BeanUtils.structToDB(struct, ProfileWorksRecord.class));
         /* 重新计算profile完整度 */

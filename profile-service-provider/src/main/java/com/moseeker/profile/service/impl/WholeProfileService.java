@@ -41,6 +41,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.concurrent.Future;
@@ -181,6 +182,7 @@ public class WholeProfileService {
     }
 
     @SuppressWarnings("unchecked")
+    @Transactional
     public Response postResource(String profile, int userId) throws TException {
         if (!StringUtils.isNullOrEmpty(profile)) {
             Map<String, Object> resume = JSON.parseObject(profile);
@@ -336,6 +338,7 @@ public class WholeProfileService {
     }
 
     @SuppressWarnings("unchecked")
+    @Transactional
     public Response importCV(String profile, int userId) throws TException {
 
         logger.info("importCV profile:" + profile);
@@ -395,6 +398,7 @@ public class WholeProfileService {
      * @return
      */
     @SuppressWarnings("unchecked")
+    @Transactional
     public Response createProfile(String profile) {
         Map<String, Object> resume = JSON.parseObject(profile);
         ProfileProfileRecord profileRecord = profileUtils
@@ -434,6 +438,7 @@ public class WholeProfileService {
 
     // 完善简历
     @SuppressWarnings("unchecked")
+    @Transactional
     public Response improveProfile(String profile) {
         Map<String, Object> resume = JSON.parseObject(profile);
         ProfileProfileRecord profileRecord = profileUtils
@@ -482,6 +487,7 @@ public class WholeProfileService {
         }
     }
 
+    @Transactional
     public Response improveProfile(int destUserId, int originUserId) {
         ProfileProfileRecord destProfile = profileDao.getProfileByIdOrUserIdOrUUID(destUserId, 0, null);
         ProfileProfileRecord originProfile = profileDao.getProfileByIdOrUserIdOrUUID(originUserId, 0, null);
@@ -566,12 +572,14 @@ public class WholeProfileService {
         return statisticsForChannelmportVO;
     }
 
+    @Transactional
     private void improveUser(UserUserRecord userRecord) {
         if (userRecord != null) {
             userDao.updateRecord(userRecord);
         }
     }
 
+    @Transactional
     private void improveWorks(List<ProfileWorksRecord> worksRecords, int profileId) {
         if (worksRecords != null && worksRecords.size() > 0) {
             worksDao.delWorksByProfileId(profileId);
@@ -583,6 +591,7 @@ public class WholeProfileService {
         }
     }
 
+    @Transactional
     private void improveWorkexp(List<ProfileWorkexpEntity> workexpRecords, int profileId) {
         if (workexpRecords != null && workexpRecords.size() > 0) {
             workExpDao.delWorkExpsByProfileId(profileId);
@@ -597,6 +606,7 @@ public class WholeProfileService {
         }
     }
 
+    @Transactional
     private void improveSkill(List<ProfileSkillRecord> skillRecords, int profileId) {
         if (skillRecords != null && skillRecords.size() > 0) {
             skillDao.delSkillByProfileId(profileId);
@@ -608,6 +618,7 @@ public class WholeProfileService {
         }
     }
 
+    @Transactional
     private void improveProjectexp(List<ProfileProjectexpRecord> projectExps, int profileId) {
         if (projectExps != null && projectExps.size() > 0) {
             projectExpDao.delProjectExpByProfileId(profileId);
@@ -619,6 +630,7 @@ public class WholeProfileService {
         }
     }
 
+    @Transactional
     private void improveOther(ProfileOtherRecord otherRecord, int profileId) {
         if (otherRecord != null && StringUtils.isNotNullOrEmpty(otherRecord.getOther())) {
             QueryUtil qu = new QueryUtil();
@@ -631,6 +643,7 @@ public class WholeProfileService {
         }
     }
 
+    @Transactional
     private void improveLanguage(List<ProfileLanguageRecord> languageRecords, int profileId) {
         if (languageRecords != null && languageRecords.size() > 0) {
             languageDao.delLanguageByProfileId(profileId);
@@ -642,6 +655,7 @@ public class WholeProfileService {
         }
     }
 
+    @Transactional
     private void improveIntention(List<IntentionRecord> intentionRecords, int profileId) {
         if (intentionRecords != null && intentionRecords.size() > 0) {
             intentionDao.delIntentionsByProfileId(profileId);
@@ -653,6 +667,7 @@ public class WholeProfileService {
         }
     }
 
+    @Transactional
     private void improveEducation(List<ProfileEducationRecord> educationRecords, int profileId) {
         if (educationRecords != null && educationRecords.size() > 0) {
             educationDao.delEducationsByProfileId(profileId);
@@ -665,6 +680,7 @@ public class WholeProfileService {
         }
     }
 
+    @Transactional
     private void improveCredentials(List<ProfileCredentialsRecord> credentialsRecords, int profileId) {
         if (credentialsRecords != null && credentialsRecords.size() > 0) {
             credentialsDao.delCredentialsByProfileId(profileId);
@@ -676,6 +692,7 @@ public class WholeProfileService {
         }
     }
 
+    @Transactional
     private void improveAwards(List<ProfileAwardsRecord> awardsRecords, int profileId) {
         if (awardsRecords != null && awardsRecords.size() > 0) {
             awardsDao.delAwardsByProfileId(profileId);
@@ -687,6 +704,7 @@ public class WholeProfileService {
         }
     }
 
+    @Transactional
     private void improveAttachment(List<ProfileAttachmentRecord> attachmentRecords, int profileId) {
         if (attachmentRecords != null && attachmentRecords.size() > 0) {
             attachmentDao.delAttachmentsByProfileId(profileId);
@@ -704,6 +722,7 @@ public class WholeProfileService {
      * @param basicRecord
      * @param profileId
      */
+    @Transactional
     private void improveBasic(ProfileBasicRecord basicRecord, int profileId) {
         if (basicRecord != null) {
             QueryUtil qu = new QueryUtil();
@@ -771,6 +790,7 @@ public class WholeProfileService {
      * @param profileRecord
      * @param record
      */
+    @Transactional
     private void improveProfile(ProfileProfileRecord profileRecord, ProfileProfileRecord record) {
         if (profileRecord != null) {
             if (record != null) {
