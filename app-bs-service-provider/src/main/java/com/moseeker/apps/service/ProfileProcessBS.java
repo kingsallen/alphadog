@@ -9,12 +9,24 @@ import com.moseeker.apps.constants.TemplateMs;
 import com.moseeker.apps.constants.TemplateMs.MsInfo;
 import com.moseeker.apps.utils.BusinessUtil;
 import com.moseeker.apps.utils.ProcessUtils;
+import com.moseeker.baseorm.dao.configdb.ConfigSysPointsConfTplDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
+import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
+import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
+import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
+import com.moseeker.baseorm.dao.userdb.UserEmployeePointsRecordDao;
+import com.moseeker.baseorm.dao.userdb.UserHRAccountDao;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeePointsRecordRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.common.annotation.notify.UpdateEs;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.application.struct.ApplicationAts;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
@@ -29,15 +41,14 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
 import com.moseeker.thrift.gen.mq.struct.MessageTplDataCol;
-import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeePointStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeePointSum;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,24 +59,25 @@ import java.util.stream.Collectors;
 @Service
 public class ProfileProcessBS {
     private Logger log = LoggerFactory.getLogger(getClass());
-
+    Logger logger = LoggerFactory.getLogger(this.getClass());
     private MqService.Iface mqService = ServiceManager.SERVICEMANAGER
             .getService(MqService.Iface.class);
-
     CompanyServices.Iface companyService = ServiceManager.SERVICEMANAGER
             .getService(CompanyServices.Iface.class);
-
-    ApplicationDao.Iface applicationDao = ServiceManager.SERVICEMANAGER
-            .getService(ApplicationDao.Iface.class);
-    UserHrAccountDao.Iface useraccountDao = ServiceManager.SERVICEMANAGER
-            .getService(UserHrAccountDao.Iface.class);
-    ConfigDBDao.Iface configDao = ServiceManager.SERVICEMANAGER
-            .getService(ConfigDBDao.Iface.class);
-    UserDBDao.Iface userDao = ServiceManager.SERVICEMANAGER
-            .getService(UserDBDao.Iface.class);
-    HrDBDao.Iface hrDao = ServiceManager.SERVICEMANAGER
-            .getService(HrDBDao.Iface.class);
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    @Autowired
+    private JobApplicationDao jobApplicationDao;
+    @Autowired
+    private UserHRAccountDao userHraccountDao;
+    @Autowired
+    private ConfigSysPointsConfTplDao configSysPointsConfTplDao;
+    @Autowired
+    private UserEmployeeDao userEmployeeDao;
+    @Autowired
+    protected HrCompanyDao hrCompanyDao;
+    @Autowired
+    private HrOperationRecordDao hrOperationRecordDao;
+    @Autowired
+    private UserEmployeePointsRecordDao userEmployeePointsRecordDao;
 
     /**
      * ats简历进度
@@ -98,25 +110,9 @@ public class ProfileProcessBS {
 
     // 通过ats的l_application_id得到List<account_id,company_id,application_ia>
     private List<ApplicationAts> getJobApplication(String params)
-            throws Exception {
+            throws Exception {      
         List<Integer> appIds = this.convertList(params);
-        Response result = applicationDao.getApplicationsByList(appIds);
-        if (result.getStatus() == 0
-                && StringUtils.isNotNullOrEmpty(result.getData())
-                && !"[]".equals(result.getData())) {
-            return this.convertApplicationAtsList(result.getData());
-        }
-        return null;
-    }
-
-    // 将ApplicationAts（account_id,company_id,application_ia）转化为list
-    private List<ApplicationAts> convertApplicationAtsList(String params) {
-        List<ApplicationAts> list = new ArrayList<ApplicationAts>();
-        JSONArray jsay = JSON.parseArray(params);
-        for (int i = 0; i < jsay.size(); i++) {
-            JSONObject obj = jsay.getJSONObject(i);
-            list.add(JSONObject.toJavaObject(obj, ApplicationAts.class));
-        }
+        List<ApplicationAts> list=jobApplicationDao.getApplicationByLApId(appIds);
         return list;
     }
 
@@ -136,16 +132,11 @@ public class ProfileProcessBS {
                         .fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
             }
             // 对需要修改的进行权限验证
-            Response application = applicationDao.getProcessAuth(appIds,
-                    companyId, progressStatus);
-            if (application.getStatus() == 0) {
-                String data = application.getData();
-                if (StringUtils.isNullOrEmpty(data) || "[]".equals(data)) {
-                    return ResponseUtils.success("");
-                }
+            List<ProcessValidationStruct> list=jobApplicationDao.getAuth(appIds, companyId, progressStatus);
+            if (list!=null&&list.size()>0) {
+               
                 boolean processStatus = true;
                 int recruitOrder = 0;
-                List<ProcessValidationStruct> list = this.ConvertList(data);
                 UserHrAccount account = this.getAccount(accountId);
                 //  判断申请状态是否相同
                 if (account != null) {
@@ -168,13 +159,7 @@ public class ProfileProcessBS {
                 }
                 //  对所有的
                 if (processStatus || progressStatus == 13 || progressStatus == 99) {
-                    Response recruit = configDao.getRecruitProcesses(companyId);
-
-                    List<HrAwardConfigTemplate> recruitProcesses = null;
-                    if (recruit.getStatus() == 0 && StringUtils.isNotNullOrEmpty(recruit.getData()) && !"[]".equals(recruit.getData())) {
-                        recruitProcesses = this.convertRecruitProcessesList(recruit.getData());
-                    }
-
+                	List<HrAwardConfigTemplate> recruitProcesses=configSysPointsConfTplDao.findRecruitProcesses(companyId);
                     RecruitmentResult result = BusinessUtil.excuteRecruitRewardOperation(recruitOrder, progressStatus, recruitProcesses);
                     if (result.getStatus() == 0) {
                         List<Integer> weChatIds = new ArrayList<Integer>();
@@ -206,16 +191,9 @@ public class ProfileProcessBS {
                             weChatIds.add(record.getRecommender_id());
                         }
                         //注意在获取employyee时，weChatIds已经不用，此处没有修改thrift的代码，所以还在
-                        Response employeeResult = userDao.getUserEmployee(
-                                companyId, weChatIds);
                         List<UserEmployeeStruct> employeesToBeUpdates = new ArrayList<UserEmployeeStruct>();
-                        if (employeeResult.getStatus() == 0
-                                && StringUtils.isNotNullOrEmpty(employeeResult
-                                .getData())
-                                && !"[]".equals(employeeResult.getData())) {
-                            employeesToBeUpdates = ConvertUserEmployeeList(employeeResult
-                                    .getData());
-                        }
+                        List<UserEmployeeRecord> UserEmployeeRecords =userEmployeeDao.getEmployeeByWeChat(companyId, weChatIds);
+                        employeesToBeUpdates=convertStruct(UserEmployeeRecords);
                         if (employeesToBeUpdates != null
                                 && employeesToBeUpdates.size() > 0) {
                             for (RewardsToBeAddBean bean : rewardsToBeAdd) {
@@ -264,7 +242,19 @@ public class ProfileProcessBS {
         }
 
     }
-
+    /*
+     * 将record转化为struct
+     */
+    private List<UserEmployeeStruct> convertStruct(List<UserEmployeeRecord> list) {
+        List<UserEmployeeStruct> datas = new ArrayList<UserEmployeeStruct>();
+        if (list != null && list.size() > 0) {
+            for (UserEmployeeRecord record : list) {
+                UserEmployeeStruct data = BeanUtils.DBToStruct(UserEmployeeStruct.class, record);
+                datas.add(data);
+            }
+        }
+        return datas;
+    }
     /**
      * 发送消息模板
      */
@@ -278,18 +268,13 @@ public class ProfileProcessBS {
         if (msInfo != null) {
             String color = "#173177";
             String companyName = "";
-            QueryUtil query = new QueryUtil();
-            Map<String, String> paramMap = new HashMap<String, String>();
-            query.setEqualFilter(paramMap);
-            paramMap.put("id", String.valueOf(companyId));
             try {
-                Response company = companyService.getResource(query);
-                if (company.status == 0) {
-                    JSONObject companyJson = JSON
-                            .parseObject(company.getData());
-                    companyName = companyJson.getString("name");
+            	Query query=new Query.QueryBuilder().where("hrCompanyDao", companyId).buildQuery();
+            	HrCompany company=hrCompanyDao.getData(query,HrCompany.class);
+                if(company!=null){
+                	companyName =company.getName();
                 }
-            } catch (TException e2) {
+            } catch (Exception e2) {
                 log.error(e2.getMessage(), e2);
             }
             MessageTplDataCol firstMs = new MessageTplDataCol();
@@ -380,7 +365,7 @@ public class ProfileProcessBS {
             struct.setAppId(beans.getApplication_id());
             lists.add(struct);
         }
-        hrDao.postHrOperationrecords(lists);
+        hrOperationRecordDao.addAllData(lists);
         insertRecord(result, rewardsToBeAdd, employeesToBeUpdates);
 
     }
@@ -390,20 +375,20 @@ public class ProfileProcessBS {
                               List<RewardsToBeAddBean> rewardsToBeAdd,
                               List<UserEmployeeStruct> employeesToBeUpdates) throws Exception {
         if (result.getReward() != 0) {
-            List<UserEmployeePointStruct> list = new ArrayList<UserEmployeePointStruct>();
-            UserEmployeePointStruct point = null;
-            for (RewardsToBeAddBean bean : rewardsToBeAdd) {
-                if (bean.getEmployee_id() != 0) {
-                    point = new UserEmployeePointStruct();
-                    point.setEmployee_id(bean.getEmployee_id());
-                    point.setAward(bean.getAward());
-                    point.setApplication_id(bean.getApplication_id());
-                    point.setReason(bean.getReason());
-                    list.add(point);
-                }
+            List<UserEmployeePointsRecordRecord> list = new ArrayList<UserEmployeePointsRecordRecord>();
+            UserEmployeePointsRecordRecord record=null;
+            for(RewardsToBeAddBean bean : rewardsToBeAdd){
+            	 if (bean.getEmployee_id() != 0) {
+            		 record=new UserEmployeePointsRecordRecord();
+            		 record.setEmployeeId((long)bean.getEmployee_id());
+            		 record.setAward(bean.getAward());
+            		 record.setApplicationId((long)bean.getApplication_id());
+            		 record.setReason(bean.getReason());
+            		 list.add(record);
+            	 }
             }
             // 插入积分操作日志
-            userDao.postUserEmployeePoints(list);
+            userEmployeePointsRecordDao.addAllRecord(list);
             this.updateEmployee(employeesToBeUpdates);
 
         }
@@ -416,36 +401,25 @@ public class ProfileProcessBS {
         for (UserEmployeeStruct data : employeesToBeUpdates) {
             records.add(Long.parseLong(data.getId() + ""));
         }
-        Response result = userDao.getPointSum(records);
-        if (result.getStatus() == 0
-                && StringUtils.isNotNullOrEmpty(result.getData())
-                && !"[]".equals(result.getData())) {
-            List<UserEmployeePointSum> list = this.ConvertpointSumList(result
-                    .getData());
+        List<UserEmployeePointSum> list=userEmployeePointsRecordDao.getSumRecord(records);
+        List<UserEmployeeRecord> UserEmployeeList = new ArrayList<UserEmployeeRecord>();
+        if (list!=null&&list.size()>0) {
             for (UserEmployeeStruct employee : employeesToBeUpdates) {
+            	
+            	UserEmployeeRecord userEmployeeRecord=BeanUtils.structToDB(employee, UserEmployeeRecord.class);
                 for (UserEmployeePointSum point : list) {
                     if (Long.parseLong(employee.getId() + "") == point
                             .getEmployee_id()) {
                         employee.setAward(point.getAward());
+                        userEmployeeRecord.setAward((int)point.getAward());
                         break;
                     }
 
                 }
+                UserEmployeeList.add(userEmployeeRecord);
             }
-            userDao.putUserEmployees(employeesToBeUpdates);
+            userEmployeeDao.updateRecords(UserEmployeeList);
         }
-    }
-
-    // 将总积分列表的string转化为list
-    private List<UserEmployeePointSum> ConvertpointSumList(String data) {
-        List<UserEmployeePointSum> list = new ArrayList<UserEmployeePointSum>();
-        JSONArray jsay = JSONObject.parseArray(data);
-        for (int i = 0; i < jsay.size(); i++) {
-            UserEmployeePointSum record = JSONObject.toJavaObject(
-                    jsay.getJSONObject(i), UserEmployeePointSum.class);
-            list.add(record);
-        }
-        return list;
     }
 
     // 当 progress_status！=13&&progress_status！=99时的操作
@@ -453,14 +427,10 @@ public class ProfileProcessBS {
             List<ProcessValidationStruct> applications,
             List<RewardsToBeAddBean> rewardsToBeAdd, int progressStatus)
             throws Exception {
-        QueryUtil query = new QueryUtil();
-        query.setPer_page(Integer.MAX_VALUE);
-        Response result = configDao.getConfigSysPointsConfTpls(query);
-        if (result.getStatus() == 0
-                && StringUtils.isNotNullOrEmpty(result.getData())
-                && !"[]".equals(result.getData())) {
-            List<ConfigSysPointsConfTpl> list = this.ConvertConfigList(result
-                    .getData());
+        Query query=new Query.QueryBuilder().buildQuery();
+        List<ConfigSysPointsConfTpl> list =configSysPointsConfTplDao.getDatas(query, ConfigSysPointsConfTpl.class);
+        if (list!=null&&list.size()>0) {
+          
             List<JobApplication> app = new ArrayList<JobApplication>();
             JobApplication jobApplication = null;
             for (ProcessValidationStruct data : applications) {
@@ -477,7 +447,7 @@ public class ProfileProcessBS {
                 }
                 app.add(jobApplication);
             }
-            applicationDao.putApplications(app);
+            jobApplicationDao.updateRecords(convertDB(app));
             int operate_tpl_id = 0;
             for (ConfigSysPointsConfTpl config : list) {
                 if (config.getRecruit_order() == progressStatus) {
@@ -491,27 +461,21 @@ public class ProfileProcessBS {
         return rewardsToBeAdd;
     }
 
-    // 将积分配置表的string转化为list
-    private List<ConfigSysPointsConfTpl> ConvertConfigList(String data) {
-        List<ConfigSysPointsConfTpl> list = new ArrayList<ConfigSysPointsConfTpl>();
-        JSONArray jsay = JSONObject.parseArray(data);
-        for (int i = 0; i < jsay.size(); i++) {
-            ConfigSysPointsConfTpl record = JSONObject.toJavaObject(
-                    jsay.getJSONObject(i), ConfigSysPointsConfTpl.class);
-            list.add(record);
-        }
-        return list;
-    }
-
     // 当 progress_status=99时的操作
     private List<RewardsToBeAddBean> Operation99(
             List<ProcessValidationStruct> applications,
             List<RewardsToBeAddBean> rewardsToBeAdd) throws Exception {
-        Response result = hrDao.getHrHistoryOperations(applications);
-        if (result.getStatus() == 0
-                && StringUtils.isNotNullOrEmpty(result.getData())
-                && !"[]".equals(result.getData())) {
-            List<HistoryOperate> list = ConvertHistoryList(result.getData());
+    	
+	    StringBuffer sb = new StringBuffer();
+        sb.append("(");
+        for (ProcessValidationStruct record : applications) {
+          sb.append("" + record.getId() + ",");
+        }
+        sb.deleteCharAt(sb.length() - 1);
+        sb.append(")");
+        String param = sb.toString();
+        List<HistoryOperate> list=hrOperationRecordDao.getHistoryOperate(param);
+        if (list!=null&&list.size()>0) {
             for (RewardsToBeAddBean reward : rewardsToBeAdd) {
                 for (HistoryOperate his : list) {
                     if (his.getOperate_tpl_id() == 0) {
@@ -521,7 +485,6 @@ public class ProfileProcessBS {
                         reward.setOperate_tpl_id(his.getOperate_tpl_id());
                         break;
                     }
-
                 }
             }
             List<JobApplication> app = new ArrayList<JobApplication>();
@@ -534,39 +497,18 @@ public class ProfileProcessBS {
                 jobApplication.setIs_viewed(0);
                 app.add(jobApplication);
             }
-            applicationDao.putApplications(app);
+            jobApplicationDao.updateRecords(convertDB(app));
         }
         return rewardsToBeAdd;
     }
-
-    // 将操作记录的string转化为list
-    private List<HistoryOperate> ConvertHistoryList(String data) {
-        List<HistoryOperate> list = new ArrayList<HistoryOperate>();
-        JSONArray jsay = JSONObject.parseArray(data);
-        for (int i = 0; i < jsay.size(); i++) {
-            HistoryOperate record = JSONObject.toJavaObject(
-                    jsay.getJSONObject(i), HistoryOperate.class);
-            list.add(record);
-        }
-        return list;
-    }
-
     // 当 progress_status=13时的操作
     private List<RewardsToBeAddBean> Operation13(
             List<ProcessValidationStruct> applications,
             List<RewardsToBeAddBean> rewardsToBeAdd,
-            List<HrOperationRecordDO> turnToCVCheckeds) throws Exception {
-        QueryUtil query = new QueryUtil();
-        Map<String, String> map = new HashMap<String, String>();
-        map.put("recruit_order", 13 + "");
-        query.setEqualFilter(map);
-        Response result = configDao.getConfigSysPointsConfTpl(query);
-        if (result.getStatus() == 0
-                && StringUtils.isNotNullOrEmpty(result.getData())
-                && !"[]".equals(result.getData())) {
-            ConfigSysPointsConfTpl config = JSONObject.toJavaObject(
-                    JSONObject.parseObject(result.getData()),
-                    ConfigSysPointsConfTpl.class);
+            List<HrOperationRecordDO> turnToCVCheckeds) throws Exception {     
+        Query query=new Query.QueryBuilder().where("recruit_order", 13).buildQuery();
+        ConfigSysPointsConfTpl config = configSysPointsConfTplDao.getData(query, ConfigSysPointsConfTpl.class);
+        if (config!=null) {
             int app_tpl_id = config.getId();
             List<JobApplication> list = new ArrayList<JobApplication>();
             JobApplication jobApplication = null;
@@ -579,80 +521,30 @@ public class ProfileProcessBS {
                 jobApplication.setReward(struct.getReward());
                 list.add(jobApplication);
             }
-            applicationDao.putApplications(list);
+            jobApplicationDao.updateRecords(convertDB(list));
             for (RewardsToBeAddBean reward : rewardsToBeAdd) {
                 reward.setOperate_tpl_id(app_tpl_id);
             }
-            hrDao.postHrOperationrecords(turnToCVCheckeds);
+            hrOperationRecordDao.addAllData(turnToCVCheckeds);
         }
         return rewardsToBeAdd;
     }
-
-    // 将信息验证转换为list集合
-    private List<ProcessValidationStruct> ConvertList(String data) {
-        List<ProcessValidationStruct> list = new ArrayList<ProcessValidationStruct>();
-        JSONArray jsay = JSONObject.parseArray(data);
-        for (int i = 0; i < jsay.size(); i++) {
-            ProcessValidationStruct record = JSONObject.toJavaObject(
-                    jsay.getJSONObject(i), ProcessValidationStruct.class);
-//            Integer applier_id=record.getApplier_id();
-//            if(applier_id!=null&&applier_id!=0){
-//            	try{
-//	            	CommonQuery query=new CommonQuery();
-//	            	HashMap<String,String> map=new HashMap<String,String>();
-//	            	map.put("id", applier_id+"");
-//	            	query.setEqualFilter(map);
-//	            	UserUserDO userRecord=userDao.getUser(query);
-//	            	String applier_name=userRecord.getName();
-//	            	record.setApplier_name(applier_name);
-//            	}catch(Exception e){
-//            		logger.info(e.getMessage(),e);
-//            	}
-//            }
-            list.add(record);
-        }
-        return list;
-    }
-
-    // 将返回的雇员信息转换成List
-    private List<UserEmployeeStruct> ConvertUserEmployeeList(String data) {
-        List<UserEmployeeStruct> list = new ArrayList<UserEmployeeStruct>();
-        JSONArray jsay = JSONObject.parseArray(data);
-        for (int i = 0; i < jsay.size(); i++) {
-            UserEmployeeStruct record = JSONObject.toJavaObject(
-                    jsay.getJSONObject(i), UserEmployeeStruct.class);
-            list.add(record);
-        }
-        return list;
-    }
-
-    // 将企业积分列表转换成list 集合
-    private List<HrAwardConfigTemplate> convertRecruitProcessesList(String data) {
-        List<HrAwardConfigTemplate> list = new ArrayList<HrAwardConfigTemplate>();
-        JSONArray jsay = JSONObject.parseArray(data);
-        for (int i = 0; i < jsay.size(); i++) {
-            HrAwardConfigTemplate record = JSONObject.toJavaObject(
-                    jsay.getJSONObject(i), HrAwardConfigTemplate.class);
-            list.add(record);
-        }
-        return list;
-    }
+    /*
+     * struct转化为db
+     * 
+     */
+    private List<JobApplicationRecord>convertDB(List<JobApplication> applications){
+		List<JobApplicationRecord> list=new ArrayList<JobApplicationRecord>();
+		for(JobApplication application:applications){
+			list.add(BeanUtils.structToDB(application, JobApplicationRecord.class));
+		}
+		return list;
+	}
 
     // 获取账户信息
     private UserHrAccount getAccount(int accountId) throws Exception {
-        UserHrAccount account = null;
-        QueryUtil query = new QueryUtil();
-        Map<String, String> map = new HashMap<String, String>();
-        map.put("id", accountId + "");
-        query.setEqualFilter(map);
-        Response user = useraccountDao.getAccount(query);
-        if (user.getStatus() == 0
-                && StringUtils.isNotNullOrEmpty(user.getData())
-                && !"[]".equals(user.getData())) {
-            account = JSONObject
-                    .toJavaObject(JSONObject.parseObject(user.getData()),
-                            UserHrAccount.class);
-        }
+        Query query=new Query.QueryBuilder().where("id",accountId).buildQuery();
+        UserHrAccount account=userHraccountDao.getData(query, UserHrAccount.class);
         return account;
     }
 

@@ -95,9 +95,7 @@ public class PositionBSTest {
 		}
 		
 		positionBS.setChaosService(chaosService);
-		positionBS.setCompanyDao(CompanyDao);
 		positionBS.setCompanyService(companyService);
-		positionBS.setPositionDao(positionDao);
 		positionBS.setPositionServices(positionServices);
 		positionBS.setUserHrAccountService(userHrAccountService);
 		

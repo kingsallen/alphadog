@@ -1,4 +1,4 @@
-package com.moseeker.apps.server;
+package com.moseeker.apps;
 
 import com.moseeker.rpccenter.common.ServerNodeUtils;
 import com.moseeker.rpccenter.exception.IncompleteException;
@@ -32,12 +32,6 @@ public class AppBSServer {
 
 		try {
 			AnnotationConfigApplicationContext acac = initSpring();
-//			MultiRegServer server = new MultiRegServer(AppBSServer.class,
-//					ServerNodeUtils.getPort(args),
-//					acac.getBean(PositionBSThriftService.class),
-//					acac.getBean(ProfileBSThriftService.class),
-//					acac.getBean(UserBSThriftService.class));
-//				server.start();
 			MoServer server = new MoServer(
 					acac,"",
 					acac.getBean(PositionBSThriftService.class),
@@ -65,6 +59,7 @@ public class AppBSServer {
 		acac.scan("com.moseeker.apps");
 		acac.scan("com.moseeker.common.aop.iface"); //开启接口统计
 		acac.scan("com.moseeker.common.aop.notify");
+		acac.scan("com.moseeker.baseorm");
 		acac.refresh();
 		return acac;
 	}

@@ -12,6 +12,7 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.pojo.JobPositionPojo;
 import com.moseeker.baseorm.pojo.RecommendedPositonPojo;
 import com.moseeker.baseorm.tool.QueryConvert;
+import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.db.analytics.tables.StJobSimilarity;
 import com.moseeker.db.hrdb.tables.HrCompany;
@@ -285,4 +286,21 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
         }
         return record;
     }
+
+	public int updatePosition(Position position) throws TException {
+		int count = 0;
+		if(position.getId() > 0) {
+			JobPositionRecord record = (JobPositionRecord)BeanUtils.structToDB(position, JobPositionRecord.class);
+			try {
+				count = this.updateRecord(record);
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+				logger.error(e.getMessage(), e);
+			} finally {
+				//do nothing
+			}
+		}
+		return count;
+	}
 }

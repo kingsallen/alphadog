@@ -60,7 +60,7 @@ public class PositionDaoThriftService implements Iface {
 	public Position getPositionWithCityCode(CommonQuery query) throws TException {
 		// TODO Auto-generated method stub
 		return new Position();
-		//return positionDao.getPositionWithCityCode(query);
+//		return positionDao.getPositionWithCityCode(query);
 	}
 
 	public JobPositionDao getPositionDao() {
