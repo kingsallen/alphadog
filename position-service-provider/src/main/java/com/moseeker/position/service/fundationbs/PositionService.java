@@ -92,6 +92,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -1303,56 +1304,34 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     e.setPublisher(jr.getPublisher()); // will be used for fetching sub company info
 
                     dataList.add(e);
-
                 }
 
                 logger.info(dataList.toString());
 
                 // 获取公司信息，拼装 company abbr, logo 等信息
                 Map<Integer /* publisher id */, HrCompanyDO> publisherCompanyMap = new HashMap<>();
-
                 QueryUtil hrm = new QueryUtil();
 
-                // 子公司特定
-                if (query.isSetDid() && query.getDid() != 0) {
+                Set<Integer> publisherSet = dataList.stream().map(WechatPositionListData::getPublisher)
+                        .collect(Collectors.toSet());
 
-                    // 获取子公司info
-                    hrm.addEqualFilter("id", String.valueOf(query.getDid()));
-                    HrCompanyDO subCompanyInfo = companyDao.getCompany(hrm);
-
-                    // 获取 hr_company_account
-                    hrm = new QueryUtil();
-                    hrm.addEqualFilter("company_id", subCompanyInfo.getId());
-                    List<HrCompanyAccountDO> companyAccountList = hrDBDao.listHrCompanyAccount(hrm);
-                    HrCompanyAccountDO subCompanyAccount = companyAccountList.get(0);
-
-                    // 写入 map
-                    publisherCompanyMap.put(subCompanyAccount.getAccountId(), subCompanyInfo);
-
+                // publisherList 应该不为空
+                // 如果 publisherList 为空，那么返回空 ArrayList
+                if (publisherSet == null || publisherSet.size() == 0) {
+                    return new ArrayList<>();
                 }
-                // 母公司 + 子公司
-                else {
-                    List<Integer> publisherList = dataList.stream().map(WechatPositionListData::getPublisher)
-                            .collect(Collectors.toList());
 
-                    // publisherList 应该不为空
-                    // 如果 publisherList 为空，那么返回空 ArrayList
-                    if (publisherList == null || publisherList.size() == 0) {
-                        return new ArrayList<>();
-                    }
+                // 根据 publisherSet 查询 companyAccountList
+                hrm.addEqualFilter("account_id", Arrays.toString(publisherSet.toArray()));
 
-                    // 根据 pbulisher_list 查询 hr_company_account_list
-                    hrm.addEqualFilter("account_id", buildQueryIds(publisherList));
+                List<HrCompanyAccountDO> companyAccountList = hrDBDao.listHrCompanyAccount(hrm);
 
-                    List<HrCompanyAccountDO> companyAccountList = hrDBDao.listHrCompanyAccount(hrm);
+                for (HrCompanyAccountDO hrCompanyAccount : companyAccountList) {
+                    hrm = new QueryUtil();
+                    hrm.addEqualFilter("id", hrCompanyAccount.getCompanyId());
+                    HrCompanyDO companyInfo = hrDBDao.getCompany(hrm);
+                    publisherCompanyMap.put(hrCompanyAccount.accountId, companyInfo);
 
-                    for (HrCompanyAccountDO hrCompanyAccount : companyAccountList) {
-                        hrm = new QueryUtil();
-                        hrm.addEqualFilter("id", hrCompanyAccount.getCompanyId());
-                        HrCompanyDO companyInfo = hrDBDao.getCompany(hrm);
-                        publisherCompanyMap.put(hrCompanyAccount.accountId, companyInfo);
-
-                    }
                 }
 
                 //拼装 company 相关内容
@@ -1362,6 +1341,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     s.setCompany_name(publisherCompanyMap.get(s.getPublisher()).getName());
                     return s;
                 }).collect(Collectors.toList());
+
             } else {
                 return new ArrayList<>();
             }
