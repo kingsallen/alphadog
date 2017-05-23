@@ -11,6 +11,7 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.EducationServices.Iface;
 import com.moseeker.thrift.gen.profile.struct.Education;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -44,6 +45,9 @@ public class ProfileEducationServicesImpl implements Iface {
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
+            if (e instanceof BIZException) {
+                return ResponseUtils.fail(((BIZException) e).getCode(), e.getMessage());
+            }
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
     }
@@ -56,6 +60,9 @@ public class ProfileEducationServicesImpl implements Iface {
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
+            if (e instanceof BIZException) {
+                return ResponseUtils.fail(((BIZException) e).getCode(), e.getMessage());
+            }
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
     }
@@ -72,6 +79,9 @@ public class ProfileEducationServicesImpl implements Iface {
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
+            if (e instanceof BIZException) {
+                return ResponseUtils.fail(((BIZException) e).getCode(), e.getMessage());
+            }
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
     }
@@ -88,6 +98,9 @@ public class ProfileEducationServicesImpl implements Iface {
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
+            if (e instanceof BIZException) {
+                return ResponseUtils.fail(((BIZException) e).getCode(), e.getMessage());
+            }
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
     }
@@ -97,13 +110,16 @@ public class ProfileEducationServicesImpl implements Iface {
         try {
             Education result = service.postResource(struct);
             if (result != null) {
-                return ResponseUtils.success("1");
+                return ResponseUtils.success(String.valueOf(result.getId()));
             } else {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
             }
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
+            if (e instanceof BIZException) {
+                return ResponseUtils.fail(((BIZException) e).getCode(), e.getMessage());
+            }
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
     }
@@ -120,6 +136,9 @@ public class ProfileEducationServicesImpl implements Iface {
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
+            if (e instanceof BIZException) {
+                return ResponseUtils.fail(((BIZException) e).getCode(), e.getMessage());
+            }
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
     }
@@ -136,6 +155,9 @@ public class ProfileEducationServicesImpl implements Iface {
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
+            if (e instanceof BIZException) {
+                return ResponseUtils.fail(((BIZException) e).getCode(), e.getMessage());
+            }
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
     }
@@ -148,6 +170,9 @@ public class ProfileEducationServicesImpl implements Iface {
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
+            if (e instanceof BIZException) {
+                return ResponseUtils.fail(((BIZException) e).getCode(), e.getMessage());
+            }
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
     }
@@ -164,6 +189,9 @@ public class ProfileEducationServicesImpl implements Iface {
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
+            if (e instanceof BIZException) {
+                return ResponseUtils.fail(((BIZException) e).getCode(), e.getMessage());
+            }
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
     }

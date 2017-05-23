@@ -11,209 +11,212 @@ namespace java com.moseeker.thrift.gen.profile.service
  */
 
 service ProfileOtherThriftService {
-    //查询HR标记的候选人信息
-    list<profiledb_struct.ProfileOtherDO> listProfileOther (1:common_struct.CommonQuery query) throws (1:common_struct.CURDException e)
-    profiledb_struct.ProfileOtherDO getProfileOther (1:common_struct.CommonQuery query) throws (1:common_struct.CURDException e)
-    profiledb_struct.ProfileOtherDO updateProfileOther (1:profiledb_struct.ProfileOtherDO profileOther) throws (1:common_struct.CURDException e)
-    profiledb_struct.ProfileOtherDO saveProfileOther (1:profiledb_struct.ProfileOtherDO profileOther) throws (1:common_struct.CURDException e)
-    i32 deleteProfileOther (1:profiledb_struct.ProfileOtherDO profileOther) throws (1:common_struct.CURDException e)
+    list<profiledb_struct.ProfileOtherDO> getResources(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+    profiledb_struct.ProfileOtherDO getResource(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+
+    list<profiledb_struct.ProfileOtherDO> postResources(1: list<profiledb_struct.ProfileOtherDO> Others) throws (1: common_struct.BIZException e);
+    profiledb_struct.ProfileOtherDO postResource(1: profiledb_struct.ProfileOtherDO Other) throws (1: common_struct.BIZException e);
+    list<i32> putResources(1: list<profiledb_struct.ProfileOtherDO> Others) throws (1: common_struct.BIZException e);
+    i32 putResource(1: profiledb_struct.ProfileOtherDO Other) throws (1: common_struct.BIZException e);
+    list<i32> delResources(1: list<profiledb_struct.ProfileOtherDO> Others) throws (1: common_struct.BIZException e);
+    i32 delResource(1: profiledb_struct.ProfileOtherDO Other) throws (1: common_struct.BIZException e);
 }
- 
+
 service WholeProfileServices {
-    common_struct.Response getResource(1:i32 userId, 2:i32 profileId, 3:string uuid);
-    common_struct.Response postResource(1:string profile, 2:i32 user_id);
-    common_struct.Response importCV(1:string profile, 2:i32 user_id);
-    common_struct.Response verifyRequires(1:i32 userId, 2:i32 positionId);
+    common_struct.Response getResource(1:i32 userId, 2:i32 profileId, 3:string uuid) throws (1: common_struct.BIZException e);
+    common_struct.Response postResource(1:string profile, 2:i32 user_id) throws (1: common_struct.BIZException e);
+    common_struct.Response importCV(1:string profile, 2:i32 user_id) throws (1: common_struct.BIZException e);
+    common_struct.Response verifyRequires(1:i32 userId, 2:i32 positionId) throws (1: common_struct.BIZException e);
     //创建简历
-    common_struct.Response createProfile(1:string profile);
+    common_struct.Response createProfile(1:string profile) throws (1: common_struct.BIZException e);
     //更新简历
-    common_struct.Response improveProfile(1:string profile);
-    common_struct.Response moveProfile(1:i32 destUserId, 2:i32 originUserId);
+    common_struct.Response improveProfile(1:string profile) throws (1: common_struct.BIZException e);
+    common_struct.Response moveProfile(1:i32 destUserId, 2:i32 originUserId) throws (1: common_struct.BIZException e);
 }
 
 service ProfileServices {
-    common_struct.Response getResources(1:common_struct.CommonQuery query);
-    common_struct.Response getPagination(2:common_struct.CommonQuery query);
-    common_struct.Response postResources(1: list<profile_struct.Profile> resources);
-    common_struct.Response putResources(1: list<profile_struct.Profile> resources);
-    common_struct.Response delResources(1: list<profile_struct.Profile> resources);
+    common_struct.Response getResources(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+    common_struct.Response getPagination(2:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+    common_struct.Response postResources(1: list<profile_struct.Profile> resources) throws (1: common_struct.BIZException e);
+    common_struct.Response putResources(1: list<profile_struct.Profile> resources) throws (1: common_struct.BIZException e);
+    common_struct.Response delResources(1: list<profile_struct.Profile> resources) throws (1: common_struct.BIZException e);
     
-    common_struct.Response getResource(1:common_struct.CommonQuery query);
-    common_struct.Response postResource(1: profile_struct.Profile profile);
-    common_struct.Response putResource(1: profile_struct.Profile profile);
-    common_struct.Response delResource(1: profile_struct.Profile profile);
-    common_struct.Response getCompleteness(1:i32 user_id, 2: string uuid, 3: i32 profile_id);
-    common_struct.Response reCalculateUserCompleteness(1:i32 userId, 2:string mobile);
-    common_struct.Response reCalculateUserCompletenessBySettingId(1:i32 id);
-    common_struct.Response getProfileByApplication(1:i32 companyId,2:i32 sourceId,3:i32 ats_status,4:bool recommender,5:bool dl_url_required);
+    common_struct.Response getResource(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+    common_struct.Response postResource(1: profile_struct.Profile profile) throws (1: common_struct.BIZException e);
+    common_struct.Response putResource(1: profile_struct.Profile profile) throws (1: common_struct.BIZException e);
+    common_struct.Response delResource(1: profile_struct.Profile profile) throws (1: common_struct.BIZException e);
+    common_struct.Response getCompleteness(1:i32 user_id, 2: string uuid, 3: i32 profile_id) throws (1: common_struct.BIZException e);
+    common_struct.Response reCalculateUserCompleteness(1:i32 userId, 2:string mobile) throws (1: common_struct.BIZException e);
+    common_struct.Response reCalculateUserCompletenessBySettingId(1:i32 id) throws (1: common_struct.BIZException e);
+    common_struct.Response getProfileByApplication(1:i32 companyId,2:i32 sourceId,3:i32 ats_status,4:bool recommender,5:bool dl_url_required) throws (1: common_struct.BIZException e);
 }
 
 service AttachmentServices {
-    common_struct.Response getResources(1:common_struct.CommonQuery query);
-    common_struct.Response getPagination(1:common_struct.CommonQuery query);
-    common_struct.Response postResources(1: list<profile_struct.Attachment> attachments);
-    common_struct.Response putResources(1: list<profile_struct.Attachment> attachments);
-    common_struct.Response delResources(1: list<profile_struct.Attachment> attachments);
+    common_struct.Response getResources(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+    common_struct.Response getPagination(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+    common_struct.Response postResources(1: list<profile_struct.Attachment> attachments) throws (1: common_struct.BIZException e);
+    common_struct.Response putResources(1: list<profile_struct.Attachment> attachments) throws (1: common_struct.BIZException e);
+    common_struct.Response delResources(1: list<profile_struct.Attachment> attachments) throws (1: common_struct.BIZException e);
     
-    common_struct.Response getResource(1:common_struct.CommonQuery query);
-    common_struct.Response postResource(1: profile_struct.Attachment attachment);
-    common_struct.Response putResource(1: profile_struct.Attachment attachment);
-    common_struct.Response delResource(1: profile_struct.Attachment attachment);
+    common_struct.Response getResource(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+    common_struct.Response postResource(1: profile_struct.Attachment attachment) throws (1: common_struct.BIZException e);
+    common_struct.Response putResource(1: profile_struct.Attachment attachment) throws (1: common_struct.BIZException e);
+    common_struct.Response delResource(1: profile_struct.Attachment attachment) throws (1: common_struct.BIZException e);
 }
 
 service AwardsServices {
-    common_struct.Response getResources(1:common_struct.CommonQuery query);
-    common_struct.Response getPagination(1:common_struct.CommonQuery query);
-    common_struct.Response postResources(1: list<profile_struct.Awards> awards);
-    common_struct.Response putResources(1: list<profile_struct.Awards> awards);
-    common_struct.Response delResources(1: list<profile_struct.Awards> awards);
+    common_struct.Response getResources(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+    common_struct.Response getPagination(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+    common_struct.Response postResources(1: list<profile_struct.Awards> awards) throws (1: common_struct.BIZException e);
+    common_struct.Response putResources(1: list<profile_struct.Awards> awards) throws (1: common_struct.BIZException e);
+    common_struct.Response delResources(1: list<profile_struct.Awards> awards) throws (1: common_struct.BIZException e);
     
-    common_struct.Response getResource(1:common_struct.CommonQuery query);
-    common_struct.Response postResource(1: profile_struct.Awards awards);
-    common_struct.Response putResource(1: profile_struct.Awards awards);
-    common_struct.Response delResource(1: profile_struct.Awards awards);
+    common_struct.Response getResource(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+    common_struct.Response postResource(1: profile_struct.Awards awards) throws (1: common_struct.BIZException e);
+    common_struct.Response putResource(1: profile_struct.Awards awards) throws (1: common_struct.BIZException e);
+    common_struct.Response delResource(1: profile_struct.Awards awards) throws (1: common_struct.BIZException e);
 }
 
 service BasicServices {
-    common_struct.Response getResources(1:common_struct.CommonQuery query);
-    common_struct.Response getPagination(1:common_struct.CommonQuery query);
-    common_struct.Response postResources(1: list<profile_struct.Basic> basics);
-    common_struct.Response putResources(1: list<profile_struct.Basic> basics);
-    common_struct.Response delResources(1: list<profile_struct.Basic> basics);
+    common_struct.Response getResources(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+    common_struct.Response getPagination(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+    common_struct.Response postResources(1: list<profile_struct.Basic> basics) throws (1: common_struct.BIZException e);
+    common_struct.Response putResources(1: list<profile_struct.Basic> basics) throws (1: common_struct.BIZException e);
+    common_struct.Response delResources(1: list<profile_struct.Basic> basics) throws (1: common_struct.BIZException e);
     
-    common_struct.Response getResource(1:common_struct.CommonQuery query);
-    common_struct.Response postResource(1: profile_struct.Basic basic);
-    common_struct.Response putResource(1: profile_struct.Basic basic);
-    common_struct.Response delResource(1: profile_struct.Basic basic);
-    common_struct.Response reCalculateBasicCompleteness(1: i32 userId);
+    common_struct.Response getResource(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+    common_struct.Response postResource(1: profile_struct.Basic basic) throws (1: common_struct.BIZException e);
+    common_struct.Response putResource(1: profile_struct.Basic basic) throws (1: common_struct.BIZException e);
+    common_struct.Response delResource(1: profile_struct.Basic basic) throws (1: common_struct.BIZException e);
+    common_struct.Response reCalculateBasicCompleteness(1: i32 userId) throws (1: common_struct.BIZException e);
 }
 
 service CredentialsServices {
-    common_struct.Response getResources(1:common_struct.CommonQuery query);
-    common_struct.Response getPagination(1:common_struct.CommonQuery query);
-    common_struct.Response postResources(1: list<profile_struct.Credentials> credentials);
-    common_struct.Response putResources(1: list<profile_struct.Credentials> credentials);
-    common_struct.Response delResources(1: list<profile_struct.Credentials> credentials);
+    common_struct.Response getResources(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+    common_struct.Response getPagination(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+    common_struct.Response postResources(1: list<profile_struct.Credentials> credentials) throws (1: common_struct.BIZException e);
+    common_struct.Response putResources(1: list<profile_struct.Credentials> credentials) throws (1: common_struct.BIZException e);
+    common_struct.Response delResources(1: list<profile_struct.Credentials> credentials) throws (1: common_struct.BIZException e);
     
-    common_struct.Response getResource(1:common_struct.CommonQuery query);
-    common_struct.Response postResource(1: profile_struct.Credentials credential);
-    common_struct.Response putResource(1: profile_struct.Credentials credential);
-    common_struct.Response delResource(1: profile_struct.Credentials credential);
+    common_struct.Response getResource(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+    common_struct.Response postResource(1: profile_struct.Credentials credential) throws (1: common_struct.BIZException e);
+    common_struct.Response putResource(1: profile_struct.Credentials credential) throws (1: common_struct.BIZException e);
+    common_struct.Response delResource(1: profile_struct.Credentials credential) throws (1: common_struct.BIZException e);
 }
 
 service EducationServices {
-    common_struct.Response getResources(1:common_struct.CommonQuery query);
-    common_struct.Response getPagination(1:common_struct.CommonQuery query);
-    common_struct.Response postResources(1: list<profile_struct.Education> educations);
-    common_struct.Response putResources(1: list<profile_struct.Education> educations);
-    common_struct.Response delResources(1: list<profile_struct.Education> educations);
+    common_struct.Response getResources(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+    common_struct.Response getPagination(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+    common_struct.Response postResources(1: list<profile_struct.Education> educations) throws (1: common_struct.BIZException e);
+    common_struct.Response putResources(1: list<profile_struct.Education> educations) throws (1: common_struct.BIZException e);
+    common_struct.Response delResources(1: list<profile_struct.Education> educations) throws (1: common_struct.BIZException e);
     
-    common_struct.Response getResource(1:common_struct.CommonQuery query);
-    common_struct.Response postResource(1: profile_struct.Education education);
-    common_struct.Response putResource(1: profile_struct.Education education);
-    common_struct.Response delResource(1: profile_struct.Education education);
+    common_struct.Response getResource(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+    common_struct.Response postResource(1: profile_struct.Education education) throws (1: common_struct.BIZException e);
+    common_struct.Response putResource(1: profile_struct.Education education) throws (1: common_struct.BIZException e);
+    common_struct.Response delResource(1: profile_struct.Education education) throws (1: common_struct.BIZException e);
 }
 
 service ProfileImportServices {
-    common_struct.Response getResources(1:common_struct.CommonQuery query);
-    common_struct.Response getPagination(1:common_struct.CommonQuery query);
-    common_struct.Response postResources(1: list<profile_struct.ProfileImport> profileImports);
-    common_struct.Response putResources(1: list<profile_struct.ProfileImport> profileImports);
-    common_struct.Response delResources(1: list<profile_struct.ProfileImport> profileImports);
+    common_struct.Response getResources(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+    common_struct.Response getPagination(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+    common_struct.Response postResources(1: list<profile_struct.ProfileImport> profileImports) throws (1: common_struct.BIZException e);
+    common_struct.Response putResources(1: list<profile_struct.ProfileImport> profileImports) throws (1: common_struct.BIZException e);
+    common_struct.Response delResources(1: list<profile_struct.ProfileImport> profileImports) throws (1: common_struct.BIZException e);
     
-    common_struct.Response getResource(1:common_struct.CommonQuery query);
-    common_struct.Response postResource(1: profile_struct.ProfileImport profileImport);
-    common_struct.Response putResource(1: profile_struct.ProfileImport profileImport);
-    common_struct.Response delResource(1: profile_struct.ProfileImport profileImport);
+    common_struct.Response getResource(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+    common_struct.Response postResource(1: profile_struct.ProfileImport profileImport) throws (1: common_struct.BIZException e);
+    common_struct.Response putResource(1: profile_struct.ProfileImport profileImport) throws (1: common_struct.BIZException e);
+    common_struct.Response delResource(1: profile_struct.ProfileImport profileImport) throws (1: common_struct.BIZException e);
 }
 
 service IntentionServices {
-    common_struct.Response getResources(1:common_struct.CommonQuery query);
-    common_struct.Response getPagination(1:common_struct.CommonQuery query);
-    common_struct.Response postResources(1: list<profile_struct.Intention> intentions);
-    common_struct.Response putResources(1: list<profile_struct.Intention> intentions);
-    common_struct.Response delResources(1: list<profile_struct.Intention> intentions);
+    common_struct.Response getResources(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+    common_struct.Response getPagination(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+    common_struct.Response postResources(1: list<profile_struct.Intention> intentions) throws (1: common_struct.BIZException e);
+    common_struct.Response putResources(1: list<profile_struct.Intention> intentions) throws (1: common_struct.BIZException e);
+    common_struct.Response delResources(1: list<profile_struct.Intention> intentions) throws (1: common_struct.BIZException e);
     
-    common_struct.Response getResource(1:common_struct.CommonQuery query);
-    common_struct.Response postResource(1: profile_struct.Intention intention);
-    common_struct.Response putResource(1: profile_struct.Intention intention);
-    common_struct.Response delResource(1: profile_struct.Intention intention);
+    common_struct.Response getResource(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+    common_struct.Response postResource(1: profile_struct.Intention intention) throws (1: common_struct.BIZException e);
+    common_struct.Response putResource(1: profile_struct.Intention intention) throws (1: common_struct.BIZException e);
+    common_struct.Response delResource(1: profile_struct.Intention intention) throws (1: common_struct.BIZException e);
 }
 
 service LanguageServices {
-    common_struct.Response getResources(1:common_struct.CommonQuery query);
-    common_struct.Response getPagination(1:common_struct.CommonQuery query);
-    common_struct.Response postResources(1: list<profile_struct.Language> languages);
-    common_struct.Response putResources(1: list<profile_struct.Language> languages);
-    common_struct.Response delResources(1: list<profile_struct.Language> languages);
+    common_struct.Response getResources(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+    common_struct.Response getPagination(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+    common_struct.Response postResources(1: list<profile_struct.Language> languages) throws (1: common_struct.BIZException e);
+    common_struct.Response putResources(1: list<profile_struct.Language> languages) throws (1: common_struct.BIZException e);
+    common_struct.Response delResources(1: list<profile_struct.Language> languages) throws (1: common_struct.BIZException e);
     
-    common_struct.Response getResource(1:common_struct.CommonQuery query);
-    common_struct.Response postResource(1: profile_struct.Language language);
-    common_struct.Response putResource(1: profile_struct.Language language);
-    common_struct.Response delResource(1: profile_struct.Language language);
+    common_struct.Response getResource(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+    common_struct.Response postResource(1: profile_struct.Language language) throws (1: common_struct.BIZException e);
+    common_struct.Response putResource(1: profile_struct.Language language) throws (1: common_struct.BIZException e);
+    common_struct.Response delResource(1: profile_struct.Language language) throws (1: common_struct.BIZException e);
 }
 
 service CustomizeResumeServices {
-    common_struct.Response getResources(1:common_struct.CommonQuery query);
-    common_struct.Response getPagination(1:common_struct.CommonQuery query);
-    common_struct.Response postResources(1: list<profile_struct.CustomizeResume> Others);
-    common_struct.Response putResources(1: list<profile_struct.CustomizeResume> Others);
-    common_struct.Response delResources(1: list<profile_struct.CustomizeResume> Others);
+    common_struct.Response getResources(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+    common_struct.Response getPagination(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+    common_struct.Response postResources(1: list<profile_struct.CustomizeResume> Others) throws (1: common_struct.BIZException e);
+    common_struct.Response putResources(1: list<profile_struct.CustomizeResume> Others) throws (1: common_struct.BIZException e);
+    common_struct.Response delResources(1: list<profile_struct.CustomizeResume> Others) throws (1: common_struct.BIZException e);
     
-    common_struct.Response getResource(1:common_struct.CommonQuery query);
-    common_struct.Response postResource(1: profile_struct.CustomizeResume Other);
-    common_struct.Response putResource(1: profile_struct.CustomizeResume Other);
-    common_struct.Response delResource(1: profile_struct.CustomizeResume Other);
+    common_struct.Response getResource(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+    common_struct.Response postResource(1: profile_struct.CustomizeResume Other) throws (1: common_struct.BIZException e);
+    common_struct.Response putResource(1: profile_struct.CustomizeResume Other) throws (1: common_struct.BIZException e);
+    common_struct.Response delResource(1: profile_struct.CustomizeResume Other) throws (1: common_struct.BIZException e);
 }
 
 service ProjectExpServices {
-    common_struct.Response getResources(1:common_struct.CommonQuery query);
-    common_struct.Response getPagination(1:common_struct.CommonQuery query);
-    common_struct.Response postResources(1: list<profile_struct.ProjectExp> projectExps);
-    common_struct.Response putResources(1: list<profile_struct.ProjectExp> projectExps);
-    common_struct.Response delResources(1: list<profile_struct.ProjectExp> projectExps);
+    common_struct.Response getResources(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+    common_struct.Response getPagination(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+    common_struct.Response postResources(1: list<profile_struct.ProjectExp> projectExps) throws (1: common_struct.BIZException e);
+    common_struct.Response putResources(1: list<profile_struct.ProjectExp> projectExps) throws (1: common_struct.BIZException e);
+    common_struct.Response delResources(1: list<profile_struct.ProjectExp> projectExps) throws (1: common_struct.BIZException e);
     
-    common_struct.Response getResource(1:common_struct.CommonQuery query);
-    common_struct.Response postResource(1: profile_struct.ProjectExp projectExp);
-    common_struct.Response putResource(1: profile_struct.ProjectExp projectExp);
-    common_struct.Response delResource(1: profile_struct.ProjectExp projectExp);
+    common_struct.Response getResource(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+    common_struct.Response postResource(1: profile_struct.ProjectExp projectExp) throws (1: common_struct.BIZException e);
+    common_struct.Response putResource(1: profile_struct.ProjectExp projectExp) throws (1: common_struct.BIZException e);
+    common_struct.Response delResource(1: profile_struct.ProjectExp projectExp) throws (1: common_struct.BIZException e);
 }
 
 service SkillServices {
-    common_struct.Response getResources(1:common_struct.CommonQuery query);
-    common_struct.Response getPagination(1:common_struct.CommonQuery query);
-    common_struct.Response postResources(1: list<profile_struct.Skill> skills);
-    common_struct.Response putResources(1: list<profile_struct.Skill> skills);
-    common_struct.Response delResources(1: list<profile_struct.Skill> skills);
+    common_struct.Response getResources(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+    common_struct.Response getPagination(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+    common_struct.Response postResources(1: list<profile_struct.Skill> skills) throws (1: common_struct.BIZException e);
+    common_struct.Response putResources(1: list<profile_struct.Skill> skills) throws (1: common_struct.BIZException e);
+    common_struct.Response delResources(1: list<profile_struct.Skill> skills) throws (1: common_struct.BIZException e);
     
-    common_struct.Response getResource(1:common_struct.CommonQuery query);
-    common_struct.Response postResource(1: profile_struct.Skill skill);
-    common_struct.Response putResource(1: profile_struct.Skill skill);
-    common_struct.Response delResource(1: profile_struct.Skill skill);
+    common_struct.Response getResource(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+    common_struct.Response postResource(1: profile_struct.Skill skill) throws (1: common_struct.BIZException e);
+    common_struct.Response putResource(1: profile_struct.Skill skill) throws (1: common_struct.BIZException e);
+    common_struct.Response delResource(1: profile_struct.Skill skill) throws (1: common_struct.BIZException e);
 }
 
 service WorkExpServices {
-    common_struct.Response getResources(1:common_struct.CommonQuery query);
-    common_struct.Response getPagination(1:common_struct.CommonQuery query);
-    common_struct.Response postResources(1: list<profile_struct.WorkExp> workExps);
-    common_struct.Response putResources(1: list<profile_struct.WorkExp> workExps);
-    common_struct.Response delResources(1: list<profile_struct.WorkExp> workExps);
+    common_struct.Response getResources(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+    common_struct.Response getPagination(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+    common_struct.Response postResources(1: list<profile_struct.WorkExp> workExps) throws (1: common_struct.BIZException e);
+    common_struct.Response putResources(1: list<profile_struct.WorkExp> workExps) throws (1: common_struct.BIZException e);
+    common_struct.Response delResources(1: list<profile_struct.WorkExp> workExps) throws (1: common_struct.BIZException e);
     
-    common_struct.Response getResource(1:common_struct.CommonQuery query);
-    common_struct.Response postResource(1: profile_struct.WorkExp workExp);
-    common_struct.Response putResource(1: profile_struct.WorkExp workExp);
-    common_struct.Response delResource(1: profile_struct.WorkExp workExp);
+    common_struct.Response getResource(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+    common_struct.Response postResource(1: profile_struct.WorkExp workExp) throws (1: common_struct.BIZException e);
+    common_struct.Response putResource(1: profile_struct.WorkExp workExp) throws (1: common_struct.BIZException e);
+    common_struct.Response delResource(1: profile_struct.WorkExp workExp) throws (1: common_struct.BIZException e);
 }
 
 service WorksServices {
-    common_struct.Response getResources(1:common_struct.CommonQuery query);
-    common_struct.Response getPagination(1:common_struct.CommonQuery query);
-    common_struct.Response postResources(1: list<profile_struct.Works> works);
-    common_struct.Response putResources(1: list<profile_struct.Works> works);
-    common_struct.Response delResources(1: list<profile_struct.Works> works);
+    common_struct.Response getResources(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+    common_struct.Response getPagination(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+    common_struct.Response postResources(1: list<profile_struct.Works> works) throws (1: common_struct.BIZException e);
+    common_struct.Response putResources(1: list<profile_struct.Works> works) throws (1: common_struct.BIZException e);
+    common_struct.Response delResources(1: list<profile_struct.Works> works) throws (1: common_struct.BIZException e);
     
-    common_struct.Response getResource(1:common_struct.CommonQuery query);
-    common_struct.Response postResource(1: profile_struct.Works works);
-    common_struct.Response putResource(1: profile_struct.Works works);
-    common_struct.Response delResource(1: profile_struct.Works works);
+    common_struct.Response getResource(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
+    common_struct.Response postResource(1: profile_struct.Works works) throws (1: common_struct.BIZException e);
+    common_struct.Response putResource(1: profile_struct.Works works) throws (1: common_struct.BIZException e);
+    common_struct.Response delResource(1: profile_struct.Works works) throws (1: common_struct.BIZException e);
 }

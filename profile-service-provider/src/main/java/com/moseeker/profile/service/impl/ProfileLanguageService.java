@@ -15,6 +15,7 @@ import com.moseeker.profile.utils.ProfileValidation;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.struct.Awards;
 import com.moseeker.thrift.gen.profile.struct.Language;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -67,7 +68,7 @@ public class ProfileLanguageService {
         });
 
         profileDao.updateUpdateTime(profileIds);
-        return ResponseUtils.success(BeanUtils.DBToStruct(Language.class, records));
+        return ResponseUtils.success("1");
     }
 
     @Transactional
@@ -136,7 +137,7 @@ public class ProfileLanguageService {
         profileDao.updateUpdateTime(profileIds);
 
         completenessImpl.recalculateprofileLanguage(struct.getProfile_id(), struct.getId());
-        return ResponseUtils.success(BeanUtils.DBToStruct(Language.class, record));
+        return ResponseUtils.success(String.valueOf(record.getId()));
     }
 
     @Transactional

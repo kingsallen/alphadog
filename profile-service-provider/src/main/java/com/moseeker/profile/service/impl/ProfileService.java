@@ -4,11 +4,9 @@ import com.moseeker.baseorm.dao.profiledb.ProfileCompletenessDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.userdb.UserSettingsDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
-import com.moseeker.baseorm.db.profiledb.tables.ProfileProfile;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserSettingsRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
-import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
@@ -20,6 +18,7 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.struct.Profile;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -28,7 +27,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.ParseException;
 import java.util.List;
 import java.util.UUID;
 
@@ -57,7 +55,7 @@ public class ProfileService {
         ProfileProfileRecord record = null;
         record = dao.getRecord(query);
         if (record != null) {
-            Profile s = DBToStruct(record);
+            Profile s = dao.recordToData(record, Profile.class);
             if (record.getCompleteness().intValue() == 0 || record.getCompleteness().intValue() == 10) {
                 int completeness = completenessImpl.getCompleteness(record.getUserId().intValue(), record.getUuid(),
                         record.getId().intValue());
@@ -87,7 +85,7 @@ public class ProfileService {
         ProfileProfileRecord record = BeanUtils.structToDB(struct, ProfileProfileRecord.class);
         record = dao.addRecord(record);
 
-        return ResponseUtils.success("1");
+        return ResponseUtils.success(String.valueOf(record.getId()));
     }
 
     public Response getCompleteness(int userId, String uuid, int profileId) throws TException {
@@ -114,14 +112,6 @@ public class ProfileService {
         }
     }
 
-    protected Profile DBToStruct(ProfileProfileRecord r) {
-        return (Profile) BeanUtils.DBToStruct(Profile.class, r);
-    }
-
-    protected ProfileProfileRecord structToDB(Profile profile) throws ParseException {
-        return (ProfileProfileRecord) BeanUtils.structToDB(profile, ProfileProfileRecord.class);
-    }
-
     public Response getProfileByApplication(int companyId, int sourceId, int ats_status, boolean recommender, boolean dl_url_required) throws Exception {
         ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil.getInstance();
         propertiesUtils.loadResource("setting.properties");
@@ -132,9 +122,9 @@ public class ProfileService {
 
 
     public Response getResources(Query query) throws TException {
-        ProfileProfile data = dao.getData(query, ProfileProfile.class);
-        if (data != null) {
-            return ResponseUtils.success(data);
+        List<Profile> datas = dao.getDatas(query, Profile.class);
+        if (datas != null && datas.size() > 0) {
+            return ResponseUtils.success(datas);
         } else {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }

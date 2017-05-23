@@ -4,7 +4,6 @@ import com.moseeker.baseorm.dao.dictdb.DictCollegeDao;
 import com.moseeker.baseorm.dao.dictdb.DictMajorDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileEducationDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
-import com.moseeker.baseorm.db.profiledb.tables.ProfileEducation;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileEducationRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
@@ -12,7 +11,11 @@ import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.Pagination;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.common.util.query.*;
+import com.moseeker.common.util.query.Condition;
+import com.moseeker.common.util.query.Order;
+import com.moseeker.common.util.query.OrderBy;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.profile.constants.ValidationMessage;
 import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
 import com.moseeker.profile.utils.ProfileValidation;
@@ -20,15 +23,21 @@ import com.moseeker.thrift.gen.dao.struct.dictdb.DictCollegeDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictMajorDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileEducationDO;
 import com.moseeker.thrift.gen.profile.struct.Education;
+
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -58,7 +67,7 @@ public class ProfileEducationService {
         query.getOrders().add(new OrderBy("end_until_now", Order.DESC));
         query.getOrders().add(new OrderBy("start", Order.DESC));
 
-        List<Education> educations = dao.getDatas(query, Education.class);
+        List<Education> educations = DBsToStructs(dao.getRecords(query));
         if (educations != null && educations.size() > 0) {
             List<Integer> College_codes = new ArrayList<>();
             List<String> Major_codes = new ArrayList<>();
@@ -103,7 +112,7 @@ public class ProfileEducationService {
     }
 
     public Education getResource(Query query) throws TException {
-        Education result = dao.getData(query, Education.class);
+        Education result = DBToStruct(dao.getRecord(query));
         if (result != null) {
             Query dictQuery = new Query.QueryBuilder().where("code", result.getCollege_code()).buildQuery();
             DictCollegeDO college = collegeDao.getData(dictQuery);
@@ -162,7 +171,7 @@ public class ProfileEducationService {
                 }
             }
 
-            result = dao.addRecord(BeanUtils.structToDB(education, ProfileEducationRecord.class)).into(Education.class);
+            result = DBToStruct(dao.addRecord(structToDB(education)));
             if (result != null && result.getId() > 0) {
                 Set<Integer> profileIds = new HashSet<>();
                 profileIds.add(education.getProfile_id());
@@ -199,7 +208,7 @@ public class ProfileEducationService {
                 }
             }
 
-            result = dao.updateRecord(BeanUtils.structToDB(education, ProfileEducationRecord.class));
+            result = dao.updateRecord(structToDB(education));
 
             if (result > 0) {
                 updateUpdateTime(education);
@@ -231,11 +240,11 @@ public class ProfileEducationService {
 
             if (structs.size() > 0) {
 
-                List<ProfileEducationRecord> records = BeanUtils.structToDB(structs, ProfileEducationRecord.class);
+                List<ProfileEducationRecord> records = structsToDBs(structs);
 
                 records = dao.addAllRecord(records);
 
-                resultDatas = BeanUtils.DBToStruct(Education.class, records);
+                resultDatas = DBsToStructs(records);
                 Set<Integer> profileIds = new HashSet<>();
                 resultDatas.forEach(struct -> {
                     if (struct.getProfile_id() > 0) {
@@ -261,7 +270,7 @@ public class ProfileEducationService {
 
         if (structs != null && structs.size() > 0) {
 
-            result = dao.updateRecords(BeanUtils.structToDB(structs, ProfileEducationRecord.class));
+            result = dao.updateRecords(structsToDBs(structs));
 
             List<Education> updatedDatas = new ArrayList<>();
 
@@ -292,7 +301,7 @@ public class ProfileEducationService {
             List<ProfileEducationDO> deleteDatas = dao.getDatas(query);
 
             //正式删除数据
-            int[] result = dao.deleteRecords(BeanUtils.structToDB(structs, ProfileEducationRecord.class));
+            int[] result = dao.deleteRecords(structsToDBs(structs));
 
             if (deleteDatas != null && deleteDatas.size() > 0) {
                 //更新对应的profile更新时间
@@ -328,6 +337,40 @@ public class ProfileEducationService {
         }
 
         return result;
+    }
+
+    protected Education DBToStruct(ProfileEducationRecord r) {
+        Map<String, String> equalRules = new HashMap<>();
+        equalRules.put("start", "start_date");
+        equalRules.put("end", "end_date");
+        return BeanUtils.DBToStruct(Education.class, r, equalRules);
+    }
+
+    protected ProfileEducationRecord structToDB(Education attachment) {
+        Map<String, String> equalRules = new HashMap<>();
+        equalRules.put("start", "start_date");
+        equalRules.put("end", "end_date");
+        return BeanUtils.structToDB(attachment, ProfileEducationRecord.class, equalRules);
+    }
+
+    protected List<Education> DBsToStructs(List<ProfileEducationRecord> records) {
+        List<Education> structs = new ArrayList<>();
+        if (records != null && records.size() > 0) {
+            for (ProfileEducationRecord r : records) {
+                structs.add(DBToStruct(r));
+            }
+        }
+        return structs;
+    }
+
+    protected List<ProfileEducationRecord> structsToDBs(List<Education> records) {
+        List<ProfileEducationRecord> structs = new ArrayList<>();
+        if (records != null && records.size() > 0) {
+            for (Education r : records) {
+                structs.add(structToDB(r));
+            }
+        }
+        return structs;
     }
 
     public void updateUpdateTime(List<Education> educations) {

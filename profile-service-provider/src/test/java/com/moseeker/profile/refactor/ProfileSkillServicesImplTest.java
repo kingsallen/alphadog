@@ -12,6 +12,7 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.SkillServices.Iface;
 import com.moseeker.thrift.gen.profile.struct.Skill;
+import com.moseeker.thrift.gen.profile.struct.Skill;
 import org.apache.thrift.TException;
 import org.junit.After;
 import org.junit.Test;
@@ -23,6 +24,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -43,9 +46,14 @@ public class ProfileSkillServicesImplTest {
     @Test
     public void postResources() throws TException {
         try {
-            response = service.postResources(null);
+            Skill skill = new Skill();
+            skill.setProfile_id(170);
+            skill.setLevel(Short.valueOf("1"));
+            skill.setName("test postResources");
+            response = service.postResources(new ArrayList<Skill>(){{add(skill);add(skill);}});
         } catch (Exception e) {
             e.printStackTrace();
+
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
     }
@@ -53,9 +61,19 @@ public class ProfileSkillServicesImplTest {
     @Test
     public void putResources() throws TException {
         try {
-            response = service.putResources(null);
+
+            Skill skill = new Skill();
+            skill.setId(90121);
+            skill.setName("test putResources");
+
+            Skill skill2 = new Skill();
+            skill2.setId(90122);
+            skill2.setName("test putResources2");
+
+            response = service.putResources(new ArrayList<Skill>(){{add(skill);add(skill2);}});
         } catch (Exception e) {
             e.printStackTrace();
+
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
     }
@@ -63,9 +81,14 @@ public class ProfileSkillServicesImplTest {
     @Test
     public void delResources() throws TException {
         try {
-            response = service.delResources(null);
+            Skill skill = new Skill();
+            skill.setId(90121);
+            Skill skill2 = new Skill();
+            skill2.setId(90122);
+            response = service.delResources(new ArrayList<Skill>(){{add(skill);add(skill2);}});
         } catch (Exception e) {
             e.printStackTrace();
+
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
     }
@@ -73,9 +96,14 @@ public class ProfileSkillServicesImplTest {
     @Test
     public void postResource() throws TException {
         try {
-            response = service.postResource(null);
+            Skill skill = new Skill();
+            skill.setProfile_id(170);
+            skill.setLevel(Short.valueOf("1"));
+            skill.setName("test postResource");
+            response = service.postResource(skill);
         } catch (Exception e) {
             e.printStackTrace();
+
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
     }
@@ -83,9 +111,13 @@ public class ProfileSkillServicesImplTest {
     @Test
     public void putResource() throws TException {
         try {
-            response = service.putResource(null);
+            Skill skill = new Skill();
+            skill.setId(90123);
+            skill.setName("test putResource");
+            response = service.putResource(skill);
         } catch (Exception e) {
             e.printStackTrace();
+
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
     }
@@ -93,39 +125,51 @@ public class ProfileSkillServicesImplTest {
     @Test
     public void delResource() throws TException {
         try {
-            response = service.delResource(null);
+            Skill skill = new Skill();
+            skill.setId(90123);
+            response = service.delResource(skill);
         } catch (Exception e) {
             e.printStackTrace();
+
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
     }
 
     @Test
-    public void getResources(CommonQuery query) throws TException {
+    public void getResources() throws TException {
         try {
-            response = service.getResources(null);
+            CommonQuery commonQuery = new CommonQuery();
+            commonQuery.setEqualFilter(new HashMap<String,String>(){{put("profile_id","170");}});
+            response = service.getResources(commonQuery);
         } catch (Exception e) {
             e.printStackTrace();
+
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
     }
 
     @Test
-    public void getPagination(CommonQuery query) throws TException {
+    public void getPagination() throws TException {
         try {
-            response = service.getPagination(null);
+            CommonQuery commonQuery = new CommonQuery();
+            commonQuery.setEqualFilter(new HashMap<String,String>(){{put("profile_id","170");}});
+            response = service.getPagination(commonQuery);
         } catch (Exception e) {
             e.printStackTrace();
+
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
     }
 
     @Test
-    public void getResource(CommonQuery query) throws TException {
+    public void getResource() throws TException {
         try {
-            response = service.getResource(null);
+            CommonQuery commonQuery = new CommonQuery();
+            commonQuery.setEqualFilter(new HashMap<String,String>(){{put("id","90123");}});
+            response = service.getResource(commonQuery);
         } catch (Exception e) {
             e.printStackTrace();
+
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
     }

@@ -17,6 +17,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.struct.Awards;
 import com.moseeker.thrift.gen.profile.struct.ProfileImport;
 import com.moseeker.thrift.gen.profile.struct.Skill;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -127,7 +128,7 @@ public class ProfileSkillService {
         profileIds.add(struct.getProfile_id());
         profileDao.updateUpdateTime(profileIds);
         completenessImpl.reCalculateProfileSkill(struct.getProfile_id(), struct.getId());
-        return ResponseUtils.success("1");
+        return ResponseUtils.success(String.valueOf(record.getId()));
     }
 
     @Transactional

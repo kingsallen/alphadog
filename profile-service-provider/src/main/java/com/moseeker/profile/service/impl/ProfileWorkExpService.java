@@ -11,7 +11,6 @@ import com.moseeker.baseorm.db.dictdb.tables.records.DictIndustryRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictPositionRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileWorkexpRecord;
-import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
@@ -27,6 +26,7 @@ import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
 import com.moseeker.profile.utils.ProfileValidation;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.struct.WorkExp;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -35,7 +35,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Service
 @CounterIface
@@ -64,15 +70,6 @@ public class ProfileWorkExpService {
     @Autowired
     private ProfileCompletenessImpl completenessImpl;
 
-    protected List<WorkExp> DBsToStructs(List<ProfileWorkexpRecord> records) {
-        List<WorkExp> structs = new ArrayList<>();
-        if (records != null && records.size() > 0) {
-            for (ProfileWorkexpRecord r : records) {
-                structs.add(DBToStruct(r));
-            }
-        }
-        return structs;
-    }
 
     public Response getResources(Query query) throws TException {
         // 按照结束时间倒序
@@ -181,7 +178,6 @@ public class ProfileWorkExpService {
         if (!vm.isPass()) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", vm.getResult()));
         }
-        int i = 0;
         if (struct.getCity_code() > 0) {
             DictCityRecord cityRecord = cityDao.getCityByCode(struct.getCity_code());
             if (cityRecord != null) {
@@ -241,7 +237,7 @@ public class ProfileWorkExpService {
             profileDao.updateUpdateTime(profileIds);
                 /* 计算用户基本信息的简历完整度 */
             completenessImpl.reCalculateProfileWorkExp(struct.getProfile_id(), struct.getId());
-            return ResponseUtils.success(String.valueOf(i));
+            return ResponseUtils.success(String.valueOf(record.getId()));
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
     }
@@ -298,7 +294,7 @@ public class ProfileWorkExpService {
             }
         }
 
-        int result = dao.updateRecord(BeanUtils.structToDB(struct, ProfileWorkexpRecord.class));
+        int result = dao.updateRecord(structToDB(struct));
 
         if (result > 0) {
             updateUpdateTime(struct);
@@ -321,7 +317,7 @@ public class ProfileWorkExpService {
                 }
             }
             if (structs.size() > 0) {
-                List<ProfileWorkexpRecord> records = dao.addAllRecord(BeanUtils.structToDB(structs, ProfileWorkexpRecord.class));
+                List<ProfileWorkexpRecord> records = dao.addAllRecord(structsToDBs(structs));
                 Set<Integer> profileIds = new HashSet<>();
                 for (WorkExp struct : structs) {
                     profileIds.add(struct.getProfile_id());
@@ -338,7 +334,7 @@ public class ProfileWorkExpService {
 
     @Transactional
     public Response putResources(List<WorkExp> structs) throws TException {
-        int[] result = dao.updateRecords(BeanUtils.structToDB(structs, ProfileWorkexpRecord.class));
+        int[] result = dao.updateRecords(structsToDBs(structs));
         if (ArrayUtils.contains(result, 1)) {
             for (WorkExp struct : structs) {
                 updateUpdateTime(structs);
@@ -372,7 +368,7 @@ public class ProfileWorkExpService {
         }
 
         if (workExpRecords != null && workExpRecords.size() > 0) {
-            int[] result = dao.deleteRecords(BeanUtils.structToDB(structs, ProfileWorkexpRecord.class));
+            int[] result = dao.deleteRecords(structsToDBs(structs));
             if (ArrayUtils.contains(result, 1)) {
                 profileIds.forEach(profileId -> {
                     updateUpdateTime(structs);
@@ -387,7 +383,7 @@ public class ProfileWorkExpService {
 
     @Transactional
     public Response delResource(WorkExp struct) throws TException {
-        int result = dao.deleteRecord(BeanUtils.structToDB(struct, ProfileWorkexpRecord.class));
+        int result = dao.deleteRecord(structToDB(struct));
         if (result > 0) {
             updateUpdateTime(struct);
             /* 计算用户基本信息的简历完整度 */
@@ -401,7 +397,7 @@ public class ProfileWorkExpService {
         Map<String, String> equalRules = new HashMap<>();
         equalRules.put("start", "start_date");
         equalRules.put("end", "end_date");
-        return (WorkExp) BeanUtils.DBToStruct(WorkExp.class, r, equalRules);
+        return BeanUtils.DBToStruct(WorkExp.class, r, equalRules);
     }
 
 
@@ -409,7 +405,27 @@ public class ProfileWorkExpService {
         Map<String, String> equalRules = new HashMap<>();
         equalRules.put("start", "start_date");
         equalRules.put("end", "end_date");
-        return (ProfileWorkexpRecord) BeanUtils.structToDB(workExp, ProfileWorkexpRecord.class, equalRules);
+        return BeanUtils.structToDB(workExp, ProfileWorkexpRecord.class, equalRules);
+    }
+
+    protected List<WorkExp> DBsToStructs(List<ProfileWorkexpRecord> records) {
+        List<WorkExp> structs = new ArrayList<>();
+        if (records != null && records.size() > 0) {
+            for (ProfileWorkexpRecord r : records) {
+                structs.add(DBToStruct(r));
+            }
+        }
+        return structs;
+    }
+
+    protected List<ProfileWorkexpRecord> structsToDBs(List<WorkExp> records) {
+        List<ProfileWorkexpRecord> structs = new ArrayList<>();
+        if (records != null && records.size() > 0) {
+            for (WorkExp r : records) {
+                structs.add(structToDB(r));
+            }
+        }
+        return structs;
     }
 
     private void updateUpdateTime(List<WorkExp> workExps) {

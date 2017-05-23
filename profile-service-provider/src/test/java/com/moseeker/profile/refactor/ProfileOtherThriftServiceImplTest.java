@@ -1,28 +1,27 @@
 package com.moseeker.profile.refactor;
 
 import com.alibaba.fastjson.JSON;
-import com.moseeker.baseorm.dao.profiledb.ProfileOtherDao;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.profile.conf.AppConfig;
-import com.moseeker.profile.thrift.ProfileLanguageServicesImpl;
 import com.moseeker.profile.thrift.ProfileOtherThriftServiceImpl;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileOtherDO;
-import com.moseeker.thrift.gen.profile.service.ProfileOtherThriftService;
+
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.thrift.TException;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -43,57 +42,65 @@ public class ProfileOtherThriftServiceImplTest {
     }
 
     @Test
-    public void listProfileOther() throws TException {
-        try {
-            response = service.listProfileOther(null);
-        } catch (Exception e) {
-            e.printStackTrace();
-
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
-        }
+    public void getResources() throws TException {
+        CommonQuery commonQuery = new CommonQuery();
+        commonQuery.setEqualFilter(new HashMap<String,String>(){{put("profile_id","170");}});
+        response = service.getResources(commonQuery);
     }
 
     @Test
-    public void getProfileOther() throws TException {
-        try {
-            response = service.getProfileOther(null);
-        } catch (Exception e) {
-            e.printStackTrace();
-
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
-        }
+    public void getResource() throws TException {
+        CommonQuery commonQuery = new CommonQuery();
+        commonQuery.setEqualFilter(new HashMap<String,String>(){{put("profile_id","170");}});
+        response = service.getResource(commonQuery);
     }
 
     @Test
-    public void updateProfileOther() throws TException {
-        try {
-            response = service.updateProfileOther(null);
-        } catch (Exception e) {
-            e.printStackTrace();
+    public void postResources() throws TException {
+        ProfileOtherDO profileOtherDO = new ProfileOtherDO();
+        profileOtherDO.setProfileId(171);
+        profileOtherDO.setOther("test postResources");
 
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
-        }
+        response = service.postResources(new ArrayList<ProfileOtherDO>(){{add(profileOtherDO);}});
+
     }
 
     @Test
-    public void saveProfileOther() throws TException {
-        try {
-            response = service.saveProfileOther(null);
-        } catch (Exception e) {
-            e.printStackTrace();
+    public void postResource() throws TException {
+        ProfileOtherDO profileOtherDO = new ProfileOtherDO();
+        profileOtherDO.setProfileId(170);
+        profileOtherDO.setOther("test postResource");
 
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
-        }
+        response = service.postResource(profileOtherDO);
     }
 
     @Test
-    public void deleteProfileOther() throws TException {
-        try {
-            response = service.deleteProfileOther(null);
-        } catch (Exception e) {
-            e.printStackTrace();
+    public void putResources() throws TException {
+        ProfileOtherDO profileOtherDO = new ProfileOtherDO();
+        profileOtherDO.setProfileId(170);
+        profileOtherDO.setOther("test putResources");
+        response = service.putResources(new ArrayList<ProfileOtherDO>(){{add(profileOtherDO);}});
+    }
 
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
-        }
+    @Test
+    public void putResource() throws TException {
+        ProfileOtherDO profileOtherDO = new ProfileOtherDO();
+        profileOtherDO.setProfileId(170);
+        profileOtherDO.setOther("test putResource");
+        response = service.putResource(profileOtherDO);
+    }
+
+    @Test
+    public void delResources() throws TException {
+        ProfileOtherDO profileOtherDO = new ProfileOtherDO();
+        profileOtherDO.setProfileId(170);
+        response = service.delResources(new ArrayList<ProfileOtherDO>(){{add(profileOtherDO);}});
+    }
+
+    @Test
+    public void delResource() throws TException {
+        ProfileOtherDO profileOtherDO = new ProfileOtherDO();
+        profileOtherDO.setProfileId(171);
+        response = service.delResource(profileOtherDO);
     }
 }

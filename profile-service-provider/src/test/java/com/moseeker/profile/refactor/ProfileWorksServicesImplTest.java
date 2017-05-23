@@ -12,6 +12,8 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.WorksServices.Iface;
 import com.moseeker.thrift.gen.profile.struct.Works;
+import com.moseeker.thrift.gen.profile.struct.Works;
+
 import org.apache.thrift.TException;
 import org.junit.After;
 import org.junit.Test;
@@ -23,6 +25,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -42,7 +46,12 @@ public class ProfileWorksServicesImplTest {
     @Test
     public void postResources() throws TException {
         try {
-            response = service.postResources(null);
+            Works work = new Works();
+            work.setProfile_id(170);
+            work.setName("test postResources");
+            response = service.postResources(new ArrayList<Works>() {{
+                add(work);
+            }});
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -53,7 +62,14 @@ public class ProfileWorksServicesImplTest {
     @Test
     public void putResources() throws TException {
         try {
-            response = service.putResources(null);
+
+            Works work = new Works();
+            work.setId(60066);
+            work.setName("test putResources");
+
+            response = service.putResources(new ArrayList<Works>() {{
+                add(work);
+            }});
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -64,7 +80,11 @@ public class ProfileWorksServicesImplTest {
     @Test
     public void delResources() throws TException {
         try {
-            response = service.delResources(null);
+            Works work = new Works();
+            work.setId(60066);
+            response = service.delResources(new ArrayList<Works>() {{
+                add(work);
+            }});
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -73,9 +93,12 @@ public class ProfileWorksServicesImplTest {
     }
 
     @Test
-    public void postResource(Works struct) throws TException {
+    public void postResource() throws TException {
         try {
-            response = service.postResource(struct);
+            Works work = new Works();
+            work.setProfile_id(170);
+            work.setName("test postResource");
+            response = service.postResource(work);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -84,9 +107,12 @@ public class ProfileWorksServicesImplTest {
     }
 
     @Test
-    public void putResource(Works struct) throws TException {
+    public void putResource() throws TException {
         try {
-            response = service.putResource(struct);
+            Works work = new Works();
+            work.setId(60067);
+            work.setName("test putResource");
+            response = service.putResource(work);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -95,9 +121,11 @@ public class ProfileWorksServicesImplTest {
     }
 
     @Test
-    public void delResource(Works struct) throws TException {
+    public void delResource() throws TException {
         try {
-            response = service.delResource(struct);
+            Works work = new Works();
+            work.setId(60067);
+            response = service.delResource(work);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -106,9 +134,13 @@ public class ProfileWorksServicesImplTest {
     }
 
     @Test
-    public void getResources(CommonQuery query) throws TException {
+    public void getResources() throws TException {
         try {
-            response = service.getResources((null));
+            CommonQuery commonQuery = new CommonQuery();
+            commonQuery.setEqualFilter(new HashMap<String, String>() {{
+                put("profile_id", "170");
+            }});
+            response = service.getResources(commonQuery);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -117,9 +149,13 @@ public class ProfileWorksServicesImplTest {
     }
 
     @Test
-    public void getPagination(CommonQuery query) throws TException {
+    public void getPagination() throws TException {
         try {
-            response = service.getPagination((null));
+            CommonQuery commonQuery = new CommonQuery();
+            commonQuery.setEqualFilter(new HashMap<String, String>() {{
+                put("profile_id", "170");
+            }});
+            response = service.getPagination(commonQuery);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -128,9 +164,13 @@ public class ProfileWorksServicesImplTest {
     }
 
     @Test
-    public void getResource(CommonQuery query) throws TException {
+    public void getResource() throws TException {
         try {
-            response = service.getResource((null));
+            CommonQuery commonQuery = new CommonQuery();
+            commonQuery.setEqualFilter(new HashMap<String, String>() {{
+                put("id", "60067");
+            }});
+            response = service.getResource(commonQuery);
         } catch (Exception e) {
             e.printStackTrace();
 

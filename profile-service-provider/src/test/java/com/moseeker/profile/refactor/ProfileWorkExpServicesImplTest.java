@@ -12,6 +12,7 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.WorkExpServices.Iface;
 import com.moseeker.thrift.gen.profile.struct.WorkExp;
+import com.moseeker.thrift.gen.profile.struct.WorkExp;
 import org.apache.thrift.TException;
 import org.junit.After;
 import org.junit.Test;
@@ -23,6 +24,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -39,43 +42,18 @@ public class ProfileWorkExpServicesImplTest {
         System.out.println(JSON.toJSONString(response));
     }
 
-    @Test
-    public void getResources() throws TException {
-        try {
-            response = service.getResources(null);
-        } catch (Exception e) {
-            e.printStackTrace();
-
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
-        }
-    }
-
-    @Test
-    public void getResource() throws TException {
-        try {
-            response = service.getResource(null);
-        } catch (Exception e) {
-            e.printStackTrace();
-
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
-        }
-    }
 
     @Test
     public void postResource() throws TException {
         try {
-            response = service.postResource(null);
-        } catch (Exception e) {
-            e.printStackTrace();
-
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
-        }
-    }
-
-    @Test
-    public void putResource() throws TException {
-        try {
-            response = service.putResource(null);
+            WorkExp workExp = new WorkExp();
+            workExp.setProfile_id(170);
+            workExp.setDescription("test postResource");
+            workExp.setPosition_name("test postResource");
+            workExp.setCompany_name("test postResource");
+            workExp.setJob("test postResource");
+            workExp.setStart_date("2017-01-01");
+            response = service.postResource(workExp);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -86,7 +64,28 @@ public class ProfileWorkExpServicesImplTest {
     @Test
     public void postResources() throws TException {
         try {
-            response = service.postResources(null);
+            WorkExp workExp = new WorkExp();
+            workExp.setProfile_id(170);
+            workExp.setDescription("test postResources");
+            workExp.setPosition_name("test postResources");
+            workExp.setCompany_name("test postResources");
+            workExp.setJob("test postResources");
+            workExp.setStart_date("2017-01-01");
+            response = service.postResources(new ArrayList<WorkExp>(){{add(workExp);add(workExp);}});
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
+    }
+
+
+    @Test
+    public void putResource() throws TException {
+        try {
+            WorkExp workExp = new WorkExp();
+            workExp.setId(322261);
+            response = service.putResource(workExp);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -97,7 +96,14 @@ public class ProfileWorkExpServicesImplTest {
     @Test
     public void putResources() throws TException {
         try {
-            response = service.putResources(null);
+
+            WorkExp workExp = new WorkExp();
+            workExp.setId(322262);
+
+            WorkExp workExp2 = new WorkExp();
+            workExp2.setId(322263);
+
+            response = service.putResources(new ArrayList<WorkExp>(){{add(workExp);add(workExp2);}});
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -108,7 +114,11 @@ public class ProfileWorkExpServicesImplTest {
     @Test
     public void delResources() throws TException {
         try {
-            response = service.delResources(null);
+            WorkExp workExp = new WorkExp();
+            workExp.setId(322262);
+            WorkExp workExp2 = new WorkExp();
+            workExp2.setId(322261);
+            response = service.delResources(new ArrayList<WorkExp>(){{add(workExp);add(workExp2);}});
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -119,7 +129,22 @@ public class ProfileWorkExpServicesImplTest {
     @Test
     public void delResource() throws TException {
         try {
-            response = service.delResource(null);
+            WorkExp workExp = new WorkExp();
+            workExp.setId(322263);
+            response = service.delResource(workExp);
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
+    }
+
+    @Test
+    public void getResources() throws TException {
+        try {
+            CommonQuery commonQuery = new CommonQuery();
+            commonQuery.setEqualFilter(new HashMap<String,String>(){{put("profile_id","170");}});
+            response = service.getResources(commonQuery);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -130,7 +155,22 @@ public class ProfileWorkExpServicesImplTest {
     @Test
     public void getPagination() throws TException {
         try {
-            response = service.getPagination(null);
+            CommonQuery commonQuery = new CommonQuery();
+            commonQuery.setEqualFilter(new HashMap<String,String>(){{put("profile_id","170");}});
+            response = service.getPagination(commonQuery);
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
+    }
+
+    @Test
+    public void getResource() throws TException {
+        try {
+            CommonQuery commonQuery = new CommonQuery();
+            commonQuery.setEqualFilter(new HashMap<String,String>(){{put("id","322261");}});
+            response = service.getResource(commonQuery);
         } catch (Exception e) {
             e.printStackTrace();
 

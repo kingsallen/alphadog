@@ -3,7 +3,6 @@ package com.moseeker.profile.service.impl;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProjectexpDao;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProjectexpRecord;
-import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.QueryUtil;
@@ -15,10 +14,9 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.profile.constants.ValidationMessage;
 import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
 import com.moseeker.profile.utils.ProfileValidation;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.profile.struct.Credentials;
 import com.moseeker.thrift.gen.profile.struct.ProjectExp;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -28,7 +26,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Service
 @CounterIface
@@ -88,25 +92,29 @@ public class ProfileProjectExpService {
                 }
             }
         }
-        List<ProfileProjectexpRecord> records = dao.addAllRecord(BeanUtils.structToDB(structs, ProfileProjectexpRecord.class));
+        if (structs != null && structs.size() > 0) {
+            List<ProfileProjectexpRecord> records = dao.addAllRecord(structsToDBs(structs));
 
-        Set<Integer> profileIds = new HashSet<Integer>();
-        structs.forEach(struct -> {
-            profileIds.add(struct.getProfile_id());
-        });
+            Set<Integer> profileIds = new HashSet<Integer>();
+            structs.forEach(struct -> {
+                profileIds.add(struct.getProfile_id());
+            });
 
-        profileDao.updateUpdateTime(profileIds);
+            profileDao.updateUpdateTime(profileIds);
 
-        profileIds.forEach(profileId -> {
+            profileIds.forEach(profileId -> {
                 /* 计算profile完成度 */
-            completenessImpl.reCalculateProfileProjectExpByProfileId(profileId);
-        });
-        return ResponseUtils.success("1");
+                completenessImpl.reCalculateProfileProjectExpByProfileId(profileId);
+            });
+            return ResponseUtils.success("1");
+        } else {
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
+        }
     }
 
     @Transactional
     public Response putResources(List<ProjectExp> structs) throws TException {
-        int[] result = dao.updateRecords(BeanUtils.structToDB(structs, ProfileProjectexpRecord.class));
+        int[] result = dao.updateRecords(structsToDBs(structs));
         if (ArrayUtils.contains(result, 1)) {
 
             updateUpdateTime(structs);
@@ -142,7 +150,7 @@ public class ProfileProjectExpService {
             });
         }
         if (projectExpRecords != null && projectExpRecords.size() > 0) {
-            int[] result = dao.deleteRecords(BeanUtils.structToDB(structs, ProfileProjectexpRecord.class));
+            int[] result = dao.deleteRecords(structsToDBs(structs));
             if (ArrayUtils.contains(result, 1)) {
 
                 updateUpdateTime(structs);
@@ -163,18 +171,18 @@ public class ProfileProjectExpService {
         if (!vm.isPass()) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", vm.getResult()));
         }
-        ProfileProjectexpRecord record = dao.addRecord(BeanUtils.structToDB(struct, ProfileProjectexpRecord.class));
+        ProfileProjectexpRecord record = dao.addRecord(structToDB(struct));
         Set<Integer> profileIds = new HashSet<>();
         profileIds.add(struct.getProfile_id());
         profileDao.updateUpdateTime(profileIds);
             /* 计算profile完成度 */
         completenessImpl.reCalculateProfileProjectExpByProfileId(struct.getProfile_id());
-        return ResponseUtils.success("1");
+        return ResponseUtils.success(String.valueOf(record.getId()));
     }
 
     @Transactional
     public Response putResource(ProjectExp struct) throws TException {
-        int result = dao.updateRecord(BeanUtils.structToDB(struct, ProfileProjectexpRecord.class));
+        int result = dao.updateRecord(structToDB(struct));
         if (result > 0) {
             updateUpdateTime(struct);
             /* 计算profile完成度 */
@@ -208,15 +216,35 @@ public class ProfileProjectExpService {
         Map<String, String> equalRules = new HashMap<>();
         equalRules.put("start", "start_date");
         equalRules.put("end", "end_date");
-        return (ProjectExp) BeanUtils.DBToStruct(ProjectExp.class, r, equalRules);
+        return BeanUtils.DBToStruct(ProjectExp.class, r, equalRules);
     }
 
 
-    protected ProfileProjectexpRecord structToDB(ProjectExp projectExp) throws ParseException {
+    protected ProfileProjectexpRecord structToDB(ProjectExp projectExp) {
         Map<String, String> equalRules = new HashMap<>();
         equalRules.put("start", "start_date");
         equalRules.put("end", "end_date");
-        return (ProfileProjectexpRecord) BeanUtils.structToDB(projectExp, ProfileProjectexpRecord.class, equalRules);
+        return BeanUtils.structToDB(projectExp, ProfileProjectexpRecord.class, equalRules);
+    }
+
+    protected List<ProjectExp> DBsToStructs(List<ProfileProjectexpRecord> records) {
+        List<ProjectExp> structs = new ArrayList<>();
+        if (records != null && records.size() > 0) {
+            for (ProfileProjectexpRecord r : records) {
+                structs.add(DBToStruct(r));
+            }
+        }
+        return structs;
+    }
+
+    protected List<ProfileProjectexpRecord> structsToDBs(List<ProjectExp> records) {
+        List<ProfileProjectexpRecord> structs = new ArrayList<>();
+        if (records != null && records.size() > 0) {
+            for (ProjectExp r : records) {
+                structs.add(structToDB(r));
+            }
+        }
+        return structs;
     }
 
     private void updateUpdateTime(List<ProjectExp> projectExps) {

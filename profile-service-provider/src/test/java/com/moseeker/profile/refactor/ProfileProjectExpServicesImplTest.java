@@ -12,6 +12,7 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.ProjectExpServices.Iface;
 import com.moseeker.thrift.gen.profile.struct.ProjectExp;
+import com.moseeker.thrift.gen.profile.struct.ProjectExp;
 import org.apache.thrift.TException;
 import org.junit.After;
 import org.junit.Test;
@@ -23,6 +24,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -43,7 +46,11 @@ public class ProfileProjectExpServicesImplTest {
     @Test
     public void postResources() throws TException {
         try {
-            response = service.postResources(null);
+            ProjectExp projectExp = new ProjectExp();
+            projectExp.setProfile_id(170);
+            projectExp.setStart_date("2017-01-01");
+            projectExp.setName("test postResources");
+            response = service.postResources(new ArrayList<ProjectExp>(){{add(projectExp);add(projectExp);}});
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -54,7 +61,16 @@ public class ProfileProjectExpServicesImplTest {
     @Test
     public void putResources() throws TException {
         try {
-            response = service.putResources(null);
+
+            ProjectExp projectExp = new ProjectExp();
+            projectExp.setId(140556);
+            projectExp.setName("test putResources");
+
+            ProjectExp projectExp2 = new ProjectExp();
+            projectExp2.setId(140557);
+            projectExp2.setName("test putResources2");
+
+            response = service.putResources(new ArrayList<ProjectExp>(){{add(projectExp);add(projectExp2);}});
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -65,7 +81,11 @@ public class ProfileProjectExpServicesImplTest {
     @Test
     public void delResources() throws TException {
         try {
-            response = service.delResources(null);
+            ProjectExp projectExp = new ProjectExp();
+            projectExp.setId(140556);
+            ProjectExp projectExp2 = new ProjectExp();
+            projectExp2.setId(140557);
+            response = service.delResources(new ArrayList<ProjectExp>(){{add(projectExp);add(projectExp2);}});
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -76,7 +96,11 @@ public class ProfileProjectExpServicesImplTest {
     @Test
     public void postResource() throws TException {
         try {
-            response = service.postResource(null);
+            ProjectExp projectExp = new ProjectExp();
+            projectExp.setProfile_id(170);
+            projectExp.setStart_date("2017-01-01");
+            projectExp.setName("test postResource");
+            response = service.postResource(projectExp);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -87,7 +111,10 @@ public class ProfileProjectExpServicesImplTest {
     @Test
     public void putResource() throws TException {
         try {
-            response = service.putResource(null);
+            ProjectExp projectExp = new ProjectExp();
+            projectExp.setId(140558);
+            projectExp.setName("test putResource");
+            response = service.putResource(projectExp);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -98,7 +125,9 @@ public class ProfileProjectExpServicesImplTest {
     @Test
     public void delResource() throws TException {
         try {
-            response = service.delResource(null);
+            ProjectExp projectExp = new ProjectExp();
+            projectExp.setId(140558);
+            response = service.delResource(projectExp);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -109,7 +138,9 @@ public class ProfileProjectExpServicesImplTest {
     @Test
     public void getResources() throws TException {
         try {
-            response = service.getResources(null);
+            CommonQuery commonQuery = new CommonQuery();
+            commonQuery.setEqualFilter(new HashMap<String,String>(){{put("profile_id","170");}});
+            response = service.getResources(commonQuery);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -120,7 +151,9 @@ public class ProfileProjectExpServicesImplTest {
     @Test
     public void getPagination() throws TException {
         try {
-            response = service.getPagination(null);
+            CommonQuery commonQuery = new CommonQuery();
+            commonQuery.setEqualFilter(new HashMap<String,String>(){{put("profile_id","170");}});
+            response = service.getPagination(commonQuery);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -131,7 +164,9 @@ public class ProfileProjectExpServicesImplTest {
     @Test
     public void getResource() throws TException {
         try {
-            response = service.getResource(null);
+            CommonQuery commonQuery = new CommonQuery();
+            commonQuery.setEqualFilter(new HashMap<String,String>(){{put("id","140558");}});
+            response = service.getResource(commonQuery);
         } catch (Exception e) {
             e.printStackTrace();
 

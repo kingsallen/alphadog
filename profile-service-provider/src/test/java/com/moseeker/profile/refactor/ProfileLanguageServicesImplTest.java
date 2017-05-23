@@ -1,30 +1,24 @@
 package com.moseeker.profile.refactor;
 
 import com.alibaba.fastjson.JSON;
-import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.profile.conf.AppConfig;
-import com.moseeker.profile.service.impl.ProfileCompletenessImpl;
-import com.moseeker.profile.service.impl.ProfileLanguageService;
-import com.moseeker.profile.thrift.ProfileImportServicesImpl;
 import com.moseeker.profile.thrift.ProfileLanguageServicesImpl;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.profile.service.LanguageServices.Iface;
 import com.moseeker.thrift.gen.profile.struct.Language;
+
 import org.apache.thrift.TException;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = AppConfig.class)
@@ -43,7 +37,11 @@ public class ProfileLanguageServicesImplTest {
     @Test
     public void postResources() throws TException {
         try {
-            response = service.postResources(null);
+            Language language = new Language();
+            language.setProfile_id(170);
+            language.setLevel(Short.valueOf("1"));
+            language.setName("test postResources");
+            response = service.postResources(new ArrayList<Language>(){{add(language);add(language);}});
         } catch (Exception e) {
             e.printStackTrace();
             
@@ -54,7 +52,16 @@ public class ProfileLanguageServicesImplTest {
     @Test
     public void putResources() throws TException {
         try {
-            response = service.putResources(null);
+
+            Language language = new Language();
+            language.setId(108611);
+            language.setName("test putResources");
+
+            Language language2 = new Language();
+            language2.setId(108612);
+            language2.setName("test putResources2");
+
+            response = service.putResources(new ArrayList<Language>(){{add(language);add(language2);}});
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -65,7 +72,11 @@ public class ProfileLanguageServicesImplTest {
     @Test
     public void delResources() throws TException {
         try {
-            response = service.delResources(null);
+            Language language = new Language();
+            language.setId(108611);
+            Language language2 = new Language();
+            language2.setId(108612);
+            response = service.delResources(new ArrayList<Language>(){{add(language);add(language2);}});
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -74,9 +85,13 @@ public class ProfileLanguageServicesImplTest {
     }
 
     @Test
-    public void postResource(Language struct) throws TException {
+    public void postResource() throws TException {
         try {
-            response = service.postResource(struct);
+            Language language = new Language();
+            language.setProfile_id(170);
+            language.setLevel(Short.valueOf("1"));
+            language.setName("test postResource");
+            response = service.postResource(language);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -85,9 +100,12 @@ public class ProfileLanguageServicesImplTest {
     }
 
     @Test
-    public void putResource(Language struct) throws TException {
+    public void putResource() throws TException {
         try {
-            response = service.putResource(struct);
+            Language language = new Language();
+            language.setId(108613);
+            language.setName("test putResource");
+            response = service.putResource(language);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -96,9 +114,11 @@ public class ProfileLanguageServicesImplTest {
     }
 
     @Test
-    public void delResource(Language struct) throws TException {
+    public void delResource() throws TException {
         try {
-            response = service.delResource(struct);
+            Language language = new Language();
+            language.setId(108613);
+            response = service.delResource(language);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -109,7 +129,9 @@ public class ProfileLanguageServicesImplTest {
     @Test
     public void getResources() throws TException {
         try {
-            response = service.getResources(null);
+            CommonQuery commonQuery = new CommonQuery();
+            commonQuery.setEqualFilter(new HashMap<String,String>(){{put("profile_id","170");}});
+            response = service.getResources(commonQuery);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -120,7 +142,9 @@ public class ProfileLanguageServicesImplTest {
     @Test
     public void getPagination() throws TException {
         try {
-            response = service.getPagination(null);
+            CommonQuery commonQuery = new CommonQuery();
+            commonQuery.setEqualFilter(new HashMap<String,String>(){{put("profile_id","170");}});
+            response = service.getPagination(commonQuery);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -131,7 +155,9 @@ public class ProfileLanguageServicesImplTest {
     @Test
     public void getResource() throws TException {
         try {
-            response = service.getResource(null);
+            CommonQuery commonQuery = new CommonQuery();
+            commonQuery.setEqualFilter(new HashMap<String,String>(){{put("id","108616");}});
+            response = service.getResource(commonQuery);
         } catch (Exception e) {
             e.printStackTrace();
 

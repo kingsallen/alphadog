@@ -17,6 +17,13 @@ import com.moseeker.thrift.gen.demo.struct.DemoStruct;
  */
 public class ResponseUtils {
 
+    public static <T> T getNotNullValue(T value, T valueIfNull) {
+        if (value == null) {
+            return valueIfNull;
+        }
+        return value;
+    }
+
     /**
      * 处理成功响应的数据格式
      *

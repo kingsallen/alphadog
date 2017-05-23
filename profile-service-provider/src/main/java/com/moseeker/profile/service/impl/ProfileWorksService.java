@@ -12,6 +12,7 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.struct.Works;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -139,7 +140,7 @@ public class ProfileWorksService {
         profileIds.add(struct.getProfile_id());
         profileDao.updateUpdateTime(profileIds);
         completenessImpl.reCalculateProfileWorks(struct.getProfile_id(), struct.getId());
-        return ResponseUtils.success("1");
+        return ResponseUtils.success(String.valueOf(record.getId()));
     }
 
 
@@ -164,15 +165,6 @@ public class ProfileWorksService {
             return ResponseUtils.success("1");
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DEL_FAILED);
-    }
-
-    protected Works DBToStruct(ProfileWorksRecord r) {
-        return (Works) BeanUtils.DBToStruct(Works.class, r);
-    }
-
-
-    protected ProfileWorksRecord structToDB(Works works) throws ParseException {
-        return (ProfileWorksRecord) BeanUtils.structToDB(works, ProfileWorksRecord.class);
     }
 
     private void updateUpdateTime(List<Works> works) {

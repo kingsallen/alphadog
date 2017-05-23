@@ -46,7 +46,7 @@ public class ProfileEducationServicesImplTest{
 		response = service.getResource(commonQuery);
 	}
 
-//	@Test
+	@Test
 	public void postResource() throws TException {
 		Education education = new Education();
 		education.setProfile_id(170);
@@ -55,6 +55,7 @@ public class ProfileEducationServicesImplTest{
 		education.setDegree(3);
 		education.setStart_date("2005-09-01");
 		education.setEnd_date("2008-06-01");
+		education.setCollege_code(Integer.MAX_VALUE);
 		response = service.postResource(education);
 	}
 
