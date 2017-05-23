@@ -50,13 +50,6 @@ public class ParamUtils {
         return t;
     }
 
-
-    static void pickToMap(Map<String, Object> params, String key, Map<String, String> pickMap) {
-        if (params.containsKey(key)) {
-            pickMap.put(key, String.valueOf(params.get(key)));
-        }
-    }
-
     /**
      * 用于解析常用的查询类。和initModelForm不同的是，会将form表单不存在的属性存入到EqualFilter中
      *

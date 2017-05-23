@@ -1,40 +1,35 @@
 package com.moseeker.servicemanager.config;
 
-import javax.servlet.Filter;
-import org.springframework.core.annotation.Order;
+import javax.servlet.*;
+import org.springframework.web.WebApplicationInitializer;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
-import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
+import org.springframework.web.servlet.DispatcherServlet;
 
 /**
  * Created by lucky8987 on 17/5/22.
+ * spring mvc 简化web.xml配置
  */
-@Order(value = 1)
-public class WebInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
+public class WebInitializer implements WebApplicationInitializer {
 
-    @Override
-    protected Class<?>[] getRootConfigClasses() {
-        return new Class<?>[]{WebConfig.class};
+    private void initializeSpringMVCConfig(ServletContext container) {
+        AnnotationConfigWebApplicationContext dispatcherContext = new AnnotationConfigWebApplicationContext();
+
+        dispatcherContext.register(WebConfig.class);
+        ServletRegistration.Dynamic dispatcher = container.addServlet("service manager", new DispatcherServlet(dispatcherContext));
+        dispatcher.setLoadOnStartup(1);
+        dispatcher.addMapping("/");
+    }
+
+    private void initializeFilter(ServletContext container) {
+        FilterRegistration.Dynamic filterRegistration = container.addFilter("charset", CharacterEncodingFilter.class);
+        filterRegistration.setInitParameter("encoding", "UTF-8");
+        filterRegistration.setInitParameter("forceEncoding", "true");
     }
 
     @Override
-    protected Class<?>[] getServletConfigClasses() {
-        return new Class<?>[0];
-    }
-
-    /**
-     * DispatcherServlet 映射路径
-     * @return
-     */
-    @Override
-    protected String[] getServletMappings() {
-        return new String[]{"/"};
-    }
-
-    @Override
-    protected Filter[] getServletFilters() {
-        CharacterEncodingFilter characterEncodingFilter = new CharacterEncodingFilter();
-        characterEncodingFilter.setEncoding("UTF-8");
-        characterEncodingFilter.setForceEncoding(true);
-        return new Filter[]{characterEncodingFilter};
+    public void onStartup(ServletContext servletContext) throws ServletException {
+        initializeFilter(servletContext);
+        initializeSpringMVCConfig(servletContext);
     }
 }

@@ -29,11 +29,8 @@ public class UserDBDaoThriftService implements Iface {
 
 	private Logger logger = LoggerFactory.getLogger(UserDBDaoThriftService.class);
 	
-	@Autowired
+	@Autowired(required = false)
 	private UserUserDao userDao;
-	
-	@Autowired
-	private UserFavPositionDao favPositionDao;
 	
 	@Autowired
 	private com.moseeker.baseorm.dao.userdb.UserEmployeeDao employeeDao;
@@ -41,8 +38,8 @@ public class UserDBDaoThriftService implements Iface {
 	@Autowired
 	private UserEmployeeDaoService userEmployeeDaoService;
 
-	@Autowired
-	private UserHRAccountDao userHRAccountDao;
+	@Autowired(required = false)
+	private UserHrAccountDao userHrAccountDao;
 
 	@Autowired
 	private WxUserDao wxUserDao;
@@ -99,13 +96,13 @@ public class UserDBDaoThriftService implements Iface {
 	@Override
 	public UserHrAccountDO updateUserHrAccount(UserHrAccountDO userHrAccountDO) throws CURDException, TException {
 		com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO u = new com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO();
-		userHRAccountDao.updateData(u);
+		userHrAccountDao.updateData(u);
 		return userHrAccountDO;
 	}
 
 	@Override
 	public int deleteUserHrAccount(int id) throws CURDException, TException {
-		return userHRAccountDao.deleteUserHrAccount(id);
+		return userHrAccountDao.deleteUserHrAccount(id);
 	}
 
 	@Override

@@ -10,6 +10,7 @@ import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.providerutils.QueryUtil;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import java.util.ArrayList;
 import org.apache.thrift.TException;
@@ -20,6 +21,7 @@ import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,20 +35,20 @@ import org.springframework.transaction.annotation.Transactional;
  * @version
  */
 @Repository
-public class UserHRAccountDao extends JooqCrudImpl<UserHrAccountDO, UserHrAccountRecord> {
+public class UserHrAccountDao extends JooqCrudImpl<UserHrAccountDO, UserHrAccountRecord> {
 
-	public UserHRAccountDao() {
+	public UserHrAccountDao() {
 		super(UserHrAccount.USER_HR_ACCOUNT, UserHrAccountDO.class);
 	}
 
-	public UserHRAccountDao(TableImpl<UserHrAccountRecord> table, Class<UserHrAccountDO> userHrAccountDOClass) {
+	public UserHrAccountDao(TableImpl<UserHrAccountRecord> table, Class<UserHrAccountDO> userHrAccountDOClass) {
 		super(table, userHrAccountDOClass);
 	}
 
 	public List<UserHrAccountDO> listHRFromCompany(int comanyId) throws TException {
-		QueryUtil qu = new QueryUtil();
-		qu.addEqualFilter("company_id", String.valueOf(comanyId));
-		return this.getDatas(qu);
+        Query.QueryBuilder qu = new Query.QueryBuilder();
+		qu.where("company_id", String.valueOf(comanyId));
+		return this.getDatas(qu.buildQuery());
 	}
 
     public int deleteUserHrAccount(int id) {
