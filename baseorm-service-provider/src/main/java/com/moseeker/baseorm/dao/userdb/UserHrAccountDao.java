@@ -26,10 +26,10 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 
- * HR帐号数据库持久类 
- * <p>Company: MoSeeker</P>  
- * <p>date: Nov 9, 2016</p>  
+ *
+ * HR帐号数据库持久类
+ * <p>Company: MoSeeker</P>
+ * <p>date: Nov 9, 2016</p>
  * <p>Email: wjf2255@gmail.com</p>
  * @author wjf
  * @version
@@ -37,32 +37,32 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 public class UserHrAccountDao extends JooqCrudImpl<UserHrAccountDO, UserHrAccountRecord> {
 
-	public UserHrAccountDao() {
-		super(UserHrAccount.USER_HR_ACCOUNT, UserHrAccountDO.class);
-	}
+    public UserHrAccountDao() {
+        super(UserHrAccount.USER_HR_ACCOUNT, UserHrAccountDO.class);
+    }
 
-	public UserHrAccountDao(TableImpl<UserHrAccountRecord> table, Class<UserHrAccountDO> userHrAccountDOClass) {
-		super(table, userHrAccountDOClass);
-	}
+    public UserHrAccountDao(TableImpl<UserHrAccountRecord> table, Class<UserHrAccountDO> userHrAccountDOClass) {
+        super(table, userHrAccountDOClass);
+    }
 
-	public List<UserHrAccountDO> listHRFromCompany(int comanyId) throws TException {
+    public List<UserHrAccountDO> listHRFromCompany(int comanyId) throws TException {
         Query.QueryBuilder qu = new Query.QueryBuilder();
-		qu.where("company_id", String.valueOf(comanyId));
-		return this.getDatas(qu.buildQuery());
-	}
+        qu.where("company_id", String.valueOf(comanyId));
+        return this.getDatas(qu.buildQuery());
+    }
 
     public int deleteUserHrAccount(int id) {
-		UserHrAccountRecord record = new UserHrAccountRecord();
-		record.setId(id);
-		try {
-			return this.deleteRecord(record);
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			return 0;
-		}
-	}
+        UserHrAccountRecord record = new UserHrAccountRecord();
+        record.setId(id);
+        try {
+            return this.deleteRecord(record);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return 0;
+        }
+    }
 
-	@Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public int createHRAccount(UserHrAccountRecord userHrAccountRecord, HrCompanyRecord companyRecord)
             throws Exception {
         int result = 0;

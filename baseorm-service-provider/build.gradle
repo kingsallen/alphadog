@@ -26,20 +26,20 @@ task copyJars(type: Copy) {
     from configurations.runtime
     into 'build/libs' // 目标位置
 }
-
-jar {
-
-    // build one flat jar
-    from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    }
-
-     manifest {
-        attributes 'Main-Class': 'com.moseeker.baseorm.server.BaseOrmServer'
-     }
-
-
-}
+//
+//jar {
+//
+//    // build one flat jar
+//    from {
+//        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+//    }
+//
+//     manifest {
+//        attributes 'Main-Class': 'com.moseeker.baseorm.server.BaseOrmServer'
+//     }
+//
+//
+//}
 
 project.description = '''
     1) orm基础数据库服务

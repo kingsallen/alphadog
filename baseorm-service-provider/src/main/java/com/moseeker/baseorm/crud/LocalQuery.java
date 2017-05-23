@@ -2,6 +2,7 @@ package com.moseeker.baseorm.crud;
 
 import com.moseeker.common.exception.OrmException;
 import com.moseeker.common.util.query.Query;
+
 import org.jooq.*;
 import org.jooq.impl.TableImpl;
 import org.slf4j.Logger;
@@ -54,8 +55,6 @@ class LocalQuery<R extends Record> {
     /**
      * 返回每页显示的信息数量
      * 如果大于0，则返回当前的每页显示的数量；否则返回10
-     *
-     * @return
      */
     public int getPageSize() {
         return query.getPageSize() > 0 ? query.getPageSize() : 10;
@@ -107,8 +106,6 @@ class LocalQuery<R extends Record> {
 
     /**
      * 生成group条件
-     *
-     * @return
      */
     public Collection<? extends Field<?>> buildGroup() {
         if (query != null && query.getGroups() != null) {
@@ -131,8 +128,6 @@ class LocalQuery<R extends Record> {
 
     /**
      * 所有Condition组装
-     *
-     * @return
      */
     public org.jooq.Condition buildConditions() {
         return localCondition.parseConditionUtil(query.getConditions());
@@ -140,8 +135,6 @@ class LocalQuery<R extends Record> {
 
     /**
      * 所有Order的组装
-     *
-     * @return
      */
     public Collection<? extends SortField<?>> buildOrder() {
         if (query != null && query.getOrders() != null) {
@@ -171,8 +164,6 @@ class LocalQuery<R extends Record> {
     /**
      * 返回解析的查询条件。
      * 该条件过滤了order条件和limit条件
-     *
-     * @return
      */
     public SelectJoinStep<Record1<Integer>> convertForCount() {
         SelectJoinStep<Record1<Integer>> select = create.selectCount().from(table);
@@ -190,8 +181,6 @@ class LocalQuery<R extends Record> {
 
     /**
      * 返回解析的查询条件。解析条件包括查询的字段，过滤条件，分组条件，排序条件
-     *
-     * @return
      */
     public SelectJoinStep<Record> convertToResultQuery() {
         SelectJoinStep<Record> select = null;
@@ -213,7 +202,9 @@ class LocalQuery<R extends Record> {
         if (orders != null && orders.size() > 0) {
             select.orderBy(orders);
         }
-        select.limit((getPage() - 1) * getPageSize(), getPageSize());
+        if (query.getPageSize() > 0) {
+            select.limit((getPage() - 1) * getPageSize(), getPageSize());
+        }
         logger.info(select.getSQL());
         return select;
     }

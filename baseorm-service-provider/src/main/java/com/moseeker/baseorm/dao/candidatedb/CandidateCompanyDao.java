@@ -5,7 +5,8 @@ import com.moseeker.baseorm.db.candidatedb.tables.CandidateCompany;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateCompanyRecord;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.dao.struct.CURDException;
-import com.moseeker.thrift.gen.dao.struct.CandidateCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateCompanyDO;
+
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
@@ -33,8 +34,7 @@ public class CandidateCompanyDao extends JooqCrudImpl<CandidateCompanyDO, Candid
         return getDatas(query);
     }
 
-    public CandidateCompanyDO updateCandidateCompany(CandidateCompanyDO candidateCompanyDO) throws CURDException {
-
+    public CandidateCompanyDO updateCandidateCompanys(CandidateCompanyDO candidateCompanyDO) throws CURDException {
         CandidateCompanyRecord candidateCompanyRecord = this.dataToRecord(candidateCompanyDO);
         create.attach(candidateCompanyRecord);
         candidateCompanyRecord.update();
