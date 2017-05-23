@@ -1,6 +1,9 @@
 package com.moseeker.profile.dao.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializeFilter;
+import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.alibaba.fastjson.serializer.ValueFilter;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -47,6 +50,9 @@ import java.sql.*;
 import java.util.*;
 import java.util.Date;
 import java.util.stream.Collectors;
+
+import static com.moseeker.common.util.BeanUtils.jooqMapfilter;
+import static com.moseeker.common.util.BeanUtils.profilter;
 
 @Repository
 public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile> implements ProfileDao {
@@ -1047,13 +1053,16 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
                 put("password", password);
             }};
             try {
+                logger.info("getDownloadUrlByUserId:{}:{}:{}", downloadApi, password, userid);
                 String content = HttpClient.sendPost(downloadApi, JSON.toJSONString(params));
+                logger.info("getDownloadUrlByUserId:{}:{}", userid, content);
                 Map<String, Object> mp = JsonToMap.parseJSON2Map(content);
                 Object link = mp.get("downloadlink");
                 if (link != null) {
                     url = link.toString();
                 }
             } catch (ConnectException e) {
+                logger.error(e.getMessage(), e);
                 e.printStackTrace();
             }
         }
@@ -1072,7 +1081,11 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
             filter.get(key).forEach(subKey -> object.remove(subKey));
         }
         if (showEmptyKey) {
-            map.put(key, object);
+            if (object == null) {
+                map.put(key, new HashMap<>());
+            } else {
+                map.put(key, object);
+            }
         } else if (object != null) {
             if ((object).size() > 0) {
                 map.put(key, object);
@@ -1093,7 +1106,11 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
             });
         }
         if (showEmptyKey) {
-            map.put(key, object);
+            if (object == null) {
+                map.put(key, new ArrayList<>());
+            } else {
+                map.put(key, object);
+            }
         } else if (object != null) {
             if (object.size() > 0) {
                 map.put(key, object);
@@ -1154,6 +1171,10 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
         }
 
         if (((UInteger) application.get("applier_id")).intValue() != 0) {
+            if (dl_url_required) {
+                String url = getDownloadUrlByUserId(downloadApi, password, ((UInteger) application.get("applier_id")).intValue());
+                map.put("download_url", url == null ? "" : url);
+            }
             //all from userdb.user_user
             if (!filterTable(filter, "user_user")) {
                 Map<String, Object> user = create
@@ -1386,10 +1407,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 
             }
 
-            if (dl_url_required && !filter.containsKey("download_url")) {
-                String url = getDownloadUrlByUserId(downloadApi, password, ((UInteger) application.get("applier_id")).intValue());
-                map.put("download_url", url == null ? "" : url);
-            }
+
         }
 
         if (recommender && (Long) application.get("recommender_user_id") != 0) {
@@ -1421,11 +1439,21 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
             }
         }
 
-        logger.info("profilesByApplication:application:{},result:{}", application.get("id"), JSON.toJSONString(application));
+        logger.info("profilesByApplication:application:{},result:{}", application.get("id"), JSON.toJSONString(application, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteNullListAsEmpty));
 
         return map;
 
     }
+
+
+    ValueFilter valueFilter = new ValueFilter() {
+        @Override
+        public Object process(Object object, String name, Object value) {
+            if (value == null)
+                return "";
+            return value;
+        }
+    };
 
     public Response getResourceByApplication(String downloadApi, String password, int companyId, int sourceId, int atsStatus, boolean recommender, boolean dl_url_required, Map<String, List<String>> filter) {
         Connection conn = null;
@@ -1444,7 +1472,13 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
                     .map(record -> getRelatedDataByJobApplication(create, record.into(jobposition).intoMap(), record.into(jobApplication).intoMap(), downloadApi, password, recommender, dl_url_required, filter))
                     .collect(Collectors.toList());
 
-            return ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(datas));
+            return ResponseUtils.successWithoutStringify(JSON.toJSONString(datas, new SerializeFilter[]{
+                            valueFilter,
+                            profilter,
+                            jooqMapfilter},
+                    SerializerFeature.WriteMapNullValue,
+                    SerializerFeature.WriteNullStringAsEmpty,
+                    SerializerFeature.WriteNullListAsEmpty));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);

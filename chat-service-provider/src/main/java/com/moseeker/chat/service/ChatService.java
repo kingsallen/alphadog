@@ -335,6 +335,13 @@ public class ChatService {
             if(chatDebut) {
                 pool.startTast(() -> createChat(resultOfSaveRoomVO, is_gamma));
                 resultOfSaveRoomVO.setChatDebut(chatDebut);
+                HrChatUnreadCountDO unreadCountDO = new HrChatUnreadCountDO();
+                unreadCountDO.setHrId(hrId);
+                unreadCountDO.setUserId(userId);
+                unreadCountDO.setHrUnreadCount(0);
+                unreadCountDO.setUserUnreadCount(1);
+                unreadCountDO.setRoomId(chatRoom.getId());
+                pool.startTast(() -> chaoDao.saveUnreadCount(unreadCountDO));
             }
 
             //默认清空C端账号的未读消息

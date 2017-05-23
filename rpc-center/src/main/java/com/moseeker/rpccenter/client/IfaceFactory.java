@@ -2,6 +2,7 @@ package com.moseeker.rpccenter.client;
 
 import com.moseeker.thrift.gen.apps.positionbs.service.PositionBS;
 import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
+import com.moseeker.thrift.gen.profile.service.ProfileServices;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import org.apache.commons.pool.impl.GenericKeyedObjectPool;
 import org.apache.thrift.TServiceClient;
@@ -44,6 +45,8 @@ public class IfaceFactory<T> {
         chaosRelatedService.add(ChaosServices.Iface.class);
         chaosRelatedService.add(UserHrAccountService.Iface.class);
         chaosRelatedService.add(PositionBS.Iface.class);
+        chaosRelatedService.add(PositionBS.Iface.class);
+        chaosRelatedService.add(ProfileServices.Iface.class);
     }
 
     /**
