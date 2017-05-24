@@ -293,7 +293,13 @@ public class ChatService {
 
         HrWxHrChatListDO chatRoomDO = new HrWxHrChatListDO();
         chatRoomDO.setId(roomId);
+        if (speaker == 0) {
+            chatRoomDO.setWxChatTime(date);
+        } else {
+            chatRoomDO.setHrChatTime(date);
+        }
         chatRoomDO.setUpdateTime(date);
+
         chaoDao.updateChatRoom(chatRoomDO);
 
         //修改未读消息数量

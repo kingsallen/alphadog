@@ -366,6 +366,7 @@ public class ChatDao {
      */
     public HrWxHrChatDO saveChat(HrWxHrChatDO chatDO) {
         try {
+
             return hrDBDao.saveChat(chatDO);
         } catch (TException e) {
             logger.error(e.getMessage(), e);
@@ -656,13 +657,13 @@ public class ChatDao {
             if(hrChatUnreadCountDO.getRoomId() > 0) {
                 switch (speaker) {
                     case 1:
-                        hrChatUnreadCountDO.setWxChatTime(date);
-                        hrChatUnreadCountDO.setUserHaveUnreadMsg((byte)1);
+                        hrChatUnreadCountDO.setHrChatTime(date);
+                        hrChatUnreadCountDO.setHrHaveUnreadMsg((byte)1);
                         hrChatUnreadCountDO.setUserUnreadCount(hrChatUnreadCountDO.getUserUnreadCount()+1);
                         break;
                     case 0:
-                        hrChatUnreadCountDO.setHrChatTime(date);
-                        hrChatUnreadCountDO.setHrHaveUnreadMsg((byte)1);
+                        hrChatUnreadCountDO.setWxChatTime(date);
+                        hrChatUnreadCountDO.setUserHaveUnreadMsg((byte)1);
                         hrChatUnreadCountDO.setHrUnreadCount(hrChatUnreadCountDO.getHrUnreadCount()+1);
                         break;
                     default:
