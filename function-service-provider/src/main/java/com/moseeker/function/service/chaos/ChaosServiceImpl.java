@@ -3,12 +3,10 @@ package com.moseeker.function.service.chaos;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
-import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.*;
 import com.moseeker.common.exception.CacheConfigNotExistException;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.redis.RedisClient;
-import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.UrlUtil;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -17,6 +15,7 @@ import com.moseeker.thrift.gen.foundation.chaos.struct.ThirdPartyAccountStruct;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
 import java.net.ConnectException;
 import java.util.List;
+import javax.annotation.Resource;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +35,9 @@ import org.springframework.stereotype.Service;
 public class ChaosServiceImpl {
 	
 	Logger logger = LoggerFactory.getLogger(ChaosServiceImpl.class);
+
+    @Resource(name = "cacheClient")
+    private RedisClient redisClient;
 	
 
     @Autowired
@@ -145,7 +147,6 @@ public class ChaosServiceImpl {
 					String positionJson = JSON.toJSONString(position);
 					logger.info("synchronize position:"+positionJson);
 					
-					RedisClient redisClient = RedisClientFactory.getCacheClient();
 					redisClient.lpush(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_QUEUE.toString(), positionJson);
 					if(second < 60*60*24) {
 						redisClient.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH.toString(), String.valueOf(position.getPosition_id()), String.valueOf(position.getChannel()), "1", 60*60*24-second);
@@ -169,7 +170,6 @@ public class ChaosServiceImpl {
 		ThirdPartyPositionData p = new ThirdPartyPositionData();
 		try {
 			String positionJson = JSON.toJSONString(position);
-			RedisClient redisClient = RedisClientFactory.getCacheClient();
 			redisClient.lpush(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH_QUEUE.toString(), positionJson);
 			p.setChannel(Byte.valueOf(position.getChannel()));
 			p.setPosition_id(Integer.valueOf(position.getPosition_id()));

@@ -1,35 +1,26 @@
 package com.moseeker.baseorm.dao.hrdb;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import com.alibaba.fastjson.JSON;
+import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyPositionRecord;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import com.moseeker.baseorm.crud.JooqCrudImpl;
-import com.moseeker.common.util.query.Query;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import org.joda.time.DateTime;
-import org.jooq.DSLContext;
-
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Service;
-
-import com.alibaba.fastjson.JSON;
-import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyPositionRecord;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.dbutils.DBConnHelper;
-import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.BeanUtils;
-import com.moseeker.common.util.StringUtils;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 
 /**
  * 

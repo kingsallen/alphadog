@@ -33,10 +33,10 @@ import com.moseeker.baseorm.db.jobdb.tables.records.JobOccupationRelRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionCityRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionExtRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
+import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.*;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.MD5Util;
@@ -61,6 +61,7 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrHbItemsDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrHbPositionBindingDO;
 import com.moseeker.thrift.gen.position.struct.*;
 import com.mysql.jdbc.StringUtils;
+import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.jooq.Field;
@@ -121,6 +122,9 @@ public class PositionService {
     private HrHbPositionBindingDao hrHbPositionBindingDao;
     @Autowired
     private HrHbItemsDao hrHbItemsDao;
+
+    @Resource(name = "cacheClient")
+    private RedisClient redisClient;
     
     com.moseeker.thrift.gen.searchengine.service.SearchengineServices.Iface searchengineServices = ServiceManager.SERVICEMANAGER
             .getService(com.moseeker.thrift.gen.searchengine.service.SearchengineServices.Iface.class);
@@ -366,7 +370,7 @@ public class PositionService {
                 if (account != null && account.getBinding() == AccountSync.bound.getValue() && p.getId() > 0
                         && p.getIs_synchronization() == PositionSync.bound.getValue()) {
                     logger.info("data allow");
-                    String str = RedisClientFactory.getCacheClient().get(AppId.APPID_ALPHADOG.getValue(),
+                    String str = redisClient.get(AppId.APPID_ALPHADOG.getValue(),
                             KeyIdentifier.THIRD_PARTY_POSITION_REFRESH.toString(), String.valueOf(positionId), String.valueOf(channel));
                     if (StringUtils.isNullOrEmpty(str)) {
                         logger.info("cache allow");

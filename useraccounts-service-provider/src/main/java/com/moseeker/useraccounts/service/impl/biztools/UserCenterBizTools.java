@@ -156,7 +156,7 @@ public class UserCenterBizTools {
 				qu.orderBy("id", Order.DESC);
 				qu.setPageNum(pageNo);
 				qu.setPageSize(pageSize);
-				recomRecordDOList = candidateRecomRecordDao.getDatas(qu.buildQuery());
+				recomRecordDOList = candidateRecomRecordDao.getDatas(qu.buildQuery(), CandidateRecomRecordDO.class);
 				break;
 			case 2:			//查找被推荐的职位转发记录
 				recomRecordDOList = candidateRecomRecordDao.listInterestedCandidateRecomRecordByUserPositions(userId, positionIdList, pageNo, pageSize);

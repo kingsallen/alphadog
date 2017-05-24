@@ -1,8 +1,6 @@
 package com.moseeker.apps.service;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.moseeker.apps.bean.RecruitmentResult;
 import com.moseeker.apps.bean.RewardsToBeAddBean;
 import com.moseeker.apps.constants.TemplateMs;
@@ -15,7 +13,7 @@ import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeePointsRecordDao;
-import com.moseeker.baseorm.dao.userdb.UserHRAccountDao;
+import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeePointsRecordRecord;
@@ -35,7 +33,6 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.config.ConfigSysPointsConfTpl;
 import com.moseeker.thrift.gen.config.HrAwardConfigTemplate;
-import com.moseeker.thrift.gen.dao.service.*;
 import com.moseeker.thrift.gen.dao.struct.HistoryOperate;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
 import com.moseeker.thrift.gen.mq.service.MqService;
@@ -44,17 +41,17 @@ import com.moseeker.thrift.gen.mq.struct.MessageTplDataCol;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeePointSum;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
-import org.apache.thrift.TException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class ProfileProcessBS {
@@ -67,7 +64,7 @@ public class ProfileProcessBS {
     @Autowired
     private JobApplicationDao jobApplicationDao;
     @Autowired
-    private UserHRAccountDao userHraccountDao;
+    private UserHrAccountDao userHraccountDao;
     @Autowired
     private ConfigSysPointsConfTplDao configSysPointsConfTplDao;
     @Autowired

@@ -4,22 +4,13 @@ import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.dictdb.tables.DictCity;
 import com.moseeker.baseorm.db.dictdb.tables.DictCollege;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCollegeRecord;
-import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCollegeDO;
-import org.jooq.DSLContext;
-import org.jooq.Result;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectWhereStep;
+import java.util.List;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
-
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author xxx

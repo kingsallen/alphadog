@@ -3,15 +3,9 @@ package com.moseeker.baseorm.dao.jobdb;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.jobdb.tables.JobOccupationRel;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobOccupationRelRecord;
-import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobOccupationRelDO;
-
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
-
 import org.jooq.Condition;
-import org.jooq.DSLContext;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 

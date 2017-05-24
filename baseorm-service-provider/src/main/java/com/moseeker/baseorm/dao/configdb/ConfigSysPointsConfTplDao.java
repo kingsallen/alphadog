@@ -4,19 +4,15 @@ import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.configdb.tables.ConfigSysPointsConfTpl;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysPointsConfTplRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrPointsConf;
-import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.thrift.gen.config.HrAwardConfigTemplate;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysPointsConfTplDO;
-import org.jooq.DSLContext;
+import java.util.ArrayList;
+import java.util.List;
 import org.jooq.Record8;
 import org.jooq.Result;
 import org.jooq.SelectOnConditionStep;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
-
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
 * @author xxx

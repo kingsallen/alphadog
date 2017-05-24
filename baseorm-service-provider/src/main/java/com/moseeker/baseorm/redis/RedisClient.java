@@ -11,18 +11,16 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import redis.clients.jedis.JedisCluster;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 import redis.clients.jedis.params.sortedset.ZAddParams;
 
-@Component
 public abstract class RedisClient {
 
 	Logger logger = LoggerFactory.getLogger(RedisClient.class);
 
 	@Autowired
-    private ConfigCacheconfigRediskeyDao cacheconfigRediskeyDao;
+    protected ConfigCacheconfigRediskeyDao cacheconfigRediskeyDao;
 
 	protected JedisCluster redisCluster;
 	protected String redisConfigKeyName;

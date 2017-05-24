@@ -3,8 +3,10 @@ package com.moseeker.useraccounts.service.impl;
 import com.moseeker.common.util.AopTargetUtils;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.UserUserDO;
+import com.moseeker.thrift.gen.useraccounts.struct.User;
 import com.moseeker.thrift.gen.useraccounts.struct.Userloginreq;
 import com.moseeker.useraccounts.config.AppConfig;
+import org.apache.thrift.TException;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,14 +54,15 @@ public class UseraccountsServiceTest {
 
 
     @Test
-    public void postuserbindmobile() throws Exception {
-
-    }
-
-    @Test
     @Transactional
     public void postuserchangepassword() throws Exception {
         Response response = service.postuserchangepassword(1122611, "123456", "123456");
+        System.out.println(response);
+    }
+
+    @Test
+    public void postuserresetpassword() throws Exception {
+        Response response = service.postuserresetpassword("13020287221", "898781415", "4000");
         System.out.println(response);
     }
 
@@ -70,53 +73,11 @@ public class UseraccountsServiceTest {
     }
 
     @Test
-    public void postuserresetpassword() throws Exception {
-
-    }
-
-    @Test
-    public void postusermergebymobile() throws Exception {
-
-    }
-
-    @Test
-    public void getUserById() throws Exception {
-
-    }
-
-    @Test
-    public void getUsers() throws Exception {
-
-    }
-
-    @Test
-    public void updateUser() throws Exception {
-
-    }
-
-    @Test
-    public void getismobileregisted() throws Exception {
-
-    }
-
-    @Test
-    public void postsendchangemobilecode() throws Exception {
-
-    }
-
-    @Test
-    public void postvalidatechangemobilecode() throws Exception {
-
-    }
-
-    @Test
-    public void postsendresetmobilecode() throws Exception {
-
-    }
-
-    @Test
-    public void postresetmobile() throws Exception {
-
+    public void postusermobilesignup() throws Exception {
+        User user = new User();
+        user.setMobile(13020287221L);
+        Response response = service.postusermobilesignup(user, "2764");
+        System.out.println(response);
     }
 
     @Test
@@ -129,20 +90,6 @@ public class UseraccountsServiceTest {
 
     }
 
-    @Test
-    public void postvalidatepasswordforgotcode() throws Exception {
-
-    }
-
-    @Test
-    public void validateVerifyCode() throws Exception {
-
-    }
-
-    @Test
-    public void sendVerifyCode() throws Exception {
-
-    }
 
     @Test
     public void checkEmail() throws Exception {
@@ -150,25 +97,6 @@ public class UseraccountsServiceTest {
         System.out.println(response);
     }
 
-    @Test
-    public void cerateQrcode() throws Exception {
-
-    }
-
-    @Test
-    public void getQrcode() throws Exception {
-
-    }
-
-    @Test
-    public void getScanResult() throws Exception {
-
-    }
-
-    @Test
-    public void setScanResult() throws Exception {
-
-    }
 
     @Test
     public void ifExistUser() throws Exception {

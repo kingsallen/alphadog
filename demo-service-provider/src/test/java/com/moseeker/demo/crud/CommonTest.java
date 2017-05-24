@@ -55,6 +55,11 @@
 ////        int delete = userDao.delete(QueryCondition.like("name", "test_add_%"));
 ////        Assert.assertEquals(delete, 1);
 ////    }
+//    @Test
+//    public void testDelete() throws SQLException {
+//        int delete = userDao.delete(QueryCondition.like("name", "test_add_%"));
+//        Assert.assertEquals(delete, 1);
+//    }
 //
 //
 //    @Test

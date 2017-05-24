@@ -1,5 +1,6 @@
 package com.moseeker.baseorm.redis.cache;
 
+import com.moseeker.baseorm.dao.configdb.ConfigCacheconfigRediskeyDao;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.RedisException;
@@ -7,7 +8,11 @@ import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.StringUtils;
 import java.util.HashSet;
 import java.util.Set;
+import javax.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.JedisCluster;
 
@@ -27,30 +32,18 @@ import redis.clients.jedis.JedisCluster;
  * @author wjf
  * @version Beta
  */
-@Component
+@Component("cacheClient")
 public class CacheClient extends RedisClient {
 
-	private static volatile CacheClient instance = null;
-
-	private CacheClient() {
-		ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil.getInstance();
-		redisConfigKeyName = propertiesUtils.get("redis.cache.config_key_name", String.class);
-		redisConfigTimeOut = propertiesUtils.get("redis.cache.config_timeout", Integer.class);
-		redisConfigType = Constant.cacheConfigType;
-		redisCluster = initRedisCluster();
-		reloadRedisKey();
-	}
-
-	public static CacheClient getInstance() {
-		if (instance == null) {
-			synchronized (CacheClient.class) {
-				if (instance == null) {
-					instance = new CacheClient();
-				}
-			}
-		}
-		return instance;
-	}
+    @PostConstruct
+	public void init() {
+        ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil.getInstance();
+        redisConfigKeyName = propertiesUtils.get("redis.cache.config_key_name", String.class);
+        redisConfigTimeOut = propertiesUtils.get("redis.cache.config_timeout", Integer.class);
+        redisConfigType = Constant.cacheConfigType;
+        redisCluster = initRedisCluster();
+        reloadRedisKey();
+    }
 
 	protected JedisCluster initRedisCluster() throws RedisException {
 		ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil.getInstance();

@@ -5,15 +5,13 @@ import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrSearchConditionRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
+import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.annotation.notify.UpdateEs;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.redis.RedisClient;
-import com.moseeker.common.redis.RedisClientFactory;
-import com.moseeker.common.sms.SmsSender;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
@@ -32,6 +30,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,8 +53,6 @@ public class UserHrAccountService {
 
     private static final String REDIS_KEY_HR_SMS_SIGNUP = "HR_SMS_SIGNUP";
 
-    RedisClient redisClient = RedisClientFactory.getCacheClient();
-
     ChaosServices.Iface chaosService = ServiceManager.SERVICEMANAGER.getService(ChaosServices.Iface.class);
 
     HRAccountFoundationServices.Iface hrAccountService = ServiceManager.SERVICEMANAGER
@@ -70,6 +67,12 @@ public class UserHrAccountService {
 
     @Autowired
     private HrTalentpoolDao hrTalentpoolDao;
+
+    @Autowired
+    private SmsSender smsSender;
+
+    @Resource(name = "cacheClient")
+    private RedisClient redisClient;
 
     /**
      * HR在下载行业报告是注册
@@ -87,7 +90,7 @@ public class UserHrAccountService {
             }
 
             // 发送HR注册的验证码
-            return ResponseUtils.success(SmsSender.sendHrMobileVertfyCode(mobile, REDIS_KEY_HR_SMS_SIGNUP, source));
+            return ResponseUtils.success(smsSender.sendHrMobileVertfyCode(mobile, REDIS_KEY_HR_SMS_SIGNUP, source));
 
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -146,7 +149,7 @@ public class UserHrAccountService {
                 int result = userHrAccountDao.createHRAccount(userHrAccountRecord, companyRecord);
 
                 if (result > 0 && downloadReport.getSource() == Constant.HR_ACCOUNT_SIGNUP_SOURCE_WWW) {
-                    SmsSender.sendHrSmsSignUpForDownloadIndustryReport(downloadReport.getMobile(), passwordArray[0]);
+                    smsSender.sendHrSmsSignUpForDownloadIndustryReport(downloadReport.getMobile(), passwordArray[0]);
                 }
                 if (result > 0) {
                     return ResponseUtils.success(new HashMap<String, Object>() {

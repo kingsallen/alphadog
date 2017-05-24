@@ -2,23 +2,18 @@ package com.moseeker.baseorm.crud;
 
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
-import com.moseeker.common.dbutils.DBConnHelper;
-import com.moseeker.common.util.query.*;
 import com.moseeker.common.util.query.Query;
-import com.moseeker.thrift.gen.useraccounts.struct.User;
-import org.jooq.*;
-import org.jooq.Condition;
-import org.jooq.impl.DefaultDSLContext;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Iterator;
-
+import org.jooq.Condition;
+import org.jooq.DSLContext;
+import org.jooq.Field;
+import org.jooq.SQLDialect;
+import org.jooq.impl.DefaultDSLContext;
 import static org.junit.Assert.assertEquals;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Created by jack on 02/05/2017.
@@ -42,11 +37,11 @@ public class LocalQueryTest {
                 .buildQuery();
 
         Connection connection = null;
-        try {
-            connection = DBConnHelper.DBConn.getConn();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            connection = DBConnHelper.DBConn.getConn();
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
         context = new DefaultDSLContext(connection, SQLDialect.MYSQL);
         localQuery = new LocalQuery<>(context, UserUser.USER_USER, query);
     }

@@ -89,7 +89,6 @@ public class ConfigCacheconfigRediskeyDao extends JooqCrudImpl<ConfigCacheconfig
         } catch (Exception e) {
             log.error("error", e);
             throw new RedisException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, ConfigCacheconfigRediskeyDao.class.getName(), Constant.REDIS_CONNECT_ERROR_EVENTKEY);
-//			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
         }
         return redisKeys;
     }

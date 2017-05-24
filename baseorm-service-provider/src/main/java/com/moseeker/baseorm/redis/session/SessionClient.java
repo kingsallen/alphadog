@@ -7,6 +7,7 @@ import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.StringUtils;
 import java.util.HashSet;
 import java.util.Set;
+import javax.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.JedisCluster;
@@ -27,13 +28,14 @@ import redis.clients.jedis.JedisCluster;
  * @author wjf
  * @version
  */
-@Component
+@Component("sessionClient")
 public class SessionClient extends RedisClient {
 
-	private SessionClient() {
+    @PostConstruct
+	public void init() {
 		ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil.getInstance();
-		redisConfigKeyName = propertiesUtils.get("redis.session.host", String.class);
-		redisConfigTimeOut = propertiesUtils.get("redis.session.port", Integer.class);
+		redisConfigKeyName = propertiesUtils.get("redis.session.config_key_name", String.class);
+		redisConfigTimeOut = propertiesUtils.get("redis.session.config_timeout", Integer.class);
 		redisConfigType = Constant.sessionConfigType;
 		redisCluster = initRedisCluster();
 		reloadRedisKey();

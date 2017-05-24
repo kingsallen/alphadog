@@ -14,7 +14,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
 import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
 import org.springframework.jdbc.datasource.init.DataSourceInitializer;
@@ -64,13 +63,23 @@ public class AppConfig {
     }
 
     @Bean
-    public DataSourceConnectionProvider connectionProvider() {
-        return new DataSourceConnectionProvider(transactionAwareDataSource());
+    public LazyConnectionDataSourceProxy lazyConnectionDataSource() {
+        return new LazyConnectionDataSourceProxy(getDataSource());
     }
 
     @Bean
     public TransactionAwareDataSourceProxy transactionAwareDataSource() {
-        return new TransactionAwareDataSourceProxy(getDataSource());
+        return new TransactionAwareDataSourceProxy(lazyConnectionDataSource());
+    }
+
+    @Bean
+    public DataSourceTransactionManager transactionManager() {
+        return new DataSourceTransactionManager(lazyConnectionDataSource());
+    }
+
+    @Bean
+    public DataSourceConnectionProvider connectionProvider() {
+        return new DataSourceConnectionProvider(transactionAwareDataSource());
     }
 
     @Bean

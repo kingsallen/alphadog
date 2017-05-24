@@ -1,7 +1,7 @@
 package com.moseeker.useraccounts.service.impl;
 
+import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.util.AopTargetUtils;
 import com.moseeker.thrift.gen.employee.struct.*;
 import com.moseeker.thrift.gen.mq.service.MqService;
@@ -9,12 +9,10 @@ import com.moseeker.useraccounts.config.AppConfig;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.util.ReflectionTestUtils;

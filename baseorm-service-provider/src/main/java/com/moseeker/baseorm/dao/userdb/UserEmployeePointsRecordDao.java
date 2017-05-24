@@ -3,22 +3,17 @@ package com.moseeker.baseorm.dao.userdb;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeePointsRecordRecord;
-import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeePointSum;
-import org.jooq.DSLContext;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import org.jooq.Record2;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
+import static org.jooq.impl.DSL.sum;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
-
-import java.math.BigDecimal;
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.jooq.impl.DSL.sum;
 
 @Repository
 public class UserEmployeePointsRecordDao extends JooqCrudImpl<UserEmployeePointsRecordDO, UserEmployeePointsRecordRecord> {

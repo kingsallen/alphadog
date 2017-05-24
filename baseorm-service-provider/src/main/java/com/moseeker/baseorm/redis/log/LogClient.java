@@ -7,6 +7,7 @@ import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.StringUtils;
 import java.util.HashSet;
 import java.util.Set;
+import javax.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.JedisCluster;
@@ -27,12 +28,11 @@ import redis.clients.jedis.JedisCluster;
  * @author wjf
  * @version
  */
-@Component
+@Component("logClient")
 public class LogClient extends RedisClient {
 
-	private static volatile LogClient instance = null;
-
-	private LogClient() {
+    @PostConstruct
+	public void  init() {
 		ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil.getInstance();
 		redisConfigKeyName = propertiesUtils.get("redis.log.config_key_name", String.class);
 		redisConfigTimeOut = propertiesUtils.get("redis.log.config_timeout", Integer.class);

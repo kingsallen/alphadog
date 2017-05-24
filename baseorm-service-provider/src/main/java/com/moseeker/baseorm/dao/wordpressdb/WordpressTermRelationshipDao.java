@@ -3,14 +3,9 @@ package com.moseeker.baseorm.dao.wordpressdb;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.wordpressdb.tables.WordpressTermRelationships;
 import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressTermRelationshipsRecord;
-import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.thrift.gen.dao.struct.wordpressdb.WordpressTermRelationshipsDO;
-import org.jooq.DSLContext;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
-
-import java.sql.Connection;
-import java.sql.SQLException;
 
 @Repository
 public class WordpressTermRelationshipDao

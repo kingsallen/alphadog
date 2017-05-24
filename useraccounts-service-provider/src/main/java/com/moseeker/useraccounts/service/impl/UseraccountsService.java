@@ -13,13 +13,12 @@ import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserFavPositionRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
+import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.*;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.redis.RedisClient;
-import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
@@ -43,6 +42,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,6 +84,9 @@ public class UseraccountsService {
 	
 	@Autowired
 	protected Map<String, BindOnAccountService> bindOnAccount;
+
+    @Resource(name = "cacheClient")
+    private RedisClient redisClient;
 	
 	/**
 	 * 用户登陆， 返回用户登陆后的信息。
@@ -847,33 +850,32 @@ public class UseraccountsService {
 	private boolean validateCode(String mobile, String code, int type) {
 		String codeinRedis = null;
 		try {
-			RedisClient redisclient = RedisClientFactory.getCacheClient();
 			switch (type) {
 			case 1:
-				codeinRedis = redisclient.get(0, "SMS_SIGNUP", mobile);
+				codeinRedis = redisClient.get(0, "SMS_SIGNUP", mobile);
 				if (code.equals(codeinRedis)) {
-					redisclient.del(0, "SMS_SIGNUP", mobile);
+                    redisClient.del(0, "SMS_SIGNUP", mobile);
 					return true;
 				}
 				break;
 			case 2:
-				codeinRedis = redisclient.get(0, "SMS_PWD_FORGOT", mobile);
+				codeinRedis = redisClient.get(0, "SMS_PWD_FORGOT", mobile);
 				if (code.equals(codeinRedis)) {
-					redisclient.del(0, "SMS_PWD_FORGOT", mobile);
+                    redisClient.del(0, "SMS_PWD_FORGOT", mobile);
 					return true;
 				}
 			case 3:
-				codeinRedis = redisclient.get(0, "SMS_CHANGEMOBILE_CODE",
+				codeinRedis = redisClient.get(0, "SMS_CHANGEMOBILE_CODE",
 						mobile);
 				if (code.equals(codeinRedis)) {
-					redisclient.del(0, "SMS_CHANGEMOBILE_CODE", mobile);
+                    redisClient.del(0, "SMS_CHANGEMOBILE_CODE", mobile);
 					return true;
 				}
 			case 4:
-				codeinRedis = redisclient
+				codeinRedis = redisClient
 						.get(0, "SMS_RESETMOBILE_CODE", mobile);
 				if (code.equals(codeinRedis)) {
-					redisclient.del(0, "SMS_RESETMOBILE_CODE", mobile);
+                    redisClient.del(0, "SMS_RESETMOBILE_CODE", mobile);
 					return true;
 				}
 				break;
@@ -982,7 +984,6 @@ public class UseraccountsService {
 	 * @throws TException
 	 */
 	public Response getScanResult(int wechatId, long sceneId) throws TException {
-		RedisClient redisClient = RedisClientFactory.getCacheClient();
 		String result = redisClient.get(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.WEIXIN_SCANRESULT.toString(), String.valueOf(wechatId), String.valueOf(sceneId));
 		if(StringUtils.isNotNullOrEmpty(result)) {
 			redisClient.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.WEIXIN_SCANRESULT.toString(), String.valueOf(wechatId), String.valueOf(sceneId));
@@ -1006,7 +1007,6 @@ public class UseraccountsService {
 	 * @throws TException
 	 */
 	public Response setScanResult(int wechatId, long sceneId, String value) throws TException {
-		RedisClient redisClient = RedisClientFactory.getCacheClient();
 		redisClient.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.WEIXIN_SCANRESULT.toString(), String.valueOf(wechatId), String.valueOf(sceneId), value);
 		return RespnoseUtil.SUCCESS.toResponse();
 	}

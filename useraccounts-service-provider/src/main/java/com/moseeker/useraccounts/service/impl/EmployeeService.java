@@ -9,10 +9,9 @@ import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeePointsRecordDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
-import com.moseeker.common.redis.RedisClient;
-import com.moseeker.common.redis.cache.CacheClient;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.DESCoder;
 import com.moseeker.common.util.StringUtils;
@@ -22,7 +21,6 @@ import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.UserEmployeeDO;
-import com.moseeker.thrift.gen.dao.struct.UserWxUserDO;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysPointsConfTplDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
@@ -34,6 +32,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +50,8 @@ public class EmployeeService {
 
 	private Logger log = LoggerFactory.getLogger(EmployeeService.class);
 
-	RedisClient client = CacheClient.getInstance();
+	@Resource(name = "cacheClient")
+	private RedisClient client;
 
     MqService.Iface mqService = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
 

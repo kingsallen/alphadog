@@ -6,8 +6,8 @@ import com.moseeker.baseorm.db.candidatedb.tables.CandidateRecomRecord;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRecomRecordRecord;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.thrift.gen.dao.struct.CURDException;
+import com.moseeker.thrift.gen.dao.struct.CandidateRecomRecordDO;
 import com.moseeker.thrift.gen.dao.struct.CandidateRecomRecordSortingDO;
-import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateRecomRecordDO;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -265,8 +265,8 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
         return count;
     }
 
-    public List<CandidateRecomRecordDO> listCandidateRecomRecordsForAppliedByUserPositions(int userId, List<Integer> positionIdList, int pageNo, int pageSize) {
-        List<CandidateRecomRecordDO> candidateRecomRecordDOList = new ArrayList<>();
+    public List<com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateRecomRecordDO> listCandidateRecomRecordsForAppliedByUserPositions(int userId, List<Integer> positionIdList, int pageNo, int pageSize) {
+        List<com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateRecomRecordDO> candidateRecomRecordDOList = new ArrayList<>();
         SelectSeekStep1 selectConditionStep = create.select(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID,
                 CandidateRecomRecord.CANDIDATE_RECOM_RECORD.APP_ID,
                 CandidateRecomRecord.CANDIDATE_RECOM_RECORD.REPOST_USER_ID,
@@ -291,7 +291,7 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
         }
         Result<CandidateRecomRecordRecord> result = selectConditionStep.fetch().into(CandidateRecomRecord.CANDIDATE_RECOM_RECORD);
         if(result != null && result.size() > 0) {
-            candidateRecomRecordDOList = BeanUtils.DBToStruct(CandidateRecomRecordDO.class, result);
+            candidateRecomRecordDOList = BeanUtils.DBToStruct(com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateRecomRecordDO.class, result);
         }
         return candidateRecomRecordDOList;
     }
@@ -348,8 +348,8 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
         return count;
     }
 
-    public List<CandidateRecomRecordDO> listInterestedCandidateRecomRecordByUserPositions(int userId, List<Integer> positionIdList, int pageNo, int pageSize) {
-        List<CandidateRecomRecordDO> candidateRecomRecordDOList = new ArrayList<>();
+    public List<com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateRecomRecordDO> listInterestedCandidateRecomRecordByUserPositions(int userId, List<Integer> positionIdList, int pageNo, int pageSize) {
+        List<com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateRecomRecordDO> candidateRecomRecordDOList = new ArrayList<>();
         SelectSeekStep1 selectConditionStep = create.select(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID,
                 CandidateRecomRecord.CANDIDATE_RECOM_RECORD.APP_ID,
                 CandidateRecomRecord.CANDIDATE_RECOM_RECORD.REPOST_USER_ID,
@@ -379,7 +379,7 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
         }
         Result<CandidateRecomRecordRecord> result = selectConditionStep.fetch().into(CandidateRecomRecord.CANDIDATE_RECOM_RECORD);
         if(result != null && result.size() > 0) {
-            candidateRecomRecordDOList = BeanUtils.DBToStruct(CandidateRecomRecordDO.class, result);
+            candidateRecomRecordDOList = BeanUtils.DBToStruct(com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateRecomRecordDO.class, result);
         }
         return candidateRecomRecordDOList;
     }
