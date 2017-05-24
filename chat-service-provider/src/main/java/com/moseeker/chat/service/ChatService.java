@@ -288,16 +288,7 @@ public class ChatService {
         chatDO.setChatlistId(roomId);
         chaoDao.saveChat(chatDO);
 
-        HrWxHrChatListDO chatRoomDO = new HrWxHrChatListDO();
-        chatRoomDO.setId(roomId);
-        if (speaker == 0) {
-            chatRoomDO.setWxChatTime(date);
-        } else {
-            chatRoomDO.setHrChatTime(date);
-        }
-        chatRoomDO.setUpdateTime(date);
-
-        chaoDao.updateChatRoom(chatRoomDO);
+        chaoDao.addChatTOChatRoom(chatDO);
 
         //修改未读消息数量
         pool.startTast(() -> chaoDao.addUnreadCount(roomId, speaker, date));

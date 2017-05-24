@@ -685,4 +685,24 @@ public class ChatDao {
             logger.error(e.getMessage(), e);
         }
     }
+
+    public void addChatTOChatRoom(HrWxHrChatDO chatDO) {
+        QueryUtil queryUtil = new QueryUtil();
+        queryUtil.addEqualFilter("id", chatDO.getId());
+        try {
+            HrWxHrChatListDO chatRoomDO = hrDBDao.getChatRoom(queryUtil);
+            if (chatRoomDO != null) {
+                if (chatDO.getSpeaker() == 0) {
+                    chatRoomDO.setWxChatTime(chatDO.getCreateTime());
+                    chatRoomDO.setUserUnreadCount(chatRoomDO.getUserUnreadCount()+1);
+                } else {
+                    chatRoomDO.setHrChatTime(chatDO.getCreateTime());
+                    chatRoomDO.setHrUnreadCount(chatRoomDO.getHrUnreadCount()+1);
+                }
+                hrDBDao.updateChatRoom(chatRoomDO);
+            }
+        } catch (TException e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
 }
