@@ -92,6 +92,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -1303,56 +1304,34 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     e.setPublisher(jr.getPublisher()); // will be used for fetching sub company info
 
                     dataList.add(e);
-
                 }
 
                 logger.info(dataList.toString());
 
                 // 获取公司信息，拼装 company abbr, logo 等信息
                 Map<Integer /* publisher id */, HrCompanyDO> publisherCompanyMap = new HashMap<>();
-
                 QueryUtil hrm = new QueryUtil();
 
-                // 子公司特定
-                if (query.isSetDid() && query.getDid() != 0) {
+                Set<Integer> publisherSet = dataList.stream().map(WechatPositionListData::getPublisher)
+                        .collect(Collectors.toSet());
 
-                    // 获取子公司info
-                    hrm.addEqualFilter("id", String.valueOf(query.getDid()));
-                    HrCompanyDO subCompanyInfo = companyDao.getCompany(hrm);
-
-                    // 获取 hr_company_account
-                    hrm = new QueryUtil();
-                    hrm.addEqualFilter("company_id", subCompanyInfo.getId());
-                    List<HrCompanyAccountDO> companyAccountList = hrDBDao.listHrCompanyAccount(hrm);
-                    HrCompanyAccountDO subCompanyAccount = companyAccountList.get(0);
-
-                    // 写入 map
-                    publisherCompanyMap.put(subCompanyAccount.getAccountId(), subCompanyInfo);
-
+                // publisherList 应该不为空
+                // 如果 publisherList 为空，那么返回空 ArrayList
+                if (publisherSet == null || publisherSet.size() == 0) {
+                    return new ArrayList<>();
                 }
-                // 母公司 + 子公司
-                else {
-                    List<Integer> publisherList = dataList.stream().map(WechatPositionListData::getPublisher)
-                            .collect(Collectors.toList());
 
-                    // publisherList 应该不为空
-                    // 如果 publisherList 为空，那么返回空 ArrayList
-                    if (publisherList == null || publisherList.size() == 0) {
-                        return new ArrayList<>();
-                    }
+                // 根据 publisherSet 查询 companyAccountList
+                hrm.addEqualFilter("account_id", Arrays.toString(publisherSet.toArray()));
 
-                    // 根据 pbulisher_list 查询 hr_company_account_list
-                    hrm.addEqualFilter("account_id", buildQueryIds(publisherList));
+                List<HrCompanyAccountDO> companyAccountList = hrDBDao.listHrCompanyAccount(hrm);
 
-                    List<HrCompanyAccountDO> companyAccountList = hrDBDao.listHrCompanyAccount(hrm);
+                for (HrCompanyAccountDO hrCompanyAccount : companyAccountList) {
+                    hrm = new QueryUtil();
+                    hrm.addEqualFilter("id", hrCompanyAccount.getCompanyId());
+                    HrCompanyDO companyInfo = hrDBDao.getCompany(hrm);
+                    publisherCompanyMap.put(hrCompanyAccount.accountId, companyInfo);
 
-                    for (HrCompanyAccountDO hrCompanyAccount : companyAccountList) {
-                        hrm = new QueryUtil();
-                        hrm.addEqualFilter("id", hrCompanyAccount.getCompanyId());
-                        HrCompanyDO companyInfo = hrDBDao.getCompany(hrm);
-                        publisherCompanyMap.put(hrCompanyAccount.accountId, companyInfo);
-
-                    }
                 }
 
                 //拼装 company 相关内容
@@ -1362,6 +1341,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     s.setCompany_name(publisherCompanyMap.get(s.getPublisher()) == null ? "" : publisherCompanyMap.get(s.getPublisher()).getName());
                     return s;
                 }).collect(Collectors.toList());
+
             } else {
                 return new ArrayList<>();
             }
@@ -1391,7 +1371,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             result.setTitle(hbConfig.getShareTitle());
             result.setDescription(hbConfig.getShareDesc());
 
-        } catch (Exception e) {
+        } catch (TException e) {
             logger.error(e.getMessage(), e);
         }
 
@@ -1406,7 +1386,6 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
      */
     public List<RpExtInfo> getPositionListRpExt(List<Integer> pids) {
         List<RpExtInfo> result = new ArrayList<>();
-
         try {
             // 获取 company_id
             int company_id = 0;
@@ -1415,17 +1394,22 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                 qu.addEqualFilter("id", String.valueOf(pids.get(0)));
                 Position p = positionDaoService.getPosition(qu);
                 company_id = p.getCompany_id();
+            } else {
+                return result;
             }
 
             // 获取正在运行的转发类红包活动集合
             QueryUtil qu = new QueryUtil();
+
             qu.addEqualFilter("status", "3"); //正在运行
             qu.addEqualFilter("company_id", String.valueOf(company_id));
             qu.addEqualFilter("type", "[2,3]"); //转发类职位
             qu.setPer_page(Integer.MAX_VALUE);
             List<HrHbConfigDO> hbConfigs = hrDao.getHbConfigs(qu);
             List<Integer> hbConfgIds = hbConfigs.stream().map(HrHbConfigDO::getId).collect(Collectors.toList());
-            String allHbConfigIdsFilterString = "[" + org.apache.commons.lang.StringUtils.join(hbConfgIds.toArray(), ",") + "]";
+
+            String allHbConfigIdsFilterString = Arrays.toString(hbConfgIds.toArray());
+            logger.info("allHbConfigIdsFilterString: " + allHbConfigIdsFilterString);
 
             for (Integer pid : pids) {
                 //对于每个 pid，先获取 position
@@ -1434,6 +1418,8 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                 qu = new QueryUtil();
                 qu.addEqualFilter("id", String.valueOf(pid));
                 Position p = this.positionDaoService.getPosition(qu);
+
+                logger.info(p.toString());
 
                 if (p.getHb_status() == 1 || p.getHb_status() == 2) {
                     // 该职位参与了一个红包活动
@@ -1445,9 +1431,14 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 
                     List<HrHbPositionBindingDO> bindings = hrDao.getHbPositionBindings(qu);
 
-                    // 确认 binding 只有一个，获取binding 对应的红包活动信息
-                    if (bindings != null && bindings.size() > 0) {
-                        HrHbConfigDO hbConfig = hbConfigs.stream().filter(c -> c.getId() == bindings.get(0).getHbConfigId())
+                    logger.info(bindings.toString());
+
+                    // 确认 binding 只有一个，获取 binding 对应的红包活动信息
+                    if (bindings.size() > 0) {
+
+                        HrHbPositionBindingDO binding = bindings.get(0);
+
+                        HrHbConfigDO hbConfig = hbConfigs.stream().filter(c -> c.getId() == binding.getHbConfigId())
                                 .findFirst().orElseGet(null);
 
                         if (hbConfig != null) {
@@ -1456,12 +1447,16 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                         } else {
                             logger.warn("查询不到对应的 hbConfig");
                             rpExtInfo.setEmployee_only(false);
+                            continue;
                         }
 
                         // 根据 binding 获取 hb_items 记录
                         qu = new QueryUtil();
-                        qu.addEqualFilter("binding_id", String.valueOf(bindings.get(0).getId()));
+                        qu.addEqualFilter("binding_id", String.valueOf(binding.getId()));
                         qu.addEqualFilter("wxuser_id", "0"); // 还未发出的
+
+                        logger.info("hb items query util: " + qu.toString());
+
                         List<HrHbItemsDO> remainItems = hrDao.getHbItems(qu);
 
                         Double remain = remainItems.stream().mapToDouble(HrHbItemsDO::getAmount).sum();
@@ -1473,8 +1468,11 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                         rpExtInfo.setPid(p.getId());
                         rpExtInfo.setRemain(remainInt);
 
+                        logger.info(rpExtInfo.toString());
+
                         result.add(rpExtInfo);
                     }
+
                 } else if (p.getHb_status() == 3) {
                     // 该职位参与了两个红包活动
 
@@ -1484,31 +1482,37 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     qu.addEqualFilter("hb_config_id", allHbConfigIdsFilterString);
 
                     List<HrHbPositionBindingDO> bindings = hrDao.getHbPositionBindings(qu);
-                    //获取binding ids
+
+                    logger.info(bindings.toString());
+
+                    //获取 binding ids
                     List<Integer> bindingIds = bindings.stream().map(HrHbPositionBindingDO::getId).collect(Collectors.toList());
-                    //获取binding 所对应的红包活动 id
-                    List<Integer> hbConfigIds = bindings.stream().map(HrHbPositionBindingDO::getHbConfigId).collect(Collectors.toList());
+
+                    //获取 binding 所对应的红包活动 id
+                    Set<Integer> hbConfigIdsSet = bindings.stream().map(HrHbPositionBindingDO::getHbConfigId).collect(Collectors.toSet());
 
                     // 得到对应的红包活动 pojo （2个）
-                    List<HrHbConfigDO> configs = hbConfigs.stream().filter(s -> hbConfigIds.contains(s.getId())).collect(Collectors.toList());
+                    List<HrHbConfigDO> configs = hbConfigs.stream().filter(s -> hbConfigIdsSet.contains(s.getId())).collect(Collectors.toList());
+
+                    logger.info(configs.toString());
 
                     // 如果任意一个对象是非员工，设置成 false
+                    rpExtInfo.setEmployee_only(true);
                     for (HrHbConfigDO config : configs) {
                         if (config.target > 0) {
                             rpExtInfo.setEmployee_only(false);
                             break;
                         }
                     }
-                    // 否则对象设置成 true
-                    if (!rpExtInfo.isSetEmployee_only()) {
-                        rpExtInfo.setEmployee_only(true);
-                    }
 
-                    String bindingIdsFilterString = "[" + org.apache.commons.lang.StringUtils.join(bindingIds.toArray(), ",") + "]";
+                    String bindingIdsFilterString = Arrays.toString(bindingIds.toArray());
                     // 根据 binding 获取 hb_items 记录
                     qu = new QueryUtil();
-                    qu.addEqualFilter("binding_id", String.valueOf(bindingIdsFilterString));
-                    qu.addEqualFilter("wxuser_id", "0"); // 未发出
+                    qu.addEqualFilter("binding_id", bindingIdsFilterString);
+                    qu.addEqualFilter("wxuser_id", "0");
+
+                    logger.info("hb items query util: " + qu.toString());
+
                     List<HrHbItemsDO> remainItems = hrDao.getHbItems(qu);
 
                     Double remain = remainItems.stream().mapToDouble(HrHbItemsDO::getAmount).sum();
@@ -1519,6 +1523,9 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 
                     rpExtInfo.setPid(p.getId());
                     rpExtInfo.setRemain(remainInt);
+
+                    logger.info(rpExtInfo.toString());
+
                     result.add(rpExtInfo);
 
                 } else {
@@ -1526,7 +1533,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     logger.warn("pid: " + p.getId() + " 已经不属于任何红包活动");
                 }
             }
-        } catch (Exception e) {
+        } catch (TException e) {
             logger.error(e.getMessage(), e);
             return result;
         } finally {
