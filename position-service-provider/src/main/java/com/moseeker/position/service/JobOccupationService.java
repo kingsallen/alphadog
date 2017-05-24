@@ -3,28 +3,19 @@ package com.moseeker.position.service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.moseeker.thrift.gen.dao.service.JobDBDao;
-import com.moseeker.common.providerutils.QueryUtil;
 import org.apache.thrift.TBase;
-import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.HRCompanyConfDao;
 import com.moseeker.baseorm.dao.jobdb.JobCustomDao;
 import com.moseeker.baseorm.dao.jobdb.JobOccupationDao;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.position.utils.ConvertUtils;
-import com.moseeker.rpccenter.client.ServiceManager;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.service.CompanyDao;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HRCompanyConfData;
 import com.moseeker.thrift.gen.position.struct.dao.JobOccupationCustom;
 

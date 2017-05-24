@@ -1,12 +1,11 @@
-package com.moseeker.searchengine.server;
+package com.moseeker.searchengine;
 
+import com.moseeker.searchengine.config.AppConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.moseeker.rpccenter.common.ServerNodeUtils;
 import com.moseeker.rpccenter.main.MoServer;
-import com.moseeker.rpccenter.main.Server;
 import com.moseeker.searchengine.thrift.SearchengineServiceImpl;
 
 public class SearchengineServer {
@@ -16,11 +15,6 @@ public class SearchengineServer {
 
 		try {
 			AnnotationConfigApplicationContext acac = initSpring();
-//			Server server = new Server(SearchengineServer.class,
-//					ServerNodeUtils.getPort(args),
-//					acac.getBean(SearchengineServiceImpl.class));
-//			
-//			server.start(); // 启动服务，非阻塞
 			MoServer server=new MoServer(acac,"",acac.getBean(SearchengineServiceImpl.class));
 			server.startServer();
 			synchronized (SearchengineServer.class) {
@@ -41,8 +35,7 @@ public class SearchengineServer {
 
 	private static AnnotationConfigApplicationContext initSpring() {
 		AnnotationConfigApplicationContext acac = new AnnotationConfigApplicationContext();
-		acac.scan("com.moseeker.searchengine");
-		acac.scan("com.moseeker.common.aop.iface");
+		acac.register(AppConfig.class);
 		acac.refresh();
 		return acac;
 	}

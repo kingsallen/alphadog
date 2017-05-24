@@ -12,7 +12,6 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.service.PositionDao;
 import com.moseeker.thrift.gen.dao.struct.UserUserDO;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
