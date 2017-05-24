@@ -94,6 +94,7 @@ public class ChatService {
                                 .filter(chatRoom -> chatRoom.getId() == chatUnreadCountDO.getRoomId()).findFirst();
                         if(chatRoomDOOptional.isPresent()) {
                             hrChatRoomVO.setCreateTime(chatRoomDOOptional.get().getUpdateTime());
+                            hrChatRoomVO.setUnReadNum(chatRoomDOOptional.get().getHrUnreadCount());
                         }
                     }
                     /** 匹配用户名称和头像 */
@@ -172,6 +173,7 @@ public class ChatService {
                                     .filter(chatRoom -> chatRoom.getId() == hrChatUnreadCountDO.getRoomId()).findFirst();
                             if(chatRoomOptional.isPresent()) {
                                 userChatRoomVO.setCreateTime(chatRoomOptional.get().getUpdateTime());
+                                userChatRoomVO.setUnReadNum(chatRoomOptional.get().getUserUnreadCount());
                             }
                         }
 
