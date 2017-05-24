@@ -79,6 +79,7 @@ public class ProfileProcessBS {
      */
     @CounterIface
     public Response processProfileAts(int progressStatus, String params) {
+        logger.info("ProfileProcessBS processProfileAts progressStatus:{}, params:{}", progressStatus, params);
         int companyId = 0;
         int accountId = 0;
         try {
@@ -90,7 +91,9 @@ public class ProfileProcessBS {
             companyId = list.get(0).getCompany_id();
             accountId = list.get(0).getAccount_id();
             List<Integer> appIds = list.stream().map(jop -> jop.getApplication_id()).collect(Collectors.toList());
+            logger.info("ProfileProcessBS processProfileAts appIds:{}", appIds);
             Response result = processProfile(companyId, progressStatus, appIds, accountId);
+            logger.info("ProfileProcessBS processProfileAts result:{}", result);
             return result;
         } catch (Exception e) {
             return ResponseUtils
@@ -133,6 +136,7 @@ public class ProfileProcessBS {
      */
     @UpdateEs(tableName = "job_application", argsIndex = 2, argsName = "application_id")
     public Response processProfile(int companyId, int progressStatus, List<Integer> appIds, int accountId) {
+        logger.info("ProfileProcessBS processProfile companyId:{}, progressStatus:{}, appIds:{}, accountId:{}", companyId, progressStatus, appIds, accountId);
         try {
             if (appIds == null || appIds.size() == 0) {
                 return ResponseUtils
@@ -141,6 +145,7 @@ public class ProfileProcessBS {
             // 对需要修改的进行权限验证
             Response application = applicationDao.getProcessAuth(appIds,
                     companyId, progressStatus);
+            logger.info("ProfileProcessBS processProfile application:{}", application);
             if (application.getStatus() == 0) {
                 String data = application.getData();
                 if (StringUtils.isNullOrEmpty(data) || "[]".equals(data)) {
@@ -149,6 +154,7 @@ public class ProfileProcessBS {
                 boolean processStatus = true;
                 int recruitOrder = 0;
                 List<ProcessValidationStruct> list = this.ConvertList(data);
+                logger.info("ProfileProcessBS processProfile list:{}", list);
                 UserHrAccount account = this.getAccount(accountId);
                 //  判断申请状态是否相同
                 if (account != null) {
@@ -173,12 +179,15 @@ public class ProfileProcessBS {
                 if (processStatus || progressStatus == 13 || progressStatus == 99) {
                     Response recruit = configDao.getRecruitProcesses(companyId);
 
+                    logger.info("ProfileProcessBS processProfile recruit:{}", recruit);
                     List<HrAwardConfigTemplate> recruitProcesses = null;
                     if (recruit.getStatus() == 0 && StringUtils.isNotNullOrEmpty(recruit.getData()) && !"[]".equals(recruit.getData())) {
                         recruitProcesses = this.convertRecruitProcessesList(recruit.getData());
+                        logger.info("ProfileProcessBS processProfile recruitProcesses:{}", recruitProcesses);
                     }
 
                     RecruitmentResult result = BusinessUtil.excuteRecruitRewardOperation(recruitOrder, progressStatus, recruitProcesses);
+                    logger.info("ProfileProcessBS processProfile result:{}", result);
                     if (result.getStatus() == 0) {
                         List<Integer> weChatIds = new ArrayList<Integer>();
                         List<RewardsToBeAddBean> rewardsToBeAdd = new ArrayList<RewardsToBeAddBean>();
@@ -188,6 +197,7 @@ public class ProfileProcessBS {
                         HrOperationRecordDO turnToCVChecked = null;
                         for (ProcessValidationStruct record : list) {
                             RecruitmentResult result1 = BusinessUtil.excuteRecruitRewardOperation(record.getRecruit_order(), progressStatus, recruitProcesses);
+                            logger.info("ProfileProcessBS processProfile result1:{}", result1);
                             reward = new RewardsToBeAddBean();
                             reward.setAccount_id(accountId);
                             reward.setEmployee_id(0);
@@ -206,11 +216,13 @@ public class ProfileProcessBS {
                                 turnToCVCheckeds.add(turnToCVChecked);
                             }
                             rewardsToBeAdd.add(reward);
-                            weChatIds.add(record.getRecommender_id());
+                            weChatIds.add(record.getRecommender_user_id());
                         }
+                        logger.info("ProfileProcessBS processProfile rewardsToBeAdd:{}", rewardsToBeAdd);
                         //注意在获取employyee时，weChatIds已经不用，此处没有修改thrift的代码，所以还在
                         Response employeeResult = userDao.getUserEmployee(
                                 companyId, weChatIds);
+                        logger.info("ProfileProcessBS processProfile employeeResult:{}", employeeResult);
                         List<UserEmployeeStruct> employeesToBeUpdates = new ArrayList<UserEmployeeStruct>();
                         if (employeeResult.getStatus() == 0
                                 && StringUtils.isNotNullOrEmpty(employeeResult
@@ -218,6 +230,7 @@ public class ProfileProcessBS {
                                 && !"[]".equals(employeeResult.getData())) {
                             employeesToBeUpdates = ConvertUserEmployeeList(employeeResult
                                     .getData());
+                            logger.info("ProfileProcessBS processProfile employeesToBeUpdates:{}", employeesToBeUpdates);
                         }
                         if (employeesToBeUpdates != null
                                 && employeesToBeUpdates.size() > 0) {
@@ -229,6 +242,7 @@ public class ProfileProcessBS {
                                     }
                                 }
                             }
+                            logger.info("ProfileProcessBS processProfile rewardsToBeAdd:{}", rewardsToBeAdd);
                         }
                         // 修改招聘进度
                         for (ProcessValidationStruct process : list) {
@@ -374,6 +388,7 @@ public class ProfileProcessBS {
             rewardsToBeAdd = this.OperationOther(applications, rewardsToBeAdd,
                     progressStatus);
         }
+        logger.info("ProfileProcessBS processProfile rewardsToBeAdd:{}", rewardsToBeAdd);
         List<HrOperationRecordDO> lists = new ArrayList<HrOperationRecordDO>();
         HrOperationRecordDO struct = null;
         for (RewardsToBeAddBean beans : rewardsToBeAdd) {
@@ -384,6 +399,7 @@ public class ProfileProcessBS {
             struct.setAppId(beans.getApplication_id());
             lists.add(struct);
         }
+        logger.info("ProfileProcessBS processProfile lists:{}", lists);
         hrDao.postHrOperationrecords(lists);
         insertRecord(result, rewardsToBeAdd, employeesToBeUpdates);
 
@@ -403,11 +419,14 @@ public class ProfileProcessBS {
                     point.setAward(bean.getAward());
                     point.setApplication_id(bean.getApplication_id());
                     point.setReason(bean.getReason());
+                    logger.info("ProfileProcessBS processProfile UserEmployeePointStruct:{}", point);
                     list.add(point);
                 }
             }
             // 插入积分操作日志
+            logger.info("ProfileProcessBS processProfile lists:{}", list);
             userDao.postUserEmployeePoints(list);
+            logger.info("ProfileProcessBS processProfile employeesToBeUpdates:{}", employeesToBeUpdates);
             this.updateEmployee(employeesToBeUpdates);
 
         }
