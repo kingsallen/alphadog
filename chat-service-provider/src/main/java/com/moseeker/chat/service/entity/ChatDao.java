@@ -628,16 +628,17 @@ public class ChatDao {
         queryUtil.addEqualFilter("room_id", chatRoomId);
         try {
             HrChatUnreadCountDO hrChatUnreadCountDO =  hrDBDao.getChatUnreadCount(queryUtil);
-
+            HrWxHrChatListDO chatRoom = new HrWxHrChatListDO();
+            chatRoom.setId(chatRoomId);
+            chatRoom.setUserUnreadCount(0);
+            hrDBDao.updateChatRoom(chatRoom);
             if(hrChatUnreadCountDO.getRoomId() > 0) {
-                hrChatUnreadCountDO.setUserUnreadCount(0);
+                hrChatUnreadCountDO.setUserHaveUnreadMsg((byte)0);
                 hrChatUnreadCountDO = hrDBDao.updateChatUnreadCount(hrChatUnreadCountDO);
             } else {
                 hrChatUnreadCountDO.setRoomId(chatRoomId);
                 hrChatUnreadCountDO.setHrId(hrId);
                 hrChatUnreadCountDO.setUserId(userId);
-                hrChatUnreadCountDO.setHrUnreadCount(0);
-                hrChatUnreadCountDO.setUserUnreadCount(0);
                 hrChatUnreadCountDO.setUserHaveUnreadMsg((byte)0);
                 hrChatUnreadCountDO = hrDBDao.saveChatUnreadCount(hrChatUnreadCountDO);
             }
@@ -674,6 +675,14 @@ public class ChatDao {
         } catch (TException e) {
             logger.error(e.getMessage(), e);
             return null;
+        }
+    }
+
+    public void updateChatUnreadCount(HrChatUnreadCountDO hrChatUnreadCountDO) {
+        try {
+            hrDBDao.updateChatUnreadCount(hrChatUnreadCountDO);
+        } catch (TException e) {
+            logger.error(e.getMessage(), e);
         }
     }
 }

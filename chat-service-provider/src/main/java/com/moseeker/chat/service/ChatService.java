@@ -7,7 +7,9 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.chat.struct.*;
-import com.moseeker.thrift.gen.dao.struct.*;
+import com.moseeker.thrift.gen.dao.struct.JobPositionDO;
+import com.moseeker.thrift.gen.dao.struct.UserHrAccountDO;
+import com.moseeker.thrift.gen.dao.struct.UserUserDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrChatUnreadCountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatDO;
@@ -17,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -93,8 +94,6 @@ public class ChatService {
                                 .filter(chatRoom -> chatRoom.getId() == chatUnreadCountDO.getRoomId()).findFirst();
                         if(chatRoomDOOptional.isPresent()) {
                             hrChatRoomVO.setCreateTime(chatRoomDOOptional.get().getUpdateTime());
-                            int status = chatRoomDOOptional.get().getStatus();
-                            hrChatRoomVO.setStatus(status);
                         }
                     }
                     /** 匹配用户名称和头像 */
@@ -172,8 +171,6 @@ public class ChatService {
                             Optional<HrWxHrChatListDO> chatRoomOptional = chatRooms.stream()
                                     .filter(chatRoom -> chatRoom.getId() == hrChatUnreadCountDO.getRoomId()).findFirst();
                             if(chatRoomOptional.isPresent()) {
-                                int status = chatRoomOptional.get().getStatus();
-                                userChatRoomVO.setStatus(status);
                                 userChatRoomVO.setCreateTime(chatRoomOptional.get().getUpdateTime());
                             }
                         }
@@ -331,7 +328,6 @@ public class ChatService {
             chatRoom.setCreateTime(createTime);
             chatRoom.setHraccountId(hrId);
             chatRoom.setSysuserId(userId);
-            chatRoom.setStatus((byte)0);
             chatRoom = chaoDao.saveChatRoom(chatRoom);
             chatDebut = true;
         }
@@ -344,8 +340,8 @@ public class ChatService {
                 HrChatUnreadCountDO unreadCountDO = new HrChatUnreadCountDO();
                 unreadCountDO.setHrId(hrId);
                 unreadCountDO.setUserId(userId);
-                unreadCountDO.setHrUnreadCount(0);
-                unreadCountDO.setUserUnreadCount(1);
+                unreadCountDO.setHrHaveUnreadMsg((byte)0);
+                unreadCountDO.setUserHaveUnreadMsg((byte)1);
                 unreadCountDO.setRoomId(chatRoom.getId());
                 pool.startTast(() -> chaoDao.saveUnreadCount(unreadCountDO));
             }
@@ -609,12 +605,17 @@ public class ChatService {
         logger.debug("leaveChatRoom roomId:{} speaker:{}", roomId, speaker);
         HrWxHrChatListDO chatRoom = new HrWxHrChatListDO();
         chatRoom.setId(roomId);
-        String time = new DateTime().toString("yyyy-MM-dd HH:mm:ss");
+
+        HrChatUnreadCountDO hrChatUnreadCountDO = new HrChatUnreadCountDO();
+        hrChatUnreadCountDO.setRoomId(roomId);
         if(speaker == 0) {
-            chatRoom.setWxChatTime(time);
+            chatRoom.setUserUnreadCount(0);
+            hrChatUnreadCountDO.setUserHaveUnreadMsg((byte)0);
         } else {
-            chatRoom.setHrChatTime(time);
+            chatRoom.setHrUnreadCount(0);
+            hrChatUnreadCountDO.setHrHaveUnreadMsg((byte)0);
         }
         chaoDao.updateChatRoom(chatRoom);
+        chaoDao.updateChatUnreadCount(hrChatUnreadCountDO);
     }
 }
