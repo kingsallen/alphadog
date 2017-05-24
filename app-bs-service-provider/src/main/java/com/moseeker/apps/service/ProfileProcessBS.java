@@ -644,7 +644,9 @@ public class ProfileProcessBS {
         for (int i = 0; i < jsay.size(); i++) {
             UserEmployeeStruct record = JSONObject.toJavaObject(
                     jsay.getJSONObject(i), UserEmployeeStruct.class);
-            list.add(record);
+            if (record.getSysuser_id() > 0) {
+                list.add(record);
+            }
         }
         return list;
     }
