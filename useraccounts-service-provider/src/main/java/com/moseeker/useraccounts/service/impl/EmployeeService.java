@@ -8,7 +8,7 @@ import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeePointsRecordDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
-import com.moseeker.baseorm.dao.userdb.WxUserDao;
+import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.redis.RedisClient;
@@ -30,17 +30,15 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.employee.struct.*;
 import com.moseeker.thrift.gen.mq.service.MqService;
-import org.apache.thrift.TException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * @author ltf
@@ -71,7 +69,7 @@ public class EmployeeService {
     private UserEmployeeDao employeeDao;
 
     @Autowired
-    private WxUserDao wxUserDao;
+    private UserWxUserDao wxUserDao;
 
     @Autowired
     private HrCompanyDao companyDao;
@@ -695,7 +693,7 @@ public class EmployeeService {
 	private int getWxuserId(Query query) {
 		int wxUserId = 0;
 		try {
-            UserWxUserDO wxUserDO = wxUserDao.getData(query);
+            com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO wxUserDO = wxUserDao.getData(query);
             wxUserId = wxUserDO.getId();
 		} catch (Exception e1) {
 			log.error(e1.getMessage(), e1);

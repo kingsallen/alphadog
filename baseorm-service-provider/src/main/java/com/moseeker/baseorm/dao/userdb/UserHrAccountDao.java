@@ -62,7 +62,7 @@ public class UserHrAccountDao extends JooqCrudImpl<UserHrAccountDO, UserHrAccoun
 		}
 	}
 
-	@Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+//	@Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public int createHRAccount(UserHrAccountRecord userHrAccountRecord, HrCompanyRecord companyRecord)
             throws Exception {
         int result = 0;

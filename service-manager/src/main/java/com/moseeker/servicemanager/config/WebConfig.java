@@ -16,6 +16,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @Import(AppConfig.class)
 public class WebConfig extends WebMvcConfigurerAdapter {
 
+    /**
+     * 转换 responseBody 格式
+     * Content-Type: application/json;charset=utf-8
+     * @param converters
+     */
 	@Override
 	public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         converters.add(new UTF8StringHttpMessageConverter());

@@ -12,6 +12,10 @@ import org.springframework.web.servlet.DispatcherServlet;
  */
 public class WebInitializer implements WebApplicationInitializer {
 
+    /**
+     * 初始化spring mvc配置，优先加载
+     * @param container
+     */
     private void initializeSpringMVCConfig(ServletContext container) {
         AnnotationConfigWebApplicationContext dispatcherContext = new AnnotationConfigWebApplicationContext();
 
@@ -21,12 +25,22 @@ public class WebInitializer implements WebApplicationInitializer {
         dispatcher.addMapping("/");
     }
 
+    /**
+     * 初始化过滤器
+     * @param container
+     */
     private void initializeFilter(ServletContext container) {
         FilterRegistration.Dynamic filterRegistration = container.addFilter("charset", CharacterEncodingFilter.class);
         filterRegistration.setInitParameter("encoding", "UTF-8");
         filterRegistration.setInitParameter("forceEncoding", "true");
     }
 
+
+    /**
+     * servlet 容器启动方法
+     * @param servletContext
+     * @throws ServletException
+     */
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {
         initializeFilter(servletContext);

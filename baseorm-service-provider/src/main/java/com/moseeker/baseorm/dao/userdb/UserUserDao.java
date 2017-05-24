@@ -79,10 +79,7 @@ public class UserUserDao extends JooqCrudImpl<UserUserDO, UserUserRecord> {
 
     public UserUserRecord getUserById(int id) {
         UserUserRecord record = null;
-        Connection conn = null;
         try {
-            conn = DBConnHelper.DBConn.getConn();
-            DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
             Result<UserUserRecord> result = create.selectFrom(UserUser.USER_USER)
                     .where(UserUser.USER_USER.ID.equal((int) (id)))
                     .and(UserUser.USER_USER.IS_DISABLE.equal((byte) 0)).fetch();
@@ -91,22 +88,11 @@ public class UserUserDao extends JooqCrudImpl<UserUserDO, UserUserRecord> {
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-        } finally {
-            try {
-                if (conn != null && !conn.isClosed()) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                logger.error(e.getMessage(), e);
-            } finally {
-                // do nothing
-            }
         }
-
         return record;
     }
 
-    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+//    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public void combineAccount(int orig, int dest) throws Exception {
         create.update(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD)
                 .set(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.RECOM_USER_ID, (int)(orig))
@@ -146,7 +132,7 @@ public class UserUserDao extends JooqCrudImpl<UserUserDO, UserUserRecord> {
                 .execute();
     }
 
-    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+//    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public void combineAccountBd(int orig, int dest) throws Exception {
         create.update(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD)
                 .set(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.RECOM_USER_ID, (int)(orig))
@@ -192,7 +178,7 @@ public class UserUserDao extends JooqCrudImpl<UserUserDO, UserUserRecord> {
      * @param user 用户的thrift struct 实体
      *
      * */
-    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+//    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public int createUser(com.moseeker.thrift.gen.useraccounts.struct.User user) throws Exception{
 
         // 用户记录转换

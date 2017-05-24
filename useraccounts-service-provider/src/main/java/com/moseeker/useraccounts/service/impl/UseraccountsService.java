@@ -28,11 +28,9 @@ import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.common.weixin.AccountMng;
 import com.moseeker.common.weixin.QrcodeType;
 import com.moseeker.common.weixin.WeixinTicketBean;
-import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
-import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.BindType;
 import com.moseeker.thrift.gen.useraccounts.struct.User;
@@ -41,7 +39,10 @@ import com.moseeker.thrift.gen.useraccounts.struct.Userloginreq;
 import com.moseeker.useraccounts.pojo.MessageTemplate;
 import com.moseeker.useraccounts.service.BindOnAccountService;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -782,19 +783,19 @@ public class UseraccountsService {
 		MessageTemplate messageTemplate = null;
 		try {
 			JobPositionRecord position = userFavoritePositionDao.getUserFavPositiond(positionId);
-			User user = userdao.getUserById(userId);
-			if(position != null && user != null) {
+            UserUserRecord user = userdao.getUserById(userId);
+            if(position != null && user != null) {
 				messageTemplate = new MessageTemplate();
 				messageTemplate.setPositionTitle(position.getTitle());
 				messageTemplate.setHrAccountId(position.getPublisher());
-				if(StringUtils.isNotNullOrEmpty(user.name)) {
-					messageTemplate.setName(user.name);
-				} else if(StringUtils.isNotNullOrEmpty(user.nickname)) {
-					messageTemplate.setName(user.nickname);
+				if(StringUtils.isNotNullOrEmpty(user.getName())) {
+					messageTemplate.setName(user.getName());
+				} else if(StringUtils.isNotNullOrEmpty(user.getNickname())) {
+					messageTemplate.setName(user.getNickname());
 				} else {
-					messageTemplate.setName(user.username);
+					messageTemplate.setName(user.getUsername());
 				}
-				messageTemplate.setContact(String.valueOf(user.mobile));
+				messageTemplate.setContact(String.valueOf(user.getMobile()));
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);

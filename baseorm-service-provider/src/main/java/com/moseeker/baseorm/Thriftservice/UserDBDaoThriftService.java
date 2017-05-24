@@ -29,7 +29,7 @@ public class UserDBDaoThriftService implements Iface {
 
 	private Logger logger = LoggerFactory.getLogger(UserDBDaoThriftService.class);
 	
-	@Autowired(required = false)
+	@Autowired
 	private UserUserDao userDao;
 	
 	@Autowired
@@ -38,7 +38,7 @@ public class UserDBDaoThriftService implements Iface {
 	@Autowired
 	private UserEmployeeDaoService userEmployeeDaoService;
 
-	@Autowired(required = false)
+	@Autowired
 	private UserHrAccountDao userHrAccountDao;
 
 	@Autowired

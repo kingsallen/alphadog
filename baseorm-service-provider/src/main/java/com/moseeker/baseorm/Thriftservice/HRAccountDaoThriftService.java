@@ -40,7 +40,7 @@ public class HRAccountDaoThriftService implements Iface {
 
     private Logger logger = LoggerFactory.getLogger(ChannelType.class);
 
-    @Autowired(required = false)
+    @Autowired
     private UserHrAccountDao hraccountDao;
 
     @Autowired
