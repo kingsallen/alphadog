@@ -78,7 +78,6 @@ public class ChatService {
                     HRChatRoomVO hrChatRoomVO = new HRChatRoomVO();
                     hrChatRoomVO.setId(chatUnreadCountDO.getRoomId());
                     hrChatRoomVO.setUserId(chatUnreadCountDO.getUserId());
-                    hrChatRoomVO.setUnReadNum(chatUnreadCountDO.getHrUnreadCount());
 
                     List<HrWxHrChatListDO> chatRoomList = null;
                     List<UserUserDO> userList = null;
@@ -163,7 +162,6 @@ public class ChatService {
                 chatUnreadCountDOlist.forEach(hrChatUnreadCountDO -> {
                     UserChatRoomVO userChatRoomVO = new UserChatRoomVO();
                     userChatRoomVO.setId(hrChatUnreadCountDO.getRoomId());
-                    userChatRoomVO.setUnReadNum(hrChatUnreadCountDO.getUserUnreadCount());
 
                     /** 匹配聊天室的状态的和最后发送消息的时间 */
                     try {

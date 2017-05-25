@@ -660,12 +660,10 @@ public class ChatDao {
                     case 1:
                         hrChatUnreadCountDO.setHrChatTime(date);
                         hrChatUnreadCountDO.setHrHaveUnreadMsg((byte)1);
-                        hrChatUnreadCountDO.setUserUnreadCount(hrChatUnreadCountDO.getUserUnreadCount()+1);
                         break;
                     case 0:
                         hrChatUnreadCountDO.setWxChatTime(date);
                         hrChatUnreadCountDO.setUserHaveUnreadMsg((byte)1);
-                        hrChatUnreadCountDO.setHrUnreadCount(hrChatUnreadCountDO.getHrUnreadCount()+1);
                         break;
                     default:
                 }
