@@ -309,8 +309,8 @@ public class ChatService {
      * @param roomId 聊天室编号
      * @return ResultOfSaveRoomVO
      */
-    public ResultOfSaveRoomVO enterChatRoom(int userId, int hrId, int positionId, int roomId, boolean is_gamma) {
-        logger.info("enterChatRoom userId:{} hrId:{}, positionId:{} roomId:{}", userId, hrId, positionId, roomId);
+    public ResultOfSaveRoomVO enterChatRoom(int userId, int hrId, int positionId, int roomId, final boolean is_gamma) {
+        logger.info("enterChatRoom userId:{} hrId:{}, positionId:{} roomId:{}, is_gamma:{}", userId, hrId, positionId, roomId, is_gamma);
         final ResultOfSaveRoomVO resultOfSaveRoomVO;
 
         HrWxHrChatListDO chatRoom = chaoDao.getChatRoom(roomId, userId, hrId);
@@ -449,7 +449,7 @@ public class ChatService {
      */
     private HrWxHrChatDO createChat(ResultOfSaveRoomVO resultOfSaveRoomVO, boolean is_gamma) {
 
-        logger.info("createChat ResultOfSaveRoomVO:{}", resultOfSaveRoomVO);
+        logger.info("createChat ResultOfSaveRoomVO:{}, is_gamma:{}", resultOfSaveRoomVO, is_gamma);
         //1.如果HR的名称不存在，则存储 "我是{companyName}HR，我可以推荐您或者您的朋友加入我们！"
         //2.如果HR的名称存在，则存储 "我是{hrName}，{companyName}HR，我可以推荐您或者您的朋友加入我们！"
         HrWxHrChatDO chatDO = new HrWxHrChatDO();
