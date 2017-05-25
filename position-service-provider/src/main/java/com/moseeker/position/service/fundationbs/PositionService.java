@@ -1410,6 +1410,8 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             List<Integer> hbConfgIds = hbConfigs.stream().map(HrHbConfigDO::getId).collect(Collectors.toList());
 
             String allHbConfigIdsFilterString = Arrays.toString(hbConfgIds.toArray());
+
+            logger.info("pids: " + pids.toString());
             logger.info("allHbConfigIdsFilterString: " + allHbConfigIdsFilterString);
 
             for (Integer pid : pids) {
@@ -1419,8 +1421,6 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                 qu = new QueryUtil();
                 qu.addEqualFilter("id", String.valueOf(pid));
                 Position p = this.positionDaoService.getPosition(qu);
-
-                logger.info(p.toString());
 
                 if (p.getHb_status() == 1 || p.getHb_status() == 2) {
                     // 该职位参与了一个红包活动
@@ -1483,6 +1483,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     qu = new QueryUtil();
                     qu.addEqualFilter("position_id", String.valueOf(p.getId()));
                     qu.addEqualFilter("hb_config_id", allHbConfigIdsFilterString);
+
                     qu.setPer_page(Integer.MAX_VALUE);
 
                     List<HrHbPositionBindingDO> bindings = hrDao.getHbPositionBindings(qu);
@@ -1592,6 +1593,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             q.addEqualFilter("id", pidFilter);
             q.setSortby("priority");
             q.setOrder("asc");
+            q.setPer_page(Integer.MAX_VALUE);
             List<JobPositionRecord> jobRecords = jobPositionDao.getResources(q);
 
             // filter 出已经发完红包的职位
@@ -1709,20 +1711,6 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                 logger.error(e.getMessage(), e);
             }
         }
-    }
-
-
-    private String buildQueryIds(List<Integer> idList) {
-
-        if (idList == null || idList.size() == 0) {
-            return "[]";
-        }
-
-        StringBuffer sb = new StringBuffer();
-        for (Integer i : idList) {
-            sb.append(String.valueOf(i) + ",");
-        }
-        return "[" + sb.substring(0, sb.length() - 1) + "]";
     }
 
 
