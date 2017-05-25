@@ -38,6 +38,7 @@ public class PositionChangeUtil {
 		LoggerFactory.getLogger(PositionChangeUtil.class).info("---------------------");
 		ThirdPartyPositionForSynchronization position = new ThirdPartyPositionForSynchronization();
 		position.setAccount_id(form.getThird_party_account_id());
+		position.setDepartment(position.getDepartment());
 		position.setChannel(form.getChannel());
 		position.setTitle(positionDB.getTitle());
 		
@@ -216,7 +217,6 @@ public class PositionChangeUtil {
 	/**
 	 * 转工作经验
 	 * @param experience
-	 * @param channelType2
 	 * @param position
 	 */
 	private static void setExperience(Integer experience, ChannelType channelType, ThirdPartyPositionForSynchronization position) {
