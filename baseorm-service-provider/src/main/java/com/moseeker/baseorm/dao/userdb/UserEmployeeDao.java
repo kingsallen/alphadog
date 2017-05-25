@@ -4,22 +4,20 @@ import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
-import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.Query.QueryBuilder;
 import com.moseeker.thrift.gen.dao.struct.UserEmployeeDO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
-
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Result;
 import org.jooq.SelectJoinStep;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
 import static org.jooq.impl.DSL.sum;
 
 @Repository
@@ -77,20 +75,27 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
         int[] successArray = new int[userEmployees.size()];
         int i = 0;
         for (UserEmployeeStruct struct : userEmployees) {
-            QueryUtil queryUtil = null;
+        	Query.QueryBuilder builder=null;
+        	
+//            QueryUtil queryUtil = null;
             if (struct.isSetCompany_id() && struct.isSetCustom_field()) {
-                queryUtil = new QueryUtil();
-                queryUtil.addEqualFilter("company_id", String.valueOf(struct.getCompany_id()));
-                queryUtil.addEqualFilter("custom_field", struct.getCustom_field());
+            	builder=new Query.QueryBuilder();
+            	builder.where("company_id", struct.getCompany_id())
+            	.and("custom_field", struct.getCustom_field());
+//                queryUtil = new QueryUtil();
+//                queryUtil.addEqualFilter("company_id", String.valueOf(struct.getCompany_id()));
+//                queryUtil.addEqualFilter("custom_field", struct.getCustom_field());
             } else if (struct.isSetCompany_id() && struct.isSetCname() && struct.isSetCfname()) {
-                queryUtil = new QueryUtil();
-                queryUtil.addEqualFilter("company_id", String.valueOf(struct.getCompany_id()));
-                queryUtil.addEqualFilter("cname", struct.getCname());
+            	builder=new Query.QueryBuilder();
+            	builder.where("company_id", struct.getCompany_id()).and("cname", struct.getCname());
+//                queryUtil = new QueryUtil();
+//                queryUtil.addEqualFilter("company_id", String.valueOf(struct.getCompany_id()));
+//                queryUtil.addEqualFilter("cname", struct.getCname());
             }
-            queryUtil.setPageSize(Integer.MAX_VALUE);
+//            queryUtil.setPageSize(Integer.MAX_VALUE);
 
-            if (queryUtil != null) {
-                List<UserEmployeeRecord> userEmployeeRecords = getRecords(queryUtil);
+            if (builder != null) {
+                List<UserEmployeeRecord> userEmployeeRecords = getRecords(builder.buildQuery());
                 if (userEmployeeRecords.size() > 0) {
                     int innserSuccessFlag = 0;
                     for (UserEmployeeRecord record : userEmployeeRecords) {

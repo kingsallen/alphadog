@@ -7,6 +7,7 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserThirdpartyUserDO;
 import com.moseeker.thrift.gen.useraccounts.struct.ThirdPartyUser;
@@ -34,11 +35,8 @@ public class ThirdPartyUserDao extends JooqCrudImpl<UserThirdpartyUserDO, UserTh
             UserThirdpartyUserRecord record = null;
             if (!user.isSetId()) {
                 if (user.isSetUser_id() && user.isSetSource_id()) {
-                    QueryUtil queryUtil = new QueryUtil();
-                    queryUtil.addEqualFilter("user_id", String.valueOf(user.getUser_id()));
-                    queryUtil.addEqualFilter("source_id", String.valueOf(user.getSource_id()));
-
-                    UserThirdpartyUserRecord thirdPartyUser = getRecord(queryUtil);
+                	Query query=new Query.QueryBuilder().where("user_id",user.getUser_id()).and("source_id",user.getSource_id()).buildQuery();
+                    UserThirdpartyUserRecord thirdPartyUser = getRecord(query);
                     if (thirdPartyUser != null) {
                         record = BeanUtils.structToDB(user, UserThirdpartyUserRecord.class);
                         record.setId(thirdPartyUser.getId());
