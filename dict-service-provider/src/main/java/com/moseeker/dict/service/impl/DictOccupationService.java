@@ -6,8 +6,8 @@ import com.moseeker.baseorm.dao.dictdb.DictZpinOccupationDao;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.dict.enums.ConstantEnum;
 import com.moseeker.thrift.gen.common.struct.Response;
 import javax.annotation.Resource;
@@ -15,8 +15,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
 
 @Service
 public class DictOccupationService {
@@ -51,24 +49,21 @@ public class DictOccupationService {
 				Integer level=obj.getInteger("level") ;
 				Integer id=obj.getInteger("code");
 				Integer parentId=obj.getInteger("parent_id");
-				QueryUtil query=new QueryUtil();
-				query.setPageSize(Integer.MAX_VALUE);
-				HashMap<String,String> map=new HashMap<String,String>();
-				map.put("status", "1");
+				Query.QueryBuilder build=new Query.QueryBuilder();
+				build.where("status",1);
 				if(id!=null){
-					map.put("code", String.valueOf(id));
+					build.and("code", id);
 				}
 				if(parentId!=null){
-					map.put("parent_id",String.valueOf(parentId));
+					build.and("parent_id", parentId);
 				}
 				if(level!=null){
-					map.put("level", String.valueOf(level));
+					build.and("level", level);
 				}
-				query.setEqualFilter(map);
 				if(channel==1){
-					return ResponseUtils.success(dict51OccupationDao.getSingle(query));
+					return ResponseUtils.success(dict51OccupationDao.getSingle(build.buildQuery()));
 				}else if(channel==3){
-					return ResponseUtils.success(dictZpinOccupationDao.getSingle(query));
+					return ResponseUtils.success(dictZpinOccupationDao.getSingle(build.buildQuery()));
 				}
 			}else{
 				if(channel==1){
