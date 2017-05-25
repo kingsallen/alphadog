@@ -1404,6 +1404,8 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             qu.addEqualFilter("status", "3"); //正在运行
             qu.addEqualFilter("company_id", String.valueOf(company_id));
             qu.addEqualFilter("type", "[2,3]"); //转发类职位
+            qu.setPer_page(Integer.MAX_VALUE);
+
             List<HrHbConfigDO> hbConfigs = hrDao.getHbConfigs(qu);
             List<Integer> hbConfgIds = hbConfigs.stream().map(HrHbConfigDO::getId).collect(Collectors.toList());
 
@@ -1427,6 +1429,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     qu = new QueryUtil();
                     qu.addEqualFilter("position_id", String.valueOf(p.getId()));
                     qu.addEqualFilter("hb_config_id", allHbConfigIdsFilterString);
+                    qu.setPer_page(Integer.MAX_VALUE);
 
                     List<HrHbPositionBindingDO> bindings = hrDao.getHbPositionBindings(qu);
 
@@ -1453,6 +1456,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                         qu = new QueryUtil();
                         qu.addEqualFilter("binding_id", String.valueOf(binding.getId()));
                         qu.addEqualFilter("wxuser_id", "0"); // 还未发出的
+                        qu.setPer_page(Integer.MAX_VALUE);
 
                         logger.info("hb items query util: " + qu.toString());
 
@@ -1479,6 +1483,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     qu = new QueryUtil();
                     qu.addEqualFilter("position_id", String.valueOf(p.getId()));
                     qu.addEqualFilter("hb_config_id", allHbConfigIdsFilterString);
+                    qu.setPer_page(Integer.MAX_VALUE);
 
                     List<HrHbPositionBindingDO> bindings = hrDao.getHbPositionBindings(qu);
 
@@ -1509,6 +1514,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     qu = new QueryUtil();
                     qu.addEqualFilter("binding_id", bindingIdsFilterString);
                     qu.addEqualFilter("wxuser_id", "0");
+                    qu.setPer_page(Integer.MAX_VALUE);
 
                     logger.info("hb items query util: " + qu.toString());
 
