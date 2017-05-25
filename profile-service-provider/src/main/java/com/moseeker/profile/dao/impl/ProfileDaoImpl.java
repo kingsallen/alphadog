@@ -1466,7 +1466,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
             List<Map<String, Object>> datas = create
                     .select()
                     .from(jobposition.join(jobApplication).on("a.id=b.position_id"))
-                    .where("a.company_id=" + companyId + " and a.source_id=" + sourceId + " and b.ats_status=" + atsStatus)
+                    .where("b.email_status=0 and a.company_id=" + companyId + " and a.source_id=" + sourceId + " and b.ats_status=" + atsStatus)
                     .fetch()
                     .stream()
                     .map(record -> getRelatedDataByJobApplication(create, record.into(jobposition).intoMap(), record.into(jobApplication).intoMap(), downloadApi, password, recommender, dl_url_required, filter))
