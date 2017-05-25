@@ -3,12 +3,9 @@ package com.moseeker.position;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-
 import com.moseeker.position.config.AppConfig;
 import com.moseeker.position.thrift.PositionServicesImpl;
-import com.moseeker.rpccenter.common.ServerNodeUtils;
 import com.moseeker.rpccenter.main.MoServer;
-import com.moseeker.rpccenter.main.Server;
 
 public class PositionServer {
 
@@ -18,12 +15,6 @@ public class PositionServer {
 
         AnnotationConfigApplicationContext acac = initSpring();
         try {
-//            Server server = new Server(
-//                    PositionServer.class,
-//                    ServerNodeUtils.getPort(args),
-//                    acac.getBean(PositionServicesImpl.class)
-//            );
-//            server.start();
         	MoServer server = new MoServer(
                   acac,"",
                   acac.getBean(PositionServicesImpl.class)

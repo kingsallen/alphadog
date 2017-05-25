@@ -1,4 +1,4 @@
-package com.moseeker.appbs.surround;
+package com.moseeker.surrender;
 
 import java.util.ArrayList;
 import java.util.List;

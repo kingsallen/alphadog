@@ -8,7 +8,6 @@ import com.moseeker.apps.config.AppConfig;
 import com.moseeker.apps.thrift.service.PositionBSThriftService;
 import com.moseeker.apps.thrift.service.ProfileBSThriftService;
 import com.moseeker.apps.thrift.service.UserBSThriftService;
-
 /**
  * 
  * 应用层服务

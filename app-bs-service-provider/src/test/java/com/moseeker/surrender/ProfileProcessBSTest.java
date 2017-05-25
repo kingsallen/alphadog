@@ -1,4 +1,4 @@
-package com.moseeker.appbs.surround;
+package com.moseeker.surrender;
 
 import org.junit.Before;
 import org.junit.Rule;
