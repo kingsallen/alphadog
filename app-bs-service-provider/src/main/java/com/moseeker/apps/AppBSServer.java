@@ -1,15 +1,10 @@
 package com.moseeker.apps;
 
-import com.moseeker.rpccenter.common.ServerNodeUtils;
-import com.moseeker.rpccenter.exception.IncompleteException;
-import com.moseeker.rpccenter.exception.RegisterException;
-import com.moseeker.rpccenter.exception.RpcException;
 import com.moseeker.rpccenter.main.MoServer;
-import com.moseeker.rpccenter.main.MultiRegServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-
+import com.moseeker.apps.config.AppConfig;
 import com.moseeker.apps.thrift.service.PositionBSThriftService;
 import com.moseeker.apps.thrift.service.ProfileBSThriftService;
 import com.moseeker.apps.thrift.service.UserBSThriftService;
@@ -56,7 +51,7 @@ public class AppBSServer {
     
     private static AnnotationConfigApplicationContext initSpring() {
 		AnnotationConfigApplicationContext acac = new AnnotationConfigApplicationContext();
-		acac.register(AppBSServer.class);
+		acac.register(AppConfig.class);
 		acac.refresh();
 		return acac;
 	}
