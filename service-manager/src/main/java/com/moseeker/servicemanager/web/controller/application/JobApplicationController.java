@@ -45,9 +45,10 @@ public class JobApplicationController {
 		try {
 			// 获取application实体对象
 			JobApplication jobApplication = ParamUtils.initModelForm(request, JobApplication.class);
-
+			logger.info("JobApplicationController jobApplication:{}", jobApplication);
 			// 创建申请记录
 			Response result = applicationService.postApplication(jobApplication);
+			logger.info("JobApplicationController result:{}", result);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
 			return ResponseLogNotification.fail(request, e.getMessage());
