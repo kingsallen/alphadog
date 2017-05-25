@@ -1,20 +1,11 @@
 package com.moseeker.mq;
 
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-
-import javax.mail.MessagingException;
-
 import com.moseeker.mq.config.AppConfig;
+import com.moseeker.mq.thrift.ThriftService;
+import com.moseeker.rpccenter.main.MoServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-
-import com.moseeker.mq.service.email.ConstantlyMailConsumer;
-import com.moseeker.mq.service.email.MandrillMailConsumer;
-import com.moseeker.mq.service.schedule.Schedule;
-import com.moseeker.mq.thrift.ThriftService;
-import com.moseeker.rpccenter.main.MoServer;
 
 /**
  * 消息队列服务
@@ -29,32 +20,11 @@ public class MqServer {
 
         AnnotationConfigApplicationContext acac = initSpring();
         try {
-//            Server server = new Server(
-//                    MqServer.class,
-//                    ServerNodeUtils.getPort(args),
-//                    acac.getBean(ThriftService.class)
-//            );
-//            server.start();
         	MoServer server = new MoServer(
                   acac,"",
                   acac.getBean(ThriftService.class)
-          );
+             );
         	server.startServer();
-            ConstantlyMailConsumer mailUtil = new ConstantlyMailConsumer();
-    		MandrillMailConsumer mandrill = new MandrillMailConsumer();
-    		mandrill.start();            
-            
-    		try {
-    			mailUtil.start();
-    		} catch (IOException | MessagingException e) {
-    			e.printStackTrace();
-    			LOGGER.error(e.getMessage(), e);
-    		}
-    		
-    		//启动消息模版延迟队列的定时搬运搬运任务
-    		Schedule schedule = new Schedule(0,1,TimeUnit.MINUTES);
-    		schedule.startListeningMessageDelayQueue();
-
             synchronized (MqServer.class) {
                 while (true) {
                     try {

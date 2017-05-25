@@ -3,14 +3,14 @@ package com.moseeker.dict.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.dictdb.Dict51OccupationDao;
 import com.moseeker.baseorm.dao.dictdb.DictZpinOccupationDao;
+import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.redis.RedisClient;
-import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.dict.enums.ConstantEnum;
 import com.moseeker.thrift.gen.common.struct.Response;
+import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +36,9 @@ public class DictOccupationService {
 	@Autowired
     private DictZpinOccupationDao dictZpinOccupationDao;
 
-	private RedisClient redisClient = RedisClientFactory.getCacheClient();
+    @Resource(name = "cacheClient")
+    private RedisClient redisClient;
+
 	/*
 	 * 查询第三方职位职能
 	 */

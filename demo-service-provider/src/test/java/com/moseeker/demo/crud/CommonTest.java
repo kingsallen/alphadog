@@ -1,30 +1,5 @@
 package com.moseeker.demo.crud;
-//
-//import com.moseeker.baseorm.db.userdb.tables.UserUser;
-//import com.moseeker.common.dbutils.DBConnHelper;
-//import com.moseeker.common.providerutils.*;
-//import com.moseeker.thrift.gen.common.struct.CommonQuery;
-//import com.moseeker.thrift.gen.common.struct.Order;
-//import com.moseeker.thrift.gen.common.struct.Select;
-//import com.moseeker.thrift.gen.common.struct.SelectOp;
-//import com.moseeker.thrift.gen.useraccounts.struct.User;
-//import org.jooq.SQLDialect;
-//import org.jooq.impl.DSL;
-//import org.junit.Assert;
-//import org.junit.Before;
-//import org.junit.Test;
-//import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-//
-//import java.sql.SQLException;
-//import java.util.HashMap;
-//import java.util.List;
-//import java.util.Map;
-//import java.util.stream.IntStream;
-//
-//
-///**
-// * Created by zhangdi on 2017/3/22.
-// */
+
  public class CommonTest {
 //    TestUserDao userDao;
 //
@@ -50,6 +25,7 @@ package com.moseeker.demo.crud;
 //        Assert.assertEquals(result, 1);
 //    }*/
 //
+
 //    @Test
 //    public void testDelete() throws SQLException {
 //        int delete = userDao.delete(QueryCondition.like("name", "test_add_%"));
@@ -99,3 +75,5 @@ package com.moseeker.demo.crud;
 //    }
 //
 }
+
+

@@ -13,13 +13,12 @@ import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserFavPositionRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
+import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.*;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.redis.RedisClient;
-import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
@@ -28,11 +27,9 @@ import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.common.weixin.AccountMng;
 import com.moseeker.common.weixin.QrcodeType;
 import com.moseeker.common.weixin.WeixinTicketBean;
-import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
-import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.BindType;
 import com.moseeker.thrift.gen.useraccounts.struct.User;
@@ -41,7 +38,11 @@ import com.moseeker.thrift.gen.useraccounts.struct.Userloginreq;
 import com.moseeker.useraccounts.pojo.MessageTemplate;
 import com.moseeker.useraccounts.service.BindOnAccountService;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,11 +61,6 @@ public class UseraccountsService {
 
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	MqService.Iface mqService = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
-	
-	com.moseeker.thrift.gen.dao.service.UserDBDao.Iface userDao = ServiceManager.SERVICEMANAGER
-			.getService(com.moseeker.thrift.gen.dao.service.UserDBDao.Iface.class);
-
 	@Autowired
 	protected UserWxUserDao wxuserdao;
 
@@ -88,6 +84,9 @@ public class UseraccountsService {
 	
 	@Autowired
 	protected Map<String, BindOnAccountService> bindOnAccount;
+
+    @Resource(name = "cacheClient")
+    private RedisClient redisClient;
 	
 	/**
 	 * 用户登陆， 返回用户登陆后的信息。
@@ -349,7 +348,7 @@ public class UseraccountsService {
 		Query.QueryBuilder query = new Query.QueryBuilder();
 		query.where("id", String.valueOf(user_id)).and("password", MD5Util.encryptSHA(old_password));
 
-		int result = 0;
+		int result;
 		try {
 			UserUserRecord user = userdao.getRecord(query.buildQuery());
 
@@ -362,7 +361,7 @@ public class UseraccountsService {
 					query.where("id", String.valueOf(parentid));
 					UserUserRecord userParent = userdao.getRecord(query.buildQuery());
 					userParent.setPassword(MD5Util.encryptSHA(password));
-					result = userdao.updateRecord(userParent);
+					userdao.updateRecord(userParent);
 				}
 				user.setPassword(MD5Util.encryptSHA(password));
 				result = userdao.updateRecord(user);
@@ -428,7 +427,7 @@ public class UseraccountsService {
 		Query.QueryBuilder query = new Query.QueryBuilder();
 		query.where("username", mobile);
 
-		int result = 0;
+		int result;
 		try {
 			UserUserRecord user = userdao.getRecord(query.buildQuery());
 
@@ -445,7 +444,7 @@ public class UseraccountsService {
 						return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_PASSWORD_REPEATPASSWORD);
 					}
 					userParent.setPassword(newPassword);
-					result = userdao.updateRecord(userParent);
+					userdao.updateRecord(userParent);
 				}
 				if(newPassword.equals(user.getPassword())) {
 					return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_PASSWORD_REPEATPASSWORD);
@@ -655,7 +654,7 @@ public class UseraccountsService {
 		Query.QueryBuilder query = new Query.QueryBuilder();
 		query.where("id", String.valueOf(user_id));
 
-		int result = 0;
+		int result;
 		try {
 			UserUserRecord user = userdao.getRecord(query.buildQuery());
 
@@ -669,7 +668,7 @@ public class UseraccountsService {
 					UserUserRecord userParent = userdao.getRecord(query.buildQuery());
 					userParent.setMobile(Long.parseLong(newmobile));
 					userParent.setUsername(newmobile);
-					result = userdao.updateRecord(userParent);
+					userdao.updateRecord(userParent);
 				}
 				user.setMobile(Long.parseLong(newmobile));
 				user.setUsername(newmobile);
@@ -787,19 +786,19 @@ public class UseraccountsService {
 		MessageTemplate messageTemplate = null;
 		try {
 			JobPositionRecord position = userFavoritePositionDao.getUserFavPositiond(positionId);
-			User user = userdao.getUserById(userId);
-			if(position != null && user != null) {
+            UserUserRecord user = userdao.getUserById(userId);
+            if(position != null && user != null) {
 				messageTemplate = new MessageTemplate();
 				messageTemplate.setPositionTitle(position.getTitle());
 				messageTemplate.setHrAccountId(position.getPublisher());
-				if(StringUtils.isNotNullOrEmpty(user.name)) {
-					messageTemplate.setName(user.name);
-				} else if(StringUtils.isNotNullOrEmpty(user.nickname)) {
-					messageTemplate.setName(user.nickname);
+				if(StringUtils.isNotNullOrEmpty(user.getName())) {
+					messageTemplate.setName(user.getName());
+				} else if(StringUtils.isNotNullOrEmpty(user.getNickname())) {
+					messageTemplate.setName(user.getNickname());
 				} else {
-					messageTemplate.setName(user.username);
+					messageTemplate.setName(user.getUsername());
 				}
-				messageTemplate.setContact(String.valueOf(user.mobile));
+				messageTemplate.setContact(String.valueOf(user.getMobile()));
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -851,33 +850,32 @@ public class UseraccountsService {
 	private boolean validateCode(String mobile, String code, int type) {
 		String codeinRedis = null;
 		try {
-			RedisClient redisclient = RedisClientFactory.getCacheClient();
 			switch (type) {
 			case 1:
-				codeinRedis = redisclient.get(0, "SMS_SIGNUP", mobile);
+				codeinRedis = redisClient.get(0, "SMS_SIGNUP", mobile);
 				if (code.equals(codeinRedis)) {
-					redisclient.del(0, "SMS_SIGNUP", mobile);
+                    redisClient.del(0, "SMS_SIGNUP", mobile);
 					return true;
 				}
 				break;
 			case 2:
-				codeinRedis = redisclient.get(0, "SMS_PWD_FORGOT", mobile);
+				codeinRedis = redisClient.get(0, "SMS_PWD_FORGOT", mobile);
 				if (code.equals(codeinRedis)) {
-					redisclient.del(0, "SMS_PWD_FORGOT", mobile);
+                    redisClient.del(0, "SMS_PWD_FORGOT", mobile);
 					return true;
 				}
 			case 3:
-				codeinRedis = redisclient.get(0, "SMS_CHANGEMOBILE_CODE",
+				codeinRedis = redisClient.get(0, "SMS_CHANGEMOBILE_CODE",
 						mobile);
 				if (code.equals(codeinRedis)) {
-					redisclient.del(0, "SMS_CHANGEMOBILE_CODE", mobile);
+                    redisClient.del(0, "SMS_CHANGEMOBILE_CODE", mobile);
 					return true;
 				}
 			case 4:
-				codeinRedis = redisclient
+				codeinRedis = redisClient
 						.get(0, "SMS_RESETMOBILE_CODE", mobile);
 				if (code.equals(codeinRedis)) {
-					redisclient.del(0, "SMS_RESETMOBILE_CODE", mobile);
+                    redisClient.del(0, "SMS_RESETMOBILE_CODE", mobile);
 					return true;
 				}
 				break;
@@ -986,7 +984,6 @@ public class UseraccountsService {
 	 * @throws TException
 	 */
 	public Response getScanResult(int wechatId, long sceneId) throws TException {
-		RedisClient redisClient = RedisClientFactory.getCacheClient();
 		String result = redisClient.get(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.WEIXIN_SCANRESULT.toString(), String.valueOf(wechatId), String.valueOf(sceneId));
 		if(StringUtils.isNotNullOrEmpty(result)) {
 			redisClient.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.WEIXIN_SCANRESULT.toString(), String.valueOf(wechatId), String.valueOf(sceneId));
@@ -1010,7 +1007,6 @@ public class UseraccountsService {
 	 * @throws TException
 	 */
 	public Response setScanResult(int wechatId, long sceneId, String value) throws TException {
-		RedisClient redisClient = RedisClientFactory.getCacheClient();
 		redisClient.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.WEIXIN_SCANRESULT.toString(), String.valueOf(wechatId), String.valueOf(sceneId), value);
 		return RespnoseUtil.SUCCESS.toResponse();
 	}

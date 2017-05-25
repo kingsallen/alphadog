@@ -8,25 +8,30 @@ import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileSkillRecord;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.profile.constants.ValidationMessage;
+import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
 import com.moseeker.profile.utils.ProfileValidation;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.struct.Awards;
 import com.moseeker.thrift.gen.profile.struct.ProfileImport;
 import com.moseeker.thrift.gen.profile.struct.Skill;
+
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.util.*;
 
 @Service
 @CounterIface
-public class ProfileSkillService extends BaseProfileService<Skill, ProfileSkillRecord> {
+public class ProfileSkillService {
 
     Logger logger = LoggerFactory.getLogger(ProfileSkillService.class);
 
@@ -39,7 +44,7 @@ public class ProfileSkillService extends BaseProfileService<Skill, ProfileSkillR
     @Autowired
     private ProfileCompletenessImpl completenessImpl;
 
-
+    @Transactional
     public Response postResources(List<Skill> structs) throws TException {
         if (structs != null && structs.size() > 0) {
             Iterator<Skill> is = structs.iterator();
@@ -51,32 +56,35 @@ public class ProfileSkillService extends BaseProfileService<Skill, ProfileSkillR
                 }
             }
         }
-        Response response = super.postResources(dao, structs);
-        if (response.getStatus() == 0 && structs != null && structs.size() > 0) {
-            Set<Integer> profileIds = new HashSet<>();
-            structs.forEach(struct -> {
-                profileIds.add(struct.getProfile_id());
-            });
-            profileIds.forEach(profileId -> {
-                completenessImpl.reCalculateProfileSkill(profileId, 0);
-            });
-            profileDao.updateUpdateTime(profileIds);
-        }
-        return response;
+
+        List<ProfileSkillRecord> records = BeanUtils.structToDB(structs, ProfileSkillRecord.class);
+
+        records = dao.addAllRecord(records);
+
+        Set<Integer> profileIds = new HashSet<>();
+        structs.forEach(struct -> {
+            profileIds.add(struct.getProfile_id());
+        });
+        profileIds.forEach(profileId -> {
+            completenessImpl.reCalculateProfileSkill(profileId, 0);
+        });
+        profileDao.updateUpdateTime(profileIds);
+        return ResponseUtils.success("1");
     }
 
-
+    @Transactional
     public Response putResources(List<Skill> structs) throws TException {
-        Response response = super.putResources(dao, structs);
-        if (response.getStatus() == 0 && structs != null && structs.size() > 0) {
+        int[] result = dao.updateRecords(BeanUtils.structToDB(structs, ProfileSkillRecord.class));
+        if (ArrayUtils.contains(result, 1)) {
             structs.forEach(struct -> {
                 completenessImpl.reCalculateProfileSkill(struct.getProfile_id(), struct.getId());
             });
+            return ResponseUtils.success("1");
         }
-        return response;
+        return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
     }
 
-
+    @Transactional
     public Response delResources(List<Skill> structs) throws TException {
         QueryUtil qu = new QueryUtil();
         StringBuffer sb = new StringBuffer("[");
@@ -89,69 +97,67 @@ public class ProfileSkillService extends BaseProfileService<Skill, ProfileSkillR
         qu.addEqualFilter("id", sb.toString());
 
         List<ProfileSkillRecord> skillRecords = null;
-        try {
-            skillRecords = dao.getRecords(qu);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
+        skillRecords = dao.getRecords(qu);
         Set<Integer> profileIds = new HashSet<>();
         if (skillRecords != null && skillRecords.size() > 0) {
             skillRecords.forEach(skill -> {
                 profileIds.add(skill.getProfileId().intValue());
             });
         }
-        Response response = super.delResources(dao, structs);
-        if (response.getStatus() == 0 && profileIds != null && profileIds.size() > 0) {
-            profileIds.forEach(profileId -> {
-                completenessImpl.reCalculateProfileSkill(profileId, 0);
-            });
+
+        if (skillRecords != null && skillRecords.size() > 0) {
+            int[] result = dao.deleteRecords(BeanUtils.structToDB(structs, ProfileSkillRecord.class));
+            if (ArrayUtils.contains(result, 1)) {
+                profileIds.forEach(profileId -> {
+                    completenessImpl.reCalculateProfileSkill(profileId, 0);
+                });
+                return ResponseUtils.success("1");
+            }
         }
-        return response;
+        return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DEL_FAILED);
     }
 
-
+    @Transactional
     public Response postResource(Skill struct) throws TException {
         ValidationMessage<Skill> vm = ProfileValidation.verifySkill(struct);
         if (!vm.isPass()) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", vm.getResult()));
         }
-        Response response = super.postResource(dao, struct);
-        if (response.getStatus() == 0) {
-            Set<Integer> profileIds = new HashSet<>();
-            profileIds.add(struct.getProfile_id());
-            profileDao.updateUpdateTime(profileIds);
-            completenessImpl.reCalculateProfileSkill(struct.getProfile_id(), struct.getId());
-        }
-        return response;
+        ProfileSkillRecord record = dao.addRecord(BeanUtils.structToDB(struct, ProfileSkillRecord.class));
+        Set<Integer> profileIds = new HashSet<>();
+        profileIds.add(struct.getProfile_id());
+        profileDao.updateUpdateTime(profileIds);
+        completenessImpl.reCalculateProfileSkill(struct.getProfile_id(), struct.getId());
+        return ResponseUtils.success(String.valueOf(record.getId()));
     }
 
-
+    @Transactional
     public Response putResource(Skill struct) throws TException {
-        Response response = super.putResource(dao, struct);
-        if (response.getStatus() == 0) {
+        int result = dao.updateRecord(BeanUtils.structToDB(struct, ProfileSkillRecord.class));
+        if (result > 0) {
             updateUpdateTime(struct);
             completenessImpl.reCalculateProfileSkill(struct.getProfile_id(), struct.getId());
+            return ResponseUtils.success("1");
         }
-        return response;
+        return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
     }
 
-
+    @Transactional
     public Response delResource(Skill struct) throws TException {
         QueryUtil qu = new QueryUtil();
         qu.addEqualFilter("id", String.valueOf(struct.getId()));
         ProfileSkillRecord skillRecord = null;
-        try {
-            skillRecord = dao.getRecord(qu);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+        skillRecord = dao.getRecord(qu);
+        if (skillRecord != null) {
+            int result = dao.deleteRecord(skillRecord);
+            if (result > 0) {
+                updateUpdateTime(struct);
+                completenessImpl.reCalculateProfileSkill(skillRecord.getProfileId().intValue(),
+                        skillRecord.getId().intValue());
+                return ResponseUtils.success("1");
+            }
         }
-        Response response = super.delResource(dao, struct);
-        if (response.getStatus() == 0 && skillRecord != null) {
-            updateUpdateTime(struct);
-            completenessImpl.reCalculateProfileSkill(skillRecord.getProfileId().intValue(),
-                    skillRecord.getId().intValue());
-        }
-        return response;
+        return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DEL_FAILED);
     }
 
 
@@ -178,15 +184,28 @@ public class ProfileSkillService extends BaseProfileService<Skill, ProfileSkillR
         updateUpdateTime(skills);
     }
 
-    public Response getResource(CommonQuery query) throws TException {
-        return super.getResource(dao, query, Skill.class);
+    public Response getResource(Query query) throws TException {
+        Skill data = dao.getData(query, Skill.class);
+        if (data != null) {
+            return ResponseUtils.success(data);
+        } else {
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+        }
     }
 
-    public Response getResources(CommonQuery query) throws TException {
-        return getResources(dao,query,Awards.class);
+    public Response getResources(Query query) throws TException {
+        Skill data = dao.getData(query, Skill.class);
+        if (data != null) {
+            return ResponseUtils.success(data);
+        } else {
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+        }
     }
 
-    public Response getPagination(CommonQuery query) throws TException {
-        return super.getPagination(dao, query);
+    public Response getPagination(Query query) throws TException {
+        int totalRow = dao.getCount(query);
+        List<?> datas = dao.getDatas(query);
+
+        return ResponseUtils.success(ProfileUtils.getPagination(totalRow, query.getPageNum(), query.getPageSize(), datas));
     }
 }

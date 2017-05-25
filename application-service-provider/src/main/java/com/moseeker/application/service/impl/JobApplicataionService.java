@@ -1,8 +1,10 @@
 package com.moseeker.application.service.impl;
 
+import com.moseeker.baseorm.redis.RedisClient;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
+import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,8 +33,6 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.redis.RedisClient;
-import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.query.Query;
@@ -58,7 +58,8 @@ public class JobApplicataionService {
     // 申请次数redis key
     private static final String REDIS_KEY_APPLICATION_COUNT_CHECK = "APPLICATION_COUNT_CHECK";
     //redis的客户端
-    private RedisClient redisClient = RedisClientFactory.getCacheClient();
+    @Resource(name = "cacheClient")
+    private RedisClient redisClient;
     @Autowired
     private JobPositionDao jobPositionDao;
     @Autowired

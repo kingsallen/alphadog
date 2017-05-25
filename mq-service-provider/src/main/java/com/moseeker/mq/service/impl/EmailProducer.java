@@ -3,18 +3,18 @@ package com.moseeker.mq.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
+import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.email.config.EmailContent;
 import com.moseeker.common.email.mail.Message;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.redis.RedisClient;
-import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.mq.service.WarnService;
 import com.moseeker.thrift.gen.common.struct.Response;
+import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +30,9 @@ import java.util.Map;
 public class EmailProducer {
 	
 	private static Logger logger = LoggerFactory.getLogger(EmailProducer.class);
+
+    @Resource(name = "cacheClient")
+    private RedisClient redisClient;
 	
 	@Autowired
 	private UserUserDao userDao;
@@ -59,7 +62,6 @@ public class EmailProducer {
 			
 			String constantlyMsg = JSON.toJSONString(message);
 			
-			RedisClient redisClient = RedisClientFactory.getCacheClient();
 			redisClient.lpush(Constant.APPID_ALPHADOG, Constant.MQ_MESSAGE_EMAIL_BIZ, constantlyMsg);
 			return ResponseUtils.success("success");
 		} catch (RedisException e) {

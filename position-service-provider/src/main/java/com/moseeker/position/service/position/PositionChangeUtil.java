@@ -12,14 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.moseeker.baseorm.dao.dictdb.DictCityMapDao;
 import com.moseeker.common.constants.ChannelType;
-import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.position.service.position.qianxun.Degree;
 import com.moseeker.position.service.position.qianxun.WorkType;
-import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
-import com.moseeker.thrift.gen.dao.service.DictDao;
 import com.moseeker.thrift.gen.dict.struct.CityMap;
 
 /**

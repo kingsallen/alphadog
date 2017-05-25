@@ -4,7 +4,6 @@ import com.moseeker.baseorm.dao.logdb.SmsSendrecordDao;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.sms.SmsSender;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.logdb.LogSmsSendrecordDO;
 import com.moseeker.thrift.gen.mq.struct.SmsType;

@@ -3,7 +3,7 @@ package com.moseeker.useraccounts.service;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.userdb.UserSettingsDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
-import com.moseeker.baseorm.dao.userdb.WxUserDao;
+import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -44,7 +44,7 @@ public abstract class BindOnAccountService {
 	protected UserSettingsDao userSettingDao;
 	
 	@Autowired
-	protected WxUserDao wxUserDao;
+	protected UserWxUserDao wxUserDao;
 	
 	/**
 	 * 账号绑定操作

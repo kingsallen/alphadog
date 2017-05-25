@@ -1,27 +1,27 @@
 package com.moseeker.servicemanager.common;
 
-import com.alibaba.fastjson.JSON;
-import com.moseeker.common.providerutils.QueryUtil;
-import com.moseeker.common.util.BeanUtils;
-import com.moseeker.common.util.JsonToMap;
-import com.moseeker.servicemanager.web.controller.util.Params;
-import com.moseeker.thrift.gen.common.struct.*;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.JsonToMap;
+import com.moseeker.servicemanager.web.controller.util.Params;
 
 /**
  * 主要用于生成form表单
@@ -50,13 +50,6 @@ public class ParamUtils {
         return t;
     }
 
-
-    static void pickToMap(Map<String, Object> params, String key, Map<String, String> pickMap) {
-        if (params.containsKey(key)) {
-            pickMap.put(key, String.valueOf(params.get(key)));
-        }
-    }
-
     /**
      * 用于解析常用的查询类。和initModelForm不同的是，会将form表单不存在的属性存入到EqualFilter中
      *
@@ -65,58 +58,12 @@ public class ParamUtils {
      * @return 转换后的类
      * @throws Exception 异常
      */
-    public static <T extends CommonQuery> CommonQuery initCommonQuery(HttpServletRequest request, Class<T> clazz) throws Exception {
+    public static <T> T initCommonQuery(HttpServletRequest request,
+                                        Class<T> clazz) throws Exception {
         Map<String, Object> data = parseRequestParam(request);
-        QueryUtil commonQuery = new QueryUtil();
-        String[] fields = null, sortBy = null, order = null, groups = null;
-
-        Object value;
-        for (String key : data.keySet()) {
-            value = data.get(key);
-            if (key != null && value != null) {
-                if ("appid".equals(key.trim())) {
-                    commonQuery.putToExtras(key.trim(), value.toString().trim());
-                } else if ("nocache".equals(key.trim())) {
-                    commonQuery.putToExtras(key.trim(), value.toString().trim());
-                } else if ("page".equals(key.trim())) {
-                    commonQuery.setPage(Integer.valueOf(value.toString().trim()));
-                } else if ("per_page".equals(key.trim())) {
-                    commonQuery.setPageSize(Integer.valueOf(value.toString().trim()));
-                } else if ("sortby".equals(key.trim())) {
-                    sortBy = value.toString().split(",");
-                } else if ("order".equals(key.trim())) {
-                    order = value.toString().split(",");
-                } else if ("fields".equals(key.trim())) {
-                    fields = value.toString().split(",");
-                } else if ("groups".equals(key.trim())) {
-                    groups = value.toString().split(",");
-                } else {
-                    commonQuery.addEqualFilter(key.trim(), value.toString().trim());
-                }
-            }
-        }
-
-        if (fields != null) {
-            for (String field : fields) {
-                commonQuery.addToAttributes(new Select(field.trim(), SelectOp.FIELD));
-            }
-        }
-
-        if (sortBy != null && order != null && sortBy.length == order.length) {
-            String field, sort;
-            for (int i = 0; i < sortBy.length; i++) {
-                field = sortBy[i].trim();
-                sort = order[i].trim();
-                commonQuery.addToOrders(new OrderBy(field.trim(), "desc".equals(sort) ? Order.DESC : Order.ASC));
-            }
-        }
-
-        if (groups != null) {
-            for (String field : groups) {
-                commonQuery.addToGroups(field);
-            }
-        }
-        return commonQuery;
+        T t = initModelForm(data, clazz);
+        buildEqualParam(data, t);
+        return t;
     }
 
     /**
@@ -124,7 +71,6 @@ public class ParamUtils {
      *
      * @param request request请求
      * @return 存储通过request请求传递过来的参数
-     * @throws Exception
      */
     public static Params<String, Object> parseRequestParam(HttpServletRequest request) throws Exception {
         Params<String, Object> data = new Params<>();
@@ -135,6 +81,49 @@ public class ParamUtils {
             throw new Exception("请设置 appid!");
         }
         return data;
+    }
+
+    /**
+     * 解析参数中的不在通用查询约定的属性，将其放入通用参数等比较集合中
+     *
+     * @param data 参数集合
+     * @param t    通用查询类
+     * @return 通用查询类
+     * @throws Exception 异常
+     */
+    private static <T> T buildEqualParam(Map<String, Object> data, T t)
+            throws Exception {
+        if (t != null) {
+            try {
+                Map<String, Object> param = new HashMap<>();
+
+                if (data != null) {
+                    for (Entry<String, Object> entry : data.entrySet()) {
+                        if (!entry.getKey().equals("appid")
+                                && !entry.getKey().equals("page")
+                                && !entry.getKey().equals("per_page")
+                                && !entry.getKey().equals("sortby")
+                                && !entry.getKey().equals("order")
+                                && !entry.getKey().equals("fields")
+                                && !entry.getKey().equals("nocache")) {
+                            param.put(entry.getKey(), entry.getValue());
+                        }
+                    }
+                }
+
+                Method method = t.getClass().getMethod("setEqualFilter",
+                        Map.class);
+                method.invoke(t, param);
+            } catch (NoSuchMethodException | SecurityException
+                    | IllegalAccessException | IllegalArgumentException
+                    | InvocationTargetException e) {
+                // warning 报警 / logging 日志
+                e.printStackTrace();
+            } finally {
+                //do nothing
+            }
+        }
+        return t;
     }
 
     /**
@@ -178,7 +167,7 @@ public class ParamUtils {
                             try {
                                 method.invoke(t, cval);
                             } catch (Exception e) {
-                                // TODO Auto-generated catch block
+                                LoggerFactory.getLogger(ParamUtils.class).error("method-name: " + method.getName() + " field-type:" + fields[i].getType() + " value:" + entry.getValue().toString(), e);
                                 e.printStackTrace();
                             }
                         }
@@ -196,7 +185,7 @@ public class ParamUtils {
      * @return 参数
      */
     private static Map<String, Object> initParamFromRequestParameter(
-            HttpServletRequest request) {
+            HttpServletRequest request) throws UnsupportedEncodingException {
         Map<String, Object> param = new HashMap<>();
 
         Map<String, String[]> reqParams = request.getParameterMap();
@@ -247,7 +236,7 @@ public class ParamUtils {
         } catch (IOException | IllegalStateException e) {
             LoggerFactory.getLogger(ParamUtils.class).error(e.getMessage(), e);
         }
-        LoggerFactory.getLogger(ParamUtils.class).info("----initParamFromRequestBody:", jb.toString());
+        LoggerFactory.getLogger(ParamUtils.class).info("----initParamFromRequestBody:{}", jb.toString());
         Map<String, Object> map = JsonToMap.parseJSON2Map(jb.toString());
         return map;
     }
@@ -279,44 +268,5 @@ public class ParamUtils {
         }
 
         return jb.toString();
-    }
-
-    public static Map<String, String> getMap(HttpServletRequest request) {
-        Map<String, String> map = new HashMap<>();
-        String[] value;
-        Map<String, String[]> paraMap = request.getParameterMap();
-        for (String key : paraMap.keySet()) {
-            value = paraMap.get(key);
-            map.put(key, value == null ? null : value.length == 0 ? null : value[0]);
-        }
-
-        String raw = null;
-        try {
-            raw = getStringRaw(request);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        if (raw != null && raw.trim().length() > 0) {
-            if (raw.startsWith("{") && raw.endsWith("}")) {
-                //object
-                Map<String, String> rawMap = (Map<String, String>) JSON.parse(raw);
-                map.putAll(rawMap);
-            } else {
-                Map<String, String> rawMap = Arrays.stream(StringUtils.split(raw, '&'))
-                        .filter(pair -> pair != null && pair.trim().length() > 0)
-                        .map(pair -> {
-                            String[] p = StringUtils.split(pair, '=');
-                            if (p.length == 1) {
-                                return new AbstractMap.SimpleEntry<String, String>(p[0], null);
-                            } else {
-                                return new AbstractMap.SimpleEntry<>(p[0], p[1]);
-                            }
-                        })
-                        .collect(Collectors.toMap(o1 -> o1.getKey(), o2 -> o2.getValue()));
-                map.putAll(rawMap);
-            }
-        }
-        return map;
     }
 }

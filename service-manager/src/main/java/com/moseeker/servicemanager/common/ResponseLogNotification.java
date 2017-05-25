@@ -1,20 +1,15 @@
 package com.moseeker.servicemanager.common;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.alibaba.fastjson.JSON;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.RedisException;
-import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.util.ConfigPropertiesUtil;
-import com.moseeker.common.util.Notification;
 import com.moseeker.thrift.gen.common.struct.Response;
+import java.util.HashMap;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ResponseLogNotification {
 
@@ -89,7 +84,6 @@ public class ResponseLogNotification {
 				reqResp.put("remote_ip", ParamUtils.getRemoteIp(request));
 				reqResp.put("web_server_ip", ParamUtils.getLocalHostIp());
 
-				RedisClientFactory.getLogClient().lpush(appid, logkey, JSON.toJSONString(reqResp));
 			}
 		} catch (RedisException e) {
 			WarnService.notify(e);
@@ -99,7 +93,4 @@ public class ResponseLogNotification {
 		//logger.info("下线日志记录功能");
 	}
 
-	public static void main(String[] args) {
-		Notification.sendNotification(0, "MYSQL_CONNECT_ERROR", "mysql ip : 123.44.44.44");
-	}
 }

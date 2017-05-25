@@ -2,15 +2,15 @@ package com.moseeker.dict.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
+import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.exception.CacheConfigNotExistException;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.redis.RedisClient;
-import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.dictdb.CityPojo;
+import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +29,9 @@ public class CityServices {
     @Autowired
     protected DictCityDao dao;
 
+    @Resource(name = "cacheClient")
+    private RedisClient redisClient;
+
     @CounterIface
     public Response getResources(CommonQuery query) throws TException {
         Response result;
@@ -36,8 +39,7 @@ public class CityServices {
             String cachKey = "transformed";
             String patternString = "DICT_CITY";
             int appid = 0; // 允许所有app_id的请求缓存
-            RedisClient rc = RedisClientFactory.getCacheClient();
-            String cachedResult = rc.get(appid, patternString, cachKey, () -> {
+            String cachedResult = redisClient.get(appid, patternString, cachKey, () -> {
                 return JSON.toJSONString(this.getCitiesResponse(true, 0));
             });
             result = JSON.parseObject(cachedResult, Response.class);
@@ -76,8 +78,7 @@ public class CityServices {
             String cachKey = "raw_level_" + level;
             String patternString = "DICT_CITY";
             int appid = 0; // 允许所有app_id的请求缓存
-            RedisClient rc = RedisClientFactory.getCacheClient();
-            String cachedResult = rc.get(appid, patternString, cachKey, () -> {
+            String cachedResult = redisClient.get(appid, patternString, cachKey, () -> {
                 return JSON.toJSONString(this.getCitiesResponse(false, level));
             });
             result = JSON.parseObject(cachedResult, Response.class);
@@ -98,8 +99,7 @@ public class CityServices {
             String cachKey = "raw_id_" + id;
             String patternString = "DICT_CITY";
             int appid = 0; // 允许所有app_id的请求缓存
-            RedisClient rc = RedisClientFactory.getCacheClient();
-            String cachedResult = rc.get(appid, patternString, cachKey, () -> {
+            String cachedResult = redisClient.get(appid, patternString, cachKey, () -> {
                 return JSON.toJSONString(this.getCitiesResponseById(id));
             });
             result = JSON.parseObject(cachedResult, Response.class);

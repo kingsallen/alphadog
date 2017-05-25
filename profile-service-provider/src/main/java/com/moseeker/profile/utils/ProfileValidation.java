@@ -4,12 +4,15 @@ import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.baseorm.db.profiledb.tables.records.*;
 import com.moseeker.profile.constants.ValidationMessage;
+import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileCredentialsDO;
+import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileEducationDO;
+import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileOtherDO;
 import com.moseeker.thrift.gen.profile.struct.*;
 
 public class ProfileValidation {
 
 	public static ValidationMessage<Credentials> verifyCredential(Credentials credentials) {
-		ValidationMessage<Credentials> vm = new ValidationMessage<Credentials>();
+		ValidationMessage<Credentials> vm = new ValidationMessage<>();
 		if(StringUtils.isNullOrEmpty(credentials.getName())) {
 			vm.addFailedElement("证书名称", "未填写证书名称");
 		}
@@ -23,7 +26,7 @@ public class ProfileValidation {
 		}
 		return vm;
 	}
-	
+
 	public static ValidationMessage<CustomizeResume> verifyCustomizeResume(CustomizeResume customizeResume) {
 		ValidationMessage<CustomizeResume> vm = new ValidationMessage<>();
 		if(StringUtils.isNullOrEmpty(customizeResume.getOther())) {

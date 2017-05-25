@@ -4,8 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.email.config.EmailContent;
 import com.moseeker.common.email.mail.Message;
-import com.moseeker.common.redis.RedisClient;
-import com.moseeker.common.redis.RedisClientFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,8 +36,8 @@ public class ConstantlyMailConsumerTest {
 
         message.setEmailContent(emailContent);
 
-        RedisClient redisClient = RedisClientFactory.getCacheClient();
-        redisClient.lpush(Constant.APPID_ALPHADOG, Constant.MQ_MESSAGE_EMAIL_BIZ, JSON.toJSONString(message));
+//        RedisClient redisClient = RedisClientFactory.getCacheClient();
+//        redisClient.lpush(Constant.APPID_ALPHADOG, Constant.MQ_MESSAGE_EMAIL_BIZ, JSON.toJSONString(message));
     }
 
 }

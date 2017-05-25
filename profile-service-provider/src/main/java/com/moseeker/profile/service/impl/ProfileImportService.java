@@ -2,30 +2,35 @@ package com.moseeker.profile.service.impl;
 
 import com.moseeker.baseorm.dao.profiledb.ProfileImportDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileImportRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.QueryUtil;
-import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.BeanUtils;
-import com.moseeker.baseorm.db.profiledb.tables.records.ProfileImportRecord;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.profile.struct.Awards;
+import com.moseeker.common.util.Pagination;
+import com.moseeker.common.util.query.Condition;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
+import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileImportDO;
 import com.moseeker.thrift.gen.profile.struct.ProfileImport;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @CounterIface
-public class ProfileImportService extends BaseProfileService<ProfileImport, ProfileImportRecord> {
+public class ProfileImportService {
 
     Logger logger = LoggerFactory.getLogger(ProfileImportService.class);
 
@@ -35,116 +40,152 @@ public class ProfileImportService extends BaseProfileService<ProfileImport, Prof
     @Autowired
     private ProfileProfileDao profileDao;
 
-
-    public Response postResources(List<ProfileImport> structs) throws TException {
-        Response response = super.postResources(dao,structs);
-        updateUpdateTime(structs, response);
-        return response;
+    public ProfileImport getResource(Query query) throws TException {
+        return dao.getData(query, ProfileImport.class);
     }
 
-
-    public Response putResources(List<ProfileImport> structs) throws TException {
-        Response response = super.putResources(dao,structs);
-        updateUpdateTime(structs, response);
-        return response;
+    public List<ProfileImport> getResources(Query query) throws TException {
+        return dao.getDatas(query, ProfileImport.class);
     }
 
+    public Pagination getPagination(Query query) throws TException {
+        int totalRow = dao.getCount(query);
+        List<?> datas = dao.getDatas(query);
 
-    public Response delResources(List<ProfileImport> structs) throws TException {
-        Response response = super.delResources(dao,structs);
-        updateUpdateTime(structs, response);
-        return response;
+        return ProfileUtils.getPagination(totalRow, query.getPageNum(), query.getPageSize(), datas);
     }
 
+    @Transactional
+    public List<ProfileImport> postResources(List<ProfileImport> structs) throws TException {
+        List<ProfileImport> resultDatas = new ArrayList<>();
 
-    public Response delResource(ProfileImport struct) throws TException {
-        Response response = super.delResource(dao,struct);
-        updateUpdateTime(struct, response);
-        return response;
+        if (structs != null && structs.size() > 0) {
+
+            List<ProfileImportRecord> records = BeanUtils.structToDB(structs, ProfileImportRecord.class);
+
+            records = dao.addAllRecord(records);
+
+            resultDatas = BeanUtils.DBToStruct(ProfileImport.class, records);
+
+            updateUpdateTime(resultDatas);
+        }
+        return resultDatas;
     }
 
+    @Transactional
+    public int[] putResources(List<ProfileImport> structs) throws TException {
+        int[] result = new int[0];
+        if (structs != null && structs.size() > 0) {
+            result = dao.updateRecords(BeanUtils.structToDB(structs, ProfileImportRecord.class));
 
-    public Response postResource(ProfileImport struct) throws TException {
-        try {
+            List<ProfileImport> updatedDatas = new ArrayList<>();
+
+            for (int i = 0; i < result.length; i++) {
+                if (result[i] > 0) updatedDatas.add(structs.get(i));
+            }
+
+            updateUpdateTime(updatedDatas);
+        }
+
+        return result;
+    }
+
+    @Transactional
+    public int[] delResources(List<ProfileImport> structs) throws TException {
+        if (structs != null && structs.size() > 0) {
+            Query query = new Query
+                    .QueryBuilder()
+                    .where(Condition.buildCommonCondition("profile_id",
+                            structs.stream()
+                                    .map(struct -> struct.getProfile_id())
+                                    .collect(Collectors.toList()),
+                            ValueOp.IN)).buildQuery();
+            //找到要删除的数据
+            List<ProfileImportDO> deleteDatas = dao.getDatas(query);
+
+            //正式删除数据
+            int[] result = dao.deleteRecords(BeanUtils.structToDB(structs, ProfileImportRecord.class));
+
+            if (deleteDatas != null && deleteDatas.size() > 0) {
+                //更新对应的profile更新时间
+                profileDao.updateUpdateTime(deleteDatas.stream().map(data -> data.getProfileId()).collect(Collectors.toSet()));
+            }
+            return result;
+        } else {
+            return new int[0];
+        }
+    }
+
+    @Transactional
+    public int delResource(ProfileImport struct) throws TException {
+        int result = 0;
+        if (struct != null) {
+            Query query = new Query
+                    .QueryBuilder()
+                    .where(Condition.buildCommonCondition("profile_id", struct.getProfile_id())).buildQuery();
+            //找到要删除的数据
+            ProfileImportRecord deleteData = dao.getRecord(query);
+            if (deleteData != null) {
+                //正式删除数据
+                result = dao.deleteRecord(deleteData);
+                if (result > 0) {
+                    updateUpdateTime(struct);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    @Transactional
+    public ProfileImport postResource(ProfileImport struct) throws TException {
+        ProfileImport result = null;
+        if (struct != null) {
             QueryUtil qu = new QueryUtil();
             qu.addEqualFilter("profile_id", String.valueOf(struct.getProfile_id()));
-            ProfileImportRecord repeat = dao.getRecord(qu);
+            ProfileImport repeat = dao.getData(qu, ProfileImport.class);
             if (repeat != null) {
-                return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_REPEAT_DATA);
+                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_REPEAT_DATA);
             }
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        } finally {
-            //do nothing
+            result = dao.addRecord(BeanUtils.structToDB(struct, ProfileImportRecord.class)).into(ProfileImport.class);
+            updateUpdateTime(result);
         }
-        Response response = super.postResource(dao,struct);
-        updateUpdateTime(struct, response);
-        return response;
+        return result;
     }
 
-
-    public Response putResource(ProfileImport struct) throws TException {
-        try {
-            QueryUtil qu = new QueryUtil();
-            qu.addEqualFilter("profile_id", String.valueOf(struct.getProfile_id()));
-            ProfileImportRecord repeat = dao.getRecord(qu);
-            if (repeat == null) {
-                return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DATA_NULL);
+    @Transactional
+    public int putResource(ProfileImport struct) throws TException {
+        int result = 0;
+        if (struct != null) {
+            result = dao.updateRecord(BeanUtils.structToDB(struct, ProfileImportRecord.class));
+            if (result > 0) {
+                updateUpdateTime(struct);
             }
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        } finally {
-            //do nothing
         }
-        Response response = super.putResource(dao,struct);
-        updateUpdateTime(struct, response);
-        return response;
-    }
-
-    public ProfileImportDao getDao() {
-        return dao;
-    }
-
-    public void setDao(ProfileImportDao dao) {
-        this.dao = dao;
-    }
-
-    protected ProfileImport DBToStruct(ProfileImportRecord r) {
-        return (ProfileImport) BeanUtils.DBToStruct(ProfileImport.class, r);
+        return result;
     }
 
 
-    protected ProfileImportRecord structToDB(ProfileImport profileImport) throws ParseException {
-        return (ProfileImportRecord) BeanUtils.structToDB(profileImport, ProfileImportRecord.class);
+    private void updateUpdateTime(ProfileImport profileImport) {
+
+        if (profileImport == null) return;
+
+        List<ProfileImport> profileImports = new ArrayList<>();
+
+        profileImports.add(profileImport);
+        updateUpdateTime(profileImports);
     }
 
-    private void updateUpdateTime(ProfileImport profileImport, Response response) {
-        if (response.getStatus() == 0 && profileImport != null) {
-            List<ProfileImport> profileImports = new ArrayList<>();
-            profileImports.add(profileImport);
-            updateUpdateTime(profileImports, response);
-        }
-    }
+    private void updateUpdateTime(List<ProfileImport> profileImports) {
 
-    private void updateUpdateTime(List<ProfileImport> profileImports, Response response) {
-        if (response.getStatus() == 0 && profileImports != null && profileImports.size() > 0) {
-            HashSet<Integer> profileIds = new HashSet<>();
-            profileImports.forEach(profileImport -> {
-                profileIds.add(profileImport.getProfile_id());
-            });
-            profileDao.updateUpdateTime(profileIds);
-        }
-    }
+        if (profileImports == null || profileImports.size() == 0) return;
 
-    public Response getResource(CommonQuery query) throws TException {
-        return super.getResource(dao, query, ProfileImport.class);
-    }
+        HashSet<Integer> profileIds = new HashSet<>();
 
-    public Response getResources(CommonQuery query) throws TException {
-        return getResources(dao,query,Awards.class);
-    }
+        profileImports.forEach(profileImport -> {
+            profileIds.add(profileImport.getProfile_id());
+        });
 
-    public Response getPagination(CommonQuery query) throws TException {
-        return super.getPagination(dao, query);
+        profileDao.updateUpdateTime(profileIds);
     }
 }

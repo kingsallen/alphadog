@@ -2,7 +2,7 @@ package com.moseeker.function.service.hraccount;
 
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
-import com.moseeker.baseorm.dao.userdb.UserHRAccountDao;
+import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
@@ -22,7 +22,7 @@ public class HRAccountService {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
-    private UserHRAccountDao hraccountDao;
+    private UserHrAccountDao hraccountDao;
 
     @Autowired
     private HRThirdPartyAccountDao hrThirdPartyAccountDao;

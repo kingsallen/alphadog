@@ -14,6 +14,8 @@ import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.log.ELKLog;
 import com.moseeker.common.log.LogVO;
+import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.Pagination;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.profile.constants.StatisticsForChannelmportVO;
 import org.slf4j.Logger;
@@ -101,10 +103,10 @@ public class ProfileUtils {
 										.setIntroduction(BeanUtils.converToString(company.get("company_introduction")));
 							}
 							if (company.get("company_scale") != null) {
-								hrCompany.setScale((Byte) company.get("company_scale"));
+								hrCompany.setScale(BeanUtils.converToByte(company.get("company_scale")));
 							}
 							if (company.get("company_property") != null) {
-								hrCompany.setProperty((Byte) company.get("company_property"));
+								hrCompany.setProperty(BeanUtils.converToByte(company.get("company_property")));
 							}
 							hrCompany.setType((byte)(Constant.COMPANY_TYPE_FREE));
 							switch(source) {
@@ -648,5 +650,28 @@ public class ProfileUtils {
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
+	}
+
+	public static Pagination getPagination(int totalRow, int pageNo1, int pageSize1, List list) {
+		Pagination pagination = new Pagination();
+		int pageNo = 1;
+		int pageSize = 10;
+		if (pageNo1 > 1) {
+			pageNo = pageNo1;
+		}
+		if (pageSize1 > 0) {
+			pageSize = pageSize1;
+		}
+		int totalPage = totalRow / pageSize;
+		if (totalRow % pageSize != 0) {
+			totalPage++;
+		}
+
+		pagination.setPageNo(pageNo);
+		pagination.setPageSize(pageSize);
+		pagination.setTotalPage(totalPage);
+		pagination.setTotalRow(totalRow);
+		pagination.setResults(list);
+		return pagination;
 	}
 }

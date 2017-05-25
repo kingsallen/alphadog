@@ -30,11 +30,6 @@ public class CompanyServer {
 
 		try {
 			AnnotationConfigApplicationContext acac = initSpring();
-//			Server server = new Server(CompanyServer.class,
-//					ServerNodeUtils.getPort(args),
-//					acac.getBean(CompanyServicesImpl.class));
-//			
-//			server.start(); // 启动服务，非阻塞
 			MoServer server = new MoServer(
 					acac,"",
 					acac.getBean(CompanyServicesImpl.class));

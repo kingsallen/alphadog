@@ -10,6 +10,7 @@ import com.moseeker.servicemanager.web.controller.useraccounts.form.UserEmployee
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.useraccounts.service.UserEmployeeService;
+import java.util.HashMap;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,7 +48,7 @@ public class UserEmployeeController {
                     return ResponseLogNotification.fail(request, "custom_field不能为空");
                 }
             }
-            QueryUtil query = new QueryUtil();
+            CommonQuery query = new CommonQuery();
             query.setEqualFilter(filter);
             Response result = service.delUserEmployee(query);
             return ResponseLogNotification.success(request, result);
@@ -72,9 +73,9 @@ public class UserEmployeeController {
     @ResponseBody
     public String getUserEmployee(HttpServletRequest request, HttpServletResponse response, @PathVariable int id) {
         try {
-            QueryUtil queryUtil = new QueryUtil();
-            queryUtil.addEqualFilter("id", String.valueOf(id));
-            Response result = service.getUserEmployee(queryUtil);
+            CommonQuery query = new CommonQuery();
+            query.setEqualFilter(new HashMap<String, String>(){{put("id", String.valueOf(id));}});
+            Response result = service.getUserEmployee(query);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());

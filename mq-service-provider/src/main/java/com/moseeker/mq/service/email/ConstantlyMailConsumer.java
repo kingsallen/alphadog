@@ -1,5 +1,6 @@
 package com.moseeker.mq.service.email;
 
+import com.moseeker.baseorm.redis.RedisClient;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,6 +14,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.mail.MessagingException;
 
 import org.slf4j.Logger;
@@ -26,10 +29,9 @@ import com.moseeker.common.email.mail.Mail;
 import com.moseeker.common.email.mail.Mail.MailBuilder;
 import com.moseeker.common.email.mail.Message;
 import com.moseeker.common.exception.RedisException;
-import com.moseeker.common.redis.RedisClient;
-import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.mq.MqServer;
 import com.moseeker.mq.service.WarnService;
+import org.springframework.stereotype.Component;
 
 /**
  * 
@@ -47,12 +49,16 @@ import com.moseeker.mq.service.WarnService;
  * @author wjf
  * @version
  */
+@Component
 public class ConstantlyMailConsumer {
 	
 	private static Logger logger = LoggerFactory.getLogger(MqServer.class);
 
 	private HashMap<Integer, String> templates = new HashMap<>(); // 模版信息
 	private ExecutorService executorService;
+
+    @Resource(name = "cacheClient")
+    private RedisClient redisClient;
 
 	/**
 	 * 从redis业务邮件队列中获取邮件信息
@@ -61,7 +67,6 @@ public class ConstantlyMailConsumer {
 	 */
 	private String fetchConstantlyMessage() {
 		try {
-			RedisClient redisClient = RedisClientFactory.getCacheClient();
 			List<String> el =  redisClient.brpop(Constant.APPID_ALPHADOG,
 					Constant.MQ_MESSAGE_EMAIL_BIZ);
 			if (el != null && el.size() >= 1){
@@ -102,7 +107,6 @@ public class ConstantlyMailConsumer {
 
 	/**
 	 * 发送邮件
-	 * @param mail
 	 * @return
 	 * @throws Exception 
 	 */
@@ -145,6 +149,7 @@ public class ConstantlyMailConsumer {
 	 * @throws IOException
 	 * @throws MessagingException
 	 */
+	@PostConstruct
 	public void start() throws IOException, MessagingException {
 		initConstantlyMail();
 		executorService = new ThreadPoolExecutor(3, 10,

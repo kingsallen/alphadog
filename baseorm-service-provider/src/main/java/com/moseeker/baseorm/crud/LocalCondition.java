@@ -3,6 +3,7 @@ package com.moseeker.baseorm.crud;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.query.*;
 import com.moseeker.common.util.query.Condition;
+import java.util.stream.Collectors;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
@@ -42,9 +43,9 @@ public class LocalCondition<R extends Record> {
             case NEQ:
                 return field.notEqual(convertTo(value, field.getType()));
             case IN:
-                return field.in((List)value);
+                return field.in(BeanUtils.converToList(value).stream().map(m -> convertTo(m, field.getType())).collect(Collectors.toList()));
             case NIN:
-                return field.notIn((List)value);
+                return field.notIn(BeanUtils.converToList(value).stream().map(m -> convertTo(m, field.getType())).collect(Collectors.toList()));
             case GT:
                 return field.greaterThan(convertTo(value, field.getType()));
             case GE:
