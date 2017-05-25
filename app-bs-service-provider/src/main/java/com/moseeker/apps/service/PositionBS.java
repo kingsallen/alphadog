@@ -1,16 +1,19 @@
 package com.moseeker.apps.service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.thrift.gen.dao.service.HrDBDao;
 import com.moseeker.thrift.gen.dao.service.UserHrAccountDao;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
+import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -57,6 +60,8 @@ public class PositionBS {
 
     UserHrAccountDao.Iface userHrAccountDao = ServiceManager.SERVICEMANAGER
             .getService(UserHrAccountDao.Iface.class);
+
+    HrDBDao.Iface hrdbDao = ServiceManager.SERVICEMANAGER.getService(HrDBDao.Iface.class);
 
     /**
      * @param position
@@ -119,12 +124,25 @@ public class PositionBS {
                     // 提交到chaos处理
                     List<ThirdPartyPositionForSynchronizationWithAccount> PositionsForSynchronizations = new ArrayList<>();
                     if (positions != null && positions.size() > 0) {
-                        positions.forEach(pos -> {
+                        QueryUtil subCompanyQuery = new QueryUtil();
+                        subCompanyQuery.addEqualFilter("account_id", String.valueOf(positionStruct.getPublisher()));
+                        List<HrCompanyAccountDO> hrCompanyAccounts = hrdbDao.listHrCompanyAccount(subCompanyQuery);
+                        HrCompanyDO subCompany = null;
+                        if (hrCompanyAccounts != null && hrCompanyAccounts.size() > 0) {
+                            QueryUtil companyQuery = new QueryUtil();
+                            companyQuery.addEqualFilter("id", String.valueOf(hrCompanyAccounts.get(0).getCompanyId()));
+                            subCompany = CompanyDao.getCompany(companyQuery);
+                        }
+
+                        for (ThirdPartyPositionForSynchronization pos : positions) {
                             ThirdPartyPositionForSynchronizationWithAccount p = new ThirdPartyPositionForSynchronizationWithAccount();
                             p.setPosition_info(pos);
-                            thirdPartyAccounts.forEach(account -> {
+                            for (ThirdPartAccountData account : thirdPartyAccounts) {
                                 if (account.getId() > 0 && account.binding == 1 && account.getRemain_num() > 0
                                         && account.getChannel() == pos.getChannel()) {
+                                    if (subCompany != null) {
+                                        p.setCompany_name(subCompany.getAbbreviation());
+                                    }
                                     p.setAccount_id(String.valueOf(account.getId()));
                                     p.setChannel(String.valueOf(pos.getChannel()));
                                     p.setPassword(account.getPassword());
@@ -134,8 +152,8 @@ public class PositionBS {
                                     PositionsForSynchronizations.add(p);
                                     logger.info("ThirdPartyPositionForSynchronization:{}", JSON.toJSONString(p));
                                 }
-                            });
-                        });
+                            }
+                        }
                     }
                     logger.info("chaosService.synchronizePosition:{}", JSON.toJSONString(PositionsForSynchronizations));
                     Response synchronizeResult = chaosService.synchronizePosition(PositionsForSynchronizations);
