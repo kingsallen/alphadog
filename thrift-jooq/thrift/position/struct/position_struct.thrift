@@ -248,7 +248,8 @@ struct JobPostrionObj{
     45:list<City> city, // 城市列表
     46:string extra,
     47:i32 id,
-    48:string requirement
+    48:string requirement,
+    49:string custom
 }
 
 struct City{
