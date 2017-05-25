@@ -37,7 +37,7 @@ public class ChatThriftServiceTest {
 
     @Test
     public void listUserChatRoom() throws Exception {
-        UserChatRoomsVO roomsVO = chatService.listUserChatRoom(4913, 1, 10);
+        UserChatRoomsVO roomsVO = chatService.listUserChatRoom(1, 1, 10);
         System.out.println("pageNo : "+roomsVO.getPageNo());
         System.out.println("pageSize : " + roomsVO.getPageSize());
         System.out.println("totalRow : " + roomsVO.getTotalRow());
@@ -53,6 +53,7 @@ public class ChatThriftServiceTest {
                 System.out.println("headImgUrl:"+room.getHeadImgUrl());
                 System.out.println("createTime:"+room.getCreateTime());
                 System.out.println("status:"+room.getUnReadNum());
+                System.out.println("unreadNum:"+room.getUnReadNum());
             });
         }
     }
