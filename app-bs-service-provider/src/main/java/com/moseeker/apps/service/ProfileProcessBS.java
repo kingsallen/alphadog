@@ -1,8 +1,6 @@
 package com.moseeker.apps.service;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.moseeker.apps.bean.RecruitmentResult;
 import com.moseeker.apps.bean.RewardsToBeAddBean;
 import com.moseeker.apps.constants.TemplateMs;
@@ -35,7 +33,6 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.config.ConfigSysPointsConfTpl;
 import com.moseeker.thrift.gen.config.HrAwardConfigTemplate;
-import com.moseeker.thrift.gen.dao.service.*;
 import com.moseeker.thrift.gen.dao.struct.HistoryOperate;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
 import com.moseeker.thrift.gen.mq.service.MqService;
@@ -79,7 +76,23 @@ public class ProfileProcessBS {
     @Autowired
     private UserEmployeePointsRecordDao userEmployeePointsRecordDao;
 
-    /**
+    public MqService.Iface getMqService() {
+		return mqService;
+	}
+
+	public void setMqService(MqService.Iface mqService) {
+		this.mqService = mqService;
+	}
+
+	public CompanyServices.Iface getCompanyService() {
+		return companyService;
+	}
+
+	public void setCompanyService(CompanyServices.Iface companyService) {
+		this.companyService = companyService;
+	}
+
+	/**
      * ats简历进度
      *
      * @param progressStatus －－－－下一步的状态，对应config_sys_points_conf_tpl.recruit_order

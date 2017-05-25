@@ -3,7 +3,6 @@ package com.moseeker.apps.service;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
@@ -31,8 +30,6 @@ import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices;
-import com.moseeker.thrift.gen.dao.service.CompanyDao;
-import com.moseeker.thrift.gen.dao.service.PositionDao;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
@@ -47,7 +44,6 @@ import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
  */
 @Service
 public class PositionBS {
-
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	UserHrAccountService.Iface userHrAccountService = ServiceManager.SERVICEMANAGER
 			.getService(UserHrAccountService.Iface.class);
@@ -62,7 +58,6 @@ public class PositionBS {
 	private HrCompanyDao hrCompanyDao;
 	@Autowired
 	private HRThirdPartyPositionDao hRThirdPartyPositionDao;
-
 	/**
 	 * 
 	 * @param position

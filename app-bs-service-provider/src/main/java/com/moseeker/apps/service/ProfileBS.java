@@ -52,8 +52,6 @@ public class ProfileBS {
 		if(positionId == 0 || StringUtils.isNullOrEmpty(profile)) {
 			return ResultMessage.PROGRAM_PARAM_NOTEXIST.toResponse();
 		}
-//		QueryUtil qu = new QueryUtil();
-//		qu.addEqualFilter("id", String.valueOf(positionId));
 		Query qu=new Query.QueryBuilder().where("id",positionId).buildQuery();
 		Position position = new Position();
 		try {
@@ -79,11 +77,11 @@ public class ProfileBS {
 		resume.put("channel", channel);
 		try {
 			//查询是否存在相同手机号码的C端帐号
-//			QueryUtil findRetrieveUserQU = new QueryUtil();
-//			findRetrieveUserQU.addEqualFilter("mobile", mobile);
-//			findRetrieveUserQU.addEqualFilter("source", String.valueOf(UserSource.RETRIEVE_PROFILE.getValue()));
 			Query findRetrieveUserQU=new Query.QueryBuilder().where("mobile", mobile).and("source",UserSource.RETRIEVE_PROFILE.getValue()).buildQuery();
 			com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO user =userUserDao.getData(findRetrieveUserQU); //userDao.getUser(findRetrieveUserQU);
+			if(user==null){
+				user=new com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO();
+			}
 			if(user.getId() > 0) {
 				//查找该帐号是否有profile
 				JobApplication application = initApplication((int)user.getId(), positionId, position.getCompany_id());
@@ -162,6 +160,30 @@ public class ProfileBS {
 		application.setApplier_id(applierId);
 		application.setCompany_id(companyId);
 		return application;
+	}
+
+	public UseraccountsServices.Iface getUseraccountsServices() {
+		return useraccountsServices;
+	}
+
+	public void setUseraccountsServices(UseraccountsServices.Iface useraccountsServices) {
+		this.useraccountsServices = useraccountsServices;
+	}
+
+	public WholeProfileServices.Iface getWholeProfileService() {
+		return wholeProfileService;
+	}
+
+	public void setWholeProfileService(WholeProfileServices.Iface wholeProfileService) {
+		this.wholeProfileService = wholeProfileService;
+	}
+
+	public JobApplicationServices.Iface getApplicationService() {
+		return applicationService;
+	}
+
+	public void setApplicationService(JobApplicationServices.Iface applicationService) {
+		this.applicationService = applicationService;
 	}
 	
 }
