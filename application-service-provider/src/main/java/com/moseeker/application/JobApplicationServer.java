@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import com.moseeker.application.config.AppConfig;
 import com.moseeker.application.thrift.JobApplicataionServicesImpl;
 import com.moseeker.rpccenter.common.ServerNodeUtils;
 import com.moseeker.rpccenter.main.MoServer;
@@ -41,9 +42,7 @@ public class JobApplicationServer {
 
     private static AnnotationConfigApplicationContext initSpring() {
         AnnotationConfigApplicationContext acac = new AnnotationConfigApplicationContext();
-        acac.scan("com.moseeker.application");
-        acac.scan("com.moseeker.common.aop.iface");
-        acac.scan("com.moseeker.baseorm");
+        acac.register(AppConfig.class);
         acac.refresh();
         return acac;
     }

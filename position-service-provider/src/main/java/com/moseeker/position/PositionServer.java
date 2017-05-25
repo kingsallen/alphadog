@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import com.moseeker.position.config.AppConfig;
 import com.moseeker.position.thrift.PositionServicesImpl;
 import com.moseeker.rpccenter.common.ServerNodeUtils;
 import com.moseeker.rpccenter.main.MoServer;
@@ -46,9 +47,7 @@ public class PositionServer {
 
     private static AnnotationConfigApplicationContext initSpring() {
         AnnotationConfigApplicationContext acac = new AnnotationConfigApplicationContext();
-        acac.scan("com.moseeker.position");
-        acac.scan("com.moseeker.common.aop.iface");
-        acac.scan("com.moseeker.baseorm");
+        acac.register(AppConfig.class);
         acac.refresh();
         return acac;
     }

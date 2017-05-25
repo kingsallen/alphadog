@@ -41,9 +41,10 @@ public class PositionBSTest {
 	@Before
 	public void init(){
 		AnnotationConfigApplicationContext acac = new AnnotationConfigApplicationContext();
-        acac.scan("com.moseeker.apps");
-        acac.scan("com.moseeker.common.aop.iface");
-        acac.scan("com.moseeker.baseorm");
+		acac.scan("com.moseeker.apps");
+		acac.scan("com.moseeker.common.aop.iface"); //开启接口统计
+		acac.scan("com.moseeker.common.aop.notify");
+		acac.scan("com.moseeker.baseorm");
         acac.refresh();
         positionBS=acac.getBean(PositionBS.class);
 		try {

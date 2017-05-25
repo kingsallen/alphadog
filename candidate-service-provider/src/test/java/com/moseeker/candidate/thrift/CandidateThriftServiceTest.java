@@ -1,17 +1,11 @@
 package com.moseeker.candidate.thrift;
 
-import com.moseeker.common.util.BeanUtils;
-import com.moseeker.db.candidatedb.tables.records.CandidatePositionRecord;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.candidate.service.CandidateService;
 import com.moseeker.thrift.gen.candidate.struct.*;
-import com.moseeker.thrift.gen.dao.struct.CandidatePositionDO;
-
 import org.apache.thrift.TException;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
-
 import java.util.ArrayList;
 import java.util.List;
 

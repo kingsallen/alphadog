@@ -3,7 +3,7 @@ package com.moseeker.profile.refactor;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.profile.conf.AppConfig;
+import com.moseeker.profile.config.AppConfig;
 import com.moseeker.profile.service.impl.ProfileWorksService;
 import com.moseeker.profile.thrift.ProfileOtherThriftServiceImpl;
 import com.moseeker.profile.thrift.ProfileWorksServicesImpl;

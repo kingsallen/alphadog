@@ -13,6 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.alibaba.fastjson.JSON;
 import com.moseeker.apps.constants.ResultMessage;
 import com.moseeker.apps.service.position.PositionSyncResultPojo;
@@ -20,6 +22,7 @@ import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.PositionRefreshType;
 import com.moseeker.common.constants.PositionSync;
 import com.moseeker.common.util.StringUtils;
@@ -43,6 +46,7 @@ import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
  *
  */
 @Service
+@Transactional
 public class PositionBS {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	UserHrAccountService.Iface userHrAccountService = ServiceManager.SERVICEMANAGER
@@ -63,6 +67,7 @@ public class PositionBS {
 	 * @param position
 	 * @return
 	 */
+	@CounterIface
 	public Response synchronizePositionToThirdPartyPlatform(ThirdPartyPositionForm position) {
 		Response response = null;
 		// 职位数据是否存在
@@ -236,6 +241,7 @@ public class PositionBS {
 	 * @param channel 渠道编号
 	 * @return
 	 */
+	@CounterIface
 	public Response refreshPosition(int positionId, int channel) {
 		logger.info("refreshPosition start");
 		HashMap<String, Object> result = new HashMap<>();

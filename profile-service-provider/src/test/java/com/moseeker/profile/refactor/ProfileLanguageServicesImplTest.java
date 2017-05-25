@@ -2,7 +2,7 @@ package com.moseeker.profile.refactor;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.profile.conf.AppConfig;
+import com.moseeker.profile.config.AppConfig;
 import com.moseeker.profile.thrift.ProfileLanguageServicesImpl;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;

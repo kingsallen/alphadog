@@ -1,6 +1,6 @@
 package com.moseeker.profile;
 
-import com.moseeker.profile.conf.AppConfig;
+import com.moseeker.profile.config.AppConfig;
 import com.moseeker.profile.thrift.*;
 import com.moseeker.rpccenter.exception.IncompleteException;
 import com.moseeker.rpccenter.exception.RegisterException;

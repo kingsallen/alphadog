@@ -18,6 +18,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeePointsRecordRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.annotation.notify.UpdateEs;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -52,8 +53,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class ProfileProcessBS {
     private Logger log = LoggerFactory.getLogger(getClass());
     Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -100,6 +103,7 @@ public class ProfileProcessBS {
      * @return Response(status, message, data)
      * @author zzt
      */
+	@CounterIface
     public Response processProfileAts(int progressStatus, String params) {
         int companyId = 0;
         int accountId = 0;
@@ -138,6 +142,7 @@ public class ProfileProcessBS {
      * @param accountId      hr_account.id
      */
     @UpdateEs(tableName = "job_application", argsIndex = 2, argsName = "application_id")
+    @CounterIface
     public Response processProfile(int companyId, int progressStatus, List<Integer> appIds, int accountId) {
         try {
             if (appIds == null || appIds.size() == 0) {

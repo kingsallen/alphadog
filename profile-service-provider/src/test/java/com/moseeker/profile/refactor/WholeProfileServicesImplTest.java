@@ -2,7 +2,7 @@ package com.moseeker.profile.refactor;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.moseeker.profile.conf.AppConfig;
+import com.moseeker.profile.config.AppConfig;
 import com.moseeker.profile.thrift.WholeProfileServicesImpl;
 import com.moseeker.thrift.gen.common.struct.Response;
 import org.apache.thrift.TException;

@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.profile.conf.AppConfig;
+import com.moseeker.profile.config.AppConfig;
 import com.moseeker.profile.thrift.ProfileOtherThriftServiceImpl;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;

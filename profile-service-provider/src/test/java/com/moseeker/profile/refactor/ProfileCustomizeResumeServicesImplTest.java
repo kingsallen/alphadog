@@ -1,7 +1,7 @@
 package com.moseeker.profile.refactor;
 
 import com.alibaba.fastjson.JSON;
-import com.moseeker.profile.conf.AppConfig;
+import com.moseeker.profile.config.AppConfig;
 import com.moseeker.profile.service.impl.ProfileCredentialsService;
 import com.moseeker.profile.service.impl.ProfileCustomizeResumeService;
 import com.moseeker.profile.thrift.ProfileCustomizeResumeServicesImpl;

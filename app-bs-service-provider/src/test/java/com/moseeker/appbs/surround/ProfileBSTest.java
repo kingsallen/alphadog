@@ -30,9 +30,10 @@ public class ProfileBSTest {
 	
 	public AnnotationConfigApplicationContext initSpring(){
 		AnnotationConfigApplicationContext acac = new AnnotationConfigApplicationContext();
-        acac.scan("com.moseeker.apps");
-        acac.scan("com.moseeker.common.aop.iface");
-        acac.scan("com.moseeker.baseorm");
+		acac.scan("com.moseeker.apps");
+		acac.scan("com.moseeker.common.aop.iface"); //开启接口统计
+		acac.scan("com.moseeker.common.aop.notify");
+		acac.scan("com.moseeker.baseorm");
         acac.refresh();
         return acac;
 	}
@@ -60,7 +61,6 @@ public class ProfileBSTest {
 		json.put("user", user);
 		String profile=json.toJSONString();
 		Response result=profileBS.retrieveProfile(124576,profile,3);
-	
 		System.out.println(result);
 	}
 

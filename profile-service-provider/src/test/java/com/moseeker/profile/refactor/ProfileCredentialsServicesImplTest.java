@@ -2,7 +2,7 @@ package com.moseeker.profile.refactor;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.common.util.query.Query;
-import com.moseeker.profile.conf.AppConfig;
+import com.moseeker.profile.config.AppConfig;
 import com.moseeker.profile.service.impl.ProfileCredentialsService;
 import com.moseeker.profile.thrift.ProfileCredentialsServicesImpl;
 import com.moseeker.rpccenter.client.ServiceManager;
