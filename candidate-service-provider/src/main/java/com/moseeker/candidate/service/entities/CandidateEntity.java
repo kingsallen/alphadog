@@ -86,7 +86,7 @@ public class CandidateEntity implements Candidate {
 
                     boolean fromEmployee = false;       //是否是员工转发
                     if(shareChainDO != null) {
-                        UserEmployeeDO employeeDO = CandidateDBDao.getEmployee(shareChainDO.getRootRecomUserId());
+                        UserEmployeeDO employeeDO = CandidateDBDao.getEmployee(shareChainDO.getRootRecomUserId(), jobPositionDO.getCompanyId());
                         if(employeeDO != null) {
                             fromEmployee = true;
                         }
