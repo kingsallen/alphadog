@@ -327,7 +327,6 @@ public class ChatService {
                 unreadCountDO.setHrUnreadCount(0);
                 unreadCountDO.setUserUnreadCount(1);
                 unreadCountDO.setRoomId(chatRoom.getId());
-                chaoDao.saveUnreadCount(unreadCountDO);
                 pool.startTast(() -> chaoDao.saveUnreadCount(unreadCountDO));
             }
         } else {
