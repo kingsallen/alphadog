@@ -8,9 +8,6 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
-import com.moseeker.common.util.BeanUtils;
-import com.moseeker.common.util.HttpClient;
-import com.moseeker.common.util.JsonToMap;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.db.dictdb.tables.*;
 import com.moseeker.db.dictdb.tables.records.*;
@@ -28,6 +25,7 @@ import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.profile.dao.ProfileDao;
 import com.moseeker.profile.dao.entity.ProfileWorkexpEntity;
+import com.moseeker.profile.service.impl.ProfileDownloadService;
 import com.moseeker.profile.service.impl.serviceutils.CompletenessCalculator;
 import com.moseeker.thrift.gen.common.struct.Response;
 import org.jooq.*;
@@ -35,7 +33,6 @@ import org.jooq.types.UByte;
 import org.jooq.types.UInteger;
 import org.springframework.stereotype.Repository;
 
-import java.net.ConnectException;
 import java.sql.*;
 import java.util.*;
 import java.util.Date;
@@ -1035,31 +1032,6 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
     }
 
 
-    private String getDownloadUrlByUserId(String downloadApi, String password, int userid) {
-        String url = null;
-        if (StringUtils.isNotNullOrEmpty(downloadApi)) {
-            Map<String, Object> params = new HashMap<String, Object>() {{
-                put("user_id", userid);
-                put("password", password);
-            }};
-            try {
-                logger.info("getDownloadUrlByUserId:{}:{}:{}", downloadApi, password, userid);
-                String content = HttpClient.sendPost(downloadApi, JSON.toJSONString(params));
-                logger.info("getDownloadUrlByUserId:{}:{}", userid, content);
-                Map<String, Object> mp = JsonToMap.parseJSON2Map(content);
-                Object link = mp.get("downloadlink");
-                if (link != null) {
-                    url = link.toString();
-                }
-            } catch (ConnectException e) {
-                logger.error(e.getMessage(), e);
-                e.printStackTrace();
-            }
-        }
-        return url;
-    }
-
-
     private boolean showEmptyKey = true;
 
     private void buildMap(Map<String, List<String>> filter, Map map, String key, Map<String, Object> object) {
@@ -1190,6 +1162,14 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
         applicationIds.remove(UInteger.valueOf(0));
         applierIds.remove(UInteger.valueOf(0));
         recommenderIds.remove(UInteger.valueOf(0));
+
+        ProfileDownloadService downloadService = new ProfileDownloadService(downloadApi, password, new HashSet<>());
+
+        if (dl_url_required && applierIds.size() > 0) {
+            //异步下载用户的简历
+            downloadService = new ProfileDownloadService(downloadApi, password, applierIds);
+            downloadService.startDownload();
+        }
 
 
         logger.info("getResourceByApplication:==============:positionIds:{}", positionIds);
@@ -1559,10 +1539,20 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
             UInteger recommenderId = (UInteger) entry.getValue().get("recommender_user_id");
             UInteger applierId = (UInteger) entry.getValue().get("applier_id");
 
+
+            int count = 0;
+            while (count < 300 * 10 && downloadService.getUserProfileUrls().size() > 0 && !downloadService.isFinished()) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                count++;
+            }
+
             if (dl_url_required) {
                 if (applierId != null && applierId.intValue() > 0) {
-                    String url = getDownloadUrlByUserId(downloadApi, password, applierId.intValue());
-                    map.put("download_url", url == null ? "" : url);
+                    map.put("download_url", downloadService.getUserProfileUrls().get(applierId.intValue()));
                 } else {
                     map.put("download_url", "");
                 }
