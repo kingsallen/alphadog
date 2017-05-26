@@ -6,10 +6,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.thrift.gen.company.service.HrTeamServices;
 import com.moseeker.thrift.gen.dao.service.HrDBDao;
 import com.moseeker.thrift.gen.dao.service.UserHrAccountDao;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrTeamDO;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
@@ -62,6 +64,9 @@ public class PositionBS {
             .getService(UserHrAccountDao.Iface.class);
 
     HrDBDao.Iface hrdbDao = ServiceManager.SERVICEMANAGER.getService(HrDBDao.Iface.class);
+
+    HrTeamServices.Iface hrTeamService = ServiceManager.SERVICEMANAGER.getService(HrTeamServices.Iface.class);
+
 
     /**
      * @param position
@@ -134,6 +139,13 @@ public class PositionBS {
                             subCompany = CompanyDao.getCompany(companyQuery);
                         }
 
+                        List<HrTeamDO> hrTeams = new ArrayList<>();
+                        if (positionStruct.getTeam_id() > 0) {
+                            Map<String, String> params = new HashMap<>();
+                            params.put("id", String.valueOf(positionStruct.getTeam_id()));
+                            hrTeams = hrTeamService.getHrTeams(params);
+                        }
+
                         for (ThirdPartyPositionForSynchronization pos : positions) {
                             ThirdPartyPositionForSynchronizationWithAccount p = new ThirdPartyPositionForSynchronizationWithAccount();
                             p.setPosition_info(pos);
@@ -142,6 +154,9 @@ public class PositionBS {
                                         && account.getChannel() == pos.getChannel()) {
                                     if (subCompany != null) {
                                         p.setCompany_name(subCompany.getAbbreviation());
+                                    }
+                                    if (hrTeams != null && hrTeams.size() > 0) {
+                                        p.getPosition_info().setDepartment(hrTeams.get(0).getName());
                                     }
                                     p.setAccount_id(String.valueOf(account.getId()));
                                     p.setChannel(String.valueOf(pos.getChannel()));
