@@ -650,6 +650,7 @@ public class ChatDao {
     }
 
     public HrChatUnreadCountDO addUnreadCount(int roomId, byte speaker, String date) {
+        logger.info("ChatDao addUnreadCount roomId:{}, speaker:{}, date:{}", roomId, speaker, date);
         QueryUtil queryUtil = new QueryUtil();
         queryUtil.addEqualFilter("room_id", roomId);
         try {
@@ -688,7 +689,7 @@ public class ChatDao {
     public void addChatTOChatRoom(HrWxHrChatDO chatDO) {
         logger.info("ChatDao addChatTOChatRoom chatDO:",chatDO);
         QueryUtil queryUtil = new QueryUtil();
-        queryUtil.addEqualFilter("id", chatDO.getId());
+        queryUtil.addEqualFilter("id", chatDO.getChatlistId());
         try {
             HrWxHrChatListDO chatRoomDO = hrDBDao.getChatRoom(queryUtil);
             if (chatRoomDO != null) {
