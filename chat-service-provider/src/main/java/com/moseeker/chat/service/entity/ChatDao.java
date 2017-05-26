@@ -667,6 +667,7 @@ public class ChatDao {
                         break;
                     default:
                 }
+                logger.info("ChatDao addUnreadCount hrChatUnreadCountDO:",hrChatUnreadCountDO);
                 hrChatUnreadCountDO = hrDBDao.updateChatUnreadCount(hrChatUnreadCountDO);
             }
             return hrChatUnreadCountDO;
@@ -685,6 +686,7 @@ public class ChatDao {
     }
 
     public void addChatTOChatRoom(HrWxHrChatDO chatDO) {
+        logger.info("ChatDao addChatTOChatRoom chatDO:",chatDO);
         QueryUtil queryUtil = new QueryUtil();
         queryUtil.addEqualFilter("id", chatDO.getId());
         try {
@@ -697,6 +699,7 @@ public class ChatDao {
                     chatRoomDO.setHrChatTime(chatDO.getCreateTime());
                     chatRoomDO.setHrUnreadCount(chatRoomDO.getHrUnreadCount()+1);
                 }
+                logger.info("ChatDao addChatTOChatRoom chatRoomDO:",chatRoomDO);
                 hrDBDao.updateChatRoom(chatRoomDO);
             }
         } catch (TException e) {
