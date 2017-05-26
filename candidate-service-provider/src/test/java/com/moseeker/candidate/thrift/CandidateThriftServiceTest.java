@@ -41,7 +41,7 @@ public class CandidateThriftServiceTest {
      */
     //@Test
     public void testGlancePosition() throws Exception {
-        candidateService.glancePosition(3870, 164107, 892);
+        candidateService.glancePosition(3502, 24443, 701);
     }
     
 //    @Test

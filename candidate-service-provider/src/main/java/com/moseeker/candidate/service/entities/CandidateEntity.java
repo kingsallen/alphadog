@@ -88,7 +88,7 @@ public class CandidateEntity implements Candidate {
                     boolean fromEmployee = false;       //是否是员工转发
                     if(shareChainDO != null) {
                         UserEmployeeDO employeeDO = CandidateDBDao.getEmployee(shareChainDO.getRootRecomUserId());
-                        if(employeeDO != null) {
+                        if(employeeDO != null && employeeDO.getId() > 0) {
                             fromEmployee = true;
                         }
                     }
@@ -103,8 +103,6 @@ public class CandidateEntity implements Candidate {
                     String date = new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS");
                     Optional<CandidatePositionDO> cp = CandidateDBDao.getCandidatePosition(positionID, userID);
 
-
-
                     if(cp.isPresent()) {
                         cp.get().setViewNumber(cp.get().getViewNumber()+1);
                         cp.get().setSharedFromEmployee(fromEmployee?(byte)1:0);
@@ -113,7 +111,7 @@ public class CandidateEntity implements Candidate {
                         Optional<CandidateCompanyDO> candidateCompanyDOOptional = CandidateDBDao.getCandidateCompanyByUserIDCompanyID(userID, jobPositionDO.getCompanyId());
                         CandidateCompanyDO candidateCompanyDO = null;
                         if(!candidateCompanyDOOptional.isPresent()) {
-                            candidateCompanyDO = candidateCompanyDOOptional.get();
+                            candidateCompanyDO = new CandidateCompanyDO();
                             candidateCompanyDO.setCompanyId(jobPositionDO.getCompanyId());
                             candidateCompanyDO.setNickname(userUserDO.getNickname());
                             candidateCompanyDO.setHeadimgurl(userUserDO.getHeadimg());
