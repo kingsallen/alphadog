@@ -10,10 +10,8 @@ sourceCompatibility = 1.8
 dependencies {
     compile deps["mysql-connector-java"]
     compile deps["libthrift"]
-    compile deps['jooq']
-    compile deps['jooq-codegen']
-    compile deps['jooq-meta']
     compile deps["slf4j-log4j12"]
+    compile  fileTree(dir:'../libs',include:'jooq*.jar')
     testCompile deps["junit"]
 }
 
