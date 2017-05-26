@@ -11,7 +11,6 @@ task copyJars(type: Copy) {
 dependencies {
     compile project(":thrift-jooq")
     compile deps["junit"]
-    compile deps["mockito"]
     compile deps["slf4j-log4j12"]
     compile deps["httpcore"]
     compile deps["joda-time"]

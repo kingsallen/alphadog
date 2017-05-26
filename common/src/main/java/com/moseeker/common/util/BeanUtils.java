@@ -3,17 +3,8 @@ package com.moseeker.common.util;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.PropertyFilter;
 import com.alibaba.fastjson.serializer.ValueFilter;
-import org.apache.thrift.TBase;
-import org.jooq.Record;
-import org.jooq.impl.UpdatableRecordImpl;
-import org.jooq.types.UByte;
-import org.jooq.types.UInteger;
-import org.jooq.types.ULong;
-import org.jooq.types.UShort;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -22,6 +13,17 @@ import java.text.ParseException;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+import org.apache.thrift.TBase;
+import org.apache.thrift.TException;
+import org.apache.thrift.TSerializer;
+import org.apache.thrift.protocol.TSimpleJSONProtocol;
+import org.jooq.Record;
+import org.jooq.types.UByte;
+import org.jooq.types.UInteger;
+import org.jooq.types.ULong;
+import org.jooq.types.UShort;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 利用反射的方式，对于get,set方法去除"get"和"set"剔除后相同,并且数据类型相同，
@@ -1231,6 +1233,31 @@ public class BeanUtils {
         }
         return iface;
     }
+
+    /**
+     * Convert the generic TBase<?, ?> entity to JSON object.
+     *
+     * @param tobj
+     * @return
+     * @author Allex Wang
+     */
+    public static String convertStructToJSON(final TBase<?, ?> tobj) throws TException {
+        TSerializer serializer = new TSerializer(new TSimpleJSONProtocol.Factory());
+        return serializer.toString(tobj, "utf8");
+    }
+
+    public static final PropertyFilter profilter = new PropertyFilter() {
+
+        @Override
+        public boolean apply(Object object, String name, Object value) {
+            if (name.startsWith("set")) {
+                return false;
+            }
+            return true;
+        }
+
+    };
+
 
     public static final ValueFilter jooqMapfilter = (object, name, value) -> {
         if (value instanceof UInteger) {

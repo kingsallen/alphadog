@@ -21,14 +21,13 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 /**
  * Created by jack on 09/03/2017.
@@ -62,6 +61,9 @@ public class ChatDao {
     @Autowired
     JobPositionDao jobPositionDao;
 
+    @Autowired
+
+
     ThreadPool threadPool = ThreadPool.Instance;
 
     /**
@@ -78,11 +80,13 @@ public class ChatDao {
         switch (type) {
             case HR:
                 queryUtil.addSelectAttribute("user_unread_count").addSelectAttribute("hr_unread_count").addSelectAttribute("user_id");
+                queryUtil.orderBy("hr_have_unread_msg,wx_chat_time");
                 queryUtil.addEqualFilter("hr_id", id);
                 queryUtil.orderBy("hr_unread_count", Order.DESC).orderBy("room_id", Order.DESC);
                 break;
             case USER:
                 queryUtil.addSelectAttribute("user_unread_count").addSelectAttribute("hr_unread_count").addSelectAttribute("hr_id");
+                queryUtil.orderBy("user_have_unread_msg,hr_chat_time");
                 queryUtil.addEqualFilter("user_id", id);
                 queryUtil.orderBy("user_unread_count", Order.DESC).orderBy("room_id", Order.DESC);
                 break;
@@ -328,7 +332,12 @@ public class ChatDao {
      * @return 聊天记录
      */
     public HrWxHrChatDO saveChat(HrWxHrChatDO chatDO) {
-        return hrWxHrChatDao.addData(chatDO);
+        try {
+            return hrWxHrChatDao.addData(chatDO);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return null;
+        }
     }
 
     /**
@@ -504,5 +513,95 @@ public class ChatDao {
 
     public HrChatUnreadCountDO saveUnreadCount(HrChatUnreadCountDO unreadCountDO) {
         return hrChatUnreadCountDao.addData(unreadCountDO);
+    }
+
+    /**
+     * 清空C端账号未读消息
+     * @param chatRoomId
+     * @param hrId
+     * @param userId
+     * @return
+     */
+    public HrChatUnreadCountDO clearUserUnreadCount(int chatRoomId, int hrId, int userId) {
+        QueryUtil queryUtil = new QueryUtil();
+        queryUtil.addEqualFilter("room_id", chatRoomId);
+        try {
+            HrChatUnreadCountDO hrChatUnreadCountDO =  hrChatUnreadCountDao.getData(queryUtil);
+            HrWxHrChatListDO chatRoom = new HrWxHrChatListDO();
+            chatRoom.setId(chatRoomId);
+            chatRoom.setUserUnreadCount(0);
+            hrWxHrChatListDao.updateData(chatRoom);
+            if(hrChatUnreadCountDO.getRoomId() > 0) {
+                hrChatUnreadCountDO.setUserHaveUnreadMsg((byte)0);
+                hrChatUnreadCountDao.updateData(hrChatUnreadCountDO);
+            } else {
+                hrChatUnreadCountDO.setRoomId(chatRoomId);
+                hrChatUnreadCountDO.setHrId(hrId);
+                hrChatUnreadCountDO.setUserId(userId);
+                hrChatUnreadCountDO.setUserHaveUnreadMsg((byte)0);
+                hrChatUnreadCountDO = hrChatUnreadCountDao.addData(hrChatUnreadCountDO);
+            }
+            return hrChatUnreadCountDO;
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return null;
+        }
+    }
+
+    public HrChatUnreadCountDO addUnreadCount(int roomId, byte speaker, String date) {
+        QueryUtil queryUtil = new QueryUtil();
+        queryUtil.addEqualFilter("room_id", roomId);
+        try {
+            HrChatUnreadCountDO hrChatUnreadCountDO =  hrChatUnreadCountDao.getData(queryUtil);
+
+            if(hrChatUnreadCountDO.getRoomId() > 0) {
+                switch (speaker) {
+                    case 1:
+                        hrChatUnreadCountDO.setHrChatTime(date);
+                        hrChatUnreadCountDO.setHrHaveUnreadMsg((byte)1);
+                        hrChatUnreadCountDO.setUserUnreadCount(hrChatUnreadCountDO.getUserUnreadCount()+1);
+                        break;
+                    case 0:
+                        hrChatUnreadCountDO.setWxChatTime(date);
+                        hrChatUnreadCountDO.setUserHaveUnreadMsg((byte)1);
+                        hrChatUnreadCountDO.setHrUnreadCount(hrChatUnreadCountDO.getHrUnreadCount()+1);
+                        break;
+                    default:
+                }
+                hrChatUnreadCountDao.updateData(hrChatUnreadCountDO);
+            }
+            return hrChatUnreadCountDO;
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return null;
+        }
+    }
+
+    public void updateChatUnreadCount(HrChatUnreadCountDO hrChatUnreadCountDO) {
+        try {
+            hrChatUnreadCountDao.updateData(hrChatUnreadCountDO);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+    public void addChatTOChatRoom(HrWxHrChatDO chatDO) {
+        QueryUtil queryUtil = new QueryUtil();
+        queryUtil.addEqualFilter("id", chatDO.getId());
+        try {
+            HrWxHrChatListDO chatRoomDO = hrWxHrChatListDao.getData(queryUtil);
+            if (chatRoomDO != null) {
+                if (chatDO.getSpeaker() == 0) {
+                    chatRoomDO.setWxChatTime(chatDO.getCreateTime());
+                    chatRoomDO.setUserUnreadCount(chatRoomDO.getUserUnreadCount()+1);
+                } else {
+                    chatRoomDO.setHrChatTime(chatDO.getCreateTime());
+                    chatRoomDO.setHrUnreadCount(chatRoomDO.getHrUnreadCount()+1);
+                }
+                hrWxHrChatListDao.updateData(chatRoomDO);
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
     }
 }

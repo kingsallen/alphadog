@@ -2,6 +2,8 @@ package com.moseeker.common.constants;
 
 public final class ConstantErrorCodeMessage {
 
+    public static final String SUCCESS = "{'status':0, 'message':'success'}";
+
     // 系统共通ERRCODE说明定义 9字头
     public static final String PROGRAM_EXHAUSTED = "{'status':-1,'message':'系统繁忙，请稍候再试!'}";
     public static final String PROGRAM_EXCEPTION = "{'status':99999 ,'message':'发生异常，请稍候再试!'}";
@@ -75,9 +77,11 @@ public final class ConstantErrorCodeMessage {
     public static final String APPLICATION_USER_INVALID = "{'status':41006,'message':'申请人是无法校验的用户!'}";
 
     //HR帐号
-    public static final String HRACCOUNT_ALREADY_BOUND = "{'status':42001,'message':'帐号已经绑定！'}";
+    public static final String HRACCOUNT_ALREADY_BOUND = "{'status':42001,'message':'该帐号已被其他人绑定！'}";
     public static final String HRACCOUNT_ELLEGLE_DATA = "{'status':42002,'message':'数据格式错误！'}";
     public static final String HRACCOUNT_BINDING = "{'status':42003,'message':'绑定中！'}";
+    public static final String HRACCOUNT_BINDING_TIMEOUT = "{'status':42004,'message':'绑定超时！'}";
+    public static final String HRACCOUNT_BINDING_LIMIT = "{'status':42005,'message':'无法绑定更多的账号了！'}";
 
     public static final String THIRD_PARTY_POSITION_UPSERT_FAILED = "{'status':42004,'message':'添加或者修改操作失败！'}";
 
@@ -94,7 +98,7 @@ public final class ConstantErrorCodeMessage {
     public static final String POSTION_COMPANY_DEPARTMENTI_PARAMETER_BLANK = "{'status':51010,'message':'未设置部门名'}";
     public static final String POSITION_JOBPOSITION_REQUIREMENT_BLANK = "{'status':51011,'message':'职位要求不能为空'}";
     public static final String POSITION_JOBPOSITION_COMPANY_ID_BLANK = "{'status':51012,'message':'未找到该公司'}";
-    public static final String POSITION_DATA_OCCUPATION_ERROR = "{'status':51013,'message':'该职位职能信息设置错误'}";
+    public static final String POSITION_DATA_OCCUPATION_ERROR = "{'status':51013,'message':'该职位职能信息设置错误,未设置的职能为:{MESSAGE}'}";
     // 工具类错误
     public static final String USER_SMS_LIMITED = "{'status':80001,'message':'短信发送异常!'}";
 }

@@ -37,7 +37,7 @@ public class DefaultCatalog extends CatalogImpl {
     /**
      * The schema <code>profiledb</code>.
      */
-    public final Profiledb PROFILEDB = com.moseeker.baseorm.db.profiledb.Profiledb.PROFILEDB;
+    public final Profiledb PROFILEDB = Profiledb.PROFILEDB;
 
     /**
      * No further instances allowed

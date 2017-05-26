@@ -2,6 +2,7 @@ package com.moseeker.mq.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -27,6 +28,7 @@ public class MandrillEmailProducer {
 	 * 
 	 * @return
 	 */
+	@CounterIface
 	public Response queueEmail(MandrillEmailStruct mandrillEmailStruct) {
 		try {
 			// 参数校验

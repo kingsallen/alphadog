@@ -17,6 +17,7 @@ public class SearchengineServer {
 			AnnotationConfigApplicationContext acac = initSpring();
 			MoServer server=new MoServer(acac,"",acac.getBean(SearchengineServiceImpl.class));
 			server.startServer();
+			server.shutDownHook();
 			synchronized (SearchengineServer.class) {
 				while (true) {
 					try {

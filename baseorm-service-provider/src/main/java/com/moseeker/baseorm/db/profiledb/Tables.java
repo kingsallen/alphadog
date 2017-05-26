@@ -42,90 +42,90 @@ public class Tables {
     /**
      * Profile的简历附件
      */
-    public static final ProfileAttachment PROFILE_ATTACHMENT = com.moseeker.baseorm.db.profiledb.tables.ProfileAttachment.PROFILE_ATTACHMENT;
+    public static final ProfileAttachment PROFILE_ATTACHMENT = ProfileAttachment.PROFILE_ATTACHMENT;
 
     /**
      * Profile的获得奖项表
      */
-    public static final ProfileAwards PROFILE_AWARDS = com.moseeker.baseorm.db.profiledb.tables.ProfileAwards.PROFILE_AWARDS;
+    public static final ProfileAwards PROFILE_AWARDS = ProfileAwards.PROFILE_AWARDS;
 
     /**
      * 用户profile基础个人信息表
      */
-    public static final ProfileBasic PROFILE_BASIC = com.moseeker.baseorm.db.profiledb.tables.ProfileBasic.PROFILE_BASIC;
+    public static final ProfileBasic PROFILE_BASIC = ProfileBasic.PROFILE_BASIC;
 
     /**
      * profile各个部分完成度表
      */
-    public static final ProfileCompleteness PROFILE_COMPLETENESS = com.moseeker.baseorm.db.profiledb.tables.ProfileCompleteness.PROFILE_COMPLETENESS;
+    public static final ProfileCompleteness PROFILE_COMPLETENESS = ProfileCompleteness.PROFILE_COMPLETENESS;
 
     /**
      * Profile的证书表
      */
-    public static final ProfileCredentials PROFILE_CREDENTIALS = com.moseeker.baseorm.db.profiledb.tables.ProfileCredentials.PROFILE_CREDENTIALS;
+    public static final ProfileCredentials PROFILE_CREDENTIALS = ProfileCredentials.PROFILE_CREDENTIALS;
 
     /**
      * Profile的教育经历
      */
-    public static final ProfileEducation PROFILE_EDUCATION = com.moseeker.baseorm.db.profiledb.tables.ProfileEducation.PROFILE_EDUCATION;
+    public static final ProfileEducation PROFILE_EDUCATION = ProfileEducation.PROFILE_EDUCATION;
 
     /**
      * 用户profile导入记录信息
      */
-    public static final ProfileImport PROFILE_IMPORT = com.moseeker.baseorm.db.profiledb.tables.ProfileImport.PROFILE_IMPORT;
+    public static final ProfileImport PROFILE_IMPORT = ProfileImport.PROFILE_IMPORT;
 
     /**
      * Profile的求职意向
      */
-    public static final ProfileIntention PROFILE_INTENTION = com.moseeker.baseorm.db.profiledb.tables.ProfileIntention.PROFILE_INTENTION;
+    public static final ProfileIntention PROFILE_INTENTION = ProfileIntention.PROFILE_INTENTION;
 
     /**
      * Profile的求职意向-期望城市关系表
      */
-    public static final ProfileIntentionCity PROFILE_INTENTION_CITY = com.moseeker.baseorm.db.profiledb.tables.ProfileIntentionCity.PROFILE_INTENTION_CITY;
+    public static final ProfileIntentionCity PROFILE_INTENTION_CITY = ProfileIntentionCity.PROFILE_INTENTION_CITY;
 
     /**
      * Profile的求职意向-行业关系表
      */
-    public static final ProfileIntentionIndustry PROFILE_INTENTION_INDUSTRY = com.moseeker.baseorm.db.profiledb.tables.ProfileIntentionIndustry.PROFILE_INTENTION_INDUSTRY;
+    public static final ProfileIntentionIndustry PROFILE_INTENTION_INDUSTRY = ProfileIntentionIndustry.PROFILE_INTENTION_INDUSTRY;
 
     /**
      * Profile的求职意向-职能关系表
      */
-    public static final ProfileIntentionPosition PROFILE_INTENTION_POSITION = com.moseeker.baseorm.db.profiledb.tables.ProfileIntentionPosition.PROFILE_INTENTION_POSITION;
+    public static final ProfileIntentionPosition PROFILE_INTENTION_POSITION = ProfileIntentionPosition.PROFILE_INTENTION_POSITION;
 
     /**
      * Profile的语言
      */
-    public static final ProfileLanguage PROFILE_LANGUAGE = com.moseeker.baseorm.db.profiledb.tables.ProfileLanguage.PROFILE_LANGUAGE;
+    public static final ProfileLanguage PROFILE_LANGUAGE = ProfileLanguage.PROFILE_LANGUAGE;
 
     /**
      * 用户profile导入记录信息
      */
-    public static final ProfileOther PROFILE_OTHER = com.moseeker.baseorm.db.profiledb.tables.ProfileOther.PROFILE_OTHER;
+    public static final ProfileOther PROFILE_OTHER = ProfileOther.PROFILE_OTHER;
 
     /**
      * 用户profile表
      */
-    public static final ProfileProfile PROFILE_PROFILE = com.moseeker.baseorm.db.profiledb.tables.ProfileProfile.PROFILE_PROFILE;
+    public static final ProfileProfile PROFILE_PROFILE = ProfileProfile.PROFILE_PROFILE;
 
     /**
      * Profile的项目经验
      */
-    public static final ProfileProjectexp PROFILE_PROJECTEXP = com.moseeker.baseorm.db.profiledb.tables.ProfileProjectexp.PROFILE_PROJECTEXP;
+    public static final ProfileProjectexp PROFILE_PROJECTEXP = ProfileProjectexp.PROFILE_PROJECTEXP;
 
     /**
      * Profile的技能
      */
-    public static final ProfileSkill PROFILE_SKILL = com.moseeker.baseorm.db.profiledb.tables.ProfileSkill.PROFILE_SKILL;
+    public static final ProfileSkill PROFILE_SKILL = ProfileSkill.PROFILE_SKILL;
 
     /**
      * Profile的工作经历
      */
-    public static final ProfileWorkexp PROFILE_WORKEXP = com.moseeker.baseorm.db.profiledb.tables.ProfileWorkexp.PROFILE_WORKEXP;
+    public static final ProfileWorkexp PROFILE_WORKEXP = ProfileWorkexp.PROFILE_WORKEXP;
 
     /**
      * Profile的个人作品
      */
-    public static final ProfileWorks PROFILE_WORKS = com.moseeker.baseorm.db.profiledb.tables.ProfileWorks.PROFILE_WORKS;
+    public static final ProfileWorks PROFILE_WORKS = ProfileWorks.PROFILE_WORKS;
 }

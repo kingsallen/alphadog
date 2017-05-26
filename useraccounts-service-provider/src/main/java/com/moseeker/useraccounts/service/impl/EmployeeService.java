@@ -75,7 +75,7 @@ public class EmployeeService {
     private HrCompanyDao companyDao;
 
     @Autowired
-    private HRCompanyConfDao hrCompanyConfDao;
+    private HrCompanyConfDao hrCompanyConfDao;
 
     @Autowired
     private HrWxWechatDao hrWxWechatDao;
@@ -652,6 +652,7 @@ public class EmployeeService {
 				BindingParams bindingParams = JSONObject.parseObject(value, BindingParams.class);
 				response = updateEmployee(bindingParams, Integer.valueOf(employeeId));
 				if (response.success) {
+				    response.setEmployeeId(Integer.valueOf(employeeId));
 					client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, employeeId);
 				}
 			}
@@ -694,10 +695,11 @@ public class EmployeeService {
 		int wxUserId = 0;
 		try {
             com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO wxUserDO = wxUserDao.getData(query);
-            wxUserId = wxUserDO.getId();
-		} catch (Exception e1) {
-			log.error(e1.getMessage(), e1);
+            wxUserId = (int)wxUserDO.getId();
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
 		}
 		return wxUserId;
 	}
+
 }

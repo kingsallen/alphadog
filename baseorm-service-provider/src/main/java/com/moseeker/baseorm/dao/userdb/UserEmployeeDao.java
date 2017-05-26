@@ -6,19 +6,18 @@ import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.query.Query;
-import com.moseeker.common.util.query.Query.QueryBuilder;
 import com.moseeker.thrift.gen.dao.struct.UserEmployeeDO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Result;
 import org.jooq.SelectJoinStep;
+import static org.jooq.impl.DSL.sum;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import static org.jooq.impl.DSL.sum;
 
 @Repository
 public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRecord> {
@@ -51,7 +50,8 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
         List<UserEmployeeRecord> list = new ArrayList<UserEmployeeRecord>();
         SelectJoinStep<Record> table = create.select().from(UserEmployee.USER_EMPLOYEE);
         table.where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId))
-                .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte) 0));
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte) 0))
+                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte)0));
         Result<Record> result = table.fetch();
         if (result != null && result.size() > 0) {
             for (Record r : result) {

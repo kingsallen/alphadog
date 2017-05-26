@@ -2,10 +2,25 @@ package com.moseeker.useraccounts.service.impl;
 
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
+import com.moseeker.baseorm.dao.userdb.UserSearchConditionDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrSearchConditionRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.common.util.query.Condition;
+import com.moseeker.common.util.query.ValueOp;
+import java.util.*;
+import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
+import com.moseeker.thrift.gen.foundation.chaos.struct.ThirdPartyAccountStruct;
+import com.moseeker.useraccounts.constant.BindingStatus;
+import com.moseeker.useraccounts.constant.ResultMessage;
+import org.apache.thrift.TException;
+import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.annotation.notify.UpdateEs;
 import com.moseeker.common.constants.Constant;
@@ -21,7 +36,6 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrTalentpoolDO;
 import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
-import com.moseeker.thrift.gen.foundation.passport.service.HRAccountFoundationServices;
 import com.moseeker.thrift.gen.useraccounts.struct.BindAccountStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.DownloadReport;
 import com.moseeker.thrift.gen.useraccounts.struct.SearchCondition;
@@ -31,11 +45,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
-import org.apache.thrift.TException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,9 +64,6 @@ public class UserHrAccountService {
 
     ChaosServices.Iface chaosService = ServiceManager.SERVICEMANAGER.getService(ChaosServices.Iface.class);
 
-    HRAccountFoundationServices.Iface hrAccountService = ServiceManager.SERVICEMANAGER
-            .getService(HRAccountFoundationServices.Iface.class);
-
 
     @Autowired
     private UserHrAccountDao userHrAccountDao;
@@ -73,6 +79,12 @@ public class UserHrAccountService {
 
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
+
+    @Autowired
+    private HRThirdPartyAccountDao hrThirdPartyAccountDao;
+
+    @Autowired
+    private UserSearchConditionDao searchConditionDao;
 
     /**
      * HR在下载行业报告是注册
@@ -153,8 +165,6 @@ public class UserHrAccountService {
                 }
                 if (result > 0) {
                     return ResponseUtils.success(new HashMap<String, Object>() {
-                        private static final long serialVersionUID = -496268769759269821L;
-
                         {
                             put("userHrAccountId", result);
                         }
@@ -284,31 +294,37 @@ public class UserHrAccountService {
     public Response bindThirdAccount(BindAccountStruct account) {
         try {
             logger.info("-------bindThirdAccount--------");
-            logger.info("bindThirdAccount");
             // 判断是否需要进行帐号绑定
-            if (account.getCompany_id() == 0 && account.getUser_id() != 0) {
+            UserHrAccount userHrAccount;
+            if (account.getUser_id() != 0) {
                 Query.QueryBuilder qu = new Query.QueryBuilder();
                 qu.where("id", String.valueOf(account.getUser_id()));
-                logger.info("search third party account");
-                account.setCompany_id(userHrAccountDao.getRecord(qu.buildQuery()).getCompanyId());
-            }
-            logger.info("search allowBind");
-            Response allowBindResponse = hrAccountService.allowBind(account.getUser_id(), account.getCompany_id(),
-                    account.getChannel());
-            if (allowBindResponse.getStatus() == 0) {
-                logger.info("bindThirdAccount have permission");
-                // 请求chaos，获取点数
-                Response response = chaosService.binding(account.getUsername(), account.getPassword(),
-                        account.getMember_name(), account.getChannel());
-                if (response.getStatus() == 0) {
-                    int remainNum = Integer.valueOf(response.getData());
-                    account.setRemainNum(remainNum);
-                    return hrAccountService.createThirdPartyAccount(account);
+                userHrAccount = userHrAccountDao.getData(qu.buildQuery(), UserHrAccount.class);
+                if (userHrAccount != null && userHrAccount.getId() > 0) {
+                    logger.info("thirdPartyAccount: {}", userHrAccount);
+                    account.setCompany_id((int)userHrAccount.getCompany_id());
+                    Response allowBindResponse = allowBind(userHrAccount, account.getChannel(), account.getUsername());
+                    if (allowBindResponse.getStatus() == 0) {
+                        logger.info("bindThirdAccount have permission");
+                        Response response = chaosService.binding(account.getUsername(), account.getPassword(), account.getMember_name(), account.getChannel());
+                        if (response.getStatus() == 0) {
+                            JSONObject data = JSONObject.parseObject(response.getData());
+                            account.setRemainNum(data.getIntValue("remain_number"));
+                            account.setRemainProfileNum(data.getIntValue("resume_number"));
+                            return addThirdPartyAccount((int) userHrAccount.getId(), account);
+                        } else {
+                            return response;
+                        }
+                    } else {
+                        return allowBindResponse;
+                    }
                 } else {
-                    return response;
+                    //没有找到该hr账号
+                    return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
                 }
             } else {
-                return allowBindResponse;
+                //没有HR ID
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
             }
 
         } catch (TException e) {
@@ -558,4 +574,194 @@ public class UserHrAccountService {
     }
 
 
+    /**
+     * 同步第三方职位信息
+     *
+     * @param id
+     * @return
+     */
+    public Response synchronizeThirdpartyAccount(int id) {
+        long startMethodTime = System.currentTimeMillis();
+        //查找第三方帐号
+        Query.QueryBuilder qu = new Query.QueryBuilder();
+        qu.where("id", String.valueOf(id));
+        try {
+            long startGetAccountData = System.currentTimeMillis();
+            ThirdPartAccountData data = hrThirdPartyAccountDao.getData(qu.buildQuery(), ThirdPartAccountData.class);
+            long getAccountUseTime = System.currentTimeMillis() - startGetAccountData;
+            logger.info("ThirdPartAccountData in CompanyService use  time========== " + getAccountUseTime);
+            //如果是绑定状态，则进行
+            //判断是否已经判定第三方帐号
+            if (data != null && data.getId() > 0 && data.getBinding() == BindingStatus.BOUND.getValue()) {
+                ThirdPartyAccountStruct thirdPartyAccount = new ThirdPartyAccountStruct();
+                thirdPartyAccount.setChannel((byte) data.getChannel());
+                thirdPartyAccount.setMemberName(data.getMembername());
+                thirdPartyAccount.setUsername(data.getUsername());
+                thirdPartyAccount.setPassword(data.getPassword());
+                //获取剩余点数
+                long startRemindTime = System.currentTimeMillis();
+                ThirdPartyAccountStruct synchronizeResult = chaosService.synchronization(thirdPartyAccount);
+                long getRemindUseTime = System.currentTimeMillis() - startRemindTime;
+                logger.info("get reminds in CompanyService Use time============== " + getRemindUseTime);
+                if (synchronizeResult != null && synchronizeResult.getStatus() == 0) {
+                    BindAccountStruct thirdPartyAccount1 = new BindAccountStruct();
+                    thirdPartyAccount1.setBinding(1);
+                    thirdPartyAccount1.setChannel((byte) data.getChannel());
+                    thirdPartyAccount1.setCompany_id(data.getCompany_id());
+                    thirdPartyAccount1.setMember_name(data.getMembername());
+                    thirdPartyAccount1.setPassword(data.getPassword());
+                    thirdPartyAccount1.setUsername(data.getUsername());
+                    thirdPartyAccount1.setRemainNum(synchronizeResult.getRemainNum());
+                    thirdPartyAccount1.setRemainProfileNum(synchronizeResult.getRemainProfileNum());
+                    //更新第三方帐号信息
+                    long startUpdateTime = System.currentTimeMillis();
+                    Response response = hrThirdPartyAccountDao.updateThirdPartyAccount(id, thirdPartyAccount1);
+                    long updateUseTime = System.currentTimeMillis() - startUpdateTime;
+                    logger.info("update ThirdPartyAccount in CompanyService use time" + updateUseTime);
+                    if (response.getStatus() == 0) {
+                        HashMap<String, Object> result = new HashMap<>();
+                        result.put("remain_num", synchronizeResult.getRemainNum());
+                        result.put("remain_profile_num", synchronizeResult.getRemainProfileNum());
+                        result.put("sync_time", (new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
+                        return ResultMessage.SUCCESS.toResponse(result);
+                    } else {
+                        return ResultMessage.THIRD_PARTY_ACCOUNT_SYNC_FAILED.toResponse();
+                    }
+                } else if (synchronizeResult != null) {
+                    Response response = new Response();
+                    response.setStatus(1);
+                    if (synchronizeResult.getStatus() == 1) {
+                        response.setMessage("账号或者密码错误！");
+                    } else if (synchronizeResult.getStatus() == 2) {
+                        response.setMessage("刷新超时，请稍后重试！");
+                    } else if (synchronizeResult.getStatus() == 3) {
+                        response.setMessage("刷新失败，请稍后重试！");
+                    } else if (synchronizeResult.getStatus() == 4) {
+                        response.setMessage("刷新失败，请稍后重试！");
+                    } else {
+                        response.setMessage("发生异常，请稍后重试！");
+                    }
+                    return response;
+                } else {
+                    return ResultMessage.THIRD_PARTY_ACCOUNT_SYNC_FAILED.toResponse();
+                }
+            } else {
+                return ResultMessage.THIRD_PARTY_ACCOUNT_UNBOUND.toResponse();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            return ResultMessage.PROGRAM_EXCEPTION.toResponse();
+        } finally {
+            //do nothing
+            long methodUseTime = System.currentTimeMillis() - startMethodTime;
+            logger.info("synchronizeThirdpartyAccount method in CompanyService use time ============" + methodUseTime);
+        }
+    }
+
+    /**
+     * 判断是否有权限发布职位
+     *
+     * @param companyId 公司编号
+     * @param channel   渠道号
+     * @return
+     */
+    public Response ifSynchronizePosition(int companyId, int channel) {
+        Response response = ResultMessage.PROGRAM_EXHAUSTED.toResponse();
+        Query.QueryBuilder qu = new Query.QueryBuilder();
+        qu.where("company_id", String.valueOf(companyId)).and("channel", String.valueOf(channel));
+        try {
+            ThirdPartAccountData data = hrThirdPartyAccountDao.getData(qu.buildQuery(), ThirdPartAccountData.class);
+            if (data.getId() == 0 || data.getBinding() != 1) {
+                response = ResultMessage.THIRD_PARTY_ACCOUNT_UNBOUND.toResponse();
+            }
+            if (data.getRemain_num() == 0) {
+                response = ResultMessage.THIRD_PARTY_ACCOUNT_HAVE_NO_REMAIN_NUM.toResponse();
+            }
+            if (data.getId() > 0 && data.binding == 1 && data.getRemain_num() > 0) {
+                response = ResultMessage.SUCCESS.toResponse();
+            } else {
+                response = ResultMessage.THIRD_PARTY_ACCOUNT_UNBOUND.toResponse();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            response = ResultMessage.PROGRAM_EXHAUSTED.toResponse();
+            logger.error(e.getMessage(), e);
+        } finally {
+            //do nothing
+        }
+        return response;
+    }
+
+    /**
+     * 是否允许执行绑定
+     */
+    @CounterIface
+    public Response allowBind(UserHrAccount user, byte channelType, String username) {
+        try {
+
+            //主账号或者没有绑定第三方账号，检查公司下该渠道已经绑定过相同的第三方账号
+            Query.QueryBuilder qu = new Query.QueryBuilder();
+            qu.where("company_id", user.getCompany_id());
+            qu.and("channel", String.valueOf(channelType));
+            qu.and("username", username);
+            qu.and(new Condition("binding", Arrays.asList(1, 2), ValueOp.IN));//绑定中或者已经绑定
+            ThirdPartAccountData data = hrThirdPartyAccountDao.getData(qu.buildQuery(), ThirdPartAccountData.class);
+
+            if (data == null || data.getId() == 0) {
+                //检查该用户是否绑定了其它相同渠道的账号
+                ThirdPartAccountData thirdPartAccount = hrThirdPartyAccountDao.getThirdPartyAccountByUserId((int) user.getId(), channelType);
+                if (thirdPartAccount != null && thirdPartAccount.getId() > 0) {
+                    if (user.getAccount_type() == 0) {
+                        //如果主账号已经绑定该渠道第三方账号，那么绑定人为空,并允许绑定
+                        user.setId(0);
+                        return ResponseUtils.success(null);
+                    } else {
+                        //已经绑定该渠道第三方账号，并且不是主账号，那么不允许绑定
+                        return ResponseUtils.fail(ConstantErrorCodeMessage.HRACCOUNT_BINDING_LIMIT);
+                    }
+                } else {
+                    return ResponseUtils.success(null);
+                }
+            } else {
+                //公司下已经有人绑定了这个第三方账号，则这个公司谁都不能再绑定这个账号了
+                if (data.getBinding() == 1) {
+                    return ResponseUtils.fail(ConstantErrorCodeMessage.HRACCOUNT_ALREADY_BOUND);
+                } else if (data.getBinding() == 2) {
+                    return ResponseUtils.fail(ConstantErrorCodeMessage.HRACCOUNT_BINDING);
+                } else {
+                    return ResponseUtils.success(null);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+        } finally {
+            //do nothing
+        }
+    }
+
+    public Response addThirdPartyAccount(int userId, BindAccountStruct account) {
+
+        try {
+            return hrThirdPartyAccountDao.addThirdPartyAccount(userId, account);
+        } catch (TException e) {
+            e.printStackTrace();
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+        } finally {
+            //do nothing
+        }
+    }
+
+    public Response updateThirdPartyAccount(int accountId, BindAccountStruct account) {
+        try {
+            return hrThirdPartyAccountDao.updateThirdPartyAccount(accountId, account);
+        } catch (TException e) {
+            e.printStackTrace();
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+        } finally {
+            //do nothing
+        }
+    }
 }

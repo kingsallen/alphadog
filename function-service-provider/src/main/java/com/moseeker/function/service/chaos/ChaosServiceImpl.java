@@ -23,17 +23,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * 
- * 第三方渠道（比如51，智联）服务 
- * <p>Company: MoSeeker</P>  
- * <p>date: Nov 6, 2016</p>  
+ * 第三方渠道（比如51，智联）服务
+ * <p>Company: MoSeeker</P>
+ * <p>date: Nov 6, 2016</p>
  * <p>Email: wjf2255@gmail.com</p>
+ *
  * @author wjf
- * @version
  */
 @Service
 public class ChaosServiceImpl {
-	
+
 	Logger logger = LoggerFactory.getLogger(ChaosServiceImpl.class);
 
     @Resource(name = "cacheClient")
@@ -70,7 +69,7 @@ public class ChaosServiceImpl {
 		} catch (ConnectException e) {
 			e.printStackTrace();
 			logger.error(e.getMessage(), e);
-			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.HRACCOUNT_BINDING_TIMEOUT);
 		} finally {
 			//do nothing
 		}
@@ -98,12 +97,16 @@ public class ChaosServiceImpl {
 			String synchronizationURI = chnnelType.getRemain(domain);
 			String params = ChaosTool.getParams(thirdPartyAccount.getUsername(), thirdPartyAccount.getPassword(), thirdPartyAccount.getMemberName(), chnnelType);
 			try {
+                logger.info("ChaosServiceImpl refresh refreshURI:" + synchronizationURI);
 				String data = UrlUtil.sendPost(synchronizationURI, params, Constant.CONNECTION_TIME_OUT, Constant.READ_TIME_OUT);
-				//String data = "{\"status\":0,\"message\":\"success\", \"data\":100}";
+                logger.info("ChaosServiceImpl refresh params:" + params);
+                //String data = "{\"status\":0,\"message\":\"success\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
 				if(data != null) {
 					JSONObject result = JSON.parseObject(data);
 					if(result.getInteger("status") != null && result.getInteger("status") == 0) {
-						thirdPartyAccount.setRemainNum(result.getIntValue("data"));
+                        JSONObject successData = JSON.parseObject(result.getString("data"));
+                        thirdPartyAccount.setRemainNum(successData.getIntValue("remain_number"));
+                        thirdPartyAccount.setRemainProfileNum(successData.getIntValue("resume_number"));
 					} else {
 						thirdPartyAccount.setStatus(result.getInteger("status"));
 					}
@@ -149,7 +152,7 @@ public class ChaosServiceImpl {
 					
 					redisClient.lpush(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_QUEUE.toString(), positionJson);
 					if(second < 60*60*24) {
-						redisClient.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH.toString(), String.valueOf(position.getPosition_id()), String.valueOf(position.getChannel()), "1", 60*60*24-second);
+                        redisClient.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH.toString(), String.valueOf(position.getPosition_id()), position.getAccount_id(), "1", 60 * 60 * 24 - second);
 					}
 				}
 				return ResponseUtils.success(null);
@@ -167,20 +170,23 @@ public class ChaosServiceImpl {
 	}
 
 	public Response refreshPosition(ThirdPartyPositionForSynchronizationWithAccount position) {
+        logger.info("refreshPosition:redis:{}", JSON.toJSONString(position));
 		ThirdPartyPositionData p = new ThirdPartyPositionData();
 		try {
 			String positionJson = JSON.toJSONString(position);
 			redisClient.lpush(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH_QUEUE.toString(), positionJson);
+            logger.info("refreshPosition:redis:{}", position.getPosition_id());
 			p.setChannel(Byte.valueOf(position.getChannel()));
 			p.setPosition_id(Integer.valueOf(position.getPosition_id()));
 			p.setIs_refresh((byte)PositionRefreshType.refreshing.getValue());
 			p.setRefresh_time((new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
+            p.setAccount_id(position.getAccount_id());
             thirdpartyPositionDao.upsertThirdPartyPosition(p);
 			
 			DateTime dt = new DateTime();
 			int second = dt.getSecondOfDay();
 			if(second < 60*60*24) {
-				redisClient.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH.toString(), String.valueOf(position.getPosition_id()), String.valueOf(position.getChannel()), "1", 60*60*24-second);
+                redisClient.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH.toString(), String.valueOf(position.getPosition_id()), String.valueOf(position.getAccount_id()), "1", 60 * 60 * 24 - second);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

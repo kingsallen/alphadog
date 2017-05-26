@@ -45,6 +45,11 @@ public class ChatService {
     private static String AUTO_CONTENT_WITH_HR_NOTEXIST = "我是{companyName}HR，我可以推荐您或者您的朋友加入我们！";
     private static String AUTO_CONTENT_WITH_HR_EXIST = "我是{hrName}，{companyName}HR，我可以推荐您或者您的朋友加入我们！";
 
+    /** 聊天页面欢迎语 **/
+    private static String WELCOMES_CONTER = "亲爱的%s：\n" +
+            "\t仟寻终于等到你啦。你可以在这里直接联系企业的HR，也可以直接和仟寻互动哦。\n" +
+            "\t祝你早日找到心仪的公司，加入令人振奋的团队，再次在你的职业之旅上迈步前行！\n";
+
     /**
      * HR查找聊天室列表
      * //todo hr_chat_unread_count的初始化脚本和定时更新脚本
@@ -93,8 +98,7 @@ public class ChatService {
                                 .filter(chatRoom -> chatRoom.getId() == chatUnreadCountDO.getRoomId()).findFirst();
                         if(chatRoomDOOptional.isPresent()) {
                             hrChatRoomVO.setCreateTime(chatRoomDOOptional.get().getUpdateTime());
-                            int status = chatRoomDOOptional.get().getStatus();
-                            hrChatRoomVO.setStatus(status);
+                            hrChatRoomVO.setUnReadNum(chatRoomDOOptional.get().getHrUnreadCount());
                         }
                     }
                     /** 匹配用户名称和头像 */
@@ -151,6 +155,9 @@ public class ChatService {
                 int[] roomIdArray = chatUnreadCountDOlist.stream().mapToInt(chatUnreadCountDO -> chatUnreadCountDO.getRoomId()).toArray();
                 int[] hrIdArray = chatUnreadCountDOlist.stream().mapToInt(chatUnreadCountDO -> chatUnreadCountDO.getHrId()).toArray();
 
+                logger.info("roomIdArray:{}", roomIdArray);
+                logger.info("hrIdArray:{}", hrIdArray);
+
                 /** 异步查找聊天室内容，HR信息，HR所属的公司信息 */
                 Future chatRoomsFuture = pool.startTast(() -> chaoDao.listChatRoom(roomIdArray));
                 Future hrsFuture = pool.startTast(() -> chaoDao.listHr(hrIdArray));
@@ -169,9 +176,8 @@ public class ChatService {
                             Optional<HrWxHrChatListDO> chatRoomOptional = chatRooms.stream()
                                     .filter(chatRoom -> chatRoom.getId() == hrChatUnreadCountDO.getRoomId()).findFirst();
                             if(chatRoomOptional.isPresent()) {
-                                int status = chatRoomOptional.get().getStatus();
-                                userChatRoomVO.setStatus(status);
                                 userChatRoomVO.setCreateTime(chatRoomOptional.get().getUpdateTime());
+                                userChatRoomVO.setUnReadNum(chatRoomOptional.get().getUserUnreadCount());
                             }
                         }
 
@@ -212,6 +218,7 @@ public class ChatService {
                     } catch (InterruptedException | ExecutionException e) {
                         logger.error(e.getMessage(), e);
                     }
+                    logger.info("userChatRoomVO:{}", userChatRoomVO);
                     userChatRoomVOList.add(userChatRoomVO);
                 });
                 userChatRoomsVO.setRooms(userChatRoomVOList);
@@ -270,7 +277,7 @@ public class ChatService {
     }
 
     /**
-     * 添加聊天内容
+     * 添加聊天内容，并修改未读消息数量
      * @param roomId 聊天室编号
      * @param content 聊天内容
      * @param positionId 职位编号
@@ -287,10 +294,10 @@ public class ChatService {
         chatDO.setChatlistId(roomId);
         chaoDao.saveChat(chatDO);
 
-        HrWxHrChatListDO chatRoomDO = new HrWxHrChatListDO();
-        chatRoomDO.setId(roomId);
-        chatRoomDO.setUpdateTime(date);
-        chaoDao.updateChatRoom(chatRoomDO);
+        chaoDao.addChatTOChatRoom(chatDO);
+
+        //修改未读消息数量
+        pool.startTast(() -> chaoDao.addUnreadCount(roomId, speaker, date));
     }
 
     /**
@@ -299,14 +306,15 @@ public class ChatService {
      * 创建聊天室时，需要默认添加一条聊天内容，规则如下：
      *  1.如果HR的名称不存在，则存储 "我是{companyName}HR，我可以推荐您或者您的朋友加入我们！"
      *  2.如果HR的名称存在，则存储 "我是{hrName}，{companyName}HR，我可以推荐您或者您的朋友加入我们！"
+     *  默认是c端账号进入聊天室，需要清空聊天该聊天室的未读消息
      * @param userId 用户编号
      * @param hrId HR编号
      * @param positionId 职位编号
      * @param roomId 聊天室编号
      * @return ResultOfSaveRoomVO
      */
-    public ResultOfSaveRoomVO enterChatRoom(int userId, int hrId, int positionId, int roomId) {
-        logger.info("enterChatRoom userId:{} hrId:{}, positionId:{} roomId:{}", userId, hrId, positionId, roomId);
+    public ResultOfSaveRoomVO enterChatRoom(int userId, int hrId, int positionId, int roomId, final boolean is_gamma) {
+        logger.info("enterChatRoom userId:{} hrId:{}, positionId:{} roomId:{}, is_gamma:{}", userId, hrId, positionId, roomId, is_gamma);
         final ResultOfSaveRoomVO resultOfSaveRoomVO;
 
         HrWxHrChatListDO chatRoom = chaoDao.getChatRoom(roomId, userId, hrId);
@@ -317,24 +325,27 @@ public class ChatService {
             chatRoom.setCreateTime(createTime);
             chatRoom.setHraccountId(hrId);
             chatRoom.setSysuserId(userId);
-            chatRoom.setStatus((byte)0);
             chatRoom = chaoDao.saveChatRoom(chatRoom);
             chatDebut = true;
         }
+
         if(chatRoom != null) {
             resultOfSaveRoomVO = searchResult(chatRoom, positionId);
             if(chatDebut) {
-                pool.startTast(() -> createChat(resultOfSaveRoomVO));
+                pool.startTast(() -> createChat(resultOfSaveRoomVO, is_gamma));
                 resultOfSaveRoomVO.setChatDebut(chatDebut);
-
                 HrChatUnreadCountDO unreadCountDO = new HrChatUnreadCountDO();
                 unreadCountDO.setHrId(hrId);
                 unreadCountDO.setUserId(userId);
-                unreadCountDO.setHrUnreadCount(0);
-                unreadCountDO.setUserUnreadCount(1);
+                unreadCountDO.setHrHaveUnreadMsg((byte)0);
+                unreadCountDO.setUserHaveUnreadMsg((byte)1);
                 unreadCountDO.setRoomId(chatRoom.getId());
                 pool.startTast(() -> chaoDao.saveUnreadCount(unreadCountDO));
             }
+
+            //默认清空C端账号的未读消息
+            int chatRoomId = chatRoom.getId();
+            pool.startTast(() -> chaoDao.clearUserUnreadCount(chatRoomId, hrId, userId));
         } else {
             resultOfSaveRoomVO = new ResultOfSaveRoomVO();
         }
@@ -440,9 +451,9 @@ public class ChatService {
      * @param resultOfSaveRoomVO 进入聊天室返回的结果
      * @return 聊天记录
      */
-    private HrWxHrChatDO createChat(ResultOfSaveRoomVO resultOfSaveRoomVO) {
+    private HrWxHrChatDO createChat(ResultOfSaveRoomVO resultOfSaveRoomVO, boolean is_gamma) {
 
-        logger.info("createChat ResultOfSaveRoomVO:{}", resultOfSaveRoomVO);
+        logger.info("createChat ResultOfSaveRoomVO:{}, is_gamma:{}", resultOfSaveRoomVO, is_gamma);
         //1.如果HR的名称不存在，则存储 "我是{companyName}HR，我可以推荐您或者您的朋友加入我们！"
         //2.如果HR的名称存在，则存储 "我是{hrName}，{companyName}HR，我可以推荐您或者您的朋友加入我们！"
         HrWxHrChatDO chatDO = new HrWxHrChatDO();
@@ -451,12 +462,16 @@ public class ChatService {
         String createTime = new DateTime().toString("yyyy-MM-dd HH:mm:ss");
         chatDO.setCreateTime(createTime);
         String content;
-        if(resultOfSaveRoomVO.getHr() != null && resultOfSaveRoomVO.getPosition() != null) {
-            content = AUTO_CONTENT_WITH_HR_EXIST.replace("{hrName}", resultOfSaveRoomVO.getHr()
-                    .getHrName()).replace("{companyName}", resultOfSaveRoomVO.getPosition().getCompanyName());
+        if(is_gamma) {
+            content = String.format(WELCOMES_CONTER, resultOfSaveRoomVO.getUser().getUserName());
         } else {
-            content = AUTO_CONTENT_WITH_HR_NOTEXIST
-                    .replace("{companyName}", resultOfSaveRoomVO.getPosition().getCompanyName());
+            if(resultOfSaveRoomVO.getHr() != null && resultOfSaveRoomVO.getPosition() != null) {
+                content = AUTO_CONTENT_WITH_HR_EXIST.replace("{hrName}", resultOfSaveRoomVO.getHr()
+                        .getHrName()).replace("{companyName}", resultOfSaveRoomVO.getPosition().getCompanyName());
+            } else {
+                content = AUTO_CONTENT_WITH_HR_NOTEXIST
+                        .replace("{companyName}", resultOfSaveRoomVO.getPosition().getCompanyName());
+            }
         }
         chatDO.setContent(content);
         if(resultOfSaveRoomVO.getPosition() != null) {
@@ -587,12 +602,17 @@ public class ChatService {
         logger.debug("leaveChatRoom roomId:{} speaker:{}", roomId, speaker);
         HrWxHrChatListDO chatRoom = new HrWxHrChatListDO();
         chatRoom.setId(roomId);
-        String time = new DateTime().toString("yyyy-MM-dd HH:mm:ss");
+
+        HrChatUnreadCountDO hrChatUnreadCountDO = new HrChatUnreadCountDO();
+        hrChatUnreadCountDO.setRoomId(roomId);
         if(speaker == 0) {
-            chatRoom.setWxChatTime(time);
+            chatRoom.setUserUnreadCount(0);
+            hrChatUnreadCountDO.setUserHaveUnreadMsg((byte)0);
         } else {
-            chatRoom.setHrChatTime(time);
+            chatRoom.setHrUnreadCount(0);
+            hrChatUnreadCountDO.setHrHaveUnreadMsg((byte)0);
         }
         chaoDao.updateChatRoom(chatRoom);
+        chaoDao.updateChatUnreadCount(hrChatUnreadCountDO);
     }
 }

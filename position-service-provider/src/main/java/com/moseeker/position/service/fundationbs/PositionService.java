@@ -35,16 +35,55 @@ import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionExtRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
+<<<<<<< HEAD
 import com.moseeker.common.constants.*;
+=======
+import com.moseeker.common.constants.AccountSync;
+import com.moseeker.common.constants.AppId;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.constants.KeyIdentifier;
+import com.moseeker.common.constants.PositionSync;
+import com.moseeker.common.providerutils.QueryUtil;
+>>>>>>> feature/gamma_0.9
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.MD5Util;
+<<<<<<< HEAD
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.Query.QueryBuilder;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.position.pojo.*;
+=======
+import com.moseeker.db.dictdb.tables.records.DictCityPostcodeRecord;
+import com.moseeker.db.dictdb.tables.records.DictCityRecord;
+import com.moseeker.db.hrdb.tables.records.HrCompanyAccountRecord;
+import com.moseeker.db.hrdb.tables.records.HrTeamRecord;
+import com.moseeker.db.jobdb.tables.records.JobCustomRecord;
+import com.moseeker.db.jobdb.tables.records.JobOccupationRecord;
+import com.moseeker.db.jobdb.tables.records.JobOccupationRelRecord;
+import com.moseeker.db.jobdb.tables.records.JobPositionCityRecord;
+import com.moseeker.db.jobdb.tables.records.JobPositionExtRecord;
+import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
+import com.moseeker.position.dao.DictCityPostCodeDao;
+import com.moseeker.position.dao.DictConstantDao;
+import com.moseeker.position.dao.DictPositionDao;
+import com.moseeker.position.dao.HrTeamDao;
+import com.moseeker.position.dao.JobCustomDao;
+import com.moseeker.position.dao.JobOccupationDao;
+import com.moseeker.position.dao.JobOccupationRelDao;
+import com.moseeker.position.dao.JobPositionCityDao;
+import com.moseeker.position.dao.JobPositionDao;
+import com.moseeker.position.dao.JobPositonExtDao;
+import com.moseeker.position.dao.PositionDao;
+import com.moseeker.position.pojo.DictConstantPojo;
+import com.moseeker.position.pojo.JobPositionFailMess;
+import com.moseeker.position.pojo.JobPositionPojo;
+import com.moseeker.position.pojo.JobPostionResponse;
+import com.moseeker.position.pojo.PositionForSynchronizationPojo;
+import com.moseeker.position.pojo.RecommendedPositonPojo;
+>>>>>>> feature/gamma_0.9
 import com.moseeker.position.service.position.PositionChangeUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
@@ -59,9 +98,27 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrHbConfigDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrHbItemsDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrHbPositionBindingDO;
+<<<<<<< HEAD
 import com.moseeker.thrift.gen.position.struct.*;
 import com.mysql.jdbc.StringUtils;
 import javax.annotation.Resource;
+=======
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrTeamStruct;
+import com.moseeker.thrift.gen.dict.service.DictOccupationDao;
+import com.moseeker.thrift.gen.position.struct.BatchHandlerJobPostion;
+import com.moseeker.thrift.gen.position.struct.City;
+import com.moseeker.thrift.gen.position.struct.JobPostrionObj;
+import com.moseeker.thrift.gen.position.struct.Position;
+import com.moseeker.thrift.gen.position.struct.RpExtInfo;
+import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
+import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
+import com.moseeker.thrift.gen.position.struct.WechatPositionListData;
+import com.moseeker.thrift.gen.position.struct.WechatPositionListQuery;
+import com.moseeker.thrift.gen.position.struct.WechatRpPositionListData;
+import com.moseeker.thrift.gen.position.struct.WechatShareData;
+import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
+import com.mysql.jdbc.StringUtils;
+>>>>>>> feature/gamma_0.9
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.jooq.Field;
@@ -74,7 +131,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.moseeker.baseorm.pojo.RecommendedPositonPojo;
 import com.moseeker.baseorm.tool.QueryConvert;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -123,9 +187,24 @@ public class PositionService {
     @Autowired
     private HrHbItemsDao hrHbItemsDao;
 
+<<<<<<< HEAD
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
     
+=======
+
+    com.moseeker.thrift.gen.dao.service.PositionDao.Iface positionDaoService = ServiceManager.SERVICEMANAGER
+            .getService(com.moseeker.thrift.gen.dao.service.PositionDao.Iface.class);
+    private CompanyDao.Iface companyDao = ServiceManager.SERVICEMANAGER.getService(CompanyDao.Iface.class);
+
+    //获取hrdb库中的内容
+    HrDBDao.Iface hrDBDao = ServiceManager.SERVICEMANAGER.getService(HrDBDao.Iface.class);
+    private SearchengineServices.Iface searchEngineService = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
+
+    private HrDBDao.Iface hrDao = ServiceManager.SERVICEMANAGER.getService(HrDBDao.Iface.class);
+
+
+>>>>>>> feature/gamma_0.9
     com.moseeker.thrift.gen.searchengine.service.SearchengineServices.Iface searchengineServices = ServiceManager.SERVICEMANAGER
             .getService(com.moseeker.thrift.gen.searchengine.service.SearchengineServices.Iface.class);
     protected Position DBToStruct(JobPositionRecord r) {
@@ -333,10 +412,10 @@ public class PositionService {
      * 该职位是否可以刷新
      *
      * @param positionId 职位编号
-     * @param channel    渠道编号
+     * @param account_id 第三方账号ID
      * @return bool
      */
-    public boolean ifAllowRefresh(int positionId, int channel) {
+    public boolean ifAllowRefresh(int positionId, int account_id) {
         boolean permission = false;
         try {
             logger.info("ifAllowRefresh");
@@ -352,6 +431,7 @@ public class PositionService {
             }
             logger.info("position:" + JSON.toJSONString(position));
             if (position.getId() > 0) {
+<<<<<<< HEAD
             	Query queryUtil=new Query.QueryBuilder()
             			.where("company_id",position.getCompany_id())
             			.and("channel",channel)
@@ -366,12 +446,27 @@ public class PositionService {
                 logger.info("company:" + JSON.toJSONString(account));
                 logger.info("search thirdparyposition");
                 ThirdPartyPositionData p = thirdpartyPositionDao.getThirdPartyPosition(positionId, channel);
+=======
+                QueryUtil queryUtil = new QueryUtil();
+                queryUtil.addEqualFilter("id", account_id);
+                ThirdPartAccountData account = hrAccountDao.getThirdPartyAccount(queryUtil);
+                logger.info("ifAllowRefresh third party account:" + JSON.toJSONString(account));
+
+                logger.info("search thirdparyposition");
+                ThirdPartyPositionData p = positionDaoService.getThirdPartyPosition(positionId, account_id);
+>>>>>>> feature/gamma_0.9
                 logger.info("thirdparyposition" + JSON.toJSONString(p));
                 if (account != null && account.getBinding() == AccountSync.bound.getValue() && p.getId() > 0
                         && p.getIs_synchronization() == PositionSync.bound.getValue()) {
                     logger.info("data allow");
+<<<<<<< HEAD
                     String str = redisClient.get(AppId.APPID_ALPHADOG.getValue(),
                             KeyIdentifier.THIRD_PARTY_POSITION_REFRESH.toString(), String.valueOf(positionId), String.valueOf(channel));
+=======
+                    String str = RedisClientFactory.getCacheClient().get(AppId.APPID_ALPHADOG.getValue(),
+                            KeyIdentifier.THIRD_PARTY_POSITION_REFRESH.toString(), String.valueOf(positionId), String.valueOf(account_id));
+                    permission = true;
+>>>>>>> feature/gamma_0.9
                     if (StringUtils.isNullOrEmpty(str)) {
                         logger.info("cache allow");
                         permission = true;
@@ -380,7 +475,6 @@ public class PositionService {
             }
         } catch (Exception e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
             logger.error(e.getMessage(), e);
         } finally {
             // do nothing
@@ -403,13 +497,14 @@ public class PositionService {
      * 创建刷新职位数据
      *
      * @param positionId 职位编号
-     * @param channel    渠道编号
+     * @param account_id 第三方账号ID
      */
-    public ThirdPartyPositionForSynchronizationWithAccount createRefreshPosition(int positionId, int channel) {
+    public ThirdPartyPositionForSynchronizationWithAccount createRefreshPosition(int positionId, int account_id) {
 
         ThirdPartyPositionForSynchronizationWithAccount account = new ThirdPartyPositionForSynchronizationWithAccount();
         try {
             ThirdPartyPosition form = new ThirdPartyPosition();
+<<<<<<< HEAD
             Query findPositionById=new Query.QueryBuilder().where("id",positionId).buildQuery();
             logger.info("search position");
             Position position = new Position();
@@ -432,13 +527,25 @@ public class PositionService {
             if(trThirdPartyAccountRecord != null) {
 				copy(accountData, trThirdPartyAccountRecord);
 			}
+=======
+            QueryUtil findPosition = new QueryUtil();
+            findPosition.addEqualFilter("id", String.valueOf(positionId));
+            Position position = positionDaoService.getPosition(findPosition);
+
+            ThirdPartyPositionData thirdPartyPosition = positionDaoService.getThirdPartyPosition(positionId, account_id);
+
+            QueryUtil findAccount = new QueryUtil();
+            findAccount.addEqualFilter("id", account_id);
+            ThirdPartAccountData accountData = hrAccountDao.getThirdPartyAccount(findAccount);
+>>>>>>> feature/gamma_0.9
             account.setUser_name(accountData.getUsername());
             account.setMember_name(accountData.getMembername());
             account.setPassword(accountData.getPassword());
-            account.setChannel(String.valueOf(channel));
+            account.setChannel(String.valueOf(accountData.getChannel()));
             account.setPosition_id(String.valueOf(positionId));
+            account.setAccount_id(String.valueOf(account_id));
 
-            form.setChannel((byte) channel);
+            form.setChannel((byte) accountData.getChannel());
             if (position.getId() > 0 && thirdPartyPosition.getId() > 0) {
                 ThirdPartyPositionForSynchronization p = new PositionChangeUtil().changeToThirdPartyPosition(form, position);
                 p.setJob_id(thirdPartyPosition.getThird_part_position_id());
@@ -648,8 +755,7 @@ public class PositionService {
                         jobPositionFailMessPojo.setJobNumber(jobPositionHandlerDate.getJobnumber());
                         jobPositionFailMessPojo.setSourceId(jobPositionHandlerDate.getSource_id());
                         jobPositionFailMessPojo.setJobPostionId(jobPositionHandlerDate.getId());
-                        jobPositionFailMessPojo.setDepartment(jobPositionHandlerDate.getDepartment());
-                        jobPositionFailMessPojo.setMessage(ConstantErrorCodeMessage.POSITION_DATA_OCCUPATION_ERROR);
+                        jobPositionFailMessPojo.setMessage(ConstantErrorCodeMessage.POSITION_DATA_OCCUPATION_ERROR.replace("{MESSAGE}", jobPositionHandlerDate.getOccupation()));
                         jobPositionFailMessPojos.add(jobPositionFailMessPojo);
                         continue;
                     }
@@ -693,8 +799,11 @@ public class PositionService {
                             if (com.moseeker.common.util.StringUtils.isNullOrEmpty(record.getJobnumber())) {
                                 record.setJobnumber(jobPositionRecordTemp.getJobnumber());
                             }
-
-                            record.setCity(citys(jobPositionHandlerDate.getCity()));
+                            // 当城市无法转换时，入库为提交的数据
+                            String city = citys(jobPositionHandlerDate.getCity());
+                            if (com.moseeker.common.util.StringUtils.isNotNullOrEmpty(city)) {
+                                record.setCity(city);
+                            }
                             record.setTeamId(team_id);
                             // 设置不需要更新的字段
                             if (fieldsNooverwriteStrings != null && fieldsNooverwriteStrings.length > 0) {
@@ -732,7 +841,11 @@ public class PositionService {
                     }
                 } else { // 数据的新增
                     record.setTeamId(team_id);
-                    record.setCity(citys(jobPositionHandlerDate.getCity()));
+                    String city = citys(jobPositionHandlerDate.getCity());
+                    // 当城市无法转换时，入库为提交的数据
+                    if (com.moseeker.common.util.StringUtils.isNotNullOrEmpty(city)) {
+                        record.setCity(city);
+                    }
                     logger.info("-- 新增jobPostion数据开始，新增的jobPostion数据为：" + record.toString() + "--");
                     Integer pid = jobPositionDao.addRecord(record).getId();
                     logger.info("-- 新增jobPostion数据结束,新增职位ID为：" + pid);
@@ -905,9 +1018,35 @@ public class PositionService {
             }
             md5 = MD5Util.md5(stringBuffer.toString());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
         return md5;
+    }
+
+    // 特殊城市拼音转CityCode
+    public final static Map specialCityMap = new LinkedHashMap();
+
+    static {
+        specialCityMap.put("Amur River", "黑龙江省");
+        specialCityMap.put("Anhwei", "安徽省");
+        specialCityMap.put("Canton", "广东省");
+        specialCityMap.put("Kwangtung", "广东省");
+        specialCityMap.put("Fukian", "福建省");
+        specialCityMap.put("Harbin", "哈尔滨");
+        specialCityMap.put("Hong Kong", "香港");
+        specialCityMap.put("Nankin", "南京");
+        specialCityMap.put("Nanking", "南京");
+        specialCityMap.put("Inner Mongolia", "内蒙古");
+        specialCityMap.put("Pekin", "北京");
+        specialCityMap.put("Peking", "北京");
+        specialCityMap.put("Shanxi", "山西省");
+        specialCityMap.put("Shaanxi", "陕西省");
+        specialCityMap.put("Szechwan", "四川");
+        specialCityMap.put("Taipei", "台北");
+        specialCityMap.put("Tibet", "西藏");
+        specialCityMap.put("Urumchi", "乌鲁木齐");
+        specialCityMap.put("Urumqi", "乌鲁木齐");
+        specialCityMap.put("Ürümqi", "乌鲁木齐");
     }
 
     /**
@@ -918,26 +1057,54 @@ public class PositionService {
         try {
             // 将已经查询的到的cityCode放到map中，避免多次查询
             HashMap cityPostCodeMap = new LinkedHashMap();
+<<<<<<< HEAD
             // 查询DictCityPostCode条件
             // 查询DictCity条件
             QueryBuilder cityQueryBuilder=new Query.QueryBuilder();
+=======
+>>>>>>> feature/gamma_0.9
             // 将从DictCity查询
             HashMap cityMap = new LinkedHashMap();
             if (citys != null && citys.size() > 0 && pid != null) {
                 for (City city : citys) {
+                    // 查询DictCityPostCode条件
+                    QueryUtil cityCodeQuery = new QueryUtil();
+                    // 查询DictCity条件
+                    QueryUtil cityQuery = new QueryUtil();
                     JobPositionCityRecord jobPositionCityRecord = new JobPositionCityRecord();
                     jobPositionCityRecord.setPid(pid);
                     logger.info("城市类型：" + city.getType().toLowerCase());
                     logger.info("VAlUE：" + city.getValue());
+<<<<<<< HEAD
                     if (city.getType().toLowerCase().equals("text")) { // 城市名字，转换成cityCode，传入的是城市的时候查询dict_city
                         cityQueryBuilder.where("name", city.getValue());
+=======
+                    // 城市名字，转换成cityCode，传入的是城市的时候查询dict_city
+                    if (city.getType().toLowerCase().equals("text")) {
+                        // 判断是不是特殊城市中的
+                        String specicalCity = (String) specialCityMap.get(city.getValue());
+                        if (specicalCity != null) {
+                            city.setValue(specicalCity);
+                        }
+                        // 判断下是否是中文还是英文
+                        if (isChinese(city.getValue())) { // 是中文
+                            cityQuery.addEqualFilter("name", city.getValue());
+                        } else { // 英文
+                            cityQuery.addEqualFilter("ename", city.getValue());
+                        }
+>>>>>>> feature/gamma_0.9
                         try {
                             DictCityDO dictCityDO = (DictCityDO) cityMap.get(city.getValue());
                             if (dictCityDO != null) {
                                 jobPositionCityRecord.setCode(dictCityDO.getCode());
                             } else {
+<<<<<<< HEAD
                                 dictCityDO = dictCityDao.getData(cityQueryBuilder.buildQuery(),DictCityDO.class);
                                 if (dictCityDO != null) {
+=======
+                                dictCityDO = dictOccupationDao.dictCityDO(cityQuery);
+                                if (dictCityDO != null && dictCityDO.getCode() != 0) {
+>>>>>>> feature/gamma_0.9
                                     jobPositionCityRecord.setCode(dictCityDO.getCode());
                                     cityMap.put(city.getValue(), dictCityDO);
                                 }
@@ -965,6 +1132,18 @@ public class PositionService {
                         }
                     } else if (city.getType().toLowerCase().equals("citycode")) { // citycode 直接存储
                         jobPositionCityRecord.setCode(Integer.valueOf(city.getValue()));
+                    } else if (city.getType().toLowerCase().equals("fuzzypostcode")) { // 模糊邮编，取邮编的前四位查询
+                        String postCodeTemp = city.getValue().substring(0, 4);
+                        DictCityPostcodeRecord cityPostcodeRecord = (DictCityPostcodeRecord) cityPostCodeMap.get(postCodeTemp);
+                        if (cityPostcodeRecord != null) {
+                            jobPositionCityRecord.setCode(Integer.valueOf(cityPostcodeRecord.getCode()));
+                        } else {
+                            cityPostcodeRecord = dictCityPostCodeDao.fuzzyGetCityPostCode(postCodeTemp);
+                            if (cityPostcodeRecord != null && cityPostcodeRecord.getCode() != null) {
+                                jobPositionCityRecord.setCode(Integer.valueOf(cityPostcodeRecord.getCode()));
+                                cityPostCodeMap.put(city.getValue(), cityPostcodeRecord);
+                            }
+                        }
                     }
                     // 如果cityCode不入库
                     if (jobPositionCityRecord.getCode() != null) {
@@ -986,20 +1165,60 @@ public class PositionService {
         if (list != null && list.size() > 0) {
             // 将已经查询的到的cityCode放到map中，避免多次查询
             HashMap cityPostCodeMap = new LinkedHashMap();
+<<<<<<< HEAD
             QueryBuilder cityCodeQuery = new Query.QueryBuilder();
+=======
+>>>>>>> feature/gamma_0.9
             int i = 0;
             for (City city : list) {
+                QueryUtil cityCodeQuery = new QueryUtil();
                 if (city.getType().toLowerCase().equals("text")) { // 城市名字，转换成cityCode
+<<<<<<< HEAD
                 	cityCodeQuery.where("city", city.getValue());
                     stringBuffer.append(city.getValue());
+=======
+                    // 判断是不是特殊城市中的
+                    String specicalCity = (String) specialCityMap.get(city.getValue());
+                    if (specicalCity != null) {
+                        stringBuffer.append(specicalCity);
+                    } else {
+                        if (isChinese(city.getValue())) { // 是中文
+                            stringBuffer.append(city.getValue());
+                        } else { // 英文
+                            cityCodeQuery.addEqualFilter("ename", city.getValue());
+                            try {
+                                DictCityDO dictCityDO = (DictCityDO) cityPostCodeMap.get(city.getValue());
+                                if (dictCityDO != null) {
+                                    stringBuffer.append(dictCityDO.getName());
+                                } else {
+                                    dictCityDO = dictOccupationDao.dictCityDO(cityCodeQuery);
+                                    if (dictCityDO != null && dictCityDO.getCode() != 0) {
+                                        stringBuffer.append(dictCityDO.getName());
+                                        cityPostCodeMap.put(city.getValue(), dictCityDO);
+                                    } else {
+                                        stringBuffer.append(city.getValue());
+                                    }
+                                }
+                            } catch (Exception e) {
+                                logger.error(e.getMessage(), e);
+                            }
+                        }
+                    }
+>>>>>>> feature/gamma_0.9
                 } else if (city.getType().toLowerCase().equals("postcode")) { // 邮编，转成城市名
                     try {
                         DictCityPostcodeRecord cityPostcodeRecord = (DictCityPostcodeRecord) cityPostCodeMap.get(city.getValue());
                         if (cityPostcodeRecord != null) {
                             stringBuffer.append(cityPostcodeRecord.getCity());
                         } else {
+<<<<<<< HEAD
                         	cityCodeQuery.where("postcode", city.getValue());
                             cityPostcodeRecord = dictCityPostcodeDao.getRecord(cityCodeQuery.buildQuery());
+=======
+                            cityCodeQuery.clear();
+                            cityCodeQuery.addEqualFilter("postcode", city.getValue());
+                            cityPostcodeRecord = dictCityPostCodeDao.getResource(cityCodeQuery);
+>>>>>>> feature/gamma_0.9
                             if (cityPostcodeRecord != null && cityPostcodeRecord.getCity() != null) {
                                 if (com.moseeker.common.util.StringUtils.isEmptyObject(cityPostcodeRecord.getCity())) {
                                     stringBuffer.append(cityPostcodeRecord.getProvince());
@@ -1014,17 +1233,40 @@ public class PositionService {
                     }
                 } else if (city.getType().toLowerCase().equals("citycode")) { // citycode 直接存储
                     try {
-                        DictCityPostcodeRecord cityPostcodeRecord = (DictCityPostcodeRecord) cityPostCodeMap.get(city.getValue());
+                        DictCityDO dictCityDO = (DictCityDO) cityPostCodeMap.get(city.getValue());
+                        if (dictCityDO != null) {
+                            stringBuffer.append(dictCityDO.getName());
+                        } else {
+                            cityCodeQuery.clear();
+                            cityCodeQuery.addEqualFilter("code", city.getValue());
+                            dictCityDO = dictOccupationDao.dictCityDO(cityCodeQuery);
+//                            cityPostcodeRecord = dictCityPostCodeDao.getResource(cityCodeQuery);
+                            if (dictCityDO != null && dictCityDO.getName() != null) {
+                                stringBuffer.append(dictCityDO.getName());
+                                cityPostCodeMap.put(city.getValue(), dictCityDO);
+                            }
+                        }
+                    } catch (Exception e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                } else if (city.getType().toLowerCase().equals("fuzzypostcode")) {  // 模糊邮编查询，转为城市名字
+                    try {
+                        String postCodeTemp = city.getValue().substring(0, 4);
+                        DictCityPostcodeRecord cityPostcodeRecord = (DictCityPostcodeRecord) cityPostCodeMap.get(postCodeTemp);
                         if (cityPostcodeRecord != null) {
                             stringBuffer.append(cityPostcodeRecord.getCity());
                         } else {
+<<<<<<< HEAD
                         	cityCodeQuery.where("citycode",city.getValue());
                             cityPostcodeRecord = dictCityPostcodeDao.getRecord(cityCodeQuery.buildQuery());
+=======
+                            cityPostcodeRecord = dictCityPostCodeDao.fuzzyGetCityPostCode(postCodeTemp);
+>>>>>>> feature/gamma_0.9
                             if (cityPostcodeRecord != null && cityPostcodeRecord.getCity() != null) {
-                                if (cityPostcodeRecord.getCity() != null) {
-                                    stringBuffer.append(cityPostcodeRecord.getProvince());
-                                } else {
+                                if (!com.moseeker.common.util.StringUtils.isEmptyObject(cityPostcodeRecord.getCity())) {
                                     stringBuffer.append(cityPostcodeRecord.getCity());
+                                } else {
+                                    stringBuffer.append(cityPostcodeRecord.getProvince());
                                 }
                                 cityPostCodeMap.put(city.getValue(), cityPostcodeRecord);
                             }
@@ -1034,9 +1276,12 @@ public class PositionService {
                     }
                 }
                 i = i + 1;
-                if (i != list.size()) {
+                if (i != list.size() && com.moseeker.common.util.StringUtils.isNotNullOrEmpty(stringBuffer.toString()) && !stringBuffer.toString().endsWith(",")) {
                     stringBuffer.append(",");
                 }
+            }
+            if (stringBuffer.toString().endsWith(",")) {
+                stringBuffer.deleteCharAt(stringBuffer.length() - 1);
             }
         }
         return stringBuffer.toString();
@@ -1053,6 +1298,7 @@ public class PositionService {
     public List<ThirdPartyPositionData> getThirdPartyPositions(CommonQuery query) {
         List<ThirdPartyPositionData> datas = new ArrayList<>();
         try {
+<<<<<<< HEAD
 			List<HrThirdPartyPositionRecord> records = thirdpartyPositionDao.getRecords(QueryConvert.commonQueryConvertToQuery(query));
 			if(records != null && records.size() > 0) {
 				records.forEach(record -> {
@@ -1067,6 +1313,23 @@ public class PositionService {
 			//do nothing
 		}
 		return datas;
+=======
+//			if(query.getEqualFilter() != null) {
+//				query.getEqualFilter().put("channel", "1");
+//			} else {
+//				Map<String, String> equalFilter = new HashMap<>();
+//				equalFilter.put("channel", "1");
+//				query.setEqualFilter(equalFilter);
+//			}
+            datas = positionDaoService.getPositionThirdPartyPositions(query);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            logger.error(e.getMessage(), e);
+        } finally {
+            //do nothing
+        }
+        return datas;
+>>>>>>> feature/gamma_0.9
     }
 
     /**
@@ -1083,15 +1346,28 @@ public class PositionService {
             String childCompanyId = "";
             String companyId = "";
 
+            logger.info("----- in getPositionList ");
+            logger.info("query.getDid() :" + String.valueOf(query.getDid()));
+            logger.info("query.getCompany_id() :" + String.valueOf(query.getCompany_id()));
+
+
             if (query.isSetDid() && query.getDid() != 0) {
                 // 如果有did, 赋值 childCompanyId
                 childCompanyId = String.valueOf(query.getDid());
 
+<<<<<<< HEAD
             } else {
                 Query qu=new Query.QueryBuilder()
                 		.where("parent_id",companyId)
                 		.buildQuery();
                 List<Hrcompany> companies = hrCompanyDao.getCompanies(qu);
+=======
+            } else
+            {
+                QueryUtil qu = new QueryUtil();
+                qu.addEqualFilter("parent_id", query.getCompany_id());
+                List<Hrcompany> companies = companyDao.getCompanies(qu);
+>>>>>>> feature/gamma_0.9
 
                 List<Integer> cIds = new ArrayList<>();
                 if (companies.size() > 0) {
@@ -1099,7 +1375,29 @@ public class PositionService {
                 }
                 cIds.add(query.getCompany_id());
                 companyId = org.apache.commons.lang.StringUtils.join(cIds.toArray(), ",");
+
+                logger.info("companyId:" + companyId);
             }
+
+            logger.info("<><><><><><><><><><><>");
+            logger.info("companyId: " + companyId);
+            logger.info("childCompanyId: " + childCompanyId);
+            logger.info("<><><><><><><><><><><>");
+            logger.info("query.getKeywords():" + query.getKeywords());
+            logger.info("query.getCities():" + query.getCities());
+            logger.info("query.getIndustries():" + query.getIndustries());
+            logger.info("query.getOccupations():" + query.getOccupations());
+            logger.info("query.getScale():" + query.getScale());
+            logger.info("query.getEmployment_type(): " + query.getEmployment_type());
+            logger.info("query.getCandidate_source():" + query.getCandidate_source());
+            logger.info("query.getExperience():" + query.getExperience());
+            logger.info("query.getDegree():" + query.getDegree());
+            logger.info("query.getSalary():" + query.getSalary());
+            logger.info("query.getPage_from(): " + query.getPage_from());
+            logger.info("query.getPage_size(): " + query.getPage_size());
+            logger.info("query.getDepartment(): " + query.getDepartment());
+            logger.info("query.getCustom(): " + query.getCustom());
+            logger.info("<><><><><><><><><><><>");
 
             //获取 pid list
             Response ret = searchengineServices.query(
@@ -1126,26 +1424,30 @@ public class PositionService {
                 // 通过 pid 列表查询 position 信息
                 JSONObject jobj = JSON.parseObject(ret.getData());
 
-                JSONArray pidsJson = jobj.getJSONArray("jd_id_list");
+                JSONArray jdIdJsonArray = jobj.getJSONArray("jd_id_list");
+                List<Integer> jdIdList = jdIdJsonArray.stream().map(m -> Integer.valueOf(String.valueOf(m))).collect(Collectors.toList());
+                logger.info("jdIdList: " + jdIdList);
 
-                logger.info("pidsJson: " + pidsJson);
-
-                ArrayList<Integer> pids = new ArrayList<>();
-                if (pidsJson != null) {
-                    int len = pidsJson.size();
-                    for (int i = 0; i < len; i++) {
-                        pids.add(pidsJson.getInteger(i));
-                    }
-                }
-
+<<<<<<< HEAD
                 Query q = new Query.QueryBuilder()
                 		.where("id", "[" + org.apache.commons.lang.StringUtils.join(pids.toArray(), ",") + "]")
                 		.orderBy("priority").buildQuery();
            
                 List<JobPositionRecord> jobRecords = jobPositionDao.getRecords(q);
+=======
+                QueryUtil q = new QueryUtil();
+                q.addEqualFilter("id", Arrays.toString(jdIdList.toArray()));
+                List<JobPositionRecord> jobRecords = jobPositionDao.getResources(q);
+>>>>>>> feature/gamma_0.9
 
-                // 内容拼装和返回
+                jobRecords.sort(Comparator.comparing(
+                        c -> { return jdIdList.indexOf(c.getId()); }
+                ));
+
                 for (JobPositionRecord jr : jobRecords) {
+                    logger.info("pid: " + String.valueOf(jr.getId()));
+
+
                     WechatPositionListData e = new WechatPositionListData();
                     e.setTitle(jr.getTitle());
                     e.setId(jr.getId());
@@ -1180,6 +1482,7 @@ public class PositionService {
 
                 // 获取公司信息，拼装 company abbr, logo 等信息
                 Map<Integer /* publisher id */, HrCompanyDO> publisherCompanyMap = new HashMap<>();
+<<<<<<< HEAD
 
                 QueryBuilder hrm = new Query.QueryBuilder();
 
@@ -1198,13 +1501,20 @@ public class PositionService {
 
                     // 写入 map
                     publisherCompanyMap.put(subCompanyAccount.getAccountId(), subCompanyInfo);
+=======
+                QueryUtil hrm = new QueryUtil();
 
+                Set<Integer> publisherSet = dataList.stream().map(WechatPositionListData::getPublisher)
+                        .collect(Collectors.toSet());
+>>>>>>> feature/gamma_0.9
+
+                // publisherList 应该不为空
+                // 如果 publisherList 为空，那么返回空 ArrayList
+                if (publisherSet == null || publisherSet.size() == 0) {
+                    return new ArrayList<>();
                 }
-                // 母公司 + 子公司
-                else {
-                    List<Integer> publisherList = dataList.stream().map(WechatPositionListData::getPublisher)
-                            .collect(Collectors.toList());
 
+<<<<<<< HEAD
                     // 根据 pbulisher_list 查询 hr_company_account_list
                     hrm.where("account_id", buildQueryIds(publisherList));
                     List<HrCompanyAccountDO> companyAccountList = hrCompanyAccountDao.getDatas(hrm.buildQuery(),HrCompanyAccountDO.class);
@@ -1214,18 +1524,29 @@ public class PositionService {
                         hrm.where("id", hrCompanyAccount.getCompanyId());
                         HrCompanyDO companyInfo = hrCompanyDao.getData(hrm.buildQuery(),HrCompanyDO.class);
                         publisherCompanyMap.put(hrCompanyAccount.accountId, companyInfo);
+=======
+                // 根据 publisherSet 查询 companyAccountList
+                hrm.addEqualFilter("account_id", Arrays.toString(publisherSet.toArray()));
 
-                    }
+                List<HrCompanyAccountDO> companyAccountList = hrDBDao.listHrCompanyAccount(hrm);
+
+                for (HrCompanyAccountDO hrCompanyAccount : companyAccountList) {
+                    hrm = new QueryUtil();
+                    hrm.addEqualFilter("id", hrCompanyAccount.getCompanyId());
+                    HrCompanyDO companyInfo = hrDBDao.getCompany(hrm);
+                    publisherCompanyMap.put(hrCompanyAccount.accountId, companyInfo);
+>>>>>>> feature/gamma_0.9
+
                 }
-
 
                 //拼装 company 相关内容
                 dataList = dataList.stream().map(s -> {
-                    s.setCompany_abbr(publisherCompanyMap.get(s.getPublisher()).getAbbreviation());
-                    s.setCompany_logo(publisherCompanyMap.get(s.getPublisher()).getLogo());
-                    s.setCompany_name(publisherCompanyMap.get(s.getPublisher()).getName());
+                    s.setCompany_abbr(publisherCompanyMap.get(s.getPublisher()) == null ? "" : publisherCompanyMap.get(s.getPublisher()).getAbbreviation());
+                    s.setCompany_logo(publisherCompanyMap.get(s.getPublisher()) == null ? "" : publisherCompanyMap.get(s.getPublisher()).getLogo());
+                    s.setCompany_name(publisherCompanyMap.get(s.getPublisher()) == null ? "" : publisherCompanyMap.get(s.getPublisher()).getName());
                     return s;
                 }).collect(Collectors.toList());
+
             } else {
                 return new ArrayList<>();
             }
@@ -1255,8 +1576,13 @@ public class PositionService {
             result.setTitle(hbConfig.getShareTitle());
             result.setDescription(hbConfig.getShareDesc());
 
+<<<<<<< HEAD
         } catch (Exception e) {
             e.printStackTrace();
+=======
+        } catch (TException e) {
+            logger.error(e.getMessage(), e);
+>>>>>>> feature/gamma_0.9
         }
 
         return result;
@@ -1270,7 +1596,6 @@ public class PositionService {
      */
     public List<RpExtInfo> getPositionListRpExt(List<Integer> pids) {
         List<RpExtInfo> result = new ArrayList<>();
-
         try {
             // 获取 company_id
             int company_id = 0;
@@ -1280,17 +1605,34 @@ public class PositionService {
                 Position p = jobPositionDao.getPositionByQuery(qus);
                
                 company_id = p.getCompany_id();
+            } else {
+                return result;
             }
 
             // 获取正在运行的转发类红包活动集合
+<<<<<<< HEAD
             Query qu = new Query.QueryBuilder()
             		.where("status", "3")
             		.and("company_id", company_id)
             		.and("type", "[2,3]")
             		.buildQuery();
             List<HrHbConfigDO> hbConfigs = hrHbConfigDao.getDatas(qu,HrHbConfigDO.class);
+=======
+            QueryUtil qu = new QueryUtil();
+
+            qu.addEqualFilter("status", "3"); //正在运行
+            qu.addEqualFilter("company_id", String.valueOf(company_id));
+            qu.addEqualFilter("type", "[2,3]"); //转发类职位
+            qu.setPer_page(Integer.MAX_VALUE);
+
+            List<HrHbConfigDO> hbConfigs = hrDao.getHbConfigs(qu);
+>>>>>>> feature/gamma_0.9
             List<Integer> hbConfgIds = hbConfigs.stream().map(HrHbConfigDO::getId).collect(Collectors.toList());
-            String allHbConfigIdsFilterString = "[" + org.apache.commons.lang.StringUtils.join(hbConfgIds.toArray(), ",") + "]";
+
+            String allHbConfigIdsFilterString = Arrays.toString(hbConfgIds.toArray());
+
+            logger.info("pids: " + pids.toString());
+            logger.info("allHbConfigIdsFilterString: " + allHbConfigIdsFilterString);
 
             for (Integer pid : pids) {
                 //对于每个 pid，先获取 position
@@ -1303,13 +1645,25 @@ public class PositionService {
                     // 该职位参与了一个红包活动
 
                     //获取 binding 记录
+<<<<<<< HEAD
                     qu = new Query.QueryBuilder().where("position_id", p.getId()).and("hb_config_id",allHbConfigIdsFilterString).buildQuery();
+=======
+                    qu = new QueryUtil();
+                    qu.addEqualFilter("position_id", String.valueOf(p.getId()));
+                    qu.addEqualFilter("hb_config_id", allHbConfigIdsFilterString);
+                    qu.setPer_page(Integer.MAX_VALUE);
+>>>>>>> feature/gamma_0.9
 
                     List<HrHbPositionBindingDO> bindings = hrHbPositionBindingDao.getDatas(qu,HrHbPositionBindingDO.class);
 
-                    // 确认 binding 只有一个，获取binding 对应的红包活动信息
-                    if (bindings != null && bindings.size() > 0) {
-                        HrHbConfigDO hbConfig = hbConfigs.stream().filter(c -> c.getId() == bindings.get(0).getHbConfigId())
+                    logger.info(bindings.toString());
+
+                    // 确认 binding 只有一个，获取 binding 对应的红包活动信息
+                    if (bindings.size() > 0) {
+
+                        HrHbPositionBindingDO binding = bindings.get(0);
+
+                        HrHbConfigDO hbConfig = hbConfigs.stream().filter(c -> c.getId() == binding.getHbConfigId())
                                 .findFirst().orElseGet(null);
 
                         if (hbConfig != null) {
@@ -1318,12 +1672,24 @@ public class PositionService {
                         } else {
                             logger.warn("查询不到对应的 hbConfig");
                             rpExtInfo.setEmployee_only(false);
+                            continue;
                         }
 
                         // 根据 binding 获取 hb_items 记录
+<<<<<<< HEAD
                         qu =new Query.QueryBuilder().where("binding_id", bindings.get(0).getId()).and("wxuser_id",0).buildQuery();
            
                         List<HrHbItemsDO> remainItems = hrHbItemsDao.getDatas(qu,HrHbItemsDO.class);
+=======
+                        qu = new QueryUtil();
+                        qu.addEqualFilter("binding_id", String.valueOf(binding.getId()));
+                        qu.addEqualFilter("wxuser_id", "0"); // 还未发出的
+                        qu.setPer_page(Integer.MAX_VALUE);
+
+                        logger.info("hb items query util: " + qu.toString());
+
+                        List<HrHbItemsDO> remainItems = hrDao.getHbItems(qu);
+>>>>>>> feature/gamma_0.9
 
                         Double remain = remainItems.stream().mapToDouble(HrHbItemsDO::getAmount).sum();
                         Integer remainInt = toIntExact(round(remain));
@@ -1334,39 +1700,63 @@ public class PositionService {
                         rpExtInfo.setPid(p.getId());
                         rpExtInfo.setRemain(remainInt);
 
+                        logger.info(rpExtInfo.toString());
+
                         result.add(rpExtInfo);
                     }
+
                 } else if (p.getHb_status() == 3) {
                     // 该职位参与了两个红包活动
 
                     // 获取 binding 记录
                     qu = new Query.QueryBuilder().where("position_id", p.getId()).and("hb_config_id",allHbConfigIdsFilterString).buildQuery();
 
+<<<<<<< HEAD
                     List<HrHbPositionBindingDO> bindings = hrHbPositionBindingDao.getDatas(qu,HrHbPositionBindingDO.class);
                     //获取binding ids
+=======
+                    qu.setPer_page(Integer.MAX_VALUE);
+
+                    List<HrHbPositionBindingDO> bindings = hrDao.getHbPositionBindings(qu);
+
+                    logger.info(bindings.toString());
+
+                    //获取 binding ids
+>>>>>>> feature/gamma_0.9
                     List<Integer> bindingIds = bindings.stream().map(HrHbPositionBindingDO::getId).collect(Collectors.toList());
-                    //获取binding 所对应的红包活动 id
-                    List<Integer> hbConfigIds = bindings.stream().map(HrHbPositionBindingDO::getHbConfigId).collect(Collectors.toList());
+
+                    //获取 binding 所对应的红包活动 id
+                    Set<Integer> hbConfigIdsSet = bindings.stream().map(HrHbPositionBindingDO::getHbConfigId).collect(Collectors.toSet());
 
                     // 得到对应的红包活动 pojo （2个）
-                    List<HrHbConfigDO> configs = hbConfigs.stream().filter(s -> hbConfigIds.contains(s.getId())).collect(Collectors.toList());
+                    List<HrHbConfigDO> configs = hbConfigs.stream().filter(s -> hbConfigIdsSet.contains(s.getId())).collect(Collectors.toList());
+
+                    logger.info(configs.toString());
 
                     // 如果任意一个对象是非员工，设置成 false
+                    rpExtInfo.setEmployee_only(true);
                     for (HrHbConfigDO config : configs) {
                         if (config.target > 0) {
                             rpExtInfo.setEmployee_only(false);
                             break;
                         }
                     }
-                    // 否则对象设置成 true
-                    if (!rpExtInfo.isSetEmployee_only()) {
-                        rpExtInfo.setEmployee_only(true);
-                    }
 
-                    String bindingIdsFilterString = "[" + org.apache.commons.lang.StringUtils.join(bindingIds.toArray(), ",") + "]";
+                    String bindingIdsFilterString = Arrays.toString(bindingIds.toArray());
                     // 根据 binding 获取 hb_items 记录
+<<<<<<< HEAD
                     qu = new Query.QueryBuilder().where("binding_id", bindings.get(0).getId()).and("wxuser_id",0).buildQuery();
                     List<HrHbItemsDO> remainItems = hrHbItemsDao.getDatas(qu,HrHbItemsDO.class);
+=======
+                    qu = new QueryUtil();
+                    qu.addEqualFilter("binding_id", bindingIdsFilterString);
+                    qu.addEqualFilter("wxuser_id", "0");
+                    qu.setPer_page(Integer.MAX_VALUE);
+
+                    logger.info("hb items query util: " + qu.toString());
+
+                    List<HrHbItemsDO> remainItems = hrDao.getHbItems(qu);
+>>>>>>> feature/gamma_0.9
 
                     Double remain = remainItems.stream().mapToDouble(HrHbItemsDO::getAmount).sum();
                     Integer remainInt = toIntExact(round(remain));
@@ -1376,6 +1766,9 @@ public class PositionService {
 
                     rpExtInfo.setPid(p.getId());
                     rpExtInfo.setRemain(remainInt);
+
+                    logger.info(rpExtInfo.toString());
+
                     result.add(rpExtInfo);
 
                 } else {
@@ -1384,7 +1777,7 @@ public class PositionService {
                 }
             }
         } catch (TException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return result;
         } finally {
 
@@ -1436,8 +1829,17 @@ public class PositionService {
             List<Integer> pids = bindings.stream().map(HrHbPositionBindingDO::getPositionId).collect(Collectors.toList());
             String pidFilter = "[" + org.apache.commons.lang.StringUtils.join(pids.toArray(), ",") + "]";
 
+<<<<<<< HEAD
             Query q = new Query.QueryBuilder().where("id", pidFilter).orderBy("priority").buildQuery();
             List<JobPositionRecord> jobRecords = jobPositionDao.getRecords(q);
+=======
+            QueryUtil q = new QueryUtil();
+            q.addEqualFilter("id", pidFilter);
+            q.setSortby("priority");
+            q.setOrder("asc");
+            q.setPer_page(Integer.MAX_VALUE);
+            List<JobPositionRecord> jobRecords = jobPositionDao.getResources(q);
+>>>>>>> feature/gamma_0.9
 
             // filter 出已经发完红包的职位
             jobRecords = jobRecords.stream().filter(p -> p.getHbStatus() > 0).collect(Collectors.toList());
@@ -1464,9 +1866,9 @@ public class PositionService {
             qu = new Query.QueryBuilder().where("id", companyId).buildQuery();
             HrCompanyDO company = hrCompanyDao.getData(qu,HrCompanyDO.class);
             result.forEach(s -> {
-                s.setCompany_abbr(company.getAbbreviation());
-                s.setCompany_logo(company.getLogo());
-                s.setCompany_name(company.getName());
+                s.setCompany_abbr(company == null ? "" : company.getAbbreviation());
+                s.setCompany_logo(company == null ? "" : company.getLogo());
+                s.setCompany_name(company == null ? "" : company.getName());
             });
 
             // 拼装红包信息
@@ -1481,8 +1883,14 @@ public class PositionService {
                 }
             });
 
+<<<<<<< HEAD
+=======
+        } catch (TException e) {
+            logger.error(e.getMessage(), e);
+            return result;
+>>>>>>> feature/gamma_0.9
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return result;
         } finally {
             // do nothing
@@ -1490,6 +1898,7 @@ public class PositionService {
         // 查询到职位
         return result;
     }
+
 
     public String replaceBlank(String str) {
         String dest = "";
@@ -1545,19 +1954,28 @@ public class PositionService {
                 }
                 logger.info("--- ES Search Engine end---");
             } catch (Exception e) {
-                e.printStackTrace();
                 logger.error(e.getMessage(), e);
             }
         }
     }
 
 
-    private String buildQueryIds(List<Integer> idList) {
-        StringBuffer sb = new StringBuffer();
-        for (Integer i : idList) {
-            sb.append(String.valueOf(i) + ",");
+    /**
+     * 输入的字符是否是汉字
+     *
+     * @return boolean
+     */
+    public boolean isChinese(String str) {
+        boolean flag = false;
+        for (int i = 0; i < str.length(); i++) {
+            int v = str.charAt(i);
+            if ((v >= 19968 && v <= 171941)) {
+                flag = true;
+                break;
+            }
         }
-        return "[" + sb.substring(0, sb.length() - 1) + "]";
+        return flag;
     }
+
 
 }

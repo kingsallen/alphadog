@@ -143,7 +143,7 @@ public class MoServer {
     /**
      * 添加一个钩子，在进程被停止时关闭资源
      */
-    private void shutDownHook() {
+    public void shutDownHook() {
         Runtime.getRuntime().addShutdownHook(new Thread(()-> {
             logger.info("----shutDownHook----");
             stopServer();

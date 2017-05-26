@@ -21,6 +21,7 @@ public class JobApplicationServer {
                     acac.getBean(JobApplicataionServicesImpl.class)
             );
             server.startServer();
+            server.shutDownHook();
             synchronized (JobApplicationServer.class) {
                 while (true) {
                     try {

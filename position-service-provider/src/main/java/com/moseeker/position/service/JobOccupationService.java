@@ -3,11 +3,17 @@ package com.moseeker.position.service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+<<<<<<< HEAD
+=======
+
+import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.thrift.gen.dao.service.JobDBDao;
+>>>>>>> feature/gamma_0.9
 import org.apache.thrift.TBase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONObject;
-import com.moseeker.baseorm.dao.hrdb.HRCompanyConfDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
 import com.moseeker.baseorm.dao.jobdb.JobCustomDao;
 import com.moseeker.baseorm.dao.jobdb.JobOccupationDao;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
@@ -27,13 +33,22 @@ public class JobOccupationService {
 	 * param:company_id
 	 * function:查找公司的自定义的字段，包括自定义职能和自定义字段
 	 */
+<<<<<<< HEAD
 	@Autowired
-	private HRCompanyConfDao hrCompantDao;
+	private HrCompanyConfDao hrCompantDao;
 	@Autowired
     private JobCustomDao customDao;
     @Autowired
     private JobOccupationDao occuPationdao;
     
+=======
+	JobDBDao.Iface jobDBDao =ServiceManager.SERVICEMANAGER
+			.getService(JobDBDao.Iface.class);
+	CompanyDao.Iface companyDao=ServiceManager.SERVICEMANAGER
+			.getService(CompanyDao.Iface.class);
+
+	@CounterIface
+>>>>>>> feature/gamma_0.9
 	public Response getCustomField(String param){
 		JSONObject obj=JSONObject.parseObject(param);
 		int company_id=obj.getIntValue("company_id");

@@ -18,6 +18,7 @@ public class WarnServer {
 //			server.start();
 			MoServer server=new MoServer(context,"",context.getBean(WarnThriftService.class));
 			server.startServer();
+			server.shutDownHook();
 			synchronized (WarnServer.class) {
 				while(true){
 					try{

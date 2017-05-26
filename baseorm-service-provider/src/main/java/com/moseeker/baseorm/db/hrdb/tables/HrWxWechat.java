@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxWechat extends TableImpl<HrWxWechatRecord> {
 
-    private static final long serialVersionUID = -1023994433;
+    private static final long serialVersionUID = -2084814607;
 
     /**
      * The reference instance of <code>hrdb.hr_wx_wechat</code>
@@ -119,7 +119,7 @@ public class HrWxWechat extends TableImpl<HrWxWechatRecord> {
     /**
      * The column <code>hrdb.hr_wx_wechat.qrcode</code>. 关注公众号的二维码
      */
-    public final TableField<HrWxWechatRecord, String> QRCODE = createField("qrcode", org.jooq.impl.SQLDataType.VARCHAR.length(300).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "关注公众号的二维码");
+    public final TableField<HrWxWechatRecord, String> QRCODE = createField("qrcode", org.jooq.impl.SQLDataType.VARCHAR.length(150).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "关注公众号的二维码");
 
     /**
      * The column <code>hrdb.hr_wx_wechat.passive_seeker</code>. 被动求职者开关，0= 开启, 1=不开启
@@ -180,11 +180,6 @@ public class HrWxWechat extends TableImpl<HrWxWechatRecord> {
      * The column <code>hrdb.hr_wx_wechat.update_time</code>. 修改时间
      */
     public final TableField<HrWxWechatRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "修改时间");
-
-    /**
-     * The column <code>hrdb.hr_wx_wechat.hr_chat</code>. IM聊天开关，0：不开启，1：开启
-     */
-    public final TableField<HrWxWechatRecord, Byte> HR_CHAT = createField("hr_chat", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "IM聊天开关，0：不开启，1：开启");
 
     /**
      * The column <code>hrdb.hr_wx_wechat.show_qx_qrcode</code>. 显示仟寻聚合号二维码, 0:不允许，1:允许

@@ -40,15 +40,14 @@ service ProfileServices {
     common_struct.Response postResources(1: list<profile_struct.Profile> resources) throws (1: common_struct.BIZException e);
     common_struct.Response putResources(1: list<profile_struct.Profile> resources) throws (1: common_struct.BIZException e);
     common_struct.Response delResources(1: list<profile_struct.Profile> resources) throws (1: common_struct.BIZException e);
-    
-    common_struct.Response getResource(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
-    common_struct.Response postResource(1: profile_struct.Profile profile) throws (1: common_struct.BIZException e);
-    common_struct.Response putResource(1: profile_struct.Profile profile) throws (1: common_struct.BIZException e);
-    common_struct.Response delResource(1: profile_struct.Profile profile) throws (1: common_struct.BIZException e);
-    common_struct.Response getCompleteness(1:i32 user_id, 2: string uuid, 3: i32 profile_id) throws (1: common_struct.BIZException e);
-    common_struct.Response reCalculateUserCompleteness(1:i32 userId, 2:string mobile) throws (1: common_struct.BIZException e);
-    common_struct.Response reCalculateUserCompletenessBySettingId(1:i32 id) throws (1: common_struct.BIZException e);
-    common_struct.Response getProfileByApplication(1:i32 companyId,2:i32 sourceId,3:i32 ats_status,4:bool recommender,5:bool dl_url_required) throws (1: common_struct.BIZException e);
+    common_struct.Response getResource(1:common_struct.CommonQuery query);
+    common_struct.Response postResource(1: profile_struct.Profile profile);
+    common_struct.Response putResource(1: profile_struct.Profile profile);
+    common_struct.Response delResource(1: profile_struct.Profile profile);
+    common_struct.Response getCompleteness(1:i32 user_id, 2: string uuid, 3: i32 profile_id);
+    common_struct.Response reCalculateUserCompleteness(1:i32 userId, 2:string mobile);
+    common_struct.Response reCalculateUserCompletenessBySettingId(1:i32 id);
+    common_struct.Response getProfileByApplication(1:i32 companyId,2:i32 sourceId,3:i32 ats_status,4:bool recommender,5:bool dl_url_required,6:map<string,list<string>> filter);
 }
 
 service AttachmentServices {
