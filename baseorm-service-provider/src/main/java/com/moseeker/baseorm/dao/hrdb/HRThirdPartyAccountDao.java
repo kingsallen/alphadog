@@ -15,6 +15,7 @@ import com.moseeker.thrift.gen.useraccounts.struct.BindAccountStruct;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -303,8 +304,27 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
         }
         return new ThirdPartAccountData();
     }
+    public List<ThirdPartAccountData> getThirdPartyAccountsByUserId(int user_id) throws TException {
+        try {
+            logger.info("getThirdPartyAccountsByUserId:"+user_id);
+            List<Integer> thirdPartyAccounts = create.select(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.THIRD_PARTY_ACCOUNT_ID).from(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR)
+                    .where(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.HR_ACCOUNT_ID.eq(user_id))
+                    .and(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.STATUS.eq((byte) 1)).fetch(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.THIRD_PARTY_ACCOUNT_ID);
 
-
+            if (thirdPartyAccounts != null && thirdPartyAccounts.size() > 0) {
+                List<ThirdPartAccountData> datas = create.select().from(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
+                        .where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID.in(thirdPartyAccounts))
+                        .fetchInto(ThirdPartAccountData.class);
+                logger.info("getThirdPartyAccountsByUserId:size"+datas.size());
+                return datas;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(),e);
+        }
+        return new ArrayList<>();
+    }
+    
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 }

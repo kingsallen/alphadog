@@ -2,11 +2,8 @@ package com.moseeker.apps.service;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.apps.constants.ResultMessage;
-<<<<<<< HEAD
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
-=======
->>>>>>> feature/gamma_0.9
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.UserSource;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -61,14 +58,9 @@ public class ProfileBS {
 		Query qu=new Query.QueryBuilder().where("id",positionId).buildQuery();
 		Position position = new Position();
 		try {
-<<<<<<< HEAD
 			position =jobPositionDao.getData(qu, Position.class);
 		} catch (Exception e1) {
 			e1.printStackTrace();
-=======
-			position = positionDao.getPosition(qu);
-		} catch (TException e1) {
->>>>>>> feature/gamma_0.9
 			logger.error(e1.getMessage(), e1);
 			return ResultMessage.PROGRAM_EXCEPTION.toResponse();
 		} finally {

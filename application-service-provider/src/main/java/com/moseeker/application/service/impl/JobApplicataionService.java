@@ -4,12 +4,8 @@ import com.moseeker.baseorm.redis.RedisClient;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
-<<<<<<< HEAD
 import javax.annotation.Resource;
 import org.apache.thrift.TException;
-=======
-
->>>>>>> feature/gamma_0.9
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -135,11 +131,7 @@ public class JobApplicataionService {
 
     @SuppressWarnings("serial")
     @CounterIface
-<<<<<<< HEAD
     public Response postApplicationIfNotApply(JobApplication jobApplication)throws TException {
-=======
-    public Response postApplicationIfNotApply(JobApplication jobApplication) {
->>>>>>> feature/gamma_0.9
         try {
             // 获取该申请的职位
         	Query query=new QueryBuilder().where("id", jobApplication.position_id).buildQuery();
@@ -645,7 +637,6 @@ public class JobApplicataionService {
         }
         return applicationResponse;
     }
-<<<<<<< HEAD
     private int archiveApplicationRecord(JobApplicationRecord jobApplicationRecord) throws TException {
 		// TODO Auto-generated method stub
 		int status = 0;
@@ -763,6 +754,4 @@ public class JobApplicataionService {
 		 return appId;
 	}
 
-=======
->>>>>>> feature/gamma_0.9
 }
