@@ -2,15 +2,13 @@ package com.moseeker.apps.service;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.apps.constants.ResultMessage;
-<<<<<<< HEAD
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
-=======
->>>>>>> feature/gamma_0.9
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.UserSource;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices;
@@ -20,7 +18,6 @@ import com.moseeker.thrift.gen.dao.struct.UserUserDO;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
-import com.mysql.jdbc.StringUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,14 +58,9 @@ public class ProfileBS {
 		Query qu=new Query.QueryBuilder().where("id",positionId).buildQuery();
 		Position position = new Position();
 		try {
-<<<<<<< HEAD
 			position =jobPositionDao.getData(qu, Position.class);
 		} catch (Exception e1) {
 			e1.printStackTrace();
-=======
-			position = positionDao.getPosition(qu);
-		} catch (TException e1) {
->>>>>>> feature/gamma_0.9
 			logger.error(e1.getMessage(), e1);
 			return ResultMessage.PROGRAM_EXCEPTION.toResponse();
 		} finally {

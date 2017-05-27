@@ -40,15 +40,11 @@ public class PositionServicesImpl implements Iface {
     private PositionService service;
     @Autowired
     private JobOccupationService customService;
-<<<<<<< HEAD
     @Autowired
     private JobPositionDao jobPositionDao;
-=======
-
     @Autowired
     private PositionQxService positionQxService;
 
->>>>>>> feature/gamma_0.9
     /**
      * 获取推荐职位
      * <p></p>

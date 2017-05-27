@@ -6,6 +6,7 @@ apply plugin: 'eclipse'
 dependencies {
     compile deps["libthrift"]
     compile deps["slf4j-log4j12"]
+    compile  fileTree(dir:'../libs',include:'jooq*.jar')
     testCompile deps["junit"]
 }
 

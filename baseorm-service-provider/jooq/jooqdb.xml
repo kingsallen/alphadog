@@ -37,5 +37,8 @@
             <!-- The destination directory of your generated classes -->
             <directory>src/main/java</directory>
         </target>
+        <generate>
+            <instanceFields>false</instanceFields>
+        </generate>
     </generator>
 </configuration>

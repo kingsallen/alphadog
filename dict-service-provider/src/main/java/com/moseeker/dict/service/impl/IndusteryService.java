@@ -55,7 +55,7 @@ public class IndusteryService {
 			if(industries != null && industries.size() > 0) {
 				industries.forEach(industry -> {
 					Map<String, Object> industryMap = new HashMap<>();
-					industryMap.put("type", industry.getType().intValue());
+					industryMap.put("type", industry.getType());
 					industryMap.put("code", industry.getCode().intValue());
 					industryMap.put("name", industry.getName());
 					industryMaps.add(industryMap);
@@ -78,7 +78,7 @@ public class IndusteryService {
 			if(industries != null && industries.size() > 0) {
 				industries.forEach(industry -> {
 					Map<String, Object> industryMap = new HashMap<>();
-					industryMap.put("type", industry.getType().intValue());
+					industryMap.put("type", industry.getType());
 					industryMap.put("code", industry.getCode().intValue());
 					industryMap.put("name", industry.getName());
 					industryMaps.add(industryMap);

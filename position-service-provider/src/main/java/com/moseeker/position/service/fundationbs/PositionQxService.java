@@ -1,26 +1,20 @@
 package com.moseeker.position.service.fundationbs;
 
+import com.moseeker.baseorm.dao.campaigndb.CampaignHeadImageDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
-import com.moseeker.baseorm.util.BeanUtils;
-import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
+import com.moseeker.common.util.query.Order;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.position.utils.CommonMessage;
-import com.moseeker.rpccenter.client.ServiceManager;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.dao.service.CampaignDBDao;
-import com.moseeker.thrift.gen.dao.service.JobDBDao;
 import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
 import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignHeadImageDO;
-import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.position.struct.PositionDetails;
 import com.moseeker.thrift.gen.position.struct.PositionDetailsListVO;
 import com.moseeker.thrift.gen.position.struct.PositionDetailsVO;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -33,13 +27,14 @@ import java.util.List;
  * Project_name :alphadog
  */
 @Service
-public class PositionQxService extends JOOQBaseServiceImpl<Position, JobPositionRecord> {
+public class PositionQxService {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-    private CampaignDBDao.Iface campaignDBDao = ServiceManager.SERVICEMANAGER.getService(CampaignDBDao.Iface.class);
+    @Autowired
+    private CampaignHeadImageDao campaignHeadImageDao;
+    @Autowired
+    private JobPositionDao jobPositionDao;
 
-
-    private JobDBDao.Iface jobDbDao = ServiceManager.SERVICEMANAGER.getService(JobDBDao.Iface.class);
 
     /**
      * 职位头图查询
@@ -50,10 +45,11 @@ public class PositionQxService extends JOOQBaseServiceImpl<Position, JobPosition
     public CampaignHeadImageVO headImage() {
         CampaignHeadImageVO campaignHeadImageVO = new CampaignHeadImageVO();
         try {
-            CommonQuery commonQuery = new CommonQuery();
-            commonQuery.setSortby("create_time");
-            commonQuery.setOrder("desc");
-            CampaignHeadImageDO campaignHeadImageDO = campaignDBDao.headImage(commonQuery);
+//            CommonQuery commonQuery = new CommonQuery();
+//            commonQuery.setSortby("create_time");
+//            commonQuery.setOrder("desc");
+            Query query=new Query.QueryBuilder().orderBy("create_time", Order.DESC).buildQuery();
+            CampaignHeadImageDO campaignHeadImageDO = campaignHeadImageDao.getData(query);     //campaignDBDao.headImage(commonQuery);
             if (campaignHeadImageDO.getId() != 0) {
                 campaignHeadImageVO.setMessage(CommonMessage.SUCCESS.getMessage());
                 campaignHeadImageVO.setStatus(CommonMessage.SUCCESS.getStatus());
@@ -84,7 +80,7 @@ public class PositionQxService extends JOOQBaseServiceImpl<Position, JobPosition
                 positionDetailsVO.setMessage(CommonMessage.POSITIONID_BLANK.getMessage());
                 return positionDetailsVO;
             }
-            PositionDetails positionDetails = jobDbDao.positionDetails(positionId);
+            PositionDetails positionDetails = jobPositionDao.positionDetails(positionId);//        jobDbDao.positionDetails(positionId);
             if (positionDetails.getId() != 0) {
                 positionDetailsVO.setData(positionDetails);
                 positionDetailsVO.setStatus(CommonMessage.SUCCESS.getStatus());
@@ -106,6 +102,7 @@ public class PositionQxService extends JOOQBaseServiceImpl<Position, JobPosition
      * 查询公司热招职位的详细信息
      *
      * @return PositionDetailsListVO
+     * 需要仔细测试
      */
     @CounterIface
     public PositionDetailsListVO companyHotPositionDetailsList(Integer companyId, Integer page, Integer per_age) {
@@ -116,13 +113,7 @@ public class PositionQxService extends JOOQBaseServiceImpl<Position, JobPosition
                 positionDetailsListVO.setMessage(CommonMessage.COMPANYID_BLANK.getMessage());
                 return positionDetailsListVO;
             }
-            CommonQuery commonQuery = new CommonQuery();
-            HashMap hashMap = new HashMap();
-            hashMap.put("company_id", String.valueOf(companyId));
-            commonQuery.setEqualFilter(hashMap);
-            commonQuery.setPage(page);
-            commonQuery.setPer_page(per_age);
-            List<PositionDetails> list = jobDbDao.hotPositionDetailsList(commonQuery);
+            List<PositionDetails> list =jobPositionDao.hotPositionDetailsList(companyId,page,per_age);
             if (list != null && list.size() > 0) {
                 positionDetailsListVO.setData(list);
                 positionDetailsListVO.setPage(page);
@@ -156,13 +147,7 @@ public class PositionQxService extends JOOQBaseServiceImpl<Position, JobPosition
                 positionDetailsList.setMessage(CommonMessage.POSITIONID_BLANK.getMessage());
                 return positionDetailsList;
             }
-            CommonQuery commonQuery = new CommonQuery();
-            HashMap hashMap = new HashMap();
-            hashMap.put("pid", String.valueOf(pid));
-            commonQuery.setEqualFilter(hashMap);
-            commonQuery.setPage(page);
-            commonQuery.setPer_page(per_age);
-            List<PositionDetails> list = jobDbDao.similarityPositionDetailsList(commonQuery);
+            List<PositionDetails> list =jobPositionDao.similarityPositionDetailsList(pid, page, per_age);// jobDbDao.similarityPositionDetailsList(commonQuery);
             if (list != null && list.size() > 0) {
                 positionDetailsList.setStatus(CommonMessage.SUCCESS.getStatus());
                 positionDetailsList.setMessage(CommonMessage.SUCCESS.getMessage());
@@ -179,21 +164,6 @@ public class PositionQxService extends JOOQBaseServiceImpl<Position, JobPosition
             logger.error(e.getMessage(), e);
         }
         return positionDetailsList;
-    }
-
-    @Override
-    protected void initDao() {
-        super.dao = this.dao;
-    }
-
-    @Override
-    protected Position DBToStruct(JobPositionRecord r) {
-        return (Position) BeanUtils.DBToStruct(Position.class, r);
-    }
-
-    @Override
-    protected JobPositionRecord structToDB(Position p) {
-        return (JobPositionRecord) BeanUtils.structToDB(p, JobPositionRecord.class);
     }
 
 

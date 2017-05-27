@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobResumeOtherRecord extends UpdatableRecordImpl<JobResumeOtherRecord> implements Record4<Integer, String, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = -285274153;
+    private static final long serialVersionUID = -2063772793;
 
     /**
      * Setter for <code>jobdb.job_resume_other.app_id</code>. job_application.id
@@ -125,7 +125,7 @@ public class JobResumeOtherRecord extends UpdatableRecordImpl<JobResumeOtherReco
      */
     @Override
     public Field<Integer> field1() {
-        return JobResumeOther.JOB_RESUME_OTHER.APP_ID;
+        return JobResumeOther.APP_ID;
     }
 
     /**
@@ -133,7 +133,7 @@ public class JobResumeOtherRecord extends UpdatableRecordImpl<JobResumeOtherReco
      */
     @Override
     public Field<String> field2() {
-        return JobResumeOther.JOB_RESUME_OTHER.OTHER;
+        return JobResumeOther.OTHER;
     }
 
     /**
@@ -141,7 +141,7 @@ public class JobResumeOtherRecord extends UpdatableRecordImpl<JobResumeOtherReco
      */
     @Override
     public Field<Timestamp> field3() {
-        return JobResumeOther.JOB_RESUME_OTHER.CREATE_TIME;
+        return JobResumeOther.CREATE_TIME;
     }
 
     /**
@@ -149,7 +149,7 @@ public class JobResumeOtherRecord extends UpdatableRecordImpl<JobResumeOtherReco
      */
     @Override
     public Field<Timestamp> field4() {
-        return JobResumeOther.JOB_RESUME_OTHER.UPDATE_TIME;
+        return JobResumeOther.UPDATE_TIME;
     }
 
     /**

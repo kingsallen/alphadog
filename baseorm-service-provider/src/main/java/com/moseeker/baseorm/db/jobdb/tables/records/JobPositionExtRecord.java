@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionExtRecord extends UpdatableRecordImpl<JobPositionExtRecord> implements Record6<Integer, Integer, Timestamp, Timestamp, Integer, String> {
 
-    private static final long serialVersionUID = 760942612;
+    private static final long serialVersionUID = 529856922;
 
     /**
      * Setter for <code>jobdb.job_position_ext.pid</code>. job_position.id
@@ -153,7 +153,7 @@ public class JobPositionExtRecord extends UpdatableRecordImpl<JobPositionExtReco
      */
     @Override
     public Field<Integer> field1() {
-        return JobPositionExt.JOB_POSITION_EXT.PID;
+        return JobPositionExt.PID;
     }
 
     /**
@@ -161,7 +161,7 @@ public class JobPositionExtRecord extends UpdatableRecordImpl<JobPositionExtReco
      */
     @Override
     public Field<Integer> field2() {
-        return JobPositionExt.JOB_POSITION_EXT.JOB_CUSTOM_ID;
+        return JobPositionExt.JOB_CUSTOM_ID;
     }
 
     /**
@@ -169,7 +169,7 @@ public class JobPositionExtRecord extends UpdatableRecordImpl<JobPositionExtReco
      */
     @Override
     public Field<Timestamp> field3() {
-        return JobPositionExt.JOB_POSITION_EXT.CREATE_TIME;
+        return JobPositionExt.CREATE_TIME;
     }
 
     /**
@@ -177,7 +177,7 @@ public class JobPositionExtRecord extends UpdatableRecordImpl<JobPositionExtReco
      */
     @Override
     public Field<Timestamp> field4() {
-        return JobPositionExt.JOB_POSITION_EXT.UPDATE_TIME;
+        return JobPositionExt.UPDATE_TIME;
     }
 
     /**
@@ -185,7 +185,7 @@ public class JobPositionExtRecord extends UpdatableRecordImpl<JobPositionExtReco
      */
     @Override
     public Field<Integer> field5() {
-        return JobPositionExt.JOB_POSITION_EXT.JOB_OCCUPATION_ID;
+        return JobPositionExt.JOB_OCCUPATION_ID;
     }
 
     /**
@@ -193,7 +193,7 @@ public class JobPositionExtRecord extends UpdatableRecordImpl<JobPositionExtReco
      */
     @Override
     public Field<String> field6() {
-        return JobPositionExt.JOB_POSITION_EXT.EXTRA;
+        return JobPositionExt.EXTRA;
     }
 
     /**

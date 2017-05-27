@@ -29,7 +29,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionTopic extends TableImpl<JobPositionTopicRecord> {
 
-    private static final long serialVersionUID = -1712272908;
+    private static final long serialVersionUID = 415014745;
 
     /**
      * The reference instance of <code>jobdb.job_position_topic</code>
@@ -47,25 +47,18 @@ public class JobPositionTopic extends TableImpl<JobPositionTopicRecord> {
     /**
      * The column <code>jobdb.job_position_topic.position_id</code>. hr_position.id, 职位ID
      */
-    public final TableField<JobPositionTopicRecord, Integer> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "hr_position.id, 职位ID");
+    public static final TableField<JobPositionTopicRecord, Integer> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), JOB_POSITION_TOPIC, "hr_position.id, 职位ID");
 
     /**
      * The column <code>jobdb.job_position_topic.topic_id</code>. hr_topic.id, 主题ID
      */
-    public final TableField<JobPositionTopicRecord, Integer> TOPIC_ID = createField("topic_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "hr_topic.id, 主题ID");
+    public static final TableField<JobPositionTopicRecord, Integer> TOPIC_ID = createField("topic_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), JOB_POSITION_TOPIC, "hr_topic.id, 主题ID");
 
     /**
-     * Create a <code>jobdb.job_position_topic</code> table reference
+     * No further instances allowed
      */
-    public JobPositionTopic() {
+    private JobPositionTopic() {
         this("job_position_topic", null);
-    }
-
-    /**
-     * Create an aliased <code>jobdb.job_position_topic</code> table reference
-     */
-    public JobPositionTopic(String alias) {
-        this(alias, JOB_POSITION_TOPIC);
     }
 
     private JobPositionTopic(String alias, Table<JobPositionTopicRecord> aliased) {
@@ -82,20 +75,5 @@ public class JobPositionTopic extends TableImpl<JobPositionTopicRecord> {
     @Override
     public Schema getSchema() {
         return Jobdb.JOBDB;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public JobPositionTopic as(String alias) {
-        return new JobPositionTopic(alias, this);
-    }
-
-    /**
-     * Rename this table
-     */
-    public JobPositionTopic rename(String name) {
-        return new JobPositionTopic(name, null);
     }
 }
