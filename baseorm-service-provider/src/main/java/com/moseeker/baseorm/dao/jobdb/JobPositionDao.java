@@ -512,4 +512,24 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
 		}
 		return count;
 	}
+    public List<Integer> listPositionIdByUserId(int userId) {
+        List<Integer> list = new ArrayList<>();
+        UserEmployeeRecord employeeRecord = create.selectFrom(UserEmployee.USER_EMPLOYEE)
+                .where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.equal(userId)
+                        .and(UserEmployee.USER_EMPLOYEE.DISABLE.equal((byte)0))
+                        .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.equal((byte)0)))
+                .fetchOne();
+        if (employeeRecord != null) {
+            Result<Record1<Integer>> result = create.select(JobPosition.JOB_POSITION.ID)
+                    .from(JobPosition.JOB_POSITION)
+                    .where(JobPosition.JOB_POSITION.COMPANY_ID.equal(employeeRecord.getCompanyId()))
+                    .fetch();
+            if(result != null && result.size() > 0) {
+                result.forEach(record ->  {
+                    list.add(record.value1());
+                });
+            }
+        }
+        return list;
+    }
 }

@@ -29,7 +29,6 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyPositionRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobCustomRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobOccupationRecord;
-import com.moseeker.baseorm.db.jobdb.tables.records.JobOccupationRelRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionCityRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionExtRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
