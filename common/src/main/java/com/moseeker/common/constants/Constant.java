@@ -197,5 +197,7 @@ public final class Constant {
 	public static final int BRPOP_BLOCKING_TIMEOUT 		= 5; 	//brpop超时时间
 	public static final int DESCRIPTION_LENGTH 		= 900; 	//描述长度
 	
-	 public static final String WORDPRESS_POST_POSTSTATUS_PUBLISH = "publish";
+    public static final String WORDPRESS_POST_POSTSTATUS_PUBLISH = "publish";
+
+    public static final int SMS_UPPER_LIMIT = 2; //暂时限制2条短信
 }
