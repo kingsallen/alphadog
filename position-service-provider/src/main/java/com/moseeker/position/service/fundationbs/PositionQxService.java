@@ -2,7 +2,7 @@ package com.moseeker.position.service.fundationbs;
 
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
-import com.moseeker.common.util.BeanUtils;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.position.utils.CommonMessage;
 import com.moseeker.rpccenter.client.ServiceManager;

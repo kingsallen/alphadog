@@ -5,14 +5,16 @@ package com.moseeker.baseorm.db.campaigndb.tables.records;
 
 
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignHeadImage;
+
+import java.sql.Timestamp;
+
+import javax.annotation.Generated;
+
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record5;
 import org.jooq.Row5;
 import org.jooq.impl.UpdatableRecordImpl;
-
-import javax.annotation.Generated;
-import java.sql.Timestamp;
 
 
 /**
@@ -28,7 +30,7 @@ import java.sql.Timestamp;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CampaignHeadImageRecord extends UpdatableRecordImpl<CampaignHeadImageRecord> implements Record5<Integer, String, String, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = 1664074325;
+    private static final long serialVersionUID = 1947689173;
 
     /**
      * Setter for <code>campaigndb.campaign_head_image.id</code>.
@@ -87,14 +89,14 @@ public class CampaignHeadImageRecord extends UpdatableRecordImpl<CampaignHeadIma
     }
 
     /**
-     * Setter for <code>campaigndb.campaign_head_image.update_time</code>. 创建时间
+     * Setter for <code>campaigndb.campaign_head_image.update_time</code>. 修改时间
      */
     public void setUpdateTime(Timestamp value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>campaigndb.campaign_head_image.update_time</code>. 创建时间
+     * Getter for <code>campaigndb.campaign_head_image.update_time</code>. 修改时间
      */
     public Timestamp getUpdateTime() {
         return (Timestamp) get(4);

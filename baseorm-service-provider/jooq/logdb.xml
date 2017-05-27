@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <configuration xmlns="http://www.jooq.org/xsd/jooq-codegen-3.7.0.xsd">
-<<<<<<< HEAD
     <!-- Configure the database connection here -->
     <jdbc>
         <driver>com.mysql.jdbc.Driver</driver>
@@ -39,43 +38,4 @@
             <directory>src/main/java</directory>
         </target>
     </generator>
-=======
-<!-- Configure the database connection here -->
-<jdbc>
-<driver>com.mysql.jdbc.Driver</driver>
-<url>jdbc:mysql://192.168.31.66:3306/logdb</url>
-<user>www</user>
-<password>moseeker.com</password>
-</jdbc>
-<generator>
-<!-- The default code generator. You can override this one, to generate your own code style.
-Supported generators:
-- org.jooq.util.JavaGenerator
-- org.jooq.util.ScalaGenerator
-Defaults to org.jooq.util.JavaGenerator -->
-<name>org.jooq.util.JavaGenerator</name>
-<database>
-<!-- The database type. The format here is:
-org.util.[database].[database]Database -->
-<name>org.jooq.util.mysql.MySQLDatabase</name>
-<!-- The database schema (or in the absence of schema support, in your RDBMS this
-can be the owner, user, database name) to be generated -->
-<inputSchema>logdb</inputSchema>
-<!-- All elements that are generated from your schema
-(A Java regular expression. Use the pipe to separate several expressions)
-Watch out for case-sensitivity. Depending on your database, this might be important! -->
-<includes>.*</includes>
-<!-- All elements that are excluded from your schema
-(A Java regular expression. Use the pipe to separate several expressions).
-Excludes match before includes -->
-<excludes></excludes>
-</database>
-<target>
-<!-- The destination package of your generated classes (within the destination directory) -->
-<packageName>com.moseeker.baseorm.db.logdb</packageName>
-<!-- The destination directory of your generated classes -->
-<directory>src/main/java</directory>
-</target>
-</generator>
->>>>>>> feature/gamma_0.9
 </configuration>

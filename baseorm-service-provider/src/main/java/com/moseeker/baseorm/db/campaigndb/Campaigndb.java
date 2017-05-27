@@ -4,15 +4,24 @@
 package com.moseeker.baseorm.db.campaigndb;
 
 
-import com.moseeker.baseorm.db.campaigndb.tables.*;
-import org.jooq.Catalog;
-import org.jooq.Table;
-import org.jooq.impl.SchemaImpl;
+import com.moseeker.baseorm.db.campaigndb.tables.CampaignCompanySurvey;
+import com.moseeker.baseorm.db.campaigndb.tables.CampaignEdmCampaign;
+import com.moseeker.baseorm.db.campaigndb.tables.CampaignEdmUserrecommendedPositions;
+import com.moseeker.baseorm.db.campaigndb.tables.CampaignEdmUsers;
+import com.moseeker.baseorm.db.campaigndb.tables.CampaignEmailAgentdelivery;
+import com.moseeker.baseorm.db.campaigndb.tables.CampaignHeadImage;
+import com.moseeker.baseorm.db.campaigndb.tables.CampaignRecommendCompany;
+import com.moseeker.baseorm.db.campaigndb.tables.CampaignRecommendPosition;
 
-import javax.annotation.Generated;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.annotation.Generated;
+
+import org.jooq.Catalog;
+import org.jooq.Table;
+import org.jooq.impl.SchemaImpl;
 
 
 /**
@@ -28,7 +37,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Campaigndb extends SchemaImpl {
 
-    private static final long serialVersionUID = -1665200872;
+    private static final long serialVersionUID = -572757470;
 
     /**
      * The reference instance of <code>campaigndb</code>
@@ -36,9 +45,9 @@ public class Campaigndb extends SchemaImpl {
     public static final Campaigndb CAMPAIGNDB = new Campaigndb();
 
     /**
-     * 百度用户关联表
+     * The table <code>campaigndb.campaign_company_survey</code>.
      */
-    public final CampaignBaiduUsers CAMPAIGN_BAIDU_USERS = com.moseeker.baseorm.db.campaigndb.tables.CampaignBaiduUsers.CAMPAIGN_BAIDU_USERS;
+    public final CampaignCompanySurvey CAMPAIGN_COMPANY_SURVEY = com.moseeker.baseorm.db.campaigndb.tables.CampaignCompanySurvey.CAMPAIGN_COMPANY_SURVEY;
 
     /**
      * The table <code>campaigndb.campaign_edm_campaign</code>.
@@ -56,6 +65,11 @@ public class Campaigndb extends SchemaImpl {
     public final CampaignEdmUsers CAMPAIGN_EDM_USERS = com.moseeker.baseorm.db.campaigndb.tables.CampaignEdmUsers.CAMPAIGN_EDM_USERS;
 
     /**
+     * The table <code>campaigndb.campaign_email_agentdelivery</code>.
+     */
+    public final CampaignEmailAgentdelivery CAMPAIGN_EMAIL_AGENTDELIVERY = com.moseeker.baseorm.db.campaigndb.tables.CampaignEmailAgentdelivery.CAMPAIGN_EMAIL_AGENTDELIVERY;
+
+    /**
      * 头部图片(职位列表页)
      */
     public final CampaignHeadImage CAMPAIGN_HEAD_IMAGE = com.moseeker.baseorm.db.campaigndb.tables.CampaignHeadImage.CAMPAIGN_HEAD_IMAGE;
@@ -63,12 +77,12 @@ public class Campaigndb extends SchemaImpl {
     /**
      * 推荐公司
      */
-    public final CampaignRecommedCompany CAMPAIGN_RECOMMED_COMPANY = com.moseeker.baseorm.db.campaigndb.tables.CampaignRecommedCompany.CAMPAIGN_RECOMMED_COMPANY;
+    public final CampaignRecommendCompany CAMPAIGN_RECOMMEND_COMPANY = com.moseeker.baseorm.db.campaigndb.tables.CampaignRecommendCompany.CAMPAIGN_RECOMMEND_COMPANY;
 
     /**
      * 推荐职位
      */
-    public final CampaignRecommedPosition CAMPAIGN_RECOMMED_POSITION = com.moseeker.baseorm.db.campaigndb.tables.CampaignRecommedPosition.CAMPAIGN_RECOMMED_POSITION;
+    public final CampaignRecommendPosition CAMPAIGN_RECOMMEND_POSITION = com.moseeker.baseorm.db.campaigndb.tables.CampaignRecommendPosition.CAMPAIGN_RECOMMEND_POSITION;
 
     /**
      * No further instances allowed
@@ -95,12 +109,13 @@ public class Campaigndb extends SchemaImpl {
 
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
-            CampaignBaiduUsers.CAMPAIGN_BAIDU_USERS,
+            CampaignCompanySurvey.CAMPAIGN_COMPANY_SURVEY,
             CampaignEdmCampaign.CAMPAIGN_EDM_CAMPAIGN,
             CampaignEdmUserrecommendedPositions.CAMPAIGN_EDM_USERRECOMMENDED_POSITIONS,
             CampaignEdmUsers.CAMPAIGN_EDM_USERS,
+            CampaignEmailAgentdelivery.CAMPAIGN_EMAIL_AGENTDELIVERY,
             CampaignHeadImage.CAMPAIGN_HEAD_IMAGE,
-            CampaignRecommedCompany.CAMPAIGN_RECOMMED_COMPANY,
-            CampaignRecommedPosition.CAMPAIGN_RECOMMED_POSITION);
+            CampaignRecommendCompany.CAMPAIGN_RECOMMEND_COMPANY,
+            CampaignRecommendPosition.CAMPAIGN_RECOMMEND_POSITION);
     }
 }

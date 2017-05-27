@@ -1,6 +1,6 @@
 package com.moseeker.baseorm.crud;
 
-import com.moseeker.common.util.BeanUtils;
+import com.moseeker.baseorm.util.BeanUtils;
 import org.jooq.Field;
 import org.jooq.impl.TableImpl;
 

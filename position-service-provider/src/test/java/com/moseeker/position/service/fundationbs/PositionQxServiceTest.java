@@ -1,6 +1,6 @@
 //package com.moseeker.position.service.fundationbs;
 //
-//import com.moseeker.common.util.BeanUtils;
+//import com.moseeker.baseorm.util.BeanUtils;
 //
 //import org.junit.Test;
 //import org.slf4j.Logger;

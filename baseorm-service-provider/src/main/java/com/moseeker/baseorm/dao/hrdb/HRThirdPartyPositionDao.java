@@ -6,7 +6,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyPositionRecord;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.BeanUtils;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -265,8 +265,7 @@ public class HRThirdPartyPositionDao extends JooqCrudImpl<HrThirdPartyPositionDO
 				logger.error(e.getMessage(), e);
 			}
 		} else {
-			HrThirdPartyPositionRecord record1 = BeanUtils.structToDB(position,
-					HrThirdPartyPositionRecord.class, null);
+			HrThirdPartyPositionRecord record1 = BeanUtils.structToDB(position, HrThirdPartyPositionRecord.class);
 			create.attach(record1);
 			count = record1.insert();
 		}

@@ -5,7 +5,7 @@ import com.moseeker.baseorm.dao.wordpressdb.WordpressPostsDao;
 import com.moseeker.baseorm.dao.wordpressdb.WordpressUserPostDao;
 import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressPostsRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.util.BeanUtils;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.dao.struct.PostExt;
