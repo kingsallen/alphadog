@@ -119,18 +119,20 @@ public class CandidateEntity implements Candidate {
                             candidateCompanyDO.setMobile(String.valueOf(userUserDO.getMobile()));
                             candidateCompanyDO.setEmail(userUserDO.getEmail());
                             candidateCompanyDO.setUpdateTime(date);
-                            CandidateDBDao.saveCandidateCompany(candidateCompanyDO);
+                            candidateCompanyDO = CandidateDBDao.saveCandidateCompany(candidateCompanyDO);
                         } else {
                             candidateCompanyDO = candidateCompanyDOOptional.get();
                         }
-                        CandidatePositionDO candidatePositionDO = new CandidatePositionDO();
-                        candidatePositionDO.setCandidateCompanyId(candidateCompanyDO.getId());
-                        candidatePositionDO.setViewNumber(1);
-                        candidatePositionDO.setUpdateTime(date);
-                        candidatePositionDO.setSharedFromEmployee(fromEmployee?(byte)1:0);
-                        candidatePositionDO.setPositionId(positionID);
-                        candidatePositionDO.setUserId(userID);
-                        CandidateDBDao.saveCandidatePosition(candidatePositionDO);
+                        if (candidateCompanyDO.getId() > 0) {
+                            CandidatePositionDO candidatePositionDO = new CandidatePositionDO();
+                            candidatePositionDO.setCandidateCompanyId(candidateCompanyDO.getId());
+                            candidatePositionDO.setViewNumber(1);
+                            candidatePositionDO.setUpdateTime(date);
+                            candidatePositionDO.setSharedFromEmployee(fromEmployee?(byte)1:0);
+                            candidatePositionDO.setPositionId(positionID);
+                            candidatePositionDO.setUserId(userID);
+                            CandidateDBDao.saveCandidatePosition(candidatePositionDO);
+                        }
                     }
                 }
             } catch (TException e) {
@@ -388,7 +390,7 @@ public class CandidateEntity implements Candidate {
         recomRecordDO.setIsRecom((byte)RecomType.IGNORE.getValue());
         try {
             CandidateDBDao.updateCandidateRecomRecord(recomRecordDO);
-            
+
             List<CandidateRecomRecordDO> candidateRecomRecordList = CandidateDBDao.listFiltredCandidateRecomRecord(recomRecordDO);
             if (candidateRecomRecordList != null && candidateRecomRecordList.size() > 0) {
             	candidateRecomRecordList.forEach(candidate -> {
@@ -396,7 +398,7 @@ public class CandidateEntity implements Candidate {
             	});
             	CandidateDBDao.updateCandidateRecomRecords(candidateRecomRecordList);
             }
-            
+
         } catch (TException e) {
             logger.error(e.getMessage(), e);
         }
@@ -581,7 +583,7 @@ public class CandidateEntity implements Candidate {
         candidateRecomRecordDO.setRecomTime(nowStr);
         candidateRecomRecordDO.setIsRecom((byte)0);
         CandidateDBDao.updateCandidateRecomRecord(candidateRecomRecordDO);
-        
+
         List<CandidateRecomRecordDO> candidateRecomRecordList = CandidateDBDao.listFiltredCandidateRecomRecord(candidateRecomRecordDO);
         if (candidateRecomRecordList != null && candidateRecomRecordList.size() > 0) {
         	candidateRecomRecordList.forEach(candidate -> {
