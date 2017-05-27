@@ -4,7 +4,7 @@ import com.moseeker.baseorm.dao.profiledb.ProfileAwardsDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileAwardsRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.util.BeanUtils;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.Pagination;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;

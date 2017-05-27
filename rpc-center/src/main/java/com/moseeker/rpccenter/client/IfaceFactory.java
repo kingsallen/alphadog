@@ -7,8 +7,6 @@ import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import org.apache.commons.pool.impl.GenericKeyedObjectPool;
 import org.apache.thrift.TServiceClient;
 import org.apache.thrift.TServiceClientFactory;
-
-import com.moseeker.common.util.BeanUtils;
 import com.moseeker.rpccenter.config.ThriftServerConfig;
 import com.moseeker.rpccenter.listener.ZKPath;
 import com.moseeker.rpccenter.pool.TMultiServicePoolFactory;

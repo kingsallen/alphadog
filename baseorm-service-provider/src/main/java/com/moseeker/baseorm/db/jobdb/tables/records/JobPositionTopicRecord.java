@@ -27,7 +27,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionTopicRecord extends TableRecordImpl<JobPositionTopicRecord> implements Record2<Integer, Integer> {
 
-    private static final long serialVersionUID = -723968060;
+    private static final long serialVersionUID = 1186106876;
 
     /**
      * Setter for <code>jobdb.job_position_topic.position_id</code>. hr_position.id, 职位ID
@@ -82,7 +82,7 @@ public class JobPositionTopicRecord extends TableRecordImpl<JobPositionTopicReco
      */
     @Override
     public Field<Integer> field1() {
-        return JobPositionTopic.JOB_POSITION_TOPIC.POSITION_ID;
+        return JobPositionTopic.POSITION_ID;
     }
 
     /**
@@ -90,7 +90,7 @@ public class JobPositionTopicRecord extends TableRecordImpl<JobPositionTopicReco
      */
     @Override
     public Field<Integer> field2() {
-        return JobPositionTopic.JOB_POSITION_TOPIC.TOPIC_ID;
+        return JobPositionTopic.TOPIC_ID;
     }
 
     /**

@@ -1,6 +1,6 @@
 package com.moseeker.baseorm.db.candidatedb.tables.records;
 
-import com.moseeker.common.util.BeanUtils;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.thrift.gen.dao.struct.CandidateCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.CandidatePositionDO;
 import org.joda.time.DateTime;

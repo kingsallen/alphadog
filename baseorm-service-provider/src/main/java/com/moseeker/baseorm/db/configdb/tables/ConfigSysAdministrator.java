@@ -21,7 +21,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -37,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSysAdministrator extends TableImpl<ConfigSysAdministratorRecord> {
 
-    private static final long serialVersionUID = 455604458;
+    private static final long serialVersionUID = 1071057930;
 
     /**
      * The reference instance of <code>configdb.config_sys_administrator</code>
@@ -55,7 +54,7 @@ public class ConfigSysAdministrator extends TableImpl<ConfigSysAdministratorReco
     /**
      * The column <code>configdb.config_sys_administrator.id</code>.
      */
-    public final TableField<ConfigSysAdministratorRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
+    public final TableField<ConfigSysAdministratorRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>configdb.config_sys_administrator.name</code>.
@@ -136,7 +135,7 @@ public class ConfigSysAdministrator extends TableImpl<ConfigSysAdministratorReco
      * {@inheritDoc}
      */
     @Override
-    public Identity<ConfigSysAdministratorRecord, UInteger> getIdentity() {
+    public Identity<ConfigSysAdministratorRecord, Integer> getIdentity() {
         return Keys.IDENTITY_CONFIG_SYS_ADMINISTRATOR;
     }
 

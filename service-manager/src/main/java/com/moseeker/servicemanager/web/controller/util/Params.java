@@ -2,7 +2,7 @@ package com.moseeker.servicemanager.web.controller.util;
 
 import java.util.HashMap;
 
-import com.moseeker.common.util.BeanUtils;
+import com.moseeker.baseorm.util.BeanUtils;
 
 /**
  * 

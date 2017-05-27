@@ -7,48 +7,32 @@ import com.alibaba.fastjson.serializer.ValueFilter;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.baseorm.dao.dictdb.DictCityPostcodeDao;
 import com.moseeker.baseorm.dao.dictdb.DictConstantDao;
-import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
-import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
-import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
-import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
-import com.moseeker.baseorm.dao.hrdb.HrHbConfigDao;
-import com.moseeker.baseorm.dao.hrdb.HrHbItemsDao;
-import com.moseeker.baseorm.dao.hrdb.HrHbPositionBindingDao;
-import com.moseeker.baseorm.dao.hrdb.HrTeamDao;
-import com.moseeker.baseorm.dao.jobdb.JobCustomDao;
-import com.moseeker.baseorm.dao.jobdb.JobOccupationDao;
-import com.moseeker.baseorm.dao.jobdb.JobOccupationRelDao;
-import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
-import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
-import com.moseeker.baseorm.dao.jobdb.JobPositionExtDao;
+import com.moseeker.baseorm.dao.hrdb.*;
+import com.moseeker.baseorm.dao.jobdb.*;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityPostcodeRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrTeamRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyPositionRecord;
-import com.moseeker.baseorm.db.jobdb.tables.records.JobCustomRecord;
-import com.moseeker.baseorm.db.jobdb.tables.records.JobOccupationRecord;
-import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionCityRecord;
-import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionExtRecord;
-import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
+import com.moseeker.baseorm.db.jobdb.tables.records.*;
+import com.moseeker.baseorm.pojo.JobPositionPojo;
+import com.moseeker.baseorm.pojo.RecommendedPositonPojo;
 import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.baseorm.tool.QueryConvert;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.*;
-import com.moseeker.common.constants.AccountSync;
-import com.moseeker.common.constants.AppId;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.constants.KeyIdentifier;
-import com.moseeker.common.constants.PositionSync;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.MD5Util;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
-import com.moseeker.common.util.query.Query.QueryBuilder;
 import com.moseeker.common.util.query.ValueOp;
-import com.moseeker.position.pojo.*;
+import com.moseeker.position.pojo.DictConstantPojo;
+import com.moseeker.position.pojo.JobPositionFailMess;
+import com.moseeker.position.pojo.JobPostionResponse;
+import com.moseeker.position.pojo.PositionForSynchronizationPojo;
 import com.moseeker.position.service.position.PositionChangeUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
@@ -58,39 +42,23 @@ import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyAccountDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrHbConfigDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrHbItemsDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrHbPositionBindingDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.position.struct.*;
-import com.mysql.jdbc.StringUtils;
+import static java.lang.Math.round;
+import static java.lang.Math.toIntExact;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import org.apache.thrift.TException;
-import org.joda.time.DateTime;
 import org.jooq.Field;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.moseeker.baseorm.pojo.RecommendedPositonPojo;
-import com.moseeker.baseorm.tool.QueryConvert;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import static java.lang.Math.round;
-import static java.lang.Math.toIntExact;
-import com.moseeker.baseorm.pojo.JobPositionPojo;
 
 @Service
 @Transactional
@@ -108,8 +76,6 @@ public class PositionService {
     private JobPositionExtDao jobPositionExtDao;
     @Autowired
     private JobOccupationDao jobOccupationDao;
-    @Autowired
-    private JobOccupationRelDao jobOccupationRelDao;
     @Autowired
     private DictCityDao dictCityDao;
     @Autowired
@@ -560,8 +526,6 @@ public class PositionService {
             List<JobPositionCityRecord> jobPositionCityRecordsUpdatelist = new ArrayList<>();
             // 需要新增的JobPositionCity数据
             List<JobPositionCityRecord> jobPositionCityRecordsAddlist = new ArrayList<>();
-            // 需要新增的JobOccupationRel 数据
-            List<JobOccupationRelRecord> jobOccupationRelRecordList = new ArrayList<>();
             // 处理数据
             for (JobPostrionObj jobPositionHandlerDate : jobPositionHandlerDates) {
                 logger.info("提交的数据：" + jobPositionHandlerDate.toString());
@@ -731,7 +695,6 @@ public class PositionService {
             logger.info("新增jobPostionExt数据的条数:" + jobPositionExtRecordAddRecords.size());
             logger.info("新增jobPositionCity数据的条数:" + jobPositionCityRecordsAddlist.size());
             logger.info("需要更新jobPositionCity数据条数:" + jobPositionCityRecordsUpdatelist.size());
-            logger.info("需要更新职能信息数据条数:" + jobOccupationRelRecordList.size());
             logger.info("---------------------------------------------------------");
             try {
                 // 更新jobPostion数据
@@ -769,18 +732,6 @@ public class PositionService {
                     logger.info("-------------新增jobPositionCity的数据开始------------------");
                     jobPositionCityDao.addAllRecord(jobPositionCityRecordsUpdatelist);
                     logger.info("-------------新增jobPositionCity的数据结束------------------");
-                }
-                // 职能信息数据
-                if (jobOccupationRelRecordList.size() > 0) {
-                    if (jobOccupationRelIdList.size() > 0) { // 先删除jobOccupationRel数据
-                        logger.info("-------------需要删除jobOccupationRel数据：" + jobOccupationRelIdList.toString());
-                        logger.info("-------------删除jobOccupationRel数据开始------------------");
-                        jobOccupationRelDao.delJobOccupationRelByPids(jobOccupationRelIdList);
-                        logger.info("-------------删除jobOccupationRel数据结束------------------");
-                    }
-                    logger.info("-------------新增jobOccupationRel数据开始------------------");
-                    jobOccupationRelDao.addAllRecord(jobOccupationRelRecordList);
-                    logger.info("-------------新增jobOccupationRel数据结束------------------");
                 }
             } catch (Exception e) {
                 logger.info("更新和插入数据发生异常,异常信息为：" + e.getMessage());
@@ -1108,14 +1059,6 @@ public class PositionService {
             }
         }
         return stringBuffer.toString();
-    }
-
-    public JobOccupationDao getJobOccupationDao() {
-        return jobOccupationDao;
-    }
-
-    public void setJobOccupationDao(JobOccupationDao jobOccupationDao) {
-        this.jobOccupationDao = jobOccupationDao;
     }
 
     public List<ThirdPartyPositionData> getThirdPartyPositions(CommonQuery query) {

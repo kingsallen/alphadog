@@ -38,5 +38,8 @@
             <directory>src/main/java</directory>
         </target>
     </generator>
+<<<<<<< HEAD
+=======
 
+>>>>>>> 1756e299a57b1530e472e4ce759726c52bf4c8f5
 </configuration>

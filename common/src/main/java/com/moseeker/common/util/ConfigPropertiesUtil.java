@@ -1,11 +1,13 @@
 package com.moseeker.common.util;
 
+import com.alibaba.fastjson.JSONArray;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashSet;
-import java.util.Properties;
-import java.util.Set;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.text.ParseException;
+import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -172,14 +174,14 @@ public class ConfigPropertiesUtil {
 
     public <T> T get(String key, Class<T> clazz) {
         if (properties.get(key) != null) {
-            return BeanUtils.convertTo(properties.get(key), clazz);
+            return ConverTools.convertTo(properties.get(key), clazz);
         }
         return null;
     }
 
     public <T> T get(String key, Class<T> clazz, T defaultValue) {
         if (properties.get(key) != null) {
-            T t = BeanUtils.convertTo(properties.get(key), clazz);
+            T t = ConverTools.convertTo(properties.get(key), clazz);
             if (t != null) {
                 return t;
             } else {

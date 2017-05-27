@@ -27,7 +27,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionCityRecord extends TableRecordImpl<JobPositionCityRecord> implements Record2<Integer, Integer> {
 
-    private static final long serialVersionUID = -783272770;
+    private static final long serialVersionUID = 1751940190;
 
     /**
      * Setter for <code>jobdb.job_position_city.pid</code>. 职位id
@@ -82,7 +82,7 @@ public class JobPositionCityRecord extends TableRecordImpl<JobPositionCityRecord
      */
     @Override
     public Field<Integer> field1() {
-        return JobPositionCity.JOB_POSITION_CITY.PID;
+        return JobPositionCity.PID;
     }
 
     /**
@@ -90,7 +90,7 @@ public class JobPositionCityRecord extends TableRecordImpl<JobPositionCityRecord
      */
     @Override
     public Field<Integer> field2() {
-        return JobPositionCity.JOB_POSITION_CITY.CODE;
+        return JobPositionCity.CODE;
     }
 
     /**

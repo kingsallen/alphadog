@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionExt extends TableImpl<JobPositionExtRecord> {
 
-    private static final long serialVersionUID = 253613028;
+    private static final long serialVersionUID = -1035592905;
 
     /**
      * The reference instance of <code>jobdb.job_position_ext</code>
@@ -53,45 +53,38 @@ public class JobPositionExt extends TableImpl<JobPositionExtRecord> {
     /**
      * The column <code>jobdb.job_position_ext.pid</code>. job_position.id
      */
-    public final TableField<JobPositionExtRecord, Integer> PID = createField("pid", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "job_position.id");
+    public static final TableField<JobPositionExtRecord, Integer> PID = createField("pid", org.jooq.impl.SQLDataType.INTEGER.nullable(false), JOB_POSITION_EXT, "job_position.id");
 
     /**
      * The column <code>jobdb.job_position_ext.job_custom_id</code>. job_custom.id
      */
-    public final TableField<JobPositionExtRecord, Integer> JOB_CUSTOM_ID = createField("job_custom_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "job_custom.id");
+    public static final TableField<JobPositionExtRecord, Integer> JOB_CUSTOM_ID = createField("job_custom_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), JOB_POSITION_EXT, "job_custom.id");
 
     /**
      * The column <code>jobdb.job_position_ext.create_time</code>. 创建时间
      */
-    public final TableField<JobPositionExtRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
+    public static final TableField<JobPositionExtRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), JOB_POSITION_EXT, "创建时间");
 
     /**
      * The column <code>jobdb.job_position_ext.update_time</code>. 修改时间
      */
-    public final TableField<JobPositionExtRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "修改时间");
+    public static final TableField<JobPositionExtRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), JOB_POSITION_EXT, "修改时间");
 
     /**
      * The column <code>jobdb.job_position_ext.job_occupation_id</code>. jobdb.job_occupation.id
      */
-    public final TableField<JobPositionExtRecord, Integer> JOB_OCCUPATION_ID = createField("job_occupation_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "jobdb.job_occupation.id");
+    public static final TableField<JobPositionExtRecord, Integer> JOB_OCCUPATION_ID = createField("job_occupation_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), JOB_POSITION_EXT, "jobdb.job_occupation.id");
 
     /**
      * The column <code>jobdb.job_position_ext.extra</code>. SuccessFactors对接
      */
-    public final TableField<JobPositionExtRecord, String> EXTRA = createField("extra", org.jooq.impl.SQLDataType.VARCHAR.length(999).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "SuccessFactors对接");
+    public static final TableField<JobPositionExtRecord, String> EXTRA = createField("extra", org.jooq.impl.SQLDataType.VARCHAR.length(999).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), JOB_POSITION_EXT, "SuccessFactors对接");
 
     /**
-     * Create a <code>jobdb.job_position_ext</code> table reference
+     * No further instances allowed
      */
-    public JobPositionExt() {
+    private JobPositionExt() {
         this("job_position_ext", null);
-    }
-
-    /**
-     * Create an aliased <code>jobdb.job_position_ext</code> table reference
-     */
-    public JobPositionExt(String alias) {
-        this(alias, JOB_POSITION_EXT);
     }
 
     private JobPositionExt(String alias, Table<JobPositionExtRecord> aliased) {
@@ -124,20 +117,5 @@ public class JobPositionExt extends TableImpl<JobPositionExtRecord> {
     @Override
     public List<UniqueKey<JobPositionExtRecord>> getKeys() {
         return Arrays.<UniqueKey<JobPositionExtRecord>>asList(Keys.KEY_JOB_POSITION_EXT_PRIMARY);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public JobPositionExt as(String alias) {
-        return new JobPositionExt(alias, this);
-    }
-
-    /**
-     * Rename this table
-     */
-    public JobPositionExt rename(String name) {
-        return new JobPositionExt(name, null);
     }
 }

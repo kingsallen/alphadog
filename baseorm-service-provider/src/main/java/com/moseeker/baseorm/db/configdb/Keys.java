@@ -46,7 +46,6 @@ import javax.annotation.Generated;
 import org.jooq.Identity;
 import org.jooq.UniqueKey;
 import org.jooq.impl.AbstractKeys;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -72,13 +71,13 @@ public class Keys {
     public static final Identity<ConfigCacheconfigRediskeyRecord, Integer> IDENTITY_CONFIG_CACHECONFIG_REDISKEY = Identities0.IDENTITY_CONFIG_CACHECONFIG_REDISKEY;
     public static final Identity<ConfigCronjobsRecord, Integer> IDENTITY_CONFIG_CRONJOBS = Identities0.IDENTITY_CONFIG_CRONJOBS;
     public static final Identity<ConfigPositionKenexaRecord, Integer> IDENTITY_CONFIG_POSITION_KENEXA = Identities0.IDENTITY_CONFIG_POSITION_KENEXA;
-    public static final Identity<ConfigSysAdministratorRecord, UInteger> IDENTITY_CONFIG_SYS_ADMINISTRATOR = Identities0.IDENTITY_CONFIG_SYS_ADMINISTRATOR;
+    public static final Identity<ConfigSysAdministratorRecord, Integer> IDENTITY_CONFIG_SYS_ADMINISTRATOR = Identities0.IDENTITY_CONFIG_SYS_ADMINISTRATOR;
     public static final Identity<ConfigSysAppTemplateRecord, Integer> IDENTITY_CONFIG_SYS_APP_TEMPLATE = Identities0.IDENTITY_CONFIG_SYS_APP_TEMPLATE;
     public static final Identity<ConfigSysCvTplRecord, Integer> IDENTITY_CONFIG_SYS_CV_TPL = Identities0.IDENTITY_CONFIG_SYS_CV_TPL;
     public static final Identity<ConfigSysH5StyleTplRecord, Integer> IDENTITY_CONFIG_SYS_H5_STYLE_TPL = Identities0.IDENTITY_CONFIG_SYS_H5_STYLE_TPL;
     public static final Identity<ConfigSysPointsConfTplRecord, Integer> IDENTITY_CONFIG_SYS_POINTS_CONF_TPL = Identities0.IDENTITY_CONFIG_SYS_POINTS_CONF_TPL;
-    public static final Identity<ConfigSysTemplateMessageColumnConfigRecord, UInteger> IDENTITY_CONFIG_SYS_TEMPLATE_MESSAGE_COLUMN_CONFIG = Identities0.IDENTITY_CONFIG_SYS_TEMPLATE_MESSAGE_COLUMN_CONFIG;
-    public static final Identity<ConfigSysTemplateMessageLibraryRecord, UInteger> IDENTITY_CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY = Identities0.IDENTITY_CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY;
+    public static final Identity<ConfigSysTemplateMessageColumnConfigRecord, Integer> IDENTITY_CONFIG_SYS_TEMPLATE_MESSAGE_COLUMN_CONFIG = Identities0.IDENTITY_CONFIG_SYS_TEMPLATE_MESSAGE_COLUMN_CONFIG;
+    public static final Identity<ConfigSysTemplateMessageLibraryRecord, Integer> IDENTITY_CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY = Identities0.IDENTITY_CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY;
     public static final Identity<ConfigSysTemplateTypeRecord, Integer> IDENTITY_CONFIG_SYS_TEMPLATE_TYPE = Identities0.IDENTITY_CONFIG_SYS_TEMPLATE_TYPE;
     public static final Identity<ConfigSysThemeRecord, Integer> IDENTITY_CONFIG_SYS_THEME = Identities0.IDENTITY_CONFIG_SYS_THEME;
 
@@ -128,13 +127,13 @@ public class Keys {
         public static Identity<ConfigCacheconfigRediskeyRecord, Integer> IDENTITY_CONFIG_CACHECONFIG_REDISKEY = createIdentity(ConfigCacheconfigRediskey.CONFIG_CACHECONFIG_REDISKEY, ConfigCacheconfigRediskey.CONFIG_CACHECONFIG_REDISKEY.ID);
         public static Identity<ConfigCronjobsRecord, Integer> IDENTITY_CONFIG_CRONJOBS = createIdentity(ConfigCronjobs.CONFIG_CRONJOBS, ConfigCronjobs.CONFIG_CRONJOBS.ID);
         public static Identity<ConfigPositionKenexaRecord, Integer> IDENTITY_CONFIG_POSITION_KENEXA = createIdentity(ConfigPositionKenexa.CONFIG_POSITION_KENEXA, ConfigPositionKenexa.CONFIG_POSITION_KENEXA.ID);
-        public static Identity<ConfigSysAdministratorRecord, UInteger> IDENTITY_CONFIG_SYS_ADMINISTRATOR = createIdentity(ConfigSysAdministrator.CONFIG_SYS_ADMINISTRATOR, ConfigSysAdministrator.CONFIG_SYS_ADMINISTRATOR.ID);
+        public static Identity<ConfigSysAdministratorRecord, Integer> IDENTITY_CONFIG_SYS_ADMINISTRATOR = createIdentity(ConfigSysAdministrator.CONFIG_SYS_ADMINISTRATOR, ConfigSysAdministrator.CONFIG_SYS_ADMINISTRATOR.ID);
         public static Identity<ConfigSysAppTemplateRecord, Integer> IDENTITY_CONFIG_SYS_APP_TEMPLATE = createIdentity(ConfigSysAppTemplate.CONFIG_SYS_APP_TEMPLATE, ConfigSysAppTemplate.CONFIG_SYS_APP_TEMPLATE.ID);
         public static Identity<ConfigSysCvTplRecord, Integer> IDENTITY_CONFIG_SYS_CV_TPL = createIdentity(ConfigSysCvTpl.CONFIG_SYS_CV_TPL, ConfigSysCvTpl.CONFIG_SYS_CV_TPL.ID);
         public static Identity<ConfigSysH5StyleTplRecord, Integer> IDENTITY_CONFIG_SYS_H5_STYLE_TPL = createIdentity(ConfigSysH5StyleTpl.CONFIG_SYS_H5_STYLE_TPL, ConfigSysH5StyleTpl.CONFIG_SYS_H5_STYLE_TPL.ID);
         public static Identity<ConfigSysPointsConfTplRecord, Integer> IDENTITY_CONFIG_SYS_POINTS_CONF_TPL = createIdentity(ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL, ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL.ID);
-        public static Identity<ConfigSysTemplateMessageColumnConfigRecord, UInteger> IDENTITY_CONFIG_SYS_TEMPLATE_MESSAGE_COLUMN_CONFIG = createIdentity(ConfigSysTemplateMessageColumnConfig.CONFIG_SYS_TEMPLATE_MESSAGE_COLUMN_CONFIG, ConfigSysTemplateMessageColumnConfig.CONFIG_SYS_TEMPLATE_MESSAGE_COLUMN_CONFIG.ID);
-        public static Identity<ConfigSysTemplateMessageLibraryRecord, UInteger> IDENTITY_CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY = createIdentity(ConfigSysTemplateMessageLibrary.CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY, ConfigSysTemplateMessageLibrary.CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY.ID);
+        public static Identity<ConfigSysTemplateMessageColumnConfigRecord, Integer> IDENTITY_CONFIG_SYS_TEMPLATE_MESSAGE_COLUMN_CONFIG = createIdentity(ConfigSysTemplateMessageColumnConfig.CONFIG_SYS_TEMPLATE_MESSAGE_COLUMN_CONFIG, ConfigSysTemplateMessageColumnConfig.CONFIG_SYS_TEMPLATE_MESSAGE_COLUMN_CONFIG.ID);
+        public static Identity<ConfigSysTemplateMessageLibraryRecord, Integer> IDENTITY_CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY = createIdentity(ConfigSysTemplateMessageLibrary.CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY, ConfigSysTemplateMessageLibrary.CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY.ID);
         public static Identity<ConfigSysTemplateTypeRecord, Integer> IDENTITY_CONFIG_SYS_TEMPLATE_TYPE = createIdentity(ConfigSysTemplateType.CONFIG_SYS_TEMPLATE_TYPE, ConfigSysTemplateType.CONFIG_SYS_TEMPLATE_TYPE.ID);
         public static Identity<ConfigSysThemeRecord, Integer> IDENTITY_CONFIG_SYS_THEME = createIdentity(ConfigSysTheme.CONFIG_SYS_THEME, ConfigSysTheme.CONFIG_SYS_THEME.ID);
     }

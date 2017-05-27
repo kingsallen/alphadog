@@ -20,7 +20,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -36,7 +35,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSysTemplateMessageColumnConfig extends TableImpl<ConfigSysTemplateMessageColumnConfigRecord> {
 
-    private static final long serialVersionUID = -1081241386;
+    private static final long serialVersionUID = -780674546;
 
     /**
      * The reference instance of <code>configdb.config_sys_template_message_column_config</code>
@@ -54,7 +53,7 @@ public class ConfigSysTemplateMessageColumnConfig extends TableImpl<ConfigSysTem
     /**
      * The column <code>configdb.config_sys_template_message_column_config.id</code>. 主key
      */
-    public final TableField<ConfigSysTemplateMessageColumnConfigRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
+    public final TableField<ConfigSysTemplateMessageColumnConfigRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "主key");
 
     /**
      * The column <code>configdb.config_sys_template_message_column_config.template_id</code>. 模板ID
@@ -74,12 +73,12 @@ public class ConfigSysTemplateMessageColumnConfig extends TableImpl<ConfigSysTem
     /**
      * The column <code>configdb.config_sys_template_message_column_config.display</code>. 是否显示
      */
-    public final TableField<ConfigSysTemplateMessageColumnConfigRecord, UInteger> DISPLAY = createField("display", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGERUNSIGNED)), this, "是否显示");
+    public final TableField<ConfigSysTemplateMessageColumnConfigRecord, Integer> DISPLAY = createField("display", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "是否显示");
 
     /**
      * The column <code>configdb.config_sys_template_message_column_config.priority</code>. 排序
      */
-    public final TableField<ConfigSysTemplateMessageColumnConfigRecord, UInteger> PRIORITY = createField("priority", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaultValue(org.jooq.impl.DSL.field("10", org.jooq.impl.SQLDataType.INTEGERUNSIGNED)), this, "排序");
+    public final TableField<ConfigSysTemplateMessageColumnConfigRecord, Integer> PRIORITY = createField("priority", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("10", org.jooq.impl.SQLDataType.INTEGER)), this, "排序");
 
     /**
      * The column <code>configdb.config_sys_template_message_column_config._default</code>. default value
@@ -120,7 +119,7 @@ public class ConfigSysTemplateMessageColumnConfig extends TableImpl<ConfigSysTem
      * {@inheritDoc}
      */
     @Override
-    public Identity<ConfigSysTemplateMessageColumnConfigRecord, UInteger> getIdentity() {
+    public Identity<ConfigSysTemplateMessageColumnConfigRecord, Integer> getIdentity() {
         return Keys.IDENTITY_CONFIG_SYS_TEMPLATE_MESSAGE_COLUMN_CONFIG;
     }
 
