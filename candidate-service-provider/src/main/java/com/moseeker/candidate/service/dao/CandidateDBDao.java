@@ -40,16 +40,20 @@ public class CandidateDBDao {
 
     public static Optional<CandidateCompanyDO> getCandidateCompanyByUserIDCompanyID(int userID, int companyId) throws TException {
         QueryUtil queryUtil = new QueryUtil();
-        queryUtil.addEqualFilter("user_id", String.valueOf(userID));
+        queryUtil.addEqualFilter("sys_user_id", String.valueOf(userID));
         queryUtil.addEqualFilter("company_id", String.valueOf(companyId));
         try {
             CandidateCompanyDO candidateCompanyDO = candidateDBDao.getCandidateCompany(queryUtil);
-            return Optional.of(candidateCompanyDO);
+            if (candidateCompanyDO != null && candidateCompanyDO.getId() > 0) {
+                return Optional.of(candidateCompanyDO);
+            } else {
+                return Optional.empty();
+            }
         } catch (CURDException e) {
             if(e.getCode() != 90010) {
                 throw e;
             } else {
-                return Optional.of(null);
+                return Optional.empty();
             }
         }
     }
@@ -159,7 +163,8 @@ public class CandidateDBDao {
 
     public static UserEmployeeDO getEmployee(int userID) throws TException {
         QueryUtil qu = new QueryUtil();
-        qu.addEqualFilter("sysuser_id", userID);
+        qu.addEqualFilter("sysuser_id", userID).addEqualFilter("disable", Constant.ENABLE_OLD)
+                .addEqualFilter("activation", EmployeeType.AUTH_SUCCESS.getValue());
         return userDBDao.getEmployee(qu);
     }
 
