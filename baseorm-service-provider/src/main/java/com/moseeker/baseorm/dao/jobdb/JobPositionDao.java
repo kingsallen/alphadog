@@ -156,7 +156,7 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
         List<PositionDetails> positionDetails = new ArrayList<>();
 
         try {
-            JobPosition jp =(JobPosition) JobPosition.JOB_POSITION.as("jp");
+            JobPosition jp = (JobPosition) JobPosition.JOB_POSITION.as("jp");
             HrTeam ht = HrTeam.HR_TEAM.as("ht");
             SelectOnConditionStep<Record> record = create.select(
                     jp.ID.as("id"), jp.JOBNUMBER.as("jobnumber"), jp.COMPANY_ID.as("companyId"), jp.TITLE.as("title"), jp.CITY.as("city"), jp.DEPARTMENT.as("department"),

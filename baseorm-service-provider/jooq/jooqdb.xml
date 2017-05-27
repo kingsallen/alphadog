@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<configuration xmlns="http://www.jooq.org/xsd/jooq-codegen-3.7.0.xsd">
+<configuration xmlns="http://www.jooq.org/xsd/jooq-codegen-3.8.0.xsd">
     <!-- Configure the database connection here -->
     <jdbc>
         <driver>com.mysql.jdbc.Driver</driver>
@@ -29,16 +29,14 @@
             (A Java regular expression. Use the pipe to separate several expressions).
             Excludes match before includes -->
             <excludes></excludes>
-            <unsignedTypes>false</unsignedTypes>
+            <!--<unsignedTypes>false</unsignedTypes>-->
         </database>
         <target>
             <!-- The destination package of your generated classes (within the destination directory) -->
             <packageName>com.moseeker.baseorm.db.${db}</packageName>
             <!-- The destination directory of your generated classes -->
             <directory>src/main/java</directory>
+            <encoding></encoding>
         </target>
-        <generate>
-            <instanceFields>false</instanceFields>
-        </generate>
     </generator>
 </configuration>

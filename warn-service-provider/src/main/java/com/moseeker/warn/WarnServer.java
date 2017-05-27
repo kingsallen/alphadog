@@ -14,8 +14,6 @@ public class WarnServer {
 	public static void main(String[] args){
 		try{
 			AnnotationConfigApplicationContext context = initSpring();
-//			Server server=new Server(WarnServer.class,ServerNodeUtils.getPort(args),context.getBean(WarnThriftService.class));
-//			server.start();
 			MoServer server=new MoServer(context,"",context.getBean(WarnThriftService.class));
 			server.startServer();
 			server.shutDownHook();

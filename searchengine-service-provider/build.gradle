@@ -29,7 +29,7 @@ jar {
      }
 
     manifest {
-        attributes 'Main-Class': 'SearchengineServer'
+        attributes 'Main-Class': 'com.moseeker.searchengine.SearchengineServer'
     }
 
     
