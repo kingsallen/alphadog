@@ -116,7 +116,7 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
      */
     public PositionDetails positionDetails(Integer positionId) {
         PositionDetails positionDetails = new PositionDetails();
-        JobPosition jp =JobPosition.JOB_POSITION.as("jp");
+        JobPosition jp =(JobPosition) JobPosition.JOB_POSITION.as("jp");
         HrTeam ht = HrTeam.HR_TEAM.as("ht");
         Record record = create.select(
                 jp.ID.as("id"), jp.JOBNUMBER.as("jobnumber"), jp.COMPANY_ID.as("companyId"), jp.TITLE.as("title"), jp.CITY.as("city"), jp.DEPARTMENT.as("department"),
@@ -156,7 +156,7 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
         List<PositionDetails> positionDetails = new ArrayList<>();
 
         try {
-            JobPosition jp =JobPosition.JOB_POSITION.as("jp");
+            JobPosition jp =(JobPosition) JobPosition.JOB_POSITION.as("jp");
             HrTeam ht = HrTeam.HR_TEAM.as("ht");
             SelectOnConditionStep<Record> record = create.select(
                     jp.ID.as("id"), jp.JOBNUMBER.as("jobnumber"), jp.COMPANY_ID.as("companyId"), jp.TITLE.as("title"), jp.CITY.as("city"), jp.DEPARTMENT.as("department"),
@@ -291,7 +291,7 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
                             }
                         }
                         if (pids != null && pids.size() > 0) {
-                            JobPosition jp =JobPosition.JOB_POSITION.as("jp");
+                            JobPosition jp =(JobPosition) JobPosition.JOB_POSITION.as("jp");
                             HrTeam ht = HrTeam.HR_TEAM.as("ht");
                             SelectConditionStep<Record> record = create.select(
                                     jp.ID.as("id"), jp.JOBNUMBER.as("jobnumber"), jp.COMPANY_ID.as("companyId"), jp.TITLE.as("title"), jp.CITY.as("city"), jp.DEPARTMENT.as("department"),
