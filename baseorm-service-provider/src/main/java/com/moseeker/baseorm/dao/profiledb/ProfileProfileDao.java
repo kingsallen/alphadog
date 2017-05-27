@@ -1320,8 +1320,8 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
 
     public Response getResourceByApplication(String downloadApi, String password, int companyId, int sourceId, int atsStatus, boolean recommender, boolean dl_url_required, Map<String, List<String>> filter) {
         try {
-            JobPosition jobposition = (JobPosition) JobPosition.JOB_POSITION.as("a");
-            JobApplication jobApplication = (JobApplication) JobApplication.JOB_APPLICATION.as("b");
+            JobPosition jobposition =JobPosition.JOB_POSITION;
+            JobApplication jobApplication =JobApplication.JOB_APPLICATION;
             jobposition.newRecord();
             List<Map<String, Object>> datas = create
                     .select()
