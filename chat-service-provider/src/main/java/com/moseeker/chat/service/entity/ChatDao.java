@@ -650,6 +650,7 @@ public class ChatDao {
     }
 
     public HrChatUnreadCountDO addUnreadCount(int roomId, byte speaker, String date) {
+        logger.info("ChatDao addUnreadCount roomId:{}, speaker:{}, date:{}", roomId, speaker, date);
         QueryUtil queryUtil = new QueryUtil();
         queryUtil.addEqualFilter("room_id", roomId);
         try {
@@ -659,14 +660,15 @@ public class ChatDao {
                 switch (speaker) {
                     case 1:
                         hrChatUnreadCountDO.setHrChatTime(date);
-                        hrChatUnreadCountDO.setHrHaveUnreadMsg((byte)1);
+                        hrChatUnreadCountDO.setUserHaveUnreadMsg((byte)1);
                         break;
                     case 0:
                         hrChatUnreadCountDO.setWxChatTime(date);
-                        hrChatUnreadCountDO.setUserHaveUnreadMsg((byte)1);
+                        hrChatUnreadCountDO.setHrHaveUnreadMsg((byte)1);
                         break;
                     default:
                 }
+                logger.info("ChatDao addUnreadCount hrChatUnreadCountDO:",hrChatUnreadCountDO);
                 hrChatUnreadCountDO = hrDBDao.updateChatUnreadCount(hrChatUnreadCountDO);
             }
             return hrChatUnreadCountDO;
@@ -685,18 +687,20 @@ public class ChatDao {
     }
 
     public void addChatTOChatRoom(HrWxHrChatDO chatDO) {
+        logger.info("ChatDao addChatTOChatRoom chatDO:",chatDO);
         QueryUtil queryUtil = new QueryUtil();
-        queryUtil.addEqualFilter("id", chatDO.getId());
+        queryUtil.addEqualFilter("id", chatDO.getChatlistId());
         try {
             HrWxHrChatListDO chatRoomDO = hrDBDao.getChatRoom(queryUtil);
             if (chatRoomDO != null) {
                 if (chatDO.getSpeaker() == 0) {
                     chatRoomDO.setWxChatTime(chatDO.getCreateTime());
-                    chatRoomDO.setUserUnreadCount(chatRoomDO.getUserUnreadCount()+1);
+                    chatRoomDO.setHrUnreadCount(chatRoomDO.getHrUnreadCount()+1);
                 } else {
                     chatRoomDO.setHrChatTime(chatDO.getCreateTime());
-                    chatRoomDO.setHrUnreadCount(chatRoomDO.getHrUnreadCount()+1);
+                    chatRoomDO.setUserUnreadCount(chatRoomDO.getUserUnreadCount()+1);
                 }
+                logger.info("ChatDao addChatTOChatRoom chatRoomDO:",chatRoomDO);
                 hrDBDao.updateChatRoom(chatRoomDO);
             }
         } catch (TException e) {

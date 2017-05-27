@@ -286,8 +286,9 @@ public class ChatService {
         chatDO.setPid(positionId);
         chatDO.setSpeaker(speaker);
         chatDO.setChatlistId(roomId);
+        logger.info("saveChat before saveChat chatDO:{}", chatDO);
         chaoDao.saveChat(chatDO);
-
+        logger.info("saveChat after saveChat chatDO:{}", chatDO);
         chaoDao.addChatTOChatRoom(chatDO);
 
         //修改未读消息数量
