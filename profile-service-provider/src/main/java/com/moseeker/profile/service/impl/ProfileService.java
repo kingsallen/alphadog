@@ -33,7 +33,7 @@ import java.util.UUID;
 @CounterIface
 public class ProfileService extends JOOQBaseServiceImpl<Profile, ProfileProfileRecord> {
 
-    Logger logger = LoggerFactory.getLogger(ProfileProjectExpService.class);
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     protected ProfileDao dao;
@@ -172,7 +172,7 @@ public class ProfileService extends JOOQBaseServiceImpl<Profile, ProfileProfileR
         this.completenessDao = completenessDao;
     }
 
-    public Response getProfileByApplication(int companyId, int sourceId, int ats_status, boolean recommender, boolean dl_url_required,Map<String,List<String>> filter) throws TException {
+    public Response getProfileByApplication(int companyId, int sourceId, int ats_status, boolean recommender, boolean dl_url_required, Map<String, List<String>> filter) throws TException {
         ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil.getInstance();
         try {
             propertiesUtils.loadResource("setting.properties");
@@ -181,7 +181,7 @@ public class ProfileService extends JOOQBaseServiceImpl<Profile, ProfileProfileR
         }
         String downloadUrl = propertiesUtils.get("GENERATE_USER_ID", String.class);
         String password = propertiesUtils.get("GENERATE_USER_PASSWORD", String.class);
-        logger.info("profilesByApplication:downloadUrl:{},companyId:{},sourceId:{},atsStatus:{},recommender:{},dlUrlRequired:{}",downloadUrl, companyId, sourceId, ats_status, recommender, dl_url_required);
+        logger.info("profilesByApplication:{},companyId:{},sourceId:{},atsStatus:{},recommender:{},dlUrlRequired:{}", downloadUrl, companyId, sourceId, ats_status, recommender, dl_url_required);
         return dao.getResourceByApplication(downloadUrl, password, companyId, sourceId, ats_status, recommender, dl_url_required, filter);
     }
 }
