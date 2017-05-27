@@ -3,6 +3,7 @@ apply plugin: 'eclipse'
   
 dependencies {
     compile project(":baseorm-service-provider")
+    compile project(":rpc-center")
     testCompile deps["junit"]
     testCompile deps["mockito"]
 }

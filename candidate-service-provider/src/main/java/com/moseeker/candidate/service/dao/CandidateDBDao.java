@@ -15,6 +15,7 @@ import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.candidate.constant.EmployeeType;
 import com.moseeker.common.biztools.RecruitmentScheduleEnum;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
@@ -243,6 +244,23 @@ public class CandidateDBDao {
     public List<CandidateRecomRecordDO> listCandidateRecomRecordDO(int postUserId, String clickTime, List<Integer> recoms) {
         return candidateRecomRecordDao.listCandidateRecomRecord(postUserId, clickTime, recoms);
     }
+    
+    /**
+     * 推荐的结果记录是根据职位和浏览者过滤的，在推荐时，需要将被过滤的数据也给添加上
+     * @param candidateRecomRecordDO 推荐的数据
+     * @return
+     */
+    public List<CandidateRecomRecordDO> listFiltredCandidateRecomRecord(
+			CandidateRecomRecordDO candidateRecomRecordDO) {
+    	Query.QueryBuilder query = new Query.QueryBuilder();
+    	query.where("position_id", candidateRecomRecordDO.getPositionId()).and("presentee_user_id", candidateRecomRecordDO.getPresenteeUserId());
+		try {
+			return candidateRecomRecordDao.getDatas(query.buildQuery());
+		} catch (Exception e) {
+			LoggerFactory.getLogger(CandidateDBDao.class).error(e.getMessage(), e);
+			return null;
+		}
+	}
 
     /**
      * 过滤某个ID之后查找推荐记录信息
@@ -337,6 +355,19 @@ public class CandidateDBDao {
     public void updateCandidateRecomRecord(CandidateRecomRecordDO candidateRecomRecordDO) throws TException {
         candidateRecomRecordDao.updateData(candidateRecomRecordDO);
     }
+    
+    /**
+     * 批量修改职位转发浏览记录
+     * @param candidateRecomRecordList
+     */
+	public void updateCandidateRecomRecords(List<CandidateRecomRecordDO> candidateRecomRecordList) {
+		try {
+            candidateRecomRecordDao.updateDatas(candidateRecomRecordList);
+		} catch (Exception e) {
+			LoggerFactory.getLogger(CandidateDBDao.class).error(e.getMessage(), e);
+		}
+		
+	}
 
     public HrPointsConfDO getHrPointConf(int companyId, RecruitmentScheduleEnum recruitmentScheduleEnum) throws TException {
 //        QueryUtil queryUtil = new QueryUtil();
@@ -387,9 +418,6 @@ public class CandidateDBDao {
      * @return 员工集合
      */
     public List<UserEmployeeDO> listUserEmployee(int companyId) {
-//        QueryUtil queryUtil = new QueryUtil();
-//        queryUtil.addSelectAttribute("id");
-//        queryUtil.addEqualFilter("company_id", companyId).addEqualFilter("disable", Constant.ENABLE_OLD).addEqualFilter("activation", EmployeeType.AUTH_SUCCESS.getValue());
         Query query = new Query.QueryBuilder().select("id").where("company_id", companyId).and("disable", Constant.ENABLE_OLD)
                 .and("activation", EmployeeType.AUTH_SUCCESS.getValue()).buildQuery();
         return userEmployeeDao.getDatas(query);

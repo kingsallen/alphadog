@@ -6,7 +6,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyPositionRecord;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.BeanUtils;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -45,7 +45,7 @@ public class HRThirdPartyPositionDao extends JooqCrudImpl<HrThirdPartyPositionDO
         super(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION, HrThirdPartyPositionDO.class);
     }
 
-	private static final String UPSERT_SQL = "insert into hrdb.hr_third_party_position(position_id, third_part_position_id, is_synchronization, is_refresh, sync_time, refresh_time, update_time, occupation, address, channel) select ?, ?, ?, ?, ?, ?, ?, ?, ?, ? from DUAL where not exists(select id from hrdb.hr_third_party_position where channel = ? and position_id = ?)";
+	private static final String UPSERT_SQL = "insert into hrdb.hr_third_party_position(position_id, third_part_position_id, is_synchronization, is_refresh, sync_time, refresh_time, update_time, occupation, address, channel, third_party_account_id) select ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? from DUAL where not exists(select id from hrdb.hr_third_party_position where third_party_account_id = ? and position_id = ?)";
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -98,12 +98,11 @@ public class HRThirdPartyPositionDao extends JooqCrudImpl<HrThirdPartyPositionDO
 			logger.info("companyDao upsertThirdPartyPositions" + JSON.toJSONString(positions));
 				positions.forEach(position -> {
 					try {
-						int count = 0;
 						Date syncTime = StringUtils.isNotNullOrEmpty(position.getSync_time())? sdf.parse(position.getSync_time()):null;
 						Date refreshTime = StringUtils.isNotNullOrEmpty(position.getRefresh_time())?sdf.parse(position.getRefresh_time()):null;
 						Date updateTime = StringUtils.isNotNullOrEmpty(position.getUpdate_time())?sdf.parse(position.getUpdate_time()):null;
 
-						create.execute(UPSERT_SQL, position.getPosition_id(), position.getThird_part_position_id(),
+                        int count = create.execute(UPSERT_SQL, position.getPosition_id(), position.getThird_part_position_id(),
 								position.getIs_synchronization(), position.getIs_refresh(), syncTime, refreshTime,
 								updateTime, position.getOccupation(), position.getAddress(), position.getChannel(),
 								position.getChannel(), position.getPosition_id());
@@ -113,9 +112,9 @@ public class HRThirdPartyPositionDao extends JooqCrudImpl<HrThirdPartyPositionDO
 							HrThirdPartyPositionRecord dbrecord = create
 									.selectFrom(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION)
 									.where(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID
-											.equal((int)(position.getPosition_id())))
-									.and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.CHANNEL
-											.equal(Short.valueOf(position.getChannel())))
+											.equal(Integer.valueOf(position.getPosition_id())))
+									.and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.THIRD_PARTY_ACCOUNT_ID
+											.equal(Integer.valueOf(position.getAccount_id())))
 									.fetchOne();
 							if (dbrecord != null) {
 								if(StringUtils.isNotNullOrEmpty(position.getAddress())) {
@@ -125,7 +124,7 @@ public class HRThirdPartyPositionDao extends JooqCrudImpl<HrThirdPartyPositionDO
 								if(StringUtils.isNotNullOrEmpty(position.getThird_part_position_id())) {
 									dbrecord.setThirdPartPositionId(position.getThird_part_position_id());
 								}
-								dbrecord.setPositionId((int)(position.getPosition_id()));
+								dbrecord.setPositionId(Integer.valueOf(position.getPosition_id()));
 								if(position.getThird_part_position_id() != null) {
 									dbrecord.setThirdPartPositionId(position.getThird_part_position_id());
 								}
@@ -180,28 +179,27 @@ public class HRThirdPartyPositionDao extends JooqCrudImpl<HrThirdPartyPositionDO
 	 * 
 	 * @param positionId
 	 *            职位编号
-	 * @param channel
 	 *            渠道号
 	 * @return
 	 */
-	public ThirdPartyPositionData getThirdPartyPosition(int positionId, int channel) {
+	public ThirdPartyPositionData getThirdPartyPosition(int positionId, int account_id) {
 		ThirdPartyPositionData position = new ThirdPartyPositionData();
-		if (positionId > 0 && channel > 0) {
-			HrThirdPartyPositionRecord record = create.selectFrom(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION)
-					.where(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID
-							.eq((int)(positionId)))
-					.and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.CHANNEL.eq((short) channel)).fetchOne();
-			if (record != null) {
-				record.into(position);
-				position.setUpdate_time(sdf.format(record.getUpdateTime()));
-				if(record.getSyncTime() != null) {
-					position.setSync_time(sdf.format(record.getSyncTime()));
-				}
-				if(record.getRefreshTime() != null) {
-					position.setRefresh_time(sdf.format(record.getRefreshTime()));
-				}
-			}
-		}
+		if (positionId > 0 && account_id > 0) {
+            HrThirdPartyPositionRecord record = create.selectFrom(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION)
+                    .where(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID
+                            .eq(Integer.valueOf(positionId)))
+                    .and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.THIRD_PARTY_ACCOUNT_ID.eq(account_id)).fetchOne();
+            if (record != null) {
+                record.into(position);
+                position.setUpdate_time(sdf.format(record.getUpdateTime()));
+                if(record.getSyncTime() != null) {
+                    position.setSync_time(sdf.format(record.getSyncTime()));
+                }
+                if(record.getRefreshTime() != null) {
+                    position.setRefresh_time(sdf.format(record.getRefreshTime()));
+                }
+            }
+        }
 		return position;
 	}
 
@@ -218,7 +216,7 @@ public class HRThirdPartyPositionDao extends JooqCrudImpl<HrThirdPartyPositionDO
 		logger.info("refresh_time:"+position.getRefresh_time());
 		HrThirdPartyPositionRecord record = create.selectFrom(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION)
 				.where(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID
-						.eq((int)(position.getPosition_id())))
+						.eq(Integer.valueOf(position.getPosition_id())))
 				.and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.CHANNEL.eq((short) position.getChannel()))
 				.fetchOne();
 		if (record != null) {
@@ -231,7 +229,7 @@ public class HRThirdPartyPositionDao extends JooqCrudImpl<HrThirdPartyPositionDO
 				if(StringUtils.isNotNullOrEmpty(position.getThird_part_position_id())) {
                     record.setThirdPartPositionId(position.getThird_part_position_id());
                 }
-				record.setPositionId((int)(position.getPosition_id()));
+				record.setPositionId(Integer.valueOf(position.getPosition_id()));
 				if(position.getThird_part_position_id() != null) {
                     record.setThirdPartPositionId(position.getThird_part_position_id());
                 }
@@ -267,8 +265,7 @@ public class HRThirdPartyPositionDao extends JooqCrudImpl<HrThirdPartyPositionDO
 				logger.error(e.getMessage(), e);
 			}
 		} else {
-			HrThirdPartyPositionRecord record1 = BeanUtils.structToDB(position,
-					HrThirdPartyPositionRecord.class, null);
+			HrThirdPartyPositionRecord record1 = BeanUtils.structToDB(position, HrThirdPartyPositionRecord.class);
 			create.attach(record1);
 			count = record1.insert();
 		}

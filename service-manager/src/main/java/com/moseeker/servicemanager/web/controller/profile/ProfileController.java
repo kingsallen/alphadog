@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices;
 import com.moseeker.thrift.gen.application.struct.ApplicationResponse;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
@@ -21,7 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.BeanUtils;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
@@ -35,6 +36,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
 
 @Controller
+@CounterIface
 public class ProfileController {
 
     Logger logger = LoggerFactory.getLogger(ProfileController.class);
@@ -108,7 +110,7 @@ public class ProfileController {
     @RequestMapping(value = "/profiles", method = RequestMethod.POST)
     @ResponseBody
     public String getBatchProfiles(HttpServletRequest request, HttpServletResponse response) {
-        System.out.println("----------getBatchProfiles-----------");
+        logger.info("----------getBatchProfiles-----------");
         // PrintWriter writer = null;
         try {
             // GET方法 通用参数解析并赋值
@@ -278,11 +280,10 @@ public class ProfileController {
     /**
      * 批量修改职位
      */
-    @RequestMapping(value = "/profiles/application", method = RequestMethod.GET)
+    @RequestMapping(value = "/profiles/application", method = RequestMethod.POST)
     @ResponseBody
     public String profilesByApplication(HttpServletRequest request, HttpServletResponse response) {
         try {
-
             Params<String, Object> form = ParamUtils.parseRequestParam(request);
 
             int companyId = form.getInt("company_id", -1);
@@ -290,14 +291,14 @@ public class ProfileController {
             int atsStatus = form.getInt("ats_status", 1);
             boolean recommender = form.getBoolean("recommender", false);
             boolean dlUrlRequired = form.getBoolean("dl_url_required", false);
-
+            Map<String, List<String>> filter = (Map<String, List<String>>) form.get("filter");
             if (companyId == -1) {
                 return ResponseLogNotification.fail(request, "company_id不能为空");
             } else if (sourceId == -1) {
                 return ResponseLogNotification.fail(request, "sourceId不能为空");
             }
-
-            Response result = service.getProfileByApplication(companyId, sourceId, atsStatus, recommender, dlUrlRequired);
+            logger.info("profilesByApplication:companyId:{},sourceId:{},atsStatus:{},recommender:{},dlUrlRequired:{}", companyId, sourceId, atsStatus, recommender, dlUrlRequired);
+            Response result = service.getProfileByApplication(companyId, sourceId, atsStatus, recommender, dlUrlRequired, filter);
 
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {

@@ -7,9 +7,10 @@ import org.apache.thrift.TBase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONObject;
-import com.moseeker.baseorm.dao.hrdb.HRCompanyConfDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
 import com.moseeker.baseorm.dao.jobdb.JobCustomDao;
 import com.moseeker.baseorm.dao.jobdb.JobOccupationDao;
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
@@ -28,12 +29,12 @@ public class JobOccupationService {
 	 * function:查找公司的自定义的字段，包括自定义职能和自定义字段
 	 */
 	@Autowired
-	private HRCompanyConfDao hrCompantDao;
+	private HrCompanyConfDao hrCompantDao;
 	@Autowired
     private JobCustomDao customDao;
     @Autowired
     private JobOccupationDao occuPationdao;
-    
+    @CounterIface
 	public Response getCustomField(String param){
 		JSONObject obj=JSONObject.parseObject(param);
 		int company_id=obj.getIntValue("company_id");

@@ -17,7 +17,7 @@ public class ChatThriftServiceTest {
     //@Test
     public void listHRChatRoom() throws Exception {
 
-        HRChatRoomsVO chatRoomsVO = chatService.listHRChatRoom(82669, 1, 10);
+        HRChatRoomsVO chatRoomsVO = chatService.listHRChatRoom(4913, 1, 10);
         System.out.println("pageNo : "+chatRoomsVO.getPageNo());
         System.out.println("pageSize : " + chatRoomsVO.getPageSize());
         System.out.println("totalRow : " + chatRoomsVO.getTotalRow());
@@ -35,9 +35,9 @@ public class ChatThriftServiceTest {
         }
     }
 
-    //@Test
+    @Test
     public void listUserChatRoom() throws Exception {
-        UserChatRoomsVO roomsVO = chatService.listUserChatRoom(391486, 0, 10);
+        UserChatRoomsVO roomsVO = chatService.listUserChatRoom(4913, 1, 10);
         System.out.println("pageNo : "+roomsVO.getPageNo());
         System.out.println("pageSize : " + roomsVO.getPageSize());
         System.out.println("totalRow : " + roomsVO.getTotalRow());
@@ -82,7 +82,7 @@ public class ChatThriftServiceTest {
 
     //@Test
     public void enterRoom() throws Exception {
-        ResultOfSaveRoomVO resultOfSaveRoomVO = chatService.enterRoom(3356, 64083, 1916, 0);
+        ResultOfSaveRoomVO resultOfSaveRoomVO = chatService.enterRoom(1, 1, 1, 17, false);
         System.out.println("roomId : "+resultOfSaveRoomVO.getRoomId());
         System.out.println(resultOfSaveRoomVO.getHr());
         System.out.println(resultOfSaveRoomVO.getPosition());

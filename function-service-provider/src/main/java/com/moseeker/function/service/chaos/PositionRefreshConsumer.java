@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.AppId;
@@ -15,23 +16,23 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 import com.moseeker.thrift.gen.position.struct.Position;
+import com.moseeker.thrift.gen.useraccounts.struct.BindAccountStruct;
+import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import java.util.List;
-
 /**
  * 监听刷新完成队列
- * @author wjf
  *
+ * @author wjf
  */
 @Component
 public class PositionRefreshConsumer {
-	
+
 	private static Logger logger = LoggerFactory.getLogger(PositionRefreshConsumer.class);
 
 	@Autowired
@@ -42,6 +43,9 @@ public class PositionRefreshConsumer {
 
     @Autowired
     private HRThirdPartyAccountDao thirdPartyAccountDao;
+
+    @Autowired
+    private UserHrAccountDao userHrAccountDao;
 
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
@@ -116,14 +120,14 @@ public class PositionRefreshConsumer {
 				logger.info("refresh completed queue update thirdpartyposition to synchronized");
                 thirdpartyPositionDao.upsertThirdPartyPosition(data);
 				if(pojo.getStatus() == 0) {
-					ThirdPartAccountData d = new ThirdPartAccountData();
-					d.setCompany_id(p.getCompany_id());
-					d.setRemain_num(pojo.getRemain_number());
-					d.setChannel(Integer.valueOf(pojo.getChannel().trim()));
-					d.setSync_time(pojo.getSync_time());
+                    BindAccountStruct bindAccountStruct = new BindAccountStruct();
+                    bindAccountStruct.setCompany_id(p.getCompany_id());
+                    bindAccountStruct.setRemainNum(pojo.getRemain_number());
+                    bindAccountStruct.setRemainProfileNum(pojo.getResume_number());
+                    bindAccountStruct.setChannel(Byte.valueOf(pojo.getChannel().trim()));
 					//positionDao.updatePosition(p);
 					logger.info("refresh completed queue update thirdpartyposition to synchronized");
-                    thirdPartyAccountDao.updatePartyAccountByCompanyIdChannel(d);
+                    thirdPartyAccountDao.updateThirdPartyAccount(pojo.getAccount_id(), bindAccountStruct);
 				}
 			}
 		} catch (Exception e) {
@@ -133,4 +137,5 @@ public class PositionRefreshConsumer {
 			//do nothing
 		}
 	}
+
 }

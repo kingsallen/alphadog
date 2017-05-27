@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <configuration xmlns="http://www.jooq.org/xsd/jooq-codegen-3.7.0.xsd">
-    <!-- Configure the database connection here -->
     <jdbc>
         <driver>com.mysql.jdbc.Driver</driver>
         <url>jdbc:mysql://db1.dqprism.com:3306/dictdb</url>
@@ -38,4 +37,5 @@
             <directory>/tmp/</directory>
         </target>
     </generator>
+
 </configuration>

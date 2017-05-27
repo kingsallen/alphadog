@@ -1,5 +1,6 @@
 package com.moseeker.servicemanager.web.controller.application;
 
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
@@ -25,6 +26,7 @@ import java.util.Map;
  * Created by zzh on 16/5/24.
  */
 @Controller
+@CounterIface
 public class JobApplicationController {
 
 	Logger logger = org.slf4j.LoggerFactory.getLogger(JobApplicationController.class);
@@ -43,9 +45,10 @@ public class JobApplicationController {
 		try {
 			// 获取application实体对象
 			JobApplication jobApplication = ParamUtils.initModelForm(request, JobApplication.class);
-
+			logger.info("JobApplicationController jobApplication:{}", jobApplication);
 			// 创建申请记录
 			Response result = applicationService.postApplication(jobApplication);
+			logger.info("JobApplicationController result:{}", result);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
 			return ResponseLogNotification.fail(request, e.getMessage());
@@ -164,9 +167,10 @@ public class JobApplicationController {
 
 			long userId = Long.valueOf(paramMap.get("user_id").toString());
 			long companyId = Long.valueOf(paramMap.get("company_id").toString());
-
+			logger.info("JobApplicationController userId:{}, companyId:{}", userId, companyId);
 			// 创建申请记录
 			Response result = applicationService.validateUserApplicationCheckCountAtCompany(userId, companyId);
+			logger.info("JobApplicationController result:{}", result);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
 			return ResponseLogNotification.fail(request, e.getMessage());

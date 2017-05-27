@@ -11,6 +11,7 @@ public class PositionSyncResultPojo {
 	private int sync_status;
 	private String sync_time;
 	private String sync_fail_reason;
+	private int account_id;
 	
 	public int getChannel() {
 		return channel;
@@ -36,6 +37,12 @@ public class PositionSyncResultPojo {
 	public void setSync_fail_reason(String sync_fail_reason) {
 		this.sync_fail_reason = sync_fail_reason;
 	}
-	
-	
+
+	public int getAccount_id() {
+		return account_id;
+	}
+
+	public void setAccount_id(int account_id) {
+		this.account_id = account_id;
+	}
 }

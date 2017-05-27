@@ -293,9 +293,13 @@ public class ServerRegistry {
      */
     private void clear(String serverName) {
         StringBuffer parentPath = new StringBuffer();
-        parentPath.append(config.getZkSeparator()+serverName+config.getServers());
+        logger.info("ServerRegistry clear parentPath:{}", serverName);
+        parentPath.append(config.getZkSeparator()).append(serverName).append(config.getServers())
+                .append(config.getZkSeparator()).append(data.getIp()).append(":").append(data.getPort());
         try {
-            client.delete().guaranteed().deletingChildrenIfNeeded().forPath(parentPath.toString());
+            if (client.checkExists().forPath(parentPath.toString()) != null ) {
+                client.delete().forPath(parentPath.toString());
+            }
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);

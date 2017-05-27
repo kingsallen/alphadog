@@ -1,19 +1,12 @@
-project.description = '''
-    thrfit IDL definitions & jooq configs
-'''
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 
-sourceCompatibility = 1.8
 
 dependencies {
-    compile deps["mysql-connector-java"]
     compile deps["libthrift"]
-    compile deps['jooq']
-    compile deps['jooq-codegen']
-    compile deps['jooq-meta']
     compile deps["slf4j-log4j12"]
+    compile  fileTree(dir:'../libs',include:'jooq*.jar')
     testCompile deps["junit"]
 }
 
@@ -28,3 +21,7 @@ jar {
     //    configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
     //}
 }
+
+project.description = '''
+    thrfit IDL definitions & jooq configs
+'''

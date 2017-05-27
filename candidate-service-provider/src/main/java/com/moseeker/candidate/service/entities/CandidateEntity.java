@@ -15,26 +15,19 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
-import com.moseeker.thrift.gen.candidate.struct.CandidateList;
-import com.moseeker.thrift.gen.candidate.struct.CandidateListParam;
-import com.moseeker.thrift.gen.candidate.struct.RecomRecordResult;
-import com.moseeker.thrift.gen.candidate.struct.RecommendResult;
-import com.moseeker.thrift.gen.candidate.struct.RecommmendParam;
-import com.moseeker.thrift.gen.candidate.struct.SortResult;
+import com.moseeker.thrift.gen.candidate.struct.*;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.struct.CandidateRecomRecordDO;
-import com.moseeker.thrift.gen.dao.struct.CandidateRecomRecordSortingDO;
-import com.moseeker.thrift.gen.dao.struct.CandidateRemarkDO;
-import com.moseeker.thrift.gen.dao.struct.CandidateShareChainDO;
-import com.moseeker.thrift.gen.dao.struct.JobPositionDO;
-import com.moseeker.thrift.gen.dao.struct.UserEmployeeDO;
-import com.moseeker.thrift.gen.dao.struct.UserEmployeePointsRecordDO;
-import com.moseeker.thrift.gen.dao.struct.UserUserDO;
+import com.moseeker.thrift.gen.dao.struct.*;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrPointsConfDO;
-
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
@@ -43,17 +36,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * 候选人实体，提供候选人相关业务
@@ -68,7 +50,6 @@ public class CandidateEntity implements Candidate {
     Logger logger = LoggerFactory.getLogger(CandidateEntity.class);
 
     ThreadPool tp = ThreadPool.Instance;
-
 
     @Autowired
     private CandidateDBDao candidateDBDao;
@@ -374,6 +355,7 @@ public class CandidateEntity implements Candidate {
     @Override
     @CounterIface
     public SortResult getRecommendatorySorting(int postUserId, int companyId) throws BIZException {
+        logger.info("CandidateEntity getRecommendatorySorting postUserId:{}, companyId:{}", postUserId, companyId);
         /** 参数校验 */
         ValidateUtil vu = ParamCheckTool.checkRecommendatorySorting(postUserId, companyId);
         String message = vu.validate();
@@ -382,13 +364,15 @@ public class CandidateEntity implements Candidate {
         }
         /** 是否开启被动求职者 */
         boolean passiveSeeker = candidateDBDao.isStartPassiveSeeker(companyId);
-        if (!passiveSeeker) {
+        logger.info("CandidateEntity getRecommendatorySorting passiveSeeker:{}", passiveSeeker);
+        if(!passiveSeeker) {
             throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_NOT_START);
         }
 
         /** 查找员工信息 */
         List<UserEmployeeDO> employeeDOList = candidateDBDao.listUserEmployee(companyId);
-        if (employeeDOList == null || employeeDOList.size() == 0) {
+        logger.info("CandidateEntity getRecommendatorySorting employeeDOList:{}", employeeDOList);
+        if(employeeDOList == null || employeeDOList.size() == 0) {
             throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_SORT_COLLEAGUE_NOT_EXIST);
         }
         List<Integer> employeeIdList = employeeDOList.stream().map(userEmployeeDO -> userEmployeeDO.getSysuserId()).collect(Collectors.toList());
@@ -397,7 +381,7 @@ public class CandidateEntity implements Candidate {
         if (sortingDOList == null || sortingDOList.size() == 0) {
             throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_SORT_USER_NOT_EXIST);
         }
-
+        logger.info("CandidateEntity getRecommendatorySorting sortingDOList:{}", sortingDOList);
         return assembleSortingResult(sortingDOList, postUserId);
     }
 
@@ -427,6 +411,14 @@ public class CandidateEntity implements Candidate {
         recomRecordDO.setIsRecom((byte) RecomType.IGNORE.getValue());
         try {
             candidateDBDao.updateCandidateRecomRecord(recomRecordDO);
+            
+            List<CandidateRecomRecordDO> candidateRecomRecordList = candidateDBDao.listFiltredCandidateRecomRecord(recomRecordDO);
+            if (candidateRecomRecordList != null && candidateRecomRecordList.size() > 0) {
+            	candidateRecomRecordList.forEach(candidate -> {
+            		candidate.setIsRecom((byte)RecomType.IGNORE.getValue());
+            	});
+                candidateDBDao.updateCandidateRecomRecords(candidateRecomRecordList);
+            }
         } catch (TException e) {
             logger.error(e.getMessage(), e);
         }
@@ -452,7 +444,8 @@ public class CandidateEntity implements Candidate {
             }
         }
         sortResult.setRank(rank);
-        sortResult.setHongbao(Constant.BONUS * sortResult.getCount());
+        sortResult.setHongbao(Constant.BONUS*sortResult.getCount());
+        logger.info("CandidateEntity getRecommendatorySorting assembleSortingResult:{}", sortResult);
         return sortResult;
     }
 
@@ -610,8 +603,22 @@ public class CandidateEntity implements Candidate {
         candidateRecomRecordDO.setRealname(param.getRealName());
         candidateRecomRecordDO.setMobile(param.getMobile());
         candidateRecomRecordDO.setRecomTime(nowStr);
-        candidateRecomRecordDO.setIsRecom((byte) 0);
+        candidateRecomRecordDO.setIsRecom((byte)0);
         candidateDBDao.updateCandidateRecomRecord(candidateRecomRecordDO);
+        
+        List<CandidateRecomRecordDO> candidateRecomRecordList = candidateDBDao.listFiltredCandidateRecomRecord(candidateRecomRecordDO);
+        if (candidateRecomRecordList != null && candidateRecomRecordList.size() > 0) {
+        	candidateRecomRecordList.forEach(candidate -> {
+        		candidate.setRecomReason(param.getRecomReason());
+        		candidate.setPosition(param.getPosition());
+        		candidate.setCompany(param.getCompany());
+        		candidate.setRealname(param.getRealName());
+        		candidate.setMobile(param.getMobile());
+        		candidate.setRecomTime(nowStr);
+        		candidate.setIsRecom((byte)0);
+        	});
+            candidateDBDao.updateCandidateRecomRecords(candidateRecomRecordList);
+        }
     }
 
     /**
@@ -647,6 +654,11 @@ public class CandidateEntity implements Candidate {
     private RecommendResult assembleResult(RecommendResult recommendResult, CandidateRecomRecordDO candidateRecomRecordDO,
                                            Future positionListFuture, Future presenteeListFuture) {
         recommendResult.setId(candidateRecomRecordDO.getId());
+        String date = candidateRecomRecordDO.getClickTime();
+        if (date != null && date.length() > 10) {
+            date = date.trim().substring(0,10);
+        }
+        recommendResult.setClickTime(date);
         try {
             JobPositionDO positionDO = (JobPositionDO) positionListFuture.get();
             if (positionDO != null) {
@@ -829,6 +841,7 @@ public class CandidateEntity implements Candidate {
 
             com.moseeker.thrift.gen.candidate.struct.Candidate candidate = new com.moseeker.thrift.gen.candidate.struct.Candidate();
             candidate.setIsRecom(candidateRecomRecordDO.getIsRecom());
+            candidate.setId(candidateRecomRecordDO.getId());
 
             setPresentee(candidate, presenteeUserList, candidateRecomRecordDO);
 

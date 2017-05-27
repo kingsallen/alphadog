@@ -1,40 +1,38 @@
-package com.moseeker.surrender;
-
-import java.util.ArrayList;
-import java.util.List;
-import org.apache.thrift.TException;
-import org.joda.time.DateTime;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
-import com.moseeker.apps.config.AppConfig;
-import com.moseeker.apps.service.PositionBS;
-import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
-import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
-import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.company.service.CompanyServices;
-import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
-import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
-import com.moseeker.thrift.gen.position.service.PositionServices;
-import com.moseeker.thrift.gen.position.struct.Position;
-import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
-import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
-import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
+//package com.moseeker.surrender;
+//
+//import java.util.ArrayList;
+//import java.util.List;
+//import org.apache.thrift.TException;
+//import org.joda.time.DateTime;
+//import org.junit.Before;
+//import org.junit.Rule;
+//import org.junit.Test;
+//import org.junit.runner.RunWith;
+//import org.mockito.Mock;
+//import org.mockito.Mockito;
+//import org.mockito.junit.MockitoJUnit;
+//import org.mockito.junit.MockitoRule;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.test.context.ContextConfiguration;
+//import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+//import org.springframework.transaction.annotation.Transactional;
+//import com.moseeker.apps.config.AppConfig;
+//import com.moseeker.apps.service.PositionBS;
+//import com.moseeker.common.providerutils.ResponseUtils;
+//import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
+//import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
+//import com.moseeker.thrift.gen.common.struct.Response;
+//import com.moseeker.thrift.gen.company.service.CompanyServices;
+//import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
+//import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
+//import com.moseeker.thrift.gen.position.service.PositionServices;
+//import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
+//import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
+//import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 //@RunWith(SpringJUnit4ClassRunner.class)
 //@ContextConfiguration(classes =AppConfig.class)
 //@Transactional
-public class PositionBSTest {
+//public class PositionBSTest {
 //	@Mock
 //	UserHrAccountService.Iface userHrAccountService;
 //	@Mock
@@ -84,7 +82,7 @@ public class PositionBSTest {
 //		}
 //	}
 //	@Test
-//	public void synchronizePositionToThirdPartyPlatformTest(){
+//	public void synchronizePositionToThirdPartyPlatformTest() throws Exception{
 //		List<ThirdPartyPosition> list=new ArrayList<ThirdPartyPosition>();
 //		ThirdPartyPosition thirdPartyPosition=new ThirdPartyPosition();
 //		thirdPartyPosition.setChannel((byte)3);
@@ -100,5 +98,5 @@ public class PositionBSTest {
 //		Response result=positionBS.refreshPosition(124576, 3);
 //		System.out.println(result);
 //	}
-
-}
+//
+//}

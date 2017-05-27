@@ -12,7 +12,7 @@
 //import com.moseeker.baseorm.dao.userdb.UserUserDao;
 //import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
 //import com.moseeker.baseorm.db.hrdb.tables.records.HrAppCvConfRecord;
-//import com.moseeker.common.util.BeanUtils;
+//import com.moseeker.baseorm.util.BeanUtils;
 //import com.moseeker.thrift.gen.common.struct.Query;
 //import com.moseeker.thrift.gen.dao.struct.CURDException;
 //import com.moseeker.thrift.gen.dao.struct.CandidatePositionDO;

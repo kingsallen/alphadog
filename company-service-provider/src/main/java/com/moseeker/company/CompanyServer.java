@@ -1,12 +1,12 @@
 package com.moseeker.company;
 
 import com.moseeker.company.config.AppConfig;
+import com.moseeker.company.thrift.CompanyServicesImpl;
+import com.moseeker.company.thrift.HrTeamThriftServicesImpl;
+import com.moseeker.rpccenter.main.MoServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-
-import com.moseeker.company.thrift.CompanyServicesImpl;
-import com.moseeker.rpccenter.main.MoServer;
 
 /**
  * 
@@ -32,8 +32,10 @@ public class CompanyServer {
 			AnnotationConfigApplicationContext acac = initSpring();
 			MoServer server = new MoServer(
 					acac,"",
-					acac.getBean(CompanyServicesImpl.class));
+					acac.getBean(CompanyServicesImpl.class),
+					acac.getBean(HrTeamThriftServicesImpl.class));
 			server.startServer();
+			server.shutDownHook();
 			synchronized (CompanyServer.class) {
 				while (true) {
 					try {

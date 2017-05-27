@@ -1,30 +1,30 @@
-package com.moseeker.surrender;
-
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.moseeker.apps.config.AppConfig;
-import com.moseeker.apps.service.ProfileProcessBS;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
-import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.company.service.CompanyServices;
-import com.moseeker.thrift.gen.mq.service.MqService;
-
+//package com.moseeker.surrender;
+//
+//import org.junit.Before;
+//import org.junit.Rule;
+//import org.junit.Test;
+//import org.junit.runner.RunWith;
+//import org.mockito.Mock;
+//import org.mockito.Mockito;
+//import org.mockito.junit.MockitoJUnit;
+//import org.mockito.junit.MockitoRule;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.test.context.ContextConfiguration;
+//import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+//import org.springframework.transaction.annotation.Transactional;
+//
+//import com.moseeker.apps.config.AppConfig;
+//import com.moseeker.apps.service.ProfileProcessBS;
+//import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
+//import com.moseeker.common.providerutils.ResponseUtils;
+//import com.moseeker.thrift.gen.common.struct.Response;
+//import com.moseeker.thrift.gen.company.service.CompanyServices;
+//import com.moseeker.thrift.gen.mq.service.MqService;
+//
 //@RunWith(SpringJUnit4ClassRunner.class)
 //@ContextConfiguration(classes =AppConfig.class)
 //@Transactional
-public class ProfileProcessBSTest {
+//public class ProfileProcessBSTest {
 //	@Mock
 //	MqService.Iface mqService;
 //	@Mock
@@ -53,4 +53,4 @@ public class ProfileProcessBSTest {
 //		Response result=profileProcessBS.processProfileAts(10, "627216844");
 //		System.out.println(result);
 //	}
-}
+//}

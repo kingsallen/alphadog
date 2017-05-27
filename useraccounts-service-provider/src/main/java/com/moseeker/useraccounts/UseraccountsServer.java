@@ -2,6 +2,7 @@ package com.moseeker.useraccounts;
 
 import com.moseeker.rpccenter.main.MoServer;
 import com.moseeker.useraccounts.config.AppConfig;
+import com.moseeker.useraccounts.service.impl.UserEmployeeServiceImpl;
 import com.moseeker.useraccounts.thrift.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,9 +37,10 @@ public class UseraccountsServer {
                     acac.getBean(UseraccountsServiceImpl.class),
                     acac.getBean(ThirdPartyUserServiceImpl.class),
                     acac.getBean(UserEmployeeThriftService.class),
-                    acac.getBean(EmployeeServiceImpl.class));
+                    acac.getBean(EmployeeServiceImpl.class),
+                    acac.getBean(UserQxServiceImpl.class));
             server.startServer();
-
+            server.shutDownHook();
             synchronized (UseraccountsServer.class) {
                 while (true) {
                     try {

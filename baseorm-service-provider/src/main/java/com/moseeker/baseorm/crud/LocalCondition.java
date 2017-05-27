@@ -1,6 +1,6 @@
 package com.moseeker.baseorm.crud;
 
-import com.moseeker.common.util.BeanUtils;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.query.*;
 import com.moseeker.common.util.query.Condition;
 import java.util.stream.Collectors;

@@ -1,31 +1,31 @@
-package com.moseeker.surrender;
-
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.alibaba.fastjson.JSONObject;
-import com.moseeker.apps.config.AppConfig;
-import com.moseeker.apps.service.ProfileBS;
-import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.thrift.gen.application.service.JobApplicationServices;
-import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
-import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
+//package com.moseeker.surrender;
+//
+//import org.junit.Before;
+//import org.junit.Rule;
+//import org.junit.Test;
+//import org.junit.runner.RunWith;
+//import org.mockito.Mock;
+//import org.mockito.Mockito;
+//import org.mockito.junit.MockitoJUnit;
+//import org.mockito.junit.MockitoRule;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+//import org.springframework.test.context.ContextConfiguration;
+//import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+//import org.springframework.transaction.annotation.Transactional;
+//
+//import com.alibaba.fastjson.JSONObject;
+//import com.moseeker.apps.config.AppConfig;
+//import com.moseeker.apps.service.ProfileBS;
+//import com.moseeker.common.providerutils.ResponseUtils;
+//import com.moseeker.thrift.gen.application.service.JobApplicationServices;
+//import com.moseeker.thrift.gen.common.struct.Response;
+//import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
+//import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
 //@RunWith(SpringJUnit4ClassRunner.class)
 //@ContextConfiguration(classes =AppConfig.class)
 //@Transactional
-public class ProfileBSTest {
+//public class ProfileBSTest {
 //	@Mock
 //	UseraccountsServices.Iface useraccountsServices;
 //	@Mock
@@ -61,4 +61,4 @@ public class ProfileBSTest {
 //		Response result=profileBS.retrieveProfile(124576,profile,3);
 //		System.out.println(result);
 //	}
-}
+//}

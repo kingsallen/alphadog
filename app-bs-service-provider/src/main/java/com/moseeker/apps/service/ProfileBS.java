@@ -7,7 +7,8 @@ import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.UserSource;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.BeanUtils;
+import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices;
@@ -17,7 +18,6 @@ import com.moseeker.thrift.gen.dao.struct.UserUserDO;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
-import com.mysql.jdbc.StringUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -132,6 +132,7 @@ public class ProfileBS {
 					
 					HashMap<String, Object> profileProfile = new HashMap<String, Object>();
 					profileProfile.put("user_id", userId);
+					profileProfile.put("source", 0);
 					resume.put("profile", profileProfile);
 					
 					Response response = wholeProfileService.createProfile(JSON.toJSONString(resume));

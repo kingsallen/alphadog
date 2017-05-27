@@ -8,14 +8,13 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.ProfileServices.Iface;
 import com.moseeker.thrift.gen.profile.struct.Profile;
-
+import java.util.List;
+import java.util.Map;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class ProfileServicesImpl implements Iface {
@@ -82,11 +81,10 @@ public class ProfileServicesImpl implements Iface {
     }
 
     @Override
-    public Response getProfileByApplication(int companyId, int sourceId, int ats_status, boolean recommender, boolean dl_url_required) throws TException {
+	public Response getProfileByApplication(int companyId, int sourceId, int ats_status, boolean recommender, boolean dl_url_required, Map<String,List<String>> filter) throws TException {
         try {
-            return service.getProfileByApplication(companyId, sourceId, ats_status, recommender, dl_url_required);
-        } catch (Exception e) {
-            e.printStackTrace();
+            return service.getProfileByApplication(companyId,sourceId,ats_status,recommender,dl_url_required,filter);
+        } catch (TException e) {
             logger.error(e.getMessage(), e);
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }

@@ -3,7 +3,7 @@ package com.moseeker.baseorm.dao.profiledb;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileOther;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileOtherRecord;
-import com.moseeker.common.util.BeanUtils;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileOtherDO;
 import com.moseeker.thrift.gen.profile.struct.CustomizeResume;
 import org.jooq.impl.TableImpl;

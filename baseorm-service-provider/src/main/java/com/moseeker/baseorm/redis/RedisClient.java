@@ -272,6 +272,7 @@ public abstract class RedisClient {
 			if(cacheKey == null) {
 				throw new CacheConfigNotExistException();
 			}
+			logger.info("redis lpush : key={},value={}",cacheKey,newvalue);
 			return redisCluster.lpush(cacheKey, newvalue);
 		} catch (CacheConfigNotExistException e) { 
 			throw new RedisException(e, Constant.REDIS_CONNECT_ERROR_APPID, className, Constant.REDIS_CACHE_CONFIG_NOTEXIST_ERROR_EVENTKEY);

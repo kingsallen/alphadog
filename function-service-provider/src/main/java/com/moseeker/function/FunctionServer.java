@@ -3,7 +3,6 @@ package com.moseeker.function;
 import com.moseeker.function.config.AppConfig;
 import com.moseeker.function.thrift.service.ChaosThriftService;
 import com.moseeker.function.thrift.service.FunctionService;
-import com.moseeker.function.thrift.service.HRAccountThriftService;
 import com.moseeker.function.thrift.service.WordpressThriftService;
 import com.moseeker.rpccenter.main.MoServer;
 import org.slf4j.Logger;
@@ -27,28 +26,14 @@ public class FunctionServer {
 
         try {
         	AnnotationConfigApplicationContext acac = initSpring();
-//        	MultiRegServer server = new MultiRegServer(FunctionServer.class,
-//        			ServerNodeUtils.getPort(args),
-//					acac.getBean(FunctionService.class),
-//					acac.getBean(ChaosThriftService.class),
-//					acac.getBean(WordpressThriftService.class),
-//					acac.getBean(HRAccountThriftService.class));
-//			server.start(); // 启动服务，非阻塞
         	MoServer server=new MoServer(
         			acac,"",
 					acac.getBean(FunctionService.class),
 					acac.getBean(ChaosThriftService.class),
-					acac.getBean(WordpressThriftService.class),
-					acac.getBean(HRAccountThriftService.class)
+					acac.getBean(WordpressThriftService.class)
         			);
 			server.startServer();
-			//开启监听同步完成任务 -> 通过@PostConstruct在bean初始化成功后启动task
-//			PositionSyncConsumer listener = new PositionSyncConsumer();
-//			listener.startTask();
-//
-//			PositionRefreshConsumer refreshListener = new PositionRefreshConsumer();
-//			refreshListener.startTask();
-
+			server.shutDownHook();
 			synchronized (FunctionServer.class) {
 				while (true) {
 					try {

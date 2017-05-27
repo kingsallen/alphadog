@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.historydb.HistoryJobApplicationDao;
-import com.moseeker.baseorm.dao.hrdb.HRCompanyConfDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
 import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
@@ -33,7 +33,7 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.BeanUtils;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.Query.QueryBuilder;
@@ -67,7 +67,7 @@ public class JobApplicataionService {
     @Autowired
     private JobResumeOtherDao jobResumeOtherDao;
     @Autowired
-    private HRCompanyConfDao hrCompanyConfDao;
+    private HrCompanyConfDao hrCompanyConfDao;
     @Autowired
     private UserUserDao userUserDao;
     @Autowired
@@ -103,7 +103,6 @@ public class JobApplicataionService {
             if (jobApplicationRecord.getWechatId() == null) {
                 jobApplicationRecord.setWechatId((int)(0));
             }
-            //int jobApplicationId = jobApplicationDao.saveApplication(jobApplicationRecord, jobPositionRecord);
             int jobApplicationId =this.saveJobApplication(jobApplicationRecord, jobPositionRecord);
             if (jobApplicationId > 0) {
                 // proxy 0: 正常投递, 1: 代理投递, null:默认为0
@@ -562,6 +561,7 @@ public class JobApplicataionService {
         if (hrCompanyConfRecord != null && hrCompanyConfRecord.getApplicationCountLimit().shortValue() > 0) {
             applicaitonCountLimit = hrCompanyConfRecord.getApplicationCountLimit().shortValue();
         }
+        logger.info("JobApplicataionService getApplicationCountLimit applicaitonCountLimit:{}", applicaitonCountLimit);
         return applicaitonCountLimit;
     }
 

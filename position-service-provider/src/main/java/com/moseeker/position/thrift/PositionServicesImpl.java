@@ -2,6 +2,8 @@ package com.moseeker.position.thrift;
 
 import java.util.List;
 
+import com.moseeker.position.service.fundationbs.PositionQxService;
+import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.position.struct.RpExtInfo;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
@@ -21,7 +23,7 @@ import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.BeanUtils;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.position.service.JobOccupationService;
 import com.moseeker.position.service.fundationbs.PositionService;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
@@ -40,6 +42,9 @@ public class PositionServicesImpl implements Iface {
     private JobOccupationService customService;
     @Autowired
     private JobPositionDao jobPositionDao;
+    @Autowired
+    private PositionQxService positionQxService;
+
     /**
      * 获取推荐职位
      * <p></p>
@@ -99,14 +104,14 @@ public class PositionServicesImpl implements Iface {
     }
 
     @Override
-    public boolean ifAllowRefresh(int positionId, int channel) throws TException {
-        return service.ifAllowRefresh(positionId, channel);
+    public boolean ifAllowRefresh(int positionId,int account_id) throws TException {
+        return service.ifAllowRefresh(positionId,account_id);
     }
 
     @Override
-    public ThirdPartyPositionForSynchronizationWithAccount createRefreshPosition(int positionId, int channel)
+    public ThirdPartyPositionForSynchronizationWithAccount createRefreshPosition(int positionId, int account_id)
             throws TException {
-        return service.createRefreshPosition(positionId, channel);
+        return service.createRefreshPosition(positionId, account_id);
     }
 
     @Override
@@ -122,6 +127,38 @@ public class PositionServicesImpl implements Iface {
     @Override
     public WechatShareData getShareInfo(int hb_config_id) throws TException {
         return service.getShareInfo(hb_config_id);
+    }
+
+    /**
+     * 职位列表头图信息
+     */
+    @Override
+    public CampaignHeadImageVO headImage() throws TException {
+        return positionQxService.headImage();
+    }
+
+    /**
+     * 查询单个职位详情
+     */
+    @Override
+    public PositionDetailsVO positionDetails(int positionId) throws TException {
+        return positionQxService.positionDetails(positionId);
+    }
+
+    /**
+     * 查询公司热招职位的详细信息
+     */
+    @Override
+    public PositionDetailsListVO companyHotPositionDetailsList(int companyId, int page, int per_age) throws TException {
+        return positionQxService.companyHotPositionDetailsList(companyId, page, per_age);
+    }
+
+    /**
+     * 职位相关职位接口
+     */
+    @Override
+    public PositionDetailsListVO similarityPositionDetailsList(int pid, int page, int per_age) throws TException {
+        return positionQxService.similarityPositionDetailsList(pid, page, per_age);
     }
 
     @Override
@@ -160,4 +197,6 @@ public class PositionServicesImpl implements Iface {
     public Response getTeamIdByDepartmentName(int companyId, String departmentName) throws TException {
         return service.getTeamIdbyDepartmentName(companyId, departmentName);
     }
+
+
 }

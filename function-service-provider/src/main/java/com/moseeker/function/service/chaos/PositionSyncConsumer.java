@@ -15,15 +15,14 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 import com.moseeker.thrift.gen.position.struct.Position;
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 监听同步完成队列
@@ -95,6 +94,7 @@ public class PositionSyncConsumer {
 		data.setChannel(Byte.valueOf(pojo.getChannel()));
 		data.setPosition_id(Integer.valueOf(pojo.getPosition_id()));
 		data.setThird_part_position_id(pojo.getJob_id());
+		data.setAccount_id(String.valueOf(pojo.getAccount_id()));
 		if(pojo.getStatus() == 0) {
 			data.setIs_synchronization((byte)PositionSync.bound.getValue());
 			data.setSync_time(pojo.getSync_time());
@@ -125,8 +125,10 @@ public class PositionSyncConsumer {
 					ThirdPartAccountData d = new ThirdPartAccountData();
 					d.setCompany_id(p.getCompany_id());
 					d.setRemain_num(pojo.getRemain_number());
+					d.setRemain_profile_num(pojo.getResume_number());
 					d.setChannel(Integer.valueOf(pojo.getChannel().trim()));
 					d.setSync_time(pojo.getSync_time());
+					d.setId(pojo.getAccount_id());
 					//positionDao.updatePosition(p);
 					logger.info("completed queue update thirdpartyposition to synchronized");
                     thirdPartyAccountDao.updatePartyAccountByCompanyIdChannel(d);

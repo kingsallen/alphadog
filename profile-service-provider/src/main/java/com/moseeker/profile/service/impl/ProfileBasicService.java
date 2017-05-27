@@ -11,7 +11,7 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.QueryUtil;
-import com.moseeker.common.util.BeanUtils;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.Pagination;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;

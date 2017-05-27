@@ -48,7 +48,8 @@ service CandidateDBDao {
     i32 countAppliedCandidateRecomRecordByUserPosition(1: i32 userId, 2: list<i32> positionIdList) 
     i32 countInterestedCandidateRecomRecord(1: i32 userId) 
     i32 countInterestedCandidateRecomRecordByUserPosition(1: i32 userId, 2: list<i32> positionIdList) 
-    candidatedb_struct.CandidateRecomRecordDO updateCandidateRecomRecords(1: candidatedb_struct.CandidateRecomRecordDO candidateRecomRecord) 
+    candidatedb_struct.CandidateRecomRecordDO updateCandidateRecomRecord(1: candidatedb_struct.CandidateRecomRecordDO candidateRecomRecord) 
+    list<candidatedb_struct.CandidateRecomRecordDO> updateCandidateRecomRecords(1: list<candidatedb_struct.CandidateRecomRecordDO> candidateRecomRecords) throws (1:common_struct.CURDException e) 
     void deleteCandidateRecomRecords(1: i32 id) 
 
     candidatedb_struct.CandidateShareChainDO getCandidateShareChain(1:common_struct.CommonQuery query) 

@@ -55,13 +55,13 @@ struct HrCmsMediaDO {
 
 	1: optional i32 id,	//null
 	2: optional i32 moduleId,	//模块id即hr_cms_module.id
-	3: optional string longtext,	//描述
+	3: optional string longtexts,	//描述
 	4: optional string attrs,	//扩展字段，地图存json
 	5: optional string title,	//模板名称
 	6: optional string subTitle,	//模板子名称
 	7: optional string link,	//模板链接
 	8: optional i32 resId,	//资源hr_resource.id
-	9: optional i32 order,	//顺序
+	9: optional i32 orders,	//顺序
 	10: optional i32 isShow,	//是否显示
 	11: optional i32 disable,	//状态 0 是有效 1是无效
 	12: optional string createTime,	//null
@@ -75,8 +75,13 @@ struct HrCmsModuleDO {
 	1: optional i32 id,	//null
 	2: optional i32 pageId,	//hr_cms_pages.id
 	3: optional string moduleName,	//模块名称
+<<<<<<< HEAD
+	4: optional i32 type,	//1,企业模块A 2，企业模块B，3企业模块C，4，企业模块D，5，企业模块E，6地图，7，二维码 8,团队详情9，职位详情，10，动态
+	5: optional i32 orders,	//顺序
+=======
 	4: optional i32 type,	//1,企业模块A 2，企业模块B，3企业模块C，4，企业模块D，5，企业模块E，6地图，7，二维码 8,团队详情9，职位详情10，动态
 	5: optional i32 order,	//顺序
+>>>>>>> master
 	6: optional string link,	//模板链接
 	7: optional i32 limit,	//限制显示数量，0为不限制
 	8: optional i32 disable,	//状态 0 是有效 1是无效
@@ -145,6 +150,15 @@ struct HrCompanyConfDO {
 	9: optional string recommendSuccess,	//推荐成功自定义文案
 	10: optional string forwardMessage,	//转发职位自定义文案
 	11: optional i32 applicationCountLimit,	//一个人在一个公司下每月申请次数限制
+<<<<<<< HEAD
+	12: optional string jobOccupation,	//自定义字段名称
+	13: optional string jobCustomTitle,	//职位自定义字段标题
+	14: optional string teamnameCustom,	//自定义部门别名
+	15: optional i32 newjdStatus,	//新jd页去设置状态 0是为开启，1是用户开启，2是审核通过（使用新jd），3撤销（返回基础版） 默认是0
+	16: optional string applicationTime,	//newjd_status即新的jd页的生效时间，
+	17: optional double hrChat,	//IM聊天开关，0：不开启，1：开启
+	18: optional double showQxOnly	//公司信息、团队信息、职位信息等只在仟寻展示，0: 否， 1: 是
+=======
 	12: optional string jobCustomTitle,	//职位自定义字段标题
 	13: optional string searchSeq,	//搜索页页面设置顺序,3#1#2
 	14: optional string searchImg,	//搜索页页面设置背景图
@@ -152,6 +166,7 @@ struct HrCompanyConfDO {
 	16: optional string teamnameCustom,	//自定义部门别名
 	17: optional string applicationTime,	//newjd_status即新的jd页的生效时间，
 	18: optional i32 newjdStatus	//新jd页去设置状态0是未开启，1是用户申请开启，2是审核通过（使用新jd），3撤销（返回基础版） 默认是0
+>>>>>>> master
 
 }
 
@@ -628,7 +643,16 @@ struct HrThirdPartyAccountDO {
 	8: optional i32 remainNum,	//点数
 	9: optional string syncTime,	//同步时间
 	10: optional string updateTime,	//数据更新时间
-	11: optional string createTime	//创建时间
+	11: optional string createTime,	//创建时间
+	12: optional i32 remainProfileNum	//第三方账号剩余简历数
+
+}
+
+
+struct HrThirdPartyAccountHrDO {
+
+	1: optional i32 thirdPartyAccountId,	//第三方账号ID
+	2: optional i32 hrAccountId	//hr账号ID
 
 }
 
@@ -638,16 +662,16 @@ struct HrThirdPartyPositionDO {
 	1: optional i32 id,	//null
 	2: optional i32 positionId,	//jobdb.job_position.id
 	3: optional string thirdPartPositionId,	//第三方渠道编号
-	4: optional i32 channel,	//1=51job,2=猎聘,3=智联,4=linkedin
-	5: optional i32 isSynchronization,	//是否同步:0=未同步,1=同步,2=同步中，3=同步失败
-	6: optional i32 isRefresh,	//是否刷新:0=未刷新,1=刷新,2=刷新中
-	7: optional string syncTime,	//职位同步时间
-	8: optional string refreshTime,	//职位刷新时间
-	9: optional string updateTime,	//数据更新时间
-	10: optional string address,	//详细地址
-	11: optional string occupation,	//同步时选中的第三方职位职能
-	12: optional string syncFailReason,	//失败原因
-	13: optional i32 useCompanyAddress	//使用企业地址
+	4: optional i32 isSynchronization,	//是否同步:0=未同步,1=同步,2=同步中，3=同步失败
+	5: optional i32 isRefresh,	//是否刷新:0=未刷新,1=刷新,2=刷新中
+	6: optional string syncTime,	//职位同步时间
+	7: optional string refreshTime,	//职位刷新时间
+	8: optional string updateTime,	//数据更新时间
+	9: optional string address,	//详细地址
+	10: optional string occupation,	//同步时选中的第三方职位职能
+	11: optional string syncFailReason,	//失败原因
+	12: optional i32 useCompanyAddress,	//使用企业地址
+	13: optional i32 thirdPartyAccountId	//第三方账号ID
 
 }
 

@@ -1,5 +1,9 @@
 package com.moseeker.dict.service.impl;
 
+import com.moseeker.common.annotation.iface.CounterIface;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.dictdb.Dict51OccupationDao;
 import com.moseeker.baseorm.dao.dictdb.DictZpinOccupationDao;
@@ -11,10 +15,7 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.dict.enums.ConstantEnum;
 import com.moseeker.thrift.gen.common.struct.Response;
 import javax.annotation.Resource;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 @Service
 public class DictOccupationService {
@@ -40,6 +41,7 @@ public class DictOccupationService {
 	/*
 	 * 查询第三方职位职能
 	 */
+	@CounterIface
 	public Response queryOccupation(String param){
 		JSONObject obj=JSONObject.parseObject(param);
 		int single_layer=obj.getIntValue("single_layer");

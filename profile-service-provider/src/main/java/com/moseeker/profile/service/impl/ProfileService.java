@@ -12,13 +12,15 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.BeanUtils;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.struct.Profile;
-
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -26,9 +28,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.UUID;
 
 @Service
 @CounterIface
@@ -112,15 +111,6 @@ public class ProfileService {
         }
     }
 
-    public Response getProfileByApplication(int companyId, int sourceId, int ats_status, boolean recommender, boolean dl_url_required) throws Exception {
-        ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil.getInstance();
-        propertiesUtils.loadResource("setting.properties");
-        String downloadUrl = propertiesUtils.get("GENERATE_USER_ID", String.class);
-        String password = propertiesUtils.get("GENERATE_USER_PASSWORD", String.class);
-        return dao.getResourceByApplication(downloadUrl, password, companyId, sourceId, ats_status, recommender, dl_url_required);
-    }
-
-
     public Response getResources(Query query) throws TException {
         List<Profile> datas = dao.getDatas(query, Profile.class);
         if (datas != null && datas.size() > 0) {
@@ -178,5 +168,19 @@ public class ProfileService {
             return ResponseUtils.success("1");
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DEL_FAILED);
+
+    }
+
+    public Response getProfileByApplication(int companyId, int sourceId, int ats_status, boolean recommender, boolean dl_url_required,Map<String,List<String>> filter) throws TException {
+        ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil.getInstance();
+        try {
+            propertiesUtils.loadResource("setting.properties");
+        } catch (Exception e1) {
+            logger.error(e1.getMessage(), e1);
+        }
+        String downloadUrl = propertiesUtils.get("GENERATE_USER_ID", String.class);
+        String password = propertiesUtils.get("GENERATE_USER_PASSWORD", String.class);
+        logger.info("profilesByApplication:downloadUrl:{},companyId:{},sourceId:{},atsStatus:{},recommender:{},dlUrlRequired:{}",downloadUrl, companyId, sourceId, ats_status, recommender, dl_url_required);
+        return dao.getResourceByApplication(downloadUrl, password, companyId, sourceId, ats_status, recommender, dl_url_required, filter);
     }
 }

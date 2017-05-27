@@ -3,6 +3,7 @@ package com.moseeker.servicemanager.web.controller.function;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.moseeker.common.annotation.iface.CounterIface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -18,6 +19,7 @@ import com.moseeker.thrift.gen.function.service.FunctionServices;
 import com.moseeker.thrift.gen.function.struct.SensitiveWord;
 
 @Controller
+@CounterIface
 public class FunctionController {
 
 	Logger logger = LoggerFactory.getLogger(FunctionController.class);

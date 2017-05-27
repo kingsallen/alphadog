@@ -32,6 +32,7 @@ public class AppBSServer {
 					acac.getBean(ProfileBSThriftService.class),
 					acac.getBean(UserBSThriftService.class));
 			server.startServer();
+			server.shutDownHook();
 			// 启动服务，非阻塞
 			synchronized (AppBSServer.class) {
                 while (true) {
