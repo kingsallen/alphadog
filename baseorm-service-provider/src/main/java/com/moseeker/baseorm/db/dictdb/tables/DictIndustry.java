@@ -63,7 +63,7 @@ public class DictIndustry extends TableImpl<DictIndustryRecord> {
     /**
      * The column <code>dictdb.dict_industry.type</code>. 字典分类code
      */
-    public final TableField<DictIndustryRecord, DictIndustryTypeRecord> TYPE = createField("type", com.moseeker.baseorm.db.dictdb.tables.DictIndustryType.DICT_INDUSTRY_TYPE.getDataType(), this, "字典分类code");
+    public final TableField<DictIndustryRecord, Integer> TYPE = createField("type",  org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "字典分类code");
 
     /**
      * Create a <code>dictdb.dict_industry</code> table reference

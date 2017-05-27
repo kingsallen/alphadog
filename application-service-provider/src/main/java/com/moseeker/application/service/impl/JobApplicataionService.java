@@ -103,7 +103,6 @@ public class JobApplicataionService {
             if (jobApplicationRecord.getWechatId() == null) {
                 jobApplicationRecord.setWechatId((int)(0));
             }
-            //int jobApplicationId = jobApplicationDao.saveApplication(jobApplicationRecord, jobPositionRecord);
             int jobApplicationId =this.saveJobApplication(jobApplicationRecord, jobPositionRecord);
             if (jobApplicationId > 0) {
                 // proxy 0: 正常投递, 1: 代理投递, null:默认为0

@@ -34,7 +34,7 @@ public class ApplicationTest {
 		app.setL_application_id(200);
 		app.setView_count(1000);
 		app.setWechat_id(234);
-		app.setPosition_id(98898);
+		app.setPosition_id(111872);
 		app.setRecommender_user_id(4021);
 		Response res=service.postApplication(app);
 		System.out.println(res);
@@ -55,7 +55,7 @@ public class ApplicationTest {
 		app.setL_application_id(200);
 		app.setView_count(1000);
 		app.setWechat_id(234);
-		app.setPosition_id(98898);
+		app.setPosition_id(111872);
 		app.setRecommender_user_id(4021);
 		Response res=service.postApplicationIfNotApply(app);
 		System.out.println(res);
@@ -66,19 +66,19 @@ public class ApplicationTest {
 		app.setApp_tpl_id(2);
 		app.setApplier_id(333);
 		app.setApplier_name("niminsa");
-		app.setId(225291);
+		app.setId(204499);
 		Response res=service.putApplication(app);
 		System.out.println(res);
 	}
 	@Test
 	public void testDeleteApp() throws TException{
-		Response res=service.deleteApplication(225291);
+		Response res=service.deleteApplication(204499);
 		System.out.println(res);
 	}
 	@Test
 	public void testPostJobResumeOther() throws TException{
 		JobResumeOther resume=new JobResumeOther();
-		resume.setApp_id(225290);
+		resume.setApp_id(204499);
 		resume.setOther("{'111':2222}");
 		Response res=service.postJobResumeOther(resume);
 		System.out.println(res);
@@ -88,4 +88,5 @@ public class ApplicationTest {
 		Response res=service.getApplicationByUserIdAndPositionId(222, 98898, 1000);
 		System.out.println(res);
 	}
+
 }
