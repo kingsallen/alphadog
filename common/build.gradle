@@ -28,6 +28,7 @@ dependencies {
     compile deps["aspectjrt"]
     compile deps["commons-codec"]
     compile deps["gjson"]
+    compile deps["commons-lang"]
     compile 'org.jetbrains:annotations:15.0'
     compile fileTree(dir:'../libs',include:'taobao-sdk-java.jar')
 }

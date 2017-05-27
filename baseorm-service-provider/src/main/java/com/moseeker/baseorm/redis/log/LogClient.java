@@ -8,6 +8,7 @@ import com.moseeker.common.util.StringUtils;
 import java.util.HashSet;
 import java.util.Set;
 import javax.annotation.PostConstruct;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.JedisCluster;
@@ -29,6 +30,7 @@ import redis.clients.jedis.JedisCluster;
  * @version
  */
 @Component("logClient")
+@Lazy
 public class LogClient extends RedisClient {
 
     @PostConstruct
