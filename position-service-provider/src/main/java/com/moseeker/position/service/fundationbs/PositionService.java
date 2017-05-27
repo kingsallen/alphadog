@@ -76,6 +76,7 @@ import com.moseeker.thrift.gen.position.struct.WechatRpPositionListData;
 import com.moseeker.thrift.gen.position.struct.WechatShareData;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.mysql.jdbc.StringUtils;
+
 import org.apache.thrift.TException;
 import org.jooq.Field;
 import org.jooq.types.UInteger;
@@ -523,8 +524,8 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     dbOnlineList.add(jobPositionRecord);
                 }
             }
-            HashMap jobOccupationMap = new LinkedHashMap();
             // 公司下职能信息
+            HashMap jobOccupationMap = new LinkedHashMap();
             QueryUtil jobOccupationQuery = new QueryUtil();
             jobOccupationQuery.addEqualFilter("company_id", String.valueOf(companyId));
             jobOccupationQuery.setPer_page(100000);
@@ -532,6 +533,18 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             List<JobOccupationRecord> jobOccupationList = jobOccupationDao.getResources(jobOccupationQuery);
             for (JobOccupationRecord jobOccupationRecord : jobOccupationList) {
                 jobOccupationMap.put(jobOccupationRecord.getName().trim(), jobOccupationRecord);
+            }
+
+            // 公司下职位自定义字段
+            HashMap jobCustomMap = new LinkedHashMap();
+            jobOccupationQuery.clear();
+            // 公司下职能信息
+            jobOccupationQuery.addEqualFilter("company_id", String.valueOf(companyId));
+            jobOccupationQuery.setPer_page(100000);
+            jobOccupationQuery.addEqualFilter("status", 1);
+            List<JobCustomRecord> jobCustomRecordList = jobCustomDao.getResources(jobOccupationQuery);
+            for (JobCustomRecord jobCustomRecord : jobCustomRecordList) {
+                jobCustomMap.put(jobCustomRecord.getName().trim(), jobCustomRecord);
             }
             // 需要删除的城市的数据ID列表
             List<Integer> deleteCitylist = new ArrayList<>();
@@ -660,6 +673,24 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                         continue;
                     }
                 }
+                // 验证职位自定义字段
+                int customId = 0;
+                if (!com.moseeker.common.util.StringUtils.isNullOrEmpty(jobPositionHandlerDate.getCustom())) {
+                    JobCustomRecord jobCustomRecord = (JobCustomRecord) jobCustomMap.get(jobPositionHandlerDate.getCustom());
+                    if (jobCustomRecord != null) {
+                        customId = jobCustomRecord.getId();
+                    } else {
+                        logger.info("-----职位自定义字段错误,职位自定义为:" + jobPositionHandlerDate.getCustom());
+                        JobPositionFailMess jobPositionFailMessPojo = new JobPositionFailMess();
+                        jobPositionFailMessPojo.setCompanyId(jobPositionHandlerDate.getCompany_id());
+                        jobPositionFailMessPojo.setJobNumber(jobPositionHandlerDate.getJobnumber());
+                        jobPositionFailMessPojo.setSourceId(jobPositionHandlerDate.getSource_id());
+                        jobPositionFailMessPojo.setJobPostionId(jobPositionHandlerDate.getId());
+                        jobPositionFailMessPojo.setMessage(ConstantErrorCodeMessage.POSITION_DATA_CUSTOM_ERROR.replace("{MESSAGE}", jobPositionHandlerDate.getCustom()));
+                        jobPositionFailMessPojos.add(jobPositionFailMessPojo);
+                        continue;
+                    }
+                }
                 // 换算薪资范围
                 if (record.getSalaryBottom().intValue() == 0 && record.getSalaryTop().intValue() == 0) {
                     record.setSalary("面议");
@@ -674,8 +705,6 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                 queryUtil.addEqualFilter("source_id", String.valueOf(jobPositionHandlerDate.getSource_id()));
                 queryUtil.addEqualFilter("jobnumber", jobPositionHandlerDate.getJobnumber());
                 JobPositionRecord jobPositionRecord = jobPositionDao.getResource(queryUtil);
-
-
                 // 更新或者新增数据
                 if (jobPositionHandlerDate.getId() != 0 || !com.moseeker.common.util.StringUtils.isEmptyObject(jobPositionRecord)) {  // 数据更新
                     // 按company_id + .source_id + .jobnumber + source=9取得数据为空时，按Id进行更新
@@ -722,16 +751,18 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                                 jobPositionCityRecordsUpdatelist.addAll(cityCode(jobPositionHandlerDate.getCity(), record.getId()));
                             }
                             // 需要更新的JobPositionExra数据
-                            if (jobPositionHandlerDate.getExtra() != null || jobOccupationId != 0) {
+                            if (jobPositionHandlerDate.getExtra() != null || jobOccupationId != 0 || customId != 0) {
                                 if (jobPositionExtRecord == null) {
                                     jobPositionExtRecord = new JobPositionExtRecord();
                                     jobPositionExtRecord.setPid(jobPositionRecordTemp.getId());
                                     jobPositionExtRecord.setExtra(jobPositionHandlerDate.getExtra() == null ? "" : jobPositionHandlerDate.getExtra());
                                     jobPositionExtRecord.setJobOccupationId(jobOccupationId);
+                                    jobPositionExtRecord.setJobCustomId(customId);
                                     jobPositionExtRecordAddRecords.add(jobPositionExtRecord);
                                 } else {
                                     jobPositionExtRecord.setExtra(jobPositionHandlerDate.getExtra() == null ? "" : jobPositionHandlerDate.getExtra());
                                     jobPositionExtRecord.setJobOccupationId(jobOccupationId);
+                                    jobPositionExtRecord.setJobCustomId(customId);
                                     jobPositionExtRecordUpdateRecords.add(jobPositionExtRecord);
                                 }
                             }
@@ -756,11 +787,12 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     }
                     // 需要新增的JobPosition数据
                     jobPositionAddRecordList.add(record);
-                    if (!com.moseeker.common.util.StringUtils.isNullOrEmpty(jobPositionHandlerDate.getExtra()) || jobOccupationId != 0) {
+                    if (!com.moseeker.common.util.StringUtils.isNullOrEmpty(jobPositionHandlerDate.getExtra()) || jobOccupationId != 0 || customId != 0) {
                         // 新增jobPostion_ext数据
                         JobPositionExtRecord jobPositionExtRecord = new JobPositionExtRecord();
                         jobPositionExtRecord.setExtra(jobPositionHandlerDate.getExtra() == null ? "" : jobPositionHandlerDate.getExtra());
                         jobPositionExtRecord.setJobOccupationId(jobOccupationId);
+                        jobPositionExtRecord.setJobCustomId(customId);
                         jobPositionExtRecord.setPid(pid);
                         jobPositionExtRecordAddRecords.add(jobPositionExtRecord);
                     }
@@ -1199,8 +1231,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                 // 如果有did, 赋值 childCompanyId
                 childCompanyId = String.valueOf(query.getDid());
 
-            } else
-            {
+            } else {
                 QueryUtil qu = new QueryUtil();
                 qu.addEqualFilter("parent_id", query.getCompany_id());
                 List<Hrcompany> companies = companyDao.getCompanies(qu);
@@ -1269,7 +1300,9 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                 List<JobPositionRecord> jobRecords = jobPositionDao.getResources(q);
 
                 jobRecords.sort(Comparator.comparing(
-                        c -> { return jdIdList.indexOf(c.getId()); }
+                        c -> {
+                            return jdIdList.indexOf(c.getId());
+                        }
                 ));
 
                 for (JobPositionRecord jr : jobRecords) {
