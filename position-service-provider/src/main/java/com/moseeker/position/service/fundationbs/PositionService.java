@@ -310,6 +310,7 @@ public class PositionService {
      * @param account_id 第三方账号ID
      * @return bool
      */
+    @CounterIface
     public boolean ifAllowRefresh(int positionId, int account_id) {
         boolean permission = false;
         try {
