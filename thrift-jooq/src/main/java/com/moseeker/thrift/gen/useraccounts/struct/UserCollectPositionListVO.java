@@ -19,7 +19,7 @@ public class UserCollectPositionListVO implements org.apache.thrift.TBase<UserCo
   private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new UserCollectPositionListVOTupleSchemeFactory();
 
   public int status; // optional
-  public java.util.List<com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO> userCollectPosition; // optional
+  public java.util.List<CollectPositionForm> userCollectPosition; // optional
   public String message; // optional
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
@@ -97,7 +97,7 @@ public class UserCollectPositionListVO implements org.apache.thrift.TBase<UserCo
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.USER_COLLECT_POSITION, new org.apache.thrift.meta_data.FieldMetaData("userCollectPosition", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
-            new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO.class))));
+            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT            , "CollectPositionForm"))));
     tmpMap.put(_Fields.MESSAGE, new org.apache.thrift.meta_data.FieldMetaData("message", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
@@ -114,9 +114,9 @@ public class UserCollectPositionListVO implements org.apache.thrift.TBase<UserCo
     __isset_bitfield = other.__isset_bitfield;
     this.status = other.status;
     if (other.isSetUserCollectPosition()) {
-      java.util.List<com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO> __this__userCollectPosition = new java.util.ArrayList<com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO>(other.userCollectPosition.size());
-      for (com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO other_element : other.userCollectPosition) {
-        __this__userCollectPosition.add(new com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO(other_element));
+      java.util.List<CollectPositionForm> __this__userCollectPosition = new java.util.ArrayList<CollectPositionForm>(other.userCollectPosition.size());
+      for (CollectPositionForm other_element : other.userCollectPosition) {
+        __this__userCollectPosition.add(other_element);
       }
       this.userCollectPosition = __this__userCollectPosition;
     }
@@ -164,22 +164,22 @@ public class UserCollectPositionListVO implements org.apache.thrift.TBase<UserCo
     return (this.userCollectPosition == null) ? 0 : this.userCollectPosition.size();
   }
 
-  public java.util.Iterator<com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO> getUserCollectPositionIterator() {
+  public java.util.Iterator<CollectPositionForm> getUserCollectPositionIterator() {
     return (this.userCollectPosition == null) ? null : this.userCollectPosition.iterator();
   }
 
-  public void addToUserCollectPosition(com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO elem) {
+  public void addToUserCollectPosition(CollectPositionForm elem) {
     if (this.userCollectPosition == null) {
-      this.userCollectPosition = new java.util.ArrayList<com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO>();
+      this.userCollectPosition = new java.util.ArrayList<CollectPositionForm>();
     }
     this.userCollectPosition.add(elem);
   }
 
-  public java.util.List<com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO> getUserCollectPosition() {
+  public java.util.List<CollectPositionForm> getUserCollectPosition() {
     return this.userCollectPosition;
   }
 
-  public UserCollectPositionListVO setUserCollectPosition(java.util.List<com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO> userCollectPosition) {
+  public UserCollectPositionListVO setUserCollectPosition(java.util.List<CollectPositionForm> userCollectPosition) {
     this.userCollectPosition = userCollectPosition;
     return this;
   }
@@ -237,7 +237,7 @@ public class UserCollectPositionListVO implements org.apache.thrift.TBase<UserCo
       if (value == null) {
         unsetUserCollectPosition();
       } else {
-        setUserCollectPosition((java.util.List<com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO>)value);
+        setUserCollectPosition((java.util.List<CollectPositionForm>)value);
       }
       break;
 
@@ -488,11 +488,11 @@ public class UserCollectPositionListVO implements org.apache.thrift.TBase<UserCo
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
                 org.apache.thrift.protocol.TList _list8 = iprot.readListBegin();
-                struct.userCollectPosition = new java.util.ArrayList<com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO>(_list8.size);
-                com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO _elem9;
+                struct.userCollectPosition = new java.util.ArrayList<CollectPositionForm>(_list8.size);
+                CollectPositionForm _elem9;
                 for (int _i10 = 0; _i10 < _list8.size; ++_i10)
                 {
-                  _elem9 = new com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO();
+                  _elem9 = new CollectPositionForm();
                   _elem9.read(iprot);
                   struct.userCollectPosition.add(_elem9);
                 }
@@ -536,7 +536,7 @@ public class UserCollectPositionListVO implements org.apache.thrift.TBase<UserCo
           oprot.writeFieldBegin(USER_COLLECT_POSITION_FIELD_DESC);
           {
             oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.userCollectPosition.size()));
-            for (com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO _iter11 : struct.userCollectPosition)
+            for (CollectPositionForm _iter11 : struct.userCollectPosition)
             {
               _iter11.write(oprot);
             }
@@ -586,7 +586,7 @@ public class UserCollectPositionListVO implements org.apache.thrift.TBase<UserCo
       if (struct.isSetUserCollectPosition()) {
         {
           oprot.writeI32(struct.userCollectPosition.size());
-          for (com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO _iter12 : struct.userCollectPosition)
+          for (CollectPositionForm _iter12 : struct.userCollectPosition)
           {
             _iter12.write(oprot);
           }
@@ -608,11 +608,11 @@ public class UserCollectPositionListVO implements org.apache.thrift.TBase<UserCo
       if (incoming.get(1)) {
         {
           org.apache.thrift.protocol.TList _list13 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-          struct.userCollectPosition = new java.util.ArrayList<com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO>(_list13.size);
-          com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO _elem14;
+          struct.userCollectPosition = new java.util.ArrayList<CollectPositionForm>(_list13.size);
+          CollectPositionForm _elem14;
           for (int _i15 = 0; _i15 < _list13.size; ++_i15)
           {
-            _elem14 = new com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO();
+            _elem14 = new CollectPositionForm();
             _elem14.read(iprot);
             struct.userCollectPosition.add(_elem14);
           }
