@@ -26,6 +26,8 @@ import java.util.Optional;
  */
 public class CandidateDBDao {
 
+    static Logger logger = LoggerFactory.getLogger(CandidateDBDao.class);
+
     private static com.moseeker.thrift.gen.dao.service.CandidateDBDao.Iface candidateDBDao = ServiceManager.SERVICEMANAGER
             .getService(com.moseeker.thrift.gen.dao.service.CandidateDBDao.Iface.class);
 
@@ -44,6 +46,7 @@ public class CandidateDBDao {
         queryUtil.addEqualFilter("company_id", String.valueOf(companyId));
         try {
             CandidateCompanyDO candidateCompanyDO = candidateDBDao.getCandidateCompany(queryUtil);
+            logger.info("CandidateDBDao getCandidateCompanyByUserIDCompanyID candidateCompanyDO:{}", candidateCompanyDO);
             if (candidateCompanyDO != null && candidateCompanyDO.getId() > 0) {
                 return Optional.of(candidateCompanyDO);
             } else {
