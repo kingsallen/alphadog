@@ -29,7 +29,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxWechatRecord extends UpdatableRecordImpl<HrWxWechatRecord> {
 
-	private static final long serialVersionUID = 1554071523;
+	private static final long serialVersionUID = 1496112119;
 
 	/**
 	 * Setter for <code>hrdb.hr_wx_wechat.id</code>.
@@ -228,14 +228,14 @@ public class HrWxWechatRecord extends UpdatableRecordImpl<HrWxWechatRecord> {
 	}
 
 	/**
-	 * Setter for <code>hrdb.hr_wx_wechat.passive_seeker</code>. 被动求职者开关，0：开启，1：不开启
+	 * Setter for <code>hrdb.hr_wx_wechat.passive_seeker</code>. 被动求职者开关，0= 开启, 1=不开启
 	 */
 	public void setPassiveSeeker(Byte value) {
 		setValue(14, value);
 	}
 
 	/**
-	 * Getter for <code>hrdb.hr_wx_wechat.passive_seeker</code>. 被动求职者开关，0：开启，1：不开启
+	 * Getter for <code>hrdb.hr_wx_wechat.passive_seeker</code>. 被动求职者开关，0= 开启, 1=不开启
 	 */
 	public Byte getPassiveSeeker() {
 		return (Byte) getValue(14);
@@ -424,14 +424,14 @@ public class HrWxWechatRecord extends UpdatableRecordImpl<HrWxWechatRecord> {
 	}
 
 	/**
-	 * Setter for <code>hrdb.hr_wx_wechat.show_custom_theme</code>. show_custom_theme,用于表示是否可以开启企业自定义颜色配置 0是否 1是开启
+	 * Setter for <code>hrdb.hr_wx_wechat.show_custom_theme</code>. show_custom_theme, 用于表示是否可以开启企业自定义颜色配置 0是否 1是开启
 	 */
 	public void setShowCustomTheme(Integer value) {
 		setValue(28, value);
 	}
 
 	/**
-	 * Getter for <code>hrdb.hr_wx_wechat.show_custom_theme</code>. show_custom_theme,用于表示是否可以开启企业自定义颜色配置 0是否 1是开启
+	 * Getter for <code>hrdb.hr_wx_wechat.show_custom_theme</code>. show_custom_theme, 用于表示是否可以开启企业自定义颜色配置 0是否 1是开启
 	 */
 	public Integer getShowCustomTheme() {
 		return (Integer) getValue(28);

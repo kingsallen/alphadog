@@ -13,6 +13,7 @@ import com.moseeker.db.hrdb.tables.HrCmsPages;
 import com.moseeker.db.hrdb.tables.HrCompany;
 import com.moseeker.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.db.hrdb.tables.HrCompanyConf;
+import com.moseeker.db.hrdb.tables.HrCompanyConfBak;
 import com.moseeker.db.hrdb.tables.HrEmployeeCertConf;
 import com.moseeker.db.hrdb.tables.HrEmployeeCustomFields;
 import com.moseeker.db.hrdb.tables.HrEmployeePosition;
@@ -41,7 +42,6 @@ import com.moseeker.db.hrdb.tables.HrSearchCondition;
 import com.moseeker.db.hrdb.tables.HrSuperaccountApply;
 import com.moseeker.db.hrdb.tables.HrTalentpool;
 import com.moseeker.db.hrdb.tables.HrTeam;
-import com.moseeker.db.hrdb.tables.HrTeamBluefocus;
 import com.moseeker.db.hrdb.tables.HrTeamMember;
 import com.moseeker.db.hrdb.tables.HrThirdPartyAccount;
 import com.moseeker.db.hrdb.tables.HrThirdPartyAccountHr;
@@ -58,7 +58,6 @@ import com.moseeker.db.hrdb.tables.HrWxRule;
 import com.moseeker.db.hrdb.tables.HrWxTemplateMessage;
 import com.moseeker.db.hrdb.tables.HrWxWechat;
 import com.moseeker.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
-import com.moseeker.db.hrdb.tables.VPositionRealcompany;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -83,7 +82,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Hrdb extends SchemaImpl {
 
-	private static final long serialVersionUID = -322766544;
+	private static final long serialVersionUID = 2137747361;
 
 	/**
 	 * The reference instance of <code>hrdb</code>
@@ -115,6 +114,7 @@ public class Hrdb extends SchemaImpl {
 			HrCompany.HR_COMPANY,
 			HrCompanyAccount.HR_COMPANY_ACCOUNT,
 			HrCompanyConf.HR_COMPANY_CONF,
+			HrCompanyConfBak.HR_COMPANY_CONF_BAK,
 			HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF,
 			HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS,
 			HrEmployeePosition.HR_EMPLOYEE_POSITION,
@@ -143,7 +143,6 @@ public class Hrdb extends SchemaImpl {
 			HrSuperaccountApply.HR_SUPERACCOUNT_APPLY,
 			HrTalentpool.HR_TALENTPOOL,
 			HrTeam.HR_TEAM,
-			HrTeamBluefocus.HR_TEAM_BLUEFOCUS,
 			HrTeamMember.HR_TEAM_MEMBER,
 			HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT,
 			HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR,
@@ -159,7 +158,6 @@ public class Hrdb extends SchemaImpl {
 			HrWxRule.HR_WX_RULE,
 			HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE,
 			HrWxWechat.HR_WX_WECHAT,
-			HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS,
-			VPositionRealcompany.V_POSITION_REALCOMPANY);
+			HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS);
 	}
 }

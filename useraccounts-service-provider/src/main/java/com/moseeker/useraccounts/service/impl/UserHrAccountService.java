@@ -6,12 +6,14 @@ import java.util.List;
 import java.util.Map;
 
 import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.dao.service.HrDBDao;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.foundation.chaos.struct.ThirdPartyAccountStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.HrNpsResult;
 import com.moseeker.thrift.gen.useraccounts.struct.HrNpsUpdate;
 import com.moseeker.useraccounts.constant.BindingStatus;
 import com.moseeker.useraccounts.constant.ResultMessage;
+
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.jooq.types.UByte;
@@ -780,11 +782,11 @@ public class UserHrAccountService {
         }
     }
 
-    public HrNpsResult npsStatus(int userId, String startDate, String endDate) throws BIZException, TException {
-        return null;
+    public HrNpsResult npsStatus(int userId, String startDate, String endDate) throws Exception {
+        return userHrDao.npsStatus(userId, startDate, endDate);
     }
 
-    public HrNpsResult npsUpdate(HrNpsUpdate npsUpdate) throws BIZException, TException {
-        return null;
+    public HrNpsResult npsUpdate(HrNpsUpdate npsUpdate) throws Exception {
+        return userHrDao.npsUpdate(npsUpdate);
     }
 }

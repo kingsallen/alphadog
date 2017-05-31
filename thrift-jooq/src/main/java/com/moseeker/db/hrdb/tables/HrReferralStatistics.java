@@ -36,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrReferralStatistics extends TableImpl<HrReferralStatisticsRecord> {
 
-	private static final long serialVersionUID = -562814381;
+	private static final long serialVersionUID = -1697941250;
 
 	/**
 	 * The reference instance of <code>hrdb.hr_referral_statistics</code>
@@ -55,6 +55,16 @@ public class HrReferralStatistics extends TableImpl<HrReferralStatisticsRecord> 
 	 * The column <code>hrdb.hr_referral_statistics.id</code>. primary key
 	 */
 	public final TableField<HrReferralStatisticsRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "primary key");
+
+	/**
+	 * The column <code>hrdb.hr_referral_statistics.position_title</code>. hr_position.title
+	 */
+	public final TableField<HrReferralStatisticsRecord, String> POSITION_TITLE = createField("position_title", org.jooq.impl.SQLDataType.VARCHAR.length(999).nullable(false), this, "hr_position.title");
+
+	/**
+	 * The column <code>hrdb.hr_referral_statistics.employee_name</code>. sys_employee.cname
+	 */
+	public final TableField<HrReferralStatisticsRecord, String> EMPLOYEE_NAME = createField("employee_name", org.jooq.impl.SQLDataType.VARCHAR.length(512).nullable(false), this, "sys_employee.cname");
 
 	/**
 	 * The column <code>hrdb.hr_referral_statistics.employee_id</code>. 推荐员工 sys.employee.id

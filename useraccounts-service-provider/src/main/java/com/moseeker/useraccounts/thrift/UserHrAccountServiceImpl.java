@@ -72,12 +72,12 @@ public class UserHrAccountServiceImpl implements Iface {
         return service.bindThirdAccount(account);
     }
 
-	@Override
-	public Response getSearchCondition(int hrAccountId, int type)
-			throws TException {
-    	logger.info("UserHrAccountServiceImpl - getSearchCondition ");
-		return service.getSearchCondition(hrAccountId, type);
-	}
+    @Override
+    public Response getSearchCondition(int hrAccountId, int type)
+            throws TException {
+        logger.info("UserHrAccountServiceImpl - getSearchCondition ");
+        return service.getSearchCondition(hrAccountId, type);
+    }
 
     @Override
     public Response postSearchCondition(SearchCondition searchCondition)
@@ -122,26 +122,42 @@ public class UserHrAccountServiceImpl implements Iface {
 
     @Override
     public Response allowBind(UserHrAccount user, byte channelType, String username) throws TException {
-        return service.allowBind(user,channelType,username);
+        return service.allowBind(user, channelType, username);
     }
 
     @Override
     public Response addThirdPartyAccount(int userId, BindAccountStruct account) throws TException {
-        return service.addThirdPartyAccount(userId,account);
+        return service.addThirdPartyAccount(userId, account);
     }
 
     @Override
     public Response updateThirdPartyAccount(int accountId, BindAccountStruct account) throws TException {
-        return service.updateThirdPartyAccount(accountId,account);
+        return service.updateThirdPartyAccount(accountId, account);
     }
 
     @Override
     public HrNpsResult npsStatus(int userId, String startDate, String endDate) throws BIZException, TException {
-        return service.;
+        try {
+            return service.npsStatus(userId, startDate, endDate);
+        } catch (BIZException e) {
+            throw e;
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new TException(e);
+        }
     }
 
     @Override
     public HrNpsResult npsUpdate(HrNpsUpdate npsUpdate) throws BIZException, TException {
-        return null;
+        try {
+            return service.npsUpdate(npsUpdate);
+        } catch (BIZException e) {
+            throw e;
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new TException(e);
+        }
     }
 }

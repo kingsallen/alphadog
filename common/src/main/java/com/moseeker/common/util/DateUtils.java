@@ -3,6 +3,7 @@ package com.moseeker.common.util;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalQuery;
 import java.util.Calendar;
@@ -110,7 +111,7 @@ public class DateUtils {
             else if (currentMonth >= 10 && currentMonth <= 12)
                 c.set(Calendar.MONTH, 9);
             c.set(Calendar.DATE, 1);
-            now = LocalDateTime.parse(normalDateSDF.format(c.getTime()) + " 00:00:00");
+            now = LocalDateTime.parse(normalDateSDF.format(c.getTime()) + " 00:00:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -140,7 +141,7 @@ public class DateUtils {
                 c.set(Calendar.MONTH, 11);
                 c.set(Calendar.DATE, 31);
             }
-            now = LocalDateTime.parse(normalDateSDF.format(c.getTime()) + " 23:59:59");
+            now = LocalDateTime.parse(normalDateSDF.format(c.getTime()) + " 23:59:59", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         } catch (Exception e) {
             e.printStackTrace();
         }

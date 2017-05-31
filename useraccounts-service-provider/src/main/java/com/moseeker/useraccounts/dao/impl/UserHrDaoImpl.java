@@ -253,6 +253,7 @@ public class UserHrDaoImpl extends BaseDaoImpl<UserHrAccountRecord, UserHrAccoun
         Connection conn = null;
         try {
             conn = DBConnHelper.DBConn.getConn();
+            conn.setAutoCommit(false);
             DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
             List<HrNpsRecord> npsRecords = create.select().from(HrNps.HR_NPS).where(HrNps.HR_NPS.HR_ACCOUNT_ID.eq(npsUpdate.getUser_id()))
                     .and(HrNps.HR_NPS.CREATE_TIME.between(Timestamp.valueOf(dateStart), Timestamp.valueOf(dateEnd))).fetchInto(HrNpsRecord.class);
@@ -268,6 +269,7 @@ public class UserHrDaoImpl extends BaseDaoImpl<UserHrAccountRecord, UserHrAccoun
                 }
                 create.attach(record);
                 record.update();
+                record.getCreateTime();
             } else {
                 //添加一条新的记录
                 HrNpsRecord npsRecord = new HrNpsRecord();
@@ -278,21 +280,25 @@ public class UserHrDaoImpl extends BaseDaoImpl<UserHrAccountRecord, UserHrAccoun
                 npsRecord.insert();
             }
 
-            List<HrRecommendRecord> recommendRecords = create.select().from(HrRecommend.HR_RECOMMEND).where(HrRecommend.HR_RECOMMEND.HR_ACCOUNT_ID.eq(npsUpdate.getUser_id()))
-                    .and(HrRecommend.HR_RECOMMEND.CREATE_TIME.between(Timestamp.valueOf(dateStart), Timestamp.valueOf(dateEnd)))
-                    .orderBy(HrRecommend.HR_RECOMMEND.CREATE_TIME.desc())
-                    .fetchInto(HrRecommendRecord.class);
-
-            List<HrRecommendDO> recommendDOS = create.select().from(HrRecommend.HR_RECOMMEND).where(HrRecommend.HR_RECOMMEND.HR_ACCOUNT_ID.eq(npsUpdate.getUser_id()))
-                    .and(HrRecommend.HR_RECOMMEND.CREATE_TIME.between(Timestamp.valueOf(dateStart), Timestamp.valueOf(dateEnd))).fetchInto(HrRecommendDO.class);
-
-            HrNpsResult hrNpsResult = new HrNpsResult();
-            hrNpsResult.setHr_recommend(recommendDOS);
-            return hrNpsResult;
+            if (npsUpdate.isSetUsername()) {
+                HrRecommendRecord recommendRecord = new HrRecommendRecord();
+                recommendRecord.setHrAccountId(npsUpdate.getUser_id());
+                recommendRecord.setUsername(npsUpdate.getUsername());
+                recommendRecord.setMobile(npsUpdate.getMobile());
+                recommendRecord.setCompany(npsUpdate.getCompany());
+                create.attach(recommendRecord);
+                recommendRecord.insert();
+            }
         } catch (Exception e) {
+            conn.rollback();
             throw e;
         } finally {
             if (conn != null) {
+                try {
+                    conn.setAutoCommit(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 try {
                     conn.close();
                 } catch (Exception e) {
@@ -300,5 +306,8 @@ public class UserHrDaoImpl extends BaseDaoImpl<UserHrAccountRecord, UserHrAccoun
                 }
             }
         }
+
+        HrNpsResult hrNpsResult = npsStatus(npsUpdate.getUser_id(), npsUpdate.getStart_date(), npsUpdate.getEnd_date());
+        return hrNpsResult;
     }
 }
