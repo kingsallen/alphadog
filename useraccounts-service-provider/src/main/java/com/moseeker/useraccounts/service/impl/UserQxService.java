@@ -186,9 +186,23 @@ public class UserQxService {
                 List<Integer> positionIds = collectPositions.stream().map(m -> m.getPositionId()).collect(Collectors.toList());
                 query.getEqualFilter().clear();
                 query.getEqualFilter().put("id", Arrays.toString(positionIds.toArray()));
-                List<Integer> positions = jobDBDao.getPositions(query).stream().map(m -> m.getId()).collect(Collectors.toList());
-                collectPositions.removeIf(r -> !positions.contains(r.getPositionId()));
-                result.setUserCollectPosition(collectPositions);
+                Map<Integer, JobPositionDO> positions = jobDBDao.getPositions(query).stream().collect(Collectors.toMap(k -> k.getId(), v -> v));
+                List<CollectPositionForm> positionFormList = new ArrayList<>();
+                collectPositions.stream().filter(f -> positions.containsKey(f.getPositionId())).forEach(r -> {
+                    CollectPositionForm form = new CollectPositionForm();
+                    JobPositionDO positionDO = positions.get(r.getPositionId());
+                    form.setId(positionDO.getId());
+                    form.setTitle(positionDO.getTitle());
+                    form.setDepartment(positionDO.getDepartment());
+                    form.setTime(r.getUpdateTime());
+                    form.setCity(positionDO.getCity());
+                    form.setSalary_top(positionDO.getSalaryTop());
+                    form.setSalary_bottom(positionDO.getSalaryBottom());
+                    form.setUpdate_time(positionDO.getUpdateTime());
+                    form.setStatus((byte) positionDO.getStatus());
+                    positionFormList.add(form);
+                });
+                result.setUserCollectPosition(positionFormList);
             } else {
                 jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", "未找到收藏记录"));
             }
