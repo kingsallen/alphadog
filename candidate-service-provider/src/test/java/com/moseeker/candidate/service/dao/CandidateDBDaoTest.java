@@ -17,7 +17,7 @@ public class CandidateDBDaoTest {
 
     private static com.moseeker.thrift.gen.dao.service.CandidateDBDao.Iface candidateDBDao = ServiceManager.SERVICEMANAGER
             .getService(com.moseeker.thrift.gen.dao.service.CandidateDBDao.Iface.class);
-    @Test
+    //@Test
     public void getCandidateCompanyByUserIDCompanyID() throws Exception {
 
         QueryUtil queryUtil = new QueryUtil();

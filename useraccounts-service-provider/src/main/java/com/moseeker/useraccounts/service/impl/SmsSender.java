@@ -268,7 +268,7 @@ public class SmsSender {
             if (getResult == null) {
                 redisClient.set(0, "SMS_LIMIT", mobile, null,"1", dateTime);
                 return true;
-            } else if (Long.valueOf(getResult) < Constant.SMS_UPPER_LIMIT) {
+            } else if (Long.valueOf(getResult) <= Constant.SMS_UPPER_LIMIT) {
                 redisClient.incr(0, "SMS_LIMIT", mobile);
                 return true;
             } else {

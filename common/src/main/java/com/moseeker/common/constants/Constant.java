@@ -199,5 +199,5 @@ public final class Constant {
 	
     public static final String WORDPRESS_POST_POSTSTATUS_PUBLISH = "publish";
 
-    public static final int SMS_UPPER_LIMIT = 2; //暂时限制2条短信
+    public static final int SMS_UPPER_LIMIT = 10; //暂时限制2条短信
 }
