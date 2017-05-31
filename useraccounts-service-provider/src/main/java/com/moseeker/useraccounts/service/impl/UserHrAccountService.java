@@ -5,8 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.foundation.chaos.struct.ThirdPartyAccountStruct;
+import com.moseeker.thrift.gen.useraccounts.struct.HrNpsResult;
+import com.moseeker.thrift.gen.useraccounts.struct.HrNpsUpdate;
 import com.moseeker.useraccounts.constant.BindingStatus;
 import com.moseeker.useraccounts.constant.ResultMessage;
 import org.apache.thrift.TException;
@@ -775,5 +778,13 @@ public class UserHrAccountService {
         } finally {
             //do nothing
         }
+    }
+
+    public HrNpsResult npsStatus(int userId, String startDate, String endDate) throws BIZException, TException {
+        return null;
+    }
+
+    public HrNpsResult npsUpdate(HrNpsUpdate npsUpdate) throws BIZException, TException {
+        return null;
     }
 }

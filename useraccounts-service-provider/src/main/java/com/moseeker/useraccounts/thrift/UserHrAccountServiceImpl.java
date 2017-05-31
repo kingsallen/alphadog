@@ -8,10 +8,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService.Iface;
 import com.moseeker.thrift.gen.useraccounts.struct.BindAccountStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.DownloadReport;
+import com.moseeker.thrift.gen.useraccounts.struct.HrNpsResult;
+import com.moseeker.thrift.gen.useraccounts.struct.HrNpsUpdate;
 import com.moseeker.thrift.gen.useraccounts.struct.SearchCondition;
 import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
 import com.moseeker.useraccounts.service.impl.UserHrAccountService;
@@ -130,5 +133,15 @@ public class UserHrAccountServiceImpl implements Iface {
     @Override
     public Response updateThirdPartyAccount(int accountId, BindAccountStruct account) throws TException {
         return service.updateThirdPartyAccount(accountId,account);
+    }
+
+    @Override
+    public HrNpsResult npsStatus(int userId, String startDate, String endDate) throws BIZException, TException {
+        return service.;
+    }
+
+    @Override
+    public HrNpsResult npsUpdate(HrNpsUpdate npsUpdate) throws BIZException, TException {
+        return null;
     }
 }

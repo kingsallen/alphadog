@@ -36,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyAccount extends TableImpl<HrThirdPartyAccountRecord> {
 
-	private static final long serialVersionUID = 1544774035;
+	private static final long serialVersionUID = -1365279785;
 
 	/**
 	 * The reference instance of <code>hrdb.hr_third_party_account</code>
@@ -105,6 +105,11 @@ public class HrThirdPartyAccount extends TableImpl<HrThirdPartyAccountRecord> {
 	 * The column <code>hrdb.hr_third_party_account.create_time</code>. 创建时间
 	 */
 	public final TableField<HrThirdPartyAccountRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "创建时间");
+
+	/**
+	 * The column <code>hrdb.hr_third_party_account.remain_profile_num</code>. 第三方账号剩余简历数
+	 */
+	public final TableField<HrThirdPartyAccountRecord, Integer> REMAIN_PROFILE_NUM = createField("remain_profile_num", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "第三方账号剩余简历数");
 
 	/**
 	 * Create a <code>hrdb.hr_third_party_account</code> table reference

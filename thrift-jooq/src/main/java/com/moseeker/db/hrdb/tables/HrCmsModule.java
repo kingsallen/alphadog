@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCmsModule extends TableImpl<HrCmsModuleRecord> {
 
-	private static final long serialVersionUID = 1199289739;
+	private static final long serialVersionUID = -675560117;
 
 	/**
 	 * The reference instance of <code>hrdb.hr_cms_module</code>
@@ -66,9 +66,9 @@ public class HrCmsModule extends TableImpl<HrCmsModuleRecord> {
 	public final TableField<HrCmsModuleRecord, String> MODULE_NAME = createField("module_name", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaulted(true), this, "模块名称");
 
 	/**
-	 * The column <code>hrdb.hr_cms_module.type</code>. 1,企业模块A 2，企业模块B，3企业模块C，4，企业模块D，5，企业模块E，6地图，7，二维码 8,团队详情9，职位详情
+	 * The column <code>hrdb.hr_cms_module.type</code>. 1,企业模块A 2，企业模块B，3企业模块C，4，企业模块D，5，企业模块E，6地图，7，二维码 ，8,团队详情，9，职位详情，10，动态
 	 */
-	public final TableField<HrCmsModuleRecord, Integer> TYPE = createField("type", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "1,企业模块A 2，企业模块B，3企业模块C，4，企业模块D，5，企业模块E，6地图，7，二维码 8,团队详情9，职位详情");
+	public final TableField<HrCmsModuleRecord, Integer> TYPE = createField("type", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "1,企业模块A 2，企业模块B，3企业模块C，4，企业模块D，5，企业模块E，6地图，7，二维码 ，8,团队详情，9，职位详情，10，动态");
 
 	/**
 	 * The column <code>hrdb.hr_cms_module.orders</code>. 顺序

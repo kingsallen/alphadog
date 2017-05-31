@@ -308,3 +308,41 @@ struct ApplicationDetailVO {
     5: optional i8 step_status,                         //状态
     6: optional list<ApplicationOperationRecordVO> status_timeline  //操作记录
 }
+
+struct HrRecommendDO {
+
+	1: optional i32 id,	//null
+	2: optional i32 hr_account_id,	//hr帐号
+	3: optional string username,	//推荐的用户
+	4: optional string mobile,	// 推荐的用户的手机号
+	5: optional string company,	//推荐的用户所属公司
+	6: optional string create_time	//推荐的时间
+
+}
+
+struct HrNpsDO {
+
+	1: optional i32 id,	//null
+	2: optional i32 hr_account_id,	//hr帐号
+	3: optional i8 intention,	//推荐同行的意愿【0-10】
+	4: optional i32 accept_contact,	// 是否愿意接听电话 0-未确认，1-愿意，2-不愿意
+	5: optional string create_time,	//分配账号的时间
+	6: optional string update_time	//更新时间
+
+}
+
+struct HrNpsResult {
+    1: optional list<HrNpsDO> hr_nps,
+    2: optional list<HrRecommendDO> hr_recommend
+}
+
+struct HrNpsUpdate {
+    1: optional i32 user_id,
+    2: optional string start_date,
+    3: optional string end_date,
+    4: optional byte intention,
+    5: optional byte accept_contact,
+    6: optional string username,
+    7: optional string mobile,
+    8: optional string company
+}

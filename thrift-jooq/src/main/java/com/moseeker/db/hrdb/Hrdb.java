@@ -27,8 +27,10 @@ import com.moseeker.db.hrdb.tables.HrHtml5Statistics;
 import com.moseeker.db.hrdb.tables.HrHtml5UniqueStatistics;
 import com.moseeker.db.hrdb.tables.HrImporterMonitor;
 import com.moseeker.db.hrdb.tables.HrMedia;
+import com.moseeker.db.hrdb.tables.HrNps;
 import com.moseeker.db.hrdb.tables.HrOperationRecord;
 import com.moseeker.db.hrdb.tables.HrPointsConf;
+import com.moseeker.db.hrdb.tables.HrRecommend;
 import com.moseeker.db.hrdb.tables.HrRecruitStatistics;
 import com.moseeker.db.hrdb.tables.HrRecruitUniqueStatistics;
 import com.moseeker.db.hrdb.tables.HrReferralStatistics;
@@ -42,6 +44,7 @@ import com.moseeker.db.hrdb.tables.HrTeam;
 import com.moseeker.db.hrdb.tables.HrTeamBluefocus;
 import com.moseeker.db.hrdb.tables.HrTeamMember;
 import com.moseeker.db.hrdb.tables.HrThirdPartyAccount;
+import com.moseeker.db.hrdb.tables.HrThirdPartyAccountHr;
 import com.moseeker.db.hrdb.tables.HrThirdPartyPosition;
 import com.moseeker.db.hrdb.tables.HrTopic;
 import com.moseeker.db.hrdb.tables.HrWxBasicReply;
@@ -55,9 +58,6 @@ import com.moseeker.db.hrdb.tables.HrWxRule;
 import com.moseeker.db.hrdb.tables.HrWxTemplateMessage;
 import com.moseeker.db.hrdb.tables.HrWxWechat;
 import com.moseeker.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
-import com.moseeker.db.hrdb.tables.HrdbHrCmsMedia;
-import com.moseeker.db.hrdb.tables.HrdbHrCmsModule;
-import com.moseeker.db.hrdb.tables.HrdbHrCmsPages;
 import com.moseeker.db.hrdb.tables.VPositionRealcompany;
 
 import java.util.ArrayList;
@@ -83,7 +83,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Hrdb extends SchemaImpl {
 
-	private static final long serialVersionUID = -1234243387;
+	private static final long serialVersionUID = -322766544;
 
 	/**
 	 * The reference instance of <code>hrdb</code>
@@ -106,9 +106,6 @@ public class Hrdb extends SchemaImpl {
 
 	private final List<Table<?>> getTables0() {
 		return Arrays.<Table<?>>asList(
-			HrdbHrCmsMedia.HRDB_HR_CMS_MEDIA,
-			HrdbHrCmsModule.HRDB_HR_CMS_MODULE,
-			HrdbHrCmsPages.HRDB_HR_CMS_PAGES,
 			HrAppCvConf.HR_APP_CV_CONF,
 			HrChatUnreadCount.HR_CHAT_UNREAD_COUNT,
 			HrChildCompany.HR_CHILD_COMPANY,
@@ -132,8 +129,10 @@ public class Hrdb extends SchemaImpl {
 			HrHtml5UniqueStatistics.HR_HTML5_UNIQUE_STATISTICS,
 			HrImporterMonitor.HR_IMPORTER_MONITOR,
 			HrMedia.HR_MEDIA,
+			HrNps.HR_NPS,
 			HrOperationRecord.HR_OPERATION_RECORD,
 			HrPointsConf.HR_POINTS_CONF,
+			HrRecommend.HR_RECOMMEND,
 			HrRecruitStatistics.HR_RECRUIT_STATISTICS,
 			HrRecruitUniqueStatistics.HR_RECRUIT_UNIQUE_STATISTICS,
 			HrReferralStatistics.HR_REFERRAL_STATISTICS,
@@ -147,6 +146,7 @@ public class Hrdb extends SchemaImpl {
 			HrTeamBluefocus.HR_TEAM_BLUEFOCUS,
 			HrTeamMember.HR_TEAM_MEMBER,
 			HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT,
+			HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR,
 			HrThirdPartyPosition.HR_THIRD_PARTY_POSITION,
 			HrTopic.HR_TOPIC,
 			HrWxBasicReply.HR_WX_BASIC_REPLY,

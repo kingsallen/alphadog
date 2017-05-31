@@ -36,7 +36,7 @@ import org.jooq.types.UShort;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
 
-	private static final long serialVersionUID = -51340953;
+	private static final long serialVersionUID = 1867243912;
 
 	/**
 	 * The reference instance of <code>hrdb.hr_company_conf</code>
@@ -135,6 +135,21 @@ public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
 	 * The column <code>hrdb.hr_company_conf.newjd_status</code>. 新jd页去设置状态 0是为开启，1是用户开启，2是审核通过（使用新jd），3撤销（返回基础版） 默认是0
 	 */
 	public final TableField<HrCompanyConfRecord, Integer> NEWJD_STATUS = createField("newjd_status", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "新jd页去设置状态 0是为开启，1是用户开启，2是审核通过（使用新jd），3撤销（返回基础版） 默认是0");
+
+	/**
+	 * The column <code>hrdb.hr_company_conf.application_time</code>. newjd_status即新的jd页的生效时间，
+	 */
+	public final TableField<HrCompanyConfRecord, Timestamp> APPLICATION_TIME = createField("application_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "newjd_status即新的jd页的生效时间，");
+
+	/**
+	 * The column <code>hrdb.hr_company_conf.hr_chat</code>. IM聊天开关，0：不开启，1：开启
+	 */
+	public final TableField<HrCompanyConfRecord, Byte> HR_CHAT = createField("hr_chat", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "IM聊天开关，0：不开启，1：开启");
+
+	/**
+	 * The column <code>hrdb.hr_company_conf.show_qx_only</code>. 公司信息、团队信息、职位信息等只在仟寻展示，0: 否， 1: 是
+	 */
+	public final TableField<HrCompanyConfRecord, Byte> SHOW_QX_ONLY = createField("show_qx_only", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "公司信息、团队信息、职位信息等只在仟寻展示，0: 否， 1: 是");
 
 	/**
 	 * Create a <code>hrdb.hr_company_conf</code> table reference
