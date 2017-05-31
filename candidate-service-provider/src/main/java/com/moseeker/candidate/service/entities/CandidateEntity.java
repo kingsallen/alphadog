@@ -91,9 +91,9 @@ public class CandidateEntity implements Candidate {
                         UserEmployeeDO employeeDO = CandidateDBDao.getEmployee(shareChainDO.getRootRecomUserId(),
                                 jobPositionDO.getCompanyId());
                         logger.info("CandidateEntity glancePosition employeeDO:{}", employeeDO);
-                        logger.info("CandidateEntity glancePosition ");
                         if(employeeDO != null && employeeDO.getId()> 0) {
                             fromEmployee = true;
+                            logger.info("CandidateEntity glancePosition 是员工转发");
                         }
                     }
 
@@ -101,16 +101,19 @@ public class CandidateEntity implements Candidate {
                     List<CandidateRemarkDO> crs = CandidateDBDao.getCandidateRemarks(userID, jobPositionDO.getCompanyId());
                     if(crs != null && crs.size() > 0) {
                         crs.forEach(candidateRemark -> candidateRemark.setStatus((byte)1));
+                        logger.info("CandidateEntity glancePosition crs crs");
                     }
                     CandidateDBDao.updateCandidateRemarks(crs);
 
                     String date = new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS");
                     Optional<CandidatePositionDO> cp = CandidateDBDao.getCandidatePosition(positionID, userID);
                     if(cp.isPresent()) {
+                        logger.info("CandidateEntity glancePosition campany_position is exist! cp:{}", cp.get());
                         cp.get().setViewNumber(cp.get().getViewNumber()+1);
                         cp.get().setSharedFromEmployee(fromEmployee?(byte)1:0);
                         CandidateDBDao.updateCandidatePosition(cp.get());
                     } else {
+                        logger.info("CandidateEntity glancePosition campany_position not exist!");
                         Optional<CandidateCompanyDO> candidateCompanyDOOptional = CandidateDBDao.getCandidateCompanyByUserIDCompanyID(userID, jobPositionDO.getCompanyId());
                         CandidateCompanyDO candidateCompanyDO = null;
                         if(!candidateCompanyDOOptional.isPresent()) {
