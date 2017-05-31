@@ -7,13 +7,17 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.dao.service.JobDBDao;
 import com.moseeker.thrift.gen.dao.struct.JobApplicationDO;
+import com.moseeker.thrift.gen.dao.struct.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserSearchConditionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserViewedPositionDO;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
+import com.moseeker.useraccounts.service.impl.biztools.UserCenterBizTools;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -153,6 +157,38 @@ public class UserQxService {
             UserCollectPositionDO entity = userDao.getUserCollectPosition(query);
             if (entity != null && entity.getId() > 0) {
                 result.setUserCollectPosition(entity);
+            } else {
+                jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", "未找到收藏记录"));
+            }
+        } catch (Exception e) {
+            jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+            logger.error(e.getMessage(), e);
+        }
+        result.setStatus(jsonObject.getIntValue("status"));
+        result.setMessage(jsonObject.getString("message"));
+        logger.info("getUserCollectPosition response: {}", result);
+        return result;
+    }
+
+    public UserCollectPositionListVO getUserCollectPositions(int userId) {
+        logger.info("getUserCollectPosition params: userId={}", userId);
+        UserCollectPositionListVO result = new UserCollectPositionListVO();
+        result.setUserCollectPosition(new ArrayList<>());
+        JSONObject jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.SUCCESS);
+        try {
+            CommonQuery query = new CommonQuery();
+            query.setEqualFilter(new HashMap<>());
+            query.getEqualFilter().put("user_id", String.valueOf(userId));
+            query.getEqualFilter().put("status", String.valueOf("0"));
+            List<UserCollectPositionDO> collectPositions = userDao.getUserCollectPositions(query);
+            if (collectPositions != null && collectPositions.size() > 0) {
+                // 过滤掉不存在job_position中的职位收藏
+                List<Integer> positionIds = collectPositions.stream().map(m -> m.getPositionId()).collect(Collectors.toList());
+                query.getEqualFilter().clear();
+                query.getEqualFilter().put("id", Arrays.toString(positionIds.toArray()));
+                List<Integer> positions = jobDBDao.getPositions(query).stream().map(m -> m.getId()).collect(Collectors.toList());
+                collectPositions.removeIf(r -> !positions.contains(r.getPositionId()));
+                result.setUserCollectPosition(collectPositions);
             } else {
                 jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", "未找到收藏记录"));
             }

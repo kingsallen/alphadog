@@ -39,6 +39,11 @@ public class UserQxServiceImpl implements com.moseeker.thrift.gen.useraccounts.s
     }
 
     @Override
+    public UserCollectPositionListVO getUserCollectPositions(int userId) throws TException {
+        return service.getUserCollectPositions(userId);
+    }
+
+    @Override
     public UserCollectPositionVO postUserCollectPosition(int userId, int positionId) throws TException {
         return service.putUserCollectPosition(userId, positionId, 0);
     }

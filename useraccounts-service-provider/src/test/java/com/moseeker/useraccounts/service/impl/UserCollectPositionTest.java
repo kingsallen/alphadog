@@ -2,6 +2,7 @@
 //
 //import com.moseeker.rpccenter.client.ServiceManager;
 //import com.moseeker.thrift.gen.useraccounts.service.UserQxService;
+//import com.moseeker.thrift.gen.useraccounts.struct.UserCollectPositionListVO;
 //import com.moseeker.thrift.gen.useraccounts.struct.UserCollectPositionVO;
 //import org.apache.thrift.TException;
 //import org.junit.Before;
@@ -24,6 +25,16 @@
 //        try {
 //            UserCollectPositionVO ucpv = service.getUserCollectPosition(1122611, 380);
 //            System.out.println(ucpv);
+//        } catch (TException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    @Test
+//    public void getUserCollectPositionsTest() {
+//        try {
+//            UserCollectPositionListVO collectPositions = service.getUserCollectPositions(3870);
+//            System.out.println(collectPositions);
 //        } catch (TException e) {
 //            e.printStackTrace();
 //        }

@@ -21,6 +21,12 @@ struct UserCollectPositionVO {
     3: optional string message
 }
 
+struct UserCollectPositionListVO {
+    1: optional i32 status,
+    2: optional list<user_collect_position_struct.UserCollectPositionDO> userCollectPosition,
+    3: optional string message
+}
+
 struct UserPositionStatusVO {
     1: optional i32 status,
     2: optional map<i32, i32> positionStatus,
