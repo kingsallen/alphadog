@@ -55,6 +55,7 @@ public class CandidateEntity implements Candidate {
      */
     @Override
     public void glancePosition(int userID, int positionID, int shareChainID) {
+        logger.info("CandidateEntity glancePosition userId:{}, positionID:{}, shareChainID:{}", userID, positionID, shareChainID);
         ValidateUtil vu = new ValidateUtil();
         vu.addRequiredValidate("微信编号", userID, null, null);
         vu.addRequiredValidate("职位编号", positionID, null, null);
@@ -82,11 +83,15 @@ public class CandidateEntity implements Candidate {
                     logger.error(e.getMessage(), e);
                 }
 
-                if(userUserDO != null && jobPositionDO != null) {
+                if(userUserDO != null && userUserDO.getId() > 0 && jobPositionDO != null && jobPositionDO.getId() > 0) {
 
+                    logger.info("CandidateEntity glancePosition userUserDO:{}, jobPositionDO:{}", userUserDO, jobPositionDO);
                     boolean fromEmployee = false;       //是否是员工转发
                     if(shareChainDO != null) {
-                        UserEmployeeDO employeeDO = CandidateDBDao.getEmployee(shareChainDO.getRootRecomUserId(), jobPositionDO.getCompanyId());
+                        UserEmployeeDO employeeDO = CandidateDBDao.getEmployee(shareChainDO.getRootRecomUserId(),
+                                jobPositionDO.getCompanyId());
+                        logger.info("CandidateEntity glancePosition employeeDO:{}", employeeDO);
+                        logger.info("CandidateEntity glancePosition ");
                         if(employeeDO != null && employeeDO.getId()> 0) {
                             fromEmployee = true;
                         }
