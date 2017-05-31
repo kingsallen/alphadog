@@ -61,9 +61,6 @@ public class ChatDao {
     @Autowired
     JobPositionDao jobPositionDao;
 
-    @Autowired
-
-
     ThreadPool threadPool = ThreadPool.Instance;
 
     /**

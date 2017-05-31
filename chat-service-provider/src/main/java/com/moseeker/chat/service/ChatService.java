@@ -40,6 +40,7 @@ public class ChatService {
 
     @Autowired
     private ChatDao chaoDao;
+
     private ThreadPool pool = ThreadPool.Instance;
 
     private static String AUTO_CONTENT_WITH_HR_NOTEXIST = "我是{companyName}HR，我可以推荐您或者您的朋友加入我们！";

@@ -3,7 +3,7 @@ apply plugin: 'eclipse'
   
 dependencies {
 
-    // compile project(":thrift-gen-java")
+    compile project(":common")
     compile project(":rpc-center")
     compile project(":baseorm-service-provider")
 
