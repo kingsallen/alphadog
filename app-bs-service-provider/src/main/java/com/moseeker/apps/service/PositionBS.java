@@ -140,9 +140,9 @@ public class PositionBS {
                         }
 
                         List<HrTeamDO> hrTeams = new ArrayList<>();
-                        if (positionStruct.getTeam_id() > 0) {
+                        if (positionStruct.getTeamId() > 0) {
                             Map<String, String> params = new HashMap<>();
-                            params.put("id", String.valueOf(positionStruct.getTeam_id()));
+                            params.put("id", String.valueOf(positionStruct.getTeamId()));
                             hrTeams = hrTeamService.getHrTeams(params);
                         }
 
