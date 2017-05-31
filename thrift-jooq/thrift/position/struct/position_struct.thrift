@@ -59,7 +59,7 @@ struct Position {
     48: optional i32 target_industry,
     49: optional i32 current_status,
     50: optional map<i32, string> cities,
-    51: optional i32 team_id
+    51: optional i32 teamId
 }
 
 // 微信端职位列表
