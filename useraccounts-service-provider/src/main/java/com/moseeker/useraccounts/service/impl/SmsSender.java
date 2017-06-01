@@ -2,6 +2,12 @@ package com.moseeker.useraccounts.service.impl;
 
 import java.util.HashMap;
 
+import com.moseeker.common.constants.AppId;
+import com.moseeker.common.constants.KeyIdentifier;
+import com.moseeker.common.redis.RedisClient;
+import com.moseeker.common.util.StringUtils;
+import org.joda.time.DateTime;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +69,11 @@ public class SmsSender {
     public boolean sendSMS(String mobile, String templateCode, HashMap<String, String> params){
         initTaobaoClientInstance();
         
-        if (mobile==null){
+        if (StringUtils.isNullOrEmpty(mobile)){
+            return false;
+        }
+
+        if (!isMoreThanUpperLimit(mobile.trim())) {
             return false;
         }
 
@@ -239,4 +249,35 @@ public class SmsSender {
         return String.valueOf((int) (Math.random()*9000+1000));
     }
 
+    /**
+     * 发送短信次数校验
+     * @param mobile
+     * @return
+     */
+    private boolean isMoreThanUpperLimit(String mobile) {
+        DateTime dt = new DateTime();
+        int second = dt.getSecondOfDay();
+        int dateTime = 60 * 60 * 24;
+        if (second >= dateTime) {
+            return false;
+        }
+
+        RedisClient redisClient = RedisClientFactory.getCacheClient();
+        try {
+            String getResult = redisClient.get(0, "SMS_LIMIT", mobile);
+            if (getResult == null) {
+                redisClient.set(0, "SMS_LIMIT", mobile, null,"1", dateTime);
+                return true;
+            } else if (Long.valueOf(getResult) <= Constant.SMS_UPPER_LIMIT) {
+                redisClient.incr(0, "SMS_LIMIT", mobile);
+                return true;
+            } else {
+                logger.info("向 {} 发送短信的次数超过上线。上线是：{}", mobile, Constant.SMS_UPPER_LIMIT);
+                return false;
+            }
+        } catch (CacheConfigNotExistException e) {
+            logger.error(e.getMessage(), e);
+            return false;
+        }
+    }
 }
