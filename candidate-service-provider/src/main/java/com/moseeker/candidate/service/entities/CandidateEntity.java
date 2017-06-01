@@ -56,6 +56,7 @@ public class CandidateEntity implements Candidate {
      */
     @Override
     public void glancePosition(int userID, int positionID, int shareChainID) {
+        logger.info("CandidateEntity glancePosition userId:{}, positionID:{}, shareChainID:{}", userID, positionID, shareChainID);
         ValidateUtil vu = new ValidateUtil();
         vu.addRequiredValidate("微信编号", userID, null, null);
         vu.addRequiredValidate("职位编号", positionID, null, null);
@@ -83,13 +84,17 @@ public class CandidateEntity implements Candidate {
                     logger.error(e.getMessage(), e);
                 }
 
-                if(userUserDO != null && jobPositionDO != null) {
+                if(userUserDO != null && userUserDO.getId() > 0 && jobPositionDO != null && jobPositionDO.getId() > 0) {
 
+                    logger.info("CandidateEntity glancePosition userUserDO:{}, jobPositionDO:{}", userUserDO, jobPositionDO);
                     boolean fromEmployee = false;       //是否是员工转发
                     if(shareChainDO != null) {
-                        UserEmployeeDO employeeDO = CandidateDBDao.getEmployee(shareChainDO.getRootRecomUserId());
-                        if(employeeDO != null && employeeDO.getId() > 0) {
+                        UserEmployeeDO employeeDO = CandidateDBDao.getEmployee(shareChainDO.getRootRecomUserId(),
+                                jobPositionDO.getCompanyId());
+                        logger.info("CandidateEntity glancePosition employeeDO:{}", employeeDO);
+                        if(employeeDO != null && employeeDO.getId()> 0) {
                             fromEmployee = true;
+                            logger.info("CandidateEntity glancePosition 是员工转发");
                         }
                     }
 
@@ -97,6 +102,7 @@ public class CandidateEntity implements Candidate {
                     List<CandidateRemarkDO> crs = CandidateDBDao.getCandidateRemarks(userID, jobPositionDO.getCompanyId());
                     if(crs != null && crs.size() > 0) {
                         crs.forEach(candidateRemark -> candidateRemark.setStatus((byte)1));
+                        logger.info("CandidateEntity glancePosition crs crs");
                     }
                     CandidateDBDao.updateCandidateRemarks(crs);
 
@@ -104,10 +110,12 @@ public class CandidateEntity implements Candidate {
                     Optional<CandidatePositionDO> cp = CandidateDBDao.getCandidatePosition(positionID, userID);
 
                     if(cp.isPresent()) {
+                        logger.info("CandidateEntity glancePosition campany_position is exist! cp:{}", cp.get());
                         cp.get().setViewNumber(cp.get().getViewNumber()+1);
                         cp.get().setSharedFromEmployee(fromEmployee?(byte)1:0);
                         CandidateDBDao.updateCandidatePosition(cp.get());
                     } else {
+                        logger.info("CandidateEntity glancePosition campany_position not exist!");
                         Optional<CandidateCompanyDO> candidateCompanyDOOptional = CandidateDBDao.getCandidateCompanyByUserIDCompanyID(userID, jobPositionDO.getCompanyId());
                         CandidateCompanyDO candidateCompanyDO = null;
                         if(!candidateCompanyDOOptional.isPresent()) {

@@ -6,6 +6,7 @@ import com.moseeker.common.exception.CacheConfigNotExistException;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.redis.cache.db.DbManager;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.thrift.gen.profile.struct.Intention;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import redis.clients.jedis.JedisCluster;
@@ -430,12 +431,32 @@ public abstract class RedisClient {
 	 * @param str2 替代第二个通配符的字符串
 	 * @throws CacheConfigNotExistException 关键词未配置的提示异常
 	 */
-	public void incr(int appId, String key_identifier, String str1, String str2)
+	public Long incr(int appId, String key_identifier, String str1, String str2)
 			throws CacheConfigNotExistException {
 		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
 		String cacheKey = String.format(redisKey.getPattern(), str1, str2);
 		if(redisCluster.exists(cacheKey)) {
-			redisCluster.incr(cacheKey);
+			return redisCluster.incr(cacheKey);
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * 对存储在指定key的数值执行原子的加1操作。
+	 * @param appId 调用方项目编号
+	 * @param key_identifier config_cacheconfig_rediskey.key_identifier 关键词标识符
+	 * @param str 替代第一个通配符的字符串
+	 * @throws CacheConfigNotExistException 关键词未配置的提示异常
+	 */
+	public Long incr(int appId, String key_identifier, String str)
+			throws CacheConfigNotExistException {
+		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
+		String cacheKey = String.format(redisKey.getPattern(), str);
+		if(redisCluster.exists(cacheKey)) {
+			return redisCluster.incr(cacheKey);
+		} else {
+			return null;
 		}
 	}
 
