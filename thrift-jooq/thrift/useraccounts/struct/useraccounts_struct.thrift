@@ -324,16 +324,16 @@ struct HrNpsDO {
 
 	1: optional i32 id,	//null
 	2: optional i32 hr_account_id,	//hr帐号
-	3: optional i8 intention,	//推荐同行的意愿【0-10】
-	4: optional i32 accept_contact,	// 是否愿意接听电话 0-未确认，1-愿意，2-不愿意
+	3: optional byte intention,	//推荐同行的意愿【0-10】
+	4: optional byte accept_contact,	// 是否愿意接听电话 0-未确认，1-愿意，2-不愿意
 	5: optional string create_time,	//分配账号的时间
 	6: optional string update_time	//更新时间
 
 }
 
 struct HrNpsResult {
-    1: optional list<HrNpsDO> hr_nps,
-    2: optional list<HrRecommendDO> hr_recommend
+    1: optional HrNpsDO hr_nps,
+    2: optional HrRecommendDO hr_recommend
 }
 
 struct HrNpsUpdate {

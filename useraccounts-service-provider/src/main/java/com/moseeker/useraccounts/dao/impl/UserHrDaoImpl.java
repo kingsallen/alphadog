@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.moseeker.common.util.BeanUtils;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
 import org.jooq.DSLContext;
@@ -202,19 +204,23 @@ public class UserHrDaoImpl extends BaseDaoImpl<UserHrAccountRecord, UserHrAccoun
         try {
             conn = DBConnHelper.DBConn.getConn();
             DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-            List<HrNpsDO> npsDOS = create.select().from(HrNps.HR_NPS).where(HrNps.HR_NPS.HR_ACCOUNT_ID.eq(userId))
+            HrNpsRecord npsRecord = create.select().from(HrNps.HR_NPS).where(HrNps.HR_NPS.HR_ACCOUNT_ID.eq(userId))
                     .and(HrNps.HR_NPS.CREATE_TIME.between(Timestamp.valueOf(dateStart), Timestamp.valueOf(dateEnd)))
                     .orderBy(HrNps.HR_NPS.CREATE_TIME.desc())
-                    .fetchInto(HrNpsDO.class);
+                    .fetchAnyInto(HrNpsRecord.class);
 
-            List<HrRecommendDO> recommendDOS = create.select().from(HrRecommend.HR_RECOMMEND).where(HrRecommend.HR_RECOMMEND.HR_ACCOUNT_ID.eq(userId))
+            HrNpsDO npsDO = BeanUtils.DBToStruct(HrNpsDO.class, npsRecord);
+
+            HrRecommendRecord recommendRecord = create.select().from(HrRecommend.HR_RECOMMEND).where(HrRecommend.HR_RECOMMEND.HR_ACCOUNT_ID.eq(userId))
                     .and(HrRecommend.HR_RECOMMEND.CREATE_TIME.between(Timestamp.valueOf(dateStart), Timestamp.valueOf(dateEnd)))
                     .orderBy(HrRecommend.HR_RECOMMEND.CREATE_TIME.desc())
-                    .fetchInto(HrRecommendDO.class);
+                    .fetchAnyInto(HrRecommendRecord.class);
+
+            HrRecommendDO recommendDO = BeanUtils.DBToStruct(HrRecommendDO.class, recommendRecord);
 
             HrNpsResult hrNpsResult = new HrNpsResult();
-            hrNpsResult.setHr_nps(npsDOS);
-            hrNpsResult.setHr_recommend(recommendDOS);
+            hrNpsResult.setHr_nps(npsDO);
+            hrNpsResult.setHr_recommend(recommendDO);
             return hrNpsResult;
         } catch (Exception e) {
             throw e;
@@ -241,11 +247,17 @@ public class UserHrDaoImpl extends BaseDaoImpl<UserHrAccountRecord, UserHrAccoun
         //默认当前季度的起止时间
         LocalDateTime dateStart = DateUtils.getCurrentQuarterStartTime();
         LocalDateTime dateEnd = DateUtils.getCurrentQuarterEndTime();
-
+        LocalDateTime dateNow = LocalDateTime.now();
         if (!StringUtils.isEmpty(npsUpdate.getStart_date()) && !StringUtils.isEmpty(npsUpdate.getEnd_date())) {
             try {
                 dateStart = LocalDateTime.parse(npsUpdate.getStart_date());
+                if(dateStart.isAfter(dateNow)){
+                    throw new BIZException(-1,"开始时间不能在当前时间之后!");
+                }
                 dateEnd = LocalDateTime.parse(npsUpdate.getEnd_date());
+                if(dateEnd.isBefore(dateNow)){
+                    throw new BIZException(-1,"结束时间不能在当前时间之前!");
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -255,32 +267,43 @@ public class UserHrDaoImpl extends BaseDaoImpl<UserHrAccountRecord, UserHrAccoun
             conn = DBConnHelper.DBConn.getConn();
             conn.setAutoCommit(false);
             DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-            List<HrNpsRecord> npsRecords = create.select().from(HrNps.HR_NPS).where(HrNps.HR_NPS.HR_ACCOUNT_ID.eq(npsUpdate.getUser_id()))
-                    .and(HrNps.HR_NPS.CREATE_TIME.between(Timestamp.valueOf(dateStart), Timestamp.valueOf(dateEnd))).fetchInto(HrNpsRecord.class);
+            HrNpsRecord npsRecord = create.select().from(HrNps.HR_NPS).where(HrNps.HR_NPS.HR_ACCOUNT_ID.eq(npsUpdate.getUser_id()))
+                    .and(HrNps.HR_NPS.CREATE_TIME.between(Timestamp.valueOf(dateStart), Timestamp.valueOf(dateEnd))).fetchAnyInto(HrNpsRecord.class);
 
-            //假如查到多条记录，更新最新的一条记录
-            if (npsRecords.size() > 0) {
-                HrNpsRecord record = npsRecords.get(0);
-                if (npsUpdate.isSetIntention()) {
-                    record.setAcceptContact(npsUpdate.getIntention());
+            if (npsRecord != null) { //本季度已经有调研记录
+
+                if (npsUpdate.isSetIntention() && npsUpdate.getIntention() > -1){
+                    throw new BIZException(-1,"本季度已经填写过推荐意愿了!");
                 }
+
+                if(npsRecord.getAcceptContact() > 0 && npsUpdate.isSetAccept_contact() && npsUpdate.getAccept_contact() > 0){
+                    throw new BIZException(-1,"本季度已经参加过调研了！");
+                }
+
                 if (npsUpdate.isSetAccept_contact()) {
-                    record.setAcceptContact(npsUpdate.getAccept_contact());
+                    npsRecord.setAcceptContact(npsUpdate.getAccept_contact());
+                    create.attach(npsRecord);
+                    npsRecord.update();
                 }
-                create.attach(record);
-                record.update();
-                record.getCreateTime();
-            } else {
-                //添加一条新的记录
-                HrNpsRecord npsRecord = new HrNpsRecord();
-                npsRecord.setHrAccountId(npsUpdate.getUser_id());
-                npsRecord.setIntention(npsUpdate.getIntention());
-                npsRecord.setAcceptContact(npsUpdate.getAccept_contact());
-                create.attach(npsRecord);
-                npsRecord.insert();
+            } else { //添加一条新的记录
+
+                HrNpsRecord newRecord = new HrNpsRecord();
+                newRecord.setHrAccountId(npsUpdate.getUser_id());
+                newRecord.setIntention(npsUpdate.getIntention());
+                create.attach(newRecord);
+                newRecord.insert();
             }
 
             if (npsUpdate.isSetUsername()) {
+                //检查本季度时候已经推荐过了
+                HrRecommendRecord record = create.select().from(HrRecommend.HR_RECOMMEND).where(HrRecommend.HR_RECOMMEND.HR_ACCOUNT_ID.eq(npsUpdate.getUser_id()))
+                        .and(HrRecommend.HR_RECOMMEND.CREATE_TIME.between(Timestamp.valueOf(dateStart), Timestamp.valueOf(dateEnd)))
+                        .orderBy(HrRecommend.HR_RECOMMEND.CREATE_TIME.desc())
+                        .fetchAnyInto(HrRecommendRecord.class);
+                if(record != null){
+                    //本季度已经推荐过了
+                    throw new BIZException(-1,"本季度已经推荐过了!");
+                }
                 HrRecommendRecord recommendRecord = new HrRecommendRecord();
                 recommendRecord.setHrAccountId(npsUpdate.getUser_id());
                 recommendRecord.setUsername(npsUpdate.getUsername());
