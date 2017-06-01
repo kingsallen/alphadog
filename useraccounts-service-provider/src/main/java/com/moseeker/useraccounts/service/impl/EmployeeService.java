@@ -211,7 +211,7 @@ public class EmployeeService {
 
                     employee.setWxuser_id(getWxuserId(query));
                     employee.setAuthMethod((byte)bindingParams.getType().getValue());
-					employee.setActivation((byte)1);
+					employee.setActivation((byte)3);
 					employee.setCreateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
                     int primaryKey = userDao.postUserEmployeeDO(employee);
                     if( primaryKey == 0) {
