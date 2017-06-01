@@ -209,14 +209,21 @@ public class UserHrDaoImpl extends BaseDaoImpl<UserHrAccountRecord, UserHrAccoun
                     .orderBy(HrNps.HR_NPS.CREATE_TIME.desc())
                     .fetchAnyInto(HrNpsRecord.class);
 
-            HrNpsDO npsDO = BeanUtils.DBToStruct(HrNpsDO.class, npsRecord);
+            HrNpsDO npsDO = null;
+
+            if (npsRecord != null) {
+                npsDO = BeanUtils.DBToStruct(HrNpsDO.class, npsRecord);
+            }
 
             HrRecommendRecord recommendRecord = create.select().from(HrRecommend.HR_RECOMMEND).where(HrRecommend.HR_RECOMMEND.HR_ACCOUNT_ID.eq(userId))
                     .and(HrRecommend.HR_RECOMMEND.CREATE_TIME.between(Timestamp.valueOf(dateStart), Timestamp.valueOf(dateEnd)))
                     .orderBy(HrRecommend.HR_RECOMMEND.CREATE_TIME.desc())
                     .fetchAnyInto(HrRecommendRecord.class);
 
-            HrRecommendDO recommendDO = BeanUtils.DBToStruct(HrRecommendDO.class, recommendRecord);
+            HrRecommendDO recommendDO = null;
+            if(recommendRecord != null) {
+                recommendDO = BeanUtils.DBToStruct(HrRecommendDO.class, recommendRecord);
+            }
 
             HrNpsResult hrNpsResult = new HrNpsResult();
             hrNpsResult.setHr_nps(npsDO);
@@ -251,12 +258,12 @@ public class UserHrDaoImpl extends BaseDaoImpl<UserHrAccountRecord, UserHrAccoun
         if (!StringUtils.isEmpty(npsUpdate.getStart_date()) && !StringUtils.isEmpty(npsUpdate.getEnd_date())) {
             try {
                 dateStart = LocalDateTime.parse(npsUpdate.getStart_date());
-                if(dateStart.isAfter(dateNow)){
-                    throw new BIZException(-1,"开始时间不能在当前时间之后!");
+                if (dateStart.isAfter(dateNow)) {
+                    throw new BIZException(-1, "开始时间不能在当前时间之后!");
                 }
                 dateEnd = LocalDateTime.parse(npsUpdate.getEnd_date());
-                if(dateEnd.isBefore(dateNow)){
-                    throw new BIZException(-1,"结束时间不能在当前时间之前!");
+                if (dateEnd.isBefore(dateNow)) {
+                    throw new BIZException(-1, "结束时间不能在当前时间之前!");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -272,12 +279,12 @@ public class UserHrDaoImpl extends BaseDaoImpl<UserHrAccountRecord, UserHrAccoun
 
             if (npsRecord != null) { //本季度已经有调研记录
 
-                if (npsUpdate.isSetIntention() && npsUpdate.getIntention() > -1){
-                    throw new BIZException(-1,"本季度已经填写过推荐意愿了!");
+                if (npsUpdate.isSetIntention() && npsUpdate.getIntention() > -1) {
+                    throw new BIZException(-1, "本季度已经填写过推荐意愿了!");
                 }
 
-                if(npsRecord.getAcceptContact() > 0 && npsUpdate.isSetAccept_contact() && npsUpdate.getAccept_contact() > 0){
-                    throw new BIZException(-1,"本季度已经参加过调研了！");
+                if (npsRecord.getAcceptContact() > 0 && npsUpdate.isSetAccept_contact() && npsUpdate.getAccept_contact() > 0) {
+                    throw new BIZException(-1, "本季度已经参加过调研了！");
                 }
 
                 if (npsUpdate.isSetAccept_contact()) {
@@ -300,9 +307,9 @@ public class UserHrDaoImpl extends BaseDaoImpl<UserHrAccountRecord, UserHrAccoun
                         .and(HrRecommend.HR_RECOMMEND.CREATE_TIME.between(Timestamp.valueOf(dateStart), Timestamp.valueOf(dateEnd)))
                         .orderBy(HrRecommend.HR_RECOMMEND.CREATE_TIME.desc())
                         .fetchAnyInto(HrRecommendRecord.class);
-                if(record != null){
+                if (record != null) {
                     //本季度已经推荐过了
-                    throw new BIZException(-1,"本季度已经推荐过了!");
+                    throw new BIZException(-1, "本季度已经推荐过了!");
                 }
                 HrRecommendRecord recommendRecord = new HrRecommendRecord();
                 recommendRecord.setHrAccountId(npsUpdate.getUser_id());

@@ -79,16 +79,16 @@ public class UserHrAccountServiceImplTest {
 
     public UserHrAccountService.Iface service;
 
-//    @Before
-//    public void init() {
-//        service = ServiceManager.SERVICEMANAGER.getService(UserHrAccountService.Iface.class);
-//    }
-//
-//    @Test
-//    public void testNpsStatus() throws TException {
-//        HrNpsResult result = service.npsStatus(82690, null, null);
-//        System.out.println(JSON.toJSON(result));
-//    }
+    @Before
+    public void init() {
+        service = ServiceManager.SERVICEMANAGER.getService(UserHrAccountService.Iface.class);
+    }
+
+    @Test
+    public void testNpsStatus() throws TException {
+        HrNpsResult result = service.npsStatus(1, null, null);
+        System.out.println(JSON.toJSON(result));
+    }
 //
 //    @Test
 //    public void testNpsUpdate() throws TException {

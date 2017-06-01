@@ -3,6 +3,7 @@ package com.moseeker.servicemanager.web.controller.useraccounts;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.common.validation.rules.DateType;
@@ -331,7 +332,7 @@ public class UserHrAccountController {
             if (StringUtils.isNullOrEmpty(vu.validate())) {
                 HrNpsResult result = userHrAccountService.npsStatus(params.getInt("user_id"), params.getString("start_date"), params.getString("end_date"));
                 logger.info("/nps/status result:{}", result);
-                return ResponseLogNotification.success(request, ResponseUtils.success(result));
+                return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(result)));
             } else {
                 return ResponseLogNotification.fail(request, vu.validate());
             }
@@ -354,7 +355,7 @@ public class UserHrAccountController {
             if (StringUtils.isNullOrEmpty(vu.validate())) {
                 HrNpsResult result = userHrAccountService.npsUpdate(npsUpdate);
                 logger.info("/nps/update params:{}", JSON.toJSON(result));
-                return ResponseLogNotification.success(request, ResponseUtils.success(result));
+                return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(result)));
             } else {
                 return ResponseLogNotification.fail(request, vu.validate());
             }
