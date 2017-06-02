@@ -202,6 +202,7 @@ public class CandidateEntity implements Candidate {
             List<JobPositionDO> jobPositionDOList = null;
             try {
                 jobPositionDOList = (List<JobPositionDO>) positionFuture.get();
+                logger.info("CandidateEntity candidateList jobPositionDOList:{}",jobPositionDOList);
                 if(jobPositionDOList != null && jobPositionDOList.size() > 0) {
 
                     List<UserUserDO> presenteeUserList = convertFuture(presenteeFuture);    //候选人
@@ -211,6 +212,7 @@ public class CandidateEntity implements Candidate {
                     for(JobPositionDO positionDO : jobPositionDOList) {
                         CandidateList postionCandidate = addPositionCandidate(positionDO, candidateRecomRecordDOList,
                                 presenteeUserList, repostUserList, candidatePositionDOList);
+                        logger.info("CandidateEntity candidateList postionCandidate:{}",postionCandidate);
                         result.add(postionCandidate);
                     }
                 } else {
@@ -223,6 +225,7 @@ public class CandidateEntity implements Candidate {
         } else {
             throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_CANDIDATES_RECORD_NOT_EXIST);
         }
+        logger.info("CandidateEntity candidateList result:{}",result);
         return result;
     }
 
