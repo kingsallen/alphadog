@@ -1,6 +1,7 @@
 package com.moseeker.useraccounts;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.common.util.BeanUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.rpccenter.config.ClientConfig;
 import com.moseeker.rpccenter.config.RegistryConfig;
@@ -8,9 +9,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.employee.service.EmployeeService;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
-import com.moseeker.thrift.gen.useraccounts.struct.HrNpsResult;
-import com.moseeker.thrift.gen.useraccounts.struct.HrNpsUpdate;
-import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
+import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.thrift.UserHrAccountServiceImpl;
 
 import org.apache.thrift.TException;
@@ -22,6 +21,8 @@ import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.List;
 
 /**
  * HR账号服务
@@ -86,16 +87,33 @@ public class UserHrAccountServiceImplTest {
 
     @Test
     public void testNpsStatus() throws TException {
-        HrNpsResult result = service.npsStatus(1, null, null);
-        System.out.println(JSON.toJSON(result));
+        HrNpsResult result = service.npsStatus(82690, null, null);
+        System.out.println(BeanUtils.convertStructToJSON(result));
     }
-//
-//    @Test
-//    public void testNpsUpdate() throws TException {
-//        HrNpsUpdate update = new HrNpsUpdate();
-//        update.setUser_id(82690);
-//        update.setAccept_contact(Byte.valueOf("1"));
-//        HrNpsResult result = service.npsUpdate(update);
-//        System.out.println(JSON.toJSON(result));
-//    }
+
+    @Test
+    public void testNpsUpdate() throws TException {
+        HrNpsUpdate update = new HrNpsUpdate();
+        update.setUser_id(82689);
+        update.setIntention(Byte.valueOf("8"));
+        HrNpsResult result = service.npsUpdate(update);
+        System.out.println(BeanUtils.convertStructToJSON(result));
+    }
+
+    @Test
+    public void testNpsUpdate2() throws TException {
+        HrNpsUpdate update = new HrNpsUpdate();
+        update.setUser_id(82689);
+        update.setUsername("testUserName");
+        update.setMobile("testMobile");
+        update.setCompany("testCompany");
+        HrNpsResult result = service.npsUpdate(update);
+        System.out.println(BeanUtils.convertStructToJSON(result));
+    }
+
+    @Test
+    public void testNpsList() throws TException {
+        HrNpsStatistic result = service.npsList(null, null, 0, 0);
+        System.out.println(BeanUtils.convertStructToJSON(result));
+    }
 }

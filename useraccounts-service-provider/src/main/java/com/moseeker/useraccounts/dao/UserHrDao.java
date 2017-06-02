@@ -4,10 +4,14 @@ import com.moseeker.common.providerutils.daoutils.BaseDao;
 import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.useraccounts.struct.HrNpsInfo;
 import com.moseeker.thrift.gen.useraccounts.struct.HrNpsResult;
+import com.moseeker.thrift.gen.useraccounts.struct.HrNpsStatistic;
 import com.moseeker.thrift.gen.useraccounts.struct.HrNpsUpdate;
 
 import org.apache.thrift.TException;
+
+import java.util.List;
 
 /**
  * HR账号
@@ -34,4 +38,6 @@ public interface UserHrDao extends BaseDao<UserHrAccountRecord> {
     HrNpsResult npsStatus(int userId, String startDate, String endDate) throws Exception;
 
     HrNpsResult npsUpdate(HrNpsUpdate npsUpdate) throws Exception;
+
+    HrNpsStatistic npsList(String startDate, String endDate, int page, int pageSize) throws Exception;
 }

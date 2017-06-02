@@ -29,9 +29,9 @@ import com.moseeker.db.hrdb.tables.HrHtml5UniqueStatistics;
 import com.moseeker.db.hrdb.tables.HrImporterMonitor;
 import com.moseeker.db.hrdb.tables.HrMedia;
 import com.moseeker.db.hrdb.tables.HrNps;
+import com.moseeker.db.hrdb.tables.HrNpsRecommend;
 import com.moseeker.db.hrdb.tables.HrOperationRecord;
 import com.moseeker.db.hrdb.tables.HrPointsConf;
-import com.moseeker.db.hrdb.tables.HrRecommend;
 import com.moseeker.db.hrdb.tables.HrRecruitStatistics;
 import com.moseeker.db.hrdb.tables.HrRecruitUniqueStatistics;
 import com.moseeker.db.hrdb.tables.HrReferralStatistics;
@@ -201,6 +201,11 @@ public class Tables {
 	public static final HrNps HR_NPS = com.moseeker.db.hrdb.tables.HrNps.HR_NPS;
 
 	/**
+	 * hr推荐同行表
+	 */
+	public static final HrNpsRecommend HR_NPS_RECOMMEND = com.moseeker.db.hrdb.tables.HrNpsRecommend.HR_NPS_RECOMMEND;
+
+	/**
 	 * hr申请状态操作记录
 	 */
 	public static final HrOperationRecord HR_OPERATION_RECORD = com.moseeker.db.hrdb.tables.HrOperationRecord.HR_OPERATION_RECORD;
@@ -209,11 +214,6 @@ public class Tables {
 	 * 雇主积分规则配置表
 	 */
 	public static final HrPointsConf HR_POINTS_CONF = com.moseeker.db.hrdb.tables.HrPointsConf.HR_POINTS_CONF;
-
-	/**
-	 * hr推荐同行表
-	 */
-	public static final HrRecommend HR_RECOMMEND = com.moseeker.db.hrdb.tables.HrRecommend.HR_RECOMMEND;
 
 	/**
 	 * 招聘数据次数统计表

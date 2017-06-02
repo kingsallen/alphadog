@@ -29,9 +29,9 @@ import com.moseeker.db.hrdb.tables.HrHtml5UniqueStatistics;
 import com.moseeker.db.hrdb.tables.HrImporterMonitor;
 import com.moseeker.db.hrdb.tables.HrMedia;
 import com.moseeker.db.hrdb.tables.HrNps;
+import com.moseeker.db.hrdb.tables.HrNpsRecommend;
 import com.moseeker.db.hrdb.tables.HrOperationRecord;
 import com.moseeker.db.hrdb.tables.HrPointsConf;
-import com.moseeker.db.hrdb.tables.HrRecommend;
 import com.moseeker.db.hrdb.tables.HrRecruitStatistics;
 import com.moseeker.db.hrdb.tables.HrRecruitUniqueStatistics;
 import com.moseeker.db.hrdb.tables.HrReferralStatistics;
@@ -82,7 +82,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Hrdb extends SchemaImpl {
 
-	private static final long serialVersionUID = 2137747361;
+	private static final long serialVersionUID = 1077413437;
 
 	/**
 	 * The reference instance of <code>hrdb</code>
@@ -130,9 +130,9 @@ public class Hrdb extends SchemaImpl {
 			HrImporterMonitor.HR_IMPORTER_MONITOR,
 			HrMedia.HR_MEDIA,
 			HrNps.HR_NPS,
+			HrNpsRecommend.HR_NPS_RECOMMEND,
 			HrOperationRecord.HR_OPERATION_RECORD,
 			HrPointsConf.HR_POINTS_CONF,
-			HrRecommend.HR_RECOMMEND,
 			HrRecruitStatistics.HR_RECRUIT_STATISTICS,
 			HrRecruitUniqueStatistics.HR_RECRUIT_UNIQUE_STATISTICS,
 			HrReferralStatistics.HR_REFERRAL_STATISTICS,

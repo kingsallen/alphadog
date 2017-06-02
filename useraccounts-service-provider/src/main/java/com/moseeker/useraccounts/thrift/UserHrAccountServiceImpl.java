@@ -1,23 +1,17 @@
 package com.moseeker.useraccounts.thrift;
 
-import java.util.List;
-
+import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService.Iface;
+import com.moseeker.thrift.gen.useraccounts.struct.*;
+import com.moseeker.useraccounts.service.impl.UserHrAccountService;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.moseeker.thrift.gen.common.struct.BIZException;
-import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService.Iface;
-import com.moseeker.thrift.gen.useraccounts.struct.BindAccountStruct;
-import com.moseeker.thrift.gen.useraccounts.struct.DownloadReport;
-import com.moseeker.thrift.gen.useraccounts.struct.HrNpsResult;
-import com.moseeker.thrift.gen.useraccounts.struct.HrNpsUpdate;
-import com.moseeker.thrift.gen.useraccounts.struct.SearchCondition;
-import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
-import com.moseeker.useraccounts.service.impl.UserHrAccountService;
+import java.util.List;
 
 /**
  * HR账号服务
@@ -49,8 +43,6 @@ public class UserHrAccountServiceImpl implements Iface {
     /**
      * 下载行业报告，添加HR记录
      *
-     * @param userHrAccount hr用户实体
-     * @param code          验证码
      */
     @Override
     public Response postResource(DownloadReport downloadReport) throws TException {
@@ -152,6 +144,19 @@ public class UserHrAccountServiceImpl implements Iface {
     public HrNpsResult npsUpdate(HrNpsUpdate npsUpdate) throws BIZException, TException {
         try {
             return service.npsUpdate(npsUpdate);
+        } catch (BIZException e) {
+            throw e;
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new TException(e);
+        }
+    }
+
+    @Override
+    public HrNpsStatistic npsList(String startDate, String endDate, int page, int pageSize) throws BIZException, TException {
+        try {
+            return service.npsList(startDate, endDate, page, pageSize);
         } catch (BIZException e) {
             throw e;
         } catch (Exception e) {

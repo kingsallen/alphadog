@@ -14,11 +14,7 @@ import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
-import com.moseeker.thrift.gen.useraccounts.struct.BindAccountStruct;
-import com.moseeker.thrift.gen.useraccounts.struct.DownloadReport;
-import com.moseeker.thrift.gen.useraccounts.struct.HrNpsResult;
-import com.moseeker.thrift.gen.useraccounts.struct.HrNpsUpdate;
-import com.moseeker.thrift.gen.useraccounts.struct.SearchCondition;
+import com.moseeker.thrift.gen.useraccounts.struct.*;
 
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -318,6 +314,34 @@ public class UserHrAccountController {
         }
     }
 
+    @RequestMapping(value = "/nps/list", method = RequestMethod.GET)
+    @ResponseBody
+    public String npsList(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            logger.info("/nps/list params:{}", params);
+            ValidateUtil vu = new ValidateUtil();
+            vu.addDateValidate("start_date", params.get("start_date"), DateType.shortDate, null, null);
+            vu.addDateValidate("end_date", params.get("end_date"), DateType.shortDate, null, null);
+
+            Integer page = params.getInt("page",1);
+            Integer pageSize = params.getInt("page_size",500);
+
+            if (StringUtils.isNullOrEmpty(vu.validate())) {
+                HrNpsStatistic result = userHrAccountService.npsList(params.getString("start_date"), params.getString("end_date"), page, pageSize);
+                logger.info("/nps/list result:{}", result);
+                return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(result)));
+            } else {
+                return ResponseLogNotification.fail(request, vu.validate());
+            }
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
     @RequestMapping(value = "/nps/status", method = RequestMethod.GET)
     @ResponseBody
     public String npsStatus(HttpServletRequest request, HttpServletResponse response) {
@@ -327,8 +351,8 @@ public class UserHrAccountController {
             ValidateUtil vu = new ValidateUtil();
             vu.addRequiredValidate("user_id", params.get("user_id"), null, null);
             vu.addIntTypeValidate("user_id", params.get("user_id"), null, null, 0, Integer.MAX_VALUE);
-            vu.addDateValidate("start_date", params.get("start_date"), DateType.longDate, null, null);
-            vu.addDateValidate("end_date", params.get("end_date"), DateType.longDate, null, null);
+            vu.addDateValidate("start_date", params.get("start_date"), DateType.shortDate, null, null);
+            vu.addDateValidate("end_date", params.get("end_date"), DateType.shortDate, null, null);
             if (StringUtils.isNullOrEmpty(vu.validate())) {
                 HrNpsResult result = userHrAccountService.npsStatus(params.getInt("user_id"), params.getString("start_date"), params.getString("end_date"));
                 logger.info("/nps/status result:{}", result);
@@ -354,7 +378,7 @@ public class UserHrAccountController {
             vu.addRequiredValidate("user_id", npsUpdate.getUser_id(), null, null);
             if (StringUtils.isNullOrEmpty(vu.validate())) {
                 HrNpsResult result = userHrAccountService.npsUpdate(npsUpdate);
-                logger.info("/nps/update params:{}", JSON.toJSON(result));
+                logger.info("/nps/update result:{}", JSON.toJSON(result));
                 return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(result)));
             } else {
                 return ResponseLogNotification.fail(request, vu.validate());
