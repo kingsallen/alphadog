@@ -54,6 +54,7 @@ public class UserQxService {
             query.setEqualFilter(new HashMap<>());
             query.getEqualFilter().put("user_id", String.valueOf(userId));
             query.getEqualFilter().put("disable", String.valueOf(0)); // 0: 不禁用 1: 禁用
+            query.setPer_page(Integer.MAX_VALUE);
             result.setSearchConditionList(userDao.getUserSearchConditions(query));
         } catch (Exception e) {
             jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
@@ -180,12 +181,14 @@ public class UserQxService {
             query.setEqualFilter(new HashMap<>());
             query.getEqualFilter().put("user_id", String.valueOf(userId));
             query.getEqualFilter().put("status", String.valueOf("0"));
+            query.setPer_page(Integer.MAX_VALUE);
             List<UserCollectPositionDO> collectPositions = userDao.getUserCollectPositions(query);
             if (collectPositions != null && collectPositions.size() > 0) {
                 // 过滤掉不存在job_position中的职位收藏
                 List<Integer> positionIds = collectPositions.stream().map(m -> m.getPositionId()).collect(Collectors.toList());
                 query.getEqualFilter().clear();
                 query.getEqualFilter().put("id", Arrays.toString(positionIds.toArray()));
+                query.setPer_page(Integer.MAX_VALUE);
                 Map<Integer, JobPositionDO> positions = jobDBDao.getPositions(query).stream().collect(Collectors.toMap(k -> k.getId(), v -> v));
                 List<CollectPositionForm> positionFormList = new ArrayList<>();
                 collectPositions.stream().filter(f -> positions.containsKey(f.getPositionId())).forEach(r -> {
