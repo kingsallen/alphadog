@@ -38,8 +38,8 @@ public class ChatThriftService implements Iface {
     }
 
     @Override
-    public ResultOfSaveRoomVO enterRoom(int userId, int hrId, int positionId, int roomId) throws CURDException, TException {
-        return chatService.enterChatRoom(userId, hrId, positionId, roomId);
+    public ResultOfSaveRoomVO enterRoom(int userId, int hrId, int positionId, int roomId, boolean is_gamma) throws CURDException, TException {
+        return chatService.enterChatRoom(userId, hrId, positionId, roomId, is_gamma);
     }
 
     @Override

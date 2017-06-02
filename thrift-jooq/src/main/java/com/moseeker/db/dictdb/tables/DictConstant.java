@@ -105,7 +105,7 @@ public class DictConstant extends TableImpl<DictConstantRecord> {
 	}
 
 	private DictConstant(String alias, Table<DictConstantRecord> aliased, Field<?>[] parameters) {
-		super(alias, Dictdb.DICTDB, aliased, parameters, "");
+		super(alias, Dictdb.DICTDB, aliased, parameters, "常量字典表");
 	}
 
 	/**

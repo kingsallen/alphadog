@@ -53,8 +53,6 @@ public class ChatServiceTest {
         HrChatUnreadCountDO unreadCountDO1 = new HrChatUnreadCountDO();
         unreadCountDO1.setUserId(1);
         unreadCountDO1.setHrId(1);
-        unreadCountDO1.setHrUnreadCount(1);
-        unreadCountDO1.setUserUnreadCount(1);
         unreadCountDO1.setRoomId(1);
         hrChatUnreadCountDOListALL.add(unreadCountDO1);
         user1UnreadCountDOList.add(unreadCountDO1);
@@ -63,8 +61,6 @@ public class ChatServiceTest {
         HrChatUnreadCountDO unreadCountDO2 = new HrChatUnreadCountDO();
         unreadCountDO2.setUserId(2);
         unreadCountDO2.setHrId(1);
-        unreadCountDO2.setHrUnreadCount(2);
-        unreadCountDO2.setUserUnreadCount(2);
         unreadCountDO2.setRoomId(2);
         hrChatUnreadCountDOListALL.add(unreadCountDO2);
         hr1UnreadCountDOList.add(unreadCountDO2);
@@ -72,8 +68,6 @@ public class ChatServiceTest {
         HrChatUnreadCountDO unreadCountDO3 = new HrChatUnreadCountDO();
         unreadCountDO3.setUserId(3);
         unreadCountDO3.setHrId(1);
-        unreadCountDO3.setHrUnreadCount(1);
-        unreadCountDO3.setUserUnreadCount(1);
         unreadCountDO3.setRoomId(3);
         hrChatUnreadCountDOListALL.add(unreadCountDO3);
         hr1UnreadCountDOList.add(unreadCountDO3);
@@ -81,16 +75,12 @@ public class ChatServiceTest {
         HrChatUnreadCountDO unreadCountDO4 = new HrChatUnreadCountDO();
         unreadCountDO4.setUserId(2);
         unreadCountDO4.setHrId(2);
-        unreadCountDO4.setHrUnreadCount(1);
-        unreadCountDO4.setUserUnreadCount(1);
         unreadCountDO4.setRoomId(4);
         hrChatUnreadCountDOListALL.add(unreadCountDO4);
 
         HrChatUnreadCountDO unreadCountDO7 = new HrChatUnreadCountDO();
         unreadCountDO7.setUserId(1);
         unreadCountDO7.setHrId(2);
-        unreadCountDO7.setHrUnreadCount(1);
-        unreadCountDO7.setUserUnreadCount(1);
         unreadCountDO7.setRoomId(7);
         hrChatUnreadCountDOListALL.add(unreadCountDO7);
         user1UnreadCountDOList.add(unreadCountDO7);
@@ -98,16 +88,12 @@ public class ChatServiceTest {
         HrChatUnreadCountDO unreadCountDO5 = new HrChatUnreadCountDO();
         unreadCountDO5.setUserId(3);
         unreadCountDO5.setHrId(2);
-        unreadCountDO5.setHrUnreadCount(1);
-        unreadCountDO5.setUserUnreadCount(1);
         unreadCountDO5.setRoomId(5);
         hrChatUnreadCountDOListALL.add(unreadCountDO5);
 
         HrChatUnreadCountDO unreadCountDO6 = new HrChatUnreadCountDO();
         unreadCountDO6.setUserId(3);
         unreadCountDO6.setHrId(3);
-        unreadCountDO6.setHrUnreadCount(1);
-        unreadCountDO6.setUserUnreadCount(1);
         unreadCountDO6.setRoomId(6);
         hrChatUnreadCountDOListALL.add(unreadCountDO6);
         hr3UnreadCountDOList.add(unreadCountDO6);
@@ -115,8 +101,6 @@ public class ChatServiceTest {
         HrChatUnreadCountDO unreadCountDO8 = new HrChatUnreadCountDO();
         unreadCountDO8.setUserId(1);
         unreadCountDO8.setHrId(3);
-        unreadCountDO8.setHrUnreadCount(1);
-        unreadCountDO8.setUserUnreadCount(1);
         unreadCountDO8.setRoomId(8);
         hrChatUnreadCountDOListALL.add(unreadCountDO8);
         hr3UnreadCountDOList.add(unreadCountDO8);
@@ -125,8 +109,6 @@ public class ChatServiceTest {
         HrChatUnreadCountDO unreadCountDO9 = new HrChatUnreadCountDO();
         unreadCountDO9.setUserId(2);
         unreadCountDO9.setHrId(3);
-        unreadCountDO9.setHrUnreadCount(1);
-        unreadCountDO9.setUserUnreadCount(1);
         unreadCountDO9.setRoomId(9);
         hrChatUnreadCountDOListALL.add(unreadCountDO9);
         hr3UnreadCountDOList.add(unreadCountDO9);
@@ -142,7 +124,6 @@ public class ChatServiceTest {
         HrWxHrChatListDO room1 = new HrWxHrChatListDO();
         room1.setSysuserId(1);
         room1.setHraccountId(1);
-        room1.setStatus((byte)0);
         room1.setCreateTime(new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
         room1.setHrChatTime(null);
         room1.setId(1);
@@ -153,7 +134,6 @@ public class ChatServiceTest {
         HrWxHrChatListDO room6 = new HrWxHrChatListDO();
         room6.setSysuserId(3);
         room6.setHraccountId(3);
-        room6.setStatus((byte)0);
         room6.setCreateTime(new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
         room6.setHrChatTime(null);
         room6.setId(6);
@@ -163,7 +143,6 @@ public class ChatServiceTest {
         HrWxHrChatListDO room7= new HrWxHrChatListDO();
         room7.setSysuserId(1);
         room7.setHraccountId(2);
-        room7.setStatus((byte)0);
         room7.setCreateTime(new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
         room7.setHrChatTime(null);
         room7.setId(7);
@@ -173,7 +152,6 @@ public class ChatServiceTest {
         HrWxHrChatListDO room8 = new HrWxHrChatListDO();
         room8.setSysuserId(1);
         room8.setHraccountId(3);
-        room8.setStatus((byte)0);
         room8.setCreateTime(new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
         room8.setHrChatTime(null);
         room8.setId(8);
@@ -184,7 +162,6 @@ public class ChatServiceTest {
         HrWxHrChatListDO room9 = new HrWxHrChatListDO();
         room9.setSysuserId(2);
         room9.setHraccountId(3);
-        room9.setStatus((byte)0);
         room9.setCreateTime(new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
         room9.setHrChatTime(null);
         room9.setId(9);
@@ -309,7 +286,6 @@ public class ChatServiceTest {
 
         HrWxHrChatListDO room = new HrWxHrChatListDO();
         room.setId(1);
-        room.setStatus((byte)0);
         room.setCreateTime(new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
         room.setHraccountId(1);
         room.setSysuserId(1);
@@ -407,7 +383,7 @@ public class ChatServiceTest {
     @Test
     public void enterChatRoom() throws Exception {
 
-        ResultOfSaveRoomVO result = chatService.enterChatRoom(1, 1, 1, 1);
+        ResultOfSaveRoomVO result = chatService.enterChatRoom(1, 1, 1, 1, false);
         assertEquals(1, result.getRoomId());
         assertEquals(false, result.isChatDebut());
 

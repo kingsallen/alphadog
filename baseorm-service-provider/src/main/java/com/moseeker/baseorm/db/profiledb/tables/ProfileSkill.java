@@ -20,8 +20,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UByte;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -37,7 +35,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileSkill extends TableImpl<ProfileSkillRecord> {
 
-	private static final long serialVersionUID = 1364098218;
+	private static final long serialVersionUID = -1040983187;
 
 	/**
 	 * The reference instance of <code>profiledb.profile_skill</code>
@@ -55,12 +53,12 @@ public class ProfileSkill extends TableImpl<ProfileSkillRecord> {
 	/**
 	 * The column <code>profiledb.profile_skill.id</code>. 主key
 	 */
-	public final TableField<ProfileSkillRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
+	public final TableField<ProfileSkillRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "主key");
 
 	/**
 	 * The column <code>profiledb.profile_skill.profile_id</code>. profile.id
 	 */
-	public final TableField<ProfileSkillRecord, UInteger> PROFILE_ID = createField("profile_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "profile.id");
+	public final TableField<ProfileSkillRecord, Integer> PROFILE_ID = createField("profile_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "profile.id");
 
 	/**
 	 * The column <code>profiledb.profile_skill.name</code>. 技能名称
@@ -70,12 +68,12 @@ public class ProfileSkill extends TableImpl<ProfileSkillRecord> {
 	/**
 	 * The column <code>profiledb.profile_skill.level</code>. 掌握程度 0:未填写 1:了解, 2:掌握 3:熟练 4:精通
 	 */
-	public final TableField<ProfileSkillRecord, UByte> LEVEL = createField("level", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "掌握程度 0:未填写 1:了解, 2:掌握 3:熟练 4:精通");
+	public final TableField<ProfileSkillRecord, Byte> LEVEL = createField("level", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "掌握程度 0:未填写 1:了解, 2:掌握 3:熟练 4:精通");
 
 	/**
 	 * The column <code>profiledb.profile_skill.month</code>. 使用 单位(月)
 	 */
-	public final TableField<ProfileSkillRecord, UInteger> MONTH = createField("month", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "使用 单位(月)");
+	public final TableField<ProfileSkillRecord, Integer> MONTH = createField("month", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "使用 单位(月)");
 
 	/**
 	 * The column <code>profiledb.profile_skill.create_time</code>. 创建时间
@@ -113,7 +111,7 @@ public class ProfileSkill extends TableImpl<ProfileSkillRecord> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Identity<ProfileSkillRecord, UInteger> getIdentity() {
+	public Identity<ProfileSkillRecord, Integer> getIdentity() {
 		return Keys.IDENTITY_PROFILE_SKILL;
 	}
 

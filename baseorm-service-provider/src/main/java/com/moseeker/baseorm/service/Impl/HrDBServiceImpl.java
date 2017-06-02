@@ -140,7 +140,6 @@ public class HrDBServiceImpl implements HrDBService {
                 result.put("authorizer_refresh_token", rs.getAuthorizerRefreshToken());
                 result.put("create_time", rs.getCreateTime());
                 result.put("update_time", rs.getUpdateTime());
-                result.put("hr_chat", rs.getHrChat());
                 result.put("show_qx_qrcode", rs.getShowQxQrcode());
                 return ResponseUtils.success(result);
             }

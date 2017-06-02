@@ -5,6 +5,7 @@ include "../../common/struct/common_struct.thrift"
 include "../struct/hrdb_struct.thrift"
 include "../struct/dao_struct.thrift"
 include "../../application/struct/application_struct.thrift"
+include "../../dao/struct/hrdb/hr_team_struct.thrift"
 
 service HrDBDao {
     hrdb_struct.HrHbConfigDO getHbConfig(1: common_struct.CommonQuery query);
@@ -51,6 +52,8 @@ service HrDBDao {
     list<hrdb_struct.HrChatUnreadCountDO> listChatRoomUnreadSort(1: common_struct.CommonQuery query) throws (1:common_struct.CURDException e);
     
     hrdb_struct.HrChatUnreadCountDO saveChatUnreadCount(1: hrdb_struct.HrChatUnreadCountDO unreadCount) throws (1:common_struct.CURDException e);
+    hrdb_struct.HrChatUnreadCountDO getChatUnreadCount(1: common_struct.CommonQuery query) throws (1:common_struct.CURDException e);
+    hrdb_struct.HrChatUnreadCountDO updateChatUnreadCount(1: hrdb_struct.HrChatUnreadCountDO unreadCount) throws (1:common_struct.CURDException e);
 	
 	common_struct.Response getHrWxWechat(1: common_struct.CommonQuery query);
 	hrdb_struct.HrWxWechatDO getHrWxWechatDO(1: common_struct.CommonQuery query) throws (1:common_struct.CURDException e);
@@ -58,4 +61,6 @@ service HrDBDao {
 	list<hrdb_struct.HrCompanyAccountDO> listHrCompanyAccount(1: common_struct.CommonQuery query) throws (1:common_struct.CURDException e);
 
     common_struct.Response getHrTeam(1:common_struct.CommonQuery query);
+
+    hr_team_struct.HrTeamDO hrTeamDo(1:common_struct.CommonQuery query);
 }

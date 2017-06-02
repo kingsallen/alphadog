@@ -408,7 +408,6 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             }
         } catch (TException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
             logger.error(e.getMessage(), e);
         } finally {
             // do nothing
@@ -449,7 +448,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                 p.setJob_id(thirdPartyPosition.getThird_part_position_id());
                 account.setPosition_info(p);
             }
-        } catch (TException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
         } finally {
@@ -949,7 +948,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             }
             md5 = MD5Util.md5(stringBuffer.toString());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
         return md5;
     }
@@ -1200,9 +1199,9 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 //				query.setEqualFilter(equalFilter);
 //			}
             datas = positionDaoService.getPositionThirdPartyPositions(query);
-        } catch (TException e) {
+        } catch (Exception e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         } finally {
             //do nothing
         }
@@ -1309,6 +1308,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                 for (JobPositionRecord jr : jobRecords) {
                     logger.info("pid: " + String.valueOf(jr.getId()));
 
+
                     WechatPositionListData e = new WechatPositionListData();
                     e.setTitle(jr.getTitle());
                     e.setId(jr.getId());
@@ -1369,9 +1369,9 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 
                 //拼装 company 相关内容
                 dataList = dataList.stream().map(s -> {
-                    s.setCompany_abbr(publisherCompanyMap.get(s.getPublisher()).getAbbreviation());
-                    s.setCompany_logo(publisherCompanyMap.get(s.getPublisher()).getLogo());
-                    s.setCompany_name(publisherCompanyMap.get(s.getPublisher()).getName());
+                    s.setCompany_abbr(publisherCompanyMap.get(s.getPublisher()) == null ? "" : publisherCompanyMap.get(s.getPublisher()).getAbbreviation());
+                    s.setCompany_logo(publisherCompanyMap.get(s.getPublisher()) == null ? "" : publisherCompanyMap.get(s.getPublisher()).getLogo());
+                    s.setCompany_name(publisherCompanyMap.get(s.getPublisher()) == null ? "" : publisherCompanyMap.get(s.getPublisher()).getName());
                     return s;
                 }).collect(Collectors.toList());
 
@@ -1655,9 +1655,9 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             qu.addEqualFilter("id", String.valueOf(companyId));
             HrCompanyDO company = companyDao.getCompany(qu);
             result.forEach(s -> {
-                s.setCompany_abbr(company.getAbbreviation());
-                s.setCompany_logo(company.getLogo());
-                s.setCompany_name(company.getName());
+                s.setCompany_abbr(company == null ? "" : company.getAbbreviation());
+                s.setCompany_logo(company == null ? "" : company.getLogo());
+                s.setCompany_name(company == null ? "" : company.getName());
             });
 
             // 拼装红包信息
@@ -1673,10 +1673,10 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             });
 
         } catch (TException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return result;
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return result;
         } finally {
             // do nothing
@@ -1684,6 +1684,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
         // 查询到职位
         return result;
     }
+
 
     public String replaceBlank(String str) {
         String dest = "";
@@ -1740,7 +1741,6 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                 }
                 logger.info("--- ES Search Engine end---");
             } catch (Exception e) {
-                e.printStackTrace();
                 logger.error(e.getMessage(), e);
             }
         }

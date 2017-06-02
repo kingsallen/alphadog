@@ -17,7 +17,7 @@ public class ChatThriftServiceTest {
     //@Test
     public void listHRChatRoom() throws Exception {
 
-        HRChatRoomsVO chatRoomsVO = chatService.listHRChatRoom(82689, 1, 10);
+        HRChatRoomsVO chatRoomsVO = chatService.listHRChatRoom(4913, 1, 10);
         System.out.println("pageNo : "+chatRoomsVO.getPageNo());
         System.out.println("pageSize : " + chatRoomsVO.getPageSize());
         System.out.println("totalRow : " + chatRoomsVO.getTotalRow());
@@ -35,9 +35,9 @@ public class ChatThriftServiceTest {
         }
     }
 
-    //@Test
+    @Test
     public void listUserChatRoom() throws Exception {
-        UserChatRoomsVO roomsVO = chatService.listUserChatRoom(1, 0, 10);
+        UserChatRoomsVO roomsVO = chatService.listUserChatRoom(1, 1, 10);
         System.out.println("pageNo : "+roomsVO.getPageNo());
         System.out.println("pageSize : " + roomsVO.getPageSize());
         System.out.println("totalRow : " + roomsVO.getTotalRow());
@@ -53,6 +53,7 @@ public class ChatThriftServiceTest {
                 System.out.println("headImgUrl:"+room.getHeadImgUrl());
                 System.out.println("createTime:"+room.getCreateTime());
                 System.out.println("status:"+room.getUnReadNum());
+                System.out.println("unreadNum:"+room.getUnReadNum());
             });
         }
     }
@@ -82,7 +83,7 @@ public class ChatThriftServiceTest {
 
     //@Test
     public void enterRoom() throws Exception {
-        ResultOfSaveRoomVO resultOfSaveRoomVO = chatService.enterRoom(1, 1, 1, 17);
+        ResultOfSaveRoomVO resultOfSaveRoomVO = chatService.enterRoom(1, 1, 1, 17, false);
         System.out.println("roomId : "+resultOfSaveRoomVO.getRoomId());
         System.out.println(resultOfSaveRoomVO.getHr());
         System.out.println(resultOfSaveRoomVO.getPosition());

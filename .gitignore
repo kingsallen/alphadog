@@ -83,3 +83,4 @@ rpc-center/src/main/resources/*.properties
 
 /tmp/
 gen-java/
+baseorm-service-provider/src/main/resources/*.properties

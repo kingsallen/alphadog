@@ -215,6 +215,23 @@ public class CandidateDBDao {
             return null;
         }
     }
+    
+    /**
+     * 推荐的结果记录是根据职位和浏览者过滤的，在推荐时，需要将被过滤的数据也给添加上
+     * @param candidateRecomRecordDO 推荐的数据
+     * @return
+     */
+    public static List<CandidateRecomRecordDO> listFiltredCandidateRecomRecord(
+			CandidateRecomRecordDO candidateRecomRecordDO) {
+    	QueryUtil query = new QueryUtil();
+    	query.addEqualFilter("position_id", candidateRecomRecordDO.getPositionId()).addEqualFilter("presentee_user_id", candidateRecomRecordDO.getPresenteeUserId());
+		try {
+			return candidateDBDao.listCandidateRecomRecords(query);
+		} catch (Exception e) {
+			LoggerFactory.getLogger(CandidateDBDao.class).error(e.getMessage(), e);
+			return null;
+		}
+	}
 
     /**
      * 过滤某个ID之后查找推荐记录信息
@@ -311,8 +328,23 @@ public class CandidateDBDao {
      * @param candidateRecomRecordDO 职位转发浏览记录
      */
     public static void updateCandidateRecomRecord(CandidateRecomRecordDO candidateRecomRecordDO) throws TException {
-        candidateDBDao.updateCandidateRecomRecords(candidateRecomRecordDO);
+        candidateDBDao.updateCandidateRecomRecord(candidateRecomRecordDO);
     }
+    
+    /**
+     * 批量修改职位转发浏览记录
+     * @param candidateRecomRecordList
+     */
+	public static void updateCandidateRecomRecords(List<CandidateRecomRecordDO> candidateRecomRecordList) {
+		try {
+			candidateDBDao.updateCandidateRecomRecords(candidateRecomRecordList);
+		} catch (com.moseeker.thrift.gen.common.struct.CURDException e) {
+			LoggerFactory.getLogger(CandidateDBDao.class).error(e.getMessage(), e);
+		} catch (TException e) {
+			LoggerFactory.getLogger(CandidateDBDao.class).error(e.getMessage(), e);
+		}
+		
+	}
 
     public static HrPointsConfDO getHrPointConf(int companyId, RecruitmentScheduleEnum recruitmentScheduleEnum) throws TException {
         QueryUtil queryUtil = new QueryUtil();

@@ -21,7 +21,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -37,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileCredentials extends TableImpl<ProfileCredentialsRecord> {
 
-	private static final long serialVersionUID = -874325248;
+	private static final long serialVersionUID = -111648158;
 
 	/**
 	 * The reference instance of <code>profiledb.profile_credentials</code>
@@ -55,12 +54,12 @@ public class ProfileCredentials extends TableImpl<ProfileCredentialsRecord> {
 	/**
 	 * The column <code>profiledb.profile_credentials.id</code>. 主key
 	 */
-	public final TableField<ProfileCredentialsRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
+	public final TableField<ProfileCredentialsRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "主key");
 
 	/**
 	 * The column <code>profiledb.profile_credentials.profile_id</code>. profile.id
 	 */
-	public final TableField<ProfileCredentialsRecord, UInteger> PROFILE_ID = createField("profile_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "profile.id");
+	public final TableField<ProfileCredentialsRecord, Integer> PROFILE_ID = createField("profile_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "profile.id");
 
 	/**
 	 * The column <code>profiledb.profile_credentials.name</code>. 证书名称
@@ -128,7 +127,7 @@ public class ProfileCredentials extends TableImpl<ProfileCredentialsRecord> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Identity<ProfileCredentialsRecord, UInteger> getIdentity() {
+	public Identity<ProfileCredentialsRecord, Integer> getIdentity() {
 		return Keys.IDENTITY_PROFILE_CREDENTIALS;
 	}
 

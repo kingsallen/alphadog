@@ -20,8 +20,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UByte;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -37,7 +35,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileLanguage extends TableImpl<ProfileLanguageRecord> {
 
-	private static final long serialVersionUID = 120742040;
+	private static final long serialVersionUID = 810322993;
 
 	/**
 	 * The reference instance of <code>profiledb.profile_language</code>
@@ -55,12 +53,12 @@ public class ProfileLanguage extends TableImpl<ProfileLanguageRecord> {
 	/**
 	 * The column <code>profiledb.profile_language.id</code>. 主key
 	 */
-	public final TableField<ProfileLanguageRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
+	public final TableField<ProfileLanguageRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "主key");
 
 	/**
 	 * The column <code>profiledb.profile_language.profile_id</code>. profile.id
 	 */
-	public final TableField<ProfileLanguageRecord, UInteger> PROFILE_ID = createField("profile_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "profile.id");
+	public final TableField<ProfileLanguageRecord, Integer> PROFILE_ID = createField("profile_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "profile.id");
 
 	/**
 	 * The column <code>profiledb.profile_language.name</code>. 语言
@@ -70,7 +68,7 @@ public class ProfileLanguage extends TableImpl<ProfileLanguageRecord> {
 	/**
 	 * The column <code>profiledb.profile_language.level</code>. 掌握程度, dict_constant.parent_code:3108
 	 */
-	public final TableField<ProfileLanguageRecord, UByte> LEVEL = createField("level", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "掌握程度, dict_constant.parent_code:3108");
+	public final TableField<ProfileLanguageRecord, Byte> LEVEL = createField("level", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "掌握程度, dict_constant.parent_code:3108");
 
 	/**
 	 * The column <code>profiledb.profile_language.create_time</code>. 创建时间
@@ -108,7 +106,7 @@ public class ProfileLanguage extends TableImpl<ProfileLanguageRecord> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Identity<ProfileLanguageRecord, UInteger> getIdentity() {
+	public Identity<ProfileLanguageRecord, Integer> getIdentity() {
 		return Keys.IDENTITY_PROFILE_LANGUAGE;
 	}
 

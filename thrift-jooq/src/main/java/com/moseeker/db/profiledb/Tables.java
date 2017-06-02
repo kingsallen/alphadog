@@ -11,6 +11,7 @@ import com.moseeker.db.profiledb.tables.ProfileCompleteness;
 import com.moseeker.db.profiledb.tables.ProfileCredentials;
 import com.moseeker.db.profiledb.tables.ProfileEducation;
 import com.moseeker.db.profiledb.tables.ProfileImport;
+import com.moseeker.db.profiledb.tables.ProfileImportBk;
 import com.moseeker.db.profiledb.tables.ProfileIntention;
 import com.moseeker.db.profiledb.tables.ProfileIntentionCity;
 import com.moseeker.db.profiledb.tables.ProfileIntentionIndustry;
@@ -18,6 +19,7 @@ import com.moseeker.db.profiledb.tables.ProfileIntentionPosition;
 import com.moseeker.db.profiledb.tables.ProfileLanguage;
 import com.moseeker.db.profiledb.tables.ProfileOther;
 import com.moseeker.db.profiledb.tables.ProfileProfile;
+import com.moseeker.db.profiledb.tables.ProfileProfileBk;
 import com.moseeker.db.profiledb.tables.ProfileProjectexp;
 import com.moseeker.db.profiledb.tables.ProfileSkill;
 import com.moseeker.db.profiledb.tables.ProfileWorkexp;
@@ -76,6 +78,11 @@ public class Tables {
 	public static final ProfileImport PROFILE_IMPORT = com.moseeker.db.profiledb.tables.ProfileImport.PROFILE_IMPORT;
 
 	/**
+	 * 用户profile导入记录信息
+	 */
+	public static final ProfileImportBk PROFILE_IMPORT_BK = com.moseeker.db.profiledb.tables.ProfileImportBk.PROFILE_IMPORT_BK;
+
+	/**
 	 * Profile的求职意向
 	 */
 	public static final ProfileIntention PROFILE_INTENTION = com.moseeker.db.profiledb.tables.ProfileIntention.PROFILE_INTENTION;
@@ -109,6 +116,11 @@ public class Tables {
 	 * 用户profile表
 	 */
 	public static final ProfileProfile PROFILE_PROFILE = com.moseeker.db.profiledb.tables.ProfileProfile.PROFILE_PROFILE;
+
+	/**
+	 * 用户profile表
+	 */
+	public static final ProfileProfileBk PROFILE_PROFILE_BK = com.moseeker.db.profiledb.tables.ProfileProfileBk.PROFILE_PROFILE_BK;
 
 	/**
 	 * Profile的项目经验
