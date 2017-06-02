@@ -251,8 +251,13 @@ public class CandidateRecomRecordDao extends StructDaoImpl<CandidateRecomRecordD
                     .groupBy(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID,
                             CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID)
                     .orderBy(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME)
-                    .limit(2)
                     .fetch();
+            SelectSeekStep1 tableLike = create.selectFrom(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
+                    .where(condition)
+                    .groupBy(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID,
+                            CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID)
+                    .orderBy(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME);
+            logger.info(tableLike.getSQL());
             if(result != null && result.size() > 0) {
                 candidateRecomRecordDOList = BeanUtils.DBToStruct(CandidateRecomRecordDO.class, result);
             }
