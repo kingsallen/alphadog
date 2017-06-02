@@ -29,7 +29,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserEmployeeRecord extends UpdatableRecordImpl<UserEmployeeRecord> {
 
-    private static final long serialVersionUID = -1784324068;
+    private static final long serialVersionUID = -2117992084;
 
     /**
      * Setter for <code>userdb.user_employee.id</code>.
@@ -88,14 +88,14 @@ public class UserEmployeeRecord extends UpdatableRecordImpl<UserEmployeeRecord> 
     }
 
     /**
-     * Setter for <code>userdb.user_employee.wxuser_id</code>. userdb.user_wx_user.id 微信账号编号。现在已经废弃。关于员工绑定的C端账号，请参考user_id
+     * Setter for <code>userdb.user_employee.wxuser_id</code>. userdb.user_wx_user.id 微信账号编号。现在已经废弃。关于员工绑定的C端账号，请参考sysuser_id
      */
     public void setWxuserId(Integer value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>userdb.user_employee.wxuser_id</code>. userdb.user_wx_user.id 微信账号编号。现在已经废弃。关于员工绑定的C端账号，请参考user_id
+     * Getter for <code>userdb.user_employee.wxuser_id</code>. userdb.user_wx_user.id 微信账号编号。现在已经废弃。关于员工绑定的C端账号，请参考sysuser_id
      */
     public Integer getWxuserId() {
         return (Integer) get(4);
@@ -438,14 +438,14 @@ public class UserEmployeeRecord extends UpdatableRecordImpl<UserEmployeeRecord> 
     }
 
     /**
-     * Setter for <code>userdb.user_employee.activation</code>. 员工认证，0：认证成功 1：未认证 2：认证失败 
+     * Setter for <code>userdb.user_employee.activation</code>. 员工认证激活状态，0：认证成功，1：认证后取消认证 2：认证失败 3：未认证 4：认证后又认证了其他公司导致本条数据变成未认证
      */
     public void setActivation(Byte value) {
         set(29, value);
     }
 
     /**
-     * Getter for <code>userdb.user_employee.activation</code>. 员工认证，0：认证成功 1：未认证 2：认证失败 
+     * Getter for <code>userdb.user_employee.activation</code>. 员工认证激活状态，0：认证成功，1：认证后取消认证 2：认证失败 3：未认证 4：认证后又认证了其他公司导致本条数据变成未认证
      */
     public Byte getActivation() {
         return (Byte) get(29);
@@ -732,14 +732,14 @@ public class UserEmployeeRecord extends UpdatableRecordImpl<UserEmployeeRecord> 
     }
 
     /**
-     * Setter for <code>userdb.user_employee.custom_field_values</code>. 自定 义字段
+     * Setter for <code>userdb.user_employee.custom_field_values</code>. 自定 义字段键值, 结构[{<id>: "<value>"},{...},...]
      */
     public void setCustomFieldValues(String value) {
         set(50, value);
     }
 
     /**
-     * Getter for <code>userdb.user_employee.custom_field_values</code>. 自定 义字段
+     * Getter for <code>userdb.user_employee.custom_field_values</code>. 自定 义字段键值, 结构[{<id>: "<value>"},{...},...]
      */
     public String getCustomFieldValues() {
         return (String) get(50);

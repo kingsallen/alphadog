@@ -3,9 +3,9 @@
 <!-- Configure the database connection here -->
 <jdbc>
 <driver>com.mysql.jdbc.Driver</driver>
-<url>jdbc:mysql://192.168.31.66:3306/userdb</url>
-<user>wyf</user>
-<password>moseeker.com</password>
+<url>jdbc:mysql://localhost:3306/userdb</url>
+<user>wjf</user>
+<password>wjf</password>
 </jdbc>
 <generator>
 <!-- The default code generator. You can override this one, to generate your own code style.
@@ -34,7 +34,7 @@ Excludes match before includes -->
 <!-- The destination package of your generated classes (within the destination directory) -->
 <packageName>com.moseeker.db.userdb</packageName>
 <!-- The destination directory of your generated classes -->
-<directory>src/main/java</directory>
+<directory>/tmp</directory>
 </target>
 </generator>
 </configuration>

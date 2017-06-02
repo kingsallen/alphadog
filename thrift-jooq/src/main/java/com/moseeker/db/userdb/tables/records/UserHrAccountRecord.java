@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserHrAccountRecord extends UpdatableRecordImpl<UserHrAccountRecord> implements Record20<Integer, Integer, String, String, Integer, String, String, Integer, Byte, Integer, Timestamp, String, Timestamp, String, Integer, Integer, String, Timestamp, Timestamp, String> {
 
-    private static final long serialVersionUID = -1253272758;
+    private static final long serialVersionUID = 1235699200;
 
     /**
      * Setter for <code>userdb.user_hr_account.id</code>.
@@ -145,14 +145,14 @@ public class UserHrAccountRecord extends UpdatableRecordImpl<UserHrAccountRecord
     }
 
     /**
-     * Setter for <code>userdb.user_hr_account.activation</code>. 账号是否激活，1：激活；0：未激活
+     * Setter for <code>userdb.user_hr_account.activation</code>. 子账号邀请使用，账号是否激活，1：激活；0：未激活
      */
     public void setActivation(Byte value) {
         set(8, value);
     }
 
     /**
-     * Getter for <code>userdb.user_hr_account.activation</code>. 账号是否激活，1：激活；0：未激活
+     * Getter for <code>userdb.user_hr_account.activation</code>. 子账号邀请使用，账号是否激活，1：激活；0：未激活
      */
     public Byte getActivation() {
         return (Byte) get(8);
@@ -243,14 +243,14 @@ public class UserHrAccountRecord extends UpdatableRecordImpl<UserHrAccountRecord
     }
 
     /**
-     * Setter for <code>userdb.user_hr_account.source</code>. 来源1:雇主 2:官网 3:微信扫描 4:我也要招人(聚合号) 5:我也要招人(企业号)
+     * Setter for <code>userdb.user_hr_account.source</code>. 来源1:雇主 2:官网 3:微信扫描 4:我也要招人(聚合号) 5:我也要招人(企业号) 6:我也要招人(手机官网)
      */
     public void setSource(Integer value) {
         set(15, value);
     }
 
     /**
-     * Getter for <code>userdb.user_hr_account.source</code>. 来源1:雇主 2:官网 3:微信扫描 4:我也要招人(聚合号) 5:我也要招人(企业号)
+     * Getter for <code>userdb.user_hr_account.source</code>. 来源1:雇主 2:官网 3:微信扫描 4:我也要招人(聚合号) 5:我也要招人(企业号) 6:我也要招人(手机官网)
      */
     public Integer getSource() {
         return (Integer) get(15);

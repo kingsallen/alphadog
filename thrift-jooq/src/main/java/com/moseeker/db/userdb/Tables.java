@@ -4,18 +4,18 @@
 package com.moseeker.db.userdb;
 
 
-import com.moseeker.db.userdb.tables.CandidateVJobPositionRecom;
 import com.moseeker.db.userdb.tables.UserBdUser;
+import com.moseeker.db.userdb.tables.UserCompanyFollow;
+import com.moseeker.db.userdb.tables.UserCompanyVisitReq;
 import com.moseeker.db.userdb.tables.UserEmployee;
 import com.moseeker.db.userdb.tables.UserEmployeePointsRecord;
+import com.moseeker.db.userdb.tables.UserEmployee_0321;
 import com.moseeker.db.userdb.tables.UserFavPosition;
 import com.moseeker.db.userdb.tables.UserHrAccount;
 import com.moseeker.db.userdb.tables.UserIntention;
 import com.moseeker.db.userdb.tables.UserSettings;
 import com.moseeker.db.userdb.tables.UserThirdpartyUser;
 import com.moseeker.db.userdb.tables.UserUser;
-import com.moseeker.db.userdb.tables.UserUserNameEmail1128;
-import com.moseeker.db.userdb.tables.UserUserTmp;
 import com.moseeker.db.userdb.tables.UserWxUser;
 import com.moseeker.db.userdb.tables.UserWxViewer;
 
@@ -36,19 +36,29 @@ import javax.annotation.Generated;
 public class Tables {
 
     /**
-     * VIEW
-     */
-    public static final CandidateVJobPositionRecom CANDIDATE_V_JOB_POSITION_RECOM = com.moseeker.db.userdb.tables.CandidateVJobPositionRecom.CANDIDATE_V_JOB_POSITION_RECOM;
-
-    /**
      * 百度用户信息表
      */
     public static final UserBdUser USER_BD_USER = com.moseeker.db.userdb.tables.UserBdUser.USER_BD_USER;
 
     /**
+     * 公司关注表
+     */
+    public static final UserCompanyFollow USER_COMPANY_FOLLOW = com.moseeker.db.userdb.tables.UserCompanyFollow.USER_COMPANY_FOLLOW;
+
+    /**
+     * C端用户申请参观记录表
+     */
+    public static final UserCompanyVisitReq USER_COMPANY_VISIT_REQ = com.moseeker.db.userdb.tables.UserCompanyVisitReq.USER_COMPANY_VISIT_REQ;
+
+    /**
      * The table <code>userdb.user_employee</code>.
      */
     public static final UserEmployee USER_EMPLOYEE = com.moseeker.db.userdb.tables.UserEmployee.USER_EMPLOYEE;
+
+    /**
+     * The table <code>userdb.user_employee_0321</code>.
+     */
+    public static final UserEmployee_0321 USER_EMPLOYEE_0321 = com.moseeker.db.userdb.tables.UserEmployee_0321.USER_EMPLOYEE_0321;
 
     /**
      * 员工积分记录表
@@ -84,16 +94,6 @@ public class Tables {
      * 用户表
      */
     public static final UserUser USER_USER = com.moseeker.db.userdb.tables.UserUser.USER_USER;
-
-    /**
-     * The table <code>userdb.user_user_name_email1128</code>.
-     */
-    public static final UserUserNameEmail1128 USER_USER_NAME_EMAIL1128 = com.moseeker.db.userdb.tables.UserUserNameEmail1128.USER_USER_NAME_EMAIL1128;
-
-    /**
-     * The table <code>userdb.user_user_tmp</code>.
-     */
-    public static final UserUserTmp USER_USER_TMP = com.moseeker.db.userdb.tables.UserUserTmp.USER_USER_TMP;
 
     /**
      * 微信用户表

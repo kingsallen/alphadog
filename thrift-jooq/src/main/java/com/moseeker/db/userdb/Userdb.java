@@ -4,18 +4,18 @@
 package com.moseeker.db.userdb;
 
 
-import com.moseeker.db.userdb.tables.CandidateVJobPositionRecom;
 import com.moseeker.db.userdb.tables.UserBdUser;
+import com.moseeker.db.userdb.tables.UserCompanyFollow;
+import com.moseeker.db.userdb.tables.UserCompanyVisitReq;
 import com.moseeker.db.userdb.tables.UserEmployee;
 import com.moseeker.db.userdb.tables.UserEmployeePointsRecord;
+import com.moseeker.db.userdb.tables.UserEmployee_0321;
 import com.moseeker.db.userdb.tables.UserFavPosition;
 import com.moseeker.db.userdb.tables.UserHrAccount;
 import com.moseeker.db.userdb.tables.UserIntention;
 import com.moseeker.db.userdb.tables.UserSettings;
 import com.moseeker.db.userdb.tables.UserThirdpartyUser;
 import com.moseeker.db.userdb.tables.UserUser;
-import com.moseeker.db.userdb.tables.UserUserNameEmail1128;
-import com.moseeker.db.userdb.tables.UserUserTmp;
 import com.moseeker.db.userdb.tables.UserWxUser;
 import com.moseeker.db.userdb.tables.UserWxViewer;
 
@@ -43,7 +43,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Userdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 695015421;
+    private static final long serialVersionUID = -666854500;
 
     /**
      * The reference instance of <code>userdb</code>
@@ -51,19 +51,29 @@ public class Userdb extends SchemaImpl {
     public static final Userdb USERDB = new Userdb();
 
     /**
-     * VIEW
-     */
-    public final CandidateVJobPositionRecom CANDIDATE_V_JOB_POSITION_RECOM = com.moseeker.db.userdb.tables.CandidateVJobPositionRecom.CANDIDATE_V_JOB_POSITION_RECOM;
-
-    /**
      * 百度用户信息表
      */
     public final UserBdUser USER_BD_USER = com.moseeker.db.userdb.tables.UserBdUser.USER_BD_USER;
 
     /**
+     * 公司关注表
+     */
+    public final UserCompanyFollow USER_COMPANY_FOLLOW = com.moseeker.db.userdb.tables.UserCompanyFollow.USER_COMPANY_FOLLOW;
+
+    /**
+     * C端用户申请参观记录表
+     */
+    public final UserCompanyVisitReq USER_COMPANY_VISIT_REQ = com.moseeker.db.userdb.tables.UserCompanyVisitReq.USER_COMPANY_VISIT_REQ;
+
+    /**
      * The table <code>userdb.user_employee</code>.
      */
     public final UserEmployee USER_EMPLOYEE = com.moseeker.db.userdb.tables.UserEmployee.USER_EMPLOYEE;
+
+    /**
+     * The table <code>userdb.user_employee_0321</code>.
+     */
+    public final UserEmployee_0321 USER_EMPLOYEE_0321 = com.moseeker.db.userdb.tables.UserEmployee_0321.USER_EMPLOYEE_0321;
 
     /**
      * 员工积分记录表
@@ -101,16 +111,6 @@ public class Userdb extends SchemaImpl {
     public final UserUser USER_USER = com.moseeker.db.userdb.tables.UserUser.USER_USER;
 
     /**
-     * The table <code>userdb.user_user_name_email1128</code>.
-     */
-    public final UserUserNameEmail1128 USER_USER_NAME_EMAIL1128 = com.moseeker.db.userdb.tables.UserUserNameEmail1128.USER_USER_NAME_EMAIL1128;
-
-    /**
-     * The table <code>userdb.user_user_tmp</code>.
-     */
-    public final UserUserTmp USER_USER_TMP = com.moseeker.db.userdb.tables.UserUserTmp.USER_USER_TMP;
-
-    /**
      * 微信用户表
      */
     public final UserWxUser USER_WX_USER = com.moseeker.db.userdb.tables.UserWxUser.USER_WX_USER;
@@ -145,9 +145,11 @@ public class Userdb extends SchemaImpl {
 
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
-            CandidateVJobPositionRecom.CANDIDATE_V_JOB_POSITION_RECOM,
             UserBdUser.USER_BD_USER,
+            UserCompanyFollow.USER_COMPANY_FOLLOW,
+            UserCompanyVisitReq.USER_COMPANY_VISIT_REQ,
             UserEmployee.USER_EMPLOYEE,
+            UserEmployee_0321.USER_EMPLOYEE_0321,
             UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD,
             UserFavPosition.USER_FAV_POSITION,
             UserHrAccount.USER_HR_ACCOUNT,
@@ -155,8 +157,6 @@ public class Userdb extends SchemaImpl {
             UserSettings.USER_SETTINGS,
             UserThirdpartyUser.USER_THIRDPARTY_USER,
             UserUser.USER_USER,
-            UserUserNameEmail1128.USER_USER_NAME_EMAIL1128,
-            UserUserTmp.USER_USER_TMP,
             UserWxUser.USER_WX_USER,
             UserWxViewer.USER_WX_VIEWER);
     }

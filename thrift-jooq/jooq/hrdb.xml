@@ -3,8 +3,8 @@
 <!-- Configure the database connection here -->
 <jdbc>
 <driver>com.mysql.jdbc.Driver</driver>
-<url>jdbc:mysql://localhost:3306/candidatedb</url>
-<user>root</user>
+<url>jdbc:mysql://localhost:3306/userdb</url>
+<user>wjf</user>
 <password>wjf</password>
 </jdbc>
 <generator>
@@ -29,11 +29,10 @@ Watch out for case-sensitivity. Depending on your database, this might be import
 (A Java regular expression. Use the pipe to separate several expressions).
 Excludes match before includes -->
 <excludes></excludes>
-<unsignedTypes>false</unsignedTypes>
 </database>
 <target>
 <!-- The destination package of your generated classes (within the destination directory) -->
-<packageName>com.moseeker.baseorm.db.hrdb</packageName>
+<packageName>com.moseeker.db.userdb</packageName>
 <!-- The destination directory of your generated classes -->
 <directory>/tmp/</directory>
 </target>
