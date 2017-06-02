@@ -171,6 +171,7 @@ public class CandidateEntity implements Candidate {
      */
     @Override
     public List<CandidateList> candidateList(CandidateListParam param) throws BIZException {
+        logger.info("CandidateEntiry candidateList param:{}", param);
 
         List<CandidateList> result = new ArrayList<>();
 
