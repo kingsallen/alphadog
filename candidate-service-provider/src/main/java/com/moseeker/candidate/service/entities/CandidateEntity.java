@@ -274,6 +274,7 @@ public class CandidateEntity implements Candidate {
     @Override
     public RecommendResult recommend(RecommmendParam param) throws BIZException {
 
+        logger.info("CandidateEntiry recommend param:{}", param);
         /** 参数校验 */
         ValidateUtil vu = ParamCheckTool.checkRecommend(param);
         String message = vu.validate();
@@ -284,12 +285,14 @@ public class CandidateEntity implements Candidate {
         /** 是否开启被动求职者 */
         boolean passiveSeeker = CandidateDBDao.isStartPassiveSeeker(param.getCompanyId());
         if(!passiveSeeker) {
+            logger.info("CandidateEntiry recommend 未开启挖掘被动求职者");
             throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_NOT_START);
         }
         //修改参数长度
         refineParam(param);
 
         CandidateRecomRecordDO candidateRecomRecordDO = CandidateDBDao.getCandidateRecomRecordDO(param.getId());
+        logger.info("CandidateEntiry recommend candidateRecomRecordDO:{}", candidateRecomRecordDO);
         if (candidateRecomRecordDO == null) {
             throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_CANDIDATES_RECORD_NOT_EXIST);
         }
@@ -377,6 +380,7 @@ public class CandidateEntity implements Candidate {
 
     @Override
     public RecommendResult ignore(int id, int companyId, int postUserId, String clickTime) throws BIZException {
+        logger.info("CandidateEntity ignore id:{}, companyId:{}, postUserId:{}, clickTime:{}", id, companyId, postUserId, clickTime);
         /** 参数校验 */
         ValidateUtil vu = ParamCheckTool.checkignore(id, companyId, postUserId, clickTime);
         String message = vu.validate();
@@ -387,10 +391,12 @@ public class CandidateEntity implements Candidate {
         /** 是否开启被动求职者 */
         boolean passiveSeeker = CandidateDBDao.isStartPassiveSeeker(companyId);
         if(!passiveSeeker) {
+            logger.info("CandidateEntiry ignore 未开启挖掘被动求职者");
             throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_NOT_START);
         }
 
         CandidateRecomRecordDO recomRecordDO = CandidateDBDao.getCandidateRecomRecordDO(id);
+        logger.info("CandidateEntiry recommend recomRecordDO:{}", recomRecordDO);
         if(recomRecordDO == null) {
             throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_CANDIDATES_RECORD_NOT_EXIST);
         }
@@ -503,6 +509,7 @@ public class CandidateEntity implements Candidate {
         } else {
             recommendResult.setNextOne(false);
         }
+        logger.info("CandidateEntiry recommend recommendResult:{}", recommendResult);
         return recommendResult;
     }
 
