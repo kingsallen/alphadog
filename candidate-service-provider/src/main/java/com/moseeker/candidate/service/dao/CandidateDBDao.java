@@ -121,6 +121,7 @@ public class CandidateDBDao {
             hrs.forEach(i -> hraccountIds.append(i.getId()).append(","));
             hraccountIds.deleteCharAt(hraccountIds.length() - 1).append("]");
             qu.addEqualFilter("hraccount_id", hraccountIds.toString());
+            qu.setPer_page(Integer.MAX_VALUE);
             try {
                 remarkDOList = candidateDBDao.listCandidateRemarks(qu);
             } catch (CURDException e) {
@@ -215,6 +216,25 @@ public class CandidateDBDao {
             return null;
         }
     }
+    
+    /**
+     * 推荐的结果记录是根据职位和浏览者过滤的，在推荐时，需要将被过滤的数据也给添加上
+     * @param candidateRecomRecordDO 推荐的数据
+     * @return
+     */
+    public static List<CandidateRecomRecordDO> listFiltredCandidateRecomRecord(
+			CandidateRecomRecordDO candidateRecomRecordDO) {
+    	QueryUtil query = new QueryUtil();
+    	query.addEqualFilter("position_id", candidateRecomRecordDO.getPositionId())
+                .addEqualFilter("presentee_user_id", candidateRecomRecordDO.getPresenteeUserId());
+    	query.setPer_page(Integer.MAX_VALUE);
+		try {
+			return candidateDBDao.listCandidateRecomRecords(query);
+		} catch (Exception e) {
+			LoggerFactory.getLogger(CandidateDBDao.class).error(e.getMessage(), e);
+			return null;
+		}
+	}
 
     /**
      * 过滤某个ID之后查找推荐记录信息
@@ -243,6 +263,7 @@ public class CandidateDBDao {
         QueryUtil queryUtil = new QueryUtil();
         queryUtil.addSelectAttribute("id").addSelectAttribute("title");
         queryUtil.addEqualFilter("id", StringUtils.converToArrayStr(positionIdList));
+        queryUtil.setPer_page(Integer.MAX_VALUE);
         try {
             return jobDBDao.getPositions(queryUtil);
         } catch (TException e) {
@@ -263,6 +284,7 @@ public class CandidateDBDao {
                 .addSelectAttribute("headimg");
         queryUtil.addEqualFilter("id", StringUtils.converToArrayStr(userIdList)).addEqualFilter("status", 0);
         queryUtil.setOrder("id");
+        queryUtil.setPer_page(Integer.MAX_VALUE);
         try {
             return userDBDao.listUser(queryUtil);
         } catch (TException e) {

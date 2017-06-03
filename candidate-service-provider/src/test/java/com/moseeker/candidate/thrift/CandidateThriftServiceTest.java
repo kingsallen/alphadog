@@ -77,11 +77,11 @@ public class CandidateThriftServiceTest {
         }
     }
 
-    //@Test
+    @Test
     public void testGetRecommendations() {
         List<Integer> candidateIdList = new ArrayList<Integer>(){{
-            add(14348);
-            add(14349);
+            add(14784);
+            add(14816);
         }};
         try {
             RecommendResult recommendResult = candidateService.getRecomendations(39978, candidateIdList);
