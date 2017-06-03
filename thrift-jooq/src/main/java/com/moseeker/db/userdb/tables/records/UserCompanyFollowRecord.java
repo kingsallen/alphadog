@@ -31,7 +31,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserCompanyFollowRecord extends UpdatableRecordImpl<UserCompanyFollowRecord> implements Record8<UInteger, Integer, Integer, Integer, Integer, Timestamp, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = -1610785472;
+    private static final long serialVersionUID = -1888768128;
 
     /**
      * Setter for <code>userdb.user_company_follow.id</code>. id
@@ -76,28 +76,28 @@ public class UserCompanyFollowRecord extends UpdatableRecordImpl<UserCompanyFoll
     }
 
     /**
-     * Setter for <code>userdb.user_company_follow.status</code>. 0: 关注 1:取消关注
+     * Setter for <code>userdb.user_company_follow.status</code>. 0: 关注 1：取消关注
      */
     public void setStatus(Integer value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>userdb.user_company_follow.status</code>. 0: 关注 1:取消关注
+     * Getter for <code>userdb.user_company_follow.status</code>. 0: 关注 1：取消关注
      */
     public Integer getStatus() {
         return (Integer) get(3);
     }
 
     /**
-     * Setter for <code>userdb.user_company_follow.source</code>. 关注来源 0: 未知 1:微信端 2:PC 端
+     * Setter for <code>userdb.user_company_follow.source</code>. 关注来源 0: 未知 1：微信端 2：PC 端
      */
     public void setSource(Integer value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>userdb.user_company_follow.source</code>. 关注来源 0: 未知 1:微信端 2:PC 端
+     * Getter for <code>userdb.user_company_follow.source</code>. 关注来源 0: 未知 1：微信端 2：PC 端
      */
     public Integer getSource() {
         return (Integer) get(4);

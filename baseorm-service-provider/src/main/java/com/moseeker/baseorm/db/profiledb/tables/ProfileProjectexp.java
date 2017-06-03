@@ -21,8 +21,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UByte;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -38,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileProjectexp extends TableImpl<ProfileProjectexpRecord> {
 
-	private static final long serialVersionUID = 1601697095;
+	private static final long serialVersionUID = 1980188184;
 
 	/**
 	 * The reference instance of <code>profiledb.profile_projectexp</code>
@@ -56,12 +54,12 @@ public class ProfileProjectexp extends TableImpl<ProfileProjectexpRecord> {
 	/**
 	 * The column <code>profiledb.profile_projectexp.id</code>. 主key
 	 */
-	public final TableField<ProfileProjectexpRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
+	public final TableField<ProfileProjectexpRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "主key");
 
 	/**
 	 * The column <code>profiledb.profile_projectexp.profile_id</code>. profile.id
 	 */
-	public final TableField<ProfileProjectexpRecord, UInteger> PROFILE_ID = createField("profile_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "profile.id");
+	public final TableField<ProfileProjectexpRecord, Integer> PROFILE_ID = createField("profile_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "profile.id");
 
 	/**
 	 * The column <code>profiledb.profile_projectexp.start</code>. 起止时间-起 yyyy-mm-dd
@@ -76,7 +74,7 @@ public class ProfileProjectexp extends TableImpl<ProfileProjectexpRecord> {
 	/**
 	 * The column <code>profiledb.profile_projectexp.end_until_now</code>. 是否至今 0：否 1：是
 	 */
-	public final TableField<ProfileProjectexpRecord, UByte> END_UNTIL_NOW = createField("end_until_now", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "是否至今 0：否 1：是");
+	public final TableField<ProfileProjectexpRecord, Byte> END_UNTIL_NOW = createField("end_until_now", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "是否至今 0：否 1：是");
 
 	/**
 	 * The column <code>profiledb.profile_projectexp.name</code>. 项目名称
@@ -91,7 +89,7 @@ public class ProfileProjectexp extends TableImpl<ProfileProjectexpRecord> {
 	/**
 	 * The column <code>profiledb.profile_projectexp.is_it</code>. 是否IT项目, 0:没填写, 1:是, 2:否
 	 */
-	public final TableField<ProfileProjectexpRecord, UByte> IS_IT = createField("is_it", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "是否IT项目, 0:没填写, 1:是, 2:否");
+	public final TableField<ProfileProjectexpRecord, Byte> IS_IT = createField("is_it", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "是否IT项目, 0:没填写, 1:是, 2:否");
 
 	/**
 	 * The column <code>profiledb.profile_projectexp.dev_tool</code>. 开发工具
@@ -174,7 +172,7 @@ public class ProfileProjectexp extends TableImpl<ProfileProjectexpRecord> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Identity<ProfileProjectexpRecord, UInteger> getIdentity() {
+	public Identity<ProfileProjectexpRecord, Integer> getIdentity() {
 		return Keys.IDENTITY_PROFILE_PROJECTEXP;
 	}
 

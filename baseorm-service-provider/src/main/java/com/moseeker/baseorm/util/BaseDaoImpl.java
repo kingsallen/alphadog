@@ -76,10 +76,10 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 				/* 分段查找数据库结果集 */
 				parsePage(table, query);
 			}
+			logger.info(table.getSQL());
 			records = table.fetchInto(tableLike.getRecordType());
 		} catch (Exception e) {
 			logger.error("error", e);
-			e.printStackTrace();
 			throw new Exception(e);
 		} finally {
 			if(conn != null && !conn.isClosed()) {

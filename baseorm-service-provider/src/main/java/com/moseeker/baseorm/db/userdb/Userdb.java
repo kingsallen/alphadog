@@ -4,30 +4,15 @@
 package com.moseeker.baseorm.db.userdb;
 
 
-import com.moseeker.baseorm.db.userdb.tables.CandidateVJobPositionRecom;
-import com.moseeker.baseorm.db.userdb.tables.UserBdUser;
-import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
-import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
-import com.moseeker.baseorm.db.userdb.tables.UserFavPosition;
-import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
-import com.moseeker.baseorm.db.userdb.tables.UserIntention;
-import com.moseeker.baseorm.db.userdb.tables.UserSettings;
-import com.moseeker.baseorm.db.userdb.tables.UserThirdpartyUser;
-import com.moseeker.baseorm.db.userdb.tables.UserUser;
-import com.moseeker.baseorm.db.userdb.tables.UserUserNameEmail1128;
-import com.moseeker.baseorm.db.userdb.tables.UserUserTmp;
-import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
-import com.moseeker.baseorm.db.userdb.tables.UserWxViewer;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.annotation.Generated;
-
+import com.moseeker.baseorm.db.userdb.tables.*;
 import org.jooq.Catalog;
 import org.jooq.Table;
 import org.jooq.impl.SchemaImpl;
+
+import javax.annotation.Generated;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -43,7 +28,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Userdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 488808204;
+    private static final long serialVersionUID = -1691132620;
 
     /**
      * The reference instance of <code>userdb</code>
@@ -53,72 +38,87 @@ public class Userdb extends SchemaImpl {
     /**
      * VIEW
      */
-    public final CandidateVJobPositionRecom CANDIDATE_V_JOB_POSITION_RECOM = com.moseeker.baseorm.db.userdb.tables.CandidateVJobPositionRecom.CANDIDATE_V_JOB_POSITION_RECOM;
+    public final CandidateVJobPositionRecom CANDIDATE_V_JOB_POSITION_RECOM = CandidateVJobPositionRecom.CANDIDATE_V_JOB_POSITION_RECOM;
 
     /**
      * 百度用户信息表
      */
-    public final UserBdUser USER_BD_USER = com.moseeker.baseorm.db.userdb.tables.UserBdUser.USER_BD_USER;
-
-    /**
-     * The table <code>userdb.user_employee</code>.
-     */
-    public final UserEmployee USER_EMPLOYEE = com.moseeker.baseorm.db.userdb.tables.UserEmployee.USER_EMPLOYEE;
-
-    /**
-     * 员工积分记录表
-     */
-    public final UserEmployeePointsRecord USER_EMPLOYEE_POINTS_RECORD = com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD;
+    public final UserBdUser USER_BD_USER = UserBdUser.USER_BD_USER;
 
     /**
      * 用户职位收藏
      */
-    public final UserFavPosition USER_FAV_POSITION = com.moseeker.baseorm.db.userdb.tables.UserFavPosition.USER_FAV_POSITION;
+    public final UserCollectPosition USER_COLLECT_POSITION = com.moseeker.baseorm.db.userdb.tables.UserCollectPosition.USER_COLLECT_POSITION;
+
+    /**
+     * The table <code>userdb.user_employee</code>.
+     */
+    public final UserEmployee USER_EMPLOYEE = UserEmployee.USER_EMPLOYEE;
+
+    /**
+     * 员工积分记录表
+     */
+    public final UserEmployeePointsRecord USER_EMPLOYEE_POINTS_RECORD = UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD;
+
+    /**
+     * 用户职位收藏
+     */
+    public final UserFavPosition USER_FAV_POSITION = UserFavPosition.USER_FAV_POSITION;
 
     /**
      * hr账号表
      */
-    public final UserHrAccount USER_HR_ACCOUNT = com.moseeker.baseorm.db.userdb.tables.UserHrAccount.USER_HR_ACCOUNT;
+    public final UserHrAccount USER_HR_ACCOUNT = UserHrAccount.USER_HR_ACCOUNT;
 
     /**
      * 用户求职意向
      */
-    public final UserIntention USER_INTENTION = com.moseeker.baseorm.db.userdb.tables.UserIntention.USER_INTENTION;
+    public final UserIntention USER_INTENTION = UserIntention.USER_INTENTION;
+
+    /**
+     * 用户搜索条件(qx职位搜索)
+     */
+    public final UserSearchCondition USER_SEARCH_CONDITION = com.moseeker.baseorm.db.userdb.tables.UserSearchCondition.USER_SEARCH_CONDITION;
 
     /**
      * 用户设置表
      */
-    public final UserSettings USER_SETTINGS = com.moseeker.baseorm.db.userdb.tables.UserSettings.USER_SETTINGS;
+    public final UserSettings USER_SETTINGS = UserSettings.USER_SETTINGS;
 
     /**
      * The table <code>userdb.user_thirdparty_user</code>.
      */
-    public final UserThirdpartyUser USER_THIRDPARTY_USER = com.moseeker.baseorm.db.userdb.tables.UserThirdpartyUser.USER_THIRDPARTY_USER;
+    public final UserThirdpartyUser USER_THIRDPARTY_USER = UserThirdpartyUser.USER_THIRDPARTY_USER;
 
     /**
      * 用户表
      */
-    public final UserUser USER_USER = com.moseeker.baseorm.db.userdb.tables.UserUser.USER_USER;
+    public final UserUser USER_USER = UserUser.USER_USER;
 
     /**
      * The table <code>userdb.user_user_name_email1128</code>.
      */
-    public final UserUserNameEmail1128 USER_USER_NAME_EMAIL1128 = com.moseeker.baseorm.db.userdb.tables.UserUserNameEmail1128.USER_USER_NAME_EMAIL1128;
+    public final UserUserNameEmail1128 USER_USER_NAME_EMAIL1128 = UserUserNameEmail1128.USER_USER_NAME_EMAIL1128;
 
     /**
      * The table <code>userdb.user_user_tmp</code>.
      */
-    public final UserUserTmp USER_USER_TMP = com.moseeker.baseorm.db.userdb.tables.UserUserTmp.USER_USER_TMP;
+    public final UserUserTmp USER_USER_TMP = UserUserTmp.USER_USER_TMP;
+
+    /**
+     * 用户查看过的职位
+     */
+    public final UserViewedPosition USER_VIEWED_POSITION = com.moseeker.baseorm.db.userdb.tables.UserViewedPosition.USER_VIEWED_POSITION;
 
     /**
      * 微信用户表
      */
-    public final UserWxUser USER_WX_USER = com.moseeker.baseorm.db.userdb.tables.UserWxUser.USER_WX_USER;
+    public final UserWxUser USER_WX_USER = UserWxUser.USER_WX_USER;
 
     /**
      * 用户浏览者记录
      */
-    public final UserWxViewer USER_WX_VIEWER = com.moseeker.baseorm.db.userdb.tables.UserWxViewer.USER_WX_VIEWER;
+    public final UserWxViewer USER_WX_VIEWER = UserWxViewer.USER_WX_VIEWER;
 
     /**
      * No further instances allowed
@@ -147,16 +147,19 @@ public class Userdb extends SchemaImpl {
         return Arrays.<Table<?>>asList(
             CandidateVJobPositionRecom.CANDIDATE_V_JOB_POSITION_RECOM,
             UserBdUser.USER_BD_USER,
+            UserCollectPosition.USER_COLLECT_POSITION,
             UserEmployee.USER_EMPLOYEE,
             UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD,
             UserFavPosition.USER_FAV_POSITION,
             UserHrAccount.USER_HR_ACCOUNT,
             UserIntention.USER_INTENTION,
+            UserSearchCondition.USER_SEARCH_CONDITION,
             UserSettings.USER_SETTINGS,
             UserThirdpartyUser.USER_THIRDPARTY_USER,
             UserUser.USER_USER,
             UserUserNameEmail1128.USER_USER_NAME_EMAIL1128,
             UserUserTmp.USER_USER_TMP,
+            UserViewedPosition.USER_VIEWED_POSITION,
             UserWxUser.USER_WX_USER,
             UserWxViewer.USER_WX_VIEWER);
     }

@@ -6,7 +6,6 @@ package com.moseeker.db.hrdb;
 
 import com.moseeker.db.hrdb.tables.HrAppCvConf;
 import com.moseeker.db.hrdb.tables.HrChatUnreadCount;
-import com.moseeker.db.hrdb.tables.HrChildCompany;
 import com.moseeker.db.hrdb.tables.HrCmsMedia;
 import com.moseeker.db.hrdb.tables.HrCmsModule;
 import com.moseeker.db.hrdb.tables.HrCmsPages;
@@ -26,7 +25,6 @@ import com.moseeker.db.hrdb.tables.HrHbSendRecord;
 import com.moseeker.db.hrdb.tables.HrHtml5Statistics;
 import com.moseeker.db.hrdb.tables.HrHtml5UniqueStatistics;
 import com.moseeker.db.hrdb.tables.HrImporterMonitor;
-import com.moseeker.db.hrdb.tables.HrMedia;
 import com.moseeker.db.hrdb.tables.HrMediaBackupChendi;
 import com.moseeker.db.hrdb.tables.HrOperationRecord;
 import com.moseeker.db.hrdb.tables.HrPointsConf;
@@ -87,7 +85,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Hrdb extends SchemaImpl {
 
-    private static final long serialVersionUID = -2071890868;
+    private static final long serialVersionUID = 1942582003;
 
     /**
      * The reference instance of <code>hrdb</code>
@@ -113,11 +111,6 @@ public class Hrdb extends SchemaImpl {
      * 聊天室未读消息
      */
     public final HrChatUnreadCount HR_CHAT_UNREAD_COUNT = com.moseeker.db.hrdb.tables.HrChatUnreadCount.HR_CHAT_UNREAD_COUNT;
-
-    /**
-     * 子公司表
-     */
-    public final HrChildCompany HR_CHILD_COMPANY = com.moseeker.db.hrdb.tables.HrChildCompany.HR_CHILD_COMPANY;
 
     /**
      * 微信端新jd模块具体内容项
@@ -213,11 +206,6 @@ public class Hrdb extends SchemaImpl {
      * 企业用户导入数据异步处理监控操作表
      */
     public final HrImporterMonitor HR_IMPORTER_MONITOR = com.moseeker.db.hrdb.tables.HrImporterMonitor.HR_IMPORTER_MONITOR;
-
-    /**
-     * 模板媒体表，存储模板渲染的媒体信息
-     */
-    public final HrMedia HR_MEDIA = com.moseeker.db.hrdb.tables.HrMedia.HR_MEDIA;
 
     /**
      * The table <code>hrdb.hr_media_backup_chendi</code>.
@@ -413,7 +401,6 @@ public class Hrdb extends SchemaImpl {
             HrdbHrHtml5UniqueStatistics.HRDB_HR_HTML5_UNIQUE_STATISTICS,
             HrAppCvConf.HR_APP_CV_CONF,
             HrChatUnreadCount.HR_CHAT_UNREAD_COUNT,
-            HrChildCompany.HR_CHILD_COMPANY,
             HrCmsMedia.HR_CMS_MEDIA,
             HrCmsModule.HR_CMS_MODULE,
             HrCmsPages.HR_CMS_PAGES,
@@ -433,7 +420,6 @@ public class Hrdb extends SchemaImpl {
             HrHtml5Statistics.HR_HTML5_STATISTICS,
             HrHtml5UniqueStatistics.HR_HTML5_UNIQUE_STATISTICS,
             HrImporterMonitor.HR_IMPORTER_MONITOR,
-            HrMedia.HR_MEDIA,
             HrMediaBackupChendi.HR_MEDIA_BACKUP_CHENDI,
             HrOperationRecord.HR_OPERATION_RECORD,
             HrPointsConf.HR_POINTS_CONF,

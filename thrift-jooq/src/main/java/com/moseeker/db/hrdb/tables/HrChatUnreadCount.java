@@ -36,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrChatUnreadCount extends TableImpl<HrChatUnreadCountRecord> {
 
-    private static final long serialVersionUID = -447702049;
+    private static final long serialVersionUID = 1153513400;
 
     /**
      * The reference instance of <code>hrdb.hr_chat_unread_count</code>
@@ -65,21 +65,6 @@ public class HrChatUnreadCount extends TableImpl<HrChatUnreadCountRecord> {
      * The column <code>hrdb.hr_chat_unread_count.user_id</code>. 用户编号 userdb.user_user.id
      */
     public final TableField<HrChatUnreadCountRecord, UInteger> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED, this, "用户编号 userdb.user_user.id");
-
-    /**
-     * The column <code>hrdb.hr_chat_unread_count.hr_unread_count</code>. hr未读消息数量
-     */
-    public final TableField<HrChatUnreadCountRecord, Integer> HR_UNREAD_COUNT = createField("hr_unread_count", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "hr未读消息数量");
-
-    /**
-     * The column <code>hrdb.hr_chat_unread_count.user_unread_count</code>. 员工未读消息数量
-     */
-    public final TableField<HrChatUnreadCountRecord, Integer> USER_UNREAD_COUNT = createField("user_unread_count", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "员工未读消息数量");
-
-    /**
-     * The column <code>hrdb.hr_chat_unread_count.status</code>. 状态，0：有效，1：无效
-     */
-    public final TableField<HrChatUnreadCountRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.TINYINT)), this, "状态，0：有效，1：无效");
 
     /**
      * The column <code>hrdb.hr_chat_unread_count.wx_chat_time</code>. sysuser最近一次聊天时间

@@ -37,7 +37,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserCompanyFollow extends TableImpl<UserCompanyFollowRecord> {
 
-    private static final long serialVersionUID = 1392805300;
+    private static final long serialVersionUID = 1588223988;
 
     /**
      * The reference instance of <code>userdb.user_company_follow</code>
@@ -68,14 +68,14 @@ public class UserCompanyFollow extends TableImpl<UserCompanyFollowRecord> {
     public final TableField<UserCompanyFollowRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "user_user.id");
 
     /**
-     * The column <code>userdb.user_company_follow.status</code>. 0: 关注 1:取消关注
+     * The column <code>userdb.user_company_follow.status</code>. 0: 关注 1：取消关注
      */
-    public final TableField<UserCompanyFollowRecord, Integer> STATUS = createField("status", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "0: 关注 1:取消关注");
+    public final TableField<UserCompanyFollowRecord, Integer> STATUS = createField("status", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "0: 关注 1：取消关注");
 
     /**
-     * The column <code>userdb.user_company_follow.source</code>. 关注来源 0: 未知 1:微信端 2:PC 端
+     * The column <code>userdb.user_company_follow.source</code>. 关注来源 0: 未知 1：微信端 2：PC 端
      */
-    public final TableField<UserCompanyFollowRecord, Integer> SOURCE = createField("source", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "关注来源 0: 未知 1:微信端 2:PC 端");
+    public final TableField<UserCompanyFollowRecord, Integer> SOURCE = createField("source", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "关注来源 0: 未知 1：微信端 2：PC 端");
 
     /**
      * The column <code>userdb.user_company_follow.create_time</code>. 关注时间

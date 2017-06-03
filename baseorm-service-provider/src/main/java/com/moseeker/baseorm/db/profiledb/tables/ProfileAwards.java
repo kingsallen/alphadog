@@ -21,7 +21,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -37,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileAwards extends TableImpl<ProfileAwardsRecord> {
 
-	private static final long serialVersionUID = -1151130133;
+	private static final long serialVersionUID = 1020172419;
 
 	/**
 	 * The reference instance of <code>profiledb.profile_awards</code>
@@ -55,12 +54,12 @@ public class ProfileAwards extends TableImpl<ProfileAwardsRecord> {
 	/**
 	 * The column <code>profiledb.profile_awards.id</code>. 主key
 	 */
-	public final TableField<ProfileAwardsRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
+	public final TableField<ProfileAwardsRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "主key");
 
 	/**
 	 * The column <code>profiledb.profile_awards.profile_id</code>. profile.id
 	 */
-	public final TableField<ProfileAwardsRecord, UInteger> PROFILE_ID = createField("profile_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "profile.id");
+	public final TableField<ProfileAwardsRecord, Integer> PROFILE_ID = createField("profile_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "profile.id");
 
 	/**
 	 * The column <code>profiledb.profile_awards.reward_date</code>. 获奖日期 yyyy-mm-dd
@@ -123,7 +122,7 @@ public class ProfileAwards extends TableImpl<ProfileAwardsRecord> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Identity<ProfileAwardsRecord, UInteger> getIdentity() {
+	public Identity<ProfileAwardsRecord, Integer> getIdentity() {
 		return Keys.IDENTITY_PROFILE_AWARDS;
 	}
 

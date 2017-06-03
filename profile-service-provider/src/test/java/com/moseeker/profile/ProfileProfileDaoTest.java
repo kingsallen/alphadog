@@ -4,7 +4,6 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices;
-import com.moseeker.thrift.gen.dao.service.ProfileProfileDao;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
 import com.moseeker.thrift.gen.useraccounts.service.UserEmployeeService;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
@@ -33,10 +32,10 @@ public class ProfileProfileDaoTest {
     }
 
     //@Test
-    public void testProfile() throws TException {
-
-        ProfileServices.Iface profile = ServiceManager.SERVICEMANAGER.getService(ProfileServices.Iface.class);
-        Response response = profile.getProfileByApplication(107604,0,0,true,false);
-        System.out.println(response);
-    }
+//    public void testProfile() throws TException {
+//
+//        ProfileServices.Iface profile = ServiceManager.SERVICEMANAGER.getService(ProfileServices.Iface.class);
+//        Response response = profile.getProfileByApplication(107604,0,0,true,false);
+//        System.out.println(response);
+//    }
 }

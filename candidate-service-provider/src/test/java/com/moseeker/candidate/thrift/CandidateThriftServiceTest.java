@@ -41,7 +41,7 @@ public class CandidateThriftServiceTest {
      */
     //@Test
     public void testGlancePosition() throws Exception {
-        candidateService.glancePosition(3870, 164107, 892);
+        candidateService.glancePosition(3502, 24443, 701);
     }
     
 //    @Test
@@ -57,7 +57,7 @@ public class CandidateThriftServiceTest {
         param.setClickTime("2017-06-01");
         param.setPostUserId(191576);
         List<Integer> recomList = new ArrayList<Integer>(){{
-            add(0);
+            add(1);
             add(2);
             add(3);
         }};
@@ -144,7 +144,7 @@ public class CandidateThriftServiceTest {
     //@Test
     public void testGetRecommendatorySorting() {
         try {
-            SortResult result = candidateService.getRecommendatorySorting(3341, 39978);
+            SortResult result = candidateService.getRecommendatorySorting(4, 1);
             System.out.println(result);
         } catch (TException e) {
             e.printStackTrace();
@@ -154,7 +154,7 @@ public class CandidateThriftServiceTest {
     //@Test
     public void testIgnore() {
         try {
-            RecommendResult result = candidateService.ignore(14348, 39978, 3341, "2017-02-09");
+            RecommendResult result = candidateService.ignore(1, 1, 4, "2017-02-21");
             System.out.println(result);
         } catch (TException e) {
             e.printStackTrace();

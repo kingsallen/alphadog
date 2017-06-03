@@ -21,8 +21,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UByte;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -38,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileWorkexp extends TableImpl<ProfileWorkexpRecord> {
 
-	private static final long serialVersionUID = -101008409;
+	private static final long serialVersionUID = -231606504;
 
 	/**
 	 * The reference instance of <code>profiledb.profile_workexp</code>
@@ -56,12 +54,12 @@ public class ProfileWorkexp extends TableImpl<ProfileWorkexpRecord> {
 	/**
 	 * The column <code>profiledb.profile_workexp.id</code>. 主key
 	 */
-	public final TableField<ProfileWorkexpRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
+	public final TableField<ProfileWorkexpRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "主key");
 
 	/**
 	 * The column <code>profiledb.profile_workexp.profile_id</code>. profile.id
 	 */
-	public final TableField<ProfileWorkexpRecord, UInteger> PROFILE_ID = createField("profile_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "profile.id");
+	public final TableField<ProfileWorkexpRecord, Integer> PROFILE_ID = createField("profile_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "profile.id");
 
 	/**
 	 * The column <code>profiledb.profile_workexp.start</code>. 起止时间-起 yyyy-mm-dd
@@ -76,17 +74,17 @@ public class ProfileWorkexp extends TableImpl<ProfileWorkexpRecord> {
 	/**
 	 * The column <code>profiledb.profile_workexp.end_until_now</code>. 是否至今 0：否 1：是
 	 */
-	public final TableField<ProfileWorkexpRecord, UByte> END_UNTIL_NOW = createField("end_until_now", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "是否至今 0：否 1：是");
+	public final TableField<ProfileWorkexpRecord, Byte> END_UNTIL_NOW = createField("end_until_now", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "是否至今 0：否 1：是");
 
 	/**
 	 * The column <code>profiledb.profile_workexp.salary_code</code>. 薪资code
 	 */
-	public final TableField<ProfileWorkexpRecord, UByte> SALARY_CODE = createField("salary_code", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "薪资code");
+	public final TableField<ProfileWorkexpRecord, Byte> SALARY_CODE = createField("salary_code", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "薪资code");
 
 	/**
 	 * The column <code>profiledb.profile_workexp.industry_code</code>. 行业字典编码
 	 */
-	public final TableField<ProfileWorkexpRecord, UInteger> INDUSTRY_CODE = createField("industry_code", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "行业字典编码");
+	public final TableField<ProfileWorkexpRecord, Integer> INDUSTRY_CODE = createField("industry_code", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "行业字典编码");
 
 	/**
 	 * The column <code>profiledb.profile_workexp.industry_name</code>. 行业名称
@@ -96,7 +94,7 @@ public class ProfileWorkexp extends TableImpl<ProfileWorkexpRecord> {
 	/**
 	 * The column <code>profiledb.profile_workexp.company_id</code>. 公司ID, hr_company.id
 	 */
-	public final TableField<ProfileWorkexpRecord, UInteger> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "公司ID, hr_company.id");
+	public final TableField<ProfileWorkexpRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "公司ID, hr_company.id");
 
 	/**
 	 * The column <code>profiledb.profile_workexp.department_name</code>. 部门名称
@@ -106,7 +104,7 @@ public class ProfileWorkexp extends TableImpl<ProfileWorkexpRecord> {
 	/**
 	 * The column <code>profiledb.profile_workexp.position_code</code>. 职能字典编码
 	 */
-	public final TableField<ProfileWorkexpRecord, UInteger> POSITION_CODE = createField("position_code", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "职能字典编码");
+	public final TableField<ProfileWorkexpRecord, Integer> POSITION_CODE = createField("position_code", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "职能字典编码");
 
 	/**
 	 * The column <code>profiledb.profile_workexp.position_name</code>. 职能字典名称
@@ -121,12 +119,12 @@ public class ProfileWorkexp extends TableImpl<ProfileWorkexpRecord> {
 	/**
 	 * The column <code>profiledb.profile_workexp.type</code>. 工作类型 0:没选择 1:全职 2:兼职 3:实习
 	 */
-	public final TableField<ProfileWorkexpRecord, UByte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "工作类型 0:没选择 1:全职 2:兼职 3:实习");
+	public final TableField<ProfileWorkexpRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "工作类型 0:没选择 1:全职 2:兼职 3:实习");
 
 	/**
 	 * The column <code>profiledb.profile_workexp.city_code</code>. 工作地点（城市），字典编码
 	 */
-	public final TableField<ProfileWorkexpRecord, UInteger> CITY_CODE = createField("city_code", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "工作地点（城市），字典编码");
+	public final TableField<ProfileWorkexpRecord, Integer> CITY_CODE = createField("city_code", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "工作地点（城市），字典编码");
 
 	/**
 	 * The column <code>profiledb.profile_workexp.city_name</code>. 工作地点（城市）名称
@@ -141,7 +139,7 @@ public class ProfileWorkexp extends TableImpl<ProfileWorkexpRecord> {
 	/**
 	 * The column <code>profiledb.profile_workexp.underlings</code>. 下属人数, 0:没有下属
 	 */
-	public final TableField<ProfileWorkexpRecord, UInteger> UNDERLINGS = createField("underlings", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "下属人数, 0:没有下属");
+	public final TableField<ProfileWorkexpRecord, Integer> UNDERLINGS = createField("underlings", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "下属人数, 0:没有下属");
 
 	/**
 	 * The column <code>profiledb.profile_workexp.reference</code>. 证明人
@@ -199,7 +197,7 @@ public class ProfileWorkexp extends TableImpl<ProfileWorkexpRecord> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Identity<ProfileWorkexpRecord, UInteger> getIdentity() {
+	public Identity<ProfileWorkexpRecord, Integer> getIdentity() {
 		return Keys.IDENTITY_PROFILE_WORKEXP;
 	}
 

@@ -5,29 +5,35 @@ package com.moseeker.db.userdb;
 
 
 import com.moseeker.db.userdb.tables.UserBdUser;
+import com.moseeker.db.userdb.tables.UserCollectPosition;
 import com.moseeker.db.userdb.tables.UserCompanyFollow;
 import com.moseeker.db.userdb.tables.UserCompanyVisitReq;
 import com.moseeker.db.userdb.tables.UserEmployee;
 import com.moseeker.db.userdb.tables.UserEmployeePointsRecord;
-import com.moseeker.db.userdb.tables.UserEmployee_0321;
 import com.moseeker.db.userdb.tables.UserFavPosition;
 import com.moseeker.db.userdb.tables.UserHrAccount;
+import com.moseeker.db.userdb.tables.UserSearchCondition;
 import com.moseeker.db.userdb.tables.UserSettings;
+import com.moseeker.db.userdb.tables.UserSysAuthGroup;
 import com.moseeker.db.userdb.tables.UserThirdpartyUser;
 import com.moseeker.db.userdb.tables.UserUser;
+import com.moseeker.db.userdb.tables.UserViewedPosition;
 import com.moseeker.db.userdb.tables.UserWxUser;
 import com.moseeker.db.userdb.tables.UserWxViewer;
 import com.moseeker.db.userdb.tables.records.UserBdUserRecord;
+import com.moseeker.db.userdb.tables.records.UserCollectPositionRecord;
 import com.moseeker.db.userdb.tables.records.UserCompanyFollowRecord;
 import com.moseeker.db.userdb.tables.records.UserCompanyVisitReqRecord;
 import com.moseeker.db.userdb.tables.records.UserEmployeePointsRecordRecord;
 import com.moseeker.db.userdb.tables.records.UserEmployeeRecord;
-import com.moseeker.db.userdb.tables.records.UserEmployee_0321Record;
 import com.moseeker.db.userdb.tables.records.UserFavPositionRecord;
 import com.moseeker.db.userdb.tables.records.UserHrAccountRecord;
+import com.moseeker.db.userdb.tables.records.UserSearchConditionRecord;
 import com.moseeker.db.userdb.tables.records.UserSettingsRecord;
+import com.moseeker.db.userdb.tables.records.UserSysAuthGroupRecord;
 import com.moseeker.db.userdb.tables.records.UserThirdpartyUserRecord;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
+import com.moseeker.db.userdb.tables.records.UserViewedPositionRecord;
 import com.moseeker.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.db.userdb.tables.records.UserWxViewerRecord;
 
@@ -59,16 +65,19 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final Identity<UserBdUserRecord, ULong> IDENTITY_USER_BD_USER = Identities0.IDENTITY_USER_BD_USER;
+    public static final Identity<UserCollectPositionRecord, Integer> IDENTITY_USER_COLLECT_POSITION = Identities0.IDENTITY_USER_COLLECT_POSITION;
     public static final Identity<UserCompanyFollowRecord, UInteger> IDENTITY_USER_COMPANY_FOLLOW = Identities0.IDENTITY_USER_COMPANY_FOLLOW;
     public static final Identity<UserCompanyVisitReqRecord, UInteger> IDENTITY_USER_COMPANY_VISIT_REQ = Identities0.IDENTITY_USER_COMPANY_VISIT_REQ;
     public static final Identity<UserEmployeeRecord, Integer> IDENTITY_USER_EMPLOYEE = Identities0.IDENTITY_USER_EMPLOYEE;
-    public static final Identity<UserEmployee_0321Record, Integer> IDENTITY_USER_EMPLOYEE_0321 = Identities0.IDENTITY_USER_EMPLOYEE_0321;
     public static final Identity<UserEmployeePointsRecordRecord, Integer> IDENTITY_USER_EMPLOYEE_POINTS_RECORD = Identities0.IDENTITY_USER_EMPLOYEE_POINTS_RECORD;
     public static final Identity<UserFavPositionRecord, UInteger> IDENTITY_USER_FAV_POSITION = Identities0.IDENTITY_USER_FAV_POSITION;
     public static final Identity<UserHrAccountRecord, Integer> IDENTITY_USER_HR_ACCOUNT = Identities0.IDENTITY_USER_HR_ACCOUNT;
+    public static final Identity<UserSearchConditionRecord, Integer> IDENTITY_USER_SEARCH_CONDITION = Identities0.IDENTITY_USER_SEARCH_CONDITION;
     public static final Identity<UserSettingsRecord, UInteger> IDENTITY_USER_SETTINGS = Identities0.IDENTITY_USER_SETTINGS;
+    public static final Identity<UserSysAuthGroupRecord, Integer> IDENTITY_USER_SYS_AUTH_GROUP = Identities0.IDENTITY_USER_SYS_AUTH_GROUP;
     public static final Identity<UserThirdpartyUserRecord, ULong> IDENTITY_USER_THIRDPARTY_USER = Identities0.IDENTITY_USER_THIRDPARTY_USER;
     public static final Identity<UserUserRecord, UInteger> IDENTITY_USER_USER = Identities0.IDENTITY_USER_USER;
+    public static final Identity<UserViewedPositionRecord, Integer> IDENTITY_USER_VIEWED_POSITION = Identities0.IDENTITY_USER_VIEWED_POSITION;
     public static final Identity<UserWxUserRecord, ULong> IDENTITY_USER_WX_USER = Identities0.IDENTITY_USER_WX_USER;
     public static final Identity<UserWxViewerRecord, UInteger> IDENTITY_USER_WX_VIEWER = Identities0.IDENTITY_USER_WX_VIEWER;
 
@@ -78,20 +87,24 @@ public class Keys {
 
     public static final UniqueKey<UserBdUserRecord> KEY_USER_BD_USER_PRIMARY = UniqueKeys0.KEY_USER_BD_USER_PRIMARY;
     public static final UniqueKey<UserBdUserRecord> KEY_USER_BD_USER_UID = UniqueKeys0.KEY_USER_BD_USER_UID;
+    public static final UniqueKey<UserCollectPositionRecord> KEY_USER_COLLECT_POSITION_PRIMARY = UniqueKeys0.KEY_USER_COLLECT_POSITION_PRIMARY;
     public static final UniqueKey<UserCompanyFollowRecord> KEY_USER_COMPANY_FOLLOW_PRIMARY = UniqueKeys0.KEY_USER_COMPANY_FOLLOW_PRIMARY;
     public static final UniqueKey<UserCompanyVisitReqRecord> KEY_USER_COMPANY_VISIT_REQ_PRIMARY = UniqueKeys0.KEY_USER_COMPANY_VISIT_REQ_PRIMARY;
     public static final UniqueKey<UserEmployeeRecord> KEY_USER_EMPLOYEE_PRIMARY = UniqueKeys0.KEY_USER_EMPLOYEE_PRIMARY;
-    public static final UniqueKey<UserEmployee_0321Record> KEY_USER_EMPLOYEE_0321_PRIMARY = UniqueKeys0.KEY_USER_EMPLOYEE_0321_PRIMARY;
     public static final UniqueKey<UserEmployeePointsRecordRecord> KEY_USER_EMPLOYEE_POINTS_RECORD_PRIMARY = UniqueKeys0.KEY_USER_EMPLOYEE_POINTS_RECORD_PRIMARY;
     public static final UniqueKey<UserFavPositionRecord> KEY_USER_FAV_POSITION_PRIMARY = UniqueKeys0.KEY_USER_FAV_POSITION_PRIMARY;
     public static final UniqueKey<UserHrAccountRecord> KEY_USER_HR_ACCOUNT_PRIMARY = UniqueKeys0.KEY_USER_HR_ACCOUNT_PRIMARY;
     public static final UniqueKey<UserHrAccountRecord> KEY_USER_HR_ACCOUNT_WXUSER_ID = UniqueKeys0.KEY_USER_HR_ACCOUNT_WXUSER_ID;
+    public static final UniqueKey<UserSearchConditionRecord> KEY_USER_SEARCH_CONDITION_PRIMARY = UniqueKeys0.KEY_USER_SEARCH_CONDITION_PRIMARY;
     public static final UniqueKey<UserSettingsRecord> KEY_USER_SETTINGS_PRIMARY = UniqueKeys0.KEY_USER_SETTINGS_PRIMARY;
     public static final UniqueKey<UserSettingsRecord> KEY_USER_SETTINGS_UID = UniqueKeys0.KEY_USER_SETTINGS_UID;
+    public static final UniqueKey<UserSysAuthGroupRecord> KEY_USER_SYS_AUTH_GROUP_PRIMARY = UniqueKeys0.KEY_USER_SYS_AUTH_GROUP_PRIMARY;
     public static final UniqueKey<UserThirdpartyUserRecord> KEY_USER_THIRDPARTY_USER_PRIMARY = UniqueKeys0.KEY_USER_THIRDPARTY_USER_PRIMARY;
     public static final UniqueKey<UserThirdpartyUserRecord> KEY_USER_THIRDPARTY_USER_USER_ID = UniqueKeys0.KEY_USER_THIRDPARTY_USER_USER_ID;
     public static final UniqueKey<UserUserRecord> KEY_USER_USER_PRIMARY = UniqueKeys0.KEY_USER_USER_PRIMARY;
     public static final UniqueKey<UserUserRecord> KEY_USER_USER_UK_USER_USERNAME = UniqueKeys0.KEY_USER_USER_UK_USER_USERNAME;
+    public static final UniqueKey<UserViewedPositionRecord> KEY_USER_VIEWED_POSITION_PRIMARY = UniqueKeys0.KEY_USER_VIEWED_POSITION_PRIMARY;
+    public static final UniqueKey<UserViewedPositionRecord> KEY_USER_VIEWED_POSITION_USER_POSITION_UNIQUE = UniqueKeys0.KEY_USER_VIEWED_POSITION_USER_POSITION_UNIQUE;
     public static final UniqueKey<UserWxUserRecord> KEY_USER_WX_USER_PRIMARY = UniqueKeys0.KEY_USER_WX_USER_PRIMARY;
     public static final UniqueKey<UserWxUserRecord> KEY_USER_WX_USER_WECHAT_ID = UniqueKeys0.KEY_USER_WX_USER_WECHAT_ID;
     public static final UniqueKey<UserWxViewerRecord> KEY_USER_WX_VIEWER_PRIMARY = UniqueKeys0.KEY_USER_WX_VIEWER_PRIMARY;
@@ -107,16 +120,19 @@ public class Keys {
 
     private static class Identities0 extends AbstractKeys {
         public static Identity<UserBdUserRecord, ULong> IDENTITY_USER_BD_USER = createIdentity(UserBdUser.USER_BD_USER, UserBdUser.USER_BD_USER.ID);
+        public static Identity<UserCollectPositionRecord, Integer> IDENTITY_USER_COLLECT_POSITION = createIdentity(UserCollectPosition.USER_COLLECT_POSITION, UserCollectPosition.USER_COLLECT_POSITION.ID);
         public static Identity<UserCompanyFollowRecord, UInteger> IDENTITY_USER_COMPANY_FOLLOW = createIdentity(UserCompanyFollow.USER_COMPANY_FOLLOW, UserCompanyFollow.USER_COMPANY_FOLLOW.ID);
         public static Identity<UserCompanyVisitReqRecord, UInteger> IDENTITY_USER_COMPANY_VISIT_REQ = createIdentity(UserCompanyVisitReq.USER_COMPANY_VISIT_REQ, UserCompanyVisitReq.USER_COMPANY_VISIT_REQ.ID);
         public static Identity<UserEmployeeRecord, Integer> IDENTITY_USER_EMPLOYEE = createIdentity(UserEmployee.USER_EMPLOYEE, UserEmployee.USER_EMPLOYEE.ID);
-        public static Identity<UserEmployee_0321Record, Integer> IDENTITY_USER_EMPLOYEE_0321 = createIdentity(UserEmployee_0321.USER_EMPLOYEE_0321, UserEmployee_0321.USER_EMPLOYEE_0321.ID);
         public static Identity<UserEmployeePointsRecordRecord, Integer> IDENTITY_USER_EMPLOYEE_POINTS_RECORD = createIdentity(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD, UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.ID);
         public static Identity<UserFavPositionRecord, UInteger> IDENTITY_USER_FAV_POSITION = createIdentity(UserFavPosition.USER_FAV_POSITION, UserFavPosition.USER_FAV_POSITION.ID);
         public static Identity<UserHrAccountRecord, Integer> IDENTITY_USER_HR_ACCOUNT = createIdentity(UserHrAccount.USER_HR_ACCOUNT, UserHrAccount.USER_HR_ACCOUNT.ID);
+        public static Identity<UserSearchConditionRecord, Integer> IDENTITY_USER_SEARCH_CONDITION = createIdentity(UserSearchCondition.USER_SEARCH_CONDITION, UserSearchCondition.USER_SEARCH_CONDITION.ID);
         public static Identity<UserSettingsRecord, UInteger> IDENTITY_USER_SETTINGS = createIdentity(UserSettings.USER_SETTINGS, UserSettings.USER_SETTINGS.ID);
+        public static Identity<UserSysAuthGroupRecord, Integer> IDENTITY_USER_SYS_AUTH_GROUP = createIdentity(UserSysAuthGroup.USER_SYS_AUTH_GROUP, UserSysAuthGroup.USER_SYS_AUTH_GROUP.ID);
         public static Identity<UserThirdpartyUserRecord, ULong> IDENTITY_USER_THIRDPARTY_USER = createIdentity(UserThirdpartyUser.USER_THIRDPARTY_USER, UserThirdpartyUser.USER_THIRDPARTY_USER.ID);
         public static Identity<UserUserRecord, UInteger> IDENTITY_USER_USER = createIdentity(UserUser.USER_USER, UserUser.USER_USER.ID);
+        public static Identity<UserViewedPositionRecord, Integer> IDENTITY_USER_VIEWED_POSITION = createIdentity(UserViewedPosition.USER_VIEWED_POSITION, UserViewedPosition.USER_VIEWED_POSITION.ID);
         public static Identity<UserWxUserRecord, ULong> IDENTITY_USER_WX_USER = createIdentity(UserWxUser.USER_WX_USER, UserWxUser.USER_WX_USER.ID);
         public static Identity<UserWxViewerRecord, UInteger> IDENTITY_USER_WX_VIEWER = createIdentity(UserWxViewer.USER_WX_VIEWER, UserWxViewer.USER_WX_VIEWER.ID);
     }
@@ -124,20 +140,24 @@ public class Keys {
     private static class UniqueKeys0 extends AbstractKeys {
         public static final UniqueKey<UserBdUserRecord> KEY_USER_BD_USER_PRIMARY = createUniqueKey(UserBdUser.USER_BD_USER, "KEY_user_bd_user_PRIMARY", UserBdUser.USER_BD_USER.ID);
         public static final UniqueKey<UserBdUserRecord> KEY_USER_BD_USER_UID = createUniqueKey(UserBdUser.USER_BD_USER, "KEY_user_bd_user_uid", UserBdUser.USER_BD_USER.UID);
+        public static final UniqueKey<UserCollectPositionRecord> KEY_USER_COLLECT_POSITION_PRIMARY = createUniqueKey(UserCollectPosition.USER_COLLECT_POSITION, "KEY_user_collect_position_PRIMARY", UserCollectPosition.USER_COLLECT_POSITION.ID);
         public static final UniqueKey<UserCompanyFollowRecord> KEY_USER_COMPANY_FOLLOW_PRIMARY = createUniqueKey(UserCompanyFollow.USER_COMPANY_FOLLOW, "KEY_user_company_follow_PRIMARY", UserCompanyFollow.USER_COMPANY_FOLLOW.ID);
         public static final UniqueKey<UserCompanyVisitReqRecord> KEY_USER_COMPANY_VISIT_REQ_PRIMARY = createUniqueKey(UserCompanyVisitReq.USER_COMPANY_VISIT_REQ, "KEY_user_company_visit_req_PRIMARY", UserCompanyVisitReq.USER_COMPANY_VISIT_REQ.ID);
         public static final UniqueKey<UserEmployeeRecord> KEY_USER_EMPLOYEE_PRIMARY = createUniqueKey(UserEmployee.USER_EMPLOYEE, "KEY_user_employee_PRIMARY", UserEmployee.USER_EMPLOYEE.ID);
-        public static final UniqueKey<UserEmployee_0321Record> KEY_USER_EMPLOYEE_0321_PRIMARY = createUniqueKey(UserEmployee_0321.USER_EMPLOYEE_0321, "KEY_user_employee_0321_PRIMARY", UserEmployee_0321.USER_EMPLOYEE_0321.ID);
         public static final UniqueKey<UserEmployeePointsRecordRecord> KEY_USER_EMPLOYEE_POINTS_RECORD_PRIMARY = createUniqueKey(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD, "KEY_user_employee_points_record_PRIMARY", UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.ID);
         public static final UniqueKey<UserFavPositionRecord> KEY_USER_FAV_POSITION_PRIMARY = createUniqueKey(UserFavPosition.USER_FAV_POSITION, "KEY_user_fav_position_PRIMARY", UserFavPosition.USER_FAV_POSITION.ID);
         public static final UniqueKey<UserHrAccountRecord> KEY_USER_HR_ACCOUNT_PRIMARY = createUniqueKey(UserHrAccount.USER_HR_ACCOUNT, "KEY_user_hr_account_PRIMARY", UserHrAccount.USER_HR_ACCOUNT.ID);
         public static final UniqueKey<UserHrAccountRecord> KEY_USER_HR_ACCOUNT_WXUSER_ID = createUniqueKey(UserHrAccount.USER_HR_ACCOUNT, "KEY_user_hr_account_wxuser_id", UserHrAccount.USER_HR_ACCOUNT.WXUSER_ID);
+        public static final UniqueKey<UserSearchConditionRecord> KEY_USER_SEARCH_CONDITION_PRIMARY = createUniqueKey(UserSearchCondition.USER_SEARCH_CONDITION, "KEY_user_search_condition_PRIMARY", UserSearchCondition.USER_SEARCH_CONDITION.ID);
         public static final UniqueKey<UserSettingsRecord> KEY_USER_SETTINGS_PRIMARY = createUniqueKey(UserSettings.USER_SETTINGS, "KEY_user_settings_PRIMARY", UserSettings.USER_SETTINGS.ID);
         public static final UniqueKey<UserSettingsRecord> KEY_USER_SETTINGS_UID = createUniqueKey(UserSettings.USER_SETTINGS, "KEY_user_settings_uid", UserSettings.USER_SETTINGS.USER_ID);
+        public static final UniqueKey<UserSysAuthGroupRecord> KEY_USER_SYS_AUTH_GROUP_PRIMARY = createUniqueKey(UserSysAuthGroup.USER_SYS_AUTH_GROUP, "KEY_user_sys_auth_group_PRIMARY", UserSysAuthGroup.USER_SYS_AUTH_GROUP.ID);
         public static final UniqueKey<UserThirdpartyUserRecord> KEY_USER_THIRDPARTY_USER_PRIMARY = createUniqueKey(UserThirdpartyUser.USER_THIRDPARTY_USER, "KEY_user_thirdparty_user_PRIMARY", UserThirdpartyUser.USER_THIRDPARTY_USER.ID);
         public static final UniqueKey<UserThirdpartyUserRecord> KEY_USER_THIRDPARTY_USER_USER_ID = createUniqueKey(UserThirdpartyUser.USER_THIRDPARTY_USER, "KEY_user_thirdparty_user_user_id", UserThirdpartyUser.USER_THIRDPARTY_USER.USER_ID, UserThirdpartyUser.USER_THIRDPARTY_USER.SOURCE_ID);
         public static final UniqueKey<UserUserRecord> KEY_USER_USER_PRIMARY = createUniqueKey(UserUser.USER_USER, "KEY_user_user_PRIMARY", UserUser.USER_USER.ID);
         public static final UniqueKey<UserUserRecord> KEY_USER_USER_UK_USER_USERNAME = createUniqueKey(UserUser.USER_USER, "KEY_user_user_uk_user_username", UserUser.USER_USER.USERNAME);
+        public static final UniqueKey<UserViewedPositionRecord> KEY_USER_VIEWED_POSITION_PRIMARY = createUniqueKey(UserViewedPosition.USER_VIEWED_POSITION, "KEY_user_viewed_position_PRIMARY", UserViewedPosition.USER_VIEWED_POSITION.ID);
+        public static final UniqueKey<UserViewedPositionRecord> KEY_USER_VIEWED_POSITION_USER_POSITION_UNIQUE = createUniqueKey(UserViewedPosition.USER_VIEWED_POSITION, "KEY_user_viewed_position_user_position_unique", UserViewedPosition.USER_VIEWED_POSITION.USER_ID, UserViewedPosition.USER_VIEWED_POSITION.POSITION_ID);
         public static final UniqueKey<UserWxUserRecord> KEY_USER_WX_USER_PRIMARY = createUniqueKey(UserWxUser.USER_WX_USER, "KEY_user_wx_user_PRIMARY", UserWxUser.USER_WX_USER.ID);
         public static final UniqueKey<UserWxUserRecord> KEY_USER_WX_USER_WECHAT_ID = createUniqueKey(UserWxUser.USER_WX_USER, "KEY_user_wx_user_wechat_id", UserWxUser.USER_WX_USER.WECHAT_ID, UserWxUser.USER_WX_USER.OPENID);
         public static final UniqueKey<UserWxViewerRecord> KEY_USER_WX_VIEWER_PRIMARY = createUniqueKey(UserWxViewer.USER_WX_VIEWER, "KEY_user_wx_viewer_PRIMARY", UserWxViewer.USER_WX_VIEWER.ID);

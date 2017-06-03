@@ -125,7 +125,7 @@ public class HRThirdPartyAccountDao extends BaseDaoImpl<HrThirdPartyAccountRecor
                 logger.info("remainume:{}", account.getRemain_num());
                 Date date = sdf.parse(account.getSync_time());
                 record.setSyncTime(new Timestamp(date.getTime()));
-                record.setRemainNum(account.getRemain_num());
+                record.setRemainNum(Integer.valueOf(account.getRemain_num()));
                 count = record.update();
             }
         } catch (SQLException e) {

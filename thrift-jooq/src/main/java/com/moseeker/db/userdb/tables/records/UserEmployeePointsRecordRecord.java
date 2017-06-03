@@ -31,7 +31,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserEmployeePointsRecordRecord extends UpdatableRecordImpl<UserEmployeePointsRecordRecord> implements Record13<Integer, Long, String, Integer, Timestamp, Long, Long, Timestamp, Long, Long, Long, UInteger, UInteger> {
 
-    private static final long serialVersionUID = 1680532284;
+    private static final long serialVersionUID = 1934949322;
 
     /**
      * Setter for <code>userdb.user_employee_points_record.id</code>.
@@ -160,14 +160,14 @@ public class UserEmployeePointsRecordRecord extends UpdatableRecordImpl<UserEmpl
     }
 
     /**
-     * Setter for <code>userdb.user_employee_points_record.berecom_wxuser_id</code>. user_wx_user.id，被推荐人的微信 id
+     * Setter for <code>userdb.user_employee_points_record.berecom_wxuser_id</code>. 已废弃
      */
     public void setBerecomWxuserId(Long value) {
         set(9, value);
     }
 
     /**
-     * Getter for <code>userdb.user_employee_points_record.berecom_wxuser_id</code>. user_wx_user.id，被推荐人的微信 id
+     * Getter for <code>userdb.user_employee_points_record.berecom_wxuser_id</code>. 已废弃
      */
     public Long getBerecomWxuserId() {
         return (Long) get(9);

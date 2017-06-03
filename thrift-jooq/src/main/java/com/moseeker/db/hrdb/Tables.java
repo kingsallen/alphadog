@@ -6,7 +6,6 @@ package com.moseeker.db.hrdb;
 
 import com.moseeker.db.hrdb.tables.HrAppCvConf;
 import com.moseeker.db.hrdb.tables.HrChatUnreadCount;
-import com.moseeker.db.hrdb.tables.HrChildCompany;
 import com.moseeker.db.hrdb.tables.HrCmsMedia;
 import com.moseeker.db.hrdb.tables.HrCmsModule;
 import com.moseeker.db.hrdb.tables.HrCmsPages;
@@ -26,7 +25,6 @@ import com.moseeker.db.hrdb.tables.HrHbSendRecord;
 import com.moseeker.db.hrdb.tables.HrHtml5Statistics;
 import com.moseeker.db.hrdb.tables.HrHtml5UniqueStatistics;
 import com.moseeker.db.hrdb.tables.HrImporterMonitor;
-import com.moseeker.db.hrdb.tables.HrMedia;
 import com.moseeker.db.hrdb.tables.HrMediaBackupChendi;
 import com.moseeker.db.hrdb.tables.HrOperationRecord;
 import com.moseeker.db.hrdb.tables.HrPointsConf;
@@ -98,11 +96,6 @@ public class Tables {
      * 聊天室未读消息
      */
     public static final HrChatUnreadCount HR_CHAT_UNREAD_COUNT = com.moseeker.db.hrdb.tables.HrChatUnreadCount.HR_CHAT_UNREAD_COUNT;
-
-    /**
-     * 子公司表
-     */
-    public static final HrChildCompany HR_CHILD_COMPANY = com.moseeker.db.hrdb.tables.HrChildCompany.HR_CHILD_COMPANY;
 
     /**
      * 微信端新jd模块具体内容项
@@ -198,11 +191,6 @@ public class Tables {
      * 企业用户导入数据异步处理监控操作表
      */
     public static final HrImporterMonitor HR_IMPORTER_MONITOR = com.moseeker.db.hrdb.tables.HrImporterMonitor.HR_IMPORTER_MONITOR;
-
-    /**
-     * 模板媒体表，存储模板渲染的媒体信息
-     */
-    public static final HrMedia HR_MEDIA = com.moseeker.db.hrdb.tables.HrMedia.HR_MEDIA;
 
     /**
      * The table <code>hrdb.hr_media_backup_chendi</code>.

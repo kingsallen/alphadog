@@ -251,8 +251,13 @@ public class CandidateRecomRecordDao extends StructDaoImpl<CandidateRecomRecordD
                     .groupBy(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID,
                             CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID)
                     .orderBy(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME)
-                    .limit(2)
                     .fetch();
+            SelectSeekStep1 tableLike = create.selectFrom(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
+                    .where(condition)
+                    .groupBy(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID,
+                            CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID)
+                    .orderBy(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME);
+            logger.info(tableLike.getSQL());
             if(result != null && result.size() > 0) {
                 candidateRecomRecordDOList = BeanUtils.DBToStruct(CandidateRecomRecordDO.class, result);
             }
@@ -292,16 +297,17 @@ public class CandidateRecomRecordDao extends StructDaoImpl<CandidateRecomRecordD
                     .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME.greaterOrEqual(new Timestamp(dateTime.getMillis())))
                     .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME.lessThan(new Timestamp(dateTime.plusDays(1).getMillis())));
             if(recoms != null && recoms.size() > 0) {
-                condition.and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.IS_RECOM.in(recoms));
+                condition = condition.and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.IS_RECOM.in(recoms));
             }
 
-            Result<CandidateRecomRecordRecord> result = create.selectFrom(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
+            SelectOffsetStep selectOffsetStep = create.selectFrom(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
                     .where(condition)
                     .groupBy(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID,
                             CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID)
                     .orderBy(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME)
-                    .limit(2)
-                    .fetch();
+                    .limit(2);
+            logger.info(selectOffsetStep.getSQL());
+            Result<CandidateRecomRecordRecord> result = selectOffsetStep.fetch();
             if(result != null && result.size() > 0) {
                 candidateRecomRecordDOList = BeanUtils.DBToStruct(CandidateRecomRecordDO.class, result);
             }

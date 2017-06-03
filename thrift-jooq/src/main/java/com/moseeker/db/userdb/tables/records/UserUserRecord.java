@@ -28,7 +28,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserUserRecord extends UpdatableRecordImpl<UserUserRecord> {
 
-    private static final long serialVersionUID = 477649349;
+    private static final long serialVersionUID = 1775837767;
 
     /**
      * Setter for <code>userdb.user_user.id</code>. 主key
@@ -45,14 +45,14 @@ public class UserUserRecord extends UpdatableRecordImpl<UserUserRecord> {
     }
 
     /**
-     * Setter for <code>userdb.user_user.username</code>. 用户名，比如手机号、邮箱等
+     * Setter for <code>userdb.user_user.username</code>. 用户名，目前存放已验证手机号或者unionid
      */
     public void setUsername(String value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>userdb.user_user.username</code>. 用户名，比如手机号、邮箱等
+     * Getter for <code>userdb.user_user.username</code>. 用户名，目前存放已验证手机号或者unionid
      */
     public String getUsername() {
         return (String) get(1);
@@ -171,14 +171,14 @@ public class UserUserRecord extends UpdatableRecordImpl<UserUserRecord> {
     }
 
     /**
-     * Setter for <code>userdb.user_user.mobile</code>. user pass mobile registe
+     * Setter for <code>userdb.user_user.mobile</code>. 手机号(未验证)
      */
     public void setMobile(Long value) {
         set(10, value);
     }
 
     /**
-     * Getter for <code>userdb.user_user.mobile</code>. user pass mobile registe
+     * Getter for <code>userdb.user_user.mobile</code>. 手机号(未验证)
      */
     public Long getMobile() {
         return (Long) get(10);
@@ -381,14 +381,14 @@ public class UserUserRecord extends UpdatableRecordImpl<UserUserRecord> {
     }
 
     /**
-     * Setter for <code>userdb.user_user.email_verified</code>. 邮箱是否认证 2:老数据 1:已认证 0:未认证
+     * Setter for <code>userdb.user_user.email_verified</code>. 邮箱是认证 2:老数据 1:已认证 0:未认证
      */
     public void setEmailVerified(Byte value) {
         set(25, value);
     }
 
     /**
-     * Getter for <code>userdb.user_user.email_verified</code>. 邮箱是否认证 2:老数据 1:已认证 0:未认证
+     * Getter for <code>userdb.user_user.email_verified</code>. 邮箱是认证 2:老数据 1:已认证 0:未认证
      */
     public Byte getEmailVerified() {
         return (Byte) get(25);

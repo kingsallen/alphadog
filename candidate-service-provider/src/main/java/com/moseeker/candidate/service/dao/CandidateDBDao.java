@@ -336,8 +336,23 @@ public class CandidateDBDao {
      * @param candidateRecomRecordDO 职位转发浏览记录
      */
     public static void updateCandidateRecomRecord(CandidateRecomRecordDO candidateRecomRecordDO) throws TException {
-        candidateDBDao.updateCandidateRecomRecords(candidateRecomRecordDO);
+        candidateDBDao.updateCandidateRecomRecord(candidateRecomRecordDO);
     }
+    
+    /**
+     * 批量修改职位转发浏览记录
+     * @param candidateRecomRecordList
+     */
+	public static void updateCandidateRecomRecords(List<CandidateRecomRecordDO> candidateRecomRecordList) {
+		try {
+			candidateDBDao.updateCandidateRecomRecords(candidateRecomRecordList);
+		} catch (com.moseeker.thrift.gen.common.struct.CURDException e) {
+			LoggerFactory.getLogger(CandidateDBDao.class).error(e.getMessage(), e);
+		} catch (TException e) {
+			LoggerFactory.getLogger(CandidateDBDao.class).error(e.getMessage(), e);
+		}
+		
+	}
 
     public static HrPointsConfDO getHrPointConf(int companyId, RecruitmentScheduleEnum recruitmentScheduleEnum) throws TException {
         QueryUtil queryUtil = new QueryUtil();
@@ -415,9 +430,5 @@ public class CandidateDBDao {
             LoggerFactory.getLogger(CandidateDBDao.class).error(e.getMessage(), e);
             return null;
         }
-    }
-
-    public static void updateCandidateRecomRecords(List<CandidateRecomRecordDO> candidateRecomRecordDOList) {
-        //candidateDBDao.updateCandidateRecomRecords()
     }
 }
