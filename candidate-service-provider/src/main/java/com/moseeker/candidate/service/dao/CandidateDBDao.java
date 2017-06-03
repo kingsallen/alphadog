@@ -225,9 +225,12 @@ public class CandidateDBDao {
     public static List<CandidateRecomRecordDO> listFiltredCandidateRecomRecord(
 			CandidateRecomRecordDO candidateRecomRecordDO) {
     	QueryUtil query = new QueryUtil();
+    	int[] recom = {1,2,3};
     	query.addEqualFilter("position_id", candidateRecomRecordDO.getPositionId())
-                .addEqualFilter("presentee_user_id", candidateRecomRecordDO.getPresenteeUserId());
-    	query.setPer_page(Integer.MAX_VALUE);
+                .addEqualFilter("presentee_user_id", candidateRecomRecordDO.getPresenteeUserId())
+                .addEqualFilter("post_user_id", candidateRecomRecordDO.getPostUserId())
+                .addEqualFilter("is_recom", StringUtils.converFromArrayToStr(recom));
+        query.setPer_page(Integer.MAX_VALUE);
 		try {
 			return candidateDBDao.listCandidateRecomRecords(query);
 		} catch (Exception e) {
@@ -412,5 +415,9 @@ public class CandidateDBDao {
             LoggerFactory.getLogger(CandidateDBDao.class).error(e.getMessage(), e);
             return null;
         }
+    }
+
+    public static void updateCandidateRecomRecords(List<CandidateRecomRecordDO> candidateRecomRecordDOList) {
+        //candidateDBDao.updateCandidateRecomRecords()
     }
 }

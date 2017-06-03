@@ -251,6 +251,11 @@ public class CandidateEntity implements Candidate {
         /** 查找职位转发浏览记录 */
         List<CandidateRecomRecordDO> candidateRecomRecordDOList = CandidateDBDao.getCandidateRecomRecordDOByIdList(idList);
         if(candidateRecomRecordDOList != null && candidateRecomRecordDOList.size() > 0) {
+            candidateRecomRecordDOList.forEach(candidateRecomRecordDO -> {
+                candidateRecomRecordDO.setIsRecom((byte)RecomType.SELECTED.getValue());
+            });
+            CandidateDBDao.updateCandidateRecomRecords(candidateRecomRecordDOList);
+
             CandidateRecomRecordDO candidateRecomRecordDO = candidateRecomRecordDOList.get(0);
 
             /** 查询职位信息和浏览者信息 */

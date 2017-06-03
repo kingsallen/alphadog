@@ -54,8 +54,8 @@ public class CandidateThriftServiceTest {
 
         CandidateListParam param = new CandidateListParam();
         param.setCompanyId(39978);
-        param.setClickTime("2017-02-09");
-        param.setPostUserId(3341);
+        param.setClickTime("2017-06-01");
+        param.setPostUserId(191576);
         List<Integer> recomList = new ArrayList<Integer>(){{
             add(0);
             add(2);
@@ -91,14 +91,14 @@ public class CandidateThriftServiceTest {
         }
     }
 
-    //@Test
+    @Test
     public void testRecommend() {
         RecommmendParam param = new RecommmendParam();
         param.setCompanyId(39978);
         param.setCompany("recommend-test");
-        param.setClickTime("2017-02-09");
-        param.setPostUserId(3341);
-        param.setId(14349);
+        param.setClickTime("2017-06-01");
+        param.setPostUserId(191576);
+        param.setId(14784);
         param.setMobile("15502117047");
         param.setPosition("recommend-position-test");
         param.setRealName("realname-test");
