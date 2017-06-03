@@ -756,12 +756,17 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                                     jobPositionExtRecord = new JobPositionExtRecord();
                                     jobPositionExtRecord.setPid(jobPositionRecordTemp.getId());
                                     jobPositionExtRecord.setExtra(jobPositionHandlerDate.getExtra() == null ? "" : jobPositionHandlerDate.getExtra());
-                                    jobPositionExtRecord.setJobOccupationId(jobOccupationId);
+                                    if (customId != 0) {
+                                        jobPositionExtRecord.setJobOccupationId(jobOccupationId);
+                                    }
+
                                     jobPositionExtRecord.setJobCustomId(customId);
                                     jobPositionExtRecordAddRecords.add(jobPositionExtRecord);
                                 } else {
                                     jobPositionExtRecord.setExtra(jobPositionHandlerDate.getExtra() == null ? "" : jobPositionHandlerDate.getExtra());
-                                    jobPositionExtRecord.setJobOccupationId(jobOccupationId);
+                                    if (customId != 0) {
+                                        jobPositionExtRecord.setJobOccupationId(jobOccupationId);
+                                    }
                                     jobPositionExtRecord.setJobCustomId(customId);
                                     jobPositionExtRecordUpdateRecords.add(jobPositionExtRecord);
                                 }
