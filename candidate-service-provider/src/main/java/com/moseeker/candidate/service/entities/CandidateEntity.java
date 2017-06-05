@@ -127,7 +127,7 @@ public class CandidateEntity implements Candidate {
                             candidateCompanyDO.setMobile(String.valueOf(userUserDO.getMobile()));
                             candidateCompanyDO.setEmail(userUserDO.getEmail());
                             candidateCompanyDO.setUpdateTime(date);
-                            CandidateDBDao.saveCandidateCompany(candidateCompanyDO);
+                            candidateCompanyDO = CandidateDBDao.saveCandidateCompany(candidateCompanyDO);
                         } else {
                             candidateCompanyDO = candidateCompanyDOOptional.get();
                         }
