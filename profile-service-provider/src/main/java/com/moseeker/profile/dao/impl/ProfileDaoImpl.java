@@ -1610,14 +1610,14 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 
             //all from profiledb.user_thirdparty_user # ATS login
             if (!filterTable(filter, "user_thirdparty_user")) {
-                buildMap(filter, map, "user_thirdparty_user", new HashMap<>());
+                List<Map<String,Object>> user_thirdparty_users = new ArrayList<>();
                 for (Map<String, Object> mp : allThirdPartyUser) {
                     Integer user_id = (Integer) mp.get("user_id");
                     if (user_id != null && user_id > 0 && user_id == applierId.intValue()) {
-                        buildMap(filter, map, "user_thirdparty_user", mp);
-                        break;
+                        user_thirdparty_users.add(mp);
                     }
                 }
+                buildMap(filter, map, "user_thirdparty_user", user_thirdparty_users);
             }
 
             UInteger profileId = null;
