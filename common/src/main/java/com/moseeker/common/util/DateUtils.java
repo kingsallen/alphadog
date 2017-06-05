@@ -107,7 +107,7 @@ public class DateUtils {
             else if (currentMonth >= 4 && currentMonth <= 6)
                 c.set(Calendar.MONTH, 3);
             else if (currentMonth >= 7 && currentMonth <= 9)
-                c.set(Calendar.MONTH, 4);
+                c.set(Calendar.MONTH, 6);
             else if (currentMonth >= 10 && currentMonth <= 12)
                 c.set(Calendar.MONTH, 9);
             c.set(Calendar.DATE, 1);
