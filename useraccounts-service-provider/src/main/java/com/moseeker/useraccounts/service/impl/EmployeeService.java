@@ -405,6 +405,7 @@ public class EmployeeService {
 		query.setEqualFilter(new HashMap<>());
 		query.getEqualFilter().put("sysuser_id", String.valueOf(bindingParams.getUserId()));
 		query.getEqualFilter().put("disable", "0");
+		query.setPer_page(Integer.MAX_VALUE);
 		List<UserEmployeeDO> employees = userDao.getUserEmployeesDO(query);
 		log.info("select employees by: {}, result = {}", query, Arrays.toString(employees.toArray()));
 		if (!StringUtils.isEmptyList(employees)) {
