@@ -460,6 +460,7 @@ public class CandidateEntity implements Candidate {
     private RecommendResult assembleRecommendResult(int id, int postUserId, String clickTime, int companyId) {
         RecommendResult recommendResult = new RecommendResult();
         recommendResult.setId(id);
+        recommendResult.setClickTime(clickTime);
 
         List<Integer> exceptNotRecommend = new ArrayList<Integer>(){{
             add(0);
@@ -489,8 +490,6 @@ public class CandidateEntity implements Candidate {
             recommendResult.setPresenteeName(refineUserName(userFuture));
             recommendResult.setPositionName(refinePositionName(positionFuture));
         }
-
-
 
         try {
             int exceptNotRecommendedCount = CandidateDBDao.countRecommendation(postUserId,
