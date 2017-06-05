@@ -284,7 +284,7 @@ public class HRAccountDaoThriftService implements Iface {
             DateTime dt = new DateTime(now.getTime());
             map.put("sync_time", dt.toString("yyyy-MM-dd HH:mm:ss"));
 
-
+            logger.info("upsertThirdPartyAccount result:{}", map);
             return ResponseUtils.success(map);
         } catch (Exception e) {
             e.printStackTrace();

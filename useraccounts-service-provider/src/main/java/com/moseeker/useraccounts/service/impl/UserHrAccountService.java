@@ -9,6 +9,7 @@ import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.foundation.chaos.struct.ThirdPartyAccountStruct;
 import com.moseeker.useraccounts.constant.BindingStatus;
 import com.moseeker.useraccounts.constant.ResultMessage;
+
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.jooq.types.UByte;
@@ -719,6 +720,11 @@ public class UserHrAccountService {
             qu.addEqualFilter("username", username);
             qu.addEqualFilter("binding", "[1,2]");//绑定中或者已经绑定
             ThirdPartAccountData data = hraccountDao.getThirdPartyAccount(qu);
+
+            //数据库中username是不区分大小写的，如果大小写不同，那么认为不是一个账号
+            if (data != null && !username.equals(data.username)) {
+                data = null;
+            }
 
             if (data == null || data.getId() == 0) {
                 //检查该用户是否绑定了其它相同渠道的账号

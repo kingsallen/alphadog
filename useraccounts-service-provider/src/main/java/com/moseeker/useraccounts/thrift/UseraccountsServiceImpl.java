@@ -18,7 +18,7 @@ import com.moseeker.useraccounts.service.impl.UseraccountsService;
 
 /**
  * 用户登陆， 注册，合并等api的实现
- * 
+ *
  * @author yaofeng
  * @email wangyaofeng@moseeker.com
  */
@@ -29,7 +29,7 @@ public class UseraccountsServiceImpl implements Iface {
 
 	@Autowired
 	private UseraccountsService service;
-	
+
 	/**
 	 * 用户登陆， 返回用户登陆后的信息。
 	 */
@@ -40,7 +40,7 @@ public class UseraccountsServiceImpl implements Iface {
 
 	/**
 	 * 记录用户登出时的信息。可能会移到 service-manager 处理。
-	 * 
+	 *
 	 * @param userid
 	 * @return
 	 * @throws TException
@@ -88,7 +88,7 @@ public class UseraccountsServiceImpl implements Iface {
 
 	/**
 	 * 修改现有密码
-	 * 
+	 *
 	 * @param user_id
 	 * @param old_password
 	 * @param password
@@ -111,7 +111,7 @@ public class UseraccountsServiceImpl implements Iface {
 
 	/**
 	 * 忘记密码后重置密码,
-	 * 
+	 *
 	 * @param code
 	 *            验证码，可选， 填写时必须判断。不填时， 请先调用postvalidatepasswordforgotcode 进行验证。
 	 */
@@ -136,7 +136,7 @@ public class UseraccountsServiceImpl implements Iface {
 	public Response getUserById(long userId) throws TException {
 		return service.getUserById(userId);
 	}
-	
+
 	@Override
 	public Response getUsers(CommonQuery query) throws TException {
 		return service.getUsers(query);
@@ -156,7 +156,7 @@ public class UseraccountsServiceImpl implements Iface {
 
 	/**
 	 * 检查手机号是否已经注册。 exist: true 已经存在， exist：false 不存在。
-	 * 
+	 *
 	 * @param mobile
 	 * @return
 	 * @throws TException
@@ -196,7 +196,7 @@ public class UseraccountsServiceImpl implements Iface {
 
 	/**
 	 * 修改当前用户手机号。
-	 * 
+	 *
 	 * @param user_id
 	 * @param newmobile
 	 *            新手机号

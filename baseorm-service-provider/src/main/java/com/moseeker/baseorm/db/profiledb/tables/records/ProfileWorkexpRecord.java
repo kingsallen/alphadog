@@ -13,8 +13,6 @@ import javax.annotation.Generated;
 
 import org.jooq.Record1;
 import org.jooq.impl.UpdatableRecordImpl;
-import org.jooq.types.UByte;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -30,34 +28,34 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileWorkexpRecord extends UpdatableRecordImpl<ProfileWorkexpRecord> {
 
-	private static final long serialVersionUID = 1218380311;
+	private static final long serialVersionUID = -1283894944;
 
 	/**
 	 * Setter for <code>profiledb.profile_workexp.id</code>. 主key
 	 */
-	public void setId(UInteger value) {
+	public void setId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
 	 * Getter for <code>profiledb.profile_workexp.id</code>. 主key
 	 */
-	public UInteger getId() {
-		return (UInteger) getValue(0);
+	public Integer getId() {
+		return (Integer) getValue(0);
 	}
 
 	/**
 	 * Setter for <code>profiledb.profile_workexp.profile_id</code>. profile.id
 	 */
-	public void setProfileId(UInteger value) {
+	public void setProfileId(Integer value) {
 		setValue(1, value);
 	}
 
 	/**
 	 * Getter for <code>profiledb.profile_workexp.profile_id</code>. profile.id
 	 */
-	public UInteger getProfileId() {
-		return (UInteger) getValue(1);
+	public Integer getProfileId() {
+		return (Integer) getValue(1);
 	}
 
 	/**
@@ -91,43 +89,43 @@ public class ProfileWorkexpRecord extends UpdatableRecordImpl<ProfileWorkexpReco
 	/**
 	 * Setter for <code>profiledb.profile_workexp.end_until_now</code>. 是否至今 0：否 1：是
 	 */
-	public void setEndUntilNow(UByte value) {
+	public void setEndUntilNow(Byte value) {
 		setValue(4, value);
 	}
 
 	/**
 	 * Getter for <code>profiledb.profile_workexp.end_until_now</code>. 是否至今 0：否 1：是
 	 */
-	public UByte getEndUntilNow() {
-		return (UByte) getValue(4);
+	public Byte getEndUntilNow() {
+		return (Byte) getValue(4);
 	}
 
 	/**
 	 * Setter for <code>profiledb.profile_workexp.salary_code</code>. 薪资code
 	 */
-	public void setSalaryCode(UByte value) {
+	public void setSalaryCode(Byte value) {
 		setValue(5, value);
 	}
 
 	/**
 	 * Getter for <code>profiledb.profile_workexp.salary_code</code>. 薪资code
 	 */
-	public UByte getSalaryCode() {
-		return (UByte) getValue(5);
+	public Byte getSalaryCode() {
+		return (Byte) getValue(5);
 	}
 
 	/**
 	 * Setter for <code>profiledb.profile_workexp.industry_code</code>. 行业字典编码
 	 */
-	public void setIndustryCode(UInteger value) {
+	public void setIndustryCode(Integer value) {
 		setValue(6, value);
 	}
 
 	/**
 	 * Getter for <code>profiledb.profile_workexp.industry_code</code>. 行业字典编码
 	 */
-	public UInteger getIndustryCode() {
-		return (UInteger) getValue(6);
+	public Integer getIndustryCode() {
+		return (Integer) getValue(6);
 	}
 
 	/**
@@ -147,15 +145,15 @@ public class ProfileWorkexpRecord extends UpdatableRecordImpl<ProfileWorkexpReco
 	/**
 	 * Setter for <code>profiledb.profile_workexp.company_id</code>. 公司ID, hr_company.id
 	 */
-	public void setCompanyId(UInteger value) {
+	public void setCompanyId(Integer value) {
 		setValue(8, value);
 	}
 
 	/**
 	 * Getter for <code>profiledb.profile_workexp.company_id</code>. 公司ID, hr_company.id
 	 */
-	public UInteger getCompanyId() {
-		return (UInteger) getValue(8);
+	public Integer getCompanyId() {
+		return (Integer) getValue(8);
 	}
 
 	/**
@@ -175,15 +173,15 @@ public class ProfileWorkexpRecord extends UpdatableRecordImpl<ProfileWorkexpReco
 	/**
 	 * Setter for <code>profiledb.profile_workexp.position_code</code>. 职能字典编码
 	 */
-	public void setPositionCode(UInteger value) {
+	public void setPositionCode(Integer value) {
 		setValue(10, value);
 	}
 
 	/**
 	 * Getter for <code>profiledb.profile_workexp.position_code</code>. 职能字典编码
 	 */
-	public UInteger getPositionCode() {
-		return (UInteger) getValue(10);
+	public Integer getPositionCode() {
+		return (Integer) getValue(10);
 	}
 
 	/**
@@ -217,29 +215,29 @@ public class ProfileWorkexpRecord extends UpdatableRecordImpl<ProfileWorkexpReco
 	/**
 	 * Setter for <code>profiledb.profile_workexp.type</code>. 工作类型 0:没选择 1:全职 2:兼职 3:实习
 	 */
-	public void setType(UByte value) {
+	public void setType(Byte value) {
 		setValue(13, value);
 	}
 
 	/**
 	 * Getter for <code>profiledb.profile_workexp.type</code>. 工作类型 0:没选择 1:全职 2:兼职 3:实习
 	 */
-	public UByte getType() {
-		return (UByte) getValue(13);
+	public Byte getType() {
+		return (Byte) getValue(13);
 	}
 
 	/**
 	 * Setter for <code>profiledb.profile_workexp.city_code</code>. 工作地点（城市），字典编码
 	 */
-	public void setCityCode(UInteger value) {
+	public void setCityCode(Integer value) {
 		setValue(14, value);
 	}
 
 	/**
 	 * Getter for <code>profiledb.profile_workexp.city_code</code>. 工作地点（城市），字典编码
 	 */
-	public UInteger getCityCode() {
-		return (UInteger) getValue(14);
+	public Integer getCityCode() {
+		return (Integer) getValue(14);
 	}
 
 	/**
@@ -273,15 +271,15 @@ public class ProfileWorkexpRecord extends UpdatableRecordImpl<ProfileWorkexpReco
 	/**
 	 * Setter for <code>profiledb.profile_workexp.underlings</code>. 下属人数, 0:没有下属
 	 */
-	public void setUnderlings(UInteger value) {
+	public void setUnderlings(Integer value) {
 		setValue(17, value);
 	}
 
 	/**
 	 * Getter for <code>profiledb.profile_workexp.underlings</code>. 下属人数, 0:没有下属
 	 */
-	public UInteger getUnderlings() {
-		return (UInteger) getValue(17);
+	public Integer getUnderlings() {
+		return (Integer) getValue(17);
 	}
 
 	/**
@@ -376,7 +374,7 @@ public class ProfileWorkexpRecord extends UpdatableRecordImpl<ProfileWorkexpReco
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Record1<UInteger> key() {
+	public Record1<Integer> key() {
 		return (Record1) super.key();
 	}
 
@@ -394,7 +392,7 @@ public class ProfileWorkexpRecord extends UpdatableRecordImpl<ProfileWorkexpReco
 	/**
 	 * Create a detached, initialised ProfileWorkexpRecord
 	 */
-	public ProfileWorkexpRecord(UInteger id, UInteger profileId, Date start, Date end, UByte endUntilNow, UByte salaryCode, UInteger industryCode, String industryName, UInteger companyId, String departmentName, UInteger positionCode, String positionName, String description, UByte type, UInteger cityCode, String cityName, String reportTo, UInteger underlings, String reference, String resignReason, String achievement, Timestamp createTime, Timestamp updateTime, String job) {
+	public ProfileWorkexpRecord(Integer id, Integer profileId, Date start, Date end, Byte endUntilNow, Byte salaryCode, Integer industryCode, String industryName, Integer companyId, String departmentName, Integer positionCode, String positionName, String description, Byte type, Integer cityCode, String cityName, String reportTo, Integer underlings, String reference, String resignReason, String achievement, Timestamp createTime, Timestamp updateTime, String job) {
 		super(ProfileWorkexp.PROFILE_WORKEXP);
 
 		setValue(0, id);

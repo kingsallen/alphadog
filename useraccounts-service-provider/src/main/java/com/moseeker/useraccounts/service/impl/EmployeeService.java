@@ -211,7 +211,7 @@ public class EmployeeService {
 
                     employee.setWxuser_id(getWxuserId(query));
                     employee.setAuthMethod((byte)bindingParams.getType().getValue());
-					employee.setActivation((byte)1);
+					employee.setActivation((byte)3);
 					employee.setCreateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
                     int primaryKey = userDao.postUserEmployeeDO(employee);
                     if( primaryKey == 0) {
@@ -258,6 +258,10 @@ public class EmployeeService {
 					if (mailResponse.getStatus() == 0) {
 						String redStr = client.set(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, String.valueOf(employee.getId()), JSONObject.toJSONString(bindingParams));
 						log.info("set redis result: ", redStr);
+						// 修改用户邮箱
+                        employee.setEmail(bindingParams.getEmail());
+                        employee.setUpdateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
+                        userDao.putUserEmployeesDO(Arrays.asList(employee));
 						response.setSuccess(true);
 						response.setMessage("发送激活邮件成功");
 					} else {
@@ -337,7 +341,7 @@ public class EmployeeService {
 
                     employee.setWxuser_id(getWxuserId(query));
                     employee.setAuthMethod((byte)bindingParams.getType().getValue());
-                    employee.setActivation((byte)1);
+                    employee.setActivation((byte)3);
                     employee.setCreateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
                     int primaryKey = userDao.postUserEmployeeDO(employee);
                     if(primaryKey== 0) {
@@ -401,6 +405,7 @@ public class EmployeeService {
 		query.setEqualFilter(new HashMap<>());
 		query.getEqualFilter().put("sysuser_id", String.valueOf(bindingParams.getUserId()));
 		query.getEqualFilter().put("disable", "0");
+		query.setPer_page(Integer.MAX_VALUE);
 		List<UserEmployeeDO> employees = userDao.getUserEmployeesDO(query);
 		log.info("select employees by: {}, result = {}", query, Arrays.toString(employees.toArray()));
 		if (!StringUtils.isEmptyList(employees)) {
@@ -624,6 +629,7 @@ public class EmployeeService {
 				BindingParams bindingParams = JSONObject.parseObject(value, BindingParams.class);
 				response = updateEmployee(bindingParams, Integer.valueOf(employeeId));
 				if (response.success) {
+				    response.setEmployeeId(Integer.valueOf(employeeId));
 					client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, employeeId);
 				}
 			} 

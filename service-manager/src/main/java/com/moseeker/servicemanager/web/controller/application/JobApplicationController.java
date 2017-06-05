@@ -45,9 +45,10 @@ public class JobApplicationController {
 		try {
 			// 获取application实体对象
 			JobApplication jobApplication = ParamUtils.initModelForm(request, JobApplication.class);
-
+			logger.info("JobApplicationController jobApplication:{}", jobApplication);
 			// 创建申请记录
 			Response result = applicationService.postApplication(jobApplication);
+			logger.info("JobApplicationController result:{}", result);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
 			return ResponseLogNotification.fail(request, e.getMessage());
@@ -166,9 +167,10 @@ public class JobApplicationController {
 
 			long userId = Long.valueOf(paramMap.get("user_id").toString());
 			long companyId = Long.valueOf(paramMap.get("company_id").toString());
-
+			logger.info("JobApplicationController userId:{}, companyId:{}", userId, companyId);
 			// 创建申请记录
 			Response result = applicationService.validateUserApplicationCheckCountAtCompany(userId, companyId);
+			logger.info("JobApplicationController result:{}", result);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
 			return ResponseLogNotification.fail(request, e.getMessage());

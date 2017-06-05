@@ -31,7 +31,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserFavPositionRecord extends UpdatableRecordImpl<UserFavPositionRecord> implements Record10<Integer, Integer, Byte, Timestamp, Timestamp, String, UInteger, UInteger, Integer, UInteger> {
 
-    private static final long serialVersionUID = 1829394326;
+    private static final long serialVersionUID = -837909666;
 
     /**
      * Setter for <code>userdb.user_fav_position.sysuser_id</code>. 用户ID
@@ -132,28 +132,28 @@ public class UserFavPositionRecord extends UpdatableRecordImpl<UserFavPositionRe
     }
 
     /**
-     * Setter for <code>userdb.user_fav_position.wxuser_id</code>. wx_user.id
+     * Setter for <code>userdb.user_fav_position.wxuser_id</code>. 浏览者user_wx_user.id。已经废弃，浏览者微信编号由浏览者C端账号编号替代，请参考sysuser_id
      */
     public void setWxuserId(UInteger value) {
         set(7, value);
     }
 
     /**
-     * Getter for <code>userdb.user_fav_position.wxuser_id</code>. wx_user.id
+     * Getter for <code>userdb.user_fav_position.wxuser_id</code>. 浏览者user_wx_user.id。已经废弃，浏览者微信编号由浏览者C端账号编号替代，请参考sysuser_id
      */
     public UInteger getWxuserId() {
         return (UInteger) get(7);
     }
 
     /**
-     * Setter for <code>userdb.user_fav_position.recom_id</code>. 推荐者 fk:wx_user.id。已经废弃，推荐者微信编号由推荐者C端账号编号替代，请参考recom_user_id
+     * Setter for <code>userdb.user_fav_position.recom_id</code>. 推荐者user_wx_user.id。已经废弃，推荐者微信编号由推荐者C端账号编号替代，请参考recom_user_id
      */
     public void setRecomId(Integer value) {
         set(8, value);
     }
 
     /**
-     * Getter for <code>userdb.user_fav_position.recom_id</code>. 推荐者 fk:wx_user.id。已经废弃，推荐者微信编号由推荐者C端账号编号替代，请参考recom_user_id
+     * Getter for <code>userdb.user_fav_position.recom_id</code>. 推荐者user_wx_user.id。已经废弃，推荐者微信编号由推荐者C端账号编号替代，请参考recom_user_id
      */
     public Integer getRecomId() {
         return (Integer) get(8);

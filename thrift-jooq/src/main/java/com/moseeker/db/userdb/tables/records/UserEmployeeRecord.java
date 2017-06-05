@@ -29,7 +29,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserEmployeeRecord extends UpdatableRecordImpl<UserEmployeeRecord> {
 
-    private static final long serialVersionUID = -1784324068;
+    private static final long serialVersionUID = 564286860;
 
     /**
      * Setter for <code>userdb.user_employee.id</code>.
@@ -88,14 +88,14 @@ public class UserEmployeeRecord extends UpdatableRecordImpl<UserEmployeeRecord> 
     }
 
     /**
-     * Setter for <code>userdb.user_employee.wxuser_id</code>. userdb.user_wx_user.id 微信账号编号。现在已经废弃。关于员工绑定的C端账号，请参考user_id
+     * Setter for <code>userdb.user_employee.wxuser_id</code>. userdb.user_wx_user.id 微信账号编号。现在已经废弃。关于员工绑定的C端账号，请参考sysuser_id
      */
     public void setWxuserId(Integer value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>userdb.user_employee.wxuser_id</code>. userdb.user_wx_user.id 微信账号编号。现在已经废弃。关于员工绑定的C端账号，请参考user_id
+     * Getter for <code>userdb.user_employee.wxuser_id</code>. userdb.user_wx_user.id 微信账号编号。现在已经废弃。关于员工绑定的C端账号，请参考sysuser_id
      */
     public Integer getWxuserId() {
         return (Integer) get(4);
@@ -732,14 +732,14 @@ public class UserEmployeeRecord extends UpdatableRecordImpl<UserEmployeeRecord> 
     }
 
     /**
-     * Setter for <code>userdb.user_employee.custom_field_values</code>. 自定 义字段
+     * Setter for <code>userdb.user_employee.custom_field_values</code>. 自定 义字段键值, 结构[{<id>: "<value>"},{...},...]
      */
     public void setCustomFieldValues(String value) {
         set(50, value);
     }
 
     /**
-     * Getter for <code>userdb.user_employee.custom_field_values</code>. 自定 义字段
+     * Getter for <code>userdb.user_employee.custom_field_values</code>. 自定 义字段键值, 结构[{<id>: "<value>"},{...},...]
      */
     public String getCustomFieldValues() {
         return (String) get(50);

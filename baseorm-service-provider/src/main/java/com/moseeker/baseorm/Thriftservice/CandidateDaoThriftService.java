@@ -241,9 +241,15 @@ public class CandidateDaoThriftService implements CandidateDBDao.Iface {
     }
 
     @Override
-    public CandidateRecomRecordDO updateCandidateRecomRecords(CandidateRecomRecordDO candidateRecomRecord) throws TException {
+    public CandidateRecomRecordDO updateCandidateRecomRecord(CandidateRecomRecordDO candidateRecomRecord) throws TException {
         return candidateRecomRecordDao.updateResource(candidateRecomRecord);
     }
+    
+    @Override
+	public List<CandidateRecomRecordDO> updateCandidateRecomRecords(List<CandidateRecomRecordDO> candidateRecomRecords)
+			throws com.moseeker.thrift.gen.common.struct.CURDException, TException {
+		return candidateRecomRecordDao.updateResources(candidateRecomRecords);
+	}
 
     @Override
     public void deleteCandidateRecomRecords(int id) throws TException {

@@ -16,4 +16,10 @@ service JobDBDao {
     
     common_struct.Response getJobCustoms(1:common_struct.CommonQuery query);
     common_struct.Response getJobOccupations(1:common_struct.CommonQuery query);
+
+    position_struct.PositionDetails positionDetails(1:i32 positionId);
+    //  企业热招职位职位
+    list<position_struct.PositionDetails> hotPositionDetailsList(1:common_struct.CommonQuery query);
+    //  职位相关职位接口
+    list<position_struct.PositionDetails> similarityPositionDetailsList(1:common_struct.CommonQuery query);
 }

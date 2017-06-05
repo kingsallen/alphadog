@@ -16,6 +16,7 @@ import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.service.JobDBDao;
+import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.position.struct.*;
@@ -338,7 +339,7 @@ public class PositionController {
             Response res = ResponseUtils.success(rpExtInfoList);
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
@@ -401,5 +402,91 @@ public class PositionController {
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
+    }
+
+    /**
+     * 根据用户id批量获取用户之于职位的状态
+     */
+    @RequestMapping(value = "/positions/status", method = RequestMethod.GET)
+    @ResponseBody
+    public String getPositionsStatus(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer user_id = params.getInt("user_id");
+            List<Integer> prositions = (List<Integer>) params.get("position_ids");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    /**
+     * 职位查询头图查询
+     */
+    @RequestMapping(value = "/head/image", method = RequestMethod.GET)
+    @ResponseBody
+    public CampaignHeadImageVO headImage(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            return positonServices.headImage();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 查询职位的详细信息
+     *
+     * @return positionDetailsVO
+     */
+    @RequestMapping(value = "/positions/positiondetails", method = RequestMethod.GET)
+    @ResponseBody
+    public PositionDetailsVO positionDetails(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer positionId = params.getInt("position_id");
+            return positonServices.positionDetails(positionId);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+        return null;
+    }
+
+    /**
+     * 查询公司热招职位的详细信息
+     */
+    @RequestMapping(value = "/positions/companyhotpositiondetailslist", method = RequestMethod.GET)
+    @ResponseBody
+    public PositionDetailsListVO companyHotPositionDetailsList(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer companyId = params.getInt("company_id");
+            Integer page = params.getInt("page");
+            Integer per_age = params.getInt("per_age");
+            return positonServices.companyHotPositionDetailsList(companyId, page, per_age);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+        return null;
+    }
+
+
+    /**
+     * 职位相关职位接口
+     */
+    @RequestMapping(value = "/positions/similaritypositiondetailslist", method = RequestMethod.GET)
+    @ResponseBody
+    public PositionDetailsListVO similarityPositionDetailsList(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer pid = params.getInt("position_id");
+            Integer page = params.getInt("page");
+            Integer per_age = params.getInt("per_age");
+            return positonServices.similarityPositionDetailsList(pid, page, per_age);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+        return null;
     }
 }

@@ -19,7 +19,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -35,7 +34,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileCompleteness extends TableImpl<ProfileCompletenessRecord> {
 
-	private static final long serialVersionUID = 1021472543;
+	private static final long serialVersionUID = -1654285253;
 
 	/**
 	 * The reference instance of <code>profiledb.profile_completeness</code>
@@ -53,7 +52,7 @@ public class ProfileCompleteness extends TableImpl<ProfileCompletenessRecord> {
 	/**
 	 * The column <code>profiledb.profile_completeness.profile_id</code>. 主key
 	 */
-	public final TableField<ProfileCompletenessRecord, UInteger> PROFILE_ID = createField("profile_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
+	public final TableField<ProfileCompletenessRecord, Integer> PROFILE_ID = createField("profile_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "主key");
 
 	/**
 	 * The column <code>profiledb.profile_completeness.user_user</code>. 用户表信息完成度
@@ -136,7 +135,7 @@ public class ProfileCompleteness extends TableImpl<ProfileCompletenessRecord> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Identity<ProfileCompletenessRecord, UInteger> getIdentity() {
+	public Identity<ProfileCompletenessRecord, Integer> getIdentity() {
 		return Keys.IDENTITY_PROFILE_COMPLETENESS;
 	}
 

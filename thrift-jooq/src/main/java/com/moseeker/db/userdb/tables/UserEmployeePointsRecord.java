@@ -21,6 +21,7 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
+import org.jooq.types.UInteger;
 
 
 /**
@@ -36,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserEmployeePointsRecord extends TableImpl<UserEmployeePointsRecordRecord> {
 
-    private static final long serialVersionUID = 508281889;
+    private static final long serialVersionUID = -337333673;
 
     /**
      * The reference instance of <code>userdb.user_employee_points_record</code>
@@ -57,9 +58,9 @@ public class UserEmployeePointsRecord extends TableImpl<UserEmployeePointsRecord
     public final TableField<UserEmployeePointsRecordRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>userdb.user_employee_points_record.employee_id</code>. sys_employee.id
+     * The column <code>userdb.user_employee_points_record.employee_id</code>. user_employee.id
      */
-    public final TableField<UserEmployeePointsRecordRecord, Long> EMPLOYEE_ID = createField("employee_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.BIGINT)), this, "sys_employee.id");
+    public final TableField<UserEmployeePointsRecordRecord, Long> EMPLOYEE_ID = createField("employee_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.BIGINT)), this, "user_employee.id");
 
     /**
      * The column <code>userdb.user_employee_points_record.reason</code>. 积分变更说明
@@ -82,9 +83,9 @@ public class UserEmployeePointsRecord extends TableImpl<UserEmployeePointsRecord
     public final TableField<UserEmployeePointsRecordRecord, Long> APPLICATION_ID = createField("application_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.BIGINT)), this, "job_application.id");
 
     /**
-     * The column <code>userdb.user_employee_points_record.recom_wxuser</code>. wx_group_user.id
+     * The column <code>userdb.user_employee_points_record.recom_wxuser</code>. user_wx_user.id，推荐人的微信 id
      */
-    public final TableField<UserEmployeePointsRecordRecord, Long> RECOM_WXUSER = createField("recom_wxuser", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.BIGINT)), this, "wx_group_user.id");
+    public final TableField<UserEmployeePointsRecordRecord, Long> RECOM_WXUSER = createField("recom_wxuser", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.BIGINT)), this, "user_wx_user.id，推荐人的微信 id");
 
     /**
      * The column <code>userdb.user_employee_points_record.update_time</code>. 修改时间
@@ -92,19 +93,29 @@ public class UserEmployeePointsRecord extends TableImpl<UserEmployeePointsRecord
     public final TableField<UserEmployeePointsRecordRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "修改时间");
 
     /**
-     * The column <code>userdb.user_employee_points_record.position_id</code>. hr_position.id
+     * The column <code>userdb.user_employee_points_record.position_id</code>. job_position.id
      */
-    public final TableField<UserEmployeePointsRecordRecord, Long> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.BIGINT)), this, "hr_position.id");
+    public final TableField<UserEmployeePointsRecordRecord, Long> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.BIGINT)), this, "job_position.id");
 
     /**
-     * The column <code>userdb.user_employee_points_record.berecom_wxuser_id</code>. 被推荐人wx_group_user.id
+     * The column <code>userdb.user_employee_points_record.berecom_wxuser_id</code>. 已废弃
      */
-    public final TableField<UserEmployeePointsRecordRecord, Long> BERECOM_WXUSER_ID = createField("berecom_wxuser_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.BIGINT)), this, "被推荐人wx_group_user.id");
+    public final TableField<UserEmployeePointsRecordRecord, Long> BERECOM_WXUSER_ID = createField("berecom_wxuser_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.BIGINT)), this, "已废弃");
 
     /**
-     * The column <code>userdb.user_employee_points_record.award_config_id</code>. 积分记录来源hr_award_config.id
+     * The column <code>userdb.user_employee_points_record.award_config_id</code>. 积分记录来源hr_points_conf.id
      */
-    public final TableField<UserEmployeePointsRecordRecord, Long> AWARD_CONFIG_ID = createField("award_config_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.BIGINT)), this, "积分记录来源hr_award_config.id");
+    public final TableField<UserEmployeePointsRecordRecord, Long> AWARD_CONFIG_ID = createField("award_config_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.BIGINT)), this, "积分记录来源hr_points_conf.id");
+
+    /**
+     * The column <code>userdb.user_employee_points_record.recom_user_id</code>. userdb.user_user.id 推荐者的C端账号
+     */
+    public final TableField<UserEmployeePointsRecordRecord, UInteger> RECOM_USER_ID = createField("recom_user_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGERUNSIGNED)), this, "userdb.user_user.id 推荐者的C端账号");
+
+    /**
+     * The column <code>userdb.user_employee_points_record.berecom_user_id</code>. userdb.user_user.id 被推荐者的C端账号
+     */
+    public final TableField<UserEmployeePointsRecordRecord, UInteger> BERECOM_USER_ID = createField("berecom_user_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGERUNSIGNED)), this, "userdb.user_user.id 被推荐者的C端账号");
 
     /**
      * Create a <code>userdb.user_employee_points_record</code> table reference

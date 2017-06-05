@@ -41,7 +41,7 @@ public class CandidateThriftServiceTest {
      */
     //@Test
     public void testGlancePosition() throws Exception {
-        candidateService.glancePosition(3870, 164107, 892);
+        candidateService.glancePosition(3502, 24443, 701);
     }
     
 //    @Test
@@ -54,10 +54,10 @@ public class CandidateThriftServiceTest {
 
         CandidateListParam param = new CandidateListParam();
         param.setCompanyId(39978);
-        param.setClickTime("2017-02-09");
-        param.setPostUserId(3341);
+        param.setClickTime("2017-06-01");
+        param.setPostUserId(191576);
         List<Integer> recomList = new ArrayList<Integer>(){{
-            add(0);
+            add(1);
             add(2);
             add(3);
         }};
@@ -77,11 +77,11 @@ public class CandidateThriftServiceTest {
         }
     }
 
-    //@Test
+    @Test
     public void testGetRecommendations() {
         List<Integer> candidateIdList = new ArrayList<Integer>(){{
-            add(14348);
-            add(14349);
+            add(14784);
+            add(14816);
         }};
         try {
             RecommendResult recommendResult = candidateService.getRecomendations(39978, candidateIdList);
@@ -91,14 +91,14 @@ public class CandidateThriftServiceTest {
         }
     }
 
-    //@Test
+    @Test
     public void testRecommend() {
         RecommmendParam param = new RecommmendParam();
         param.setCompanyId(39978);
         param.setCompany("recommend-test");
-        param.setClickTime("2017-02-09");
-        param.setPostUserId(3341);
-        param.setId(14349);
+        param.setClickTime("2017-06-01");
+        param.setPostUserId(191576);
+        param.setId(14784);
         param.setMobile("15502117047");
         param.setPosition("recommend-position-test");
         param.setRealName("realname-test");
@@ -144,7 +144,7 @@ public class CandidateThriftServiceTest {
     //@Test
     public void testGetRecommendatorySorting() {
         try {
-            SortResult result = candidateService.getRecommendatorySorting(3341, 39978);
+            SortResult result = candidateService.getRecommendatorySorting(4, 1);
             System.out.println(result);
         } catch (TException e) {
             e.printStackTrace();
@@ -154,7 +154,7 @@ public class CandidateThriftServiceTest {
     //@Test
     public void testIgnore() {
         try {
-            RecommendResult result = candidateService.ignore(14348, 39978, 3341, "2017-02-09");
+            RecommendResult result = candidateService.ignore(1, 1, 4, "2017-02-21");
             System.out.println(result);
         } catch (TException e) {
             e.printStackTrace();
