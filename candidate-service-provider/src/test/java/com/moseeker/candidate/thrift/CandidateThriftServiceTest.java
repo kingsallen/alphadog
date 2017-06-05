@@ -77,7 +77,7 @@ public class CandidateThriftServiceTest {
         }
     }
 
-    @Test
+    //@Test
     public void testGetRecommendations() {
         List<Integer> candidateIdList = new ArrayList<Integer>(){{
             add(14784);
@@ -91,7 +91,7 @@ public class CandidateThriftServiceTest {
         }
     }
 
-    @Test
+    //@Test
     public void testRecommend() {
         RecommmendParam param = new RecommmendParam();
         param.setCompanyId(39978);

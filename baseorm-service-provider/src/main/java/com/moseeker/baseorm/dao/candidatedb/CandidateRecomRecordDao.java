@@ -243,7 +243,7 @@ public class CandidateRecomRecordDao extends StructDaoImpl<CandidateRecomRecordD
                     .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME.greaterOrEqual(new Timestamp(dateTime.getMillis())))
                     .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME.lessThan(new Timestamp(dateTime.plusDays(1).getMillis())));
             if(recoms != null && recoms.size() > 0) {
-                condition.and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.IS_RECOM.in(recoms));
+                condition = condition.and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.IS_RECOM.in(recoms));
             }
 
             Result<CandidateRecomRecordRecord> result = create.selectFrom(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
