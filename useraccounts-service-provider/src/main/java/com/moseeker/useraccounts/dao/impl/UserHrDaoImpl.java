@@ -188,10 +188,10 @@ public class UserHrDaoImpl extends BaseDaoImpl<UserHrAccountRecord, UserHrAccoun
 
         if (!StringUtils.isEmpty(startDate) && !StringUtils.isEmpty(endDate)) {
             try {
-                dateStart = LocalDateTime.parse(startDate);
-                dateEnd = LocalDateTime.parse(endDate);
+                dateStart = LocalDateTime.parse(startDate + " 00:00:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                dateEnd = LocalDateTime.parse(endDate + " 23:59:59", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
             } catch (Exception e) {
-                e.printStackTrace();
+                throw new BIZException(-1, "日期格式错误,正确的格式：yyyy-MM-dd");
             }
         }
 
@@ -336,10 +336,10 @@ public class UserHrDaoImpl extends BaseDaoImpl<UserHrAccountRecord, UserHrAccoun
 
         if (!StringUtils.isEmpty(startDate) && !StringUtils.isEmpty(endDate)) {
             try {
-                dateStart = LocalDateTime.parse(startDate);
-                dateEnd = LocalDateTime.parse(endDate);
+                dateStart = LocalDateTime.parse(startDate + " 00:00:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                dateEnd = LocalDateTime.parse(endDate + " 23:59:59", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
             } catch (Exception e) {
-                e.printStackTrace();
+                throw new BIZException(-1, "日期格式错误,正确的格式：yyyy-MM-dd");
             }
         }
 
@@ -407,13 +407,17 @@ public class UserHrDaoImpl extends BaseDaoImpl<UserHrAccountRecord, UserHrAccoun
         LocalDateTime dateNow = LocalDateTime.now();
         if (!StringUtils.isEmpty(npsUpdate.getStart_date()) && !StringUtils.isEmpty(npsUpdate.getEnd_date())) {
             try {
-                dateStart = LocalDateTime.parse(npsUpdate.getStart_date());
-                if (dateStart.isAfter(dateNow)) {
-                    throw new BIZException(-1, "开始时间不能在当前时间之后!");
-                }
-                dateEnd = LocalDateTime.parse(npsUpdate.getEnd_date());
-                if (dateEnd.isBefore(dateNow)) {
-                    throw new BIZException(-1, "结束时间不能在当前时间之前!");
+                try {
+                    dateStart = LocalDateTime.parse(npsUpdate.getStart_date() + " 00:00:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                    if (dateStart.isAfter(dateNow)) {
+                        throw new BIZException(-1, "开始时间不能在当前时间之后!");
+                    }
+                    dateEnd = LocalDateTime.parse(npsUpdate.getEnd_date() + " 23:59:59", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                    if (dateEnd.isBefore(dateNow)) {
+                        throw new BIZException(-1, "结束时间不能在当前时间之前!");
+                    }
+                } catch (Exception e) {
+                    throw new BIZException(-1, "日期格式错误,正确的格式：yyyy-MM-dd");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
