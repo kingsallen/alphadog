@@ -24,7 +24,7 @@ public class UserThirdPartyController {
 
     ThirdPartyUserService.Iface service = ServiceManager.SERVICEMANAGER.getService(ThirdPartyUserService.Iface.class);
 
-    @RequestMapping(value = "/user/thirdparty", method = RequestMethod.PUT)
+    @RequestMapping(value = "/user/thirdparty", method = RequestMethod.POST)
     @ResponseBody
     public String update(HttpServletRequest request, HttpServletResponse response) {
         try {
