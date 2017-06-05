@@ -1,10 +1,12 @@
 package com.moseeker.useraccounts.service.impl;
 
 
-
-
-
-
+import com.moseeker.common.util.StringUtils;
+import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.logdb.LogSmsSendrecordDao;
@@ -20,10 +22,7 @@ import com.taobao.api.request.AlibabaAliqinFcSmsNumSendRequest;
 import com.taobao.api.response.AlibabaAliqinFcSmsNumSendResponse;
 import java.util.HashMap;
 import javax.annotation.Resource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+
 
 /**
  * 短信发送客户端
@@ -70,7 +69,11 @@ public class SmsSender {
     public boolean sendSMS(String mobile, String templateCode, HashMap<String, String> params){
         initTaobaoClientInstance();
         
-        if (mobile==null){
+        if (StringUtils.isNullOrEmpty(mobile)){
+            return false;
+        }
+
+        if (!isMoreThanUpperLimit(mobile.trim())) {
             return false;
         }
 
@@ -114,6 +117,7 @@ public class SmsSender {
 		}
         return false;    
     }
+
     /**
      *      SMS_5755096
      *      您的验证码是：${code}。请不要把验证码泄露给其他人。    
@@ -246,4 +250,34 @@ public class SmsSender {
         return String.valueOf((int) (Math.random()*9000+1000));
     }
 
+    /**
+     * 发送短信次数校验
+     * @param mobile
+     * @return
+     */
+    private boolean isMoreThanUpperLimit(String mobile) {
+        DateTime dt = new DateTime();
+        int second = dt.getSecondOfDay();
+        int dateTime = 60 * 60 * 24;
+        if (second >= dateTime) {
+            return false;
+        }
+
+        try {
+            String getResult = redisClient.get(0, "SMS_LIMIT", mobile);
+            if (getResult == null) {
+                redisClient.set(0, "SMS_LIMIT", mobile, null,"1", dateTime);
+                return true;
+            } else if (Long.valueOf(getResult) <= Constant.SMS_UPPER_LIMIT) {
+                redisClient.incr(0, "SMS_LIMIT", mobile);
+                return true;
+            } else {
+                logger.info("向 {} 发送短信的次数超过上线。上线是：{}", mobile, Constant.SMS_UPPER_LIMIT);
+                return false;
+            }
+        } catch (CacheConfigNotExistException e) {
+            logger.error(e.getMessage(), e);
+            return false;
+        }
+    }
 }

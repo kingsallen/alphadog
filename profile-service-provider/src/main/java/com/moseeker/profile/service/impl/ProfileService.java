@@ -33,7 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 @CounterIface
 public class ProfileService {
 
-    Logger logger = LoggerFactory.getLogger(ProfileProjectExpService.class);
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     protected ProfileProfileDao dao;
@@ -171,7 +171,7 @@ public class ProfileService {
 
     }
 
-    public Response getProfileByApplication(int companyId, int sourceId, int ats_status, boolean recommender, boolean dl_url_required,Map<String,List<String>> filter) throws TException {
+    public Response getProfileByApplication(int companyId, int sourceId, int ats_status, boolean recommender, boolean dl_url_required, Map<String, List<String>> filter) throws TException {
         ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil.getInstance();
         try {
             propertiesUtils.loadResource("setting.properties");
@@ -180,7 +180,7 @@ public class ProfileService {
         }
         String downloadUrl = propertiesUtils.get("GENERATE_USER_ID", String.class);
         String password = propertiesUtils.get("GENERATE_USER_PASSWORD", String.class);
-        logger.info("profilesByApplication:downloadUrl:{},companyId:{},sourceId:{},atsStatus:{},recommender:{},dlUrlRequired:{}",downloadUrl, companyId, sourceId, ats_status, recommender, dl_url_required);
+        logger.info("profilesByApplication:{},companyId:{},sourceId:{},atsStatus:{},recommender:{},dlUrlRequired:{}", downloadUrl, companyId, sourceId, ats_status, recommender, dl_url_required);
         return dao.getResourceByApplication(downloadUrl, password, companyId, sourceId, ats_status, recommender, dl_url_required, filter);
     }
 }

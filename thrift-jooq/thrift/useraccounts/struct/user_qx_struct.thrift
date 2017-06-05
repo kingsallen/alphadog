@@ -21,6 +21,12 @@ struct UserCollectPositionVO {
     3: optional string message
 }
 
+struct UserCollectPositionListVO {
+    1: optional i32 status,
+    2: optional list<CollectPositionForm> userCollectPosition,
+    3: optional string message
+}
+
 struct UserPositionStatusVO {
     1: optional i32 status,
     2: optional map<i32, i32> positionStatus,
@@ -30,4 +36,19 @@ struct UserPositionStatusVO {
 struct UserViewedPositionVO {
     1: optional i32 status,
     2: optional string message
+}
+
+/*
+ * 个人中心职位收藏列表
+ */
+struct CollectPositionForm {
+    1: optional i32 id,                 //职位编号
+    2: optional string title,           //职位名称
+    3: optional string department,      //招聘部门
+    4: optional string time,         //收藏的更新时间
+    5: optional string city,            //再招城市
+    6: optional i32 salary_top,          //薪资上限
+    7: optional i32 salary_bottom,       //薪资下限
+    8: optional i8 status,              //薪资下限
+    9: optional string update_time    //职位的更新时间
 }

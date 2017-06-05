@@ -2,6 +2,7 @@ package com.moseeker.useraccounts.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserCollectPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserSearchConditionDao;
 import com.moseeker.baseorm.dao.userdb.UserViewedPositionDao;
@@ -10,18 +11,18 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserSearchConditionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserViewedPositionDO;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -45,6 +46,9 @@ public class UserQxService {
 
     @Autowired
     private JobApplicationDao jobApplicationDao;
+
+    @Autowired
+    private JobPositionDao jobPositionDao;
 
     /**
      * 用户获取筛选条件列表
@@ -166,6 +170,51 @@ public class UserQxService {
             UserCollectPositionDO entity = collectPositionDao.getData(query.buildQuery());
             if (entity != null && entity.getId() > 0) {
                 result.setUserCollectPosition(entity);
+            } else {
+                jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", "未找到收藏记录"));
+            }
+        } catch (Exception e) {
+            jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+            logger.error(e.getMessage(), e);
+        }
+        result.setStatus(jsonObject.getIntValue("status"));
+        result.setMessage(jsonObject.getString("message"));
+        logger.info("getUserCollectPosition response: {}", result);
+        return result;
+    }
+
+    public UserCollectPositionListVO getUserCollectPositions(int userId) {
+        logger.info("getUserCollectPosition params: userId={}", userId);
+        UserCollectPositionListVO result = new UserCollectPositionListVO();
+        result.setUserCollectPosition(new ArrayList<>());
+        JSONObject jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.SUCCESS);
+        try {
+            Query.QueryBuilder query = new Query.QueryBuilder();
+            query.where("user_id", String.valueOf(userId));
+            query.and("status", String.valueOf("0"));
+            List<UserCollectPositionDO> collectPositions = collectPositionDao.getDatas(query.buildQuery());
+            if (collectPositions != null && collectPositions.size() > 0) {
+                // 过滤掉不存在job_position中的职位收藏
+                List<Integer> positionIds = collectPositions.stream().map(m -> m.getPositionId()).collect(Collectors.toList());
+                query.clear();
+                query.where("id", Arrays.toString(positionIds.toArray()));
+                Map<Integer, JobPositionDO> positions = jobPositionDao.getPositions(query.buildQuery()).stream().collect(Collectors.toMap(k -> k.getId(), v -> v));
+                List<CollectPositionForm> positionFormList = new ArrayList<>();
+                collectPositions.stream().filter(f -> positions.containsKey(f.getPositionId())).forEach(r -> {
+                    CollectPositionForm form = new CollectPositionForm();
+                    JobPositionDO positionDO = positions.get(r.getPositionId());
+                    form.setId(positionDO.getId());
+                    form.setTitle(positionDO.getTitle());
+                    form.setDepartment(positionDO.getDepartment());
+                    form.setTime(r.getUpdateTime());
+                    form.setCity(positionDO.getCity());
+                    form.setSalary_top(NumberUtils.toInt(positionDO.getSalaryTop()+"", 0));
+                    form.setSalary_bottom(NumberUtils.toInt(positionDO.getSalaryBottom()+"", 0));
+                    form.setUpdate_time(positionDO.getUpdateTime());
+                    form.setStatus((byte) positionDO.getStatus());
+                    positionFormList.add(form);
+                });
+                result.setUserCollectPosition(positionFormList);
             } else {
                 jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", "未找到收藏记录"));
             }

@@ -248,7 +248,7 @@ public class EmployeeService {
 
 					employee.setWxuser_id(getWxuserId(query.buildQuery()));
 					employee.setAuthMethod((byte)bindingParams.getType().getValue());
-					employee.setActivation((byte)1);
+					employee.setActivation((byte)3);
 					employee.setCreateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
 					int primaryKey = employeeDao.addData(employee).getId();
 					if( primaryKey == 0) {
@@ -294,6 +294,10 @@ public class EmployeeService {
 					if (mailResponse.getStatus() == 0) {
 						String redStr = client.set(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, String.valueOf(employee.getId()), JSONObject.toJSONString(bindingParams));
 						log.info("set redis result: ", redStr);
+						// 修改用户邮箱
+                        employee.setEmail(bindingParams.getEmail());
+                        employee.setUpdateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
+                        employeeDao.updateData(employee);
 						response.setSuccess(true);
 						response.setMessage("发送激活邮件成功");
 					} else {
@@ -372,7 +376,7 @@ public class EmployeeService {
 
 					employee.setWxuser_id(getWxuserId(query.buildQuery()));
 					employee.setAuthMethod((byte)bindingParams.getType().getValue());
-					employee.setActivation((byte)1);
+					employee.setActivation((byte)3);
 					employee.setCreateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
 					int primaryKey = employeeDao.addData(employee).getId();
 					if(primaryKey== 0) {

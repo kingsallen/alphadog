@@ -83,7 +83,6 @@ public class ChatService {
                     HRChatRoomVO hrChatRoomVO = new HRChatRoomVO();
                     hrChatRoomVO.setId(chatUnreadCountDO.getRoomId());
                     hrChatRoomVO.setUserId(chatUnreadCountDO.getUserId());
-                    hrChatRoomVO.setUnReadNum(chatUnreadCountDO.getHrUnreadCount());
 
                     List<HrWxHrChatListDO> chatRoomList = null;
                     List<UserUserDO> userList = null;
@@ -168,7 +167,6 @@ public class ChatService {
                 chatUnreadCountDOlist.forEach(hrChatUnreadCountDO -> {
                     UserChatRoomVO userChatRoomVO = new UserChatRoomVO();
                     userChatRoomVO.setId(hrChatUnreadCountDO.getRoomId());
-                    userChatRoomVO.setUnReadNum(hrChatUnreadCountDO.getUserUnreadCount());
 
                     /** 匹配聊天室的状态的和最后发送消息的时间 */
                     try {
@@ -293,8 +291,9 @@ public class ChatService {
         chatDO.setPid(positionId);
         chatDO.setSpeaker(speaker);
         chatDO.setChatlistId(roomId);
+        logger.info("saveChat before saveChat chatDO:{}", chatDO);
         chaoDao.saveChat(chatDO);
-
+        logger.info("saveChat after saveChat chatDO:{}", chatDO);
         chaoDao.addChatTOChatRoom(chatDO);
 
         //修改未读消息数量

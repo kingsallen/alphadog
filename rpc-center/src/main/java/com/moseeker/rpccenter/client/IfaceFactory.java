@@ -12,8 +12,8 @@ import com.moseeker.rpccenter.listener.ZKPath;
 import com.moseeker.rpccenter.pool.TMultiServicePoolFactory;
 import com.moseeker.rpccenter.proxy.DynamicClientHandler;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * rpc服务客户端工厂
@@ -30,7 +30,7 @@ public class IfaceFactory<T> {
     private GenericKeyedObjectPool<ZKPath, T> pool = null;    //节点对象池
     private String serverName;
 
-    private Set<Class> chaosRelatedService = new HashSet<>();
+    private Map<Class,Integer> customtimeOutService = new HashMap<>();
 
     /**
      * 初始化thrift客户端工厂
@@ -40,11 +40,11 @@ public class IfaceFactory<T> {
     public IfaceFactory(ThriftServerConfig config, String serverName) {
         this.config = config;
         this.serverName = serverName;
-        chaosRelatedService.add(ChaosServices.Iface.class);
-        chaosRelatedService.add(UserHrAccountService.Iface.class);
-        chaosRelatedService.add(PositionBS.Iface.class);
-        chaosRelatedService.add(PositionBS.Iface.class);
-        chaosRelatedService.add(ProfileServices.Iface.class);
+        customtimeOutService.put(ChaosServices.Iface.class,120*1000);
+        customtimeOutService.put(UserHrAccountService.Iface.class,120*1000);
+        customtimeOutService.put(PositionBS.Iface.class,120*1000);
+        customtimeOutService.put(PositionBS.Iface.class,120*1000);
+        customtimeOutService.put(ProfileServices.Iface.class,300*1000);
     }
 
     /**
@@ -96,7 +96,7 @@ public class IfaceFactory<T> {
         Class<TServiceClientFactory<TServiceClient>> fi = (Class<TServiceClientFactory<TServiceClient>>) classLoader.loadClass(findOutClassName(ifaceClass) + "$Client$Factory");
         TServiceClientFactory<TServiceClient> clientFactory = fi.newInstance();
         //几个特殊的和Chaos相关的服务超时时间设置为120s
-        int timeout = chaosRelatedService.contains(ifaceClass) ? 120*1000 : config.getTimeout();
+        int timeout = customtimeOutService.containsKey(ifaceClass) ? customtimeOutService.get(ifaceClass) : config.getTimeout();
         TMultiServicePoolFactory<T> clientPool = new TMultiServicePoolFactory<T>(clientFactory, timeout, config.getInitialBufferCapacity(), config.getMaxLength());
 
         return new GenericKeyedObjectPool<ZKPath, T>(clientPool, poolConfig);

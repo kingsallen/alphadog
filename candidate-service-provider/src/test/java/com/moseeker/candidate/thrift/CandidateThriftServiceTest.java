@@ -35,7 +35,7 @@ public class CandidateThriftServiceTest {
      */
     //@Test
     public void testGlancePosition() throws Exception {
-        candidateService.glancePosition(3870, 164107, 892);
+        candidateService.glancePosition(3502, 24443, 701);
     }
     
 //    @Test
@@ -47,9 +47,9 @@ public class CandidateThriftServiceTest {
     public void testCandidateList() {
 
         CandidateListParam param = new CandidateListParam();
-        param.setCompanyId(1);
-        param.setClickTime("2017-02-21");
-        param.setPostUserId(4);
+        param.setCompanyId(39978);
+        param.setClickTime("2017-06-01");
+        param.setPostUserId(191576);
         List<Integer> recomList = new ArrayList<Integer>(){{
             add(1);
             add(2);
@@ -71,11 +71,11 @@ public class CandidateThriftServiceTest {
         }
     }
 
-    //@Test
+    @Test
     public void testGetRecommendations() {
         List<Integer> candidateIdList = new ArrayList<Integer>(){{
-            add(14348);
-            add(14349);
+            add(14784);
+            add(14816);
         }};
         try {
             RecommendResult recommendResult = candidateService.getRecomendations(39978, candidateIdList);
@@ -85,14 +85,14 @@ public class CandidateThriftServiceTest {
         }
     }
 
-    //@Test
+    @Test
     public void testRecommend() {
         RecommmendParam param = new RecommmendParam();
-        param.setCompanyId(1);
+        param.setCompanyId(39978);
         param.setCompany("recommend-test");
-        param.setClickTime("2017-02-21");
-        param.setPostUserId(4);
-        param.setId(1);
+        param.setClickTime("2017-06-01");
+        param.setPostUserId(191576);
+        param.setId(14784);
         param.setMobile("15502117047");
         param.setPosition("recommend-position-test");
         param.setRealName("realname-test");

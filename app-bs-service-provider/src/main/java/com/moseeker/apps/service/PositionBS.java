@@ -1,15 +1,30 @@
 package com.moseeker.apps.service;
 
+<<<<<<< HEAD
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+=======
+import java.util.*;
+
+import com.alibaba.fastjson.JSONObject;
+>>>>>>> master
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
+<<<<<<< HEAD
+=======
+import com.moseeker.thrift.gen.company.service.HrTeamServices;
+import com.moseeker.thrift.gen.dao.service.HrDBDao;
+import com.moseeker.thrift.gen.dao.service.UserHrAccountDao;
+>>>>>>> master
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrTeamDO;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
+import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -50,6 +65,7 @@ import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 @Service
 @Transactional
 public class PositionBS {
+<<<<<<< HEAD
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	UserHrAccountService.Iface userHrAccountService = ServiceManager.SERVICEMANAGER
 			.getService(UserHrAccountService.Iface.class);
@@ -81,6 +97,41 @@ public class PositionBS {
 	        Query.QueryBuilder qu = new Query.QueryBuilder();
 	        qu.where("id", position.getPosition_id());
             com.moseeker.thrift.gen.position.struct.Position positionStruct = jobPositionDao.getPositionWithCityCode(qu.buildQuery());
+=======
+
+    Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    PositionDao.Iface positionDao = ServiceManager.SERVICEMANAGER.getService(PositionDao.Iface.class);
+
+    PositionServices.Iface positionServices = ServiceManager.SERVICEMANAGER.getService(PositionServices.Iface.class);
+
+    CompanyDao.Iface CompanyDao = ServiceManager.SERVICEMANAGER.getService(CompanyDao.Iface.class);
+
+    ChaosServices.Iface chaosService = ServiceManager.SERVICEMANAGER.getService(ChaosServices.Iface.class);
+
+    UserHrAccountDao.Iface userHrAccountDao = ServiceManager.SERVICEMANAGER
+            .getService(UserHrAccountDao.Iface.class);
+
+    HrDBDao.Iface hrdbDao = ServiceManager.SERVICEMANAGER.getService(HrDBDao.Iface.class);
+
+    HrTeamServices.Iface hrTeamService = ServiceManager.SERVICEMANAGER.getService(HrTeamServices.Iface.class);
+
+
+    /**
+     * @param position
+     * @return
+     */
+    @CounterIface
+    public Response synchronizePositionToThirdPartyPlatform(ThirdPartyPositionForm position) {
+        logger.info("synchronizePositionToThirdPartyPlatform:" + JSON.toJSONString(position));
+        Response response;
+        ;
+        // 职位数据是否存在
+        QueryUtil qu = new QueryUtil();
+        qu.addEqualFilter("id", String.valueOf(position.getPosition_id()));
+        try {
+            com.moseeker.thrift.gen.position.struct.Position positionStruct = positionDao.getPositionWithCityCode(qu);
+>>>>>>> master
             logger.info("position:" + JSON.toJSONString(positionStruct));
             // 如果职位数据存在，并且是在招职位
             if (positionStruct != null && positionStruct.getId() > 0 && positionStruct.getStatus() == 0) {
@@ -128,6 +179,7 @@ public class PositionBS {
                     // 提交到chaos处理
                     List<ThirdPartyPositionForSynchronizationWithAccount> PositionsForSynchronizations = new ArrayList<>();
                     if (positions != null && positions.size() > 0) {
+<<<<<<< HEAD
                         Query.QueryBuilder subCompanyQuery = new Query.QueryBuilder();
                         subCompanyQuery.where("account_id", positionStruct.getPublisher());
                         List<HrCompanyAccountDO> hrCompanyAccounts = hrCompanyAccountDao.getDatas(subCompanyQuery.buildQuery());//listHrCompanyAccount(subCompanyQuery);
@@ -136,6 +188,23 @@ public class PositionBS {
                             Query.QueryBuilder companyQuery = new Query.QueryBuilder();
                             companyQuery.where("id",hrCompanyAccounts.get(0).getCompanyId());
                             subCompany =hrCompanyDao.getData(companyQuery.buildQuery());// CompanyDao.getCompany(companyQuery);
+=======
+                        QueryUtil subCompanyQuery = new QueryUtil();
+                        subCompanyQuery.addEqualFilter("account_id", String.valueOf(positionStruct.getPublisher()));
+                        List<HrCompanyAccountDO> hrCompanyAccounts = hrdbDao.listHrCompanyAccount(subCompanyQuery);
+                        HrCompanyDO subCompany = null;
+                        if (hrCompanyAccounts != null && hrCompanyAccounts.size() > 0) {
+                            QueryUtil companyQuery = new QueryUtil();
+                            companyQuery.addEqualFilter("id", String.valueOf(hrCompanyAccounts.get(0).getCompanyId()));
+                            subCompany = CompanyDao.getCompany(companyQuery);
+                        }
+
+                        List<HrTeamDO> hrTeams = new ArrayList<>();
+                        if (positionStruct.getTeamId() > 0) {
+                            Map<String, String> params = new HashMap<>();
+                            params.put("id", String.valueOf(positionStruct.getTeamId()));
+                            hrTeams = hrTeamService.getHrTeams(params);
+>>>>>>> master
                         }
 
                         for (ThirdPartyPositionForSynchronization pos : positions) {
@@ -147,6 +216,12 @@ public class PositionBS {
                                     if (subCompany != null) {
                                         p.setCompany_name(subCompany.getAbbreviation());
                                     }
+<<<<<<< HEAD
+=======
+                                    if (hrTeams != null && hrTeams.size() > 0) {
+                                        p.getPosition_info().setDepartment(hrTeams.get(0).getName());
+                                    }
+>>>>>>> master
                                     p.setAccount_id(String.valueOf(account.getId()));
                                     p.setChannel(String.valueOf(pos.getChannel()));
                                     p.setPassword(account.getPassword());

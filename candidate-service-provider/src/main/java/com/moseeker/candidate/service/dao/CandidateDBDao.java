@@ -51,6 +51,7 @@ import java.util.Optional;
 @Service
 public class CandidateDBDao {
 
+<<<<<<< HEAD
     @Autowired
     CandidateCompanyDao candidateCompanyDao;
 
@@ -69,6 +70,12 @@ public class CandidateDBDao {
 
     @Autowired
     CandidatePositionDao candidatePositionDao;
+=======
+    static Logger logger = LoggerFactory.getLogger(CandidateDBDao.class);
+
+    private static com.moseeker.thrift.gen.dao.service.CandidateDBDao.Iface candidateDBDao = ServiceManager.SERVICEMANAGER
+            .getService(com.moseeker.thrift.gen.dao.service.CandidateDBDao.Iface.class);
+>>>>>>> master
 
 
     @Autowired
@@ -77,6 +84,7 @@ public class CandidateDBDao {
     @Autowired
     UserEmployeeDao userEmployeeDao;
 
+<<<<<<< HEAD
     @Autowired
     HrWxWechatDao hrWxWechatDao;
 
@@ -100,11 +108,25 @@ public class CandidateDBDao {
         try {
             CandidateCompanyDO candidateCompanyDO = candidateCompanyDao.getCandidateCompany(query);
             return Optional.of(candidateCompanyDO);
+=======
+    public static Optional<CandidateCompanyDO> getCandidateCompanyByUserIDCompanyID(int userID, int companyId) throws TException {
+        QueryUtil queryUtil = new QueryUtil();
+        queryUtil.addEqualFilter("sys_user_id", String.valueOf(userID));
+        queryUtil.addEqualFilter("company_id", String.valueOf(companyId));
+        try {
+            CandidateCompanyDO candidateCompanyDO = candidateDBDao.getCandidateCompany(queryUtil);
+            logger.info("CandidateDBDao getCandidateCompanyByUserIDCompanyID candidateCompanyDO:{}", candidateCompanyDO);
+            if (candidateCompanyDO != null && candidateCompanyDO.getId() > 0) {
+                return Optional.of(candidateCompanyDO);
+            } else {
+                return Optional.empty();
+            }
+>>>>>>> master
         } catch (CURDException e) {
             if (e.getCode() != 90010) {
                 throw e;
             } else {
-                return Optional.of(null);
+                return Optional.empty();
             }
         }
     }
@@ -154,6 +176,7 @@ public class CandidateDBDao {
         //qu.addEqualFilter("hraccount_id", hraccountIds.toString());
 
         List<CandidateRemarkDO> remarkDOList = new ArrayList<>();
+<<<<<<< HEAD
         List<UserHrAccountDO> hrs = userHRAccountDao.listHRFromCompany(companyId);
         if (hrs.size() > 0) {
 //            StringBuffer hraccountIds = new StringBuffer("[");
@@ -164,6 +187,31 @@ public class CandidateDBDao {
             Condition condition = new Condition("hraccount_id", hraccountIds, ValueOp.IN);
             Query query = new Query.QueryBuilder().where("user_id", String.valueOf(userID)).and(condition).buildQuery();
             remarkDOList = candidateRemarkDao.getDatas(query);
+=======
+        List<UserHrAccountDO> hrs = new ArrayList<>();
+        try {
+            hrs = userDBDao.listHRFromCompany(companyId);
+        } catch (CURDException e) {
+            if(e.getCode() != 90010) {
+                throw e;
+            } else {
+                //return Optional.of(null);
+            }
+        }
+        if(hrs.size() > 0) {
+            QueryUtil qu = new QueryUtil();
+            qu.addEqualFilter("user_id", String.valueOf(userID));
+            StringBuffer hraccountIds = new StringBuffer("[");
+            hrs.forEach(i -> hraccountIds.append(i.getId()).append(","));
+            hraccountIds.deleteCharAt(hraccountIds.length() - 1).append("]");
+            qu.addEqualFilter("hraccount_id", hraccountIds.toString());
+            qu.setPer_page(Integer.MAX_VALUE);
+            try {
+                remarkDOList = candidateDBDao.listCandidateRemarks(qu);
+            } catch (CURDException e) {
+                LoggerFactory.getLogger(CandidateDBDao.class).error(e.getMessage(), e);
+            }
+>>>>>>> master
         }
         return remarkDOList;
     }
@@ -199,11 +247,19 @@ public class CandidateDBDao {
         return candidateShareChainDao.getData(query);
     }
 
+<<<<<<< HEAD
     public UserEmployeeDO getEmployee(int userID) throws TException {
 //        QueryUtil qu = new QueryUtil();
 //        qu.addEqualFilter("sysuser_id", userID);
         Query query = new Query.QueryBuilder().where("sysuser_id", userID).buildQuery();
         return userEmployeeDao.getEmployee(query);
+=======
+    public static UserEmployeeDO getEmployee(int userID) throws TException {
+        QueryUtil qu = new QueryUtil();
+        qu.addEqualFilter("sysuser_id", userID).addEqualFilter("disable", Constant.ENABLE_OLD)
+                .addEqualFilter("activation", EmployeeType.AUTH_SUCCESS.getValue());
+        return userDBDao.getEmployee(qu);
+>>>>>>> master
     }
 
     public UserEmployeeDO getEmployee(int userID, int companyId) throws TException {
@@ -252,8 +308,18 @@ public class CandidateDBDao {
      */
     public List<CandidateRecomRecordDO> listFiltredCandidateRecomRecord(
 			CandidateRecomRecordDO candidateRecomRecordDO) {
+<<<<<<< HEAD
     	Query.QueryBuilder query = new Query.QueryBuilder();
     	query.where("position_id", candidateRecomRecordDO.getPositionId()).and("presentee_user_id", candidateRecomRecordDO.getPresenteeUserId());
+=======
+    	QueryUtil query = new QueryUtil();
+    	int[] recom = {1,2,3};
+    	query.addEqualFilter("position_id", candidateRecomRecordDO.getPositionId())
+                .addEqualFilter("presentee_user_id", candidateRecomRecordDO.getPresenteeUserId())
+                .addEqualFilter("post_user_id", candidateRecomRecordDO.getPostUserId())
+                .addEqualFilter("is_recom", StringUtils.converFromArrayToStr(recom));
+        query.setPer_page(Integer.MAX_VALUE);
+>>>>>>> master
 		try {
 			return candidateRecomRecordDao.getDatas(query.buildQuery());
 		} catch (Exception e) {
@@ -281,6 +347,7 @@ public class CandidateDBDao {
      * @param positionIdList 职位编号
      * @return 职位信息集合
      */
+<<<<<<< HEAD
     public List<JobPositionDO> getPositionByIdList(List<Integer> positionIdList) {
 //        QueryUtil queryUtil = new QueryUtil();
 //        queryUtil.addSelectAttribute("id").addSelectAttribute("title");
@@ -288,6 +355,20 @@ public class CandidateDBDao {
         Query query = new Query.QueryBuilder().select("id").select("title")
                 .where(new Condition("id", positionIdList, ValueOp.IN)).buildQuery();
         return jobPositionDao.getPositions(query);
+=======
+    public static List<JobPositionDO> getPositionByIdList(List<Integer> positionIdList) {
+        List<JobPositionDO> jobPositionDOList = new ArrayList<>();
+        QueryUtil queryUtil = new QueryUtil();
+        queryUtil.addSelectAttribute("id").addSelectAttribute("title");
+        queryUtil.addEqualFilter("id", StringUtils.converToArrayStr(positionIdList));
+        queryUtil.setPer_page(Integer.MAX_VALUE);
+        try {
+            return jobDBDao.getPositions(queryUtil);
+        } catch (TException e) {
+            LoggerFactory.getLogger(CandidateDBDao.class).error(e.getMessage(), e);
+            return jobPositionDOList;
+        }
+>>>>>>> master
     }
 
     /**
@@ -296,6 +377,7 @@ public class CandidateDBDao {
      * @param userIdList 用户编号
      * @return 用户信息集合
      */
+<<<<<<< HEAD
     public List<UserUserDO> getUserByIDList(List<Integer> userIdList) {
 //        List<UserUserDO> userUserDOList = new ArrayList<>();
 //        QueryUtil queryUtil = new QueryUtil();
@@ -308,6 +390,22 @@ public class CandidateDBDao {
         Query query = new Query.QueryBuilder().select("id").select("name").select("nickname").select("headimg").
                 where(new Condition("id", userIdList, ValueOp.IN)).and("status", 0).buildQuery();
         return userDao.getDatas(query);
+=======
+    public static List<UserUserDO> getUserByIDList(List<Integer> userIdList) {
+        List<UserUserDO> userUserDOList = new ArrayList<>();
+        QueryUtil queryUtil = new QueryUtil();
+        queryUtil.addSelectAttribute("id").addSelectAttribute("name").addSelectAttribute("nickname")
+                .addSelectAttribute("headimg");
+        queryUtil.addEqualFilter("id", StringUtils.converToArrayStr(userIdList)).addEqualFilter("status", 0);
+        queryUtil.setOrder("id");
+        queryUtil.setPer_page(Integer.MAX_VALUE);
+        try {
+            return userDBDao.listUser(queryUtil);
+        } catch (TException e) {
+            LoggerFactory.getLogger(CandidateDBDao.class).error(e.getMessage(), e);
+            return userUserDOList;
+        }
+>>>>>>> master
     }
 
     /**

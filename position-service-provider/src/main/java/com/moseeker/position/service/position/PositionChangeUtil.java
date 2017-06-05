@@ -215,7 +215,6 @@ public class PositionChangeUtil {
 	/**
 	 * 转工作经验
 	 * @param experience
-	 * @param channelType2
 	 * @param position
 	 */
 	private static void setExperience(Integer experience, ChannelType channelType, ThirdPartyPositionForSynchronization position) {

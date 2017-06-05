@@ -157,6 +157,7 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
 
     public List<CandidateRecomRecordDO> listCandidateRecomRecord(int postUserId, String clickTime, List<Integer> recoms) {
         List<CandidateRecomRecordDO> candidateRecomRecordDOList = new ArrayList<>();
+<<<<<<< HEAD
         DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd");
         DateTime dateTime = DateTime.parse(clickTime, format);
         Condition condition = CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(postUserId)
@@ -165,6 +166,37 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
         if(recoms != null && recoms.size() > 0) {
             condition.and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.IS_RECOM.in(recoms));
         }
+=======
+        Connection conn = null;
+        try {
+            conn = DBConnHelper.DBConn.getConn();
+            DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+
+            DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd");
+            DateTime dateTime = DateTime.parse(clickTime, format);
+            Condition condition = CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(UInteger.valueOf(postUserId))
+                    .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME.greaterOrEqual(new Timestamp(dateTime.getMillis())))
+                    .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME.lessThan(new Timestamp(dateTime.plusDays(1).getMillis())));
+            if(recoms != null && recoms.size() > 0) {
+                condition.and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.IS_RECOM.in(recoms));
+            }
+
+            Result<CandidateRecomRecordRecord> result = create.selectFrom(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
+                    .where(condition)
+                    .groupBy(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID,
+                            CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID)
+                    .orderBy(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME)
+                    .fetch();
+            SelectSeekStep1 tableLike = create.selectFrom(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
+                    .where(condition)
+                    .groupBy(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID,
+                            CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID)
+                    .orderBy(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME);
+            logger.info(tableLike.getSQL());
+            if(result != null && result.size() > 0) {
+                candidateRecomRecordDOList = BeanUtils.DBToStruct(CandidateRecomRecordDO.class, result);
+            }
+>>>>>>> master
 
         Result<CandidateRecomRecordRecord> result = create.selectFrom(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
                 .where(condition)
@@ -181,6 +213,7 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
 
     public List<CandidateRecomRecordDO> listCandidateRecomRecordExceptId(int id, int postUserId, String clickTime, List<Integer> recoms) {
         List<CandidateRecomRecordDO> candidateRecomRecordDOList = new ArrayList<>();
+<<<<<<< HEAD
         DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd");
         DateTime dateTime = DateTime.parse(clickTime, format);
         Condition condition = CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(postUserId)
@@ -190,6 +223,34 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
         if(recoms != null && recoms.size() > 0) {
             condition.and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.IS_RECOM.in(recoms));
         }
+=======
+        Connection conn = null;
+        try {
+            conn = DBConnHelper.DBConn.getConn();
+            DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+
+            DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd");
+            DateTime dateTime = DateTime.parse(clickTime, format);
+            Condition condition = CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(UInteger.valueOf(postUserId))
+                    .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID.notEqual(UInteger.valueOf(id)))
+                    .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME.greaterOrEqual(new Timestamp(dateTime.getMillis())))
+                    .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME.lessThan(new Timestamp(dateTime.plusDays(1).getMillis())));
+            if(recoms != null && recoms.size() > 0) {
+                condition = condition.and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.IS_RECOM.in(recoms));
+            }
+
+            SelectOffsetStep selectOffsetStep = create.selectFrom(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
+                    .where(condition)
+                    .groupBy(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID,
+                            CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID)
+                    .orderBy(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME)
+                    .limit(2);
+            logger.info(selectOffsetStep.getSQL());
+            Result<CandidateRecomRecordRecord> result = selectOffsetStep.fetch();
+            if(result != null && result.size() > 0) {
+                candidateRecomRecordDOList = BeanUtils.DBToStruct(CandidateRecomRecordDO.class, result);
+            }
+>>>>>>> master
 
         Result<CandidateRecomRecordRecord> result = create.selectFrom(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
                 .where(condition)
