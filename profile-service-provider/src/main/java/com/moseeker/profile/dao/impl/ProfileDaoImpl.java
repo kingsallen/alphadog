@@ -1107,7 +1107,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
             List<AbstractMap.SimpleEntry<Map<String, Object>, Map<String, Object>>> positionApplications = create
                     .select()
                     .from(jobposition.join(jobApplication).on("a.id=b.position_id"))
-                    .where("a.company_id=" + companyId + " and a.source_id=" + sourceId + " and b.ats_status=" + atsStatus)
+                    .where("b.email_status=0 and a.company_id=" + companyId + " and a.source_id=" + sourceId + " and b.ats_status=" + atsStatus)
                     .fetch()
                     .stream()
                     .map(record -> new AbstractMap.SimpleEntry<Map<String, Object>, Map<String, Object>>(record.into(jobposition).intoMap(), record.into(jobApplication).intoMap()))
@@ -1610,14 +1610,14 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 
             //all from profiledb.user_thirdparty_user # ATS login
             if (!filterTable(filter, "user_thirdparty_user")) {
-                buildMap(filter, map, "user_thirdparty_user", new HashMap<>());
+                List<Map<String,Object>> user_thirdparty_users = new ArrayList<>();
                 for (Map<String, Object> mp : allThirdPartyUser) {
                     Integer user_id = (Integer) mp.get("user_id");
                     if (user_id != null && user_id > 0 && user_id == applierId.intValue()) {
-                        buildMap(filter, map, "user_thirdparty_user", mp);
-                        break;
+                        user_thirdparty_users.add(mp);
                     }
                 }
+                buildMap(filter, map, "user_thirdparty_user", user_thirdparty_users);
             }
 
             UInteger profileId = null;
