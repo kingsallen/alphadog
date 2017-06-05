@@ -44,6 +44,7 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
                     .set(UserWxUser.USER_WX_USER.SYSUSER_ID, orig)
                     .where(UserWxUser.USER_WX_USER.SYSUSER_ID.equal(dest))
                     .execute();
+            mergeData(create, orig, dest);
             conn.commit();
             conn.setAutoCommit(true);
     	}  catch (Exception e) {
@@ -57,6 +58,7 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
                     .set(UserBdUser.USER_BD_USER.USER_ID, orig)
                     .where(UserBdUser.USER_BD_USER.USER_ID.equal(dest))
                     .execute();
+            mergeData(create, orig, dest);
 	        conn.commit();
 	        conn.setAutoCommit(true);
 		}  catch (Exception e) {
@@ -64,8 +66,9 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
 	    }
     }
 
-    private void mergeData(int orig, int dest) {
-        try {
+    private void mergeData(DSLContext create, int orig, int dest) {
+
+        /*try {
             create.update(CandidateCompany.CANDIDATE_COMPANY)
                     .set(CandidateCompany.CANDIDATE_COMPANY.SYS_USER_ID, UInteger.valueOf(orig))
                     .where(CandidateCompany.CANDIDATE_COMPANY.SYS_USER_ID.equal(UInteger.valueOf(dest)))
@@ -80,8 +83,8 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
                     .execute();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-        }
-        try {
+        }*/
+        /*try {
             create.update(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD)
                     .set(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.PRESENTEE_USER_ID, UInteger.valueOf(orig))
                     .where(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.PRESENTEE_USER_ID.equal(UInteger.valueOf(dest)))
@@ -152,7 +155,7 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
                     .execute();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-        }
+        }*/
 
         //聊天室暂时不迁移
         /*try {
@@ -179,7 +182,7 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
                     .execute();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-        }*/
+        }
         try {
             create.update(UserFavPosition.USER_FAV_POSITION)
                     .set(UserFavPosition.USER_FAV_POSITION.SYSUSER_ID, orig)
@@ -187,7 +190,7 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
                     .execute();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-        }
+        }*/
         try {
             create.update(UserIntention.USER_INTENTION)
                     .set(UserIntention.USER_INTENTION.SYSUSER_ID, orig)
@@ -196,15 +199,14 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
-        try {
+        /*try {
             create.update(UserWxViewer.USER_WX_VIEWER)
                     .set(UserWxViewer.USER_WX_VIEWER.SYSUSER_ID, orig)
                     .where(UserWxViewer.USER_WX_VIEWER.SYSUSER_ID.equal(dest))
                     .execute();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-        }
-
+        }*/
 
         try {
             create.update(JobApplication.JOB_APPLICATION)
