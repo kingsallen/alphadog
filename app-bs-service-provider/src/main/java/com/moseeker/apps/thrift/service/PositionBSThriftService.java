@@ -1,5 +1,6 @@
 package com.moseeker.apps.thrift.service;
 
+import com.moseeker.apps.constants.ResultMessage;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,8 +25,13 @@ public class PositionBSThriftService implements Iface {
      */
     @Override
     public Response synchronizePositionToThirdPartyPlatform(ThirdPartyPositionForm position) throws TException {
-        logger.info("PositionBSThriftService.synchronizePositionToThirdPartyPlatform");
-        return positionBS.synchronizePositionToThirdPartyPlatform(position);
+        try {
+            return positionBS.synchronizePositionToThirdPartyPlatform(position);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            return ResultMessage.PROGRAM_EXCEPTION.toResponse();
+        }
     }
 
     /**
