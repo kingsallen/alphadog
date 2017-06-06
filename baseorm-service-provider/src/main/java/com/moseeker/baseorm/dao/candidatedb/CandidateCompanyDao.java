@@ -42,7 +42,7 @@ public class CandidateCompanyDao extends JooqCrudImpl<CandidateCompanyDO, Candid
     }
 
     public CandidateCompanyDO saveCandidateCompany(CandidateCompanyDO candidateCompanyDO) throws CURDException {
-        addData(candidateCompanyDO);
+        candidateCompanyDO = addData(candidateCompanyDO);
         return candidateCompanyDO;
     }
 
