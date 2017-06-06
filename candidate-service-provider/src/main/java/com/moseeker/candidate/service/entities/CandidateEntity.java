@@ -140,7 +140,7 @@ public class CandidateEntity implements Candidate {
                         candidatePositionDO.setSharedFromEmployee(fromEmployee?(byte)1:0);
                         candidatePositionDO.setPositionId(positionID);
                         candidatePositionDO.setUserId(userID);
-                        logger.info("CandidateEntity glancePosition candidatePositionDO:{}", candidateCompanyDO);
+                        logger.info("CandidateEntity glancePosition candidatePositionDO:{}", candidatePositionDO);
                         CandidateDBDao.saveCandidatePosition(candidatePositionDO);
                     }
                 }
