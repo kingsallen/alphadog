@@ -21,6 +21,7 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.*;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrPointsConfDO;
+import java.time.format.DateTimeFormatter;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
@@ -156,7 +157,7 @@ public class CandidateEntity implements Candidate {
 		Boolean isInterested = BooleanUtils.toBooleanObject(is_interested);
 		if (position.filter(f -> f.userId != 0 && f.isInterested != isInterested).isPresent()) {
 			try {
-				CandidateDBDao.updateCandidatePosition(position.map(m -> m.setIsInterested(isInterested)).map(m -> m.setUpdateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '))).get());
+				CandidateDBDao.updateCandidatePosition(position.map(m -> m.setIsInterested(isInterested)).map(m -> m.setUpdateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))).get());
 			} catch (TException e) {
 				logger.error(e.getMessage(), e);
 				response = ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
