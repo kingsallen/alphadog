@@ -37,7 +37,7 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
     @Override
     public List<ProfileOtherDO> getResources(CommonQuery query) throws TException {
         try {
-            return ResponseUtils.getNotNullValue(dao.getDatas(QueryConvert.commonQueryConvertToQuery(query)), new ArrayList<>());
+            return ResponseUtils.getNotNullValue(dao.getDatas(QueryConvert.commonQueryConvertToQuery(query)), new ArrayList<ProfileOtherDO>());
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
@@ -67,7 +67,7 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
     @Override
     public List<ProfileOtherDO> postResources(List<ProfileOtherDO> Others) throws TException {
         try {
-            return ResponseUtils.getNotNullValue(dao.addAllData(Others), new ArrayList<>());
+            return ResponseUtils.getNotNullValue(dao.addAllData(Others), new ArrayList<ProfileOtherDO>());
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
