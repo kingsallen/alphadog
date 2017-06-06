@@ -56,7 +56,10 @@ public class ThirdPartyUserDao extends JooqCrudImpl<UserThirdpartyUserDO, UserTh
                     return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
                 }
             } else {
-                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
+                //没有的话添加
+                record = BeanUtils.structToDB(user, UserThirdpartyUserRecord.class);
+                addRecord(record);
+                return ResponseUtils.success(1);
             }
         } catch (Exception e) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);

@@ -1,10 +1,9 @@
-package com.moseeker.profile.service.impl;
+package com.moseeker.baseorm.dao.profiledb.entity;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.common.util.HttpClient;
 import com.moseeker.common.util.JsonToMap;
 import com.moseeker.common.util.StringUtils;
-import org.jooq.types.UInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,10 +22,10 @@ public class ProfileDownloadService {
 
     int threadSize = 20;//下载的线程数量
 
-    public ProfileDownloadService(String downloadApi, String password, Set<UInteger> userIds) {
+    public ProfileDownloadService(String downloadApi, String password, Set<Integer> userIds) {
         this.downloadApi = downloadApi;
         this.password = password;
-        for (UInteger uId : userIds) {
+        for (Integer uId : userIds) {
             userProfileUrls.put(uId.intValue(), null);
         }
         threadSize = userProfileUrls.size() > threadSize ? threadSize : userProfileUrls.size();

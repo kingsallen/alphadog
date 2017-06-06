@@ -12,6 +12,7 @@ import org.jooq.impl.DefaultDSLContext;
 import org.jooq.impl.TableImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -37,13 +38,13 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> extends Crud<S, R> {
         return BeanUtils.structToDB(s, table.getRecordType());
     }
 
-    public S recordToData(R r){
-        return r.into(sClass);
+    public S recordToData(R r) {
+        return BeanUtils.DBToStruct(sClass, r);
     }
 
     @Override
     public <T> T recordToData(R r, Class<T> tClass) {
-        return r.into(tClass);
+        return BeanUtils.DBToStruct(tClass, r);
     }
 
     @Override
@@ -102,12 +103,22 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> extends Crud<S, R> {
 
     @Override
     public <T> T getData(Query query, Class<T> sClass) {
-        return new LocalQuery<R>(create, table, query).convertToResultQuery().fetchAnyInto(sClass);
+        R r = new LocalQuery<R>(create, table, query).convertToResultQuery().fetchAnyInto(rClass);
+        if (r != null) {
+            return recordToData(r, sClass);
+        } else {
+            return null;
+        }
     }
 
     @Override
     public <T> List<T> getDatas(Query query, Class<T> sClass) {
-        return new LocalQuery<>(create, table, query).convertToResultQuery().fetchInto(sClass);
+        List<R> rs = new LocalQuery<>(create, table, query).convertToResultQuery().fetchInto(rClass);
+        List<T> ts = new ArrayList<>();
+        for (R r : rs) {
+            ts.add(recordToData(r, sClass));
+        }
+        return ts;
     }
 
     @Override
