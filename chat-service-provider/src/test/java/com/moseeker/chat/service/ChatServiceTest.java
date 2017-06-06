@@ -124,10 +124,6 @@ public class ChatServiceTest {
         HrWxHrChatListDO room1 = new HrWxHrChatListDO();
         room1.setSysuserId(1);
         room1.setHraccountId(1);
-<<<<<<< HEAD
-//        room1.setStatus((byte)0);
-=======
->>>>>>> master
         room1.setCreateTime(new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
         room1.setHrChatTime(null);
         room1.setId(1);
@@ -138,10 +134,6 @@ public class ChatServiceTest {
         HrWxHrChatListDO room6 = new HrWxHrChatListDO();
         room6.setSysuserId(3);
         room6.setHraccountId(3);
-<<<<<<< HEAD
-//        room6.setStatus((byte)0);
-=======
->>>>>>> master
         room6.setCreateTime(new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
         room6.setHrChatTime(null);
         room6.setId(6);
@@ -151,10 +143,6 @@ public class ChatServiceTest {
         HrWxHrChatListDO room7= new HrWxHrChatListDO();
         room7.setSysuserId(1);
         room7.setHraccountId(2);
-<<<<<<< HEAD
-//        room7.setStatus((byte)0);
-=======
->>>>>>> master
         room7.setCreateTime(new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
         room7.setHrChatTime(null);
         room7.setId(7);
@@ -164,10 +152,6 @@ public class ChatServiceTest {
         HrWxHrChatListDO room8 = new HrWxHrChatListDO();
         room8.setSysuserId(1);
         room8.setHraccountId(3);
-<<<<<<< HEAD
-//        room8.setStatus((byte)0);
-=======
->>>>>>> master
         room8.setCreateTime(new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
         room8.setHrChatTime(null);
         room8.setId(8);
@@ -178,10 +162,6 @@ public class ChatServiceTest {
         HrWxHrChatListDO room9 = new HrWxHrChatListDO();
         room9.setSysuserId(2);
         room9.setHraccountId(3);
-<<<<<<< HEAD
-//        room9.setStatus((byte)0);
-=======
->>>>>>> master
         room9.setCreateTime(new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
         room9.setHrChatTime(null);
         room9.setId(9);
@@ -306,10 +286,6 @@ public class ChatServiceTest {
 
         HrWxHrChatListDO room = new HrWxHrChatListDO();
         room.setId(1);
-<<<<<<< HEAD
-//        room.setStatus((byte)0);
-=======
->>>>>>> master
         room.setCreateTime(new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
         room.setHraccountId(1);
         room.setSysuserId(1);

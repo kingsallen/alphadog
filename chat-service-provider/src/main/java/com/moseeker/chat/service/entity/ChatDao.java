@@ -76,26 +76,14 @@ public class ChatDao {
         queryUtil.addSelectAttribute("room_id");
         switch (type) {
             case HR:
-<<<<<<< HEAD
                 queryUtil.addSelectAttribute("user_unread_count").addSelectAttribute("hr_unread_count").addSelectAttribute("user_id");
-                queryUtil.orderBy("hr_have_unread_msg,wx_chat_time");
-=======
-                queryUtil.addSelectAttribute("user_id");
-                queryUtil.setSortby("hr_have_unread_msg,wx_chat_time");
->>>>>>> master
                 queryUtil.addEqualFilter("hr_id", id);
-                queryUtil.orderBy("hr_unread_count", Order.DESC).orderBy("room_id", Order.DESC);
+                queryUtil.orderBy("hr_have_unread_msg", Order.DESC).orderBy("wx_chat_time", Order.DESC);
                 break;
             case USER:
-<<<<<<< HEAD
                 queryUtil.addSelectAttribute("user_unread_count").addSelectAttribute("hr_unread_count").addSelectAttribute("hr_id");
-                queryUtil.orderBy("user_have_unread_msg,hr_chat_time");
-=======
-                queryUtil.addSelectAttribute("hr_id");
-                queryUtil.setSortby("user_have_unread_msg,hr_chat_time");
->>>>>>> master
                 queryUtil.addEqualFilter("user_id", id);
-                queryUtil.orderBy("user_unread_count", Order.DESC).orderBy("room_id", Order.DESC);
+                queryUtil.orderBy("user_have_unread_msg", Order.DESC).orderBy("hr_chat_time", Order.DESC);
                 break;
             default:
         }
@@ -574,12 +562,8 @@ public class ChatDao {
                         break;
                     default:
                 }
-<<<<<<< HEAD
-                hrChatUnreadCountDao.updateData(hrChatUnreadCountDO);
-=======
                 logger.info("ChatDao addUnreadCount hrChatUnreadCountDO:",hrChatUnreadCountDO);
-                hrChatUnreadCountDO = hrDBDao.updateChatUnreadCount(hrChatUnreadCountDO);
->>>>>>> master
+                hrChatUnreadCountDao.updateData(hrChatUnreadCountDO);
             }
             return hrChatUnreadCountDO;
         } catch (Exception e) {
@@ -610,12 +594,9 @@ public class ChatDao {
                     chatRoomDO.setHrChatTime(chatDO.getCreateTime());
                     chatRoomDO.setUserUnreadCount(chatRoomDO.getUserUnreadCount()+1);
                 }
-<<<<<<< HEAD
-                hrWxHrChatListDao.updateData(chatRoomDO);
-=======
+
                 logger.info("ChatDao addChatTOChatRoom chatRoomDO:",chatRoomDO);
-                hrDBDao.updateChatRoom(chatRoomDO);
->>>>>>> master
+                hrWxHrChatListDao.updateData(chatRoomDO);
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

@@ -1,17 +1,17 @@
 package com.moseeker.baseorm.Thriftservice;
 
-import com.alibaba.fastjson.JSON;
-import com.moseeker.common.providerutils.QueryUtil;
-import com.moseeker.rpccenter.client.ServiceManager;
-import com.moseeker.thrift.gen.dao.service.PositionDao;
-import com.moseeker.thrift.gen.dao.struct.UserUserDO;
-import com.moseeker.thrift.gen.position.struct.Position;
-
-import org.apache.thrift.TException;
-import org.junit.Before;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+//import com.alibaba.fastjson.JSON;
+//import com.moseeker.common.providerutils.QueryUtil;
+//import com.moseeker.rpccenter.client.ServiceManager;
+//import com.moseeker.thrift.gen.dao.service.PositionDao;
+//import com.moseeker.thrift.gen.dao.struct.UserUserDO;
+//import com.moseeker.thrift.gen.position.struct.Position;
+//
+//import org.apache.thrift.TException;
+//import org.junit.Before;
+//import org.junit.Test;
+//
+//import static org.junit.Assert.*;
 
 /**
  * Created by jack on 12/05/2017.
@@ -31,12 +31,12 @@ public class UserDBDaoThriftServiceTest {
 //        userDao.saveUser(userUserDO);
 //    }
 
-    PositionDao.Iface positionDao;
-
-    @Before
-    public void be(){
-       positionDao = ServiceManager.SERVICEMANAGER.getService(PositionDao.Iface.class);
-    }
+//    PositionDao.Iface positionDao;
+//
+//    @Before
+//    public void be(){
+//       positionDao = ServiceManager.SERVICEMANAGER.getService(PositionDao.Iface.class);
+//    }
 
 //    @Test
 //    public void testPosition() throws TException {
