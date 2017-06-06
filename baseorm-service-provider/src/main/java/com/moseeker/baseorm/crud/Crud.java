@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,7 +33,7 @@ public abstract class Crud<S, R> implements CrudAdd<R>, CrudDelete<R>, CrudUpdat
 
     public abstract S recordToData(R r);
 
-    public abstract <T> T recordToData(R r,Class<T> tClass);
+    public abstract <T> T recordToData(R r, Class<T> tClass);
 
     public S addData(S s) {
         R r = dataToRecord(s);
@@ -71,5 +72,30 @@ public abstract class Crud<S, R> implements CrudAdd<R>, CrudDelete<R>, CrudUpdat
 
     public S getData(Query query) {
         return getData(query, sClass);
+    }
+
+    @Override
+    public <T> T getData(Query query, Class<T> sClass) {
+        R r = getRecord(query);
+        if (r != null) {
+            return recordToData(r, sClass);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public <T> List<T> getDatas(Query query, Class<T> sClass) {
+        List<R> rs = getRecords(query);
+
+        if (rs == null) {
+            return new ArrayList<>();
+        }
+
+        List<T> ts = new ArrayList<>();
+        for (R r : rs) {
+            ts.add(recordToData(r, sClass));
+        }
+        return ts;
     }
 }

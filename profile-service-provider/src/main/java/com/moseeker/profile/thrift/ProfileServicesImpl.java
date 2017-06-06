@@ -84,7 +84,7 @@ public class ProfileServicesImpl implements Iface {
 	public Response getProfileByApplication(int companyId, int sourceId, int ats_status, boolean recommender, boolean dl_url_required, Map<String,List<String>> filter) throws TException {
         try {
             return service.getProfileByApplication(companyId,sourceId,ats_status,recommender,dl_url_required,filter);
-        } catch (TException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }

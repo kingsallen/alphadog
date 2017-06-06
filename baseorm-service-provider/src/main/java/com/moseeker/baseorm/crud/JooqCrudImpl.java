@@ -12,6 +12,7 @@ import org.jooq.impl.DefaultDSLContext;
 import org.jooq.impl.TableImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -37,13 +38,13 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> extends Crud<S, R> {
         return BeanUtils.structToDB(s, table.getRecordType());
     }
 
-    public S recordToData(R r){
-        return r.into(sClass);
+    public S recordToData(R r) {
+        return BeanUtils.DBToStruct(sClass, r);
     }
 
     @Override
     public <T> T recordToData(R r, Class<T> tClass) {
-        return r.into(tClass);
+        return BeanUtils.DBToStruct(tClass, r);
     }
 
     @Override
@@ -99,17 +100,6 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> extends Crud<S, R> {
         return updateSetMoreStep.where(new LocalCondition<>(table).parseConditionUtil(update.getConditions())).execute();
     }
 
-
-    @Override
-    public <T> T getData(Query query, Class<T> sClass) {
-        return new LocalQuery<R>(create, table, query).convertToResultQuery().fetchAnyInto(sClass);
-    }
-
-    @Override
-    public <T> List<T> getDatas(Query query, Class<T> sClass) {
-        return new LocalQuery<>(create, table, query).convertToResultQuery().fetchInto(sClass);
-    }
-
     @Override
     public R getRecord(Query query) {
         return new LocalQuery<>(create, table, query).convertToResultQuery().fetchAnyInto(table.getRecordType());
@@ -122,6 +112,6 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> extends Crud<S, R> {
 
     @Override
     public int getCount(Query query) {
-        return new LocalQuery<R>(create, table, query).convertForCount().fetchOne().value1();
+        return new LocalQuery<>(create, table, query).convertForCount().fetchOne().value1();
     }
 }
