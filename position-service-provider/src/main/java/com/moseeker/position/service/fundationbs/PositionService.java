@@ -42,7 +42,6 @@ import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
-<<<<<<< HEAD
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.position.struct.*;
 import static java.lang.Math.round;
@@ -53,7 +52,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;
-=======
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrHbConfigDO;
@@ -73,9 +71,6 @@ import com.moseeker.thrift.gen.position.struct.WechatPositionListQuery;
 import com.moseeker.thrift.gen.position.struct.WechatRpPositionListData;
 import com.moseeker.thrift.gen.position.struct.WechatShareData;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
-import com.mysql.jdbc.StringUtils;
-
->>>>>>> master
 import org.apache.thrift.TException;
 import org.jooq.Field;
 import org.slf4j.Logger;
@@ -472,32 +467,24 @@ public class PositionService {
                 }
             }
             // 公司下职能信息
-<<<<<<< HEAD
+			HashMap jobOccupationMap = new LinkedHashMap();
             Query jobOccupationQuery=new Query.QueryBuilder()
             		.where("company_id",companyId)
             		.and("status", 1)
             		.buildQuery();
             List<JobOccupationRecord> jobOccupationList = jobOccupationDao.getRecords(jobOccupationQuery);
-=======
-            HashMap jobOccupationMap = new LinkedHashMap();
-            QueryUtil jobOccupationQuery = new QueryUtil();
-            jobOccupationQuery.addEqualFilter("company_id", String.valueOf(companyId));
-            jobOccupationQuery.setPer_page(100000);
-            jobOccupationQuery.addEqualFilter("status", 1);
-            List<JobOccupationRecord> jobOccupationList = jobOccupationDao.getResources(jobOccupationQuery);
->>>>>>> master
             for (JobOccupationRecord jobOccupationRecord : jobOccupationList) {
                 jobOccupationMap.put(jobOccupationRecord.getName().trim(), jobOccupationRecord);
             }
 
             // 公司下职位自定义字段
             HashMap jobCustomMap = new LinkedHashMap();
-            jobOccupationQuery.clear();
+            jobOccupationQuery=new Query.QueryBuilder()
+    		.where("company_id",companyId)
+    		.and("status", 1)
+    		.buildQuery();
             // 公司下职能信息
-            jobOccupationQuery.addEqualFilter("company_id", String.valueOf(companyId));
-            jobOccupationQuery.setPer_page(100000);
-            jobOccupationQuery.addEqualFilter("status", 1);
-            List<JobCustomRecord> jobCustomRecordList = jobCustomDao.getResources(jobOccupationQuery);
+            List<JobCustomRecord> jobCustomRecordList = jobCustomDao.getRecords(jobOccupationQuery);
             for (JobCustomRecord jobCustomRecord : jobCustomRecordList) {
                 jobCustomMap.put(jobCustomRecord.getName().trim(), jobCustomRecord);
             }
@@ -652,7 +639,6 @@ public class PositionService {
                     record.setSalary(record.getSalaryBottom().intValue() + "K以上");
                 }
                 // 按company_id + .source_id + .jobnumber + source=9取得数据
-<<<<<<< HEAD
                 Query queryUtil=new Query.QueryBuilder()
                 		.where("company_id", jobPositionHandlerDate.getCompany_id())
                 		.and("source", 9)
@@ -660,16 +646,6 @@ public class PositionService {
                 		.and("jobnumber", jobPositionHandlerDate.getJobnumber())
                 		.buildQuery();
                 JobPositionRecord jobPositionRecord = jobPositionDao.getRecord(queryUtil);
-
-
-=======
-                QueryUtil queryUtil = new QueryUtil();
-                queryUtil.addEqualFilter("company_id", String.valueOf(jobPositionHandlerDate.getCompany_id()));
-                queryUtil.addEqualFilter("source", "9");
-                queryUtil.addEqualFilter("source_id", String.valueOf(jobPositionHandlerDate.getSource_id()));
-                queryUtil.addEqualFilter("jobnumber", jobPositionHandlerDate.getJobnumber());
-                JobPositionRecord jobPositionRecord = jobPositionDao.getResource(queryUtil);
->>>>>>> master
                 // 更新或者新增数据
                 if (jobPositionHandlerDate.getId() != 0 || !com.moseeker.common.util.StringUtils.isEmptyObject(jobPositionRecord)) {  // 数据更新
                     // 按company_id + .source_id + .jobnumber + source=9取得数据为空时，按Id进行更新
@@ -1186,19 +1162,11 @@ public class PositionService {
             if (query.isSetDid() && query.getDid() != 0) {
                 // 如果有did, 赋值 childCompanyId
                 childCompanyId = String.valueOf(query.getDid());
-<<<<<<< HEAD
             } else {
                 Query qu=new Query.QueryBuilder()
                 		.where("parent_id",companyId)
                 		.buildQuery();
                 List<Hrcompany> companies = hrCompanyDao.getCompanies(qu);
-=======
-
-            } else {
-                QueryUtil qu = new QueryUtil();
-                qu.addEqualFilter("parent_id", query.getCompany_id());
-                List<Hrcompany> companies = companyDao.getCompanies(qu);
->>>>>>> master
 
                 List<Integer> cIds = new ArrayList<>();
                 if (companies.size() > 0) {
@@ -1256,22 +1224,9 @@ public class PositionService {
                 JSONArray jdIdJsonArray = jobj.getJSONArray("jd_id_list");
                 List<Integer> jdIdList = jdIdJsonArray.stream().map(m -> Integer.valueOf(String.valueOf(m))).collect(Collectors.toList());
                 logger.info("jdIdList: " + jdIdList);
-<<<<<<< HEAD
                 Condition con=new Condition("id", jdIdList.toArray(),ValueOp.IN);
 				Query q = new Query.QueryBuilder().where(con).buildQuery();
                 List<JobPositionRecord> jobRecords = jobPositionDao.getRecords(q);
-=======
-
-                QueryUtil q = new QueryUtil();
-                q.addEqualFilter("id", Arrays.toString(jdIdList.toArray()));
-                List<JobPositionRecord> jobRecords = jobPositionDao.getResources(q);
-
-                jobRecords.sort(Comparator.comparing(
-                        c -> {
-                            return jdIdList.indexOf(c.getId());
-                        }
-                ));
->>>>>>> master
 
                 for (JobPositionRecord jr : jobRecords) {
                     logger.info("pid: " + String.valueOf(jr.getId()));
