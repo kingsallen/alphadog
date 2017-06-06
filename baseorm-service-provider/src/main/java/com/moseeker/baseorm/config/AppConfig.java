@@ -3,11 +3,14 @@ package com.moseeker.baseorm.config;
 import com.jolbox.bonecp.BoneCPDataSource;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.baseorm.exception.ExceptionTranslator;
+
 import org.jooq.SQLDialect;
 import org.jooq.impl.DataSourceConnectionProvider;
 import org.jooq.impl.DefaultConfiguration;
 import org.jooq.impl.DefaultDSLContext;
 import org.jooq.impl.DefaultExecuteListenerProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -31,6 +34,8 @@ public class AppConfig {
 
     @Autowired
     private Environment env;
+
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Bean(destroyMethod = "close")
     public DataSource getDataSource() {
@@ -99,6 +104,7 @@ public class AppConfig {
         ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
 
         String sqlDialectName = propertiesReader.get("mycat.dialect", String.class);
+        logger.info("sqlDialectName:" + sqlDialectName);
         SQLDialect dialect = SQLDialect.valueOf(sqlDialectName);
         jooqConfiguration.set(dialect);
 
