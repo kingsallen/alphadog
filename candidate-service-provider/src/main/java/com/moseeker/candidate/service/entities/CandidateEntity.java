@@ -128,6 +128,7 @@ public class CandidateEntity implements Candidate {
                             candidateCompanyDO.setEmail(userUserDO.getEmail());
                             candidateCompanyDO.setUpdateTime(date);
                             candidateCompanyDO = CandidateDBDao.saveCandidateCompany(candidateCompanyDO);
+                            logger.info("CandidateEntity glancePosition save candidateCompanyDO:{}", candidateCompanyDO);
                         } else {
                             candidateCompanyDO = candidateCompanyDOOptional.get();
                         }
@@ -138,6 +139,7 @@ public class CandidateEntity implements Candidate {
                         candidatePositionDO.setSharedFromEmployee(fromEmployee?(byte)1:0);
                         candidatePositionDO.setPositionId(positionID);
                         candidatePositionDO.setUserId(userID);
+                        logger.info("CandidateEntity glancePosition candidatePositionDO:{}", candidateCompanyDO);
                         CandidateDBDao.saveCandidatePosition(candidatePositionDO);
                     }
                 }
