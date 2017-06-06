@@ -100,27 +100,6 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> extends Crud<S, R> {
         return updateSetMoreStep.where(new LocalCondition<>(table).parseConditionUtil(update.getConditions())).execute();
     }
 
-
-    @Override
-    public <T> T getData(Query query, Class<T> sClass) {
-        R r = new LocalQuery<R>(create, table, query).convertToResultQuery().fetchAnyInto(rClass);
-        if (r != null) {
-            return recordToData(r, sClass);
-        } else {
-            return null;
-        }
-    }
-
-    @Override
-    public <T> List<T> getDatas(Query query, Class<T> sClass) {
-        List<R> rs = new LocalQuery<>(create, table, query).convertToResultQuery().fetchInto(rClass);
-        List<T> ts = new ArrayList<>();
-        for (R r : rs) {
-            ts.add(recordToData(r, sClass));
-        }
-        return ts;
-    }
-
     @Override
     public R getRecord(Query query) {
         return new LocalQuery<>(create, table, query).convertToResultQuery().fetchAnyInto(table.getRecordType());
@@ -133,6 +112,6 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> extends Crud<S, R> {
 
     @Override
     public int getCount(Query query) {
-        return new LocalQuery<R>(create, table, query).convertForCount().fetchOne().value1();
+        return new LocalQuery<>(create, table, query).convertForCount().fetchOne().value1();
     }
 }
