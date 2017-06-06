@@ -8,7 +8,6 @@ import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.PositionRefreshType;
 import com.moseeker.common.constants.PositionSync;
-import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.Query.QueryBuilder;
@@ -76,8 +75,7 @@ public class PositionBS {
         Response response;
         ;
         // 职位数据是否存在
-        QueryUtil qu = new QueryUtil();
-        qu.addEqualFilter("id", String.valueOf(position.getPosition_id()));
+        Query qu=new Query.QueryBuilder().where("id",position.getPosition_id()).buildQuery();
         com.moseeker.thrift.gen.position.struct.Position positionStruct = jobPositionDao.getPositionWithCityCode(qu);
         logger.info("position:" + JSON.toJSONString(positionStruct));
         // 如果职位数据存在，并且是在招职位
