@@ -971,7 +971,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                         jooqMapfilter},
                 SerializerFeature.WriteMapNullValue,
                 SerializerFeature.WriteNullStringAsEmpty,
-                SerializerFeature.WriteNullListAsEmpty));
+                SerializerFeature.WriteNullListAsEmpty, SerializerFeature.DisableCircularReferenceDetect));
     }
 
     public List<Map<String, Object>> getRelatedDataByJobApplication(DSLContext create,
