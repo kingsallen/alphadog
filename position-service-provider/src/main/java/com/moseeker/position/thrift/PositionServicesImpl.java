@@ -123,7 +123,12 @@ public class PositionServicesImpl implements Iface {
     @Override
     public ThirdPartyPositionForSynchronizationWithAccount createRefreshPosition(int positionId, int account_id)
             throws TException {
-        return service.createRefreshPosition(positionId, account_id);
+        try {
+            return service.createRefreshPosition(positionId, account_id);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return new ThirdPartyPositionForSynchronizationWithAccount();
+        }
     }
 
     @Override
@@ -180,17 +185,32 @@ public class PositionServicesImpl implements Iface {
 
     @Override
     public List<WechatRpPositionListData> getRpPositionList(int hb_config_id) throws TException {
-        return service.getRpPositionList(hb_config_id);
+        try {
+            return service.getRpPositionList(hb_config_id);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return new ArrayList<>();
+        }
     }
 
     @Override
     public List<ThirdPartyPositionData> getThirdPartyPositions(CommonQuery query) throws TException {
-        return service.getThirdPartyPositions(query);
+        try {
+            return service.getThirdPartyPositions(query);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return new ArrayList<>();
+        }
     }
 
     @Override
     public Response batchHandlerJobPostion(BatchHandlerJobPostion batchHandlerJobPostion) throws TException {
-        return service.batchHandlerJobPostion(batchHandlerJobPostion);
+        try {
+            return service.batchHandlerJobPostion(batchHandlerJobPostion);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
     }
 
     @Override
@@ -207,12 +227,22 @@ public class PositionServicesImpl implements Iface {
         if (delePostion.isSetSource_id()) {
             sourceId = delePostion.getSource_id();
         }
-        return service.deleteJobposition(id, companyId, delePostion.getJobnumber(), sourceId);
+        try {
+            return service.deleteJobposition(id, companyId, delePostion.getJobnumber(), sourceId);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
     }
 
     @Override
     public Response getTeamIdByDepartmentName(int companyId, String departmentName) throws TException {
-        return service.getTeamIdbyDepartmentName(companyId, departmentName);
+        try {
+            return service.getTeamIdbyDepartmentName(companyId, departmentName);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
     }
 
 
