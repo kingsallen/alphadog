@@ -152,7 +152,7 @@ public class PositionService {
     }
    
     @CounterIface
-    public Response verifyCustomize(int positionId) throws TException {
+    public Response verifyCustomize(int positionId){
     	Query query=new Query.QueryBuilder().where("id",positionId).buildQuery();
         JobPositionRecord positionRecord = jobPositionDao.getRecord(query);
         if (positionRecord == null) {
@@ -173,7 +173,7 @@ public class PositionService {
      * @throws TException TException
      */
     @CounterIface
-    public Response getPositionById(int positionId) throws TException {
+    public Response getPositionById(int positionId){
 
         try {
             // 必填项校验
@@ -405,11 +405,12 @@ public class PositionService {
 
     /**
      * 批量处理修改职位
+     * @throws TException 
      */
     @CounterIface
-    public Response batchHandlerJobPostion(BatchHandlerJobPostion batchHandlerJobPosition) {
+    public Response batchHandlerJobPostion(BatchHandlerJobPostion batchHandlerJobPosition) throws TException {
         logger.info("------开始批量修改职位--------");
-        try {
+//        try {
             JobPostionResponse jobPostionResponse = new JobPostionResponse();
             // 返回新增或者更新失败的职位信息
             List<JobPositionFailMess> jobPositionFailMessPojos = new ArrayList<>();
@@ -755,7 +756,7 @@ public class PositionService {
             logger.info("新增jobPositionCity数据的条数:" + jobPositionCityRecordsAddlist.size());
             logger.info("需要更新jobPositionCity数据条数:" + jobPositionCityRecordsUpdatelist.size());
             logger.info("---------------------------------------------------------");
-            try {
+//            try {
                 // 更新jobPostion数据
                 if (jobPositionUpdateRecordList.size() > 0) {
                     logger.info("-------------更新jobPostion数据开始------------------");
@@ -792,10 +793,10 @@ public class PositionService {
                     jobPositionCityDao.addAllRecord(jobPositionCityRecordsUpdatelist);
                     logger.info("-------------新增jobPositionCity的数据结束------------------");
                 }
-            } catch (Exception e) {
-                logger.info("更新和插入数据发生异常,异常信息为：" + e.getMessage());
-                e.printStackTrace();
-            }
+//            } catch (Exception e) {
+//                logger.info("更新和插入数据发生异常,异常信息为：" + e.getMessage());
+//                e.printStackTrace();
+//            }
             jobPostionResponse.setJobPositionFailMessPojolist(jobPositionFailMessPojos);
             jobPostionResponse.setDeleteCounts(deleteCounts);
             jobPostionResponse.setInsertCounts(jobPositionAddRecordList.size());
@@ -811,18 +812,18 @@ public class PositionService {
             }
             logger.info("-------批量修改职位结束---------");
             return ResponseUtils.fail(1, JSONArray.toJSONString(jobPostionResponse));
-        } catch (Exception e) {
-            logger.info("发生异常，异常信息：" + e.getMessage());
-            logger.error(e.getMessage(), e);
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
-        }
+//        } catch (Exception e) {
+//            logger.info("发生异常，异常信息：" + e.getMessage());
+//            logger.error(e.getMessage(), e);
+//            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+//        }
     }
 
     /**
      * 删除职位
      */
-    public Response deleteJobposition(Integer id, Integer companyId, String jobnumber, Integer sourceId) {
-        try {
+    public Response deleteJobposition(Integer id, Integer companyId, String jobnumber, Integer sourceId) throws TException{
+//        try {
             JobPositionRecord jobPositionRecord = null;
             if (id != null && id.intValue() != 0) {
                 Query queryUtil=new Query.QueryBuilder().where("id",id).buildQuery();
@@ -854,19 +855,19 @@ public class PositionService {
             } else {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.POSITION_DATA_DELETE_FAIL);
             }
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
-        }
+//        } catch (Exception e) {
+//            logger.error(e.getMessage(), e);
+//            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+//        }
     }
 
 
     /**
      * 对JobPositionRecord 进行除了nohash字段之外的值进行MD5进行计算
      */
-    public String md5(String[] nohashs, JobPositionRecord jobPositionRecord, String extra) {
+    public String md5(String[] nohashs, JobPositionRecord jobPositionRecord, String extra) throws TException {
         String md5 = null;
-        try {
+//        try {
             StringBuffer stringBuffer = new StringBuffer();
             HashMap hashMap = new HashMap();
             for (String nohash : nohashs) {
@@ -884,9 +885,9 @@ public class PositionService {
                 stringBuffer.append(extra);
             }
             md5 = MD5Util.md5(stringBuffer.toString());
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
+//        } catch (Exception e) {
+//            logger.error(e.getMessage(), e);
+//        }
         return md5;
     }
 
@@ -1122,7 +1123,7 @@ public class PositionService {
 
     public List<ThirdPartyPositionData> getThirdPartyPositions(CommonQuery query) {
         List<ThirdPartyPositionData> datas = new ArrayList<>();
-        try {
+//        try {
 			List<HrThirdPartyPositionRecord> records = thirdpartyPositionDao.getRecords(QueryConvert.commonQueryConvertToQuery(query));
 			if(records != null && records.size() > 0) {
 				records.forEach(record -> {
@@ -1130,12 +1131,12 @@ public class PositionService {
 					datas.add(data);
 				});
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error(e.getMessage(), e);
-		} finally {
-			//do nothing
-		}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			logger.error(e.getMessage(), e);
+//		} finally {
+//			//do nothing
+//		}
 		return datas;
 
     }
@@ -1145,6 +1146,7 @@ public class PositionService {
      *
      * @param query 查询条件
      * @return 微信端职位列表信息
+     * @throws Exception 
      */
     public List<WechatPositionListData> getPositionList(WechatPositionListQuery query) {
 
@@ -1339,6 +1341,7 @@ public class PositionService {
      *
      * @param pids pids
      * @return pids 对应职位红包活动的额外信息
+     * @throws TException 
      */
     public List<RpExtInfo> getPositionListRpExt(List<Integer> pids){
         List<RpExtInfo> result = new ArrayList<>();
@@ -1475,7 +1478,7 @@ public class PositionService {
             logger.error(e.getMessage(), e);
             return result;
         } finally {
-
+//
         }
         return result;
     }
@@ -1513,8 +1516,9 @@ public class PositionService {
      *
      * @param hbConfigId 红包活动id
      * @return 红包职位列表
+     * @throws TException 
      */
-    public List<WechatRpPositionListData> getRpPositionList(int hbConfigId) {
+    public List<WechatRpPositionListData> getRpPositionList(int hbConfigId)  {
         List<WechatRpPositionListData> result = new ArrayList<>();
         try {
             Query qu = new Query.QueryBuilder()

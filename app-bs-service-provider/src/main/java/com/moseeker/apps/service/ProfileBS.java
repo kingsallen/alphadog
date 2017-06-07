@@ -50,7 +50,7 @@ public class ProfileBS {
 
 	@SuppressWarnings("unchecked")
 	@CounterIface
-	public Response retrieveProfile(int positionId, String profile, int channel) {
+	public Response retrieveProfile(int positionId, String profile, int channel) throws TException {
 		
 		if(positionId == 0 || StringUtils.isNullOrEmpty(profile)) {
 			return ResultMessage.PROGRAM_PARAM_NOTEXIST.toResponse();
@@ -78,7 +78,7 @@ public class ProfileBS {
 		
 		//更新profile数据
 		resume.put("channel", channel);
-		try {
+//		try {
 			//查询是否存在相同手机号码的C端帐号
 			Query findRetrieveUserQU=new Query.QueryBuilder().where("mobile", mobile).and("source",UserSource.RETRIEVE_PROFILE.getValue()).buildQuery();
 			com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO user =userUserDao.getData(findRetrieveUserQU); //userDao.getUser(findRetrieveUserQU);
@@ -149,12 +149,12 @@ public class ProfileBS {
 					}
 				}
 			}
-		} catch (TException e) {
-			e.printStackTrace();
-			logger.error(e.getMessage(), e);
-		} finally {
-			//do nothing
-		}
+//		} catch (TException e) {
+//			e.printStackTrace();
+//			logger.error(e.getMessage(), e);
+//		} finally {
+//			//do nothing
+//		}
 		return ResponseUtils.success(null);
 	}
 	

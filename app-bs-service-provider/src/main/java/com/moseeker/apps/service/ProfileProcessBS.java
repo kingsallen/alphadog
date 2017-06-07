@@ -103,14 +103,15 @@ public class ProfileProcessBS {
      * @param params         －－－－l_application_id的字符串，之间用，隔开
      * @return Response(status, message, data)
      * @author zzt
+	 * @throws Exception 
      */
 
     @CounterIface
-    public Response processProfileAts(int progressStatus, String params) {
+    public Response processProfileAts(int progressStatus, String params) throws Exception {
         logger.info("ProfileProcessBS processProfileAts progressStatus:{}, params:{}", progressStatus, params);
         int companyId = 0;
         int accountId = 0;
-        try {
+//        try {
             List<ApplicationAts> list = getJobApplication(params);
             if (list == null || list.size() == 0) {
                 return ResponseUtils
@@ -123,10 +124,10 @@ public class ProfileProcessBS {
             Response result = processProfile(companyId, progressStatus, appIds, accountId);
             logger.info("ProfileProcessBS processProfileAts result:{}", result);
             return result;
-        } catch (Exception e) {
-            return ResponseUtils
-                    .fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-        }
+//        } catch (Exception e) {
+//            return ResponseUtils
+//                    .fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+//        }
 
     }
 
@@ -145,12 +146,13 @@ public class ProfileProcessBS {
      * @param progressStatus 下一步的状态，对应config_sys_points_conf_tpl.recruit_order
      * @param appIds         申请编号
      * @param accountId      hr_account.id
+     * @throws Exception 
      */
     @UpdateEs(tableName = "job_application", argsIndex = 2, argsName = "application_id")
     @CounterIface
-    public Response processProfile(int companyId, int progressStatus, List<Integer> appIds, int accountId) {
+    public Response processProfile(int companyId, int progressStatus, List<Integer> appIds, int accountId) throws Exception {
         logger.info("ProfileProcessBS processProfile companyId:{}, progressStatus:{}, appIds:{}, accountId:{}", companyId, progressStatus, appIds, accountId);
-        try {
+//        try {
             if (appIds == null || appIds.size() == 0) {
                 return ResponseUtils
                         .fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
@@ -262,12 +264,12 @@ public class ProfileProcessBS {
                         .fail("{\"status\":2201, \"message\":\"参数错误\"}");
             }
             return ResponseUtils.success("操作成功");
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-            return ResponseUtils
-                    .fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-        }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            logger.error(e.getMessage(), e);
+//            return ResponseUtils
+//                    .fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+//        }
 
     }
     /*
@@ -285,10 +287,11 @@ public class ProfileProcessBS {
     }
     /**
      * 发送消息模板
+     * @throws TException 
      */
     @CounterIface
     public void sendTemplate(int userId, String userName, int companyId,
-                             int status, String positionName, int applicationId, TemplateMs tm) {
+                             int status, String positionName, int applicationId, TemplateMs tm)  {
         if (StringUtils.isNullOrEmpty(positionName)) {
             return;
         }

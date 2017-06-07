@@ -11,6 +11,8 @@ import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignHeadImageDO;
 import com.moseeker.thrift.gen.position.struct.PositionDetails;
 import com.moseeker.thrift.gen.position.struct.PositionDetailsListVO;
 import com.moseeker.thrift.gen.position.struct.PositionDetailsVO;
+
+import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,9 +74,9 @@ public class PositionQxService {
      * @return positionDetailsVO
      */
     @CounterIface
-    public PositionDetailsVO positionDetails(Integer positionId) {
+    public PositionDetailsVO positionDetails(Integer positionId){
         PositionDetailsVO positionDetailsVO = new PositionDetailsVO();
-        try {
+        try{
             if (positionId == 0) {
                 positionDetailsVO.setStatus(CommonMessage.POSITIONID_BLANK.getStatus());
                 positionDetailsVO.setMessage(CommonMessage.POSITIONID_BLANK.getMessage());

@@ -314,7 +314,7 @@ public class JobApplicataionService {
      */
     @CounterIface
     public Response postJobResumeOther(JobResumeOther jobResumeOther) throws TException {
-        try {
+//        try {
             // 必填项验证
             Response response = validateJobResumeOther(jobResumeOther);
             if (response.status > 0) {
@@ -331,12 +331,12 @@ public class JobApplicataionService {
                 hashmap.put("jobResumeOtherStatus", jobResumeOtherStatus);
                 return ResponseUtils.success(hashmap); // 返回 jobResumeOtherStatus
             }
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            logger.error("postJobResumeOther JobResumeOther error: ", e);
-        } finally {
-            //do nothing
-        }
+//        } catch (Exception e) {
+//            // TODO Auto-generated catch block
+//            logger.error("postJobResumeOther JobResumeOther error: ", e);
+//        } finally {
+//            //do nothing
+//        }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
     }
 

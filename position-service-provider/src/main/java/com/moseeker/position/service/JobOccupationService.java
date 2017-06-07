@@ -6,6 +6,8 @@ import java.util.Map;
 import org.apache.thrift.TBase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
 import com.moseeker.baseorm.dao.jobdb.JobCustomDao;
@@ -21,6 +23,7 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HRCompanyConfData;
 import com.moseeker.thrift.gen.position.struct.dao.JobOccupationCustom;
 
 @Service
+@Transactional
 public class JobOccupationService {
 	/*
 	 * auth:zzt

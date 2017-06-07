@@ -27,6 +27,8 @@ import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
+
+import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -264,16 +266,17 @@ public class PositionBS {
      * @param positionId 职位编号
      * @param channel    渠道编号
      * @return
+     * @throws TException 
      */
     @CounterIface
-    public Response refreshPosition(int positionId, int channel) {
+    public Response refreshPosition(int positionId, int channel) throws TException {
         logger.info("refreshPosition start");
         HashMap<String, Object> result = new HashMap<>();
         result.put("position_id", positionId);
         result.put("channel", channel);
         result.put("is_refresh", PositionRefreshType.notRefresh.getValue());
         Response response = ResultMessage.PROGRAM_EXHAUSTED.toResponse(result);
-        try {
+//        try {
             //更新仟寻职位的修改时间
             writeBackToQX(positionId);
             Query.QueryBuilder queryUtil = new Query.QueryBuilder();
@@ -309,13 +312,13 @@ public class PositionBS {
             } else {
                 response = ResultMessage.POSITION_NOT_EXIST.toResponse(result);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-            response = ResultMessage.PROGRAM_EXCEPTION.toResponse();
-        } finally {
-            // do nothing
-        }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            logger.error(e.getMessage(), e);
+//            response = ResultMessage.PROGRAM_EXCEPTION.toResponse();
+//        } finally {
+//            // do nothing
+//        }
 
         return response;
     }
