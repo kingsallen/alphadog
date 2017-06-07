@@ -13,6 +13,7 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserSearchConditionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserViewedPositionDO;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.service.impl.biztools.UserCenterBizTools;
+import java.time.format.DateTimeFormatter;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -247,7 +248,7 @@ public class UserQxService {
                         result.setUserCollectPosition(entity);
                     } else {
                         entity.setStatus(status);
-                        entity.setUpdateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
+                        entity.setUpdateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
                         result.setUserCollectPosition(userDao.updateUserCollectPosition(entity));
                     }
                 } else {
@@ -255,7 +256,7 @@ public class UserQxService {
                     entity.setStatus(status);
                     entity.setUserId(userId);
                     entity.setPositionId(positionId);
-                    entity.setCreateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
+                    entity.setCreateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
                     result.setUserCollectPosition(userDao.saveUserCollectPosition(entity));
                 }
             }

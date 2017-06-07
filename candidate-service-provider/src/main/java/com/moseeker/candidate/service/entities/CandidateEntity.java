@@ -21,6 +21,7 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.*;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrPointsConfDO;
+import java.time.format.DateTimeFormatter;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
@@ -127,7 +128,8 @@ public class CandidateEntity implements Candidate {
                             candidateCompanyDO.setMobile(String.valueOf(userUserDO.getMobile()));
                             candidateCompanyDO.setEmail(userUserDO.getEmail());
                             candidateCompanyDO.setUpdateTime(date);
-                            CandidateDBDao.saveCandidateCompany(candidateCompanyDO);
+                            candidateCompanyDO = CandidateDBDao.saveCandidateCompany(candidateCompanyDO);
+                            logger.info("CandidateEntity glancePosition save candidateCompanyDO:{}", candidateCompanyDO);
                         } else {
                             candidateCompanyDO = candidateCompanyDOOptional.get();
                         }
@@ -138,6 +140,7 @@ public class CandidateEntity implements Candidate {
                         candidatePositionDO.setSharedFromEmployee(fromEmployee?(byte)1:0);
                         candidatePositionDO.setPositionId(positionID);
                         candidatePositionDO.setUserId(userID);
+                        logger.info("CandidateEntity glancePosition candidatePositionDO:{}", candidatePositionDO);
                         CandidateDBDao.saveCandidatePosition(candidatePositionDO);
                     }
                 }
@@ -154,7 +157,7 @@ public class CandidateEntity implements Candidate {
 		Boolean isInterested = BooleanUtils.toBooleanObject(is_interested);
 		if (position.filter(f -> f.userId != 0 && f.isInterested != isInterested).isPresent()) {
 			try {
-				CandidateDBDao.updateCandidatePosition(position.map(m -> m.setIsInterested(isInterested)).map(m -> m.setUpdateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '))).get());
+				CandidateDBDao.updateCandidatePosition(position.map(m -> m.setIsInterested(isInterested)).map(m -> m.setUpdateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))).get());
 			} catch (TException e) {
 				logger.error(e.getMessage(), e);
 				response = ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
@@ -459,7 +462,7 @@ public class CandidateEntity implements Candidate {
      */
     private RecommendResult assembleRecommendResult(int id, int postUserId, String clickTime, int companyId) {
         RecommendResult recommendResult = new RecommendResult();
-        recommendResult.setId(id);
+        recommendResult.setClickTime(clickTime);
 
         List<Integer> exceptNotRecommend = new ArrayList<Integer>(){{
             add(0);
@@ -484,13 +487,12 @@ public class CandidateEntity implements Candidate {
                         clickTime, selected);
         if(candidateRecomRecordDOList != null && candidateRecomRecordDOList.size() > 0) {
             CandidateRecomRecordDO candidateRecomRecordDO = candidateRecomRecordDOList.get(0);
+            recommendResult.setId(candidateRecomRecordDO.getId());
             Future positionFuture = findPositionFutureById(candidateRecomRecordDO.getPositionId());
             Future userFuture = findUserFutureById(candidateRecomRecordDO.getPresenteeUserId());
             recommendResult.setPresenteeName(refineUserName(userFuture));
             recommendResult.setPositionName(refinePositionName(positionFuture));
         }
-
-
 
         try {
             int exceptNotRecommendedCount = CandidateDBDao.countRecommendation(postUserId,
