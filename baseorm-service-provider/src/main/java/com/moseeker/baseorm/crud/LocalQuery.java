@@ -66,7 +66,7 @@ class LocalQuery<R extends Record> {
                     .map(select -> {
                         Field<?> field = table.field(select.getField());
                         if (field == null) {
-                            logger.error("field '" + select.getField() + "' not found in table " + table.getName());
+                            logger.warn("field '" + select.getField() + "' not found in table " + table.getName());
                             return null;
                         } else {
                             switch (select.getSelectOp()) {
@@ -113,7 +113,7 @@ class LocalQuery<R extends Record> {
                     .map(groupField -> {
                         Field<?> field = table.field(groupField);
                         if (field == null) {
-                            logger.error("field '" + groupField + "' not found in table " + table.getName());
+                            logger.warn("field '" + groupField + "' not found in table " + table.getName());
                             return null;
                         } else {
                             return field;
@@ -143,7 +143,7 @@ class LocalQuery<R extends Record> {
                     .map(orderBy -> {
                         Field<?> field = table.field(orderBy.getField());
                         if (field == null) {
-                            logger.error("field '" + orderBy.getField() + "' not found in table " + table.getName());
+                            logger.warn("field '" + orderBy.getField() + "' not found in table " + table.getName());
                             return null;
                         } else {
                             switch (orderBy.getOrder()) {
