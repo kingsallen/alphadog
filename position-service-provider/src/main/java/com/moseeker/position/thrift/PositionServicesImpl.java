@@ -1,7 +1,9 @@
 package com.moseeker.position.thrift;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.moseeker.common.exception.ExceptionType;
 import com.moseeker.position.service.fundationbs.PositionQxService;
 import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
 import com.moseeker.thrift.gen.position.struct.Position;
@@ -64,7 +66,12 @@ public class PositionServicesImpl implements Iface {
      */
     @Override
     public Response getPositionById(int positionId) throws TException {
-        return service.getPositionById(positionId);
+        try {
+            return service.getPositionById(positionId);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+        }
     }
 
     @Override
@@ -104,8 +111,13 @@ public class PositionServicesImpl implements Iface {
     }
 
     @Override
-    public boolean ifAllowRefresh(int positionId,int account_id) throws TException {
-        return service.ifAllowRefresh(positionId,account_id);
+    public boolean ifAllowRefresh(int positionId,int account_id) {
+        try {
+            return service.ifAllowRefresh(positionId,account_id);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return false;
+        }
     }
 
     @Override
@@ -121,7 +133,12 @@ public class PositionServicesImpl implements Iface {
 
     @Override
     public List<RpExtInfo> getPositionListRpExt(List<Integer> pids) throws TException {
-        return service.getPositionListRpExt(pids);
+        try {
+            return service.getPositionListRpExt(pids);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return new ArrayList<>();
+        }
     }
 
     @Override
