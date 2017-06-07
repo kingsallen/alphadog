@@ -57,15 +57,8 @@ public class PositionBS {
 	public void synchronizePosition(PositionForSynchronizationPojo position) {
 		//校验必填项信息
 		//todo
-		try {
-			if(positionService.verifySynchronizePosition(position)) {
-				positionService.getPositionById(position.getId());
-			}
-			
-		} catch (TException e) {
-			
-		} finally {
-			
+		if(positionService.verifySynchronizePosition(position)) {
+			positionService.getPositionById(position.getId());
 		}
 	}
 

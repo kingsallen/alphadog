@@ -24,18 +24,16 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.position.struct.PositionDetails;
+import org.jooq.*;
+import org.jooq.impl.TableImpl;
+import org.jooq.types.UInteger;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import org.apache.thrift.TException;
-import org.jooq.*;
-import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
-import org.springframework.stereotype.Repository;
 
 @Repository
 public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecord> {
@@ -464,23 +462,15 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
     /*
      * 获取position
      */
-    public Position getPositionByQuery(Query query) throws TException {
+    public Position getPositionByQuery(Query query) {
         Position position = new Position();
-        try {
-            JobPositionRecord record = this.getRecord(query);
-            if (record != null) {
-                record.into(position);
-                position.setHb_status(record.getHbStatus());
-                position.setCompany_id(record.getCompanyId().intValue());
-                position.setAccountabilities(record.getAccountabilities());
-                return position;
-            }
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-        } finally {
-            //do nothing
+        JobPositionRecord record = this.getRecord(query);
+        if (record != null) {
+            record.into(position);
+            position.setHb_status(record.getHbStatus());
+            position.setCompany_id(record.getCompanyId().intValue());
+            position.setAccountabilities(record.getAccountabilities());
+            return position;
         }
         return position;
     }
