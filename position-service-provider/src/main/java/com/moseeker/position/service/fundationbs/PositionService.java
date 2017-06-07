@@ -418,7 +418,7 @@ public class PositionService {
             // 如果为true, 数据不能删除. 否则,允许删除, data中的数据根据fields_nohash中以外的字段, 判断data中的记录和数据库中已有记录的关系, 进行添加, 修改,删除
             Boolean noDelete = batchHandlerJobPosition.nodelete;
             // 参数有误
-            if (!noDelete){
+            if (null == noDelete){
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, ConstantErrorCodeMessage.POSITION_NODELETE_BLANK);
             }
             // 提交的数据为空
