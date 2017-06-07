@@ -1120,7 +1120,8 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
                             jooqMapfilter},
                     SerializerFeature.WriteMapNullValue,
                     SerializerFeature.WriteNullStringAsEmpty,
-                    SerializerFeature.WriteNullListAsEmpty));
+                    SerializerFeature.WriteNullListAsEmpty,
+                    SerializerFeature.DisableCircularReferenceDetect));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
