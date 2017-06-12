@@ -11,6 +11,7 @@ import com.moseeker.db.profiledb.tables.ProfileCompleteness;
 import com.moseeker.db.profiledb.tables.ProfileCredentials;
 import com.moseeker.db.profiledb.tables.ProfileEducation;
 import com.moseeker.db.profiledb.tables.ProfileImport;
+import com.moseeker.db.profiledb.tables.ProfileImportBk;
 import com.moseeker.db.profiledb.tables.ProfileIntention;
 import com.moseeker.db.profiledb.tables.ProfileIntentionCity;
 import com.moseeker.db.profiledb.tables.ProfileIntentionIndustry;
@@ -18,6 +19,7 @@ import com.moseeker.db.profiledb.tables.ProfileIntentionPosition;
 import com.moseeker.db.profiledb.tables.ProfileLanguage;
 import com.moseeker.db.profiledb.tables.ProfileOther;
 import com.moseeker.db.profiledb.tables.ProfileProfile;
+import com.moseeker.db.profiledb.tables.ProfileProfileBk;
 import com.moseeker.db.profiledb.tables.ProfileProjectexp;
 import com.moseeker.db.profiledb.tables.ProfileSkill;
 import com.moseeker.db.profiledb.tables.ProfileWorkexp;
@@ -47,7 +49,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Profiledb extends SchemaImpl {
 
-	private static final long serialVersionUID = 1372855577;
+	private static final long serialVersionUID = 2080632071;
 
 	/**
 	 * The reference instance of <code>profiledb</code>
@@ -77,6 +79,7 @@ public class Profiledb extends SchemaImpl {
 			ProfileCredentials.PROFILE_CREDENTIALS,
 			ProfileEducation.PROFILE_EDUCATION,
 			ProfileImport.PROFILE_IMPORT,
+			ProfileImportBk.PROFILE_IMPORT_BK,
 			ProfileIntention.PROFILE_INTENTION,
 			ProfileIntentionCity.PROFILE_INTENTION_CITY,
 			ProfileIntentionIndustry.PROFILE_INTENTION_INDUSTRY,
@@ -84,6 +87,7 @@ public class Profiledb extends SchemaImpl {
 			ProfileLanguage.PROFILE_LANGUAGE,
 			ProfileOther.PROFILE_OTHER,
 			ProfileProfile.PROFILE_PROFILE,
+			ProfileProfileBk.PROFILE_PROFILE_BK,
 			ProfileProjectexp.PROFILE_PROJECTEXP,
 			ProfileSkill.PROFILE_SKILL,
 			ProfileWorkexp.PROFILE_WORKEXP,

@@ -5,10 +5,15 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.service.UserEmployeeService;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
-import com.moseeker.thrift.gen.common.struct.*;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CURDException;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.service.UserDBDao.Iface;
 import com.moseeker.thrift.gen.dao.struct.*;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserSearchConditionDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserViewedPositionDO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeePointStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 
@@ -43,8 +48,18 @@ public class UserDBDaoThriftService implements Iface {
 	@Autowired
 	private WxUserDao wxUserDao;
 
+    @Autowired
+    private UserEmployeePointsDao userEmployeePointsDao;
+
+    @Autowired
+    private UserCollectPositionDao collectPositionDao;
+
 	@Autowired
-	private UserEmployeePointsDao userEmployeePointsDao;
+    private UserSearchConditionDao searchConditionDao;
+
+    @Autowired
+    private UserViewedPositionDao userViewedPositionDao;
+
 
 	@Override
 	public UserUserDO getUser(CommonQuery query) throws TException {
@@ -183,18 +198,73 @@ public class UserDBDaoThriftService implements Iface {
 	public UserWxUserDO getUserWxUserDO(CommonQuery query) throws CURDException, TException {
 		return wxUserDao.findResource(query);
 	}
-	
-	@Override
-	public int postUserEmployeeDO(UserEmployeeDO userEmployee)
-			throws TException {
-		if (userEmployee != null) {
-			UserEmployeeRecord ueRecord = BeanUtils.structToDB(userEmployee, UserEmployeeRecord.class);
-			try {
-				return employeeDao.postResource(ueRecord);
-			} catch (Exception e) {
-				logger.error(e.getMessage(), e);
-			}
-		}
-		return 0;
-	}
+
+    @Override
+    public int postUserEmployeeDO(UserEmployeeDO userEmployee)
+            throws TException {
+        if (userEmployee != null) {
+            UserEmployeeRecord ueRecord = BeanUtils.structToDB(userEmployee, UserEmployeeRecord.class);
+            try {
+                return employeeDao.postResource(ueRecord);
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+        return 0;
+    }
+
+    @Override
+    public List<UserSearchConditionDO> getUserSearchConditions(CommonQuery query) throws TException {
+        return searchConditionDao.listResources(query);
+    }
+
+    @Override
+    public UserSearchConditionDO getUserSearchCondition(CommonQuery query) throws TException {
+        return searchConditionDao.findResource(query);
+    }
+
+    @Override
+    public UserSearchConditionDO saveUserSearchCondition(UserSearchConditionDO entity) throws TException {
+        return searchConditionDao.saveResource(entity);
+    }
+
+    @Override
+    public UserSearchConditionDO updateUserSearchCondition(UserSearchConditionDO entity) throws TException {
+        return searchConditionDao.updateResource(entity);
+    }
+
+    @Override
+    public List<UserCollectPositionDO> getUserCollectPositions(CommonQuery query) throws TException {
+        return collectPositionDao.listResources(query);
+    }
+
+    @Override
+    public UserCollectPositionDO getUserCollectPosition(CommonQuery query) throws TException {
+        return collectPositionDao.findResource(query);
+    }
+
+    @Override
+    public UserCollectPositionDO saveUserCollectPosition(UserCollectPositionDO entity) throws TException {
+        return collectPositionDao.saveResource(entity);
+    }
+
+    @Override
+    public UserCollectPositionDO updateUserCollectPosition(UserCollectPositionDO entity) throws TException {
+        return collectPositionDao.updateResource(entity);
+    }
+
+    @Override
+    public List<UserViewedPositionDO> getUserViewedPositions(CommonQuery query) throws TException {
+        return userViewedPositionDao.listResources(query);
+    }
+
+    @Override
+    public UserViewedPositionDO getUserViewedPosition(CommonQuery query) throws TException {
+        return userViewedPositionDao.findResource(query);
+    }
+
+    @Override
+    public UserViewedPositionDO saveUserViewedPosition(UserViewedPositionDO entity) throws TException {
+        return userViewedPositionDao.saveResource(entity);
+    }
 }

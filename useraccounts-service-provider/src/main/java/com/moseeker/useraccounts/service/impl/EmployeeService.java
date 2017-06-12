@@ -20,6 +20,7 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCustomFieldsDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrPointsConfDO;
 import com.moseeker.thrift.gen.employee.struct.*;
 import com.moseeker.thrift.gen.mq.service.MqService;
+import java.time.format.DateTimeFormatter;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -211,8 +212,8 @@ public class EmployeeService {
 
                     employee.setWxuser_id(getWxuserId(query));
                     employee.setAuthMethod((byte)bindingParams.getType().getValue());
-					employee.setActivation((byte)1);
-					employee.setCreateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
+					employee.setActivation((byte)3);
+					employee.setCreateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
                     int primaryKey = userDao.postUserEmployeeDO(employee);
                     if( primaryKey == 0) {
 						response.setSuccess(false);
@@ -258,6 +259,10 @@ public class EmployeeService {
 					if (mailResponse.getStatus() == 0) {
 						String redStr = client.set(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, String.valueOf(employee.getId()), JSONObject.toJSONString(bindingParams));
 						log.info("set redis result: ", redStr);
+						// 修改用户邮箱
+                        employee.setEmail(bindingParams.getEmail());
+                        employee.setUpdateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+                        userDao.putUserEmployeesDO(Arrays.asList(employee));
 						response.setSuccess(true);
 						response.setMessage("发送激活邮件成功");
 					} else {
@@ -337,8 +342,8 @@ public class EmployeeService {
 
                     employee.setWxuser_id(getWxuserId(query));
                     employee.setAuthMethod((byte)bindingParams.getType().getValue());
-                    employee.setActivation((byte)1);
-                    employee.setCreateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
+                    employee.setActivation((byte)3);
+                    employee.setCreateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
                     int primaryKey = userDao.postUserEmployeeDO(employee);
                     if(primaryKey== 0) {
                         response.setSuccess(false);
@@ -401,6 +406,7 @@ public class EmployeeService {
 		query.setEqualFilter(new HashMap<>());
 		query.getEqualFilter().put("sysuser_id", String.valueOf(bindingParams.getUserId()));
 		query.getEqualFilter().put("disable", "0");
+		query.setPer_page(Integer.MAX_VALUE);
 		List<UserEmployeeDO> employees = userDao.getUserEmployeesDO(query);
 		log.info("select employees by: {}, result = {}", query, Arrays.toString(employees.toArray()));
 		if (!StringUtils.isEmptyList(employees)) {
@@ -412,8 +418,8 @@ public class EmployeeService {
 					query.getEqualFilter().put("sysuser_id", String.valueOf(bindingParams.getUserId()));
 					e.setWxuser_id(getWxuserId(query));
 					e.setEmail(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getEmail(), e.getEmail()));
-					e.setBindingTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
-					e.setUpdateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
+					e.setBindingTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+					e.setUpdateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 					e.setCname(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getName(), e.getCname()));
 					e.setMobile(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getMobile(), e.getMobile()));
 					e.setCustomField(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getCustomField(), e.getCustomField()));
@@ -624,6 +630,7 @@ public class EmployeeService {
 				BindingParams bindingParams = JSONObject.parseObject(value, BindingParams.class);
 				response = updateEmployee(bindingParams, Integer.valueOf(employeeId));
 				if (response.success) {
+				    response.setEmployeeId(Integer.valueOf(employeeId));
 					client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, employeeId);
 				}
 			} 

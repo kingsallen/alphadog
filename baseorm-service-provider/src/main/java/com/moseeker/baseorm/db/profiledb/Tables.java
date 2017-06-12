@@ -11,6 +11,7 @@ import com.moseeker.baseorm.db.profiledb.tables.ProfileCompleteness;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileCredentials;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileEducation;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileImport;
+import com.moseeker.baseorm.db.profiledb.tables.ProfileImportBk;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileIntention;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileIntentionCity;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileIntentionIndustry;
@@ -18,10 +19,12 @@ import com.moseeker.baseorm.db.profiledb.tables.ProfileIntentionPosition;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileLanguage;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileOther;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileProfile;
+import com.moseeker.baseorm.db.profiledb.tables.ProfileProfileBk;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileProjectexp;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileSkill;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileWorkexp;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileWorks;
+import com.moseeker.baseorm.db.profiledb.tables.SchemaMigrations;
 
 import javax.annotation.Generated;
 
@@ -75,6 +78,11 @@ public class Tables {
 	public static final ProfileImport PROFILE_IMPORT = com.moseeker.baseorm.db.profiledb.tables.ProfileImport.PROFILE_IMPORT;
 
 	/**
+	 * 用户profile导入记录信息
+	 */
+	public static final ProfileImportBk PROFILE_IMPORT_BK = com.moseeker.baseorm.db.profiledb.tables.ProfileImportBk.PROFILE_IMPORT_BK;
+
+	/**
 	 * Profile的求职意向
 	 */
 	public static final ProfileIntention PROFILE_INTENTION = com.moseeker.baseorm.db.profiledb.tables.ProfileIntention.PROFILE_INTENTION;
@@ -110,6 +118,11 @@ public class Tables {
 	public static final ProfileProfile PROFILE_PROFILE = com.moseeker.baseorm.db.profiledb.tables.ProfileProfile.PROFILE_PROFILE;
 
 	/**
+	 * 用户profile表
+	 */
+	public static final ProfileProfileBk PROFILE_PROFILE_BK = com.moseeker.baseorm.db.profiledb.tables.ProfileProfileBk.PROFILE_PROFILE_BK;
+
+	/**
 	 * Profile的项目经验
 	 */
 	public static final ProfileProjectexp PROFILE_PROJECTEXP = com.moseeker.baseorm.db.profiledb.tables.ProfileProjectexp.PROFILE_PROJECTEXP;
@@ -128,4 +141,9 @@ public class Tables {
 	 * Profile的个人作品
 	 */
 	public static final ProfileWorks PROFILE_WORKS = com.moseeker.baseorm.db.profiledb.tables.ProfileWorks.PROFILE_WORKS;
+
+	/**
+	 * The table profiledb.schema_migrations
+	 */
+	public static final SchemaMigrations SCHEMA_MIGRATIONS = com.moseeker.baseorm.db.profiledb.tables.SchemaMigrations.SCHEMA_MIGRATIONS;
 }

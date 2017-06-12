@@ -37,7 +37,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserUser extends TableImpl<UserUserRecord> {
 
-    private static final long serialVersionUID = 411645064;
+    private static final long serialVersionUID = 1035219647;
 
     /**
      * The reference instance of <code>userdb.user_user</code>
@@ -58,9 +58,9 @@ public class UserUser extends TableImpl<UserUserRecord> {
     public final TableField<UserUserRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
 
     /**
-     * The column <code>userdb.user_user.username</code>. 用户名，比如手机号、邮箱等
+     * The column <code>userdb.user_user.username</code>. 用户名，目前存放已验证手机号或者unionid
      */
-    public final TableField<UserUserRecord, String> USERNAME = createField("username", org.jooq.impl.SQLDataType.VARCHAR.length(50), this, "用户名，比如手机号、邮箱等");
+    public final TableField<UserUserRecord, String> USERNAME = createField("username", org.jooq.impl.SQLDataType.VARCHAR.length(50), this, "用户名，目前存放已验证手机号或者unionid");
 
     /**
      * The column <code>userdb.user_user.password</code>. 密码
@@ -103,9 +103,9 @@ public class UserUser extends TableImpl<UserUserRecord> {
     public final TableField<UserUserRecord, Integer> LOGIN_COUNT = createField("login_count", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "登录次数");
 
     /**
-     * The column <code>userdb.user_user.mobile</code>. user pass mobile registe
+     * The column <code>userdb.user_user.mobile</code>. 手机号(未验证)
      */
-    public final TableField<UserUserRecord, Long> MOBILE = createField("mobile", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.BIGINT)), this, "user pass mobile registe");
+    public final TableField<UserUserRecord, Long> MOBILE = createField("mobile", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.BIGINT)), this, "手机号(未验证)");
 
     /**
      * The column <code>userdb.user_user.email</code>. user pass email registe
@@ -153,9 +153,9 @@ public class UserUser extends TableImpl<UserUserRecord> {
     public final TableField<UserUserRecord, String> UNIONID = createField("unionid", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "存储仟寻服务号的unionid");
 
     /**
-     * The column <code>userdb.user_user.source</code>. 来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录, 7:PC(手机直接注册) 8:PC(我要投递) 9: PC(我感兴趣) 10:PC(微信扫描后手机注册)100: 简历回收自动创建
+     * The column <code>userdb.user_user.source</code>. 来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录 3:微信端百度 oauth 7:PC(正常添加) 8:PC(我要投递) 9:PC(我感兴趣) 10:PC(微信扫描后手机注册) 100:简历回收自动创建
      */
-    public final TableField<UserUserRecord, Short> SOURCE = createField("source", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录, 7:PC(手机直接注册) 8:PC(我要投递) 9: PC(我感兴趣) 10:PC(微信扫描后手机注册)100: 简历回收自动创建");
+    public final TableField<UserUserRecord, Short> SOURCE = createField("source", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录 3:微信端百度 oauth 7:PC(正常添加) 8:PC(我要投递) 9:PC(我感兴趣) 10:PC(微信扫描后手机注册) 100:简历回收自动创建");
 
     /**
      * The column <code>userdb.user_user.company</code>. 点击我感兴趣时填写的公司
@@ -175,12 +175,12 @@ public class UserUser extends TableImpl<UserUserRecord> {
     /**
      * The column <code>userdb.user_user.nickname</code>. 用户昵称
      */
-    public final TableField<UserUserRecord, String> NICKNAME = createField("nickname", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "用户昵称");
+    public final TableField<UserUserRecord, String> NICKNAME = createField("nickname", org.jooq.impl.SQLDataType.VARCHAR.length(100), this, "用户昵称");
 
     /**
-     * The column <code>userdb.user_user.email_verified</code>. 邮箱是否认证 2:老数据 1:已认证 0:未认证
+     * The column <code>userdb.user_user.email_verified</code>. 邮箱是认证 2:老数据 1:已认证 0:未认证
      */
-    public final TableField<UserUserRecord, Byte> EMAIL_VERIFIED = createField("email_verified", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("2", org.jooq.impl.SQLDataType.TINYINT)), this, "邮箱是否认证 2:老数据 1:已认证 0:未认证");
+    public final TableField<UserUserRecord, Byte> EMAIL_VERIFIED = createField("email_verified", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("2", org.jooq.impl.SQLDataType.TINYINT)), this, "邮箱是认证 2:老数据 1:已认证 0:未认证");
 
     /**
      * The column <code>userdb.user_user.update_time</code>.

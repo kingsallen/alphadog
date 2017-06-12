@@ -720,6 +720,11 @@ public class UserHrAccountService {
             qu.addEqualFilter("binding", "[1,2]");//绑定中或者已经绑定
             ThirdPartAccountData data = hraccountDao.getThirdPartyAccount(qu);
 
+            //数据库中username是不区分大小写的，如果大小写不同，那么认为不是一个账号
+            if (data != null && !username.equals(data.username)) {
+                data = null;
+            }
+
             if (data == null || data.getId() == 0) {
                 //检查该用户是否绑定了其它相同渠道的账号
                 ThirdPartAccountData thirdPartAccount = hraccountDao.getThirdPartyAccountByUserId((int) user.getId(), channelType);

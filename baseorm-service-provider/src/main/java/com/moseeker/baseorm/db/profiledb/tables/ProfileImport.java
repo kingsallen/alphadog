@@ -19,8 +19,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UByte;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -36,7 +34,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileImport extends TableImpl<ProfileImportRecord> {
 
-	private static final long serialVersionUID = -1122497632;
+	private static final long serialVersionUID = 1219553010;
 
 	/**
 	 * The reference instance of <code>profiledb.profile_import</code>
@@ -54,12 +52,12 @@ public class ProfileImport extends TableImpl<ProfileImportRecord> {
 	/**
 	 * The column <code>profiledb.profile_import.profile_id</code>. profile.id
 	 */
-	public final TableField<ProfileImportRecord, UInteger> PROFILE_ID = createField("profile_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "profile.id");
+	public final TableField<ProfileImportRecord, Integer> PROFILE_ID = createField("profile_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "profile.id");
 
 	/**
 	 * The column <code>profiledb.profile_import.source</code>. 来源, 0:无法识别 1:51Job 2:Liepin 3:zhilian 4:linkedin
 	 */
-	public final TableField<ProfileImportRecord, UByte> SOURCE = createField("source", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "来源, 0:无法识别 1:51Job 2:Liepin 3:zhilian 4:linkedin");
+	public final TableField<ProfileImportRecord, Byte> SOURCE = createField("source", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "来源, 0:无法识别 1:51Job 2:Liepin 3:zhilian 4:linkedin");
 
 	/**
 	 * The column <code>profiledb.profile_import.last_update_time</code>. 导入简历的最后修改时间

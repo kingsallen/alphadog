@@ -3,8 +3,8 @@ package com.moseeker.apps.constants;
 import java.text.MessageFormat;
 
 public enum TemplateMs {
-	
-	TOSEEKER(9, "{0}mobile/application?wechat_signature={1}&m=checkstatus&app_id={2}") {
+
+	TOSEEKER(9, "{0}m/app/usercenter/applyrecords/{2}?wechat_signature={1}") {
 		@Override
 		public MsInfo processStatus(int status, Object...args) {
 			MsInfo mi = null;
@@ -28,7 +28,7 @@ public enum TemplateMs {
 		}
 	},
 	
-	TORECOM(9, "{0}mobile/sysuser?m=recom&wechat_signature={1}") {
+	TORECOM(9, "{0}m/app/employee/recommends?wechat_signature={1}") {
 		@Override
 		public MsInfo processStatus(int status, Object ...args) {
 			MsInfo mi = null;

@@ -6,16 +6,20 @@ package com.moseeker.db.userdb;
 
 import com.moseeker.db.userdb.tables.CandidateVJobPositionRecom;
 import com.moseeker.db.userdb.tables.UserBdUser;
+import com.moseeker.db.userdb.tables.UserCollectPosition;
+import com.moseeker.db.userdb.tables.UserCompanyFollow;
+import com.moseeker.db.userdb.tables.UserCompanyVisitReq;
 import com.moseeker.db.userdb.tables.UserEmployee;
 import com.moseeker.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.db.userdb.tables.UserFavPosition;
 import com.moseeker.db.userdb.tables.UserHrAccount;
 import com.moseeker.db.userdb.tables.UserIntention;
+import com.moseeker.db.userdb.tables.UserSearchCondition;
 import com.moseeker.db.userdb.tables.UserSettings;
+import com.moseeker.db.userdb.tables.UserSysAuthGroup;
 import com.moseeker.db.userdb.tables.UserThirdpartyUser;
 import com.moseeker.db.userdb.tables.UserUser;
-import com.moseeker.db.userdb.tables.UserUserNameEmail1128;
-import com.moseeker.db.userdb.tables.UserUserTmp;
+import com.moseeker.db.userdb.tables.UserViewedPosition;
 import com.moseeker.db.userdb.tables.UserWxUser;
 import com.moseeker.db.userdb.tables.UserWxViewer;
 
@@ -43,7 +47,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Userdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 695015421;
+    private static final long serialVersionUID = -1716299300;
 
     /**
      * The reference instance of <code>userdb</code>
@@ -59,6 +63,21 @@ public class Userdb extends SchemaImpl {
      * 百度用户信息表
      */
     public final UserBdUser USER_BD_USER = com.moseeker.db.userdb.tables.UserBdUser.USER_BD_USER;
+
+    /**
+     * 用户职位收藏
+     */
+    public final UserCollectPosition USER_COLLECT_POSITION = com.moseeker.db.userdb.tables.UserCollectPosition.USER_COLLECT_POSITION;
+
+    /**
+     * 公司关注表
+     */
+    public final UserCompanyFollow USER_COMPANY_FOLLOW = com.moseeker.db.userdb.tables.UserCompanyFollow.USER_COMPANY_FOLLOW;
+
+    /**
+     * C端用户申请参观记录表
+     */
+    public final UserCompanyVisitReq USER_COMPANY_VISIT_REQ = com.moseeker.db.userdb.tables.UserCompanyVisitReq.USER_COMPANY_VISIT_REQ;
 
     /**
      * The table <code>userdb.user_employee</code>.
@@ -86,12 +105,22 @@ public class Userdb extends SchemaImpl {
     public final UserIntention USER_INTENTION = com.moseeker.db.userdb.tables.UserIntention.USER_INTENTION;
 
     /**
+     * 用户搜索条件(qx职位搜索)
+     */
+    public final UserSearchCondition USER_SEARCH_CONDITION = com.moseeker.db.userdb.tables.UserSearchCondition.USER_SEARCH_CONDITION;
+
+    /**
      * 用户设置表
      */
     public final UserSettings USER_SETTINGS = com.moseeker.db.userdb.tables.UserSettings.USER_SETTINGS;
 
     /**
-     * The table <code>userdb.user_thirdparty_user</code>.
+     * sysplat用户权限
+     */
+    public final UserSysAuthGroup USER_SYS_AUTH_GROUP = com.moseeker.db.userdb.tables.UserSysAuthGroup.USER_SYS_AUTH_GROUP;
+
+    /**
+     * 第三方关联帐号表
      */
     public final UserThirdpartyUser USER_THIRDPARTY_USER = com.moseeker.db.userdb.tables.UserThirdpartyUser.USER_THIRDPARTY_USER;
 
@@ -101,14 +130,9 @@ public class Userdb extends SchemaImpl {
     public final UserUser USER_USER = com.moseeker.db.userdb.tables.UserUser.USER_USER;
 
     /**
-     * The table <code>userdb.user_user_name_email1128</code>.
+     * 用户查看过的职位
      */
-    public final UserUserNameEmail1128 USER_USER_NAME_EMAIL1128 = com.moseeker.db.userdb.tables.UserUserNameEmail1128.USER_USER_NAME_EMAIL1128;
-
-    /**
-     * The table <code>userdb.user_user_tmp</code>.
-     */
-    public final UserUserTmp USER_USER_TMP = com.moseeker.db.userdb.tables.UserUserTmp.USER_USER_TMP;
+    public final UserViewedPosition USER_VIEWED_POSITION = com.moseeker.db.userdb.tables.UserViewedPosition.USER_VIEWED_POSITION;
 
     /**
      * 微信用户表
@@ -147,16 +171,20 @@ public class Userdb extends SchemaImpl {
         return Arrays.<Table<?>>asList(
             CandidateVJobPositionRecom.CANDIDATE_V_JOB_POSITION_RECOM,
             UserBdUser.USER_BD_USER,
+            UserCollectPosition.USER_COLLECT_POSITION,
+            UserCompanyFollow.USER_COMPANY_FOLLOW,
+            UserCompanyVisitReq.USER_COMPANY_VISIT_REQ,
             UserEmployee.USER_EMPLOYEE,
             UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD,
             UserFavPosition.USER_FAV_POSITION,
             UserHrAccount.USER_HR_ACCOUNT,
             UserIntention.USER_INTENTION,
+            UserSearchCondition.USER_SEARCH_CONDITION,
             UserSettings.USER_SETTINGS,
+            UserSysAuthGroup.USER_SYS_AUTH_GROUP,
             UserThirdpartyUser.USER_THIRDPARTY_USER,
             UserUser.USER_USER,
-            UserUserNameEmail1128.USER_USER_NAME_EMAIL1128,
-            UserUserTmp.USER_USER_TMP,
+            UserViewedPosition.USER_VIEWED_POSITION,
             UserWxUser.USER_WX_USER,
             UserWxViewer.USER_WX_VIEWER);
     }

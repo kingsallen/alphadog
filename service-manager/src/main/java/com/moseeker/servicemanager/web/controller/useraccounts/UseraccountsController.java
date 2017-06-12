@@ -1,18 +1,6 @@
 package com.moseeker.servicemanager.web.controller.useraccounts;
 
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.moseeker.common.annotation.iface.CounterIface;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
@@ -21,14 +9,26 @@ import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.apps.userbs.service.UserBS;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserSearchConditionDO;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
+import com.moseeker.thrift.gen.useraccounts.service.UserQxService;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
 import com.moseeker.thrift.gen.useraccounts.service.UsersettingServices;
-import com.moseeker.thrift.gen.useraccounts.struct.BindType;
-import com.moseeker.thrift.gen.useraccounts.struct.User;
-import com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition;
-import com.moseeker.thrift.gen.useraccounts.struct.Userloginreq;
-import com.moseeker.thrift.gen.useraccounts.struct.Usersetting;
+import com.moseeker.thrift.gen.useraccounts.struct.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.apache.thrift.TSerializer;
+import org.apache.thrift.protocol.TSimpleJSONProtocol;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 //@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
 @Controller
@@ -42,6 +42,8 @@ public class UseraccountsController {
 	UsersettingServices.Iface usersettingServices = ServiceManager.SERVICEMANAGER
 			.getService(UsersettingServices.Iface.class);
 	ProfileServices.Iface profileService = ServiceManager.SERVICEMANAGER.getService(ProfileServices.Iface.class);
+
+	UserQxService.Iface userQxService = ServiceManager.SERVICEMANAGER.getService(UserQxService.Iface.class);
 	
 	UserBS.Iface userBS = ServiceManager.SERVICEMANAGER.getService(UserBS.Iface.class);
 
@@ -769,4 +771,161 @@ public class UseraccountsController {
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}
 	}
+
+
+    /**
+     * 获取用户筛选条件
+     * @param request
+     * @return
+     */
+	@RequestMapping(value = "/user/searchcondition", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+    @ResponseBody
+	public String getUserSearchCondition(HttpServletRequest request) {
+        try {
+            Params<String, Object> param = ParamUtils.parseRequestParam(request);
+            int userId = param.getInt("user_id", 0);
+            return new TSerializer(new TSimpleJSONProtocol.Factory()).toString(userQxService.userSearchConditionList(userId));
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     * 保存用户筛选条件
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/user/searchcondition", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public String  postUserSearchCondition(HttpServletRequest request) {
+        try {
+            UserSearchConditionDO conditionDO = ParamUtils.initModelForm(request, UserSearchConditionDO.class);
+
+            return new TSerializer(new TSimpleJSONProtocol.Factory()).toString(userQxService.postUserSearchCondition(conditionDO));
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     * 删除用户筛选条件
+     * @param request
+     * @return
+     */
+    @RequestMapping(value =  "/user/searchcondition", method = RequestMethod.DELETE, produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public String delUserSearchCondition(HttpServletRequest request) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int userId = params.getInt("user_id", 0);
+            int id = params.getInt("id", 0);
+
+            return new TSerializer(new TSimpleJSONProtocol.Factory()).toString(userQxService.delUserSearchCondition(userId, id));
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     *  用户收藏职位
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/user/collect/position", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public String postCollectPosition(HttpServletRequest request) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int userId = params.getInt("user_id", 0);
+            int positionId = params.getInt("position_id", 0);
+
+            return new TSerializer(new TSimpleJSONProtocol.Factory()).toString(userQxService.postUserCollectPosition(userId, positionId));
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     * 获取用户收藏的职位信息
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/user/collect/position", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public String getCollectPosition(HttpServletRequest request) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int userId = params.getInt("user_id", 0);
+            int positionId = params.getInt("position_id", 0);
+
+            return new TSerializer(new TSimpleJSONProtocol.Factory()).toString(userQxService.getUserCollectPosition(userId, positionId));
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     * 用户取消收藏职位
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/user/collect/position", method = RequestMethod.DELETE, produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public String delCollectPosition(HttpServletRequest request) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int userId = params.getInt("user_id", 0);
+            int positionId = params.getInt("position_id", 0);
+
+            return new TSerializer(new TSimpleJSONProtocol.Factory()).toString(userQxService.delUserCollectPosition(userId, positionId));
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     * 用户阅读的职位
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/user/viewed/position", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public String viewedPosition(HttpServletRequest request) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int userId = params.getInt("user_id", 0);
+            int positionId = params.getInt("position_id", 0);
+
+            return new TSerializer(new TSimpleJSONProtocol.Factory()).toString(userQxService.userViewedPosition(userId, positionId));
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     * 批量查询用户职位状态
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/user/position/status", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public String userPositionStatus(HttpServletRequest request) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int userId = params.getInt("user_id", 0);
+            List<Integer> positionIds = ((ArrayList<String>)params.get("position_ids")).stream().map(Integer::valueOf).collect(Collectors.toList());
+
+            return new TSerializer(new TSimpleJSONProtocol.Factory()).toString(userQxService.getUserPositionStatus(userId, positionIds));
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 }

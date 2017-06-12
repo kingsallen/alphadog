@@ -1,102 +1,104 @@
 package com.moseeker.baseorm.Thriftservice;
 
 import com.moseeker.baseorm.dao.hrdb.*;
+import com.moseeker.baseorm.util.CURDExceptionUtils;
+import com.moseeker.thrift.gen.common.struct.CURDException;
+import org.apache.thrift.TException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import com.moseeker.baseorm.service.HrDBService;
 import com.moseeker.baseorm.service.HrDaoService;
-import com.moseeker.baseorm.util.CURDExceptionUtils;
 import com.moseeker.thrift.gen.application.struct.ProcessValidationStruct;
 import com.moseeker.thrift.gen.common.struct.BIZException;
-import com.moseeker.thrift.gen.common.struct.CURDException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.service.HrDBDao.Iface;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
-import org.apache.thrift.TException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Set;
 
 @Service
 public class HrDBThriftService implements Iface {
 
-	@Autowired
-	private HrDBService hrDBService;
+    @Autowired
+    private HrDBService hrDBService;
 
-	@Autowired
+    @Autowired
     private HrDaoService hrDaoService;
 
-	@Autowired
-	private HrOperationRecordDao hrOperationRecordDao;
+    @Autowired
+    private HrOperationRecordDao hrOperationRecordDao;
 
-	@Autowired
-	private CompanyDao companyDao;
+    @Autowired
+    private CompanyDao companyDao;
 
-	@Autowired
-	private ChatDao chatDao;
+    @Autowired
+    private ChatDao chatDao;
 
-	@Autowired
-	private ChatRoomDao chatRoomDao;
+    @Autowired
+    private ChatRoomDao chatRoomDao;
 
-	@Autowired
-	private HrChatUnreadCountDao hrChatUnreadCountDao;
+    @Autowired
+    private HrChatUnreadCountDao hrChatUnreadCountDao;
 
-	@Autowired
-	private HrWxWechatDao hrWxWechatDao;
+    @Autowired
+    private HrWxWechatDao hrWxWechatDao;
 
-	@Autowired
-	private HrPointsConfDao hrPointsConfDao;
+    @Autowired
+    private HrPointsConfDao hrPointsConfDao;
 
-	@Override
-	public Response getHrHistoryOperations(List<ProcessValidationStruct> record) throws TException {
-		return hrDBService.getHrHistoryOpertation(record);
-	}
+    @Autowired
+    private HrTeamDao hrTeamDao;
 
-	@Override
-	public List<HrOperationRecordDO> listHrOperationRecord(CommonQuery query) throws TException {
-		return hrOperationRecordDao.listResources(query);
-	}
+    @Override
+    public Response getHrHistoryOperations(List<ProcessValidationStruct> record) throws TException {
+        return hrDBService.getHrHistoryOpertation(record);
+    }
 
-	@Override
-	public List<HrOperationRecordDO> listLatestOperationRecordByAppIdSet(Set<Integer> appidSet) throws TException {
-		return hrOperationRecordDao.listLatestOperationRecordByAppIdSet(appidSet);
-	}
+    @Override
+    public List<HrOperationRecordDO> listHrOperationRecord(CommonQuery query) throws TException {
+        return hrOperationRecordDao.listResources(query);
+    }
 
-	@Override
-	public HrEmployeeCertConfDO getEmployeeCertConf(CommonQuery query) throws TException {
-		return hrDaoService.getEmployeeCertConf(query);
-	}
+    @Override
+    public List<HrOperationRecordDO> listLatestOperationRecordByAppIdSet(Set<Integer> appidSet) throws TException {
+        return hrOperationRecordDao.listLatestOperationRecordByAppIdSet(appidSet);
+    }
 
-	@Override
-	public List<HrEmployeeCustomFieldsDO> getEmployeeCustomFields(CommonQuery query) throws TException {
-		return hrDaoService.getEmployeeCustomFields(query);
-	}
+    @Override
+    public HrEmployeeCertConfDO getEmployeeCertConf(CommonQuery query) throws TException {
+        return hrDaoService.getEmployeeCertConf(query);
+    }
 
-	@Override
-	public List<HrPointsConfDO> getPointsConfs(CommonQuery query) throws TException {
-		return hrDaoService.getPointsConfs(query);
-	}
+    @Override
+    public List<HrEmployeeCustomFieldsDO> getEmployeeCustomFields(CommonQuery query) throws TException {
+        return hrDaoService.getEmployeeCustomFields(query);
+    }
+
+    @Override
+    public List<HrPointsConfDO> getPointsConfs(CommonQuery query) throws TException {
+        return hrDaoService.getPointsConfs(query);
+    }
 
 	@Override
 	public HrPointsConfDO getPointsConf(CommonQuery query) throws BIZException, TException {
 		return hrPointsConfDao.findResource(query);
 	}
 
-	@Override
-	public HrCompanyDO getCompany(CommonQuery query) throws TException {
-		return companyDao.getCompany(query);
-	}
+    @Override
+    public HrCompanyDO getCompany(CommonQuery query) throws TException {
+        return companyDao.getCompany(query);
+    }
 
-	@Override
-	public List<HrCompanyDO> listCompany(CommonQuery query) throws CURDException, TException {
-		return companyDao.listResources(query);
-	}
+    @Override
+    public List<HrCompanyDO> listCompany(CommonQuery query) throws CURDException, TException {
+        return companyDao.listResources(query);
+    }
 
-	@Override
-	public List<HrWxHrChatDO> listChats(CommonQuery query) throws CURDException, TException {
-		return chatDao.listResources(query);
-	}
+    @Override
+    public List<HrWxHrChatDO> listChats(CommonQuery query) throws CURDException, TException {
+        return chatDao.listResources(query);
+    }
 
 	@Override
 	public int countChats(CommonQuery query) throws CURDException, TException {
@@ -163,6 +165,16 @@ public class HrDBThriftService implements Iface {
 	@Override
 	public HrChatUnreadCountDO saveChatUnreadCount(HrChatUnreadCountDO unreadCount) throws CURDException, TException {
 		return hrChatUnreadCountDao.saveResource(unreadCount);
+	}
+
+	@Override
+	public HrChatUnreadCountDO getChatUnreadCount(CommonQuery query) throws CURDException, TException {
+		return hrChatUnreadCountDao.findResource(query);
+	}
+
+	@Override
+	public HrChatUnreadCountDO updateChatUnreadCount(HrChatUnreadCountDO unreadCount) throws CURDException, TException {
+		return hrChatUnreadCountDao.updateResource(unreadCount);
 	}
 
 	public HrHbConfigDO getHbConfig(CommonQuery query) throws TException {
@@ -237,4 +249,8 @@ public class HrDBThriftService implements Iface {
 		return hrDBService.getHrTeam(query);
 	}
 
+    @Override
+    public HrTeamDO hrTeamDo(CommonQuery query) throws TException {
+        return hrTeamDao.findResource(query);
+    }
 }

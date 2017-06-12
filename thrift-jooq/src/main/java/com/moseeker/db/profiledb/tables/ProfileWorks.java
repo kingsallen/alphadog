@@ -36,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileWorks extends TableImpl<ProfileWorksRecord> {
 
-	private static final long serialVersionUID = -725121610;
+	private static final long serialVersionUID = -448867507;
 
 	/**
 	 * The reference instance of <code>profiledb.profile_works</code>
@@ -134,7 +134,7 @@ public class ProfileWorks extends TableImpl<ProfileWorksRecord> {
 	 */
 	@Override
 	public List<UniqueKey<ProfileWorksRecord>> getKeys() {
-		return Arrays.<UniqueKey<ProfileWorksRecord>>asList(Keys.KEY_PROFILE_WORKS_PRIMARY);
+		return Arrays.<UniqueKey<ProfileWorksRecord>>asList(Keys.KEY_PROFILE_WORKS_PRIMARY, Keys.KEY_PROFILE_WORKS_IDX_PROFILEID);
 	}
 
 	/**
