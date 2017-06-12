@@ -5,6 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.moseeker.baseorm.dao.dictdb.DictIndustryDao;
+import com.moseeker.baseorm.dao.dictdb.DictIndustryTypeDao;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictIndustryRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictIndustryTypeRecord;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,10 +17,6 @@ import org.springframework.stereotype.Service;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.db.dictdb.tables.records.DictIndustryRecord;
-import com.moseeker.db.dictdb.tables.records.DictIndustryTypeRecord;
-import com.moseeker.dict.dao.IndustryDao;
-import com.moseeker.dict.dao.IndustryTypeDao;
 import com.moseeker.thrift.gen.common.struct.Response;
 
 @Service
@@ -25,10 +25,10 @@ public class IndusteryService {
 	Logger logger = LoggerFactory.getLogger(IndusteryService.class);
 
 	@Autowired
-	private IndustryDao industryDao; 
+	private DictIndustryDao industryDao;
 	
 	@Autowired
-	private IndustryTypeDao industryTypeDao; 
+	private DictIndustryTypeDao industryTypeDao;
 	
 	@CounterIface
 	public Response getIndustriesByCode(String code) throws TException {
@@ -45,17 +45,17 @@ public class IndusteryService {
 				});
 			}
 			QueryUtil qu = new QueryUtil();
-			qu.setPer_page(Integer.MAX_VALUE);
-			List<DictIndustryRecord> industries = null;;
+			qu.setPageSize(Integer.MAX_VALUE);
+			List<DictIndustryRecord> industries = null;
 			try {
-				industries = industryDao.getResources(qu);
+				industries = industryDao.getRecords(qu);
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}
 			if(industries != null && industries.size() > 0) {
 				industries.forEach(industry -> {
 					Map<String, Object> industryMap = new HashMap<>();
-					industryMap.put("type", industry.getType().intValue());
+					industryMap.put("type", industry.getType());
 					industryMap.put("code", industry.getCode().intValue());
 					industryMap.put("name", industry.getName());
 					industryMaps.add(industryMap);
@@ -78,7 +78,7 @@ public class IndusteryService {
 			if(industries != null && industries.size() > 0) {
 				industries.forEach(industry -> {
 					Map<String, Object> industryMap = new HashMap<>();
-					industryMap.put("type", industry.getType().intValue());
+					industryMap.put("type", industry.getType());
 					industryMap.put("code", industry.getCode().intValue());
 					industryMap.put("name", industry.getName());
 					industryMaps.add(industryMap);
@@ -87,13 +87,5 @@ public class IndusteryService {
 		}
 		
 		return ResponseUtils.success(industryMaps);
-	}
-
-	public IndustryDao getIndustryDao() {
-		return industryDao;
-	}
-
-	public void setIndustryDao(IndustryDao industryDao) {
-		this.industryDao = industryDao;
 	}
 }

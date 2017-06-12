@@ -1,11 +1,11 @@
 package com.moseeker.baseorm.dao.configdb;
 
-import org.springframework.stereotype.Repository;
-
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.configdb.tables.ConfigSysAdministrator;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysAdministratorRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysAdministratorDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +13,14 @@ import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysAdministratorDO;
 * 2017-03-20
 */
 @Repository
-public class ConfigSysAdministratorDao extends StructDaoImpl<ConfigSysAdministratorDO, ConfigSysAdministratorRecord, ConfigSysAdministrator> {
+public class ConfigSysAdministratorDao extends JooqCrudImpl<ConfigSysAdministratorDO, ConfigSysAdministratorRecord> {
 
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = ConfigSysAdministrator.CONFIG_SYS_ADMINISTRATOR;
-   }
+    public ConfigSysAdministratorDao() {
+        super(ConfigSysAdministrator.CONFIG_SYS_ADMINISTRATOR, ConfigSysAdministratorDO.class);
+    }
+
+    public ConfigSysAdministratorDao(TableImpl<ConfigSysAdministratorRecord> table, Class<ConfigSysAdministratorDO> configSysAdministratorDOClass) {
+        super(table, configSysAdministratorDOClass);
+    }
 }

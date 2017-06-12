@@ -1,11 +1,11 @@
 package com.moseeker.baseorm.dao.wordpressdb;
 
-import org.springframework.stereotype.Repository;
-
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.wordpressdb.tables.WordpressOptions;
 import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressOptionsRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.wordpressdb.WordpressOptionsDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +13,13 @@ import com.moseeker.thrift.gen.dao.struct.wordpressdb.WordpressOptionsDO;
 * 2017-03-21
 */
 @Repository
-public class WordpressOptionsDao extends StructDaoImpl<WordpressOptionsDO, WordpressOptionsRecord, WordpressOptions> {
+public class WordpressOptionsDao extends JooqCrudImpl<WordpressOptionsDO, WordpressOptionsRecord> {
 
+    public WordpressOptionsDao() {
+        super(WordpressOptions.WORDPRESS_OPTIONS, WordpressOptionsDO.class);
+    }
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = WordpressOptions.WORDPRESS_OPTIONS;
-   }
+    public WordpressOptionsDao(TableImpl<WordpressOptionsRecord> table, Class<WordpressOptionsDO> wordpressOptionsDOClass) {
+        super(table, wordpressOptionsDOClass);
+    }
 }

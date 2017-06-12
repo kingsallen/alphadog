@@ -21,7 +21,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -37,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogEmailSendrecord extends TableImpl<LogEmailSendrecordRecord> {
 
-    private static final long serialVersionUID = -1840303755;
+    private static final long serialVersionUID = -357333925;
 
     /**
      * The reference instance of <code>logdb.log_email_sendrecord</code>
@@ -55,12 +54,12 @@ public class LogEmailSendrecord extends TableImpl<LogEmailSendrecordRecord> {
     /**
      * The column <code>logdb.log_email_sendrecord.id</code>.
      */
-    public final TableField<LogEmailSendrecordRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
+    public final TableField<LogEmailSendrecordRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>logdb.log_email_sendrecord.type</code>. 邮件类型
+     * The column <code>logdb.log_email_sendrecord.tpl_id</code>. 邮件模板ID
      */
-    public final TableField<LogEmailSendrecordRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.TINYINT)), this, "邮件类型");
+    public final TableField<LogEmailSendrecordRecord, Integer> TPL_ID = createField("tpl_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "邮件模板ID");
 
     /**
      * The column <code>logdb.log_email_sendrecord.sys</code>. 来自系统，0:未知 1:platform 2:qx 3:hr 4:官网 9:script
@@ -116,7 +115,7 @@ public class LogEmailSendrecord extends TableImpl<LogEmailSendrecordRecord> {
      * {@inheritDoc}
      */
     @Override
-    public Identity<LogEmailSendrecordRecord, UInteger> getIdentity() {
+    public Identity<LogEmailSendrecordRecord, Integer> getIdentity() {
         return Keys.IDENTITY_LOG_EMAIL_SENDRECORD;
     }
 

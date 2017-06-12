@@ -8,15 +8,15 @@ import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizat
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import com.moseeker.baseorm.dao.dictdb.DictCityMapDao;
 import com.moseeker.common.constants.ChannelType;
-import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.position.service.position.qianxun.Degree;
 import com.moseeker.position.service.position.qianxun.WorkType;
-import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
-import com.moseeker.thrift.gen.dao.service.DictDao;
 import com.moseeker.thrift.gen.dict.struct.CityMap;
 
 /**
@@ -25,16 +25,15 @@ import com.moseeker.thrift.gen.dict.struct.CityMap;
  *
  */
 public class PositionChangeUtil {
-	
-	private static DictDao.Iface dictDao = ServiceManager.SERVICEMANAGER.getService(DictDao.Iface.class);
-	
+	@Autowired
+	private DictCityMapDao cityMapDao;
 	/**
 	 * 将仟寻职位转成第卅方职位
 	 * @param form
 	 * @param positionDB
 	 * @return
 	 */
-	public static ThirdPartyPositionForSynchronization changeToThirdPartyPosition(ThirdPartyPosition form, Position positionDB) {
+	public  ThirdPartyPositionForSynchronization changeToThirdPartyPosition(ThirdPartyPosition form, Position positionDB) {
 		LoggerFactory.getLogger(PositionChangeUtil.class).info("---------------------");
 		ThirdPartyPositionForSynchronization position = new ThirdPartyPositionForSynchronization();
 		position.setAccount_id(form.getThird_party_account_id());
@@ -226,7 +225,7 @@ public class PositionChangeUtil {
 		}
 	}
 	
-	private static String changeCity(int cityCode, int channel) {
+	private  String changeCity(int cityCode, int channel) {
 		String cityCodeStr = "";
 		DecimalFormat df= null;
 		ChannelType channelType = ChannelType.instaceFromInteger(channel);
@@ -236,11 +235,9 @@ public class PositionChangeUtil {
 		default :
 		}
 		
-		QueryUtil qu = new QueryUtil();
-		qu.addEqualFilter("code", String.valueOf(cityCode));
-		qu.addEqualFilter("channel", String.valueOf(channel));
+		Query qu = new Query.QueryBuilder().where("code",cityCode).where("channel", channel).buildQuery();
 		try {
-			CityMap cityMap = dictDao.getDictMap(qu);
+			CityMap cityMap = cityMapDao.getDictMap(qu);
 			if(cityMap != null) {
 				int cityCodeOther = cityMap.getCode_other();
 				cityCodeStr = df.format(cityCodeOther);

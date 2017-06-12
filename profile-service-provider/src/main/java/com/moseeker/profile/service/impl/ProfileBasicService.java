@@ -1,407 +1,355 @@
 package com.moseeker.profile.service.impl;
 
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import com.moseeker.baseorm.dao.dictdb.DictCityDao;
+import com.moseeker.baseorm.dao.dictdb.DictCountryDao;
+import com.moseeker.baseorm.dao.profiledb.ProfileBasicDao;
+import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictCountryRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileBasicRecord;
+import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.ExceptionUtils;
+import com.moseeker.common.providerutils.QueryUtil;
+import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.util.Pagination;
+import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Condition;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
+import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileBasicDO;
+import com.moseeker.thrift.gen.profile.struct.Basic;
 import org.apache.thrift.TException;
 import org.jooq.Record2;
 import org.jooq.Result;
-import org.jooq.types.UInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.providerutils.QueryUtil;
-import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
-import com.moseeker.common.util.BeanUtils;
-import com.moseeker.common.util.StringUtils;
-import com.moseeker.db.dictdb.tables.records.DictCityRecord;
-import com.moseeker.db.dictdb.tables.records.DictCountryRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileBasicRecord;
-import com.moseeker.profile.dao.CityDao;
-import com.moseeker.profile.dao.CountryDao;
-import com.moseeker.profile.dao.ProfileBasicDao;
-import com.moseeker.profile.dao.ProfileDao;
-import com.moseeker.profile.dao.UserDao;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.profile.struct.Basic;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @CounterIface
-public class ProfileBasicService extends JOOQBaseServiceImpl<Basic, ProfileBasicRecord> {
-	
-	Logger logger = LoggerFactory.getLogger(ProfileBasicService.class);
-	
-	@Override
-	public Response getResources(CommonQuery query) throws TException {
-		try {
-			List<ProfileBasicRecord> records = dao.getResources(query);
-			List<Basic> basics = DBsToStructs(records);
-			if(basics != null && basics.size() > 0) {
-				List<Integer> profileIds = new ArrayList<>();
-				List<Integer> cityCodes = new ArrayList<>();
-				List<Integer> contryIds = new ArrayList<>();
-				basics.forEach(basic -> {
-					//cityCodes.add(basic.getCity());
-					if(basic.getCity_code() > 0 && StringUtils.isNullOrEmpty(basic.getCity_name()))
-						cityCodes.add((int)basic.getCity_code());
-					if(basic.getNationality_code() > 0 && StringUtils.isNullOrEmpty(basic.getNationality_name()))
-						contryIds.add((int)basic.getNationality_code());
-					profileIds.add(basic.getProfile_id());
-				});
-				
-				//城市
-				List<DictCityRecord> cities = cityDao.getCitiesByCodes(cityCodes);
-				if(cities != null && cities.size() > 0) {
-					for(Basic basic : basics) {
-						for(DictCityRecord record : cities) {
-							if(basic.getCity_code() == record.getCode().intValue()) {
-								basic.setCity_name(record.getName());
-								break;
-							}
-						}
-					}
-				}
-				//国旗
-				List<DictCountryRecord> countries = countryDao.getCountresByIDs(cityCodes);
-				if(countries != null && countries.size() > 0) {
-					for(Basic basic : basics) {
-						for(DictCountryRecord record : countries) {
-							if(basic.getNationality_code() == record.getId().intValue()) {
-								basic.setNationality_name(record.getName());
-								break;
-							}
-						}
-					}
-				}
-				Result<Record2<UInteger, String>> result = profileDao.findRealName(profileIds);
-				if(result != null && result.size() > 0) {
-					for(Basic basic : basics) {
-						for(Record2<UInteger, String> record2 : result) {
-							if(basic.getProfile_id() == ((UInteger)record2.get(0)).intValue()) {
-								basic.setName((String)record2.get(1));
-								break;
-							}
-						}
-					}
-				}
-				return ResponseUtils.success(basics);
-			}
-			
-		} catch (Exception e) {
-			logger.error("getResources error", e);
-			return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-		} finally {
-			//do nothing
-		}
-		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
-	}
-	
-	@Override
-	public Response getResource(CommonQuery query) throws TException {
-		try {
-			ProfileBasicRecord record = dao.getResource(query);
-			if(record != null) {
-				Basic basic = DBToStruct(record);
-				if(basic.getCity_code() > 0 && StringUtils.isNullOrEmpty(basic.getCity_name())) {
-					DictCityRecord city = cityDao.getCityByCode(basic.getCity_code());
-					if(city != null) {
-						basic.setCity_name(city.getName());
-					}
-				}
-				if(basic.getNationality_code() > 0 && StringUtils.isNullOrEmpty(basic.getNationality_name())) {
-					DictCountryRecord country = countryDao.getCountryByID(basic.getNationality_code());
-					if(country != null) {
-						basic.setNationality_name(country.getName());
-					}
-				}
-				String realName = profileDao.findRealName(basic.getProfile_id());
-				if(StringUtils.isNullOrEmpty(realName)) {
-					basic.setName(realName);
-				}
-				return ResponseUtils.success(basic);
-			}
-		} catch (Exception e) {
-			logger.error("getResources error", e);
-			return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-		} finally {
-			//do nothing
-		}
-		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
-	}
+public class ProfileBasicService {
 
-	@Override
-	public Response postResource(Basic struct) throws TException {
-		try {
-			if(struct.getCity_code() > 0) {
-				DictCityRecord city = cityDao.getCityByCode(struct.getCity_code());
-				if(city != null) {
-					struct.setCity_name(city.getName());
-				} else {
-					return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_CITY_NOTEXIST);
-				}
-			}
-			if(struct.getNationality_code() > 0) {
-				DictCountryRecord country = countryDao.getCountryByID(struct.getNationality_code());
-				if(country != null) {
-					struct.setNationality_name(country.getName());
-				} else {
-					return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_NATIONALITY_NOTEXIST);
-				}
-			}
-			QueryUtil qu = new QueryUtil();
-			qu.addEqualFilter("profile_id", String.valueOf(struct.getProfile_id()));
-			ProfileBasicRecord repeat = dao.getResource(qu);
-			if(repeat != null) {
-				return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_REPEAT_DATA);
-			}
-			ProfileBasicRecord record = structToDB(struct);
-			int i = dao.postResource(record);
-			if(i > 0) {
-				
-				updateUpdateTime(struct);
-				
-				if(!StringUtils.isNullOrEmpty(struct.getName())) {
-					profileDao.updateRealName(record.getProfileId().intValue(), struct.getName());
-				}
+    Logger logger = LoggerFactory.getLogger(ProfileBasicService.class);
+
+    @Autowired
+    ProfileBasicDao dao;
+
+    @Autowired
+    DictCityDao cityDao;
+
+    @Autowired
+    DictCountryDao countryDao;
+
+    @Autowired
+    ProfileProfileDao profileDao;
+
+    @Autowired
+    private ProfileCompletenessImpl completenessImpl;
+
+    public List<Basic> getResources(Query query) {
+        List<Basic> basics = dao.getDatas(query, Basic.class);
+        if (basics != null && basics.size() > 0) {
+            List<Integer> profileIds = new ArrayList<>();
+            List<Integer> cityCodes = new ArrayList<>();
+            List<Integer> contryIds = new ArrayList<>();
+            basics.forEach(basic -> {
+                //cityCodes.add(basic.getCity());
+                if (basic.getCity_code() > 0 && StringUtils.isNullOrEmpty(basic.getCity_name()))
+                    cityCodes.add((int) basic.getCity_code());
+                if (basic.getNationality_code() > 0 && StringUtils.isNullOrEmpty(basic.getNationality_name()))
+                    contryIds.add((int) basic.getNationality_code());
+                profileIds.add(basic.getProfile_id());
+            });
+
+            //城市
+            List<DictCityRecord> cities = cityDao.getCitiesByCodes(cityCodes);
+            if (cities != null && cities.size() > 0) {
+                for (Basic basic : basics) {
+                    for (DictCityRecord record : cities) {
+                        if (basic.getCity_code() == record.getCode().intValue()) {
+                            basic.setCity_name(record.getName());
+                            break;
+                        }
+                    }
+                }
+            }
+            //国旗
+            List<DictCountryRecord> countries = countryDao.getCountresByIDs(cityCodes);
+            if (countries != null && countries.size() > 0) {
+                for (Basic basic : basics) {
+                    for (DictCountryRecord record : countries) {
+                        if (basic.getNationality_code() == record.getId().intValue()) {
+                            basic.setNationality_name(record.getName());
+                            break;
+                        }
+                    }
+                }
+            }
+            Result<Record2<Integer, String>> result = profileDao.findRealName(profileIds);
+            if (result != null && result.size() > 0) {
+                for (Basic basic : basics) {
+                    for (Record2<Integer, String> record2 : result) {
+                        if (basic.getProfile_id() == (int) record2.get(0)) {
+                            basic.setName((String) record2.get(1));
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return basics;
+    }
+
+    public Basic getResource(Query query) {
+        Basic basic = dao.getData(query, Basic.class);
+        if (basic != null) {
+            if (basic.getCity_code() > 0 && StringUtils.isNullOrEmpty(basic.getCity_name())) {
+                DictCityRecord city = cityDao.getCityByCode(basic.getCity_code());
+                if (city != null) {
+                    basic.setCity_name(city.getName());
+                }
+            }
+            if (basic.getNationality_code() > 0 && StringUtils.isNullOrEmpty(basic.getNationality_name())) {
+                DictCountryRecord country = countryDao.getCountryByID(basic.getNationality_code());
+                if (country != null) {
+                    basic.setNationality_name(country.getName());
+                }
+            }
+            String realName = profileDao.findRealName(basic.getProfile_id());
+            if (StringUtils.isNullOrEmpty(realName)) {
+                basic.setName(realName);
+            }
+        }
+        return basic;
+    }
+
+    @Transactional
+    public Basic postResource(Basic struct) throws BIZException {
+        Basic resultStruct = null;
+        if (struct != null) {
+            if (struct.getCity_code() > 0) {
+                DictCityRecord city = cityDao.getCityByCode(struct.getCity_code());
+                if (city != null) {
+                    struct.setCity_name(city.getName());
+                } else {
+                    throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_DICT_CITY_NOTEXIST);
+                }
+            }
+            if (struct.getNationality_code() > 0) {
+                DictCountryRecord country = countryDao.getCountryByID(struct.getNationality_code());
+                if (country != null) {
+                    struct.setNationality_name(country.getName());
+                } else {
+                    throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_DICT_NATIONALITY_NOTEXIST);
+                }
+            }
+            QueryUtil qu = new QueryUtil();
+            qu.addEqualFilter("profile_id", String.valueOf(struct.getProfile_id()));
+            ProfileBasicRecord repeat = dao.getRecord(qu);
+            if (repeat != null) {
+                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_REPEAT_DATA);
+            }
+            if (struct.getProfile_id() > 0) {
+                resultStruct = dao.addRecord(BeanUtils.structToDB(struct, ProfileBasicRecord.class)).into(Basic.class);
+
+                if (resultStruct.getProfile_id() > 0) {
+
+                    updateUpdateTime(resultStruct);
+
+                    if (!StringUtils.isNullOrEmpty(struct.getName())) {
+                        profileDao.updateRealName(resultStruct.getProfile_id(), struct.getName());
+                    }
+                /* 计算用户基本信息的简历完整度 */
+                    completenessImpl.reCalculateUserUser(struct.getProfile_id());
+                    return resultStruct;
+                }
+            }
+        }
+
+        return resultStruct;
+    }
+
+    @Transactional
+    public int putResource(Basic struct) throws TException {
+        int i = 0;
+        if (struct != null) {
+            if (struct.getCity_code() > 0) {
+                DictCityRecord city = cityDao.getCityByCode(struct.getCity_code());
+                if (city != null) {
+                    struct.setCity_name(city.getName());
+                } else {
+                    throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_DICT_CITY_NOTEXIST);
+                }
+            }
+            if (struct.getNationality_code() > 0) {
+                DictCountryRecord country = countryDao.getCountryByID(struct.getNationality_code());
+                if (country != null) {
+                    struct.setNationality_name(country.getName());
+                } else {
+                    throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_DICT_NATIONALITY_NOTEXIST);
+                }
+            }
+            QueryUtil qu = new QueryUtil();
+            qu.addEqualFilter("profile_id", String.valueOf(struct.getProfile_id()));
+            ProfileBasicRecord repeat = dao.getRecord(qu);
+            if (repeat == null) {
+                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_DATA_NULL);
+            }
+            i = dao.updateRecord(BeanUtils.structToDB(struct, ProfileBasicRecord.class));
+            if (i > 0) {
+
+                updateUpdateTime(struct);
+
+                if (!StringUtils.isNullOrEmpty(struct.getName())) {
+                    profileDao.updateRealName(struct.getProfile_id(), struct.getName());
+                }
+
 				/* 计算用户基本信息的简历完整度 */
-				completenessImpl.reCalculateUserUser(struct.getProfile_id());
-				return ResponseUtils.success(String.valueOf(i));
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-		} finally {
-			//do nothing
-		}
-		
-		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
-	}
+                completenessImpl.reCalculateUserUser(struct.getProfile_id());
+                completenessImpl.reCalculateProfileBasic(struct.getProfile_id());
+            }
+        }
+        return i;
+    }
 
-	@Override
-	public Response putResource(Basic struct) throws TException {
-		try {
-			if(struct.getCity_code() > 0) {
-				DictCityRecord city = cityDao.getCityByCode(struct.getCity_code());
-				if(city != null) {
-					struct.setCity_name(city.getName());
-				} else {
-					return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_CITY_NOTEXIST);
-				}
-			}
-			if(struct.getNationality_code() > 0) {
-				DictCountryRecord country = countryDao.getCountryByID(struct.getNationality_code());
-				if(country != null) {
-					struct.setNationality_name(country.getName());
-				} else {
-					return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_NATIONALITY_NOTEXIST);
-				}
-			}
-			QueryUtil qu = new QueryUtil();
-			qu.addEqualFilter("profile_id", String.valueOf(struct.getProfile_id()));
-			ProfileBasicRecord repeat = dao.getResource(qu);
-			if(repeat == null) {
-				return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DATA_NULL);
-			}
-			ProfileBasicRecord record = structToDB(struct);
-			int i = dao.putResource(record);
-			if(i > 0) {
-				
-				updateUpdateTime(struct);
-				
-				if(!StringUtils.isNullOrEmpty(struct.getName())) {
-					profileDao.updateRealName(record.getProfileId().intValue(), struct.getName());
-				}
-				
-				/* 计算用户基本信息的简历完整度 */
-				completenessImpl.reCalculateUserUser(struct.getProfile_id());
-				completenessImpl.reCalculateProfileBasic(struct.getProfile_id());
-				return ResponseUtils.success(String.valueOf(i));
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-		} finally {
-			//do nothing
-		}
-		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
-	}
+    @Transactional
+    public List<Basic> postResources(List<Basic> structs) throws TException {
+        List<Basic> resultDatas = new ArrayList<>();
 
-	@Override
-	public Response postResources(List<Basic> structs) throws TException {
-		Response response = super.postResources(structs);
-		if(structs != null && structs.size() > 0 && response.getStatus() == 0) {
-			
-			HashSet<Integer> profileIds = new HashSet<>();
-			for(Basic basic : structs) {
-				if(basic.getProfile_id() > 0) {
-					profileIds.add(basic.getProfile_id());
-				}
-			}
-			profileDao.updateUpdateTime(profileIds);
-			profileIds.forEach(profileId -> {
-				/* 计算用户基本信息的简历完整度 */
-				completenessImpl.reCalculateUserUser(profileId);
-				completenessImpl.reCalculateProfileBasic(profileId);
-			});
-		}
-		return response;
-	}
+        if (structs != null && structs.size() > 0) {
 
-	@Override
-	public Response putResources(List<Basic> structs) throws TException {
-		Response response = super.putResources(structs);
-		if(structs != null && structs.size() > 0 && response.getStatus() == 0) {
-			
-			HashSet<Integer> profileIds = new HashSet<>();
-			for(Basic basic : structs) {
-				if(basic.getProfile_id() > 0) {
-					profileIds.add(basic.getProfile_id());
-				}
-			}
-			profileDao.updateUpdateTime(profileIds);
-			profileIds.forEach(profileId -> {
-				/* 计算用户基本信息的简历完整度 */
-				completenessImpl.reCalculateUserUser(profileId);
-				completenessImpl.reCalculateProfileBasic(profileId);
-			});
-		}
-		return response;
-	}
+            List<ProfileBasicRecord> records = BeanUtils.structToDB(structs, ProfileBasicRecord.class);
 
-	@Override
-	public Response delResources(List<Basic> structs) throws TException {
-		Response response = super.delResources(structs);
-		if(structs != null && structs.size() > 0 && response.getStatus() == 0) {
-			
-			Set<Integer> profileIds = new HashSet<>();
-			for(Basic basic : structs) {
-				if(basic.getProfile_id() > 0) {
-					profileIds.add(basic.getProfile_id());
-				}
-			}
-			profileDao.updateUpdateTime(profileIds);
-			profileIds.forEach(profileId -> {
-				/* 计算用户基本信息的简历完整度 */
-				completenessImpl.reCalculateUserUser(profileId);
-				completenessImpl.reCalculateProfileBasic(profileId);
-			});
-		}
-		return response;
-	}
+            records = dao.addAllRecord(records);
 
-	@Override
-	public Response delResource(Basic struct) throws TException {
-		Response response = super.delResource(struct);
-		if(response.getStatus() == 0) {
-			
-			updateUpdateTime(struct);
-			
-			/* 计算用户基本信息的简历完整度 */
-			completenessImpl.reCalculateUserUser(struct.getProfile_id());
-			completenessImpl.reCalculateProfileBasic(struct.getProfile_id());
-		}
-		return response;
-	}
-	
-	@Override
-	protected Basic DBToStruct(ProfileBasicRecord r) {
-		return (Basic)BeanUtils.DBToStruct(Basic.class, r);
-	}
+            resultDatas = BeanUtils.DBToStruct(Basic.class, records);
 
-	@Override
-	protected ProfileBasicRecord structToDB(Basic basic)
-			throws ParseException {
-		ProfileBasicRecord record = (ProfileBasicRecord)BeanUtils.structToDB(basic, ProfileBasicRecord.class);
-		return record;
-	}
-	
-	@Autowired
-	private ProfileBasicDao dao;
-	
-	@Autowired
-	private ProfileDao profileDao;
-	
-	@Autowired
-	private CityDao cityDao;
-	
-	@Autowired
-	private CountryDao countryDao;
-	
-	@Autowired
-	private UserDao userDao;
-	
-	@Autowired
-	private ProfileCompletenessImpl completenessImpl;
-	
-	@Override
-	protected void initDao() {
-		super.dao = this.dao;
-	}
-	
-	public ProfileBasicDao getDao() {
-		return dao;
-	}
+            HashSet<Integer> profileIds = new HashSet<>();
+            for (Basic basic : structs) {
+                if (basic.getProfile_id() > 0) {
+                    profileIds.add(basic.getProfile_id());
+                }
+            }
+            profileDao.updateUpdateTime(profileIds);
+            profileIds.forEach(profileId -> {
+                /* 计算用户基本信息的简历完整度 */
+                completenessImpl.reCalculateUserUser(profileId);
+                completenessImpl.reCalculateProfileBasic(profileId);
+            });
+        }
 
-	public void setDao(ProfileBasicDao dao) {
-		this.dao = dao;
-	}
+        return resultDatas;
+    }
 
-	public CityDao getCityDao() {
-		return cityDao;
-	}
+    @Transactional
+    public int[] putResources(List<Basic> structs) throws TException {
 
-	public void setCityDao(CityDao cityDao) {
-		this.cityDao = cityDao;
-	}
+        if (structs != null && structs.size() > 0) {
+            int[] putResult = dao.updateRecords(BeanUtils.structToDB(structs, ProfileBasicRecord.class));
 
-	public CountryDao getCountryDao() {
-		return countryDao;
-	}
+            HashSet<Integer> profileIds = new HashSet<>();
 
-	public void setCountryDao(CountryDao countryDao) {
-		this.countryDao = countryDao;
-	}
+            for (int i = 0; i < putResult.length; i++) {
+                if (putResult[i] > 0) {
+                    profileIds.add(structs.get(i).getProfile_id());
+                }
+            }
 
-	public UserDao getUserDao() {
-		return userDao;
-	}
+            profileDao.updateUpdateTime(profileIds);
+            profileIds.forEach(profileId -> {
+                /* 计算用户基本信息的简历完整度 */
+                completenessImpl.reCalculateUserUser(profileId);
+                completenessImpl.reCalculateProfileBasic(profileId);
+            });
+            return putResult;
+        } else {
+            return new int[0];
+        }
+    }
 
-	public void setUserDao(UserDao userDao) {
-		this.userDao = userDao;
-	}
+    @Transactional
+    public int delResource(Basic struct) throws TException {
+        int result = 0;
+        if (struct != null) {
+            Query query = new Query
+                    .QueryBuilder()
+                    .where(Condition.buildCommonCondition("profile_id", struct.getProfile_id())).buildQuery();
+            //找到要删除的数据
+            ProfileBasicDO deleteData = dao.getData(query);
+            if (deleteData != null) {
+                //正式删除数据
+                result = dao.deleteRecord(BeanUtils.structToDB(struct, ProfileBasicRecord.class));
+                if (result > 0) {
+                    updateUpdateTime(struct);
 
-	public ProfileDao getProfileDao() {
-		return profileDao;
-	}
+                /* 计算用户基本信息的简历完整度 */
+                    completenessImpl.reCalculateUserUser(struct.getProfile_id());
+                    completenessImpl.reCalculateProfileBasic(struct.getProfile_id());
+                }
+            }
+        }
+        return result;
+    }
 
-	public void setProfileDao(ProfileDao profileDao) {
-		this.profileDao = profileDao;
-	}
+    @Transactional
+    public int[] delResources(List<Basic> structs) throws TException {
 
-	public ProfileCompletenessImpl getCompletenessImpl() {
-		return completenessImpl;
-	}
+        if (structs != null && structs.size() > 0) {
 
-	public void setCompletenessImpl(ProfileCompletenessImpl completenessImpl) {
-		this.completenessImpl = completenessImpl;
-	}
+            Query query = new Query
+                    .QueryBuilder()
+                    .where(Condition.buildCommonCondition("profile_id",
+                            structs.stream()
+                                    .map(struct -> struct.getProfile_id())
+                                    .collect(Collectors.toList()),
+                            ValueOp.IN)).buildQuery();
+            //找到要删除的数据
+            List<ProfileBasicDO> deleteDatas = dao.getDatas(query);
 
-	public Response reCalculateBasicCompleteness(int userId) throws TException {
-		return null;
-	}
-	
-	private void updateUpdateTime(Basic basic) {
-		HashSet<Integer> profileIds = new HashSet<>();
-		profileIds.add(basic.getProfile_id());
-		profileDao.updateUpdateTime(profileIds);
-	}
+            //正式删除数据
+            int[] result = dao.deleteRecords(BeanUtils.structToDB(structs, ProfileBasicRecord.class));
+
+
+            if (deleteDatas != null && deleteDatas.size() > 0) {
+                //更新对应的profile更新时间
+                profileDao.updateUpdateTime(deleteDatas.stream().map(data -> data.getProfileId()).collect(Collectors.toSet()));
+
+                for (ProfileBasicDO data : deleteDatas) {
+                    completenessImpl.reCalculateUserUser(data.getProfileId());
+                    completenessImpl.reCalculateProfileBasic(data.getProfileId());
+                }
+            }
+
+            return result;
+        } else {
+            return new int[0];
+        }
+    }
+
+    private void updateUpdateTime(Basic basic) {
+
+        if (basic == null) return;
+
+        HashSet<Integer> profileIds = new HashSet<>();
+
+        profileIds.add(basic.getProfile_id());
+        profileDao.updateUpdateTime(profileIds);
+    }
+
+    public Pagination getPagination(Query query) throws TException {
+        int totalRow = dao.getCount(query);
+        List<?> datas = dao.getDatas(query);
+
+        return ProfileUtils.getPagination(totalRow, query.getPageNum(), query.getPageSize(), datas);
+    }
 }

@@ -10,10 +10,7 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CURDException;
 import org.apache.commons.pool.impl.GenericKeyedObjectPool;
 import org.apache.thrift.TApplicationException;
-import org.apache.thrift.TException;
 import org.apache.thrift.TServiceClient;
-import org.apache.thrift.server.TServer;
-import org.apache.thrift.transport.TTransport;
 import org.apache.thrift.transport.TTransportException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +34,7 @@ public class NodeInvoker<T> implements Invoker {
 	
 	private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 	
-	private int retry = 3;								//重试次数
+	private int retry = 1;								//重试次数
 	private GenericKeyedObjectPool<ZKPath, T> pool;		//节点对象池
 	private String parentName;							//二级节点名称(/services(一级节点名称)/com.moseeker.thrift.gen.profile.service.WholeProfileServices(二级节点名称)/servers
 	
@@ -76,7 +73,7 @@ public class NodeInvoker<T> implements Invoker {
 		}
         Throwable exception = null;
         ZKPath node = null;
-        for (int i = 0; i < retry + 1; i++) {
+        for (int i = 0; i < 1; i++) {
             try {
                 node = NodeLoadBalance.LoadBalance.getNextNode(root, parentName);
                 if (node == null) {
@@ -85,18 +82,8 @@ public class NodeInvoker<T> implements Invoker {
                 	//warning
                     continue;
                 }
-                
-
-                
                 LOGGER.info(node.toString());
                 client = pool.borrowObject(node);
-                if (i>=0){
-                	LOGGER.error("try:" + (i+1));
-                	LOGGER.error("node:" + node);
-                    TTransport tp = ((TServiceClient) client).getInputProtocol().getTransport();
-                    LOGGER.error("client transport isopen:" + tp.isOpen());           
-                }
-                
                 System.out.println("after borrowObject getNumActive:"+pool.getNumActive());
                 Object result = method.invoke(client, args);
                 
@@ -140,9 +127,9 @@ public class NodeInvoker<T> implements Invoker {
                                 // XXX:其他异常的情况，需要将当前链接置为无效
                             	//warning
                                 //Notification.sendThriftConnectionError(serverNode+"  链接置为无效, error:"+ite.getMessage());
-                                pool.invalidateObject(node, client);
-                                LOGGER.error(node+" current retry:" + retry + "  链接置为无效, error:"+ite.getMessage(), ite);
+                                LOGGER.error(node+"  链接置为无效, error:"+ite.getMessage(), ite);
                                 LOGGER.debug("after invalidateObject getNumActive:"+pool.getNumActive());
+                                pool.invalidateObject(node, client);
                             }
                             client = null;
                         } catch (Exception e) {
@@ -171,7 +158,6 @@ public class NodeInvoker<T> implements Invoker {
                 }
             }
         }
-        LOGGER.error("retry failed. "+ node);
         throw new RpcException(exception.getMessage(), exception);
 	}
 

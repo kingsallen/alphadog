@@ -1,24 +1,18 @@
-project.description = '''
-    thrfit IDL definitions & jooq configs
-'''
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 
-sourceCompatibility = 1.8
 
 dependencies {
-    compile deps["mysql-connector-java"]
-    //compile deps["libthrift"]
-    compile  fileTree(dir:'../libs',include:'libthrift-0.10.0.jar')
-    compile  fileTree(dir:'../libs',include:'jooq*.jar')
+    compile deps["libthrift"]
     compile deps["slf4j-log4j12"]
+    compile  fileTree(dir:'../libs',include:'jooq*.jar')
     testCompile deps["junit"]
 }
 
 task copyJars(type: Copy) {
-  from configurations.runtime
-  into 'build/libs' // 目标位置
+    from configurations.runtime
+    into 'build/libs' // 目标位置
 }
 
 jar {
@@ -27,3 +21,7 @@ jar {
     //    configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
     //}
 }
+
+project.description = '''
+    thrfit IDL definitions & jooq configs
+'''

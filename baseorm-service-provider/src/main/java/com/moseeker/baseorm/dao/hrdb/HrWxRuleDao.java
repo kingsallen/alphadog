@@ -1,11 +1,11 @@
 package com.moseeker.baseorm.dao.hrdb;
 
-import org.springframework.stereotype.Repository;
-
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxRule;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxRuleRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxRuleDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +13,13 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxRuleDO;
 * 2017-03-21
 */
 @Repository
-public class HrWxRuleDao extends StructDaoImpl<HrWxRuleDO, HrWxRuleRecord, HrWxRule> {
+public class HrWxRuleDao extends JooqCrudImpl<HrWxRuleDO, HrWxRuleRecord> {
 
+    public HrWxRuleDao() {
+        super(HrWxRule.HR_WX_RULE, HrWxRuleDO.class);
+    }
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = HrWxRule.HR_WX_RULE;
-   }
+    public HrWxRuleDao(TableImpl<HrWxRuleRecord> table, Class<HrWxRuleDO> hrWxRuleDOClass) {
+        super(table, hrWxRuleDOClass);
+    }
 }

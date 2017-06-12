@@ -47,13 +47,12 @@ public class EducationController {
 	@RequestMapping(value = "/profile/education", method = RequestMethod.POST)
 	@ResponseBody
 	public String post(HttpServletRequest request, HttpServletResponse response) {
-		//PrintWriter writer = null;
 		try {
 			Education education = ParamUtils.initModelForm(request, Education.class);
 			Response result = educationService.postResource(education);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}
 	}

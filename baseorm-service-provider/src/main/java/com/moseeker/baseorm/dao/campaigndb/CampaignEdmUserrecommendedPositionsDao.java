@@ -1,8 +1,8 @@
 package com.moseeker.baseorm.dao.campaigndb;
 
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignEdmUserrecommendedPositions;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignEdmUserrecommendedPositionsRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignEdmUserrecommendedPositionsDO;
 import org.springframework.stereotype.Repository;
 
@@ -12,11 +12,9 @@ import org.springframework.stereotype.Repository;
 * 2017-04-12
 */
 @Repository
-public class CampaignEdmUserrecommendedPositionsDao extends StructDaoImpl<CampaignEdmUserrecommendedPositionsDO, CampaignEdmUserrecommendedPositionsRecord, CampaignEdmUserrecommendedPositions> {
+public class CampaignEdmUserrecommendedPositionsDao extends JooqCrudImpl<CampaignEdmUserrecommendedPositionsDO, CampaignEdmUserrecommendedPositionsRecord> {
 
-
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = CampaignEdmUserrecommendedPositions.CAMPAIGN_EDM_USERRECOMMENDED_POSITIONS;
-   }
+    public CampaignEdmUserrecommendedPositionsDao() {
+        super(CampaignEdmUserrecommendedPositions.CAMPAIGN_EDM_USERRECOMMENDED_POSITIONS, CampaignEdmUserrecommendedPositionsDO.class);
+    }
 }

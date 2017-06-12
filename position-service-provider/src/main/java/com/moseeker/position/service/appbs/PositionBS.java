@@ -23,6 +23,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
  * @version
  */
 @Service
+
 public class PositionBS {
 	
 	@Autowired
@@ -52,20 +53,14 @@ public class PositionBS {
 	/**
 	 * 同步职位
 	 * @param position
+	 * @throws Exception 
 	 */
 	@CounterIface
-	public void synchronizePosition(PositionForSynchronizationPojo position) {
+	public void synchronizePosition(PositionForSynchronizationPojo position){
 		//校验必填项信息
 		//todo
-		try {
-			if(positionService.verifySynchronizePosition(position)) {
-				positionService.getPositionById(position.getId());
-			}
-			
-		} catch (TException e) {
-			
-		} finally {
-			
+		if(positionService.verifySynchronizePosition(position)) {
+			positionService.getPositionById(position.getId());
 		}
 	}
 

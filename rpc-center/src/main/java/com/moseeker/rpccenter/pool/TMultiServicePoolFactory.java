@@ -1,5 +1,6 @@
 package com.moseeker.rpccenter.pool;
 
+import com.moseeker.thrift.gen.demo.service.DemoThriftService;
 import org.apache.commons.pool.BaseKeyedPoolableObjectFactory;
 import org.apache.thrift.TServiceClient;
 import org.apache.thrift.TServiceClientFactory;

@@ -1,6 +1,7 @@
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 apply from: 'versions.gradle'
+apply plugin: 'java'
 
 project.description = '''
 the service layer of moseeker. It\'s going to serve all moseeker\'s products.
@@ -10,18 +11,17 @@ the service layer of moseeker. It\'s going to serve all moseeker\'s products.
     4) JOOQ as the data access layer
 '''
 allprojects {
-
+    apply plugin: 'idea'
+    apply plugin: 'eclipse'
+    apply plugin: 'java'
     repositories {
 	     maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
          mavenCentral()
-        // maven { url 'http://maven.oschina.net/content/groups/public/' }
          maven { url 'http://maven.outofmemory.cn/' }
          maven { url 'https://plugins.gradle.org/m2/'}
     }
 
 }
-
-apply plugin: 'java'
 
 task copyJars(type: Copy) {
   from configurations.runtime

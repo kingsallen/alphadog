@@ -1,11 +1,11 @@
 package com.moseeker.baseorm.dao.jobdb;
 
-import org.springframework.stereotype.Repository;
-
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionExt;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionExtRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionExtDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +13,13 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionExtDO;
 * 2017-03-21
 */
 @Repository
-public class JobPositionExtDao extends StructDaoImpl<JobPositionExtDO, JobPositionExtRecord, JobPositionExt> {
+public class JobPositionExtDao extends JooqCrudImpl<JobPositionExtDO, JobPositionExtRecord> {
 
+    public JobPositionExtDao() {
+        super(JobPositionExt.JOB_POSITION_EXT, JobPositionExtDO.class);
+    }
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = JobPositionExt.JOB_POSITION_EXT;
-   }
+    public JobPositionExtDao(TableImpl<JobPositionExtRecord> table, Class<JobPositionExtDO> jobPositionExtDOClass) {
+        super(table, jobPositionExtDOClass);
+    }
 }

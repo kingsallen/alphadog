@@ -1,31 +1,28 @@
 package com.moseeker.useraccounts.service.impl;
 
-import java.util.HashMap;
 
-import com.moseeker.common.constants.AppId;
-import com.moseeker.common.constants.KeyIdentifier;
-import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.util.StringUtils;
 import org.joda.time.DateTime;
-import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.dao.logdb.LogSmsSendrecordDao;
+import com.moseeker.baseorm.db.logdb.tables.records.LogSmsSendrecordRecord;
+import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CacheConfigNotExistException;
-import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.util.ConfigPropertiesUtil;
-import com.moseeker.db.logdb.tables.records.LogSmsSendrecordRecord;
-import com.moseeker.useraccounts.dao.SMSRecordDao;
 import com.taobao.api.ApiException;
 import com.taobao.api.DefaultTaobaoClient;
 import com.taobao.api.TaobaoClient;
 import com.taobao.api.request.AlibabaAliqinFcSmsNumSendRequest;
 import com.taobao.api.response.AlibabaAliqinFcSmsNumSendResponse;
+import java.util.HashMap;
+import javax.annotation.Resource;
+
 
 /**
  * 短信发送客户端
@@ -39,7 +36,10 @@ public class SmsSender {
     private static Logger logger = LoggerFactory.getLogger(SmsSender.class);
     
     @Autowired
-	protected SMSRecordDao smsRecordDao;
+	protected LogSmsSendrecordDao smsRecordDao;
+
+    @Resource(name = "cacheClient")
+    private RedisClient redisClient;
 
     public static TaobaoClient initTaobaoClientInstance() {
         if (taobaoclient == null) {
@@ -103,7 +103,7 @@ public class SmsSender {
             	json.put("template_code", templateCode);
             	json.put("params", params);
             	record.setMsg(json.toJSONString());
-            	smsRecordDao.postResource(record);
+            	smsRecordDao.addRecord(record);
             	logger.info(json.toJSONString());
                 return true;
             }
@@ -117,6 +117,7 @@ public class SmsSender {
 		}
         return false;    
     }
+
     /**
      *      SMS_5755096
      *      您的验证码是：${code}。请不要把验证码泄露给其他人。    
@@ -128,7 +129,7 @@ public class SmsSender {
         String signupcode = getRandomStr();
         params.put("code", signupcode);    
         try {
-			RedisClientFactory.getCacheClient().set(0, "SMS_SIGNUP", mobile, signupcode);
+			redisClient.set(0, "SMS_SIGNUP", mobile, signupcode);
 		} catch (CacheConfigNotExistException e) {
 			logger.error(e.getMessage(), e);
 		}
@@ -145,7 +146,7 @@ public class SmsSender {
         HashMap<String, String> params = new HashMap<String, String>();
         String passwordforgotcode = getRandomStr();
         params.put("code", passwordforgotcode);        
-        RedisClientFactory.getCacheClient().set(0, "SMS_PWD_FORGOT", mobile, passwordforgotcode);        
+        redisClient.set(0, "SMS_PWD_FORGOT", mobile, passwordforgotcode);
         return sendSMS(mobile,"SMS_5755096",params);
     } 
     
@@ -174,7 +175,7 @@ public class SmsSender {
         HashMap<String, String> params = new HashMap<String, String>();
         String code = getRandomStr();
         params.put("code", code);    
-        RedisClientFactory.getCacheClient().set(0, "SMS_CHANGEMOBILE_CODE", mobile, code);
+        redisClient.set(0, "SMS_CHANGEMOBILE_CODE", mobile, code);
         return sendSMS(mobile,"SMS_5755096",params);
     }     
     
@@ -188,7 +189,7 @@ public class SmsSender {
         HashMap<String, String> params = new HashMap<String, String>();
         String code = getRandomStr();
         params.put("code", code);    
-        RedisClientFactory.getCacheClient().set(0, "SMS_RESETMOBILE_CODE", mobile, code);
+        redisClient.set(0, "SMS_RESETMOBILE_CODE", mobile, code);
         return sendSMS(mobile,"SMS_5755096",params);
     }
 
@@ -207,7 +208,7 @@ public class SmsSender {
         HashMap<String, String> params = new HashMap<String, String>();
         String code = getRandomStr();
         params.put("code", code);
-        RedisClientFactory.getCacheClient().set(Constant.APPID_ALPHADOG, redisKey,
+        redisClient.set(Constant.APPID_ALPHADOG, redisKey,
                 Constant.HR_ACCOUNT_SIGNUP_SOURCE_ARRAY[source-1], mobile, code);
 
         return sendSMS(mobile, "SMS_5755096", params);
@@ -224,7 +225,7 @@ public class SmsSender {
         HashMap<String, String> params = new HashMap<String, String>();
         String passwordforgotcode = getRandomStr();
         params.put("code", passwordforgotcode);        
-        RedisClientFactory.getCacheClient().set(0, event, mobile, passwordforgotcode);        
+        redisClient.set(0, event, mobile, passwordforgotcode);
         return sendSMS(mobile,"SMS_5755096",params);
     } 
 
@@ -262,7 +263,6 @@ public class SmsSender {
             return false;
         }
 
-        RedisClient redisClient = RedisClientFactory.getCacheClient();
         try {
             String getResult = redisClient.get(0, "SMS_LIMIT", mobile);
             if (getResult == null) {

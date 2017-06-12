@@ -3,14 +3,14 @@ package com.moseeker.warn.service;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.moseeker.thrift.gen.dao.struct.configdb.Event;
+import com.moseeker.thrift.gen.dao.struct.configdb.WarnMsg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.moseeker.thrift.gen.warn.struct.WarnBean;
-import com.moseeker.warn.dto.Event;
-import com.moseeker.warn.dto.WarnMsg;
 
 /**
  * @author ltf

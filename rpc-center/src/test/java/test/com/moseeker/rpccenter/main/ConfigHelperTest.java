@@ -24,35 +24,35 @@ public class ConfigHelperTest {
     /**
      * Method: initConfig(Object configObject, String configPrefix, PropertiesConfiguration configuration)
      */
-    @Test
+    //@Test
     public void testInitConfigForConfigObjectConfigPrefixConfiguration() throws Exception {
     }
 
     /**
      * Method: initConfig(AnnotationConfigApplicationContext acac, String configName, List<Object> impls)
      */
-    @Test
+    //@Test
     public void testInitConfigForAcacConfigNameImpls() throws Exception {
     }
 
     /**
      * Method: getThriftConfig()
      */
-    @Test
+    //@Test
     public void testGetThriftConfig() throws Exception {
     }
 
     /**
      * Method: getZkConfig()
      */
-    @Test
+    //@Test
     public void testGetZkConfig() throws Exception {
     }
 
     /**
      * Method: getServerData()
      */
-    @Test
+    //@Test
     public void testGetServerData() throws Exception {
 //TODO: Test goes here... 
     }
@@ -61,7 +61,7 @@ public class ConfigHelperTest {
     /**
      * Method: createServices(ConfigPropertiesUtil configUtils, List<Object> impl, AnnotationConfigApplicationContext acac)
      */
-    @Test
+    //@Test
     public void testCreateServices() throws Exception {
 //TODO: Test goes here... 
 /* 
@@ -79,7 +79,7 @@ try {
     /**
      * Method: createServicesByClass(List<Object> impl)
      */
-    @Test
+    //@Test
     public void testCreateServicesByClass() throws Exception {
 //TODO: Test goes here... 
 /* 
@@ -97,7 +97,7 @@ try {
     /**
      * Method: createServicesByConf(ConfigPropertiesUtil configUtils, AnnotationConfigApplicationContext acac)
      */
-    @Test
+    //@Test
     public void testCreateServicesByConf() throws Exception {
 //TODO: Test goes here... 
 /* 

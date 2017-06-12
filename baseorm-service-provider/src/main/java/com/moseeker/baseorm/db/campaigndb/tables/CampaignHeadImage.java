@@ -7,13 +7,20 @@ package com.moseeker.baseorm.db.campaigndb.tables;
 import com.moseeker.baseorm.db.campaigndb.Campaigndb;
 import com.moseeker.baseorm.db.campaigndb.Keys;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignHeadImageRecord;
-import org.jooq.*;
-import org.jooq.impl.TableImpl;
 
-import javax.annotation.Generated;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.annotation.Generated;
+
+import org.jooq.Field;
+import org.jooq.Identity;
+import org.jooq.Schema;
+import org.jooq.Table;
+import org.jooq.TableField;
+import org.jooq.UniqueKey;
+import org.jooq.impl.TableImpl;
 
 
 /**
@@ -29,7 +36,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CampaignHeadImage extends TableImpl<CampaignHeadImageRecord> {
 
-    private static final long serialVersionUID = -322582815;
+    private static final long serialVersionUID = -445495943;
 
     /**
      * The reference instance of <code>campaigndb.campaign_head_image</code>
@@ -65,9 +72,9 @@ public class CampaignHeadImage extends TableImpl<CampaignHeadImageRecord> {
     public final TableField<CampaignHeadImageRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
 
     /**
-     * The column <code>campaigndb.campaign_head_image.update_time</code>. 创建时间
+     * The column <code>campaigndb.campaign_head_image.update_time</code>. 修改时间
      */
-    public final TableField<CampaignHeadImageRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
+    public final TableField<CampaignHeadImageRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "修改时间");
 
     /**
      * Create a <code>campaigndb.campaign_head_image</code> table reference

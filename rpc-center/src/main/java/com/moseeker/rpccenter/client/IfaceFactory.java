@@ -7,7 +7,6 @@ import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import org.apache.commons.pool.impl.GenericKeyedObjectPool;
 import org.apache.thrift.TServiceClient;
 import org.apache.thrift.TServiceClientFactory;
-
 import com.moseeker.rpccenter.config.ThriftServerConfig;
 import com.moseeker.rpccenter.listener.ZKPath;
 import com.moseeker.rpccenter.pool.TMultiServicePoolFactory;
@@ -91,6 +90,7 @@ public class IfaceFactory<T> {
         poolConfig.maxWait = config.getMaxWait();
         poolConfig.timeBetweenEvictionRunsMillis = config.getTimeBetweenEvictionRunsMillis();
         poolConfig.testWhileIdle = config.isTestWhileIdle();
+        poolConfig.testOnReturn = true;
 
         // 加载Client.Factory类
         Class<TServiceClientFactory<TServiceClient>> fi = (Class<TServiceClientFactory<TServiceClient>>) classLoader.loadClass(findOutClassName(ifaceClass) + "$Client$Factory");

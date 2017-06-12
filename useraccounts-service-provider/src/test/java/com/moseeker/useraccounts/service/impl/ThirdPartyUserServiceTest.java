@@ -23,7 +23,7 @@ public class ThirdPartyUserServiceTest {
 //        service = context.getBean(ThirdPartyUserServiceImpl.class);
 //    }
 //
-//    @Test
+//    //@Test
 //    public void testUpdateUser() throws TException {
 //        init();
 //        ThirdPartyUser user = new ThirdPartyUser();

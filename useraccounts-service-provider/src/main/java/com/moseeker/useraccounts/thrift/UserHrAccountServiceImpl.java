@@ -91,7 +91,12 @@ public class UserHrAccountServiceImpl implements Iface {
     @Override
     public Response joinTalentpool(int hrAccountId, List<Integer> applierIds)
             throws TException {
-        return service.joinTalentpool(hrAccountId, applierIds);
+        try {
+            return service.joinTalentpool(hrAccountId, applierIds);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        return null;
     }
 
     @Override

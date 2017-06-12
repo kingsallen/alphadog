@@ -15,7 +15,7 @@
 //	
 //	MqService.Iface service = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
 //	
-//	@Test
+//	//@Test
 //	public void sendSMSTest() {
 //		try {
 //			//'mobile': '18058808209', 'sys': 1, 'ip': '::1', 'code': '18YJ4c'

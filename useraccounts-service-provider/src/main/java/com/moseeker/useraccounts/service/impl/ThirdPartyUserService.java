@@ -1,14 +1,14 @@
 package com.moseeker.useraccounts.service.impl;
 
+import com.moseeker.baseorm.dao.userdb.ThirdPartyUserDao;
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.service.ThirdPartyUserDao;
 import com.moseeker.thrift.gen.useraccounts.service.ThirdPartyUserService.Iface;
 import com.moseeker.thrift.gen.useraccounts.struct.ThirdPartyUser;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -23,7 +23,8 @@ public class ThirdPartyUserService implements Iface {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    ThirdPartyUserDao.Iface thirdPartyUserDao = ServiceManager.SERVICEMANAGER.getService(ThirdPartyUserDao.Iface.class);
+    @Autowired
+    ThirdPartyUserDao thirdPartyUserDao;
 
 
     @Override

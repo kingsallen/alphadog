@@ -3,26 +3,27 @@ package com.moseeker.position.service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.thrift.gen.dao.service.JobDBDao;
 import org.apache.thrift.TBase;
-import org.apache.thrift.TException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
+import com.moseeker.baseorm.dao.jobdb.JobCustomDao;
+import com.moseeker.baseorm.dao.jobdb.JobOccupationDao;
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.position.utils.ConvertUtils;
-import com.moseeker.rpccenter.client.ServiceManager;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.service.CompanyDao;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HRCompanyConfData;
 import com.moseeker.thrift.gen.position.struct.dao.JobOccupationCustom;
 
 @Service
+@Transactional
 public class JobOccupationService {
 	/*
 	 * auth:zzt
@@ -30,27 +31,23 @@ public class JobOccupationService {
 	 * param:company_id
 	 * function:查找公司的自定义的字段，包括自定义职能和自定义字段
 	 */
-	JobDBDao.Iface jobDBDao =ServiceManager.SERVICEMANAGER
-			.getService(JobDBDao.Iface.class);
-	CompanyDao.Iface companyDao=ServiceManager.SERVICEMANAGER
-			.getService(CompanyDao.Iface.class);
-
-	@CounterIface
+	@Autowired
+	private HrCompanyConfDao hrCompantDao;
+	@Autowired
+    private JobCustomDao customDao;
+    @Autowired
+    private JobOccupationDao occuPationdao;
+    @CounterIface
 	public Response getCustomField(String param){
 		JSONObject obj=JSONObject.parseObject(param);
 		int company_id=obj.getIntValue("company_id");
-		CommonQuery query=new CommonQuery();
-		HashMap<String,String> map=new HashMap<String,String>();
-		map.put("company_id", company_id+"");
-		map.put("status", "1");
-		query.setEqualFilter(map);
-		query.setPer_page(Integer.MAX_VALUE);
+		Query query=new Query.QueryBuilder().where("company_id",company_id).where("status",1).buildQuery();
 		try{
 			HRCompanyConfData hrconf=getHRCompanyConf(company_id);
-			Response result1=jobDBDao.getJobCustoms(query);
+			Response result1=customDao.getJobCustoms(query);
 			List<? extends TBase> list1=ConvertUtils.convert(JobOccupationCustom.class, result1);
 			Map<String,Object> map1= ConvertUtils.convertToJSON(list1, hrconf.job_custom_title);
-			Response result2=jobDBDao.getJobOccupations(query);
+			Response result2=occuPationdao.getJobOccupations(query);
 			List<? extends TBase> list2=ConvertUtils.convert(JobOccupationCustom.class, result2);
 			Map<String,Object> map2= ConvertUtils.convertToJSON(list2, hrconf.getJob_occupation());
 			Map<String,Object> hashmap=new HashMap<String,Object>();
@@ -64,14 +61,10 @@ public class JobOccupationService {
 	}
 	  private  HRCompanyConfData getHRCompanyConf(int company_id){
 		  HRCompanyConfData data=null;
-		  CommonQuery query=new CommonQuery();
-		  Map<String,String> map=new HashMap<String,String>();
-		  map.put("company_id", String.valueOf(company_id));
-		  query.setEqualFilter(map);
+		  Query query=new Query.QueryBuilder().where("company_id", company_id).buildQuery();
 		  try {
-			Response result=companyDao.getHrCompanyConfig(query);
-			if(result.getStatus()==0&&StringUtils.isNotNullOrEmpty(result.getData())){
-				data=JSONObject.toJavaObject(JSONObject.parseObject(result.getData()), HRCompanyConfData.class);
+			  data=hrCompantDao.getData(query,HRCompanyConfData.class);
+			if(data!=null){
 				if(StringUtils.isNullOrEmpty(data.getJob_custom_title())){
 					data.setJob_custom_title("自定义字段");
 				}
@@ -80,7 +73,7 @@ public class JobOccupationService {
 				}
 				return data;
 			}
-		} catch (TException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

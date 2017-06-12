@@ -1,11 +1,11 @@
 package com.moseeker.baseorm.dao.hrdb;
 
-import org.springframework.stereotype.Repository;
-
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatNoticeSyncStatusRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatNoticeSyncStatusDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +13,13 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatNoticeSyncStatusDO;
 * 2017-03-21
 */
 @Repository
-public class HrWxWechatNoticeSyncStatusDao extends StructDaoImpl<HrWxWechatNoticeSyncStatusDO, HrWxWechatNoticeSyncStatusRecord, HrWxWechatNoticeSyncStatus> {
+public class HrWxWechatNoticeSyncStatusDao extends JooqCrudImpl<HrWxWechatNoticeSyncStatusDO, HrWxWechatNoticeSyncStatusRecord> {
 
+    public HrWxWechatNoticeSyncStatusDao() {
+        super(HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS, HrWxWechatNoticeSyncStatusDO.class);
+    }
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS;
-   }
+    public HrWxWechatNoticeSyncStatusDao(TableImpl<HrWxWechatNoticeSyncStatusRecord> table, Class<HrWxWechatNoticeSyncStatusDO> hrWxWechatNoticeSyncStatusDOClass) {
+        super(table, hrWxWechatNoticeSyncStatusDOClass);
+    }
 }

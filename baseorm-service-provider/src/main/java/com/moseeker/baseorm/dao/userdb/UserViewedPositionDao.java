@@ -1,10 +1,10 @@
 package com.moseeker.baseorm.dao.userdb;
 
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import org.springframework.stereotype.Repository;
 
 import com.moseeker.baseorm.db.userdb.tables.UserViewedPosition;
 import com.moseeker.baseorm.db.userdb.tables.records.UserViewedPositionRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserViewedPositionDO;
 
 /**
@@ -13,11 +13,9 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserViewedPositionDO;
 * 2017-04-12
 */
 @Repository
-public class UserViewedPositionDao extends StructDaoImpl<UserViewedPositionDO, UserViewedPositionRecord, UserViewedPosition> {
+public class UserViewedPositionDao extends JooqCrudImpl<UserViewedPositionDO, UserViewedPositionRecord> {
 
-
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = UserViewedPosition.USER_VIEWED_POSITION;
-   }
+    public UserViewedPositionDao() {
+        super(UserViewedPosition.USER_VIEWED_POSITION, UserViewedPositionDO.class);
+    }
 }

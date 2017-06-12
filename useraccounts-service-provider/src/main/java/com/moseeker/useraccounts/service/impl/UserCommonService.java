@@ -1,21 +1,20 @@
 package com.moseeker.useraccounts.service.impl;
 
+import com.moseeker.baseorm.redis.RedisClient;
 import java.util.HashMap;
 
 import com.moseeker.common.annotation.iface.CounterIface;
+import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.redis.RedisClient;
-import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.foundation.wordpress.service.WordpressService;
@@ -40,6 +39,9 @@ public class UserCommonService {
 	WordpressService.Iface wordpressService = ServiceManager.SERVICEMANAGER
 			.getService(WordpressService.Iface.class);
 
+    @Resource(name = "cacheClient")
+    private RedisClient redisClient;
+
 	/**
 	 * 获取平台最新版本的内容
 	 * @param form
@@ -48,14 +50,13 @@ public class UserCommonService {
 	public Response newsletter(NewsletterForm form) {
 		
 		if (form.getAccount_id() > 0) {
-			RedisClient redis = RedisClientFactory.getCacheClient();
-			String value = redis.get(AppId.APPID_ALPHADOG.getValue(),
+			String value = redisClient.get(AppId.APPID_ALPHADOG.getValue(),
 					KeyIdentifier.NEWSLETTER_HRACCOUNT_READED.toString(), String.valueOf(form.getAccount_id()));
 			if (value != null) {
 				NewsletterData data = JSONObject.parseObject(value, NewsletterData.class);
 				if(data.getShow_new_version() == 1) {
 					data.setShow_new_version((byte)0);
-					redis.set(AppId.APPID_ALPHADOG.getValue(),
+                    redisClient.set(AppId.APPID_ALPHADOG.getValue(),
 							KeyIdentifier.NEWSLETTER_HRACCOUNT_READED.toString(), String.valueOf(form.getAccount_id()), JSON.toJSONString(data));
 				}
 				return ResponseUtils.success(JSON.parse(value));
@@ -68,7 +69,7 @@ public class UserCommonService {
 						if(showNewVersion == 1) {
 							data.setShow_new_version((byte)0);
 						}
-						redis.set(AppId.APPID_ALPHADOG.getValue(),
+                        redisClient.set(AppId.APPID_ALPHADOG.getValue(),
 								KeyIdentifier.NEWSLETTER_HRACCOUNT_READED.toString(), String.valueOf(form.getAccount_id()), JSON.toJSONString(newsletterToMap(data)));
 						if(showNewVersion == 1) {
 							data.setShow_new_version(showNewVersion);

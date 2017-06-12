@@ -16,7 +16,7 @@ import com.moseeker.mq.service.email.ConstantlyMailConsumer;
 
 public class EmailTest {
 
-	@Test
+	//@Test
 	public void sendEmail() {
 		ConstantlyMailConsumer mailUtil = new ConstantlyMailConsumer();
 		try {
@@ -27,7 +27,7 @@ public class EmailTest {
 		}
 	}
 	
-	@Test
+	//@Test
 	public void sendMail() {
 		try {
 			MailBuilder mailBuilder = new MailBuilder();

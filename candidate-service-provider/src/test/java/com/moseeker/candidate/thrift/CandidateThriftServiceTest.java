@@ -1,17 +1,11 @@
 package com.moseeker.candidate.thrift;
 
-import com.moseeker.common.util.BeanUtils;
-import com.moseeker.db.candidatedb.tables.records.CandidatePositionRecord;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.candidate.service.CandidateService;
 import com.moseeker.thrift.gen.candidate.struct.*;
-import com.moseeker.thrift.gen.dao.struct.CandidatePositionDO;
-
 import org.apache.thrift.TException;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,17 +33,17 @@ public class CandidateThriftServiceTest {
     /**
      * Method: glancePosition(int userId, int positionId, int shareChainId)
      */
-    //@Test
+    ////@Test
     public void testGlancePosition() throws Exception {
         candidateService.glancePosition(3502, 24443, 701);
     }
     
-//    @Test
+//    //@Test
 //    public void changeInterestingTest() throws TException {
 //    		candidateService.changeInteresting(391470, 61106, (byte)0);
 //    }
 
-    //@Test
+    ////@Test
     public void testCandidateList() {
 
         CandidateListParam param = new CandidateListParam();
@@ -77,7 +71,7 @@ public class CandidateThriftServiceTest {
         }
     }
 
-    //@Test
+    ////@Test
     public void testGetRecommendations() {
         List<Integer> candidateIdList = new ArrayList<Integer>(){{
             add(14784);
@@ -91,7 +85,7 @@ public class CandidateThriftServiceTest {
         }
     }
 
-    //@Test
+    ////@Test
     public void testRecommend() {
         RecommmendParam param = new RecommmendParam();
         param.setCompanyId(39978);
@@ -111,7 +105,7 @@ public class CandidateThriftServiceTest {
         }
     }
 
-    //@Test
+    ////@Test
     public void testRecommend1() {
         RecommmendParam param = new RecommmendParam();
         param.setCompanyId(39978);
@@ -131,7 +125,7 @@ public class CandidateThriftServiceTest {
         }
     }
 
-    //@Test
+    ////@Test
     public void testGetRecommendation() {
         try {
             RecomRecordResult recommendResult = candidateService.getRecommendation(14349, 3341);
@@ -141,7 +135,7 @@ public class CandidateThriftServiceTest {
         }
     }
 
-    //@Test
+    ////@Test
     public void testGetRecommendatorySorting() {
         try {
             SortResult result = candidateService.getRecommendatorySorting(4, 1);
@@ -151,7 +145,7 @@ public class CandidateThriftServiceTest {
         }
     }
 
-    //@Test
+    ////@Test
     public void testIgnore() {
         try {
             RecommendResult result = candidateService.ignore(1, 1, 4, "2017-02-21");

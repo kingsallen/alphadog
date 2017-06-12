@@ -1,13 +1,5 @@
 package moseeker.baseorm.dao.user;
 
-import com.moseeker.baseorm.Thriftservice.ThirdPartyUserDaoThriftService;
-import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.useraccounts.struct.ThirdPartyUser;
-import org.apache.thrift.TException;
-import org.junit.Assert;
-import org.junit.Test;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-
 /**
  * Created by eddie on 2017/3/8.
  */
@@ -22,7 +14,7 @@ public class ThirdPartyUserDaoTest {
 //        service = context.getBean(ThirdPartyUserDaoThriftService.class);
 //    }
 //
-//    @Test
+//    //@Test
 //    public void testUpdateUser() throws TException {
 //        init();
 //        ThirdPartyUser user = new ThirdPartyUser();

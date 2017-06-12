@@ -6,7 +6,7 @@ import com.moseeker.common.providerutils.QueryUtil;
 
 public class WordpressDaoTest {
 
-	//@Test
+	////@Test
 	/*public void testMysql() {
 		WordpressPostsDao dao = new WordpressPostsDao();
 		

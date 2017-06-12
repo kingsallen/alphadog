@@ -1,11 +1,11 @@
 package com.moseeker.baseorm.dao.hrdb;
 
-import org.springframework.stereotype.Repository;
-
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.hrdb.tables.HrFeedback;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrFeedbackRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrFeedbackDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +13,13 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrFeedbackDO;
 * 2017-03-21
 */
 @Repository
-public class HrFeedbackDao extends StructDaoImpl<HrFeedbackDO, HrFeedbackRecord, HrFeedback> {
+public class HrFeedbackDao extends JooqCrudImpl<HrFeedbackDO, HrFeedbackRecord> {
 
+    public HrFeedbackDao() {
+        super(HrFeedback.HR_FEEDBACK, HrFeedbackDO.class);
+    }
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = HrFeedback.HR_FEEDBACK;
-   }
+    public HrFeedbackDao(TableImpl<HrFeedbackRecord> table, Class<HrFeedbackDO> hrFeedbackDOClass) {
+        super(table, hrFeedbackDOClass);
+    }
 }

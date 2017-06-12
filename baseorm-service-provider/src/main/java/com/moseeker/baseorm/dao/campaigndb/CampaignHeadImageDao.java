@@ -1,8 +1,8 @@
 package com.moseeker.baseorm.dao.campaigndb;
 
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignHeadImage;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignHeadImageRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignHeadImageDO;
 import org.springframework.stereotype.Repository;
 
@@ -12,11 +12,9 @@ import org.springframework.stereotype.Repository;
 * 2017-04-12
 */
 @Repository
-public class CampaignHeadImageDao extends StructDaoImpl<CampaignHeadImageDO, CampaignHeadImageRecord, CampaignHeadImage> {
+public class CampaignHeadImageDao extends JooqCrudImpl<CampaignHeadImageDO, CampaignHeadImageRecord> {
 
-
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = CampaignHeadImage.CAMPAIGN_HEAD_IMAGE;
-   }
+    public CampaignHeadImageDao() {
+        super(CampaignHeadImage.CAMPAIGN_HEAD_IMAGE, CampaignHeadImageDO.class);
+    }
 }

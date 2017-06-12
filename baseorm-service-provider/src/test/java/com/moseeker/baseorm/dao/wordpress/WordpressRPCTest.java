@@ -9,14 +9,12 @@ import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
 
 import com.moseeker.common.providerutils.QueryUtil;
-import com.moseeker.thrift.gen.dao.service.WordpressDao.Client;
-import com.moseeker.thrift.gen.dao.service.WordpressDao.Client.Factory;
 import com.moseeker.thrift.gen.dao.struct.WordpressPosts;
 import com.moseeker.thrift.gen.dao.struct.WordpressTermRelationships;
 
 public class WordpressRPCTest {
 
-	//@Test
+	////@Test
 	/*public void test() {
 		TTransport transport = null;
 		try {

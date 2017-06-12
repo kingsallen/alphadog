@@ -1,12 +1,6 @@
 package com.moseeker.mq.service.impl;
 
-import java.util.UUID;
-
-import org.apache.thrift.TException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-
+import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.Constant;
@@ -14,12 +8,16 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.redis.RedisClient;
-import com.moseeker.common.redis.RedisClientFactory;
-import com.moseeker.common.util.BeanUtils;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.mq.service.WarnService;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
+import java.util.UUID;
+import javax.annotation.Resource;
+import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 /**
  * 消息队列服务
@@ -32,7 +30,8 @@ public class TemplateMsgProducer {
 
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	private RedisClient redisClient = RedisClientFactory.getCacheClient();
+    @Resource(name = "cacheClient")
+    private RedisClient redisClient;
 
 	/**
 	 * 消息模板通知接口

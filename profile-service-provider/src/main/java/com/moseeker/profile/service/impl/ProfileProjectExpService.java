@@ -1,5 +1,30 @@
 package com.moseeker.profile.service.impl;
 
+import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
+import com.moseeker.baseorm.dao.profiledb.ProfileProjectexpDao;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProjectexpRecord;
+import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.QueryUtil;
+import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.util.query.Order;
+import com.moseeker.common.util.query.OrderBy;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.profile.constants.ValidationMessage;
+import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
+import com.moseeker.profile.utils.ProfileValidation;
+import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.profile.struct.ProjectExp;
+
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,236 +34,230 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.thrift.TException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.providerutils.QueryUtil;
-import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
-import com.moseeker.common.util.BeanUtils;
-import com.moseeker.db.profiledb.tables.records.ProfileProjectexpRecord;
-import com.moseeker.profile.constants.ValidationMessage;
-import com.moseeker.profile.dao.ProfileDao;
-import com.moseeker.profile.dao.ProjectExpDao;
-import com.moseeker.profile.utils.ProfileValidation;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.profile.struct.ProjectExp;
-
 @Service
 @CounterIface
-public class ProfileProjectExpService extends JOOQBaseServiceImpl<ProjectExp, ProfileProjectexpRecord> {
+public class ProfileProjectExpService {
 
-	Logger logger = LoggerFactory.getLogger(ProfileProjectExpService.class);
+    Logger logger = LoggerFactory.getLogger(ProfileProjectExpService.class);
 
-	@Autowired
-	private ProjectExpDao dao;
-	
-	@Autowired
-	private ProfileDao profileDao;
-	
-	@Autowired
-	private ProfileCompletenessImpl completenessImpl;
+    @Autowired
+    private ProfileProjectexpDao dao;
 
-	public ProjectExpDao getDao() {
-		return dao;
-	}
+    @Autowired
+    private ProfileProfileDao profileDao;
 
-	public void setDao(ProjectExpDao dao) {
-		this.dao = dao;
-	}
+    @Autowired
+    private ProfileCompletenessImpl completenessImpl;
 
-	public ProfileDao getProfileDao() {
-		return profileDao;
-	}
+    public Response getResource(Query query) throws TException {
+        ProjectExp data = dao.getData(query, ProjectExp.class);
+        if (data != null) {
+            return ResponseUtils.success(data);
+        } else {
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+        }
+    }
 
-	public void setProfileDao(ProfileDao profileDao) {
-		this.profileDao = profileDao;
-	}
+    public Response getPagination(Query query) throws TException {
+        int totalRow = dao.getCount(query);
+        List<?> datas = dao.getDatas(query);
 
-	public ProfileCompletenessImpl getCompletenessImpl() {
-		return completenessImpl;
-	}
+        return ResponseUtils.success(ProfileUtils.getPagination(totalRow, query.getPageNum(), query.getPageSize(), datas));
+    }
 
-	public void setCompletenessImpl(ProfileCompletenessImpl completenessImpl) {
-		this.completenessImpl = completenessImpl;
-	}
+    public Response getResources(Query query) throws TException {
+        // 按照结束时间倒序
+        query.getOrders().add(new OrderBy("end_until_now", Order.DESC));
+        query.getOrders().add(new OrderBy("start", Order.DESC));
 
-	@Override
-	protected void initDao() {
-		super.dao = this.dao;
-	}
 
-	@Override
-	public Response getResources(CommonQuery query) throws TException {
-		// 按照结束时间倒序
-		query.setSortby("end_until_now,start");
-		query.setOrder("desc,desc");
-		return super.getResources(query);
-	}
-	
-	
-	@Override
-	public Response postResources(List<ProjectExp> structs) throws TException {
-		if(structs != null && structs.size() > 0) {
-			Iterator<ProjectExp> ipe = structs.iterator();
-			while(ipe.hasNext()) {
-				ProjectExp pe = ipe.next();
-				ValidationMessage<ProjectExp> vm = ProfileValidation.verifyProjectExp(pe);
-				if(!vm.isPass()) {
-					ipe.remove();
-				}
-			}
-		}
-		Response response = super.postResources(structs);
-		if (response.getStatus() == 0 && structs != null && structs.size() > 0) {
-			Set<Integer> profileIds = new HashSet<Integer>();
-			structs.forEach(struct -> {
-				profileIds.add(struct.getProfile_id());
-			});
-			
-			profileDao.updateUpdateTime(profileIds);
-			
-			profileIds.forEach(profileId -> {
-				/* 计算profile完成度 */
-				completenessImpl.reCalculateProfileProjectExpByProfileId(profileId);
-			});
-		}
-		return response;
-	}
+        List<ProjectExp> structs = dao.getDatas(query, ProjectExp.class);
 
-	@Override
-	public Response putResources(List<ProjectExp> structs) throws TException {
-		Response response = super.putResources(structs);
-		if (response.getStatus() == 0 && structs != null && structs.size() > 0) {
-			
-			updateUpdateTime(structs);
-			
-			structs.forEach(struct -> {
-				/* 计算profile完成度 */
-				completenessImpl.reCalculateProfileProjectExpByProjectExpId(struct.getId());
-			});
-		}
-		return response;
-	}
+        if (!structs.isEmpty()) {
+            return ResponseUtils.success(structs);
+        } else {
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+        }
+    }
 
-	@Override
-	public Response delResources(List<ProjectExp> structs) throws TException {
-		QueryUtil qu = new QueryUtil();
-		StringBuffer sb = new StringBuffer("[");
-		structs.forEach(struct -> {
-			sb.append(struct.getId());
-			sb.append(",");
-		});
-		sb.deleteCharAt(sb.length() - 1);
-		sb.append("]");
-		qu.addEqualFilter("id", sb.toString());
+    @Transactional
+    public Response postResources(List<ProjectExp> structs) throws TException {
+        if (structs != null && structs.size() > 0) {
+            Iterator<ProjectExp> ipe = structs.iterator();
+            while (ipe.hasNext()) {
+                ProjectExp pe = ipe.next();
+                ValidationMessage<ProjectExp> vm = ProfileValidation.verifyProjectExp(pe);
+                if (!vm.isPass()) {
+                    ipe.remove();
+                }
+            }
+        }
+        if (structs != null && structs.size() > 0) {
+            List<ProfileProjectexpRecord> records = dao.addAllRecord(structsToDBs(structs));
 
-		List<ProfileProjectexpRecord> projectExpRecords = null;
-		try {
-			projectExpRecords = dao.getResources(qu);
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-		Set<Integer> profileIds = new HashSet<>();
-		if (projectExpRecords != null && projectExpRecords.size() > 0) {
-			projectExpRecords.forEach(projectExp -> {
-				profileIds.add(projectExp.getProfileId().intValue());
-			});
-		}
-		Response response = super.delResources(structs);
-		if (response.getStatus() == 0 && profileIds != null && profileIds.size() > 0) {
-			
-			updateUpdateTime(structs);
-			
-			profileIds.forEach(profileId -> {
-				/* 计算profile完成度 */
-				completenessImpl.reCalculateProfileProjectExp(profileId, 0);
-			});
-		}
-		return response;
-	}
+            Set<Integer> profileIds = new HashSet<Integer>();
+            structs.forEach(struct -> {
+                profileIds.add(struct.getProfile_id());
+            });
 
-	@Override
-	public Response postResource(ProjectExp struct) throws TException {
-		ValidationMessage<ProjectExp> vm = ProfileValidation.verifyProjectExp(struct);
-		if(!vm.isPass()) {
-			return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", vm.getResult()));
-		}
-		Response response = super.postResource(struct);
-		if (response.getStatus() == 0) {
-			Set<Integer> profileIds = new HashSet<>();
-			profileIds.add(struct.getProfile_id());
-			profileDao.updateUpdateTime(profileIds);
-			/* 计算profile完成度 */
-			completenessImpl.reCalculateProfileProjectExpByProfileId(struct.getProfile_id());
-		}
-		return response;
-	}
+            profileDao.updateUpdateTime(profileIds);
 
-	@Override
-	public Response putResource(ProjectExp struct) throws TException {
-		Response response = super.putResource(struct);
-		if (response.getStatus() == 0) {
-			updateUpdateTime(struct);
-			/* 计算profile完成度 */
-			completenessImpl.reCalculateProfileProjectExpByProjectExpId(struct.getId());
-		}
-		return response;
-	}
+            profileIds.forEach(profileId -> {
+                /* 计算profile完成度 */
+                completenessImpl.reCalculateProfileProjectExpByProfileId(profileId);
+            });
+            return ResponseUtils.success("1");
+        } else {
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
+        }
+    }
 
-	@Override
-	public Response delResource(ProjectExp struct) throws TException {
-		QueryUtil qu = new QueryUtil();
-		qu.addEqualFilter("id", String.valueOf(struct.getId()));
-		ProfileProjectexpRecord projectExpRecord = null;
-		try {
-			projectExpRecord = dao.getResource(qu);
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-		Response response = super.delResource(struct);
-		if (response.getStatus() == 0 && projectExpRecord != null) {
-			updateUpdateTime(struct);
-			/* 计算profile完成度 */
-			completenessImpl.reCalculateProfileProjectExp(projectExpRecord.getProfileId().intValue(),
-					projectExpRecord.getId().intValue());
-		}
-		return response;
-	}
-	
-	@Override
-	protected ProjectExp DBToStruct(ProfileProjectexpRecord r) {
-		Map<String, String> equalRules = new HashMap<>();
-		equalRules.put("start", "start_date");
-		equalRules.put("end", "end_date");
-		return (ProjectExp) BeanUtils.DBToStruct(ProjectExp.class, r, equalRules);
-	}
+    @Transactional
+    public Response putResources(List<ProjectExp> structs) throws TException {
+        int[] result = dao.updateRecords(structsToDBs(structs));
+        if (ArrayUtils.contains(result, 1)) {
 
-	@Override
-	protected ProfileProjectexpRecord structToDB(ProjectExp projectExp) throws ParseException {
-		Map<String, String> equalRules = new HashMap<>();
-		equalRules.put("start", "start_date");
-		equalRules.put("end", "end_date");
-		return (ProfileProjectexpRecord) BeanUtils.structToDB(projectExp, ProfileProjectexpRecord.class, equalRules);
-	}
-	
-	private void updateUpdateTime(List<ProjectExp> projectExps) {
-		Set<Integer> projectExpIds = new HashSet<>();
-		projectExps.forEach(projectExp -> {
-			projectExpIds.add(projectExp.getId());
-		});
-		dao.updateProfileUpdateTime(projectExpIds);
-	}
+            updateUpdateTime(structs);
 
-	private void updateUpdateTime(ProjectExp projectExp) {
-		List<ProjectExp> projectExps = new ArrayList<>();
-		projectExps.add(projectExp);
-		updateUpdateTime(projectExps);
-	}
+            structs.forEach(struct -> {
+                /* 计算profile完成度 */
+                completenessImpl.reCalculateProfileProjectExpByProjectExpId(struct.getId());
+            });
+
+            return ResponseUtils.success("1");
+        }
+        return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
+    }
+
+    @Transactional
+    public Response delResources(List<ProjectExp> structs) throws TException {
+        QueryUtil qu = new QueryUtil();
+        StringBuffer sb = new StringBuffer("[");
+        structs.forEach(struct -> {
+            sb.append(struct.getId());
+            sb.append(",");
+        });
+        sb.deleteCharAt(sb.length() - 1);
+        sb.append("]");
+        qu.addEqualFilter("id", sb.toString());
+
+        List<ProfileProjectexpRecord> projectExpRecords = null;
+        projectExpRecords = dao.getRecords(qu);
+        Set<Integer> profileIds = new HashSet<>();
+        if (projectExpRecords != null && projectExpRecords.size() > 0) {
+            projectExpRecords.forEach(projectExp -> {
+                profileIds.add(projectExp.getProfileId().intValue());
+            });
+        }
+        if (projectExpRecords != null && projectExpRecords.size() > 0) {
+            int[] result = dao.deleteRecords(structsToDBs(structs));
+            if (ArrayUtils.contains(result, 1)) {
+
+                updateUpdateTime(structs);
+
+                profileIds.forEach(profileId -> {
+                /* 计算profile完成度 */
+                    completenessImpl.reCalculateProfileProjectExp(profileId, 0);
+                });
+                return ResponseUtils.success("1");
+            }
+        }
+        return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DEL_FAILED);
+    }
+
+    @Transactional
+    public Response postResource(ProjectExp struct) throws TException {
+        ValidationMessage<ProjectExp> vm = ProfileValidation.verifyProjectExp(struct);
+        if (!vm.isPass()) {
+            return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", vm.getResult()));
+        }
+        ProfileProjectexpRecord record = dao.addRecord(structToDB(struct));
+        Set<Integer> profileIds = new HashSet<>();
+        profileIds.add(struct.getProfile_id());
+        profileDao.updateUpdateTime(profileIds);
+            /* 计算profile完成度 */
+        completenessImpl.reCalculateProfileProjectExpByProfileId(struct.getProfile_id());
+        return ResponseUtils.success(String.valueOf(record.getId()));
+    }
+
+    @Transactional
+    public Response putResource(ProjectExp struct) throws TException {
+        int result = dao.updateRecord(structToDB(struct));
+        if (result > 0) {
+            updateUpdateTime(struct);
+            /* 计算profile完成度 */
+            completenessImpl.reCalculateProfileProjectExpByProjectExpId(struct.getId());
+            return ResponseUtils.success("1");
+        }
+        return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
+    }
+
+    @Transactional
+    public Response delResource(ProjectExp struct) throws TException {
+        QueryUtil qu = new QueryUtil();
+        qu.addEqualFilter("id", String.valueOf(struct.getId()));
+        ProfileProjectexpRecord projectExpRecord = null;
+        projectExpRecord = dao.getRecord(qu);
+        if (projectExpRecord != null) {
+            int result = dao.deleteRecord(projectExpRecord);
+            if (result > 0) {
+                updateUpdateTime(struct);
+            /* 计算profile完成度 */
+                completenessImpl.reCalculateProfileProjectExp(projectExpRecord.getProfileId().intValue(),
+                        projectExpRecord.getId().intValue());
+                return ResponseUtils.success("1");
+            }
+        }
+        return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DEL_FAILED);
+    }
+
+
+    protected ProjectExp DBToStruct(ProfileProjectexpRecord r) {
+        Map<String, String> equalRules = new HashMap<>();
+        equalRules.put("start", "start_date");
+        equalRules.put("end", "end_date");
+        return BeanUtils.DBToStruct(ProjectExp.class, r, equalRules);
+    }
+
+
+    protected ProfileProjectexpRecord structToDB(ProjectExp projectExp) {
+        Map<String, String> equalRules = new HashMap<>();
+        equalRules.put("start", "start_date");
+        equalRules.put("end", "end_date");
+        return BeanUtils.structToDB(projectExp, ProfileProjectexpRecord.class, equalRules);
+    }
+
+    protected List<ProjectExp> DBsToStructs(List<ProfileProjectexpRecord> records) {
+        List<ProjectExp> structs = new ArrayList<>();
+        if (records != null && records.size() > 0) {
+            for (ProfileProjectexpRecord r : records) {
+                structs.add(DBToStruct(r));
+            }
+        }
+        return structs;
+    }
+
+    protected List<ProfileProjectexpRecord> structsToDBs(List<ProjectExp> records) {
+        List<ProfileProjectexpRecord> structs = new ArrayList<>();
+        if (records != null && records.size() > 0) {
+            for (ProjectExp r : records) {
+                structs.add(structToDB(r));
+            }
+        }
+        return structs;
+    }
+
+    private void updateUpdateTime(List<ProjectExp> projectExps) {
+        Set<Integer> projectExpIds = new HashSet<>();
+        projectExps.forEach(projectExp -> {
+            projectExpIds.add(projectExp.getId());
+        });
+        dao.updateProfileUpdateTime(projectExpIds);
+    }
+
+    private void updateUpdateTime(ProjectExp projectExp) {
+        List<ProjectExp> projectExps = new ArrayList<>();
+        projectExps.add(projectExp);
+        updateUpdateTime(projectExps);
+    }
 }

@@ -21,7 +21,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -37,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogWxMessageRecord extends TableImpl<LogWxMessageRecordRecord> {
 
-    private static final long serialVersionUID = -1884545194;
+    private static final long serialVersionUID = 1102419433;
 
     /**
      * The reference instance of <code>logdb.log_wx_message_record</code>
@@ -55,17 +54,17 @@ public class LogWxMessageRecord extends TableImpl<LogWxMessageRecordRecord> {
     /**
      * The column <code>logdb.log_wx_message_record.id</code>. 主key
      */
-    public final TableField<LogWxMessageRecordRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
+    public final TableField<LogWxMessageRecordRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "主key");
 
     /**
      * The column <code>logdb.log_wx_message_record.template_id</code>. 我的模板ID
      */
-    public final TableField<LogWxMessageRecordRecord, UInteger> TEMPLATE_ID = createField("template_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "我的模板ID");
+    public final TableField<LogWxMessageRecordRecord, Integer> TEMPLATE_ID = createField("template_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "我的模板ID");
 
     /**
      * The column <code>logdb.log_wx_message_record.wechat_id</code>. 所属公众号
      */
-    public final TableField<LogWxMessageRecordRecord, UInteger> WECHAT_ID = createField("wechat_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGERUNSIGNED)), this, "所属公众号");
+    public final TableField<LogWxMessageRecordRecord, Integer> WECHAT_ID = createField("wechat_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "所属公众号");
 
     /**
      * The column <code>logdb.log_wx_message_record.msgid</code>. 发送消息ID
@@ -95,7 +94,7 @@ public class LogWxMessageRecord extends TableImpl<LogWxMessageRecordRecord> {
     /**
      * The column <code>logdb.log_wx_message_record.errcode</code>. 返回结果值
      */
-    public final TableField<LogWxMessageRecordRecord, UInteger> ERRCODE = createField("errcode", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "返回结果值");
+    public final TableField<LogWxMessageRecordRecord, Integer> ERRCODE = createField("errcode", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "返回结果值");
 
     /**
      * The column <code>logdb.log_wx_message_record.errmsg</code>. 返回提示信息
@@ -161,7 +160,7 @@ public class LogWxMessageRecord extends TableImpl<LogWxMessageRecordRecord> {
      * {@inheritDoc}
      */
     @Override
-    public Identity<LogWxMessageRecordRecord, UInteger> getIdentity() {
+    public Identity<LogWxMessageRecordRecord, Integer> getIdentity() {
         return Keys.IDENTITY_LOG_WX_MESSAGE_RECORD;
     }
 

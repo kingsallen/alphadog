@@ -26,14 +26,14 @@ public class RecruitmentScheduleEnumTest {
     /**
      * Method: getCurrentStatus()
      */
-    @Test
+    //@Test
     public void testGetCurrentStatus() throws Exception {
     }
 
     /**
      * Method: setLastStep(int lastStep)
      */
-    @Test
+    //@Test
     public void testSetLastStep() throws Exception {
         RecruitmentScheduleEnum recruitmentScheduleEnum = RecruitmentScheduleEnum.createFromID(4);
 
@@ -71,7 +71,7 @@ public class RecruitmentScheduleEnumTest {
     /**
      * Method: setLastStep(int lastStep)
      */
-    @Test
+    //@Test
     public void testSetLastStep1() throws Exception {
         RecruitmentScheduleEnum recruitmentScheduleEnum = RecruitmentScheduleEnum.createFromID(1);
 
@@ -84,7 +84,7 @@ public class RecruitmentScheduleEnumTest {
 
     }
 
-    @Test
+    //@Test
     public void testGetAppStatusDescription() throws Exception {
         RecruitmentScheduleEnum recruitmentScheduleEnum = RecruitmentScheduleEnum.createFromID(12);
         System.out.println(recruitmentScheduleEnum.getAppStatusDescription((byte)0, (byte)0,10));
@@ -129,7 +129,7 @@ public class RecruitmentScheduleEnumTest {
     /**
      * Method: init(int value)
      */
-    @Test
+    //@Test
     public void testInit() throws Exception {
         //TODO: Test goes here...
         /*

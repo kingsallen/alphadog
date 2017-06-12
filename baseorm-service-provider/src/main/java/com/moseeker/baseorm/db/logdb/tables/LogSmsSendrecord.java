@@ -21,7 +21,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -37,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogSmsSendrecord extends TableImpl<LogSmsSendrecordRecord> {
 
-    private static final long serialVersionUID = 453395113;
+    private static final long serialVersionUID = 1853747957;
 
     /**
      * The reference instance of <code>logdb.log_sms_sendrecord</code>
@@ -55,12 +54,12 @@ public class LogSmsSendrecord extends TableImpl<LogSmsSendrecordRecord> {
     /**
      * The column <code>logdb.log_sms_sendrecord.id</code>.
      */
-    public final TableField<LogSmsSendrecordRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
+    public final TableField<LogSmsSendrecordRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>logdb.log_sms_sendrecord.sys</code>. 来自系统，0:未知 1:platform 2:qx 3:hr 4:官网 5:基础服务 9:script
+     * The column <code>logdb.log_sms_sendrecord.sys</code>. 来自系统，0:未知 1:platform 2:qx 3:hr 4:官网 9:script
      */
-    public final TableField<LogSmsSendrecordRecord, Byte> SYS = createField("sys", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("1", org.jooq.impl.SQLDataType.TINYINT)), this, "来自系统，0:未知 1:platform 2:qx 3:hr 4:官网 5:基础服务 9:script");
+    public final TableField<LogSmsSendrecordRecord, Byte> SYS = createField("sys", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("1", org.jooq.impl.SQLDataType.TINYINT)), this, "来自系统，0:未知 1:platform 2:qx 3:hr 4:官网 9:script");
 
     /**
      * The column <code>logdb.log_sms_sendrecord.mobile</code>.
@@ -116,7 +115,7 @@ public class LogSmsSendrecord extends TableImpl<LogSmsSendrecordRecord> {
      * {@inheritDoc}
      */
     @Override
-    public Identity<LogSmsSendrecordRecord, UInteger> getIdentity() {
+    public Identity<LogSmsSendrecordRecord, Integer> getIdentity() {
         return Keys.IDENTITY_LOG_SMS_SENDRECORD;
     }
 

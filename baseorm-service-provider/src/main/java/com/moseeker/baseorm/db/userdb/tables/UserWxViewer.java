@@ -20,7 +20,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -36,7 +35,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserWxViewer extends TableImpl<UserWxViewerRecord> {
 
-    private static final long serialVersionUID = -684389031;
+    private static final long serialVersionUID = 196549021;
 
     /**
      * The reference instance of <code>userdb.user_wx_viewer</code>
@@ -54,7 +53,7 @@ public class UserWxViewer extends TableImpl<UserWxViewerRecord> {
     /**
      * The column <code>userdb.user_wx_viewer.id</code>. 主key
      */
-    public final TableField<UserWxViewerRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
+    public final TableField<UserWxViewerRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "主key");
 
     /**
      * The column <code>userdb.user_wx_viewer.sysuser_id</code>.
@@ -105,7 +104,7 @@ public class UserWxViewer extends TableImpl<UserWxViewerRecord> {
      * {@inheritDoc}
      */
     @Override
-    public Identity<UserWxViewerRecord, UInteger> getIdentity() {
+    public Identity<UserWxViewerRecord, Integer> getIdentity() {
         return Keys.IDENTITY_USER_WX_VIEWER;
     }
 

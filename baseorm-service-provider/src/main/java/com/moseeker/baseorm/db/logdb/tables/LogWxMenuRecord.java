@@ -21,7 +21,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -37,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogWxMenuRecord extends TableImpl<LogWxMenuRecordRecord> {
 
-    private static final long serialVersionUID = 1032606664;
+    private static final long serialVersionUID = 1673369716;
 
     /**
      * The reference instance of <code>logdb.log_wx_menu_record</code>
@@ -55,12 +54,12 @@ public class LogWxMenuRecord extends TableImpl<LogWxMenuRecordRecord> {
     /**
      * The column <code>logdb.log_wx_menu_record.id</code>.
      */
-    public final TableField<LogWxMenuRecordRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
+    public final TableField<LogWxMenuRecordRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>logdb.log_wx_menu_record.wechat_id</code>.
      */
-    public final TableField<LogWxMenuRecordRecord, UInteger> WECHAT_ID = createField("wechat_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGERUNSIGNED)), this, "");
+    public final TableField<LogWxMenuRecordRecord, Integer> WECHAT_ID = createField("wechat_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>logdb.log_wx_menu_record.name</code>.
@@ -80,7 +79,7 @@ public class LogWxMenuRecord extends TableImpl<LogWxMenuRecordRecord> {
     /**
      * The column <code>logdb.log_wx_menu_record.errcode</code>. 微信调用返回的errcode
      */
-    public final TableField<LogWxMenuRecordRecord, UInteger> ERRCODE = createField("errcode", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGERUNSIGNED)), this, "微信调用返回的errcode");
+    public final TableField<LogWxMenuRecordRecord, Integer> ERRCODE = createField("errcode", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "微信调用返回的errcode");
 
     /**
      * The column <code>logdb.log_wx_menu_record.errmsg</code>. 微信调用返回的errmsg
@@ -121,7 +120,7 @@ public class LogWxMenuRecord extends TableImpl<LogWxMenuRecordRecord> {
      * {@inheritDoc}
      */
     @Override
-    public Identity<LogWxMenuRecordRecord, UInteger> getIdentity() {
+    public Identity<LogWxMenuRecordRecord, Integer> getIdentity() {
         return Keys.IDENTITY_LOG_WX_MENU_RECORD;
     }
 

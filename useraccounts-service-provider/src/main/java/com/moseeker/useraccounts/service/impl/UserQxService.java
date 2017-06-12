@@ -1,20 +1,23 @@
 package com.moseeker.useraccounts.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.dao.userdb.UserCollectPositionDao;
+import com.moseeker.baseorm.dao.userdb.UserSearchConditionDao;
+import com.moseeker.baseorm.dao.userdb.UserViewedPositionDao;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.rpccenter.client.ServiceManager;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.dao.service.JobDBDao;
-import com.moseeker.thrift.gen.dao.struct.JobApplicationDO;
-import com.moseeker.thrift.gen.dao.struct.JobPositionDO;
+import com.moseeker.common.util.query.Condition;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserSearchConditionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserViewedPositionDO;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
-import com.moseeker.useraccounts.service.impl.biztools.UserCenterBizTools;
-import java.time.format.DateTimeFormatter;
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -33,10 +37,20 @@ public class UserQxService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserQxService.class);
 
-    com.moseeker.thrift.gen.dao.service.UserDBDao.Iface userDao = ServiceManager.SERVICEMANAGER
-            .getService(com.moseeker.thrift.gen.dao.service.UserDBDao.Iface.class);
+    @Autowired
+    private UserCollectPositionDao collectPositionDao;
 
-    JobDBDao.Iface jobDBDao = ServiceManager.SERVICEMANAGER.getService(JobDBDao.Iface.class);
+    @Autowired
+    private UserSearchConditionDao searchConditionDao;
+
+    @Autowired
+    private UserViewedPositionDao userViewedPositionDao;
+
+    @Autowired
+    private JobApplicationDao jobApplicationDao;
+
+    @Autowired
+    private JobPositionDao jobPositionDao;
 
     /**
      * 用户获取筛选条件列表
@@ -49,14 +63,12 @@ public class UserQxService {
         UserSearchConditionListVO result = new UserSearchConditionListVO();
         result.setSearchConditionList(new ArrayList<>());
         JSONObject jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.SUCCESS);
-        CommonQuery query;
+        Query.QueryBuilder query;
         try {
-            query = new CommonQuery();
-            query.setEqualFilter(new HashMap<>());
-            query.getEqualFilter().put("user_id", String.valueOf(userId));
-            query.getEqualFilter().put("disable", String.valueOf(0)); // 0: 不禁用 1: 禁用
-            query.setPer_page(Integer.MAX_VALUE);
-            result.setSearchConditionList(userDao.getUserSearchConditions(query));
+            query = new Query.QueryBuilder();
+            query.where("user_id", String.valueOf(userId));
+            query.and("disable", String.valueOf(0)); // 0: 不禁用 1: 禁用
+            result.setSearchConditionList(searchConditionDao.getDatas(query.buildQuery()));
         } catch (Exception e) {
             jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
             logger.error(e.getMessage(), e);
@@ -83,7 +95,7 @@ public class UserQxService {
                 logger.error("postUserSearchCondition 请求参数为空，请检查相关参数, userSearchCondition={}", userSearchCondition);
                 jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
             } else {
-                userSearchCondition = userDao.saveUserSearchCondition(userSearchCondition);
+                userSearchCondition = searchConditionDao.addData(userSearchCondition);
                 if (userSearchCondition != null && userSearchCondition.getId() > 0) {
                     result.setSearchCondition(userSearchCondition);
                 } else {
@@ -109,7 +121,7 @@ public class UserQxService {
      */
     public UserSearchConditionVO delUserSearchCondition(int userId, int id) throws TException {
         logger.info("delUserSearchCondition params: userId={}, id={}", userId, id);
-        CommonQuery query = new CommonQuery();
+        Query.QueryBuilder query = new Query.QueryBuilder();
         UserSearchConditionVO result = new UserSearchConditionVO();
         result.setSearchCondition(new UserSearchConditionDO());
         JSONObject jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.SUCCESS);
@@ -118,12 +130,14 @@ public class UserQxService {
                 logger.error("delUserSearchCondition 请求参数为空，请检查相关参数, userId={}, id={}", userId, id);
                 jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
             } else {
-                query.setEqualFilter(new HashMap<>());
-                query.getEqualFilter().put("user_id", String.valueOf(userId));
-                query.getEqualFilter().put("id", String.valueOf(id));
-                UserSearchConditionDO condition = userDao.getUserSearchCondition(query);
+                query.where("user_id", String.valueOf(userId));
+                query.and("id", String.valueOf(id));
+                UserSearchConditionDO condition = searchConditionDao.getData(query.buildQuery());
                 if(condition != null && condition.getId() > 0) {
-                    result.setSearchCondition(condition.getDisable() == 1 ? condition : userDao.updateUserSearchCondition(condition.setDisable((byte)1)));
+                    if (condition.getDisable() == 0) {
+                        searchConditionDao.updateData(condition.setDisable((byte) 1));
+                    }
+                    result.setSearchCondition(condition);
                 } else {
                     jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_DEL_FAILED);
                     logger.error("用户(user_id={})不存在该筛选项(筛选项id={})", userId, id);
@@ -152,11 +166,10 @@ public class UserQxService {
         result.setUserCollectPosition(new UserCollectPositionDO());
         JSONObject jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.SUCCESS);
         try {
-            CommonQuery query = new CommonQuery();
-            query.setEqualFilter(new HashMap<>());
-            query.getEqualFilter().put("user_id", String.valueOf(userId));
-            query.getEqualFilter().put("position_id", String.valueOf(positionId));
-            UserCollectPositionDO entity = userDao.getUserCollectPosition(query);
+            Query.QueryBuilder query = new Query.QueryBuilder();
+            query.where("user_id", String.valueOf(userId));
+            query.and("position_id", String.valueOf(positionId));
+            UserCollectPositionDO entity = collectPositionDao.getData(query.buildQuery());
             if (entity != null && entity.getId() > 0) {
                 result.setUserCollectPosition(entity);
             } else {
@@ -178,19 +191,16 @@ public class UserQxService {
         result.setUserCollectPosition(new ArrayList<>());
         JSONObject jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.SUCCESS);
         try {
-            CommonQuery query = new CommonQuery();
-            query.setEqualFilter(new HashMap<>());
-            query.getEqualFilter().put("user_id", String.valueOf(userId));
-            query.getEqualFilter().put("status", String.valueOf("0"));
-            query.setPer_page(Integer.MAX_VALUE);
-            List<UserCollectPositionDO> collectPositions = userDao.getUserCollectPositions(query);
+            Query.QueryBuilder query = new Query.QueryBuilder();
+            query.where("user_id", String.valueOf(userId));
+            query.and("status", String.valueOf("0"));
+            List<UserCollectPositionDO> collectPositions = collectPositionDao.getDatas(query.buildQuery());
             if (collectPositions != null && collectPositions.size() > 0) {
                 // 过滤掉不存在job_position中的职位收藏
                 List<Integer> positionIds = collectPositions.stream().map(m -> m.getPositionId()).collect(Collectors.toList());
-                query.getEqualFilter().clear();
-                query.getEqualFilter().put("id", Arrays.toString(positionIds.toArray()));
-                query.setPer_page(Integer.MAX_VALUE);
-                Map<Integer, JobPositionDO> positions = jobDBDao.getPositions(query).stream().collect(Collectors.toMap(k -> k.getId(), v -> v));
+                query.clear();
+                query.where("id", Arrays.toString(positionIds.toArray()));
+                Map<Integer, JobPositionDO> positions = jobPositionDao.getPositions(query.buildQuery()).stream().collect(Collectors.toMap(k -> k.getId(), v -> v));
                 List<CollectPositionForm> positionFormList = new ArrayList<>();
                 collectPositions.stream().filter(f -> positions.containsKey(f.getPositionId())).forEach(r -> {
                     CollectPositionForm form = new CollectPositionForm();
@@ -200,8 +210,8 @@ public class UserQxService {
                     form.setDepartment(positionDO.getDepartment());
                     form.setTime(r.getUpdateTime());
                     form.setCity(positionDO.getCity());
-                    form.setSalary_top(positionDO.getSalaryTop());
-                    form.setSalary_bottom(positionDO.getSalaryBottom());
+                    form.setSalary_top(NumberUtils.toInt(positionDO.getSalaryTop()+"", 0));
+                    form.setSalary_bottom(NumberUtils.toInt(positionDO.getSalaryBottom()+"", 0));
                     form.setUpdate_time(positionDO.getUpdateTime());
                     form.setStatus((byte) positionDO.getStatus());
                     positionFormList.add(form);
@@ -238,18 +248,22 @@ public class UserQxService {
                 logger.error("putUserCollectPosition 请求参数为空，请检查相关参数, userId={}, positionId={}, status={}", userId, positionId, status);
                 jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
             } else {
-                CommonQuery query = new CommonQuery();
-                query.setEqualFilter(new HashMap<>());
-                query.getEqualFilter().put("user_id", String.valueOf(userId));
-                query.getEqualFilter().put("position_id", String.valueOf(positionId));
-                UserCollectPositionDO entity = userDao.getUserCollectPosition(query);
+                Query.QueryBuilder query = new Query.QueryBuilder();
+                query.where("user_id", String.valueOf(userId));
+                query.and("position_id", String.valueOf(positionId));
+                UserCollectPositionDO entity = collectPositionDao.getData(query.buildQuery());
                 if (entity != null && entity.getId() > 0) {
                     if (entity.getStatus() == status) {
                         result.setUserCollectPosition(entity);
                     } else {
                         entity.setStatus(status);
                         entity.setUpdateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-                        result.setUserCollectPosition(userDao.updateUserCollectPosition(entity));
+                        int resultRow = collectPositionDao.updateData(entity);
+                        if (resultRow == 0) {
+                            jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
+                        } else {
+                            result.setUserCollectPosition(entity);
+                        }
                     }
                 } else {
                     entity = new UserCollectPositionDO();
@@ -257,7 +271,7 @@ public class UserQxService {
                     entity.setUserId(userId);
                     entity.setPositionId(positionId);
                     entity.setCreateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-                    result.setUserCollectPosition(userDao.saveUserCollectPosition(entity));
+                    result.setUserCollectPosition(collectPositionDao.addData(entity));
                 }
             }
         } catch (Exception e) {
@@ -282,7 +296,7 @@ public class UserQxService {
         logger.info("getUserPositionStatus params: userId={}, positionIds={}", userId, Arrays.toString(positionIds.toArray()));
         UserPositionStatusVO result = new UserPositionStatusVO();
         JSONObject jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.SUCCESS);
-        CommonQuery query = new CommonQuery();
+        Query.QueryBuilder query = new Query.QueryBuilder();
         Map<Integer, Integer> positionStatus = new HashMap<>();
         result.setPositionStatus(positionStatus);
         try {
@@ -291,26 +305,25 @@ public class UserQxService {
                 jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
             } else {
                 // 查询已投递的职位
-                query.setEqualFilter(new HashMap<>());
-                query.getEqualFilter().put("applier_id", String.valueOf(userId));
-                query.getEqualFilter().put("position_id", Arrays.toString(positionIds.toArray()));
-                query.getEqualFilter().put("disable", String.valueOf(0));
-                List<JobApplicationDO> applications = jobDBDao.getApplications(query);
+                query.where("applier_id", String.valueOf(userId));
+                query.and(new Condition("position_id", positionIds, ValueOp.IN));
+                query.and("disable", String.valueOf(0));
+                List<JobApplicationDO> applications = jobApplicationDao.getApplications(query.buildQuery());
                 Map<Integer, Integer> isApplication = applications.stream().map(m -> m.getPositionId()).collect(Collectors.toMap(k -> k, v -> 3));
                 positionIds.removeAll(isApplication.keySet());
                 // 查询已收藏的职位
-                query.getEqualFilter().clear();
-                query.getEqualFilter().put("user_id", String.valueOf(userId));
-                query.getEqualFilter().put("position_id", Arrays.toString(positionIds.toArray()));
-                query.getEqualFilter().put("status", String.valueOf(0));
-                List<UserCollectPositionDO> collectPositions = userDao.getUserCollectPositions(query);
+                query.clear();
+                query.where("user_id", String.valueOf(userId));
+                query.and(new Condition("position_id", positionIds, ValueOp.IN));
+                query.and("status", String.valueOf(0));
+                List<UserCollectPositionDO> collectPositions = collectPositionDao.getDatas(query.buildQuery());
                 Map<Integer, Integer> isCollect = collectPositions.stream().map(m -> m.getPositionId()).collect(Collectors.toMap(k -> k, v -> 2));
                 positionIds.removeAll(isCollect.keySet());
                 // 查询已查看的职位
-                query.getEqualFilter().clear();
-                query.getEqualFilter().put("user_id", String.valueOf(userId));
-                query.getEqualFilter().put("position_id", Arrays.toString(positionIds.toArray()));
-                List<UserViewedPositionDO> userViewedPositions = userDao.getUserViewedPositions(query);
+                query.clear();
+                query.where("user_id", String.valueOf(userId));
+                query.and(new Condition("position_id", positionIds, ValueOp.IN));
+                List<UserViewedPositionDO> userViewedPositions = userViewedPositionDao.getDatas(query.buildQuery());
                 Map<Integer, Integer> isViewed = userViewedPositions.stream().map(m -> m.getPositionId()).collect(Collectors.toMap(k -> k, v -> 1));
                 positionIds.removeAll(isViewed.keySet());
                 // 剩下都是未阅读的职位
@@ -345,16 +358,15 @@ public class UserQxService {
         JSONObject jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.SUCCESS);
         try {
             if (userId > 0 && positionId > 0 ){
-                CommonQuery query = new CommonQuery();
-                query.setEqualFilter(new HashMap<>());
-                query.getEqualFilter().put("user_id", String.valueOf(userId));
-                query.getEqualFilter().put("position_id", String.valueOf(positionId));
-                UserViewedPositionDO userViewedPosition = userDao.getUserViewedPosition(query);
+                Query.QueryBuilder query = new Query.QueryBuilder();
+                query.where("user_id", String.valueOf(userId));
+                query.and("position_id", String.valueOf(positionId));
+                UserViewedPositionDO userViewedPosition = userViewedPositionDao.getData(query.buildQuery());
                 if (userViewedPosition == null || userViewedPosition.getId() == 0 ) {
                     UserViewedPositionDO entity = new UserViewedPositionDO();
                     entity.setUserId(userId);
                     entity.setPositionId(positionId);
-                    UserViewedPositionDO viewedPositionDO = userDao.saveUserViewedPosition(entity);
+                    UserViewedPositionDO viewedPositionDO = userViewedPositionDao.addData(entity);
                     if (viewedPositionDO == null || viewedPositionDO.getId() <= 0) {
                         jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
                     }

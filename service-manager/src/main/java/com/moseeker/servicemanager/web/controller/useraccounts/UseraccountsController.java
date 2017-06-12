@@ -1,7 +1,7 @@
 package com.moseeker.servicemanager.web.controller.useraccounts;
 
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.util.BeanUtils;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;

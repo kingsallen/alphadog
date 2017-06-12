@@ -12,8 +12,8 @@
 //import com.moseeker.baseorm.dao.userdb.UserUserDao;
 //import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
 //import com.moseeker.baseorm.db.hrdb.tables.records.HrAppCvConfRecord;
-//import com.moseeker.common.util.BeanUtils;
-//import com.moseeker.thrift.gen.common.struct.CommonQuery;
+//import com.moseeker.baseorm.util.BeanUtils;
+//import com.moseeker.thrift.gen.common.struct.Query;
 //import com.moseeker.thrift.gen.dao.struct.CURDException;
 //import com.moseeker.thrift.gen.dao.struct.CandidatePositionDO;
 //import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
@@ -32,10 +32,10 @@
 //		annConfig.refresh();
 //	}
 //	
-//	@Test
+//	//@Test
 //	public void dictCityDaoTest() throws Exception {
 //		DictCityDao dictCityDao = annConfig.getBean(DictCityDao.class);
-//		CommonQuery query = new CommonQuery();
+//		Query query = new Query();
 //		query.setEqualFilter(new HashMap<String, String>());
 //		query.getEqualFilter().put("code", "110000");
 //		DictCityRecord record = dictCityDao.getResource(query);
@@ -44,10 +44,10 @@
 //		System.out.println(struct);
 //	}
 //	
-//	@Test
+//	//@Test
 //	public void hrAppCvConfDaoTest() throws Exception {
 //		HrAppCvConfDao appCvConfDao = annConfig.getBean(HrAppCvConfDao.class);
-//		CommonQuery query = new CommonQuery();
+//		Query query = new Query();
 //		query.setEqualFilter(new HashMap<String, String>());
 //		query.getEqualFilter().put("code", "110000");
 //		HrAppCvConfRecord record = appCvConfDao.getResource(query);
@@ -57,7 +57,7 @@
 //	}
 //	
 //	
-//	@Test
+//	//@Test
 //	public void userDaoTest() throws Exception {
 //		UserUserDao userDao = annConfig.getBean(UserUserDao.class);
 //		UserUserDO userDO = new UserUserDO();

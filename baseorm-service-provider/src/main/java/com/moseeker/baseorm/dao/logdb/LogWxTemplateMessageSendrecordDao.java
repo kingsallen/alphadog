@@ -1,11 +1,11 @@
 package com.moseeker.baseorm.dao.logdb;
 
-import org.springframework.stereotype.Repository;
-
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.logdb.tables.LogWxTemplateMessageSendrecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogWxTemplateMessageSendrecordRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.logdb.LogWxTemplateMessageSendrecordDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +13,13 @@ import com.moseeker.thrift.gen.dao.struct.logdb.LogWxTemplateMessageSendrecordDO
 * 2017-03-21
 */
 @Repository
-public class LogWxTemplateMessageSendrecordDao extends StructDaoImpl<LogWxTemplateMessageSendrecordDO, LogWxTemplateMessageSendrecordRecord, LogWxTemplateMessageSendrecord> {
+public class LogWxTemplateMessageSendrecordDao extends JooqCrudImpl<LogWxTemplateMessageSendrecordDO, LogWxTemplateMessageSendrecordRecord> {
 
+    public LogWxTemplateMessageSendrecordDao() {
+        super(LogWxTemplateMessageSendrecord.LOG_WX_TEMPLATE_MESSAGE_SENDRECORD, LogWxTemplateMessageSendrecordDO.class);
+    }
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = LogWxTemplateMessageSendrecord.LOG_WX_TEMPLATE_MESSAGE_SENDRECORD;
-   }
+    public LogWxTemplateMessageSendrecordDao(TableImpl<LogWxTemplateMessageSendrecordRecord> table, Class<LogWxTemplateMessageSendrecordDO> logWxTemplateMessageSendrecordDOClass) {
+        super(table, logWxTemplateMessageSendrecordDOClass);
+    }
 }

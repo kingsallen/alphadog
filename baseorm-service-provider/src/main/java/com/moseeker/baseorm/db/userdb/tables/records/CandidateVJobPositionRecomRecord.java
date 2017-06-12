@@ -29,7 +29,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidateVJobPositionRecomRecord extends TableRecordImpl<CandidateVJobPositionRecomRecord> implements Record5<Long, Long, Long, Timestamp, String> {
 
-    private static final long serialVersionUID = -1247342335;
+    private static final long serialVersionUID = 620117975;
 
     /**
      * Setter for <code>userdb.candidate_v_job_position_recom.position_id</code>. position.id 分享职位ID
@@ -46,14 +46,14 @@ public class CandidateVJobPositionRecomRecord extends TableRecordImpl<CandidateV
     }
 
     /**
-     * Setter for <code>userdb.candidate_v_job_position_recom.recom_id</code>. userdb.user_wx_user.id 分享用户微信ID。现在已经废弃，请参考sysuser_id字段
+     * Setter for <code>userdb.candidate_v_job_position_recom.recom_id</code>. userdb.user_wx_user.id 分享用户微信ID。现在已经废弃，请参考recom_user_id字段
      */
     public void setRecomId(Long value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>userdb.candidate_v_job_position_recom.recom_id</code>. userdb.user_wx_user.id 分享用户微信ID。现在已经废弃，请参考sysuser_id字段
+     * Getter for <code>userdb.candidate_v_job_position_recom.recom_id</code>. userdb.user_wx_user.id 分享用户微信ID。现在已经废弃，请参考recom_user_id字段
      */
     public Long getRecomId() {
         return (Long) get(1);

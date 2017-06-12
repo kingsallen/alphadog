@@ -1,11 +1,11 @@
 package com.moseeker.baseorm.dao.configdb;
 
-import org.springframework.stereotype.Repository;
-
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.configdb.tables.ConfigAdminnotificationGroupmembers;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigAdminnotificationGroupmembersRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigAdminnotificationGroupmembersDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +13,13 @@ import com.moseeker.thrift.gen.dao.struct.configdb.ConfigAdminnotificationGroupm
 * 2017-03-20
 */
 @Repository
-public class ConfigAdminnotificationGroupmembersDao extends StructDaoImpl<ConfigAdminnotificationGroupmembersDO, ConfigAdminnotificationGroupmembersRecord, ConfigAdminnotificationGroupmembers> {
+public class ConfigAdminnotificationGroupmembersDao extends JooqCrudImpl<ConfigAdminnotificationGroupmembersDO, ConfigAdminnotificationGroupmembersRecord> {
 
+    public ConfigAdminnotificationGroupmembersDao() {
+        super(ConfigAdminnotificationGroupmembers.CONFIG_ADMINNOTIFICATION_GROUPMEMBERS, ConfigAdminnotificationGroupmembersDO.class);
+    }
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = ConfigAdminnotificationGroupmembers.CONFIG_ADMINNOTIFICATION_GROUPMEMBERS;
-   }
+    public ConfigAdminnotificationGroupmembersDao(TableImpl<ConfigAdminnotificationGroupmembersRecord> table, Class<ConfigAdminnotificationGroupmembersDO> configAdminnotificationGroupmembersDOClass) {
+        super(table, configAdminnotificationGroupmembersDOClass);
+    }
 }

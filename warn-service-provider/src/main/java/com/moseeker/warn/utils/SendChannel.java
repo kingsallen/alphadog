@@ -7,6 +7,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import com.moseeker.thrift.gen.dao.struct.configdb.Member;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.moseeker.common.email.config.EmailContent;
@@ -14,7 +16,6 @@ import com.moseeker.common.email.config.EmailSessionConfig;
 import com.moseeker.common.email.mail.Mail;
 import com.moseeker.common.email.mail.Mail.MailBuilder;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.warn.dto.Member;
 
 /**
  * @author ltf

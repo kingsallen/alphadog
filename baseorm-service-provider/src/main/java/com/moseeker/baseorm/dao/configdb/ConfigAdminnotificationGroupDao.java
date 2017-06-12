@@ -1,11 +1,11 @@
 package com.moseeker.baseorm.dao.configdb;
 
-import org.springframework.stereotype.Repository;
-
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.configdb.tables.ConfigAdminnotificationGroup;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigAdminnotificationGroupRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigAdminnotificationGroupDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +13,13 @@ import com.moseeker.thrift.gen.dao.struct.configdb.ConfigAdminnotificationGroupD
 * 2017-03-20
 */
 @Repository
-public class ConfigAdminnotificationGroupDao extends StructDaoImpl<ConfigAdminnotificationGroupDO, ConfigAdminnotificationGroupRecord, ConfigAdminnotificationGroup> {
+public class ConfigAdminnotificationGroupDao extends JooqCrudImpl<ConfigAdminnotificationGroupDO, ConfigAdminnotificationGroupRecord> {
 
+    public ConfigAdminnotificationGroupDao() {
+        super(ConfigAdminnotificationGroup.CONFIG_ADMINNOTIFICATION_GROUP, ConfigAdminnotificationGroupDO.class);
+    }
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = ConfigAdminnotificationGroup.CONFIG_ADMINNOTIFICATION_GROUP;
-   }
+    public ConfigAdminnotificationGroupDao(TableImpl<ConfigAdminnotificationGroupRecord> table, Class<ConfigAdminnotificationGroupDO> configAdminnotificationGroupDOClass) {
+        super(table, configAdminnotificationGroupDOClass);
+    }
 }

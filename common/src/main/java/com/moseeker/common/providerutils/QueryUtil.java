@@ -1,69 +1,119 @@
 package com.moseeker.common.providerutils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.*;
 
-import com.moseeker.common.util.BeanUtils;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Map;
 
 /**
- * 通用查询工具辅助类，方便添加属性
+ * 该类只为兼容以前的调用方式，后续接口直接使用CommonQuery，或者使用新的工具类
  */
-public class QueryUtil extends CommonQuery {
 
-	private static final long serialVersionUID = 2531526866610292082L;
+@Deprecated
+public class QueryUtil extends Query {
 
-	/**
-	 * 添加查询条件，以后会用Condition替换
-	 * @param key 数据库字段名称
-	 * @param value 值
-	 * @return 查询工具类本身
-	 */
-	public QueryUtil addEqualFilter(String key, String value) {
-		if(this.equalFilter == null) {
-			this.equalFilter = new HashMap<String, String>();
-		}
-		this.equalFilter.put(key, value);
-		return this;
-	}
+    public QueryUtil addEqualFilter(String key, Object value) {
+        if (StringUtils.isNotNullOrEmpty(key)) {
+            Condition condition = buildCondition(key, value);
+            if (this.conditions == null) {
+                this.conditions = condition;
+            } else {
+                this.conditions.andCondition(condition);
+            }
+        }
 
-	/**
-	 * 添加查询条件
-	 * @param key 数据库字段名称
-	 * @param value 值
-	 * @return 查询工具类本身
-	 */
-	public QueryUtil addEqualFilter(String key, Object value) {
-		if(this.equalFilter == null) {
-			this.equalFilter = new HashMap<String, String>();
-		}
-		this.equalFilter.put(key, BeanUtils.converToString(value));
-		return this;
-	}
+        return this;
+    }
 
-	/**
-	 * 添加group条件
-	 * @param attribute 数据库字段名称
-	 * @return 查询工具类本身
-	 */
-	public QueryUtil addGroup(String attribute) {
-		if(this.grouops == null) {
-			this.grouops = new ArrayList<>();
-		}
-		this.grouops.add(attribute);
-		return this;
-	}
+    public QueryUtil setEqualFilter(Map<String, String> equalFilter) {
+        if(equalFilter != null) {
+            equalFilter.forEach((key, value) -> {
+                Condition condition = buildCondition(key, value);
+                if (this.conditions == null) {
+                    this.conditions = condition;
+                } else {
+                    this.conditions.andCondition(condition);
+                }
+            });
+        }
+        return this;
+    }
 
-	/**
-	 * 添加制定查询字段条件
-	 * @param attribute 制定查询返回的字段
-	 * @return 查询工具类本身
-	 */
-	public QueryUtil addSelectAttribute(String attribute) {
-		if(this.attributes == null) {
-			this.attributes = new ArrayList<>();
-		}
-		this.attributes.add(attribute);
-		return this;
-	}
+    public QueryUtil addGroupBy(String field) {
+        if (StringUtils.isNotNullOrEmpty(field)) {
+            if (this.groups == null) {
+                this.groups = new ArrayList<>();
+            }
+            this.groups.add(field);
+        }
+        return this;
+    }
+
+    public QueryUtil addOrderBy(String filed, Order order) {
+        if (StringUtils.isNotNullOrEmpty(filed) && order != null) {
+            OrderBy orderBy = new OrderBy(filed, order);
+            if (this.orders == null) {
+                this.orders = new ArrayList<>();
+            }
+            this.orders.add(orderBy);
+        }
+        return this;
+    }
+
+    public QueryUtil addSelectAttribute(String field) {
+        if (StringUtils.isNotNullOrEmpty(field)) {
+            Select select = new Select(field, SelectOp.FIELD);
+            if (this.attributes == null) {
+                this.attributes = new ArrayList<>();
+            }
+            this.attributes.add(select);
+        }
+        return this;
+    }
+
+    public QueryUtil orderBy(String field) {
+        return addOrderBy(field, Order.ASC);
+    }
+
+    public void setPer_page(int per_page) {
+        this.pageSize = per_page;
+    }
+
+    public QueryUtil addGroup(String field) {
+        return addGroupBy(field);
+    }
+
+
+    public QueryUtil setPageSize(int pageSize) {
+        this.pageSize = pageSize;
+        return this;
+    }
+
+    public QueryUtil setPageNo(int pageNo) {
+        this.pageNum = pageNo;
+        return this;
+    }
+
+    public QueryUtil orderBy(String field, Order order) {
+        addOrderBy(field, order);
+        return this;
+    }
+
+    public QueryUtil putToExtras(String name, String value) {
+        extras.put(name, value);
+        return this;
+    }
+
+    private Condition buildCondition(String key, Object value) {
+        Condition condition = null;
+        if (value != null && value instanceof String && ((String) value).startsWith("[") && ((String) value).endsWith("]")) {
+            String[] arrayValue = ((String) value).substring(1, ((String) value).length()-1).split(",");
+            condition = new Condition(key, Arrays.asList(arrayValue), ValueOp.IN);
+        } else {
+            condition = new Condition(key, value);
+        }
+        return condition;
+    }
 }

@@ -1,11 +1,11 @@
 package com.moseeker.baseorm.dao.hrdb;
 
-import org.springframework.stereotype.Repository;
-
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxBasicReply;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxBasicReplyRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxBasicReplyDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +13,13 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxBasicReplyDO;
 * 2017-03-21
 */
 @Repository
-public class HrWxBasicReplyDao extends StructDaoImpl<HrWxBasicReplyDO, HrWxBasicReplyRecord, HrWxBasicReply> {
+public class HrWxBasicReplyDao extends JooqCrudImpl<HrWxBasicReplyDO, HrWxBasicReplyRecord> {
 
+    public HrWxBasicReplyDao() {
+        super(HrWxBasicReply.HR_WX_BASIC_REPLY, HrWxBasicReplyDO.class);
+    }
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = HrWxBasicReply.HR_WX_BASIC_REPLY;
-   }
+    public HrWxBasicReplyDao(TableImpl<HrWxBasicReplyRecord> table, Class<HrWxBasicReplyDO> hrWxBasicReplyDOClass) {
+        super(table, hrWxBasicReplyDOClass);
+    }
 }

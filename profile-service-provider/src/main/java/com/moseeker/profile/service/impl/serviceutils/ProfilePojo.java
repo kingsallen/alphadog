@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.jooq.types.UByte;
+
+import com.moseeker.baseorm.dao.profiledb.IntentionRecord;
+import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,21 +14,19 @@ import org.slf4j.LoggerFactory;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.Constant;
-import com.moseeker.db.profiledb.tables.records.ProfileAttachmentRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileAwardsRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileBasicRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileCredentialsRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileEducationRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileImportRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileLanguageRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileOtherRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileProjectexpRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileSkillRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileWorksRecord;
-import com.moseeker.db.userdb.tables.records.UserUserRecord;
-import com.moseeker.profile.dao.entity.ProfileWorkexpEntity;
-import com.moseeker.profile.dao.impl.IntentionRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileAttachmentRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileAwardsRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileBasicRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileCredentialsRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileEducationRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileImportRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileLanguageRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileOtherRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProjectexpRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileSkillRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileWorksRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 
 public class ProfilePojo {
 	
@@ -67,7 +67,7 @@ public class ProfilePojo {
 		if(profileRecord.getUserId().intValue() != userRecord.getId().intValue()) {
 			profileRecord.setUserId(userRecord.getId());
 		}
-		profileRecord.setDisable(UByte.valueOf(Constant.ENABLE));
+		profileRecord.setDisable((byte)(Constant.ENABLE));
 		profileRecord.setUuid(UUID.randomUUID().toString());
 		if(resume.get("channel") != null && (profileRecord.getSource() == null || profileRecord.getSource().intValue() == 0)) {
 			int channel = (Integer)resume.get("channel");
@@ -307,7 +307,7 @@ public class ProfilePojo {
 		this.worksRecords = worksRecords;
 	}
 	
-	@Test
+	//@Test
 	public void test() {
 		String stri = "THIRD_PARTY_POSITION_SYNCHRONIZATION_COMPLATED_QUEUE{SYNCHRONIZATION}";
 		System.out.println(stri.length());

@@ -25,9 +25,12 @@ public class WordpressThriftService implements Iface {
 
 	@Override
 	public NewsletterData getNewsletter(NewsletterForm newsletter) throws TException {
-		
-		return wordpressService.getNewsletter(newsletter);
-	}
+        try {
+            return wordpressService.getNewsletter(newsletter);
+        } catch (Exception e) {
+            return new NewsletterData();
+        }
+    }
 
 	public WordpressServiceImpl getWordpressService() {
 		return wordpressService;

@@ -15,7 +15,7 @@ public class ChaOsTest {
 		return annConfig;
 	}
 	//测试调用orm服务
-	@Test
+	//@Test
 	public void chaOsBindTest() throws Exception{
 		ThirdPartParamer param=new ThirdPartParamer();
 		param.setAppid(1);

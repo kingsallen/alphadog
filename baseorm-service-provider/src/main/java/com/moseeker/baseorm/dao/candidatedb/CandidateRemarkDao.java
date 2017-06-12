@@ -1,27 +1,31 @@
 package com.moseeker.baseorm.dao.candidatedb;
 
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateRemark;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRemarkRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.CURDException;
 import com.moseeker.thrift.gen.dao.struct.CandidateRemarkDO;
-import org.springframework.stereotype.Component;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
  * Created by jack on 15/02/2017.
  */
-@Component
-public class CandidateRemarkDao extends StructDaoImpl<CandidateRemarkDO, CandidateRemarkRecord, CandidateRemark> {
+@Repository
+public class CandidateRemarkDao extends JooqCrudImpl<CandidateRemarkDO, CandidateRemarkRecord> {
 
 
-    @Override
-    protected void initJOOQEntity() {
-        this.tableLike = CandidateRemark.CANDIDATE_REMARK;
+    public CandidateRemarkDao() {
+        super(CandidateRemark.CANDIDATE_REMARK, CandidateRemarkDO.class);
+    }
+
+    public CandidateRemarkDao(TableImpl<CandidateRemarkRecord> table, Class<CandidateRemarkDO> candidateRemarkDOClass) {
+        super(table, candidateRemarkDOClass);
     }
 
     public void deleteCandidateRemark(int id) throws CURDException {
         CandidateRemarkDO p = new CandidateRemarkDO();
         p.setId(id);
-        this.deleteResource(p);
+        this.deleteData(p);
     }
 }

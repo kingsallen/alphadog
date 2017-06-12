@@ -1,11 +1,11 @@
 package com.moseeker.baseorm.dao.wordpressdb;
 
-import org.springframework.stereotype.Repository;
-
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.wordpressdb.tables.WordpressComments;
 import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressCommentsRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.wordpressdb.WordpressCommentsDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +13,13 @@ import com.moseeker.thrift.gen.dao.struct.wordpressdb.WordpressCommentsDO;
 * 2017-03-21
 */
 @Repository
-public class WordpressCommentsDao extends StructDaoImpl<WordpressCommentsDO, WordpressCommentsRecord, WordpressComments> {
+public class WordpressCommentsDao extends JooqCrudImpl<WordpressCommentsDO, WordpressCommentsRecord> {
 
+    public WordpressCommentsDao() {
+        super(WordpressComments.WORDPRESS_COMMENTS, WordpressCommentsDO.class);
+    }
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = WordpressComments.WORDPRESS_COMMENTS;
-   }
+    public WordpressCommentsDao(TableImpl<WordpressCommentsRecord> table, Class<WordpressCommentsDO> wordpressCommentsDOClass) {
+        super(table, wordpressCommentsDOClass);
+    }
 }

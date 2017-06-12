@@ -21,9 +21,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UByte;
-import org.jooq.types.UInteger;
-import org.jooq.types.ULong;
 
 
 /**
@@ -39,7 +36,7 @@ import org.jooq.types.ULong;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserWxUser extends TableImpl<UserWxUserRecord> {
 
-    private static final long serialVersionUID = 1112466190;
+    private static final long serialVersionUID = -786147532;
 
     /**
      * The reference instance of <code>userdb.user_wx_user</code>
@@ -57,17 +54,17 @@ public class UserWxUser extends TableImpl<UserWxUserRecord> {
     /**
      * The column <code>userdb.user_wx_user.id</code>. 主key
      */
-    public final TableField<UserWxUserRecord, ULong> ID = createField("id", org.jooq.impl.SQLDataType.BIGINTUNSIGNED.nullable(false), this, "主key");
+    public final TableField<UserWxUserRecord, Long> ID = createField("id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "主key");
 
     /**
      * The column <code>userdb.user_wx_user.wechat_id</code>. 所属公众号
      */
-    public final TableField<UserWxUserRecord, UInteger> WECHAT_ID = createField("wechat_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "所属公众号");
+    public final TableField<UserWxUserRecord, Integer> WECHAT_ID = createField("wechat_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "所属公众号");
 
     /**
      * The column <code>userdb.user_wx_user.group_id</code>. 分组ID
      */
-    public final TableField<UserWxUserRecord, UInteger> GROUP_ID = createField("group_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGERUNSIGNED)), this, "分组ID");
+    public final TableField<UserWxUserRecord, Integer> GROUP_ID = createField("group_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "分组ID");
 
     /**
      * The column <code>userdb.user_wx_user.sysuser_id</code>. user_user.id, C端用户ID
@@ -77,7 +74,7 @@ public class UserWxUser extends TableImpl<UserWxUserRecord> {
     /**
      * The column <code>userdb.user_wx_user.is_subscribe</code>. 是否关注 1:关注 0：没关注
      */
-    public final TableField<UserWxUserRecord, UByte> IS_SUBSCRIBE = createField("is_subscribe", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.TINYINTUNSIGNED)), this, "是否关注 1:关注 0：没关注");
+    public final TableField<UserWxUserRecord, Byte> IS_SUBSCRIBE = createField("is_subscribe", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否关注 1:关注 0：没关注");
 
     /**
      * The column <code>userdb.user_wx_user.openid</code>. 用户标示
@@ -193,7 +190,7 @@ public class UserWxUser extends TableImpl<UserWxUserRecord> {
      * {@inheritDoc}
      */
     @Override
-    public Identity<UserWxUserRecord, ULong> getIdentity() {
+    public Identity<UserWxUserRecord, Long> getIdentity() {
         return Keys.IDENTITY_USER_WX_USER;
     }
 

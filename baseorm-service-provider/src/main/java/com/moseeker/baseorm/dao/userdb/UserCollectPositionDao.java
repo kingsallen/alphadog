@@ -1,10 +1,10 @@
 package com.moseeker.baseorm.dao.userdb;
 
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import org.springframework.stereotype.Repository;
 
 import com.moseeker.baseorm.db.userdb.tables.UserCollectPosition;
 import com.moseeker.baseorm.db.userdb.tables.records.UserCollectPositionRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO;
 
 /**
@@ -13,11 +13,10 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO;
 * 2017-04-12
 */
 @Repository
-public class UserCollectPositionDao extends StructDaoImpl<UserCollectPositionDO, UserCollectPositionRecord, UserCollectPosition> {
+public class UserCollectPositionDao extends JooqCrudImpl<UserCollectPositionDO, UserCollectPositionRecord> {
 
+    public UserCollectPositionDao() {
+        super(UserCollectPosition.USER_COLLECT_POSITION, UserCollectPositionDO.class);
+    }
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = UserCollectPosition.USER_COLLECT_POSITION;
-   }
 }

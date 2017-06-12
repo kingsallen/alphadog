@@ -6,8 +6,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import org.junit.Test;
-
 import com.moseeker.common.exception.ParamNullException;
 import com.moseeker.common.util.StringUtils;
 /**

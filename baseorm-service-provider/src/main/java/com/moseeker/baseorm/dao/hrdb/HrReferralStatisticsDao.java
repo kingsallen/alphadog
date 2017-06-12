@@ -1,11 +1,11 @@
 package com.moseeker.baseorm.dao.hrdb;
 
-import org.springframework.stereotype.Repository;
-
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.hrdb.tables.HrReferralStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrReferralStatisticsRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrReferralStatisticsDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +13,13 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrReferralStatisticsDO;
 * 2017-03-21
 */
 @Repository
-public class HrReferralStatisticsDao extends StructDaoImpl<HrReferralStatisticsDO, HrReferralStatisticsRecord, HrReferralStatistics> {
+public class HrReferralStatisticsDao extends JooqCrudImpl<HrReferralStatisticsDO, HrReferralStatisticsRecord> {
 
+    public HrReferralStatisticsDao() {
+        super(HrReferralStatistics.HR_REFERRAL_STATISTICS, HrReferralStatisticsDO.class);
+    }
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = HrReferralStatistics.HR_REFERRAL_STATISTICS;
-   }
+    public HrReferralStatisticsDao(TableImpl<HrReferralStatisticsRecord> table, Class<HrReferralStatisticsDO> hrReferralStatisticsDOClass) {
+        super(table, hrReferralStatisticsDOClass);
+    }
 }

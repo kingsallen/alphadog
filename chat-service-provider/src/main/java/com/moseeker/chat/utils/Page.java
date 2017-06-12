@@ -29,7 +29,12 @@ public class Page {
         if(totalRow == 0) {
             totalPage = 0;
         } else {
-            totalPage = totalRow/pageSize+1;
+            if (pageSize > 1) {
+                totalPage = totalRow/pageSize+1;
+            } else {
+                totalPage = totalRow;
+            }
+
         }
 
         if(pageNo > 1 && totalPage > 0) {

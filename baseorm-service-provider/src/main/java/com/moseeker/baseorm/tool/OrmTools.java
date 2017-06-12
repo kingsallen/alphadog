@@ -1,23 +1,16 @@
 package com.moseeker.baseorm.tool;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.thrift.TBase;
-import org.jooq.impl.TableImpl;
-import org.jooq.impl.UpdatableRecordImpl;
-import org.jooq.types.UInteger;
-import org.jooq.types.UShort;
-
-import com.moseeker.baseorm.util.BaseDaoImpl;
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.BeanUtils;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.common.struct.Response;
+import org.apache.thrift.TBase;
+import org.jooq.UpdatableRecord;
+import org.jooq.impl.UpdatableRecordImpl;
+
+import java.util.*;
 /**
  * 
  * @author zztaiwll
@@ -28,25 +21,25 @@ public class OrmTools {
 	/*
 	 * 按照内部是三层嵌套的方式的list集合的response
 	 */
-	public static <K extends UpdatableRecordImpl<K>, V extends TableImpl<K>> Response getAll(BaseDaoImpl<K,V> dao){
+	public static <K, V extends UpdatableRecord<V>> Response getAll(JooqCrudImpl<K,V> dao){
 		List<Map<String, Object>> result=new ArrayList<>();
 		try {
-			CommonQuery query=new CommonQuery();
+			QueryUtil query=new QueryUtil();
 			HashMap<String,String> map1=new HashMap<String,String>();
 			map1.put("status", "1");
-			query.setPer_page(Integer.MAX_VALUE);
+			query.setPageSize(Integer.MAX_VALUE);
 			query.setEqualFilter(map1);
 			List<Map<String, Object>> allData = new ArrayList<>();
-			List<K> list = dao.getResources(query);
+			List<V> list = dao.getRecords(query);
 			if(list != null && list.size() > 0) {
 				list.forEach(r -> {
 					Map<String, Object> map = new HashMap<String, Object>();
-					map.put("code", ((Integer)r.get("code")).intValue());
-					map.put("parent_id", ((UInteger)r.get("parent_Id")).intValue());
+					map.put("code", r.get("code"));
+					map.put("parent_id", r.get("parent_Id"));
 					map.put("name", (String)r.get("name"));
-					map.put("code_other", ((Integer)r.get("code_other")).intValue());
-					map.put("level", ((UShort)r.get("level")).intValue());
-					map.put("status", ((UShort)r.get("status")).intValue());
+					map.put("code_other", r.get("code_other"));
+					map.put("level", r.get("level"));
+					map.put("status", r.get("status"));
 					allData.add(map);
 				});
 			}
@@ -62,7 +55,7 @@ public class OrmTools {
 			//do nothing
 		}
 		
-		/*CommonQuery query=new CommonQuery();
+		/*Query query=new Query();
 		HashMap<String,String> map=new HashMap<String,String>();
 		map.put("level", "1");
 		query.setEqualFilter(map);
@@ -75,7 +68,7 @@ public class OrmTools {
 				for(int i=0;i<list.size();i++){
 					DictOccupation occu=(DictOccupation) BeanUtils.DBToStruct(DictOccupation.class,list.get(i) );
 					int id=occu.getCode();
-					CommonQuery query1=new CommonQuery();
+					Query query1=new Query();
 					HashMap<String,String> map1=new HashMap<String,String>();
 					map1.put("parent_id", id+"");
 					query1.setEqualFilter(map1);
@@ -86,7 +79,7 @@ public class OrmTools {
 						for(int j=0;j<list1.size();j++){
 							DictOccupation occ1=(DictOccupation) BeanUtils.DBToStruct(DictOccupation.class,list1.get(j) );
 							int id1=occ1.getCode();
-							CommonQuery query2=new CommonQuery();
+							Query query2=new Query();
 							HashMap<String,String> map2=new HashMap<String,String>();
 							map2.put("parent_id", id1+"");
 							query2.setEqualFilter(map2);
@@ -173,7 +166,7 @@ public class OrmTools {
 	/*
 	 * 返回内部是单层的occupation集合的response，因为有child元素，所以没用公共方法，只能特殊处理
 	 */
-//	public static Response getSingle_layerOccupation(BaseDaoImpl<?,?> dao,CommonQuery query){
+//	public static Response getSingle_layerOccupation(BaseDaoImpl<?,?> dao,Query query){
 //		try{
 //			List<? extends UpdatableRecordImpl<?>> list=dao.getResources(query);
 //			List<DictOccupation> result=new ArrayList<DictOccupation>();
@@ -193,35 +186,28 @@ public class OrmTools {
 	/*
 	 * 按照内部是数据的list集合的方式返回response
 	 */
-	public static <K extends UpdatableRecordImpl<K>, V extends TableImpl<K>> Response getList(BaseDaoImpl<K,V> dao,CommonQuery query,TBase bean){
+	public static <K, V extends UpdatableRecordImpl<V>> Response getList(JooqCrudImpl<K,V> dao, Query query, TBase bean){
 		try{
-			List<K> list=dao.getResources(query);
-			List<TBase> result=new ArrayList<TBase>();
-			if(list!=null&&list.size()>0){
-				for(int z=0;z<list.size();z++){
-					bean= BeanUtils.DBToStruct(bean.getClass(),list.get(z) );
-					result.add(bean);
-				}
-			}
-			return ResponseUtils.success(result);
+			List<K> list=dao.getDatas(query);
+			return ResponseUtils.success(list);
 		}catch(Exception e){
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 		}
 	}
 	
-	public static <K extends UpdatableRecordImpl<K>, V extends TableImpl<K>> Response getSingle(BaseDaoImpl<K,V> dao,CommonQuery query){
+	public static <K, V extends UpdatableRecordImpl<V>> Response getSingle(JooqCrudImpl<K,V> dao,Query query){
 		List<Map<String, Object>> allData = new ArrayList<>();
 		try{
-			List<K> list = dao.getResources(query);
+			List<V> list = dao.getRecords(query);
 			if(list != null && list.size() > 0) {
 				list.forEach(r -> {
 					Map<String, Object> map = new HashMap<String, Object>();
-					map.put("code", ((Integer)r.get("code")).intValue());
-					map.put("parent_id", ((UInteger)r.get("parent_Id")).intValue());
+					map.put("code", r.get("code"));
+					map.put("parent_id", r.get("parent_Id"));
 					map.put("name", (String)r.get("name"));
-					map.put("code_other", ((Integer)r.get("code_other")).intValue());
-					map.put("level", ((UShort)r.get("level")).intValue());
-					map.put("status", ((UShort)r.get("status")).intValue());
+					map.put("code_other", r.get("code_other"));
+					map.put("level", r.get("level"));
+					map.put("status", r.get("status"));
 					allData.add(map);
 				});
 			}

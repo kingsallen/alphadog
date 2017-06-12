@@ -16,14 +16,14 @@ import org.junit.Test;
 public class ProfileProfileDaoTest {
 
 
-    //@Test
+    ////@Test
     public void testCompany() throws TException {
         CompanyServices.Iface companyServices = ServiceManager.SERVICEMANAGER.getService(CompanyServices.Iface.class);
         Response response = companyServices.getAllCompanies(new CommonQuery());
         System.out.println(response);
     }
 
-    //@Test
+    ////@Test
     public void testUser() throws TException {
 
         UserEmployeeService.Iface useremployee = ServiceManager.SERVICEMANAGER.getService(UserEmployeeService.Iface.class);
@@ -31,7 +31,7 @@ public class ProfileProfileDaoTest {
         System.out.println(response);
     }
 
-    //@Test
+    ////@Test
 //    public void testProfile() throws TException {
 //
 //        ProfileServices.Iface profile = ServiceManager.SERVICEMANAGER.getService(ProfileServices.Iface.class);

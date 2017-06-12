@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigCacheconfigRediskey extends TableImpl<ConfigCacheconfigRediskeyRecord> {
 
-    private static final long serialVersionUID = -1611458752;
+    private static final long serialVersionUID = -1364343484;
 
     /**
      * The reference instance of <code>configdb.config_cacheconfig_rediskey</code>
@@ -67,9 +67,9 @@ public class ConfigCacheconfigRediskey extends TableImpl<ConfigCacheconfigRedisk
     public final TableField<ConfigCacheconfigRediskeyRecord, String> KEY_IDENTIFIER = createField("key_identifier", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false), this, "标识符， 大写英文字母");
 
     /**
-     * The column <code>configdb.config_cacheconfig_rediskey.type</code>. 缓存类型 1:data, 2:session, 3:log, 4:mq
+     * The column <code>configdb.config_cacheconfig_rediskey.type</code>. 缓存类型 1 data  2. session 3 log
      */
-    public final TableField<ConfigCacheconfigRediskeyRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false), this, "缓存类型 1:data, 2:session, 3:log, 4:mq");
+    public final TableField<ConfigCacheconfigRediskeyRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false), this, "缓存类型 1 data  2. session 3 log");
 
     /**
      * The column <code>configdb.config_cacheconfig_rediskey.pattern</code>. 格式， 形如 ip_limit_%s

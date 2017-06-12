@@ -3,9 +3,6 @@ package moseeker.baseorm.dao.dictoccupation;
 import java.util.HashMap;
 import org.junit.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import com.moseeker.baseorm.service.Impl.DictDaoServiceImpl;
-import com.moseeker.baseorm.service.Impl.PositionServiceImpl;
-import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dict.service.DictOccupationDao;
@@ -25,10 +22,10 @@ public class DictOccupationTest {
 		position= context.getBean(PositionServiceImpl.class);
 	}
 	//测试获取所有，直接调用接口
-	@Test
+	//@Test
 	public void test(){
 		init();
-		CommonQuery query=new CommonQuery();
+		Query query=new Query();
 		HashMap<String,String> map=new HashMap<String,String>();
 		map.put("level", "1");
 		map.put("status", "1");
@@ -37,7 +34,7 @@ public class DictOccupationTest {
 		System.out.println(result);
 	}*/
 //  //获取occupation，通过Iface
-//	@Test
+//	//@Test
 //	public void getOccupation() throws Exception{
 //		DictOccupationDao.Iface dictOccupationDao = ServiceManager.SERVICEMANAGER
 //				.getService(DictOccupationDao.Iface.class);
@@ -45,10 +42,10 @@ public class DictOccupationTest {
 //		System.out.println(result);
 //	}
 //	//测试获取joboccupation
-	/*@Test
+	/*//@Test
 	public void testJobOccupation(){
 		init();
-		CommonQuery query=new CommonQuery();
+		Query query=new Query();
 		HashMap<String,String> map=new HashMap<String,String>();
 		map.put("company_id", "2");
 		map.put("status", "1");

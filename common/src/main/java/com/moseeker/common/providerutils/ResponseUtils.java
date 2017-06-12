@@ -11,12 +11,19 @@ import com.moseeker.thrift.gen.common.struct.Response;
 
 /**
  * 处理数据格式转换
- *
  */
 public class ResponseUtils {
 
+    public static <T> T getNotNullValue(T value, T valueIfNull) {
+        if (value == null) {
+            return valueIfNull;
+        }
+        return value;
+    }
+
     /**
      * 处理成功响应的数据格式
+     *
      * @param hashmap 需要传入一个HashMap类型, TODO: 对其他对象类型支持
      * @return
      */
@@ -43,6 +50,7 @@ public class ResponseUtils {
 
     /**
      * 处理失败响应的数据格式
+     *
      * @param constantErrorCodeMessage json格式的String字符串"{}", 否则会抛异常
      *                                 eg: syntax error, dao 1, json : JobApplication failed
      * @return
@@ -50,7 +58,7 @@ public class ResponseUtils {
      */
     public static Response fail(String constantErrorCodeMessage) throws ParamNullException {
         Response response = new Response();
-        if(StringUtils.isNullOrEmpty(constantErrorCodeMessage)) {
+        if (StringUtils.isNullOrEmpty(constantErrorCodeMessage)) {
             throw new ParamNullException();
         }
         JSONObject jsonObject = JSONObject.parseObject(constantErrorCodeMessage);
@@ -62,7 +70,7 @@ public class ResponseUtils {
 
     public static Response fail(String constantErrorCodeMessage, Map<String, Object> hashmap) {
         Response response = new Response();
-        if(StringUtils.isNullOrEmpty(constantErrorCodeMessage)) {
+        if (StringUtils.isNullOrEmpty(constantErrorCodeMessage)) {
             throw new ParamNullException();
         }
         JSONObject jsonObject = JSONObject.parseObject(constantErrorCodeMessage);
@@ -71,10 +79,10 @@ public class ResponseUtils {
         response.setMessage(jsonObject.getString("message"));
         return response;
     }
-    
+
     public static Response fail(int status, String message) throws ParamNullException {
         Response response = new Response();
-        if(StringUtils.isNullOrEmpty(message)) {
+        if (StringUtils.isNullOrEmpty(message)) {
             throw new ParamNullException();
         }
         response.setData(Constant.NONE_JSON);
@@ -82,4 +90,5 @@ public class ResponseUtils {
         response.setMessage(message);
         return response;
     }
+
 }

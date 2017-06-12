@@ -1,11 +1,11 @@
 package com.moseeker.baseorm.dao.hrdb;
 
-import org.springframework.stereotype.Repository;
-
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxHrChatList;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxHrChatListRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatListDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +13,13 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatListDO;
 * 2017-03-21
 */
 @Repository
-public class HrWxHrChatListDao extends StructDaoImpl<HrWxHrChatListDO, HrWxHrChatListRecord, HrWxHrChatList> {
+public class HrWxHrChatListDao extends JooqCrudImpl<HrWxHrChatListDO, HrWxHrChatListRecord> {
 
+    public HrWxHrChatListDao() {
+        super(HrWxHrChatList.HR_WX_HR_CHAT_LIST, HrWxHrChatListDO.class);
+    }
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = HrWxHrChatList.HR_WX_HR_CHAT_LIST;
-   }
+    public HrWxHrChatListDao(TableImpl<HrWxHrChatListRecord> table, Class<HrWxHrChatListDO> hrWxHrChatListDOClass) {
+        super(table, hrWxHrChatListDOClass);
+    }
 }
