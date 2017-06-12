@@ -46,17 +46,17 @@ public class LocalQueryTest {
         localQuery = new LocalQuery<>(context, UserUser.USER_USER, query);
     }
 
-    @Test
+    //@Test
     public void getPage() throws Exception {
         assertEquals(1, localQuery.getPage());
     }
 
-    @Test
+    //@Test
     public void getPageSize() throws Exception {
         assertEquals(10, localQuery.getPageSize());
     }
 
-    @Test
+    //@Test
     public void buildSelect() throws Exception {
         Collection fieldCollection = localQuery.buildSelect();
         
@@ -74,7 +74,7 @@ public class LocalQueryTest {
         }
     }
 
-    @Test
+    //@Test
     public void buildGroup() throws Exception {
         Collection fieldCollection = localQuery.buildGroup();
         assertEquals(3, fieldCollection.size());
@@ -93,7 +93,7 @@ public class LocalQueryTest {
         }
     }
 
-    @Test
+    //@Test
     public void buildConditions() throws Exception {
 
         Condition userId = UserUser.USER_USER.ID.eq(1);
@@ -141,7 +141,7 @@ public class LocalQueryTest {
                 .from(UserUser.USER_USER).where(condition13).getSQL());
     }
 
-    @Test
+    //@Test
     public void convertToResultQuery() throws Exception {
 
 //        ResultQuery<UserUserRecord> resultQuery = localQuery.convertToResultQuery();

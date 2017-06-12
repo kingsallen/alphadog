@@ -14,7 +14,7 @@ public class ThirdPartyUserDaoTest {
 //        service = context.getBean(ThirdPartyUserDaoThriftService.class);
 //    }
 //
-//    @Test
+//    //@Test
 //    public void testUpdateUser() throws TException {
 //        init();
 //        ThirdPartyUser user = new ThirdPartyUser();

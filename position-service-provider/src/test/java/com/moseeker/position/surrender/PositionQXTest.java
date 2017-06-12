@@ -19,22 +19,22 @@
 //public class PositionQXTest {
 //	@Autowired
 //	private PositionQxService service;
-//	@Test
+//	//@Test
 //	public void headImageTest(){
 //		CampaignHeadImageVO vo=service.headImage();
 //		System.out.println(vo);
 //	}
-//	@Test
+//	//@Test
 //	public void positionDetailsTest(){
 //		PositionDetailsVO vo=service.positionDetails(111872);
 //		System.out.println(vo);
 //	}
-//	@Test
+//	//@Test
 //	public void companyHotPositionDetailsListTest(){
 //		PositionDetailsListVO vo=service.companyHotPositionDetailsList(39978, 1, 10);
 //		System.out.println(vo);
 //	}
-//	@Test
+//	//@Test
 //	public void similarityPositionDetailsListTest(){
 //		PositionDetailsListVO vo=service.similarityPositionDetailsList(39978, 1, 10);
 //		System.out.println(vo);

@@ -17,7 +17,7 @@ public class EmployeeServiceTest {
 		service = ServiceManager.SERVICEMANAGER.getService(EmployeeService.Iface.class);
 	}
 
-    //@Test
+    ////@Test
 	public void test() {
 		try {
             EmployeeResponse employee = service.getEmployee(4, 1);
@@ -27,7 +27,7 @@ public class EmployeeServiceTest {
 		}
 	}
 
-	//@Test
+	////@Test
 	public void getEmpConfigTest() {
 		try {
 			EmployeeVerificationConfResponse conf = service.getEmployeeVerificationConf(2878);
@@ -38,7 +38,7 @@ public class EmployeeServiceTest {
 		}
 	}
 
-    //@Test
+    ////@Test
 	public void unbindTest(){
 		try {
 			Result unbind = service.unbind(6, 1, 1);
@@ -49,7 +49,7 @@ public class EmployeeServiceTest {
 		}
 	}
 
-    //@Test
+    ////@Test
 	public void getEmployeeRewardsTest() {
 		try {
 			RewardsResponse rewards = service.getEmployeeRewards(14, 39978);
@@ -60,7 +60,7 @@ public class EmployeeServiceTest {
 		}
 	}
 
-    //@Test
+    ////@Test
 	public void setEmployeeCustomInfoTest() {
 		try {
 			Result result = service.setEmployeeCustomInfo(28207607, "[{\"10\":[\"1\"]},{\"8\":[\"\u804c\u4f4d\u4fe1\u606f2\"]}]");
@@ -71,7 +71,7 @@ public class EmployeeServiceTest {
 		}
 	}
 
-    //@Test
+    ////@Test
 	public void getEmployeeCustomFieldsConfTest() {
 		try {
 			java.util.List<EmployeeCustomFieldsConf> list = service.getEmployeeCustomFieldsConf(2878);
@@ -82,7 +82,7 @@ public class EmployeeServiceTest {
 		}
 	}
 
-    //@Test
+    ////@Test
 	public void bindTest() {
 		BindingParams bp = new BindingParams();
 		bp.setEmail("510340677@qq.com");
@@ -104,7 +104,7 @@ public class EmployeeServiceTest {
 		}
 	}
 
-    //@Test
+    ////@Test
 	public void emailActivationTest() {
 		try {
 			Result result = service.emailActivation("ff24a4dc10362b20");

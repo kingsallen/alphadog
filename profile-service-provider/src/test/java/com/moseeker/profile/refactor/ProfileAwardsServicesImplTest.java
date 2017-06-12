@@ -17,8 +17,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = AppConfig.class)
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(classes = AppConfig.class)
 public class ProfileAwardsServicesImplTest {
 
     @Autowired
@@ -31,7 +31,7 @@ public class ProfileAwardsServicesImplTest {
         System.out.println(JSON.toJSONString(response));
     }
 
-    //@Test
+    ////@Test
     public void postResources() throws TException {
         Awards awards = new Awards();
         awards.setName("testAwards-");
@@ -41,7 +41,7 @@ public class ProfileAwardsServicesImplTest {
         response = service.postResources(new ArrayList<Awards>(){{add(awards);}});
     }
 
-    //@Test
+    ////@Test
     public void putResources() throws TException {
         Awards awards = new Awards();
         awards.setName("testAwards-----");
@@ -58,7 +58,7 @@ public class ProfileAwardsServicesImplTest {
         response = service.putResources(new ArrayList<Awards>(){{add(awards);add(awards1);}});
     }
 
-    //@Test
+    ////@Test
     public void delResources() throws TException {
         Awards awards = new Awards();
         awards.setId(20266);
@@ -67,7 +67,7 @@ public class ProfileAwardsServicesImplTest {
         response = service.delResources(new ArrayList<Awards>(){{add(awards);add(awards1);}});
     }
 
-    //@Test
+    ////@Test
     public void postResource() throws TException {
         Awards awards = new Awards();
         awards.setName("testAwards");
@@ -77,7 +77,7 @@ public class ProfileAwardsServicesImplTest {
         response = service.postResource(awards);
     }
 
-    //@Test
+    ////@Test
     public void putResource() throws TException {
         Awards awards = new Awards();
         awards.setName("testAwards---");
@@ -87,14 +87,14 @@ public class ProfileAwardsServicesImplTest {
         response = service.putResource(awards);
     }
 
-    //@Test
+    ////@Test
     public void delResource() throws TException {
         Awards awards1 = new Awards();
         awards1.setId(20268);
         response = service.delResource(awards1);
     }
 
-    //@Test
+    ////@Test
     public void getResources() throws TException {
         CommonQuery commonQuery = new CommonQuery();
         commonQuery.setEqualFilter(new HashMap<>());
@@ -102,7 +102,7 @@ public class ProfileAwardsServicesImplTest {
         response = service.getResources(commonQuery);
     }
 
-    //@Test
+    ////@Test
     public void getPagination() throws TException {
         CommonQuery commonQuery = new CommonQuery();
         commonQuery.setEqualFilter(new HashMap<>());
@@ -110,7 +110,7 @@ public class ProfileAwardsServicesImplTest {
         response = service.getPagination(commonQuery);
     }
 
-    //@Test
+    ////@Test
     public void getResource() throws TException {
         CommonQuery commonQuery = new CommonQuery();
         commonQuery.setEqualFilter(new HashMap<>());

@@ -307,7 +307,7 @@ public class ProfilePojo {
 		this.worksRecords = worksRecords;
 	}
 	
-	@Test
+	//@Test
 	public void test() {
 		String stri = "THIRD_PARTY_POSITION_SYNCHRONIZATION_COMPLATED_QUEUE{SYNCHRONIZATION}";
 		System.out.println(stri.length());

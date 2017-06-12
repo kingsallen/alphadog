@@ -16,14 +16,14 @@ import static org.junit.Assert.*;
 /**
  * Created by lucky8987 on 17/5/11.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = AppConfig.class)
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(classes = AppConfig.class)
 public class SmsServiceTest {
 
     @Autowired
     private SmsService service;
 
-    @Test
+    //@Test
     public void sendSMS() throws Exception {
         Response response = service.sendSMS(SmsType.RANDOM_SMS, "13020287221", new HashMap<String, String>() {{
             put("code", "123456");

@@ -16,7 +16,7 @@ public class JobPositionDaoTest {
 //        return annConfig;
 //    }
 //
-//    @Test
+//    //@Test
 //    public void positionDetails() throws Exception {
 //        AnnotationConfigApplicationContext acac = initSpring();
 //        try {
@@ -31,7 +31,7 @@ public class JobPositionDaoTest {
 //    /**
 //     * 查询公司热招职位
 //     */
-//    @Test
+//    //@Test
 //    public void hotPositionDetailsList() throws Exception {
 //        AnnotationConfigApplicationContext acac = initSpring();
 //        try {
@@ -50,7 +50,7 @@ public class JobPositionDaoTest {
 //    /**
 //     * 查询职位相似职位
 //     */
-//    @Test
+//    //@Test
 //    public void similarityPositionDetailsList() throws Exception {
 //        AnnotationConfigApplicationContext acac = initSpring();
 //        try {

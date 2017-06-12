@@ -11,7 +11,7 @@ public class UserHrAccountServiceTest {
     private UserHrAccountService userHrAccountService;
 
 
-    @Test
+    //@Test
     public void testUserHrAccount() {
         try {
             Response response = userHrAccountService.userHrAccount(1, 1, 1, 20);

@@ -8,7 +8,7 @@ public class HrcompanyConfTest {
 		context.refresh();
 		htcompany= context.getBean(HrCompanyServiceImpl.class);
 	}
-	@Test
+	//@Test
 	public void test(){
 		init();
 		Query query=new Query();

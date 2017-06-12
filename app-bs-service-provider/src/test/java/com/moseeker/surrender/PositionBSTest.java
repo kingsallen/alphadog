@@ -81,7 +81,7 @@
 //			e.printStackTrace();
 //		}
 //	}
-//	@Test
+//	//@Test
 //	public void synchronizePositionToThirdPartyPlatformTest() throws Exception{
 //		List<ThirdPartyPosition> list=new ArrayList<ThirdPartyPosition>();
 //		ThirdPartyPosition thirdPartyPosition=new ThirdPartyPosition();
@@ -93,7 +93,7 @@
 //		Response result=positionBS.synchronizePositionToThirdPartyPlatform(position);
 //		System.out.println(result);
 //	}
-//	@Test
+//	//@Test
 //	public void refreshPositionTest(){
 //		Response result=positionBS.refreshPosition(124576, 3);
 //		System.out.println(result);

@@ -17,8 +17,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = AppConfig.class)
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(classes = AppConfig.class)
 public class ProfileBasicServicesImplTest {
 
 	@Autowired
@@ -32,7 +32,7 @@ public class ProfileBasicServicesImplTest {
 	}
 	
 
-	//@Test
+	////@Test
 	public void getResources() throws TException {
 		CommonQuery commonQuery = new CommonQuery();
 		commonQuery.setEqualFilter(new HashMap<>());
@@ -40,7 +40,7 @@ public class ProfileBasicServicesImplTest {
 		response = service.getResources(commonQuery);
 	}
 	
-	//@Test
+	////@Test
 	public void getResource() throws TException {
 		CommonQuery commonQuery = new CommonQuery();
 		commonQuery.setEqualFilter(new HashMap<>());
@@ -48,7 +48,7 @@ public class ProfileBasicServicesImplTest {
 		response = service.getResource(commonQuery);
 	}
 
-	//@Test
+	////@Test
 	public void postResource() throws TException {
 		Basic basic = new Basic();
 		basic.setNationality_name("中国");
@@ -58,7 +58,7 @@ public class ProfileBasicServicesImplTest {
 		response = service.postResource(basic);
 	}
 
-	//@Test
+	////@Test
 	public void putResource() throws TException {
 		Basic basic = new Basic();
 		basic.setNationality_name("中国2");
@@ -68,7 +68,7 @@ public class ProfileBasicServicesImplTest {
 		response = service.putResource(basic);
 	}
 
-	//@Test
+	////@Test
 	public void postResources() throws TException {
 		Basic basic = new Basic();
 		basic.setNationality_name("中国3");
@@ -78,7 +78,7 @@ public class ProfileBasicServicesImplTest {
 		response = service.postResources(new ArrayList<Basic>(){{add(basic);}});
 	}
 
-	//@Test
+	////@Test
 	public void putResources() throws TException {
 		Basic basic = new Basic();
 		basic.setNationality_name("中国4");
@@ -88,21 +88,21 @@ public class ProfileBasicServicesImplTest {
 		response = service.putResources(new ArrayList<Basic>(){{add(basic);}});
 	}
 
-	//@Test
+	////@Test
 	public void delResources() throws TException {
 		Basic basic = new Basic();
 		basic.setProfile_id(170);
 		response = service.delResources(new ArrayList<Basic>(){{add(basic);}});
 	}
 
-	//@Test
+	////@Test
 	public void delResource() throws TException {
 		Basic basic = new Basic();
 		basic.setProfile_id(170);
 		response = service.delResource(basic);
 	}
 
-	//@Test
+	////@Test
 	public void getPagination() throws TException {
 		CommonQuery commonQuery = new CommonQuery();
 		commonQuery.setEqualFilter(new HashMap<>());
@@ -110,7 +110,7 @@ public class ProfileBasicServicesImplTest {
 		response = service.getPagination(commonQuery);
 	}
 
-	//@Test
+	////@Test
 	public void reCalculateBasicCompleteness() throws TException {
 		response = service.reCalculateBasicCompleteness(0);
 	}

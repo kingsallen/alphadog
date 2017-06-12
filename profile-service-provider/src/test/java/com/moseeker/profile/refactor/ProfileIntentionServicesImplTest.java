@@ -23,8 +23,8 @@ import java.util.*;
  *
  * Created by zzh on 16/7/5.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = AppConfig.class)
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(classes = AppConfig.class)
 public class ProfileIntentionServicesImplTest {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -35,7 +35,7 @@ public class ProfileIntentionServicesImplTest {
     @Autowired
     private ProfileCompletenessImpl completenessImpl;
 
-//    @Test
+//    //@Test
     public void testGetResources() {
         CommonQuery query = new CommonQuery();
         Map<String, String> equelFilter = new HashMap<>();
@@ -49,7 +49,7 @@ public class ProfileIntentionServicesImplTest {
         }
     }
 
-//    @Test
+//    //@Test
     public void testGetPagination() {
         CommonQuery query = new CommonQuery();
         query.setPage(2);
@@ -63,7 +63,7 @@ public class ProfileIntentionServicesImplTest {
 
 
 
-//    @Test
+//    //@Test
     public void testPostResource() {
         Intention intention = new Intention();
         intention.setProfile_id(170);
@@ -92,7 +92,7 @@ public class ProfileIntentionServicesImplTest {
         }
     }
 
-//    @Test
+//    //@Test
     public void testPutResource() {
         Intention intention = new Intention();
         intention.setProfile_id(170);
@@ -118,7 +118,7 @@ public class ProfileIntentionServicesImplTest {
         }
     }
 
-//    @Test
+//    //@Test
     public void testDelResource() {
         Intention intention = new Intention();
         intention.setProfile_id(170);
@@ -130,7 +130,7 @@ public class ProfileIntentionServicesImplTest {
         }
     }
 
-//    @Test
+//    //@Test
     public void testGetResource() {
         CommonQuery query = new CommonQuery();
         query.setEqualFilter(new HashMap<String, String>(){{
@@ -144,7 +144,7 @@ public class ProfileIntentionServicesImplTest {
         }
     }
 
-//    @Test
+//    //@Test
     public void testPostResources() {
         List<Intention> structs = new ArrayList<Intention>(){{
 
@@ -205,7 +205,7 @@ public class ProfileIntentionServicesImplTest {
         }
     }
 
-//    @Test
+//    //@Test
     public void testPutResources() {
         List<Intention> structs = new ArrayList<Intention>(){{
 

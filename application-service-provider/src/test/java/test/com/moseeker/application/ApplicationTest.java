@@ -18,7 +18,7 @@
 //public class ApplicationTest {
 //	@Autowired
 //	private JobApplicataionService service;
-//	@Test
+//	//@Test
 //	public void testSave() throws TException{
 //		JobApplication app=new JobApplication();
 //		app.setApp_tpl_id(1);
@@ -39,7 +39,7 @@
 //		Response res=service.postApplication(app);
 //		System.out.println(res);
 //	}
-//	@Test
+//	//@Test
 //	public void testSaveNotApply() throws TException{
 //		JobApplication app=new JobApplication();
 //		app.setApp_tpl_id(1);
@@ -60,7 +60,7 @@
 //		Response res=service.postApplicationIfNotApply(app);
 //		System.out.println(res);
 //	}
-//	@Test
+//	//@Test
 //	public void testUpdateApp() throws TException{
 //		JobApplication app=new JobApplication();
 //		app.setApp_tpl_id(2);
@@ -70,12 +70,12 @@
 //		Response res=service.putApplication(app);
 //		System.out.println(res);
 //	}
-//	@Test
+//	//@Test
 //	public void testDeleteApp() throws TException{
 //		Response res=service.deleteApplication(204499);
 //		System.out.println(res);
 //	}
-//	@Test
+//	//@Test
 //	public void testPostJobResumeOther() throws TException{
 //		JobResumeOther resume=new JobResumeOther();
 //		resume.setApp_id(204499);
@@ -83,7 +83,7 @@
 //		Response res=service.postJobResumeOther(resume);
 //		System.out.println(res);
 //	}
-//	@Test
+//	//@Test
 //	public void testGetApplicationByUserIdAndPositionId() throws TException{
 //		Response res=service.getApplicationByUserIdAndPositionId(222, 98898, 1000);
 //		System.out.println(res);

@@ -18,8 +18,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = AppConfig.class)
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(classes = AppConfig.class)
 public class ProfileAttachmentServicesImplTest{
 
 	@Autowired
@@ -31,7 +31,7 @@ public class ProfileAttachmentServicesImplTest{
 		System.out.println(JSON.toJSONString(response));
 	}
 	
-	//@Test
+	////@Test
 	public void getResources() throws TException {
 		CommonQuery commonQuery = new CommonQuery();
 		commonQuery.setEqualFilter(new HashMap<>());
@@ -39,7 +39,7 @@ public class ProfileAttachmentServicesImplTest{
 		response = service.getResources(commonQuery);
 	}
 
-	//@Test
+	////@Test
 	public void postResources() throws TException {
 		Attachment attachment = new Attachment();
 		attachment.setDescription("test");
@@ -49,7 +49,7 @@ public class ProfileAttachmentServicesImplTest{
 		response = service.postResources(new ArrayList<Attachment>(){{add(attachment);}});
 	}
 
-	//@Test
+	////@Test
 	public void putResources() throws TException {
 		Attachment attachment = new Attachment();
 		attachment.setDescription("test----------");
@@ -59,7 +59,7 @@ public class ProfileAttachmentServicesImplTest{
 		response = service.putResources(new ArrayList<Attachment>(){{add(attachment);}});
 	}
 
-//	@Test
+//	//@Test
 	public void delResources() throws TException {
 		Attachment attachment = new Attachment();
 		attachment.setDescription("test----------");
@@ -69,7 +69,7 @@ public class ProfileAttachmentServicesImplTest{
 		response = service.delResources(new ArrayList<Attachment>(){{add(attachment);}});
 	}
 	
-	//@Test
+	////@Test
 	public void postResource() throws TException {
 		Attachment attachment = new Attachment();
 		attachment.setDescription("test");
@@ -78,7 +78,7 @@ public class ProfileAttachmentServicesImplTest{
 		response = service.postResource(attachment);
 	}
 
-	//@Test
+	////@Test
 	public void putResource() throws TException {
 		Attachment attachment = new Attachment();
 		attachment.setDescription("test----------");
@@ -87,7 +87,7 @@ public class ProfileAttachmentServicesImplTest{
 		response = service.putResource(attachment);
 	}
 
-	//@Test
+	////@Test
 	public void delResource() throws TException {
 		Attachment attachment = new Attachment();
 		attachment.setDescription("test----------");
@@ -96,7 +96,7 @@ public class ProfileAttachmentServicesImplTest{
 		response = service.delResource(attachment);
 	}
 
-	//@Test
+	////@Test
 	public void getPagination() throws TException {
 		CommonQuery commonQuery = new CommonQuery();
 		commonQuery.setEqualFilter(new HashMap<>());
@@ -104,7 +104,7 @@ public class ProfileAttachmentServicesImplTest{
 		response = service.getPagination(commonQuery);
 	}
 
-	//@Test
+	////@Test
 	public void getResource() throws TException {
 		CommonQuery commonQuery = new CommonQuery();
 		commonQuery.setEqualFilter(new HashMap<>());

@@ -22,7 +22,7 @@
 //    }
 //
 //
-//    @Test
+//    //@Test
 //    public void postSearchConditionTest() {
 //        UserSearchConditionDO entity = new UserSearchConditionDO();
 //        entity.setUserId(1122611);
@@ -40,7 +40,7 @@
 //        }
 //    }
 //
-//    @Test
+//    //@Test
 //    public void searchConditionListTest() {
 //        try {
 //            UserSearchConditionListVO list = service.userSearchConditionList(1122611);
@@ -50,7 +50,7 @@
 //        }
 //    }
 //
-//    @Test
+//    //@Test
 //    public void delSearchConditionTest() {
 //        try {
 //            UserSearchConditionVO result = service.delUserSearchCondition(1122611, 1);

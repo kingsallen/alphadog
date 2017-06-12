@@ -51,7 +51,7 @@
 //		profileBS.setWholeProfileService(wholeProfileService);
 //        
 //	}
-//	@Test
+//	//@Test
 //	public void retrieveProfileTest(){
 //		JSONObject json=new JSONObject();
 //		JSONObject user=new JSONObject();

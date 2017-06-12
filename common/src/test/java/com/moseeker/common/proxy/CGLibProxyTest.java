@@ -4,7 +4,7 @@ import org.junit.Test;
 
 public class CGLibProxyTest {
 	
-	@Test
+	//@Test
 	public void proxyTest() {
 		Book book = new Book();
 		book.setDescription("book description!");

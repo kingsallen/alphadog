@@ -20,8 +20,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = AppConfig.class)
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(classes = AppConfig.class)
 public class ProfileLanguageServicesImplTest {
 
     @Autowired
@@ -34,7 +34,7 @@ public class ProfileLanguageServicesImplTest {
         System.out.println(JSON.toJSONString(response));
     }
 
-    //@Test
+    ////@Test
     public void postResources() throws TException {
         try {
             Language language = new Language();
@@ -49,7 +49,7 @@ public class ProfileLanguageServicesImplTest {
         }
     }
 
-    //@Test
+    ////@Test
     public void putResources() throws TException {
         try {
 
@@ -69,7 +69,7 @@ public class ProfileLanguageServicesImplTest {
         }
     }
 
-    //@Test
+    ////@Test
     public void delResources() throws TException {
         try {
             Language language = new Language();
@@ -84,7 +84,7 @@ public class ProfileLanguageServicesImplTest {
         }
     }
 
-    //@Test
+    ////@Test
     public void postResource() throws TException {
         try {
             Language language = new Language();
@@ -99,7 +99,7 @@ public class ProfileLanguageServicesImplTest {
         }
     }
 
-    //@Test
+    ////@Test
     public void putResource() throws TException {
         try {
             Language language = new Language();
@@ -113,7 +113,7 @@ public class ProfileLanguageServicesImplTest {
         }
     }
 
-    //@Test
+    ////@Test
     public void delResource() throws TException {
         try {
             Language language = new Language();
@@ -126,7 +126,7 @@ public class ProfileLanguageServicesImplTest {
         }
     }
 
-    //@Test
+    ////@Test
     public void getResources() throws TException {
         try {
             CommonQuery commonQuery = new CommonQuery();
@@ -139,7 +139,7 @@ public class ProfileLanguageServicesImplTest {
         }
     }
 
-    //@Test
+    ////@Test
     public void getPagination() throws TException {
         try {
             CommonQuery commonQuery = new CommonQuery();
@@ -152,7 +152,7 @@ public class ProfileLanguageServicesImplTest {
         }
     }
 
-    //@Test
+    ////@Test
     public void getResource() throws TException {
         try {
             CommonQuery commonQuery = new CommonQuery();

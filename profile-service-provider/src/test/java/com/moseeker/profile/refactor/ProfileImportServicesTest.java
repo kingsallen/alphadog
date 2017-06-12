@@ -20,8 +20,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = AppConfig.class)
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(classes = AppConfig.class)
 public class ProfileImportServicesTest{
 
 	@Autowired
@@ -34,7 +34,7 @@ public class ProfileImportServicesTest{
 		System.out.println(JSON.toJSONString(response));
 	}
 
-//	@Test
+//	//@Test
 	public void postResources() throws TException {
 		ProfileImport profileImport = new ProfileImport();
 		profileImport.setProfile_id(170);
@@ -42,7 +42,7 @@ public class ProfileImportServicesTest{
 		response = service.postResources(new ArrayList<ProfileImport>(){{add(profileImport);}});
 	}
 
-//	@Test
+//	//@Test
 	public void putResources() throws TException {
 		ProfileImport profileImport = new ProfileImport();
 		profileImport.setProfile_id(170);
@@ -50,21 +50,21 @@ public class ProfileImportServicesTest{
 		response = service.putResources(new ArrayList<ProfileImport>(){{add(profileImport);}});
 	}
 
-//	@Test
+//	//@Test
 	public void delResources() throws TException {
 		ProfileImport profileImport = new ProfileImport();
 		profileImport.setProfile_id(170);
 		response = service.delResources(new ArrayList<ProfileImport>(){{add(profileImport);}});
 	}
 
-//	@Test
+//	//@Test
 	public void delResource() throws TException {
 		ProfileImport profileImport = new ProfileImport();
 		profileImport.setProfile_id(170);
 		response = service.delResource(profileImport);
 	}
 
-//	@Test
+//	//@Test
 	public void postResource() throws TException {
 		ProfileImport profileImport = new ProfileImport();
 		profileImport.setProfile_id(170);
@@ -72,7 +72,7 @@ public class ProfileImportServicesTest{
 		response = service.postResource(profileImport);
 	}
 
-//	@Test
+//	//@Test
 	public void putResource() throws TException {
 		ProfileImport profileImport = new ProfileImport();
 		profileImport.setProfile_id(170);
@@ -80,21 +80,21 @@ public class ProfileImportServicesTest{
 		response = service.putResource(profileImport);
 	}
 
-//	@Test
+//	//@Test
 	public void getResources() throws TException {
 		CommonQuery commonQuery = new CommonQuery();
 		commonQuery.setEqualFilter(new HashMap<String,String>(){{put("profile_id","170");}});
 		response = service.getResources(commonQuery);
 	}
 
-//	@Test
+//	//@Test
 	public void getPagination() throws TException {
 		CommonQuery commonQuery = new CommonQuery();
 		commonQuery.setEqualFilter(new HashMap<String,String>(){{put("profile_id","170");}});
 		response = service.getPagination(commonQuery);
 	}
 
-//	@Test
+//	//@Test
 	public void getResource() throws TException {
 		CommonQuery commonQuery = new CommonQuery();
 		commonQuery.setEqualFilter(new HashMap<String,String>(){{put("profile_id","170");}});

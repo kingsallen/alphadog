@@ -14,33 +14,33 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * Created by lucky8987 on 17/5/10.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = AppConfig.class)
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(classes = AppConfig.class)
 public class CompanyServiceTest {
 
-    @Autowired
+//    @Autowired
     private CompanyService service;
 
-    @Test
+    //@Test
     public void getResources() throws Exception {
         Response resources = service.getResources(new CommonQuery());
         System.out.println(resources);
     }
 
-    @Test
+    //@Test
     public void getResource() throws Exception {
         Response resource = service.getResource(new CommonQuery());
         System.out.println(resource);
     }
 
-    @Test
+    //@Test
     public void getAllCompanies() throws Exception {
         Response resource = service.getAllCompanies(new CommonQuery());
         System.out.println(resource);
     }
 
-    @Test
-    @Transactional
+    //@Test
+//    @Transactional
     public void add() throws Exception {
         Hrcompany company = new Hrcompany();
         company.setName("人间烟火");
@@ -50,19 +50,19 @@ public class CompanyServiceTest {
         System.out.println(response);
     }
 
-    @Test
+    //@Test
     public void getWechat() throws Exception {
         Response response = service.getWechat(2878, 0);
         System.out.println(response);
     }
 
-    @Test
+    //@Test
     public void synchronizeThirdpartyAccount() throws Exception {
         Response response = service.synchronizeThirdpartyAccount(2878, (byte) 1);
         System.out.println(response);
     }
 
-    @Test
+    //@Test
     public void ifSynchronizePosition() throws Exception {
         Response response = service.ifSynchronizePosition(54545, (byte) 1);
         System.out.println(response);

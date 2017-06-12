@@ -15,20 +15,20 @@ import static org.junit.Assert.*;
 /**
  * Created by lucky8987 on 17/5/11.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = AppConfig.class)
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(classes = AppConfig.class)
 public class HRAccountServiceTest {
 
-    @Autowired
+//    @Autowired
     private HRAccountService service;
 
-    @Test
+    //@Test
     public void allowBind() throws Exception {
         Response response = service.allowBind(81654, 0, (byte) 3);
         System.out.println(response);
     }
 
-    @Test
+    //@Test
     @Transactional
     public void createThirdPartyAccount() throws Exception {
         BindAccountStruct struct = new BindAccountStruct();

@@ -18,8 +18,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = AppConfig.class)
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(classes = AppConfig.class)
 public class ProfileEducationServicesImplTest{
 
 	@Autowired
@@ -32,21 +32,21 @@ public class ProfileEducationServicesImplTest{
 		System.out.println(JSON.toJSONString(response));
 	}
 
-//	@Test
+//	//@Test
 	public void getResources() throws TException {
 		CommonQuery commonQuery = new CommonQuery();
 		commonQuery.setEqualFilter(new HashMap<String,String>(){{put("profile_id","170");}});
 		response = service.getResources(commonQuery);
 	}
 
-//	@Test
+//	//@Test
 	public void getResource() throws TException {
 		CommonQuery commonQuery = new CommonQuery();
 		commonQuery.setEqualFilter(new HashMap<String,String>(){{put("profile_id","170");}});
 		response = service.getResource(commonQuery);
 	}
 
-//	@Test
+//	//@Test
 	public void postResource() throws TException {
 		Education education = new Education();
 		education.setProfile_id(170);
@@ -59,7 +59,7 @@ public class ProfileEducationServicesImplTest{
 		response = service.postResource(education);
 	}
 
-//	@Test
+//	//@Test
 	public void putResource() throws TException {
 		Education education = new Education();
 		education.setId(220984);
@@ -67,7 +67,7 @@ public class ProfileEducationServicesImplTest{
 		response = service.putResource(education);
 	}
 
-//	@Test
+//	//@Test
 	public void postResources() throws TException {
 		Education education = new Education();
 		education.setProfile_id(170);
@@ -79,7 +79,7 @@ public class ProfileEducationServicesImplTest{
 		response = service.postResources(new ArrayList<Education>(){{add(education);}});
 	}
 
-//	@Test
+//	//@Test
 	public void putResources() throws TException {
 		Education education = new Education();
 		education.setId(206);
@@ -87,21 +87,21 @@ public class ProfileEducationServicesImplTest{
 		response = service.putResources(new ArrayList<Education>(){{add(education);}});
 	}
 
-//	@Test
+//	//@Test
 	public void delResources() throws TException {
 		Education education = new Education();
 		education.setId(220984);
 		response = service.delResources(new ArrayList<Education>(){{add(education);}});
 	}
 
-//	@Test
+//	//@Test
 	public void delResource() throws TException {
 		Education education = new Education();
 		education.setId(220985);
 		response = service.delResource(education);
 	}
 
-//	@Test
+//	//@Test
 	public void getPagination() throws TException {
 		CommonQuery commonQuery = new CommonQuery();
 		commonQuery.setEqualFilter(new HashMap<String,String>(){{put("profile_id","170");}});

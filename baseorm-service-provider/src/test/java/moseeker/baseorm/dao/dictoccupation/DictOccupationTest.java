@@ -22,7 +22,7 @@ public class DictOccupationTest {
 		position= context.getBean(PositionServiceImpl.class);
 	}
 	//测试获取所有，直接调用接口
-	@Test
+	//@Test
 	public void test(){
 		init();
 		Query query=new Query();
@@ -34,7 +34,7 @@ public class DictOccupationTest {
 		System.out.println(result);
 	}*/
 //  //获取occupation，通过Iface
-//	@Test
+//	//@Test
 //	public void getOccupation() throws Exception{
 //		DictOccupationDao.Iface dictOccupationDao = ServiceManager.SERVICEMANAGER
 //				.getService(DictOccupationDao.Iface.class);
@@ -42,7 +42,7 @@ public class DictOccupationTest {
 //		System.out.println(result);
 //	}
 //	//测试获取joboccupation
-	/*@Test
+	/*//@Test
 	public void testJobOccupation(){
 		init();
 		Query query=new Query();

@@ -30,7 +30,7 @@ public class ELKLogTest {
     /**
      * Method: log(LogVO logVO)
      */
-    //@Test
+    ////@Test
     public void testLog() throws Exception {
         HashMap<String, Object> statisticsForChannelmportVO = new HashMap<>();
         statisticsForChannelmportVO.put("profile_operation", (byte)0);

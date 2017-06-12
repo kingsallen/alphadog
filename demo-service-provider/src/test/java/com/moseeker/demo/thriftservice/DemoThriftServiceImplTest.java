@@ -15,7 +15,7 @@ public class DemoThriftServiceImplTest {
 
     DemoThriftService.Iface demoService = ServiceManager.SERVICEMANAGER.getService(DemoThriftService.Iface.class);
 
-    //@Test
+    ////@Test
     public void testGetData() {
         CommonQuery query = new CommonQuery();
         DemoStruct demoStruct = new DemoStruct();

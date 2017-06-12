@@ -14,7 +14,7 @@ package com.moseeker.demo.crud;
 //    }
 //
 //
-//    /*@Test
+//    /*//@Test
 //    public void testUpdateMap() throws SQLException {
 //        int result = UpdateCreator
 //                .set("name", "test_add2_" + System.currentTimeMillis())
@@ -26,14 +26,14 @@ package com.moseeker.demo.crud;
 //    }*/
 //
 
-//    @Test
+//    //@Test
 //    public void testDelete() throws SQLException {
 //        int delete = userDao.delete(QueryCondition.like("name", "test_add_%"));
 //        Assert.assertEquals(delete, 1);
 //    }
 //
 //
-//    @Test
+//    //@Test
 //    public void testQuery() throws SQLException {
 //
 //        //实现的SQL

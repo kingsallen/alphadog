@@ -15,7 +15,7 @@ import com.moseeker.thrift.gen.company.service.CompanyServices.Client.Factory;
 
 public class CompanyThriftServiceTest {
 
-	@Test
+	//@Test
 	public void test() {
 		TTransport transport = null;
 		try {

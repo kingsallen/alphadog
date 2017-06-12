@@ -24,36 +24,36 @@ public class CandidateEntityTest {
     /**
      * C端用户查看职位，判断是否生成候选人数据
      */
-    @Test
+    //@Test
     public void glancePosition() throws Exception {
 //        candidate.glancePosition();
     }
 
-    @Test
+    //@Test
     public void changeInteresting() throws Exception {
     }
 
-    @Test
+    //@Test
     public void candidateList() throws Exception {
     }
 
-    @Test
+    //@Test
     public void getRecommendations() throws Exception {
     }
 
-    @Test
+    //@Test
     public void recommend() throws Exception {
     }
 
-    @Test
+    //@Test
     public void getRecommendation() throws Exception {
     }
 
-    @Test
+    //@Test
     public void getRecommendatorySorting() throws Exception {
     }
 
-    @Test
+    //@Test
     public void ignore() throws Exception {
     }
 

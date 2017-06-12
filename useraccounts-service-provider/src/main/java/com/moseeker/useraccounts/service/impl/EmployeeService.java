@@ -28,16 +28,18 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.employee.struct.*;
 import com.moseeker.thrift.gen.mq.service.MqService;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
-import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author ltf
@@ -249,7 +251,7 @@ public class EmployeeService {
 					employee.setWxuser_id(getWxuserId(query.buildQuery()));
 					employee.setAuthMethod((byte)bindingParams.getType().getValue());
 					employee.setActivation((byte)3);
-					employee.setCreateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
+					employee.setCreateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 					int primaryKey = employeeDao.addData(employee).getId();
 					if( primaryKey == 0) {
 						response.setSuccess(false);
@@ -296,7 +298,7 @@ public class EmployeeService {
 						log.info("set redis result: ", redStr);
 						// 修改用户邮箱
                         employee.setEmail(bindingParams.getEmail());
-                        employee.setUpdateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
+                        employee.setUpdateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
                         employeeDao.updateData(employee);
 						response.setSuccess(true);
 						response.setMessage("发送激活邮件成功");
@@ -374,23 +376,23 @@ public class EmployeeService {
 					query.clear();
 					query.where("sysuser_id", String.valueOf(bindingParams.getUserId()));
 
-					employee.setWxuser_id(getWxuserId(query.buildQuery()));
-					employee.setAuthMethod((byte)bindingParams.getType().getValue());
-					employee.setActivation((byte)3);
-					employee.setCreateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
-					int primaryKey = employeeDao.addData(employee).getId();
-					if(primaryKey== 0) {
-						response.setSuccess(false);
-						response.setMessage("认证失败，请检查员工信息");
-						log.info("员工认证(question模式)，保存员工信息失败 employee={}", employee);
-						break;
-					}
-					employee.setId(primaryKey);
-				} else if (employee.getActivation() == 0) {
-					response.setSuccess(false);
-					response.setMessage("该员工已绑定");
-					break;
-				}
+                    employee.setWxuser_id(getWxuserId(query.buildQuery()));
+                    employee.setAuthMethod((byte)bindingParams.getType().getValue());
+                    employee.setActivation((byte)3);
+                    employee.setCreateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+                    int primaryKey = employeeDao.addData(employee).getId();
+                    if(primaryKey== 0) {
+                        response.setSuccess(false);
+                        response.setMessage("认证失败，请检查员工信息");
+                        log.info("员工认证(question模式)，保存员工信息失败 employee={}", employee);
+                        break;
+                    }
+                    employee.setId(primaryKey);
+                } else if (employee.getActivation() == 0) {
+                    response.setSuccess(false);
+                    response.setMessage("该员工已绑定");
+                    break;
+                }
 
 				// 问题校验
 				List<String> answers = JSONObject.parseArray(certConf.getQuestions()).stream().map(m -> JSONObject.parseObject(String.valueOf(m)).getString("a")).collect(Collectors.toList());
@@ -449,8 +451,8 @@ public class EmployeeService {
 					query.where("sysuser_id", String.valueOf(bindingParams.getUserId()));
 					e.setWxuser_id(getWxuserId(query.buildQuery()));
 					e.setEmail(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getEmail(), e.getEmail()));
-					e.setBindingTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
-					e.setUpdateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
+					e.setBindingTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+					e.setUpdateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 					e.setCname(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getName(), e.getCname()));
 					e.setMobile(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getMobile(), e.getMobile()));
 					e.setCustomField(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getCustomField(), e.getCustomField()));

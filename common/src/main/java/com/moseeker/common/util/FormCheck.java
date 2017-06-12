@@ -210,13 +210,13 @@ public class FormCheck {
 		return m.find();
 	}
 
-	@Test
+	//@Test
 	public void pwTest() {
 		String str = "123【】6!@#$%^&*()-=_+";
 		System.out.println(pwdSpecialCharactor(str));
 	}
 
-	@Test
+	//@Test
 	public void isEmailTest() {
 		// String str = "wengjianfei@moseeker.com";
 		// String str = "hello@moseeker";
@@ -226,19 +226,19 @@ public class FormCheck {
 		System.out.println(isEmail(str));
 	}
 
-	@Test
+	//@Test
 	public void isIntegerTest() {
 		String str = "011";
 		System.out.println(isInteger(str));
 	}
 
-	@Test
+	//@Test
 	public void isDateTest() {
 		String date = "2012-02-30";
 		System.out.println("date." + isDate(date));
 	}
 
-	@Test
+	//@Test
 	public void isDateTimeTest() {
 		String date = "2012-02-29 23:59:59";
 		System.out.println("date." + isDateTime(date));

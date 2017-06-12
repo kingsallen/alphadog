@@ -29,8 +29,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = AppConfig.class)
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(classes = AppConfig.class)
 public class ProfileWorksServicesImplTest {
 
     @Autowired
@@ -43,7 +43,7 @@ public class ProfileWorksServicesImplTest {
         System.out.println(JSON.toJSONString(response));
     }
 
-//    @Test
+//    //@Test
     public void postResources() throws TException {
         try {
             Works work = new Works();
@@ -59,7 +59,7 @@ public class ProfileWorksServicesImplTest {
         }
     }
 
-//    @Test
+//    //@Test
     public void putResources() throws TException {
         try {
 
@@ -77,7 +77,7 @@ public class ProfileWorksServicesImplTest {
         }
     }
 
-//    @Test
+//    //@Test
     public void delResources() throws TException {
         try {
             Works work = new Works();
@@ -92,7 +92,7 @@ public class ProfileWorksServicesImplTest {
         }
     }
 
-//    @Test
+//    //@Test
     public void postResource() throws TException {
         try {
             Works work = new Works();
@@ -106,7 +106,7 @@ public class ProfileWorksServicesImplTest {
         }
     }
 
-//    @Test
+//    //@Test
     public void putResource() throws TException {
         try {
             Works work = new Works();
@@ -120,7 +120,7 @@ public class ProfileWorksServicesImplTest {
         }
     }
 
-//    @Test
+//    //@Test
     public void delResource() throws TException {
         try {
             Works work = new Works();
@@ -133,7 +133,7 @@ public class ProfileWorksServicesImplTest {
         }
     }
 
-//    @Test
+//    //@Test
     public void getResources() throws TException {
         try {
             CommonQuery commonQuery = new CommonQuery();
@@ -148,7 +148,7 @@ public class ProfileWorksServicesImplTest {
         }
     }
 
-//    @Test
+//    //@Test
     public void getPagination() throws TException {
         try {
             CommonQuery commonQuery = new CommonQuery();
@@ -163,7 +163,7 @@ public class ProfileWorksServicesImplTest {
         }
     }
 
-//    @Test
+//    //@Test
     public void getResource() throws TException {
         try {
             CommonQuery commonQuery = new CommonQuery();

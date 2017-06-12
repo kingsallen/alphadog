@@ -21,8 +21,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 /**
  * Created by lucky8987 on 17/5/17.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = AppConfig.class)
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(classes = AppConfig.class)
 public class UserCommonServiceTest {
 
     @Autowired
@@ -42,7 +42,7 @@ public class UserCommonServiceTest {
         Mockito.when(wordpressService.getNewsletter(Mockito.any())).thenReturn(newsletterData);
     }
 
-    @Test
+    //@Test
     public void newsletter() throws Exception {
         NewsletterForm form = new NewsletterForm();
         form.setAccount_id(1122611);

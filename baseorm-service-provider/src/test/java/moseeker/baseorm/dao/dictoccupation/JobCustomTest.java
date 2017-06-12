@@ -8,7 +8,7 @@ public class JobCustomTest {
 //		context.refresh();
 //		position= context.getBean(PositionServiceImpl.class);
 //	}
-//	@Test
+//	//@Test
 //	public void getCustomField() throws Exception{
 //		PositionDao.Iface position = ServiceManager.SERVICEMANAGER
 //				.getService(PositionDao.Iface.class);

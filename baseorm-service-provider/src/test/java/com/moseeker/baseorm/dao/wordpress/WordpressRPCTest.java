@@ -14,7 +14,7 @@ import com.moseeker.thrift.gen.dao.struct.WordpressTermRelationships;
 
 public class WordpressRPCTest {
 
-	//@Test
+	////@Test
 	/*public void test() {
 		TTransport transport = null;
 		try {

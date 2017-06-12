@@ -23,7 +23,7 @@
 //		userDao = ServiceManager.SERVICEMANAGER.getService(UserDBDao.Iface.class);
 //	}
 //
-//	@Test
+//	//@Test
 //	public void testGet() {
 //		QueryUtil qu = new QueryUtil();
 //		qu.addEqualFilter("id", "1");
@@ -43,7 +43,7 @@
 
 
 	/*
-	@Test
+	//@Test
 	public void testGetHrHbConfig() {
 		QueryUtil qu = new QueryUtil();
 		qu.addEqualFilter("id", "1");
@@ -56,7 +56,7 @@
 		}
 	}
 	
-	@Test
+	//@Test
 	public void testGetHrHbItemsList() {
 		QueryUtil qu = new QueryUtil();
 		qu.addEqualFilter("id", "[1,2]");
@@ -71,7 +71,7 @@
 		}
 	}
 	
-	@Test
+	//@Test
 	public void testGetHrHbPositionBindingPojo() {
 		QueryUtil qu = new QueryUtil();
 		qu.addEqualFilter("id", "1");
@@ -84,7 +84,7 @@
 		}
 	}
 	
-	@Test
+	//@Test
 	public void testGetHrHbScratchCard() {
 		QueryUtil qu = new QueryUtil();
 		qu.addEqualFilter("id", "1");
@@ -97,7 +97,7 @@
 		}
 	}
 	
-	@Test
+	//@Test
 	public void testGetHrSendRecord() {
 		QueryUtil qu = new QueryUtil();
 		qu.addEqualFilter("id", "1");

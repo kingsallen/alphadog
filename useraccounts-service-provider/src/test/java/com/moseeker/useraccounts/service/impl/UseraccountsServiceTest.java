@@ -23,8 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * Created by lucky8987 on 17/5/17.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = AppConfig.class)
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(classes = AppConfig.class)
 public class UseraccountsServiceTest {
 
     @Autowired
@@ -42,7 +42,7 @@ public class UseraccountsServiceTest {
         Mockito.when(smsSender.sendSMS_passwordforgot(Mockito.anyString())).thenReturn(true);
     }
 
-    @Test
+    //@Test
     @Transactional
     public void postuserlogin() throws Exception {
         Userloginreq userloginreq = new Userloginreq();
@@ -53,26 +53,26 @@ public class UseraccountsServiceTest {
     }
 
 
-    @Test
+    //@Test
     @Transactional
     public void postuserchangepassword() throws Exception {
         Response response = service.postuserchangepassword(1122611, "123456", "123456");
         System.out.println(response);
     }
 
-    @Test
+    //@Test
     public void postuserresetpassword() throws Exception {
         Response response = service.postuserresetpassword("13020287221", "898781415", "4000");
         System.out.println(response);
     }
 
-    @Test
+    //@Test
     public void postusersendpasswordforgotcode() throws Exception {
         Response response = service.postusersendpasswordforgotcode("13020287221");
         System.out.println(response);
     }
 
-    @Test
+    //@Test
     public void postusermobilesignup() throws Exception {
         User user = new User();
         user.setMobile(13020287221L);
@@ -80,36 +80,36 @@ public class UseraccountsServiceTest {
         System.out.println(response);
     }
 
-    @Test
+    //@Test
     public void getUserFavPositionCountByUserIdAndPositionId() throws Exception {
 
     }
 
-    @Test
+    //@Test
     public void postUserFavoritePosition() throws Exception {
 
     }
 
 
-    @Test
+    //@Test
     public void checkEmail() throws Exception {
         Response response = service.checkEmail("510340677@qq.com");
         System.out.println(response);
     }
 
 
-    @Test
+    //@Test
     public void ifExistUser() throws Exception {
         UserUserDO userUserDO = service.ifExistUser("13020287221");
         System.out.println(userUserDO);
     }
 
-    @Test
+    //@Test
     public void createRetrieveProfileUser() throws Exception {
 
     }
 
-    @Test
+    //@Test
     public void ifExistProfile() throws Exception {
         boolean existProfile = service.ifExistProfile("13020287221");
         System.out.println(existProfile);

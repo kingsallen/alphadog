@@ -13,14 +13,14 @@ import static org.junit.Assert.*;
 /**
  * Created by lucky8987 on 17/5/10.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = AppConfig.class)
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(classes = AppConfig.class)
 public class PositionServiceTest {
 
-    @Autowired
+//    @Autowired
     private PositionService service;
 
-    @Test
+    //@Test
     public void getPositionsByCode() throws Exception {
         Response response = service.getPositionsByCode("110000");
         System.out.println(response);

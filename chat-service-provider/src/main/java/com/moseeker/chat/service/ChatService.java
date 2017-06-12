@@ -341,11 +341,11 @@ public class ChatService {
                 unreadCountDO.setUserHaveUnreadMsg((byte)1);
                 unreadCountDO.setRoomId(chatRoom.getId());
                 pool.startTast(() -> chaoDao.saveUnreadCount(unreadCountDO));
+            } else {
+                //默认清空C端账号的未读消息
+                int chatRoomId = chatRoom.getId();
+                pool.startTast(() -> chaoDao.clearUserUnreadCount(chatRoomId, hrId, userId));
             }
-
-            //默认清空C端账号的未读消息
-            int chatRoomId = chatRoom.getId();
-            pool.startTast(() -> chaoDao.clearUserUnreadCount(chatRoomId, hrId, userId));
         } else {
             resultOfSaveRoomVO = new ResultOfSaveRoomVO();
         }

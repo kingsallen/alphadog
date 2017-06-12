@@ -14,7 +14,7 @@ public class ChatThriftServiceTest {
 
     ChatService.Iface chatService = ServiceManager.SERVICEMANAGER.getService(ChatService.Iface.class);
 
-    //@Test
+    ////@Test
     public void listHRChatRoom() throws Exception {
 
         HRChatRoomsVO chatRoomsVO = chatService.listHRChatRoom(4913, 1, 10);
@@ -35,7 +35,7 @@ public class ChatThriftServiceTest {
         }
     }
 
-    @Test
+//    //@Test
     public void listUserChatRoom() throws Exception {
         UserChatRoomsVO roomsVO = chatService.listUserChatRoom(1, 1, 10);
         System.out.println("pageNo : "+roomsVO.getPageNo());
@@ -58,7 +58,7 @@ public class ChatThriftServiceTest {
         }
     }
 
-    //@Test
+    ////@Test
     public void listChatLogs() throws Exception {
         ChatsVO chatsVO = chatService.listChatLogs(28559, 1, 10);
         System.out.println("pageNo : "+chatsVO.getPageNo());
@@ -76,12 +76,12 @@ public class ChatThriftServiceTest {
         }
     }
 
-    //@Test
+    ////@Test
     public void saveChat() throws Exception {
         chatService.saveChat(28559, "answer", 61107, (byte) 1);
     }
 
-    //@Test
+    ////@Test
     public void enterRoom() throws Exception {
         ResultOfSaveRoomVO resultOfSaveRoomVO = chatService.enterRoom(1, 1, 1, 17, false);
         System.out.println("roomId : "+resultOfSaveRoomVO.getRoomId());
@@ -90,17 +90,17 @@ public class ChatThriftServiceTest {
         System.out.println(resultOfSaveRoomVO.getUser());
     }
 
-    //@Test
+    ////@Test
     public void getChat() throws Exception {
 
     }
 
-    //@Test
+    ////@Test
     public void leaveChatRoom() throws Exception {
         chatService.leaveChatRoom(28569, (byte) 0);
     }
 
-    //@Test
+    ////@Test
     public void leaveChatRoom1() throws Exception {
         chatService.leaveChatRoom(28569, (byte) 1);
     }

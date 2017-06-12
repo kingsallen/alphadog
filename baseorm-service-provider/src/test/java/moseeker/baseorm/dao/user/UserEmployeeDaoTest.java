@@ -14,7 +14,7 @@ public class UserEmployeeDaoTest {
 //        service = context.getBean(UserEmployeeDaoThriftService.class);
 //    }
 //
-//    @Test
+//    //@Test
 //    public void testGetUserEmployee() throws TException {
 //        init();
 //        QueryUtil queryUtil = new QueryUtil();
@@ -39,7 +39,7 @@ public class UserEmployeeDaoTest {
 //        Assert.assertTrue(userEmployeeStruct.size() == 0);
 //    }
 //
-//    @Test
+//    //@Test
 //    public void testPostPutUserEmployee() throws TException {
 //        init();
 //
@@ -65,7 +65,7 @@ public class UserEmployeeDaoTest {
 //        Assert.assertEquals(response.getData(),""+userEmployeeStruct.size());
 //    }
 //
-//    @Test
+//    //@Test
 //    public void testDeleteUserEmployee() throws TException {
 //        init();
 //        Map<String,String> filter = new HashMap<>();

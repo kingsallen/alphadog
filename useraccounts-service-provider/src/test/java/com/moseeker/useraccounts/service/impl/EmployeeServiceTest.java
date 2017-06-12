@@ -21,8 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * Created by lucky8987 on 17/5/17.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = AppConfig.class)
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(classes = AppConfig.class)
 public class EmployeeServiceTest {
 
     @Autowired
@@ -45,19 +45,19 @@ public class EmployeeServiceTest {
         Mockito.when(client.get(Mockito.anyInt(), Mockito.anyString(), Mockito.anyString())).thenReturn(null);
     }
 
-    @Test
+    //@Test
     public void getEmployee() throws Exception {
         EmployeeResponse employee = service.getEmployee(4, 32);
         System.out.println(employee);
     }
 
-    @Test
+    //@Test
     public void getEmployeeVerificationConf() throws Exception {
         EmployeeVerificationConfResponse response = service.getEmployeeVerificationConf(27);
         System.out.println(response);
     }
 
-    @Test
+    //@Test
     @Transactional
     public void bind() throws Exception {
         BindingParams bp = new BindingParams();
@@ -70,33 +70,33 @@ public class EmployeeServiceTest {
         System.out.println(result);
     }
 
-    @Test
+    //@Test
     @Transactional
     public void unbind() throws Exception {
         Result result = service.unbind(12528, 14, 143999);
         System.out.println(result);
     }
 
-    @Test
+    //@Test
     public void getEmployeeCustomFieldsConf() throws Exception {
         EmployeeVerificationConfResponse response = service.getEmployeeVerificationConf(650);
         System.out.println(response);
     }
 
-    @Test
+    //@Test
     public void getEmployeeRewards() throws Exception {
         RewardsResponse response = service.getEmployeeRewards(14, 39978);
         System.out.println(response);
     }
 
-    @Test
+    //@Test
     @Transactional
     public void setEmployeeCustomInfo() throws Exception {
         Result result = service.setEmployeeCustomInfo(28002227, "[{\"10\":[\"1\"]},{\"8\":[\"\u804c\u4f4d\u4fe1\u606f2\"]}]");
         System.out.println(result);
     }
 
-    @Test
+    //@Test
     @Transactional
     public void emailActivation() throws Exception {
         Result result = service.emailActivation("1d6006dbb2296da2");

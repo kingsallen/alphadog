@@ -48,7 +48,7 @@
 //		profileProcessBS.setCompanyService(companyService);
 //		profileProcessBS.setMqService(mqService);
 //	}
-//	@Test
+//	//@Test
 //	public void processProfileAtsTest(){
 //		Response result=profileProcessBS.processProfileAts(10, "627216844");
 //		System.out.println(result);

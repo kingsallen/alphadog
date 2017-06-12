@@ -23,7 +23,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -255,7 +257,7 @@ public class UserQxService {
                         result.setUserCollectPosition(entity);
                     } else {
                         entity.setStatus(status);
-                        entity.setUpdateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
+                        entity.setUpdateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
                         int resultRow = collectPositionDao.updateData(entity);
                         if (resultRow == 0) {
                             jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
@@ -268,7 +270,7 @@ public class UserQxService {
                     entity.setStatus(status);
                     entity.setUserId(userId);
                     entity.setPositionId(positionId);
-                    entity.setCreateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
+                    entity.setCreateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
                     result.setUserCollectPosition(collectPositionDao.addData(entity));
                 }
             }

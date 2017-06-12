@@ -32,7 +32,7 @@
 //		annConfig.refresh();
 //	}
 //	
-//	@Test
+//	//@Test
 //	public void dictCityDaoTest() throws Exception {
 //		DictCityDao dictCityDao = annConfig.getBean(DictCityDao.class);
 //		Query query = new Query();
@@ -44,7 +44,7 @@
 //		System.out.println(struct);
 //	}
 //	
-//	@Test
+//	//@Test
 //	public void hrAppCvConfDaoTest() throws Exception {
 //		HrAppCvConfDao appCvConfDao = annConfig.getBean(HrAppCvConfDao.class);
 //		Query query = new Query();
@@ -57,7 +57,7 @@
 //	}
 //	
 //	
-//	@Test
+//	//@Test
 //	public void userDaoTest() throws Exception {
 //		UserUserDao userDao = annConfig.getBean(UserUserDao.class);
 //		UserUserDO userDO = new UserUserDO();

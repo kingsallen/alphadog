@@ -28,32 +28,32 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = AppConfig.class)
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(classes = AppConfig.class)
 public class UserCenterServiceTest {
 
     @Autowired
     private UserCenterService service;
 
-    @Test
+    //@Test
     public void getApplication() throws Exception {
         List<ApplicationRecordsForm> list = service.getApplication(1122611);
         System.out.println(Arrays.toString(list.toArray()));
     }
 
-    @Test
+    //@Test
     public void getFavPositions() throws Exception {
         List<FavPositionForm> favPositions = service.getFavPositions(675796);
         System.out.println(Arrays.toString(favPositions.toArray()));
     }
 
-    @Test
+    //@Test
     public void getRecommendations() throws Exception {
         RecommendationVO recommendationVO = service.getRecommendations(677438, (byte) 0, (byte) 1, (byte) 10);
         System.out.println(recommendationVO);
     }
 
-    @Test
+    //@Test
     public void getApplicationDetail() throws Exception {
         ApplicationDetailVO applicationDetail = service.getApplicationDetail(1122611, 107102);
         System.out.println(applicationDetail);
@@ -161,7 +161,7 @@ public class UserCenterServiceTest {
 		}
 	}
 
-	@Test
+	//@Test
 	public void testGetApplication() {
 		try {
 			List<ApplicationRecordsForm> records = userCenterService.getApplication(1);
@@ -172,7 +172,7 @@ public class UserCenterServiceTest {
 		}
 	}
 
-	@Test
+	//@Test
 	public void testGetApplication2() {
 		try {
 			List<ApplicationRecordsForm> records = userCenterService.getApplication(1);
@@ -193,7 +193,7 @@ public class UserCenterServiceTest {
 			fail("Exception");
 		}
 	}
-	@Test
+	//@Test
 	public void testGetFavPositions() {
 		try {
 			List<FavPositionForm> forms = userCenterService.getFavPositions(1);

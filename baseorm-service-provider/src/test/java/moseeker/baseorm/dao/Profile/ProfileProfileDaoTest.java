@@ -22,7 +22,7 @@ public class ProfileProfileDaoTest {
 //        service = context.getBean(ProfileProfileDaoThriftService.class);
 //    }
 
-    @Test
+    //@Test
     public void testJoin(){
 //        Connection conn = null;
 //        try {
@@ -54,14 +54,14 @@ public class ProfileProfileDaoTest {
 //        }
     }
 
-    //@Test
+    ////@Test
     public void testProfileByApplication() throws TException {
         /*init();
         Response response = service.getResourceByApplication(107604,0,0,true,false);
         System.out.println(response);*/
     }
 
-   // @Test
+   // //@Test
     public void testDownloadProfileByUserId() throws ConnectException {
         Map<String,Object> map = new HashMap<String,Object>(){{
             put("user_id",2590);
@@ -73,7 +73,7 @@ public class ProfileProfileDaoTest {
     }
 }
 //
-//    @Test
+//    //@Test
 //    public void testJoin(){
 ////        Connection conn = null;
 ////        try {
@@ -105,14 +105,14 @@ public class ProfileProfileDaoTest {
 ////        }
 //    }
 //
-//    @Test
+//    //@Test
 //    public void testProfileByApplication() throws TException {
 //        init();
 //        Response response = service.getResourceByApplication(107604,0,0,true,false);
 //        System.out.println(response);
 //    }
 //
-//    @Test
+//    //@Test
 //    public void testDownloadProfileByUserId() throws ConnectException {
 //        Map<String,Object> map = new HashMap<String,Object>(){{
 //            put("user_id",2590);

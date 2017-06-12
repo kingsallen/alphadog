@@ -15,32 +15,32 @@
 //public class PositionServiceTest {
 //	@Autowired
 //	private PositionService service;
-//	@Test
+//	//@Test
 //	public void getRecommendedPositionsTest(){
 //		Response res=service.getRecommendedPositions(106002);
 //		System.out.println(res);
 //	}
-//	@Test
+//	//@Test
 //	public void verifyCustomizeTest() throws Exception{
 //		Response res=service.verifyCustomize(106002);
 //		System.out.println(res);
 //	}
-//	@Test
+//	//@Test
 //	public void getPositionByIdTest() throws Exception{
 //		Response res=service.getPositionById(106002);
 //		System.out.println(res);
 //	}
-//	@Test
+//	//@Test
 //	public  void deleteJobpositionTest(){
 //		Response res=service.deleteJobposition(106002,0,"",0);
 //		System.out.println(res);
 //	}
-//	@Test
+//	//@Test
 //	public void getTeamIdbyDepartmentNameTest(){
 //		Response res=service.getTeamIdbyDepartmentName(71176,"法务部");
 //		System.out.println(res);
 //	}
-//	@Test
+//	//@Test
 //	public void ifAllowRefreshTest(){
 //		boolean bool=service.ifAllowRefresh(124445, 82671);
 //		System.out.println(bool+"==================");

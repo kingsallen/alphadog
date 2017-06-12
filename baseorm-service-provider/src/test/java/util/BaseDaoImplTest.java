@@ -27,7 +27,7 @@ public class BaseDaoImplTest {
     public void after() throws Exception {
     }
 
-    @Test
+    //@Test
     public void testTableField() {
         CandidateRecomRecord recomRecord = new CandidateRecomRecord();
         Field<Timestamp> field = (Field<Timestamp>) recomRecord.field("createTime");

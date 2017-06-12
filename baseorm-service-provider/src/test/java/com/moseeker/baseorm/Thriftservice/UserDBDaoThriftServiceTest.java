@@ -21,7 +21,7 @@ public class UserDBDaoThriftServiceTest {
 //    com.moseeker.thrift.gen.dao.service.UserDBDao.Iface userDao = ServiceManager.SERVICEMANAGER
 //            .getService(com.moseeker.thrift.gen.dao.service.UserDBDao.Iface.class);
 //
-//    //@Test
+//    ////@Test
 //    public void saveUser() throws Exception {
 //        UserUserDO userUserDO = new UserUserDO();
 //        userUserDO.setUsername("testtesttest");
@@ -38,7 +38,7 @@ public class UserDBDaoThriftServiceTest {
 //       positionDao = ServiceManager.SERVICEMANAGER.getService(PositionDao.Iface.class);
 //    }
 
-//    @Test
+//    //@Test
 //    public void testPosition() throws TException {
 //        QueryUtil queryUtil = new QueryUtil();
 //        queryUtil.addEqualFilter("id","1000655");
@@ -46,7 +46,7 @@ public class UserDBDaoThriftServiceTest {
 //        System.out.println(JSON.toJSONString(position));
 //    }
 //
-//    @Test
+//    //@Test
 //    public void testPosition2() throws TException {
 //        QueryUtil queryUtil = new QueryUtil();
 //        queryUtil.addEqualFilter("id","1000655");

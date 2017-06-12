@@ -22,14 +22,6 @@ import com.moseeker.thrift.gen.dao.struct.*;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrPointsConfDO;
-
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
@@ -38,6 +30,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 候选人实体，提供候选人相关业务
@@ -131,6 +130,7 @@ public class CandidateEntity implements Candidate {
                             candidateCompanyDO.setEmail(userUserDO.getEmail());
                             candidateCompanyDO.setUpdateTime(date);
                             candidateCompanyDO = candidateDBDao.saveCandidateCompany(candidateCompanyDO);
+                            logger.info("CandidateEntity glancePosition save candidateCompanyDO:{}", candidateCompanyDO);
                         } else {
                             candidateCompanyDO = candidateCompanyDOOptional.get();
                         }
@@ -141,6 +141,7 @@ public class CandidateEntity implements Candidate {
                         candidatePositionDO.setSharedFromEmployee(fromEmployee ? (byte) 1 : 0);
                         candidatePositionDO.setPositionId(positionID);
                         candidatePositionDO.setUserId(userID);
+                        logger.info("CandidateEntity glancePosition candidatePositionDO:{}", candidatePositionDO);
                         candidateDBDao.saveCandidatePosition(candidatePositionDO);
                     }
                 }
@@ -150,14 +151,7 @@ public class CandidateEntity implements Candidate {
         }
     }
 
-    /**
-     *
-     * @param user_id
-     * @param position_id
-     * @param is_interested
-     * @return
-     */
-    @Override
+	@Override
     @CounterIface
     public Response changeInteresting(int user_id, int position_id, byte is_interested) {
         Response response = ResponseUtils.success("{}");
