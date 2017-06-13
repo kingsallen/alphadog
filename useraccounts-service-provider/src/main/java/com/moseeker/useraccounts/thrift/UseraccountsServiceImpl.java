@@ -1,6 +1,6 @@
 package com.moseeker.useraccounts.thrift;
 
-import com.moseeker.thrift.gen.dao.struct.UserUserDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

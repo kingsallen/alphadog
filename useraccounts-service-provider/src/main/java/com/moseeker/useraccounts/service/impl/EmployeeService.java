@@ -20,11 +20,11 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.struct.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysPointsConfTplDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.employee.struct.*;
 import com.moseeker.thrift.gen.mq.service.MqService;
@@ -248,7 +248,7 @@ public class EmployeeService {
 					query.clear();
 					query.where("sysuser_id", String.valueOf(bindingParams.getUserId()));
 
-					employee.setWxuser_id(getWxuserId(query.buildQuery()));
+					employee.setWxuserId(getWxuserId(query.buildQuery()));
 					employee.setAuthMethod((byte)bindingParams.getType().getValue());
 					employee.setActivation((byte)3);
 					employee.setCreateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
@@ -376,7 +376,7 @@ public class EmployeeService {
 					query.clear();
 					query.where("sysuser_id", String.valueOf(bindingParams.getUserId()));
 
-                    employee.setWxuser_id(getWxuserId(query.buildQuery()));
+                    employee.setWxuserId(getWxuserId(query.buildQuery()));
                     employee.setAuthMethod((byte)bindingParams.getType().getValue());
                     employee.setActivation((byte)3);
                     employee.setCreateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
@@ -449,7 +449,7 @@ public class EmployeeService {
 					e.setAuthMethod((byte)bindingParams.getType().getValue());
 					query.clear();
 					query.where("sysuser_id", String.valueOf(bindingParams.getUserId()));
-					e.setWxuser_id(getWxuserId(query.buildQuery()));
+					e.setWxuserId(getWxuserId(query.buildQuery()));
 					e.setEmail(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getEmail(), e.getEmail()));
 					e.setBindingTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 					e.setUpdateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
