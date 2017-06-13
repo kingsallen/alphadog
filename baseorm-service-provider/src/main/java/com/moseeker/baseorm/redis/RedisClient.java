@@ -590,7 +590,7 @@ public abstract class RedisClient {
 		if (getResult == null) {
 			set(0, keyIdentifier, pattern, null,defautValue, dateTime);
 			return true;
-		} else if (Long.valueOf(getResult) <= limit) {
+		} else if (Long.valueOf(getResult) < limit) {
 			incr(0, keyIdentifier, pattern);
 			return true;
 		} else {
