@@ -13,7 +13,6 @@ import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.constants.PositionRefreshType;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
-import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.useraccounts.struct.BindAccountStruct;
