@@ -275,7 +275,7 @@ public class UserHrDaoImpl extends BaseDaoImpl<UserHrAccountRecord, UserHrAccoun
             for (HrNpsRecord record : npsRecords) {
                 info = new HrNpsInfo();
                 info.setId(record.getId());
-                info.setDate(record.getUpdateTime().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+                info.setDate(record.getCreateTime().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
                 info.setIntention(record.getIntention());
                 info.setAccept_contact(record.getAcceptContact());
                 HrNpsRecommendRecord recommendRecord = hrNpsRecommendRecordMap.get(record.getId());
