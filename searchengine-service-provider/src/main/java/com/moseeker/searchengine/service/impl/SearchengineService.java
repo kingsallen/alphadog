@@ -267,7 +267,7 @@ public class SearchengineService {
             e1.printStackTrace();
         }
         String cluster_name = propertiesReader.get("es.cluster.name", String.class);
-        System.out.println(cluster_name);
+        logger.info(cluster_name);
         String es_connection = propertiesReader.get("es.connection", String.class);
         Integer es_port = propertiesReader.get("es.port", Integer.class);
         Settings settings = Settings.settingsBuilder().put("cluster.name", cluster_name)

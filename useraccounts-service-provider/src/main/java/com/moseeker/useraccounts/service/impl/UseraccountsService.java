@@ -1017,12 +1017,12 @@ public class UseraccountsService {
 		return RespnoseUtil.SUCCESS.toResponse();
 	}
 
-	public com.moseeker.thrift.gen.dao.struct.UserUserDO ifExistUser(String mobile) {
-        com.moseeker.thrift.gen.dao.struct.UserUserDO user = new com.moseeker.thrift.gen.dao.struct.UserUserDO();
+	public UserUserDO ifExistUser(String mobile) {
+        UserUserDO user = new UserUserDO();
 		Query.QueryBuilder qu = new Query.QueryBuilder();
 		qu.where("mobile", mobile).and("source", String.valueOf(UserSource.RETRIEVE_PROFILE.getValue()));
 		try {
-			user = userdao.getData(qu.buildQuery(), com.moseeker.thrift.gen.dao.struct.UserUserDO.class);
+			user = userdao.getData(qu.buildQuery(), UserUserDO.class);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -1033,7 +1033,7 @@ public class UseraccountsService {
 		return user;
 	}
 
-	public int createRetrieveProfileUser(com.moseeker.thrift.gen.dao.struct.UserUserDO user) {
+	public int createRetrieveProfileUser(UserUserDO user) {
 	    int userId = 0;
 		if(user.getMobile() == 0) {
 			return 0;

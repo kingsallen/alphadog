@@ -14,7 +14,7 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.struct.UserUserDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
@@ -81,9 +81,9 @@ public class ProfileBS {
 //		try {
 			//查询是否存在相同手机号码的C端帐号
 			Query findRetrieveUserQU=new Query.QueryBuilder().where("mobile", mobile).and("source",UserSource.RETRIEVE_PROFILE.getValue()).buildQuery();
-			com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO user =userUserDao.getData(findRetrieveUserQU); //userDao.getUser(findRetrieveUserQU);
+			UserUserDO user =userUserDao.getData(findRetrieveUserQU); //userDao.getUser(findRetrieveUserQU);
 			if(user==null){
-				user=new com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO();
+				user=new UserUserDO();
 			}
 			if(user.getId() > 0) {
 				//查找该帐号是否有profile
