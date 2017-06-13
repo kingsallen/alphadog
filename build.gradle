@@ -49,7 +49,11 @@ subprojects {
         logger.quiet(env)
         def envResourcesSrc = "src/main/resources/$env/"
 
+
         doLast {
+            logger.quiet("!!!!!!")
+            logger.quiet(processResources.destinationDir.toString())
+            logger.quiet("!!!!!!")
             copy {
                 from envResourcesSrc
                 into processResources.destinationDir

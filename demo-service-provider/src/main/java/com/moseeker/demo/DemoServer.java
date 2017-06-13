@@ -23,7 +23,7 @@ public class DemoServer {
 			// 启动服务，非阻塞
 			try {
 				server.startServer();
-
+				server.shutDownHook();
 				synchronized (DemoServer.class) {
                     while (true) {
                         try {

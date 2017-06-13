@@ -3,7 +3,7 @@ package com.moseeker.baseorm.dao.userdb;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeePointsRecordRecord;
-import com.moseeker.thrift.gen.dao.struct.UserEmployeePointsRecordDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 

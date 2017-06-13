@@ -25,6 +25,7 @@ public class MqServer {
                   acac.getBean(ThriftService.class)
              );
         	server.startServer();
+        	server.shutDownHook();
             synchronized (MqServer.class) {
                 while (true) {
                     try {

@@ -48,6 +48,7 @@ public class CacheClient extends RedisClient {
     }
 
 	protected JedisCluster initRedisCluster() throws RedisException {
+		logger.info("CacheClient initRedisCluster");
 		ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil.getInstance();
 		if (redisCluster == null) {
 			try {
@@ -60,6 +61,7 @@ public class CacheClient extends RedisClient {
 					String[] portArray = port.split(",");
 					if (hostArray.length == portArray.length) {
 						for (int i = 0; i < hostArray.length; i++) {
+							logger.info("host:{}, port:{}", hostArray[i], portArray[i]);
 							jedisClusterNodes.add(new HostAndPort(hostArray[i], Integer.parseInt(portArray[i])));
 						}
 					}

@@ -3,7 +3,6 @@ package com.moseeker.baseorm.dao.dictdb;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.dictdb.tables.DictZhilianOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictZhilianOccupationRecord;
-import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictZhilianOccupationDO;
 import org.jooq.impl.TableImpl;
