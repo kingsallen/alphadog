@@ -18,10 +18,13 @@ import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.thrift.gen.candidate.struct.*;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.struct.*;
-import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateCompanyDO;
-import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionDO;
+import com.moseeker.thrift.gen.dao.struct.CandidateRecomRecordSortingDO;
+import com.moseeker.thrift.gen.dao.struct.candidatedb.*;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrPointsConfDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
@@ -551,7 +554,7 @@ public class CandidateEntity implements Candidate {
         recomRecordResult.setClickTime(candidateRecomRecordDO.getClickTime());
         recomRecordResult.setPresenteeName(refineUserName(userFuture));
         recomRecordResult.setTitle(refinePositionName(positionFuture));
-        recomRecordResult.setRecom(candidateRecomRecordDO.getIsRecom());
+        recomRecordResult.setRecom((byte)candidateRecomRecordDO.getIsRecom());
         return recomRecordResult;
     }
 
@@ -574,11 +577,11 @@ public class CandidateEntity implements Candidate {
                 HrPointsConfDO hrPointsConfDO = candidateDBDao.getHrPointConf(compnayId, RecruitmentScheduleEnum.IMPROVE_CANDIDATE);
                 if (hrPointsConfDO != null && hrPointsConfDO.getReward() > 0) {
                     UserEmployeePointsRecordDO userEmployeePointsRecordDO = new UserEmployeePointsRecordDO();
-                    userEmployeePointsRecordDO.setEmployee_id(employeeDO.getId());
+                    userEmployeePointsRecordDO.setEmployeeId(employeeDO.getId());
                     userEmployeePointsRecordDO.setReason(hrPointsConfDO.getStatusName());
                     userEmployeePointsRecordDO.setAward((int) hrPointsConfDO.getReward());
-                    userEmployeePointsRecordDO.setApplication_id(appId);
-                    userEmployeePointsRecordDO.setPosition_id(positionId);
+                    userEmployeePointsRecordDO.setApplicationId(appId);
+                    userEmployeePointsRecordDO.setPositionId(positionId);
                     candidateDBDao.saveEmployeePointsRecord(userEmployeePointsRecordDO);
 
                     point = candidateDBDao.updateEmployeePoint(employeeDO.getId());
