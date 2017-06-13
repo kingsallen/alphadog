@@ -1,32 +1,12 @@
 package com.moseeker.useraccounts.service.impl;
 
-import com.moseeker.thrift.gen.company.struct.Hrcompany;
-import com.moseeker.thrift.gen.dao.struct.ConfigSysPointConfTplDO;
-import com.moseeker.thrift.gen.dao.struct.JobApplicationDO;
-import com.moseeker.thrift.gen.dao.struct.JobPositionDO;
-import com.moseeker.thrift.gen.dao.struct.UserFavPositionDO;
-import com.moseeker.thrift.gen.useraccounts.struct.*;
-import com.moseeker.useraccounts.config.AppConfig;
-import com.moseeker.useraccounts.service.impl.biztools.UserCenterBizTools;
-import org.apache.thrift.TException;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
-
+import com.moseeker.thrift.gen.useraccounts.struct.ApplicationDetailVO;
+import com.moseeker.thrift.gen.useraccounts.struct.ApplicationRecordsForm;
+import com.moseeker.thrift.gen.useraccounts.struct.FavPositionForm;
+import com.moseeker.thrift.gen.useraccounts.struct.RecommendationVO;
 import java.util.Arrays;
 import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 //@RunWith(SpringJUnit4ClassRunner.class)
 //@ContextConfiguration(classes = AppConfig.class)
