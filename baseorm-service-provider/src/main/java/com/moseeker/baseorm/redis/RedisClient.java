@@ -8,12 +8,16 @@ import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.util.StringUtils;
 import java.util.List;
 import java.util.Set;
+
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import redis.clients.jedis.JedisCluster;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 import redis.clients.jedis.params.sortedset.ZAddParams;
+
+import javax.management.StringValueExp;
 
 public abstract class RedisClient {
 
@@ -560,5 +564,38 @@ public abstract class RedisClient {
 		}
 		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
 		return redisCluster.zremrangeByScore(redisKey.getPattern(), start, end);
+	}
+
+	/**
+	 * 每日操作次数限制
+	 * @param keyIdentifier 关键词
+	 * @param pattern 匹配字段
+	 * @param limit 上限
+	 * @param defautValue 默认值
+	 * @return 是否允许再次操作
+	 * @throws CacheConfigNotExistException
+	 */
+	public boolean isAllowed(String keyIdentifier, String pattern, int limit, String defautValue)
+			throws CacheConfigNotExistException {
+		DateTime dt = new DateTime();
+		int second = dt.getSecondOfDay();
+		int dateTime = 60 * 60 * 24;
+		if (second >= dateTime) {
+			return false;
+		}
+		if (StringUtils.isNullOrEmpty(defautValue)) {
+			defautValue = "0";
+		}
+		String getResult = get(0, keyIdentifier, pattern);
+		if (getResult == null) {
+			set(0, keyIdentifier, pattern, null,defautValue, dateTime);
+			return true;
+		} else if (Long.valueOf(getResult) <= limit) {
+			incr(0, keyIdentifier, pattern);
+			return true;
+		} else {
+			logger.info("用户 {} 导入简历超过上限。上线是：{}", pattern, limit);
+			return false;
+		}
 	}
 }

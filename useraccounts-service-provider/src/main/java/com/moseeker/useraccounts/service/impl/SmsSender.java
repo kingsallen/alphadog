@@ -34,6 +34,7 @@ public class SmsSender {
 
     private static TaobaoClient taobaoclient;
     private static Logger logger = LoggerFactory.getLogger(SmsSender.class);
+    private static final String SMS_LIMIT_KEY = "SMS_LIMIT";
     
     @Autowired
 	protected LogSmsSendrecordDao smsRecordDao;
@@ -256,25 +257,8 @@ public class SmsSender {
      * @return
      */
     private boolean isMoreThanUpperLimit(String mobile) {
-        DateTime dt = new DateTime();
-        int second = dt.getSecondOfDay();
-        int dateTime = 60 * 60 * 24;
-        if (second >= dateTime) {
-            return false;
-        }
-
         try {
-            String getResult = redisClient.get(0, "SMS_LIMIT", mobile);
-            if (getResult == null) {
-                redisClient.set(0, "SMS_LIMIT", mobile, null,"1", dateTime);
-                return true;
-            } else if (Long.valueOf(getResult) <= Constant.SMS_UPPER_LIMIT) {
-                redisClient.incr(0, "SMS_LIMIT", mobile);
-                return true;
-            } else {
-                logger.info("向 {} 发送短信的次数超过上线。上线是：{}", mobile, Constant.SMS_UPPER_LIMIT);
-                return false;
-            }
+            return redisClient.isAllowed(SMS_LIMIT_KEY, mobile, Constant.SMS_UPPER_LIMIT, "1");
         } catch (CacheConfigNotExistException e) {
             logger.error(e.getMessage(), e);
             return false;
