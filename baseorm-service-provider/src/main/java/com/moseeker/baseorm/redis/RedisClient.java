@@ -21,7 +21,7 @@ import javax.management.StringValueExp;
 
 public abstract class RedisClient {
 
-	Logger logger = LoggerFactory.getLogger(RedisClient.class);
+	protected Logger logger = LoggerFactory.getLogger(RedisClient.class);
 
 	@Autowired
     protected ConfigCacheconfigRediskeyDao cacheconfigRediskeyDao;
