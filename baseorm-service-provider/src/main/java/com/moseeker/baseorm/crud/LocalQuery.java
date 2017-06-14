@@ -1,16 +1,12 @@
 package com.moseeker.baseorm.crud;
 
-import com.moseeker.common.exception.OrmException;
 import com.moseeker.common.util.query.Query;
-
 import org.jooq.*;
 import org.jooq.impl.TableImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.stream.Collectors;
 
 /**

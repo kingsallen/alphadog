@@ -7,11 +7,6 @@ namespace py thrift_gen.gen.dao.struct.candidatedb
  */
 typedef string Timestamp;
 
-exception CURDException {
-    1: i32 code,
-    2: string message
-}
-
 /*
  * 候选人记录
  */
