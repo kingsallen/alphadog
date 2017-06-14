@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserHrAccount extends TableImpl<UserHrAccountRecord> {
 
-    private static final long serialVersionUID = -303126783;
+    private static final long serialVersionUID = 780192873;
 
     /**
      * The reference instance of <code>userdb.user_hr_account</code>
@@ -72,9 +72,9 @@ public class UserHrAccount extends TableImpl<UserHrAccountRecord> {
     public final TableField<UserHrAccountRecord, String> EMAIL = createField("email", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "邮箱");
 
     /**
-     * The column <code>userdb.user_hr_account.wxuser_id</code>. 绑定的微信 账号
+     * The column <code>userdb.user_hr_account.wxuser_id</code>. 绑定的微信账号
      */
-    public final TableField<UserHrAccountRecord, Integer> WXUSER_ID = createField("wxuser_id", org.jooq.impl.SQLDataType.INTEGER, this, "绑定的微信 账号");
+    public final TableField<UserHrAccountRecord, Integer> WXUSER_ID = createField("wxuser_id", org.jooq.impl.SQLDataType.INTEGER, this, "绑定的微信账号");
 
     /**
      * The column <code>userdb.user_hr_account.password</code>. 登录密码
@@ -92,9 +92,9 @@ public class UserHrAccount extends TableImpl<UserHrAccountRecord> {
     public final TableField<UserHrAccountRecord, Integer> ACCOUNT_TYPE = createField("account_type", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("2", org.jooq.impl.SQLDataType.INTEGER)), this, "0 超级账号；1：子账号; 2：普通账号");
 
     /**
-     * The column <code>userdb.user_hr_account.activation</code>. 账号是否激活，1：激活；0：未激活
+     * The column <code>userdb.user_hr_account.activation</code>. 子账号邀请使用，账号是否激活，1：激活；0：未激活
      */
-    public final TableField<UserHrAccountRecord, Byte> ACTIVATION = createField("activation", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("1", org.jooq.impl.SQLDataType.TINYINT)), this, "账号是否激活，1：激活；0：未激活");
+    public final TableField<UserHrAccountRecord, Byte> ACTIVATION = createField("activation", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("1", org.jooq.impl.SQLDataType.TINYINT)), this, "子账号邀请使用，账号是否激活，1：激活；0：未激活");
 
     /**
      * The column <code>userdb.user_hr_account.disable</code>. 1：可用账号；0禁用账号 ） 遵循数据库整体的设计习惯，1表示可用，0表示不可用
@@ -127,9 +127,9 @@ public class UserHrAccount extends TableImpl<UserHrAccountRecord> {
     public final TableField<UserHrAccountRecord, Integer> LOGIN_COUNT = createField("login_count", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "登录次数");
 
     /**
-     * The column <code>userdb.user_hr_account.source</code>. 来源1:雇主 2:官网 3:微信扫描 4:我也要招人(聚合号) 5:我也要招人(企业号)
+     * The column <code>userdb.user_hr_account.source</code>. 来源1:雇主 2:官网 3:微信扫描 4:我也要招人(聚合号) 5:我也要招人(企业号) 6:我也要招人(手机官网)
      */
-    public final TableField<UserHrAccountRecord, Integer> SOURCE = createField("source", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "来源1:雇主 2:官网 3:微信扫描 4:我也要招人(聚合号) 5:我也要招人(企业号)");
+    public final TableField<UserHrAccountRecord, Integer> SOURCE = createField("source", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "来源1:雇主 2:官网 3:微信扫描 4:我也要招人(聚合号) 5:我也要招人(企业号) 6:我也要招人(手机官网)");
 
     /**
      * The column <code>userdb.user_hr_account.download_token</code>. 下载行业报告校验码

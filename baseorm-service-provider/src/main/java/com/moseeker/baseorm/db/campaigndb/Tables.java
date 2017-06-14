@@ -4,7 +4,14 @@
 package com.moseeker.baseorm.db.campaigndb;
 
 
-import com.moseeker.baseorm.db.campaigndb.tables.*;
+import com.moseeker.baseorm.db.campaigndb.tables.CampaignCompanySurvey;
+import com.moseeker.baseorm.db.campaigndb.tables.CampaignEdmCampaign;
+import com.moseeker.baseorm.db.campaigndb.tables.CampaignEdmUserrecommendedPositions;
+import com.moseeker.baseorm.db.campaigndb.tables.CampaignEdmUsers;
+import com.moseeker.baseorm.db.campaigndb.tables.CampaignEmailAgentdelivery;
+import com.moseeker.baseorm.db.campaigndb.tables.CampaignHeadImage;
+import com.moseeker.baseorm.db.campaigndb.tables.CampaignRecommendCompany;
+import com.moseeker.baseorm.db.campaigndb.tables.CampaignRecommendPosition;
 
 import javax.annotation.Generated;
 
@@ -23,9 +30,9 @@ import javax.annotation.Generated;
 public class Tables {
 
     /**
-     * 百度用户关联表
+     * The table <code>campaigndb.campaign_company_survey</code>.
      */
-    public static final CampaignBaiduUsers CAMPAIGN_BAIDU_USERS = com.moseeker.baseorm.db.campaigndb.tables.CampaignBaiduUsers.CAMPAIGN_BAIDU_USERS;
+    public static final CampaignCompanySurvey CAMPAIGN_COMPANY_SURVEY = com.moseeker.baseorm.db.campaigndb.tables.CampaignCompanySurvey.CAMPAIGN_COMPANY_SURVEY;
 
     /**
      * The table <code>campaigndb.campaign_edm_campaign</code>.
@@ -43,6 +50,11 @@ public class Tables {
     public static final CampaignEdmUsers CAMPAIGN_EDM_USERS = com.moseeker.baseorm.db.campaigndb.tables.CampaignEdmUsers.CAMPAIGN_EDM_USERS;
 
     /**
+     * The table <code>campaigndb.campaign_email_agentdelivery</code>.
+     */
+    public static final CampaignEmailAgentdelivery CAMPAIGN_EMAIL_AGENTDELIVERY = com.moseeker.baseorm.db.campaigndb.tables.CampaignEmailAgentdelivery.CAMPAIGN_EMAIL_AGENTDELIVERY;
+
+    /**
      * 头部图片(职位列表页)
      */
     public static final CampaignHeadImage CAMPAIGN_HEAD_IMAGE = com.moseeker.baseorm.db.campaigndb.tables.CampaignHeadImage.CAMPAIGN_HEAD_IMAGE;
@@ -50,10 +62,10 @@ public class Tables {
     /**
      * 推荐公司
      */
-    public static final CampaignRecommedCompany CAMPAIGN_RECOMMED_COMPANY = com.moseeker.baseorm.db.campaigndb.tables.CampaignRecommedCompany.CAMPAIGN_RECOMMED_COMPANY;
+    public static final CampaignRecommendCompany CAMPAIGN_RECOMMEND_COMPANY = com.moseeker.baseorm.db.campaigndb.tables.CampaignRecommendCompany.CAMPAIGN_RECOMMEND_COMPANY;
 
     /**
      * 推荐职位
      */
-    public static final CampaignRecommedPosition CAMPAIGN_RECOMMED_POSITION = com.moseeker.baseorm.db.campaigndb.tables.CampaignRecommedPosition.CAMPAIGN_RECOMMED_POSITION;
+    public static final CampaignRecommendPosition CAMPAIGN_RECOMMEND_POSITION = com.moseeker.baseorm.db.campaigndb.tables.CampaignRecommendPosition.CAMPAIGN_RECOMMEND_POSITION;
 }

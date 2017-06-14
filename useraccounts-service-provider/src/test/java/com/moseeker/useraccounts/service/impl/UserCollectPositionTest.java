@@ -20,7 +20,7 @@
 //        service = ServiceManager.SERVICEMANAGER.getService(UserQxService.Iface.class);
 //    }
 //
-//    @Test
+//    //@Test
 //    public void getUserCollectPositionTest() {
 //        try {
 //            UserCollectPositionVO ucpv = service.getUserCollectPosition(1122611, 380);
@@ -30,7 +30,7 @@
 //        }
 //    }
 //
-//    @Test
+//    //@Test
 //    public void getUserCollectPositionsTest() {
 //        try {
 //            UserCollectPositionListVO collectPositions = service.getUserCollectPositions(3870);
@@ -40,7 +40,7 @@
 //        }
 //    }
 //
-//    @Test
+//    //@Test
 //    public void postUserCollectPositionTest() {
 //        try {
 //            UserCollectPositionVO ucpv = service.postUserCollectPosition(1122611, 380);
@@ -50,7 +50,7 @@
 //        }
 //    }
 //
-//    @Test
+//    //@Test
 //    public void delUserCollectPositionTest() {
 //        try {
 //            UserCollectPositionVO ucpv = service.delUserCollectPosition(1122611, 380);

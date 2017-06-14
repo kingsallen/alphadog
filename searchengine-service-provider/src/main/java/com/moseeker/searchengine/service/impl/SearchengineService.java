@@ -1,5 +1,6 @@
 package com.moseeker.searchengine.service.impl;
 
+import com.moseeker.common.util.ConverTools;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -25,7 +26,6 @@ import org.springframework.stereotype.Service;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.thrift.gen.common.struct.Response;
 
@@ -239,7 +239,7 @@ public class SearchengineService {
 
             for (SearchHit hit : response.getHits()) {
                 //Handle the hit...
-                String id = BeanUtils.converToString(hit.getSource().get("id"));
+                String id = ConverTools.converToString(hit.getSource().get("id"));
                 listOfid.add(id);
             }
 
@@ -267,7 +267,7 @@ public class SearchengineService {
             e1.printStackTrace();
         }
         String cluster_name = propertiesReader.get("es.cluster.name", String.class);
-        System.out.println(cluster_name);
+        logger.info(cluster_name);
         String es_connection = propertiesReader.get("es.connection", String.class);
         Integer es_port = propertiesReader.get("es.port", Integer.class);
         Settings settings = Settings.settingsBuilder().put("cluster.name", cluster_name)

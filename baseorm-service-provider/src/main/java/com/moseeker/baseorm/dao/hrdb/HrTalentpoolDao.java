@@ -1,11 +1,11 @@
 package com.moseeker.baseorm.dao.hrdb;
 
-import org.springframework.stereotype.Repository;
-
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.hrdb.tables.HrTalentpool;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrTalentpoolRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrTalentpoolDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +13,13 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrTalentpoolDO;
 * 2017-03-21
 */
 @Repository
-public class HrTalentpoolDao extends StructDaoImpl<HrTalentpoolDO, HrTalentpoolRecord, HrTalentpool> {
+public class HrTalentpoolDao extends JooqCrudImpl<HrTalentpoolDO, HrTalentpoolRecord> {
 
+    public HrTalentpoolDao() {
+        super(HrTalentpool.HR_TALENTPOOL, HrTalentpoolDO.class);
+    }
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = HrTalentpool.HR_TALENTPOOL;
-   }
+    public HrTalentpoolDao(TableImpl<HrTalentpoolRecord> table, Class<HrTalentpoolDO> hrTalentpoolDOClass) {
+        super(table, hrTalentpoolDOClass);
+    }
 }

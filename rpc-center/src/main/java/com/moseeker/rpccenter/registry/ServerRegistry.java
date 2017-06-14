@@ -108,15 +108,20 @@ public class ServerRegistry {
     /**
      * 根据配置文件注册节点以及子节点，并注册服务的配置信息
      */
-    private void buildPaths() {
-        config.getServerNames().forEach(serverName -> {
+    private void buildPaths() throws RegisterException {
+        boolean flag = false;
+        for (String serverName : config.getServerNames()) {
             try {
                 buildPath(serverName);
+                flag = true;
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
                 e.printStackTrace();
             }
-        });
+        }
+        if(!flag) {
+            throw new RegisterException();
+        }
     }
 
     /**

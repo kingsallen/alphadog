@@ -6,11 +6,17 @@ import com.moseeker.common.exception.RecruitmentScheduleLastStepNotExistExceptio
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
-import com.moseeker.thrift.gen.dao.struct.*;
+import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionDO;
+import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateRecomRecordDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserFavPositionDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.service.impl.biztools.UserCenterBizTools;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,8 +58,8 @@ public class UserCenterService {
             List<JobApplicationDO> apps = bizTools.getAppsForUser(userId);
             if (apps != null && apps.size() > 0) {
                 //查询申请记录对应的职位数据
-                List<JobPositionDO> positions = bizTools.getPositions(apps.stream().mapToInt(app -> app.getPositionId()).toArray());
-                List<Hrcompany> companies = bizTools.getCompanies(apps.stream().mapToInt(app -> app.getCompanyId()).toArray());
+                List<JobPositionDO> positions = bizTools.getPositions(apps.stream().map(app -> Integer.valueOf(app.getPositionId())).collect(Collectors.toList()));
+                List<Hrcompany> companies = bizTools.getCompanies(apps.stream().map(app -> Integer.valueOf(app.getCompanyId())).collect(Collectors.toList()));
                 List<HrOperationRecordDO> operationRecordDOList = bizTools.listLastHrOperationRecordPassedReject(apps.stream().map(app -> app.getAppTplId()).collect(Collectors.toSet()));
                 //List<ConfigSysPointConfTplDO> tpls = bizTools.getAwardConfigTpls();
 
@@ -85,7 +91,7 @@ public class UserCenterService {
                             preID = operationRecordDOOptional.get().getOperateTplId();
                         }
                     }
-                    ar.setStatus_name(recruitmentScheduleEnum.getAppStatusDescription(app.getApplyType(), app.getEmailStatus(), preID));
+                    ar.setStatus_name(recruitmentScheduleEnum.getAppStatusDescription((byte)app.getApplyType(), (byte)app.getEmailStatus(), preID));
 
                     return ar;
                 }).collect(Collectors.toList());
@@ -116,7 +122,7 @@ public class UserCenterService {
             List<UserFavPositionDO> favPositionRecords = bizTools.getFavPositions(userId, 0);
             if (favPositionRecords != null && favPositionRecords.size() > 0) {
                 //差用用户收藏职位的职位详情
-                List<JobPositionDO> positions = bizTools.getPositions(favPositionRecords.stream().mapToInt(favP -> favP.getPositionId()).toArray());
+                List<JobPositionDO> positions = bizTools.getPositions(favPositionRecords.stream().map(favP -> Integer.valueOf(favP.getPositionId())).collect(Collectors.toList()));
                 //拼装职位收藏记录
                 if (positions != null && positions.size() > 0) {
                     favPositions = favPositionRecords.stream()
@@ -136,10 +142,10 @@ public class UserCenterService {
                                     form.setId(op.get().getId());
                                     form.setTitle(op.get().getTitle());
                                     form.setDepartment(op.get().getDepartment());
-                                    form.setTime(record.getUpdate_time());
+                                    form.setTime(record.getUpdateTime());
                                     form.setCity(op.get().getCity());
-                                    form.setSalary_top(op.get().getSalaryTop());
-                                    form.setSalary_bottom(op.get().getSalaryBottom());
+                                    form.setSalary_top(NumberUtils.toInt(op.get().getSalaryTop()+"", 0));
+                                    form.setSalary_bottom(NumberUtils.toInt(op.get().getSalaryBottom()+"", 0));
                                     form.setUpdate_time(op.get().getUpdateTime());
                                     form.setStatus((byte) op.get().getStatus());
                                 }
@@ -246,7 +252,7 @@ public class UserCenterService {
 
                     recommendationRecordVO.setId(candidateRecomRecordDO.getId());
                     recommendationRecordVO.setClick_time(candidateRecomRecordDO.getClickTime());
-                    recommendationRecordVO.setRecom_status(candidateRecomRecordDO.getIsRecom());
+                    recommendationRecordVO.setRecom_status((byte)candidateRecomRecordDO.getIsRecom());
 
                     /** 匹配职位名称 */
                     if (positions != null && positions.size() > 0) {
@@ -298,7 +304,7 @@ public class UserCenterService {
                                         candidatePosition.getPositionId() == candidateRecomRecordDO.getPositionId()
                                                 && candidatePosition.getUserId() == candidateRecomRecordDO.getPresenteeUserId())
                                 .forEach(candidatePosition -> {
-                                    recommendationRecordVO.setIs_interested(candidatePosition.isIsInterested()?(byte)1:0);
+                                    recommendationRecordVO.setIs_interested(candidatePosition.getIsInterested());
                                     recommendationRecordVO.setView_number(candidatePosition.getViewNumber());
                                 });
                     }
@@ -362,7 +368,7 @@ public class UserCenterService {
                             }
                             logger.info("company_name:{}", companyDO.getName());
                         }
-                        applicationDetailVO.setStep_status((byte) recruitmentScheduleEnum.getStepStatusForApplicationDetail(applicationDO.getEmailStatus()));
+                        applicationDetailVO.setStep_status((byte) recruitmentScheduleEnum.getStepStatusForApplicationDetail((byte) applicationDO.getEmailStatus()));
                         applicationDetailVO.setStep((byte) recruitmentScheduleEnum.getStepForApplicationDetail());
                         if(operationFuture != null) {
                             List<HrOperationRecordDO> operationrecordDOList = (List<HrOperationRecordDO>)operationFuture.get();
@@ -370,7 +376,7 @@ public class UserCenterService {
                                 HrOperationRecordDO operationRecordDO = operationrecordDOList.get(0);
 
                                 recruitmentScheduleEnum.setLastStep(operationRecordDO.getOperateTplId());
-                                applicationDetailVO.setStep_status((byte) recruitmentScheduleEnum.getStepStatusForApplicationDetail(applicationDO.getEmailStatus()));
+                                applicationDetailVO.setStep_status((byte) recruitmentScheduleEnum.getStepStatusForApplicationDetail((byte) applicationDO.getEmailStatus()));
                                 applicationDetailVO.setStep((byte) recruitmentScheduleEnum.getStepForApplicationDetail());
                             }
                         }
@@ -402,7 +408,9 @@ public class UserCenterService {
                                     logger.info("preID :{}", preID);
                                 }
                                 RecruitmentScheduleEnum recruitmentScheduleEnum1 = RecruitmentScheduleEnum.createFromID(oprationRecord.getOperateTplId());
-                                applicationOprationRecordVO.setEvent(recruitmentScheduleEnum1.getAppStatusDescription(applicationDO.getApplyType(), applicationDO.getEmailStatus(), preID));
+                                if (recruitmentScheduleEnum1 != null) {
+                                    applicationOprationRecordVO.setEvent(recruitmentScheduleEnum1.getAppStatusDescription((byte) applicationDO.getApplyType(), (byte) applicationDO.getEmailStatus(), preID));
+                                }
                                 /** 如果前一条操作记录也是拒绝的操作记录，那么这一条操作记录隐藏 */
                                 if(recruitmentScheduleEnum.getId() == RecruitmentScheduleEnum.REJECT.getId()
                                         && recruitmentScheduleEnum.getLastID() == RecruitmentScheduleEnum.REJECT.getId()) {

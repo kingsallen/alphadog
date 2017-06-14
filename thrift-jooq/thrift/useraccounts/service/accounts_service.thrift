@@ -4,7 +4,7 @@ include "../struct/useraccounts_struct.thrift"
 include "../../common/struct/common_struct.thrift"
 include "../../foundataionbs/wordpress/struct/wordpress_foundation_strcut.thrift"
 include "../struct/bindtype_struct.thrift"
-include "../../dao/struct/userdb_struct.thrift"
+include "../../dao/struct/userdb/user_user_struct.thrift"
 
 namespace java com.moseeker.thrift.gen.useraccounts.service
 
@@ -58,9 +58,9 @@ service UseraccountsServices {
     common_struct.Response setScanResult(1: i32 wechatId, 2: i64 sceneId, 3:string value);
 	
     //根据手机号码获取用户数据
-    userdb_struct.UserUserDO ifExistUser(1: string mobile);
+    user_user_struct.UserUserDO ifExistUser(1: string mobile);
     //简历回收的自动生成帐号
-    i32 createRetrieveProfileUser(1: userdb_struct.UserUserDO user);
+    i32 createRetrieveProfileUser(1: user_user_struct.UserUserDO user);
     //查询用户是否存在简历
     bool ifExistProfile(1:string mobile);
 }
@@ -86,7 +86,7 @@ service UserHrAccountService {
     //绑定第三方帐号 
     common_struct.Response bind(1: useraccounts_struct.BindAccountStruct account);
     //是否可以绑定第三方账号
-    common_struct.Response allowBind(1:useraccounts_struct.UserHrAccount user, 3:byte channelType,4:string username);
+    common_struct.Response allowBind(1:useraccounts_struct.UserHrAccount user, 3: i8 channelType,4:string username);
     //添加第三方账号
     common_struct.Response addThirdPartyAccount(1:i32 userId,2:useraccounts_struct.BindAccountStruct account);
     //更新第三方账号

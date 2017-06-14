@@ -1,11 +1,11 @@
 package com.moseeker.baseorm.dao.wordpressdb;
 
-import org.springframework.stereotype.Repository;
-
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.wordpressdb.tables.WordpressCommentmeta;
 import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressCommentmetaRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.wordpressdb.WordpressCommentmetaDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +13,13 @@ import com.moseeker.thrift.gen.dao.struct.wordpressdb.WordpressCommentmetaDO;
 * 2017-03-21
 */
 @Repository
-public class WordpressCommentmetaDao extends StructDaoImpl<WordpressCommentmetaDO, WordpressCommentmetaRecord, WordpressCommentmeta> {
+public class WordpressCommentmetaDao extends JooqCrudImpl<WordpressCommentmetaDO, WordpressCommentmetaRecord> {
 
+    public WordpressCommentmetaDao() {
+        super(WordpressCommentmeta.WORDPRESS_COMMENTMETA, WordpressCommentmetaDO.class);
+    }
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = WordpressCommentmeta.WORDPRESS_COMMENTMETA;
-   }
+    public WordpressCommentmetaDao(TableImpl<WordpressCommentmetaRecord> table, Class<WordpressCommentmetaDO> wordpressCommentmetaDOClass) {
+        super(table, wordpressCommentmetaDOClass);
+    }
 }

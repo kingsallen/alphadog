@@ -1,48 +1,48 @@
 package com.moseeker.profile.service.impl;
 
+import com.moseeker.baseorm.dao.profiledb.ProfileCompletenessDao;
+import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
+import com.moseeker.baseorm.dao.userdb.UserSettingsDao;
+import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserSettingsRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
-import com.moseeker.common.util.BeanUtils;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
-import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
-import com.moseeker.db.userdb.tables.records.UserSettingsRecord;
-import com.moseeker.db.userdb.tables.records.UserUserRecord;
-import com.moseeker.profile.dao.CompletenessDao;
-import com.moseeker.profile.dao.ProfileDao;
-import com.moseeker.profile.dao.UserDao;
-import com.moseeker.profile.dao.UserSettingsDao;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.struct.Profile;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.text.ParseException;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @CounterIface
-public class ProfileService extends JOOQBaseServiceImpl<Profile, ProfileProfileRecord> {
+public class ProfileService {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    protected ProfileDao dao;
+    protected ProfileProfileDao dao;
 
     @Autowired
-    protected UserDao userDao;
+    protected UserUserDao userDao;
 
     @Autowired
-    protected CompletenessDao completenessDao;
+    protected ProfileCompletenessDao completenessDao;
 
     @Autowired
     private UserSettingsDao settingDao;
@@ -50,59 +50,23 @@ public class ProfileService extends JOOQBaseServiceImpl<Profile, ProfileProfileR
     @Autowired
     private ProfileCompletenessImpl completenessImpl;
 
-    @Override
-    protected void initDao() {
-        super.dao = this.dao;
-    }
-
-    public ProfileDao getDao() {
-        return dao;
-    }
-
-    public void setDao(ProfileDao dao) {
-        this.dao = dao;
-    }
-
-    public UserSettingsDao getSettingDao() {
-        return settingDao;
-    }
-
-    public void setSettingDao(UserSettingsDao settingDao) {
-        this.settingDao = settingDao;
-    }
-
-    public ProfileCompletenessImpl getCompletenessImpl() {
-        return completenessImpl;
-    }
-
-    public void setCompletenessImpl(ProfileCompletenessImpl completenessImpl) {
-        this.completenessImpl = completenessImpl;
-    }
-
-    public Response getResource(CommonQuery query) throws TException {
-        if (dao == null) {
-            initDao();
-        }
+    public Response getResource(Query query) throws TException {
         ProfileProfileRecord record = null;
-        try {
-            record = dao.getResource(query);
-            if (record != null) {
-                Profile s = DBToStruct(record);
-                if (record.getCompleteness().intValue() == 0 || record.getCompleteness().intValue() == 10) {
-                    int completeness = completenessImpl.getCompleteness(record.getUserId().intValue(), record.getUuid(),
-                            record.getId().intValue());
-                    s.setCompleteness(completeness);
-                }
-                return ResponseUtils.success(s);
+        record = dao.getRecord(query);
+        if (record != null) {
+            Profile s = dao.recordToData(record, Profile.class);
+            if (record.getCompleteness().intValue() == 0 || record.getCompleteness().intValue() == 10) {
+                int completeness = completenessImpl.getCompleteness(record.getUserId().intValue(), record.getUuid(),
+                        record.getId().intValue());
+                s.setCompleteness(completeness);
             }
-
-        } catch (Exception e) {
-            logger.error("getResource error", e);
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+            return ResponseUtils.success(s);
         }
+
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
     }
 
+    @Transactional
     public Response postResource(Profile struct) throws TException {
         struct.setUuid(UUID.randomUUID().toString());
         if (!struct.isSetDisable()) {
@@ -116,7 +80,11 @@ public class ProfileService extends JOOQBaseServiceImpl<Profile, ProfileProfileR
         } else {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_USER_NOTEXIST);
         }
-        return super.postResource(struct);
+
+        ProfileProfileRecord record = BeanUtils.structToDB(struct, ProfileProfileRecord.class);
+        record = dao.addRecord(record);
+
+        return ResponseUtils.success(String.valueOf(record.getId()));
     }
 
     public Response getCompleteness(int userId, String uuid, int profileId) throws TException {
@@ -133,43 +101,74 @@ public class ProfileService extends JOOQBaseServiceImpl<Profile, ProfileProfileR
     public Response reCalculateUserCompletenessBySettingId(int id) throws TException {
         QueryUtil qu = new QueryUtil();
         qu.addEqualFilter("id", String.valueOf(id));
-        try {
-            UserSettingsRecord record = settingDao.getResource(qu);
-            if (record != null) {
-                completenessImpl.reCalculateUserUserByUserIdOrMobile(record.getUserId().intValue(), null);
-                int totalComplementness = completenessImpl.getCompleteness(record.getUserId().intValue(), null, 0);
-                return ResponseUtils.success(totalComplementness);
-            } else {
-                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
-            }
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+        UserSettingsRecord record = settingDao.getRecord(qu);
+        if (record != null) {
+            completenessImpl.reCalculateUserUserByUserIdOrMobile(record.getUserId().intValue(), null);
+            int totalComplementness = completenessImpl.getCompleteness(record.getUserId().intValue(), null, 0);
+            return ResponseUtils.success(totalComplementness);
+        } else {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
     }
 
-    protected Profile DBToStruct(ProfileProfileRecord r) {
-        return (Profile) BeanUtils.DBToStruct(Profile.class, r);
+    public Response getResources(Query query) throws TException {
+        List<Profile> datas = dao.getDatas(query, Profile.class);
+        if (datas != null && datas.size() > 0) {
+            return ResponseUtils.success(datas);
+        } else {
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+        }
     }
 
-    protected ProfileProfileRecord structToDB(Profile profile) throws ParseException {
-        return (ProfileProfileRecord) BeanUtils.structToDB(profile, ProfileProfileRecord.class);
+    public Response getPagination(Query query) throws TException {
+        int totalRow = dao.getCount(query);
+        List<?> datas = dao.getDatas(query);
+
+        return ResponseUtils.success(ProfileUtils.getPagination(totalRow, query.getPageNum(), query.getPageSize(), datas));
     }
 
-    public UserDao getUserDao() {
-        return userDao;
+    @Transactional
+    public Response postResources(List<Profile> structs) throws TException {
+        List<ProfileProfileRecord> records = dao.addAllRecord(BeanUtils.structToDB(structs, ProfileProfileRecord.class));
+
+        return ResponseUtils.success("1");
     }
 
-    public void setUserDao(UserDao userDao) {
-        this.userDao = userDao;
+    @Transactional
+    public Response putResources(List<Profile> structs) throws TException {
+        int[] result = dao.updateRecords(BeanUtils.structToDB(structs, ProfileProfileRecord.class));
+        if (ArrayUtils.contains(result, 1)) {
+            return ResponseUtils.success("1");
+        }
+        return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
     }
 
-    public CompletenessDao getCompletenessDao() {
-        return completenessDao;
+    @Transactional
+    public Response delResources(List<Profile> structs) throws TException {
+        int[] result = dao.deleteRecords(BeanUtils.structToDB(structs, ProfileProfileRecord.class));
+        if (ArrayUtils.contains(result, 1)) {
+            return ResponseUtils.success("1");
+        }
+        return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DEL_FAILED);
     }
 
-    public void setCompletenessDao(CompletenessDao completenessDao) {
-        this.completenessDao = completenessDao;
+    @Transactional
+    public Response putResource(Profile struct) throws TException {
+        int result = dao.updateRecord(BeanUtils.structToDB(struct, ProfileProfileRecord.class));
+        if (result > 0) {
+            return ResponseUtils.success("1");
+        }
+        return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
+    }
+
+    @Transactional
+    public Response delResource(Profile struct) throws TException {
+        int result = dao.deleteRecord(BeanUtils.structToDB(struct, ProfileProfileRecord.class));
+        if (result > 0) {
+            return ResponseUtils.success("1");
+        }
+        return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DEL_FAILED);
+
     }
 
     public Response getProfileByApplication(int companyId, int sourceId, int ats_status, boolean recommender, boolean dl_url_required, Map<String, List<String>> filter) throws TException {

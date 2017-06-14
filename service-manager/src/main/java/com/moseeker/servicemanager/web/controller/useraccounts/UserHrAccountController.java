@@ -1,9 +1,9 @@
 package com.moseeker.servicemanager.web.controller.useraccounts;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.common.validation.rules.DateType;
@@ -324,8 +324,8 @@ public class UserHrAccountController {
             vu.addDateValidate("start_date", params.get("start_date"), DateType.shortDate, null, null);
             vu.addDateValidate("end_date", params.get("end_date"), DateType.shortDate, null, null);
 
-            Integer page = params.getInt("page",1);
-            Integer pageSize = params.getInt("page_size",500);
+            Integer page = params.getInt("page", 1);
+            Integer pageSize = params.getInt("page_size", 500);
 
             if (StringUtils.isNullOrEmpty(vu.validate())) {
                 HrNpsStatistic result = userHrAccountService.npsList(params.getString("start_date"), params.getString("end_date"), page, pageSize);

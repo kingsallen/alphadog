@@ -15,26 +15,22 @@ dependencies {
     compile deps["httpcore"]
     compile deps["joda-time"]
     compile deps["jedis"]
-    compile deps["mysql-connector-java"]
-    //compile deps["zookeeper"]
     compile deps["curator-recipes"]
     compile deps["fastjson"]
-    //compile deps["libthrift"]
-    compile fileTree(dir:'../libs',include:'libthrift-0.10.0.jar')
     compile deps["bonecp"]
     compile deps["javamail"]
     compile deps["servlet-api"]
     compile deps["cglib"]
     compile deps["beanutils"]
-    compile deps["gjson"]
     compile deps["spring-context"]
     compile deps["spring-aop"]
     compile deps["aspectj"]
     compile deps["aspectjrt"]
     compile deps["commons-codec"]
-    compile fileTree(dir:'../libs',include:'*.jar')
-
+    compile deps["gjson"]
+    compile deps["commons-lang"]
     compile 'org.jetbrains:annotations:15.0'
+    compile fileTree(dir:'../libs',include:'taobao-sdk-java.jar')
 }
 
 project.description = '''

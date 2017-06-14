@@ -1,8 +1,14 @@
 package com.moseeker.mq.service.schedule;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.common.constants.AppId;
+import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.KeyIdentifier;
+import java.util.Set;
+import javax.annotation.Resource;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 /**
  * 
@@ -14,29 +20,27 @@ import java.util.concurrent.TimeUnit;
  * @author wjf
  * @version
  */
+@Component
+@EnableScheduling
 public class Schedule {
 	
-	private long initialDelay;
-	private long period;
-	private TimeUnit unit;
-	
-	/**
-	 * 
-	 * @param initialDelay
-	 * @param period
-	 * @param unit
-	 */
-	public Schedule(long initialDelay, long period, TimeUnit unit) {
-		this.initialDelay = initialDelay;
-		this.period = period;
-		this.unit = unit;
-	}
+	@Resource(name = "cacheClient")
+    private RedisClient redisClient;
 
+    /**
+     * 负责从延迟队列中查找符合要求的消息模版，将其转移到消息模版的执行队列中
+     * 每分钟执行一次
+     */
+    @Scheduled(cron="0 */1 * * * ?")
 	public void startListeningMessageDelayQueue() {
-		ScheduledExecutorService service = Executors  
-                .newSingleThreadScheduledExecutor();  
-        // 第二个参数为首次执行的延时时间，第三个参数为定时执行的间隔时间  
-		PortConsumer porter = new PortConsumer();
-        service.scheduleAtFixedRate(porter, initialDelay, period, unit);  
+        long now = System.currentTimeMillis();
+        Set<String> tasks = redisClient.rangeByScore(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.MQ_MESSAGE_NOTICE_TEMPLATE_DELAY.toString(), 0l, now);
+        if(tasks != null && tasks.size() > 0) {
+            redisClient.zRemRangeByScore(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.MQ_MESSAGE_NOTICE_TEMPLATE_DELAY.toString(), 0l, now);
+            tasks.forEach(task -> {
+                redisClient.lpush(Constant.APPID_ALPHADOG,
+                        Constant.REDIS_KEY_IDENTIFIER_MQ_MESSAGE_NOTICE_TEMPLATE, task);
+            });
+        }
 	}
 }

@@ -20,7 +20,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -36,7 +35,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSysTemplateMessageLibrary extends TableImpl<ConfigSysTemplateMessageLibraryRecord> {
 
-    private static final long serialVersionUID = 1154936414;
+    private static final long serialVersionUID = 1898320973;
 
     /**
      * The reference instance of <code>configdb.config_sys_template_message_library</code>
@@ -54,7 +53,7 @@ public class ConfigSysTemplateMessageLibrary extends TableImpl<ConfigSysTemplate
     /**
      * The column <code>configdb.config_sys_template_message_library.id</code>. 主key
      */
-    public final TableField<ConfigSysTemplateMessageLibraryRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
+    public final TableField<ConfigSysTemplateMessageLibraryRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "主key");
 
     /**
      * The column <code>configdb.config_sys_template_message_library.title</code>. 模板标题
@@ -84,17 +83,17 @@ public class ConfigSysTemplateMessageLibrary extends TableImpl<ConfigSysTemplate
     /**
      * The column <code>configdb.config_sys_template_message_library.display</code>. 是否显示
      */
-    public final TableField<ConfigSysTemplateMessageLibraryRecord, UInteger> DISPLAY = createField("display", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGERUNSIGNED)), this, "是否显示");
+    public final TableField<ConfigSysTemplateMessageLibraryRecord, Integer> DISPLAY = createField("display", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "是否显示");
 
     /**
      * The column <code>configdb.config_sys_template_message_library.priority</code>. 排序
      */
-    public final TableField<ConfigSysTemplateMessageLibraryRecord, UInteger> PRIORITY = createField("priority", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaultValue(org.jooq.impl.DSL.field("10", org.jooq.impl.SQLDataType.INTEGERUNSIGNED)), this, "排序");
+    public final TableField<ConfigSysTemplateMessageLibraryRecord, Integer> PRIORITY = createField("priority", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("10", org.jooq.impl.SQLDataType.INTEGER)), this, "排序");
 
     /**
      * The column <code>configdb.config_sys_template_message_library.disable</code>. 是否可用
      */
-    public final TableField<ConfigSysTemplateMessageLibraryRecord, UInteger> DISABLE = createField("disable", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGERUNSIGNED)), this, "是否可用");
+    public final TableField<ConfigSysTemplateMessageLibraryRecord, Integer> DISABLE = createField("disable", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "是否可用");
 
     /**
      * The column <code>configdb.config_sys_template_message_library.type</code>. 模板类别 0:微信 1:邮件 2:短信 3:申请模板 4:其他
@@ -137,6 +136,16 @@ public class ConfigSysTemplateMessageLibrary extends TableImpl<ConfigSysTemplate
     public final TableField<ConfigSysTemplateMessageLibraryRecord, String> URL = createField("url", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false), this, "跳转页面");
 
     /**
+     * The column <code>configdb.config_sys_template_message_library.from_name</code>.
+     */
+    public final TableField<ConfigSysTemplateMessageLibraryRecord, String> FROM_NAME = createField("from_name", org.jooq.impl.SQLDataType.VARCHAR.length(100), this, "");
+
+    /**
+     * The column <code>configdb.config_sys_template_message_library.subject</code>.
+     */
+    public final TableField<ConfigSysTemplateMessageLibraryRecord, String> SUBJECT = createField("subject", org.jooq.impl.SQLDataType.VARCHAR.length(100), this, "");
+
+    /**
      * Create a <code>configdb.config_sys_template_message_library</code> table reference
      */
     public ConfigSysTemplateMessageLibrary() {
@@ -170,7 +179,7 @@ public class ConfigSysTemplateMessageLibrary extends TableImpl<ConfigSysTemplate
      * {@inheritDoc}
      */
     @Override
-    public Identity<ConfigSysTemplateMessageLibraryRecord, UInteger> getIdentity() {
+    public Identity<ConfigSysTemplateMessageLibraryRecord, Integer> getIdentity() {
         return Keys.IDENTITY_CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY;
     }
 

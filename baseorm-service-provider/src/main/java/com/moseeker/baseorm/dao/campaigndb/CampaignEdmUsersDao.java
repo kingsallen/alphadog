@@ -1,8 +1,8 @@
 package com.moseeker.baseorm.dao.campaigndb;
 
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignEdmUsers;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignEdmUsersRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignEdmUsersDO;
 import org.springframework.stereotype.Repository;
 
@@ -12,11 +12,9 @@ import org.springframework.stereotype.Repository;
  * 2017-04-12
  */
 @Repository
-public class CampaignEdmUsersDao extends StructDaoImpl<CampaignEdmUsersDO, CampaignEdmUsersRecord, CampaignEdmUsers> {
+public class CampaignEdmUsersDao extends JooqCrudImpl<CampaignEdmUsersDO, CampaignEdmUsersRecord> {
 
-
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = CampaignEdmUsers.CAMPAIGN_EDM_USERS;
+   public CampaignEdmUsersDao() {
+       super(CampaignEdmUsers.CAMPAIGN_EDM_USERS, CampaignEdmUsersDO.class);
    }
 }

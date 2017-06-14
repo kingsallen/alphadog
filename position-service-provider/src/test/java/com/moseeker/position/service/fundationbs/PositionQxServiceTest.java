@@ -1,6 +1,6 @@
 //package com.moseeker.position.service.fundationbs;
 //
-//import com.moseeker.common.util.BeanUtils;
+//import com.moseeker.baseorm.util.BeanUtils;
 //
 //import org.junit.Test;
 //import org.slf4j.Logger;
@@ -34,7 +34,7 @@
 //    /**
 //     * 头图信息
 //     */
-//    @Test
+//    //@Test
 //    public void headImage() throws Exception {
 //        AnnotationConfigApplicationContext acac = initSpring();
 //        try {
@@ -48,7 +48,7 @@
 //    /**
 //     * 单个职位详情查询接口
 //     */
-//    @Test
+//    //@Test
 //    public void positionDetails() throws Exception {
 //        AnnotationConfigApplicationContext acac = initSpring();
 //        try {
@@ -67,7 +67,7 @@
 //    /**
 //     * 查询企业热招职位查询接口
 //     */
-//    @Test
+//    //@Test
 //    public void companyHotPositionDetailsList() throws Exception {
 //        AnnotationConfigApplicationContext acac = initSpring();
 //        try {
@@ -85,7 +85,7 @@
 //    /**
 //     * 职位相关职位接口
 //     */
-//    @Test
+//    //@Test
 //    public void similarityPositionDetailsList() throws Exception {
 //        AnnotationConfigApplicationContext acac = initSpring();
 //        try {

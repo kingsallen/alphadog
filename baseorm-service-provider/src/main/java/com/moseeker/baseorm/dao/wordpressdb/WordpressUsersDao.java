@@ -1,11 +1,11 @@
 package com.moseeker.baseorm.dao.wordpressdb;
 
-import org.springframework.stereotype.Repository;
-
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.wordpressdb.tables.WordpressUsers;
 import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressUsersRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.wordpressdb.WordpressUsersDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +13,13 @@ import com.moseeker.thrift.gen.dao.struct.wordpressdb.WordpressUsersDO;
 * 2017-03-21
 */
 @Repository
-public class WordpressUsersDao extends StructDaoImpl<WordpressUsersDO, WordpressUsersRecord, WordpressUsers> {
+public class WordpressUsersDao extends JooqCrudImpl<WordpressUsersDO, WordpressUsersRecord> {
 
+    public WordpressUsersDao() {
+        super(WordpressUsers.WORDPRESS_USERS, WordpressUsersDO.class);
+    }
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = WordpressUsers.WORDPRESS_USERS;
-   }
+    public WordpressUsersDao(TableImpl<WordpressUsersRecord> table, Class<WordpressUsersDO> wordpressUsersDOClass) {
+        super(table, wordpressUsersDOClass);
+    }
 }

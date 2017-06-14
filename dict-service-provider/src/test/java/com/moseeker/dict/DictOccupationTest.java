@@ -10,7 +10,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dict.service.DictOccupationService;
 
 public class DictOccupationTest {
-	@Test
+	//@Test
 	public void getOccupation() throws Exception{
 //		DictOccupationService.Iface dictOccupationService = ServiceManager.SERVICEMANAGER
 //				.getService(DictOccupationService.Iface.class);

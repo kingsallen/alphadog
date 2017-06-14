@@ -6,18 +6,29 @@ import com.moseeker.chat.utils.Page;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.thrift.gen.chat.struct.*;
-import com.moseeker.thrift.gen.dao.struct.JobPositionDO;
-import com.moseeker.thrift.gen.dao.struct.UserHrAccountDO;
-import com.moseeker.thrift.gen.dao.struct.UserUserDO;
+import com.moseeker.thrift.gen.chat.struct.ChatVO;
+import com.moseeker.thrift.gen.chat.struct.ChatsVO;
+import com.moseeker.thrift.gen.chat.struct.HRChatRoomVO;
+import com.moseeker.thrift.gen.chat.struct.HRChatRoomsVO;
+import com.moseeker.thrift.gen.chat.struct.HrVO;
+import com.moseeker.thrift.gen.chat.struct.PositionVO;
+import com.moseeker.thrift.gen.chat.struct.ResultOfSaveRoomVO;
+import com.moseeker.thrift.gen.chat.struct.UserChatRoomVO;
+import com.moseeker.thrift.gen.chat.struct.UserChatRoomsVO;
+import com.moseeker.thrift.gen.chat.struct.UserVO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrChatUnreadCountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatListDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,11 +42,14 @@ import java.util.concurrent.Future;
  */
 @Service
 @CounterIface
+@Transactional
 public class ChatService {
 
     Logger logger = LoggerFactory.getLogger(ChatService.class);
 
-    private ChatDao chaoDao = new ChatDao();
+    @Autowired
+    private ChatDao chaoDao;
+
     private ThreadPool pool = ThreadPool.Instance;
 
     private static String AUTO_CONTENT_WITH_HR_NOTEXIST = "我是{companyName}HR，我可以推荐您或者您的朋友加入我们！";
@@ -379,8 +393,8 @@ public class ChatService {
                     PositionVO positionVO = new PositionVO();
                     positionVO.setPositionId(positionDO.getId());
                     positionVO.setPositionTitle(positionDO.getTitle());
-                    positionVO.setSalaryBottom(positionDO.getSalaryBottom());
-                    positionVO.setSalaryTop(positionDO.getSalaryTop());
+                    positionVO.setSalaryBottom((int)positionDO.getSalaryBottom());
+                    positionVO.setSalaryTop((int)positionDO.getSalaryTop());
                     positionVO.setUpdateTime(positionDO.getUpdateTime());
                     positionVO.setCity(positionDO.getCity());
 

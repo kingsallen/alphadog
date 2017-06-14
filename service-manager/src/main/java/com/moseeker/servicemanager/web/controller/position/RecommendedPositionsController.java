@@ -17,6 +17,8 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 
+import java.util.Map;
+
 //@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
 @Controller
 @CounterIface
@@ -31,8 +33,10 @@ public class RecommendedPositionsController {
     public String get(HttpServletRequest request, HttpServletResponse response) {
         try {
             // GET方法 通用参数解析并赋值
-            CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
-            int id = Integer.parseInt(query.getEqualFilter().get("pid"));
+            Map<String,Object> params = ParamUtils.parseRequestParam(request);
+            String pid = String.valueOf(params.get("pid"));
+
+            int id = Integer.parseInt(pid);
             Response result = positonServices.getRecommendedPositions(id);
 
             return ResponseLogNotification.success(request, result);

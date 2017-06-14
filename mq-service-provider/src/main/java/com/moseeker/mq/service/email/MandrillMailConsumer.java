@@ -1,9 +1,19 @@
 package com.moseeker.mq.service.email;
 
-import java.io.BufferedReader;
+import com.alibaba.fastjson.JSON;
+import com.microtripit.mandrillapp.lutung.MandrillApi;
+import com.microtripit.mandrillapp.lutung.view.MandrillMessage;
+import com.microtripit.mandrillapp.lutung.view.MandrillMessage.MergeVar;
+import com.microtripit.mandrillapp.lutung.view.MandrillMessage.MergeVarBucket;
+import com.microtripit.mandrillapp.lutung.view.MandrillMessage.Recipient;
+import com.microtripit.mandrillapp.lutung.view.MandrillMessageStatus;
+import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.common.constants.Constant;
+import com.moseeker.common.exception.RedisException;
+import com.moseeker.common.util.ConfigPropertiesUtil;
+import com.moseeker.common.util.StringUtils;
+import com.moseeker.thrift.gen.mq.struct.MandrillEmailStruct;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,33 +22,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.mail.MessagingException;
-
-import com.moseeker.common.exception.RedisException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.alibaba.fastjson.JSON;
-import com.microtripit.mandrillapp.lutung.MandrillApi;
-import com.microtripit.mandrillapp.lutung.model.MandrillApiError;
-import com.microtripit.mandrillapp.lutung.view.MandrillMessage;
-import com.microtripit.mandrillapp.lutung.view.MandrillMessageStatus;
-import com.microtripit.mandrillapp.lutung.view.MandrillMessage.MergeVar;
-import com.microtripit.mandrillapp.lutung.view.MandrillMessage.MergeVarBucket;
-import com.microtripit.mandrillapp.lutung.view.MandrillMessage.Recipient;
-import com.moseeker.common.constants.Constant;
-import com.moseeker.common.email.config.EmailContent;
-import com.moseeker.common.email.config.EmailSessionConfig;
-import com.moseeker.common.email.mail.Mail;
-import com.moseeker.common.email.mail.Mail.MailBuilder;
-import com.moseeker.common.email.mail.Message;
-import com.moseeker.common.redis.RedisClient;
-import com.moseeker.common.redis.RedisClientFactory;
-import com.moseeker.common.util.ConfigPropertiesUtil;
-import com.moseeker.common.util.StringUtils;
-import com.moseeker.mq.server.MqServer;
-import com.moseeker.thrift.gen.mq.struct.MandrillEmailStruct;
+import org.springframework.stereotype.Component;
 
 /**
  * 
@@ -56,18 +45,20 @@ import com.moseeker.thrift.gen.mq.struct.MandrillEmailStruct;
  * @author wangyaofeng
  * @version
  */
+@Component
 public class MandrillMailConsumer {
 
 	private static Logger logger = LoggerFactory.getLogger(MandrillMailConsumer.class);
 
 	private static ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
 	private static final String mandrillApikey = propertiesReader.get("mandrill.apikey", String.class);
-    //private static final String mandrillFrom_email = propertiesReader.get("mandrill.from_email", String.class);
-    //private static final String mandrillFrom_name = propertiesReader.get("mandrill.from_name", String.class);
-    
+
 	private HashMap<Integer, String> templates = new HashMap<>(); // 模版信息
 	private ExecutorService executorService;
 	private MandrillApi mandrillApi;
+
+    @Resource(name = "cacheClient")
+    private RedisClient redisClient;
 
 	/**
 	 * 从redis业务邮件队列中获取邮件信息
@@ -76,7 +67,6 @@ public class MandrillMailConsumer {
 	 */
 	private String fetchConstantlyMessage() {
 		try {
-			RedisClient redisClient = RedisClientFactory.getCacheClient();
 			List<String> el = redisClient.brpop(Constant.APPID_ALPHADOG, Constant.MQ_MESSAGE_EMAIL_MANDRILL);
 			if (el != null && el.size() > 1){
                 return el.get(1);
@@ -184,6 +174,7 @@ public class MandrillMailConsumer {
 	 * @throws IOException
 	 * @throws MessagingException
 	 */
+	@PostConstruct
 	public void start() throws IOException, MessagingException {
 		initConstantlyMail();
 		executorService = new ThreadPoolExecutor(3, 10, 60L, TimeUnit.MILLISECONDS,

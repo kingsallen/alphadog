@@ -1,144 +1,197 @@
 package com.moseeker.profile.service.impl;
 
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import com.moseeker.baseorm.dao.profiledb.ProfileAttachmentDao;
+import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileAttachmentRecord;
+import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.util.Pagination;
+import com.moseeker.common.util.query.Condition;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
+import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileAttachmentDO;
+import com.moseeker.thrift.gen.profile.struct.Attachment;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
-import com.moseeker.common.util.BeanUtils;
-import com.moseeker.db.profiledb.tables.records.ProfileAttachmentRecord;
-import com.moseeker.profile.dao.AttachmentDao;
-import com.moseeker.profile.dao.ProfileDao;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.profile.struct.Attachment;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @CounterIface
-public class ProfileAttachmentService extends JOOQBaseServiceImpl<Attachment, ProfileAttachmentRecord> {
-	
-	Logger logger = LoggerFactory.getLogger(ProfileAttachmentService.class);
-	
-	@Override
-	public Response getResources(CommonQuery query) throws TException {
-		return super.getResources(query);
-	}
+public class ProfileAttachmentService {
 
-	@Override
-	public Response postResources(List<Attachment> structs) throws TException {
-		Response response = super.postResources(structs);
-		if(response != null && response.getStatus() == 0) {
-			Set<Integer> profileIds = new HashSet<>();
-			for(Attachment attachement : structs) {
-				if(attachement.getProfile_id() > 0) {
-					profileIds.add(attachement.getProfile_id());
-				}
-			}
-			profileDao.updateUpdateTime(profileIds);
-		}
-		return response;
-	}
+    Logger logger = LoggerFactory.getLogger(ProfileAttachmentService.class);
 
-	@Override
-	public Response putResources(List<Attachment> structs) throws TException {
-		Response response = super.putResources(structs);
-		updateUpdateTime(structs, response);
-		return response;
-	}
+    @Autowired
+    ProfileAttachmentDao dao;
 
-	@Override
-	public Response delResources(List<Attachment> structs) throws TException {
-		Response response = super.delResources(structs);
-		updateUpdateTime(structs, response);
-		return response;
-	}
-	
-	@Override
-	public Response postResource(Attachment struct) throws TException {
-		Response response = super.postResource(struct);
-		if(response != null && response.getStatus() == 0) {
-			Set<Integer> profileIds = new HashSet<>();
-			profileIds.add(struct.getProfile_id());
-			profileDao.updateUpdateTime(profileIds);
-		}
-		return response;
-	}
+    @Autowired
+    ProfileProfileDao profileDao;
 
-	@Override
-	public Response putResource(Attachment struct) throws TException {
-		Response response =  super.putResource(struct);
-		updateUpdateTime(struct, response);
-		return response;
-	}
+    public Attachment getResource(Query query) throws TException {
+        return dao.getData(query, Attachment.class);
+    }
 
-	@Override
-	public Response delResource(Attachment struct) throws TException {
-		Response response = super.delResource(struct);
-		updateUpdateTime(struct, response);
-		return response;
-	}
+    public List<Attachment> getResources(Query query) throws TException {
+        return dao.getDatas(query, Attachment.class);
+    }
 
-	@Autowired
-	private AttachmentDao dao;
-	
-	@Autowired
-	private ProfileDao profileDao;
-	
-	public AttachmentDao getDao() {
-		return dao;
-	}
+    @Transactional
+    public List<Attachment> postResources(List<Attachment> structs) throws TException {
+        List<Attachment> datas = new ArrayList<>();
 
-	public void setDao(AttachmentDao dao) {
-		this.dao = dao;
-	}
+        if (structs != null && structs.size() > 0) {
 
-	public ProfileDao getProfileDao() {
-		return profileDao;
-	}
+            List<ProfileAttachmentRecord> records = BeanUtils.structToDB(structs, ProfileAttachmentRecord.class);
 
-	public void setProfileDao(ProfileDao profileDao) {
-		this.profileDao = profileDao;
-	}
+            records = dao.addAllRecord(records);
 
-	@Override
-	protected void initDao() {
-		super.dao = this.dao;
-	}
+            datas = BeanUtils.DBToStruct(Attachment.class, records);
 
-	@Override
-	protected Attachment DBToStruct(ProfileAttachmentRecord r) {
-		return (Attachment)BeanUtils.DBToStruct(Attachment.class, r);
-	}
+            Set<Integer> profileIds = new HashSet<>();
+            for (Attachment attachement : structs) {
+                if (attachement.getProfile_id() > 0) {
+                    profileIds.add(attachement.getProfile_id());
+                }
+            }
+            profileDao.updateUpdateTime(profileIds);
+        }
+        return datas;
+    }
 
-	@Override
-	protected ProfileAttachmentRecord structToDB(Attachment attachment) throws ParseException {
-		return (ProfileAttachmentRecord)BeanUtils.structToDB(attachment, ProfileAttachmentRecord.class);
-	}
-	
-	private void updateUpdateTime(List<Attachment> attachments, Response response) {
-		if(response.getStatus() == 0) {
-			HashSet<Integer> attachmentIds = new HashSet<>();
-			attachments.forEach(attachment -> {
-				attachmentIds.add(attachment.getId());
-			});
-			dao.updateProfileUpdateTime(attachmentIds);
-		}
-	}
-	
-	private void updateUpdateTime(Attachment attachment, Response response) {
-		if(response.getStatus() == 0) {
-			List<Attachment> attachments = new ArrayList<>();
-			attachments.add(attachment);
-			updateUpdateTime(attachments, response);
-		}
-	}
+    @Transactional
+    public int[] putResources(List<Attachment> structs) throws TException {
+
+        if (structs != null && structs.size() > 0) {
+            int[] result = dao.updateRecords(BeanUtils.structToDB(structs, ProfileAttachmentRecord.class));
+
+            List<Attachment> updatedDatas = new ArrayList<>();
+
+            for (int i = 0; i < result.length; i++) {
+                if (result[i] > 0) updatedDatas.add(structs.get(i));
+            }
+
+            updateUpdateTime(updatedDatas);
+            return result;
+        } else {
+            return new int[0];
+        }
+
+    }
+
+    @Transactional
+    public int delResource(Attachment struct) throws TException {
+
+        int result = 0;
+
+        if (struct != null) {
+            Query query = new Query
+                    .QueryBuilder()
+                    .where(Condition.buildCommonCondition("id", struct.getId())).buildQuery();
+            //找到要删除的数据
+            ProfileAttachmentDO deleteData = dao.getData(query);
+            if (deleteData != null) {
+                //正式删除数据
+                result = dao.deleteData(deleteData);
+                if (result > 0) {
+                    //更新对应的profile更新时间
+                    profileDao.updateUpdateTime(new HashSet<Integer>() {{
+                        add(deleteData.getProfileId());
+                    }});
+                }
+            }
+        }
+        return result;
+    }
+
+    @Transactional
+    public int[] delResources(List<Attachment> structs) throws TException {
+        if (structs != null && structs.size() > 0) {
+            Query query = new Query
+                    .QueryBuilder()
+                    .where(Condition.buildCommonCondition("id",
+                            structs.stream()
+                                    .map(struct -> struct.getId())
+                                    .collect(Collectors.toList()),
+                            ValueOp.IN)).buildQuery();
+            //找到要删除的数据
+            List<ProfileAttachmentDO> deleteDatas = dao.getDatas(query);
+
+            //正式删除数据
+            int[] result = dao.deleteRecords(BeanUtils.structToDB(structs, ProfileAttachmentRecord.class));
+
+            if (deleteDatas != null && deleteDatas.size() > 0) {
+                //更新对应的profile更新时间
+                profileDao.updateUpdateTime(deleteDatas.stream().map(data -> data.getProfileId()).collect(Collectors.toSet()));
+            }
+
+            return result;
+        } else {
+            return new int[0];
+        }
+    }
+
+    @Transactional
+    public Attachment postResource(Attachment struct) throws TException {
+        if (struct != null) {
+            ProfileAttachmentRecord data = dao.addRecord(BeanUtils.structToDB(struct, ProfileAttachmentRecord.class));
+            Set<Integer> profileIds = new HashSet<>();
+            profileIds.add(data.getProfileId());
+            profileDao.updateUpdateTime(profileIds);
+            return data.into(Attachment.class);
+        } else {
+            return null;
+        }
+    }
+
+    @Transactional
+    public int putResource(Attachment struct) throws TException {
+
+        int i = 0;
+        if (struct != null) {
+            i = dao.updateRecord(BeanUtils.structToDB(struct, ProfileAttachmentRecord.class));
+            if (i > 0) {
+                updateUpdateTime(struct);
+            }
+        }
+        return i;
+    }
+
+    private void updateUpdateTime(List<Attachment> attachments) {
+
+        if (attachments == null || attachments.size() == 0) return;
+
+        HashSet<Integer> attachmentIds = new HashSet<>();
+
+        attachments.forEach(attachment -> {
+            attachmentIds.add(attachment.getId());
+        });
+        dao.updateProfileUpdateTime(attachmentIds);
+    }
+
+    private void updateUpdateTime(Attachment attachment) {
+
+        if (attachment == null) return;
+
+        List<Attachment> attachments = new ArrayList<>();
+
+        attachments.add(attachment);
+        updateUpdateTime(attachments);
+    }
+
+    public Pagination getPagination(Query query) throws TException {
+        int totalRow = dao.getCount(query);
+        List<?> datas = dao.getDatas(query);
+
+        return ProfileUtils.getPagination(totalRow, query.getPageNum(), query.getPageSize(), datas);
+    }
 }

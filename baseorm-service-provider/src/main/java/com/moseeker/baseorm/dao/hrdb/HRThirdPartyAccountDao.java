@@ -1,24 +1,32 @@
 package com.moseeker.baseorm.dao.hrdb;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
+import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccountHr;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountHrRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import com.moseeker.thrift.gen.useraccounts.struct.BindAccountStruct;
+
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
-import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountHrRecord;
-import com.moseeker.baseorm.util.BaseDaoImpl;
-import org.jooq.DSLContext;
-import org.jooq.types.UInteger;
-import org.springframework.stereotype.Service;
-
-import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
-import com.moseeker.common.dbutils.DBConnHelper;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
+import org.apache.thrift.TException;
+import org.joda.time.DateTime;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * HR帐号数据库持久类
@@ -34,76 +42,47 @@ import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
  *
  * @author wjf
  */
-@Service
-public class HRThirdPartyAccountDao extends BaseDaoImpl<HrThirdPartyAccountRecord, HrThirdPartyAccount> {
+@Repository
+public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, HrThirdPartyAccountRecord> {
 
-    @Override
-    protected void initJOOQEntity() {
-        this.tableLike = HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT;
+    public HRThirdPartyAccountDao() {
+        super(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT, HrThirdPartyAccountDO.class);
     }
 
-    public int addThirdPartyAccount(int userId, HrThirdPartyAccountRecord record) {
-        logger.info("添加第三方账号到数据库："+userId+":"+record.getMembername());
-        int count = 0;
-        Connection conn = null;
-        try {
-            conn = DBConnHelper.DBConn.getConn();
-            conn.setAutoCommit(false);
-            DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-            create.attach(record);
-            //添加第三方账号
-            count = record.insert();
-            //HR关联到第三方账号
-            if (userId > 0) {
-                logger.info("HR关联到第三方账号："+userId+":"+record.getMembername());
-                HrThirdPartyAccountHrRecord hrThirdPartyAccountHrRecord = new HrThirdPartyAccountHrRecord();
-                hrThirdPartyAccountHrRecord.setChannel(record.getChannel());
-                hrThirdPartyAccountHrRecord.setHrAccountId(userId);
-                hrThirdPartyAccountHrRecord.setThirdPartyAccountId(record.getId());
-                create.attach(hrThirdPartyAccountHrRecord);
-                count = hrThirdPartyAccountHrRecord.insert();
-            }
-            conn.commit();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-            try {
-                conn.rollback();
-            } catch (SQLException e1) {
-                e1.printStackTrace();
-            }
-        } finally {
-            if (conn != null) {
-                try {
-                    conn.setAutoCommit(true);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
+    private static final String UPSERT_SQL = "insert into hrdb.hr_third_party_account(channel, username, password, membername, binding, company_id, remain_num, sync_time) select ?, ?, ?, ?, ?, ?, ?, ? from DUAL where not exists(select id from hrdb.hr_third_party_account where channel = ? and company_id = ?)";
+
+    public HRThirdPartyAccountDao(TableImpl<HrThirdPartyAccountRecord> table, Class<HrThirdPartyAccountDO> hrThirdPartyAccountDOClass) {
+        super(table, hrThirdPartyAccountDOClass);
+    }
+
+    public int upsertResource(HrThirdPartyAccountRecord record) {
+        logger.info("HRThirdPartyAccountDao upsertResource");
+        logger.info("HRThirdPartyAccountDao upsertResource channel:{}, company_id:{}", record.getChannel(), record.getCompanyId());
+        logger.info("HRThirdPartyAccountDao upsertResource record:{}", record);
+        int count = create.execute(UPSERT_SQL, record.getChannel(), record.getUsername(), record.getPassword(),
+                record.getMembername(), record.getBinding(), record.getCompanyId().intValue(),
+                record.getRemainNum().intValue(), record.getSyncTime(), record.getChannel(),
+                record.getCompanyId().intValue());
+        logger.info("HRThirdPartyAccountDao count:{}", count);
+
+        if (count == 0) {
+            HrThirdPartyAccountRecord dbrecord = create.selectFrom(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
+                    .where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.COMPANY_ID.equal(record.getCompanyId())
+                            .and(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.CHANNEL.equal(record.getChannel())))
+                    .fetchOne();
+            dbrecord.setUsername(record.getUsername());
+            dbrecord.setPassword(record.getPassword());
+            dbrecord.setMembername(record.getMembername());
+            dbrecord.setBinding(record.getBinding());
+            dbrecord.setRemainNum(record.getRemainNum());
+            dbrecord.setSyncTime(record.getSyncTime());
+            count = dbrecord.update();
         }
         return count;
     }
 
-    public int updateThirdPartyAccount(HrThirdPartyAccountRecord record) {
-        try {
-            return putResource(record);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
-
-    public List<HrThirdPartyAccountRecord> getThirdPartyBindingAccounts(CommonQuery query) {
-        try {
-            return this.getResources(query);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-        } finally {
-            // do nothing
-        }
-        return null;
+    public List<HrThirdPartyAccountRecord> getThirdPartyBindingAccounts(Query query) {
+        return getRecords(query);
     }
 
     /**
@@ -115,32 +94,236 @@ public class HRThirdPartyAccountDao extends BaseDaoImpl<HrThirdPartyAccountRecor
     public int updatePartyAccountByCompanyIdChannel(ThirdPartAccountData account) {
         logger.info("updatePartyAccountByCompanyIdChannel");
         int count = 0;
-        try (Connection conn = DBConnHelper.DBConn.getConn();
-             DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);) {
+        try {
+            Date date = sdf.parse(account.getSync_time());
             HrThirdPartyAccountRecord record = create.selectFrom(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
-                    .where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID.eq(account.getId()))
+                    .where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.COMPANY_ID
+                            .equal((int) (account.getCompany_id())))
+                    .and(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.CHANNEL.equal((short) account.getChannel()))
                     .fetchOne();
             if (record != null) {
                 logger.info("HrThirdPartyAccount.id:{}", record.getId().intValue());
                 logger.info("remainume:{}", account.getRemain_num());
-                Date date = sdf.parse(account.getSync_time());
                 record.setSyncTime(new Timestamp(date.getTime()));
-                record.setRemainNum(Integer.valueOf(account.getRemain_num()));
+                record.setRemainNum((int) (account.getRemain_num()));
                 count = record.update();
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-
         } catch (ParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
             logger.error(e.getMessage(), e);
-        } finally {
-            // do nothing
         }
         return count;
     }
+
+    public Response upsertThirdPartyAccount(BindAccountStruct account) {
+        try {
+            logger.info("upsertThirdPartyAccount");
+            logger.info("upsertThirdPartyAccount account:{}", account);
+            HrThirdPartyAccountRecord record = new HrThirdPartyAccountRecord();
+            record.setBinding((short) account.getBinding());
+            record.setChannel((short) account.getChannel());
+            record.setCompanyId((int) (account.getCompany_id()));
+            Timestamp now = new Timestamp(System.currentTimeMillis());
+            record.setCreateTime(now);
+            record.setMembername(account.getMember_name());
+            record.setPassword(account.getPassword());
+            record.setRemainNum((int) (account.getRemainNum()));
+            record.setSyncTime(now);
+            record.setBinding((short) 1);
+            record.setUsername(account.getUsername());
+            logger.info("upsertThirdPartyAccount record:{}", record);
+            logger.info("upsertThirdPartyAccount channel:{}, company_id:{}", account.getChannel(), account.getCompany_id());
+            int count = upsertResource(record);
+            logger.info("upsertThirdPartyAccount count:{}", count);
+            if (count == 0) {
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
+            }
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("remain_num", account.getRemainNum());
+            DateTime dt = new DateTime(now.getTime());
+            map.put("sync_time", dt.toString("yyyy-MM-dd HH:mm:ss"));
+            logger.info("upsertThirdPartyAccount result:{}", map);
+            return ResponseUtils.success(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+        } finally {
+
+        }
+    }
+
+    public Response createThirdPartyAccount(BindAccountStruct account) throws TException {
+
+        try {
+            HrThirdPartyAccountRecord record = new HrThirdPartyAccountRecord();
+            record.setBinding((short) account.getBinding());
+            record.setChannel((short) account.getChannel());
+            record.setCompanyId((int) (account.getCompany_id()));
+            Timestamp now = new Timestamp(System.currentTimeMillis());
+            record.setCreateTime(now);
+            record.setMembername(account.getMember_name());
+            record.setPassword(account.getPassword());
+            record.setRemainNum((int) (account.getRemainNum()));
+            record.setSyncTime(now);
+            record.setUsername(account.getUsername());
+            addRecord(record);
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("remain_num", account.getRemainNum());
+            DateTime dt = new DateTime(now.getTime());
+            map.put("sync_time", dt.toString("yyyy-MM-dd HH:mm:ss"));
+            return ResponseUtils.success(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+        } finally {
+
+        }
+    }
+
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+    public int addThirdPartyAccount(int userId, HrThirdPartyAccountRecord record) {
+        logger.info("添加第三方账号到数据库：" + userId + ":" + record.getMembername());
+        int count = 0;
+        create.attach(record);
+        //添加第三方账号
+        count = record.insert();
+        //HR关联到第三方账号
+        if (userId > 0) {
+            logger.info("HR关联到第三方账号：" + userId + ":" + record.getMembername());
+            HrThirdPartyAccountHrRecord hrThirdPartyAccountHrRecord = new HrThirdPartyAccountHrRecord();
+            hrThirdPartyAccountHrRecord.setChannel(record.getChannel());
+            hrThirdPartyAccountHrRecord.setHrAccountId(userId);
+            hrThirdPartyAccountHrRecord.setThirdPartyAccountId(record.getId());
+            create.attach(hrThirdPartyAccountHrRecord);
+            count = hrThirdPartyAccountHrRecord.insert();
+        }
+        return count;
+    }
+
+    public Response addThirdPartyAccount(int userId, BindAccountStruct account) throws TException {
+        try {
+            HrThirdPartyAccountRecord record = new HrThirdPartyAccountRecord();
+            copyToRecord(account, record);
+            Timestamp now = new Timestamp(System.currentTimeMillis());
+            record.setCreateTime(now);
+            record.setUpdateTime(now);
+            record.setSyncTime(now);
+            int count = addThirdPartyAccount(userId, record);
+            if (count == 0) {
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
+            }
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("remain_num", account.getRemainNum());
+            map.put("remain_profile_num", account.getRemainProfileNum());
+            DateTime dt = new DateTime(now.getTime());
+            map.put("sync_time", dt.toString("yyyy-MM-dd HH:mm:ss"));
+            return ResponseUtils.success(map);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+        } finally {
+
+        }
+    }
+
+
+    public int updateThirdPartyAccount(HrThirdPartyAccountRecord record) {
+        return updateRecord(record);
+    }
+
+    /**
+     * 更新第三方账号
+     *
+     * @param accountId 第三方账号ID
+     * @param account
+     * @return
+     * @throws TException
+     */
+    public Response updateThirdPartyAccount(int accountId, BindAccountStruct account) throws TException {
+        try {
+            HrThirdPartyAccountRecord record = new HrThirdPartyAccountRecord();
+            copyToRecord(account, record);
+            record.setId(accountId);
+            Timestamp now = new Timestamp(System.currentTimeMillis());
+            record.setUpdateTime(now);
+            record.setSyncTime(now);
+            int count = updateThirdPartyAccount(record);
+            if (count == 0) {
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
+            }
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("remain_num", account.getRemainNum());
+            map.put("remain_profile_num", account.getRemainProfileNum());
+            DateTime dt = new DateTime(now.getTime());
+            map.put("sync_time", dt.toString("yyyy-MM-dd HH:mm:ss"));
+
+            logger.info("upsertThirdPartyAccount result:{}", map);
+            return ResponseUtils.success(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+        } finally {
+
+        }
+    }
+
+    public void copyToRecord(BindAccountStruct account, HrThirdPartyAccountRecord record) {
+        record.setBinding((short) account.getBinding());
+        record.setChannel((short) account.getChannel());
+        record.setCompanyId(account.getCompany_id());
+        record.setMembername(account.getMember_name());
+        record.setPassword(account.getPassword());
+        record.setRemainNum(account.getRemainNum());
+        record.setRemainProfileNum(account.getRemainProfileNum());
+        record.setBinding((short) 1);
+        record.setUsername(account.getUsername());
+    }
+
+
+    public ThirdPartAccountData getThirdPartyAccountByUserId(int user_id, int channel) throws TException {
+        try {
+            logger.info("getThirdPartyAccountByUserId:user_id{},channel:{}", user_id, channel);
+            List<Integer> thirdPartyAccounts = create.select(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.THIRD_PARTY_ACCOUNT_ID).from(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR)
+                    .where(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.HR_ACCOUNT_ID.eq(user_id))
+                    .and(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.STATUS.eq((byte) 1)).fetch(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.THIRD_PARTY_ACCOUNT_ID);
+
+            if (thirdPartyAccounts != null && thirdPartyAccounts.size() > 0) {
+                ThirdPartAccountData data = create.select().from(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
+                        .where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID.in(thirdPartyAccounts))
+                        .and(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.CHANNEL.eq((short) channel))
+                        .and(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.BINDING.eq((short) 1))
+                        .fetchAnyInto(ThirdPartAccountData.class);
+                if (data != null) {
+                    logger.info("getThirdPartyAccountByUserId:result:{}", data.getId());
+                    return data;
+                }
+            }
+            logger.info("getThirdPartyAccountByUserId:result:empty");
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+        }
+        return new ThirdPartAccountData();
+    }
+
+    public List<ThirdPartAccountData> getThirdPartyAccountsByUserId(int user_id) {
+        logger.info("getThirdPartyAccountsByUserId:" + user_id);
+        List<Integer> thirdPartyAccounts = create.select(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.THIRD_PARTY_ACCOUNT_ID).from(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR)
+                .where(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.HR_ACCOUNT_ID.eq(user_id))
+                .and(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.STATUS.eq((byte) 1)).fetch(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.THIRD_PARTY_ACCOUNT_ID);
+
+        if (thirdPartyAccounts != null && thirdPartyAccounts.size() > 0) {
+            List<ThirdPartAccountData> datas = create.select().from(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
+                    .where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID.in(thirdPartyAccounts))
+                    .fetchInto(ThirdPartAccountData.class);
+            logger.info("getThirdPartyAccountsByUserId:size" + datas.size());
+            return datas;
+        }
+        return new ArrayList<>();
+    }
+
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 }

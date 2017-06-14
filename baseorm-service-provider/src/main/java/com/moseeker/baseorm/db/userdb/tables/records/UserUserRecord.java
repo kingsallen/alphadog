@@ -12,7 +12,6 @@ import javax.annotation.Generated;
 
 import org.jooq.Record1;
 import org.jooq.impl.UpdatableRecordImpl;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -28,31 +27,31 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserUserRecord extends UpdatableRecordImpl<UserUserRecord> {
 
-    private static final long serialVersionUID = -653794661;
+    private static final long serialVersionUID = 17983637;
 
     /**
      * Setter for <code>userdb.user_user.id</code>. 主key
      */
-    public void setId(UInteger value) {
+    public void setId(Integer value) {
         set(0, value);
     }
 
     /**
      * Getter for <code>userdb.user_user.id</code>. 主key
      */
-    public UInteger getId() {
-        return (UInteger) get(0);
+    public Integer getId() {
+        return (Integer) get(0);
     }
 
     /**
-     * Setter for <code>userdb.user_user.username</code>. 用户名，比如手机号、邮箱等
+     * Setter for <code>userdb.user_user.username</code>. 用户名，目前存放已验证手机号或者unionid
      */
     public void setUsername(String value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>userdb.user_user.username</code>. 用户名，比如手机号、邮箱等
+     * Getter for <code>userdb.user_user.username</code>. 用户名，目前存放已验证手机号或者unionid
      */
     public String getUsername() {
         return (String) get(1);
@@ -171,14 +170,14 @@ public class UserUserRecord extends UpdatableRecordImpl<UserUserRecord> {
     }
 
     /**
-     * Setter for <code>userdb.user_user.mobile</code>. user pass mobile registe
+     * Setter for <code>userdb.user_user.mobile</code>. 手机号(未验证)
      */
     public void setMobile(Long value) {
         set(10, value);
     }
 
     /**
-     * Getter for <code>userdb.user_user.mobile</code>. user pass mobile registe
+     * Getter for <code>userdb.user_user.mobile</code>. 手机号(未验证)
      */
     public Long getMobile() {
         return (Long) get(10);
@@ -311,14 +310,14 @@ public class UserUserRecord extends UpdatableRecordImpl<UserUserRecord> {
     }
 
     /**
-     * Setter for <code>userdb.user_user.source</code>. 来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录, 7:PC(手机直接注册) 8:PC(我要投递) 9: PC(我感兴趣) 10:PC(微信扫描后手机注册)100: 简历回收自动创建
+     * Setter for <code>userdb.user_user.source</code>. 来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录 3:微信端百度 oauth 7:PC(正常添加) 8:PC(我要投递) 9:PC(我感兴趣) 10:PC(微信扫描后手机注册) 100:简历回收自动创建
      */
     public void setSource(Short value) {
         set(20, value);
     }
 
     /**
-     * Getter for <code>userdb.user_user.source</code>. 来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录, 7:PC(手机直接注册) 8:PC(我要投递) 9: PC(我感兴趣) 10:PC(微信扫描后手机注册)100: 简历回收自动创建
+     * Getter for <code>userdb.user_user.source</code>. 来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录 3:微信端百度 oauth 7:PC(正常添加) 8:PC(我要投递) 9:PC(我感兴趣) 10:PC(微信扫描后手机注册) 100:简历回收自动创建
      */
     public Short getSource() {
         return (Short) get(20);
@@ -355,15 +354,15 @@ public class UserUserRecord extends UpdatableRecordImpl<UserUserRecord> {
     /**
      * Setter for <code>userdb.user_user.parentid</code>. 合并到了新用户的id
      */
-    public void setParentid(UInteger value) {
+    public void setParentid(Integer value) {
         set(23, value);
     }
 
     /**
      * Getter for <code>userdb.user_user.parentid</code>. 合并到了新用户的id
      */
-    public UInteger getParentid() {
-        return (UInteger) get(23);
+    public Integer getParentid() {
+        return (Integer) get(23);
     }
 
     /**
@@ -381,14 +380,14 @@ public class UserUserRecord extends UpdatableRecordImpl<UserUserRecord> {
     }
 
     /**
-     * Setter for <code>userdb.user_user.email_verified</code>. 邮箱是否认证 2:老数据 1:已认证 0:未认证
+     * Setter for <code>userdb.user_user.email_verified</code>. 邮箱是认证 2:老数据 1:已认证 0:未认证
      */
     public void setEmailVerified(Byte value) {
         set(25, value);
     }
 
     /**
-     * Getter for <code>userdb.user_user.email_verified</code>. 邮箱是否认证 2:老数据 1:已认证 0:未认证
+     * Getter for <code>userdb.user_user.email_verified</code>. 邮箱是认证 2:老数据 1:已认证 0:未认证
      */
     public Byte getEmailVerified() {
         return (Byte) get(25);
@@ -416,7 +415,7 @@ public class UserUserRecord extends UpdatableRecordImpl<UserUserRecord> {
      * {@inheritDoc}
      */
     @Override
-    public Record1<UInteger> key() {
+    public Record1<Integer> key() {
         return (Record1) super.key();
     }
 
@@ -434,7 +433,7 @@ public class UserUserRecord extends UpdatableRecordImpl<UserUserRecord> {
     /**
      * Create a detached, initialised UserUserRecord
      */
-    public UserUserRecord(UInteger id, String username, String password, Byte isDisable, Integer rank, Timestamp registerTime, String registerIp, Timestamp lastLoginTime, String lastLoginIp, Integer loginCount, Long mobile, String email, Byte activation, String activationCode, String token, String name, String headimg, Integer nationalCodeId, Integer wechatId, String unionid, Short source, String company, String position, UInteger parentid, String nickname, Byte emailVerified, Timestamp updateTime) {
+    public UserUserRecord(Integer id, String username, String password, Byte isDisable, Integer rank, Timestamp registerTime, String registerIp, Timestamp lastLoginTime, String lastLoginIp, Integer loginCount, Long mobile, String email, Byte activation, String activationCode, String token, String name, String headimg, Integer nationalCodeId, Integer wechatId, String unionid, Short source, String company, String position, Integer parentid, String nickname, Byte emailVerified, Timestamp updateTime) {
         super(UserUser.USER_USER);
 
         set(0, id);

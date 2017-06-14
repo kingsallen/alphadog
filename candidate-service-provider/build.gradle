@@ -1,17 +1,17 @@
 apply plugin: 'idea'
 apply plugin: 'eclipse'
-  
-dependencies {
 
+dependencies {
     compile project(":rpc-center")
+    compile project(":baseorm-service-provider")
     testCompile deps["junit"]
     compile deps["spring-core"]
     compile deps["spring-context"]
 }
 
 task copyJars(type: Copy) {
-  from configurations.runtime
-  into 'build/libs' // 目标位置
+    from configurations.runtime
+    into 'build/libs' // 目标位置
 }
 
 jar {
@@ -22,10 +22,10 @@ jar {
     }
 
     manifest {
-       attributes 'Main-Class': 'com.moseeker.candidate.server.CandidateServer'
+        attributes 'Main-Class': 'com.moseeker.candidate.CandidateServer'
     }
 
-    
+
 }
 
 project.description = '''

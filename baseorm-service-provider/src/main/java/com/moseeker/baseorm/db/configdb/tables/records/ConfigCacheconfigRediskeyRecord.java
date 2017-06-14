@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigCacheconfigRediskeyRecord extends UpdatableRecordImpl<ConfigCacheconfigRediskeyRecord> implements Record9<Integer, Integer, String, Byte, String, String, Integer, String, Timestamp> {
 
-    private static final long serialVersionUID = 1182402856;
+    private static final long serialVersionUID = 1165496676;
 
     /**
      * Setter for <code>configdb.config_cacheconfig_rediskey.id</code>.
@@ -75,14 +75,14 @@ public class ConfigCacheconfigRediskeyRecord extends UpdatableRecordImpl<ConfigC
     }
 
     /**
-     * Setter for <code>configdb.config_cacheconfig_rediskey.type</code>. 缓存类型 1:data, 2:session, 3:log, 4:mq
+     * Setter for <code>configdb.config_cacheconfig_rediskey.type</code>. 缓存类型 1 data  2. session 3 log
      */
     public void setType(Byte value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>configdb.config_cacheconfig_rediskey.type</code>. 缓存类型 1:data, 2:session, 3:log, 4:mq
+     * Getter for <code>configdb.config_cacheconfig_rediskey.type</code>. 缓存类型 1 data  2. session 3 log
      */
     public Byte getType() {
         return (Byte) get(3);

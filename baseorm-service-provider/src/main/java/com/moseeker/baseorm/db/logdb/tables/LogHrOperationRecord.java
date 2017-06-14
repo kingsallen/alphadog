@@ -21,7 +21,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -37,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogHrOperationRecord extends TableImpl<LogHrOperationRecordRecord> {
 
-    private static final long serialVersionUID = 1432126006;
+    private static final long serialVersionUID = -1500067882;
 
     /**
      * The reference instance of <code>logdb.log_hr_operation_record</code>
@@ -55,7 +54,7 @@ public class LogHrOperationRecord extends TableImpl<LogHrOperationRecordRecord> 
     /**
      * The column <code>logdb.log_hr_operation_record.id</code>.
      */
-    public final TableField<LogHrOperationRecordRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
+    public final TableField<LogHrOperationRecordRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>logdb.log_hr_operation_record.type</code>. 0:无效1：hr操作职位发布人
@@ -111,7 +110,7 @@ public class LogHrOperationRecord extends TableImpl<LogHrOperationRecordRecord> 
      * {@inheritDoc}
      */
     @Override
-    public Identity<LogHrOperationRecordRecord, UInteger> getIdentity() {
+    public Identity<LogHrOperationRecordRecord, Integer> getIdentity() {
         return Keys.IDENTITY_LOG_HR_OPERATION_RECORD;
     }
 

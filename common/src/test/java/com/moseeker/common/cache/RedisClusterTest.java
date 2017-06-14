@@ -2,7 +2,7 @@ package com.moseeker.common.cache;
 
 public class RedisClusterTest {
 
-	/*@Test
+	/*//@Test
 	public void connPoolTest() {
 		RedisClient redisClient = RedisClientFactory.getCacheClient();
 		String key = "DEFAULT";

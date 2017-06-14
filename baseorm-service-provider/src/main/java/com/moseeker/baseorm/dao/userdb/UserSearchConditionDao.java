@@ -1,11 +1,10 @@
 package com.moseeker.baseorm.dao.userdb;
 
-import org.springframework.stereotype.Repository;
-
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.userdb.tables.UserSearchCondition;
 import com.moseeker.baseorm.db.userdb.tables.records.UserSearchConditionRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserSearchConditionDO;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +12,10 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserSearchConditionDO;
 * 2017-04-12
 */
 @Repository
-public class UserSearchConditionDao extends StructDaoImpl<UserSearchConditionDO, UserSearchConditionRecord, UserSearchCondition> {
+public class UserSearchConditionDao extends JooqCrudImpl<UserSearchConditionDO, UserSearchConditionRecord> {
 
+    public UserSearchConditionDao() {
+        super(UserSearchCondition.USER_SEARCH_CONDITION, UserSearchConditionDO.class);
+    }
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = UserSearchCondition.USER_SEARCH_CONDITION;
-   }
 }

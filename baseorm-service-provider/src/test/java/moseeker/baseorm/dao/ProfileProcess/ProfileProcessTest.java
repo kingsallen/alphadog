@@ -12,7 +12,7 @@ public class ProfileProcessTest {
 		config=context.getBean(ConfigServiceImpl.class);
 		hrDB=context.getBean(HrDBServiceImpl.class);
 	}
-	@Test
+	//@Test
 	public void TestAuth(){
 		init();
 		List<Integer> appIds=new ArrayList<Integer>();
@@ -24,12 +24,12 @@ public class ProfileProcessTest {
 		int progressStatus=13;
 		System.out.println(jobApplication.processvalidation(appIds, companyId, progressStatus));
 	}
-	@Test
+	//@Test
 	public void TestGetRecruitProcess(){
 		init();
 		System.out.println(config.getRecruitProcess(8));
 	}
-	@Test
+	//@Test
 	public void TestHistory(){
 		init();
 		List<ProcessValidationStruct> records=new ArrayList<ProcessValidationStruct>();
@@ -47,7 +47,7 @@ public class ProfileProcessTest {
 		records.add(ss3);
 		System.out.println(hrDB.getHrHistoryOpertation(records));
 	}
-	@Test
+	//@Test
 	public void TestAts(){
 		init();
 		List<Integer>list=new ArrayList<Integer>();

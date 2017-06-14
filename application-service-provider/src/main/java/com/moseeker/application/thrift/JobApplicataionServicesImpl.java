@@ -1,10 +1,14 @@
 package com.moseeker.application.thrift;
 
 import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.moseeker.application.service.impl.JobApplicataionService;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices.Iface;
 import com.moseeker.thrift.gen.application.struct.ApplicationResponse;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
@@ -19,7 +23,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
  */
 @Service
 public class JobApplicataionServicesImpl implements Iface {
-
+	Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private JobApplicataionService service;
 
@@ -30,8 +34,13 @@ public class JobApplicataionServicesImpl implements Iface {
      * @return 新创建的申请记录ID
      */
     @Override
-    public Response postApplication(JobApplication jobApplication) throws TException {
-        return service.postApplication(jobApplication);
+    public Response postApplication(JobApplication jobApplication){
+    	try{
+    		return service.postApplication(jobApplication);
+    	}catch(Exception e){
+    		logger.error(e.getMessage(),e);
+    		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+    	}
     }
 
 
@@ -41,8 +50,13 @@ public class JobApplicataionServicesImpl implements Iface {
      * @param jobApplication 用户实体
      */
     @Override
-    public Response putApplication(JobApplication jobApplication) throws TException {
-        return service.putApplication(jobApplication);
+    public Response putApplication(JobApplication jobApplication){
+    	try{
+    		return service.putApplication(jobApplication);
+    	}catch(Exception e){
+    		logger.error(e.getMessage(),e);
+    		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
+    	}
     }
 
     /**
@@ -51,8 +65,13 @@ public class JobApplicataionServicesImpl implements Iface {
      * @param applicationId 申请Id
      */
     @Override
-    public Response deleteApplication(long applicationId) throws TException {
-        return service.deleteApplication(applicationId);
+    public Response deleteApplication(long applicationId){
+    	try{
+    		return service.deleteApplication(applicationId);
+    	}catch(Exception e){
+    		logger.error(e.getMessage(),e);
+    		return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_ARCHIVE_FAILED);
+    	}
     }
 
     /**
@@ -63,7 +82,12 @@ public class JobApplicataionServicesImpl implements Iface {
      */
     @Override
     public Response postJobResumeOther(JobResumeOther jobResumeOther) throws TException {
-        return service.postJobResumeOther(jobResumeOther);
+    	try{
+    		return service.postJobResumeOther(jobResumeOther);
+    	}catch(Exception e){
+    		logger.error(e.getMessage(),e);
+    		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+    	}
     }
 
     /**
@@ -108,6 +132,11 @@ public class JobApplicataionServicesImpl implements Iface {
 
     @Override
     public Response postApplicationIfNotApply(JobApplication application) throws TException {
-        return service.postApplicationIfNotApply(application);
+    	try{
+    		return service.postApplicationIfNotApply(application);
+    	}catch(Exception e){
+    		logger.error(e.getMessage(),e);
+    		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+    	}
     }
 }

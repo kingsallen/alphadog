@@ -8,11 +8,11 @@ public class JobCustomTest {
 //		context.refresh();
 //		position= context.getBean(PositionServiceImpl.class);
 //	}
-//	@Test
+//	//@Test
 //	public void getCustomField() throws Exception{
 //		PositionDao.Iface position = ServiceManager.SERVICEMANAGER
 //				.getService(PositionDao.Iface.class);
-//		CommonQuery query=new CommonQuery();
+//		Query query=new Query();
 //		HashMap<String,String> map=new HashMap<String,String>();
 //		map.put("company_id", "1");
 //		query.setEqualFilter(map);

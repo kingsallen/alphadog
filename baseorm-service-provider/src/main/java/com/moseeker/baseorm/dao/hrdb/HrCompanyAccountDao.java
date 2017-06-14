@@ -1,11 +1,11 @@
 package com.moseeker.baseorm.dao.hrdb;
 
-import org.springframework.stereotype.Repository;
-
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyAccountDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +13,13 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyAccountDO;
 * 2017-03-21
 */
 @Repository
-public class HrCompanyAccountDao extends StructDaoImpl<HrCompanyAccountDO, HrCompanyAccountRecord, HrCompanyAccount> {
+public class HrCompanyAccountDao extends JooqCrudImpl<HrCompanyAccountDO, HrCompanyAccountRecord> {
 
+    public HrCompanyAccountDao() {
+        super(HrCompanyAccount.HR_COMPANY_ACCOUNT, HrCompanyAccountDO.class);
+    }
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = HrCompanyAccount.HR_COMPANY_ACCOUNT;
-   }
+    public HrCompanyAccountDao(TableImpl<HrCompanyAccountRecord> table, Class<HrCompanyAccountDO> hrCompanyAccountDOClass) {
+        super(table, hrCompanyAccountDOClass);
+    }
 }

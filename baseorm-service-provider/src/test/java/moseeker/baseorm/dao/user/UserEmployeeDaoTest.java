@@ -1,21 +1,5 @@
 package moseeker.baseorm.dao.user;
 
-import com.alibaba.fastjson.JSON;
-import com.moseeker.baseorm.Thriftservice.UserEmployeeDaoThriftService;
-import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
-import com.moseeker.common.providerutils.QueryUtil;
-import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
-import org.apache.thrift.TException;
-import org.junit.Assert;
-import org.junit.Test;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * Created by eddie on 2017/3/9.
  */
@@ -30,7 +14,7 @@ public class UserEmployeeDaoTest {
 //        service = context.getBean(UserEmployeeDaoThriftService.class);
 //    }
 //
-//    @Test
+//    //@Test
 //    public void testGetUserEmployee() throws TException {
 //        init();
 //        QueryUtil queryUtil = new QueryUtil();
@@ -55,7 +39,7 @@ public class UserEmployeeDaoTest {
 //        Assert.assertTrue(userEmployeeStruct.size() == 0);
 //    }
 //
-//    @Test
+//    //@Test
 //    public void testPostPutUserEmployee() throws TException {
 //        init();
 //
@@ -81,7 +65,7 @@ public class UserEmployeeDaoTest {
 //        Assert.assertEquals(response.getData(),""+userEmployeeStruct.size());
 //    }
 //
-//    @Test
+//    //@Test
 //    public void testDeleteUserEmployee() throws TException {
 //        init();
 //        Map<String,String> filter = new HashMap<>();

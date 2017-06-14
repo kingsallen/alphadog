@@ -1,22 +1,28 @@
 package com.moseeker.baseorm.dao.userdb;
 
-import com.moseeker.baseorm.util.BaseDaoImpl;
-import com.moseeker.common.util.BeanUtils;
-import com.moseeker.db.userdb.tables.UserFavPosition;
-import com.moseeker.db.userdb.tables.records.UserFavPositionRecord;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.dao.struct.UserFavPositionDO;
-import org.springframework.stereotype.Service;
+import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
+import com.moseeker.baseorm.db.userdb.tables.UserFavPosition;
+import com.moseeker.baseorm.db.userdb.tables.records.UserFavPositionRecord;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserFavPositionDO;
+import org.jooq.Condition;
+import org.jooq.Record;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 
-@Service
-public class UserFavPositionDao extends BaseDaoImpl<UserFavPositionRecord, UserFavPosition> {
+@Repository
+public class UserFavPositionDao extends JooqCrudImpl<UserFavPositionDO, UserFavPositionRecord> {
 
-	@Override
-	protected void initJOOQEntity() {
-		this.tableLike = UserFavPosition.USER_FAV_POSITION;
+	public UserFavPositionDao() {
+		super(UserFavPosition.USER_FAV_POSITION, UserFavPositionDO.class);
+	}
+
+	public UserFavPositionDao(TableImpl<UserFavPositionRecord> table, Class<UserFavPositionDO> userFavPositionDOClass) {
+		super(table, userFavPositionDOClass);
 	}
 
 	/**
@@ -24,23 +30,33 @@ public class UserFavPositionDao extends BaseDaoImpl<UserFavPositionRecord, UserF
 	 * @param query
 	 * @return
 	 */
-	public List<UserFavPositionDO> getUserFavPositions(CommonQuery query) {
-		List<UserFavPositionDO> favPositions = new ArrayList<>();
-		
-		try {
-			List<UserFavPositionRecord> records = getResources(query);
-			if(records != null && records.size() > 0) {
-				favPositions = BeanUtils.DBToStruct(UserFavPositionDO.class, records);
-			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			logger.error(e.getMessage(), e);
-		} finally {
-			//do nothing
-		}
-		
-		return favPositions;
+	public List<UserFavPositionDO> getUserFavPositions(Query query) {
+		return getDatas(query);
 	}
+
+    /**
+     * 判断用户是否我感兴趣
+     * <p>
+     *
+     * @param favorite
+     *            0:收藏, 1:取消收藏, 2:感兴趣
+     */
+    public int getUserFavPositionCountByUserIdAndPositionId(int userId, int positionId, byte favorite)
+            throws Exception {
+
+        Condition condition = UserFavPosition.USER_FAV_POSITION.SYSUSER_ID.equal(userId)
+                .and(UserFavPosition.USER_FAV_POSITION.POSITION_ID.equal(positionId))
+                .and(UserFavPosition.USER_FAV_POSITION.FAVORITE.equal(favorite));
+
+        Record record = create.selectCount().from(UserFavPosition.USER_FAV_POSITION).where(condition).limit(1).fetchOne();
+        Integer count = (Integer) record.getValue(0);
+        return count;
+    }
+
+    public JobPositionRecord getUserFavPositiond(int positionId) {
+        JobPositionRecord record = create.selectFrom(JobPosition.JOB_POSITION)
+                .where(JobPosition.JOB_POSITION.ID.equal(positionId)).fetchOne();
+        return record;
+    }
 
 }

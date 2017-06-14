@@ -33,7 +33,7 @@
 //	@Mock
 //	public TalentpoolDao.Iface talentpoolDao;
 //	
-//	@Test
+//	//@Test
 //	public void getSearchConditionTest() {
 //		try {
 //			// case 1: 请求成功
@@ -48,7 +48,7 @@
 //		}
 //	}
 //	
-//	@Test
+//	//@Test
 //	public void postSearchConditionTest() {
 //		try {
 //			SearchCondition searchCondition = new SearchCondition();
@@ -72,7 +72,7 @@
 //		}
 //	}
 //	
-//	@Test
+//	//@Test
 //	public void delSearchConditionTest() {
 //		try {
 //			when(searchConditionDao.delResource(anyInt(), anyInt())).thenThrow(TException.class).thenReturn(0).thenReturn(1);
@@ -88,7 +88,7 @@
 //		}
 //	}
 //	
-//	@Test
+//	//@Test
 //	public void joinTalentpoolTest() {
 //		try {
 //			when(talentpoolDao.getResource(any())).thenThrow(TException.class).thenReturn(null, null, new Talentpool(0, 50, 22, "", "", 1), new Talentpool(1, 50, 22, "", "", 1));
@@ -114,7 +114,7 @@
 //		}
 //	}
 //	
-//	@Test
+//	//@Test
 //	public void shiftOutTalentpoolTest() {
 //		try {
 //			when(talentpoolDao.getResource(any())).thenThrow(TException.class).thenReturn(null, new Talentpool(0, 50, 22, "", "", 0), new Talentpool(1, 50, 22, "", "", 0));

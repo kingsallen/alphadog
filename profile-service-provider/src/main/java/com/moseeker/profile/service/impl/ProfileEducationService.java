@@ -1,6 +1,36 @@
 package com.moseeker.profile.service.impl;
 
-import java.text.ParseException;
+import com.moseeker.baseorm.dao.dictdb.DictCollegeDao;
+import com.moseeker.baseorm.dao.dictdb.DictMajorDao;
+import com.moseeker.baseorm.dao.profiledb.ProfileEducationDao;
+import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileEducationRecord;
+import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.ExceptionUtils;
+import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.util.Pagination;
+import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Condition;
+import com.moseeker.common.util.query.Order;
+import com.moseeker.common.util.query.OrderBy;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.profile.constants.ValidationMessage;
+import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
+import com.moseeker.profile.utils.ProfileValidation;
+import com.moseeker.thrift.gen.dao.struct.dictdb.DictCollegeDO;
+import com.moseeker.thrift.gen.dao.struct.dictdb.DictMajorDO;
+import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileEducationDO;
+import com.moseeker.thrift.gen.profile.struct.Education;
+
+import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,389 +38,359 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.apache.thrift.TException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.providerutils.QueryUtil;
-import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
-import com.moseeker.common.util.BeanUtils;
-import com.moseeker.common.util.StringUtils;
-import com.moseeker.db.dictdb.tables.records.DictCollegeRecord;
-import com.moseeker.db.dictdb.tables.records.DictMajorRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileEducationRecord;
-import com.moseeker.profile.constants.ValidationMessage;
-import com.moseeker.profile.dao.CollegeDao;
-import com.moseeker.profile.dao.EducationDao;
-import com.moseeker.profile.dao.MajorDao;
-import com.moseeker.profile.dao.ProfileDao;
-import com.moseeker.profile.utils.ProfileValidation;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.profile.struct.Education;
+import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @CounterIface
-public class ProfileEducationService extends JOOQBaseServiceImpl<Education, ProfileEducationRecord> {
+public class ProfileEducationService {
 
-	Logger logger = LoggerFactory.getLogger(ProfileEducationService.class);
+    Logger logger = LoggerFactory.getLogger(ProfileEducationService.class);
 
-	@Autowired
-	private EducationDao dao;
+    @Autowired
+    private ProfileEducationDao dao;
 
-	@Autowired
-	private CollegeDao collegeDao;
+    @Autowired
+    private DictCollegeDao collegeDao;
 
-	@Autowired
-	private MajorDao majorDao;
-	
-	@Autowired
-	private ProfileDao profileDao;
+    @Autowired
+    private DictMajorDao majorDao;
 
-	@Autowired
-	private ProfileCompletenessImpl completenessImpl;
+    @Autowired
+    private ProfileProfileDao profileDao;
 
-	public EducationDao getDao() {
-		return dao;
-	}
+    @Autowired
+    private ProfileCompletenessImpl completenessImpl;
 
-	public void setDao(EducationDao dao) {
-		this.dao = dao;
-	}
+    public List<Education> getResources(Query query) throws TException {
+        // 按照结束时间倒序
+        query.getOrders().add(new OrderBy("end_until_now", Order.DESC));
+        query.getOrders().add(new OrderBy("start", Order.DESC));
 
-	public CollegeDao getCollegeDao() {
-		return collegeDao;
-	}
+        List<Education> educations = DBsToStructs(dao.getRecords(query));
+        if (educations != null && educations.size() > 0) {
+            List<Integer> College_codes = new ArrayList<>();
+            List<String> Major_codes = new ArrayList<>();
+            educations.forEach(education -> {
+                // cityCodes.add(basic.getCity());
+                if (education.getCollege_code() > 0 && StringUtils.isNullOrEmpty(education.getCollege_name())) {
+                    College_codes.add((int) education.getCollege_code());
+                }
+                if (!StringUtils.isNullOrEmpty(education.getMajor_code())
+                        && StringUtils.isNullOrEmpty(education.getMajor_name())) {
+                    Major_codes.add(education.getMajor_code());
+                }
+            });
+            // 学校
+            List<DictCollegeDO> colleges = collegeDao.getCollegesByIDs(College_codes);
+            if (colleges != null && colleges.size() > 0) {
+                for (Education education : educations) {
+                    for (DictCollegeDO college : colleges) {
+                        if (education.getCollege_code() == college.getCode()) {
+                            education.setCollege_name(college.getName());
+                            education.setCollege_logo(college.getLogo());
+                            break;
+                        }
+                    }
+                }
+            }
+            // 专业
+            List<DictMajorDO> majors = majorDao.getMajorsByIDs(Major_codes);
+            if (majors != null && majors.size() > 0) {
+                for (Education education : educations) {
+                    for (DictMajorDO major : majors) {
+                        if (education.getMajor_code().equals(major.getCode())) {
+                            education.setMajor_name(major.getName());
+                            break;
+                        }
+                    }
+                }
+            }
 
-	public void setCollegeDao(CollegeDao collegeDao) {
-		this.collegeDao = collegeDao;
-	}
+        }
+        return educations;
+    }
 
-	public MajorDao getMajorDao() {
-		return majorDao;
-	}
+    public Education getResource(Query query) throws TException {
+        Education result = DBToStruct(dao.getRecord(query));
+        if (result != null) {
+            Query dictQuery = new Query.QueryBuilder().where("code", result.getCollege_code()).buildQuery();
+            DictCollegeDO college = collegeDao.getData(dictQuery);
+            if (college != null) {
+                result.setCollege_name(college.getName());
+                result.setCollege_logo(college.getLogo());
+            }
+            Query majorQuery = new Query.QueryBuilder().where("code", result.getMajor_code()).buildQuery();
+            DictMajorDO major = majorDao.getData(majorQuery);
+            if (major != null) {
+                result.setMajor_name(major.getName());
+            }
+        }
+        return result;
+    }
 
-	public void setMajorDao(MajorDao majorDao) {
-		this.majorDao = majorDao;
-	}
+    public Pagination getPagination(Query query) throws TException {
+        int totalRow = dao.getCount(query);
+        List<?> datas = dao.getDatas(query);
 
-	public ProfileDao getProfileDao() {
-		return profileDao;
-	}
+        return ProfileUtils.getPagination(totalRow, query.getPageNum(), query.getPageSize(), datas);
+    }
 
-	public void setProfileDao(ProfileDao profileDao) {
-		this.profileDao = profileDao;
-	}
+    /**
+     * start-start_date
+     * end-end_data
+     *
+     * @param education
+     * @return
+     * @throws TException
+     */
+    @Transactional
+    public Education postResource(Education education) throws TException {
+        Education result = null;
+        if (education != null) {
+            //添加信息校验
+            ValidationMessage<Education> vm = ProfileValidation.verifyEducation(education);
+            if (!vm.isPass()) {
+                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", vm.getResult()));
+            }
+            if (education.getCollege_code() > 0) {
+                DictCollegeDO college = collegeDao.getCollegeByID(education.getCollege_code());
+                if (college != null) {
+                    education.setCollege_name(college.getName());
+                    education.setCollege_logo(college.getLogo());
+                } else {
+                    throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_DICT_COLLEGE_NOTEXIST);
+                }
+            }
+            if (!StringUtils.isNullOrEmpty(education.getMajor_code())) {
+                DictMajorDO major = majorDao.getMajorByID(education.getMajor_code());
+                if (major != null) {
+                    education.setMajor_name(major.getName());
+                } else {
+                    throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_DICT_MAJOR_NOTEXIST);
+                }
+            }
 
-	public ProfileCompletenessImpl getCompletenessImpl() {
-		return completenessImpl;
-	}
-
-	public void setCompletenessImpl(ProfileCompletenessImpl completenessImpl) {
-		this.completenessImpl = completenessImpl;
-	}
-
-	@Override
-	protected void initDao() {
-		super.dao = this.dao;
-	}
-
-	@Override
-	public Response getResources(CommonQuery query) throws TException {
-		try {
-			// 按照结束时间倒序
-			query.setSortby("end_until_now,start");
-			query.setOrder("desc,desc");
-			
-			List<ProfileEducationRecord> educationRecords = dao.getResources(query);
-			List<Education> educations = DBsToStructs(educationRecords);
-			if (educations != null && educations.size() > 0) {
-				List<Integer> collegeCodes = new ArrayList<>();
-				List<String> majorCodes = new ArrayList<>();
-				educations.forEach(education -> {
-					// cityCodes.add(basic.getCity());
-					if (education.getCollege_code() > 0 && StringUtils.isNullOrEmpty(education.getCollege_name())) {
-						collegeCodes.add((int) education.getCollege_code());
-					}
-					if (!StringUtils.isNullOrEmpty(education.getMajor_code())
-							&& StringUtils.isNullOrEmpty(education.getMajor_name())) {
-						majorCodes.add(education.getMajor_code());
-					}
-				});
-				// 学校
-				List<DictCollegeRecord> colleges = collegeDao.getCollegesByIDs(collegeCodes);
-				if (colleges != null && colleges.size() > 0) {
-					for (Education education : educations) {
-						for (DictCollegeRecord college : colleges) {
-							if (education.getCollege_code() == college.getCode().intValue()) {
-								education.setCollege_name(college.getName());
-								education.setCollege_logo(college.getLogo());
-								break;
-							}
-						}
-					}
-				}
-				// 专业
-				List<DictMajorRecord> majors = majorDao.getMajorsByIDs(majorCodes);
-				if (majors != null && majors.size() > 0) {
-					for (Education education : educations) {
-						for (DictMajorRecord major : majors) {
-							if (education.getMajor_code().equals(major.getCode())) {
-								education.setMajor_name(major.getName());
-								break;
-							}
-						}
-					}
-				}
-				return ResponseUtils.success(educations);
-			}
-		} catch (Exception e) {
-			logger.error("getResources error", e);
-			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-		} finally {
-			// do nothing
-		}
-		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
-	}
-
-	@Override
-	public Response getResource(CommonQuery query) throws TException {
-		try {
-			ProfileEducationRecord educationRecord = dao.getResource(query);
-			if (educationRecord != null) {
-				Education education = DBToStruct(educationRecord);
-				DictCollegeRecord college = collegeDao.getCollegeByID(educationRecord.getCollegeCode().intValue());
-				if (college != null) {
-					education.setCollege_name(college.getName());
-					education.setCollege_logo(college.getLogo());
-				}
-				DictMajorRecord major = majorDao.getMajorByID(educationRecord.getMajorCode());
-				if (major != null) {
-					education.setMajor_name(major.getName());
-				}
-				return ResponseUtils.success(educationRecord);
-			}
-		} catch (Exception e) {
-			logger.error("getResources error", e);
-			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-		} finally {
-			// do nothing
-		}
-		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
-	}
-
-	@Override
-	public Response postResource(Education education) throws TException {
-		try {
-			//添加信息校验
-			ValidationMessage<Education> vm = ProfileValidation.verifyEducation(education);
-			if(!vm.isPass()) {
-				return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", vm.getResult()));
-			}
-			if (education.getCollege_code() > 0) {
-				DictCollegeRecord college = collegeDao.getCollegeByID(education.getCollege_code());
-				if (college != null) {
-					education.setCollege_name(college.getName());
-					education.setCollege_logo(college.getLogo());
-				} else {
-					return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_COLLEGE_NOTEXIST);
-				}
-			}
-			if (!StringUtils.isNullOrEmpty(education.getMajor_code())) {
-				DictMajorRecord major = majorDao.getMajorByID(education.getMajor_code());
-				if (major != null) {
-					education.setMajor_name(major.getName());
-				} else {
-					return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_MAJOR_NOTEXIST);
-				}
-			}
-			ProfileEducationRecord record = structToDB(education);
-			int id = dao.postResource(record);
-			if (id > 0) {
-				
-				Set<Integer> profileIds = new HashSet<>();
-				profileIds.add(education.getProfile_id());
-				profileDao.updateUpdateTime(profileIds);
-				
+            result = DBToStruct(dao.addRecord(structToDB(education)));
+            if (result != null && result.getId() > 0) {
+                Set<Integer> profileIds = new HashSet<>();
+                profileIds.add(education.getProfile_id());
+                profileDao.updateUpdateTime(profileIds);
+                
 				/* 计算profile完整度 */
-				completenessImpl.reCalculateProfileEducation(education.getProfile_id(), 0);
-				return ResponseUtils.success(String.valueOf(id));
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			e.printStackTrace();
-			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-		} finally {
-			// do nothing
-		}
-		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
-	}
+                completenessImpl.reCalculateProfileEducation(education.getProfile_id(), 0);
+            }
+        }
+        return result;
 
-	@Override
-	public Response putResource(Education education) throws TException {
-		if (education.getCollege_code() > 0) {
-			DictCollegeRecord college = collegeDao.getCollegeByID(education.getCollege_code());
-			if (college != null) {
-				education.setCollege_name(college.getName());
-				education.setCollege_logo(college.getLogo());
-			} else {
-				return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_COLLEGE_NOTEXIST);
-			}
-		}
-		if (!StringUtils.isNullOrEmpty(education.getMajor_code())) {
-			DictMajorRecord major = majorDao.getMajorByID(education.getMajor_code());
-			if (major != null) {
-				education.setMajor_name(major.getName());
-			} else {
-				return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_MAJOR_NOTEXIST);
-			}
-		}
-		Response response = super.putResource(education);
-		if (response.getStatus() == 0) {
-			updateUpdateTime(education);
-			/* 计算profile完整度 */
-			completenessImpl.reCalculateProfileEducation(education.getProfile_id(), education.getId());
-		}
-		return response;
-	}
+    }
 
-	@Override
-	public Response postResources(List<Education> structs) throws TException {
-		//添加信息校验
-		if(structs != null && structs.size() > 0) {
-			Iterator<Education> ie = structs.iterator();
-			while(ie.hasNext()) {
-				Education education = ie.next();
-				ValidationMessage<Education> vm = ProfileValidation.verifyEducation(education);
-				if(!vm.isPass()) {
-					ie.remove();
-				}
-			}
-		}
-		Response response = super.postResources(structs);
-		if (response.getStatus() == 0) {
-			if (structs != null && structs.size() > 0) {
-				Set<Integer> profileIds = new HashSet<>();
-				structs.forEach(struct -> {
-					if (struct.getProfile_id() > 0) {
-						profileIds.add(struct.getProfile_id());
-					}
-				});
-				
-				profileDao.updateUpdateTime(profileIds);
-				
-				profileIds.forEach(profileId -> {
-					/* 计算profile完整度 */
-					completenessImpl.reCalculateProfileEducation(profileId, 0);
-				});
-			}
-		}
-		return response;
-	}
+    @Transactional
+    public int putResource(Education education) throws TException {
+        int result = 0;
 
-	@Override
-	public Response putResources(List<Education> structs) throws TException {
-		Response response = super.putResources(structs);
-		if (response.getStatus() == 0 && structs != null && structs.size() > 0) {
-			updateUpdateTime(structs);
-			structs.forEach(struct -> {
-				/* 计算profile完整度 */
-				completenessImpl.reCalculateProfileEducation(struct.getProfile_id(), struct.getId());
-			});
-		}
-		return response;
-	}
+        if (education != null) {
+            if (education.getCollege_code() > 0) {
+                DictCollegeDO college = collegeDao.getCollegeByID(education.getCollege_code());
+                if (college != null) {
+                    education.setCollege_name(college.getName());
+                    education.setCollege_logo(college.getLogo());
+                } else {
+                    throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_DICT_COLLEGE_NOTEXIST);
+                }
+            }
+            if (!StringUtils.isNullOrEmpty(education.getMajor_code())) {
+                DictMajorDO major = majorDao.getMajorByID(education.getMajor_code());
+                if (major != null) {
+                    education.setMajor_name(major.getName());
+                } else {
+                    throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_DICT_MAJOR_NOTEXIST);
+                }
+            }
 
-	@Override
-	public Response delResources(List<Education> structs) throws TException {
-		QueryUtil qu = new QueryUtil();
-		StringBuffer sb = new StringBuffer("[");
-		structs.forEach(struct -> {
-			sb.append(struct.getId());
-			sb.append(",");
-		});
-		sb.deleteCharAt(sb.length() - 1);
-		sb.append("]");
-		qu.addEqualFilter("id", sb.toString());
+            result = dao.updateRecord(structToDB(education));
 
-		List<ProfileEducationRecord> educationRecords = null;
-		try {
-			educationRecords = dao.getResources(qu);
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-		Set<Integer> profileIds = new HashSet<>();
-		if (educationRecords != null && educationRecords.size() > 0) {
-			educationRecords.forEach(education -> {
-				profileIds.add(education.getProfileId().intValue());
-			});
-		}
-		Response response = super.delResources(structs);
-		if (response.getStatus() == 0 && profileIds != null && profileIds.size() > 0) {
-			updateUpdateTime(structs);
-			profileIds.forEach(profileId -> {
-				/* 计算profile完整度 */
-				completenessImpl.reCalculateProfileEducation(profileId, profileId);
-			});
-		}
-		return response;
-	}
+            if (result > 0) {
+                updateUpdateTime(education);
+            /* 计算profile完整度 */
+                completenessImpl.reCalculateProfileEducation(education.getProfile_id(), education.getId());
+            }
+        }
+        return result;
+    }
 
-	@Override
-	public Response delResource(Education struct) throws TException {
-		QueryUtil qu = new QueryUtil();
-		qu.addEqualFilter("id", String.valueOf(struct.getId()));
-		ProfileEducationRecord education = null;
-		try {
-			education = dao.getResource(qu);
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-		Response response = super.delResource(struct);
-		if (response.getStatus() == 0 && education != null) {
-			
-			updateUpdateTime(struct);
-			
-			/* 计算profile完整度 */
-			completenessImpl.reCalculateProfileEducation(education.getProfileId().intValue(),
-					education.getId().intValue());
-		}
-		return response;
-	}
-	
-	@Override
-	protected Education DBToStruct(ProfileEducationRecord r) {
-		Map<String, String> equalRules = new HashMap<>();
-		equalRules.put("start", "start_date");
-		equalRules.put("end", "end_date");
-		return (Education) BeanUtils.DBToStruct(Education.class, r, equalRules);
-	}
+    @Transactional
+    public List<Education> postResources(List<Education> structs) throws TException {
 
-	@Override
-	protected ProfileEducationRecord structToDB(Education attachment) throws ParseException {
-		Map<String, String> equalRules = new HashMap<>();
-		equalRules.put("start", "start_date");
-		equalRules.put("end", "end_date");
-		return (ProfileEducationRecord) BeanUtils.structToDB(attachment, ProfileEducationRecord.class, equalRules);
-	}
-	
-	public void updateUpdateTime(List<Education> educations) {
-		HashSet<Integer> educationIds = new HashSet<>();
-		educations.forEach(education -> {
-			educationIds.add(education.getId());
-		});
-		dao.updateProfileUpdateTime(educationIds);
-	}
-	
-	private void updateUpdateTime(Education education) {
-		List<Education> educations = new ArrayList<>();
-		educations.add(education);
-		updateUpdateTime(educations);
-	}
+        List<Education> resultDatas = new ArrayList<>();
+
+        if (structs != null && structs.size() > 0) {
+
+            //添加信息校验
+            if (structs != null && structs.size() > 0) {
+                Iterator<Education> ie = structs.iterator();
+                while (ie.hasNext()) {
+                    Education education = ie.next();
+                    ValidationMessage<Education> vm = ProfileValidation.verifyEducation(education);
+                    if (!vm.isPass()) {
+                        ie.remove();
+                    }
+                }
+            }
+
+            if (structs.size() > 0) {
+
+                List<ProfileEducationRecord> records = structsToDBs(structs);
+
+                records = dao.addAllRecord(records);
+
+                resultDatas = DBsToStructs(records);
+                Set<Integer> profileIds = new HashSet<>();
+                resultDatas.forEach(struct -> {
+                    if (struct.getProfile_id() > 0) {
+                        profileIds.add(struct.getProfile_id());
+                    }
+                });
+
+                profileDao.updateUpdateTime(profileIds);
+
+                profileIds.forEach(profileId -> {
+                    /* 计算profile完整度 */
+                    completenessImpl.reCalculateProfileEducation(profileId, 0);
+                });
+            }
+        }
+        return resultDatas;
+    }
+
+    @Transactional
+    public int[] putResources(List<Education> structs) throws TException {
+
+        int[] result = new int[0];
+
+        if (structs != null && structs.size() > 0) {
+
+            result = dao.updateRecords(structsToDBs(structs));
+
+            List<Education> updatedDatas = new ArrayList<>();
+
+            for (int i = 0; i < result.length; i++) {
+                if (result[i] > 0) updatedDatas.add(structs.get(i));
+            }
+
+            updateUpdateTime(updatedDatas);
+            updatedDatas.forEach(struct -> {
+                /* 计算profile完整度 */
+                completenessImpl.reCalculateProfileEducation(struct.getProfile_id(), struct.getId());
+            });
+        }
+        return result;
+    }
+
+    @Transactional
+    public int[] delResources(List<Education> structs) throws TException {
+        if (structs != null && structs.size() > 0) {
+            Query query = new Query
+                    .QueryBuilder()
+                    .where(Condition.buildCommonCondition("id",
+                            structs.stream()
+                                    .map(struct -> struct.getId())
+                                    .collect(Collectors.toList()),
+                            ValueOp.IN)).buildQuery();
+            //找到要删除的数据
+            List<ProfileEducationDO> deleteDatas = dao.getDatas(query);
+
+            //正式删除数据
+            int[] result = dao.deleteRecords(structsToDBs(structs));
+
+            if (deleteDatas != null && deleteDatas.size() > 0) {
+                //更新对应的profile更新时间
+                profileDao.updateUpdateTime(deleteDatas.stream().map(data -> data.getProfileId()).collect(Collectors.toSet()));
+                for (ProfileEducationDO data : deleteDatas) {
+                    completenessImpl.reCalculateProfileEducation(data.getProfileId(), 0);
+                }
+            }
+            return result;
+        } else {
+            return new int[0];
+        }
+    }
+
+    @Transactional
+    public int delResource(Education struct) throws TException {
+        int result = 0;
+        if (struct != null) {
+            Query query = new Query
+                    .QueryBuilder()
+                    .where(Condition.buildCommonCondition("id", struct.getId())).buildQuery();
+            //找到要删除的数据
+            ProfileEducationDO deleteData = dao.getData(query);
+            if (deleteData != null) {
+                //正式删除数据
+                result = dao.deleteData(deleteData);
+                if (result > 0) {
+                    updateUpdateTime(struct);
+                    /* 计算profile完整度 */
+                    completenessImpl.reCalculateProfileEducation(deleteData.getProfileId(), 0);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    protected Education DBToStruct(ProfileEducationRecord r) {
+        Map<String, String> equalRules = new HashMap<>();
+        equalRules.put("start", "start_date");
+        equalRules.put("end", "end_date");
+        return BeanUtils.DBToStruct(Education.class, r, equalRules);
+    }
+
+    protected ProfileEducationRecord structToDB(Education attachment) {
+        Map<String, String> equalRules = new HashMap<>();
+        equalRules.put("start", "start_date");
+        equalRules.put("end", "end_date");
+        return BeanUtils.structToDB(attachment, ProfileEducationRecord.class, equalRules);
+    }
+
+    protected List<Education> DBsToStructs(List<ProfileEducationRecord> records) {
+        List<Education> structs = new ArrayList<>();
+        if (records != null && records.size() > 0) {
+            for (ProfileEducationRecord r : records) {
+                structs.add(DBToStruct(r));
+            }
+        }
+        return structs;
+    }
+
+    protected List<ProfileEducationRecord> structsToDBs(List<Education> records) {
+        List<ProfileEducationRecord> structs = new ArrayList<>();
+        if (records != null && records.size() > 0) {
+            for (Education r : records) {
+                structs.add(structToDB(r));
+            }
+        }
+        return structs;
+    }
+
+    public void updateUpdateTime(List<Education> educations) {
+        if (educations == null || educations.size() == 0) return;
+
+        HashSet<Integer> educationIds = new HashSet<>();
+
+        educations.forEach(education -> {
+            educationIds.add(education.getId());
+        });
+        dao.updateProfileUpdateTime(educationIds);
+    }
+
+    private void updateUpdateTime(Education education) {
+
+        if (education == null) return;
+
+        List<Education> educations = new ArrayList<>();
+        educations.add(education);
+        updateUpdateTime(educations);
+    }
+
 }

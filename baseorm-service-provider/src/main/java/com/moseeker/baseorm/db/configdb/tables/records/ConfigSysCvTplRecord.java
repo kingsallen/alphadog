@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSysCvTplRecord extends UpdatableRecordImpl<ConfigSysCvTplRecord> implements Record14<Integer, String, String, Integer, String, Integer, Integer, Timestamp, Timestamp, Integer, Integer, Integer, String, String> {
 
-    private static final long serialVersionUID = 2079268620;
+    private static final long serialVersionUID = 509525538;
 
     /**
      * Setter for <code>configdb.config_sys_cv_tpl.id</code>.
@@ -75,14 +75,14 @@ public class ConfigSysCvTplRecord extends UpdatableRecordImpl<ConfigSysCvTplReco
     }
 
     /**
-     * Setter for <code>configdb.config_sys_cv_tpl.field_type</code>. 属性类型 0:短文本, 1:长文本,  2:多选, 3:单选, 4:长tag, 5tag:, 6:时间, 7img, 8:复合字段-单条, 9:复合字段-多条,10:下拉列表, 11:数字输入框(用于校验)
+     * Setter for <code>configdb.config_sys_cv_tpl.field_type</code>. 属性类型 0:短文本, 1:长文本,  2:多选, 3:单选, 4:长tag, 5:tag:, 6:时间, 7:img, 8:复合字段-单条, 9:复合字段-多条,10:下拉列表, 11:数字输入框(用于校验) 12:城市选择控件 13:英文文本
      */
     public void setFieldType(Integer value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>configdb.config_sys_cv_tpl.field_type</code>. 属性类型 0:短文本, 1:长文本,  2:多选, 3:单选, 4:长tag, 5tag:, 6:时间, 7img, 8:复合字段-单条, 9:复合字段-多条,10:下拉列表, 11:数字输入框(用于校验)
+     * Getter for <code>configdb.config_sys_cv_tpl.field_type</code>. 属性类型 0:短文本, 1:长文本,  2:多选, 3:单选, 4:长tag, 5:tag:, 6:时间, 7:img, 8:复合字段-单条, 9:复合字段-多条,10:下拉列表, 11:数字输入框(用于校验) 12:城市选择控件 13:英文文本
      */
     public Integer getFieldType() {
         return (Integer) get(3);

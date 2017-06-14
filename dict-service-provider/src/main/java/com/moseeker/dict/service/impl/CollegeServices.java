@@ -1,30 +1,24 @@
 package com.moseeker.dict.service.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.thrift.TException;
-import org.jooq.Record;
-import org.jooq.types.UInteger;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.alibaba.fastjson.JSON;
+import com.moseeker.baseorm.dao.dictdb.DictCollegeDao;
+import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.redis.RedisClient;
-import com.moseeker.common.redis.RedisClientFactory;
-import com.moseeker.dict.dao.CollegeDao;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dict.struct.College;
+import java.util.*;
+import javax.annotation.Resource;
+import org.apache.thrift.TException;
+import org.jooq.Record;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class CollegeServices {
@@ -32,14 +26,17 @@ public class CollegeServices {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    protected CollegeDao dao;
+    protected DictCollegeDao dao;
+
+    @Resource(name = "cacheClient")
+    private RedisClient redisClient;
 
     protected College DBToStruct(Record r) {
         College c = new College();
-        c.setCollege_code(((UInteger)r.getValue("college_code")).intValue());
+        c.setCollege_code((Integer) r.getValue("college_code"));
         c.setCollge_name((String)r.getValue("college_name"));
         c.setCollge_logo((String)r.getValue("college_logo"));
-        c.setProvince_code(((UInteger)r.getValue("province_code")).intValue());
+        c.setProvince_code((Integer) r.getValue("province_code"));
         c.setProvince_name((String)r.getValue("province_name"));
         return c;
     }
@@ -56,18 +53,16 @@ public class CollegeServices {
 
     @CounterIface
     public Response getResources(CommonQuery query) throws TException {
-        RedisClient rc;
         String cachKey = genCachKey(query);
         String cachedResult = null;
         Response result = null;
         String patternString = "DICT_COLLEGE";
         int appid = 0; // query.appid
         try {
-        		rc = RedisClientFactory.getCacheClient();
-            cachedResult = rc.get(appid, patternString, cachKey, () -> {
+            cachedResult = redisClient.get(appid, patternString, cachKey, () -> {
                 String r = null;
                 try {
-                    List joinedResult = this.dao.getJoinedResults(query);
+                    List joinedResult = this.dao.getJoinedResults(QueryConvert.commonQueryConvertToQuery(query));
                     List<College> structs = DBsToStructs(joinedResult);
                     Collection transformed = transformData(structs);
                     r = JSON.toJSONString(ResponseUtils.success(transformed));
@@ -83,7 +78,7 @@ public class CollegeServices {
         		WarnService.notify(e);
         } catch(Exception e) {
             e.printStackTrace();
-            List joinedResult = this.dao.getJoinedResults(query);
+            List joinedResult = this.dao.getJoinedResults(QueryConvert.commonQueryConvertToQuery(query));
             List<College> structs = DBsToStructs(joinedResult);
             result = ResponseUtils.success(transformData(structs));
         }

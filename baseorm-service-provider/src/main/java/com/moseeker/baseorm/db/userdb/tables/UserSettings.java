@@ -20,8 +20,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UByte;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -37,7 +35,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserSettings extends TableImpl<UserSettingsRecord> {
 
-    private static final long serialVersionUID = -1878119097;
+    private static final long serialVersionUID = 1735915843;
 
     /**
      * The reference instance of <code>userdb.user_settings</code>
@@ -55,12 +53,12 @@ public class UserSettings extends TableImpl<UserSettingsRecord> {
     /**
      * The column <code>userdb.user_settings.id</code>. 主key
      */
-    public final TableField<UserSettingsRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
+    public final TableField<UserSettingsRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "主key");
 
     /**
      * The column <code>userdb.user_settings.user_id</code>. user_user.id, 用户id
      */
-    public final TableField<UserSettingsRecord, UInteger> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "user_user.id, 用户id");
+    public final TableField<UserSettingsRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "user_user.id, 用户id");
 
     /**
      * The column <code>userdb.user_settings.banner_url</code>. profile banner 的qiniu 相对url
@@ -70,7 +68,7 @@ public class UserSettings extends TableImpl<UserSettingsRecord> {
     /**
      * The column <code>userdb.user_settings.privacy_policy</code>. 0:公开, 10:仅对hr公开, 20:完全保密
      */
-    public final TableField<UserSettingsRecord, UByte> PRIVACY_POLICY = createField("privacy_policy", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.TINYINTUNSIGNED)), this, "0:公开, 10:仅对hr公开, 20:完全保密");
+    public final TableField<UserSettingsRecord, Byte> PRIVACY_POLICY = createField("privacy_policy", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0:公开, 10:仅对hr公开, 20:完全保密");
 
     /**
      * Create a <code>userdb.user_settings</code> table reference
@@ -106,7 +104,7 @@ public class UserSettings extends TableImpl<UserSettingsRecord> {
      * {@inheritDoc}
      */
     @Override
-    public Identity<UserSettingsRecord, UInteger> getIdentity() {
+    public Identity<UserSettingsRecord, Integer> getIdentity() {
         return Keys.IDENTITY_USER_SETTINGS;
     }
 

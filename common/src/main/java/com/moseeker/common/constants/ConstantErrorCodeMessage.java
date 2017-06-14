@@ -65,6 +65,7 @@ public final class ConstantErrorCodeMessage {
     public static final String CRAWLER_LOGIN2_FAILED = "{'status':32005,'message':'登录失败!'}";
     public static final String CRAWLER_SERVICE_TIMEOUT = "{'status':32006,'message':'服务超时!'}";
     public static final String CRAWLER_SERVICE_PARAM_ERROR = "{'status':32007,'message':'服务超时!'}";
+    public static final String CRAWLER_SERVICE_IMPORT_UPPER_LIMIT = "{'status':32008,'message':'导入次数过多!'}";
 
     public static final String COMPANY_SUPER_REPEART_NAME = "{'status':33001, 'message':'和超级账号重名'}";
 

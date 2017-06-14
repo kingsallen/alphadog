@@ -1,42 +1,52 @@
 package com.moseeker.function.service.chaos;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.moseeker.thrift.gen.dao.service.UserHrAccountDao;
-import com.moseeker.thrift.gen.position.struct.Position;
-import org.apache.thrift.TException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
+import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.constants.PositionSync;
-import com.moseeker.common.providerutils.QueryUtil;
-import com.moseeker.common.redis.RedisClient;
-import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.rpccenter.client.ServiceManager;
-import com.moseeker.thrift.gen.dao.service.CompanyDao;
-import com.moseeker.thrift.gen.dao.service.PositionDao;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
+import com.moseeker.thrift.gen.position.struct.Position;
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * 监听同步完成队列
  * @author wjf
  *
  */
+@Component
 public class PositionSyncConsumer {
 	
 	private static Logger logger = LoggerFactory.getLogger(PositionSyncConsumer.class);
 
-	UserHrAccountDao.Iface userHrAccountDao = ServiceManager.SERVICEMANAGER.getService(UserHrAccountDao.Iface.class);
-	PositionDao.Iface positionDao = ServiceManager.SERVICEMANAGER
-			.getService(PositionDao.Iface.class);
-	
+    @Autowired
+    private JobPositionDao positionDao;
+
+    @Autowired
+    HRThirdPartyPositionDao thirdpartyPositionDao;
+
+    @Autowired
+    private HRThirdPartyAccountDao thirdPartyAccountDao;
+
+    @Resource(name = "cacheClient")
+    private RedisClient redisClient;
+
+    @PostConstruct
 	public void startTask() {
 		new Thread(()-> {
 			while(true) {
@@ -65,7 +75,6 @@ public class PositionSyncConsumer {
 	 * @return
 	 */
 	private String fetchCompledPosition() {
-		RedisClient redisClient = RedisClientFactory.getCacheClient();
 		List<String> result = redisClient.brpop(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_COMPLETED_QUEUE.toString());
 		if(result != null && result.size() > 0) {
 			logger.info("completed queue :"+result.get(1));
@@ -78,6 +87,7 @@ public class PositionSyncConsumer {
 	 * 回写数据
 	 * @param pojo
 	 */
+	@CounterIface
 	private void writeBack(PositionForSyncResultPojo pojo) {
 		List<ThirdPartyPositionData> datas = new ArrayList<>();
 		ThirdPartyPositionData data = new ThirdPartyPositionData();
@@ -103,14 +113,14 @@ public class PositionSyncConsumer {
 		datas.add(data);
 		
 		try {
-			QueryUtil qu = new QueryUtil();
-			qu.addEqualFilter("id", pojo.getPosition_id());
-			logger.info("completed queue search position:"+pojo.getPosition_id());
-			Position p = positionDao.getPosition(qu);
+            Query.QueryBuilder qu = new Query.QueryBuilder();
+			qu.where("id", pojo.getPosition_id());
+			logger.info("completed queue search position:{}", pojo.getPosition_id());
+			Position p = positionDao.getData(qu.buildQuery(), Position.class);
 			if(p != null && p.getId() > 0) {
 				logger.info("completed queue position existî");
 				logger.info("completed queue update thirdpartyposition to synchronized");
-				userHrAccountDao.upsertThirdPartyPositions(datas);
+                thirdpartyPositionDao.upsertThirdPartyPositions(datas);
 				if(pojo.getStatus() == 0) {
 					ThirdPartAccountData d = new ThirdPartAccountData();
 					d.setCompany_id(p.getCompany_id());
@@ -121,12 +131,13 @@ public class PositionSyncConsumer {
 					d.setId(pojo.getAccount_id());
 					//positionDao.updatePosition(p);
 					logger.info("completed queue update thirdpartyposition to synchronized");
-					userHrAccountDao.updatePartyAccountByCompanyIdChannel(d);
+                    thirdPartyAccountDao.updatePartyAccountByCompanyIdChannel(d);
 				}
 			}
-		} catch (TException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
+            logger.error(e.getMessage(), e);
+        } finally {
 			//do nothing
 		}
 	}

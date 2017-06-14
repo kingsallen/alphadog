@@ -1,27 +1,18 @@
 package com.moseeker.profile.utils;
 
+import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.db.profiledb.tables.records.ProfileCredentialsRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileEducationRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileLanguageRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileOtherRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileProjectexpRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileSkillRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileWorkexpRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.*;
 import com.moseeker.profile.constants.ValidationMessage;
-import com.moseeker.profile.dao.entity.ProfileWorkexpEntity;
-import com.moseeker.thrift.gen.profile.struct.Credentials;
-import com.moseeker.thrift.gen.profile.struct.CustomizeResume;
-import com.moseeker.thrift.gen.profile.struct.Education;
-import com.moseeker.thrift.gen.profile.struct.Language;
-import com.moseeker.thrift.gen.profile.struct.ProjectExp;
-import com.moseeker.thrift.gen.profile.struct.Skill;
-import com.moseeker.thrift.gen.profile.struct.WorkExp;
+import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileCredentialsDO;
+import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileEducationDO;
+import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileOtherDO;
+import com.moseeker.thrift.gen.profile.struct.*;
 
 public class ProfileValidation {
 
 	public static ValidationMessage<Credentials> verifyCredential(Credentials credentials) {
-		ValidationMessage<Credentials> vm = new ValidationMessage<Credentials>();
+		ValidationMessage<Credentials> vm = new ValidationMessage<>();
 		if(StringUtils.isNullOrEmpty(credentials.getName())) {
 			vm.addFailedElement("证书名称", "未填写证书名称");
 		}
@@ -35,7 +26,7 @@ public class ProfileValidation {
 		}
 		return vm;
 	}
-	
+
 	public static ValidationMessage<CustomizeResume> verifyCustomizeResume(CustomizeResume customizeResume) {
 		ValidationMessage<CustomizeResume> vm = new ValidationMessage<>();
 		if(StringUtils.isNullOrEmpty(customizeResume.getOther())) {

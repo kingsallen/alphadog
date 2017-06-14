@@ -106,7 +106,7 @@ public class CounterIfaceAop {
 			try(Jedis client = jedisPool.getResource()){
 				client.lpush(redisKey, jsonStr);
 			} catch (Exception e) {
-				log.error(e.getMessage(), e);
+				log.error("redis Connection refused");
 			}
 		});
 		log.info("counterInfo:{}", jsonStr);

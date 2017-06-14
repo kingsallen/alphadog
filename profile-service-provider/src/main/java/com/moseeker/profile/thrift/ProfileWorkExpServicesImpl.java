@@ -2,6 +2,10 @@ package com.moseeker.profile.thrift;
 
 import java.util.List;
 
+import com.moseeker.baseorm.tool.QueryConvert;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.thrift.gen.common.struct.BIZException;
+
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,56 +22,107 @@ import com.moseeker.thrift.gen.profile.struct.WorkExp;
 @Service
 public class ProfileWorkExpServicesImpl implements Iface {
 
-	Logger logger = LoggerFactory.getLogger(ProfileWorkExpServicesImpl.class);
+    Logger logger = LoggerFactory.getLogger(ProfileWorkExpServicesImpl.class);
 
-	@Autowired
-	private ProfileWorkExpService service;
-	
-	@Autowired
-	private ProfileCompletenessImpl completenessImpl;
+    @Autowired
+    private ProfileWorkExpService service;
 
-	@Override
-	public Response getResources(CommonQuery query) throws TException {
-		return service.getResources(query);
-	}
+    @Override
+    public Response getResources(CommonQuery query) throws TException {
+        try {
+            return service.getResources(QueryConvert.commonQueryConvertToQuery(query));
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
+    }
 
-	@Override
-	public Response getResource(CommonQuery query) throws TException {
-		return service.getResource(query);
-	}
+    @Override
+    public Response getResource(CommonQuery query) throws TException {
+        try {
+            return service.getResource(QueryConvert.commonQueryConvertToQuery(query));
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
+    }
 
-	@Override
-	public Response postResource(WorkExp struct) throws TException {
-		return service.postResource(struct);
-	}
+    @Override
+    public Response postResource(WorkExp struct) throws TException {
+        try {
+            return service.postResource(struct);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
+    }
 
-	@Override
-	public Response putResource(WorkExp struct) throws TException {
-		return service.putResource(struct);
-	}
-	
-	@Override
-	public Response postResources(List<WorkExp> structs) throws TException {
-		return service.postResources(structs);
-	}
+    @Override
+    public Response putResource(WorkExp struct) throws TException {
+        try {
+            return service.putResource(struct);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
+    }
 
-	@Override
-	public Response putResources(List<WorkExp> structs) throws TException {
-		return service.putResources(structs);
-	}
+    @Override
+    public Response postResources(List<WorkExp> structs) throws TException {
+        try {
+            return service.postResources(structs);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
+    }
 
-	@Override
-	public Response delResources(List<WorkExp> structs) throws TException {
-		return service.delResources(structs);
-	}
+    @Override
+    public Response putResources(List<WorkExp> structs) throws TException {
+        try {
+            return service.putResources(structs);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
+    }
 
-	@Override
-	public Response delResource(WorkExp struct) throws TException {
-		return service.delResource(struct);
-	}
-	
-	@Override
-	public Response getPagination(CommonQuery query) throws TException {
-		return service.getPagination(query);
-	}
+    @Override
+    public Response delResources(List<WorkExp> structs) throws TException {
+        try {
+            return service.delResources(structs);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
+    }
+
+    @Override
+    public Response delResource(WorkExp struct) throws TException {
+        try {
+            return service.delResource(struct);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
+    }
+
+    @Override
+    public Response getPagination(CommonQuery query) throws TException {
+        try {
+            return service.getPagination(QueryConvert.commonQueryConvertToQuery(query));
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
+    }
 }

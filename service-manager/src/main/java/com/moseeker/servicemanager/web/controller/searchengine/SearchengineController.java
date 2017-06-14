@@ -1,24 +1,11 @@
 package com.moseeker.servicemanager.web.controller.searchengine;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.moseeker.common.annotation.iface.CounterIface;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.BeanUtils;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
@@ -28,7 +15,17 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
-import com.taobao.api.internal.toplink.embedded.websocket.util.StringUtil;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @CounterIface
@@ -61,7 +58,7 @@ public class SearchengineController {
             
             String company_id = BeanUtils.converToString(position_map.get("company_id"));
             CommonQuery query = new CommonQuery();
-            query.putToEqualFilter("id", company_id);
+            query.setEqualFilter(new HashMap<String, String>(){{put("id", company_id);}});
             Response company_resp = companyServices.getAllCompanies(query);
             String company = company_resp.data;
             logger.info("======"+company);
@@ -178,7 +175,7 @@ public class SearchengineController {
 	          
 	          String company_id = BeanUtils.converToString(position_map.get("company_id"));
 	          CommonQuery query = new CommonQuery();
-	          query.putToEqualFilter("id", company_id);
+	          query.setEqualFilter(new HashMap<String, String>(){{put("id", company_id);}});
 	          Response company_resp = companyServices.getAllCompanies(query);
 	          String company = company_resp.data;
 	          List company_maps = (List) JSON.parse(company);

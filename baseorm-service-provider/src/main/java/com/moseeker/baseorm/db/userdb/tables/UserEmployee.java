@@ -22,7 +22,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -38,7 +37,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserEmployee extends TableImpl<UserEmployeeRecord> {
 
-    private static final long serialVersionUID = -1731932290;
+    private static final long serialVersionUID = -1453668544;
 
     /**
      * The reference instance of <code>userdb.user_employee</code>
@@ -74,9 +73,9 @@ public class UserEmployee extends TableImpl<UserEmployeeRecord> {
     public final TableField<UserEmployeeRecord, Integer> ROLE_ID = createField("role_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "sys_role.id");
 
     /**
-     * The column <code>userdb.user_employee.wxuser_id</code>. userdb.user_wx_user.id 微信账号编号。现在已经废弃。关于员工绑定的C端账号，请参考user_id
+     * The column <code>userdb.user_employee.wxuser_id</code>. userdb.user_wx_user.id 微信账号编号。现在已经废弃。关于员工绑定的C端账号，请参考sysuser_id
      */
-    public final TableField<UserEmployeeRecord, Integer> WXUSER_ID = createField("wxuser_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "userdb.user_wx_user.id 微信账号编号。现在已经废弃。关于员工绑定的C端账号，请参考user_id");
+    public final TableField<UserEmployeeRecord, Integer> WXUSER_ID = createField("wxuser_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "userdb.user_wx_user.id 微信账号编号。现在已经废弃。关于员工绑定的C端账号，请参考sysuser_id");
 
     /**
      * The column <code>userdb.user_employee.sex</code>. 0：未知，1：男，2：女
@@ -266,7 +265,7 @@ public class UserEmployee extends TableImpl<UserEmployeeRecord> {
     /**
      * The column <code>userdb.user_employee.hr_wxuser_id</code>. hr招聘助手的微信ID，wx_group_user.id
      */
-    public final TableField<UserEmployeeRecord, UInteger> HR_WXUSER_ID = createField("hr_wxuser_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGERUNSIGNED)), this, "hr招聘助手的微信ID，wx_group_user.id");
+    public final TableField<UserEmployeeRecord, Integer> HR_WXUSER_ID = createField("hr_wxuser_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "hr招聘助手的微信ID，wx_group_user.id");
 
     /**
      * The column <code>userdb.user_employee.custom_field</code>. 配置的自定义认证名称对应的内容
@@ -304,9 +303,9 @@ public class UserEmployee extends TableImpl<UserEmployeeRecord> {
     public final TableField<UserEmployeeRecord, Byte> AUTH_METHOD = createField("auth_method", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.TINYINT)), this, "员工认证途径 0:使用邮箱认证 1:使用自定义认证 2:使用问答认证");
 
     /**
-     * The column <code>userdb.user_employee.custom_field_values</code>. 自定 义字段
+     * The column <code>userdb.user_employee.custom_field_values</code>. 自定 义字段键值, 结构[{<id>: "<value>"},{...},...]
      */
-    public final TableField<UserEmployeeRecord, String> CUSTOM_FIELD_VALUES = createField("custom_field_values", org.jooq.impl.SQLDataType.VARCHAR.length(4096).nullable(false).defaultValue(org.jooq.impl.DSL.field("[]", org.jooq.impl.SQLDataType.VARCHAR)), this, "自定 义字段");
+    public final TableField<UserEmployeeRecord, String> CUSTOM_FIELD_VALUES = createField("custom_field_values", org.jooq.impl.SQLDataType.VARCHAR.length(4096).nullable(false).defaultValue(org.jooq.impl.DSL.field("[]", org.jooq.impl.SQLDataType.VARCHAR)), this, "自定 义字段键值, 结构[{<id>: \"<value>\"},{...},...]");
 
     /**
      * Create a <code>userdb.user_employee</code> table reference

@@ -4,7 +4,7 @@ import org.junit.Test;
 
 public class ConfigPropertiesUtilTest {
 
-	@Test
+	//@Test
 	public void testInit() {
 		ConfigPropertiesUtil configPropertiesUtil = null;
 		configPropertiesUtil = ConfigPropertiesUtil.getInstance();

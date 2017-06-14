@@ -5,52 +5,50 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.dao.dictdb.DictCityDao;
+import com.moseeker.baseorm.dao.dictdb.DictIndustryDao;
+import com.moseeker.baseorm.dao.dictdb.DictPositionDao;
+import com.moseeker.baseorm.dao.profiledb.*;
+import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
+import com.moseeker.baseorm.tool.QueryConvert;
+import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.log.ELKLog;
 import com.moseeker.common.log.LogVO;
+import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.Pagination;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.profile.constants.StatisticsForChannelmportVO;
-import org.jooq.types.UByte;
-import org.jooq.types.UInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.common.constants.Constant;
-import com.moseeker.common.util.BeanUtils;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.db.dictdb.tables.records.DictCityRecord;
-import com.moseeker.db.dictdb.tables.records.DictConstantRecord;
-import com.moseeker.db.dictdb.tables.records.DictIndustryRecord;
-import com.moseeker.db.dictdb.tables.records.DictPositionRecord;
-import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileAttachmentRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileAwardsRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileBasicRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileCredentialsRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileEducationRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileImportRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileIntentionCityRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileIntentionIndustryRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileIntentionPositionRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileIntentionRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileLanguageRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileOtherRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileProjectexpRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileSkillRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileWorksRecord;
-import com.moseeker.db.userdb.tables.records.UserUserRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictConstantRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictIndustryRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictPositionRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileAttachmentRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileAwardsRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileBasicRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileCredentialsRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileEducationRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileImportRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileIntentionCityRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileIntentionIndustryRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileIntentionPositionRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileIntentionRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileLanguageRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileOtherRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProjectexpRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileSkillRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileWorksRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.profile.constants.ValidationMessage;
-import com.moseeker.profile.dao.CityDao;
-import com.moseeker.profile.dao.IndustryDao;
-import com.moseeker.profile.dao.IntentionCityDao;
-import com.moseeker.profile.dao.IntentionDao;
-import com.moseeker.profile.dao.IntentionIndustryDao;
-import com.moseeker.profile.dao.IntentionPositionDao;
-import com.moseeker.profile.dao.PositionDao;
-import com.moseeker.profile.dao.entity.ProfileWorkexpEntity;
-import com.moseeker.profile.dao.impl.IntentionRecord;
 import com.moseeker.profile.utils.ProfileValidation;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 
@@ -105,19 +103,19 @@ public class ProfileUtils {
 										.setIntroduction(BeanUtils.converToString(company.get("company_introduction")));
 							}
 							if (company.get("company_scale") != null) {
-								hrCompany.setScale(BeanUtils.converToUByte(company.get("company_scale")));
+								hrCompany.setScale(BeanUtils.converToByte(company.get("company_scale")));
 							}
 							if (company.get("company_property") != null) {
-								hrCompany.setProperty(BeanUtils.converToUByte(company.get("company_property")));
+								hrCompany.setProperty(BeanUtils.converToByte(company.get("company_property")));
 							}
-							hrCompany.setType(UByte.valueOf(Constant.COMPANY_TYPE_FREE));
+							hrCompany.setType((byte)(Constant.COMPANY_TYPE_FREE));
 							switch(source) {
 								case Constant.PROFILE_SOURCE_WEIXIN_TEGETHER_IMPORT:
 								case Constant.PROFILE_SOURCE_WEIXIN_COMPANY_IMPORT:
-									hrCompany.setSource(UByte.valueOf(Constant.COMPANY_SOURCE_WX_IMPORT));
+									hrCompany.setSource((byte)(Constant.COMPANY_SOURCE_WX_IMPORT));
 									break;
 								case Constant.PROFILE_SOURCE_PC_IMPORT:
-									hrCompany.setSource(UByte.valueOf(Constant.COMPANY_SOURCE_PC_IMPORT));
+									hrCompany.setSource((byte)(Constant.COMPANY_SOURCE_PC_IMPORT));
 									break;
 								default:
 							}
@@ -362,19 +360,19 @@ public class ProfileUtils {
 			record = new ProfileProfileRecord();
 			record.setUuid((String) profile.get("uuid"));
 			if (profile.get("lang") != null) {
-				record.setLang(UByte.valueOf((Integer) profile.get("lang")));
+				record.setLang((byte)(profile.get("lang")));
 			}
 			if (profile.get("source") != null) {
-				record.setSource(UInteger.valueOf((Integer) profile.get("source")));
+				record.setSource((int)((Integer) profile.get("source")));
 			}
 			if (profile.get("completeness") != null) {
-				record.setCompleteness(UByte.valueOf((Integer) profile.get("completeness")));
+				record.setCompleteness((byte)(profile.get("completeness")));
 			}
-			record.setUserId(UInteger.valueOf((Integer) profile.get("user_id")));
+			record.setUserId((int)((Integer) profile.get("user_id")));
 			if (profile.get("disable") != null) {
-				record.setDisable(UByte.valueOf((Integer) profile.get("disable")));
+				record.setDisable((byte)(profile.get("disable")));
 			} else {
-				record.setDisable(UByte.valueOf(1));
+				record.setDisable((byte)(1));
 			}
 			if(profile.get("origin") != null) {
 				record.setOrigin((String)profile.get("origin"));
@@ -479,19 +477,19 @@ public class ProfileUtils {
 		return record;
 	}
 
-	public List<Map<String, Object>> buildsIntentions(ProfileProfileRecord profileRecord, CommonQuery query,
-			List<DictConstantRecord> constantRecords, IntentionDao intentionDao, IntentionCityDao intentionCityDao,
-			IntentionIndustryDao intentionIndustryDao, IntentionPositionDao intentionPositionDao, CityDao dictCityDao,
-			IndustryDao dictIndustryDao, PositionDao dictPositionDao) {
+	public List<Map<String, Object>> buildsIntentions(ProfileProfileRecord profileRecord, Query query,
+													  List<DictConstantRecord> constantRecords, ProfileIntentionDao intentionDao, ProfileIntentionCityDao intentionCityDao,
+													  ProfileIntentionIndustryDao intentionIndustryDao, ProfileIntentionPositionDao intentionPositionDao, DictCityDao dictCityDao,
+													  DictIndustryDao dictIndustryDao, DictPositionDao dictPositionDao) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		try {
-			List<ProfileIntentionRecord> records = intentionDao.getResources(query);
+			List<ProfileIntentionRecord> records = intentionDao.getRecords(query);
 			if (records != null && records.size() > 0) {
-				CommonQuery dictQuery = new CommonQuery();
-				dictQuery.setPer_page(Integer.MAX_VALUE);
-				List<DictCityRecord> dictCities = dictCityDao.getResources(dictQuery);
-				List<DictIndustryRecord> dictIndustries = dictIndustryDao.getResources(dictQuery);
-				List<DictPositionRecord> dictPositions = dictPositionDao.getResources(dictQuery);
+				QueryUtil dictQuery = new QueryUtil();
+				dictQuery.setPageSize(Integer.MAX_VALUE);
+				List<DictCityRecord> dictCities = dictCityDao.getRecords(dictQuery);
+				List<DictIndustryRecord> dictIndustries = dictIndustryDao.getRecords(dictQuery);
+				List<DictPositionRecord> dictPositions = dictPositionDao.getRecords(dictQuery);
 				List<Integer> intentionIds = new ArrayList<>();
 				records.forEach(record -> {
 					Map<String, Object> map = new HashMap<String, Object>();
@@ -652,5 +650,28 @@ public class ProfileUtils {
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
+	}
+
+	public static Pagination getPagination(int totalRow, int pageNo1, int pageSize1, List list) {
+		Pagination pagination = new Pagination();
+		int pageNo = 1;
+		int pageSize = 10;
+		if (pageNo1 > 1) {
+			pageNo = pageNo1;
+		}
+		if (pageSize1 > 0) {
+			pageSize = pageSize1;
+		}
+		int totalPage = totalRow / pageSize;
+		if (totalRow % pageSize != 0) {
+			totalPage++;
+		}
+
+		pagination.setPageNo(pageNo);
+		pagination.setPageSize(pageSize);
+		pagination.setTotalPage(totalPage);
+		pagination.setTotalRow(totalRow);
+		pagination.setResults(list);
+		return pagination;
 	}
 }

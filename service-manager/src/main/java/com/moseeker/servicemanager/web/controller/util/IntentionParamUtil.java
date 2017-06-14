@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.moseeker.common.util.BeanUtils;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.thrift.gen.profile.struct.Intention;
 
 /**

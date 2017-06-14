@@ -4,13 +4,14 @@
 package com.moseeker.baseorm.db.userdb;
 
 
-import org.jooq.Schema;
-import org.jooq.impl.CatalogImpl;
-
-import javax.annotation.Generated;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.annotation.Generated;
+
+import org.jooq.Schema;
+import org.jooq.impl.CatalogImpl;
 
 
 /**
@@ -36,7 +37,7 @@ public class DefaultCatalog extends CatalogImpl {
     /**
      * The schema <code>userdb</code>.
      */
-    public final Userdb USERDB = Userdb.USERDB;
+    public final Userdb USERDB = com.moseeker.baseorm.db.userdb.Userdb.USERDB;
 
     /**
      * No further instances allowed

@@ -21,7 +21,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -37,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserFavPosition extends TableImpl<UserFavPositionRecord> {
 
-    private static final long serialVersionUID = 628399675;
+    private static final long serialVersionUID = 916045556;
 
     /**
      * The reference instance of <code>userdb.user_fav_position</code>
@@ -85,22 +84,22 @@ public class UserFavPosition extends TableImpl<UserFavPositionRecord> {
     /**
      * The column <code>userdb.user_fav_position.id</code>. ID
      */
-    public final TableField<UserFavPositionRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "ID");
+    public final TableField<UserFavPositionRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "ID");
 
     /**
-     * The column <code>userdb.user_fav_position.wxuser_id</code>. wx_user.id
+     * The column <code>userdb.user_fav_position.wxuser_id</code>. 浏览者user_wx_user.id。已经废弃，浏览者微信编号由浏览者C端账号编号替代，请参考sysuser_id
      */
-    public final TableField<UserFavPositionRecord, UInteger> WXUSER_ID = createField("wxuser_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGERUNSIGNED)), this, "wx_user.id");
+    public final TableField<UserFavPositionRecord, Integer> WXUSER_ID = createField("wxuser_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "浏览者user_wx_user.id。已经废弃，浏览者微信编号由浏览者C端账号编号替代，请参考sysuser_id");
 
     /**
-     * The column <code>userdb.user_fav_position.recom_id</code>. 推荐者 fk:wx_user.id。已经废弃，推荐者微信编号由推荐者C端账号编号替代，请参考recom_user_id
+     * The column <code>userdb.user_fav_position.recom_id</code>. 推荐者user_wx_user.id。已经废弃，推荐者微信编号由推荐者C端账号编号替代，请参考recom_user_id
      */
-    public final TableField<UserFavPositionRecord, Integer> RECOM_ID = createField("recom_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "推荐者 fk:wx_user.id。已经废弃，推荐者微信编号由推荐者C端账号编号替代，请参考recom_user_id");
+    public final TableField<UserFavPositionRecord, Integer> RECOM_ID = createField("recom_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "推荐者user_wx_user.id。已经废弃，推荐者微信编号由推荐者C端账号编号替代，请参考recom_user_id");
 
     /**
      * The column <code>userdb.user_fav_position.recom_user_id</code>. userdb.user_user.id 推荐者C端账号编号
      */
-    public final TableField<UserFavPositionRecord, UInteger> RECOM_USER_ID = createField("recom_user_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED, this, "userdb.user_user.id 推荐者C端账号编号");
+    public final TableField<UserFavPositionRecord, Integer> RECOM_USER_ID = createField("recom_user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "userdb.user_user.id 推荐者C端账号编号");
 
     /**
      * Create a <code>userdb.user_fav_position</code> table reference
@@ -136,7 +135,7 @@ public class UserFavPosition extends TableImpl<UserFavPositionRecord> {
      * {@inheritDoc}
      */
     @Override
-    public Identity<UserFavPositionRecord, UInteger> getIdentity() {
+    public Identity<UserFavPositionRecord, Integer> getIdentity() {
         return Keys.IDENTITY_USER_FAV_POSITION;
     }
 

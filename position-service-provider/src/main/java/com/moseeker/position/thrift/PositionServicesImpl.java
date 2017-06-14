@@ -1,7 +1,9 @@
 package com.moseeker.position.thrift;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.moseeker.common.exception.ExceptionType;
 import com.moseeker.position.service.fundationbs.PositionQxService;
 import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
 import com.moseeker.thrift.gen.position.struct.Position;
@@ -13,13 +15,17 @@ import com.moseeker.thrift.gen.position.struct.WechatPositionListQuery;
 import com.moseeker.thrift.gen.position.struct.WechatRpPositionListData;
 import com.moseeker.thrift.gen.position.struct.WechatShareData;
 import com.moseeker.thrift.gen.position.struct.*;
-
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
+import com.moseeker.baseorm.tool.QueryConvert;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.position.service.JobOccupationService;
 import com.moseeker.position.service.fundationbs.PositionService;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
@@ -32,12 +38,12 @@ import com.moseeker.thrift.gen.position.service.PositionServices.Iface;
 public class PositionServicesImpl implements Iface {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
-
     @Autowired
     private PositionService service;
     @Autowired
     private JobOccupationService customService;
-
+    @Autowired
+    private JobPositionDao jobPositionDao;
     @Autowired
     private PositionQxService positionQxService;
 
@@ -60,14 +66,33 @@ public class PositionServicesImpl implements Iface {
      */
     @Override
     public Response getPositionById(int positionId) throws TException {
-        return service.getPositionById(positionId);
+        try {
+            return service.getPositionById(positionId);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+        }
     }
 
     @Override
     public Response getResources(CommonQuery query) throws TException {
-        return service.getResources(query);
+    	try {
+    		List<JobPositionRecord> list=jobPositionDao.getRecords(QueryConvert.commonQueryConvertToQuery(query));
+			List<Position> structs = BeanUtils.DBToStruct(Position.class, list);
+			
+			if (!structs.isEmpty()){
+				return ResponseUtils.success(structs);
+			}
+			
+		} catch (Exception e) {
+			logger.error("getResources error", e);
+			return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+		} finally {
+			//do nothing
+		}
+		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
     }
-
+ 
     /**
      * @return response
      * @throws TException time 2016-11-21
@@ -86,14 +111,24 @@ public class PositionServicesImpl implements Iface {
     }
 
     @Override
-    public boolean ifAllowRefresh(int positionId,int account_id) throws TException {
-        return service.ifAllowRefresh(positionId,account_id);
+    public boolean ifAllowRefresh(int positionId,int account_id) {
+        try {
+            return service.ifAllowRefresh(positionId,account_id);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return false;
+        }
     }
 
     @Override
     public ThirdPartyPositionForSynchronizationWithAccount createRefreshPosition(int positionId, int account_id)
             throws TException {
-        return service.createRefreshPosition(positionId, account_id);
+        try {
+            return service.createRefreshPosition(positionId, account_id);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return new ThirdPartyPositionForSynchronizationWithAccount();
+        }
     }
 
     @Override
@@ -103,7 +138,12 @@ public class PositionServicesImpl implements Iface {
 
     @Override
     public List<RpExtInfo> getPositionListRpExt(List<Integer> pids) throws TException {
-        return service.getPositionListRpExt(pids);
+        try {
+            return service.getPositionListRpExt(pids);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return new ArrayList<>();
+        }
     }
 
     @Override
@@ -145,17 +185,32 @@ public class PositionServicesImpl implements Iface {
 
     @Override
     public List<WechatRpPositionListData> getRpPositionList(int hb_config_id) throws TException {
-        return service.getRpPositionList(hb_config_id);
+        try {
+            return service.getRpPositionList(hb_config_id);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return new ArrayList<>();
+        }
     }
 
     @Override
     public List<ThirdPartyPositionData> getThirdPartyPositions(CommonQuery query) throws TException {
-        return service.getThirdPartyPositions(query);
+        try {
+            return service.getThirdPartyPositions(query);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return new ArrayList<>();
+        }
     }
 
     @Override
     public Response batchHandlerJobPostion(BatchHandlerJobPostion batchHandlerJobPostion) throws TException {
-        return service.batchHandlerJobPostion(batchHandlerJobPostion);
+        try {
+            return service.batchHandlerJobPostion(batchHandlerJobPostion);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
     }
 
     @Override
@@ -172,12 +227,22 @@ public class PositionServicesImpl implements Iface {
         if (delePostion.isSetSource_id()) {
             sourceId = delePostion.getSource_id();
         }
-        return service.deleteJobposition(id, companyId, delePostion.getJobnumber(), sourceId);
+        try {
+            return service.deleteJobposition(id, companyId, delePostion.getJobnumber(), sourceId);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
     }
 
     @Override
     public Response getTeamIdByDepartmentName(int companyId, String departmentName) throws TException {
-        return service.getTeamIdbyDepartmentName(companyId, departmentName);
+        try {
+            return service.getTeamIdbyDepartmentName(companyId, departmentName);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
     }
 
 

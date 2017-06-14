@@ -21,7 +21,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.ULong;
 
 
 /**
@@ -37,7 +36,7 @@ import org.jooq.types.ULong;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserBdUser extends TableImpl<UserBdUserRecord> {
 
-    private static final long serialVersionUID = -1554976001;
+    private static final long serialVersionUID = 594314479;
 
     /**
      * The reference instance of <code>userdb.user_bd_user</code>
@@ -55,7 +54,7 @@ public class UserBdUser extends TableImpl<UserBdUserRecord> {
     /**
      * The column <code>userdb.user_bd_user.id</code>.
      */
-    public final TableField<UserBdUserRecord, ULong> ID = createField("id", org.jooq.impl.SQLDataType.BIGINTUNSIGNED.nullable(false), this, "");
+    public final TableField<UserBdUserRecord, Long> ID = createField("id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>userdb.user_bd_user.uid</code>. 百度帐号 id
@@ -126,7 +125,7 @@ public class UserBdUser extends TableImpl<UserBdUserRecord> {
      * {@inheritDoc}
      */
     @Override
-    public Identity<UserBdUserRecord, ULong> getIdentity() {
+    public Identity<UserBdUserRecord, Long> getIdentity() {
         return Keys.IDENTITY_USER_BD_USER;
     }
 

@@ -1,11 +1,12 @@
 package com.moseeker.baseorm.dao.userdb;
 
-import org.springframework.stereotype.Repository;
-
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
+import java.sql.SQLException;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +14,21 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 * 2017-03-21
 */
 @Repository
-public class UserWxUserDao extends StructDaoImpl<UserWxUserDO, UserWxUserRecord, UserWxUser> {
+public class UserWxUserDao extends JooqCrudImpl<UserWxUserDO, UserWxUserRecord> {
 
+    public UserWxUserDao() {
+        super(UserWxUser.USER_WX_USER, UserWxUserDO.class);
+    }
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = UserWxUser.USER_WX_USER;
-   }
+    public UserWxUserDao(TableImpl<UserWxUserRecord> table, Class<UserWxUserDO> userWxUserDOClass) {
+        super(table, userWxUserDOClass);
+    }
+
+    public UserWxUserRecord getWXUserByUserId(int userId) throws SQLException {
+        UserWxUserRecord wxuser = null;
+        if(userId > 0) {
+            wxuser = create.selectFrom(UserWxUser.USER_WX_USER).where(UserWxUser.USER_WX_USER.SYSUSER_ID.equal(userId)).limit(1).fetchOne();
+        }
+        return wxuser;
+    }
 }

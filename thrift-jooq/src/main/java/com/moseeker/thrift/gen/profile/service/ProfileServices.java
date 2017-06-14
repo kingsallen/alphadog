@@ -12,29 +12,29 @@ public class ProfileServices {
 
   public interface Iface {
 
-    public com.moseeker.thrift.gen.common.struct.Response getResources(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.common.struct.Response getResources(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response getPagination(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.common.struct.Response getPagination(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response postResources(java.util.List<com.moseeker.thrift.gen.profile.struct.Profile> resources) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.common.struct.Response postResources(java.util.List<com.moseeker.thrift.gen.profile.struct.Profile> resources) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response putResources(java.util.List<com.moseeker.thrift.gen.profile.struct.Profile> resources) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.common.struct.Response putResources(java.util.List<com.moseeker.thrift.gen.profile.struct.Profile> resources) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response delResources(java.util.List<com.moseeker.thrift.gen.profile.struct.Profile> resources) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.common.struct.Response delResources(java.util.List<com.moseeker.thrift.gen.profile.struct.Profile> resources) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response getResource(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.common.struct.Response getResource(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response postResource(com.moseeker.thrift.gen.profile.struct.Profile profile) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.common.struct.Response postResource(com.moseeker.thrift.gen.profile.struct.Profile profile) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response putResource(com.moseeker.thrift.gen.profile.struct.Profile profile) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.common.struct.Response putResource(com.moseeker.thrift.gen.profile.struct.Profile profile) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response delResource(com.moseeker.thrift.gen.profile.struct.Profile profile) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.common.struct.Response delResource(com.moseeker.thrift.gen.profile.struct.Profile profile) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response getCompleteness(int user_id, String uuid, int profile_id) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.common.struct.Response getCompleteness(int user_id, java.lang.String uuid, int profile_id) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response reCalculateUserCompleteness(int userId, String mobile) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.common.struct.Response reCalculateUserCompleteness(int userId, java.lang.String mobile) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response reCalculateUserCompletenessBySettingId(int id) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.common.struct.Response reCalculateUserCompletenessBySettingId(int id) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
     public com.moseeker.thrift.gen.common.struct.Response getProfileByApplication(int companyId, int sourceId, int ats_status, boolean recommender, boolean dl_url_required, java.util.Map<String, java.util.List<String>> filter) throws org.apache.thrift.TException;
 
@@ -60,9 +60,9 @@ public class ProfileServices {
 
     public void delResource(com.moseeker.thrift.gen.profile.struct.Profile profile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
-    public void getCompleteness(int user_id, String uuid, int profile_id, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+    public void getCompleteness(int user_id, java.lang.String uuid, int profile_id, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
-    public void reCalculateUserCompleteness(int userId, String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+    public void reCalculateUserCompleteness(int userId, java.lang.String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
     public void reCalculateUserCompletenessBySettingId(int id, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
@@ -90,7 +90,7 @@ public class ProfileServices {
       super(iprot, oprot);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response getResources(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response getResources(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
       send_getResources(query);
       return recv_getResources();
@@ -103,17 +103,20 @@ public class ProfileServices {
       sendBase("getResources", args);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response recv_getResources() throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response recv_getResources() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
       getResources_result result = new getResources_result();
       receiveBase(result, "getResources");
       if (result.isSetSuccess()) {
         return result.success;
       }
+      if (result.e != null) {
+        throw result.e;
+      }
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getResources failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response getPagination(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response getPagination(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
       send_getPagination(query);
       return recv_getPagination();
@@ -126,17 +129,20 @@ public class ProfileServices {
       sendBase("getPagination", args);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response recv_getPagination() throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response recv_getPagination() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
       getPagination_result result = new getPagination_result();
       receiveBase(result, "getPagination");
       if (result.isSetSuccess()) {
         return result.success;
       }
+      if (result.e != null) {
+        throw result.e;
+      }
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getPagination failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response postResources(java.util.List<com.moseeker.thrift.gen.profile.struct.Profile> resources) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response postResources(java.util.List<com.moseeker.thrift.gen.profile.struct.Profile> resources) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
       send_postResources(resources);
       return recv_postResources();
@@ -149,17 +155,20 @@ public class ProfileServices {
       sendBase("postResources", args);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response recv_postResources() throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response recv_postResources() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
       postResources_result result = new postResources_result();
       receiveBase(result, "postResources");
       if (result.isSetSuccess()) {
         return result.success;
       }
+      if (result.e != null) {
+        throw result.e;
+      }
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "postResources failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response putResources(java.util.List<com.moseeker.thrift.gen.profile.struct.Profile> resources) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response putResources(java.util.List<com.moseeker.thrift.gen.profile.struct.Profile> resources) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
       send_putResources(resources);
       return recv_putResources();
@@ -172,17 +181,20 @@ public class ProfileServices {
       sendBase("putResources", args);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response recv_putResources() throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response recv_putResources() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
       putResources_result result = new putResources_result();
       receiveBase(result, "putResources");
       if (result.isSetSuccess()) {
         return result.success;
       }
+      if (result.e != null) {
+        throw result.e;
+      }
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "putResources failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response delResources(java.util.List<com.moseeker.thrift.gen.profile.struct.Profile> resources) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response delResources(java.util.List<com.moseeker.thrift.gen.profile.struct.Profile> resources) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
       send_delResources(resources);
       return recv_delResources();
@@ -195,17 +207,20 @@ public class ProfileServices {
       sendBase("delResources", args);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response recv_delResources() throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response recv_delResources() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
       delResources_result result = new delResources_result();
       receiveBase(result, "delResources");
       if (result.isSetSuccess()) {
         return result.success;
       }
+      if (result.e != null) {
+        throw result.e;
+      }
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "delResources failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response getResource(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response getResource(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
       send_getResource(query);
       return recv_getResource();
@@ -218,17 +233,20 @@ public class ProfileServices {
       sendBase("getResource", args);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response recv_getResource() throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response recv_getResource() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
       getResource_result result = new getResource_result();
       receiveBase(result, "getResource");
       if (result.isSetSuccess()) {
         return result.success;
       }
+      if (result.e != null) {
+        throw result.e;
+      }
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getResource failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response postResource(com.moseeker.thrift.gen.profile.struct.Profile profile) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response postResource(com.moseeker.thrift.gen.profile.struct.Profile profile) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
       send_postResource(profile);
       return recv_postResource();
@@ -241,17 +259,20 @@ public class ProfileServices {
       sendBase("postResource", args);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response recv_postResource() throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response recv_postResource() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
       postResource_result result = new postResource_result();
       receiveBase(result, "postResource");
       if (result.isSetSuccess()) {
         return result.success;
       }
+      if (result.e != null) {
+        throw result.e;
+      }
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "postResource failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response putResource(com.moseeker.thrift.gen.profile.struct.Profile profile) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response putResource(com.moseeker.thrift.gen.profile.struct.Profile profile) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
       send_putResource(profile);
       return recv_putResource();
@@ -264,17 +285,20 @@ public class ProfileServices {
       sendBase("putResource", args);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response recv_putResource() throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response recv_putResource() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
       putResource_result result = new putResource_result();
       receiveBase(result, "putResource");
       if (result.isSetSuccess()) {
         return result.success;
       }
+      if (result.e != null) {
+        throw result.e;
+      }
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "putResource failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response delResource(com.moseeker.thrift.gen.profile.struct.Profile profile) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response delResource(com.moseeker.thrift.gen.profile.struct.Profile profile) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
       send_delResource(profile);
       return recv_delResource();
@@ -287,23 +311,26 @@ public class ProfileServices {
       sendBase("delResource", args);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response recv_delResource() throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response recv_delResource() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
       delResource_result result = new delResource_result();
       receiveBase(result, "delResource");
       if (result.isSetSuccess()) {
         return result.success;
       }
+      if (result.e != null) {
+        throw result.e;
+      }
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "delResource failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response getCompleteness(int user_id, String uuid, int profile_id) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response getCompleteness(int user_id, java.lang.String uuid, int profile_id) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
       send_getCompleteness(user_id, uuid, profile_id);
       return recv_getCompleteness();
     }
 
-    public void send_getCompleteness(int user_id, String uuid, int profile_id) throws org.apache.thrift.TException
+    public void send_getCompleteness(int user_id, java.lang.String uuid, int profile_id) throws org.apache.thrift.TException
     {
       getCompleteness_args args = new getCompleteness_args();
       args.setUser_id(user_id);
@@ -312,23 +339,26 @@ public class ProfileServices {
       sendBase("getCompleteness", args);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response recv_getCompleteness() throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response recv_getCompleteness() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
       getCompleteness_result result = new getCompleteness_result();
       receiveBase(result, "getCompleteness");
       if (result.isSetSuccess()) {
         return result.success;
       }
+      if (result.e != null) {
+        throw result.e;
+      }
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getCompleteness failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response reCalculateUserCompleteness(int userId, String mobile) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response reCalculateUserCompleteness(int userId, java.lang.String mobile) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
       send_reCalculateUserCompleteness(userId, mobile);
       return recv_reCalculateUserCompleteness();
     }
 
-    public void send_reCalculateUserCompleteness(int userId, String mobile) throws org.apache.thrift.TException
+    public void send_reCalculateUserCompleteness(int userId, java.lang.String mobile) throws org.apache.thrift.TException
     {
       reCalculateUserCompleteness_args args = new reCalculateUserCompleteness_args();
       args.setUserId(userId);
@@ -336,17 +366,20 @@ public class ProfileServices {
       sendBase("reCalculateUserCompleteness", args);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response recv_reCalculateUserCompleteness() throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response recv_reCalculateUserCompleteness() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
       reCalculateUserCompleteness_result result = new reCalculateUserCompleteness_result();
       receiveBase(result, "reCalculateUserCompleteness");
       if (result.isSetSuccess()) {
         return result.success;
       }
+      if (result.e != null) {
+        throw result.e;
+      }
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "reCalculateUserCompleteness failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response reCalculateUserCompletenessBySettingId(int id) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response reCalculateUserCompletenessBySettingId(int id) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
       send_reCalculateUserCompletenessBySettingId(id);
       return recv_reCalculateUserCompletenessBySettingId();
@@ -359,12 +392,15 @@ public class ProfileServices {
       sendBase("reCalculateUserCompletenessBySettingId", args);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response recv_reCalculateUserCompletenessBySettingId() throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response recv_reCalculateUserCompletenessBySettingId() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
       reCalculateUserCompletenessBySettingId_result result = new reCalculateUserCompletenessBySettingId_result();
       receiveBase(result, "reCalculateUserCompletenessBySettingId");
       if (result.isSetSuccess()) {
         return result.success;
+      }
+      if (result.e != null) {
+        throw result.e;
       }
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "reCalculateUserCompletenessBySettingId failed: unknown result");
     }
@@ -387,12 +423,15 @@ public class ProfileServices {
       sendBase("getProfileByApplication", args);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response recv_getProfileByApplication() throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response recv_getProfileByApplication() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
       getProfileByApplication_result result = new getProfileByApplication_result();
       receiveBase(result, "getProfileByApplication");
       if (result.isSetSuccess()) {
         return result.success;
+      }
+      if (result.e != null) {
+        throw result.e;
       }
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getProfileByApplication failed: unknown result");
     }
@@ -437,9 +476,9 @@ public class ProfileServices {
         prot.writeMessageEnd();
       }
 
-      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -469,9 +508,9 @@ public class ProfileServices {
         prot.writeMessageEnd();
       }
 
-      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -501,9 +540,9 @@ public class ProfileServices {
         prot.writeMessageEnd();
       }
 
-      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -533,9 +572,9 @@ public class ProfileServices {
         prot.writeMessageEnd();
       }
 
-      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -565,9 +604,9 @@ public class ProfileServices {
         prot.writeMessageEnd();
       }
 
-      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -597,9 +636,9 @@ public class ProfileServices {
         prot.writeMessageEnd();
       }
 
-      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -629,9 +668,9 @@ public class ProfileServices {
         prot.writeMessageEnd();
       }
 
-      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -661,9 +700,9 @@ public class ProfileServices {
         prot.writeMessageEnd();
       }
 
-      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -693,9 +732,9 @@ public class ProfileServices {
         prot.writeMessageEnd();
       }
 
-      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -703,7 +742,7 @@ public class ProfileServices {
       }
     }
 
-    public void getCompleteness(int user_id, String uuid, int profile_id, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+    public void getCompleteness(int user_id, java.lang.String uuid, int profile_id, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       getCompleteness_call method_call = new getCompleteness_call(user_id, uuid, profile_id, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -712,9 +751,9 @@ public class ProfileServices {
 
     public static class getCompleteness_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
       private int user_id;
-      private String uuid;
+      private java.lang.String uuid;
       private int profile_id;
-      public getCompleteness_call(int user_id, String uuid, int profile_id, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public getCompleteness_call(int user_id, java.lang.String uuid, int profile_id, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.user_id = user_id;
         this.uuid = uuid;
@@ -731,9 +770,9 @@ public class ProfileServices {
         prot.writeMessageEnd();
       }
 
-      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -741,7 +780,7 @@ public class ProfileServices {
       }
     }
 
-    public void reCalculateUserCompleteness(int userId, String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+    public void reCalculateUserCompleteness(int userId, java.lang.String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       reCalculateUserCompleteness_call method_call = new reCalculateUserCompleteness_call(userId, mobile, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -750,8 +789,8 @@ public class ProfileServices {
 
     public static class reCalculateUserCompleteness_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
       private int userId;
-      private String mobile;
-      public reCalculateUserCompleteness_call(int userId, String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private java.lang.String mobile;
+      public reCalculateUserCompleteness_call(int userId, java.lang.String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.userId = userId;
         this.mobile = mobile;
@@ -766,9 +805,9 @@ public class ProfileServices {
         prot.writeMessageEnd();
       }
 
-      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -798,9 +837,9 @@ public class ProfileServices {
         prot.writeMessageEnd();
       }
 
-      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -845,9 +884,9 @@ public class ProfileServices {
         prot.writeMessageEnd();
       }
 
-      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -860,14 +899,14 @@ public class ProfileServices {
   public static class Processor<I extends Iface> extends org.apache.thrift.TBaseProcessor<I> implements org.apache.thrift.TProcessor {
     private static final org.slf4j.Logger _LOGGER = org.slf4j.LoggerFactory.getLogger(Processor.class.getName());
     public Processor(I iface) {
-      super(iface, getProcessMap(new java.util.HashMap<String, org.apache.thrift.ProcessFunction<I, ? extends org.apache.thrift.TBase>>()));
+      super(iface, getProcessMap(new java.util.HashMap<java.lang.String, org.apache.thrift.ProcessFunction<I, ? extends org.apache.thrift.TBase>>()));
     }
 
-    protected Processor(I iface, java.util.Map<String, org.apache.thrift.ProcessFunction<I, ? extends org.apache.thrift.TBase>> processMap) {
+    protected Processor(I iface, java.util.Map<java.lang.String, org.apache.thrift.ProcessFunction<I, ? extends org.apache.thrift.TBase>> processMap) {
       super(iface, getProcessMap(processMap));
     }
 
-    private static <I extends Iface> java.util.Map<String,  org.apache.thrift.ProcessFunction<I, ? extends org.apache.thrift.TBase>> getProcessMap(java.util.Map<String, org.apache.thrift.ProcessFunction<I, ? extends  org.apache.thrift.TBase>> processMap) {
+    private static <I extends Iface> java.util.Map<java.lang.String,  org.apache.thrift.ProcessFunction<I, ? extends org.apache.thrift.TBase>> getProcessMap(java.util.Map<java.lang.String, org.apache.thrift.ProcessFunction<I, ? extends  org.apache.thrift.TBase>> processMap) {
       processMap.put("getResources", new getResources());
       processMap.put("getPagination", new getPagination());
       processMap.put("postResources", new postResources());
@@ -899,7 +938,11 @@ public class ProfileServices {
 
       public getResources_result getResult(I iface, getResources_args args) throws org.apache.thrift.TException {
         getResources_result result = new getResources_result();
-        result.success = iface.getResources(args.query);
+        try {
+          result.success = iface.getResources(args.query);
+        } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
+          result.e = e;
+        }
         return result;
       }
     }
@@ -919,7 +962,11 @@ public class ProfileServices {
 
       public getPagination_result getResult(I iface, getPagination_args args) throws org.apache.thrift.TException {
         getPagination_result result = new getPagination_result();
-        result.success = iface.getPagination(args.query);
+        try {
+          result.success = iface.getPagination(args.query);
+        } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
+          result.e = e;
+        }
         return result;
       }
     }
@@ -939,7 +986,11 @@ public class ProfileServices {
 
       public postResources_result getResult(I iface, postResources_args args) throws org.apache.thrift.TException {
         postResources_result result = new postResources_result();
-        result.success = iface.postResources(args.resources);
+        try {
+          result.success = iface.postResources(args.resources);
+        } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
+          result.e = e;
+        }
         return result;
       }
     }
@@ -959,7 +1010,11 @@ public class ProfileServices {
 
       public putResources_result getResult(I iface, putResources_args args) throws org.apache.thrift.TException {
         putResources_result result = new putResources_result();
-        result.success = iface.putResources(args.resources);
+        try {
+          result.success = iface.putResources(args.resources);
+        } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
+          result.e = e;
+        }
         return result;
       }
     }
@@ -979,7 +1034,11 @@ public class ProfileServices {
 
       public delResources_result getResult(I iface, delResources_args args) throws org.apache.thrift.TException {
         delResources_result result = new delResources_result();
-        result.success = iface.delResources(args.resources);
+        try {
+          result.success = iface.delResources(args.resources);
+        } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
+          result.e = e;
+        }
         return result;
       }
     }
@@ -999,7 +1058,11 @@ public class ProfileServices {
 
       public getResource_result getResult(I iface, getResource_args args) throws org.apache.thrift.TException {
         getResource_result result = new getResource_result();
-        result.success = iface.getResource(args.query);
+        try {
+          result.success = iface.getResource(args.query);
+        } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
+          result.e = e;
+        }
         return result;
       }
     }
@@ -1019,7 +1082,11 @@ public class ProfileServices {
 
       public postResource_result getResult(I iface, postResource_args args) throws org.apache.thrift.TException {
         postResource_result result = new postResource_result();
-        result.success = iface.postResource(args.profile);
+        try {
+          result.success = iface.postResource(args.profile);
+        } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
+          result.e = e;
+        }
         return result;
       }
     }
@@ -1039,7 +1106,11 @@ public class ProfileServices {
 
       public putResource_result getResult(I iface, putResource_args args) throws org.apache.thrift.TException {
         putResource_result result = new putResource_result();
-        result.success = iface.putResource(args.profile);
+        try {
+          result.success = iface.putResource(args.profile);
+        } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
+          result.e = e;
+        }
         return result;
       }
     }
@@ -1059,7 +1130,11 @@ public class ProfileServices {
 
       public delResource_result getResult(I iface, delResource_args args) throws org.apache.thrift.TException {
         delResource_result result = new delResource_result();
-        result.success = iface.delResource(args.profile);
+        try {
+          result.success = iface.delResource(args.profile);
+        } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
+          result.e = e;
+        }
         return result;
       }
     }
@@ -1079,7 +1154,11 @@ public class ProfileServices {
 
       public getCompleteness_result getResult(I iface, getCompleteness_args args) throws org.apache.thrift.TException {
         getCompleteness_result result = new getCompleteness_result();
-        result.success = iface.getCompleteness(args.user_id, args.uuid, args.profile_id);
+        try {
+          result.success = iface.getCompleteness(args.user_id, args.uuid, args.profile_id);
+        } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
+          result.e = e;
+        }
         return result;
       }
     }
@@ -1099,7 +1178,11 @@ public class ProfileServices {
 
       public reCalculateUserCompleteness_result getResult(I iface, reCalculateUserCompleteness_args args) throws org.apache.thrift.TException {
         reCalculateUserCompleteness_result result = new reCalculateUserCompleteness_result();
-        result.success = iface.reCalculateUserCompleteness(args.userId, args.mobile);
+        try {
+          result.success = iface.reCalculateUserCompleteness(args.userId, args.mobile);
+        } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
+          result.e = e;
+        }
         return result;
       }
     }
@@ -1119,7 +1202,11 @@ public class ProfileServices {
 
       public reCalculateUserCompletenessBySettingId_result getResult(I iface, reCalculateUserCompletenessBySettingId_args args) throws org.apache.thrift.TException {
         reCalculateUserCompletenessBySettingId_result result = new reCalculateUserCompletenessBySettingId_result();
-        result.success = iface.reCalculateUserCompletenessBySettingId(args.id);
+        try {
+          result.success = iface.reCalculateUserCompletenessBySettingId(args.id);
+        } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
+          result.e = e;
+        }
         return result;
       }
     }
@@ -1149,14 +1236,14 @@ public class ProfileServices {
   public static class AsyncProcessor<I extends AsyncIface> extends org.apache.thrift.TBaseAsyncProcessor<I> {
     private static final org.slf4j.Logger _LOGGER = org.slf4j.LoggerFactory.getLogger(AsyncProcessor.class.getName());
     public AsyncProcessor(I iface) {
-      super(iface, getProcessMap(new java.util.HashMap<String, org.apache.thrift.AsyncProcessFunction<I, ? extends org.apache.thrift.TBase, ?>>()));
+      super(iface, getProcessMap(new java.util.HashMap<java.lang.String, org.apache.thrift.AsyncProcessFunction<I, ? extends org.apache.thrift.TBase, ?>>()));
     }
 
-    protected AsyncProcessor(I iface, java.util.Map<String,  org.apache.thrift.AsyncProcessFunction<I, ? extends  org.apache.thrift.TBase, ?>> processMap) {
+    protected AsyncProcessor(I iface, java.util.Map<java.lang.String,  org.apache.thrift.AsyncProcessFunction<I, ? extends  org.apache.thrift.TBase, ?>> processMap) {
       super(iface, getProcessMap(processMap));
     }
 
-    private static <I extends AsyncIface> java.util.Map<String,  org.apache.thrift.AsyncProcessFunction<I, ? extends  org.apache.thrift.TBase,?>> getProcessMap(java.util.Map<String,  org.apache.thrift.AsyncProcessFunction<I, ? extends  org.apache.thrift.TBase, ?>> processMap) {
+    private static <I extends AsyncIface> java.util.Map<java.lang.String,  org.apache.thrift.AsyncProcessFunction<I, ? extends  org.apache.thrift.TBase,?>> getProcessMap(java.util.Map<java.lang.String,  org.apache.thrift.AsyncProcessFunction<I, ? extends  org.apache.thrift.TBase, ?>> processMap) {
       processMap.put("getResources", new getResources());
       processMap.put("getPagination", new getPagination());
       processMap.put("postResources", new postResources());
@@ -1193,16 +1280,20 @@ public class ProfileServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             getResources_result result = new getResources_result();
-            if (e instanceof org.apache.thrift.transport.TTransportException) {
+            if (e instanceof com.moseeker.thrift.gen.common.struct.BIZException) {
+              result.e = (com.moseeker.thrift.gen.common.struct.BIZException) e;
+              result.setEIsSet(true);
+              msg = result;
+            } else if (e instanceof org.apache.thrift.transport.TTransportException) {
               _LOGGER.error("TTransportException inside handler", e);
               fb.close();
               return;
@@ -1217,7 +1308,7 @@ public class ProfileServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -1254,16 +1345,20 @@ public class ProfileServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             getPagination_result result = new getPagination_result();
-            if (e instanceof org.apache.thrift.transport.TTransportException) {
+            if (e instanceof com.moseeker.thrift.gen.common.struct.BIZException) {
+              result.e = (com.moseeker.thrift.gen.common.struct.BIZException) e;
+              result.setEIsSet(true);
+              msg = result;
+            } else if (e instanceof org.apache.thrift.transport.TTransportException) {
               _LOGGER.error("TTransportException inside handler", e);
               fb.close();
               return;
@@ -1278,7 +1373,7 @@ public class ProfileServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -1315,16 +1410,20 @@ public class ProfileServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             postResources_result result = new postResources_result();
-            if (e instanceof org.apache.thrift.transport.TTransportException) {
+            if (e instanceof com.moseeker.thrift.gen.common.struct.BIZException) {
+              result.e = (com.moseeker.thrift.gen.common.struct.BIZException) e;
+              result.setEIsSet(true);
+              msg = result;
+            } else if (e instanceof org.apache.thrift.transport.TTransportException) {
               _LOGGER.error("TTransportException inside handler", e);
               fb.close();
               return;
@@ -1339,7 +1438,7 @@ public class ProfileServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -1376,16 +1475,20 @@ public class ProfileServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             putResources_result result = new putResources_result();
-            if (e instanceof org.apache.thrift.transport.TTransportException) {
+            if (e instanceof com.moseeker.thrift.gen.common.struct.BIZException) {
+              result.e = (com.moseeker.thrift.gen.common.struct.BIZException) e;
+              result.setEIsSet(true);
+              msg = result;
+            } else if (e instanceof org.apache.thrift.transport.TTransportException) {
               _LOGGER.error("TTransportException inside handler", e);
               fb.close();
               return;
@@ -1400,7 +1503,7 @@ public class ProfileServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -1437,16 +1540,20 @@ public class ProfileServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             delResources_result result = new delResources_result();
-            if (e instanceof org.apache.thrift.transport.TTransportException) {
+            if (e instanceof com.moseeker.thrift.gen.common.struct.BIZException) {
+              result.e = (com.moseeker.thrift.gen.common.struct.BIZException) e;
+              result.setEIsSet(true);
+              msg = result;
+            } else if (e instanceof org.apache.thrift.transport.TTransportException) {
               _LOGGER.error("TTransportException inside handler", e);
               fb.close();
               return;
@@ -1461,7 +1568,7 @@ public class ProfileServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -1498,16 +1605,20 @@ public class ProfileServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             getResource_result result = new getResource_result();
-            if (e instanceof org.apache.thrift.transport.TTransportException) {
+            if (e instanceof com.moseeker.thrift.gen.common.struct.BIZException) {
+              result.e = (com.moseeker.thrift.gen.common.struct.BIZException) e;
+              result.setEIsSet(true);
+              msg = result;
+            } else if (e instanceof org.apache.thrift.transport.TTransportException) {
               _LOGGER.error("TTransportException inside handler", e);
               fb.close();
               return;
@@ -1522,7 +1633,7 @@ public class ProfileServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -1559,16 +1670,20 @@ public class ProfileServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             postResource_result result = new postResource_result();
-            if (e instanceof org.apache.thrift.transport.TTransportException) {
+            if (e instanceof com.moseeker.thrift.gen.common.struct.BIZException) {
+              result.e = (com.moseeker.thrift.gen.common.struct.BIZException) e;
+              result.setEIsSet(true);
+              msg = result;
+            } else if (e instanceof org.apache.thrift.transport.TTransportException) {
               _LOGGER.error("TTransportException inside handler", e);
               fb.close();
               return;
@@ -1583,7 +1698,7 @@ public class ProfileServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -1620,16 +1735,20 @@ public class ProfileServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             putResource_result result = new putResource_result();
-            if (e instanceof org.apache.thrift.transport.TTransportException) {
+            if (e instanceof com.moseeker.thrift.gen.common.struct.BIZException) {
+              result.e = (com.moseeker.thrift.gen.common.struct.BIZException) e;
+              result.setEIsSet(true);
+              msg = result;
+            } else if (e instanceof org.apache.thrift.transport.TTransportException) {
               _LOGGER.error("TTransportException inside handler", e);
               fb.close();
               return;
@@ -1644,7 +1763,7 @@ public class ProfileServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -1681,16 +1800,20 @@ public class ProfileServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             delResource_result result = new delResource_result();
-            if (e instanceof org.apache.thrift.transport.TTransportException) {
+            if (e instanceof com.moseeker.thrift.gen.common.struct.BIZException) {
+              result.e = (com.moseeker.thrift.gen.common.struct.BIZException) e;
+              result.setEIsSet(true);
+              msg = result;
+            } else if (e instanceof org.apache.thrift.transport.TTransportException) {
               _LOGGER.error("TTransportException inside handler", e);
               fb.close();
               return;
@@ -1705,7 +1828,7 @@ public class ProfileServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -1742,16 +1865,20 @@ public class ProfileServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             getCompleteness_result result = new getCompleteness_result();
-            if (e instanceof org.apache.thrift.transport.TTransportException) {
+            if (e instanceof com.moseeker.thrift.gen.common.struct.BIZException) {
+              result.e = (com.moseeker.thrift.gen.common.struct.BIZException) e;
+              result.setEIsSet(true);
+              msg = result;
+            } else if (e instanceof org.apache.thrift.transport.TTransportException) {
               _LOGGER.error("TTransportException inside handler", e);
               fb.close();
               return;
@@ -1766,7 +1893,7 @@ public class ProfileServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -1803,16 +1930,20 @@ public class ProfileServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             reCalculateUserCompleteness_result result = new reCalculateUserCompleteness_result();
-            if (e instanceof org.apache.thrift.transport.TTransportException) {
+            if (e instanceof com.moseeker.thrift.gen.common.struct.BIZException) {
+              result.e = (com.moseeker.thrift.gen.common.struct.BIZException) e;
+              result.setEIsSet(true);
+              msg = result;
+            } else if (e instanceof org.apache.thrift.transport.TTransportException) {
               _LOGGER.error("TTransportException inside handler", e);
               fb.close();
               return;
@@ -1827,7 +1958,7 @@ public class ProfileServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -1864,16 +1995,20 @@ public class ProfileServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             reCalculateUserCompletenessBySettingId_result result = new reCalculateUserCompletenessBySettingId_result();
-            if (e instanceof org.apache.thrift.transport.TTransportException) {
+            if (e instanceof com.moseeker.thrift.gen.common.struct.BIZException) {
+              result.e = (com.moseeker.thrift.gen.common.struct.BIZException) e;
+              result.setEIsSet(true);
+              msg = result;
+            } else if (e instanceof org.apache.thrift.transport.TTransportException) {
               _LOGGER.error("TTransportException inside handler", e);
               fb.close();
               return;
@@ -1888,7 +2023,7 @@ public class ProfileServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -1925,16 +2060,20 @@ public class ProfileServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             getProfileByApplication_result result = new getProfileByApplication_result();
-            if (e instanceof org.apache.thrift.transport.TTransportException) {
+            if (e instanceof com.moseeker.thrift.gen.common.struct.BIZException) {
+              result.e = (com.moseeker.thrift.gen.common.struct.BIZException) e;
+              result.setEIsSet(true);
+              msg = result;
+            } else if (e instanceof org.apache.thrift.transport.TTransportException) {
               _LOGGER.error("TTransportException inside handler", e);
               fb.close();
               return;
@@ -1949,7 +2088,7 @@ public class ProfileServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -1982,7 +2121,7 @@ public class ProfileServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       QUERY((short)1, "query");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -2008,21 +2147,21 @@ public class ProfileServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -2031,7 +2170,7 @@ public class ProfileServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -2098,7 +2237,7 @@ public class ProfileServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case QUERY:
         if (value == null) {
@@ -2111,30 +2250,30 @@ public class ProfileServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case QUERY:
         return getQuery();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case QUERY:
         return isSetQuery();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof getResources_args)
@@ -2179,7 +2318,7 @@ public class ProfileServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetQuery()).compareTo(other.isSetQuery());
+      lastComparison = java.lang.Boolean.valueOf(isSetQuery()).compareTo(other.isSetQuery());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -2205,8 +2344,8 @@ public class ProfileServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("getResources_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("getResources_args(");
       boolean first = true;
 
       sb.append("query:");
@@ -2236,7 +2375,7 @@ public class ProfileServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -2339,17 +2478,20 @@ public class ProfileServices {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getResources_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
+    private static final org.apache.thrift.protocol.TField E_FIELD_DESC = new org.apache.thrift.protocol.TField("e", org.apache.thrift.protocol.TType.STRUCT, (short)1);
 
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getResources_resultStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getResources_resultTupleSchemeFactory();
 
     public com.moseeker.thrift.gen.common.struct.Response success; // required
+    public com.moseeker.thrift.gen.common.struct.BIZException e; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      SUCCESS((short)0, "success");
+      SUCCESS((short)0, "success"),
+      E((short)1, "e");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -2364,6 +2506,8 @@ public class ProfileServices {
         switch(fieldId) {
           case 0: // SUCCESS
             return SUCCESS;
+          case 1: // E
+            return E;
           default:
             return null;
         }
@@ -2375,21 +2519,21 @@ public class ProfileServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -2398,7 +2542,7 @@ public class ProfileServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -2409,6 +2553,8 @@ public class ProfileServices {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getResources_result.class, metaDataMap);
     }
@@ -2417,10 +2563,12 @@ public class ProfileServices {
     }
 
     public getResources_result(
-      com.moseeker.thrift.gen.common.struct.Response success)
+      com.moseeker.thrift.gen.common.struct.Response success,
+      com.moseeker.thrift.gen.common.struct.BIZException e)
     {
       this();
       this.success = success;
+      this.e = e;
     }
 
     /**
@@ -2429,6 +2577,9 @@ public class ProfileServices {
     public getResources_result(getResources_result other) {
       if (other.isSetSuccess()) {
         this.success = new com.moseeker.thrift.gen.common.struct.Response(other.success);
+      }
+      if (other.isSetE()) {
+        this.e = new com.moseeker.thrift.gen.common.struct.BIZException(other.e);
       }
     }
 
@@ -2439,6 +2590,7 @@ public class ProfileServices {
     @Override
     public void clear() {
       this.success = null;
+      this.e = null;
     }
 
     public com.moseeker.thrift.gen.common.struct.Response getSuccess() {
@@ -2465,7 +2617,31 @@ public class ProfileServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public com.moseeker.thrift.gen.common.struct.BIZException getE() {
+      return this.e;
+    }
+
+    public getResources_result setE(com.moseeker.thrift.gen.common.struct.BIZException e) {
+      this.e = e;
+      return this;
+    }
+
+    public void unsetE() {
+      this.e = null;
+    }
+
+    /** Returns true if field e is set (has been assigned a value) and false otherwise */
+    public boolean isSetE() {
+      return this.e != null;
+    }
+
+    public void setEIsSet(boolean value) {
+      if (!value) {
+        this.e = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -2475,33 +2651,46 @@ public class ProfileServices {
         }
         break;
 
+      case E:
+        if (value == null) {
+          unsetE();
+        } else {
+          setE((com.moseeker.thrift.gen.common.struct.BIZException)value);
+        }
+        break;
+
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
+      case E:
+        return getE();
+
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
+      case E:
+        return isSetE();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof getResources_result)
@@ -2524,6 +2713,15 @@ public class ProfileServices {
           return false;
       }
 
+      boolean this_present_e = true && this.isSetE();
+      boolean that_present_e = true && that.isSetE();
+      if (this_present_e || that_present_e) {
+        if (!(this_present_e && that_present_e))
+          return false;
+        if (!this.e.equals(that.e))
+          return false;
+      }
+
       return true;
     }
 
@@ -2534,6 +2732,10 @@ public class ProfileServices {
       hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
       if (isSetSuccess())
         hashCode = hashCode * 8191 + success.hashCode();
+
+      hashCode = hashCode * 8191 + ((isSetE()) ? 131071 : 524287);
+      if (isSetE())
+        hashCode = hashCode * 8191 + e.hashCode();
 
       return hashCode;
     }
@@ -2546,12 +2748,22 @@ public class ProfileServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
       if (isSetSuccess()) {
         lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetE()).compareTo(other.isSetE());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetE()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.e, other.e);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -2572,8 +2784,8 @@ public class ProfileServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("getResources_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("getResources_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -2581,6 +2793,14 @@ public class ProfileServices {
         sb.append("null");
       } else {
         sb.append(this.success);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("e:");
+      if (this.e == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.e);
       }
       first = false;
       sb.append(")");
@@ -2603,7 +2823,7 @@ public class ProfileServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -2638,6 +2858,15 @@ public class ProfileServices {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
+            case 1: // E
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+                struct.e.read(iprot);
+                struct.setEIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -2656,6 +2885,11 @@ public class ProfileServices {
         if (struct.success != null) {
           oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
           struct.success.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        if (struct.e != null) {
+          oprot.writeFieldBegin(E_FIELD_DESC);
+          struct.e.write(oprot);
           oprot.writeFieldEnd();
         }
         oprot.writeFieldStop();
@@ -2679,20 +2913,31 @@ public class ProfileServices {
         if (struct.isSetSuccess()) {
           optionals.set(0);
         }
-        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetE()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
         if (struct.isSetSuccess()) {
           struct.success.write(oprot);
+        }
+        if (struct.isSetE()) {
+          struct.e.write(oprot);
         }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, getResources_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet incoming = iprot.readBitSet(1);
+        java.util.BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
           struct.success = new com.moseeker.thrift.gen.common.struct.Response();
           struct.success.read(iprot);
           struct.setSuccessIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+          struct.e.read(iprot);
+          struct.setEIsSet(true);
         }
       }
     }
@@ -2716,7 +2961,7 @@ public class ProfileServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       QUERY((short)2, "query");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -2742,21 +2987,21 @@ public class ProfileServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -2765,7 +3010,7 @@ public class ProfileServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -2832,7 +3077,7 @@ public class ProfileServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case QUERY:
         if (value == null) {
@@ -2845,30 +3090,30 @@ public class ProfileServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case QUERY:
         return getQuery();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case QUERY:
         return isSetQuery();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof getPagination_args)
@@ -2913,7 +3158,7 @@ public class ProfileServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetQuery()).compareTo(other.isSetQuery());
+      lastComparison = java.lang.Boolean.valueOf(isSetQuery()).compareTo(other.isSetQuery());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -2939,8 +3184,8 @@ public class ProfileServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("getPagination_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("getPagination_args(");
       boolean first = true;
 
       sb.append("query:");
@@ -2970,7 +3215,7 @@ public class ProfileServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -3073,17 +3318,20 @@ public class ProfileServices {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getPagination_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
+    private static final org.apache.thrift.protocol.TField E_FIELD_DESC = new org.apache.thrift.protocol.TField("e", org.apache.thrift.protocol.TType.STRUCT, (short)1);
 
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getPagination_resultStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getPagination_resultTupleSchemeFactory();
 
     public com.moseeker.thrift.gen.common.struct.Response success; // required
+    public com.moseeker.thrift.gen.common.struct.BIZException e; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      SUCCESS((short)0, "success");
+      SUCCESS((short)0, "success"),
+      E((short)1, "e");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -3098,6 +3346,8 @@ public class ProfileServices {
         switch(fieldId) {
           case 0: // SUCCESS
             return SUCCESS;
+          case 1: // E
+            return E;
           default:
             return null;
         }
@@ -3109,21 +3359,21 @@ public class ProfileServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -3132,7 +3382,7 @@ public class ProfileServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -3143,6 +3393,8 @@ public class ProfileServices {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getPagination_result.class, metaDataMap);
     }
@@ -3151,10 +3403,12 @@ public class ProfileServices {
     }
 
     public getPagination_result(
-      com.moseeker.thrift.gen.common.struct.Response success)
+      com.moseeker.thrift.gen.common.struct.Response success,
+      com.moseeker.thrift.gen.common.struct.BIZException e)
     {
       this();
       this.success = success;
+      this.e = e;
     }
 
     /**
@@ -3163,6 +3417,9 @@ public class ProfileServices {
     public getPagination_result(getPagination_result other) {
       if (other.isSetSuccess()) {
         this.success = new com.moseeker.thrift.gen.common.struct.Response(other.success);
+      }
+      if (other.isSetE()) {
+        this.e = new com.moseeker.thrift.gen.common.struct.BIZException(other.e);
       }
     }
 
@@ -3173,6 +3430,7 @@ public class ProfileServices {
     @Override
     public void clear() {
       this.success = null;
+      this.e = null;
     }
 
     public com.moseeker.thrift.gen.common.struct.Response getSuccess() {
@@ -3199,7 +3457,31 @@ public class ProfileServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public com.moseeker.thrift.gen.common.struct.BIZException getE() {
+      return this.e;
+    }
+
+    public getPagination_result setE(com.moseeker.thrift.gen.common.struct.BIZException e) {
+      this.e = e;
+      return this;
+    }
+
+    public void unsetE() {
+      this.e = null;
+    }
+
+    /** Returns true if field e is set (has been assigned a value) and false otherwise */
+    public boolean isSetE() {
+      return this.e != null;
+    }
+
+    public void setEIsSet(boolean value) {
+      if (!value) {
+        this.e = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -3209,33 +3491,46 @@ public class ProfileServices {
         }
         break;
 
+      case E:
+        if (value == null) {
+          unsetE();
+        } else {
+          setE((com.moseeker.thrift.gen.common.struct.BIZException)value);
+        }
+        break;
+
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
+      case E:
+        return getE();
+
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
+      case E:
+        return isSetE();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof getPagination_result)
@@ -3258,6 +3553,15 @@ public class ProfileServices {
           return false;
       }
 
+      boolean this_present_e = true && this.isSetE();
+      boolean that_present_e = true && that.isSetE();
+      if (this_present_e || that_present_e) {
+        if (!(this_present_e && that_present_e))
+          return false;
+        if (!this.e.equals(that.e))
+          return false;
+      }
+
       return true;
     }
 
@@ -3268,6 +3572,10 @@ public class ProfileServices {
       hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
       if (isSetSuccess())
         hashCode = hashCode * 8191 + success.hashCode();
+
+      hashCode = hashCode * 8191 + ((isSetE()) ? 131071 : 524287);
+      if (isSetE())
+        hashCode = hashCode * 8191 + e.hashCode();
 
       return hashCode;
     }
@@ -3280,12 +3588,22 @@ public class ProfileServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
       if (isSetSuccess()) {
         lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetE()).compareTo(other.isSetE());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetE()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.e, other.e);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -3306,8 +3624,8 @@ public class ProfileServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("getPagination_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("getPagination_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -3315,6 +3633,14 @@ public class ProfileServices {
         sb.append("null");
       } else {
         sb.append(this.success);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("e:");
+      if (this.e == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.e);
       }
       first = false;
       sb.append(")");
@@ -3337,7 +3663,7 @@ public class ProfileServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -3372,6 +3698,15 @@ public class ProfileServices {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
+            case 1: // E
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+                struct.e.read(iprot);
+                struct.setEIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -3390,6 +3725,11 @@ public class ProfileServices {
         if (struct.success != null) {
           oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
           struct.success.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        if (struct.e != null) {
+          oprot.writeFieldBegin(E_FIELD_DESC);
+          struct.e.write(oprot);
           oprot.writeFieldEnd();
         }
         oprot.writeFieldStop();
@@ -3413,20 +3753,31 @@ public class ProfileServices {
         if (struct.isSetSuccess()) {
           optionals.set(0);
         }
-        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetE()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
         if (struct.isSetSuccess()) {
           struct.success.write(oprot);
+        }
+        if (struct.isSetE()) {
+          struct.e.write(oprot);
         }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, getPagination_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet incoming = iprot.readBitSet(1);
+        java.util.BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
           struct.success = new com.moseeker.thrift.gen.common.struct.Response();
           struct.success.read(iprot);
           struct.setSuccessIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+          struct.e.read(iprot);
+          struct.setEIsSet(true);
         }
       }
     }
@@ -3450,7 +3801,7 @@ public class ProfileServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       RESOURCES((short)1, "resources");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -3476,21 +3827,21 @@ public class ProfileServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -3499,7 +3850,7 @@ public class ProfileServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -3586,7 +3937,7 @@ public class ProfileServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case RESOURCES:
         if (value == null) {
@@ -3599,30 +3950,30 @@ public class ProfileServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case RESOURCES:
         return getResources();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case RESOURCES:
         return isSetResources();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof postResources_args)
@@ -3667,7 +4018,7 @@ public class ProfileServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetResources()).compareTo(other.isSetResources());
+      lastComparison = java.lang.Boolean.valueOf(isSetResources()).compareTo(other.isSetResources());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -3693,8 +4044,8 @@ public class ProfileServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("postResources_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("postResources_args(");
       boolean first = true;
 
       sb.append("resources:");
@@ -3721,7 +4072,7 @@ public class ProfileServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -3750,14 +4101,14 @@ public class ProfileServices {
             case 1: // RESOURCES
               if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
                 {
-                  org.apache.thrift.protocol.TList _list0 = iprot.readListBegin();
-                  struct.resources = new java.util.ArrayList<com.moseeker.thrift.gen.profile.struct.Profile>(_list0.size);
-                  com.moseeker.thrift.gen.profile.struct.Profile _elem1;
-                  for (int _i2 = 0; _i2 < _list0.size; ++_i2)
+                  org.apache.thrift.protocol.TList _list56 = iprot.readListBegin();
+                  struct.resources = new java.util.ArrayList<com.moseeker.thrift.gen.profile.struct.Profile>(_list56.size);
+                  com.moseeker.thrift.gen.profile.struct.Profile _elem57;
+                  for (int _i58 = 0; _i58 < _list56.size; ++_i58)
                   {
-                    _elem1 = new com.moseeker.thrift.gen.profile.struct.Profile();
-                    _elem1.read(iprot);
-                    struct.resources.add(_elem1);
+                    _elem57 = new com.moseeker.thrift.gen.profile.struct.Profile();
+                    _elem57.read(iprot);
+                    struct.resources.add(_elem57);
                   }
                   iprot.readListEnd();
                 }
@@ -3785,9 +4136,9 @@ public class ProfileServices {
           oprot.writeFieldBegin(RESOURCES_FIELD_DESC);
           {
             oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.resources.size()));
-            for (com.moseeker.thrift.gen.profile.struct.Profile _iter3 : struct.resources)
+            for (com.moseeker.thrift.gen.profile.struct.Profile _iter59 : struct.resources)
             {
-              _iter3.write(oprot);
+              _iter59.write(oprot);
             }
             oprot.writeListEnd();
           }
@@ -3818,9 +4169,9 @@ public class ProfileServices {
         if (struct.isSetResources()) {
           {
             oprot.writeI32(struct.resources.size());
-            for (com.moseeker.thrift.gen.profile.struct.Profile _iter4 : struct.resources)
+            for (com.moseeker.thrift.gen.profile.struct.Profile _iter60 : struct.resources)
             {
-              _iter4.write(oprot);
+              _iter60.write(oprot);
             }
           }
         }
@@ -3832,14 +4183,14 @@ public class ProfileServices {
         java.util.BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
           {
-            org.apache.thrift.protocol.TList _list5 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-            struct.resources = new java.util.ArrayList<com.moseeker.thrift.gen.profile.struct.Profile>(_list5.size);
-            com.moseeker.thrift.gen.profile.struct.Profile _elem6;
-            for (int _i7 = 0; _i7 < _list5.size; ++_i7)
+            org.apache.thrift.protocol.TList _list61 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+            struct.resources = new java.util.ArrayList<com.moseeker.thrift.gen.profile.struct.Profile>(_list61.size);
+            com.moseeker.thrift.gen.profile.struct.Profile _elem62;
+            for (int _i63 = 0; _i63 < _list61.size; ++_i63)
             {
-              _elem6 = new com.moseeker.thrift.gen.profile.struct.Profile();
-              _elem6.read(iprot);
-              struct.resources.add(_elem6);
+              _elem62 = new com.moseeker.thrift.gen.profile.struct.Profile();
+              _elem62.read(iprot);
+              struct.resources.add(_elem62);
             }
           }
           struct.setResourcesIsSet(true);
@@ -3856,17 +4207,20 @@ public class ProfileServices {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("postResources_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
+    private static final org.apache.thrift.protocol.TField E_FIELD_DESC = new org.apache.thrift.protocol.TField("e", org.apache.thrift.protocol.TType.STRUCT, (short)1);
 
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new postResources_resultStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new postResources_resultTupleSchemeFactory();
 
     public com.moseeker.thrift.gen.common.struct.Response success; // required
+    public com.moseeker.thrift.gen.common.struct.BIZException e; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      SUCCESS((short)0, "success");
+      SUCCESS((short)0, "success"),
+      E((short)1, "e");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -3881,6 +4235,8 @@ public class ProfileServices {
         switch(fieldId) {
           case 0: // SUCCESS
             return SUCCESS;
+          case 1: // E
+            return E;
           default:
             return null;
         }
@@ -3892,21 +4248,21 @@ public class ProfileServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -3915,7 +4271,7 @@ public class ProfileServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -3926,6 +4282,8 @@ public class ProfileServices {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(postResources_result.class, metaDataMap);
     }
@@ -3934,10 +4292,12 @@ public class ProfileServices {
     }
 
     public postResources_result(
-      com.moseeker.thrift.gen.common.struct.Response success)
+      com.moseeker.thrift.gen.common.struct.Response success,
+      com.moseeker.thrift.gen.common.struct.BIZException e)
     {
       this();
       this.success = success;
+      this.e = e;
     }
 
     /**
@@ -3946,6 +4306,9 @@ public class ProfileServices {
     public postResources_result(postResources_result other) {
       if (other.isSetSuccess()) {
         this.success = new com.moseeker.thrift.gen.common.struct.Response(other.success);
+      }
+      if (other.isSetE()) {
+        this.e = new com.moseeker.thrift.gen.common.struct.BIZException(other.e);
       }
     }
 
@@ -3956,6 +4319,7 @@ public class ProfileServices {
     @Override
     public void clear() {
       this.success = null;
+      this.e = null;
     }
 
     public com.moseeker.thrift.gen.common.struct.Response getSuccess() {
@@ -3982,7 +4346,31 @@ public class ProfileServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public com.moseeker.thrift.gen.common.struct.BIZException getE() {
+      return this.e;
+    }
+
+    public postResources_result setE(com.moseeker.thrift.gen.common.struct.BIZException e) {
+      this.e = e;
+      return this;
+    }
+
+    public void unsetE() {
+      this.e = null;
+    }
+
+    /** Returns true if field e is set (has been assigned a value) and false otherwise */
+    public boolean isSetE() {
+      return this.e != null;
+    }
+
+    public void setEIsSet(boolean value) {
+      if (!value) {
+        this.e = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -3992,33 +4380,46 @@ public class ProfileServices {
         }
         break;
 
+      case E:
+        if (value == null) {
+          unsetE();
+        } else {
+          setE((com.moseeker.thrift.gen.common.struct.BIZException)value);
+        }
+        break;
+
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
+      case E:
+        return getE();
+
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
+      case E:
+        return isSetE();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof postResources_result)
@@ -4041,6 +4442,15 @@ public class ProfileServices {
           return false;
       }
 
+      boolean this_present_e = true && this.isSetE();
+      boolean that_present_e = true && that.isSetE();
+      if (this_present_e || that_present_e) {
+        if (!(this_present_e && that_present_e))
+          return false;
+        if (!this.e.equals(that.e))
+          return false;
+      }
+
       return true;
     }
 
@@ -4051,6 +4461,10 @@ public class ProfileServices {
       hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
       if (isSetSuccess())
         hashCode = hashCode * 8191 + success.hashCode();
+
+      hashCode = hashCode * 8191 + ((isSetE()) ? 131071 : 524287);
+      if (isSetE())
+        hashCode = hashCode * 8191 + e.hashCode();
 
       return hashCode;
     }
@@ -4063,12 +4477,22 @@ public class ProfileServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
       if (isSetSuccess()) {
         lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetE()).compareTo(other.isSetE());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetE()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.e, other.e);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -4089,8 +4513,8 @@ public class ProfileServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("postResources_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("postResources_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -4098,6 +4522,14 @@ public class ProfileServices {
         sb.append("null");
       } else {
         sb.append(this.success);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("e:");
+      if (this.e == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.e);
       }
       first = false;
       sb.append(")");
@@ -4120,7 +4552,7 @@ public class ProfileServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -4155,6 +4587,15 @@ public class ProfileServices {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
+            case 1: // E
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+                struct.e.read(iprot);
+                struct.setEIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -4173,6 +4614,11 @@ public class ProfileServices {
         if (struct.success != null) {
           oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
           struct.success.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        if (struct.e != null) {
+          oprot.writeFieldBegin(E_FIELD_DESC);
+          struct.e.write(oprot);
           oprot.writeFieldEnd();
         }
         oprot.writeFieldStop();
@@ -4196,20 +4642,31 @@ public class ProfileServices {
         if (struct.isSetSuccess()) {
           optionals.set(0);
         }
-        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetE()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
         if (struct.isSetSuccess()) {
           struct.success.write(oprot);
+        }
+        if (struct.isSetE()) {
+          struct.e.write(oprot);
         }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, postResources_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet incoming = iprot.readBitSet(1);
+        java.util.BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
           struct.success = new com.moseeker.thrift.gen.common.struct.Response();
           struct.success.read(iprot);
           struct.setSuccessIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+          struct.e.read(iprot);
+          struct.setEIsSet(true);
         }
       }
     }
@@ -4233,7 +4690,7 @@ public class ProfileServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       RESOURCES((short)1, "resources");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -4259,21 +4716,21 @@ public class ProfileServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -4282,7 +4739,7 @@ public class ProfileServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -4369,7 +4826,7 @@ public class ProfileServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case RESOURCES:
         if (value == null) {
@@ -4382,30 +4839,30 @@ public class ProfileServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case RESOURCES:
         return getResources();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case RESOURCES:
         return isSetResources();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof putResources_args)
@@ -4450,7 +4907,7 @@ public class ProfileServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetResources()).compareTo(other.isSetResources());
+      lastComparison = java.lang.Boolean.valueOf(isSetResources()).compareTo(other.isSetResources());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -4476,8 +4933,8 @@ public class ProfileServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("putResources_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("putResources_args(");
       boolean first = true;
 
       sb.append("resources:");
@@ -4504,7 +4961,7 @@ public class ProfileServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -4533,14 +4990,14 @@ public class ProfileServices {
             case 1: // RESOURCES
               if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
                 {
-                  org.apache.thrift.protocol.TList _list8 = iprot.readListBegin();
-                  struct.resources = new java.util.ArrayList<com.moseeker.thrift.gen.profile.struct.Profile>(_list8.size);
-                  com.moseeker.thrift.gen.profile.struct.Profile _elem9;
-                  for (int _i10 = 0; _i10 < _list8.size; ++_i10)
+                  org.apache.thrift.protocol.TList _list64 = iprot.readListBegin();
+                  struct.resources = new java.util.ArrayList<com.moseeker.thrift.gen.profile.struct.Profile>(_list64.size);
+                  com.moseeker.thrift.gen.profile.struct.Profile _elem65;
+                  for (int _i66 = 0; _i66 < _list64.size; ++_i66)
                   {
-                    _elem9 = new com.moseeker.thrift.gen.profile.struct.Profile();
-                    _elem9.read(iprot);
-                    struct.resources.add(_elem9);
+                    _elem65 = new com.moseeker.thrift.gen.profile.struct.Profile();
+                    _elem65.read(iprot);
+                    struct.resources.add(_elem65);
                   }
                   iprot.readListEnd();
                 }
@@ -4568,9 +5025,9 @@ public class ProfileServices {
           oprot.writeFieldBegin(RESOURCES_FIELD_DESC);
           {
             oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.resources.size()));
-            for (com.moseeker.thrift.gen.profile.struct.Profile _iter11 : struct.resources)
+            for (com.moseeker.thrift.gen.profile.struct.Profile _iter67 : struct.resources)
             {
-              _iter11.write(oprot);
+              _iter67.write(oprot);
             }
             oprot.writeListEnd();
           }
@@ -4601,9 +5058,9 @@ public class ProfileServices {
         if (struct.isSetResources()) {
           {
             oprot.writeI32(struct.resources.size());
-            for (com.moseeker.thrift.gen.profile.struct.Profile _iter12 : struct.resources)
+            for (com.moseeker.thrift.gen.profile.struct.Profile _iter68 : struct.resources)
             {
-              _iter12.write(oprot);
+              _iter68.write(oprot);
             }
           }
         }
@@ -4615,14 +5072,14 @@ public class ProfileServices {
         java.util.BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
           {
-            org.apache.thrift.protocol.TList _list13 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-            struct.resources = new java.util.ArrayList<com.moseeker.thrift.gen.profile.struct.Profile>(_list13.size);
-            com.moseeker.thrift.gen.profile.struct.Profile _elem14;
-            for (int _i15 = 0; _i15 < _list13.size; ++_i15)
+            org.apache.thrift.protocol.TList _list69 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+            struct.resources = new java.util.ArrayList<com.moseeker.thrift.gen.profile.struct.Profile>(_list69.size);
+            com.moseeker.thrift.gen.profile.struct.Profile _elem70;
+            for (int _i71 = 0; _i71 < _list69.size; ++_i71)
             {
-              _elem14 = new com.moseeker.thrift.gen.profile.struct.Profile();
-              _elem14.read(iprot);
-              struct.resources.add(_elem14);
+              _elem70 = new com.moseeker.thrift.gen.profile.struct.Profile();
+              _elem70.read(iprot);
+              struct.resources.add(_elem70);
             }
           }
           struct.setResourcesIsSet(true);
@@ -4639,17 +5096,20 @@ public class ProfileServices {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("putResources_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
+    private static final org.apache.thrift.protocol.TField E_FIELD_DESC = new org.apache.thrift.protocol.TField("e", org.apache.thrift.protocol.TType.STRUCT, (short)1);
 
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new putResources_resultStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new putResources_resultTupleSchemeFactory();
 
     public com.moseeker.thrift.gen.common.struct.Response success; // required
+    public com.moseeker.thrift.gen.common.struct.BIZException e; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      SUCCESS((short)0, "success");
+      SUCCESS((short)0, "success"),
+      E((short)1, "e");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -4664,6 +5124,8 @@ public class ProfileServices {
         switch(fieldId) {
           case 0: // SUCCESS
             return SUCCESS;
+          case 1: // E
+            return E;
           default:
             return null;
         }
@@ -4675,21 +5137,21 @@ public class ProfileServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -4698,7 +5160,7 @@ public class ProfileServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -4709,6 +5171,8 @@ public class ProfileServices {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(putResources_result.class, metaDataMap);
     }
@@ -4717,10 +5181,12 @@ public class ProfileServices {
     }
 
     public putResources_result(
-      com.moseeker.thrift.gen.common.struct.Response success)
+      com.moseeker.thrift.gen.common.struct.Response success,
+      com.moseeker.thrift.gen.common.struct.BIZException e)
     {
       this();
       this.success = success;
+      this.e = e;
     }
 
     /**
@@ -4729,6 +5195,9 @@ public class ProfileServices {
     public putResources_result(putResources_result other) {
       if (other.isSetSuccess()) {
         this.success = new com.moseeker.thrift.gen.common.struct.Response(other.success);
+      }
+      if (other.isSetE()) {
+        this.e = new com.moseeker.thrift.gen.common.struct.BIZException(other.e);
       }
     }
 
@@ -4739,6 +5208,7 @@ public class ProfileServices {
     @Override
     public void clear() {
       this.success = null;
+      this.e = null;
     }
 
     public com.moseeker.thrift.gen.common.struct.Response getSuccess() {
@@ -4765,7 +5235,31 @@ public class ProfileServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public com.moseeker.thrift.gen.common.struct.BIZException getE() {
+      return this.e;
+    }
+
+    public putResources_result setE(com.moseeker.thrift.gen.common.struct.BIZException e) {
+      this.e = e;
+      return this;
+    }
+
+    public void unsetE() {
+      this.e = null;
+    }
+
+    /** Returns true if field e is set (has been assigned a value) and false otherwise */
+    public boolean isSetE() {
+      return this.e != null;
+    }
+
+    public void setEIsSet(boolean value) {
+      if (!value) {
+        this.e = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -4775,33 +5269,46 @@ public class ProfileServices {
         }
         break;
 
+      case E:
+        if (value == null) {
+          unsetE();
+        } else {
+          setE((com.moseeker.thrift.gen.common.struct.BIZException)value);
+        }
+        break;
+
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
+      case E:
+        return getE();
+
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
+      case E:
+        return isSetE();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof putResources_result)
@@ -4824,6 +5331,15 @@ public class ProfileServices {
           return false;
       }
 
+      boolean this_present_e = true && this.isSetE();
+      boolean that_present_e = true && that.isSetE();
+      if (this_present_e || that_present_e) {
+        if (!(this_present_e && that_present_e))
+          return false;
+        if (!this.e.equals(that.e))
+          return false;
+      }
+
       return true;
     }
 
@@ -4834,6 +5350,10 @@ public class ProfileServices {
       hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
       if (isSetSuccess())
         hashCode = hashCode * 8191 + success.hashCode();
+
+      hashCode = hashCode * 8191 + ((isSetE()) ? 131071 : 524287);
+      if (isSetE())
+        hashCode = hashCode * 8191 + e.hashCode();
 
       return hashCode;
     }
@@ -4846,12 +5366,22 @@ public class ProfileServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
       if (isSetSuccess()) {
         lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetE()).compareTo(other.isSetE());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetE()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.e, other.e);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -4872,8 +5402,8 @@ public class ProfileServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("putResources_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("putResources_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -4881,6 +5411,14 @@ public class ProfileServices {
         sb.append("null");
       } else {
         sb.append(this.success);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("e:");
+      if (this.e == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.e);
       }
       first = false;
       sb.append(")");
@@ -4903,7 +5441,7 @@ public class ProfileServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -4938,6 +5476,15 @@ public class ProfileServices {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
+            case 1: // E
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+                struct.e.read(iprot);
+                struct.setEIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -4956,6 +5503,11 @@ public class ProfileServices {
         if (struct.success != null) {
           oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
           struct.success.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        if (struct.e != null) {
+          oprot.writeFieldBegin(E_FIELD_DESC);
+          struct.e.write(oprot);
           oprot.writeFieldEnd();
         }
         oprot.writeFieldStop();
@@ -4979,20 +5531,31 @@ public class ProfileServices {
         if (struct.isSetSuccess()) {
           optionals.set(0);
         }
-        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetE()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
         if (struct.isSetSuccess()) {
           struct.success.write(oprot);
+        }
+        if (struct.isSetE()) {
+          struct.e.write(oprot);
         }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, putResources_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet incoming = iprot.readBitSet(1);
+        java.util.BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
           struct.success = new com.moseeker.thrift.gen.common.struct.Response();
           struct.success.read(iprot);
           struct.setSuccessIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+          struct.e.read(iprot);
+          struct.setEIsSet(true);
         }
       }
     }
@@ -5016,7 +5579,7 @@ public class ProfileServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       RESOURCES((short)1, "resources");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -5042,21 +5605,21 @@ public class ProfileServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -5065,7 +5628,7 @@ public class ProfileServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -5152,7 +5715,7 @@ public class ProfileServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case RESOURCES:
         if (value == null) {
@@ -5165,30 +5728,30 @@ public class ProfileServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case RESOURCES:
         return getResources();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case RESOURCES:
         return isSetResources();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof delResources_args)
@@ -5233,7 +5796,7 @@ public class ProfileServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetResources()).compareTo(other.isSetResources());
+      lastComparison = java.lang.Boolean.valueOf(isSetResources()).compareTo(other.isSetResources());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -5259,8 +5822,8 @@ public class ProfileServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("delResources_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("delResources_args(");
       boolean first = true;
 
       sb.append("resources:");
@@ -5287,7 +5850,7 @@ public class ProfileServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -5316,14 +5879,14 @@ public class ProfileServices {
             case 1: // RESOURCES
               if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
                 {
-                  org.apache.thrift.protocol.TList _list16 = iprot.readListBegin();
-                  struct.resources = new java.util.ArrayList<com.moseeker.thrift.gen.profile.struct.Profile>(_list16.size);
-                  com.moseeker.thrift.gen.profile.struct.Profile _elem17;
-                  for (int _i18 = 0; _i18 < _list16.size; ++_i18)
+                  org.apache.thrift.protocol.TList _list72 = iprot.readListBegin();
+                  struct.resources = new java.util.ArrayList<com.moseeker.thrift.gen.profile.struct.Profile>(_list72.size);
+                  com.moseeker.thrift.gen.profile.struct.Profile _elem73;
+                  for (int _i74 = 0; _i74 < _list72.size; ++_i74)
                   {
-                    _elem17 = new com.moseeker.thrift.gen.profile.struct.Profile();
-                    _elem17.read(iprot);
-                    struct.resources.add(_elem17);
+                    _elem73 = new com.moseeker.thrift.gen.profile.struct.Profile();
+                    _elem73.read(iprot);
+                    struct.resources.add(_elem73);
                   }
                   iprot.readListEnd();
                 }
@@ -5351,9 +5914,9 @@ public class ProfileServices {
           oprot.writeFieldBegin(RESOURCES_FIELD_DESC);
           {
             oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.resources.size()));
-            for (com.moseeker.thrift.gen.profile.struct.Profile _iter19 : struct.resources)
+            for (com.moseeker.thrift.gen.profile.struct.Profile _iter75 : struct.resources)
             {
-              _iter19.write(oprot);
+              _iter75.write(oprot);
             }
             oprot.writeListEnd();
           }
@@ -5384,9 +5947,9 @@ public class ProfileServices {
         if (struct.isSetResources()) {
           {
             oprot.writeI32(struct.resources.size());
-            for (com.moseeker.thrift.gen.profile.struct.Profile _iter20 : struct.resources)
+            for (com.moseeker.thrift.gen.profile.struct.Profile _iter76 : struct.resources)
             {
-              _iter20.write(oprot);
+              _iter76.write(oprot);
             }
           }
         }
@@ -5398,14 +5961,14 @@ public class ProfileServices {
         java.util.BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
           {
-            org.apache.thrift.protocol.TList _list21 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-            struct.resources = new java.util.ArrayList<com.moseeker.thrift.gen.profile.struct.Profile>(_list21.size);
-            com.moseeker.thrift.gen.profile.struct.Profile _elem22;
-            for (int _i23 = 0; _i23 < _list21.size; ++_i23)
+            org.apache.thrift.protocol.TList _list77 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+            struct.resources = new java.util.ArrayList<com.moseeker.thrift.gen.profile.struct.Profile>(_list77.size);
+            com.moseeker.thrift.gen.profile.struct.Profile _elem78;
+            for (int _i79 = 0; _i79 < _list77.size; ++_i79)
             {
-              _elem22 = new com.moseeker.thrift.gen.profile.struct.Profile();
-              _elem22.read(iprot);
-              struct.resources.add(_elem22);
+              _elem78 = new com.moseeker.thrift.gen.profile.struct.Profile();
+              _elem78.read(iprot);
+              struct.resources.add(_elem78);
             }
           }
           struct.setResourcesIsSet(true);
@@ -5422,17 +5985,20 @@ public class ProfileServices {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("delResources_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
+    private static final org.apache.thrift.protocol.TField E_FIELD_DESC = new org.apache.thrift.protocol.TField("e", org.apache.thrift.protocol.TType.STRUCT, (short)1);
 
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new delResources_resultStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new delResources_resultTupleSchemeFactory();
 
     public com.moseeker.thrift.gen.common.struct.Response success; // required
+    public com.moseeker.thrift.gen.common.struct.BIZException e; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      SUCCESS((short)0, "success");
+      SUCCESS((short)0, "success"),
+      E((short)1, "e");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -5447,6 +6013,8 @@ public class ProfileServices {
         switch(fieldId) {
           case 0: // SUCCESS
             return SUCCESS;
+          case 1: // E
+            return E;
           default:
             return null;
         }
@@ -5458,21 +6026,21 @@ public class ProfileServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -5481,7 +6049,7 @@ public class ProfileServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -5492,6 +6060,8 @@ public class ProfileServices {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(delResources_result.class, metaDataMap);
     }
@@ -5500,10 +6070,12 @@ public class ProfileServices {
     }
 
     public delResources_result(
-      com.moseeker.thrift.gen.common.struct.Response success)
+      com.moseeker.thrift.gen.common.struct.Response success,
+      com.moseeker.thrift.gen.common.struct.BIZException e)
     {
       this();
       this.success = success;
+      this.e = e;
     }
 
     /**
@@ -5512,6 +6084,9 @@ public class ProfileServices {
     public delResources_result(delResources_result other) {
       if (other.isSetSuccess()) {
         this.success = new com.moseeker.thrift.gen.common.struct.Response(other.success);
+      }
+      if (other.isSetE()) {
+        this.e = new com.moseeker.thrift.gen.common.struct.BIZException(other.e);
       }
     }
 
@@ -5522,6 +6097,7 @@ public class ProfileServices {
     @Override
     public void clear() {
       this.success = null;
+      this.e = null;
     }
 
     public com.moseeker.thrift.gen.common.struct.Response getSuccess() {
@@ -5548,7 +6124,31 @@ public class ProfileServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public com.moseeker.thrift.gen.common.struct.BIZException getE() {
+      return this.e;
+    }
+
+    public delResources_result setE(com.moseeker.thrift.gen.common.struct.BIZException e) {
+      this.e = e;
+      return this;
+    }
+
+    public void unsetE() {
+      this.e = null;
+    }
+
+    /** Returns true if field e is set (has been assigned a value) and false otherwise */
+    public boolean isSetE() {
+      return this.e != null;
+    }
+
+    public void setEIsSet(boolean value) {
+      if (!value) {
+        this.e = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -5558,33 +6158,46 @@ public class ProfileServices {
         }
         break;
 
+      case E:
+        if (value == null) {
+          unsetE();
+        } else {
+          setE((com.moseeker.thrift.gen.common.struct.BIZException)value);
+        }
+        break;
+
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
+      case E:
+        return getE();
+
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
+      case E:
+        return isSetE();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof delResources_result)
@@ -5607,6 +6220,15 @@ public class ProfileServices {
           return false;
       }
 
+      boolean this_present_e = true && this.isSetE();
+      boolean that_present_e = true && that.isSetE();
+      if (this_present_e || that_present_e) {
+        if (!(this_present_e && that_present_e))
+          return false;
+        if (!this.e.equals(that.e))
+          return false;
+      }
+
       return true;
     }
 
@@ -5617,6 +6239,10 @@ public class ProfileServices {
       hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
       if (isSetSuccess())
         hashCode = hashCode * 8191 + success.hashCode();
+
+      hashCode = hashCode * 8191 + ((isSetE()) ? 131071 : 524287);
+      if (isSetE())
+        hashCode = hashCode * 8191 + e.hashCode();
 
       return hashCode;
     }
@@ -5629,12 +6255,22 @@ public class ProfileServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
       if (isSetSuccess()) {
         lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetE()).compareTo(other.isSetE());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetE()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.e, other.e);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -5655,8 +6291,8 @@ public class ProfileServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("delResources_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("delResources_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -5664,6 +6300,14 @@ public class ProfileServices {
         sb.append("null");
       } else {
         sb.append(this.success);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("e:");
+      if (this.e == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.e);
       }
       first = false;
       sb.append(")");
@@ -5686,7 +6330,7 @@ public class ProfileServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -5721,6 +6365,15 @@ public class ProfileServices {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
+            case 1: // E
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+                struct.e.read(iprot);
+                struct.setEIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -5739,6 +6392,11 @@ public class ProfileServices {
         if (struct.success != null) {
           oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
           struct.success.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        if (struct.e != null) {
+          oprot.writeFieldBegin(E_FIELD_DESC);
+          struct.e.write(oprot);
           oprot.writeFieldEnd();
         }
         oprot.writeFieldStop();
@@ -5762,20 +6420,31 @@ public class ProfileServices {
         if (struct.isSetSuccess()) {
           optionals.set(0);
         }
-        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetE()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
         if (struct.isSetSuccess()) {
           struct.success.write(oprot);
+        }
+        if (struct.isSetE()) {
+          struct.e.write(oprot);
         }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, delResources_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet incoming = iprot.readBitSet(1);
+        java.util.BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
           struct.success = new com.moseeker.thrift.gen.common.struct.Response();
           struct.success.read(iprot);
           struct.setSuccessIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+          struct.e.read(iprot);
+          struct.setEIsSet(true);
         }
       }
     }
@@ -5799,7 +6468,7 @@ public class ProfileServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       QUERY((short)1, "query");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -5825,21 +6494,21 @@ public class ProfileServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -5848,7 +6517,7 @@ public class ProfileServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -5915,7 +6584,7 @@ public class ProfileServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case QUERY:
         if (value == null) {
@@ -5928,30 +6597,30 @@ public class ProfileServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case QUERY:
         return getQuery();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case QUERY:
         return isSetQuery();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof getResource_args)
@@ -5996,7 +6665,7 @@ public class ProfileServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetQuery()).compareTo(other.isSetQuery());
+      lastComparison = java.lang.Boolean.valueOf(isSetQuery()).compareTo(other.isSetQuery());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -6022,8 +6691,8 @@ public class ProfileServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("getResource_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("getResource_args(");
       boolean first = true;
 
       sb.append("query:");
@@ -6053,7 +6722,7 @@ public class ProfileServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -6156,17 +6825,20 @@ public class ProfileServices {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getResource_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
+    private static final org.apache.thrift.protocol.TField E_FIELD_DESC = new org.apache.thrift.protocol.TField("e", org.apache.thrift.protocol.TType.STRUCT, (short)1);
 
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getResource_resultStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getResource_resultTupleSchemeFactory();
 
     public com.moseeker.thrift.gen.common.struct.Response success; // required
+    public com.moseeker.thrift.gen.common.struct.BIZException e; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      SUCCESS((short)0, "success");
+      SUCCESS((short)0, "success"),
+      E((short)1, "e");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -6181,6 +6853,8 @@ public class ProfileServices {
         switch(fieldId) {
           case 0: // SUCCESS
             return SUCCESS;
+          case 1: // E
+            return E;
           default:
             return null;
         }
@@ -6192,21 +6866,21 @@ public class ProfileServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -6215,7 +6889,7 @@ public class ProfileServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -6226,6 +6900,8 @@ public class ProfileServices {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getResource_result.class, metaDataMap);
     }
@@ -6234,10 +6910,12 @@ public class ProfileServices {
     }
 
     public getResource_result(
-      com.moseeker.thrift.gen.common.struct.Response success)
+      com.moseeker.thrift.gen.common.struct.Response success,
+      com.moseeker.thrift.gen.common.struct.BIZException e)
     {
       this();
       this.success = success;
+      this.e = e;
     }
 
     /**
@@ -6246,6 +6924,9 @@ public class ProfileServices {
     public getResource_result(getResource_result other) {
       if (other.isSetSuccess()) {
         this.success = new com.moseeker.thrift.gen.common.struct.Response(other.success);
+      }
+      if (other.isSetE()) {
+        this.e = new com.moseeker.thrift.gen.common.struct.BIZException(other.e);
       }
     }
 
@@ -6256,6 +6937,7 @@ public class ProfileServices {
     @Override
     public void clear() {
       this.success = null;
+      this.e = null;
     }
 
     public com.moseeker.thrift.gen.common.struct.Response getSuccess() {
@@ -6282,7 +6964,31 @@ public class ProfileServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public com.moseeker.thrift.gen.common.struct.BIZException getE() {
+      return this.e;
+    }
+
+    public getResource_result setE(com.moseeker.thrift.gen.common.struct.BIZException e) {
+      this.e = e;
+      return this;
+    }
+
+    public void unsetE() {
+      this.e = null;
+    }
+
+    /** Returns true if field e is set (has been assigned a value) and false otherwise */
+    public boolean isSetE() {
+      return this.e != null;
+    }
+
+    public void setEIsSet(boolean value) {
+      if (!value) {
+        this.e = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -6292,33 +6998,46 @@ public class ProfileServices {
         }
         break;
 
+      case E:
+        if (value == null) {
+          unsetE();
+        } else {
+          setE((com.moseeker.thrift.gen.common.struct.BIZException)value);
+        }
+        break;
+
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
+      case E:
+        return getE();
+
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
+      case E:
+        return isSetE();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof getResource_result)
@@ -6341,6 +7060,15 @@ public class ProfileServices {
           return false;
       }
 
+      boolean this_present_e = true && this.isSetE();
+      boolean that_present_e = true && that.isSetE();
+      if (this_present_e || that_present_e) {
+        if (!(this_present_e && that_present_e))
+          return false;
+        if (!this.e.equals(that.e))
+          return false;
+      }
+
       return true;
     }
 
@@ -6351,6 +7079,10 @@ public class ProfileServices {
       hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
       if (isSetSuccess())
         hashCode = hashCode * 8191 + success.hashCode();
+
+      hashCode = hashCode * 8191 + ((isSetE()) ? 131071 : 524287);
+      if (isSetE())
+        hashCode = hashCode * 8191 + e.hashCode();
 
       return hashCode;
     }
@@ -6363,12 +7095,22 @@ public class ProfileServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
       if (isSetSuccess()) {
         lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetE()).compareTo(other.isSetE());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetE()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.e, other.e);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -6389,8 +7131,8 @@ public class ProfileServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("getResource_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("getResource_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -6398,6 +7140,14 @@ public class ProfileServices {
         sb.append("null");
       } else {
         sb.append(this.success);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("e:");
+      if (this.e == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.e);
       }
       first = false;
       sb.append(")");
@@ -6420,7 +7170,7 @@ public class ProfileServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -6455,6 +7205,15 @@ public class ProfileServices {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
+            case 1: // E
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+                struct.e.read(iprot);
+                struct.setEIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -6473,6 +7232,11 @@ public class ProfileServices {
         if (struct.success != null) {
           oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
           struct.success.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        if (struct.e != null) {
+          oprot.writeFieldBegin(E_FIELD_DESC);
+          struct.e.write(oprot);
           oprot.writeFieldEnd();
         }
         oprot.writeFieldStop();
@@ -6496,20 +7260,31 @@ public class ProfileServices {
         if (struct.isSetSuccess()) {
           optionals.set(0);
         }
-        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetE()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
         if (struct.isSetSuccess()) {
           struct.success.write(oprot);
+        }
+        if (struct.isSetE()) {
+          struct.e.write(oprot);
         }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, getResource_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet incoming = iprot.readBitSet(1);
+        java.util.BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
           struct.success = new com.moseeker.thrift.gen.common.struct.Response();
           struct.success.read(iprot);
           struct.setSuccessIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+          struct.e.read(iprot);
+          struct.setEIsSet(true);
         }
       }
     }
@@ -6533,7 +7308,7 @@ public class ProfileServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       PROFILE((short)1, "profile");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -6559,21 +7334,21 @@ public class ProfileServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -6582,7 +7357,7 @@ public class ProfileServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -6649,7 +7424,7 @@ public class ProfileServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case PROFILE:
         if (value == null) {
@@ -6662,30 +7437,30 @@ public class ProfileServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case PROFILE:
         return getProfile();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case PROFILE:
         return isSetProfile();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof postResource_args)
@@ -6730,7 +7505,7 @@ public class ProfileServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetProfile()).compareTo(other.isSetProfile());
+      lastComparison = java.lang.Boolean.valueOf(isSetProfile()).compareTo(other.isSetProfile());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -6756,8 +7531,8 @@ public class ProfileServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("postResource_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("postResource_args(");
       boolean first = true;
 
       sb.append("profile:");
@@ -6787,7 +7562,7 @@ public class ProfileServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -6890,17 +7665,20 @@ public class ProfileServices {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("postResource_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
+    private static final org.apache.thrift.protocol.TField E_FIELD_DESC = new org.apache.thrift.protocol.TField("e", org.apache.thrift.protocol.TType.STRUCT, (short)1);
 
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new postResource_resultStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new postResource_resultTupleSchemeFactory();
 
     public com.moseeker.thrift.gen.common.struct.Response success; // required
+    public com.moseeker.thrift.gen.common.struct.BIZException e; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      SUCCESS((short)0, "success");
+      SUCCESS((short)0, "success"),
+      E((short)1, "e");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -6915,6 +7693,8 @@ public class ProfileServices {
         switch(fieldId) {
           case 0: // SUCCESS
             return SUCCESS;
+          case 1: // E
+            return E;
           default:
             return null;
         }
@@ -6926,21 +7706,21 @@ public class ProfileServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -6949,7 +7729,7 @@ public class ProfileServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -6960,6 +7740,8 @@ public class ProfileServices {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(postResource_result.class, metaDataMap);
     }
@@ -6968,10 +7750,12 @@ public class ProfileServices {
     }
 
     public postResource_result(
-      com.moseeker.thrift.gen.common.struct.Response success)
+      com.moseeker.thrift.gen.common.struct.Response success,
+      com.moseeker.thrift.gen.common.struct.BIZException e)
     {
       this();
       this.success = success;
+      this.e = e;
     }
 
     /**
@@ -6980,6 +7764,9 @@ public class ProfileServices {
     public postResource_result(postResource_result other) {
       if (other.isSetSuccess()) {
         this.success = new com.moseeker.thrift.gen.common.struct.Response(other.success);
+      }
+      if (other.isSetE()) {
+        this.e = new com.moseeker.thrift.gen.common.struct.BIZException(other.e);
       }
     }
 
@@ -6990,6 +7777,7 @@ public class ProfileServices {
     @Override
     public void clear() {
       this.success = null;
+      this.e = null;
     }
 
     public com.moseeker.thrift.gen.common.struct.Response getSuccess() {
@@ -7016,7 +7804,31 @@ public class ProfileServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public com.moseeker.thrift.gen.common.struct.BIZException getE() {
+      return this.e;
+    }
+
+    public postResource_result setE(com.moseeker.thrift.gen.common.struct.BIZException e) {
+      this.e = e;
+      return this;
+    }
+
+    public void unsetE() {
+      this.e = null;
+    }
+
+    /** Returns true if field e is set (has been assigned a value) and false otherwise */
+    public boolean isSetE() {
+      return this.e != null;
+    }
+
+    public void setEIsSet(boolean value) {
+      if (!value) {
+        this.e = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -7026,33 +7838,46 @@ public class ProfileServices {
         }
         break;
 
+      case E:
+        if (value == null) {
+          unsetE();
+        } else {
+          setE((com.moseeker.thrift.gen.common.struct.BIZException)value);
+        }
+        break;
+
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
+      case E:
+        return getE();
+
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
+      case E:
+        return isSetE();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof postResource_result)
@@ -7075,6 +7900,15 @@ public class ProfileServices {
           return false;
       }
 
+      boolean this_present_e = true && this.isSetE();
+      boolean that_present_e = true && that.isSetE();
+      if (this_present_e || that_present_e) {
+        if (!(this_present_e && that_present_e))
+          return false;
+        if (!this.e.equals(that.e))
+          return false;
+      }
+
       return true;
     }
 
@@ -7085,6 +7919,10 @@ public class ProfileServices {
       hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
       if (isSetSuccess())
         hashCode = hashCode * 8191 + success.hashCode();
+
+      hashCode = hashCode * 8191 + ((isSetE()) ? 131071 : 524287);
+      if (isSetE())
+        hashCode = hashCode * 8191 + e.hashCode();
 
       return hashCode;
     }
@@ -7097,12 +7935,22 @@ public class ProfileServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
       if (isSetSuccess()) {
         lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetE()).compareTo(other.isSetE());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetE()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.e, other.e);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -7123,8 +7971,8 @@ public class ProfileServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("postResource_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("postResource_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -7132,6 +7980,14 @@ public class ProfileServices {
         sb.append("null");
       } else {
         sb.append(this.success);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("e:");
+      if (this.e == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.e);
       }
       first = false;
       sb.append(")");
@@ -7154,7 +8010,7 @@ public class ProfileServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -7189,6 +8045,15 @@ public class ProfileServices {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
+            case 1: // E
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+                struct.e.read(iprot);
+                struct.setEIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -7207,6 +8072,11 @@ public class ProfileServices {
         if (struct.success != null) {
           oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
           struct.success.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        if (struct.e != null) {
+          oprot.writeFieldBegin(E_FIELD_DESC);
+          struct.e.write(oprot);
           oprot.writeFieldEnd();
         }
         oprot.writeFieldStop();
@@ -7230,20 +8100,31 @@ public class ProfileServices {
         if (struct.isSetSuccess()) {
           optionals.set(0);
         }
-        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetE()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
         if (struct.isSetSuccess()) {
           struct.success.write(oprot);
+        }
+        if (struct.isSetE()) {
+          struct.e.write(oprot);
         }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, postResource_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet incoming = iprot.readBitSet(1);
+        java.util.BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
           struct.success = new com.moseeker.thrift.gen.common.struct.Response();
           struct.success.read(iprot);
           struct.setSuccessIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+          struct.e.read(iprot);
+          struct.setEIsSet(true);
         }
       }
     }
@@ -7267,7 +8148,7 @@ public class ProfileServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       PROFILE((short)1, "profile");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -7293,21 +8174,21 @@ public class ProfileServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -7316,7 +8197,7 @@ public class ProfileServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -7383,7 +8264,7 @@ public class ProfileServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case PROFILE:
         if (value == null) {
@@ -7396,30 +8277,30 @@ public class ProfileServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case PROFILE:
         return getProfile();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case PROFILE:
         return isSetProfile();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof putResource_args)
@@ -7464,7 +8345,7 @@ public class ProfileServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetProfile()).compareTo(other.isSetProfile());
+      lastComparison = java.lang.Boolean.valueOf(isSetProfile()).compareTo(other.isSetProfile());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -7490,8 +8371,8 @@ public class ProfileServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("putResource_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("putResource_args(");
       boolean first = true;
 
       sb.append("profile:");
@@ -7521,7 +8402,7 @@ public class ProfileServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -7624,17 +8505,20 @@ public class ProfileServices {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("putResource_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
+    private static final org.apache.thrift.protocol.TField E_FIELD_DESC = new org.apache.thrift.protocol.TField("e", org.apache.thrift.protocol.TType.STRUCT, (short)1);
 
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new putResource_resultStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new putResource_resultTupleSchemeFactory();
 
     public com.moseeker.thrift.gen.common.struct.Response success; // required
+    public com.moseeker.thrift.gen.common.struct.BIZException e; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      SUCCESS((short)0, "success");
+      SUCCESS((short)0, "success"),
+      E((short)1, "e");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -7649,6 +8533,8 @@ public class ProfileServices {
         switch(fieldId) {
           case 0: // SUCCESS
             return SUCCESS;
+          case 1: // E
+            return E;
           default:
             return null;
         }
@@ -7660,21 +8546,21 @@ public class ProfileServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -7683,7 +8569,7 @@ public class ProfileServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -7694,6 +8580,8 @@ public class ProfileServices {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(putResource_result.class, metaDataMap);
     }
@@ -7702,10 +8590,12 @@ public class ProfileServices {
     }
 
     public putResource_result(
-      com.moseeker.thrift.gen.common.struct.Response success)
+      com.moseeker.thrift.gen.common.struct.Response success,
+      com.moseeker.thrift.gen.common.struct.BIZException e)
     {
       this();
       this.success = success;
+      this.e = e;
     }
 
     /**
@@ -7714,6 +8604,9 @@ public class ProfileServices {
     public putResource_result(putResource_result other) {
       if (other.isSetSuccess()) {
         this.success = new com.moseeker.thrift.gen.common.struct.Response(other.success);
+      }
+      if (other.isSetE()) {
+        this.e = new com.moseeker.thrift.gen.common.struct.BIZException(other.e);
       }
     }
 
@@ -7724,6 +8617,7 @@ public class ProfileServices {
     @Override
     public void clear() {
       this.success = null;
+      this.e = null;
     }
 
     public com.moseeker.thrift.gen.common.struct.Response getSuccess() {
@@ -7750,7 +8644,31 @@ public class ProfileServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public com.moseeker.thrift.gen.common.struct.BIZException getE() {
+      return this.e;
+    }
+
+    public putResource_result setE(com.moseeker.thrift.gen.common.struct.BIZException e) {
+      this.e = e;
+      return this;
+    }
+
+    public void unsetE() {
+      this.e = null;
+    }
+
+    /** Returns true if field e is set (has been assigned a value) and false otherwise */
+    public boolean isSetE() {
+      return this.e != null;
+    }
+
+    public void setEIsSet(boolean value) {
+      if (!value) {
+        this.e = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -7760,33 +8678,46 @@ public class ProfileServices {
         }
         break;
 
+      case E:
+        if (value == null) {
+          unsetE();
+        } else {
+          setE((com.moseeker.thrift.gen.common.struct.BIZException)value);
+        }
+        break;
+
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
+      case E:
+        return getE();
+
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
+      case E:
+        return isSetE();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof putResource_result)
@@ -7809,6 +8740,15 @@ public class ProfileServices {
           return false;
       }
 
+      boolean this_present_e = true && this.isSetE();
+      boolean that_present_e = true && that.isSetE();
+      if (this_present_e || that_present_e) {
+        if (!(this_present_e && that_present_e))
+          return false;
+        if (!this.e.equals(that.e))
+          return false;
+      }
+
       return true;
     }
 
@@ -7819,6 +8759,10 @@ public class ProfileServices {
       hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
       if (isSetSuccess())
         hashCode = hashCode * 8191 + success.hashCode();
+
+      hashCode = hashCode * 8191 + ((isSetE()) ? 131071 : 524287);
+      if (isSetE())
+        hashCode = hashCode * 8191 + e.hashCode();
 
       return hashCode;
     }
@@ -7831,12 +8775,22 @@ public class ProfileServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
       if (isSetSuccess()) {
         lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetE()).compareTo(other.isSetE());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetE()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.e, other.e);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -7857,8 +8811,8 @@ public class ProfileServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("putResource_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("putResource_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -7866,6 +8820,14 @@ public class ProfileServices {
         sb.append("null");
       } else {
         sb.append(this.success);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("e:");
+      if (this.e == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.e);
       }
       first = false;
       sb.append(")");
@@ -7888,7 +8850,7 @@ public class ProfileServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -7923,6 +8885,15 @@ public class ProfileServices {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
+            case 1: // E
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+                struct.e.read(iprot);
+                struct.setEIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -7941,6 +8912,11 @@ public class ProfileServices {
         if (struct.success != null) {
           oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
           struct.success.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        if (struct.e != null) {
+          oprot.writeFieldBegin(E_FIELD_DESC);
+          struct.e.write(oprot);
           oprot.writeFieldEnd();
         }
         oprot.writeFieldStop();
@@ -7964,20 +8940,31 @@ public class ProfileServices {
         if (struct.isSetSuccess()) {
           optionals.set(0);
         }
-        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetE()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
         if (struct.isSetSuccess()) {
           struct.success.write(oprot);
+        }
+        if (struct.isSetE()) {
+          struct.e.write(oprot);
         }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, putResource_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet incoming = iprot.readBitSet(1);
+        java.util.BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
           struct.success = new com.moseeker.thrift.gen.common.struct.Response();
           struct.success.read(iprot);
           struct.setSuccessIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+          struct.e.read(iprot);
+          struct.setEIsSet(true);
         }
       }
     }
@@ -8001,7 +8988,7 @@ public class ProfileServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       PROFILE((short)1, "profile");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -8027,21 +9014,21 @@ public class ProfileServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -8050,7 +9037,7 @@ public class ProfileServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -8117,7 +9104,7 @@ public class ProfileServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case PROFILE:
         if (value == null) {
@@ -8130,30 +9117,30 @@ public class ProfileServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case PROFILE:
         return getProfile();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case PROFILE:
         return isSetProfile();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof delResource_args)
@@ -8198,7 +9185,7 @@ public class ProfileServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetProfile()).compareTo(other.isSetProfile());
+      lastComparison = java.lang.Boolean.valueOf(isSetProfile()).compareTo(other.isSetProfile());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -8224,8 +9211,8 @@ public class ProfileServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("delResource_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("delResource_args(");
       boolean first = true;
 
       sb.append("profile:");
@@ -8255,7 +9242,7 @@ public class ProfileServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -8358,17 +9345,20 @@ public class ProfileServices {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("delResource_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
+    private static final org.apache.thrift.protocol.TField E_FIELD_DESC = new org.apache.thrift.protocol.TField("e", org.apache.thrift.protocol.TType.STRUCT, (short)1);
 
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new delResource_resultStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new delResource_resultTupleSchemeFactory();
 
     public com.moseeker.thrift.gen.common.struct.Response success; // required
+    public com.moseeker.thrift.gen.common.struct.BIZException e; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      SUCCESS((short)0, "success");
+      SUCCESS((short)0, "success"),
+      E((short)1, "e");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -8383,6 +9373,8 @@ public class ProfileServices {
         switch(fieldId) {
           case 0: // SUCCESS
             return SUCCESS;
+          case 1: // E
+            return E;
           default:
             return null;
         }
@@ -8394,21 +9386,21 @@ public class ProfileServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -8417,7 +9409,7 @@ public class ProfileServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -8428,6 +9420,8 @@ public class ProfileServices {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(delResource_result.class, metaDataMap);
     }
@@ -8436,10 +9430,12 @@ public class ProfileServices {
     }
 
     public delResource_result(
-      com.moseeker.thrift.gen.common.struct.Response success)
+      com.moseeker.thrift.gen.common.struct.Response success,
+      com.moseeker.thrift.gen.common.struct.BIZException e)
     {
       this();
       this.success = success;
+      this.e = e;
     }
 
     /**
@@ -8448,6 +9444,9 @@ public class ProfileServices {
     public delResource_result(delResource_result other) {
       if (other.isSetSuccess()) {
         this.success = new com.moseeker.thrift.gen.common.struct.Response(other.success);
+      }
+      if (other.isSetE()) {
+        this.e = new com.moseeker.thrift.gen.common.struct.BIZException(other.e);
       }
     }
 
@@ -8458,6 +9457,7 @@ public class ProfileServices {
     @Override
     public void clear() {
       this.success = null;
+      this.e = null;
     }
 
     public com.moseeker.thrift.gen.common.struct.Response getSuccess() {
@@ -8484,7 +9484,31 @@ public class ProfileServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public com.moseeker.thrift.gen.common.struct.BIZException getE() {
+      return this.e;
+    }
+
+    public delResource_result setE(com.moseeker.thrift.gen.common.struct.BIZException e) {
+      this.e = e;
+      return this;
+    }
+
+    public void unsetE() {
+      this.e = null;
+    }
+
+    /** Returns true if field e is set (has been assigned a value) and false otherwise */
+    public boolean isSetE() {
+      return this.e != null;
+    }
+
+    public void setEIsSet(boolean value) {
+      if (!value) {
+        this.e = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -8494,33 +9518,46 @@ public class ProfileServices {
         }
         break;
 
+      case E:
+        if (value == null) {
+          unsetE();
+        } else {
+          setE((com.moseeker.thrift.gen.common.struct.BIZException)value);
+        }
+        break;
+
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
+      case E:
+        return getE();
+
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
+      case E:
+        return isSetE();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof delResource_result)
@@ -8543,6 +9580,15 @@ public class ProfileServices {
           return false;
       }
 
+      boolean this_present_e = true && this.isSetE();
+      boolean that_present_e = true && that.isSetE();
+      if (this_present_e || that_present_e) {
+        if (!(this_present_e && that_present_e))
+          return false;
+        if (!this.e.equals(that.e))
+          return false;
+      }
+
       return true;
     }
 
@@ -8553,6 +9599,10 @@ public class ProfileServices {
       hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
       if (isSetSuccess())
         hashCode = hashCode * 8191 + success.hashCode();
+
+      hashCode = hashCode * 8191 + ((isSetE()) ? 131071 : 524287);
+      if (isSetE())
+        hashCode = hashCode * 8191 + e.hashCode();
 
       return hashCode;
     }
@@ -8565,12 +9615,22 @@ public class ProfileServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
       if (isSetSuccess()) {
         lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetE()).compareTo(other.isSetE());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetE()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.e, other.e);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -8591,8 +9651,8 @@ public class ProfileServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("delResource_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("delResource_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -8600,6 +9660,14 @@ public class ProfileServices {
         sb.append("null");
       } else {
         sb.append(this.success);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("e:");
+      if (this.e == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.e);
       }
       first = false;
       sb.append(")");
@@ -8622,7 +9690,7 @@ public class ProfileServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -8657,6 +9725,15 @@ public class ProfileServices {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
+            case 1: // E
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+                struct.e.read(iprot);
+                struct.setEIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -8675,6 +9752,11 @@ public class ProfileServices {
         if (struct.success != null) {
           oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
           struct.success.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        if (struct.e != null) {
+          oprot.writeFieldBegin(E_FIELD_DESC);
+          struct.e.write(oprot);
           oprot.writeFieldEnd();
         }
         oprot.writeFieldStop();
@@ -8698,20 +9780,31 @@ public class ProfileServices {
         if (struct.isSetSuccess()) {
           optionals.set(0);
         }
-        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetE()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
         if (struct.isSetSuccess()) {
           struct.success.write(oprot);
+        }
+        if (struct.isSetE()) {
+          struct.e.write(oprot);
         }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, delResource_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet incoming = iprot.readBitSet(1);
+        java.util.BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
           struct.success = new com.moseeker.thrift.gen.common.struct.Response();
           struct.success.read(iprot);
           struct.setSuccessIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+          struct.e.read(iprot);
+          struct.setEIsSet(true);
         }
       }
     }
@@ -8732,7 +9825,7 @@ public class ProfileServices {
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getCompleteness_argsTupleSchemeFactory();
 
     public int user_id; // required
-    public String uuid; // required
+    public java.lang.String uuid; // required
     public int profile_id; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
@@ -8741,7 +9834,7 @@ public class ProfileServices {
       UUID((short)2, "uuid"),
       PROFILE_ID((short)3, "profile_id");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -8771,21 +9864,21 @@ public class ProfileServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -8794,7 +9887,7 @@ public class ProfileServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -8821,7 +9914,7 @@ public class ProfileServices {
 
     public getCompleteness_args(
       int user_id,
-      String uuid,
+      java.lang.String uuid,
       int profile_id)
     {
       this();
@@ -8880,11 +9973,11 @@ public class ProfileServices {
       __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __USER_ID_ISSET_ID, value);
     }
 
-    public String getUuid() {
+    public java.lang.String getUuid() {
       return this.uuid;
     }
 
-    public getCompleteness_args setUuid(String uuid) {
+    public getCompleteness_args setUuid(java.lang.String uuid) {
       this.uuid = uuid;
       return this;
     }
@@ -8927,13 +10020,13 @@ public class ProfileServices {
       __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __PROFILE_ID_ISSET_ID, value);
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case USER_ID:
         if (value == null) {
           unsetUser_id();
         } else {
-          setUser_id((Integer)value);
+          setUser_id((java.lang.Integer)value);
         }
         break;
 
@@ -8941,7 +10034,7 @@ public class ProfileServices {
         if (value == null) {
           unsetUuid();
         } else {
-          setUuid((String)value);
+          setUuid((java.lang.String)value);
         }
         break;
 
@@ -8949,14 +10042,14 @@ public class ProfileServices {
         if (value == null) {
           unsetProfile_id();
         } else {
-          setProfile_id((Integer)value);
+          setProfile_id((java.lang.Integer)value);
         }
         break;
 
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case USER_ID:
         return getUser_id();
@@ -8968,13 +10061,13 @@ public class ProfileServices {
         return getProfile_id();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
@@ -8985,11 +10078,11 @@ public class ProfileServices {
       case PROFILE_ID:
         return isSetProfile_id();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof getCompleteness_args)
@@ -9056,7 +10149,7 @@ public class ProfileServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetUser_id()).compareTo(other.isSetUser_id());
+      lastComparison = java.lang.Boolean.valueOf(isSetUser_id()).compareTo(other.isSetUser_id());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -9066,7 +10159,7 @@ public class ProfileServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetUuid()).compareTo(other.isSetUuid());
+      lastComparison = java.lang.Boolean.valueOf(isSetUuid()).compareTo(other.isSetUuid());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -9076,7 +10169,7 @@ public class ProfileServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetProfile_id()).compareTo(other.isSetProfile_id());
+      lastComparison = java.lang.Boolean.valueOf(isSetProfile_id()).compareTo(other.isSetProfile_id());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -9102,8 +10195,8 @@ public class ProfileServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("getCompleteness_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("getCompleteness_args(");
       boolean first = true;
 
       sb.append("user_id:");
@@ -9138,7 +10231,7 @@ public class ProfileServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
@@ -9283,17 +10376,20 @@ public class ProfileServices {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getCompleteness_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
+    private static final org.apache.thrift.protocol.TField E_FIELD_DESC = new org.apache.thrift.protocol.TField("e", org.apache.thrift.protocol.TType.STRUCT, (short)1);
 
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getCompleteness_resultStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getCompleteness_resultTupleSchemeFactory();
 
     public com.moseeker.thrift.gen.common.struct.Response success; // required
+    public com.moseeker.thrift.gen.common.struct.BIZException e; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      SUCCESS((short)0, "success");
+      SUCCESS((short)0, "success"),
+      E((short)1, "e");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -9308,6 +10404,8 @@ public class ProfileServices {
         switch(fieldId) {
           case 0: // SUCCESS
             return SUCCESS;
+          case 1: // E
+            return E;
           default:
             return null;
         }
@@ -9319,21 +10417,21 @@ public class ProfileServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -9342,7 +10440,7 @@ public class ProfileServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -9353,6 +10451,8 @@ public class ProfileServices {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getCompleteness_result.class, metaDataMap);
     }
@@ -9361,10 +10461,12 @@ public class ProfileServices {
     }
 
     public getCompleteness_result(
-      com.moseeker.thrift.gen.common.struct.Response success)
+      com.moseeker.thrift.gen.common.struct.Response success,
+      com.moseeker.thrift.gen.common.struct.BIZException e)
     {
       this();
       this.success = success;
+      this.e = e;
     }
 
     /**
@@ -9373,6 +10475,9 @@ public class ProfileServices {
     public getCompleteness_result(getCompleteness_result other) {
       if (other.isSetSuccess()) {
         this.success = new com.moseeker.thrift.gen.common.struct.Response(other.success);
+      }
+      if (other.isSetE()) {
+        this.e = new com.moseeker.thrift.gen.common.struct.BIZException(other.e);
       }
     }
 
@@ -9383,6 +10488,7 @@ public class ProfileServices {
     @Override
     public void clear() {
       this.success = null;
+      this.e = null;
     }
 
     public com.moseeker.thrift.gen.common.struct.Response getSuccess() {
@@ -9409,7 +10515,31 @@ public class ProfileServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public com.moseeker.thrift.gen.common.struct.BIZException getE() {
+      return this.e;
+    }
+
+    public getCompleteness_result setE(com.moseeker.thrift.gen.common.struct.BIZException e) {
+      this.e = e;
+      return this;
+    }
+
+    public void unsetE() {
+      this.e = null;
+    }
+
+    /** Returns true if field e is set (has been assigned a value) and false otherwise */
+    public boolean isSetE() {
+      return this.e != null;
+    }
+
+    public void setEIsSet(boolean value) {
+      if (!value) {
+        this.e = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -9419,33 +10549,46 @@ public class ProfileServices {
         }
         break;
 
+      case E:
+        if (value == null) {
+          unsetE();
+        } else {
+          setE((com.moseeker.thrift.gen.common.struct.BIZException)value);
+        }
+        break;
+
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
+      case E:
+        return getE();
+
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
+      case E:
+        return isSetE();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof getCompleteness_result)
@@ -9468,6 +10611,15 @@ public class ProfileServices {
           return false;
       }
 
+      boolean this_present_e = true && this.isSetE();
+      boolean that_present_e = true && that.isSetE();
+      if (this_present_e || that_present_e) {
+        if (!(this_present_e && that_present_e))
+          return false;
+        if (!this.e.equals(that.e))
+          return false;
+      }
+
       return true;
     }
 
@@ -9478,6 +10630,10 @@ public class ProfileServices {
       hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
       if (isSetSuccess())
         hashCode = hashCode * 8191 + success.hashCode();
+
+      hashCode = hashCode * 8191 + ((isSetE()) ? 131071 : 524287);
+      if (isSetE())
+        hashCode = hashCode * 8191 + e.hashCode();
 
       return hashCode;
     }
@@ -9490,12 +10646,22 @@ public class ProfileServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
       if (isSetSuccess()) {
         lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetE()).compareTo(other.isSetE());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetE()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.e, other.e);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -9516,8 +10682,8 @@ public class ProfileServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("getCompleteness_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("getCompleteness_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -9525,6 +10691,14 @@ public class ProfileServices {
         sb.append("null");
       } else {
         sb.append(this.success);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("e:");
+      if (this.e == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.e);
       }
       first = false;
       sb.append(")");
@@ -9547,7 +10721,7 @@ public class ProfileServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -9582,6 +10756,15 @@ public class ProfileServices {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
+            case 1: // E
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+                struct.e.read(iprot);
+                struct.setEIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -9600,6 +10783,11 @@ public class ProfileServices {
         if (struct.success != null) {
           oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
           struct.success.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        if (struct.e != null) {
+          oprot.writeFieldBegin(E_FIELD_DESC);
+          struct.e.write(oprot);
           oprot.writeFieldEnd();
         }
         oprot.writeFieldStop();
@@ -9623,20 +10811,31 @@ public class ProfileServices {
         if (struct.isSetSuccess()) {
           optionals.set(0);
         }
-        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetE()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
         if (struct.isSetSuccess()) {
           struct.success.write(oprot);
+        }
+        if (struct.isSetE()) {
+          struct.e.write(oprot);
         }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, getCompleteness_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet incoming = iprot.readBitSet(1);
+        java.util.BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
           struct.success = new com.moseeker.thrift.gen.common.struct.Response();
           struct.success.read(iprot);
           struct.setSuccessIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+          struct.e.read(iprot);
+          struct.setEIsSet(true);
         }
       }
     }
@@ -9656,14 +10855,14 @@ public class ProfileServices {
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new reCalculateUserCompleteness_argsTupleSchemeFactory();
 
     public int userId; // required
-    public String mobile; // required
+    public java.lang.String mobile; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       USER_ID((short)1, "userId"),
       MOBILE((short)2, "mobile");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -9691,21 +10890,21 @@ public class ProfileServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -9714,7 +10913,7 @@ public class ProfileServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -9738,7 +10937,7 @@ public class ProfileServices {
 
     public reCalculateUserCompleteness_args(
       int userId,
-      String mobile)
+      java.lang.String mobile)
     {
       this();
       this.userId = userId;
@@ -9791,11 +10990,11 @@ public class ProfileServices {
       __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __USERID_ISSET_ID, value);
     }
 
-    public String getMobile() {
+    public java.lang.String getMobile() {
       return this.mobile;
     }
 
-    public reCalculateUserCompleteness_args setMobile(String mobile) {
+    public reCalculateUserCompleteness_args setMobile(java.lang.String mobile) {
       this.mobile = mobile;
       return this;
     }
@@ -9815,13 +11014,13 @@ public class ProfileServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case USER_ID:
         if (value == null) {
           unsetUserId();
         } else {
-          setUserId((Integer)value);
+          setUserId((java.lang.Integer)value);
         }
         break;
 
@@ -9829,14 +11028,14 @@ public class ProfileServices {
         if (value == null) {
           unsetMobile();
         } else {
-          setMobile((String)value);
+          setMobile((java.lang.String)value);
         }
         break;
 
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case USER_ID:
         return getUserId();
@@ -9845,13 +11044,13 @@ public class ProfileServices {
         return getMobile();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
@@ -9860,11 +11059,11 @@ public class ProfileServices {
       case MOBILE:
         return isSetMobile();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof reCalculateUserCompleteness_args)
@@ -9920,7 +11119,7 @@ public class ProfileServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetUserId()).compareTo(other.isSetUserId());
+      lastComparison = java.lang.Boolean.valueOf(isSetUserId()).compareTo(other.isSetUserId());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -9930,7 +11129,7 @@ public class ProfileServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetMobile()).compareTo(other.isSetMobile());
+      lastComparison = java.lang.Boolean.valueOf(isSetMobile()).compareTo(other.isSetMobile());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -9956,8 +11155,8 @@ public class ProfileServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("reCalculateUserCompleteness_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("reCalculateUserCompleteness_args(");
       boolean first = true;
 
       sb.append("userId:");
@@ -9988,7 +11187,7 @@ public class ProfileServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
@@ -10112,17 +11311,20 @@ public class ProfileServices {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("reCalculateUserCompleteness_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
+    private static final org.apache.thrift.protocol.TField E_FIELD_DESC = new org.apache.thrift.protocol.TField("e", org.apache.thrift.protocol.TType.STRUCT, (short)1);
 
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new reCalculateUserCompleteness_resultStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new reCalculateUserCompleteness_resultTupleSchemeFactory();
 
     public com.moseeker.thrift.gen.common.struct.Response success; // required
+    public com.moseeker.thrift.gen.common.struct.BIZException e; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      SUCCESS((short)0, "success");
+      SUCCESS((short)0, "success"),
+      E((short)1, "e");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -10137,6 +11339,8 @@ public class ProfileServices {
         switch(fieldId) {
           case 0: // SUCCESS
             return SUCCESS;
+          case 1: // E
+            return E;
           default:
             return null;
         }
@@ -10148,21 +11352,21 @@ public class ProfileServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -10171,7 +11375,7 @@ public class ProfileServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -10182,6 +11386,8 @@ public class ProfileServices {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(reCalculateUserCompleteness_result.class, metaDataMap);
     }
@@ -10190,10 +11396,12 @@ public class ProfileServices {
     }
 
     public reCalculateUserCompleteness_result(
-      com.moseeker.thrift.gen.common.struct.Response success)
+      com.moseeker.thrift.gen.common.struct.Response success,
+      com.moseeker.thrift.gen.common.struct.BIZException e)
     {
       this();
       this.success = success;
+      this.e = e;
     }
 
     /**
@@ -10202,6 +11410,9 @@ public class ProfileServices {
     public reCalculateUserCompleteness_result(reCalculateUserCompleteness_result other) {
       if (other.isSetSuccess()) {
         this.success = new com.moseeker.thrift.gen.common.struct.Response(other.success);
+      }
+      if (other.isSetE()) {
+        this.e = new com.moseeker.thrift.gen.common.struct.BIZException(other.e);
       }
     }
 
@@ -10212,6 +11423,7 @@ public class ProfileServices {
     @Override
     public void clear() {
       this.success = null;
+      this.e = null;
     }
 
     public com.moseeker.thrift.gen.common.struct.Response getSuccess() {
@@ -10238,7 +11450,31 @@ public class ProfileServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public com.moseeker.thrift.gen.common.struct.BIZException getE() {
+      return this.e;
+    }
+
+    public reCalculateUserCompleteness_result setE(com.moseeker.thrift.gen.common.struct.BIZException e) {
+      this.e = e;
+      return this;
+    }
+
+    public void unsetE() {
+      this.e = null;
+    }
+
+    /** Returns true if field e is set (has been assigned a value) and false otherwise */
+    public boolean isSetE() {
+      return this.e != null;
+    }
+
+    public void setEIsSet(boolean value) {
+      if (!value) {
+        this.e = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -10248,33 +11484,46 @@ public class ProfileServices {
         }
         break;
 
+      case E:
+        if (value == null) {
+          unsetE();
+        } else {
+          setE((com.moseeker.thrift.gen.common.struct.BIZException)value);
+        }
+        break;
+
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
+      case E:
+        return getE();
+
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
+      case E:
+        return isSetE();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof reCalculateUserCompleteness_result)
@@ -10297,6 +11546,15 @@ public class ProfileServices {
           return false;
       }
 
+      boolean this_present_e = true && this.isSetE();
+      boolean that_present_e = true && that.isSetE();
+      if (this_present_e || that_present_e) {
+        if (!(this_present_e && that_present_e))
+          return false;
+        if (!this.e.equals(that.e))
+          return false;
+      }
+
       return true;
     }
 
@@ -10307,6 +11565,10 @@ public class ProfileServices {
       hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
       if (isSetSuccess())
         hashCode = hashCode * 8191 + success.hashCode();
+
+      hashCode = hashCode * 8191 + ((isSetE()) ? 131071 : 524287);
+      if (isSetE())
+        hashCode = hashCode * 8191 + e.hashCode();
 
       return hashCode;
     }
@@ -10319,12 +11581,22 @@ public class ProfileServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
       if (isSetSuccess()) {
         lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetE()).compareTo(other.isSetE());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetE()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.e, other.e);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -10345,8 +11617,8 @@ public class ProfileServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("reCalculateUserCompleteness_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("reCalculateUserCompleteness_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -10354,6 +11626,14 @@ public class ProfileServices {
         sb.append("null");
       } else {
         sb.append(this.success);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("e:");
+      if (this.e == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.e);
       }
       first = false;
       sb.append(")");
@@ -10376,7 +11656,7 @@ public class ProfileServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -10411,6 +11691,15 @@ public class ProfileServices {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
+            case 1: // E
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+                struct.e.read(iprot);
+                struct.setEIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -10429,6 +11718,11 @@ public class ProfileServices {
         if (struct.success != null) {
           oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
           struct.success.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        if (struct.e != null) {
+          oprot.writeFieldBegin(E_FIELD_DESC);
+          struct.e.write(oprot);
           oprot.writeFieldEnd();
         }
         oprot.writeFieldStop();
@@ -10452,20 +11746,31 @@ public class ProfileServices {
         if (struct.isSetSuccess()) {
           optionals.set(0);
         }
-        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetE()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
         if (struct.isSetSuccess()) {
           struct.success.write(oprot);
+        }
+        if (struct.isSetE()) {
+          struct.e.write(oprot);
         }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, reCalculateUserCompleteness_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet incoming = iprot.readBitSet(1);
+        java.util.BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
           struct.success = new com.moseeker.thrift.gen.common.struct.Response();
           struct.success.read(iprot);
           struct.setSuccessIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+          struct.e.read(iprot);
+          struct.setEIsSet(true);
         }
       }
     }
@@ -10489,7 +11794,7 @@ public class ProfileServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       ID((short)1, "id");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -10515,21 +11820,21 @@ public class ProfileServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -10538,7 +11843,7 @@ public class ProfileServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -10607,43 +11912,43 @@ public class ProfileServices {
       __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __ID_ISSET_ID, value);
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case ID:
         if (value == null) {
           unsetId();
         } else {
-          setId((Integer)value);
+          setId((java.lang.Integer)value);
         }
         break;
 
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case ID:
         return getId();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case ID:
         return isSetId();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof reCalculateUserCompletenessBySettingId_args)
@@ -10686,7 +11991,7 @@ public class ProfileServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetId()).compareTo(other.isSetId());
+      lastComparison = java.lang.Boolean.valueOf(isSetId()).compareTo(other.isSetId());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -10712,8 +12017,8 @@ public class ProfileServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("reCalculateUserCompletenessBySettingId_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("reCalculateUserCompletenessBySettingId_args(");
       boolean first = true;
 
       sb.append("id:");
@@ -10736,7 +12041,7 @@ public class ProfileServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
@@ -10837,17 +12142,20 @@ public class ProfileServices {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("reCalculateUserCompletenessBySettingId_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
+    private static final org.apache.thrift.protocol.TField E_FIELD_DESC = new org.apache.thrift.protocol.TField("e", org.apache.thrift.protocol.TType.STRUCT, (short)1);
 
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new reCalculateUserCompletenessBySettingId_resultStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new reCalculateUserCompletenessBySettingId_resultTupleSchemeFactory();
 
     public com.moseeker.thrift.gen.common.struct.Response success; // required
+    public com.moseeker.thrift.gen.common.struct.BIZException e; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      SUCCESS((short)0, "success");
+      SUCCESS((short)0, "success"),
+      E((short)1, "e");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -10862,6 +12170,8 @@ public class ProfileServices {
         switch(fieldId) {
           case 0: // SUCCESS
             return SUCCESS;
+          case 1: // E
+            return E;
           default:
             return null;
         }
@@ -10873,21 +12183,21 @@ public class ProfileServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -10896,7 +12206,7 @@ public class ProfileServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -10907,6 +12217,8 @@ public class ProfileServices {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(reCalculateUserCompletenessBySettingId_result.class, metaDataMap);
     }
@@ -10915,10 +12227,12 @@ public class ProfileServices {
     }
 
     public reCalculateUserCompletenessBySettingId_result(
-      com.moseeker.thrift.gen.common.struct.Response success)
+      com.moseeker.thrift.gen.common.struct.Response success,
+      com.moseeker.thrift.gen.common.struct.BIZException e)
     {
       this();
       this.success = success;
+      this.e = e;
     }
 
     /**
@@ -10927,6 +12241,9 @@ public class ProfileServices {
     public reCalculateUserCompletenessBySettingId_result(reCalculateUserCompletenessBySettingId_result other) {
       if (other.isSetSuccess()) {
         this.success = new com.moseeker.thrift.gen.common.struct.Response(other.success);
+      }
+      if (other.isSetE()) {
+        this.e = new com.moseeker.thrift.gen.common.struct.BIZException(other.e);
       }
     }
 
@@ -10937,6 +12254,7 @@ public class ProfileServices {
     @Override
     public void clear() {
       this.success = null;
+      this.e = null;
     }
 
     public com.moseeker.thrift.gen.common.struct.Response getSuccess() {
@@ -10963,7 +12281,31 @@ public class ProfileServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public com.moseeker.thrift.gen.common.struct.BIZException getE() {
+      return this.e;
+    }
+
+    public reCalculateUserCompletenessBySettingId_result setE(com.moseeker.thrift.gen.common.struct.BIZException e) {
+      this.e = e;
+      return this;
+    }
+
+    public void unsetE() {
+      this.e = null;
+    }
+
+    /** Returns true if field e is set (has been assigned a value) and false otherwise */
+    public boolean isSetE() {
+      return this.e != null;
+    }
+
+    public void setEIsSet(boolean value) {
+      if (!value) {
+        this.e = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -10973,33 +12315,46 @@ public class ProfileServices {
         }
         break;
 
+      case E:
+        if (value == null) {
+          unsetE();
+        } else {
+          setE((com.moseeker.thrift.gen.common.struct.BIZException)value);
+        }
+        break;
+
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
+      case E:
+        return getE();
+
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
+      case E:
+        return isSetE();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof reCalculateUserCompletenessBySettingId_result)
@@ -11022,6 +12377,15 @@ public class ProfileServices {
           return false;
       }
 
+      boolean this_present_e = true && this.isSetE();
+      boolean that_present_e = true && that.isSetE();
+      if (this_present_e || that_present_e) {
+        if (!(this_present_e && that_present_e))
+          return false;
+        if (!this.e.equals(that.e))
+          return false;
+      }
+
       return true;
     }
 
@@ -11032,6 +12396,10 @@ public class ProfileServices {
       hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
       if (isSetSuccess())
         hashCode = hashCode * 8191 + success.hashCode();
+
+      hashCode = hashCode * 8191 + ((isSetE()) ? 131071 : 524287);
+      if (isSetE())
+        hashCode = hashCode * 8191 + e.hashCode();
 
       return hashCode;
     }
@@ -11044,12 +12412,22 @@ public class ProfileServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
       if (isSetSuccess()) {
         lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetE()).compareTo(other.isSetE());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetE()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.e, other.e);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -11070,8 +12448,8 @@ public class ProfileServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("reCalculateUserCompletenessBySettingId_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("reCalculateUserCompletenessBySettingId_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -11079,6 +12457,14 @@ public class ProfileServices {
         sb.append("null");
       } else {
         sb.append(this.success);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("e:");
+      if (this.e == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.e);
       }
       first = false;
       sb.append(")");
@@ -11101,7 +12487,7 @@ public class ProfileServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -11136,6 +12522,15 @@ public class ProfileServices {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
+            case 1: // E
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+                struct.e.read(iprot);
+                struct.setEIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -11154,6 +12549,11 @@ public class ProfileServices {
         if (struct.success != null) {
           oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
           struct.success.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        if (struct.e != null) {
+          oprot.writeFieldBegin(E_FIELD_DESC);
+          struct.e.write(oprot);
           oprot.writeFieldEnd();
         }
         oprot.writeFieldStop();
@@ -11177,20 +12577,31 @@ public class ProfileServices {
         if (struct.isSetSuccess()) {
           optionals.set(0);
         }
-        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetE()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
         if (struct.isSetSuccess()) {
           struct.success.write(oprot);
+        }
+        if (struct.isSetE()) {
+          struct.e.write(oprot);
         }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, reCalculateUserCompletenessBySettingId_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet incoming = iprot.readBitSet(1);
+        java.util.BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
           struct.success = new com.moseeker.thrift.gen.common.struct.Response();
           struct.success.read(iprot);
           struct.setSuccessIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+          struct.e.read(iprot);
+          struct.setEIsSet(true);
         }
       }
     }
@@ -11229,7 +12640,7 @@ public class ProfileServices {
       DL_URL_REQUIRED((short)5, "dl_url_required"),
       FILTER((short)6, "filter");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -11265,21 +12676,21 @@ public class ProfileServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -11288,7 +12699,7 @@ public class ProfileServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -11549,7 +12960,7 @@ public class ProfileServices {
         if (value == null) {
           unsetCompanyId();
         } else {
-          setCompanyId((Integer)value);
+          setCompanyId((java.lang.Integer)value);
         }
         break;
 
@@ -11557,7 +12968,7 @@ public class ProfileServices {
         if (value == null) {
           unsetSourceId();
         } else {
-          setSourceId((Integer)value);
+          setSourceId((java.lang.Integer)value);
         }
         break;
 
@@ -11565,7 +12976,7 @@ public class ProfileServices {
         if (value == null) {
           unsetAts_status();
         } else {
-          setAts_status((Integer)value);
+          setAts_status((java.lang.Integer)value);
         }
         break;
 
@@ -11573,7 +12984,7 @@ public class ProfileServices {
         if (value == null) {
           unsetRecommender();
         } else {
-          setRecommender((Boolean)value);
+          setRecommender((java.lang.Boolean)value);
         }
         break;
 
@@ -11581,7 +12992,7 @@ public class ProfileServices {
         if (value == null) {
           unsetDl_url_required();
         } else {
-          setDl_url_required((Boolean)value);
+          setDl_url_required((java.lang.Boolean)value);
         }
         break;
 
@@ -11596,7 +13007,7 @@ public class ProfileServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case COMPANY_ID:
         return getCompanyId();
@@ -11617,13 +13028,13 @@ public class ProfileServices {
         return getFilter();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
@@ -11640,11 +13051,11 @@ public class ProfileServices {
       case FILTER:
         return isSetFilter();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof getProfileByApplication_args)
@@ -11744,7 +13155,7 @@ public class ProfileServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetCompanyId()).compareTo(other.isSetCompanyId());
+      lastComparison = java.lang.Boolean.valueOf(isSetCompanyId()).compareTo(other.isSetCompanyId());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -11754,7 +13165,7 @@ public class ProfileServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetSourceId()).compareTo(other.isSetSourceId());
+      lastComparison = java.lang.Boolean.valueOf(isSetSourceId()).compareTo(other.isSetSourceId());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -11764,7 +13175,7 @@ public class ProfileServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetAts_status()).compareTo(other.isSetAts_status());
+      lastComparison = java.lang.Boolean.valueOf(isSetAts_status()).compareTo(other.isSetAts_status());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -11774,7 +13185,7 @@ public class ProfileServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetRecommender()).compareTo(other.isSetRecommender());
+      lastComparison = java.lang.Boolean.valueOf(isSetRecommender()).compareTo(other.isSetRecommender());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -11784,7 +13195,7 @@ public class ProfileServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetDl_url_required()).compareTo(other.isSetDl_url_required());
+      lastComparison = java.lang.Boolean.valueOf(isSetDl_url_required()).compareTo(other.isSetDl_url_required());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -11820,8 +13231,8 @@ public class ProfileServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("getProfileByApplication_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("getProfileByApplication_args(");
       boolean first = true;
 
       sb.append("companyId:");
@@ -11868,7 +13279,7 @@ public class ProfileServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
@@ -12146,17 +13557,20 @@ public class ProfileServices {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getProfileByApplication_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
+    private static final org.apache.thrift.protocol.TField E_FIELD_DESC = new org.apache.thrift.protocol.TField("e", org.apache.thrift.protocol.TType.STRUCT, (short)1);
 
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getProfileByApplication_resultStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getProfileByApplication_resultTupleSchemeFactory();
 
     public com.moseeker.thrift.gen.common.struct.Response success; // required
+    public com.moseeker.thrift.gen.common.struct.BIZException e; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      SUCCESS((short)0, "success");
+      SUCCESS((short)0, "success"),
+      E((short)1, "e");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -12171,6 +13585,8 @@ public class ProfileServices {
         switch(fieldId) {
           case 0: // SUCCESS
             return SUCCESS;
+          case 1: // E
+            return E;
           default:
             return null;
         }
@@ -12182,21 +13598,21 @@ public class ProfileServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -12205,7 +13621,7 @@ public class ProfileServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -12216,6 +13632,8 @@ public class ProfileServices {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getProfileByApplication_result.class, metaDataMap);
     }
@@ -12224,10 +13642,12 @@ public class ProfileServices {
     }
 
     public getProfileByApplication_result(
-      com.moseeker.thrift.gen.common.struct.Response success)
+      com.moseeker.thrift.gen.common.struct.Response success,
+      com.moseeker.thrift.gen.common.struct.BIZException e)
     {
       this();
       this.success = success;
+      this.e = e;
     }
 
     /**
@@ -12236,6 +13656,9 @@ public class ProfileServices {
     public getProfileByApplication_result(getProfileByApplication_result other) {
       if (other.isSetSuccess()) {
         this.success = new com.moseeker.thrift.gen.common.struct.Response(other.success);
+      }
+      if (other.isSetE()) {
+        this.e = new com.moseeker.thrift.gen.common.struct.BIZException(other.e);
       }
     }
 
@@ -12246,6 +13669,7 @@ public class ProfileServices {
     @Override
     public void clear() {
       this.success = null;
+      this.e = null;
     }
 
     public com.moseeker.thrift.gen.common.struct.Response getSuccess() {
@@ -12272,7 +13696,31 @@ public class ProfileServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public com.moseeker.thrift.gen.common.struct.BIZException getE() {
+      return this.e;
+    }
+
+    public getProfileByApplication_result setE(com.moseeker.thrift.gen.common.struct.BIZException e) {
+      this.e = e;
+      return this;
+    }
+
+    public void unsetE() {
+      this.e = null;
+    }
+
+    /** Returns true if field e is set (has been assigned a value) and false otherwise */
+    public boolean isSetE() {
+      return this.e != null;
+    }
+
+    public void setEIsSet(boolean value) {
+      if (!value) {
+        this.e = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -12282,33 +13730,46 @@ public class ProfileServices {
         }
         break;
 
+      case E:
+        if (value == null) {
+          unsetE();
+        } else {
+          setE((com.moseeker.thrift.gen.common.struct.BIZException)value);
+        }
+        break;
+
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
+      case E:
+        return getE();
+
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
+      case E:
+        return isSetE();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof getProfileByApplication_result)
@@ -12331,6 +13792,15 @@ public class ProfileServices {
           return false;
       }
 
+      boolean this_present_e = true && this.isSetE();
+      boolean that_present_e = true && that.isSetE();
+      if (this_present_e || that_present_e) {
+        if (!(this_present_e && that_present_e))
+          return false;
+        if (!this.e.equals(that.e))
+          return false;
+      }
+
       return true;
     }
 
@@ -12341,6 +13811,10 @@ public class ProfileServices {
       hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
       if (isSetSuccess())
         hashCode = hashCode * 8191 + success.hashCode();
+
+      hashCode = hashCode * 8191 + ((isSetE()) ? 131071 : 524287);
+      if (isSetE())
+        hashCode = hashCode * 8191 + e.hashCode();
 
       return hashCode;
     }
@@ -12353,12 +13827,22 @@ public class ProfileServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
       if (isSetSuccess()) {
         lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetE()).compareTo(other.isSetE());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetE()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.e, other.e);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -12379,8 +13863,8 @@ public class ProfileServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("getProfileByApplication_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("getProfileByApplication_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -12388,6 +13872,14 @@ public class ProfileServices {
         sb.append("null");
       } else {
         sb.append(this.success);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("e:");
+      if (this.e == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.e);
       }
       first = false;
       sb.append(")");
@@ -12410,7 +13902,7 @@ public class ProfileServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -12445,6 +13937,15 @@ public class ProfileServices {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
+            case 1: // E
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+                struct.e.read(iprot);
+                struct.setEIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -12463,6 +13964,11 @@ public class ProfileServices {
         if (struct.success != null) {
           oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
           struct.success.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        if (struct.e != null) {
+          oprot.writeFieldBegin(E_FIELD_DESC);
+          struct.e.write(oprot);
           oprot.writeFieldEnd();
         }
         oprot.writeFieldStop();
@@ -12486,20 +13992,31 @@ public class ProfileServices {
         if (struct.isSetSuccess()) {
           optionals.set(0);
         }
-        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetE()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
         if (struct.isSetSuccess()) {
           struct.success.write(oprot);
+        }
+        if (struct.isSetE()) {
+          struct.e.write(oprot);
         }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, getProfileByApplication_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet incoming = iprot.readBitSet(1);
+        java.util.BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
           struct.success = new com.moseeker.thrift.gen.common.struct.Response();
           struct.success.read(iprot);
           struct.setSuccessIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+          struct.e.read(iprot);
+          struct.setEIsSet(true);
         }
       }
     }

@@ -1,21 +1,18 @@
 package com.moseeker.useraccounts.service.impl;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.moseeker.baseorm.dao.userdb.UserBdUserDao;
+import com.moseeker.baseorm.db.userdb.tables.records.UserBdUserRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.useraccounts.service.BindOnAccountService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.moseeker.common.providerutils.QueryUtil;
-import com.moseeker.db.userdb.tables.records.UserBdUserRecord;
-import com.moseeker.db.userdb.tables.records.UserUserRecord;
-import com.moseeker.db.userdb.tables.records.UserWxUserRecord;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.useraccounts.dao.impl.UserBdUserDaoImpl;
-import com.moseeker.useraccounts.service.BindOnAccountService;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 百度账号绑定
@@ -30,17 +27,15 @@ public class BindBaiduAccountService extends BindOnAccountService{
 	private static final Logger logger = LoggerFactory.getLogger(BindBaiduAccountService.class);
 	
 	@Autowired
-	private UserBdUserDaoImpl bduserDao;
+    private UserBdUserDao bduserDao;
 	
 	@Override
 	protected UserUserRecord getUserByUnionId(String id) {
-		CommonQuery query = new CommonQuery();
-		Map<String, String> filters = new HashMap<>();
-		filters.put("id", id);
-		query.setEqualFilter(filters);
+        Query.QueryBuilder query = new Query.QueryBuilder();
+		query.where("id", id);
 		UserUserRecord userUnionid = null;
 		try {
-			userUnionid = userdao.getResource(query);
+			userUnionid = userdao.getRecord(query.buildQuery());
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
@@ -61,11 +56,10 @@ public class BindBaiduAccountService extends BindOnAccountService{
 	
 	@Override
 	protected boolean volidationBind(UserUserRecord mobileUser, UserUserRecord idUser) throws Exception {
-		QueryUtil queryUtil = new QueryUtil();
-		Map<String, String> map = new HashMap<String, String>();
-		queryUtil.setEqualFilter(map);
-		map.put("user_id", String.valueOf(mobileUser.getId()));
-		UserBdUserRecord bdMbUser = bduserDao.getResource(queryUtil);
+		Query.QueryBuilder queryUtil = new Query.QueryBuilder();
+		Map<String, String> map = new HashMap<>();
+		queryUtil.where("user_id", String.valueOf(mobileUser.getId()));
+		UserBdUserRecord bdMbUser = bduserDao.getRecord(queryUtil.buildQuery());
 		if (bdMbUser != null) {
 			return true;
 		}
@@ -77,7 +71,7 @@ public class BindBaiduAccountService extends BindOnAccountService{
 		try {
 			// unnionid置为子账号
 			userUnionid.setParentid(userMobile.getId());
-			if (userdao.putResource(userUnionid) > 0) {
+			if (userdao.updateRecord(userUnionid) > 0) {
 				consummateUserAccount(userMobile, userUnionid);
 			}
 			doSomthing(userMobile.getId().intValue(), userUnionid.getId().intValue());

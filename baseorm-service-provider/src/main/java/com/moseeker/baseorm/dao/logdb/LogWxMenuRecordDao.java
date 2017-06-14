@@ -1,11 +1,11 @@
 package com.moseeker.baseorm.dao.logdb;
 
-import org.springframework.stereotype.Repository;
-
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.logdb.tables.LogWxMenuRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogWxMenuRecordRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.logdb.LogWxMenuRecordDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +13,13 @@ import com.moseeker.thrift.gen.dao.struct.logdb.LogWxMenuRecordDO;
 * 2017-03-21
 */
 @Repository
-public class LogWxMenuRecordDao extends StructDaoImpl<LogWxMenuRecordDO, LogWxMenuRecordRecord, LogWxMenuRecord> {
+public class LogWxMenuRecordDao extends JooqCrudImpl<LogWxMenuRecordDO, LogWxMenuRecordRecord> {
 
+    public LogWxMenuRecordDao() {
+        super(LogWxMenuRecord.LOG_WX_MENU_RECORD, LogWxMenuRecordDO.class);
+    }
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = LogWxMenuRecord.LOG_WX_MENU_RECORD;
-   }
+    public LogWxMenuRecordDao(TableImpl<LogWxMenuRecordRecord> table, Class<LogWxMenuRecordDO> logWxMenuRecordDOClass) {
+        super(table, logWxMenuRecordDOClass);
+    }
 }

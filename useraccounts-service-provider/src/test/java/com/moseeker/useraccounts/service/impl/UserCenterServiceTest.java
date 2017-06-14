@@ -1,31 +1,44 @@
 package com.moseeker.useraccounts.service.impl;
 
-import com.moseeker.thrift.gen.company.struct.Hrcompany;
-import com.moseeker.thrift.gen.dao.struct.ConfigSysPointConfTplDO;
-import com.moseeker.thrift.gen.dao.struct.JobApplicationDO;
-import com.moseeker.thrift.gen.dao.struct.JobPositionDO;
-import com.moseeker.thrift.gen.dao.struct.UserFavPositionDO;
+import com.moseeker.thrift.gen.useraccounts.struct.ApplicationDetailVO;
 import com.moseeker.thrift.gen.useraccounts.struct.ApplicationRecordsForm;
 import com.moseeker.thrift.gen.useraccounts.struct.FavPositionForm;
-import com.moseeker.useraccounts.service.impl.biztools.UserCenterBizTools;
-import org.apache.thrift.TException;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
-
+import com.moseeker.thrift.gen.useraccounts.struct.RecommendationVO;
 import java.util.Arrays;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(classes = AppConfig.class)
 public class UserCenterServiceTest {
-	
+
+    @Autowired
+    private UserCenterService service;
+
+    //@Test
+    public void getApplication() throws Exception {
+        List<ApplicationRecordsForm> list = service.getApplication(1122611);
+        System.out.println(Arrays.toString(list.toArray()));
+    }
+
+    //@Test
+    public void getFavPositions() throws Exception {
+        List<FavPositionForm> favPositions = service.getFavPositions(675796);
+        System.out.println(Arrays.toString(favPositions.toArray()));
+    }
+
+    //@Test
+    public void getRecommendations() throws Exception {
+        RecommendationVO recommendationVO = service.getRecommendations(677438, (byte) 0, (byte) 1, (byte) 10);
+        System.out.println(recommendationVO);
+    }
+
+    //@Test
+    public void getApplicationDetail() throws Exception {
+        ApplicationDetailVO applicationDetail = service.getApplicationDetail(1122611, 107102);
+        System.out.println(applicationDetail);
+    }
+
 	/*@Mock
 	private UserCenterBizTools bizTools;
 	
@@ -128,7 +141,7 @@ public class UserCenterServiceTest {
 		}
 	}
 
-	@Test
+	//@Test
 	public void testGetApplication() {
 		try {
 			List<ApplicationRecordsForm> records = userCenterService.getApplication(1);
@@ -139,7 +152,7 @@ public class UserCenterServiceTest {
 		}
 	}
 
-	@Test
+	//@Test
 	public void testGetApplication2() {
 		try {
 			List<ApplicationRecordsForm> records = userCenterService.getApplication(1);
@@ -160,7 +173,7 @@ public class UserCenterServiceTest {
 			fail("Exception");
 		}
 	}
-	@Test
+	//@Test
 	public void testGetFavPositions() {
 		try {
 			List<FavPositionForm> forms = userCenterService.getFavPositions(1);

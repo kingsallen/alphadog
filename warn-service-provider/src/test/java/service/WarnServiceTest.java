@@ -1,30 +1,26 @@
 package service;
 
-import java.util.concurrent.TimeUnit;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-
 import com.moseeker.thrift.gen.warn.struct.WarnBean;
+import com.moseeker.warn.config.AppConfig;
 import com.moseeker.warn.service.ValidationService;
 import com.moseeker.warn.utils.SendChannel;
+import org.junit.After;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.concurrent.TimeUnit;
+
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(classes = AppConfig.class)
 public class WarnServiceTest {
+
+    @Autowired
+	private ValidationService service;
 	
-	/*private ValidationService service;
-	
-	@SuppressWarnings("resource")
-	@Before
-	public void init() {
-		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
-		context.scan("com.moseeker.warn");
-		context.refresh();
-		service = context.getBean(ValidationService.class);
-	}
-	
-	@Test
+	//@Test
 	public void notifyTest() throws Exception{
 		try {
 			service.valid(new WarnBean("0", "REDIS_CONNECT_ERROR", null, "Redis 连接失败", getClass().getName().concat(":36")));
@@ -48,5 +44,5 @@ public class WarnServiceTest {
 				break;
 			}
 		}
-	}*/
+	}
 }

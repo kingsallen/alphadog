@@ -7,6 +7,7 @@ import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.warn.service.WarnSetService;
@@ -39,6 +40,7 @@ public class WarnService {
 	 * 预警通知
 	 * @param e
 	 */
+	@CounterIface
 	public static void notify(RedisException e) {
 		try {
 			String stackTrace = "";

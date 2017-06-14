@@ -9,7 +9,7 @@ import com.moseeker.common.email.attachment.UrlAttachment;
  */
 public class EmailTest {
 
-    @Test
+    //@Test
     public void sendTest() {
 
         try {

@@ -45,7 +45,7 @@ import org.jooq.util.GenerationTool
         }
         generator() {
             database {
-//                unsignedTypes false
+                unsignedTypes false
                 name 'org.jooq.util.mysql.MySQLDatabase'
                 inputSchema db
                 excludes 'view_resume_import'
@@ -53,7 +53,7 @@ import org.jooq.util.GenerationTool
             generate() {
             }
             target() {
-                packageName('com.moseeker.db.'+db)
+                packageName('com.moseeker.baseorm.db.'+db)
                 directory('src/main/java')
             }
         }

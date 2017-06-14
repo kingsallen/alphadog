@@ -1,11 +1,11 @@
 package com.moseeker.baseorm.dao.hrdb;
 
-import org.springframework.stereotype.Repository;
-
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.hrdb.tables.HrRuleStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrRuleStatisticsRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrRuleStatisticsDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +13,13 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrRuleStatisticsDO;
 * 2017-03-21
 */
 @Repository
-public class HrRuleStatisticsDao extends StructDaoImpl<HrRuleStatisticsDO, HrRuleStatisticsRecord, HrRuleStatistics> {
+public class HrRuleStatisticsDao extends JooqCrudImpl<HrRuleStatisticsDO, HrRuleStatisticsRecord> {
 
+    public HrRuleStatisticsDao() {
+        super(HrRuleStatistics.HR_RULE_STATISTICS, HrRuleStatisticsDO.class);
+    }
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = HrRuleStatistics.HR_RULE_STATISTICS;
-   }
+    public HrRuleStatisticsDao(TableImpl<HrRuleStatisticsRecord> table, Class<HrRuleStatisticsDO> hrRuleStatisticsDOClass) {
+        super(table, hrRuleStatisticsDOClass);
+    }
 }
