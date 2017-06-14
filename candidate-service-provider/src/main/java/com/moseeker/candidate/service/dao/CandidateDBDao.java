@@ -26,6 +26,7 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import org.apache.thrift.TException;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,6 +42,8 @@ import java.util.Optional;
  */
 @Service
 public class CandidateDBDao {
+
+    private Logger logger = LoggerFactory.getLogger(CandidateDBDao.class);
 
     @Autowired
     CandidateCompanyDao candidateCompanyDao;
@@ -170,6 +173,7 @@ public class CandidateDBDao {
 //        qu.addEqualFilter("position_id", String.valueOf(positionID));
         Query query = new Query.QueryBuilder().where("user_id", String.valueOf(userID)).and("position_id", String.valueOf(positionID)).buildQuery();
         CandidatePositionDO candidatePositionDO = candidatePositionDao.getData(query);
+        logger.info("getCandidatePosition candidatePositionDO:{}", candidatePositionDO);
         if (candidatePositionDO == null || candidatePositionDO.getUserId() == 0) {
             return Optional.empty();
         }
