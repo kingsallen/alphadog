@@ -170,7 +170,7 @@ public class CandidateDBDao {
 //        qu.addEqualFilter("position_id", String.valueOf(positionID));
         Query query = new Query.QueryBuilder().where("user_id", String.valueOf(userID)).and("position_id", String.valueOf(positionID)).buildQuery();
         CandidatePositionDO candidatePositionDO = candidatePositionDao.getData(query);
-        if (candidatePositionDO.getUserId() == 0) {
+        if (candidatePositionDO == null || candidatePositionDO.getUserId() == 0) {
             return Optional.empty();
         }
         return Optional.of(candidatePositionDO);
