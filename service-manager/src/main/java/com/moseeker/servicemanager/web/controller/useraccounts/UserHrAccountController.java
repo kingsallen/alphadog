@@ -1,18 +1,21 @@
 package com.moseeker.servicemanager.web.controller.useraccounts;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
+import com.moseeker.common.validation.rules.DateType;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.web.controller.util.Params;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
-import com.moseeker.thrift.gen.useraccounts.struct.BindAccountStruct;
-import com.moseeker.thrift.gen.useraccounts.struct.DownloadReport;
-import com.moseeker.thrift.gen.useraccounts.struct.SearchCondition;
+import com.moseeker.thrift.gen.useraccounts.struct.*;
+
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.util.List;
 
 /**
@@ -94,12 +98,12 @@ public class UserHrAccountController {
     public String bindThirdPartyAccount(HttpServletRequest request, HttpServletResponse response) {
         try {
             BindAccountStruct struct = ParamUtils.initModelForm(request, BindAccountStruct.class);
-            logger.info("bind thirdParyAccount in controller params==========================="+ JSON.toJSONString(struct));
+            logger.info("bind thirdParyAccount in controller params===========================" + JSON.toJSONString(struct));
             Response result = userHrAccountService.bind(struct);
-            logger.info("bind thirdParyAccount in controller end==========================="+result.getData());
+            logger.info("bind thirdParyAccount in controller end===========================" + result.getData());
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            logger.error(e.getMessage(),e);
+            logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
         } finally {
             //do nothing
@@ -289,7 +293,7 @@ public class UserHrAccountController {
     @ResponseBody
     public String synchronizeThirdpartyAccount(HttpServletRequest request, HttpServletResponse response) {
         logger.info("/thirdpartyaccount/refresh start : {}", new DateTime().toString("YYYY-MM-dd HH:mm:ss SSS"));
-        long startTime= System.currentTimeMillis();
+        long startTime = System.currentTimeMillis();
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             Integer userId = params.getInt("id");
@@ -303,10 +307,87 @@ public class UserHrAccountController {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseLogNotification.fail(request, e.getMessage());
-        }finally{
+        } finally {
             logger.info("/thirdpartyaccount/refresh start : {}", new DateTime().toString("YYYY-MM-dd HH:mm:ss SSS"));
-            long allUseTime=System.currentTimeMillis()-startTime;
-            logger.info("refresh thirdParyAccount in controller Use time==========================="+allUseTime);
+            long allUseTime = System.currentTimeMillis() - startTime;
+            logger.info("refresh thirdParyAccount in controller Use time===========================" + allUseTime);
+        }
+    }
+
+    @RequestMapping(value = "/nps/list", method = RequestMethod.GET)
+    @ResponseBody
+    public String npsList(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            logger.info("/nps/list params:{}", params);
+            ValidateUtil vu = new ValidateUtil();
+            vu.addDateValidate("start_date", params.get("start_date"), DateType.shortDate, null, null);
+            vu.addDateValidate("end_date", params.get("end_date"), DateType.shortDate, null, null);
+
+            Integer page = params.getInt("page", 1);
+            Integer pageSize = params.getInt("page_size", 500);
+
+            if (StringUtils.isNullOrEmpty(vu.validate())) {
+                HrNpsStatistic result = userHrAccountService.npsList(params.getString("start_date"), params.getString("end_date"), page, pageSize);
+                logger.info("/nps/list result:{}", result);
+                return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(result)));
+            } else {
+                return ResponseLogNotification.fail(request, vu.validate());
+            }
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/nps/status", method = RequestMethod.GET)
+    @ResponseBody
+    public String npsStatus(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            logger.info("/nps/status params:{}", params);
+            ValidateUtil vu = new ValidateUtil();
+            vu.addRequiredValidate("user_id", params.get("user_id"), null, null);
+            vu.addIntTypeValidate("user_id", params.get("user_id"), null, null, 0, Integer.MAX_VALUE);
+            vu.addDateValidate("start_date", params.get("start_date"), DateType.shortDate, null, null);
+            vu.addDateValidate("end_date", params.get("end_date"), DateType.shortDate, null, null);
+            if (StringUtils.isNullOrEmpty(vu.validate())) {
+                HrNpsResult result = userHrAccountService.npsStatus(params.getInt("user_id"), params.getString("start_date"), params.getString("end_date"));
+                logger.info("/nps/status result:{}", result);
+                return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(result)));
+            } else {
+                return ResponseLogNotification.fail(request, vu.validate());
+            }
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/nps/update", method = RequestMethod.POST)
+    @ResponseBody
+    public String npsUpdate(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            HrNpsUpdate npsUpdate = ParamUtils.initModelForm(request, HrNpsUpdate.class);
+            logger.info("/nps/update params:{}", JSON.toJSON(npsUpdate));
+            ValidateUtil vu = new ValidateUtil();
+            vu.addRequiredValidate("user_id", npsUpdate.getUser_id(), null, null);
+            if (StringUtils.isNullOrEmpty(vu.validate())) {
+                HrNpsResult result = userHrAccountService.npsUpdate(npsUpdate);
+                logger.info("/nps/update result:{}", JSON.toJSON(result));
+                return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(result)));
+            } else {
+                return ResponseLogNotification.fail(request, vu.validate());
+            }
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
 }
