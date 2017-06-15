@@ -33,6 +33,8 @@ public class WebInitializer implements WebApplicationInitializer {
         FilterRegistration.Dynamic filterRegistration = container.addFilter("charset", CharacterEncodingFilter.class);
         filterRegistration.setInitParameter("encoding", "UTF-8");
         filterRegistration.setInitParameter("forceEncoding", "true");
+        filterRegistration.addMappingForUrlPatterns(null, false, "/*");
+
     }
 
 
@@ -43,8 +45,7 @@ public class WebInitializer implements WebApplicationInitializer {
      */
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {
-
-        //initializeFilter(servletContext);
+        initializeFilter(servletContext);
         initializeSpringMVCConfig(servletContext);
     }
 }
