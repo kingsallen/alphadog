@@ -58,43 +58,45 @@ class LocalQuery<R extends Record> {
 
     public Collection<? extends SelectField<?>> buildSelect() {
         if (query != null && query.getAttributes() != null) {
-            return query.getAttributes().stream()
-                    .map(select -> {
-                        Field<?> field = table.field(select.getField());
-                        if (field == null) {
-                            logger.warn("field '" + select.getField() + "' not found in table " + table.getName());
-                            return null;
-                        } else {
-                            switch (select.getSelectOp()) {
-                                case AVG:
-                                    return field.avg().as(select.getField() + "_avg");
-                                case COUNT:
-                                    return field.count().as(select.getField() + "_count");
-                                case COUNT_DISTINCT:
-                                    return field.countDistinct().as(select.getField() + "_count_distinct");
-                                case TRIM:
-                                    return field.trim().as(select.getField() + "_trim");
-                                case LCASE:
-                                    return field.lower().as(select.getField() + "_lower");
-                                case LEN:
-                                    return field.length().as(select.getField() + "_length");
-                                case MAX:
-                                    return field.max().as(select.getField() + "_max");
-                                case MIN:
-                                    return field.min().as(select.getField() + "_min");
-                                case ROUND:
-                                    return field.round().as(select.getField() + "_round");
-                                case SUM:
-                                    return field.sum().as(select.getField() + "_sum");
-                                case UCASE:
-                                    return field.upper().as(select.getField() + "_ucase");
-                                default:
-                                    return field;
+            synchronized (query) {
+                return query.getAttributes().stream()
+                        .map(select -> {
+                            Field<?> field = table.field(select.getField());
+                            if (field == null) {
+                                logger.warn("field '" + select.getField() + "' not found in table " + table.getName());
+                                return null;
+                            } else {
+                                switch (select.getSelectOp()) {
+                                    case AVG:
+                                        return field.avg().as(select.getField() + "_avg");
+                                    case COUNT:
+                                        return field.count().as(select.getField() + "_count");
+                                    case COUNT_DISTINCT:
+                                        return field.countDistinct().as(select.getField() + "_count_distinct");
+                                    case TRIM:
+                                        return field.trim().as(select.getField() + "_trim");
+                                    case LCASE:
+                                        return field.lower().as(select.getField() + "_lower");
+                                    case LEN:
+                                        return field.length().as(select.getField() + "_length");
+                                    case MAX:
+                                        return field.max().as(select.getField() + "_max");
+                                    case MIN:
+                                        return field.min().as(select.getField() + "_min");
+                                    case ROUND:
+                                        return field.round().as(select.getField() + "_round");
+                                    case SUM:
+                                        return field.sum().as(select.getField() + "_sum");
+                                    case UCASE:
+                                        return field.upper().as(select.getField() + "_ucase");
+                                    default:
+                                        return field;
+                                }
                             }
-                        }
-                    })
-                    .filter(field -> field != null)
-                    .collect(Collectors.toList());
+                        })
+                        .filter(field -> field != null)
+                        .collect(Collectors.toList());
+            }
         } else {
             return null;
         }
@@ -105,18 +107,20 @@ class LocalQuery<R extends Record> {
      */
     public Collection<? extends Field<?>> buildGroup() {
         if (query != null && query.getGroups() != null) {
-            return query.getGroups().stream()
-                    .map(groupField -> {
-                        Field<?> field = table.field(groupField);
-                        if (field == null) {
-                            logger.warn("field '" + groupField + "' not found in table " + table.getName());
-                            return null;
-                        } else {
-                            return field;
-                        }
-                    })
-                    .filter(filed -> filed != null)
-                    .collect(Collectors.toList());
+            synchronized (query) {
+                return query.getGroups().stream()
+                        .map(groupField -> {
+                            Field<?> field = table.field(groupField);
+                            if (field == null) {
+                                logger.warn("field '" + groupField + "' not found in table " + table.getName());
+                                return null;
+                            } else {
+                                return field;
+                            }
+                        })
+                        .filter(filed -> filed != null)
+                        .collect(Collectors.toList());
+            }
         } else {
             return null;
         }
@@ -134,24 +138,26 @@ class LocalQuery<R extends Record> {
      */
     public Collection<? extends SortField<?>> buildOrder() {
         if (query != null && query.getOrders() != null) {
-            return query.getOrders().stream()
-                    .filter(orderBy -> orderBy != null)
-                    .map(orderBy -> {
-                        Field<?> field = table.field(orderBy.getField());
-                        if (field == null) {
-                            logger.warn("field '" + orderBy.getField() + "' not found in table " + table.getName());
-                            return null;
-                        } else {
-                            switch (orderBy.getOrder()) {
-                                case DESC:
-                                    return field.desc();
-                                default:
-                                    return field.asc();
+            synchronized (query) {
+                return query.getOrders().stream()
+                        .filter(orderBy -> orderBy != null)
+                        .map(orderBy -> {
+                            Field<?> field = table.field(orderBy.getField());
+                            if (field == null) {
+                                logger.warn("field '" + orderBy.getField() + "' not found in table " + table.getName());
+                                return null;
+                            } else {
+                                switch (orderBy.getOrder()) {
+                                    case DESC:
+                                        return field.desc();
+                                    default:
+                                        return field.asc();
+                                }
                             }
-                        }
-                    })
-                    .filter(filed -> filed != null)
-                    .collect(Collectors.toList());
+                        })
+                        .filter(filed -> filed != null)
+                        .collect(Collectors.toList());
+            }
         } else {
             return null;
         }
