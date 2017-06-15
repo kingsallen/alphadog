@@ -308,3 +308,62 @@ struct ApplicationDetailVO {
     5: optional i8 step_status,                         //状态
     6: optional list<ApplicationOperationRecordVO> status_timeline  //操作记录
 }
+
+struct HrNpsRecommendDO {
+
+	1: optional i32 id,
+	2: optional i32 hr_nps_id,	//nps.id
+	3: optional string username,	//推荐的用户
+	4: optional string mobile,	// 推荐的用户的手机号
+	5: optional string company,	//推荐的用户所属公司
+	6: optional string create_time	//推荐的时间
+
+}
+
+struct HrNpsDO {
+
+	1: optional i32 id,
+	2: optional i32 hr_account_id,	//hr帐号
+	3: optional byte intention,	//推荐同行的意愿【0-10】
+	4: optional byte accept_contact,	// 是否愿意接听电话 0-未确认，1-愿意，2-不愿意
+	5: optional string create_time,	//分配账号的时间
+	6: optional string update_time	//更新时间
+
+}
+
+struct HrNpsResult {
+    1: optional HrNpsDO hr_nps,
+    2: optional HrNpsRecommendDO hr_nps_recommend
+}
+
+struct HrNpsUpdate {
+    1: optional i32 user_id,
+    2: optional string start_date,
+    3: optional string end_date,
+    4: optional byte intention,
+    5: optional byte accept_contact,
+    6: optional string username,
+    7: optional string mobile,
+    8: optional string company
+}
+
+struct HrNpsInfo {
+    1: optional i32 id,
+    2: optional string date,
+    3: optional i32 hr_account_id,
+    4: optional string hr_mobile,
+    5: optional byte hr_account_type,
+    6: optional string company,
+    7: optional byte intention,
+    8: optional byte accept_contact,
+    9: optional string recommend_user,
+    10: optional string recommend_mobile,
+    11: optional string recommend_company
+}
+
+struct HrNpsStatistic {
+    1: optional i32 total,
+    2: optional i32 page,
+    3: optional i32 page_size,
+    4: optional list<HrNpsInfo> data
+}

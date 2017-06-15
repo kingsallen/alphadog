@@ -109,12 +109,12 @@ public class SmsSender {
                 return true;
             }
             else{
-            	logger.warn("短信发送失败:" + rsp.getBody());
+            	logger.warn("短信发送失败:{}   手机号码:{}",rsp.getBody(), mobile);
             }
         } catch (ApiException e) {
-        	logger.warn("短信发送失败:" + e.getMessage());
+        	logger.warn("短信发送失败:{},  手机号码:{}", e.getMessage(), mobile);
         } catch (Exception e) {
-        	logger.warn("短信发送失败:" + e.getMessage());
+        	logger.warn("短信发送失败:" + e.getMessage(), e);
 		}
         return false;    
     }

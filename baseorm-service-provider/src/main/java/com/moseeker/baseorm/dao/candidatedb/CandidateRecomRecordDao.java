@@ -5,8 +5,8 @@ import com.moseeker.baseorm.db.candidatedb.tables.CandidatePosition;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateRecomRecord;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRecomRecordRecord;
 import com.moseeker.baseorm.util.BeanUtils;
-import com.moseeker.thrift.gen.dao.struct.CURDException;
 
+import com.moseeker.thrift.gen.common.struct.CURDException;
 import com.moseeker.thrift.gen.dao.struct.CandidateRecomRecordSortingDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateRecomRecordDO;
 import org.joda.time.DateTime;

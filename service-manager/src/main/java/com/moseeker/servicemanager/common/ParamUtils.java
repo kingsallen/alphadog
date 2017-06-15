@@ -141,7 +141,7 @@ public class ParamUtils {
             if (data != null && data.size() > 0) {
                 // thrift 都是自动生成的public类型, 故使用getFields,如果不是public的时候, 请不要使用此方法
                 Field[] fields = clazz.getDeclaredFields();
-                Map<String, Integer> fieldMap = new HashMap<String, Integer>();
+                Map<String, Integer> fieldMap = new HashMap<>();
                 for (int f = 0; f < fields.length; f++) {
                     // 过滤掉转换不需要的字段 metaDataMap
                     if (!"metaDataMap".equals(fields[f].getName())) {
