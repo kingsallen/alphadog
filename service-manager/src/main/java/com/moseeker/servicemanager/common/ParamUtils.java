@@ -74,8 +74,8 @@ public class ParamUtils {
      */
     public static Params<String, Object> parseRequestParam(HttpServletRequest request) throws Exception {
         Params<String, Object> data = new Params<>();
-        data.putAll(initParamFromRequestBody(request));
         data.putAll(initParamFromRequestParameter(request));
+        data.putAll(initParamFromRequestBody(request));
 
         if (data.get("appid") == null) {
             throw new Exception("请设置 appid!");

@@ -43,7 +43,8 @@ public class WebInitializer implements WebApplicationInitializer {
      */
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {
-        initializeFilter(servletContext);
+
+        //initializeFilter(servletContext);
         initializeSpringMVCConfig(servletContext);
     }
 }

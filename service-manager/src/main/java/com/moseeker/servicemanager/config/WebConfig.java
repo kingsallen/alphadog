@@ -23,7 +23,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
      */
 	@Override
 	public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        //converters.add(new UTF8StringHttpMessageConverter());
+        converters.add(new UTF8StringHttpMessageConverter());
         super.configureMessageConverters(converters);
     }
 }
