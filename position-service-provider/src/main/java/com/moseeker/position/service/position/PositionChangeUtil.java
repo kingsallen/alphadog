@@ -1,15 +1,5 @@
 package com.moseeker.position.service.position;
 
-import java.text.DecimalFormat;
-import java.util.Map;
-
-import com.moseeker.thrift.gen.position.struct.Position;
-import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
-import org.apache.thrift.TException;
-import org.joda.time.DateTime;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.moseeker.baseorm.dao.dictdb.DictCityMapDao;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.util.StringUtils;
@@ -18,6 +8,15 @@ import com.moseeker.position.service.position.qianxun.Degree;
 import com.moseeker.position.service.position.qianxun.WorkType;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.dict.struct.CityMap;
+import com.moseeker.thrift.gen.position.struct.Position;
+import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
+import org.apache.thrift.TException;
+import org.joda.time.DateTime;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.text.DecimalFormat;
+import java.util.Map;
 
 /**
  * 职位转换
