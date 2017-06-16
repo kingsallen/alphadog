@@ -5,6 +5,7 @@ include "../../common/struct/common_struct.thrift"
 include "../../foundataionbs/wordpress/struct/wordpress_foundation_strcut.thrift"
 include "../struct/bindtype_struct.thrift"
 include "../../dao/struct/userdb/user_user_struct.thrift"
+include "../../dao/struct/hrdb/hr_third_party_account_struct.thrift"
 
 namespace java com.moseeker.thrift.gen.useraccounts.service
 
@@ -84,17 +85,15 @@ service UserHrAccountService {
     common_struct.Response postResource(1: useraccounts_struct.DownloadReport downloadReport);
     common_struct.Response putResource(1: useraccounts_struct.UserHrAccount userHrAccount);
     //绑定第三方帐号 
-    common_struct.Response bind(1: useraccounts_struct.BindAccountStruct account);
-    //是否可以绑定第三方账号
-    common_struct.Response allowBind(1:useraccounts_struct.UserHrAccount user, 3: i8 channelType,4:string username);
+    hr_third_party_account_struct.HrThirdPartyAccountDO bindThirdpartyAccount(1:i32 hrId,2:hr_third_party_account_struct.HrThirdPartyAccountDO account) throws (1: common_struct.BIZException e);
+    //同步第三方帐号
+    hr_third_party_account_struct.HrThirdPartyAccountDO syncThirdpartyAccount(1:i32 id) throws (1: common_struct.BIZException e);
     //添加第三方账号
     common_struct.Response addThirdPartyAccount(1:i32 userId,2:useraccounts_struct.BindAccountStruct account);
     //更新第三方账号
-    common_struct.Response updateThirdPartyAccount(1:i32 accountId,2:useraccounts_struct.BindAccountStruct account);
+    common_struct.Response updateThirdPartyAccount(1:hr_third_party_account_struct.HrThirdPartyAccountDO account);
     //是否可以同步职位
     common_struct.Response ifSynchronizePosition(1: i32 companyId, 2: i32 channel);
-    #同步第三方帐号
-    common_struct.Response synchronizeThirdpartyAccount(1:i32 id);
     // 获取常用筛选项
     common_struct.Response getSearchCondition(1: i32 hrAccountId, 2: i32 type); 
     // 保存常用筛选项

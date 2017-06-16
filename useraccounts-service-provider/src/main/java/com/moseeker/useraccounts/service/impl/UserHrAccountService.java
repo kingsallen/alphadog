@@ -9,8 +9,12 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.ValueOp;
+
 import java.util.*;
+
 import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.foundation.chaos.struct.ThirdPartyAccountStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.constant.BindingStatus;
@@ -44,6 +48,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
+
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -152,11 +157,11 @@ public class UserHrAccountService {
                     userHrAccountRecord.setLastLoginIp(downloadReport.getLast_login_ip());
                 }
                 HrCompanyRecord companyRecord = new HrCompanyRecord();
-                companyRecord.setType((byte)(1));
+                companyRecord.setType((byte) (1));
                 if (downloadReport.isSetCompany_name()) {
                     companyRecord.setName(downloadReport.getCompany_name());
                 }
-                companyRecord.setSource((byte)(Constant.COMPANY_SOURCE_DOWNLOAD));
+                companyRecord.setSource((byte) (Constant.COMPANY_SOURCE_DOWNLOAD));
                 int result = userHrAccountDao.createHRAccount(userHrAccountRecord, companyRecord);
 
                 if (result > 0 && downloadReport.getSource() == Constant.HR_ACCOUNT_SIGNUP_SOURCE_WWW) {
@@ -290,40 +295,35 @@ public class UserHrAccountService {
      * @param account
      * @return
      */
-    public Response bindThirdAccount(BindAccountStruct account) {
+    public Response bindThirdAccount(int hrId, HrThirdPartyAccountDO account) {
         try {
             logger.info("-------bindThirdAccount--------");
             // 判断是否需要进行帐号绑定
-            UserHrAccount userHrAccount;
-            if (account.getUser_id() != 0) {
-                Query.QueryBuilder qu = new Query.QueryBuilder();
-                qu.where("id", String.valueOf(account.getUser_id()));
-                userHrAccount = userHrAccountDao.getData(qu.buildQuery(), UserHrAccount.class);
-                if (userHrAccount != null && userHrAccount.getId() > 0) {
-                    logger.info("thirdPartyAccount: {}", userHrAccount);
-                    account.setCompany_id((int)userHrAccount.getCompany_id());
-                    Response allowBindResponse = allowBind(userHrAccount, account.getChannel(), account.getUsername());
-                    if (allowBindResponse.getStatus() == 0) {
-                        logger.info("bindThirdAccount have permission");
-                        Response response = chaosService.binding(account.getUsername(), account.getPassword(), account.getMember_name(), account.getChannel());
-                        if (response.getStatus() == 0) {
-                            JSONObject data = JSONObject.parseObject(response.getData());
-                            account.setRemainNum(data.getIntValue("remain_number"));
-                            account.setRemainProfileNum(data.getIntValue("resume_number"));
-                            return addThirdPartyAccount((int) userHrAccount.getId(), account);
-                        } else {
-                            return response;
-                        }
+            Query.QueryBuilder qu = new Query.QueryBuilder();
+            qu.where("id", String.valueOf(hrId));
+            UserHrAccountDO userHrAccount = userHrAccountDao.getData(qu.buildQuery());
+            if (userHrAccount != null && userHrAccount.getId() > 0) {
+                logger.info("thirdPartyAccount: {}", userHrAccount);
+
+                account.setCompanyId(userHrAccount.getCompanyId());
+                Response allowBindResponse = allowBind(userHrAccount, account.getChannel(), account.getUsername());
+                if (allowBindResponse.getStatus() == 0) {
+                    logger.info("bindThirdAccount have permission");
+                    Response response = chaosService.binding(account.getUsername(), account.getPassword(), account.getMember_name(), account.getChannel());
+                    if (response.getStatus() == 0) {
+                        JSONObject data = JSONObject.parseObject(response.getData());
+                        account.setRemainNum(data.getIntValue("remain_number"));
+                        account.setRemainProfileNum(data.getIntValue("resume_number"));
+                        return addThirdPartyAccount((int) userHrAccount.getId(), account);
                     } else {
-                        return allowBindResponse;
+                        return response;
                     }
                 } else {
-                    //没有找到该hr账号
-                    return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+                    return allowBindResponse;
                 }
             } else {
-                //没有HR ID
-                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
+                //没有找到该hr账号
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
             }
 
         } catch (TException e) {
@@ -692,60 +692,6 @@ public class UserHrAccountService {
         return response;
     }
 
-    /**
-     * 是否允许执行绑定
-     */
-    @CounterIface
-    public Response allowBind(UserHrAccount user, byte channelType, String username) {
-        try {
-
-            //主账号或者没有绑定第三方账号，检查公司下该渠道已经绑定过相同的第三方账号
-            Query.QueryBuilder qu = new Query.QueryBuilder();
-            qu.where("company_id", user.getCompany_id());
-            qu.and("channel", String.valueOf(channelType));
-            qu.and("username", username);
-            qu.and(new Condition("binding", Arrays.asList(1, 2), ValueOp.IN));//绑定中或者已经绑定
-            ThirdPartAccountData data = hrThirdPartyAccountDao.getData(qu.buildQuery(), ThirdPartAccountData.class);
-
-            //数据库中username是不区分大小写的，如果大小写不同，那么认为不是一个账号
-            if (data != null && !username.equals(data.username)) {
-                data = null;
-            }
-
-            if (data == null || data.getId() == 0) {
-                //检查该用户是否绑定了其它相同渠道的账号
-                ThirdPartAccountData thirdPartAccount = hrThirdPartyAccountDao.getThirdPartyAccountByUserId((int) user.getId(), channelType);
-                if (thirdPartAccount != null && thirdPartAccount.getId() > 0) {
-                    if (user.getAccount_type() == 0) {
-                        //如果主账号已经绑定该渠道第三方账号，那么绑定人为空,并允许绑定
-                        user.setId(0);
-                        return ResponseUtils.success(null);
-                    } else {
-                        //已经绑定该渠道第三方账号，并且不是主账号，那么不允许绑定
-                        return ResponseUtils.fail(ConstantErrorCodeMessage.HRACCOUNT_BINDING_LIMIT);
-                    }
-                } else {
-                    return ResponseUtils.success(null);
-                }
-            } else {
-                //公司下已经有人绑定了这个第三方账号，则这个公司谁都不能再绑定这个账号了
-                if (data.getBinding() == 1) {
-                    return ResponseUtils.fail(ConstantErrorCodeMessage.HRACCOUNT_ALREADY_BOUND);
-                } else if (data.getBinding() == 2) {
-                    return ResponseUtils.fail(ConstantErrorCodeMessage.HRACCOUNT_BINDING);
-                } else {
-                    return ResponseUtils.success(null);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-        } finally {
-            //do nothing
-        }
-    }
-
     public Response addThirdPartyAccount(int userId, BindAccountStruct account) {
 
         try {
@@ -778,6 +724,6 @@ public class UserHrAccountService {
     }
 
     public HrNpsStatistic npsList(String startDate, String endDate, int page, int pageSize) throws Exception {
-        return userHrAccountDao.npsList(startDate,endDate,page,pageSize);
+        return userHrAccountDao.npsList(startDate, endDate, page, pageSize);
     }
 }
