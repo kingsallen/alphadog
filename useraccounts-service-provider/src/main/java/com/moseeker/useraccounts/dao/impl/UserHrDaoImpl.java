@@ -294,6 +294,8 @@ public class UserHrDaoImpl extends BaseDaoImpl<UserHrAccountRecord, UserHrAccoun
                     HrCompanyRecord companyRecord = companyRecordMap.get(hrAccountRecord.getCompanyId());
                     if (companyRecord != null) {
                         info.setCompany(companyRecord.getName());
+                        info.setCompany_id(companyRecord.getId().intValue());
+                        info.setCompany_type(companyRecord.getType().intValue());
                     }
                 }
 
