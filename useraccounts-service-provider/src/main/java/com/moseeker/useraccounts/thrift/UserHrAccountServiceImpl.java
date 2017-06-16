@@ -43,7 +43,6 @@ public class UserHrAccountServiceImpl implements Iface {
 
     /**
      * 下载行业报告，添加HR记录
-     *
      */
     @Override
     public Response postResource(DownloadReport downloadReport) throws TException {
@@ -62,12 +61,24 @@ public class UserHrAccountServiceImpl implements Iface {
 
     @Override
     public HrThirdPartyAccountDO bindThirdpartyAccount(int hrId, HrThirdPartyAccountDO account) throws BIZException, TException {
-        return service.bindThirdAccount(hrId,account);
+        try {
+            return service.bindThirdAccount(hrId, account);
+        } catch (BIZException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new TException(e.getMessage());
+        }
     }
 
     @Override
     public HrThirdPartyAccountDO syncThirdpartyAccount(int id) throws BIZException, TException {
-        return service.synchronizeThirdpartyAccount(id);
+        try {
+            return service.synchronizeThirdpartyAccount(id);
+        } catch (BIZException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new TException(e.getMessage());
+        }
     }
 
     @Override

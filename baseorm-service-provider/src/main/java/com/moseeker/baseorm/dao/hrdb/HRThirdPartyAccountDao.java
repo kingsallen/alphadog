@@ -5,6 +5,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccountHr;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountHrRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.query.Query;
@@ -79,10 +80,6 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
         return count;
     }
 
-    public List<HrThirdPartyAccountRecord> getThirdPartyBindingAccounts(Query query) {
-        return getRecords(query);
-    }
-
     /**
      * 修改第三方帐号信息
      *
@@ -117,9 +114,9 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
             logger.info("upsertThirdPartyAccount");
             logger.info("upsertThirdPartyAccount account:{}", account);
             HrThirdPartyAccountRecord record = new HrThirdPartyAccountRecord();
-            record.setBinding((short) account.getBinding());
-            record.setChannel((short) account.getChannel());
-            record.setCompanyId((int) (account.getCompanyId()));
+            record.setBinding(account.getBinding());
+            record.setChannel(account.getChannel());
+            record.setCompanyId(account.getCompanyId());
             Timestamp now = new Timestamp(System.currentTimeMillis());
             record.setCreateTime(now);
             record.setMembername(account.getMembername());
@@ -151,29 +148,27 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
     }
 
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
-    public int addThirdPartyAccount(int userId, HrThirdPartyAccountRecord record) {
-        logger.info("添加第三方账号到数据库：" + userId + ":" + record.getMembername());
-        int count = 0;
-        create.attach(record);
+    public HrThirdPartyAccountDO addThirdPartyAccount(int userId, HrThirdPartyAccountDO hrThirdPartyAccount) throws TException {
+        logger.info("添加第三方账号到数据库：" + userId + ":" + BeanUtils.convertStructToJSON(hrThirdPartyAccount));
         //添加第三方账号
-        count = record.insert();
+        HrThirdPartyAccountDO thirdPartyAccount = addData(hrThirdPartyAccount);
         //HR关联到第三方账号
         if (userId > 0) {
-            logger.info("HR关联到第三方账号：" + userId + ":" + record.getMembername());
+            logger.info("HR关联到第三方账号：" + userId + ":" + thirdPartyAccount.getMembername());
             HrThirdPartyAccountHrRecord hrThirdPartyAccountHrRecord = new HrThirdPartyAccountHrRecord();
-            hrThirdPartyAccountHrRecord.setChannel(record.getChannel());
+            hrThirdPartyAccountHrRecord.setChannel(thirdPartyAccount.getChannel());
             hrThirdPartyAccountHrRecord.setHrAccountId(userId);
-            hrThirdPartyAccountHrRecord.setThirdPartyAccountId(record.getId());
+            hrThirdPartyAccountHrRecord.setThirdPartyAccountId(thirdPartyAccount.getId());
             create.attach(hrThirdPartyAccountHrRecord);
-            count = hrThirdPartyAccountHrRecord.insert();
+            hrThirdPartyAccountHrRecord.insert();
         }
-        return count;
+        return thirdPartyAccount;
     }
 
     public HrThirdPartyAccountDO getThirdPartyAccountByUserId(int user_id, int channel) throws TException {
         try {
             logger.info("getThirdPartyAccountByUserId:user_id{},channel:{}", user_id, channel);
-            Query query = new Query.QueryBuilder().where("hr_account_id",user_id).and("status",1).buildQuery();
+            Query query = new Query.QueryBuilder().where("hr_account_id", user_id).and("status", 1).buildQuery();
 
             List<Integer> thirdPartyAccounts = create.select(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.THIRD_PARTY_ACCOUNT_ID).from(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR)
                     .where(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.HR_ACCOUNT_ID.eq(user_id))

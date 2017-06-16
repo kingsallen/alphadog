@@ -21,6 +21,7 @@ import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrTeamDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.position.struct.Position;
@@ -283,7 +284,7 @@ public class PositionBS {
             queryUtil.where("id", positionId);
             Position position = jobPositionDao.getData(queryUtil.buildQuery(), Position.class);
             boolean permission = false;
-            ThirdPartAccountData thirdPartAccountData = null;
+            HrThirdPartyAccountDO thirdPartAccountData = null;
             if (position != null) {
                 thirdPartAccountData = hRThirdPartyAccountDao.getThirdPartyAccountByUserId(position.getPublisher(), channel);
                 if (thirdPartAccountData != null && thirdPartAccountData.getId() > 0) {
