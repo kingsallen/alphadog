@@ -108,6 +108,13 @@ service UserHrAccountService {
 
     // 获取userHrAccount
     common_struct.Response userHrAccount(1: i32 company_id, 2: i32 disable,3:i32 page ,4:i32 per_age)
+
+    //nps调研接口
+    useraccounts_struct.HrNpsResult npsStatus(1:i32 userId,2:string startDate,3:string endDate) throws (1: common_struct.BIZException e);
+
+    useraccounts_struct.HrNpsResult npsUpdate(1:useraccounts_struct.HrNpsUpdate npsUpdate)  throws (1: common_struct.BIZException e);
+
+    useraccounts_struct.HrNpsStatistic npsList(1:string startDate,2:string endDate,3:i32 page,4:i32 pageSize)  throws (1: common_struct.BIZException e);
 }
 
 /**

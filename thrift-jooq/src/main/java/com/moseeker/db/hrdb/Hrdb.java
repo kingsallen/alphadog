@@ -26,6 +26,8 @@ import com.moseeker.db.hrdb.tables.HrHtml5Statistics;
 import com.moseeker.db.hrdb.tables.HrHtml5UniqueStatistics;
 import com.moseeker.db.hrdb.tables.HrImporterMonitor;
 import com.moseeker.db.hrdb.tables.HrMediaBackupChendi;
+import com.moseeker.db.hrdb.tables.HrNps;
+import com.moseeker.db.hrdb.tables.HrNpsRecommend;
 import com.moseeker.db.hrdb.tables.HrOperationRecord;
 import com.moseeker.db.hrdb.tables.HrPointsConf;
 import com.moseeker.db.hrdb.tables.HrRecruitStatistics;
@@ -85,7 +87,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Hrdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 1942582003;
+    private static final long serialVersionUID = -1054807904;
 
     /**
      * The reference instance of <code>hrdb</code>
@@ -211,6 +213,16 @@ public class Hrdb extends SchemaImpl {
      * The table <code>hrdb.hr_media_backup_chendi</code>.
      */
     public final HrMediaBackupChendi HR_MEDIA_BACKUP_CHENDI = com.moseeker.db.hrdb.tables.HrMediaBackupChendi.HR_MEDIA_BACKUP_CHENDI;
+
+    /**
+     * nps打分推荐表
+     */
+    public final HrNps HR_NPS = com.moseeker.db.hrdb.tables.HrNps.HR_NPS;
+
+    /**
+     * hr推荐同行表
+     */
+    public final HrNpsRecommend HR_NPS_RECOMMEND = com.moseeker.db.hrdb.tables.HrNpsRecommend.HR_NPS_RECOMMEND;
 
     /**
      * hr申请状态操作记录
@@ -421,6 +433,8 @@ public class Hrdb extends SchemaImpl {
             HrHtml5UniqueStatistics.HR_HTML5_UNIQUE_STATISTICS,
             HrImporterMonitor.HR_IMPORTER_MONITOR,
             HrMediaBackupChendi.HR_MEDIA_BACKUP_CHENDI,
+            HrNps.HR_NPS,
+            HrNpsRecommend.HR_NPS_RECOMMEND,
             HrOperationRecord.HR_OPERATION_RECORD,
             HrPointsConf.HR_POINTS_CONF,
             HrRecruitStatistics.HR_RECRUIT_STATISTICS,

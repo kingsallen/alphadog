@@ -26,6 +26,8 @@ import com.moseeker.db.hrdb.tables.HrHtml5Statistics;
 import com.moseeker.db.hrdb.tables.HrHtml5UniqueStatistics;
 import com.moseeker.db.hrdb.tables.HrImporterMonitor;
 import com.moseeker.db.hrdb.tables.HrMediaBackupChendi;
+import com.moseeker.db.hrdb.tables.HrNps;
+import com.moseeker.db.hrdb.tables.HrNpsRecommend;
 import com.moseeker.db.hrdb.tables.HrOperationRecord;
 import com.moseeker.db.hrdb.tables.HrPointsConf;
 import com.moseeker.db.hrdb.tables.HrRecruitStatistics;
@@ -196,6 +198,16 @@ public class Tables {
      * The table <code>hrdb.hr_media_backup_chendi</code>.
      */
     public static final HrMediaBackupChendi HR_MEDIA_BACKUP_CHENDI = com.moseeker.db.hrdb.tables.HrMediaBackupChendi.HR_MEDIA_BACKUP_CHENDI;
+
+    /**
+     * nps打分推荐表
+     */
+    public static final HrNps HR_NPS = com.moseeker.db.hrdb.tables.HrNps.HR_NPS;
+
+    /**
+     * hr推荐同行表
+     */
+    public static final HrNpsRecommend HR_NPS_RECOMMEND = com.moseeker.db.hrdb.tables.HrNpsRecommend.HR_NPS_RECOMMEND;
 
     /**
      * hr申请状态操作记录

@@ -5,8 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.dao.service.HrDBDao;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.foundation.chaos.struct.ThirdPartyAccountStruct;
+import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.constant.BindingStatus;
 import com.moseeker.useraccounts.constant.ResultMessage;
 
@@ -42,10 +45,6 @@ import com.moseeker.thrift.gen.dao.service.SearcheConditionDao;
 import com.moseeker.thrift.gen.dao.service.TalentpoolDao;
 import com.moseeker.thrift.gen.dao.struct.Talentpool;
 import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
-import com.moseeker.thrift.gen.useraccounts.struct.BindAccountStruct;
-import com.moseeker.thrift.gen.useraccounts.struct.DownloadReport;
-import com.moseeker.thrift.gen.useraccounts.struct.SearchCondition;
-import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
 import com.moseeker.useraccounts.dao.UserHrDao;
 
 /**
@@ -781,5 +780,17 @@ public class UserHrAccountService {
         } finally {
             //do nothing
         }
+    }
+
+    public HrNpsResult npsStatus(int userId, String startDate, String endDate) throws Exception {
+        return userHrDao.npsStatus(userId, startDate, endDate);
+    }
+
+    public HrNpsResult npsUpdate(HrNpsUpdate npsUpdate) throws Exception {
+        return userHrDao.npsUpdate(npsUpdate);
+    }
+
+    public HrNpsStatistic npsList(String startDate, String endDate, int page, int pageSize) throws Exception {
+        return userHrDao.npsList(startDate,endDate,page,pageSize);
     }
 }
