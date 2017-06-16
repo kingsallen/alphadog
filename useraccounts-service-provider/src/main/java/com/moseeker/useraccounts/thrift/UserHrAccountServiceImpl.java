@@ -2,6 +2,7 @@ package com.moseeker.useraccounts.thrift;
 
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService.Iface;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.service.impl.UserHrAccountService;
@@ -60,8 +61,13 @@ public class UserHrAccountServiceImpl implements Iface {
     }
 
     @Override
-    public Response bind(BindAccountStruct account) throws TException {
-        return service.bindThirdAccount(account);
+    public HrThirdPartyAccountDO bindThirdpartyAccount(int hrId, HrThirdPartyAccountDO account) throws BIZException, TException {
+        return service.bindThirdAccount(hrId,account);
+    }
+
+    @Override
+    public HrThirdPartyAccountDO syncThirdpartyAccount(int id) throws BIZException, TException {
+        return service.synchronizeThirdpartyAccount(id);
     }
 
     @Override
@@ -106,25 +112,9 @@ public class UserHrAccountServiceImpl implements Iface {
     }
 
     @Override
-    public Response synchronizeThirdpartyAccount(int id) throws TException {
-        // TODO Auto-generated method stub
-        return service.synchronizeThirdpartyAccount(id);
-    }
-
-    @Override
     public Response ifSynchronizePosition(int companyId, int channel) throws TException {
         // TODO Auto-generated method stub
         return service.ifSynchronizePosition(companyId, channel);
-    }
-
-    @Override
-    public Response addThirdPartyAccount(int userId, BindAccountStruct account) throws TException {
-        return service.addThirdPartyAccount(userId, account);
-    }
-
-    @Override
-    public Response updateThirdPartyAccount(int accountId, BindAccountStruct account) throws TException {
-        return service.updateThirdPartyAccount(accountId, account);
     }
 
     @Override

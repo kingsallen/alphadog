@@ -2,6 +2,8 @@ package com.moseeker.function.thrift.service;
 
 import java.util.List;
 
+import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
 import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,13 +30,13 @@ public class ChaosThriftService implements Iface{
 	private ChaosServiceImpl chaosService;
 	
 	@Override
-	public Response binding(String username, String password, String member_name, byte channel) throws TException {
-		return chaosService.bind(username, password, member_name, channel);
+	public HrThirdPartyAccountDO binding(HrThirdPartyAccountDO hrThirdPartyAccount) throws TException {
+		return chaosService.bind(hrThirdPartyAccount);
 	}
 
 	@Override
-	public ThirdPartyAccountStruct synchronization(ThirdPartyAccountStruct thirdPartyAccount) throws TException {
-		return chaosService.synchronization(thirdPartyAccount);
+	public HrThirdPartyAccountDO synchronization(HrThirdPartyAccountDO thirdPartyAccount) throws BIZException, TException {
+		return chaosService.synchronization(hrThirdPartyAccount);
 	}
 
 	@Override

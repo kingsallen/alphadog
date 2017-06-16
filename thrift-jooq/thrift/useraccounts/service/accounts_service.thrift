@@ -88,10 +88,6 @@ service UserHrAccountService {
     hr_third_party_account_struct.HrThirdPartyAccountDO bindThirdpartyAccount(1:i32 hrId,2:hr_third_party_account_struct.HrThirdPartyAccountDO account) throws (1: common_struct.BIZException e);
     //同步第三方帐号
     hr_third_party_account_struct.HrThirdPartyAccountDO syncThirdpartyAccount(1:i32 id) throws (1: common_struct.BIZException e);
-    //添加第三方账号
-    common_struct.Response addThirdPartyAccount(1:i32 userId,2:useraccounts_struct.BindAccountStruct account);
-    //更新第三方账号
-    common_struct.Response updateThirdPartyAccount(1:hr_third_party_account_struct.HrThirdPartyAccountDO account);
     //是否可以同步职位
     common_struct.Response ifSynchronizePosition(1: i32 companyId, 2: i32 channel);
     // 获取常用筛选项

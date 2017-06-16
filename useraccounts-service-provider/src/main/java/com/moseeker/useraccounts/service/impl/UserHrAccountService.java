@@ -66,7 +66,7 @@ public class UserHrAccountService {
 
     private static final String REDIS_KEY_HR_SMS_SIGNUP = "HR_SMS_SIGNUP";
 
-    ChaosServices.Iface chaosService = ServiceManager.SERVICEMANAGER.getService(ChaosServices.Iface.class);
+
 
 
     @Autowired
@@ -292,10 +292,12 @@ public class UserHrAccountService {
     }
 
     /**
+     * 第三方账号绑定
+     * @param hrId
      * @param account
      * @return
      */
-    public Response bindThirdAccount(int hrId, HrThirdPartyAccountDO account) {
+    public HrThirdPartyAccountDO bindThirdAccount(int hrId, HrThirdPartyAccountDO account) {
         try {
             logger.info("-------bindThirdAccount--------");
             // 判断是否需要进行帐号绑定
@@ -306,10 +308,10 @@ public class UserHrAccountService {
                 logger.info("thirdPartyAccount: {}", userHrAccount);
 
                 account.setCompanyId(userHrAccount.getCompanyId());
-                Response allowBindResponse = allowBind(userHrAccount, account.getChannel(), account.getUsername());
+                Response allowBindResponse = allowBind(userHrAccount, account);
                 if (allowBindResponse.getStatus() == 0) {
                     logger.info("bindThirdAccount have permission");
-                    Response response = chaosService.binding(account.getUsername(), account.getPassword(), account.getMember_name(), account.getChannel());
+                    Response response = chaosService.binding(account);
                     if (response.getStatus() == 0) {
                         JSONObject data = JSONObject.parseObject(response.getData());
                         account.setRemainNum(data.getIntValue("remain_number"));
@@ -332,6 +334,137 @@ public class UserHrAccountService {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         } finally {
             // do nothing
+        }
+    }
+
+    /**
+     * 是否允许执行绑定
+     */
+    @CounterIface
+    public Response allowBind(UserHrAccountDO hrAccount, HrThirdPartyAccountDO thirdPartyAccount) throws TException {
+
+        //主账号或者没有绑定第三方账号，检查公司下该渠道已经绑定过相同的第三方账号
+        Query.QueryBuilder qu = new Query.QueryBuilder();
+        qu.where("company_id", thirdPartyAccount.getCompanyId());
+        qu.and("channel", String.valueOf(thirdPartyAccount.getChannel()));
+        qu.and("username", thirdPartyAccount.getUsername());
+        qu.and(new Condition("binding", Arrays.asList(1, 2), ValueOp.IN));//绑定中或者已经绑定
+        ThirdPartAccountData data = hrThirdPartyAccountDao.getData(qu.buildQuery(), ThirdPartAccountData.class);
+
+        //数据库中username是不区分大小写的，如果大小写不同，那么认为不是一个账号
+        if (data != null && !thirdPartyAccount.getUsername().equals(data.username)) {
+            data = null;
+        }
+
+        if (data == null || data.getId() == 0) {
+            //检查该用户是否绑定了其它相同渠道的账号
+            HrThirdPartyAccountDO thirdPartAccount = hrThirdPartyAccountDao.getThirdPartyAccountByUserId((int) hrAccount.getId(), thirdPartyAccount.getChannel());
+            if (thirdPartAccount != null && thirdPartAccount.getId() > 0) {
+                if (hrAccount.getAccountType() == 0) {
+                    //如果主账号已经绑定该渠道第三方账号，那么绑定人为空,并允许绑定
+                    return ResponseUtils.success(1);
+                } else {
+                    //已经绑定该渠道第三方账号，并且不是主账号，那么不允许绑定
+                    return ResponseUtils.fail(ConstantErrorCodeMessage.HRACCOUNT_BINDING_LIMIT);
+                }
+            } else {
+                return ResponseUtils.success(null);
+            }
+        } else {
+            //公司下已经有人绑定了这个第三方账号，则这个公司谁都不能再绑定这个账号了
+            if (data.getBinding() == 1) {
+                return ResponseUtils.fail(ConstantErrorCodeMessage.HRACCOUNT_ALREADY_BOUND);
+            } else if (data.getBinding() == 2) {
+                return ResponseUtils.fail(ConstantErrorCodeMessage.HRACCOUNT_BINDING);
+            } else {
+                return ResponseUtils.success(0);
+            }
+        }
+    }
+
+
+    /**
+     * 同步第三方账号信息
+     *
+     * @param id
+     * @return
+     */
+    public HrThirdPartyAccountDO synchronizeThirdpartyAccount(int id) {
+        long startMethodTime = System.currentTimeMillis();
+        //查找第三方帐号
+        Query.QueryBuilder qu = new Query.QueryBuilder();
+        qu.where("id", String.valueOf(id));
+        try {
+            long startGetAccountData = System.currentTimeMillis();
+            ThirdPartAccountData data = hrThirdPartyAccountDao.getData(qu.buildQuery(), ThirdPartAccountData.class);
+            long getAccountUseTime = System.currentTimeMillis() - startGetAccountData;
+            logger.info("ThirdPartAccountData in CompanyService use  time========== " + getAccountUseTime);
+            //如果是绑定状态，则进行
+            //判断是否已经判定第三方帐号
+            if (data != null && data.getId() > 0 && data.getBinding() == BindingStatus.BOUND.getValue()) {
+                ThirdPartyAccountStruct thirdPartyAccount = new ThirdPartyAccountStruct();
+                thirdPartyAccount.setChannel((byte) data.getChannel());
+                thirdPartyAccount.setMemberName(data.getMembername());
+                thirdPartyAccount.setUsername(data.getUsername());
+                thirdPartyAccount.setPassword(data.getPassword());
+                //获取剩余点数
+                long startRemindTime = System.currentTimeMillis();
+                ThirdPartyAccountStruct synchronizeResult = chaosService.synchronization(thirdPartyAccount);
+                long getRemindUseTime = System.currentTimeMillis() - startRemindTime;
+                logger.info("get reminds in CompanyService Use time============== " + getRemindUseTime);
+                if (synchronizeResult != null && synchronizeResult.getStatus() == 0) {
+                    BindAccountStruct thirdPartyAccount1 = new BindAccountStruct();
+                    thirdPartyAccount1.setBinding(1);
+                    thirdPartyAccount1.setChannel((byte) data.getChannel());
+                    thirdPartyAccount1.setCompany_id(data.getCompany_id());
+                    thirdPartyAccount1.setMember_name(data.getMembername());
+                    thirdPartyAccount1.setPassword(data.getPassword());
+                    thirdPartyAccount1.setUsername(data.getUsername());
+                    thirdPartyAccount1.setRemainNum(synchronizeResult.getRemainNum());
+                    thirdPartyAccount1.setRemainProfileNum(synchronizeResult.getRemainProfileNum());
+                    //更新第三方帐号信息
+                    long startUpdateTime = System.currentTimeMillis();
+                    Response response = hrThirdPartyAccountDao.updateThirdPartyAccount(id, thirdPartyAccount1);
+                    long updateUseTime = System.currentTimeMillis() - startUpdateTime;
+                    logger.info("update ThirdPartyAccount in CompanyService use time" + updateUseTime);
+                    if (response.getStatus() == 0) {
+                        HashMap<String, Object> result = new HashMap<>();
+                        result.put("remain_num", synchronizeResult.getRemainNum());
+                        result.put("remain_profile_num", synchronizeResult.getRemainProfileNum());
+                        result.put("sync_time", (new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
+                        return ResultMessage.SUCCESS.toResponse(result);
+                    } else {
+                        return ResultMessage.THIRD_PARTY_ACCOUNT_SYNC_FAILED.toResponse();
+                    }
+                } else if (synchronizeResult != null) {
+                    Response response = new Response();
+                    response.setStatus(1);
+                    if (synchronizeResult.getStatus() == 1) {
+                        response.setMessage("账号或者密码错误！");
+                    } else if (synchronizeResult.getStatus() == 2) {
+                        response.setMessage("刷新超时，请稍后重试！");
+                    } else if (synchronizeResult.getStatus() == 3) {
+                        response.setMessage("刷新失败，请稍后重试！");
+                    } else if (synchronizeResult.getStatus() == 4) {
+                        response.setMessage("刷新失败，请稍后重试！");
+                    } else {
+                        response.setMessage("发生异常，请稍后重试！");
+                    }
+                    return response;
+                } else {
+                    return ResultMessage.THIRD_PARTY_ACCOUNT_SYNC_FAILED.toResponse();
+                }
+            } else {
+                return ResultMessage.THIRD_PARTY_ACCOUNT_UNBOUND.toResponse();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            return ResultMessage.PROGRAM_EXCEPTION.toResponse();
+        } finally {
+            //do nothing
+            long methodUseTime = System.currentTimeMillis() - startMethodTime;
+            logger.info("synchronizeThirdpartyAccount method in CompanyService use time ============" + methodUseTime);
         }
     }
 
@@ -572,92 +705,6 @@ public class UserHrAccountService {
         }
     }
 
-
-    /**
-     * 同步第三方职位信息
-     *
-     * @param id
-     * @return
-     */
-    public Response synchronizeThirdpartyAccount(int id) {
-        long startMethodTime = System.currentTimeMillis();
-        //查找第三方帐号
-        Query.QueryBuilder qu = new Query.QueryBuilder();
-        qu.where("id", String.valueOf(id));
-        try {
-            long startGetAccountData = System.currentTimeMillis();
-            ThirdPartAccountData data = hrThirdPartyAccountDao.getData(qu.buildQuery(), ThirdPartAccountData.class);
-            long getAccountUseTime = System.currentTimeMillis() - startGetAccountData;
-            logger.info("ThirdPartAccountData in CompanyService use  time========== " + getAccountUseTime);
-            //如果是绑定状态，则进行
-            //判断是否已经判定第三方帐号
-            if (data != null && data.getId() > 0 && data.getBinding() == BindingStatus.BOUND.getValue()) {
-                ThirdPartyAccountStruct thirdPartyAccount = new ThirdPartyAccountStruct();
-                thirdPartyAccount.setChannel((byte) data.getChannel());
-                thirdPartyAccount.setMemberName(data.getMembername());
-                thirdPartyAccount.setUsername(data.getUsername());
-                thirdPartyAccount.setPassword(data.getPassword());
-                //获取剩余点数
-                long startRemindTime = System.currentTimeMillis();
-                ThirdPartyAccountStruct synchronizeResult = chaosService.synchronization(thirdPartyAccount);
-                long getRemindUseTime = System.currentTimeMillis() - startRemindTime;
-                logger.info("get reminds in CompanyService Use time============== " + getRemindUseTime);
-                if (synchronizeResult != null && synchronizeResult.getStatus() == 0) {
-                    BindAccountStruct thirdPartyAccount1 = new BindAccountStruct();
-                    thirdPartyAccount1.setBinding(1);
-                    thirdPartyAccount1.setChannel((byte) data.getChannel());
-                    thirdPartyAccount1.setCompany_id(data.getCompany_id());
-                    thirdPartyAccount1.setMember_name(data.getMembername());
-                    thirdPartyAccount1.setPassword(data.getPassword());
-                    thirdPartyAccount1.setUsername(data.getUsername());
-                    thirdPartyAccount1.setRemainNum(synchronizeResult.getRemainNum());
-                    thirdPartyAccount1.setRemainProfileNum(synchronizeResult.getRemainProfileNum());
-                    //更新第三方帐号信息
-                    long startUpdateTime = System.currentTimeMillis();
-                    Response response = hrThirdPartyAccountDao.updateThirdPartyAccount(id, thirdPartyAccount1);
-                    long updateUseTime = System.currentTimeMillis() - startUpdateTime;
-                    logger.info("update ThirdPartyAccount in CompanyService use time" + updateUseTime);
-                    if (response.getStatus() == 0) {
-                        HashMap<String, Object> result = new HashMap<>();
-                        result.put("remain_num", synchronizeResult.getRemainNum());
-                        result.put("remain_profile_num", synchronizeResult.getRemainProfileNum());
-                        result.put("sync_time", (new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
-                        return ResultMessage.SUCCESS.toResponse(result);
-                    } else {
-                        return ResultMessage.THIRD_PARTY_ACCOUNT_SYNC_FAILED.toResponse();
-                    }
-                } else if (synchronizeResult != null) {
-                    Response response = new Response();
-                    response.setStatus(1);
-                    if (synchronizeResult.getStatus() == 1) {
-                        response.setMessage("账号或者密码错误！");
-                    } else if (synchronizeResult.getStatus() == 2) {
-                        response.setMessage("刷新超时，请稍后重试！");
-                    } else if (synchronizeResult.getStatus() == 3) {
-                        response.setMessage("刷新失败，请稍后重试！");
-                    } else if (synchronizeResult.getStatus() == 4) {
-                        response.setMessage("刷新失败，请稍后重试！");
-                    } else {
-                        response.setMessage("发生异常，请稍后重试！");
-                    }
-                    return response;
-                } else {
-                    return ResultMessage.THIRD_PARTY_ACCOUNT_SYNC_FAILED.toResponse();
-                }
-            } else {
-                return ResultMessage.THIRD_PARTY_ACCOUNT_UNBOUND.toResponse();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-            return ResultMessage.PROGRAM_EXCEPTION.toResponse();
-        } finally {
-            //do nothing
-            long methodUseTime = System.currentTimeMillis() - startMethodTime;
-            logger.info("synchronizeThirdpartyAccount method in CompanyService use time ============" + methodUseTime);
-        }
-    }
-
     /**
      * 判断是否有权限发布职位
      *
@@ -690,29 +737,6 @@ public class UserHrAccountService {
             //do nothing
         }
         return response;
-    }
-
-    public Response addThirdPartyAccount(int userId, BindAccountStruct account) {
-
-        try {
-            return hrThirdPartyAccountDao.addThirdPartyAccount(userId, account);
-        } catch (TException e) {
-            e.printStackTrace();
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-        } finally {
-            //do nothing
-        }
-    }
-
-    public Response updateThirdPartyAccount(int accountId, BindAccountStruct account) {
-        try {
-            return hrThirdPartyAccountDao.updateThirdPartyAccount(accountId, account);
-        } catch (TException e) {
-            e.printStackTrace();
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-        } finally {
-            //do nothing
-        }
     }
 
     public HrNpsResult npsStatus(int userId, String startDate, String endDate) throws Exception {
