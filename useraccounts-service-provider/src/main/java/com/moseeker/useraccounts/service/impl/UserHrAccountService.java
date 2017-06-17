@@ -311,7 +311,7 @@ public class UserHrAccountService {
 
         logger.info("bindThirdAccount allowStatus:{}", allowStatus);
 
-        HrThirdPartyAccountDO result = thirdPartyAccountSynctor.bindThirdPartyAccount(hrId, account, true);
+        HrThirdPartyAccountDO result = thirdPartyAccountSynctor.bindThirdPartyAccount(allowStatus == 0 ? hrId : 0, account, true);
 
 
         return result;

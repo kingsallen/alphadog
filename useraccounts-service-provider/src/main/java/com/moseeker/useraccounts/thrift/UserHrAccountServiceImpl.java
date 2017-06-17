@@ -66,6 +66,7 @@ public class UserHrAccountServiceImpl implements Iface {
         } catch (BIZException e) {
             throw e;
         } catch (Exception e) {
+            logger.error(e.getMessage(),e);
             throw new TException(e.getMessage());
         }
     }
@@ -77,6 +78,7 @@ public class UserHrAccountServiceImpl implements Iface {
         } catch (BIZException e) {
             throw e;
         } catch (Exception e) {
+            logger.error(e.getMessage(),e);
             throw new TException(e.getMessage());
         }
     }

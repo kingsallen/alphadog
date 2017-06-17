@@ -27,6 +27,7 @@ public class ThirdPartyAccountSynctor {
 
     ChaosServices.Iface chaosService = ServiceManager.SERVICEMANAGER.getService(ChaosServices.Iface.class);
 
+
     @Autowired
     private HRThirdPartyAccountDao hrThirdPartyAccountDao;
 
@@ -57,7 +58,7 @@ public class ThirdPartyAccountSynctor {
                 result.setSyncTime(result.getUpdateTime());
 
                 logger.info("Chaos回传解析成功:{}:{}", syncType, JSON.toJSONString(result));
-                int updateResult = hrThirdPartyAccountDao.updateData(result);
+                int updateResult = updateThirdPartyAccount(result);
                 logger.info("Chaos回传解析成功 更改数据信息:{}:更改状态:{}", syncType, updateResult);
                 if (updateResult < 1) {
                     logger.warn("Chaos回传解析成功 更改数据信息失败:{}:更改状态:{}", syncType, updateResult);
@@ -67,7 +68,7 @@ public class ThirdPartyAccountSynctor {
                 if (e.getCode() == 1) {
                     //帐号密码错误，将状态改为5
                     hrThirdPartyAccount.setBinding(Short.valueOf("5"));
-                    int updateResult = hrThirdPartyAccountDao.updateData(hrThirdPartyAccount);
+                    int updateResult = updateThirdPartyAccount(hrThirdPartyAccount);
 
                     if (updateResult < 1) {
                         //更新失败，发送邮件
@@ -84,7 +85,7 @@ public class ThirdPartyAccountSynctor {
         }
     }
 
-    //发送同步失败的
+    //发送同步失败的邮件
     private void sendFailureMail(int syncType, HrThirdPartyAccountDO thirdPartyAccount, String message) {
         logger.info("发送同步错误的邮件:syncType{}:thirdPartyAccount:{}:message:{}", syncType, JSON.toJSONString(thirdPartyAccount), message);
 
@@ -156,7 +157,7 @@ public class ThirdPartyAccountSynctor {
     private HrThirdPartyAccountDO asyncWithSyncThirdPartyAccount(HrThirdPartyAccountDO hrThirdPartyAccount) throws Exception {
         //先更新数据库的状态为刷新中3
         hrThirdPartyAccount.setBinding(Short.valueOf("3"));
-        int updateResult = hrThirdPartyAccountDao.updateData(hrThirdPartyAccount);
+        int updateResult = updateThirdPartyAccount(hrThirdPartyAccount);
         if (updateResult < 1) {
             //更新失败
             throw new BIZException(-1, "系统异常,请重试");
@@ -178,11 +179,28 @@ public class ThirdPartyAccountSynctor {
         //更新回数据库
         syncResult.setUpdateTime((new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
         syncResult.setSyncTime(syncResult.getUpdateTime());
-        int updateResult = hrThirdPartyAccountDao.updateData(syncResult);
+        int updateResult = updateThirdPartyAccount(syncResult);
         if (updateResult < 1) {
             //更新失败
             throw new BIZException(-1, "系统异常,请重试");
         }
         return syncResult;
+    }
+
+    /**
+     * 更新第三方帐号到数据库，这里只更新时间和可发布数以及绑定状态
+     *
+     * @param hrThirdPartyAccount
+     * @return
+     */
+    private int updateThirdPartyAccount(HrThirdPartyAccountDO hrThirdPartyAccount) {
+        HrThirdPartyAccountDO newThirdPartyAccount = new HrThirdPartyAccountDO();
+        newThirdPartyAccount.setId(hrThirdPartyAccount.getId());
+        newThirdPartyAccount.setBinding(hrThirdPartyAccount.getBinding());
+        newThirdPartyAccount.setSyncTime(hrThirdPartyAccount.getSyncTime());
+        newThirdPartyAccount.setUpdateTime(hrThirdPartyAccount.getUpdateTime());
+        newThirdPartyAccount.setRemainNum(hrThirdPartyAccount.getRemainNum());
+        newThirdPartyAccount.setRemainProfileNum(hrThirdPartyAccount.getRemainProfileNum());
+        return hrThirdPartyAccountDao.updateData(newThirdPartyAccount);
     }
 }
