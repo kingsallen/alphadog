@@ -13,6 +13,7 @@ import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.annotation.notify.UpdateEs;
+import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.RedisException;
@@ -296,6 +297,13 @@ public class UserHrAccountService {
      */
     public HrThirdPartyAccountDO bindThirdAccount(int hrId, HrThirdPartyAccountDO account) throws Exception {
         logger.info("-------bindThirdAccount--------");
+        // 判断Channel是否合法
+        ChannelType channelType = ChannelType.instaceFromInteger(account.getChannel());
+
+        if (channelType == null) {
+            throw new BIZException(-1, "不支持的渠道类型：" + account.getChannel());
+        }
+
         // 判断是否需要进行帐号绑定
         Query qu = new Query.QueryBuilder().where("id", String.valueOf(hrId)).buildQuery();
 
@@ -306,7 +314,6 @@ public class UserHrAccountService {
             throw new BIZException(-1, "无效的HR帐号");
         }
 
-        logger.info("thirdPartyAccount: {}", userHrAccount);
         account.setCompanyId(userHrAccount.getCompanyId());
 
         int allowStatus = allowBind(userHrAccount, account);

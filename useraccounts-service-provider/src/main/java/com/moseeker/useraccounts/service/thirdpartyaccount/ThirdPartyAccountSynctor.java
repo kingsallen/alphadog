@@ -2,6 +2,7 @@ package com.moseeker.useraccounts.service.thirdpartyaccount;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
+import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.email.Email;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
@@ -114,14 +115,12 @@ public class ThirdPartyAccountSynctor {
 
             Email.EmailBuilder emailBuilder = new Email.EmailBuilder(csEmail);
 
-            String channelName = thirdPartyAccount.getChannel() == 1 ? "51JOB" :
-                    thirdPartyAccount.getChannel() == 2 ? "猎聘" :
-                            thirdPartyAccount.getChannel() == 3 ? "智联" : String.valueOf(thirdPartyAccount.getChannel());
+            ChannelType channelType = ChannelType.instaceFromInteger(thirdPartyAccount.getChannel());
 
             String content = new StringBuilder()
                     .append("这是一条")
                     .append(syncType == 0 ? "绑定" : "同步")
-                    .append(channelName)
+                    .append(channelType.getAlias())
                     .append("帐号失败的消息")
                     .append("<br/>")
                     .append("用户名:").append("<br/>")
@@ -132,11 +131,11 @@ public class ThirdPartyAccountSynctor {
                     .append(message == null ? "" : message)
                     .toString();
 
-            emailBuilder.setSubject("【" + channelName + "】【账号" + (syncType == 0 ? "绑定" : "刷新") + "失败】");
+            emailBuilder.setSubject("【" + channelType.getAlias() + "】【账号" + (syncType == 0 ? "绑定" : "刷新") + "失败】");
             emailBuilder.setContent(content);
             emailBuilder.build().send();
         } catch (Exception e) {
-            logger.error("发送绑定失败的邮件发生错误：{}",e.getMessage());
+            logger.error("发送绑定失败的邮件发生错误：{}", e.getMessage());
             e.printStackTrace();
             logger.error(e.getMessage(), e);
         }
