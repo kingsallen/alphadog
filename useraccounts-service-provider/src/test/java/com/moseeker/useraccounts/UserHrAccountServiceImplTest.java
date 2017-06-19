@@ -1,10 +1,12 @@
 package com.moseeker.useraccounts;
 
+import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.rpccenter.config.ClientConfig;
 import com.moseeker.rpccenter.config.RegistryConfig;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import com.moseeker.thrift.gen.useraccounts.struct.HrNpsResult;
 import com.moseeker.thrift.gen.useraccounts.struct.HrNpsStatistic;
@@ -105,5 +107,18 @@ public class UserHrAccountServiceImplTest {
     public void testNpsList() throws TException {
         HrNpsStatistic result = service.npsList(null, null, 0, 0);
         System.out.println(BeanUtils.convertStructToJSON(result));
+    }
+
+
+    @Test
+    public void testStructToDB(){
+        HrThirdPartyAccountDO hrThirdPartyAccountDO = new HrThirdPartyAccountDO();
+        hrThirdPartyAccountDO.setChannel(Short.valueOf("2"));
+        hrThirdPartyAccountDO.setUsername("fdfdsaf");
+        hrThirdPartyAccountDO.setPassword("fdfdsfdpwd");
+        hrThirdPartyAccountDO.setBinding(Short.valueOf("1"));
+        HrThirdPartyAccountRecord record = BeanUtils.structToDB(hrThirdPartyAccountDO,HrThirdPartyAccountRecord.class);
+
+        record.toString();
     }
 }

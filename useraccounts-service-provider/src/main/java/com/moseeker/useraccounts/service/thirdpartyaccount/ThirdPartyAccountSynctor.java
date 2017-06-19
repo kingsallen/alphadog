@@ -2,6 +2,8 @@ package com.moseeker.useraccounts.service.thirdpartyaccount;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
+import com.moseeker.common.email.Email;
+import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
@@ -23,10 +25,24 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ThirdPartyAccountSynctor {
 
-    Logger logger = LoggerFactory.getLogger(ThirdPartyAccountSynctor.class);
+    static Logger logger = LoggerFactory.getLogger(ThirdPartyAccountSynctor.class);
 
     ChaosServices.Iface chaosService = ServiceManager.SERVICEMANAGER.getService(ChaosServices.Iface.class);
 
+
+    static ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil.getInstance();
+
+    static String csEmail;
+
+    static {
+        try {
+            propertiesUtils.loadResource("setting.properties");
+            csEmail = propertiesUtils.get("THIRD_PARTY_ACCOUNT_SYNC_EMAIL", String.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+        }
+    }
 
     @Autowired
     private HRThirdPartyAccountDao hrThirdPartyAccountDao;
@@ -80,7 +96,7 @@ public class ThirdPartyAccountSynctor {
                 }
             } catch (Exception e) {
                 //系统的异常
-                sendFailureMail(syncType, hrThirdPartyAccount, "系统异常：" + e.getMessage());
+                sendFailureMail(syncType, hrThirdPartyAccount, "系统异常：" + e.getMessage() == null ? "" : e.getMessage());
             }
         }
     }
@@ -88,6 +104,41 @@ public class ThirdPartyAccountSynctor {
     //发送同步失败的邮件
     private void sendFailureMail(int syncType, HrThirdPartyAccountDO thirdPartyAccount, String message) {
         logger.info("发送同步错误的邮件:syncType{}:thirdPartyAccount:{}:message:{}", syncType, JSON.toJSONString(thirdPartyAccount), message);
+
+        if (csEmail == null) {
+            logger.error("没有配置同步邮箱地址!");
+            return;
+        }
+
+        try {
+
+            Email.EmailBuilder emailBuilder = new Email.EmailBuilder(csEmail);
+
+            String channelName = thirdPartyAccount.getChannel() == 1 ? "51JOB" :
+                    thirdPartyAccount.getChannel() == 2 ? "猎聘" :
+                            thirdPartyAccount.getChannel() == 3 ? "智联" : String.valueOf(thirdPartyAccount.getChannel());
+
+            String content = new StringBuilder()
+                    .append("这是一条")
+                    .append(syncType == 0 ? "绑定" : "同步")
+                    .append(channelName)
+                    .append("帐号失败的消息")
+                    .append("<br/>")
+                    .append("用户名:").append("<br/>")
+                    .append("ID:").append(thirdPartyAccount.getId()).append("<br/>")
+                    .append("帐号:").append(thirdPartyAccount.getUsername()).append("<br/>")
+                    .append("会员名:").append(thirdPartyAccount.getMembername() == null ? "" : thirdPartyAccount.getMembername()).append("<br/>")
+                    .append("失败信息:").append("<br/>")
+                    .append(message == null ? "" : message)
+                    .toString();
+
+            emailBuilder.setSubject("【" + channelName + "】【账号" + (syncType == 0 ? "绑定" : "刷新") + "失败】");
+            emailBuilder.setContent(content);
+            emailBuilder.build().send();
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+        }
 
     }
 

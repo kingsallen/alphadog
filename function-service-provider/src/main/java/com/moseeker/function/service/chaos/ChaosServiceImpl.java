@@ -127,7 +127,7 @@ public class ChaosServiceImpl {
 
         String domain = getDomain();
         ChannelType chnnelType = ChannelType.instaceFromInteger(hrThirdPartyAccount.getChannel());
-        String synchronizationURI = chnnelType.getRemain(domain);
+        String synchronizationURI = chnnelType.getRemainURI(domain);
         String params = ChaosTool.getParams(hrThirdPartyAccount.getUsername(), hrThirdPartyAccount.getPassword(), hrThirdPartyAccount.getMembername(), chnnelType);
         logger.info("ChaosServiceImpl refresh refreshURI:" + synchronizationURI);
         String data = UrlUtil.sendPost(synchronizationURI, params, Constant.CONNECTION_TIME_OUT, Constant.READ_TIME_OUT);

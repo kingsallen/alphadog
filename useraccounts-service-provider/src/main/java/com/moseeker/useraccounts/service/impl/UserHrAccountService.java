@@ -311,6 +311,7 @@ public class UserHrAccountService {
 
         logger.info("bindThirdAccount allowStatus:{}", allowStatus);
 
+        //allowStatus==0,绑定之后将hrId和帐号关联起来，allowStatus==1,只绑定不关联
         HrThirdPartyAccountDO result = thirdPartyAccountSynctor.bindThirdPartyAccount(allowStatus == 0 ? hrId : 0, account, true);
 
 
