@@ -30,7 +30,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * HR账号服务
@@ -96,16 +98,37 @@ public class UserHrAccountController {
         }
     }
 
+    /**
+     * 驼峰转下划线
+     * @param struct
+     * @return
+     */
+    private Map<String, Object> thirdpartyAccountToMap(HrThirdPartyAccountDO struct) {
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("id", struct.getId());
+        resultMap.put("channel", struct.getChannel());
+        resultMap.put("username", struct.getUsername());
+        resultMap.put("company_id", struct.getCompanyId());
+        resultMap.put("member_name", struct.getMembername());
+        resultMap.put("binding", struct.getBinding());
+        resultMap.put("create_time", struct.getCreateTime());
+        resultMap.put("password", struct.getPassword());
+        resultMap.put("remain_num", struct.getRemainNum());
+        resultMap.put("remain_profile_num", struct.getRemainProfileNum());
+        return resultMap;
+    }
+
     @RequestMapping(value = "/hraccount/binding", method = RequestMethod.POST)
     @ResponseBody
     public String bindThirdPartyAccount(HttpServletRequest request, HttpServletResponse response) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            HrThirdPartyAccountDO struct = ParamUtils.initModelForm(params,HrThirdPartyAccountDO.class);
+            HrThirdPartyAccountDO struct = ParamUtils.initModelForm(params, HrThirdPartyAccountDO.class);
             logger.info("bind thirdParyAccount in controller params===========================" + JSON.toJSONString(struct));
             struct = userHrAccountService.bindThirdpartyAccount(params.getInt("user_id", 0), struct);
             //同步情况下走下面的代码
-            return ResponseLogNotification.success(request, ResponseUtils.success(struct));
+
+            return ResponseLogNotification.success(request, ResponseUtils.success(thirdpartyAccountToMap(struct)));
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
@@ -128,7 +151,7 @@ public class UserHrAccountController {
 
             HrThirdPartyAccountDO hrThirdPartyAccountDO = userHrAccountService.syncThirdpartyAccount(id);
 
-            return ResponseLogNotification.success(request, ResponseUtils.success(hrThirdPartyAccountDO));
+            return ResponseLogNotification.success(request, ResponseUtils.success(thirdpartyAccountToMap(hrThirdPartyAccountDO)));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseLogNotification.fail(request, e.getMessage());
