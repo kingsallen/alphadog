@@ -428,7 +428,7 @@ public class UserHrAccountController {
     public String getThirdPartyAccount(HttpServletRequest request, HttpServletResponse response) {
         try {
             CommonQuery commonQuery = ParamUtils.initCommonQuery(request, CommonQuery.class);
-            List<HrThirdPartyAccountDO> result = null;//userHrAccountService.getDatas(commonQuery);
+            List<HrThirdPartyAccountDO> result = userHrAccountService.getThirdPartyAccounts(commonQuery);
             return ResponseLogNotification.success(request, ResponseUtils.success(result));
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
@@ -443,11 +443,11 @@ public class UserHrAccountController {
             HrThirdPartyAccountDO thirdPartyAccount = ParamUtils.initModelForm(request, HrThirdPartyAccountDO.class);
             if (!thirdPartyAccount.isSetId()) {
                 if (!thirdPartyAccount.isSetId()) {
-                    return ResponseLogNotification.fail(request, "user_id不能为空");
+                    return ResponseLogNotification.fail(request, "id不能为空");
                 }
             }
-            Response result = null;//userHrAccountService.updateData(thirdPartyAccount);
-            return ResponseLogNotification.success(request, result);
+            int result = userHrAccountService.updateThirdPartyAccount(thirdPartyAccount);
+            return ResponseLogNotification.success(request, ResponseUtils.success(result));
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
         }

@@ -1,6 +1,10 @@
 package com.moseeker.useraccounts.thrift;
 
+import com.moseeker.baseorm.tool.QueryConvert;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService.Iface;
@@ -66,7 +70,7 @@ public class UserHrAccountServiceImpl implements Iface {
         } catch (BIZException e) {
             throw e;
         } catch (Exception e) {
-            logger.error(e.getMessage(),e);
+            logger.error(e.getMessage(), e);
             throw new TException(e.getMessage());
         }
     }
@@ -78,7 +82,7 @@ public class UserHrAccountServiceImpl implements Iface {
         } catch (BIZException e) {
             throw e;
         } catch (Exception e) {
-            logger.error(e.getMessage(),e);
+            logger.error(e.getMessage(), e);
             throw new TException(e.getMessage());
         }
     }
@@ -167,5 +171,30 @@ public class UserHrAccountServiceImpl implements Iface {
             logger.error(e.getMessage(), e);
             throw new TException(e);
         }
+    }
+
+    @Override
+    public List<HrThirdPartyAccountDO> getThirdPartyAccounts(CommonQuery query) throws TException {
+        try {
+            return service.getThirdPartyAccounts(QueryConvert.commonQueryConvertToQuery(query));
+        } catch (Exception e) {
+            throw new TException(e);
+        }
+    }
+
+    @Override
+    public int updateThirdPartyAccount(HrThirdPartyAccountDO account) throws BIZException, TException {
+        try {
+            int result = service.updateThirdPartyAccount(account);
+            if (result < 1) {
+                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
+            }
+            return result;
+        } catch (BIZException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new TException(e);
+        }
+
     }
 }

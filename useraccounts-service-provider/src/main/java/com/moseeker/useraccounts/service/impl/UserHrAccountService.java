@@ -9,6 +9,7 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrSearchConditionRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.annotation.notify.UpdateEs;
@@ -24,6 +25,7 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrTalentpoolDO;
@@ -667,5 +669,13 @@ public class UserHrAccountService {
 
     public HrNpsStatistic npsList(String startDate, String endDate, int page, int pageSize) throws Exception {
         return userHrAccountDao.npsList(startDate, endDate, page, pageSize);
+    }
+
+    public List<HrThirdPartyAccountDO> getThirdPartyAccounts(Query query) throws TException {
+        return hrThirdPartyAccountDao.getDatas(query);
+    }
+
+    public int updateThirdPartyAccount(HrThirdPartyAccountDO account) throws BIZException, TException {
+        return hrThirdPartyAccountDao.updateData(account);
     }
 }

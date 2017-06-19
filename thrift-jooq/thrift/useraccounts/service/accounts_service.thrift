@@ -110,6 +110,10 @@ service UserHrAccountService {
     useraccounts_struct.HrNpsResult npsUpdate(1:useraccounts_struct.HrNpsUpdate npsUpdate)  throws (1: common_struct.BIZException e);
 
     useraccounts_struct.HrNpsStatistic npsList(1:string startDate,2:string endDate,3:i32 page,4:i32 pageSize)  throws (1: common_struct.BIZException e);
+
+    list<hr_third_party_account_struct.HrThirdPartyAccountDO> getThirdPartyAccounts(1: common_struct.CommonQuery query);
+
+    i32 updateThirdPartyAccount(1: hr_third_party_account_struct.HrThirdPartyAccountDO account)  throws (1: common_struct.BIZException e);
 }
 
 /**
