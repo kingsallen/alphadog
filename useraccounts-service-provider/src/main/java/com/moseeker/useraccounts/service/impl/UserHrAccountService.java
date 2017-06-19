@@ -329,7 +329,7 @@ public class UserHrAccountService {
         qu.where("company_id", thirdPartyAccount.getCompanyId());
         qu.and("channel", String.valueOf(thirdPartyAccount.getChannel()));
         qu.and("username", thirdPartyAccount.getUsername());
-        qu.and(new Condition("binding", Arrays.asList(1, 2, 3, 4, 5), ValueOp.IN));//绑定中或者已经绑定
+        qu.and(new Condition("binding", 0, ValueOp.NEQ));//有效的状态
         ThirdPartAccountData data = hrThirdPartyAccountDao.getData(qu.buildQuery(), ThirdPartAccountData.class);
 
         //数据库中username是不区分大小写的，如果大小写不同，那么认为不是一个账号

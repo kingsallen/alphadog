@@ -14,6 +14,7 @@ import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
@@ -417,6 +418,37 @@ public class UserHrAccountController {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
             e.printStackTrace();
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    //获取第三方账号列表
+    @RequestMapping(value = "/hraccount/thirdparty", method = RequestMethod.GET)
+    @ResponseBody
+    public String getThirdPartyAccount(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            CommonQuery commonQuery = ParamUtils.initCommonQuery(request, CommonQuery.class);
+            List<HrThirdPartyAccountDO> result = null;//userHrAccountService.getDatas(commonQuery);
+            return ResponseLogNotification.success(request, ResponseUtils.success(result));
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    //更新第三方账号
+    @RequestMapping(value = "/hraccount/thirdparty", method = RequestMethod.PUT)
+    @ResponseBody
+    public String updateThirdPartyAccount(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            HrThirdPartyAccountDO thirdPartyAccount = ParamUtils.initModelForm(request, HrThirdPartyAccountDO.class);
+            if (!thirdPartyAccount.isSetId()) {
+                if (!thirdPartyAccount.isSetId()) {
+                    return ResponseLogNotification.fail(request, "user_id不能为空");
+                }
+            }
+            Response result = null;//userHrAccountService.updateData(thirdPartyAccount);
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
