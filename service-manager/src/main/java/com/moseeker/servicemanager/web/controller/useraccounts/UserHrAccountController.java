@@ -100,6 +100,7 @@ public class UserHrAccountController {
 
     /**
      * 驼峰转下划线
+     *
      * @param struct
      * @return
      */
@@ -110,8 +111,10 @@ public class UserHrAccountController {
         resultMap.put("username", struct.getUsername());
         resultMap.put("company_id", struct.getCompanyId());
         resultMap.put("member_name", struct.getMembername());
-        resultMap.put("binding", struct.getBinding());
+        resultMap.put("bound", struct.getBinding());
         resultMap.put("create_time", struct.getCreateTime());
+        resultMap.put("update_time", struct.getCreateTime());
+        resultMap.put("sync_time", struct.getSyncTime());
         resultMap.put("password", struct.getPassword());
         resultMap.put("remain_num", struct.getRemainNum());
         resultMap.put("remain_profile_num", struct.getRemainProfileNum());
