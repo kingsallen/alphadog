@@ -367,7 +367,8 @@ public class ProfileUtils {
 				record.setSource((Integer) profile.get("source"));
 			}
 			if (profile.get("completeness") != null) {
-				record.setCompleteness((byte)(profile.get("completeness")));
+				byte completeness = ((Integer)profile.get("completeness")).byteValue();
+				record.setCompleteness(completeness);
 			}
 			record.setUserId((Integer) profile.get("user_id"));
 			if (profile.get("disable") != null) {
