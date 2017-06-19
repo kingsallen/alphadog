@@ -82,8 +82,8 @@ public class ThirdPartyAccountSynctor {
                 }
             } catch (BIZException e) {
                 if (e.getCode() == 1) {
-                    //帐号密码错误，将状态改为5
-                    hrThirdPartyAccount.setBinding(Short.valueOf("5"));
+                    //帐号密码错误，将状态改为4
+                    hrThirdPartyAccount.setBinding(Short.valueOf("4"));
                     int updateResult = updateThirdPartyAccount(hrThirdPartyAccount);
 
                     if (updateResult < 1) {
