@@ -136,6 +136,7 @@ public class ThirdPartyAccountSynctor {
             emailBuilder.setContent(content);
             emailBuilder.build().send();
         } catch (Exception e) {
+            logger.error("发送绑定失败的邮件发生错误：{}",e.getMessage());
             e.printStackTrace();
             logger.error(e.getMessage(), e);
         }
