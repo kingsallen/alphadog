@@ -77,8 +77,8 @@ public class ChaosServiceImpl {
         String opName = opType == 0 ? "绑定":"刷新";
 
         if (status == 0) {
-            thirdPartyAccountDO.setRemainNum(jsonObject.getIntValue("remain_number"));
-            thirdPartyAccountDO.setRemainProfileNum(jsonObject.getIntValue("resume_number"));
+            thirdPartyAccountDO.setRemainNum(jsonObject.getJSONObject("data").getIntValue("remain_number"));
+            thirdPartyAccountDO.setRemainProfileNum(jsonObject.getJSONObject("data").getIntValue("resume_number"));
         } else if (status == 1) {
             throw new BIZException(1, "账号或者密码错误！");
         } else if (status == 2) {
