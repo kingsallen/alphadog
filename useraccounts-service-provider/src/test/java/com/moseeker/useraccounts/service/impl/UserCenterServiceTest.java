@@ -2,7 +2,6 @@ package com.moseeker.useraccounts.service.impl;
 
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.ConfigSysPointConfTplDO;
-import com.moseeker.thrift.gen.dao.struct.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.UserFavPositionDO;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
