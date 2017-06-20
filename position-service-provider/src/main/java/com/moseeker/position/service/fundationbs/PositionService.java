@@ -1300,10 +1300,7 @@ public class PositionService {
         } else {
             return result;
         }
-        List<Integer> typeParams=new ArrayList<Integer>();
-        typeParams.add(2);
-        typeParams.add(3);
-        Condition condition=new Condition("type",typeParams,ValueOp.IN);
+        Condition condition=new Condition("type",new Object[]{2,3},ValueOp.IN);
         // 获取正在运行的转发类红包活动集合
         Query qu = new Query.QueryBuilder()
                 .where("status", "3")
@@ -1353,7 +1350,7 @@ public class PositionService {
                     }
 
                     // 根据 binding 获取 hb_items 记录
-                    qu =new Query.QueryBuilder().where("binding_id", binding.getId()).and("wxuser_id",0).buildQuery();
+                    qu =new Query.QueryBuilder().where("binding_id", bindings.get(0).getId()).and("wxuser_id",0).buildQuery();
 
                     List<HrHbItemsDO> remainItems = hrHbItemsDao.getDatas(qu,HrHbItemsDO.class);
                     Double remain = remainItems.stream().mapToDouble(HrHbItemsDO::getAmount).sum();

@@ -74,8 +74,8 @@ public class ParamUtils {
      */
     public static Params<String, Object> parseRequestParam(HttpServletRequest request) throws Exception {
         Params<String, Object> data = new Params<>();
-        data.putAll(initParamFromRequestBody(request));
         data.putAll(initParamFromRequestParameter(request));
+        data.putAll(initParamFromRequestBody(request));
 
         if (data.get("appid") == null) {
             throw new Exception("请设置 appid!");
@@ -141,7 +141,7 @@ public class ParamUtils {
             if (data != null && data.size() > 0) {
                 // thrift 都是自动生成的public类型, 故使用getFields,如果不是public的时候, 请不要使用此方法
                 Field[] fields = clazz.getDeclaredFields();
-                Map<String, Integer> fieldMap = new HashMap<String, Integer>();
+                Map<String, Integer> fieldMap = new HashMap<>();
                 for (int f = 0; f < fields.length; f++) {
                     // 过滤掉转换不需要的字段 metaDataMap
                     if (!"metaDataMap".equals(fields[f].getName())) {

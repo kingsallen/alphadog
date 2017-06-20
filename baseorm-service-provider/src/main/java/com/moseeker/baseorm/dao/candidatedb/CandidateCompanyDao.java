@@ -4,7 +4,7 @@ import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateCompany;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateCompanyRecord;
 import com.moseeker.common.util.query.Query;
-import com.moseeker.thrift.gen.dao.struct.CURDException;
+import com.moseeker.thrift.gen.common.struct.CURDException;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateCompanyDO;
 
 import org.jooq.impl.TableImpl;

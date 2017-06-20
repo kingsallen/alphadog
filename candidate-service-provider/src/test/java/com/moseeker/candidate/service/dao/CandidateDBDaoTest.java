@@ -2,8 +2,6 @@ package com.moseeker.candidate.service.dao;
 
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
-import com.moseeker.thrift.gen.dao.struct.CURDException;
-import com.moseeker.thrift.gen.dao.struct.CandidateCompanyDO;
 import org.junit.Test;
 
 import java.util.Optional;

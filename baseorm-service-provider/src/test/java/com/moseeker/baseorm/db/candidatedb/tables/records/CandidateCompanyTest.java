@@ -1,8 +1,8 @@
 package com.moseeker.baseorm.db.candidatedb.tables.records;
 
 import com.moseeker.baseorm.util.BeanUtils;
-import com.moseeker.thrift.gen.dao.struct.CandidateCompanyDO;
-import com.moseeker.thrift.gen.dao.struct.CandidatePositionDO;
+import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionDO;
 import org.joda.time.DateTime;
 
 import org.junit.Assert;
@@ -44,7 +44,7 @@ public class CandidateCompanyTest {
         assertEquals(5, candidateCompanyDO.getCompanyId());
         assertEquals("wjf//@Test.com", candidateCompanyDO.getEmail());
         assertEquals("headimg", candidateCompanyDO.getHeadimgurl());
-        assertEquals(true, candidateCompanyDO.isIsRecommend());
+        assertEquals(true, candidateCompanyDO.getIsRecommend());
         assertEquals("1851129553", candidateCompanyDO.getMobile());
         assertEquals("wjf", candidateCompanyDO.getName());
         assertEquals("wjfnickname", candidateCompanyDO.getNickname());
@@ -59,7 +59,7 @@ public class CandidateCompanyTest {
         assertEquals(true, candidatePositionDO.isIsInterested());*/
 
         CandidatePositionDO candidatePositionDO1 = new CandidatePositionDO();
-        candidatePositionDO1.setIsInterested(true);
+        candidatePositionDO1.setIsInterested(Byte.valueOf("1"));
 
         CandidatePositionRecord record1 = BeanUtils.structToDB(candidatePositionDO1, CandidatePositionRecord.class);
         assertEquals(1, record1.getIsInterested().intValue());

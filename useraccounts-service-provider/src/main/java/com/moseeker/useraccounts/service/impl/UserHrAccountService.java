@@ -12,6 +12,7 @@ import com.moseeker.common.util.query.ValueOp;
 import java.util.*;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.foundation.chaos.struct.ThirdPartyAccountStruct;
+import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.constant.BindingStatus;
 import com.moseeker.useraccounts.constant.ResultMessage;
 
@@ -37,10 +38,7 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrTalentpoolDO;
 import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
-import com.moseeker.thrift.gen.useraccounts.struct.BindAccountStruct;
-import com.moseeker.thrift.gen.useraccounts.struct.DownloadReport;
-import com.moseeker.thrift.gen.useraccounts.struct.SearchCondition;
-import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -769,5 +767,17 @@ public class UserHrAccountService {
         } finally {
             //do nothing
         }
+    }
+
+    public HrNpsResult npsStatus(int userId, String startDate, String endDate) throws Exception {
+        return userHrAccountDao.npsStatus(userId, startDate, endDate);
+    }
+
+    public HrNpsResult npsUpdate(HrNpsUpdate npsUpdate) throws Exception {
+        return userHrAccountDao.npsUpdate(npsUpdate);
+    }
+
+    public HrNpsStatistic npsList(String startDate, String endDate, int page, int pageSize) throws Exception {
+        return userHrAccountDao.npsList(startDate,endDate,page,pageSize);
     }
 }

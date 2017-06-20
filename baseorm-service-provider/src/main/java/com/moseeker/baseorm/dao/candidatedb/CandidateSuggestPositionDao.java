@@ -3,7 +3,7 @@ package com.moseeker.baseorm.dao.candidatedb;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateSuggestPosition;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateSuggestPositionRecord;
-import com.moseeker.thrift.gen.dao.struct.CURDException;
+import com.moseeker.thrift.gen.common.struct.CURDException;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateSuggestPositionDO;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
