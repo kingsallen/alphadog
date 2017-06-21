@@ -171,7 +171,7 @@ class LocalQuery<R extends Record> {
         if (groups != null && groups.size() > 0) {
             select.groupBy(groups);
         }
-        logger.info(select.getSQL());
+        logger.debug(select.getSQL());
         return select;
     }
 
