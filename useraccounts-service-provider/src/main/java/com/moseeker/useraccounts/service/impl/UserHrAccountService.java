@@ -342,6 +342,8 @@ public class UserHrAccountService {
         qu.and(new Condition("binding", 0, ValueOp.NEQ));//有效的状态
         ThirdPartAccountData data = hrThirdPartyAccountDao.getData(qu.buildQuery(), ThirdPartAccountData.class);
 
+        logger.info("allowBind:相同名字的帐号:{}" + JSON.toJSONString(data));
+
         //数据库中username是不区分大小写的，如果大小写不同，那么认为不是一个账号
         if (data != null && !thirdPartyAccount.getUsername().equals(data.username)) {
             data = null;
@@ -350,12 +352,14 @@ public class UserHrAccountService {
         if (data == null || data.getId() == 0) {
             //检查该用户是否绑定了其它相同渠道的账号
             HrThirdPartyAccountDO bindingAccount = hrThirdPartyAccountDao.getThirdPartyAccountByUserId(hrAccount.getId(), thirdPartyAccount.getChannel());
-            logger.info("该用户绑定渠道{}的帐号:{}", JSON.toJSONString(bindingAccount));
-            if (bindingAccount != null && bindingAccount.getId() > 0) {
+            logger.info("该用户绑定渠道{}的帐号:{}", thirdPartyAccount.getChannel(), JSON.toJSONString(bindingAccount));
+            if (bindingAccount != null && bindingAccount.getId() > 0 && bindingAccount.getBinding() != 0) {
                 if (hrAccount.getAccountType() == 0) {
+                    logger.info("主张号已经绑定该渠道第三方帐号");
                     //如果主账号已经绑定该渠道第三方账号，那么绑定人为空,并允许绑定
                     return 1;
                 } else {
+                    logger.info("已经绑定过该渠道第三方帐号");
                     //已经绑定该渠道第三方账号，并且不是主账号，那么不允许绑定
                     throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.HRACCOUNT_BINDING_LIMIT);
                 }
@@ -363,6 +367,7 @@ public class UserHrAccountService {
                 return 0;
             }
         } else {
+            logger.info("这个帐号已经被其它人绑定了");
             //公司下已经有人绑定了这个第三方账号，则这个公司谁都不能再绑定这个账号了
             if (data.getBinding() == 1) {
                 throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.HRACCOUNT_ALREADY_BOUND);
