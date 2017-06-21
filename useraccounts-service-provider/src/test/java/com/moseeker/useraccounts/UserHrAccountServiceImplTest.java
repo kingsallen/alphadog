@@ -12,15 +12,22 @@ import com.moseeker.thrift.gen.useraccounts.struct.HrNpsResult;
 import com.moseeker.thrift.gen.useraccounts.struct.HrNpsStatistic;
 import com.moseeker.thrift.gen.useraccounts.struct.HrNpsUpdate;
 import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
+import com.moseeker.useraccounts.config.AppConfig;
 import org.apache.thrift.TException;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * HR账号服务
  * <p>
  * Created by zzh on 16/6/1.
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = AppConfig.class)
 public class UserHrAccountServiceImplTest {
 
     public static void main(String[] args) {
@@ -120,5 +127,17 @@ public class UserHrAccountServiceImplTest {
         HrThirdPartyAccountRecord record = BeanUtils.structToDB(hrThirdPartyAccountDO,HrThirdPartyAccountRecord.class);
 
         record.toString();
+    }
+
+    @Autowired
+    com.moseeker.useraccounts.service.impl.UserHrAccountService userHrAccountService;
+
+    @Test
+    public void testBinding() throws Exception {
+        HrThirdPartyAccountDO hrThirdPartyAccountDO = new HrThirdPartyAccountDO();
+        hrThirdPartyAccountDO.setUsername("xxxxx");
+        hrThirdPartyAccountDO.setPassword("xxxxx");
+        hrThirdPartyAccountDO.setChannel((short) 2);
+        userHrAccountService.bindThirdAccount(82847,hrThirdPartyAccountDO);
     }
 }

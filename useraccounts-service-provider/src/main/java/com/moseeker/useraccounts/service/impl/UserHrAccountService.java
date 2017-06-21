@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HrSearchConditionDao;
 import com.moseeker.baseorm.dao.hrdb.HrTalentpoolDao;
@@ -348,8 +349,9 @@ public class UserHrAccountService {
 
         if (data == null || data.getId() == 0) {
             //检查该用户是否绑定了其它相同渠道的账号
-            HrThirdPartyAccountDO thirdPartAccount = hrThirdPartyAccountDao.getThirdPartyAccountByUserId((int) hrAccount.getId(), thirdPartyAccount.getChannel());
-            if (thirdPartAccount != null && thirdPartAccount.getId() > 0) {
+            HrThirdPartyAccountDO bindingAccount = hrThirdPartyAccountDao.getThirdPartyAccountByUserId(hrAccount.getId(), thirdPartyAccount.getChannel());
+            logger.info("该用户绑定渠道{}的帐号:{}", JSON.toJSONString(bindingAccount));
+            if (bindingAccount != null && bindingAccount.getId() > 0) {
                 if (hrAccount.getAccountType() == 0) {
                     //如果主账号已经绑定该渠道第三方账号，那么绑定人为空,并允许绑定
                     return 1;

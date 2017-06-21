@@ -40,7 +40,7 @@ public class IfaceFactory<T> {
     public IfaceFactory(ThriftServerConfig config, String serverName) {
         this.config = config;
         this.serverName = serverName;
-        customtimeOutService.put(ChaosServices.Iface.class,120*1000);
+        customtimeOutService.put(ChaosServices.Iface.class,300*1000);
         customtimeOutService.put(UserHrAccountService.Iface.class,120*1000);
         customtimeOutService.put(PositionBS.Iface.class,120*1000);
         customtimeOutService.put(PositionBS.Iface.class,120*1000);

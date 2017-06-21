@@ -12,9 +12,11 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountHrDO;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.jooq.impl.TableImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,6 +45,9 @@ import java.util.List;
  */
 @Repository
 public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, HrThirdPartyAccountRecord> {
+
+    @Autowired
+    HRThirdPartyAccountHrDao thirdPartyAccountHrDao;
 
     public HRThirdPartyAccountDao() {
         super(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT, HrThirdPartyAccountDO.class);
@@ -166,31 +171,14 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
     }
 
     public HrThirdPartyAccountDO getThirdPartyAccountByUserId(int user_id, int channel) throws TException {
-        try {
-            logger.info("getThirdPartyAccountByUserId:user_id{},channel:{}", user_id, channel);
-            Query query = new Query.QueryBuilder().where("hr_account_id", user_id).and("status", 1).buildQuery();
-
-            List<Integer> thirdPartyAccounts = create.select(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.THIRD_PARTY_ACCOUNT_ID).from(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR)
-                    .where(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.HR_ACCOUNT_ID.eq(user_id))
-                    .and(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.STATUS.eq((byte) 1)).fetch(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.THIRD_PARTY_ACCOUNT_ID);
-
-            if (thirdPartyAccounts != null && thirdPartyAccounts.size() > 0) {
-                HrThirdPartyAccountDO data = create.select().from(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
-                        .where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID.in(thirdPartyAccounts))
-                        .and(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.CHANNEL.eq((short) channel))
-                        .and(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.BINDING.eq((short) 1))
-                        .fetchAnyInto(HrThirdPartyAccountDO.class);
-                if (data != null) {
-                    logger.info("getThirdPartyAccountByUserId:result:{}", data.getId());
-                    return data;
-                }
-            }
-            logger.info("getThirdPartyAccountByUserId:result:empty");
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
+        logger.info("getThirdPartyAccountByUserId:user_id{},channel:{}", user_id, channel);
+        Query query = new Query.QueryBuilder().where("hr_account_id", user_id).and("status", 1).and("channel", channel).buildQuery();
+        HrThirdPartyAccountHrDO hrThirdPartyAccountHr = thirdPartyAccountHrDao.getData(query);
+        if (hrThirdPartyAccountHr != null) {
+            query = new Query.QueryBuilder().where("id", hrThirdPartyAccountHr.getThirdPartyAccountId()).buildQuery();
+            return getData(query);
         }
-        return new HrThirdPartyAccountDO();
+        return null;
     }
 
     public List<ThirdPartAccountData> getThirdPartyAccountsByUserId(int user_id) {
