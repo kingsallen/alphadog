@@ -342,6 +342,8 @@ public class UserHrAccountService {
         qu.and(new Condition("binding", 0, ValueOp.NEQ));//有效的状态
         ThirdPartAccountData data = hrThirdPartyAccountDao.getData(qu.buildQuery(), ThirdPartAccountData.class);
 
+        logger.info("allowBind:相同名字的帐号:{}"+JSON.toJSONString(data));
+
         //数据库中username是不区分大小写的，如果大小写不同，那么认为不是一个账号
         if (data != null && !thirdPartyAccount.getUsername().equals(data.username)) {
             data = null;

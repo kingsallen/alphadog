@@ -86,6 +86,8 @@ public class ThirdPartyAccountSynctor {
                     updateThirdPartyAccount(hrThirdPartyAccount, syncType, "Chaos异常:" + e.getMessage());
                 }
             } catch (Exception e) {
+                e.printStackTrace();
+                logger.error(e.getMessage(),e);
                 //系统的异常
                 hrThirdPartyAccount.setBinding(Short.valueOf(syncType == 0 ? "6" : "7"));
                 updateThirdPartyAccount(hrThirdPartyAccount, syncType, "系统异常：" + e.getMessage() == null ? "" : e.getMessage());
