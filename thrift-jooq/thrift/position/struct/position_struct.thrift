@@ -147,10 +147,11 @@ struct JobOccupationCustom {
 //第三方渠道职位，用于职位同步
 struct ThirdPartyPositionForSynchronization {
     1:  string title="",
-    2:  string category_main_code="",
-    3:  string category_main="",
-    4:  string category_sub_code="",
-    5:  string category_sub="",
+    2:  list<string> occupation,
+    2:  list<string> cities,
+    3:  i8 salary_discuss,
+    4:  int salary_month,
+    5:  feedback_period,
     6:  string quantity="",
     7:  string degree_code="",
     8:  string degree="",

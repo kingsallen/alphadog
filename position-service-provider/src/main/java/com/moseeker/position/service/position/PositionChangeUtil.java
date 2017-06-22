@@ -47,7 +47,7 @@ public class PositionChangeUtil {
 
         ChannelType channelType = ChannelType.instaceFromInteger(form.getChannel());
 
-        setCategoryMainCode(form.getOccupation_level1(), channelType, position);
+        setCategoryMainCode(form.getOccupation().get(0), channelType, position);
         setCategorySubCode(form.getOccupation_level2(), channelType, position);
 
         setQuantity(form.getCount(), positionDB.getCount(), position);

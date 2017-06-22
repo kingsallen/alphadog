@@ -27,10 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * HR帐号数据库持久类
@@ -187,20 +184,27 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
         return null;
     }
 
-    public List<ThirdPartAccountData> getThirdPartyAccountsByUserId(int user_id) {
+    public List<HrThirdPartyAccountDO> getThirdPartyAccountsByUserId(int user_id) {
         logger.info("getThirdPartyAccountsByUserId:" + user_id);
-        List<Integer> thirdPartyAccounts = create.select(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.THIRD_PARTY_ACCOUNT_ID).from(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR)
-                .where(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.HR_ACCOUNT_ID.eq(user_id))
-                .and(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.STATUS.eq((byte) 1)).fetch(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.THIRD_PARTY_ACCOUNT_ID);
+        Query query = new Query.QueryBuilder().select("third_party_account_id").where("id",user_id).and("status",1).buildQuery();
 
-        if (thirdPartyAccounts != null && thirdPartyAccounts.size() > 0) {
-            List<ThirdPartAccountData> datas = create.select().from(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
-                    .where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID.in(thirdPartyAccounts))
-                    .fetchInto(ThirdPartAccountData.class);
-            logger.info("getThirdPartyAccountsByUserId:size" + datas.size());
-            return datas;
+        //所有绑定的第三方帐号的ID的合集
+        List<Integer> thirdPartyAccounts = thirdPartyAccountHrDao.getDatas(query,Integer.class);
+
+        if(thirdPartyAccounts == null || thirdPartyAccounts.size() == 0){
+            return new ArrayList<>();
         }
-        return new ArrayList<>();
+
+        Short[] valiableBinding = new Short[]{(short) 1, (short) 3, (short) 7};//有效的状态:已绑定，刷新中，刷新程序错误
+
+        query = new Query.QueryBuilder()
+                .where(new Condition("id",thirdPartyAccounts,ValueOp.IN))
+                .and(new Condition("binding", Arrays.asList(valiableBinding),ValueOp.IN))
+                .buildQuery();
+
+        List<HrThirdPartyAccountDO> hrThirdPartyAccountDOS = getDatas(query);
+
+        return hrThirdPartyAccountDOS == null ? new ArrayList<>():hrThirdPartyAccountDOS;
     }
 
 
