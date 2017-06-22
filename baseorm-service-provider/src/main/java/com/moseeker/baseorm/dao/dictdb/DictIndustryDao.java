@@ -45,8 +45,8 @@ public class DictIndustryDao extends JooqCrudImpl<DictIndustryDO, DictIndustryRe
                     selectCondition.or(DictIndustry.DICT_INDUSTRY.CODE.equal((int) (industryCodes.get(i))));
                 }
             }
+            records = selectCondition.fetch();
         }
-        records = selectCondition.fetch();
         return records;
     }
 
