@@ -321,6 +321,10 @@ public class UserHrAccountService {
 
         logger.info("bindThirdAccount allowStatus:{}", allowStatus);
 
+        if(allowStatus > 0){
+            account.setId(allowStatus);
+        }
+
         //allowStatus==0,绑定之后将hrId和帐号关联起来，allowStatus==1,只绑定不关联
         HrThirdPartyAccountDO result = thirdPartyAccountSynctor.bindThirdPartyAccount(allowStatus == 0 ? hrId : 0, account, true);
 
@@ -330,6 +334,9 @@ public class UserHrAccountService {
 
     /**
      * 是否允许执行绑定
+     * <0,主张号已绑定，
+     * 0,正常绑定，
+     * >0,复用帐号
      */
     @CounterIface
     public int allowBind(UserHrAccountDO hrAccount, HrThirdPartyAccountDO thirdPartyAccount) throws Exception {
@@ -340,13 +347,18 @@ public class UserHrAccountService {
         qu.and("channel", String.valueOf(thirdPartyAccount.getChannel()));
         qu.and("username", thirdPartyAccount.getUsername());
         qu.and(new Condition("binding", 0, ValueOp.NEQ));//有效的状态
-        ThirdPartAccountData data = hrThirdPartyAccountDao.getData(qu.buildQuery(), ThirdPartAccountData.class);
+        List<ThirdPartAccountData> datas = hrThirdPartyAccountDao.getDatas(qu.buildQuery(), ThirdPartAccountData.class);
 
-        logger.info("allowBind:相同名字的帐号:{}" + JSON.toJSONString(data));
+        logger.info("allowBind:相同名字的帐号:{}" + JSON.toJSONString(datas));
 
-        //数据库中username是不区分大小写的，如果大小写不同，那么认为不是一个账号
-        if (data != null && !thirdPartyAccount.getUsername().equals(data.username)) {
-            data = null;
+        ThirdPartAccountData data = null;
+
+        for (ThirdPartAccountData d : datas) {
+            ///数据库中username是不区分大小写的，如果大小写不同，那么认为不是一个账号
+            if (d.getUsername().equals(thirdPartyAccount)) {
+                data = d;
+                break;
+            }
         }
 
         if (data == null || data.getId() == 0) {
@@ -357,7 +369,7 @@ public class UserHrAccountService {
                 if (hrAccount.getAccountType() == 0) {
                     logger.info("主张号已经绑定该渠道第三方帐号");
                     //如果主账号已经绑定该渠道第三方账号，那么绑定人为空,并允许绑定
-                    return 1;
+                    return -1;
                 } else {
                     logger.info("已经绑定过该渠道第三方帐号");
                     //已经绑定该渠道第三方账号，并且不是主账号，那么不允许绑定
@@ -367,6 +379,18 @@ public class UserHrAccountService {
                 return 0;
             }
         } else {
+            //如果尝试绑定相同的帐号
+            if (data.getUsername().equals(thirdPartyAccount.getUsername())) {
+                if (data.getBinding() == 1 || data.getBinding() == 3 || data.getBinding() == 7) {
+                    throw new BIZException(-1, "已经绑定该帐号了");
+                } else if (data.getBinding() == 2 || data.getBinding() == 6) {
+                    throw new BIZException(-1, "该帐号已经在绑定中了");
+                } else if (data.getBinding() == 4 || data.getBinding() == 5) {
+                    //重新绑定
+                    logger.info("重新绑定:{}",data.getId());
+                    return data.getId();
+                }
+            }
             logger.info("这个帐号已经被其它人绑定了");
             //公司下已经有人绑定了这个第三方账号，则这个公司谁都不能再绑定这个账号了
             if (data.getBinding() == 1) {
