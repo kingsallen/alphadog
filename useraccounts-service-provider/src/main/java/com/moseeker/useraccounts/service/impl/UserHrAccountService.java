@@ -344,7 +344,7 @@ public class UserHrAccountService {
         //主账号或者没有绑定第三方账号，检查公司下该渠道已经绑定过相同的第三方账号
         Query.QueryBuilder qu = new Query.QueryBuilder();
         qu.where("company_id", thirdPartyAccount.getCompanyId());
-        qu.and("channel", String.valueOf(thirdPartyAccount.getChannel()));
+        qu.and("channel", thirdPartyAccount.getChannel());
         qu.and("username", thirdPartyAccount.getUsername());
         qu.and(new Condition("binding", 0, ValueOp.NEQ));//有效的状态
         List<ThirdPartAccountData> datas = hrThirdPartyAccountDao.getDatas(qu.buildQuery(), ThirdPartAccountData.class);
@@ -355,7 +355,7 @@ public class UserHrAccountService {
 
         for (ThirdPartAccountData d : datas) {
             ///数据库中username是不区分大小写的，如果大小写不同，那么认为不是一个账号
-            if (d.getUsername().equals(thirdPartyAccount)) {
+            if (d.getUsername().equals(thirdPartyAccount.getUsername())) {
                 data = d;
                 break;
             }
