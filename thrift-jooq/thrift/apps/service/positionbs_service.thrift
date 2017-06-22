@@ -14,5 +14,7 @@ service PositionBS {
 	common_struct.Response synchronizePositionToThirdPartyPlatform(1: appbs_struct.ThirdPartyPositionForm position);
 	//刷新职位
 	common_struct.Response refreshPositionToThirdPartyPlatform(1: i32 positionId, 2:i32 channel);
+	//刷新职位，千寻平台
+	common_struct.Response refreshPositionQXPlatform(1: list<i32> positionIds);
 }
 

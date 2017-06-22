@@ -1,6 +1,9 @@
 package com.moseeker.apps.thrift.service;
 
 import com.moseeker.apps.constants.ResultMessage;
+
+import java.util.List;
+
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,4 +52,16 @@ public class PositionBSThriftService implements Iface {
     public void setPositionBS(PositionBS positionBS) {
         this.positionBS = positionBS;
     }
+
+	@Override
+	public Response refreshPositionQXPlatform(List<Integer> positionIds) {
+		// TODO Auto-generated method stub
+		try{
+			return positionBS.refreshPositionQX(positionIds);
+		}catch(Exception e){
+            logger.error(e.getMessage(), e);
+            return ResultMessage.PROGRAM_EXCEPTION.toResponse();
+		}
+		
+	}
 }

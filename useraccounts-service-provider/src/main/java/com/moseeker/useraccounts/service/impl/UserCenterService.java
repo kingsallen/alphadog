@@ -60,8 +60,11 @@ public class UserCenterService {
             if (apps != null && apps.size() > 0) {
                 //查询申请记录对应的职位数据
                 List<JobPositionDO> positions = bizTools.getPositions(apps.stream().map(app -> Integer.valueOf(app.getPositionId())).collect(Collectors.toList()));
+                logger.info("UserCenterService getApplication positions:{}", positions);
                 List<Hrcompany> companies = bizTools.getCompanies(apps.stream().map(app -> Integer.valueOf(app.getCompanyId())).collect(Collectors.toList()));
+                logger.info("UserCenterService getApplication companies:{}", companies);
                 List<HrOperationRecordDO> operationRecordDOList = bizTools.listLastHrOperationRecordPassedReject(apps.stream().map(app -> app.getAppTplId()).collect(Collectors.toSet()));
+                logger.info("UserCenterService getApplication operationRecordDOList:{}", operationRecordDOList);
                 //List<ConfigSysPointConfTplDO> tpls = bizTools.getAwardConfigTpls();
 
                 applications = apps.stream().map(app -> {
