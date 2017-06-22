@@ -12,7 +12,7 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserFavPositionDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.service.impl.biztools.UserCenterBizTools;
@@ -119,7 +119,7 @@ public class UserCenterService {
         //参数校验
         if (userId > 0) {
             //查询用户的收藏职位列表
-            List<UserFavPositionDO> favPositionRecords = bizTools.getFavPositions(userId, 0);
+            List<UserCollectPositionDO> favPositionRecords = bizTools.getFavPositions(userId);
             if (favPositionRecords != null && favPositionRecords.size() > 0) {
                 //差用用户收藏职位的职位详情
                 List<JobPositionDO> positions = bizTools.getPositions(favPositionRecords.stream().map(favP -> Integer.valueOf(favP.getPositionId())).collect(Collectors.toList()));
