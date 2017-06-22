@@ -1703,4 +1703,18 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
         return result;
 
     }
+
+    public ProfileProfileRecord getProfileByUserId(int userId) {
+        return create.selectFrom(ProfileProfile.PROFILE_PROFILE)
+                .where(ProfileProfile.PROFILE_PROFILE.USER_ID.equal((int)(userId)))
+                .fetchAny();
+    }
+
+    public int updateUpdateTimeByUserId(int userId) {
+        Timestamp updateTime = new Timestamp(System.currentTimeMillis());
+        return create.update(ProfileProfile.PROFILE_PROFILE)
+                .set(ProfileProfile.PROFILE_PROFILE.UPDATE_TIME, updateTime)
+                .where(ProfileProfile.PROFILE_PROFILE.USER_ID.eq((int)(userId)))
+                .execute();
+    }
 }
