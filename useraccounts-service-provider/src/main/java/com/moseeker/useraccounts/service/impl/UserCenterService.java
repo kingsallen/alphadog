@@ -50,6 +50,7 @@ public class UserCenterService {
      * @throws TException
      */
     public List<ApplicationRecordsForm> getApplication(int userId) throws TException {
+        logger.info("UserCenterService getApplication userId:{}", userId);
         List<ApplicationRecordsForm> applications = new ArrayList<>();
 
         //参数有效性校验
@@ -92,7 +93,6 @@ public class UserCenterService {
                         }
                     }
                     ar.setStatus_name(recruitmentScheduleEnum.getAppStatusDescription((byte)app.getApplyType(), (byte)app.getEmailStatus(), preID));
-
                     return ar;
                 }).collect(Collectors.toList());
             }
@@ -101,8 +101,10 @@ public class UserCenterService {
         }
         if(applications.size() > 0) {
             applications.forEach(application -> {
-                logger.info("ApplicationRecordsForm:"+application);
+                logger.info("ApplicationRecordsForm getApplication application:{}", application);
             });
+        } else {
+            logger.info("ApplicationRecordsForm getApplication have no application");
         }
         return applications;
     }
@@ -408,6 +410,7 @@ public class UserCenterService {
                                     logger.info("preID :{}", preID);
                                 }
                                 RecruitmentScheduleEnum recruitmentScheduleEnum1 = RecruitmentScheduleEnum.createFromID(oprationRecord.getOperateTplId());
+                                logger.info("UserCenterService getApplicationDetail recruitmentScheduleEnum1: {}", recruitmentScheduleEnum1);
                                 if (recruitmentScheduleEnum1 != null) {
                                     applicationOprationRecordVO.setEvent(recruitmentScheduleEnum1.getAppStatusDescription((byte) applicationDO.getApplyType(), (byte) applicationDO.getEmailStatus(), preID));
                                 }
@@ -423,6 +426,7 @@ public class UserCenterService {
                                     }
                                     applyCount ++;
                                 }
+                                logger.info("UserCenterService getApplicationDetail applicationOprationRecordVO : {}", applicationOprationRecordVO);
                                 applicationOperationRecordVOList.add(applicationOprationRecordVO);
                                 count ++;
                             }
