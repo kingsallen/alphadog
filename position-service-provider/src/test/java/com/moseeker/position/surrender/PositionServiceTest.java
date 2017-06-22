@@ -29,7 +29,7 @@
 //		Response res=service.verifyCustomize(106002);
 //		System.out.println(res);
 //	}
-//	//@Test
+//	@Test
 //	public void getPositionByIdTest() throws Exception{
 //		Response res=service.getPositionById(106002);
 //		System.out.println(res);

@@ -505,6 +505,10 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
         }
         return count;
     }
+    public void updatePositionList(List<Position> list){
+    	List<JobPositionRecord> records=BeanUtils.structToDB(list, JobPositionRecord.class);
+        this.updateRecords(records);
+    }
 
     public List<Integer> listPositionIdByUserId(int userId) {
         List<Integer> list = new ArrayList<>();
