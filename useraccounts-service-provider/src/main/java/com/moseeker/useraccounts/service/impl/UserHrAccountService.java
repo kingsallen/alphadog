@@ -297,7 +297,7 @@ public class UserHrAccountService {
      * @return
      */
     public HrThirdPartyAccountDO bindThirdAccount(int hrId, HrThirdPartyAccountDO account) throws Exception {
-        logger.info("-------bindThirdAccount--------");
+        logger.info("-------bindThirdAccount--------{}:{}", hrId, JSON.toJSONString(account));
         // 判断Channel是否合法
         ChannelType channelType = ChannelType.instaceFromInteger(account.getChannel());
 
@@ -321,7 +321,7 @@ public class UserHrAccountService {
 
         logger.info("bindThirdAccount allowStatus:{}", allowStatus);
 
-        if(allowStatus > 0){
+        if (allowStatus > 0) {
             account.setId(allowStatus);
         }
 
@@ -387,7 +387,7 @@ public class UserHrAccountService {
                     throw new BIZException(-1, "该帐号已经在绑定中了");
                 } else if (data.getBinding() == 4 || data.getBinding() == 5) {
                     //重新绑定
-                    logger.info("重新绑定:{}",data.getId());
+                    logger.info("重新绑定:{}", data.getId());
                     return data.getId();
                 }
             }
