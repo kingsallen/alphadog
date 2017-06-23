@@ -24,6 +24,7 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.position.struct.PositionDetails;
+
 import org.jooq.*;
 import org.jooq.impl.TableImpl;
 import org.jooq.types.UInteger;
@@ -213,7 +214,7 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
                     Map resMap = recordRes.groupBy(JobPosition.JOB_POSITION.COMPANY_ID, JobPosition.JOB_POSITION.ID).fetch().intoMap(JobPosition.JOB_POSITION.ID);
                     if (resMap != null && resMap.size() > 0) {
                         for (PositionDetails positionDetailsTemp : positionDetails) {
-                            Record4<String, UInteger, Integer, Integer> record4 = (Record4<String, UInteger, Integer, Integer>) resMap.get(Integer.valueOf(positionDetailsTemp.getId()));
+                            Record4<String, Integer, Integer, Integer> record4 = (Record4<String, Integer, Integer, Integer>) resMap.get(Integer.valueOf(positionDetailsTemp.getId()));
                             if (record4 != null) {
                                 positionDetailsTemp.setResUrl(String.valueOf(record4.getValue("res_url")));
                             }
@@ -246,8 +247,8 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
                 }
 
                 Record positionAndCompanyRecord = positionAndCompanyRecords.get(0);
-                int company_id = ((UInteger) positionAndCompanyRecord.getValue("company_id")).intValue();
-                int company_type = (int) positionAndCompanyRecord.getValue("type"); // 公司区分(其它:2,免费用户:1,企业用户:0)
+                int company_id = positionAndCompanyRecord.getValue(JobPosition.JOB_POSITION.COMPANY_ID);
+                int company_type = Integer.parseInt(positionAndCompanyRecord.getValue("type").toString()); // 公司区分(其它:2,免费用户:1,企业用户:0)
                 Result<? extends Record> recomResults;
                 Condition condition = StJobSimilarity.ST_JOB_SIMILARITY.POS_ID.equal(pid);
                 if (company_type == 0) {
@@ -306,7 +307,7 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
                                     jp.SOURCE.as("source"), jp.HB_STATUS.as("hbStatus"), jp.CHILD_COMPANY_ID.as("childCompanyId"), jp.AGE.as("age"), jp.MAJOR_REQUIRED.as("majorRequired"), jp.WORK_ADDRESS.as("workAddress"),
                                     jp.KEYWORD.as("keyword"), jp.REPORTING_TO.as("reportingTo"), jp.IS_HIRING.as("isHiring"), jp.UNDERLINGS.as("underlings"), jp.LANGUAGE_REQUIRED.as("languageRequired"), jp.TARGET_INDUSTRY.as("targetIndustry"),
                                     jp.CURRENT_STATUS.as("currentStatus"), jp.POSITION_CODE.as("positionCode"), ht.ID.as("teamId"), ht.NAME.as("teamName"), ht.DESCRIPTION.as("teamDescription")
-                            ).from(jp).leftJoin(ht).on(jp.TEAM_ID.equal(ht.ID)).where(jp.ID.in(pids));
+                            ).from(jp).leftJoin(ht).on(jp.TEAM_ID.equal(ht.ID)).where(jp.ID.in(pids)).and(jp.STATUS.eq((byte) 0));
                             // 分页
                             int page = 1;
                             int per_page = 20;
@@ -324,7 +325,7 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
                             Map resMap = recordRes.groupBy(JobPosition.JOB_POSITION.COMPANY_ID, JobPosition.JOB_POSITION.ID).fetch().intoMap(JobPosition.JOB_POSITION.ID);
                             if (resMap != null && resMap.size() > 0) {
                                 for (PositionDetails position : positionDetails) {
-                                    Record3<String, UInteger, Integer> record4 = (Record3<String, UInteger, Integer>) resMap.get(Integer.valueOf(position.getId()));
+                                    Record3<String, Integer, Integer> record4 = (Record3<String, Integer, Integer>) resMap.get(Integer.valueOf(position.getId()));
                                     if (record4 != null) {
                                         position.setResUrl(String.valueOf(record4.getValue("res_url")));
                                     }
@@ -424,10 +425,12 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
                         HrCompany.HR_COMPANY.LOGO.as("company_logo"))
                 .from(JobPosition.JOB_POSITION).join(HrCompany.HR_COMPANY)
                 .on(HrCompany.HR_COMPANY.ID.equal(JobPosition.JOB_POSITION.COMPANY_ID))
-                .where(JobPosition.JOB_POSITION.ID.in(pids)).fetch().into(RecommendedPositonPojo.class);
-		/* 子公司职位需要返回子公司的公司简称和公司logo */
+                .where(JobPosition.JOB_POSITION.ID.in(pids))
+                .and(JobPosition.JOB_POSITION.STATUS.eq((byte) 0))
+                .fetch().into(RecommendedPositonPojo.class);
+        /* 子公司职位需要返回子公司的公司简称和公司logo */
         recommedPositoinsList.forEach(position -> {
-			/* 检查是否是子公司的职位 */
+            /* 检查是否是子公司的职位 */
             int publisher = position.getPublisher();
             HrCompanyAccountRecord hrcompanyAccountrecord = create.selectFrom(HrCompanyAccount.HR_COMPANY_ACCOUNT)
                     .where(HrCompanyAccount.HR_COMPANY_ACCOUNT.ACCOUNT_ID.equal(publisher)).fetchOne();
@@ -504,6 +507,11 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
             }
         }
         return count;
+    }
+
+    public void updatePositionList(List<Position> list) {
+        List<JobPositionRecord> records = BeanUtils.structToDB(list, JobPositionRecord.class);
+        this.updateRecords(records);
     }
 
     public List<Integer> listPositionIdByUserId(int userId) {

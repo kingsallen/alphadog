@@ -21,6 +21,7 @@ import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrTeamDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.position.struct.Position;
@@ -321,6 +322,19 @@ public class PositionBS {
 //        }
 
         return response;
+    }
+    
+    @CounterIface
+    public Response refreshPositionQX(List<Integer> list) throws TException{
+    	List<Position> positionList=new ArrayList<Position>();
+    	for(int i=0;i<list.size();i++){
+    		Position position=new Position();
+    		position.setId(list.get(i));
+    		position.setUpdate_time((new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
+    		positionList.add(position);
+    	}
+	   jobPositionDao.updatePositionList(positionList);
+	   return  ResultMessage.SUCCESS.toResponse(null);
     }
 
     private void writeBackToQX(int positionId) {

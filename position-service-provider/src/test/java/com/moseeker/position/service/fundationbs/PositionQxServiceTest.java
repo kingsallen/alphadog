@@ -1,11 +1,16 @@
 //package com.moseeker.position.service.fundationbs;
 //
 //import com.moseeker.baseorm.util.BeanUtils;
+//import com.moseeker.position.config.AppConfig;
 //
 //import org.junit.Test;
+//import org.junit.runner.RunWith;
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
+//import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+//import org.springframework.test.context.ContextConfiguration;
+//import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 //
 //import java.io.File;
 //import java.io.FileNotFoundException;
@@ -20,6 +25,8 @@
 // *
 // * Project_name :alphadog
 // */
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(classes = AppConfig.class)
 //public class PositionQxServiceTest {
 //
 //    private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -81,18 +88,19 @@
 //
 //    }
 //
+//    @Autowired
+//    private PositionQxService positionQxService;
 //
 //    /**
 //     * 职位相关职位接口
 //     */
-//    //@Test
+//    @Test
 //    public void similarityPositionDetailsList() throws Exception {
 //        AnnotationConfigApplicationContext acac = initSpring();
 //        try {
-//            PositionQxService positionService = acac.getBean(PositionQxService.class);
-//            String positionDetails = BeanUtils.convertStructToJSON(positionService.similarityPositionDetailsList(20286, 1, 30));
+//            String positionDetails = BeanUtils.convertStructToJSON(positionQxService.similarityPositionDetailsList(124597, 1, 30));
 //            logger.info(positionDetails);
-//            writeLog(positionDetails, "similarityPositionDetailsList");
+////            writeLog(positionDetails, "similarityPositionDetailsList");
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }

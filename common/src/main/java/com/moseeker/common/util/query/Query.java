@@ -1,5 +1,6 @@
 package com.moseeker.common.util.query;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.exception.ConditionNotExist;
 
@@ -297,4 +298,9 @@ public class Query {
         return extras;
     }
 
+    @Override
+    public String toString() {
+
+        return JSON.toJSONString(this);
+    }
 }

@@ -248,7 +248,7 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
                     candidateRecomRecordSortingDO.setCount((Integer) record2.get(0));
                 }
                 if (record2.get(1) != null) {
-                    candidateRecomRecordSortingDO.setPostUserId(((UInteger) record2.get(1)).intValue());
+                    candidateRecomRecordSortingDO.setPostUserId(((Integer) record2.get(1)).intValue());
                 }
                 recoms.add(candidateRecomRecordSortingDO);
             }

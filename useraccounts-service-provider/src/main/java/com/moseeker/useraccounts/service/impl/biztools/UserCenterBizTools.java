@@ -7,6 +7,7 @@ import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.dao.userdb.UserCollectPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserFavPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.common.constants.AbleFlag;
@@ -22,6 +23,7 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserFavPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import org.apache.thrift.TException;
@@ -67,8 +69,8 @@ public class UserCenterBizTools {
     @Autowired
     private HrCompanyDao companyDao;
 
-    @Autowired
-    private UserFavPositionDao favPositionDao;
+	@Autowired
+	private UserCollectPositionDao collectPositionDao;
 
     /**
 	 * 查找用户的申请记录
@@ -124,14 +126,16 @@ public class UserCenterBizTools {
 	/**
 	 * 查找职位搜藏
 	 * @param userId 用户编号
-	 * @param favorite 收藏类型
 	 * @return 感兴趣职位集合
 	 * @throws TException thrift异常信息
 	 */
-	public List<UserFavPositionDO> getFavPositions(int userId, int favorite) throws TException {
+	public List<UserCollectPositionDO> getFavPositions(int userId) throws TException {
 		Query.QueryBuilder qu = new Query.QueryBuilder();
-		qu.where("sysuser_id", String.valueOf(userId)).and("favorite", String.valueOf(favorite));
-		return favPositionDao.getUserFavPositions(qu.buildQuery());
+		qu.where("user_id", String.valueOf(userId));
+		qu.and("status", String.valueOf("0"));
+		List<UserCollectPositionDO> collectPositions = collectPositionDao.getDatas(qu.buildQuery());
+
+		return collectPositions;
 	}
 
 	/**
@@ -440,7 +444,7 @@ public class UserCenterBizTools {
 	public List<HrOperationRecordDO> listHrOperationRecord(int appId) {
 		Query.QueryBuilder queryUtil = new Query.QueryBuilder();
 		queryUtil.where("app_id", appId);
-		queryUtil.select("id").select("app_id").select("opt_time");
+		queryUtil.select("id").select("app_id").select("opt_time").select("operate_tpl_id");
 		queryUtil.orderBy("opt_time");
 		queryUtil.setPageNum(0);
 		queryUtil.setPageSize(Integer.MAX_VALUE);

@@ -61,6 +61,7 @@ public class ProfileSkillServicesImpl implements Iface {
     @Override
     public Response postResource(Skill struct) throws TException {
         try {
+            logger.info("skill postResource ");
             return service.postResource(struct);
         } catch (Exception e) {
             e.printStackTrace();

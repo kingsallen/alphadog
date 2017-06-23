@@ -94,9 +94,17 @@
 //		System.out.println(result);
 //	}
 //	//@Test
-//	public void refreshPositionTest(){
+//	public void refreshPositionTest() throws Exception{
 //		Response result=positionBS.refreshPosition(124576, 3);
 //		System.out.println(result);
+//	}
+//	 @Test
+//	public void refreshPositionQXTest() throws TException{
+//	 List<Integer> list =new ArrayList<Integer>();
+//	 list.add(110484);
+//	 list.add(110485);
+//	 list.add(110486);
+//	 positionBS.refreshPositionQX(list);
 //	}
 //
 //}
