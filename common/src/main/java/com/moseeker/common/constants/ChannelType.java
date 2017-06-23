@@ -38,7 +38,21 @@ public enum ChannelType {
 	}, LIANPIAN(2, "liepin","猎聘") {
 		@Override
 		public String getOrigin(String origin) {
-			return null;
+			String result;
+			if(StringUtils.isNullOrEmpty(origin)) {
+				result = String.valueOf(10000000000000000l);
+			} else {
+				if(origin.length() >= 18) {
+					if(origin.charAt(origin.length()-18) == '0') {
+						result = String.valueOf(Long.valueOf(origin)+100000000000000000l);
+					} else {
+						result = origin;
+					}
+				} else {
+					result = String.valueOf(Long.valueOf(origin)+100000000000000000l);
+				}
+			}
+			return result;
 		}
 	}, ZHILIAN(3, "zhaopin","智联") {
 		@Override
