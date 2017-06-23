@@ -36,6 +36,7 @@ import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.config.ConfigSysPointsConfTpl;
 import com.moseeker.thrift.gen.config.HrAwardConfigTemplate;
 import com.moseeker.thrift.gen.dao.struct.HistoryOperate;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
@@ -301,10 +302,10 @@ public class ProfileProcessBS {
             String color = "#173177";
             String companyName = "";
             try {
-            	Query query=new Query.QueryBuilder().where("hrCompanyDao", companyId).buildQuery();
-            	HrCompany company=hrCompanyDao.getData(query,HrCompany.class);
-                if(company!=null){
-                	companyName =company.getName();
+            	Query query = new Query.QueryBuilder().where("id", companyId).buildQuery();
+                HrCompanyDO company = hrCompanyDao.getData(query);
+                if(company != null){
+                	companyName = company.getName();
                 }
             } catch (Exception e2) {
                 log.error(e2.getMessage(), e2);
