@@ -39,7 +39,7 @@ public class ChaosTool {
 			pramas.put("password", password);
 			pramas.put("member_name", memberName);
 			break;
-		case LIANPIAN:
+		case LIEPIN:
 			pramas.put("user_name", username);
 			pramas.put("password", password);
 			pramas.put("member_name", memberName);
