@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts;
 
+import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
@@ -110,9 +111,13 @@ public class UserHrAccountServiceImplTest {
         System.out.println(BeanUtils.convertStructToJSON(result));
     }
 
-    //    @Test
-    public void testNpsList() throws TException {
-        HrNpsStatistic result = service.npsList(null, null, 0, 0);
+
+    @Autowired
+    UserHrAccountDao userHrAccountDao;
+
+    @Test
+    public void testNpsList() throws Exception {
+        HrNpsStatistic result = userHrAccountDao.npsList(null,null,1,500);
         System.out.println(BeanUtils.convertStructToJSON(result));
     }
 
