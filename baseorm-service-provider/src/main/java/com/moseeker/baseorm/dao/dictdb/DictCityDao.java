@@ -60,7 +60,9 @@ public class DictCityDao extends JooqCrudImpl<DictCityDO, DictCityRecord> {
                 selectCondition.or(DictCity.DICT_CITY.CODE.equal((int)(cityCodes.get(i))));
             }
         }
-        records = selectCondition.fetch();
+        if (selectCondition != null) {
+            records = selectCondition.fetch();
+        }
         return records;
     }
 

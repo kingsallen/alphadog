@@ -96,6 +96,19 @@ public class CrawlerUtils {
 		} else if (obj instanceof String) {
 			messagBean = (Map<String, Object>) JSON.parse((String) obj);
 		}
+		/**
+		 *
+		 * 状态码  python  alphadog
+		 * 			1		32001
+		 * 			2		32002
+		 * 			3		32003
+		 * 			-1		32004
+		 * 			4		32005
+		 * 			-3		32006
+		 * 			-5		32007
+		 * 			5		32008
+		 * 			-2		其他
+		 * */
 		if (messagBean.get("status") != null && (Integer) messagBean.get("status") == 0) {
 			List<Map<String, Object>> resumes = (List<Map<String, Object>>) messagBean.get("resumes");
 			Map<String, Object> resume = resumes.get(0);

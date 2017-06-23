@@ -123,4 +123,26 @@ public class PositionParamUtils extends ParamUtils {
         }
         return paramList;
     }
+    @SuppressWarnings("unchecked")
+    public static List<Integer> parseRefreshParamQX(Params<String, Object> params) {
+
+        List<Integer> paramList = new ArrayList<Integer>();
+        try {
+            List<Map<String, Object>> positions = (List<Map<String, Object>>) params.get("params");
+            if (positions != null && positions.size() > 0) {
+                positions.forEach(position -> {
+                    int positionId = (Integer) position.get("position_id");
+                    if(positionId!=0){
+                    	paramList.add(positionId);
+                    }
+                });
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            LoggerFactory.getLogger(PositionParamUtils.class).error(e.getMessage(), e);
+        } finally {
+            //do nothing
+        }
+        return paramList;
+    }
 }

@@ -3,7 +3,7 @@ package com.moseeker.useraccounts.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
-import com.moseeker.baseorm.dao.profiledb.ProfileDao;
+import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.userdb.UserFavPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserSettingsDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
@@ -73,7 +73,7 @@ public class UseraccountsService {
 	protected UserUserDao userdao;
 
 	@Autowired
-	protected ProfileDao profileDao;
+	protected ProfileProfileDao profileDao;
 
 	@Autowired
 	protected UserSettingsDao userSettingDao;

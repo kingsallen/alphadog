@@ -28,7 +28,6 @@ import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
-
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -50,9 +49,6 @@ import java.util.List;
 @Transactional
 public class PositionBS {
     Logger logger = LoggerFactory.getLogger(this.getClass());
-    UserHrAccountService.Iface userHrAccountService = ServiceManager.SERVICEMANAGER
-            .getService(UserHrAccountService.Iface.class);
-    CompanyServices.Iface companyService = ServiceManager.SERVICEMANAGER.getService(CompanyServices.Iface.class);
     PositionServices.Iface positionServices = ServiceManager.SERVICEMANAGER.getService(PositionServices.Iface.class);
     ChaosServices.Iface chaosService = ServiceManager.SERVICEMANAGER.getService(ChaosServices.Iface.class);
     @Autowired
@@ -324,37 +320,24 @@ public class PositionBS {
         return response;
     }
 
+    @CounterIface
+    public Response refreshPositionQX(List<Integer> list) throws TException{
+    	List<Position> positionList=new ArrayList<Position>();
+    	for(int i=0;i<list.size();i++){
+    		Position position=new Position();
+    		position.setId(list.get(i));
+    		position.setUpdate_time((new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
+    		positionList.add(position);
+    	}
+	   jobPositionDao.updatePositionList(positionList);
+	   return  ResultMessage.SUCCESS.toResponse(null);
+    }
+
     private void writeBackToQX(int positionId) {
         Position job = new Position();
         job.setId(positionId);
         job.setUpdate_time((new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
         jobPositionDao.updatePosition(job);
-    }
-
-    public UserHrAccountService.Iface getUserHrAccountService() {
-        return userHrAccountService;
-    }
-
-    public void setUserHrAccountService(UserHrAccountService.Iface userHrAccountService) {
-        this.userHrAccountService = userHrAccountService;
-    }
-
-
-    public PositionServices.Iface getPositionServices() {
-        return positionServices;
-    }
-
-    public void setPositionServices(PositionServices.Iface positionServices) {
-        this.positionServices = positionServices;
-    }
-
-
-    public ChaosServices.Iface getChaosService() {
-        return chaosService;
-    }
-
-    public void setChaosService(ChaosServices.Iface chaosService) {
-        this.chaosService = chaosService;
     }
 
 }
