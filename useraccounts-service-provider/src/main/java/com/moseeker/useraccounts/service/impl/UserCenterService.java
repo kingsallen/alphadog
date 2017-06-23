@@ -95,6 +95,7 @@ public class UserCenterService {
                             preID = operationRecordDOOptional.get().getOperateTplId();
                         }
                     }
+                    logger.info("UserCenterService getApplication recruitmentScheduleEnum:{}", recruitmentScheduleEnum);
                     ar.setStatus_name(recruitmentScheduleEnum.getAppStatusDescription((byte)app.getApplyType(), (byte)app.getEmailStatus(), preID));
                     return ar;
                 }).collect(Collectors.toList());
@@ -412,6 +413,7 @@ public class UserCenterService {
                                     }
                                     logger.info("preID :{}", preID);
                                 }
+                                logger.info("UserCenterService getApplicationDetail oprationRecord: {}", oprationRecord);
                                 RecruitmentScheduleEnum recruitmentScheduleEnum1 = RecruitmentScheduleEnum.createFromID(oprationRecord.getOperateTplId());
                                 logger.info("UserCenterService getApplicationDetail recruitmentScheduleEnum1: {}", recruitmentScheduleEnum1);
                                 if (recruitmentScheduleEnum1 != null) {

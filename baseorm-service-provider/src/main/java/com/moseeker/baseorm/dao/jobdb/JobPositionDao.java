@@ -307,7 +307,7 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
                                     jp.SOURCE.as("source"), jp.HB_STATUS.as("hbStatus"), jp.CHILD_COMPANY_ID.as("childCompanyId"), jp.AGE.as("age"), jp.MAJOR_REQUIRED.as("majorRequired"), jp.WORK_ADDRESS.as("workAddress"),
                                     jp.KEYWORD.as("keyword"), jp.REPORTING_TO.as("reportingTo"), jp.IS_HIRING.as("isHiring"), jp.UNDERLINGS.as("underlings"), jp.LANGUAGE_REQUIRED.as("languageRequired"), jp.TARGET_INDUSTRY.as("targetIndustry"),
                                     jp.CURRENT_STATUS.as("currentStatus"), jp.POSITION_CODE.as("positionCode"), ht.ID.as("teamId"), ht.NAME.as("teamName"), ht.DESCRIPTION.as("teamDescription")
-                            ).from(jp).leftJoin(ht).on(jp.TEAM_ID.equal(ht.ID)).where(jp.ID.in(pids));
+                            ).from(jp).leftJoin(ht).on(jp.TEAM_ID.equal(ht.ID)).where(jp.ID.in(pids)).and(jp.STATUS.eq((byte) 0));
                             // 分页
                             int page = 1;
                             int per_page = 20;
@@ -425,7 +425,9 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
                         HrCompany.HR_COMPANY.LOGO.as("company_logo"))
                 .from(JobPosition.JOB_POSITION).join(HrCompany.HR_COMPANY)
                 .on(HrCompany.HR_COMPANY.ID.equal(JobPosition.JOB_POSITION.COMPANY_ID))
-                .where(JobPosition.JOB_POSITION.ID.in(pids)).fetch().into(RecommendedPositonPojo.class);
+                .where(JobPosition.JOB_POSITION.ID.in(pids))
+                .and(JobPosition.JOB_POSITION.STATUS.eq((byte) 0))
+                .fetch().into(RecommendedPositonPojo.class);
         /* 子公司职位需要返回子公司的公司简称和公司logo */
         recommedPositoinsList.forEach(position -> {
             /* 检查是否是子公司的职位 */
@@ -506,8 +508,9 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
         }
         return count;
     }
-    public void updatePositionList(List<Position> list){
-    	List<JobPositionRecord> records=BeanUtils.structToDB(list, JobPositionRecord.class);
+
+    public void updatePositionList(List<Position> list) {
+        List<JobPositionRecord> records = BeanUtils.structToDB(list, JobPositionRecord.class);
         this.updateRecords(records);
     }
 
