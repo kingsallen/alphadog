@@ -704,9 +704,10 @@ public class JobApplicataionService {
 						.where("disable", 0).where("activation",0).buildQuery();
 				UserEmployeeRecord userEmployeeRecord=userEmployeedao.getRecord(query1);
                 logger.info("JobApplicataionService saveJobApplication userEmployeeRecord:{}", userEmployeeRecord);
-				if(userEmployeeRecord==null){
+				if(userEmployeeRecord != null){
 					existUserEmployee = true;
 				}
+                logger.info("JobApplicataionService saveJobApplication existUserEmployee:{}", existUserEmployee);
 				if(!existUserEmployee) {
                     logger.info("JobApplicataionService saveJobApplication not employee");
 	                jobApplicationRecord.setRecommenderUserId(0);
