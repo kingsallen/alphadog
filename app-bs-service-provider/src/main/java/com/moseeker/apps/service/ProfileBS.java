@@ -51,6 +51,8 @@ public class ProfileBS {
 	@SuppressWarnings("unchecked")
 	@CounterIface
 	public Response retrieveProfile(int positionId, String profile, int channel) throws TException {
+
+		logger.info("ProfileBS retrieveProfile positionId:{}, channel:{}", positionId, channel);
 		
 		if(positionId == 0 || StringUtils.isNullOrEmpty(profile)) {
 			return ResultMessage.PROGRAM_PARAM_NOTEXIST.toResponse();
@@ -59,6 +61,7 @@ public class ProfileBS {
 		Position position;
 		try {
 			position =jobPositionDao.getData(qu, Position.class);
+			logger.info("ProfileBS retrieveProfile position:{}", position);
 		} catch (Exception e1) {
 			e1.printStackTrace();
 			logger.error(e1.getMessage(), e1);
@@ -72,6 +75,7 @@ public class ProfileBS {
 		Map<String, Object> resume = JSON.parseObject(profile);
 		Map<String, Object> map = (Map<String, Object>) resume.get("user");
 		String mobile = (String)map.get("mobile");
+		logger.info("ProfileBS retrieveProfile mobile:{}", mobile);
 		if(StringUtils.isNullOrEmpty(mobile)) {
 			return ResultMessage.PROGRAM_PARAM_NOTEXIST.toResponse();
 		}
@@ -82,12 +86,15 @@ public class ProfileBS {
 			//查询是否存在相同手机号码的C端帐号
 			Query findRetrieveUserQU=new Query.QueryBuilder().where("mobile", mobile).and("source",UserSource.RETRIEVE_PROFILE.getValue()).buildQuery();
 			UserUserDO user =userUserDao.getData(findRetrieveUserQU); //userDao.getUser(findRetrieveUserQU);
+			logger.info("ProfileBS retrieveProfile user:{}", user);
 			if(user==null){
 				user=new UserUserDO();
 			}
 			if(user.getId() > 0) {
+				logger.info("ProfileBS retrieveProfile user exist");
 				//查找该帐号是否有profile
-				JobApplication application = initApplication((int)user.getId(), positionId, position.getCompany_id());
+				JobApplication application = initApplication(user.getId(), positionId, position.getCompany_id());
+				logger.info("ProfileBS retrieveProfile application:{}", application);
 				//更新用户数据
 				map.put("id", user.getId());
 				HashMap<String, Object> profileProfile = new HashMap<String, Object>();
@@ -97,6 +104,7 @@ public class ProfileBS {
 				
 				//如果有profile，进行profile合并
 				if(useraccountsServices.ifExistProfile(mobile)) {
+					logger.info("ProfileBS retrieveProfile profile exist");
 					Response improveProfile = wholeProfileService.improveProfile(JSON.toJSONString(resume));
 					if(improveProfile.getStatus() == 0) {
 						Response getApplyResult = applicationService.getApplicationByUserIdAndPositionId(user.getId(), positionId, position.getCompany_id());
@@ -109,6 +117,7 @@ public class ProfileBS {
 						return improveProfile;
 					}
 				} else {
+					logger.info("ProfileBS retrieveProfile profile not exist");
 					//如果不存在profile，进行profile创建
 					Response response = wholeProfileService.createProfile(JSON.toJSONString(resume));
 					if(response.getStatus() == 0) {
@@ -122,10 +131,13 @@ public class ProfileBS {
 					}
 				}
 			} else {
+				logger.info("ProfileBS retrieveProfile user not exist");
 				//如果不存在C端帐号，创建帐号
 				UserUserDO user1 =  BeanUtils.MapToRecord(map, UserUserDO.class);
+				logger.info("ProfileBS retrieveProfile user:{}", user1);
 				user1.setSource((byte)UserSource.RETRIEVE_PROFILE.getValue());
 				int userId = useraccountsServices.createRetrieveProfileUser(user1);
+				logger.info("ProfileBS retrieveProfile userId:{}", userId);
 				//创建profile
 				if(userId > 0) {
 					map.put("id", userId);
@@ -136,6 +148,7 @@ public class ProfileBS {
 					resume.put("profile", profileProfile);
 					
 					Response response = wholeProfileService.createProfile(JSON.toJSONString(resume));
+					logger.info("ProfileBS retrieveProfile response:{}", response);
 					//创建申请
 					if(response.getStatus() == 0) {
 						JobApplication application = initApplication(userId, positionId, position.getCompany_id());
