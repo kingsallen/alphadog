@@ -87,7 +87,7 @@ public class ThirdPartyAccountSynctor {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                logger.error(e.getMessage(),e);
+                logger.error(e.getMessage(), e);
                 //系统的异常
                 hrThirdPartyAccount.setBinding(Short.valueOf(syncType == 0 ? "6" : "7"));
                 updateThirdPartyAccount(hrThirdPartyAccount, syncType, "系统异常：" + e.getMessage() == null ? "" : e.getMessage());
@@ -158,10 +158,17 @@ public class ThirdPartyAccountSynctor {
     private HrThirdPartyAccountDO asyncWithBindThirdPartyAccount(int hrId, HrThirdPartyAccountDO thirdPartyAccount) throws Exception {
         //先保存信息到数据库,状态为2绑定中
         thirdPartyAccount.setBinding(Short.valueOf("2"));
-        HrThirdPartyAccountDO hrThirdPartyAccount = hrThirdPartyAccountDao.addThirdPartyAccount(hrId, thirdPartyAccount);
+        if (thirdPartyAccount.getId() > 0) {
+            int updateResult = updateThirdPartyAccount(thirdPartyAccount);
+            if (updateResult < 1) {
+                throw new BIZException(-1, "无法保存数据，请重试");
+            }
+        } else {
+            thirdPartyAccount = hrThirdPartyAccountDao.addThirdPartyAccount(hrId, thirdPartyAccount);
+        }
         //开启线程后台取处理第三方账号同步
-        new Thread(new ThirdPartyAccountSyncTask(0, hrThirdPartyAccount)).start();
-        return hrThirdPartyAccount;
+        new Thread(new ThirdPartyAccountSyncTask(0, thirdPartyAccount)).start();
+        return thirdPartyAccount;
     }
 
 
@@ -176,7 +183,12 @@ public class ThirdPartyAccountSynctor {
         //先绑定
         HrThirdPartyAccountDO bindResult = chaosService.binding(thirdPartyAccount);
         //绑定成功之后添加到数据库
-        bindResult = hrThirdPartyAccountDao.addThirdPartyAccount(hrId, bindResult);
+        if (thirdPartyAccount.getId() > 0) {
+            bindResult.setId(thirdPartyAccount.getId());
+            updateThirdPartyAccount(thirdPartyAccount);
+        } else {
+            bindResult = hrThirdPartyAccountDao.addThirdPartyAccount(hrId, bindResult);
+        }
         return bindResult;
     }
 
@@ -268,13 +280,6 @@ public class ThirdPartyAccountSynctor {
 
 
     private int updateThirdPartyAccount(HrThirdPartyAccountDO hrThirdPartyAccount) {
-        HrThirdPartyAccountDO newThirdPartyAccount = new HrThirdPartyAccountDO();
-        newThirdPartyAccount.setId(hrThirdPartyAccount.getId());
-        newThirdPartyAccount.setBinding(hrThirdPartyAccount.getBinding());
-        newThirdPartyAccount.setSyncTime(hrThirdPartyAccount.getSyncTime());
-        newThirdPartyAccount.setUpdateTime(hrThirdPartyAccount.getUpdateTime());
-        newThirdPartyAccount.setRemainNum(hrThirdPartyAccount.getRemainNum());
-        newThirdPartyAccount.setRemainProfileNum(hrThirdPartyAccount.getRemainProfileNum());
-        return hrThirdPartyAccountDao.updateData(newThirdPartyAccount);
+        return hrThirdPartyAccountDao.updateData(hrThirdPartyAccount);
     }
 }

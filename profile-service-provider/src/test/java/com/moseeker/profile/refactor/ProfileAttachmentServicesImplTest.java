@@ -1,10 +1,15 @@
 package com.moseeker.profile.refactor;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
+import com.moseeker.common.util.query.Condition;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.profile.config.AppConfig;
 import com.moseeker.profile.thrift.ProfileAttachmentServicesImpl;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileAttachmentDO;
 import com.moseeker.thrift.gen.profile.struct.Attachment;
 import org.apache.thrift.TException;
@@ -17,10 +22,26 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(classes = AppConfig.class)
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = AppConfig.class)
 public class ProfileAttachmentServicesImplTest{
+
+	@Autowired
+	HRThirdPartyAccountDao hrThirdPartyAccountDao;
+
+	@Test
+	public void testThirdPartyAccountBinding(){
+		Query.QueryBuilder qu = new Query.QueryBuilder();
+		qu.where("company_id", 39978);
+		qu.and("channel", 2);
+		qu.and("username", "18710101234");
+		qu.and(new Condition("binding", 0, ValueOp.NEQ));//有效的状态
+		List<ThirdPartAccountData> datas = hrThirdPartyAccountDao.getDatas(qu.buildQuery(), ThirdPartAccountData.class);
+
+		datas.toString();
+	}
 
 	@Autowired
 	ProfileAttachmentServicesImpl service;
