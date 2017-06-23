@@ -349,7 +349,7 @@ public class UserHrAccountService {
         qu.and(new Condition("binding", 0, ValueOp.NEQ));//有效的状态
         List<ThirdPartAccountData> datas = hrThirdPartyAccountDao.getDatas(qu.buildQuery(), ThirdPartAccountData.class);
 
-        logger.info("allowBind:相同名字的帐号:{}" + JSON.toJSONString(datas));
+        logger.info("allowBind:相同名字的帐号:{}" , JSON.toJSONString(datas));
 
         ThirdPartAccountData data = null;
 
