@@ -438,7 +438,8 @@ public class CandidateDBDao {
      * @return 员工集合
      */
     public List<UserEmployeeDO> listUserEmployee(int companyId) {
-        Query query = new Query.QueryBuilder().select("id").where("company_id", companyId).and("disable", Constant.ENABLE_OLD)
+        Query query = new Query.QueryBuilder().select("id").select("sysuser_id")
+                .where("company_id", companyId).and("disable", Constant.ENABLE_OLD)
                 .and("activation", EmployeeType.AUTH_SUCCESS.getValue()).buildQuery();
         return userEmployeeDao.getDatas(query);
     }
