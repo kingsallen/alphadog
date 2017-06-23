@@ -64,6 +64,9 @@ service UseraccountsServices {
     i32 createRetrieveProfileUser(1: user_user_struct.UserUserDO user);
     //查询用户是否存在简历
     bool ifExistProfile(1:string mobile);
+    // 换绑操作
+    common_struct.Response userChangeBind(1:string unionid, 2:string mobile);
+
 }
 
 /**

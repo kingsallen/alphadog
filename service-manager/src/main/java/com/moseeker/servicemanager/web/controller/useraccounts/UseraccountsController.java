@@ -233,6 +233,34 @@ public class UseraccountsController {
 		}
 	}
 
+
+	/**
+	 * 用户换绑
+	 *
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/user/userchangebind", method = RequestMethod.POST)
+	@ResponseBody
+	public String userChangeBind(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			// GET方法 通用参数解析并赋值
+			Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
+			String unionid = BeanUtils.converToString(reqParams.get("unionid"));
+			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
+			Response result = useraccountsServices.userChangeBind(unionid, mobile);
+			if (result.getStatus() == 0) {
+				return ResponseLogNotification.success(request, result);
+			} else {
+				return ResponseLogNotification.fail(request, result);
+			}
+		} catch (Exception e) {
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
+
+
 	@RequestMapping(value = "/user/changepassword", method = RequestMethod.POST)
 	@ResponseBody
 	public String postuserchangepassword(HttpServletRequest request, HttpServletResponse response) {

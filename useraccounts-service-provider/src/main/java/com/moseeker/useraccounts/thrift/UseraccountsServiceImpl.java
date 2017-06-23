@@ -298,6 +298,11 @@ public class UseraccountsServiceImpl implements Iface {
 	}
 
 	@Override
+	public Response userChangeBind(String unionid, String mobile) throws TException {
+		return service.userChangeBind(unionid,mobile);
+	}
+
+	@Override
 	public Response postuserbindmobile(int appid, String unionid, String code,
 			String mobile, BindType bindType) throws TException {
 		return service.postuserbindmobile(appid, unionid, code, mobile, bindType);
