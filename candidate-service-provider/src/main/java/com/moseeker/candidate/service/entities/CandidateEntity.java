@@ -94,6 +94,13 @@ public class CandidateEntity implements Candidate {
                     e.printStackTrace();
                     logger.error(e.getMessage(), e);
                 }
+
+                /* 1. 如果浏览者是员工，则不生成候选人数据;2. 以后需要加上没有把该公司下的所有职位都投递以便才算候选人；3. 以后需要加上不是这家公司的hr */
+                UserEmployeeDO userEmployeeDO = candidateDBDao.getEmployee(userID, jobPositionDO.getCompanyId());
+                if (userEmployeeDO != null && userEmployeeDO.getId() > 0) {
+                    return;
+                }
+
                 if (userUserDO != null && userUserDO.getId() > 0 && jobPositionDO != null && jobPositionDO.getId() > 0) {
                     logger.info("CandidateEntity glancePosition userUserDO:{}, jobPositionDO:{}", userUserDO, jobPositionDO);
                     boolean fromEmployee = false;       //是否是员工转发
