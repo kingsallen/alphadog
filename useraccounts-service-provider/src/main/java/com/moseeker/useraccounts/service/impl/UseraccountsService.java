@@ -1051,13 +1051,19 @@ public class UseraccountsService {
     }
 
     public int createRetrieveProfileUser(UserUserDO user) {
+        logger.info("UseraccountsService createRetrieveProfileUser user:{}", user);
         int userId = 0;
         if (user.getMobile() == 0) {
+            logger.info("UseraccountsService createRetrieveProfileUser mobile not exist");
             return 0;
         }
         user.setSource((byte) UserSource.RETRIEVE_PROFILE.getValue());
         try {
+            if (user.getPassword() == null) {
+                user.setPassword("");
+            }
             UserUserRecord userUserRecord = userdao.addRecord(BeanUtils.structToDB(user, UserUserRecord.class));
+
             userId = userUserRecord.getId();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
