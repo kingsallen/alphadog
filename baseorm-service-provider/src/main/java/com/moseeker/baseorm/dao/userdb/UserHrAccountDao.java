@@ -186,11 +186,14 @@ public class UserHrAccountDao extends JooqCrudImpl<UserHrAccountDO, UserHrAccoun
         }
 
         total = create.selectCount().from(HrNps.HR_NPS)
-                .where(HrNps.HR_NPS.CREATE_TIME.between(Timestamp.valueOf(dateStart), Timestamp.valueOf(dateEnd))).fetchOne().into(Integer.class);
+                .where(HrNps.HR_NPS.CREATE_TIME.ge(Timestamp.valueOf(dateStart)))
+                .and(HrNps.HR_NPS.CREATE_TIME.le(Timestamp.valueOf(dateEnd)))
+                .fetchOneInto(Integer.class);
 
         List<HrNpsRecord> npsRecords = create.select().
                 from(HrNps.HR_NPS)
-                .where(HrNps.HR_NPS.CREATE_TIME.between(Timestamp.valueOf(dateStart), Timestamp.valueOf(dateEnd)))
+                .where(HrNps.HR_NPS.CREATE_TIME.ge(Timestamp.valueOf(dateStart)))
+                .and(HrNps.HR_NPS.CREATE_TIME.le(Timestamp.valueOf(dateEnd)))
                 .orderBy(HrNps.HR_NPS.CREATE_TIME.desc())
                 .offset((page - 1) * pageSize)
                 .limit(pageSize)
@@ -317,7 +320,8 @@ public class UserHrAccountDao extends JooqCrudImpl<UserHrAccountDO, UserHrAccoun
             throw new BIZException(-1, "hr账号不存在");
         }
         HrNpsRecord npsRecord = create.select().from(HrNps.HR_NPS).where(HrNps.HR_NPS.HR_ACCOUNT_ID.eq(userId))
-                .and(HrNps.HR_NPS.CREATE_TIME.between(Timestamp.valueOf(dateStart), Timestamp.valueOf(dateEnd)))
+                .and(HrNps.HR_NPS.CREATE_TIME.ge(Timestamp.valueOf(dateStart)))
+                .and(HrNps.HR_NPS.CREATE_TIME.le(Timestamp.valueOf(dateEnd)))
                 .orderBy(HrNps.HR_NPS.CREATE_TIME.desc())
                 .fetchAnyInto(HrNpsRecord.class);
 
@@ -373,7 +377,9 @@ public class UserHrAccountDao extends JooqCrudImpl<UserHrAccountDO, UserHrAccoun
             }
         }
         HrNpsRecord npsRecord = create.select().from(HrNps.HR_NPS).where(HrNps.HR_NPS.HR_ACCOUNT_ID.eq(npsUpdate.getUser_id()))
-                .and(HrNps.HR_NPS.CREATE_TIME.between(Timestamp.valueOf(dateStart), Timestamp.valueOf(dateEnd))).fetchAnyInto(HrNpsRecord.class);
+                .and(HrNps.HR_NPS.CREATE_TIME.ge(Timestamp.valueOf(dateStart)))
+                .and(HrNps.HR_NPS.CREATE_TIME.le(Timestamp.valueOf(dateEnd)))
+                .fetchAnyInto(HrNpsRecord.class);
 
         if (npsRecord != null) { //本季度已经有调研记录
             if (npsUpdate.isSetIntention() && npsUpdate.getIntention() > -1) {
