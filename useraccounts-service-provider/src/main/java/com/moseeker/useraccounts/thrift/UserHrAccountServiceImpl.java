@@ -1,7 +1,12 @@
 package com.moseeker.useraccounts.thrift;
 
+import com.moseeker.baseorm.tool.QueryConvert;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService.Iface;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.service.impl.UserHrAccountService;
@@ -42,7 +47,6 @@ public class UserHrAccountServiceImpl implements Iface {
 
     /**
      * 下载行业报告，添加HR记录
-     *
      */
     @Override
     public Response postResource(DownloadReport downloadReport) throws TException {
@@ -60,8 +64,27 @@ public class UserHrAccountServiceImpl implements Iface {
     }
 
     @Override
-    public Response bind(BindAccountStruct account) throws TException {
-        return service.bindThirdAccount(account);
+    public HrThirdPartyAccountDO bindThirdpartyAccount(int hrId, HrThirdPartyAccountDO account) throws BIZException, TException {
+        try {
+            return service.bindThirdAccount(hrId, account);
+        } catch (BIZException e) {
+            throw e;
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new TException(e.getMessage());
+        }
+    }
+
+    @Override
+    public HrThirdPartyAccountDO syncThirdpartyAccount(int id) throws BIZException, TException {
+        try {
+            return service.synchronizeThirdpartyAccount(id);
+        } catch (BIZException e) {
+            throw e;
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new TException(e.getMessage());
+        }
     }
 
     @Override
@@ -106,30 +129,9 @@ public class UserHrAccountServiceImpl implements Iface {
     }
 
     @Override
-    public Response synchronizeThirdpartyAccount(int id) throws TException {
-        // TODO Auto-generated method stub
-        return service.synchronizeThirdpartyAccount(id);
-    }
-
-    @Override
     public Response ifSynchronizePosition(int companyId, int channel) throws TException {
         // TODO Auto-generated method stub
         return service.ifSynchronizePosition(companyId, channel);
-    }
-
-    @Override
-    public Response allowBind(UserHrAccount user, byte channelType, String username) throws TException {
-        return service.allowBind(user, channelType, username);
-    }
-
-    @Override
-    public Response addThirdPartyAccount(int userId, BindAccountStruct account) throws TException {
-        return service.addThirdPartyAccount(userId, account);
-    }
-
-    @Override
-    public Response updateThirdPartyAccount(int accountId, BindAccountStruct account) throws TException {
-        return service.updateThirdPartyAccount(accountId, account);
     }
 
     @Override
@@ -169,5 +171,30 @@ public class UserHrAccountServiceImpl implements Iface {
             logger.error(e.getMessage(), e);
             throw new TException(e);
         }
+    }
+
+    @Override
+    public List<HrThirdPartyAccountDO> getThirdPartyAccounts(CommonQuery query) throws TException {
+        try {
+            return service.getThirdPartyAccounts(QueryConvert.commonQueryConvertToQuery(query));
+        } catch (Exception e) {
+            throw new TException(e);
+        }
+    }
+
+    @Override
+    public int updateThirdPartyAccount(HrThirdPartyAccountDO account) throws BIZException, TException {
+        try {
+            int result = service.updateThirdPartyAccount(account);
+            if (result < 1) {
+                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
+            }
+            return result;
+        } catch (BIZException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new TException(e);
+        }
+
     }
 }

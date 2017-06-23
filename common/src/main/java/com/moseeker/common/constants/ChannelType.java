@@ -16,7 +16,7 @@ import com.moseeker.common.util.StringUtils;
  */
 public enum ChannelType {
 	
-	JOB51(1, "51job") {
+	JOB51(1, "51job","51job") {
 		@Override
 		public String getOrigin(String origin) {
 			String result;
@@ -35,12 +35,26 @@ public enum ChannelType {
 			}
 			return result;
 		}
-	}, LIANPIAN(2, "") {
+	}, LIANPIAN(2, "liepin","猎聘") {
 		@Override
 		public String getOrigin(String origin) {
-			return null;
+			String result;
+			if(StringUtils.isNullOrEmpty(origin)) {
+				result = String.valueOf(10000000000000000l);
+			} else {
+				if(origin.length() >= 18) {
+					if(origin.charAt(origin.length()-18) == '0') {
+						result = String.valueOf(Long.valueOf(origin)+100000000000000000l);
+					} else {
+						result = origin;
+					}
+				} else {
+					result = String.valueOf(Long.valueOf(origin)+100000000000000000l);
+				}
+			}
+			return result;
 		}
-	}, ZHILIAN(3, "zhaopin") {
+	}, ZHILIAN(3, "zhaopin","智联") {
 		@Override
 		public String getOrigin(String origin) {
 			String result;
@@ -59,7 +73,7 @@ public enum ChannelType {
 			}
 			return result;
 		}
-	}, LINKEDIN(4, "") {
+	}, LINKEDIN(4, "linkedin","领英") {
 		@Override
 		public String getOrigin(String origin) {
 			
@@ -67,13 +81,15 @@ public enum ChannelType {
 		}
 	};
 	
-	private ChannelType(int value, String name) {
+	private ChannelType(int value, String name,String alias) {
 		this.value = value;
 		this.name = name;
+		this.alias = alias;
 	}
 	
 	private int value = 0;				//渠道值
 	private String name = null;			//渠道名称
+	private String alias = null;        //渠道别名
 	
 	public abstract String getOrigin(String origin);
 	
@@ -105,7 +121,7 @@ public enum ChannelType {
 	public String getBindURI(String domain) {
 		return domain+"/"+name+"/"+BINDING;
 	}
-	
+
 	/**
 	 * 返回该渠道的绑定请求地址
 	 * @param domain chaos域名
@@ -122,5 +138,9 @@ public enum ChannelType {
 	 */
 	public String getRemainURI(String domain) {
 		return domain+"/"+name+"/"+REMAIN_NUM;
+	}
+
+	public String getAlias() {
+		return alias;
 	}
 }

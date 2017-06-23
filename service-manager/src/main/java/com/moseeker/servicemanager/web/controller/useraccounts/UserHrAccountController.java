@@ -3,6 +3,8 @@ package com.moseeker.servicemanager.web.controller.useraccounts;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.RespnoseUtil;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
@@ -12,7 +14,9 @@ import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 
@@ -27,7 +31,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * HR账号服务
@@ -93,20 +99,70 @@ public class UserHrAccountController {
         }
     }
 
+    /**
+     * 驼峰转下划线
+     *
+     * @param struct
+     * @return
+     */
+    private Map<String, Object> thirdpartyAccountToMap(HrThirdPartyAccountDO struct) {
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("id", struct.getId());
+        resultMap.put("channel", struct.getChannel());
+        resultMap.put("username", struct.getUsername());
+        resultMap.put("company_id", struct.getCompanyId());
+        resultMap.put("member_name", struct.getMembername());
+        resultMap.put("bound", struct.getBinding());
+        resultMap.put("create_time", struct.getCreateTime());
+        resultMap.put("update_time", struct.getCreateTime());
+        resultMap.put("sync_time", struct.getSyncTime());
+        resultMap.put("password", struct.getPassword());
+        resultMap.put("remain_num", struct.getRemainNum());
+        resultMap.put("remain_profile_num", struct.getRemainProfileNum());
+        return resultMap;
+    }
+
     @RequestMapping(value = "/hraccount/binding", method = RequestMethod.POST)
     @ResponseBody
     public String bindThirdPartyAccount(HttpServletRequest request, HttpServletResponse response) {
         try {
-            BindAccountStruct struct = ParamUtils.initModelForm(request, BindAccountStruct.class);
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            HrThirdPartyAccountDO struct = ParamUtils.initModelForm(params, HrThirdPartyAccountDO.class);
             logger.info("bind thirdParyAccount in controller params===========================" + JSON.toJSONString(struct));
-            Response result = userHrAccountService.bind(struct);
-            logger.info("bind thirdParyAccount in controller end===========================" + result.getData());
-            return ResponseLogNotification.success(request, result);
+            struct = userHrAccountService.bindThirdpartyAccount(params.getInt("user_id", 0), struct);
+            //同步情况下走下面的代码
+
+            return ResponseLogNotification.success(request, ResponseUtils.success(thirdpartyAccountToMap(struct)));
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            e.printStackTrace();
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/thirdpartyaccount/refresh", method = RequestMethod.GET)
+    @ResponseBody
+    public String synchronizeThirdpartyAccount(HttpServletRequest request, HttpServletResponse response) {
+        logger.info("/thirdpartyaccount/refresh start : {}", new DateTime().toString("YYYY-MM-dd HH:mm:ss SSS"));
+        long startTime = System.currentTimeMillis();
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer id = params.getInt("id");
+            if (id == null) {
+                return ResponseLogNotification.fail(request, "id不能为空");
+            }
+
+            HrThirdPartyAccountDO hrThirdPartyAccountDO = userHrAccountService.syncThirdpartyAccount(id);
+
+            return ResponseLogNotification.success(request, ResponseUtils.success(thirdpartyAccountToMap(hrThirdPartyAccountDO)));
+        } catch (Exception e) {
+            e.printStackTrace();
             return ResponseLogNotification.fail(request, e.getMessage());
         } finally {
-            //do nothing
+            logger.info("/thirdpartyaccount/refresh start : {}", new DateTime().toString("YYYY-MM-dd HH:mm:ss SSS"));
+            long allUseTime = System.currentTimeMillis() - startTime;
+            logger.info("refresh thirdParyAccount in controller Use time===========================" + allUseTime);
         }
     }
 
@@ -289,31 +345,6 @@ public class UserHrAccountController {
         }
     }
 
-    @RequestMapping(value = "/thirdpartyaccount/refresh", method = RequestMethod.GET)
-    @ResponseBody
-    public String synchronizeThirdpartyAccount(HttpServletRequest request, HttpServletResponse response) {
-        logger.info("/thirdpartyaccount/refresh start : {}", new DateTime().toString("YYYY-MM-dd HH:mm:ss SSS"));
-        long startTime = System.currentTimeMillis();
-        try {
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            Integer userId = params.getInt("id");
-            if (userId == null) {
-                return ResponseLogNotification.fail(request, "id不能为空");
-            }
-
-            Response result = userHrAccountService.synchronizeThirdpartyAccount(userId);
-
-            return ResponseLogNotification.success(request, result);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseLogNotification.fail(request, e.getMessage());
-        } finally {
-            logger.info("/thirdpartyaccount/refresh start : {}", new DateTime().toString("YYYY-MM-dd HH:mm:ss SSS"));
-            long allUseTime = System.currentTimeMillis() - startTime;
-            logger.info("refresh thirdParyAccount in controller Use time===========================" + allUseTime);
-        }
-    }
-
     @RequestMapping(value = "/nps/list", method = RequestMethod.GET)
     @ResponseBody
     public String npsList(HttpServletRequest request, HttpServletResponse response) {
@@ -387,6 +418,37 @@ public class UserHrAccountController {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
             e.printStackTrace();
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    //获取第三方账号列表
+    @RequestMapping(value = "/hraccount/thirdparty", method = RequestMethod.GET)
+    @ResponseBody
+    public String getThirdPartyAccount(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            CommonQuery commonQuery = ParamUtils.initCommonQuery(request, CommonQuery.class);
+            List<HrThirdPartyAccountDO> result = userHrAccountService.getThirdPartyAccounts(commonQuery);
+            return ResponseLogNotification.success(request, ResponseUtils.success(result));
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    //更新第三方账号
+    @RequestMapping(value = "/hraccount/thirdparty", method = RequestMethod.PUT)
+    @ResponseBody
+    public String updateThirdPartyAccount(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            HrThirdPartyAccountDO thirdPartyAccount = ParamUtils.initModelForm(request, HrThirdPartyAccountDO.class);
+            if (!thirdPartyAccount.isSetId()) {
+                if (!thirdPartyAccount.isSetId()) {
+                    return ResponseLogNotification.fail(request, "id不能为空");
+                }
+            }
+            int result = userHrAccountService.updateThirdPartyAccount(thirdPartyAccount);
+            return ResponseLogNotification.success(request, ResponseUtils.success(result));
+        } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }

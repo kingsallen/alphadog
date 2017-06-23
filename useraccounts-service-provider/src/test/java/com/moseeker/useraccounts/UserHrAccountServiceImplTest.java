@@ -1,24 +1,33 @@
 package com.moseeker.useraccounts;
 
+import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.rpccenter.config.ClientConfig;
 import com.moseeker.rpccenter.config.RegistryConfig;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import com.moseeker.thrift.gen.useraccounts.struct.HrNpsResult;
 import com.moseeker.thrift.gen.useraccounts.struct.HrNpsStatistic;
 import com.moseeker.thrift.gen.useraccounts.struct.HrNpsUpdate;
 import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
+import com.moseeker.useraccounts.config.AppConfig;
 import org.apache.thrift.TException;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * HR账号服务
  * <p>
  * Created by zzh on 16/6/1.
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = AppConfig.class)
 public class UserHrAccountServiceImplTest {
 
     public static void main(String[] args) {
@@ -105,5 +114,30 @@ public class UserHrAccountServiceImplTest {
     public void testNpsList() throws TException {
         HrNpsStatistic result = service.npsList(null, null, 0, 0);
         System.out.println(BeanUtils.convertStructToJSON(result));
+    }
+
+
+    @Test
+    public void testStructToDB(){
+        HrThirdPartyAccountDO hrThirdPartyAccountDO = new HrThirdPartyAccountDO();
+        hrThirdPartyAccountDO.setChannel(Short.valueOf("2"));
+        hrThirdPartyAccountDO.setUsername("fdfdsaf");
+        hrThirdPartyAccountDO.setPassword("fdfdsfdpwd");
+        hrThirdPartyAccountDO.setBinding(Short.valueOf("1"));
+        HrThirdPartyAccountRecord record = BeanUtils.structToDB(hrThirdPartyAccountDO,HrThirdPartyAccountRecord.class);
+
+        record.toString();
+    }
+
+    @Autowired
+    com.moseeker.useraccounts.service.impl.UserHrAccountService userHrAccountService;
+
+    @Test
+    public void testBinding() throws Exception {
+        HrThirdPartyAccountDO hrThirdPartyAccountDO = new HrThirdPartyAccountDO();
+        hrThirdPartyAccountDO.setUsername("xxxxx");
+        hrThirdPartyAccountDO.setPassword("xxxxx");
+        hrThirdPartyAccountDO.setChannel((short) 2);
+        userHrAccountService.bindThirdAccount(82847,hrThirdPartyAccountDO);
     }
 }

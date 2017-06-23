@@ -726,7 +726,9 @@ public class BeanUtils {
 			return ((UShort) value).shortValue();
 		} else if (value instanceof BigDecimal) {
 			return Short.valueOf(((BigDecimal) value).shortValue());
-		} else {
+		} else if(value instanceof Short){
+			return (Short) value;
+		}else{
 			return null;
 		}
 	}

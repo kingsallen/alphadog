@@ -358,7 +358,9 @@ struct HrNpsInfo {
     8: optional byte accept_contact,
     9: optional string recommend_user,
     10: optional string recommend_mobile,
-    11: optional string recommend_company
+    11: optional string recommend_company,
+    12: optional i32 company_id,
+    13: optional i32 company_type
 }
 
 struct HrNpsStatistic {

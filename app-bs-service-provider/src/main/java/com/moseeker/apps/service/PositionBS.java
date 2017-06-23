@@ -21,14 +21,13 @@ import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrTeamDO;
-import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
-
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -50,9 +49,6 @@ import java.util.List;
 @Transactional
 public class PositionBS {
     Logger logger = LoggerFactory.getLogger(this.getClass());
-    UserHrAccountService.Iface userHrAccountService = ServiceManager.SERVICEMANAGER
-            .getService(UserHrAccountService.Iface.class);
-    CompanyServices.Iface companyService = ServiceManager.SERVICEMANAGER.getService(CompanyServices.Iface.class);
     PositionServices.Iface positionServices = ServiceManager.SERVICEMANAGER.getService(PositionServices.Iface.class);
     ChaosServices.Iface chaosService = ServiceManager.SERVICEMANAGER.getService(ChaosServices.Iface.class);
     @Autowired
@@ -284,7 +280,7 @@ public class PositionBS {
             queryUtil.where("id", positionId);
             Position position = jobPositionDao.getData(queryUtil.buildQuery(), Position.class);
             boolean permission = false;
-            ThirdPartAccountData thirdPartAccountData = null;
+            HrThirdPartyAccountDO thirdPartAccountData = null;
             if (position != null) {
                 thirdPartAccountData = hRThirdPartyAccountDao.getThirdPartyAccountByUserId(position.getPublisher(), channel);
                 if (thirdPartAccountData != null && thirdPartAccountData.getId() > 0) {
@@ -323,7 +319,7 @@ public class PositionBS {
 
         return response;
     }
-    
+
     @CounterIface
     public Response refreshPositionQX(List<Integer> list) throws TException{
     	List<Position> positionList=new ArrayList<Position>();
@@ -342,32 +338,6 @@ public class PositionBS {
         job.setId(positionId);
         job.setUpdate_time((new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
         jobPositionDao.updatePosition(job);
-    }
-
-    public UserHrAccountService.Iface getUserHrAccountService() {
-        return userHrAccountService;
-    }
-
-    public void setUserHrAccountService(UserHrAccountService.Iface userHrAccountService) {
-        this.userHrAccountService = userHrAccountService;
-    }
-
-
-    public PositionServices.Iface getPositionServices() {
-        return positionServices;
-    }
-
-    public void setPositionServices(PositionServices.Iface positionServices) {
-        this.positionServices = positionServices;
-    }
-
-
-    public ChaosServices.Iface getChaosService() {
-        return chaosService;
-    }
-
-    public void setChaosService(ChaosServices.Iface chaosService) {
-        this.chaosService = chaosService;
     }
 
 }
