@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -47,9 +48,7 @@ public class PositionChangeUtil {
 
         ChannelType channelType = ChannelType.instaceFromInteger(form.getChannel());
 
-        setCategoryMainCode(form.getOccupation().get(0), channelType, position);
-        setCategorySubCode(form.getOccupation_level2(), channelType, position);
-
+        setOccupation(form, channelType, position);
         setQuantity(form.getCount(), positionDB.getCount(), position);
 
         setDegree(positionDB.getDegree(), channelType, position);
@@ -146,48 +145,30 @@ public class PositionChangeUtil {
         }
     }
 
-    private static void setCategorySubCode(String categorySubCode, ChannelType channelType,
-                                           ThirdPartyPositionForSynchronization position) {
-        System.out.println("--form.getOccupation_level2():" + categorySubCode);
-        if (StringUtils.isNotNullOrEmpty(categorySubCode)) {
-            switch (channelType) {
-                case JOB51:
-                    DecimalFormat df = new DecimalFormat("0000");
-                    if (StringUtils.isNotNullOrEmpty(categorySubCode)) {
-                        position.setCategory_sub_code(df.format(Integer.valueOf(categorySubCode)));
-                    }
-                    break;
-                case ZHILIAN:
-                    DecimalFormat df1 = new DecimalFormat("000");
-                    if (StringUtils.isNotNullOrEmpty(categorySubCode)) {
-                        position.setCategory_sub_code(df1.format(Integer.valueOf(categorySubCode)));
-                    }
-                    break;
-                default:
-                    position.setCategory_sub_code(categorySubCode);
-            }
-        }
-    }
+    private static void setOccupation(ThirdPartyPosition positionForm, ChannelType channelType,
+                                      ThirdPartyPositionForSynchronization position) {
+        System.out.println("--form.occupation:" + positionForm.getOccupation());
+        position.setOccupation(new ArrayList<>());
+        if (positionForm.getOccupation() != null) {
+            for (String occupation : positionForm.getOccupation()) {
+                String finalOccupation = null;
+                switch (channelType) {
+                    case JOB51:
+                        DecimalFormat df = new DecimalFormat("0000");
+                        finalOccupation = df.format(Integer.valueOf(occupation));
+                        break;
+                    case ZHILIAN:
+                        DecimalFormat df1 = new DecimalFormat("000");
+                        finalOccupation = df1.format(Integer.valueOf(occupation));
+                        break;
+                    case LIANPIAN:
+                        finalOccupation = occupation;
+                        break;
+                }
 
-    private static void setCategoryMainCode(String categoryMainCode, ChannelType channelType,
-                                            ThirdPartyPositionForSynchronization position) {
-        System.out.println("--form.getOccupation_level1():" + categoryMainCode);
-        if (StringUtils.isNotNullOrEmpty(categoryMainCode)) {
-            switch (channelType) {
-                case JOB51:
-                    DecimalFormat df = new DecimalFormat("0000");
-                    if (StringUtils.isNotNullOrEmpty(categoryMainCode)) {
-                        position.setCategory_main_code(df.format(Integer.valueOf(categoryMainCode)));
-                    }
-                    break;
-                case ZHILIAN:
-                    DecimalFormat df1 = new DecimalFormat("000");
-                    if (StringUtils.isNotNullOrEmpty(categoryMainCode)) {
-                        position.setCategory_main_code(df1.format(Integer.valueOf(categoryMainCode)));
-                    }
-                    break;
-                default:
-                    position.setCategory_main_code(categoryMainCode);
+                if (finalOccupation != null) {
+                    position.getOccupation().add(finalOccupation);
+                }
             }
         }
     }
