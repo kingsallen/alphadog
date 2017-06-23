@@ -90,7 +90,7 @@ public class CandidateDBDao {
      * @return
      */
     public Optional<CandidateCompanyDO> getCandidateCompanyByUserIDCompanyID(int userID, int companyId) throws TException {
-        Query query = new Query.QueryBuilder().where("user_id", String.valueOf(userID)).and("company_id", String.valueOf(companyId)).buildQuery();
+        Query query = new Query.QueryBuilder().where("sys_user_id", String.valueOf(userID)).and("company_id", String.valueOf(companyId)).buildQuery();
         try {
             CandidateCompanyDO candidateCompanyDO = candidateCompanyDao.getCandidateCompany(query);
             return Optional.of(candidateCompanyDO);
