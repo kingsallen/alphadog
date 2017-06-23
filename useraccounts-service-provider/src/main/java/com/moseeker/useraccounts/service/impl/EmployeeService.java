@@ -10,6 +10,7 @@ import com.moseeker.baseorm.dao.userdb.UserEmployeePointsRecordDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.util.ConfigPropertiesUtil;
@@ -581,7 +582,7 @@ public class EmployeeService {
                 if (!StringUtils.isEmptyList(applications)) {
                     appMap.putAll(applications.stream().collect(Collectors.toMap(JobApplicationDO::getId, JobApplicationDO::getPositionId)));
                     query.clear();
-                    query.where(new Condition("id", appMap.values(), ValueOp.IN));
+                    query.where(new Condition("id", appMap.values().toArray(), ValueOp.IN));
                     List<JobPositionDO> positions = positionDao.getPositions(query.buildQuery());
                     // 转成map -> k: positionId, v: positionTitle
                     if (!StringUtils.isEmptyList(points)){
