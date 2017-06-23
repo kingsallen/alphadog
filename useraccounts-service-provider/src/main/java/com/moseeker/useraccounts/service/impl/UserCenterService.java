@@ -95,6 +95,7 @@ public class UserCenterService {
                             preID = operationRecordDOOptional.get().getOperateTplId();
                         }
                     }
+                    logger.info("UserCenterService getApplication recruitmentScheduleEnum:{}", recruitmentScheduleEnum);
                     ar.setStatus_name(recruitmentScheduleEnum.getAppStatusDescription((byte)app.getApplyType(), (byte)app.getEmailStatus(), preID));
                     return ar;
                 }).collect(Collectors.toList());
