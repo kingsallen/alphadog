@@ -129,12 +129,6 @@ public class UserHrAccountServiceImpl implements Iface {
     }
 
     @Override
-    public Response ifSynchronizePosition(int companyId, int channel) throws TException {
-        // TODO Auto-generated method stub
-        return service.ifSynchronizePosition(companyId, channel);
-    }
-
-    @Override
     public HrNpsResult npsStatus(int userId, String startDate, String endDate) throws BIZException, TException {
         try {
             return service.npsStatus(userId, startDate, endDate);

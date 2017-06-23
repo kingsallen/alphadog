@@ -12,7 +12,7 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserFavPositionDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.service.impl.biztools.UserCenterBizTools;
@@ -50,6 +50,7 @@ public class UserCenterService {
      * @throws TException
      */
     public List<ApplicationRecordsForm> getApplication(int userId) throws TException {
+        logger.info("UserCenterService getApplication userId:{}", userId);
         List<ApplicationRecordsForm> applications = new ArrayList<>();
 
         //参数有效性校验
@@ -59,8 +60,11 @@ public class UserCenterService {
             if (apps != null && apps.size() > 0) {
                 //查询申请记录对应的职位数据
                 List<JobPositionDO> positions = bizTools.getPositions(apps.stream().map(app -> Integer.valueOf(app.getPositionId())).collect(Collectors.toList()));
+                logger.info("UserCenterService getApplication positions:{}", positions);
                 List<Hrcompany> companies = bizTools.getCompanies(apps.stream().map(app -> Integer.valueOf(app.getCompanyId())).collect(Collectors.toList()));
+                logger.info("UserCenterService getApplication companies:{}", companies);
                 List<HrOperationRecordDO> operationRecordDOList = bizTools.listLastHrOperationRecordPassedReject(apps.stream().map(app -> app.getAppTplId()).collect(Collectors.toSet()));
+                logger.info("UserCenterService getApplication operationRecordDOList:{}", operationRecordDOList);
                 //List<ConfigSysPointConfTplDO> tpls = bizTools.getAwardConfigTpls();
 
                 applications = apps.stream().map(app -> {
@@ -92,7 +96,6 @@ public class UserCenterService {
                         }
                     }
                     ar.setStatus_name(recruitmentScheduleEnum.getAppStatusDescription((byte)app.getApplyType(), (byte)app.getEmailStatus(), preID));
-
                     return ar;
                 }).collect(Collectors.toList());
             }
@@ -101,8 +104,10 @@ public class UserCenterService {
         }
         if(applications.size() > 0) {
             applications.forEach(application -> {
-                logger.info("ApplicationRecordsForm:"+application);
+                logger.info("ApplicationRecordsForm getApplication application:{}", application);
             });
+        } else {
+            logger.info("ApplicationRecordsForm getApplication have no application");
         }
         return applications;
     }
@@ -119,7 +124,7 @@ public class UserCenterService {
         //参数校验
         if (userId > 0) {
             //查询用户的收藏职位列表
-            List<UserFavPositionDO> favPositionRecords = bizTools.getFavPositions(userId, 0);
+            List<UserCollectPositionDO> favPositionRecords = bizTools.getFavPositions(userId);
             if (favPositionRecords != null && favPositionRecords.size() > 0) {
                 //差用用户收藏职位的职位详情
                 List<JobPositionDO> positions = bizTools.getPositions(favPositionRecords.stream().map(favP -> Integer.valueOf(favP.getPositionId())).collect(Collectors.toList()));
@@ -408,6 +413,7 @@ public class UserCenterService {
                                     logger.info("preID :{}", preID);
                                 }
                                 RecruitmentScheduleEnum recruitmentScheduleEnum1 = RecruitmentScheduleEnum.createFromID(oprationRecord.getOperateTplId());
+                                logger.info("UserCenterService getApplicationDetail recruitmentScheduleEnum1: {}", recruitmentScheduleEnum1);
                                 if (recruitmentScheduleEnum1 != null) {
                                     applicationOprationRecordVO.setEvent(recruitmentScheduleEnum1.getAppStatusDescription((byte) applicationDO.getApplyType(), (byte) applicationDO.getEmailStatus(), preID));
                                 }
@@ -423,6 +429,7 @@ public class UserCenterService {
                                     }
                                     applyCount ++;
                                 }
+                                logger.info("UserCenterService getApplicationDetail applicationOprationRecordVO : {}", applicationOprationRecordVO);
                                 applicationOperationRecordVOList.add(applicationOprationRecordVO);
                                 count ++;
                             }

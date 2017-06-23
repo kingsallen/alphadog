@@ -15,11 +15,7 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyAccountDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrTeamDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.position.struct.Position;
@@ -173,7 +169,7 @@ public class PositionBS {
         logger.info("synchronizeResult:" + JSON.toJSONString(synchronizeResult));
         if (synchronizeResult.getStatus() == 0) {
 
-            List<ThirdPartyPositionData> pds = new ArrayList<>();
+            List<HrThirdPartyPositionDO> pds = new ArrayList<>();
 
             String syncTime = (new DateTime()).toString("yyyy-MM-dd HH:mm:ss");
             positions.forEach(p -> {
@@ -184,14 +180,17 @@ public class PositionBS {
                 result.setAccount_id(p.getAccount_id());
                 results.add(result);
 
-                ThirdPartyPositionData data = new ThirdPartyPositionData();
+                HrThirdPartyPositionDO data = new HrThirdPartyPositionDO();
                 data.setAddress(p.getWork_place());
                 data.setChannel((byte) p.getChannel());
-                data.setIs_synchronization((byte) PositionSync.binding.getValue());
-                data.setOccupation(p.getCategory_sub_code());
-                data.setSync_time(syncTime);
-                data.setPosition_id(p.getPosition_id());
-                data.setAccount_id(String.valueOf(p.getAccount_id()));
+                data.setIsSynchronization((byte) PositionSync.binding.getValue());
+                //将最后一个职能的Code存到数据库
+                if (p.getOccupation().size() > 0) {
+                    data.setOccupation(p.getOccupation().get(p.getOccupation().size() - 1));
+                }
+                data.setSyncTime(syncTime);
+                data.setPositionId(p.getPosition_id());
+                data.setThirdPartyAccountId(p.getAccount_id());
                 pds.add(data);
             });
             // 回写数据到第三方职位表表
@@ -287,9 +286,9 @@ public class PositionBS {
                 if (refreshPosition.getPosition_info() != null && StringUtils.isNotNullOrEmpty(refreshPosition.getUser_name())) {
                     logger.info("refreshPosition:" + JSON.toJSONString(refreshPosition));
                     response = chaosService.refreshPosition(refreshPosition);
-                    ThirdPartyPositionData account = JSON.parseObject(response.getData(), ThirdPartyPositionData.class);
+                    HrThirdPartyPositionDO thirdPartyPosition = JSON.parseObject(response.getData(), HrThirdPartyPositionDO.class);
                     result.put("is_refresh", PositionRefreshType.refreshing.getValue());
-                    result.put("sync_time", account.getSync_time());
+                    result.put("sync_time", thirdPartyPosition.getSyncTime());
                     logger.info("refreshPosition:result" + JSON.toJSONString(result));
                     response = ResultMessage.SUCCESS.toResponse(result);
                 } else {
@@ -302,15 +301,21 @@ public class PositionBS {
         } else {
             response = ResultMessage.POSITION_NOT_EXIST.toResponse(result);
         }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            logger.error(e.getMessage(), e);
-//            response = ResultMessage.PROGRAM_EXCEPTION.toResponse();
-//        } finally {
-//            // do nothing
-//        }
 
         return response;
+    }
+
+    @CounterIface
+    public Response refreshPositionQX(List<Integer> list) throws TException {
+        List<Position> positionList = new ArrayList<Position>();
+        for (int i = 0; i < list.size(); i++) {
+            Position position = new Position();
+            position.setId(list.get(i));
+            position.setUpdate_time((new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
+            positionList.add(position);
+        }
+        jobPositionDao.updatePositionList(positionList);
+        return ResultMessage.SUCCESS.toResponse(null);
     }
 
     private void writeBackToQX(int positionId) {
@@ -319,4 +324,5 @@ public class PositionBS {
         job.setUpdate_time((new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
         jobPositionDao.updatePosition(job);
     }
+
 }

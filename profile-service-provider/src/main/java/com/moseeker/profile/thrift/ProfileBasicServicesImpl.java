@@ -103,6 +103,7 @@ public class ProfileBasicServicesImpl implements Iface {
     @Override
     public Response postResource(Basic struct) throws TException {
         try {
+            logger.info("basic postResource ");
             Basic result = service.postResource(struct);
             if (result != null) {
                 return ResponseUtils.success(String.valueOf(result.getProfile_id()));

@@ -199,7 +199,7 @@ public class UserQxService {
                 // 过滤掉不存在job_position中的职位收藏
                 List<Integer> positionIds = collectPositions.stream().map(m -> m.getPositionId()).collect(Collectors.toList());
                 query.clear();
-                query.where("id", Arrays.toString(positionIds.toArray()));
+                query.where(Condition.buildCommonCondition("id", positionIds, ValueOp.IN));
                 Map<Integer, JobPositionDO> positions = jobPositionDao.getPositions(query.buildQuery()).stream().collect(Collectors.toMap(k -> k.getId(), v -> v));
                 List<CollectPositionForm> positionFormList = new ArrayList<>();
                 collectPositions.stream().filter(f -> positions.containsKey(f.getPositionId())).forEach(r -> {

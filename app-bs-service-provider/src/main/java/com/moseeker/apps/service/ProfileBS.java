@@ -56,7 +56,7 @@ public class ProfileBS {
 			return ResultMessage.PROGRAM_PARAM_NOTEXIST.toResponse();
 		}
 		Query qu=new Query.QueryBuilder().where("id",positionId).buildQuery();
-		Position position = new Position();
+		Position position;
 		try {
 			position =jobPositionDao.getData(qu, Position.class);
 		} catch (Exception e1) {
@@ -66,7 +66,7 @@ public class ProfileBS {
 		} finally {
 			//do nothing
 		}
-		if(position.getId() < 1) {
+		if(position == null) {
 			return ResultMessage.POSITION_NOT_EXIST.toResponse();
 		}
 		Map<String, Object> resume = JSON.parseObject(profile);

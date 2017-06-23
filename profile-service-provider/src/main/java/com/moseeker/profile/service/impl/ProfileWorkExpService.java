@@ -85,7 +85,7 @@ public class ProfileWorkExpService {
             List<Integer> positionCodes = new ArrayList<>();
             records.forEach(record -> {
                 if (record.getIndustryCode() != null && record.getIndustryCode().intValue() > 0
-                        && StringUtils.isNullOrEmpty(record.getIndustryName())) {
+                        && StringUtils.isNotNullOrEmpty(record.getIndustryName())) {
                     industryCodes.add(record.getIndustryCode().intValue());
                 }
                 if (record.getCityCode() != null && record.getCityCode().intValue() > 0

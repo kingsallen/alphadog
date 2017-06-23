@@ -2,18 +2,15 @@ package com.moseeker.baseorm.dao.hrdb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
-import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccountHr;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountHrRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.query.Condition;
-import com.moseeker.common.util.query.ConditionOp;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountHrDO;
 import org.apache.thrift.TException;
@@ -25,9 +22,11 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * HR帐号数据库持久类
@@ -81,35 +80,6 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
             dbrecord.setRemainNum(record.getRemainNum());
             dbrecord.setSyncTime(record.getSyncTime());
             count = dbrecord.update();
-        }
-        return count;
-    }
-
-    /**
-     * 修改第三方帐号信息
-     *
-     * @param account
-     * @return
-     */
-    public int updatePartyAccountByCompanyIdChannel(ThirdPartAccountData account) {
-        logger.info("updatePartyAccountByCompanyIdChannel");
-        int count = 0;
-        try {
-            Date date = sdf.parse(account.getSync_time());
-            HrThirdPartyAccountRecord record = create.selectFrom(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
-                    .where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.COMPANY_ID
-                            .equal((int) (account.getCompany_id())))
-                    .and(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.CHANNEL.equal((short) account.getChannel()))
-                    .fetchOne();
-            if (record != null) {
-                logger.info("HrThirdPartyAccount.id:{}", record.getId().intValue());
-                logger.info("remainume:{}", account.getRemain_num());
-                record.setSyncTime(new Timestamp(date.getTime()));
-                record.setRemainNum((int) (account.getRemain_num()));
-                count = record.update();
-            }
-        } catch (ParseException e) {
-            logger.error(e.getMessage(), e);
         }
         return count;
     }

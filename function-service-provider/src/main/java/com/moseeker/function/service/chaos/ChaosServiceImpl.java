@@ -11,8 +11,8 @@ import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.UrlUtil;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -60,7 +60,7 @@ public class ChaosServiceImpl {
      * 将返回来的Json成功的信息装载到HrThirdPartyAccountDO
      * 出现错误直接抛出BizException
      *
-     * @param opType 0 绑定 1 刷新账号信息
+     * @param opType              0 绑定 1 刷新账号信息
      * @param json
      * @param thirdPartyAccountDO
      * @throws Exception
@@ -74,7 +74,7 @@ public class ChaosServiceImpl {
 //			4 捕获异常，操作中断
         int status = jsonObject.getIntValue("status");
 
-        String opName = opType == 0 ? "绑定":"刷新";
+        String opName = opType == 0 ? "绑定" : "刷新";
 
         if (status == 0) {
             thirdPartyAccountDO.setRemainNum(jsonObject.getJSONObject("data").getIntValue("remain_number"));
@@ -82,13 +82,13 @@ public class ChaosServiceImpl {
         } else if (status == 1) {
             throw new BIZException(1, "账号或者密码错误！");
         } else if (status == 2) {
-            throw new BIZException(2, opName+"超时了，请重试！");
+            throw new BIZException(2, opName + "超时了，请重试！");
         } else if (status == 3) {
-            throw new BIZException(3, opName+"失败了，请重试！");
+            throw new BIZException(3, opName + "失败了，请重试！");
         } else if (status == 4) {
-            throw new BIZException(4, opName+"失败了，请稍后重试！");
+            throw new BIZException(4, opName + "失败了，请稍后重试！");
         } else {
-            throw new BIZException(5, opName+"发生异常，请稍后重试！");
+            throw new BIZException(5, opName + "发生异常，请稍后重试！");
         }
     }
 
@@ -185,16 +185,16 @@ public class ChaosServiceImpl {
 
     public Response refreshPosition(ThirdPartyPositionForSynchronizationWithAccount position) {
         logger.info("refreshPosition:redis:{}", JSON.toJSONString(position));
-        ThirdPartyPositionData p = new ThirdPartyPositionData();
+        HrThirdPartyPositionDO p = new HrThirdPartyPositionDO();
         try {
             String positionJson = JSON.toJSONString(position);
             redisClient.lpush(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH_QUEUE.toString(), positionJson);
             logger.info("refreshPosition:redis:{}", position.getPosition_id());
             p.setChannel(Byte.valueOf(position.getChannel()));
-            p.setPosition_id(Integer.valueOf(position.getPosition_id()));
-            p.setIs_refresh((byte) PositionRefreshType.refreshing.getValue());
-            p.setRefresh_time((new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
-            p.setAccount_id(position.getAccount_id());
+            p.setPositionId(Integer.valueOf(position.getPosition_id()));
+            p.setIsRefresh((byte) PositionRefreshType.refreshing.getValue());
+            p.setRefreshTime((new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
+            p.setThirdPartyAccountId(Integer.valueOf(position.getAccount_id()));
             thirdpartyPositionDao.upsertThirdPartyPosition(p);
 
             DateTime dt = new DateTime();

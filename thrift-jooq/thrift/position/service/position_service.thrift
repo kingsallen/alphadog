@@ -2,6 +2,7 @@ include "../struct/position_struct.thrift"
 include "../../common/struct/common_struct.thrift"
 include "../../apps/struct/appbs_struct.thrift"
 include "../../dao/struct/dao_struct.thrift"
+include "../../dao/struct/hrdb/hr_third_party_position_struct.thrift"
 include "../../dao/struct/campaignrvo_struct.thrift"
 
 namespace java com.moseeker.thrift.gen.position.service
@@ -22,7 +23,7 @@ service PositionServices {
     position_struct.ThirdPartyPositionForSynchronizationWithAccount createRefreshPosition(1: i32 positionId, 2: i32 account_id);
     //是否可以刷新
     bool ifAllowRefresh(1:i32 positionId, 2: i32 account_id);
-    list<dao_struct.ThirdPartyPositionData> getThirdPartyPositions(1: common_struct.CommonQuery query);
+    list<hr_third_party_position_struct.HrThirdPartyPositionDO> getThirdPartyPositions(1: common_struct.CommonQuery query);
 
     // 批量修改职位
     common_struct.Response batchHandlerJobPostion(1:position_struct.BatchHandlerJobPostion batchHandlerJobPostion);

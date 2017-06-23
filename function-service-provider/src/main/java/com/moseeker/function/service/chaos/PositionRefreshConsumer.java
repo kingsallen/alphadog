@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
-import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.AppId;
@@ -13,8 +12,8 @@ import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.constants.PositionRefreshType;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
-import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.position.struct.Position;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -44,9 +43,6 @@ public class PositionRefreshConsumer {
 
     @Autowired
     private HRThirdPartyAccountDao thirdPartyAccountDao;
-
-    @Autowired
-    private UserHrAccountDao userHrAccountDao;
 
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
@@ -100,18 +96,18 @@ public class PositionRefreshConsumer {
      */
     @CounterIface
     private void writeBack(PositionForSyncResultPojo pojo) {
-        ThirdPartyPositionData data = new ThirdPartyPositionData();
+        HrThirdPartyPositionDO data = new HrThirdPartyPositionDO();
         data.setChannel(Byte.valueOf(pojo.getChannel()));
-        data.setPosition_id(Integer.valueOf(pojo.getPosition_id()));
+        data.setPositionId(Integer.valueOf(pojo.getPosition_id()));
         if (pojo.getStatus() == 0) {
-            data.setIs_refresh((byte) PositionRefreshType.refreshed.getValue());
-            data.setRefresh_time(pojo.getSync_time());
+            data.setIsRefresh((byte) PositionRefreshType.refreshed.getValue());
+            data.setRefreshTime(pojo.getSync_time());
         } else {
-            data.setIs_refresh((byte) PositionRefreshType.failed.getValue());
+            data.setIsRefresh((byte) PositionRefreshType.failed.getValue());
             if (pojo.getStatus() == 2) {
-                data.setSync_fail_reason(Constant.POSITION_SYNCHRONIZATION_FAILED);
+                data.setSyncFailReason(Constant.POSITION_SYNCHRONIZATION_FAILED);
             } else {
-                data.setSync_fail_reason(pojo.getMessage());
+                data.setSyncFailReason(pojo.getMessage());
             }
         }
         try {
