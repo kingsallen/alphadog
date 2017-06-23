@@ -93,7 +93,11 @@ public class CandidateDBDao {
         Query query = new Query.QueryBuilder().where("sys_user_id", String.valueOf(userID)).and("company_id", String.valueOf(companyId)).buildQuery();
         try {
             CandidateCompanyDO candidateCompanyDO = candidateCompanyDao.getCandidateCompany(query);
-            return Optional.of(candidateCompanyDO);
+            if (candidateCompanyDO != null) {
+                return Optional.of(candidateCompanyDO);
+            } else {
+                return Optional.empty();
+            }
         } catch (CURDException e) {
             if (e.getCode() != 90010) {
                 throw e;
