@@ -909,6 +909,9 @@ public class CandidateEntity implements Candidate {
             if (candidatePositionDOOptional.isPresent()) {
                 candidate.setViewNumber(candidatePositionDOOptional.get().getViewNumber());
                 candidate.setInsterested(BooleanUtils.toBooleanObject(candidatePositionDOOptional.get().getIsInterested()));
+            } else {
+                candidate.setViewNumber(0);
+                candidate.setInsterested(false);
             }
         }
     }
@@ -933,6 +936,8 @@ public class CandidateEntity implements Candidate {
                 String name = StringUtils.isNotNullOrEmpty(userUserDOOptional.get().getName())
                         ? userUserDOOptional.get().getName() : userUserDOOptional.get().getNickname();
                 candidate.setPresenteeFriendName(name);
+            } else {
+                candidate.setPresenteeFriendName("");
             }
         }
     }
@@ -958,6 +963,9 @@ public class CandidateEntity implements Candidate {
                         ? userUserDOOptional.get().getName() : userUserDOOptional.get().getNickname();
                 candidate.setPresenteeName(name);
                 candidate.setPresenteeLogo(userUserDOOptional.get().getHeadimg());
+            } else {
+                candidate.setPresenteeName("");
+                candidate.setPresenteeLogo("");
             }
         }
     }
