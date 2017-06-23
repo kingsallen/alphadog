@@ -40,18 +40,32 @@ public class PositionChangeUtil {
      * @return
      */
     public ThirdPartyPositionForSynchronization changeToThirdPartyPosition(ThirdPartyPosition form, Position positionDB) {
-        LoggerFactory.getLogger(PositionChangeUtil.class).info("---------------------");
+        logger.info("changeToThirdPartyPosition---------------------");
         ThirdPartyPositionForSynchronization position = new ThirdPartyPositionForSynchronization();
+
+        //使用的第三方帐号的
         position.setAccount_id(form.getThird_party_account_id());
+
+        //渠道
         position.setChannel(form.getChannel());
+
+        //职位名称
         position.setTitle(positionDB.getTitle());
+
+        //是否显示为面议
+        position.setSalary_discuss(form.isSalary_discuss() ? (byte) 1 : (byte) 0);
 
         ChannelType channelType = ChannelType.instaceFromInteger(form.getChannel());
 
+        //设置职位职能
         setOccupation(form, channelType, position);
+
+        //招聘人数
         setQuantity(form.getCount(), positionDB.getCount(), position);
 
+        //学历要求
         setDegree(positionDB.getDegree(), channelType, position);
+
         Integer experience = null;
         try {
             if (StringUtils.isNotNullOrEmpty(positionDB.getExperience())) {
@@ -59,7 +73,7 @@ public class PositionChangeUtil {
             }
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            LoggerFactory.getLogger(PositionChangeUtil.class).error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         } finally {
             //do nothing
         }
@@ -91,20 +105,20 @@ public class PositionChangeUtil {
         position.setStop_date(dayAfter60.toString("yyyy-MM-dd"));
         //转职位
         if (positionDB.getCities() != null && positionDB.getCities().size() > 0) {
-            LoggerFactory.getLogger(PositionChangeUtil.class).info("position have city");
+            logger.info("position have city");
             try {
                 int cityCode = 0;
                 String cityName = null;
                 Map<Integer, String> cities = positionDB.getCities();
                 if (cities != null && cities.size() > 0) {
                     for (Map.Entry<Integer, String> entry : cities.entrySet()) {
-                        LoggerFactory.getLogger(PositionChangeUtil.class).info("entry.getKey():{}, entry.getValue():{}", entry.getKey(), entry.getValue());
+                        logger.info("entry.getKey():{}, entry.getValue():{}", entry.getKey(), entry.getValue());
                         cityCode = entry.getKey();
                         cityName = entry.getValue();
                         break;
                     }
                 }
-                LoggerFactory.getLogger(PositionChangeUtil.class).info("cityCode:{}, cityName:{}", cityCode, cityName);
+                logger.info("cityCode:{}, cityName:{}", cityCode, cityName);
                 String otherCode = changeCity(cityCode, form.getChannel());
                 position.setPub_place_code(otherCode);
                 position.setPub_place_name(cityName);
@@ -112,7 +126,7 @@ public class PositionChangeUtil {
             } catch (Exception e) {
                 position.setPub_place_code("");
                 e.printStackTrace();
-                LoggerFactory.getLogger(PositionChangeUtil.class).error(e.getMessage(), e);
+                logger.error(e.getMessage(), e);
             }
         } else {
             position.setPub_place_code("");
@@ -200,12 +214,15 @@ public class PositionChangeUtil {
         switch (channelType) {
             case JOB51:
                 position.setDegree_code(DegreeChangeUtil.getJob51Degree(degree).getValue());
+                position.setDegree_code(DegreeChangeUtil.getJob51Degree(degree).getName());
                 break;
             case ZHILIAN:
                 position.setDegree_code(DegreeChangeUtil.getZhilianDegree(degree).getValue());
+                position.setDegree(DegreeChangeUtil.getZhilianDegree(degree).getName());
                 break;
-            default:
-                position.setDegree_code("");
+            case LIANPIAN:
+                position.setDegree_code(DegreeChangeUtil.getLiepinDegree(degree).getValue());
+                position.setDegree(DegreeChangeUtil.getLiepinDegree(degree).getName());
         }
     }
 
@@ -219,12 +236,16 @@ public class PositionChangeUtil {
         switch (channelType) {
             case JOB51:
                 position.setExperience_code(ExperienceChangeUtil.getJob51Experience(experience).getValue());
+                position.setExperience(ExperienceChangeUtil.getJob51Experience(experience).getValue());
                 break;
             case ZHILIAN:
                 position.setExperience_code(ExperienceChangeUtil.getZhilianExperience(experience).getValue());
+                position.setExperience(ExperienceChangeUtil.getZhilianExperience(experience).getName());
                 break;
-            default:
-                position.setExperience("");
+            case LIANPIAN:
+                position.setExperience_code((experience == null || experience == 0) ? "不限" : String.valueOf(experience));
+                position.setExperience((experience == null || experience == 0) ? "不限" : String.valueOf(experience));
+                break;
         }
     }
 
