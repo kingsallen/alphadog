@@ -498,7 +498,7 @@ public class JobApplicataionService {
      * @param positionId 职位id
      */
     private boolean isAppliedPosition(long userId, long positionId) throws Exception {
-    	Query query=new QueryBuilder().where("applier_id", userId).where("position_id",positionId).buildQuery();
+    	Query query=new QueryBuilder().where("applier_id", userId).and("position_id",positionId).buildQuery();
     	Integer count =jobApplicationDao.getCount(query);
         return count > 0 ? true : false;
     }
