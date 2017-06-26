@@ -81,9 +81,7 @@ public class Query {
         }
 
         public QueryBuilder where(Condition condition) throws ConditionNotExist {
-            setConditions(condition);
-            index = condition;
-            return this;
+            return and(condition);
         }
 
         public QueryBuilder and(String field, Object value) throws ConditionNotExist {
