@@ -10,6 +10,8 @@ import com.moseeker.baseorm.db.campaigndb.tables.CampaignEdmUserrecommendedPosit
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignEdmUsers;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignEmailAgentdelivery;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignHeadImage;
+import com.moseeker.baseorm.db.campaigndb.tables.CampaignNominateCompany;
+import com.moseeker.baseorm.db.campaigndb.tables.CampaignNominatePosition;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignRecommendCompany;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignRecommendPosition;
 
@@ -37,7 +39,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Campaigndb extends SchemaImpl {
 
-    private static final long serialVersionUID = -572757470;
+    private static final long serialVersionUID = 1655583146;
 
     /**
      * The reference instance of <code>campaigndb</code>
@@ -73,6 +75,16 @@ public class Campaigndb extends SchemaImpl {
      * 头部图片(职位列表页)
      */
     public final CampaignHeadImage CAMPAIGN_HEAD_IMAGE = com.moseeker.baseorm.db.campaigndb.tables.CampaignHeadImage.CAMPAIGN_HEAD_IMAGE;
+
+    /**
+     * 企业严选
+     */
+    public final CampaignNominateCompany CAMPAIGN_NOMINATE_COMPANY = com.moseeker.baseorm.db.campaigndb.tables.CampaignNominateCompany.CAMPAIGN_NOMINATE_COMPANY;
+
+    /**
+     * 职位严选
+     */
+    public final CampaignNominatePosition CAMPAIGN_NOMINATE_POSITION = com.moseeker.baseorm.db.campaigndb.tables.CampaignNominatePosition.CAMPAIGN_NOMINATE_POSITION;
 
     /**
      * 推荐公司
@@ -115,6 +127,8 @@ public class Campaigndb extends SchemaImpl {
             CampaignEdmUsers.CAMPAIGN_EDM_USERS,
             CampaignEmailAgentdelivery.CAMPAIGN_EMAIL_AGENTDELIVERY,
             CampaignHeadImage.CAMPAIGN_HEAD_IMAGE,
+            CampaignNominateCompany.CAMPAIGN_NOMINATE_COMPANY,
+            CampaignNominatePosition.CAMPAIGN_NOMINATE_POSITION,
             CampaignRecommendCompany.CAMPAIGN_RECOMMEND_COMPANY,
             CampaignRecommendPosition.CAMPAIGN_RECOMMEND_POSITION);
     }

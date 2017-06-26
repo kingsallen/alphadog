@@ -10,6 +10,8 @@ import com.moseeker.baseorm.db.campaigndb.tables.CampaignEdmUserrecommendedPosit
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignEdmUsers;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignEmailAgentdelivery;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignHeadImage;
+import com.moseeker.baseorm.db.campaigndb.tables.CampaignNominateCompany;
+import com.moseeker.baseorm.db.campaigndb.tables.CampaignNominatePosition;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignRecommendCompany;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignRecommendPosition;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignCompanySurveyRecord;
@@ -18,6 +20,8 @@ import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignEdmUserrecommen
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignEdmUsersRecord;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignEmailAgentdeliveryRecord;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignHeadImageRecord;
+import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignNominateCompanyRecord;
+import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignNominatePositionRecord;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignRecommendCompanyRecord;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignRecommendPositionRecord;
 
@@ -52,6 +56,8 @@ public class Keys {
     public static final Identity<CampaignEdmUsersRecord, Integer> IDENTITY_CAMPAIGN_EDM_USERS = Identities0.IDENTITY_CAMPAIGN_EDM_USERS;
     public static final Identity<CampaignEmailAgentdeliveryRecord, Integer> IDENTITY_CAMPAIGN_EMAIL_AGENTDELIVERY = Identities0.IDENTITY_CAMPAIGN_EMAIL_AGENTDELIVERY;
     public static final Identity<CampaignHeadImageRecord, Integer> IDENTITY_CAMPAIGN_HEAD_IMAGE = Identities0.IDENTITY_CAMPAIGN_HEAD_IMAGE;
+    public static final Identity<CampaignNominateCompanyRecord, Integer> IDENTITY_CAMPAIGN_NOMINATE_COMPANY = Identities0.IDENTITY_CAMPAIGN_NOMINATE_COMPANY;
+    public static final Identity<CampaignNominatePositionRecord, Integer> IDENTITY_CAMPAIGN_NOMINATE_POSITION = Identities0.IDENTITY_CAMPAIGN_NOMINATE_POSITION;
     public static final Identity<CampaignRecommendCompanyRecord, Integer> IDENTITY_CAMPAIGN_RECOMMEND_COMPANY = Identities0.IDENTITY_CAMPAIGN_RECOMMEND_COMPANY;
     public static final Identity<CampaignRecommendPositionRecord, Integer> IDENTITY_CAMPAIGN_RECOMMEND_POSITION = Identities0.IDENTITY_CAMPAIGN_RECOMMEND_POSITION;
 
@@ -65,6 +71,8 @@ public class Keys {
     public static final UniqueKey<CampaignEdmUsersRecord> KEY_CAMPAIGN_EDM_USERS_PRIMARY = UniqueKeys0.KEY_CAMPAIGN_EDM_USERS_PRIMARY;
     public static final UniqueKey<CampaignEmailAgentdeliveryRecord> KEY_CAMPAIGN_EMAIL_AGENTDELIVERY_PRIMARY = UniqueKeys0.KEY_CAMPAIGN_EMAIL_AGENTDELIVERY_PRIMARY;
     public static final UniqueKey<CampaignHeadImageRecord> KEY_CAMPAIGN_HEAD_IMAGE_PRIMARY = UniqueKeys0.KEY_CAMPAIGN_HEAD_IMAGE_PRIMARY;
+    public static final UniqueKey<CampaignNominateCompanyRecord> KEY_CAMPAIGN_NOMINATE_COMPANY_PRIMARY = UniqueKeys0.KEY_CAMPAIGN_NOMINATE_COMPANY_PRIMARY;
+    public static final UniqueKey<CampaignNominatePositionRecord> KEY_CAMPAIGN_NOMINATE_POSITION_PRIMARY = UniqueKeys0.KEY_CAMPAIGN_NOMINATE_POSITION_PRIMARY;
     public static final UniqueKey<CampaignRecommendCompanyRecord> KEY_CAMPAIGN_RECOMMEND_COMPANY_PRIMARY = UniqueKeys0.KEY_CAMPAIGN_RECOMMEND_COMPANY_PRIMARY;
     public static final UniqueKey<CampaignRecommendPositionRecord> KEY_CAMPAIGN_RECOMMEND_POSITION_PRIMARY = UniqueKeys0.KEY_CAMPAIGN_RECOMMEND_POSITION_PRIMARY;
 
@@ -84,6 +92,8 @@ public class Keys {
         public static Identity<CampaignEdmUsersRecord, Integer> IDENTITY_CAMPAIGN_EDM_USERS = createIdentity(CampaignEdmUsers.CAMPAIGN_EDM_USERS, CampaignEdmUsers.CAMPAIGN_EDM_USERS.ID);
         public static Identity<CampaignEmailAgentdeliveryRecord, Integer> IDENTITY_CAMPAIGN_EMAIL_AGENTDELIVERY = createIdentity(CampaignEmailAgentdelivery.CAMPAIGN_EMAIL_AGENTDELIVERY, CampaignEmailAgentdelivery.CAMPAIGN_EMAIL_AGENTDELIVERY.ID);
         public static Identity<CampaignHeadImageRecord, Integer> IDENTITY_CAMPAIGN_HEAD_IMAGE = createIdentity(CampaignHeadImage.CAMPAIGN_HEAD_IMAGE, CampaignHeadImage.CAMPAIGN_HEAD_IMAGE.ID);
+        public static Identity<CampaignNominateCompanyRecord, Integer> IDENTITY_CAMPAIGN_NOMINATE_COMPANY = createIdentity(CampaignNominateCompany.CAMPAIGN_NOMINATE_COMPANY, CampaignNominateCompany.CAMPAIGN_NOMINATE_COMPANY.ID);
+        public static Identity<CampaignNominatePositionRecord, Integer> IDENTITY_CAMPAIGN_NOMINATE_POSITION = createIdentity(CampaignNominatePosition.CAMPAIGN_NOMINATE_POSITION, CampaignNominatePosition.CAMPAIGN_NOMINATE_POSITION.ID);
         public static Identity<CampaignRecommendCompanyRecord, Integer> IDENTITY_CAMPAIGN_RECOMMEND_COMPANY = createIdentity(CampaignRecommendCompany.CAMPAIGN_RECOMMEND_COMPANY, CampaignRecommendCompany.CAMPAIGN_RECOMMEND_COMPANY.ID);
         public static Identity<CampaignRecommendPositionRecord, Integer> IDENTITY_CAMPAIGN_RECOMMEND_POSITION = createIdentity(CampaignRecommendPosition.CAMPAIGN_RECOMMEND_POSITION, CampaignRecommendPosition.CAMPAIGN_RECOMMEND_POSITION.ID);
     }
@@ -95,6 +105,8 @@ public class Keys {
         public static final UniqueKey<CampaignEdmUsersRecord> KEY_CAMPAIGN_EDM_USERS_PRIMARY = createUniqueKey(CampaignEdmUsers.CAMPAIGN_EDM_USERS, "KEY_campaign_edm_users_PRIMARY", CampaignEdmUsers.CAMPAIGN_EDM_USERS.ID);
         public static final UniqueKey<CampaignEmailAgentdeliveryRecord> KEY_CAMPAIGN_EMAIL_AGENTDELIVERY_PRIMARY = createUniqueKey(CampaignEmailAgentdelivery.CAMPAIGN_EMAIL_AGENTDELIVERY, "KEY_campaign_email_agentdelivery_PRIMARY", CampaignEmailAgentdelivery.CAMPAIGN_EMAIL_AGENTDELIVERY.ID);
         public static final UniqueKey<CampaignHeadImageRecord> KEY_CAMPAIGN_HEAD_IMAGE_PRIMARY = createUniqueKey(CampaignHeadImage.CAMPAIGN_HEAD_IMAGE, "KEY_campaign_head_image_PRIMARY", CampaignHeadImage.CAMPAIGN_HEAD_IMAGE.ID);
+        public static final UniqueKey<CampaignNominateCompanyRecord> KEY_CAMPAIGN_NOMINATE_COMPANY_PRIMARY = createUniqueKey(CampaignNominateCompany.CAMPAIGN_NOMINATE_COMPANY, "KEY_campaign_nominate_company_PRIMARY", CampaignNominateCompany.CAMPAIGN_NOMINATE_COMPANY.ID);
+        public static final UniqueKey<CampaignNominatePositionRecord> KEY_CAMPAIGN_NOMINATE_POSITION_PRIMARY = createUniqueKey(CampaignNominatePosition.CAMPAIGN_NOMINATE_POSITION, "KEY_campaign_nominate_position_PRIMARY", CampaignNominatePosition.CAMPAIGN_NOMINATE_POSITION.ID);
         public static final UniqueKey<CampaignRecommendCompanyRecord> KEY_CAMPAIGN_RECOMMEND_COMPANY_PRIMARY = createUniqueKey(CampaignRecommendCompany.CAMPAIGN_RECOMMEND_COMPANY, "KEY_campaign_recommend_company_PRIMARY", CampaignRecommendCompany.CAMPAIGN_RECOMMEND_COMPANY.ID);
         public static final UniqueKey<CampaignRecommendPositionRecord> KEY_CAMPAIGN_RECOMMEND_POSITION_PRIMARY = createUniqueKey(CampaignRecommendPosition.CAMPAIGN_RECOMMEND_POSITION, "KEY_campaign_recommend_position_PRIMARY", CampaignRecommendPosition.CAMPAIGN_RECOMMEND_POSITION.ID);
     }

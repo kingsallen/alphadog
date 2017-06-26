@@ -10,6 +10,8 @@ import com.moseeker.baseorm.db.campaigndb.tables.CampaignEdmUserrecommendedPosit
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignEdmUsers;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignEmailAgentdelivery;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignHeadImage;
+import com.moseeker.baseorm.db.campaigndb.tables.CampaignNominateCompany;
+import com.moseeker.baseorm.db.campaigndb.tables.CampaignNominatePosition;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignRecommendCompany;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignRecommendPosition;
 
@@ -58,6 +60,16 @@ public class Tables {
      * 头部图片(职位列表页)
      */
     public static final CampaignHeadImage CAMPAIGN_HEAD_IMAGE = com.moseeker.baseorm.db.campaigndb.tables.CampaignHeadImage.CAMPAIGN_HEAD_IMAGE;
+
+    /**
+     * 企业严选
+     */
+    public static final CampaignNominateCompany CAMPAIGN_NOMINATE_COMPANY = com.moseeker.baseorm.db.campaigndb.tables.CampaignNominateCompany.CAMPAIGN_NOMINATE_COMPANY;
+
+    /**
+     * 职位严选
+     */
+    public static final CampaignNominatePosition CAMPAIGN_NOMINATE_POSITION = com.moseeker.baseorm.db.campaigndb.tables.CampaignNominatePosition.CAMPAIGN_NOMINATE_POSITION;
 
     /**
      * 推荐公司

@@ -99,6 +99,7 @@ public class SearchengineController {
     
         try {
             Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
+            logger.info(JSON.toJSONString(reqParams)+"=============");
             String keywords = BeanUtils.converToString(reqParams.get("keywords"));
             String cities = BeanUtils.converToString(reqParams.get("cities"));
             String industries = BeanUtils.converToString(reqParams.get("industries"));
@@ -121,6 +122,9 @@ public class SearchengineController {
             Response result = searchengineServices.query(keywords, cities, industries, occupations, scale,
                     employment_type, candidate_source, experience, degree, salary, company_id, page_from, page_size,
                     child_company_id,department, order_by_priority, custom);
+            logger.info(keywords, cities, industries, occupations, scale,
+                    employment_type, candidate_source, experience, degree, salary, company_id, page_from, page_size,
+                    child_company_id,department, order_by_priority, custom,"=============");
             if (result.getStatus() == 0) {
                 return ResponseLogNotification.success(request, result);
             } else {

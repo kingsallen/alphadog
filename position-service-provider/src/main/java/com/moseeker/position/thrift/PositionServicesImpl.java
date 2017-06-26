@@ -3,7 +3,6 @@ package com.moseeker.position.thrift;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.moseeker.common.exception.ExceptionType;
 import com.moseeker.position.service.fundationbs.PositionQxService;
 import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
 import com.moseeker.thrift.gen.position.struct.Position;
