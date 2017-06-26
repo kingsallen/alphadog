@@ -85,6 +85,7 @@ public class JobApplicataionService {
     @SuppressWarnings("serial")
     @CounterIface
     public Response postApplication(JobApplication jobApplication) throws TException {
+        logger.info("JobApplicataionService postApplication jobApplication:{}", jobApplication);
         try {
             // 获取该申请的职位
         	Query query=new QueryBuilder().where("id", jobApplication.getPosition_id()).buildQuery();
@@ -98,10 +99,12 @@ public class JobApplicataionService {
             // 初始化参数
             initJobApplication(jobApplication, jobPositionRecord);
             // 添加申请
-            JobApplicationRecord jobApplicationRecord = (JobApplicationRecord) BeanUtils.structToDB(jobApplication,
+            logger.info("JobApplicataionService postApplication ");
+            JobApplicationRecord jobApplicationRecord = BeanUtils.structToDB(jobApplication,
                     JobApplicationRecord.class);
+            logger.info("JobApplicataionService postApplication jobApplicationRecord:{}", jobApplicationRecord);
             if (jobApplicationRecord.getWechatId() == null) {
-                jobApplicationRecord.setWechatId((int)(0));
+                jobApplicationRecord.setWechatId(0);
             }
             int jobApplicationId =this.saveJobApplication(jobApplicationRecord, jobPositionRecord);
             if (jobApplicationId > 0) {
@@ -693,24 +696,29 @@ public class JobApplicataionService {
 		// TODO Auto-generated method stub
 		int appId=0;
 		try{
-        	Query query=new QueryBuilder().where("id", jobApplicationRecord.getRecommenderUserId()).buildQuery();
-			UserUserRecord userUserRecord=userUserDao.getRecord(query);
 			if(jobApplicationRecord.getRecommenderUserId() != null && jobApplicationRecord.getRecommenderUserId().intValue() > 0) {
-				boolean existUserEmployee = false;
-				Query query1=new QueryBuilder().where("sysuser_id",userUserRecord.getId().intValue())
-						.where("disable", 0).where("activation",0).where("status", 0).buildQuery();
+                Query query=new QueryBuilder().where("id", jobApplicationRecord.getRecommenderUserId()).buildQuery();
+                UserUserRecord userUserRecord=userUserDao.getRecord(query);
+                boolean existUserEmployee = false;
+                Query query1=new QueryBuilder().where("sysuser_id",userUserRecord.getId().intValue())
+						.where("disable", 0).where("activation",0).buildQuery();
 				UserEmployeeRecord userEmployeeRecord=userEmployeedao.getRecord(query1);
-				if(userEmployeeRecord==null){
+                logger.info("JobApplicataionService saveJobApplication userEmployeeRecord:{}", userEmployeeRecord);
+				if(userEmployeeRecord != null){
 					existUserEmployee = true;
 				}
+                logger.info("JobApplicataionService saveJobApplication existUserEmployee:{}", existUserEmployee);
 				if(!existUserEmployee) {
+                    logger.info("JobApplicataionService saveJobApplication not employee");
 	                jobApplicationRecord.setRecommenderUserId(0);
 	            }
 				if(jobApplicationRecord.getApplierId() != null && jobApplicationRecord.getApplierId().intValue() == jobApplicationRecord.getRecommenderUserId().intValue()) {
-	                jobApplicationRecord.setRecommenderUserId(0);
+                    logger.info("JobApplicataionService saveJobApplication applier_id equals recommender_user_id");
+				    jobApplicationRecord.setRecommenderUserId(0);
 	            }
 				
 			}
+            logger.info("JobApplicataionService saveJobApplication jobApplicationRecord:{}",jobApplicationRecord);
 			jobApplicationDao.addRecord(jobApplicationRecord);
 			appId=jobApplicationRecord.getId();
 			if(appId > 0){

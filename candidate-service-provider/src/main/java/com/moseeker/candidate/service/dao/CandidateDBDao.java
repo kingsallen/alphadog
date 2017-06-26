@@ -90,10 +90,14 @@ public class CandidateDBDao {
      * @return
      */
     public Optional<CandidateCompanyDO> getCandidateCompanyByUserIDCompanyID(int userID, int companyId) throws TException {
-        Query query = new Query.QueryBuilder().where("user_id", String.valueOf(userID)).and("company_id", String.valueOf(companyId)).buildQuery();
+        Query query = new Query.QueryBuilder().where("sys_user_id", String.valueOf(userID)).and("company_id", String.valueOf(companyId)).buildQuery();
         try {
             CandidateCompanyDO candidateCompanyDO = candidateCompanyDao.getCandidateCompany(query);
-            return Optional.of(candidateCompanyDO);
+            if (candidateCompanyDO != null) {
+                return Optional.of(candidateCompanyDO);
+            } else {
+                return Optional.empty();
+            }
         } catch (CURDException e) {
             if (e.getCode() != 90010) {
                 throw e;
@@ -438,7 +442,8 @@ public class CandidateDBDao {
      * @return 员工集合
      */
     public List<UserEmployeeDO> listUserEmployee(int companyId) {
-        Query query = new Query.QueryBuilder().select("id").where("company_id", companyId).and("disable", Constant.ENABLE_OLD)
+        Query query = new Query.QueryBuilder().select("id").select("sysuser_id")
+                .where("company_id", companyId).and("disable", Constant.ENABLE_OLD)
                 .and("activation", EmployeeType.AUTH_SUCCESS.getValue()).buildQuery();
         return userEmployeeDao.getDatas(query);
     }

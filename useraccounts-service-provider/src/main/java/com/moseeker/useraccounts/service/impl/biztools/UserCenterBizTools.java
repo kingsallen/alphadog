@@ -444,7 +444,7 @@ public class UserCenterBizTools {
 	public List<HrOperationRecordDO> listHrOperationRecord(int appId) {
 		Query.QueryBuilder queryUtil = new Query.QueryBuilder();
 		queryUtil.where("app_id", appId);
-		queryUtil.select("id").select("app_id").select("opt_time");
+		queryUtil.select("id").select("app_id").select("opt_time").select("operate_tpl_id");
 		queryUtil.orderBy("opt_time");
 		queryUtil.setPageNum(0);
 		queryUtil.setPageSize(Integer.MAX_VALUE);
