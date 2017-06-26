@@ -9,7 +9,7 @@ typedef string Timestamp
 struct ThirdPartyPosition {
      1: optional i32 salary_top,             // 薪资上限
      2: optional i32 salary_bottom,          // 薪资下限
-     3: optional string salary_month,        // 薪资下限
+     3: optional i32 salary_month,        // 薪资下限
      4: optional i32 count,            	     // 招聘人数
      5: optional string address,             // 工作地址
      6: optional bool use_company_address,   // 是否使用公司地址

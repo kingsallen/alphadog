@@ -161,6 +161,7 @@ public class ChaosServiceImpl {
                 int second = dt.getSecondOfDay();
                 for (ThirdPartyPositionForSynchronizationWithAccount position : positions) {
                     position.getPosition_info().setEmail("cv_" + position.getPosition_id() + email);
+
                     String positionJson = JSON.toJSONString(position);
                     logger.info("synchronize position:" + positionJson);
 

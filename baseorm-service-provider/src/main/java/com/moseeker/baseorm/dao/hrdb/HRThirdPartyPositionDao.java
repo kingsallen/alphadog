@@ -43,133 +43,10 @@ public class HRThirdPartyPositionDao extends JooqCrudImpl<HrThirdPartyPositionDO
         super(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION, HrThirdPartyPositionDO.class);
     }
 
-    private static final String UPSERT_SQL = "insert into hrdb.hrThirdPartyPosition(positionId, thirdPartPositionId, isSynchronization, isRefresh, syncTime, refreshTime, updateTime, occupation, address, channel, thirdParty_accountId) select ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? from DUAL where not exists(select id from hrdb.hrThirdPartyPosition where thirdParty_accountId = ? and positionId = ?)";
-
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public HRThirdPartyPositionDao(TableImpl<HrThirdPartyPositionRecord> table, Class<HrThirdPartyPositionDO> hrThirdPartyPositionDOClass) {
         super(table, hrThirdPartyPositionDOClass);
-    }
-
-    public List<HrThirdPartyPositionDO> getThirdPartyPositions(Query query) {
-        List<HrThirdPartyPositionDO> datas = new ArrayList<>();
-        try {
-            List<HrThirdPartyPositionRecord> records = this.getRecords(query);
-            if (records != null && records.size() > 0) {
-                records.forEach(record -> {
-                    HrThirdPartyPositionDO position = new HrThirdPartyPositionDO();
-                    copy(position, record);
-                    datas.add(position);
-                });
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-        } finally {
-            // do nothing
-        }
-        return datas;
-    }
-
-    private void copy(HrThirdPartyPositionDO position, HrThirdPartyPositionRecord record) {
-        position.setAddress(record.getAddress());
-        position.setId(record.getId());
-        position.setChannel(record.getChannel().byteValue());
-        position.setOccupation(record.getOccupation());
-        position.setPositionId(record.getPositionId().intValue());
-        if (record.getSyncTime() != null) {
-            position.setSyncTime((new DateTime(record.getSyncTime().getTime())).toString("yyyy-MM-dd"));
-        }
-        if (record.getRefreshTime() != null) {
-            position.setRefreshTime((new DateTime(record.getRefreshTime().getTime())).toString("yyyy-MM-dd"));
-        }
-        if (record.getUpdateTime() != null) {
-            position.setUpdateTime((new DateTime(record.getUpdateTime().getTime())).toString("yyyy-MM-dd"));
-        }
-        position.setThirdPartPositionId(record.getThirdPartPositionId());
-        position.setIsRefresh(record.getIsRefresh().byteValue());
-        position.setIsSynchronization(record.getIsSynchronization().byteValue());
-    }
-
-    public Response upsertThirdPartyPositions(List<HrThirdPartyPositionDO> positions) {
-        if (positions != null && positions.size() > 0) {
-            logger.info("companyDao upsertThirdPartyPositions" + JSON.toJSONString(positions));
-            positions.forEach(position -> {
-                try {
-                    Date syncTime = StringUtils.isNotNullOrEmpty(position.getSyncTime()) ? sdf.parse(position.getSyncTime()) : null;
-                    Date refreshTime = StringUtils.isNotNullOrEmpty(position.getRefreshTime()) ? sdf.parse(position.getRefreshTime()) : null;
-                    Date updateTime = StringUtils.isNotNullOrEmpty(position.getUpdateTime()) ? sdf.parse(position.getUpdateTime()) : null;
-
-                    int count = create.execute(UPSERT_SQL, position.getPositionId(), position.getThirdPartPositionId(),
-                            position.getIsSynchronization(), position.getIsRefresh(), syncTime, refreshTime,
-                            updateTime, position.getOccupation(), position.getAddress(), position.getChannel(),
-                            position.getChannel(), position.getPositionId());
-
-                    if (count == 0) {
-                        logger.info("companyDao upsertThirdPartyPositions exist");
-                        HrThirdPartyPositionRecord dbrecord = create
-                                .selectFrom(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION)
-                                .where(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID
-                                        .equal(Integer.valueOf(position.getPositionId())))
-                                .and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.THIRD_PARTY_ACCOUNT_ID
-                                        .equal(Integer.valueOf(position.getThirdPartyAccountId())))
-                                .fetchOne();
-                        if (dbrecord != null) {
-                            if (StringUtils.isNotNullOrEmpty(position.getAddress())) {
-                                dbrecord.setAddress(position.getAddress());
-                            }
-
-                            if (StringUtils.isNotNullOrEmpty(position.getThirdPartPositionId())) {
-                                dbrecord.setThirdPartPositionId(position.getThirdPartPositionId());
-                            }
-                            dbrecord.setPositionId(Integer.valueOf(position.getPositionId()));
-                            if (position.getThirdPartPositionId() != null) {
-                                dbrecord.setThirdPartPositionId(position.getThirdPartPositionId());
-                            }
-                            dbrecord.setChannel(Integer.valueOf(position.getChannel()).shortValue());
-                            if (position.isSetIsRefresh()) {
-                                dbrecord.setIsRefresh(Integer.valueOf(position.getIsRefresh()).shortValue());
-                            }
-                            if (position.isSetIsSynchronization()) {
-                                dbrecord.setIsSynchronization(Integer.valueOf(position.getIsSynchronization()).shortValue());
-                            }
-                            if (position.getOccupation() != null) {
-                                dbrecord.setOccupation(position.getOccupation());
-                            }
-                            if (position.getSyncTime() != null) {
-                                dbrecord.setSyncTime(new Timestamp(sdf.parse(position.getSyncTime()).getTime()));
-                            }
-                            if (position.getRefreshTime() != null) {
-                                dbrecord.setRefreshTime(
-                                        new Timestamp(sdf.parse(position.getRefreshTime()).getTime()));
-                            }
-                            if (position.getUpdateTime() != null) {
-                                dbrecord.setUpdateTime(
-                                        new Timestamp(sdf.parse(position.getUpdateTime()).getTime()));
-                            }
-                            if (position.isSetSyncFailReason()) {
-                                dbrecord.setSyncFailReason(position.getSyncFailReason());
-                            }
-                            count = dbrecord.update();
-                            if (count > 0) {
-                                logger.info("companyDao upsertThirdPartyPositions update success");
-                            } else {
-                                logger.info("companyDao upsertThirdPartyPositions update failed");
-                            }
-                        }
-                    } else {
-                        logger.info("companyDao upsertThirdPartyPositions add success");
-                    }
-                } catch (Exception e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                    logger.error(e.getMessage(), e);
-                }
-            });
-            return ResponseUtils.success(null);
-        } else {
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
-        }
     }
 
     /**
@@ -200,6 +77,22 @@ public class HRThirdPartyPositionDao extends JooqCrudImpl<HrThirdPartyPositionDO
         return position;
     }
 
+
+    /**
+     * 批量插入或更新第三方职能
+     * @param positions
+     * @return
+     */
+    public Response upsertThirdPartyPositions(List<HrThirdPartyPositionDO> positions) {
+        if (positions == null || positions.size() == 0) return ResponseUtils.success(null);
+        logger.info("companyDao upsertThirdPartyPositions" + JSON.toJSONString(positions));
+        positions.forEach(position -> {
+            upsertThirdPartyPosition(position);
+        });
+        return ResponseUtils.success(null);
+
+    }
+
     /**
      * 如果第三方职位数据存在，则修改，否则添加
      *
@@ -207,66 +100,32 @@ public class HRThirdPartyPositionDao extends JooqCrudImpl<HrThirdPartyPositionDO
      * @return
      */
     public int upsertThirdPartyPosition(HrThirdPartyPositionDO position) {
-        int count = 0;
+        try {
+            Query query = new Query.QueryBuilder()
+                    .where("third_party_account_id", position.getThirdPartyAccountId())
+                    .and("position_id", position.getPositionId())
+                    .buildQuery();
+            HrThirdPartyPositionDO thirdPartyPosition = getData(query);
+            if (thirdPartyPosition == null) {
+                logger.info("添加一个第三方职位:channel:{},positionId:{}", position.getChannel(), position.getPositionId());
+                addData(position);
+                return 1;
+            } else {
+                logger.info("添加一个第三方职位:channel:{},positionId:{}", position.getChannel(), position.getPositionId());
+                position.setId(thirdPartyPosition.getId());
+                int updateResult = updateData(position);
 
-        logger.info("isrefresh:" + position.getIsRefresh());
-        logger.info("refreshTime:" + position.getRefreshTime());
-        HrThirdPartyPositionRecord record = create.selectFrom(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION)
-                .where(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID
-                        .eq(Integer.valueOf(position.getPositionId())))
-                .and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.CHANNEL.eq((short) position.getChannel()))
-                .fetchOne();
-        if (record != null) {
-            //BeanUtils.structToDB(position, record, null);
-            logger.info("record before isRefresh:" + record.getIsRefresh());
-            try {
-                if (StringUtils.isNotNullOrEmpty(position.getAddress())) {
-                    record.setAddress(position.getAddress());
+                if (updateResult < 1) {
+                    logger.error("更新第三方职位失败:{}", JSON.toJSONString(position));
                 }
-                if (StringUtils.isNotNullOrEmpty(position.getThirdPartPositionId())) {
-                    record.setThirdPartPositionId(position.getThirdPartPositionId());
-                }
-                record.setPositionId(position.getPositionId());
-                if (position.getThirdPartPositionId() != null) {
-                    record.setThirdPartPositionId(position.getThirdPartPositionId());
-                }
-                record.setChannel(Integer.valueOf(position.getChannel()).shortValue());
-                if (position.isSetIsRefresh()) {
-                    record.setIsRefresh(Integer.valueOf(position.getIsRefresh()).shortValue());
-                }
-                if (position.getIsSynchronization() != 0) {
-                    record.setIsSynchronization(Integer.valueOf(position.getIsSynchronization()).shortValue());
-                }
-                if (position.getOccupation() != null) {
-                    record.setOccupation(position.getOccupation());
-                }
-                if (position.getSyncTime() != null) {
-                    record.setSyncTime(new Timestamp(sdf.parse(position.getSyncTime()).getTime()));
-                }
-                if (position.getRefreshTime() != null) {
-                    record.setRefreshTime(
-                            new Timestamp(sdf.parse(position.getRefreshTime()).getTime()));
-                }
-                if (position.getUpdateTime() != null) {
-                    record.setUpdateTime(
-                            new Timestamp(sdf.parse(position.getUpdateTime()).getTime()));
-                }
-                if (position.isSetSyncFailReason()) {
-                    record.setSyncFailReason(position.getSyncFailReason());
-                }
-                logger.info("record isRefresh:" + record.getIsRefresh());
-                logger.info("record RefreshTime:" + record.getRefreshTime());
-                create.attach(record);
-                count = record.update();
-            } catch (ParseException e) {
-                logger.error(e.getMessage(), e);
+
+                return updateResult;
             }
-        } else {
-            HrThirdPartyPositionRecord record1 = BeanUtils.structToDB(position, HrThirdPartyPositionRecord.class);
-            create.attach(record1);
-            count = record1.insert();
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            logger.error("添加第三方职位同步失败:{}", JSON.toJSONString(position));
+            return 0;
         }
-        logger.info("upsertThirdPartyPosition count:" + count);
-        return count;
     }
 }

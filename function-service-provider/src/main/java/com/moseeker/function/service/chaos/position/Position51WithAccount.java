@@ -1,18 +1,20 @@
-package com.moseeker.function.service.chaos;
+package com.moseeker.function.service.chaos.position;
+
+import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
 
 import java.io.Serializable;
 
 /**
  * Created by zhangdi on 2017/6/22.
  */
-public class Position51SyncWithAccountPojo implements Serializable {
+public class Position51WithAccount implements Serializable {
 
     public String user_name;
     public String password;
     public String member_name;
     public String position_id;
     public String channel;
-    public Position51SyncPojo position_info;
+    public Position51 position_info;
     public String company_name;
     public String account_id;
 
@@ -56,11 +58,11 @@ public class Position51SyncWithAccountPojo implements Serializable {
         this.channel = channel;
     }
 
-    public Position51SyncPojo getPosition_info() {
+    public Position51 getPosition_info() {
         return position_info;
     }
 
-    public void setPosition_info(Position51SyncPojo position_info) {
+    public void setPosition_info(Position51 position_info) {
         this.position_info = position_info;
     }
 
@@ -92,5 +94,22 @@ public class Position51SyncWithAccountPojo implements Serializable {
                 ", company_name='" + company_name + '\'' +
                 ", account_id='" + account_id + '\'' +
                 '}';
+    }
+
+    public static Position51WithAccount copyFromSyncPosition(ThirdPartyPositionForSynchronizationWithAccount syncPosition) {
+
+        if (syncPosition == null) return null;
+
+        Position51WithAccount position51WithAccount = new Position51WithAccount();
+        position51WithAccount.setUser_name(syncPosition.getUser_name());
+        position51WithAccount.setPassword(syncPosition.getPassword());
+        position51WithAccount.setMember_name(syncPosition.getMember_name());
+        position51WithAccount.setPosition_id(String.valueOf(syncPosition.getPosition_id()));
+        position51WithAccount.setChannel(String.valueOf(syncPosition.getChannel()));
+        position51WithAccount.setCompany_name(syncPosition.getCompany_name());
+        position51WithAccount.setChannel(String.valueOf(syncPosition.getChannel()));
+        position51WithAccount.setPosition_info(Position51.copyFromSyncPosition(syncPosition.getPosition_info()));
+
+        return position51WithAccount;
     }
 }

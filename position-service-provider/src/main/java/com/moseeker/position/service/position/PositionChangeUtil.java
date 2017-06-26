@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -55,9 +56,6 @@ public class PositionChangeUtil {
         //职位名称
         position.setTitle(positionDB.getTitle());
 
-        //是否显示为面议
-        position.setSalary_discuss(form.isSalary_discuss() ? (byte) 1 : (byte) 0);
-
         ChannelType channelType = ChannelType.instaceFromInteger(form.getChannel());
 
         //设置职位职能
@@ -88,7 +86,10 @@ public class PositionChangeUtil {
         setSalaryTop(form.getSalary_top(), positionDB.getSalary_top(), position);
 
         //是否薪资面谈
-        position.setSalary_discuss(form.isSalary_discuss() ? (byte) 1 : (byte) 0);
+        position.setSalary_discuss(form.isSalary_discuss());
+
+        //薪水发放月数
+        position.setSalary_month(form.getSalary_month());
 
         //职位详情
         String description = "";
@@ -105,6 +106,9 @@ public class PositionChangeUtil {
         //招聘职位类型
         setEmployeeType(positionDB.getEmployment_type(), form.getChannel(), position);
 
+        //反馈时间
+        position.setFeedback_period(form.getFeedback_period());
+
         //有效时间
         DateTime dt = new DateTime();
         DateTime dayAfter60 = dt.plusDays(60);
@@ -118,25 +122,25 @@ public class PositionChangeUtil {
     private static void setSalaryBottom(int salaryBottom, int salaryBottomDB,
                                         ThirdPartyPositionForSynchronization position) {
         if (salaryBottom > 0) {
-            position.setSalary_low(String.valueOf(salaryBottom * 1000));
+            position.setSalary_bottom(salaryBottom * 1000);
         } else {
-            position.setSalary_low(String.valueOf(salaryBottomDB * 1000));
+            position.setSalary_bottom(salaryBottomDB * 1000);
         }
     }
 
     private static void setSalaryTop(int salary_top, int salaryTopDB, ThirdPartyPositionForSynchronization position) {
         if (salary_top > 0) {
-            position.setSalary_high(String.valueOf(salary_top * 1000));
+            position.setSalary_top(salary_top * 1000);
         } else {
-            position.setSalary_high(String.valueOf(salaryTopDB * 1000));
+            position.setSalary_bottom(salaryTopDB * 1000);
         }
     }
 
     private static void setQuantity(int count, int countFromDB, ThirdPartyPositionForSynchronization position) {
         if (count > 0) {
-            position.setQuantity(String.valueOf(count));
+            position.setQuantity(count);
         } else {
-            position.setQuantity(String.valueOf(countFromDB));
+            position.setQuantity(countFromDB);
         }
     }
 
@@ -310,9 +314,12 @@ public class PositionChangeUtil {
 
 
     public void setCities(Position positionDB, ThirdPartyPositionForSynchronization syncPosition, ChannelType channelType) {
+        logger.info("setCities:{}", positionDB.getCities());
         //转城市
         if (channelType == ChannelType.LIEPIN) {
-
+            List<List<String>> otherCityCodes = cityMapDao.getOtherCityFunllLevel(ChannelType.LIEPIN, positionDB.getCities().keySet());
+            syncPosition.setCities(otherCityCodes);
+            logger.info("setCities:otherCityCodes:{}", otherCityCodes);
         } else {
             if (positionDB.getCities() != null && positionDB.getCities().size() > 0) {
                 logger.info("position have city");

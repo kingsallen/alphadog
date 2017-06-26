@@ -148,16 +148,16 @@ struct JobOccupationCustom {
 struct ThirdPartyPositionForSynchronization {
     1:  string title="",
     2:  list<string> occupation,
-    3:  list<string> cities,
-    4:  i8 salary_discuss,
+    3:  list<list<string>> cities,
+    4:  bool salary_discuss,
     5:  i32 salary_month,
-    6:  string quantity="",
+    6:  i32 quantity,
     7:  string degree_code="",
     8:  string degree="",
     9:  string experience_code="",
     10: string experience="",
-    11: string salary_low="",
-    12: string salary_high="",
+    11: i32 salary_bottom,
+    12: i32 salary_top,
     13: string description="",
     14: string pub_place_code="",
     15: i32 position_id,
@@ -177,11 +177,11 @@ struct ThirdPartyPositionForSynchronizationWithAccount {
     1: string user_name="",
     2: string password="",
     3: string member_name="",
-    4: string position_id,
-    5: string channel="",
+    4: i32 position_id,
+    5: i32 channel,
     6: ThirdPartyPositionForSynchronization position_info,
     7: string company_name="",
-    8: string account_id
+    8: i32 account_id
 }
 
 struct JobPositionExt{

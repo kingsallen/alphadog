@@ -1,36 +1,38 @@
-package com.moseeker.function.service.chaos;
+package com.moseeker.function.service.chaos.position;
+
+import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
 
 import java.io.Serializable;
 
 /**
  * Created by zhangdi on 2017/6/22.
  */
-public class Position51SyncPojo implements Serializable{
+public class Position51 implements Serializable {
 
-    public String title;
-    public String category_main_code;
-    public String category_main;
-    public String category_sub_code;
-    public String category_sub;
-    public String quantity;
-    public String degree_code;
-    public String degree;
-    public String experience_code;
-    public String experience;
-    public String salary_low;
-    public String salary_high;
-    public String description;
-    public String pub_place_code;
-    public int position_id;
-    public String work_place;
-    public String email;
-    public String stop_date;
-    public int channel;
-    public String type_code;
-    public String job_id;
-    public String pub_place_name;
-    public String department;
-    public int account_id;
+    private String title;
+    private String category_main_code;
+    private String category_main;
+    private String category_sub_code;
+    private String category_sub;
+    private String quantity;
+    private String degree_code;
+    private String degree;
+    private String experience_code;
+    private String experience;
+    private String salary_low;
+    private String salary_high;
+    private String description;
+    private String pub_place_code;
+    private int position_id;
+    private String work_place;
+    private String email;
+    private String stop_date;
+    private int channel;
+    private String type_code;
+    private String job_id;
+    private String pub_place_name;
+    private String department;
+    private int account_id;
 
 
     public String getTitle() {
@@ -253,5 +255,40 @@ public class Position51SyncPojo implements Serializable{
                 ", department='" + department + '\'' +
                 ", account_id=" + account_id +
                 '}';
+    }
+
+    public static Position51 copyFromSyncPosition(ThirdPartyPositionForSynchronization positionInfo) {
+
+        if (positionInfo == null) return null;
+
+        Position51 position51 = new Position51();
+        position51.setTitle(positionInfo.getTitle());
+        if (positionInfo.getOccupation() != null && positionInfo.getOccupation().size() > 1) {
+            position51.setCategory_main_code(positionInfo.getOccupation().get(positionInfo.getOccupation().size() - 2));
+            position51.setCategory_sub_code(positionInfo.getOccupation().get(positionInfo.getOccupation().size() - 1));
+        }
+        position51.setQuantity(String.valueOf(positionInfo.getQuantity()));
+        position51.setDegree_code(positionInfo.getDegree_code());
+        position51.setDegree(positionInfo.getDegree());
+        position51.setExperience(positionInfo.getExperience());
+        position51.setExperience_code(positionInfo.getExperience_code());
+        position51.setSalary_low(String.valueOf(positionInfo.getSalary_bottom()));
+        position51.setSalary_high(String.valueOf(positionInfo.getSalary_top()));
+//        private String salary_low;
+//        private String salary_high;
+//        private String description;
+//        private String pub_place_code;
+//        private int position_id;
+//        private String work_place;
+//        private String email;
+//        private String stop_date;
+//        private int channel;
+//        private String type_code;
+//        private String job_id;
+//        private String pub_place_name;
+//        private String department;
+//        private int account_id;
+
+        return position51;
     }
 }

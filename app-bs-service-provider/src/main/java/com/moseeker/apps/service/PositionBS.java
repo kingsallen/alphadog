@@ -144,8 +144,7 @@ public class PositionBS {
                 ThirdPartyPositionForSynchronizationWithAccount p = new ThirdPartyPositionForSynchronizationWithAccount();
                 p.setPosition_info(pos);
                 for (HrThirdPartyAccountDO account : thirdPartyAccounts) {
-                    if (account.getId() > 0 && account.binding == 1 && account.getRemainNum() > 0
-                            && account.getChannel() == pos.getChannel()) {
+                    if (account.getId() > 0 && account.binding == 1 && account.getRemainNum() > 0 && account.getChannel() == pos.getChannel()) {
                         if (subCompany != null) {
                             p.setCompany_name(subCompany.getAbbreviation());
                         }
@@ -189,8 +188,15 @@ public class PositionBS {
                     data.setOccupation(p.getOccupation().get(p.getOccupation().size() - 1));
                 }
                 data.setSyncTime(syncTime);
+                data.setUpdateTime(syncTime);
                 data.setPositionId(p.getPosition_id());
                 data.setThirdPartyAccountId(p.getAccount_id());
+                data.setFeedbackPeriod(p.getFeedback_period());
+                data.setDepartment(p.getDepartment());
+                data.setSalaryBottom(p.getSalary_bottom());
+                data.setSalaryTop(p.getSalary_top());
+                data.setSalaryDiscuss(p.isSalary_discuss() ? 1 : 0);
+                data.setSalaryMonth(p.getSalary_month());
                 pds.add(data);
             });
             // 回写数据到第三方职位表表
@@ -199,15 +205,15 @@ public class PositionBS {
 
             ThirdPartyPositionForSynchronization p = positions.get(positions.size() - 1);
             boolean needWriteBackToPositin = false;
-            if (!p.getSalary_high().equals(String.valueOf(moseekerPosition.getSalary_top() * 1000))) {
-                moseekerPosition.setSalary_top(Integer.valueOf(p.getSalary_high()) / 1000);
+            if (p.getSalary_top() != moseekerPosition.getSalary_top() * 1000) {
+                moseekerPosition.setSalary_top(p.getSalary_top() / 1000);
                 needWriteBackToPositin = true;
             }
-            if (!p.getSalary_low().equals(String.valueOf(moseekerPosition.getSalary_bottom() * 1000))) {
-                moseekerPosition.setSalary_bottom(Integer.valueOf(p.getSalary_low()) / 1000);
+            if (p.getSalary_bottom() != moseekerPosition.getSalary_bottom() * 1000) {
+                moseekerPosition.setSalary_bottom(p.getSalary_bottom() / 1000);
                 needWriteBackToPositin = true;
             }
-            if (!p.getQuantity().equals(String.valueOf(moseekerPosition.getCount()))) {
+            if (p.getQuantity() != moseekerPosition.getCount()) {
                 moseekerPosition.setCount(Integer.valueOf(p.getQuantity()));
                 needWriteBackToPositin = true;
             }
