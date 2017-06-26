@@ -701,7 +701,7 @@ public class JobApplicataionService {
                 UserUserRecord userUserRecord=userUserDao.getRecord(query);
                 boolean existUserEmployee = false;
                 Query query1=new QueryBuilder().where("sysuser_id",userUserRecord.getId().intValue())
-						.where("disable", 0).where("activation",0).buildQuery();
+						.and("disable", 0).and("activation",0).buildQuery();
 				UserEmployeeRecord userEmployeeRecord=userEmployeedao.getRecord(query1);
                 logger.info("JobApplicataionService saveJobApplication userEmployeeRecord:{}", userEmployeeRecord);
 				if(userEmployeeRecord != null){
