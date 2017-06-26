@@ -41,7 +41,7 @@ public class JobOccupationService {
 	public Response getCustomField(String param){
 		JSONObject obj=JSONObject.parseObject(param);
 		int company_id=obj.getIntValue("company_id");
-		Query query=new Query.QueryBuilder().where("company_id",company_id).where("status",1).buildQuery();
+		Query query=new Query.QueryBuilder().where("company_id",company_id).and("status",1).buildQuery();
 		try{
 			HRCompanyConfData hrconf=getHRCompanyConf(company_id);
 			Response result1=customDao.getJobCustoms(query);
