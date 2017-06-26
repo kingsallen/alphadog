@@ -274,21 +274,18 @@ public class Position51 implements Serializable {
         position51.setExperience_code(positionInfo.getExperience_code());
         position51.setSalary_low(String.valueOf(positionInfo.getSalary_bottom()));
         position51.setSalary_high(String.valueOf(positionInfo.getSalary_top()));
-//        private String salary_low;
-//        private String salary_high;
-//        private String description;
-//        private String pub_place_code;
-//        private int position_id;
-//        private String work_place;
-//        private String email;
-//        private String stop_date;
-//        private int channel;
-//        private String type_code;
-//        private String job_id;
-//        private String pub_place_name;
-//        private String department;
-//        private int account_id;
-
+        position51.setDescription(positionInfo.getDescription());
+        position51.setPub_place_code(positionInfo.getPub_place_code());
+        position51.setPub_place_name(positionInfo.getPub_place_name());
+        position51.setPosition_id(positionInfo.getPosition_id());
+        position51.setWork_place(positionInfo.getWork_place());
+        position51.setEmail(positionInfo.getEmail());
+        position51.setStop_date(positionInfo.getStop_date());
+        position51.setChannel(positionInfo.getChannel());
+        position51.setType_code(positionInfo.getType_code());
+        position51.setJob_id(positionInfo.getJob_id());
+        position51.setDepartment(positionInfo.getDepartment());
+        position51.setAccount_id(positionInfo.getAccount_id());
         return position51;
     }
 }

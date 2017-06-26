@@ -38,6 +38,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.position.struct.*;
 import org.apache.thrift.TException;
 import org.jooq.Field;
@@ -288,7 +289,7 @@ public class PositionService {
      * 转成第三方渠道职位
      */
     public List<ThirdPartyPositionForSynchronization> changeToThirdPartyPosition(List<ThirdPartyPosition> forms,
-                                                                                 Position position) {
+                                                                                 JobPositionDO position) {
         List<ThirdPartyPositionForSynchronization> positions = new ArrayList<>();
         if (forms != null && forms.size() > 0 && position != null && position.getId() > 0) {
             forms.forEach(form -> {
@@ -347,16 +348,16 @@ public class PositionService {
         ThirdPartyPositionForSynchronizationWithAccount account = new ThirdPartyPositionForSynchronizationWithAccount();
         ThirdPartyPosition form = new ThirdPartyPosition();
         Query findPosition = new Query.QueryBuilder().where("id", positionId).buildQuery();
-        Position position = jobPositionDao.getData(findPosition, Position.class);
+        JobPositionDO position = jobPositionDao.getData(findPosition);
         HrThirdPartyPositionDO thirdPartyPosition = thirdpartyPositionDao.getThirdPartyPosition(positionId, account_id);
         Query findAccount = new Query.QueryBuilder().where("id", account_id).buildQuery();
         HrThirdPartyAccountDO thirdPartyAccount = thirdPartyAccountDao.getData(findAccount);
         account.setUser_name(thirdPartyAccount.getUsername());
         account.setMember_name(thirdPartyAccount.getMembername());
         account.setPassword(thirdPartyAccount.getPassword());
-        account.setChannel(String.valueOf(thirdPartyAccount.getChannel()));
-        account.setPosition_id(String.valueOf(positionId));
-        account.setAccount_id(String.valueOf(account_id));
+        account.setChannel(thirdPartyAccount.getChannel());
+        account.setPosition_id(positionId);
+        account.setAccount_id(account_id);
 
         form.setChannel((byte) thirdPartyAccount.getChannel());
         if (position.getId() > 0 && thirdPartyPosition.getId() > 0) {

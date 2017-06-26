@@ -16,6 +16,7 @@ import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.position.struct.Position;
@@ -66,7 +67,7 @@ public class PositionBS {
         logger.info("synchronizePositionToThirdPartyPlatform:" + JSON.toJSONString(position));
         // 职位数据是否存在
         Query qu = new Query.QueryBuilder().where("id", position.getPosition_id()).buildQuery();
-        com.moseeker.thrift.gen.position.struct.Position moseekerPosition = jobPositionDao.getPositionWithCityCode(qu);
+        JobPositionDO moseekerPosition = jobPositionDao.getData(qu);
         logger.info("position:" + JSON.toJSONString(moseekerPosition));
 
         // 如果职位数据不存在，并且是不是在招职位
@@ -81,7 +82,7 @@ public class PositionBS {
         List<ThirdPartyPosition> positionFroms = new ArrayList<>();
 
         //根据是否使用公司地址来设置工作地址
-        setCompanyAddress(position.getChannels(), moseekerPosition.getCompany_id());
+        setCompanyAddress(position.getChannels(), moseekerPosition.getCompanyId());
 
         //获取发布人绑定的第三方帐号
         List<HrThirdPartyAccountDO> thirdPartyAccounts = hRThirdPartyAccountDao.getThirdPartyAccountsByUserId(moseekerPosition.getPublisher());
@@ -151,11 +152,11 @@ public class PositionBS {
                         if (hrTeam != null) {
                             p.getPosition_info().setDepartment(hrTeam.getName());
                         }
-                        p.setAccount_id(String.valueOf(account.getId()));
-                        p.setChannel(String.valueOf(pos.getChannel()));
+                        p.setAccount_id(account.getId());
+                        p.setChannel(pos.getChannel());
                         p.setPassword(account.getPassword());
                         p.setUser_name(account.getUsername());
-                        p.setPosition_id(String.valueOf(pos.getPosition_id()));
+                        p.setPosition_id(pos.getPosition_id());
                         p.setMember_name(account.getMembername());
                         PositionsForSynchronizations.add(p);
                         logger.info("ThirdPartyPositionForSynchronization:{}", JSON.toJSONString(p));
@@ -205,12 +206,12 @@ public class PositionBS {
 
             ThirdPartyPositionForSynchronization p = positions.get(positions.size() - 1);
             boolean needWriteBackToPositin = false;
-            if (p.getSalary_top() != moseekerPosition.getSalary_top() * 1000) {
-                moseekerPosition.setSalary_top(p.getSalary_top() / 1000);
+            if (p.getSalary_top() != moseekerPosition.getSalaryTop() * 1000) {
+                moseekerPosition.setSalaryTop(p.getSalary_top() / 1000);
                 needWriteBackToPositin = true;
             }
-            if (p.getSalary_bottom() != moseekerPosition.getSalary_bottom() * 1000) {
-                moseekerPosition.setSalary_bottom(p.getSalary_bottom() / 1000);
+            if (p.getSalary_bottom() != moseekerPosition.getSalaryBottom() * 1000) {
+                moseekerPosition.setSalaryBottom(p.getSalary_bottom() / 1000);
                 needWriteBackToPositin = true;
             }
             if (p.getQuantity() != moseekerPosition.getCount()) {
@@ -220,7 +221,7 @@ public class PositionBS {
             if (needWriteBackToPositin) {
                 logger.info("needWriteBackToPositin :" + JSON.toJSONString(moseekerPosition));
 //                            positionDao.updatePosition(positionStruct);
-                jobPositionDao.updatePosition(moseekerPosition);
+                jobPositionDao.updateData(moseekerPosition);
             }
 
             return ResultMessage.SUCCESS.toResponse(results);
@@ -325,10 +326,10 @@ public class PositionBS {
     }
 
     private void writeBackToQX(int positionId) {
-        Position job = new Position();
-        job.setId(positionId);
-        job.setUpdate_time((new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
-        jobPositionDao.updatePosition(job);
+        JobPositionDO positionDO = new JobPositionDO();
+        positionDO.setId(positionId);
+        positionDO.setUpdateTime((new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
+        jobPositionDao.updateData(positionDO);
     }
 
 }

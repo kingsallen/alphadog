@@ -4,6 +4,7 @@ include "../../apps/struct/appbs_struct.thrift"
 include "../../dao/struct/dao_struct.thrift"
 include "../../dao/struct/hrdb/hr_third_party_position_struct.thrift"
 include "../../dao/struct/campaignrvo_struct.thrift"
+include "../../dao/struct/jobdb/job_position_struct.thrift"
 
 namespace java com.moseeker.thrift.gen.position.service
 /*
@@ -18,7 +19,7 @@ service PositionServices {
     //获取公司两种自定义的字段
     common_struct.Response CustomField(1:string param);    
     //转成第三方同步职位数据    
-    list<position_struct.ThirdPartyPositionForSynchronization> changeToThirdPartyPosition(1:list<appbs_struct.ThirdPartyPosition> form, 2:position_struct.Position position);
+    list<position_struct.ThirdPartyPositionForSynchronization> changeToThirdPartyPosition(1:list<appbs_struct.ThirdPartyPosition> form, 2:job_position_struct.JobPositionDO position);
     //生成第三方同步职位数据
     position_struct.ThirdPartyPositionForSynchronizationWithAccount createRefreshPosition(1: i32 positionId, 2: i32 account_id);
     //是否可以刷新

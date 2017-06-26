@@ -9,6 +9,8 @@ import com.moseeker.common.exception.CacheConfigNotExistException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.UrlUtil;
+import com.moseeker.function.service.chaos.position.Position51WithAccount;
+import com.moseeker.function.service.chaos.position.PositionLiepinWithAccount;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
@@ -162,12 +164,20 @@ public class ChaosServiceImpl {
                 for (ThirdPartyPositionForSynchronizationWithAccount position : positions) {
                     position.getPosition_info().setEmail("cv_" + position.getPosition_id() + email);
 
-                    String positionJson = JSON.toJSONString(position);
+                    String positionJson = null;
+
+                    if (position.getChannel() == ChannelType.LIEPIN.getValue()) {
+                        positionJson = JSON.toJSONString(PositionLiepinWithAccount.copyFromSyncPosition(position));
+                    } else if (position.getChannel() == ChannelType.JOB51.getValue() || position.getChannel() == ChannelType.ZHILIAN.getValue()) {
+                        positionJson = JSON.toJSONString(Position51WithAccount.copyFromSyncPosition(position));
+                    }
                     logger.info("synchronize position:" + positionJson);
+
+                    if (positionJson == null) continue;
 
                     redisClient.lpush(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_QUEUE.toString(), positionJson);
                     if (second < 60 * 60 * 24) {
-                        redisClient.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH.toString(), String.valueOf(position.getPosition_id()), position.getAccount_id(), "1", 60 * 60 * 24 - second);
+                        redisClient.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH.toString(), String.valueOf(position.getPosition_id()), String.valueOf(position.getAccount_id()), "1", 60 * 60 * 24 - second);
                     }
                 }
                 return ResponseUtils.success(null);
@@ -191,7 +201,7 @@ public class ChaosServiceImpl {
             String positionJson = JSON.toJSONString(position);
             redisClient.lpush(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH_QUEUE.toString(), positionJson);
             logger.info("refreshPosition:redis:{}", position.getPosition_id());
-            p.setChannel(Byte.valueOf(position.getChannel()));
+            p.setChannel(position.getChannel());
             p.setPositionId(Integer.valueOf(position.getPosition_id()));
             p.setIsRefresh((byte) PositionRefreshType.refreshing.getValue());
             p.setRefreshTime((new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));

@@ -1,5 +1,7 @@
 package com.moseeker.function.service.chaos.position;
 
+import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -7,130 +9,73 @@ import java.util.List;
  * Created by zhangdi on 2017/6/26.
  */
 public class PositionLiepinWithAccount implements Serializable {
-    private String title;
-    private List<List<String>> cities;
-    private String address;
-    private String occupation;
-    private String department;
-    private String salary_low;
-    private String salary_high;
-    private String salary_discuss;
-    private String salary_month;
-    private String workyears;
-    private String degree;
-    private String description;
-    private String feedback_period;
-    private String email;
+    private int account_id;
+    private String username;
+    private String password;
+    private int channel;
+    private int position_id;
+    private PositionLiepin position_info;
 
-    public String getTitle() {
-        return title;
+    public int getAccount_id() {
+        return account_id;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setAccount_id(int account_id) {
+        this.account_id = account_id;
     }
 
-    public List<List<String>> getCities() {
-        return cities;
+    public String getUsername() {
+        return username;
     }
 
-    public void setCities(List<List<String>> cities) {
-        this.cities = cities;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public String getAddress() {
-        return address;
+    public String getPassword() {
+        return password;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public String getOccupation() {
-        return occupation;
+    public int getChannel() {
+        return channel;
     }
 
-    public void setOccupation(String occupation) {
-        this.occupation = occupation;
+    public void setChannel(int channel) {
+        this.channel = channel;
     }
 
-    public String getDepartment() {
-        return department;
+    public int getPosition_id() {
+        return position_id;
     }
 
-    public void setDepartment(String department) {
-        this.department = department;
+    public void setPosition_id(int position_id) {
+        this.position_id = position_id;
     }
 
-    public String getSalary_low() {
-        return salary_low;
+    public PositionLiepin getPosition_info() {
+        return position_info;
     }
 
-    public void setSalary_low(String salary_low) {
-        this.salary_low = salary_low;
+    public void setPosition_info(PositionLiepin position_info) {
+        this.position_info = position_info;
     }
 
-    public String getSalary_high() {
-        return salary_high;
-    }
+    public static Object copyFromSyncPosition(ThirdPartyPositionForSynchronizationWithAccount position) {
 
-    public void setSalary_high(String salary_high) {
-        this.salary_high = salary_high;
-    }
+        PositionLiepinWithAccount positionLiepinWithAccount = new PositionLiepinWithAccount();
 
-    public String getSalary_discuss() {
-        return salary_discuss;
-    }
+        positionLiepinWithAccount.setAccount_id(position.getAccount_id());
+        positionLiepinWithAccount.setUsername(position.getUser_name());
+        positionLiepinWithAccount.setPassword(position.getPassword());
+        positionLiepinWithAccount.setChannel(position.getChannel());
+        positionLiepinWithAccount.setPosition_id(position.getPosition_id());
+        positionLiepinWithAccount.setPosition_info(PositionLiepin.copyFromSyncPosition(position.getPosition_info()));
 
-    public void setSalary_discuss(String salary_discuss) {
-        this.salary_discuss = salary_discuss;
-    }
+        return positionLiepinWithAccount;
 
-    public String getSalary_month() {
-        return salary_month;
-    }
-
-    public void setSalary_month(String salary_month) {
-        this.salary_month = salary_month;
-    }
-
-    public String getWorkyears() {
-        return workyears;
-    }
-
-    public void setWorkyears(String workyears) {
-        this.workyears = workyears;
-    }
-
-    public String getDegree() {
-        return degree;
-    }
-
-    public void setDegree(String degree) {
-        this.degree = degree;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getFeedback_period() {
-        return feedback_period;
-    }
-
-    public void setFeedback_period(String feedback_period) {
-        this.feedback_period = feedback_period;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 }

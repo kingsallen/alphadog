@@ -1,6 +1,7 @@
 package com.moseeker.position.service.position;
 
 import com.moseeker.baseorm.dao.dictdb.DictCityMapDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
@@ -8,7 +9,8 @@ import com.moseeker.position.service.position.qianxun.Degree;
 import com.moseeker.position.service.position.qianxun.WorkType;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityMapDO;
-import com.moseeker.thrift.gen.position.struct.Position;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionCityDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -17,9 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 /**
  * 职位转换
@@ -33,6 +35,9 @@ public class PositionChangeUtil {
     @Autowired
     private DictCityMapDao cityMapDao;
 
+    @Autowired
+    JobPositionCityDao jobPositionCityDao;
+
     /**
      * 将仟寻职位转成第卅方职位
      *
@@ -40,7 +45,7 @@ public class PositionChangeUtil {
      * @param positionDB
      * @return
      */
-    public ThirdPartyPositionForSynchronization changeToThirdPartyPosition(ThirdPartyPosition form, Position positionDB) {
+    public ThirdPartyPositionForSynchronization changeToThirdPartyPosition(ThirdPartyPosition form, JobPositionDO positionDB) {
         logger.info("changeToThirdPartyPosition---------------------");
         ThirdPartyPositionForSynchronization position = new ThirdPartyPositionForSynchronization();
 
@@ -62,10 +67,10 @@ public class PositionChangeUtil {
         setOccupation(form, channelType, position);
 
         //招聘人数
-        setQuantity(form.getCount(), positionDB.getCount(), position);
+        setQuantity(form.getCount(), (int) positionDB.getCount(), position);
 
         //学历要求
-        setDegree(positionDB.getDegree(), channelType, position);
+        setDegree((int) positionDB.getDegree(), channelType, position);
 
         //工作经验要求
         Integer experience = null;
@@ -82,8 +87,8 @@ public class PositionChangeUtil {
         setExperience(experience, channelType, position);
 
         //薪资要求
-        setSalaryBottom(form.getSalary_bottom(), positionDB.getSalary_bottom(), position);
-        setSalaryTop(form.getSalary_top(), positionDB.getSalary_top(), position);
+        setSalaryBottom(form.getSalary_bottom(), (int) positionDB.getSalaryBottom(), position);
+        setSalaryTop(form.getSalary_top(), (int) positionDB.getSalaryTop(), position);
 
         //是否薪资面谈
         position.setSalary_discuss(form.isSalary_discuss());
@@ -104,7 +109,7 @@ public class PositionChangeUtil {
         position.setWork_place(form.getAddress());
 
         //招聘职位类型
-        setEmployeeType(positionDB.getEmployment_type(), form.getChannel(), position);
+        setEmployeeType((byte) positionDB.getEmploymentType(), form.getChannel(), position);
 
         //反馈时间
         position.setFeedback_period(form.getFeedback_period());
@@ -235,10 +240,14 @@ public class PositionChangeUtil {
     }
 
     private String changeCity(int cityCode, int channel) {
+
         Query qu = new Query.QueryBuilder().where("code", cityCode).where("channel", channel).buildQuery();
         DictCityMapDO cityMap = cityMapDao.getData(qu);
         String cityCodeStr = "";
-        if (cityMap != null) {
+        try {
+            if (cityMap == null) {
+                return cityCodeStr;
+            }
             switch (ChannelType.instaceFromInteger(channel)) {
                 case JOB51:
                     cityCodeStr = new DecimalFormat("000000").format(Integer.valueOf(cityMap.getCodeOther()));
@@ -246,10 +255,10 @@ public class PositionChangeUtil {
                 case ZHILIAN:
                     cityCodeStr = new DecimalFormat("000").format(Integer.valueOf(cityMap.getCodeOther()));
                     break;
-                case LIEPIN:
-                    cityCodeStr = cityMap.getCodeOther();
-                    break;
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
         if (cityCodeStr.length() == 0) {
             logger.error("转换仟寻城市到第三方城市时找不到channel:{}:code:{}", channel, cityCode);
@@ -313,39 +322,36 @@ public class PositionChangeUtil {
     }
 
 
-    public void setCities(Position positionDB, ThirdPartyPositionForSynchronization syncPosition, ChannelType channelType) {
-        logger.info("setCities:{}", positionDB.getCities());
+    public void setCities(JobPositionDO positionDB, ThirdPartyPositionForSynchronization syncPosition, ChannelType channelType) {
+
+        Query query = new Query.QueryBuilder().where("pid", positionDB.getId()).buildQuery();
+
+        List<JobPositionCityDO> positionCitys = jobPositionCityDao.getDatas(query);
+
+        Set<Integer> positionCityCodes = new HashSet<>();
+
+        if (positionCitys == null || positionCitys.size() == 0) {
+            //设置为全国
+            positionCityCodes.add(111111);
+        } else {
+            for (JobPositionCityDO cityDO : positionCitys) {
+                positionCityCodes.add(cityDO.getCode());
+            }
+        }
+
+        logger.info("setCities:{}", positionCityCodes);
         //转城市
         if (channelType == ChannelType.LIEPIN) {
-            List<List<String>> otherCityCodes = cityMapDao.getOtherCityFunllLevel(ChannelType.LIEPIN, positionDB.getCities().keySet());
+            List<List<String>> otherCityCodes = cityMapDao.getOtherCityFunllLevel(ChannelType.LIEPIN, positionCityCodes);
             syncPosition.setCities(otherCityCodes);
             logger.info("setCities:otherCityCodes:{}", otherCityCodes);
         } else {
-            if (positionDB.getCities() != null && positionDB.getCities().size() > 0) {
+            if (positionCitys != null && positionCitys.size() > 0) {
                 logger.info("position have city");
-                try {
-                    int cityCode = 0;
-                    String cityName = null;
-                    Map<Integer, String> cities = positionDB.getCities();
-                    if (cities != null && cities.size() > 0) {
-                        for (Map.Entry<Integer, String> entry : cities.entrySet()) {
-                            logger.info("entry.getKey():{}, entry.getValue():{}", entry.getKey(), entry.getValue());
-                            cityCode = entry.getKey();
-                            cityName = entry.getValue();
-                            break;
-                        }
-                    }
-                    logger.info("cityCode:{}, cityName:{}", cityCode, cityName);
-                    String otherCode = changeCity(cityCode, channelType.getValue());
-                    syncPosition.setPub_place_code(otherCode);
-                    syncPosition.setPub_place_name(cityName);
-
-                } catch (Exception e) {
-                    syncPosition.setPub_place_code("");
-                    syncPosition.setPub_place_name("");
-                    e.printStackTrace();
-                    logger.error(e.getMessage(), e);
-                }
+                int cityCode = positionCitys.get(0).getCode();
+                logger.info("cityCode:{}", cityCode);
+                String otherCode = changeCity(cityCode, channelType.getValue());
+                syncPosition.setPub_place_code(otherCode);
             } else {
                 syncPosition.setPub_place_code("");
                 syncPosition.setPub_place_name("");

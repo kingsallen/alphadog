@@ -15,6 +15,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.position.service.PositionServices.Iface;
 import com.moseeker.thrift.gen.position.struct.*;
 import org.apache.thrift.TException;
@@ -99,7 +100,7 @@ public class PositionServicesImpl implements Iface {
 
     @Override
     public List<ThirdPartyPositionForSynchronization> changeToThirdPartyPosition(List<ThirdPartyPosition> forms,
-                                                                                 Position position) throws TException {
+                                                                                 JobPositionDO position) throws TException {
         return service.changeToThirdPartyPosition(forms, position);
     }
 
