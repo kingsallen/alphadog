@@ -40,7 +40,7 @@ public enum ChannelType {
 		public String getOrigin(String origin) {
 			String result;
 			if(StringUtils.isNullOrEmpty(origin)) {
-				result = String.valueOf(10000000000000000l);
+				result = String.valueOf(100000000000000000l);
 			} else {
 				if(origin.length() >= 18) {
 					if(origin.charAt(origin.length()-18) == '0') {
