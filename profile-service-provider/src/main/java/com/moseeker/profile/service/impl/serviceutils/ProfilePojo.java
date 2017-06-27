@@ -52,12 +52,11 @@ public class ProfilePojo {
 	 * 解析profile生成ProfilePojo类
 	 * @param resume
 	 * @param userRecord
-	 * @param profileDB 
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
 	public static ProfilePojo parseProfile(Map<String, Object> resume, UserUserRecord userRecord) {
-		LoggerFactory.getLogger(ProfilePojo.class).info("------parseProfile-------");
+		LoggerFactory.getLogger(ProfilePojo.class).info("------parseProfile-------:{}",JSON.toJSONString(resume));
 		ProfilePojo pojo = new ProfilePojo();
 		ProfileUtils profileUtils = new ProfileUtils();
 		
@@ -87,6 +86,7 @@ public class ProfilePojo {
 		ProfileBasicRecord basicRecord = null;
 		try {
 			basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"));
+			LoggerFactory.getLogger(ProfilePojo.class).info("------parseProfile selfIntroduction-------:{}",basicRecord.getSelfIntroduction());
 			pojo.setBasicRecord(basicRecord);
 		} catch (Exception e1) {
 			LoggerFactory.getLogger(ProfilePojo.class).error(e1.getMessage(), e1);
