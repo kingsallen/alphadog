@@ -498,7 +498,7 @@ public class JobApplicataionService {
      * @param positionId 职位id
      */
     private boolean isAppliedPosition(long userId, long positionId) throws Exception {
-    	Query query=new QueryBuilder().where("applier_id", userId).where("position_id",positionId).buildQuery();
+    	Query query=new QueryBuilder().where("applier_id", userId).and("position_id",positionId).buildQuery();
     	Integer count =jobApplicationDao.getCount(query);
         return count > 0 ? true : false;
     }
@@ -701,7 +701,7 @@ public class JobApplicataionService {
                 UserUserRecord userUserRecord=userUserDao.getRecord(query);
                 boolean existUserEmployee = false;
                 Query query1=new QueryBuilder().where("sysuser_id",userUserRecord.getId().intValue())
-						.where("disable", 0).where("activation",0).buildQuery();
+						.and("disable", 0).and("activation",0).buildQuery();
 				UserEmployeeRecord userEmployeeRecord=userEmployeedao.getRecord(query1);
                 logger.info("JobApplicataionService saveJobApplication userEmployeeRecord:{}", userEmployeeRecord);
 				if(userEmployeeRecord != null){
