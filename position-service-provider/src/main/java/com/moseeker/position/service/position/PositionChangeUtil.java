@@ -16,6 +16,7 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ import java.util.Set;
  *
  * @author wjf
  */
+@Service
 public class PositionChangeUtil {
 
     Logger logger = LoggerFactory.getLogger(PositionChangeUtil.class);
@@ -36,7 +38,7 @@ public class PositionChangeUtil {
     private DictCityMapDao cityMapDao;
 
     @Autowired
-    JobPositionCityDao jobPositionCityDao;
+    private JobPositionCityDao jobPositionCityDao;
 
     /**
      * 将仟寻职位转成第卅方职位
@@ -98,7 +100,7 @@ public class PositionChangeUtil {
 
         //职位详情
         String description = "";
-        if (channelType.getValue() == 1) {
+        if (channelType == ChannelType.JOB51 || channelType == ChannelType.LIEPIN) {
             description = convertDescriptionFor51(positionDB.getAccountabilities(), positionDB.getRequirement());
         } else {
             description = convertDescription(positionDB.getAccountabilities(), positionDB.getRequirement());
@@ -113,6 +115,8 @@ public class PositionChangeUtil {
 
         //反馈时间
         position.setFeedback_period(form.getFeedback_period());
+
+        position.setDepartment(form.getDepartment());
 
         //有效时间
         DateTime dt = new DateTime();

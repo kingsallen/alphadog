@@ -70,8 +70,9 @@ public class DictCityMapDao extends JooqCrudImpl<DictCityMapDO, DictCityMapRecor
                         otherCity.add(otherCode);
                     }
                 }
-
-                otherCodes.add(otherCity);
+                if(otherCity.size() > 0) {
+                    otherCodes.add(otherCity);
+                }
             }
         }
 

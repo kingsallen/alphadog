@@ -87,11 +87,8 @@ public class DegreeChangeUtil {
     }
 
     public static LiepinDegree getLiepinDegree(Degree degree) {
-        LiepinDegree liepinDegree = LiepinDegree.NotRequired;
+        LiepinDegree liepinDegree;
         switch (degree) {
-            case None:
-                liepinDegree = LiepinDegree.None;
-                break;
             case SpecicalSecondarySchool:
                 liepinDegree = LiepinDegree.MiddleCollege;
                 break;

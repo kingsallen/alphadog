@@ -17,8 +17,6 @@ public enum  LiepinDegree {
      <li data-value="080"><a href="javascript:;">高中</a></li>
      <li data-value="090"><a href="javascript:;">初中</a></li>
      */
-
-    None("", "-1"),
     NotRequired("不限", "000"),
     PostDoctor("博士后","005"),
     Doctor("博士","010"),

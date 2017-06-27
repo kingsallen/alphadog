@@ -96,6 +96,10 @@ public class PositionService {
     private HrHbPositionBindingDao hrHbPositionBindingDao;
     @Autowired
     private HrHbItemsDao hrHbItemsDao;
+
+    @Autowired
+    private PositionChangeUtil positionChangeUtil;
+
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
     com.moseeker.thrift.gen.searchengine.service.SearchengineServices.Iface searchengineServices = ServiceManager.SERVICEMANAGER
@@ -293,7 +297,7 @@ public class PositionService {
         List<ThirdPartyPositionForSynchronization> positions = new ArrayList<>();
         if (forms != null && forms.size() > 0 && position != null && position.getId() > 0) {
             forms.forEach(form -> {
-                ThirdPartyPositionForSynchronization p = new PositionChangeUtil().changeToThirdPartyPosition(form, position);
+                ThirdPartyPositionForSynchronization p = positionChangeUtil.changeToThirdPartyPosition(form, position);
                 positions.add(p);
             });
         }

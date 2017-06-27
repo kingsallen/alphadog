@@ -23,10 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * HR帐号数据库持久类
@@ -156,19 +153,25 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
 
     public List<HrThirdPartyAccountDO> getThirdPartyAccountsByUserId(int user_id) {
         logger.info("getThirdPartyAccountsByUserId:" + user_id);
-        Query query = new Query.QueryBuilder().select("third_party_account_id").where("id",user_id).and("status",1).buildQuery();
+        Query query = new Query.QueryBuilder().select("third_party_account_id").where("hr_account_id",user_id).and("status",1).buildQuery();
 
         //所有绑定的第三方帐号的ID的合集
-        List<Integer> thirdPartyAccounts = thirdPartyAccountHrDao.getDatas(query,Integer.class);
+        List<HrThirdPartyAccountHrDO> thirdPartyAccounts  = thirdPartyAccountHrDao.getDatas(query);
 
         if(thirdPartyAccounts == null || thirdPartyAccounts.size() == 0){
             return new ArrayList<>();
         }
 
+        Set<Integer> thirdPartyAccountIds = new HashSet<>();
+
+        for(HrThirdPartyAccountHrDO thirdPartyAccountHrDO : thirdPartyAccounts){
+            thirdPartyAccountIds.add(thirdPartyAccountHrDO.getThirdPartyAccountId());
+        }
+
         Short[] valiableBinding = new Short[]{(short) 1, (short) 3, (short) 7};//有效的状态:已绑定，刷新中，刷新程序错误
 
         query = new Query.QueryBuilder()
-                .where(new Condition("id",thirdPartyAccounts,ValueOp.IN))
+                .where(new Condition("id",thirdPartyAccountIds,ValueOp.IN))
                 .and(new Condition("binding", Arrays.asList(valiableBinding),ValueOp.IN))
                 .buildQuery();
 

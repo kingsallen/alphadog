@@ -175,7 +175,7 @@ public class ChaosServiceImpl {
 
                     if (positionJson == null) continue;
 
-                    redisClient.lpush(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_QUEUE.toString(), positionJson);
+                    //redisClient.lpush(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_QUEUE.toString(), positionJson);
                     if (second < 60 * 60 * 24) {
                         redisClient.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH.toString(), String.valueOf(position.getPosition_id()), String.valueOf(position.getAccount_id()), "1", 60 * 60 * 24 - second);
                     }
@@ -199,7 +199,7 @@ public class ChaosServiceImpl {
         HrThirdPartyPositionDO p = new HrThirdPartyPositionDO();
         try {
             String positionJson = JSON.toJSONString(position);
-            redisClient.lpush(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH_QUEUE.toString(), positionJson);
+            //redisClient.lpush(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH_QUEUE.toString(), positionJson);
             logger.info("refreshPosition:redis:{}", position.getPosition_id());
             p.setChannel(position.getChannel());
             p.setPositionId(Integer.valueOf(position.getPosition_id()));

@@ -108,6 +108,7 @@ public class Position51WithAccount implements Serializable {
         position51WithAccount.setChannel(String.valueOf(syncPosition.getChannel()));
         position51WithAccount.setCompany_name(syncPosition.getCompany_name());
         position51WithAccount.setChannel(String.valueOf(syncPosition.getChannel()));
+        position51WithAccount.setAccount_id(String.valueOf(syncPosition.getAccount_id()));
         position51WithAccount.setPosition_info(Position51.copyFromSyncPosition(syncPosition.getPosition_info()));
 
         return position51WithAccount;

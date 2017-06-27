@@ -80,6 +80,7 @@ public class HRThirdPartyPositionDao extends JooqCrudImpl<HrThirdPartyPositionDO
 
     /**
      * 批量插入或更新第三方职能
+     *
      * @param positions
      * @return
      */
@@ -111,8 +112,16 @@ public class HRThirdPartyPositionDao extends JooqCrudImpl<HrThirdPartyPositionDO
                 addData(position);
                 return 1;
             } else {
-                logger.info("添加一个第三方职位:channel:{},positionId:{}", position.getChannel(), position.getPositionId());
+                logger.info("更新一个第三方职位:channel:{},positionId:{}", position.getChannel(), position.getPositionId());
                 position.setId(thirdPartyPosition.getId());
+
+                //一个职位同步到猎聘，如果这个职位有多个城市的话，那么这个职位同步到猎聘会变成多个职位，这时候redis队列中就会返回多个同步消息
+                //这里position的job_id会采用追加的方式，并且采用逗号分隔开来
+
+                if (!thirdPartyPosition.getThirdPartPositionId().equals(position.getThirdPartPositionId())) {
+                    position.setThirdPartPositionId(thirdPartyPosition.getThirdPartPositionId() + "," + position.getThirdPartPositionId());
+                }
+
                 int updateResult = updateData(position);
 
                 if (updateResult < 1) {
