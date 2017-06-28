@@ -140,12 +140,12 @@ public class ThirdPartyAccountSynctor {
      *
      * @param hrId
      * @param thirdPartyAccount
-     * @param async
+     * @param sync
      * @return
      * @throws Exception
      */
-    public HrThirdPartyAccountDO bindThirdPartyAccount(int hrId, HrThirdPartyAccountDO thirdPartyAccount, boolean async) throws Exception {
-        return async ? asyncWithBindThirdPartyAccount(hrId, thirdPartyAccount) : syncWithBindThirdPartyAccount(hrId, thirdPartyAccount);
+    public HrThirdPartyAccountDO bindThirdPartyAccount(int hrId, HrThirdPartyAccountDO thirdPartyAccount, boolean sync) throws Exception {
+        return sync ? syncWithBindThirdPartyAccount(hrId, thirdPartyAccount) : asyncWithBindThirdPartyAccount(hrId, thirdPartyAccount);
     }
 
     /**
@@ -200,8 +200,8 @@ public class ThirdPartyAccountSynctor {
      * @return
      * @throws Exception
      */
-    public HrThirdPartyAccountDO syncThirdPartyAccount(HrThirdPartyAccountDO thirdPartyAccount, boolean async) throws Exception {
-        return async ? asyncWithSyncThirdPartyAccount(thirdPartyAccount) : syncWithSyncThirdPartyAccount(thirdPartyAccount);
+    public HrThirdPartyAccountDO syncThirdPartyAccount(HrThirdPartyAccountDO thirdPartyAccount, boolean sync) throws Exception {
+        return sync ? syncWithSyncThirdPartyAccount(thirdPartyAccount) : asyncWithSyncThirdPartyAccount(thirdPartyAccount);
     }
 
     /**

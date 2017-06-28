@@ -129,7 +129,7 @@ public class UserHrAccountController {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             HrThirdPartyAccountDO struct = ParamUtils.initModelForm(params, HrThirdPartyAccountDO.class);
             logger.info("bind thirdParyAccount in controller params===========================" + JSON.toJSONString(struct));
-            struct = userHrAccountService.bindThirdpartyAccount(params.getInt("user_id", 0), struct);
+            struct = userHrAccountService.bindThirdpartyAccount(params.getInt("user_id", 0), struct, params.getBoolean("sync", false));
             //同步情况下走下面的代码
 
             return ResponseLogNotification.success(request, ResponseUtils.success(thirdpartyAccountToMap(struct)));
@@ -153,7 +153,7 @@ public class UserHrAccountController {
                 return ResponseLogNotification.fail(request, "id不能为空");
             }
 
-            HrThirdPartyAccountDO hrThirdPartyAccountDO = userHrAccountService.syncThirdpartyAccount(id);
+            HrThirdPartyAccountDO hrThirdPartyAccountDO = userHrAccountService.syncThirdpartyAccount(id, params.getBoolean("sync", false));
 
             return ResponseLogNotification.success(request, ResponseUtils.success(thirdpartyAccountToMap(hrThirdPartyAccountDO)));
         } catch (Exception e) {

@@ -293,7 +293,7 @@ public class UserHrAccountService {
      * @param account
      * @return
      */
-    public HrThirdPartyAccountDO bindThirdAccount(int hrId, HrThirdPartyAccountDO account) throws Exception {
+    public HrThirdPartyAccountDO bindThirdAccount(int hrId, HrThirdPartyAccountDO account, boolean sync) throws Exception {
         logger.info("-------bindThirdAccount--------{}:{}", hrId, JSON.toJSONString(account));
         // 判断Channel是否合法
         ChannelType channelType = ChannelType.instaceFromInteger(account.getChannel());
@@ -323,7 +323,7 @@ public class UserHrAccountService {
         }
 
         //allowStatus==0,绑定之后将hrId和帐号关联起来，allowStatus==1,只绑定不关联
-        HrThirdPartyAccountDO result = thirdPartyAccountSynctor.bindThirdPartyAccount(allowStatus == 0 ? hrId : 0, account, true);
+        HrThirdPartyAccountDO result = thirdPartyAccountSynctor.bindThirdPartyAccount(allowStatus == 0 ? hrId : 0, account, sync);
 
 
         return result;
@@ -346,7 +346,7 @@ public class UserHrAccountService {
         qu.and(new Condition("binding", 0, ValueOp.NEQ));//有效的状态
         List<HrThirdPartyAccountDO> datas = hrThirdPartyAccountDao.getDatas(qu.buildQuery());
 
-        logger.info("allowBind:相同名字的帐号:{}" , JSON.toJSONString(datas));
+        logger.info("allowBind:相同名字的帐号:{}", JSON.toJSONString(datas));
 
         HrThirdPartyAccountDO data = null;
 
@@ -408,7 +408,7 @@ public class UserHrAccountService {
      * @return
      */
 
-    public HrThirdPartyAccountDO synchronizeThirdpartyAccount(int id) throws Exception {
+    public HrThirdPartyAccountDO synchronizeThirdpartyAccount(int id, boolean sync) throws Exception {
         //查找第三方帐号
         Query qu = new Query.QueryBuilder().where("id", id).buildQuery();
         HrThirdPartyAccountDO hrThirdPartyAccount = hrThirdPartyAccountDao.getData(qu);
@@ -417,7 +417,7 @@ public class UserHrAccountService {
             throw new BIZException(-1, "无效的第三方帐号");
         }
         //如果是绑定状态，则进行
-        hrThirdPartyAccount = thirdPartyAccountSynctor.syncThirdPartyAccount(hrThirdPartyAccount, true);
+        hrThirdPartyAccount = thirdPartyAccountSynctor.syncThirdPartyAccount(hrThirdPartyAccount, sync);
 
         //刷新成功
         return hrThirdPartyAccount;
