@@ -145,7 +145,7 @@ public class ChaosServiceImpl {
      * @return
      */
     public void synchronizePosition(List<ThirdPartyPositionForSynchronizationWithAccount> positions) throws Exception {
-        if (positions != null && positions.size() > 0) {
+        if (positions == null || positions.size() == 0) {
             logger.warn("同步一个空的职位到第三方平台，跳过。");
             return;
         }
