@@ -144,8 +144,8 @@ public class PositionLiepin implements Serializable {
         positionLiepin.setAddress(positionInfo.getWork_place());
         positionLiepin.setOccupation(positionInfo.getOccupation());
         positionLiepin.setDepartment(positionInfo.getDepartment());
-        positionLiepin.setSalary_low(String.valueOf(positionInfo.getSalary_bottom()));
-        positionLiepin.setSalary_high(String.valueOf(positionInfo.getSalary_top()));
+        positionLiepin.setSalary_low(String.valueOf(positionInfo.getSalary_bottom() / 1000));
+        positionLiepin.setSalary_high(String.valueOf(positionInfo.getSalary_top() / 1000));
         positionLiepin.setSalary_discuss(positionInfo.isSalary_discuss() ? "1" : "0");
         positionLiepin.setSalary_month(String.valueOf(positionInfo.getSalary_month()));
         positionLiepin.setWorkyears(positionInfo.getExperience());

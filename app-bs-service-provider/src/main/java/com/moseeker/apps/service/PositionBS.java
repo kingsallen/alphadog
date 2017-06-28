@@ -74,7 +74,7 @@ public class PositionBS {
 
         // 如果职位数据不存在，并且是不是在招职位
         if (moseekerPosition == null || moseekerPosition.getId() == 0 || moseekerPosition.getStatus() != 0) {
-            return ResultMessage.PROGRAM_PARAM_NOTEXIST.toResponse();
+            return ResultMessage.POSITION_NOT_EXIST.toResponse();
         }
 
         // 返回结果
