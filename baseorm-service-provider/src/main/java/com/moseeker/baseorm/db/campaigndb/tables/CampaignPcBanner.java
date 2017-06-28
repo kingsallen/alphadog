@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CampaignPcBanner extends TableImpl<CampaignPcBannerRecord> {
 
-    private static final long serialVersionUID = -639740546;
+    private static final long serialVersionUID = 1917953056;
 
     /**
      * The reference instance of <code>campaigndb.campaign_pc_banner</code>
@@ -57,9 +57,9 @@ public class CampaignPcBanner extends TableImpl<CampaignPcBannerRecord> {
     public final TableField<CampaignPcBannerRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "主键");
 
     /**
-     * The column <code>campaigndb.campaign_pc_banner.url</code>. 图片链接
+     * The column <code>campaigndb.campaign_pc_banner.href</code>. 图片链接
      */
-    public final TableField<CampaignPcBannerRecord, String> URL = createField("url", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "图片链接");
+    public final TableField<CampaignPcBannerRecord, String> HREF = createField("href", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "图片链接");
 
     /**
      * The column <code>campaigndb.campaign_pc_banner.img_url</code>. 图片地址
@@ -69,7 +69,7 @@ public class CampaignPcBanner extends TableImpl<CampaignPcBannerRecord> {
     /**
      * The column <code>campaigndb.campaign_pc_banner.disable</code>. 状态 0：可用，1：不可用
      */
-    public final TableField<CampaignPcBannerRecord, Integer> DISABLE = createField("disable", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "状态 0：可用，1：不可用");
+    public final TableField<CampaignPcBannerRecord, Byte> DISABLE = createField("disable", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.TINYINT)), this, "状态 0：可用，1：不可用");
 
     /**
      * The column <code>campaigndb.campaign_pc_banner.create_time</code>. 创建时间

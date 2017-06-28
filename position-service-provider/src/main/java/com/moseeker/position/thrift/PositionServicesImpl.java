@@ -244,5 +244,11 @@ public class PositionServicesImpl implements Iface {
         }
     }
 
+	@Override
+	public Response getPcRecommand(int page, int pageSize) throws TException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }

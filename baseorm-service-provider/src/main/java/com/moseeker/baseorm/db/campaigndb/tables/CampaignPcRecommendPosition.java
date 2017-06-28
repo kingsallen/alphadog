@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CampaignPcRecommendPosition extends TableImpl<CampaignPcRecommendPositionRecord> {
 
-    private static final long serialVersionUID = 385322502;
+    private static final long serialVersionUID = 275121548;
 
     /**
      * The reference instance of <code>campaigndb.campaign_pc_recommend_position</code>
@@ -64,7 +64,7 @@ public class CampaignPcRecommendPosition extends TableImpl<CampaignPcRecommendPo
     /**
      * The column <code>campaigndb.campaign_pc_recommend_position.disable</code>. 是否可用，0：可用，1：不可用
      */
-    public final TableField<CampaignPcRecommendPositionRecord, Integer> DISABLE = createField("disable", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "是否可用，0：可用，1：不可用");
+    public final TableField<CampaignPcRecommendPositionRecord, Byte> DISABLE = createField("disable", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否可用，0：可用，1：不可用");
 
     /**
      * The column <code>campaigndb.campaign_pc_recommend_position.create_time</code>.

@@ -14,11 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * Created by lucky8987 on 17/5/10.
  */
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(classes = AppConfig.class)
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = AppConfig.class)
 public class CompanyServiceTest {
 
-//    @Autowired
+    @Autowired
     private CompanyService service;
 
     //@Test
@@ -60,6 +60,13 @@ public class CompanyServiceTest {
     public void ifSynchronizePosition() throws Exception {
         Response response = service.ifSynchronizePosition(54545, (byte) 1);
         System.out.println(response);
+    }
+    @Test
+    public void getBannerTest() throws Exception{
+    	int page=1;
+    	int pagesize=10;
+    	Response res=service.getPcBannerByPage(page, pagesize);
+    	System.out.println(res);
     }
 
 }

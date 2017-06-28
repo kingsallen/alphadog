@@ -12,9 +12,9 @@ public class CampaignPcBannerDO implements org.apache.thrift.TBase<CampaignPcBan
   private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("CampaignPcBannerDO");
 
   private static final org.apache.thrift.protocol.TField ID_FIELD_DESC = new org.apache.thrift.protocol.TField("id", org.apache.thrift.protocol.TType.I32, (short)1);
-  private static final org.apache.thrift.protocol.TField URL_FIELD_DESC = new org.apache.thrift.protocol.TField("url", org.apache.thrift.protocol.TType.STRING, (short)2);
+  private static final org.apache.thrift.protocol.TField HREF_FIELD_DESC = new org.apache.thrift.protocol.TField("href", org.apache.thrift.protocol.TType.STRING, (short)2);
   private static final org.apache.thrift.protocol.TField IMG_URL_FIELD_DESC = new org.apache.thrift.protocol.TField("imgUrl", org.apache.thrift.protocol.TType.STRING, (short)3);
-  private static final org.apache.thrift.protocol.TField DISABLE_FIELD_DESC = new org.apache.thrift.protocol.TField("disable", org.apache.thrift.protocol.TType.I32, (short)4);
+  private static final org.apache.thrift.protocol.TField DISABLE_FIELD_DESC = new org.apache.thrift.protocol.TField("disable", org.apache.thrift.protocol.TType.BYTE, (short)4);
   private static final org.apache.thrift.protocol.TField CREATE_TIME_FIELD_DESC = new org.apache.thrift.protocol.TField("createTime", org.apache.thrift.protocol.TType.STRING, (short)5);
   private static final org.apache.thrift.protocol.TField UPDATE_TIME_FIELD_DESC = new org.apache.thrift.protocol.TField("updateTime", org.apache.thrift.protocol.TType.STRING, (short)6);
 
@@ -22,16 +22,16 @@ public class CampaignPcBannerDO implements org.apache.thrift.TBase<CampaignPcBan
   private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new CampaignPcBannerDOTupleSchemeFactory();
 
   public int id; // optional
-  public java.lang.String url; // optional
+  public java.lang.String href; // optional
   public java.lang.String imgUrl; // optional
-  public int disable; // optional
+  public byte disable; // optional
   public java.lang.String createTime; // optional
   public java.lang.String updateTime; // optional
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
     ID((short)1, "id"),
-    URL((short)2, "url"),
+    HREF((short)2, "href"),
     IMG_URL((short)3, "imgUrl"),
     DISABLE((short)4, "disable"),
     CREATE_TIME((short)5, "createTime"),
@@ -52,8 +52,8 @@ public class CampaignPcBannerDO implements org.apache.thrift.TBase<CampaignPcBan
       switch(fieldId) {
         case 1: // ID
           return ID;
-        case 2: // URL
-          return URL;
+        case 2: // HREF
+          return HREF;
         case 3: // IMG_URL
           return IMG_URL;
         case 4: // DISABLE
@@ -105,18 +105,18 @@ public class CampaignPcBannerDO implements org.apache.thrift.TBase<CampaignPcBan
   private static final int __ID_ISSET_ID = 0;
   private static final int __DISABLE_ISSET_ID = 1;
   private byte __isset_bitfield = 0;
-  private static final _Fields optionals[] = {_Fields.ID,_Fields.URL,_Fields.IMG_URL,_Fields.DISABLE,_Fields.CREATE_TIME,_Fields.UPDATE_TIME};
+  private static final _Fields optionals[] = {_Fields.ID,_Fields.HREF,_Fields.IMG_URL,_Fields.DISABLE,_Fields.CREATE_TIME,_Fields.UPDATE_TIME};
   public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
     tmpMap.put(_Fields.ID, new org.apache.thrift.meta_data.FieldMetaData("id", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-    tmpMap.put(_Fields.URL, new org.apache.thrift.meta_data.FieldMetaData("url", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+    tmpMap.put(_Fields.HREF, new org.apache.thrift.meta_data.FieldMetaData("href", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.IMG_URL, new org.apache.thrift.meta_data.FieldMetaData("imgUrl", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.DISABLE, new org.apache.thrift.meta_data.FieldMetaData("disable", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BYTE)));
     tmpMap.put(_Fields.CREATE_TIME, new org.apache.thrift.meta_data.FieldMetaData("createTime", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.UPDATE_TIME, new org.apache.thrift.meta_data.FieldMetaData("updateTime", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
@@ -134,8 +134,8 @@ public class CampaignPcBannerDO implements org.apache.thrift.TBase<CampaignPcBan
   public CampaignPcBannerDO(CampaignPcBannerDO other) {
     __isset_bitfield = other.__isset_bitfield;
     this.id = other.id;
-    if (other.isSetUrl()) {
-      this.url = other.url;
+    if (other.isSetHref()) {
+      this.href = other.href;
     }
     if (other.isSetImgUrl()) {
       this.imgUrl = other.imgUrl;
@@ -157,7 +157,7 @@ public class CampaignPcBannerDO implements org.apache.thrift.TBase<CampaignPcBan
   public void clear() {
     setIdIsSet(false);
     this.id = 0;
-    this.url = null;
+    this.href = null;
     this.imgUrl = null;
     setDisableIsSet(false);
     this.disable = 0;
@@ -188,27 +188,27 @@ public class CampaignPcBannerDO implements org.apache.thrift.TBase<CampaignPcBan
     __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __ID_ISSET_ID, value);
   }
 
-  public java.lang.String getUrl() {
-    return this.url;
+  public java.lang.String getHref() {
+    return this.href;
   }
 
-  public CampaignPcBannerDO setUrl(java.lang.String url) {
-    this.url = url;
+  public CampaignPcBannerDO setHref(java.lang.String href) {
+    this.href = href;
     return this;
   }
 
-  public void unsetUrl() {
-    this.url = null;
+  public void unsetHref() {
+    this.href = null;
   }
 
-  /** Returns true if field url is set (has been assigned a value) and false otherwise */
-  public boolean isSetUrl() {
-    return this.url != null;
+  /** Returns true if field href is set (has been assigned a value) and false otherwise */
+  public boolean isSetHref() {
+    return this.href != null;
   }
 
-  public void setUrlIsSet(boolean value) {
+  public void setHrefIsSet(boolean value) {
     if (!value) {
-      this.url = null;
+      this.href = null;
     }
   }
 
@@ -236,11 +236,11 @@ public class CampaignPcBannerDO implements org.apache.thrift.TBase<CampaignPcBan
     }
   }
 
-  public int getDisable() {
+  public byte getDisable() {
     return this.disable;
   }
 
-  public CampaignPcBannerDO setDisable(int disable) {
+  public CampaignPcBannerDO setDisable(byte disable) {
     this.disable = disable;
     setDisableIsSet(true);
     return this;
@@ -317,11 +317,11 @@ public class CampaignPcBannerDO implements org.apache.thrift.TBase<CampaignPcBan
       }
       break;
 
-    case URL:
+    case HREF:
       if (value == null) {
-        unsetUrl();
+        unsetHref();
       } else {
-        setUrl((java.lang.String)value);
+        setHref((java.lang.String)value);
       }
       break;
 
@@ -337,7 +337,7 @@ public class CampaignPcBannerDO implements org.apache.thrift.TBase<CampaignPcBan
       if (value == null) {
         unsetDisable();
       } else {
-        setDisable((java.lang.Integer)value);
+        setDisable((java.lang.Byte)value);
       }
       break;
 
@@ -365,8 +365,8 @@ public class CampaignPcBannerDO implements org.apache.thrift.TBase<CampaignPcBan
     case ID:
       return getId();
 
-    case URL:
-      return getUrl();
+    case HREF:
+      return getHref();
 
     case IMG_URL:
       return getImgUrl();
@@ -393,8 +393,8 @@ public class CampaignPcBannerDO implements org.apache.thrift.TBase<CampaignPcBan
     switch (field) {
     case ID:
       return isSetId();
-    case URL:
-      return isSetUrl();
+    case HREF:
+      return isSetHref();
     case IMG_URL:
       return isSetImgUrl();
     case DISABLE:
@@ -431,12 +431,12 @@ public class CampaignPcBannerDO implements org.apache.thrift.TBase<CampaignPcBan
         return false;
     }
 
-    boolean this_present_url = true && this.isSetUrl();
-    boolean that_present_url = true && that.isSetUrl();
-    if (this_present_url || that_present_url) {
-      if (!(this_present_url && that_present_url))
+    boolean this_present_href = true && this.isSetHref();
+    boolean that_present_href = true && that.isSetHref();
+    if (this_present_href || that_present_href) {
+      if (!(this_present_href && that_present_href))
         return false;
-      if (!this.url.equals(that.url))
+      if (!this.href.equals(that.href))
         return false;
     }
 
@@ -487,9 +487,9 @@ public class CampaignPcBannerDO implements org.apache.thrift.TBase<CampaignPcBan
     if (isSetId())
       hashCode = hashCode * 8191 + id;
 
-    hashCode = hashCode * 8191 + ((isSetUrl()) ? 131071 : 524287);
-    if (isSetUrl())
-      hashCode = hashCode * 8191 + url.hashCode();
+    hashCode = hashCode * 8191 + ((isSetHref()) ? 131071 : 524287);
+    if (isSetHref())
+      hashCode = hashCode * 8191 + href.hashCode();
 
     hashCode = hashCode * 8191 + ((isSetImgUrl()) ? 131071 : 524287);
     if (isSetImgUrl())
@@ -497,7 +497,7 @@ public class CampaignPcBannerDO implements org.apache.thrift.TBase<CampaignPcBan
 
     hashCode = hashCode * 8191 + ((isSetDisable()) ? 131071 : 524287);
     if (isSetDisable())
-      hashCode = hashCode * 8191 + disable;
+      hashCode = hashCode * 8191 + (int) (disable);
 
     hashCode = hashCode * 8191 + ((isSetCreateTime()) ? 131071 : 524287);
     if (isSetCreateTime())
@@ -528,12 +528,12 @@ public class CampaignPcBannerDO implements org.apache.thrift.TBase<CampaignPcBan
         return lastComparison;
       }
     }
-    lastComparison = java.lang.Boolean.valueOf(isSetUrl()).compareTo(other.isSetUrl());
+    lastComparison = java.lang.Boolean.valueOf(isSetHref()).compareTo(other.isSetHref());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetUrl()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.url, other.url);
+    if (isSetHref()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.href, other.href);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -603,13 +603,13 @@ public class CampaignPcBannerDO implements org.apache.thrift.TBase<CampaignPcBan
       sb.append(this.id);
       first = false;
     }
-    if (isSetUrl()) {
+    if (isSetHref()) {
       if (!first) sb.append(", ");
-      sb.append("url:");
-      if (this.url == null) {
+      sb.append("href:");
+      if (this.href == null) {
         sb.append("null");
       } else {
-        sb.append(this.url);
+        sb.append(this.href);
       }
       first = false;
     }
@@ -702,10 +702,10 @@ public class CampaignPcBannerDO implements org.apache.thrift.TBase<CampaignPcBan
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 2: // URL
+          case 2: // HREF
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-              struct.url = iprot.readString();
-              struct.setUrlIsSet(true);
+              struct.href = iprot.readString();
+              struct.setHrefIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
@@ -719,8 +719,8 @@ public class CampaignPcBannerDO implements org.apache.thrift.TBase<CampaignPcBan
             }
             break;
           case 4: // DISABLE
-            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-              struct.disable = iprot.readI32();
+            if (schemeField.type == org.apache.thrift.protocol.TType.BYTE) {
+              struct.disable = iprot.readByte();
               struct.setDisableIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
@@ -762,10 +762,10 @@ public class CampaignPcBannerDO implements org.apache.thrift.TBase<CampaignPcBan
         oprot.writeI32(struct.id);
         oprot.writeFieldEnd();
       }
-      if (struct.url != null) {
-        if (struct.isSetUrl()) {
-          oprot.writeFieldBegin(URL_FIELD_DESC);
-          oprot.writeString(struct.url);
+      if (struct.href != null) {
+        if (struct.isSetHref()) {
+          oprot.writeFieldBegin(HREF_FIELD_DESC);
+          oprot.writeString(struct.href);
           oprot.writeFieldEnd();
         }
       }
@@ -778,7 +778,7 @@ public class CampaignPcBannerDO implements org.apache.thrift.TBase<CampaignPcBan
       }
       if (struct.isSetDisable()) {
         oprot.writeFieldBegin(DISABLE_FIELD_DESC);
-        oprot.writeI32(struct.disable);
+        oprot.writeByte(struct.disable);
         oprot.writeFieldEnd();
       }
       if (struct.createTime != null) {
@@ -816,7 +816,7 @@ public class CampaignPcBannerDO implements org.apache.thrift.TBase<CampaignPcBan
       if (struct.isSetId()) {
         optionals.set(0);
       }
-      if (struct.isSetUrl()) {
+      if (struct.isSetHref()) {
         optionals.set(1);
       }
       if (struct.isSetImgUrl()) {
@@ -835,14 +835,14 @@ public class CampaignPcBannerDO implements org.apache.thrift.TBase<CampaignPcBan
       if (struct.isSetId()) {
         oprot.writeI32(struct.id);
       }
-      if (struct.isSetUrl()) {
-        oprot.writeString(struct.url);
+      if (struct.isSetHref()) {
+        oprot.writeString(struct.href);
       }
       if (struct.isSetImgUrl()) {
         oprot.writeString(struct.imgUrl);
       }
       if (struct.isSetDisable()) {
-        oprot.writeI32(struct.disable);
+        oprot.writeByte(struct.disable);
       }
       if (struct.isSetCreateTime()) {
         oprot.writeString(struct.createTime);
@@ -861,15 +861,15 @@ public class CampaignPcBannerDO implements org.apache.thrift.TBase<CampaignPcBan
         struct.setIdIsSet(true);
       }
       if (incoming.get(1)) {
-        struct.url = iprot.readString();
-        struct.setUrlIsSet(true);
+        struct.href = iprot.readString();
+        struct.setHrefIsSet(true);
       }
       if (incoming.get(2)) {
         struct.imgUrl = iprot.readString();
         struct.setImgUrlIsSet(true);
       }
       if (incoming.get(3)) {
-        struct.disable = iprot.readI32();
+        struct.disable = iprot.readByte();
         struct.setDisableIsSet(true);
       }
       if (incoming.get(4)) {

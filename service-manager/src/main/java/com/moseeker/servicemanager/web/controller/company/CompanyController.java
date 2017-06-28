@@ -99,7 +99,21 @@ public class CompanyController {
 	@RequestMapping(value = "/company/strictselection", method = RequestMethod.GET)
 	@ResponseBody
 	public String getPcBanner(HttpServletRequest request, HttpServletResponse response) {
-		
-		return null;
+		try{
+			Map<String, Object> data = ParamUtils.parseRequestParam(request);
+			Integer page=(Integer) data.get("page");
+			Integer pageSize=(Integer) data.get("pagesize");
+			if(page==null){
+				 return ResponseLogNotification.fail(request, "page不能为空");
+			}
+			if(pageSize==null){
+				pageSize=10;
+			}
+			Response res=companyServices.getPcBanner(page, pageSize);
+			return ResponseLogNotification.success(request, res);
+		}catch(Exception e){
+			logger.info(e.getMessage(),e);
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
 	}
 }

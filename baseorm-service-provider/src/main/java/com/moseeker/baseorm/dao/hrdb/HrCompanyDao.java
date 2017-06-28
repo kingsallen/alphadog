@@ -8,7 +8,9 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
@@ -127,4 +129,14 @@ public class HrCompanyDao extends JooqCrudImpl<HrCompanyDO, HrCompanyRecord> {
         companies = getDatas(query, Hrcompany.class);
         return companies;
     }
+    
+    /*
+	 * 根据公司列表获取
+	 */
+	public List<HrCompanyDO> getCompanyList(List<Integer> list){
+		Condition condition=new Condition("id",list.toArray(),ValueOp.IN);
+		Query query=new Query.QueryBuilder().where(condition).and("status",0).buildQuery();
+		List<HrCompanyDO> result=this.getDatas(query);
+		return result;
+	}
 }

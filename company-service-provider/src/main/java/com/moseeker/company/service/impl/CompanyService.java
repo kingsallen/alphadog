@@ -1,5 +1,6 @@
 package com.moseeker.company.service.impl;
 
+import com.moseeker.baseorm.dao.campaigndb.CampaignPcBannerDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
@@ -19,6 +20,7 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
+import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignPcBannerDO;
 import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -41,6 +43,9 @@ public class CompanyService{
     
     @Autowired
     protected HrWxWechatDao wechatDao;
+    
+    @Autowired
+    private CampaignPcBannerDao campaignPcBannerDao;
 
     @Autowired
     private HRThirdPartyAccountDao hrThirdPartyAccountDao;
@@ -178,5 +183,14 @@ public class CompanyService{
 			//do nothing
 		}
 		return response;
+	}
+	/*
+	 * 获取pc端获取banner图
+	 */
+	@CounterIface
+	public Response getPcBannerByPage(int page,int pageSize) throws Exception{
+		Query query=new Query.QueryBuilder().setPageNum(page).setPageSize(pageSize).buildQuery();
+		List<CampaignPcBannerDO> list=campaignPcBannerDao.getDatas(query);
+		return ResponseUtils.success(list);
 	}
 }

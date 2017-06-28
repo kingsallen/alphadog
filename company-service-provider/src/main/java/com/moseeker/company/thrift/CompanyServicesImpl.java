@@ -6,6 +6,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.company.service.impl.CompanyService;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -43,6 +45,17 @@ public class CompanyServicesImpl implements Iface {
 	public Response getWechat(long companyId, long wechatId) throws TException {
 		// TODO Auto-generated method stub
 		return service.getWechat(companyId, wechatId);
+	}
+
+	@Override
+	public Response getPcBanner(int page, int pageSize){
+		// TODO Auto-generated method stub
+		try{
+			return service.getPcBannerByPage(page,pageSize);
+		}catch(Exception e){
+			logger.info(e.getMessage(),e);
+		}
+		return  ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 	}
 }
 
