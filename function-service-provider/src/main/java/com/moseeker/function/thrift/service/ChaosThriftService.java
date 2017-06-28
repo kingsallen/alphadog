@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.net.ConnectException;
 import java.util.List;
 
 /**
@@ -37,6 +38,8 @@ public class ChaosThriftService implements Iface {
             return chaosService.bind(hrThirdPartyAccount);
         } catch (BIZException e) {
             throw e;
+        } catch (ConnectException e) {
+            throw new BIZException(-1, "绑定失败，请稍后再试");
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
@@ -50,6 +53,8 @@ public class ChaosThriftService implements Iface {
             return chaosService.synchronization(thirdPartyAccount);
         } catch (BIZException e) {
             throw e;
+        } catch (ConnectException e) {
+            throw new BIZException(-1, "刷新失败，请稍后再试");
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
