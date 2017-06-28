@@ -119,7 +119,7 @@ public class PositionRefreshConsumer {
                 logger.info("refresh completed queue position existî");
                 logger.info("refresh completed queue update thirdpartyposition to synchronized");
                 thirdpartyPositionDao.upsertThirdPartyPosition(data);
-                if (pojo.getStatus() == 0) {
+                if (pojo.getStatus() == 0 && pojo.getRemain_number() > -1 && pojo.getResume_number() > -1) {
                     HrThirdPartyAccountDO thirdPartyAccount = new HrThirdPartyAccountDO();
                     thirdPartyAccount.setId(pojo.getAccount_id());
                     thirdPartyAccount.setRemainNum(pojo.getRemain_number());

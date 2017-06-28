@@ -56,7 +56,7 @@ public class ProfilePojo {
 	 */
 	@SuppressWarnings("unchecked")
 	public static ProfilePojo parseProfile(Map<String, Object> resume, UserUserRecord userRecord) {
-		LoggerFactory.getLogger(ProfilePojo.class).info("------parseProfile-------:{}",JSON.toJSONString(resume));
+		LoggerFactory.getLogger(ProfilePojo.class).info("------parseProfile-------");
 		ProfilePojo pojo = new ProfilePojo();
 		ProfileUtils profileUtils = new ProfileUtils();
 		
@@ -86,7 +86,6 @@ public class ProfilePojo {
 		ProfileBasicRecord basicRecord = null;
 		try {
 			basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"));
-			LoggerFactory.getLogger(ProfilePojo.class).info("------parseProfile selfIntroduction-------:{}",basicRecord.getSelfIntroduction());
 			pojo.setBasicRecord(basicRecord);
 		} catch (Exception e1) {
 			LoggerFactory.getLogger(ProfilePojo.class).error(e1.getMessage(), e1);

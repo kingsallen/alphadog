@@ -4,6 +4,7 @@ import com.moseeker.function.service.chaos.ChaosServiceImpl;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices.Iface;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
 import org.apache.thrift.TException;
@@ -57,14 +58,29 @@ public class ChaosThriftService implements Iface {
     }
 
     @Override
-    public Response synchronizePosition(List<ThirdPartyPositionForSynchronizationWithAccount> positions)
-            throws TException {
-        return chaosService.synchronizePosition(positions);
+    public void synchronizePosition(List<ThirdPartyPositionForSynchronizationWithAccount> positions) throws TException {
+        try {
+            chaosService.synchronizePosition(positions);
+        } catch (BIZException e) {
+            throw e;
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new TException(e);
+        }
     }
 
     @Override
-    public Response refreshPosition(ThirdPartyPositionForSynchronizationWithAccount position) throws TException {
+    public void refreshPosition(ThirdPartyPositionForSynchronizationWithAccount position) throws TException {
         // TODO Auto-generated method stub
-        return chaosService.refreshPosition(position);
+        try {
+            chaosService.refreshPosition(position);
+        } catch (BIZException e) {
+            throw e;
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new TException(e);
+        }
     }
 }

@@ -16,6 +16,7 @@ import com.moseeker.servicemanager.web.controller.position.bean.ThirdPartyPositi
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.apps.positionbs.service.PositionBS;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
@@ -198,35 +199,12 @@ public class PositionController {
             logger.info("result:" + JSON.toJSONString(result));
             logger.info("-----------synchronizePosition end------------");
             return ResponseLogNotification.success(request, result);
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
-        }
-    }
-
-    @RequestMapping(value = "/thirdparty/position", method = RequestMethod.GET)
-    @ResponseBody
-    public String thirdpartyposition(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            CommonQuery qu = ParamUtils.initCommonQuery(request, CommonQuery.class);
-            List<HrThirdPartyPositionDO> datas = positonServices.getThirdPartyPositions(qu);
-
-            if (datas == null) datas = new ArrayList<>();
-
-            List<ThirdPartyPositionVO> vos = new ArrayList<>();
-
-            for (HrThirdPartyPositionDO positionDO : datas) {
-                vos.add(new ThirdPartyPositionVO().copyDO(positionDO));
-            }
-
-            Response result = ResponseUtils.success(vos);
-            return ResponseLogNotification.success(request, result);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
-        } finally {
-            //do nothing
         }
     }
 
@@ -281,6 +259,31 @@ public class PositionController {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/thirdparty/position", method = RequestMethod.GET)
+    @ResponseBody
+    public String thirdpartyposition(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            CommonQuery qu = ParamUtils.initCommonQuery(request, CommonQuery.class);
+            List<HrThirdPartyPositionDO> datas = positonServices.getThirdPartyPositions(qu);
+
+            if (datas == null) datas = new ArrayList<>();
+
+            List<ThirdPartyPositionVO> vos = new ArrayList<>();
+
+            for (HrThirdPartyPositionDO positionDO : datas) {
+                vos.add(new ThirdPartyPositionVO().copyDO(positionDO));
+            }
+
+            Response result = ResponseUtils.success(vos);
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        } finally {
+            //do nothing
         }
     }
 

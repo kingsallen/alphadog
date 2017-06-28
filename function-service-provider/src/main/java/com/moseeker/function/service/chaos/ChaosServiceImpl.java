@@ -41,10 +41,11 @@ public class ChaosServiceImpl {
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
 
-
-    @Autowired
-    HRThirdPartyPositionDao thirdpartyPositionDao;
-
+    private String getConfigString(String key) throws Exception {
+        ConfigPropertiesUtil configUtils = ConfigPropertiesUtil.getInstance();
+        configUtils.loadResource("chaos.properties");
+        return configUtils.get(key, String.class);
+    }
 
     /**
      * 获取Chaos访问路径
@@ -53,9 +54,7 @@ public class ChaosServiceImpl {
      * @throws Exception
      */
     private String getDomain() throws Exception {
-        ConfigPropertiesUtil configUtils = ConfigPropertiesUtil.getInstance();
-        configUtils.loadResource("chaos.properties");
-        return configUtils.get("chaos.domain", String.class);
+        return getConfigString("chaos.domain");
     }
 
     /**
@@ -145,82 +144,61 @@ public class ChaosServiceImpl {
      * @param positions
      * @return
      */
-    public Response synchronizePosition(List<ThirdPartyPositionForSynchronizationWithAccount> positions) {
-
-        try {
-            if (positions != null && positions.size() > 0) {
-                String email = "";
-                try {
-                    ConfigPropertiesUtil configUtils = ConfigPropertiesUtil.getInstance();
-                    configUtils.loadResource("chaos.properties");
-                    email = configUtils.get("chaos.email", String.class);
-                } catch (Exception e) {
-                    logger.error(e.getMessage(), e);
-                } finally {
-                    //do nothing
-                }
-                DateTime dt = new DateTime();
-                int second = dt.getSecondOfDay();
-                for (ThirdPartyPositionForSynchronizationWithAccount position : positions) {
-                    position.getPosition_info().setEmail("cv_" + position.getPosition_id() + email);
-
-                    String positionJson = null;
-
-                    if (position.getChannel() == ChannelType.LIEPIN.getValue()) {
-                        positionJson = JSON.toJSONString(PositionLiepinWithAccount.copyFromSyncPosition(position));
-                    } else if (position.getChannel() == ChannelType.JOB51.getValue() || position.getChannel() == ChannelType.ZHILIAN.getValue()) {
-                        positionJson = JSON.toJSONString(Position51WithAccount.copyFromSyncPosition(position));
-                    }
-                    logger.info("synchronize position:" + positionJson);
-
-                    if (positionJson == null) continue;
-
-                    //redisClient.lpush(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_QUEUE.toString(), positionJson);
-                    if (second < 60 * 60 * 24) {
-                        redisClient.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH.toString(), String.valueOf(position.getPosition_id()), String.valueOf(position.getAccount_id()), "1", 60 * 60 * 24 - second);
-                    }
-                }
-                return ResponseUtils.success(null);
-            } else {
-                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
-            }
-        } catch (CacheConfigNotExistException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXHAUSTED);
-        } finally {
-            //do nothing
+    public void synchronizePosition(List<ThirdPartyPositionForSynchronizationWithAccount> positions) throws Exception {
+        if (positions != null && positions.size() > 0) {
+            logger.warn("同步一个空的职位到第三方平台，跳过。");
+            return;
         }
-    }
 
-    public Response refreshPosition(ThirdPartyPositionForSynchronizationWithAccount position) {
-        logger.info("refreshPosition:redis:{}", JSON.toJSONString(position));
-        HrThirdPartyPositionDO p = new HrThirdPartyPositionDO();
-        try {
-            String positionJson = JSON.toJSONString(position);
-            //redisClient.lpush(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH_QUEUE.toString(), positionJson);
-            logger.info("refreshPosition:redis:{}", position.getPosition_id());
-            p.setChannel(position.getChannel());
-            p.setPositionId(Integer.valueOf(position.getPosition_id()));
-            p.setIsRefresh((byte) PositionRefreshType.refreshing.getValue());
-            p.setRefreshTime((new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
-            p.setThirdPartyAccountId(Integer.valueOf(position.getAccount_id()));
-            thirdpartyPositionDao.upsertThirdPartyPosition(p);
+        String email = getConfigString("chaos.email");
 
-            DateTime dt = new DateTime();
-            int second = dt.getSecondOfDay();
+        int second = new DateTime().getSecondOfDay();
+
+        for (ThirdPartyPositionForSynchronizationWithAccount position : positions) {
+
+            position.getPosition_info().setEmail("cv_" + position.getPosition_id() + email);
+
+            String positionJson = null;
+
+            if (position.getChannel() == ChannelType.LIEPIN.getValue()) {
+                positionJson = JSON.toJSONString(PositionLiepinWithAccount.copyFromSyncPosition(position));
+            } else if (position.getChannel() == ChannelType.JOB51.getValue() || position.getChannel() == ChannelType.ZHILIAN.getValue()) {
+                positionJson = JSON.toJSONString(Position51WithAccount.copyFromSyncPosition(position));
+            }
+
+            logger.info("synchronize position:" + positionJson);
+
+            if (positionJson == null) {
+                logger.warn("不能识别的Channel类型:{}", position.getChannel());
+                continue;
+            }
+
+            redisClient.lpush(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_QUEUE.toString(), positionJson);
+
+            logger.info("成功将同步数据插入队列:{}", position.getPosition_id());
+
             if (second < 60 * 60 * 24) {
                 redisClient.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH.toString(), String.valueOf(position.getPosition_id()), String.valueOf(position.getAccount_id()), "1", 60 * 60 * 24 - second);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXHAUSTED);
-        } finally {
-            //do nothing
         }
+    }
 
-        return ResponseUtils.success(p);
+    public void refreshPosition(ThirdPartyPositionForSynchronizationWithAccount position) throws Exception {
+        String positionJson = null;
+
+        if (position.getChannel() == ChannelType.LIEPIN.getValue()) {
+            positionJson = JSON.toJSONString(PositionLiepinWithAccount.copyFromSyncPosition(position));
+        } else if (position.getChannel() == ChannelType.JOB51.getValue() || position.getChannel() == ChannelType.ZHILIAN.getValue()) {
+            positionJson = JSON.toJSONString(Position51WithAccount.copyFromSyncPosition(position));
+        }
+        logger.info("refresh position:" + positionJson);
+
+        redisClient.lpush(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH_QUEUE.toString(), positionJson);
+
+        DateTime dt = new DateTime();
+        int second = dt.getSecondOfDay();
+        if (second < 60 * 60 * 24) {
+            redisClient.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH.toString(), String.valueOf(position.getPosition_id()), String.valueOf(position.getAccount_id()), "1", 60 * 60 * 24 - second);
+        }
     }
 }

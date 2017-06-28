@@ -349,27 +349,35 @@ public class PositionService {
      * @param account_id 第三方账号ID
      */
     public ThirdPartyPositionForSynchronizationWithAccount createRefreshPosition(int positionId, int account_id) {
-        ThirdPartyPositionForSynchronizationWithAccount account = new ThirdPartyPositionForSynchronizationWithAccount();
-        ThirdPartyPosition form = new ThirdPartyPosition();
+        ThirdPartyPositionForSynchronizationWithAccount syncAccount = new ThirdPartyPositionForSynchronizationWithAccount();
         Query findPosition = new Query.QueryBuilder().where("id", positionId).buildQuery();
         JobPositionDO position = jobPositionDao.getData(findPosition);
+
+        if (position == null) {
+            return null;
+        }
+
         HrThirdPartyPositionDO thirdPartyPosition = thirdpartyPositionDao.getThirdPartyPosition(positionId, account_id);
+
+        if (thirdPartyPosition == null) {
+            return null;
+        }
+
         Query findAccount = new Query.QueryBuilder().where("id", account_id).buildQuery();
         HrThirdPartyAccountDO thirdPartyAccount = thirdPartyAccountDao.getData(findAccount);
-        account.setUser_name(thirdPartyAccount.getUsername());
-        account.setMember_name(thirdPartyAccount.getMembername());
-        account.setPassword(thirdPartyAccount.getPassword());
-        account.setChannel(thirdPartyAccount.getChannel());
-        account.setPosition_id(positionId);
-        account.setAccount_id(account_id);
+        syncAccount.setUser_name(thirdPartyAccount.getUsername());
+        syncAccount.setMember_name(thirdPartyAccount.getMembername());
+        syncAccount.setPassword(thirdPartyAccount.getPassword());
+        syncAccount.setChannel(thirdPartyAccount.getChannel());
+        syncAccount.setPosition_id(positionId);
+        syncAccount.setAccount_id(account_id);
 
+        ThirdPartyPosition form = new ThirdPartyPosition();
         form.setChannel((byte) thirdPartyAccount.getChannel());
-        if (position.getId() > 0 && thirdPartyPosition.getId() > 0) {
-            ThirdPartyPositionForSynchronization p = new PositionChangeUtil().changeToThirdPartyPosition(form, position);
-            p.setJob_id(thirdPartyPosition.getThirdPartPositionId());
-            account.setPosition_info(p);
-        }
-        return account;
+        ThirdPartyPositionForSynchronization p = new PositionChangeUtil().changeToThirdPartyPosition(form, position);
+        p.setJob_id(thirdPartyPosition.getThirdPartPositionId());
+        syncAccount.setPosition_info(p);
+        return syncAccount;
     }
 
     /**
