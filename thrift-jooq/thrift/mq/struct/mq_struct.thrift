@@ -22,7 +22,8 @@ struct MessageTemplateNoticeStruct {
     7: optional i8 enable_qx_retry = 1,
     8: optional i64 delay = 0,
     9: optional string validators,
-    10: optional string id
+    10: optional string id,
+    11: optional string validators_params
 }
 
 struct EmailStruct {
