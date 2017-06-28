@@ -10,8 +10,9 @@ import com.moseeker.baseorm.db.campaigndb.tables.CampaignEdmUserrecommendedPosit
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignEdmUsers;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignEmailAgentdelivery;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignHeadImage;
-import com.moseeker.baseorm.db.campaigndb.tables.CampaignNominateCompany;
-import com.moseeker.baseorm.db.campaigndb.tables.CampaignNominatePosition;
+import com.moseeker.baseorm.db.campaigndb.tables.CampaignPcBanner;
+import com.moseeker.baseorm.db.campaigndb.tables.CampaignPcRecommendCompany;
+import com.moseeker.baseorm.db.campaigndb.tables.CampaignPcRecommendPosition;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignRecommendCompany;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignRecommendPosition;
 
@@ -62,14 +63,19 @@ public class Tables {
     public static final CampaignHeadImage CAMPAIGN_HEAD_IMAGE = com.moseeker.baseorm.db.campaigndb.tables.CampaignHeadImage.CAMPAIGN_HEAD_IMAGE;
 
     /**
-     * 企业严选
+     * The table <code>campaigndb.campaign_pc_banner</code>.
      */
-    public static final CampaignNominateCompany CAMPAIGN_NOMINATE_COMPANY = com.moseeker.baseorm.db.campaigndb.tables.CampaignNominateCompany.CAMPAIGN_NOMINATE_COMPANY;
+    public static final CampaignPcBanner CAMPAIGN_PC_BANNER = com.moseeker.baseorm.db.campaigndb.tables.CampaignPcBanner.CAMPAIGN_PC_BANNER;
 
     /**
-     * 职位严选
+     * 逛公司页面仟寻推荐公司
      */
-    public static final CampaignNominatePosition CAMPAIGN_NOMINATE_POSITION = com.moseeker.baseorm.db.campaigndb.tables.CampaignNominatePosition.CAMPAIGN_NOMINATE_POSITION;
+    public static final CampaignPcRecommendCompany CAMPAIGN_PC_RECOMMEND_COMPANY = com.moseeker.baseorm.db.campaigndb.tables.CampaignPcRecommendCompany.CAMPAIGN_PC_RECOMMEND_COMPANY;
+
+    /**
+     * 首页推荐职位
+     */
+    public static final CampaignPcRecommendPosition CAMPAIGN_PC_RECOMMEND_POSITION = com.moseeker.baseorm.db.campaigndb.tables.CampaignPcRecommendPosition.CAMPAIGN_PC_RECOMMEND_POSITION;
 
     /**
      * 推荐公司

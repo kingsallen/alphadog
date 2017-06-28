@@ -96,4 +96,10 @@ public class CompanyController {
 			// do nothing
 		}
 	}
+	@RequestMapping(value = "/company/strictselection", method = RequestMethod.GET)
+	@ResponseBody
+	public String getPcBanner(HttpServletRequest request, HttpServletResponse response) {
+		
+		return null;
+	}
 }
