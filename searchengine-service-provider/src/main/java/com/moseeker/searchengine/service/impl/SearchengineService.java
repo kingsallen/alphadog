@@ -18,6 +18,8 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.sort.SortBuilder;
+import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -214,6 +216,7 @@ public class SearchengineService {
             if (order_by_priority) {
 
                 if (haskey) {
+                	
                     response = client.prepareSearch("index").setTypes("fulltext")
                             .setQuery(query)
                             .addSort("priority", SortOrder.ASC)

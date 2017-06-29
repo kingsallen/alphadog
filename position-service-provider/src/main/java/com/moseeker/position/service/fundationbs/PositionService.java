@@ -40,6 +40,7 @@ import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.position.struct.*;
+import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import org.apache.thrift.TException;
 import org.jooq.Field;
 import org.slf4j.Logger;
@@ -102,16 +103,8 @@ public class PositionService {
 
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
-    com.moseeker.thrift.gen.searchengine.service.SearchengineServices.Iface searchengineServices = ServiceManager.SERVICEMANAGER
-            .getService(com.moseeker.thrift.gen.searchengine.service.SearchengineServices.Iface.class);
 
-    protected Position DBToStruct(JobPositionRecord r) {
-        return (Position) BeanUtils.DBToStruct(Position.class, r);
-    }
-
-    protected JobPositionRecord structToDB(Position p) {
-        return (JobPositionRecord) BeanUtils.structToDB(p, JobPositionRecord.class);
-    }
+    SearchengineServices.Iface searchengineServices = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
 
     /**
      * 获取推荐职位
@@ -1178,51 +1171,47 @@ public class PositionService {
                 Condition con = new Condition("id", jdIdList.toArray(), ValueOp.IN);
                 Query q = new Query.QueryBuilder().where(con).buildQuery();
                 List<JobPositionRecord> jobRecords = jobPositionDao.getRecords(q);
+                for(int i=0;i<jdIdList.size();i++){
+                	int positionId=jdIdList.get(i);
+                	 for (JobPositionRecord jr : jobRecords) {
+                		if(positionId==jr.getId()){
+	 	                    logger.info("pid: " + String.valueOf(jr.getId()));
+	 	                    WechatPositionListData e = new WechatPositionListData();
+	 	                    e.setTitle(jr.getTitle());
+	 	                    e.setId(jr.getId());
+	 	                    // 数据库的 salary_top 和 salary_bottom 默认是 NULL 不是 0
+	 	                    // 所以这里需要对这两个字段做 null pointer 检查
+	 	                    if (jr.getSalaryTop() == null) {
+	 	                        e.setSalary_top(0);
+	 	                    } else {
+	 	                        e.setSalary_top(jr.getSalaryTop());
+	 	                    }
 
-                for (JobPositionRecord jr : jobRecords) {
-                    logger.info("pid: " + String.valueOf(jr.getId()));
-
-
-                    WechatPositionListData e = new WechatPositionListData();
-                    e.setTitle(jr.getTitle());
-                    e.setId(jr.getId());
-
-                    // 数据库的 salary_top 和 salary_bottom 默认是 NULL 不是 0
-                    // 所以这里需要对这两个字段做 null pointer 检查
-                    if (jr.getSalaryTop() == null) {
-                        e.setSalary_top(0);
-                    } else {
-                        e.setSalary_top(jr.getSalaryTop());
-                    }
-
-                    if (jr.getSalaryBottom() == null) {
-                        e.setSalary_bottom(0);
-                    } else {
-                        e.setSalary_bottom(jr.getSalaryBottom());
-                    }
-
-                    e.setPublish_date(new SimpleDateFormat("YYYY-MM-dd HH:mm:ss").format(jr.getUpdateTime()));
-                    e.setDepartment(jr.getDepartment());
-                    e.setVisitnum(jr.getVisitnum());
-                    e.setIn_hb(jr.getHbStatus() > 0);
-                    e.setCount(jr.getCount());
-                    e.setCity(jr.getCity());
-                    e.setPriority(jr.getPriority());
-                    e.setPublisher(jr.getPublisher()); // will be used for fetching sub company info
-
-                    dataList.add(e);
+	 	                    if (jr.getSalaryBottom() == null) {
+	 	                        e.setSalary_bottom(0);
+	 	                    } else {
+	 	                        e.setSalary_bottom(jr.getSalaryBottom());
+	 	                    }
+	 	                    e.setPublish_date(new SimpleDateFormat("YYYY-MM-dd HH:mm:ss").format(jr.getUpdateTime()));
+	 	                    e.setDepartment(jr.getDepartment());
+	 	                    e.setVisitnum(jr.getVisitnum());
+	 	                    e.setIn_hb(jr.getHbStatus() > 0);
+	 	                    e.setCount(jr.getCount());
+	 	                    e.setCity(jr.getCity());
+	 	                    e.setPriority(jr.getPriority());
+	 	                    e.setPublisher(jr.getPublisher()); // will be used for fetching sub company info
+	 	                    dataList.add(e);
+	 	                    break;
+                		}
+ 	                }
                 }
-
                 logger.info(dataList.toString());
-
                 // 获取公司信息，拼装 company abbr, logo 等信息
                 Map<Integer /* publisher id */, HrCompanyDO> publisherCompanyMap = new HashMap<>();
-//                QueryUtil hrm = new QueryUtil();
+                //QueryUtil hrm = new QueryUtil();
                 Query.QueryBuilder hrm = new Query.QueryBuilder();
-
                 Set<Integer> publisherSet = dataList.stream().map(WechatPositionListData::getPublisher)
                         .collect(Collectors.toSet());
-
                 // publisherList 应该不为空
                 // 如果 publisherList 为空，那么返回空 ArrayList
                 if (publisherSet == null || publisherSet.size() == 0) {
