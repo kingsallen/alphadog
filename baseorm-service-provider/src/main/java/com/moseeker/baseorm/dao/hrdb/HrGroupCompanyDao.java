@@ -6,6 +6,7 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrGroupCompanyRecord;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrGroupCompanyDO;
 
 import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
  * Created by YYF
@@ -14,13 +15,14 @@ import org.jooq.impl.TableImpl;
  *
  * Project_name :alphadog
  */
-public class HrGroupComanyDao extends JooqCrudImpl<HrGroupCompanyDO, HrGroupCompanyRecord> {
+@Repository
+public class HrGroupCompanyDao extends JooqCrudImpl<HrGroupCompanyDO, HrGroupCompanyRecord> {
 
-    public HrGroupComanyDao() {
+    public HrGroupCompanyDao() {
         super(HrGroupCompany.HR_GROUP_COMPANY, HrGroupCompanyDO.class);
     }
 
-    public HrGroupComanyDao(TableImpl<HrGroupCompanyRecord> table, Class<HrGroupCompanyDO> hrGroupCompanyDOClass) {
+    public HrGroupCompanyDao(TableImpl<HrGroupCompanyRecord> table, Class<HrGroupCompanyDO> hrGroupCompanyDOClass) {
         super(table, hrGroupCompanyDOClass);
     }
 }

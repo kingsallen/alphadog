@@ -15,6 +15,7 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
+import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.thrift.gen.candidate.struct.*;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -25,6 +26,8 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrPointsConfDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
+import com.moseeker.thrift.gen.employee.struct.Employee;
+
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
@@ -57,6 +60,10 @@ public class CandidateEntity implements Candidate {
 
     @Autowired
     private CandidateDBDao candidateDBDao;
+
+
+    @Autowired
+    private EmployeeEntity employeeEntity;
 
     /**
      * C端用户查看职位，判断是否生成候选人数据
@@ -161,7 +168,7 @@ public class CandidateEntity implements Candidate {
         }
     }
 
-	@Override
+    @Override
     @CounterIface
     public Response changeInteresting(int user_id, int position_id, byte is_interested) {
         Response response = ResponseUtils.success("{}");
@@ -370,6 +377,12 @@ public class CandidateEntity implements Candidate {
         return recomRecordResult;
     }
 
+    /**
+     * 查询员工在公司的推荐排名
+     *
+     * @param postUserId 转发者编号
+     * @param companyId  公司编号
+     */
     @Override
     @CounterIface
     public SortResult getRecommendatorySorting(int postUserId, int companyId) throws
@@ -381,15 +394,16 @@ public class CandidateEntity implements Candidate {
         if (!StringUtils.isNullOrEmpty(message)) {
             throw CandidateExceptionFactory.buildCheckFailedException(message);
         }
-        /** 是否开启被动求职者 */
-        boolean passiveSeeker = candidateDBDao.isStartPassiveSeeker(companyId);
-        logger.info("CandidateEntity getRecommendatorySorting passiveSeeker:{}", passiveSeeker);
-        if (!passiveSeeker) {
-            throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_NOT_START);
-        }
 
+        /** 是否开启被动求职者
+         boolean passiveSeeker = candidateDBDao.isStartPassiveSeeker(companyId);
+         logger.info("CandidateEntity getRecommendatorySorting passiveSeeker:{}", passiveSeeker);
+         if (!passiveSeeker) {
+         throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_NOT_START);
+         }
+         */
         /** 查找员工信息 */
-        List<UserEmployeeDO> employeeDOList = candidateDBDao.listUserEmployee(companyId);
+        List<UserEmployeeDO> employeeDOList = employeeEntity.getUserEmployeeDOList(companyId);
         logger.info("CandidateEntity getRecommendatorySorting employeeDOList:{}", employeeDOList);
         if (employeeDOList == null || employeeDOList.size() == 0) {
             throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_SORT_COLLEAGUE_NOT_EXIST);
@@ -561,7 +575,7 @@ public class CandidateEntity implements Candidate {
         recomRecordResult.setClickTime(candidateRecomRecordDO.getClickTime());
         recomRecordResult.setPresenteeName(refineUserName(userFuture));
         recomRecordResult.setTitle(refinePositionName(positionFuture));
-        recomRecordResult.setRecom((byte)candidateRecomRecordDO.getIsRecom());
+        recomRecordResult.setRecom((byte) candidateRecomRecordDO.getIsRecom());
         return recomRecordResult;
     }
 
