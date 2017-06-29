@@ -3,16 +3,15 @@ package com.moseeker.function.service.chaos.position;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * Created by zhangdi on 2017/6/26.
  */
 public class PositionLiepinWithAccount implements Serializable {
     private int account_id;
-    private String username;
+    private String user_name;
     private String password;
-    private int channel;
+    private String channel;
     private int position_id;
     private PositionLiepin position_info;
 
@@ -24,12 +23,12 @@ public class PositionLiepinWithAccount implements Serializable {
         this.account_id = account_id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getUser_name() {
+        return user_name;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUser_name(String user_name) {
+        this.user_name = user_name;
     }
 
     public String getPassword() {
@@ -40,11 +39,11 @@ public class PositionLiepinWithAccount implements Serializable {
         this.password = password;
     }
 
-    public int getChannel() {
+    public String getChannel() {
         return channel;
     }
 
-    public void setChannel(int channel) {
+    public void setChannel(String channel) {
         this.channel = channel;
     }
 
@@ -69,9 +68,9 @@ public class PositionLiepinWithAccount implements Serializable {
         PositionLiepinWithAccount positionLiepinWithAccount = new PositionLiepinWithAccount();
 
         positionLiepinWithAccount.setAccount_id(position.getAccount_id());
-        positionLiepinWithAccount.setUsername(position.getUser_name());
+        positionLiepinWithAccount.setUser_name(position.getUser_name());
         positionLiepinWithAccount.setPassword(position.getPassword());
-        positionLiepinWithAccount.setChannel(position.getChannel());
+        positionLiepinWithAccount.setChannel(String.valueOf(position.getChannel()));
         positionLiepinWithAccount.setPosition_id(position.getPosition_id());
         positionLiepinWithAccount.setPosition_info(PositionLiepin.copyFromSyncPosition(position.getPosition_info()));
 
