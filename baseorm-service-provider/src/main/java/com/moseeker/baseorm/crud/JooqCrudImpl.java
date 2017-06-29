@@ -5,6 +5,8 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.Update;
 import com.moseeker.common.util.query.Condition;
 import org.jooq.Field;
+import org.jooq.Record;
+import org.jooq.Result;
 import org.jooq.UpdatableRecord;
 import org.jooq.UpdateSetFirstStep;
 import org.jooq.UpdateSetMoreStep;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -113,5 +116,13 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> extends Crud<S, R> {
     @Override
     public int getCount(Query query) {
         return new LocalQuery<>(create, table, query).convertForCount().fetchOne().value1();
+    }
+    
+    public Map<String,Object> getMap(Query query) {
+        return new LocalQuery<>(create, table, query).convertToResultQuery().fetchAnyMap();
+    }
+    
+    public List<Map<String,Object>> getMaps(Query query) {
+        return new LocalQuery<>(create, table, query).convertToResultQuery().fetchMaps();
     }
 }

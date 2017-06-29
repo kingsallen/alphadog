@@ -43,9 +43,48 @@ public class PositionPcServiceTest {
     	List<Integer> list=new ArrayList<Integer>();
     	list.add(39978);
     	list.add(71176);
-    	List<Map> result=service.getTeamNum(list);
+    	List<Map<String,Object>> result=service.getTeamNum(list);
     	System.out.println(result);
     	
     }
-
+  @Test
+  public void getPositionNumTest(){
+	  List<Integer> list=new ArrayList<Integer>();
+	  list.add(82671);
+	  list.add(82673);
+	  list.add(82691);
+	  list.add(82752);
+	  list.add(82753);
+	  list.add(82755);
+	  list.add(82756);
+	  list.add(82767);
+	  list.add(82787);
+	  list.add(82794);
+	  list.add(82795);
+	  list.add(82796);
+	  list.add(82797);
+	  list.add(82798);
+	  list.add(82800);
+	  list.add(82805);
+	  list.add(82806);
+	  list.add(82807);
+	  list.add(82808);
+	  list.add(82827);
+	  list.add(82851);
+	  list.add(82852);
+	  list.add(82862);
+	  list.add(82864);
+	  list.add(82948);
+	  list.add(82976);
+	  list.add(82980);
+	  list.add(82980);
+	  int num=service.getPositionNum(list);
+	  System.out.println("职位的数量是＝＝＝＝＝＝＝"+num);
+  }
+  
+  @Test
+  public void getQXRecommendCompanyListTest(){
+	  Response res=service.getQXRecommendCompanyList();
+	  System.out.println(res);
+  }
 }

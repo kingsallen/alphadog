@@ -8,6 +8,8 @@ import java.util.Map;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.query.SelectOp;
+
+import org.jooq.Record;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +20,7 @@ import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.Select;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignPcRecommendCompanyDO;
@@ -191,12 +194,12 @@ public class PositionPcService {
 	/*
 	 * 获取团队数量，通过公司的List<id>
 	 */
-	public List<Map> getTeamNum(List<Integer> list){
-		Query query=new Query.QueryBuilder().select("id", SelectOp.COUNT).select("company_id")
+	public List<Map<String,Object>> getTeamNum(List<Integer> list){
+		Query query=new Query.QueryBuilder().select(new Select("id", SelectOp.COUNT)).select("company_id")
 				.where(new Condition("company_id",list.toArray(),ValueOp.IN))
 				.and("disale",0).and("is_show",1)
 				.groupBy("company_id").buildQuery();
-		List<Map> result=hrTeamDao.getDatas(query, Map.class);
+		List<Map<String,Object>> result=hrTeamDao.getMaps(query);
 		return result;
 	}
 	/*
@@ -498,7 +501,7 @@ public class PositionPcService {
 	  * 获取该公司id列表下的职位数量
 	  */
 	 public int getPositionNum(List<Integer> publisherIds){
-		 Query query=new Query.QueryBuilder().select("id", SelectOp.COUNT_DISTINCT)
+		 Query query=new Query.QueryBuilder()
 				 .where(new Condition("publisher",publisherIds.toArray(),ValueOp.IN))
 				 .and("status",0).buildQuery();
 		 int num=jobPositionDao.getCount(query);
@@ -511,7 +514,7 @@ public class PositionPcService {
 		 List<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
 		 List<HrCompanyDO> companyList=this.getHrCompanyByCompanyIds(companyIds);
 		 Map<String,List<Integer>> companyPulisher=getCompanyAccountListByCompanyIds(companyIds);
-		 List<Map> mapTeamNum=getTeamNum(companyIds);
+		 List<Map<String,Object>> mapTeamNum=getTeamNum(companyIds);
 		 companyList=filterCompanyList(companyList);
 		 Map<String,Object> map=null;
 		 for(int i=0;i<companyList.size();i++){
@@ -527,9 +530,9 @@ public class PositionPcService {
 				map.put("positionNum", 0);
 			 }
 			 for(Map teamMap:mapTeamNum){
-				 int companyId1=(int) teamMap.get("companyId");
+				 int companyId1=(int) teamMap.get("company_id");
 				 if(companyId1==companyId){
-					 int teamNum=(int) teamMap.get("num");
+					 int teamNum=(int) teamMap.get("id_count");
 					 map.put("teamNum", teamNum);
 					 break;
 				 }
