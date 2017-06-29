@@ -1,9 +1,6 @@
 package com.moseeker.function.service.chaos;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
 import com.moseeker.baseorm.redis.RedisClient;
-import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.util.StringUtils;
 import org.slf4j.LoggerFactory;
 
@@ -40,14 +37,15 @@ public abstract class RedisConsumer<T> {
     }
 
     /**
-     * 监听职位同步完成队列
-     *
+     * 从队列中取出
+     * @param appid
+     * @param key
      * @return
      */
     private String fetchFromRedis(int appid, String key) {
         List<String> result = redisClient.brpop(appid, key);
         if (result != null && result.size() > 0) {
-            LoggerFactory.getLogger(this.getClass()).info("同步完成队列 : {}", result.get(1));
+            LoggerFactory.getLogger(this.getClass()).info("fetch from redis : {}", result.get(1));
             return result.get(1);
         } else {
             return null;
