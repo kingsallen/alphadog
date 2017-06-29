@@ -4,22 +4,16 @@ import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyPositionRecord;
-import com.moseeker.baseorm.util.BeanUtils;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
-import org.joda.time.DateTime;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -84,12 +78,13 @@ public class HRThirdPartyPositionDao extends JooqCrudImpl<HrThirdPartyPositionDO
      * @param positions
      * @return
      */
-    public Response upsertThirdPartyPositions(List<HrThirdPartyPositionDO> positions) {
+    @Transactional
+    public Response upsertThirdPartyPositions(List<HrThirdPartyPositionDO> positions) throws BIZException {
         if (positions == null || positions.size() == 0) return ResponseUtils.success(null);
         logger.info("companyDao upsertThirdPartyPositions" + JSON.toJSONString(positions));
-        positions.forEach(position -> {
-            upsertThirdPartyPosition(position);
-        });
+        for (HrThirdPartyPositionDO thirdPartyPositionDO : positions) {
+            upsertThirdPartyPosition(thirdPartyPositionDO);
+        }
         return ResponseUtils.success(null);
 
     }
@@ -97,37 +92,31 @@ public class HRThirdPartyPositionDao extends JooqCrudImpl<HrThirdPartyPositionDO
     /**
      * 如果第三方职位数据存在，则修改，否则添加
      *
-     * @param position
+     * @param thirdPartyPositionDO
      * @return
      */
-    public int upsertThirdPartyPosition(HrThirdPartyPositionDO position) {
-        try {
-            Query query = new Query.QueryBuilder()
-                    .where("third_party_account_id", position.getThirdPartyAccountId())
-                    .and("position_id", position.getPositionId())
-                    .buildQuery();
-            HrThirdPartyPositionDO thirdPartyPosition = getData(query);
-            if (thirdPartyPosition == null) {
-                logger.info("添加一个第三方职位:channel:{},positionId:{}", position.getChannel(), position.getPositionId());
-                addData(position);
-                return 1;
-            } else {
-                logger.info("更新一个第三方职位:channel:{},positionId:{}", position.getChannel(), position.getPositionId());
-                position.setId(thirdPartyPosition.getId());
+    public HrThirdPartyPositionDO upsertThirdPartyPosition(HrThirdPartyPositionDO thirdPartyPositionDO) throws BIZException {
+        Query query = new Query.QueryBuilder()
+                .where("third_party_account_id", thirdPartyPositionDO.getThirdPartyAccountId())
+                .and("position_id", thirdPartyPositionDO.getPositionId())
+                .buildQuery();
+        HrThirdPartyPositionDO thirdPartyPosition = getData(query);
+        if (thirdPartyPosition == null) {
+            logger.info("添加一个第三方职位:channel:{},positionId:{}", thirdPartyPositionDO.getChannel(), thirdPartyPositionDO.getPositionId());
+            return addData(thirdPartyPositionDO);
+        } else {
+            logger.info("更新一个第三方职位:channel:{},positionId:{}", thirdPartyPositionDO.getChannel(), thirdPartyPositionDO.getPositionId());
+            thirdPartyPositionDO.setId(thirdPartyPosition.getId());
 
-                int updateResult = updateData(position);
+            int updateResult = updateData(thirdPartyPositionDO);
 
-                if (updateResult < 1) {
-                    logger.error("更新第三方职位失败:{}", JSON.toJSONString(position));
-                }
-
-                return updateResult;
+            if (updateResult < 1) {
+                logger.error("更新第三方职位失败:{}", JSON.toJSONString(thirdPartyPositionDO));
+                throw new BIZException(-1, "更新状态时发生了错误，请重试！");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-            logger.error("添加第三方职位同步失败:{}", JSON.toJSONString(position));
-            return 0;
+            query = new Query.QueryBuilder().where("id", thirdPartyPosition.getId()).buildQuery();
+            thirdPartyPosition = getData(query);
+            return thirdPartyPosition;
         }
     }
 }

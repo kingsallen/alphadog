@@ -13,6 +13,7 @@ import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.constants.PositionRefreshType;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
@@ -65,6 +66,9 @@ public class PositionRefreshConsumer extends RedisConsumer<PositionForSyncResult
     @CounterIface
     @Override
     protected void onComplete(PositionForSyncResultPojo pojo) {
+
+        if (pojo == null) return;
+
         HrThirdPartyPositionDO data = new HrThirdPartyPositionDO();
         data.setChannel(Byte.valueOf(pojo.getChannel()));
         data.setPositionId(Integer.valueOf(pojo.getPosition_id()));
@@ -86,7 +90,12 @@ public class PositionRefreshConsumer extends RedisConsumer<PositionForSyncResult
             logger.warn("刷新完成队列中包含不存在的职位:{}", pojo.getPosition_id());
             return;
         }
-        thirdpartyPositionDao.upsertThirdPartyPosition(data);
+        try {
+            thirdpartyPositionDao.upsertThirdPartyPosition(data);
+        } catch (BIZException e) {
+            e.printStackTrace();
+            logger.error("读取职位刷新队列后无法更新到数据库:{}", JSON.toJSONString(data));
+        }
         if (pojo.getStatus() == 0 && pojo.getRemain_number() > -1 && pojo.getResume_number() > -1) {
             HrThirdPartyAccountDO thirdPartyAccount = new HrThirdPartyAccountDO();
             thirdPartyAccount.setId(pojo.getAccount_id());

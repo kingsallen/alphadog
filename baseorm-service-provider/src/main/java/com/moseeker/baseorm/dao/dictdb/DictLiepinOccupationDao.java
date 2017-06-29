@@ -5,6 +5,7 @@ import com.moseeker.baseorm.db.dictdb.tables.DictLiepinOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.Dict_51jobOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictLiepinOccupationRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.Dict_51jobOccupationRecord;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.dao.struct.dictdb.Dict51jobOccupationDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictLiepinOccupationDO;
@@ -112,7 +113,7 @@ public class DictLiepinOccupationDao extends JooqCrudImpl<DictLiepinOccupationDO
             if (result.get("children") != null && ((List<Map<String, Object>>) result.get("children")).size() > 0) {
                 ((List<Map<String, Object>>) result.get("children")).forEach(r2 -> {
                     if (r2.get("children") != null && ((List<Map<String, Object>>) r2.get("children")).size() > 0) {
-                        ((List<Map<String, Object>>)  r2.get("children")).forEach(r3 -> {
+                        ((List<Map<String, Object>>) r2.get("children")).forEach(r3 -> {
                             Iterator<Map<String, Object>> id = allData.iterator();
                             while (id.hasNext()) {
                                 Map<String, Object> d = id.next();
@@ -146,5 +147,39 @@ public class DictLiepinOccupationDao extends JooqCrudImpl<DictLiepinOccupationDO
             }
         }
         return result;
+    }
+
+    public List<DictLiepinOccupationDO> getFullOccupations(String occupation) {
+        List<DictLiepinOccupationDO> fullOccupations = new ArrayList<>();
+
+        if (StringUtils.isNullOrEmpty(occupation)) return fullOccupations;
+
+        String currentField = "other_code";
+        Object currentValue = occupation;
+
+        Query query = null;
+
+        DictLiepinOccupationDO dictLiepinOccupationDO;
+
+        for (int i = 0; i < 4; i++) {
+
+            query = new Query.QueryBuilder().where(currentField, currentValue).buildQuery();
+
+            dictLiepinOccupationDO = getData(query);
+
+            if (dictLiepinOccupationDO == null) {
+                break;
+            } else {
+                fullOccupations.add(0, dictLiepinOccupationDO);
+                if (dictLiepinOccupationDO.getParentId() == 0) {
+                    break;
+                }
+                currentField = "code";
+                currentValue = dictLiepinOccupationDO.getParentId();
+            }
+        }
+
+        return fullOccupations;
+
     }
 }
