@@ -66,25 +66,6 @@ public class HrTeamDao extends JooqCrudImpl<HrTeamDO, HrTeamRecord> {
 
     }
     
-	/*
-	 * 获取团队
-	 */
-	public List<HrTeamDO> getTeamList(List<Integer> list){
-		Condition condition=new Condition("id",list.toArray(),ValueOp.IN);
-		Query query=new Query.QueryBuilder().where(condition).and("disable",0).and("is_show",1).buildQuery();
-		List<HrTeamDO> result=this.getDatas(query);
-		return result;
-	}
-	/*
-	 * 获取团队数量，通过公司的List<id>
-	 */
-	public List<Map> getTeamNum(List<Integer> list){
-		Query query=new Query.QueryBuilder().select("id", SelectOp.COUNT).select("id")
-				.where(new Condition("id",list.toArray(),ValueOp.IN))
-				.and("disale",0).and("is_show",1)
-				.groupBy("id").buildQuery();
-		List<Map> result=this.getDatas(query, Map.class);
-		return result;
-	}
+
 	
 }
