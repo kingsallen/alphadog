@@ -1,17 +1,15 @@
 package com.moseeker.position.service.fundationbs;
 
-import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignPcRecommendPositionDO;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.junit.runner.RunWith;
-import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.position.config.AppConfig;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -21,7 +19,7 @@ import java.util.Map;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = AppConfig.class)
-public class PositionPcService {
+public class PositionPcServiceTest {
     @Autowired
     private PositionPcService service;
     //测试总接口
@@ -40,6 +38,14 @@ public class PositionPcService {
         List<CampaignPcRecommendPositionDO> list=service.getPcRemmendPositionIdList(page,pageSize);
         System.out.println(list);
     }
-
+    @Test
+    public void getTeamNumTest(){
+    	List<Integer> list=new ArrayList<Integer>();
+    	list.add(39978);
+    	list.add(71176);
+    	List<Map> result=service.getTeamNum(list);
+    	System.out.println(result);
+    	
+    }
 
 }

@@ -6,22 +6,21 @@ import java.util.List;
 import java.util.Map;
 
 import com.moseeker.baseorm.dao.hrdb.*;
-import com.moseeker.baseorm.db.hrdb.tables.HrTeam;
-import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.query.SelectOp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.moseeker.baseorm.dao.campaigndb.CampaignPcRecommendCompanyDao;
 import com.moseeker.baseorm.dao.campaigndb.CampaignPcRecommendPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
-import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignPcRecommendCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignPcRecommendPositionDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCmsMediaDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCmsModuleDO;
@@ -61,15 +60,16 @@ public class PositionPcService {
 	private HrCompanyConfDao hrCompanyConfDao;
 	@Autowired
 	private HrTeamDao hrTeamDao;
-
+	@Autowired
+	private CampaignPcRecommendCompanyDao campaignPcRecommendCompanyDao;
 	/*
 	 * 获取pc首页职位推荐
 	 */
 	@CounterIface
 	public Response getRecommendPositionPC(int page,int pageSize){
 		List<CampaignPcRecommendPositionDO>  list=getPcRemmendPositionIdList(page,pageSize);
-		List<Integer> positionids=this.getPCRecommendPositionIds(list);
-		List<Map<String,Object>> result=handleDataJDAndPosition(positionids,3);
+		List<Integer> positionIds=this.getPCRecommendPositionIds(list);
+		List<Map<String,Object>> result=handleDataJDAndPosition(positionIds,3);
 		Response res= ResponseUtils.success(result);
 		return res;
 	}
@@ -77,7 +77,7 @@ public class PositionPcService {
 	 * 分页获取推荐职位列表
 	 */
 	public  List<CampaignPcRecommendPositionDO> getPcRemmendPositionIdList(int page,int pageSize){
-		Query query=new Query.QueryBuilder().setPageNum(page).setPageSize(pageSize).buildQuery();
+		Query query=new Query.QueryBuilder().where("disable",0).setPageNum(page).setPageSize(pageSize).buildQuery();
 		List<CampaignPcRecommendPositionDO> list=campaignPcRecommendPositionDao.getDatas(query);
 		return list;
 	}
@@ -116,8 +116,9 @@ public class PositionPcService {
 	/*
 	获取publisher和companyId的对应关系集合
 	 */
-	private Map<String,Integer> getPublisherCompanyId(List<Integer> list){
-		Map<String,Integer> map=new HashMap<String,Integer>();
+	private List<Map<String,Integer>> getPublisherCompanyId(List<Integer> list){
+		List<Map<String,Integer>> result=new ArrayList<Map<String,Integer>>();
+		Map<String,Integer> map=null;
 		Query query=new Query.QueryBuilder().where(new Condition("account_id",list.toArray(),ValueOp.IN)).buildQuery();
 		List<HrCompanyAccountDO> records=hrCompanyAccountDao.getDatas(query);
 		if(records!=null&&records.size()>0){
@@ -125,10 +126,13 @@ public class PositionPcService {
 				HrCompanyAccountDO accountDo=records.get(i);
 				int publisher=accountDo.getAccountId();
 				int companyId=accountDo.getCompanyId();
-				map.put(companyId+"",publisher);
+				map=new HashMap<String,Integer>();
+				map.put("companyId",companyId);
+				map.put("publisher",publisher);
+				result.add(map);
 			}
 		}
-		return map;
+		return result;
 	}
 	/*
 	 * 通过publisher的id列表获取公司的id列表
@@ -188,10 +192,10 @@ public class PositionPcService {
 	 * 获取团队数量，通过公司的List<id>
 	 */
 	public List<Map> getTeamNum(List<Integer> list){
-		Query query=new Query.QueryBuilder().select("id", SelectOp.COUNT).select("id")
-				.where(new Condition("id",list.toArray(),ValueOp.IN))
+		Query query=new Query.QueryBuilder().select("id", SelectOp.COUNT).select("company_id")
+				.where(new Condition("company_id",list.toArray(),ValueOp.IN))
 				.and("disale",0).and("is_show",1)
-				.groupBy("id").buildQuery();
+				.groupBy("company_id").buildQuery();
 		List<Map> result=hrTeamDao.getDatas(query, Map.class);
 		return result;
 	}
@@ -202,7 +206,7 @@ public class PositionPcService {
 		List<Integer> result=new ArrayList<Integer>();
 		for(int i=0;i<list.size();i++){
 			JobPositionDO positionDO=list.get(i);
-			result.add(positionDO.getId());
+			result.add(positionDO.getTeamId());
 		}
 		return result;
 	}
@@ -299,7 +303,7 @@ public class PositionPcService {
 				 Integer originPageId=(Integer)map1.get("pageId");
 				 if(originPageId==pageId){
 				 	if(map1.get("moudleId")==null) {
-						map1.put("moudleId",ModuleId);
+						map1.put("moduleId",ModuleId);
 						break;
 					}
 				 }
@@ -335,9 +339,9 @@ public class PositionPcService {
 					 Map<String, Object> map3 = maps1.get(j);
 					 Integer resId = (Integer)map3.get("resId");
 					 if (resId == id) {
-						 if (map3.get("resId")==null){
+						 if (map3.get("imgUrl")==null){
 						 	String imgUrl=resourceDO.getResUrl();
-						 	map.put("imgUrl",imgUrl);
+						 	map3.put("imgUrl",imgUrl);
 						 }
 					 }
 				 }
@@ -349,7 +353,7 @@ public class PositionPcService {
 	 /*
 	 处理position和company的数据
 	  */
-	 public List<Map<String,Object>> handleCompanyAndPositionData(List<JobPositionDO> positionList, List<HrCompanyDO> companyList,List<HrTeamDO> teamList,Map<String,Integer> publisherAndCompanyId){
+	 public List<Map<String,Object>> handleCompanyAndPositionData(List<JobPositionDO> positionList, List<HrCompanyDO> companyList,List<HrTeamDO> teamList,List<Map<String,Integer>> publisherAndCompanyId){
 		 List<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
 		 for(int i=0;i<positionList.size();i++){
 			 JobPositionDO positionDo=positionList.get(i);
@@ -360,11 +364,16 @@ public class PositionPcService {
 			 for(int j=0;j<companyList.size();j++){
 				 HrCompanyDO companyDO=companyList.get(j);
 				 int companyId=companyDO.getId();
-				 Integer oripublisher=publisherAndCompanyId.get(companyId+"");
-				 if(oripublisher!=null&&oripublisher==publisher){
-					 map.put("company",companyDO);
-					 break;
+				 for(int z=0;z<publisherAndCompanyId.size();z++){
+					 Map<String,Integer> maps=publisherAndCompanyId.get(z);
+					 Integer oripublisher=maps.get("publisher");
+					 Integer oriCompanyid=maps.get("companyId");
+					 if(oripublisher!=null&&oripublisher==publisher&&oriCompanyid!=null&&oriCompanyid==companyId){
+						 map.put("company",companyDO);
+						 break;
+					 }
 				 }
+							
 			 }
 			 for(HrTeamDO teamDo:teamList){
 			 	int id=teamDo.getId();
@@ -415,7 +424,7 @@ public class PositionPcService {
 		 List<Integer> publisherIds=this.getPublisherIdList(positionList);
 		 List<Integer> compantIds=this.getHrCompanyIdList(publisherIds);
 		 List<HrCompanyDO> companyList=this.getHrCompanyByCompanyIds(compantIds);
-		 Map<String,Integer> publisherAndCompanyId=getPublisherCompanyId(publisherIds);
+		 List<Map<String,Integer>> publisherAndCompanyId=getPublisherCompanyId(publisherIds);
 		 List<Integer> teamIds=this.getTeamIdList(positionList);
 		 List<HrTeamDO> teamList=this.getTeamList(teamIds);
 		 list=this.handleCompanyAndPositionData(positionList,companyList,teamList,publisherAndCompanyId);
@@ -427,11 +436,127 @@ public class PositionPcService {
 		 		HrTeamDO teamDO=(HrTeamDO)map1.get("team");
 		 		int id=teamDO.getId();
 		 		if(id==configId){
-		 			map.put("jdPic",picture);
+		 			map1.put("jdPic",picture);
 				}
 			 }
 		 }
 	 	return list;
 	 }
-
+	 
+	//====================================================== 
+	 //获取仟寻推荐职位接口
+	 public Response getQXRecommendCompanyList(){
+		 List<CampaignPcRecommendCompanyDO>  CampaignPcRecommendCompanyList= getCampaignPcRecommendCompanyList();
+		 List<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
+		 for(CampaignPcRecommendCompanyDO dO:CampaignPcRecommendCompanyList){
+			 Map<String,Object> map=new HashMap<String,Object>();
+			 String companyIds=dO.getCompanyIds();
+			 map.put("moduleName", dO.getModuleName());
+			 map.put("moduleDescription", dO.getModuleDescription());
+			 List<Integer> companyIdList=new ArrayList<Integer>();
+			 String [] ids=companyIds.split(",");
+			 for(int i=0;i<ids.length;i++){
+				 companyIdList.add(Integer.parseInt(ids[i]));
+			 }
+			 List<Map<String,Object>> result=handleRecommendPcCompanyData(companyIdList);
+			 map.put("data", result);
+			 list.add(map);
+		 }
+		 Response res= ResponseUtils.success(list);
+		 return res;
+	 }
+	 /*
+	  * 获取所有的千寻推荐公司
+	  */
+	 public List<CampaignPcRecommendCompanyDO> getCampaignPcRecommendCompanyList(){
+		 Query query=new Query.QueryBuilder().where("disable",0).buildQuery();
+		 List<CampaignPcRecommendCompanyDO> list=campaignPcRecommendCompanyDao.getDatas(query);
+		 return list;
+	 }
+	 /*
+	  * 获取所推荐公司的publisher列表
+	  */
+	 public Map<String,List<Integer>> getCompanyAccountListByCompanyIds(List<Integer> companyIds){
+		 Map<String,List<Integer>> map=new HashMap<String,List<Integer>>();
+		 Query query=new Query.QueryBuilder().where(new Condition("company_id",companyIds.toArray(),ValueOp.IN)).buildQuery();
+		 List<HrCompanyAccountDO> list=hrCompanyAccountDao.getDatas(query);
+		 for(HrCompanyAccountDO accountDO:list){
+			 int companyId=accountDO.getCompanyId();
+			 int pulisher=accountDO.getAccountId();
+			 if(map.get(companyId+"")!=null){
+				 List<Integer> publisherList=map.get(companyId+"");
+				 publisherList.add(pulisher);
+			 }else{
+				 List<Integer> publisherList=new ArrayList<Integer>();
+				 publisherList.add(pulisher);
+				 map.put(companyId+"",publisherList);
+			 }
+		 }
+		 return map;
+	 }
+	 /*
+	  * 获取该公司id列表下的职位数量
+	  */
+	 public int getPositionNum(List<Integer> publisherIds){
+		 Query query=new Query.QueryBuilder().select("id", SelectOp.COUNT_DISTINCT)
+				 .where(new Condition("publisher",publisherIds.toArray(),ValueOp.IN))
+				 .and("status",0).buildQuery();
+		 int num=jobPositionDao.getCount(query);
+		 return num;
+	 }
+	 /*
+	  * 处理数据获取千寻推荐企业严选数据
+	  */
+	 public List<Map<String,Object>> handleRecommendPcCompanyData(List<Integer> companyIds){
+		 List<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
+		 List<HrCompanyDO> companyList=this.getHrCompanyByCompanyIds(companyIds);
+		 Map<String,List<Integer>> companyPulisher=getCompanyAccountListByCompanyIds(companyIds);
+		 List<Map> mapTeamNum=getTeamNum(companyIds);
+		 companyList=filterCompanyList(companyList);
+		 Map<String,Object> map=null;
+		 for(int i=0;i<companyList.size();i++){
+			 map=new HashMap<String,Object>();
+			 HrCompanyDO companyDO=companyList.get(i);
+			 int companyId=companyDO.getId();
+			 map.put("company", companyDO);
+			 List<Integer> publisherIds=companyPulisher.get(companyId+"");
+			 if(publisherIds!=null&&publisherIds.size()>0){
+				int num=this.getPositionNum(publisherIds);
+				map.put("positionNum", num);
+			 }else{
+				map.put("positionNum", 0);
+			 }
+			 for(Map teamMap:mapTeamNum){
+				 int companyId1=(int) teamMap.get("companyId");
+				 if(companyId1==companyId){
+					 int teamNum=(int) teamMap.get("num");
+					 map.put("teamNum", teamNum);
+					 break;
+				 }
+			 }
+			 if(map.get("teamNum")==null){
+				 map.put("teamNum",0);
+			 }
+			 list.add(map);
+		 }
+		 return list;
+	 }
+	 
+	 /*
+	  * 删除已经删除的公司
+	  */
+	 public List<HrCompanyDO> filterCompanyList(List<HrCompanyDO> list){
+		 for(int i=0;i<list.size();i++){
+			 HrCompanyDO companyDO=list.get(i);
+			 int parentId=companyDO.getParentId();
+			 if(parentId!=0){
+				 int disable=companyDO.getDisable();
+				 if(disable!=0){
+					 list.remove(i);
+					 i=0;
+				 }
+			 }
+		 }
+		 return list;
+	 }
 }
