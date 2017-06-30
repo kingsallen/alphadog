@@ -5,6 +5,7 @@ dependencies {
 
     compile project(":rpc-center")
     compile project(":baseorm-service-provider")
+    compile project(":common-service")
 
     testCompile deps["junit"]
     testCompile deps["mockito"]

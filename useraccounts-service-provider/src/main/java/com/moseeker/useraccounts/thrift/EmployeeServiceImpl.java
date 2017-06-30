@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.thrift;
 
+import com.moseeker.useraccounts.service.impl.EmployeeBindByEmail;
 import java.util.List;
 
 import org.apache.thrift.TException;
@@ -26,7 +27,10 @@ public class EmployeeServiceImpl implements Iface {
 	
 	@Autowired
 	private EmployeeService service;
-	
+
+	@Autowired
+    private EmployeeBindByEmail employeeBindByEmail;
+
 	/* 
 	 * 获取用户员工信息
 	 */
@@ -42,7 +46,7 @@ public class EmployeeServiceImpl implements Iface {
 	@Override
 	public EmployeeVerificationConfResponse getEmployeeVerificationConf(int companyId)
 			throws TException {
-		
+
 		return service.getEmployeeVerificationConf(companyId);
 	}
 
@@ -52,7 +56,7 @@ public class EmployeeServiceImpl implements Iface {
 	 */
 	@Override
 	public Result bind(BindingParams bindingParams) throws TException {
-		
+
 		return service.bind(bindingParams);
 	}
 
@@ -63,7 +67,7 @@ public class EmployeeServiceImpl implements Iface {
 	@Override
 	public Result unbind(int employeeId, int companyId, int userId)
 			throws TException {
-		
+
 		return service.unbind(employeeId, companyId, userId);
 	}
 
@@ -74,7 +78,7 @@ public class EmployeeServiceImpl implements Iface {
 	@Override
 	public List<EmployeeCustomFieldsConf> getEmployeeCustomFieldsConf(int companyId)
 			throws TException {
-		
+
 		return service.getEmployeeCustomFieldsConf(companyId);
 	}
 
@@ -96,7 +100,7 @@ public class EmployeeServiceImpl implements Iface {
 	 */
 	@Override
 	public List<RecomInfo> getEmployeeRecoms(int recomId) throws TException {
-		
+
 		return null;
 	}
 
@@ -113,8 +117,7 @@ public class EmployeeServiceImpl implements Iface {
 
 	@Override
 	public Result emailActivation(String activationCode) throws TException {
-		// TODO Auto-generated method stub
-		return service.emailActivation(activationCode);
+		return employeeBindByEmail.emailActivation(activationCode);
 	}
 	
 }
