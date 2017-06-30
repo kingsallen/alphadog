@@ -347,17 +347,25 @@ public class PositionService {
         JobPositionDO position = jobPositionDao.getData(findPosition);
 
         if (position == null) {
-            return null;
+            logger.info("createRefreshPosition position null :{}", positionId, account_id);
+            return syncAccount;
         }
 
         HrThirdPartyPositionDO thirdPartyPosition = thirdpartyPositionDao.getThirdPartyPosition(positionId, account_id);
 
         if (thirdPartyPosition == null) {
-            return null;
+            logger.info("createRefreshPosition thirdPartyPosition:{}:{}", positionId, account_id);
+            return syncAccount;
         }
 
         Query findAccount = new Query.QueryBuilder().where("id", account_id).buildQuery();
         HrThirdPartyAccountDO thirdPartyAccount = thirdPartyAccountDao.getData(findAccount);
+
+        if (thirdPartyAccount == null) {
+            logger.info("createRefreshPosition thirdPartyAccount null:{}:{}", positionId, account_id);
+            return syncAccount;
+        }
+
         syncAccount.setUser_name(thirdPartyAccount.getUsername());
         syncAccount.setMember_name(thirdPartyAccount.getMembername());
         syncAccount.setPassword(thirdPartyAccount.getPassword());
@@ -367,7 +375,17 @@ public class PositionService {
 
         ThirdPartyPosition form = new ThirdPartyPosition();
         form.setChannel((byte) thirdPartyAccount.getChannel());
-        ThirdPartyPositionForSynchronization p = new PositionChangeUtil().changeToThirdPartyPosition(form, position);
+        form.setAddress(thirdPartyPosition.getAddress());
+        //count,occupation暂时没有放进去，目前不需要
+        form.setDepartment(thirdPartyPosition.getDepartment());
+        form.setFeedback_period(thirdPartyPosition.getFeedbackPeriod());
+        form.setSalary_bottom(thirdPartyPosition.getSalaryBottom());
+        form.setSalary_top(thirdPartyPosition.getSalaryTop());
+        form.setSalary_discuss(thirdPartyPosition.getSalaryDiscuss() == 0 ? false : true);
+        form.setSalary_month(thirdPartyPosition.getSalaryMonth());
+        form.setUse_company_address(thirdPartyPosition.getUseCompanyAddress() == 0 ? false : true);
+        form.setThird_party_account_id(thirdPartyAccount.getId());
+        ThirdPartyPositionForSynchronization p = positionChangeUtil.changeToThirdPartyPosition(form, position);
         p.setJob_id(thirdPartyPosition.getThirdPartPositionId());
         syncAccount.setPosition_info(p);
         return syncAccount;
@@ -1171,39 +1189,39 @@ public class PositionService {
                 Condition con = new Condition("id", jdIdList.toArray(), ValueOp.IN);
                 Query q = new Query.QueryBuilder().where(con).buildQuery();
                 List<JobPositionRecord> jobRecords = jobPositionDao.getRecords(q);
-                for(int i=0;i<jdIdList.size();i++){
-                	int positionId=jdIdList.get(i);
-                	 for (JobPositionRecord jr : jobRecords) {
-                		if(positionId==jr.getId()){
-	 	                    logger.info("pid: " + String.valueOf(jr.getId()));
-	 	                    WechatPositionListData e = new WechatPositionListData();
-	 	                    e.setTitle(jr.getTitle());
-	 	                    e.setId(jr.getId());
-	 	                    // 数据库的 salary_top 和 salary_bottom 默认是 NULL 不是 0
-	 	                    // 所以这里需要对这两个字段做 null pointer 检查
-	 	                    if (jr.getSalaryTop() == null) {
-	 	                        e.setSalary_top(0);
-	 	                    } else {
-	 	                        e.setSalary_top(jr.getSalaryTop());
-	 	                    }
+                for (int i = 0; i < jdIdList.size(); i++) {
+                    int positionId = jdIdList.get(i);
+                    for (JobPositionRecord jr : jobRecords) {
+                        if (positionId == jr.getId()) {
+                            logger.info("pid: " + String.valueOf(jr.getId()));
+                            WechatPositionListData e = new WechatPositionListData();
+                            e.setTitle(jr.getTitle());
+                            e.setId(jr.getId());
+                            // 数据库的 salary_top 和 salary_bottom 默认是 NULL 不是 0
+                            // 所以这里需要对这两个字段做 null pointer 检查
+                            if (jr.getSalaryTop() == null) {
+                                e.setSalary_top(0);
+                            } else {
+                                e.setSalary_top(jr.getSalaryTop());
+                            }
 
-	 	                    if (jr.getSalaryBottom() == null) {
-	 	                        e.setSalary_bottom(0);
-	 	                    } else {
-	 	                        e.setSalary_bottom(jr.getSalaryBottom());
-	 	                    }
-	 	                    e.setPublish_date(new SimpleDateFormat("YYYY-MM-dd HH:mm:ss").format(jr.getUpdateTime()));
-	 	                    e.setDepartment(jr.getDepartment());
-	 	                    e.setVisitnum(jr.getVisitnum());
-	 	                    e.setIn_hb(jr.getHbStatus() > 0);
-	 	                    e.setCount(jr.getCount());
-	 	                    e.setCity(jr.getCity());
-	 	                    e.setPriority(jr.getPriority());
-	 	                    e.setPublisher(jr.getPublisher()); // will be used for fetching sub company info
-	 	                    dataList.add(e);
-	 	                    break;
-                		}
- 	                }
+                            if (jr.getSalaryBottom() == null) {
+                                e.setSalary_bottom(0);
+                            } else {
+                                e.setSalary_bottom(jr.getSalaryBottom());
+                            }
+                            e.setPublish_date(new SimpleDateFormat("YYYY-MM-dd HH:mm:ss").format(jr.getUpdateTime()));
+                            e.setDepartment(jr.getDepartment());
+                            e.setVisitnum(jr.getVisitnum());
+                            e.setIn_hb(jr.getHbStatus() > 0);
+                            e.setCount(jr.getCount());
+                            e.setCity(jr.getCity());
+                            e.setPriority(jr.getPriority());
+                            e.setPublisher(jr.getPublisher()); // will be used for fetching sub company info
+                            dataList.add(e);
+                            break;
+                        }
+                    }
                 }
                 logger.info(dataList.toString());
                 // 获取公司信息，拼装 company abbr, logo 等信息
