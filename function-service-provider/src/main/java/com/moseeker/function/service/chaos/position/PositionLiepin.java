@@ -23,6 +23,7 @@ public class PositionLiepin implements Serializable {
     private String description;
     private String feedback_period;
     private String email;
+    private String job_id;
 
     public String getTitle() {
         return title;
@@ -136,6 +137,14 @@ public class PositionLiepin implements Serializable {
         this.email = email;
     }
 
+    public String getJob_id() {
+        return job_id;
+    }
+
+    public void setJob_id(String job_id) {
+        this.job_id = job_id;
+    }
+
     public static PositionLiepin copyFromSyncPosition(ThirdPartyPositionForSynchronization positionInfo) {
 
         PositionLiepin positionLiepin = new PositionLiepin();
@@ -153,6 +162,7 @@ public class PositionLiepin implements Serializable {
         positionLiepin.setDescription(positionInfo.getDescription());
         positionLiepin.setFeedback_period(String.valueOf(positionInfo.getFeedback_period()));
         positionLiepin.setEmail(positionInfo.getEmail());
+        positionLiepin.setJob_id(positionInfo.getJob_id());
         return positionLiepin;
     }
 }
