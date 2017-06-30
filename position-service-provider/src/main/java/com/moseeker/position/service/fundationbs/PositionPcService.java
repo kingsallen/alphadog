@@ -549,17 +549,18 @@ public class PositionPcService {
 	  * 删除已经删除的公司
 	  */
 	 public List<HrCompanyDO> filterCompanyList(List<HrCompanyDO> list){
-		 for(int i=0;i<list.size();i++){
-			 HrCompanyDO companyDO=list.get(i);
+		 List<HrCompanyDO> newList=new ArrayList<HrCompanyDO>();
+		 for(HrCompanyDO companyDO:list){
 			 int parentId=companyDO.getParentId();
 			 if(parentId!=0){
 				 int disable=companyDO.getDisable();
-				 if(disable!=0){
-					 list.remove(i);
-					 i=0;
+				 if(disable==0){
+					 newList.add(companyDO);
 				 }
+			 }else{
+				 newList.add(companyDO);
 			 }
 		 }
-		 return list;
+		 return newList;
 	 }
 }
