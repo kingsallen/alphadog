@@ -1,3 +1,5 @@
+package com.moseeker.baseorm.crud;
+
 import static org.junit.Assert.*;
 
 /**
