@@ -30,7 +30,7 @@ public class CandidateEntityTest {
      */
     @Test
     public void getRecommendatorySorting() throws BIZException {
-        SortResult sortResult = candidateEntity.getRecommendatorySorting(29145,39978);
+        SortResult sortResult = candidateEntity.getRecommendatorySorting(19811221,16);
         System.out.println(sortResult);
     }
 }

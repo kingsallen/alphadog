@@ -108,7 +108,7 @@ public class EmployeeEntity {
         logger.info("compangId:{}", companyId);
         // 查询集团ID
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-        queryBuilder.where(HrGroupCompanyRel.HR_GROUP_COMPANY_REL.COMPANY_ID + "", companyId);
+        queryBuilder.where(HrGroupCompanyRel.HR_GROUP_COMPANY_REL.COMPANY_ID.getName(), companyId);
         HrGroupCompanyRelDO hrGroupCompanyRelDO = hrGroupCompanyRelDao.getData(queryBuilder.buildQuery());
         // 没有集团信息，返回当前companyId
         if (StringUtils.isEmptyObject(hrGroupCompanyRelDO)) {
@@ -117,7 +117,7 @@ public class EmployeeEntity {
             return list;
         }
         queryBuilder.clear();
-        queryBuilder.where(HrGroupCompanyRel.HR_GROUP_COMPANY_REL.GROUP_ID + "", hrGroupCompanyRelDO.getGroupId());
+        queryBuilder.where(HrGroupCompanyRel.HR_GROUP_COMPANY_REL.GROUP_ID.getName(), hrGroupCompanyRelDO.getGroupId());
         List<HrGroupCompanyRelDO> hrGroupCompanyRelDOS = hrGroupCompanyRelDao.getDatas(queryBuilder.buildQuery());
         if (StringUtils.isEmptyList(hrGroupCompanyRelDOS)) {
             return list;
@@ -142,7 +142,7 @@ public class EmployeeEntity {
             // 首先通过CompanyId 查询到该公司集团下所有的公司ID
             List<Integer> companyIds = getCompanyIds(companyId);
             Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-            Condition condition = new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID + "", companyIds, ValueOp.IN);
+            Condition condition = new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyIds, ValueOp.IN);
             queryBuilder.where(condition);
             userEmployeeDOS = userEmployeeDao.getDatas(queryBuilder.buildQuery());
         }
