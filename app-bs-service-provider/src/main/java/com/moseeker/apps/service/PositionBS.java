@@ -274,19 +274,23 @@ public class PositionBS {
         Position position = jobPositionDao.getData(queryUtil.buildQuery(), Position.class);
         HrThirdPartyAccountDO thirdPartAccountData = null;
         if (position == null) {
+            logger.warn("职位不存在:{}", positionId);
             return ResultMessage.POSITION_NOT_EXIST.toResponse();
         }
         boolean permission = false;
         thirdPartAccountData = hRThirdPartyAccountDao.getThirdPartyAccountByUserId(position.getPublisher(), channel);
         if (thirdPartAccountData != null && thirdPartAccountData.getId() > 0) {
             permission = positionServices.ifAllowRefresh(positionId, thirdPartAccountData.getId());
+            logger.info("check permission:{}:{}", positionId, permission);
         }
         if (!permission) {
+            logger.info("position not allow refresh:{}:{}", positionId, permission);
             return ResultMessage.POSITION_NOT_ALLOW_REFRESH.toResponse();
         }
         ThirdPartyPositionForSynchronizationWithAccount refreshPosition = positionServices.createRefreshPosition(positionId, thirdPartAccountData.getId());
 
         if (refreshPosition == null || refreshPosition.getPosition_info() == null || StringUtils.isNullOrEmpty(refreshPosition.getUser_name())) {
+            logger.warn("position no thirdpartyposition record:{}", positionId);
             return ResultMessage.PROGRAM_PARAM_NOTEXIST.toResponse();
         }
 
