@@ -60,7 +60,7 @@ public class PositionSyncConsumer extends RedisConsumer<PositionForSyncResultPoj
 
     @Override
     protected PositionForSyncResultPojo convertData(String redisString) {
-        return JSON.parseObject("{\"job_id\":\"9180479\",\"account_id\":57,\"channel\":2,\"message\":\"发布成功\",\"position_id\":378,\"sync_time\":\"2017-06-28 12:01:23\",\"status\":9}", PositionForSyncResultPojo.class);
+        return JSON.parseObject(redisString, PositionForSyncResultPojo.class);
     }
 
     /**
@@ -195,12 +195,12 @@ public class PositionSyncConsumer extends RedisConsumer<PositionForSyncResultPoj
 
         String divider = "<br/>";
 
-        emailMessgeBuilder.append("【职位表ID】：").append(pojo.getPosition_id()).append(divider);
-        emailMessgeBuilder.append("【第三方帐号表ID】：").append(pojo.getAccount_id()).append(divider);
-        emailMessgeBuilder.append("【第三方职位表ID】：").append(thirdPartyPositionDO.getId()).append(divider);
+        emailMessgeBuilder.append("【职位ID】：").append(pojo.getPosition_id()).append(divider);
+        emailMessgeBuilder.append("【第三方帐号ID】：").append(pojo.getAccount_id()).append(divider);
+        emailMessgeBuilder.append("【第三方职位ID】：").append(thirdPartyPositionDO.getId()).append(divider);
         emailMessgeBuilder.append("【标题】：").append(moseekerPosition.getTitle()).append(divider);
         emailMessgeBuilder.append("【城市】：").append(getCitys(moseekerPosition.getId())).append(divider);
-        emailMessgeBuilder.append("【地址】：").append(thirdPartyPositionDO.getAddress()).append(divider);
+        emailMessgeBuilder.append("【地址】：").append(getAddress(thirdPartyPositionDO.getAddress())).append(divider);
         emailMessgeBuilder.append("【职能】：").append(getOccupation(thirdPartyPositionDO.getOccupation())).append(divider);
         emailMessgeBuilder.append("【部门】：").append(thirdPartyPositionDO.getDepartment()).append(divider);
         emailMessgeBuilder.append("【月薪】：").append(thirdPartyPositionDO.getSalaryBottom()).append("-").append(thirdPartyPositionDO.getSalaryTop()).append(divider);
@@ -287,5 +287,13 @@ public class PositionSyncConsumer extends RedisConsumer<PositionForSyncResultPoj
         }
         cityBuilder.delete(0, 1);
         return cityBuilder.toString();
+    }
+
+    private String getAddress(String address) {
+        if (StringUtils.isNullOrEmpty(address)) {
+            return "无";
+        }
+
+        return address;
     }
 }
