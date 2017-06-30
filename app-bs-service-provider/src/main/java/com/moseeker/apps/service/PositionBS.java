@@ -290,7 +290,7 @@ public class PositionBS {
         ThirdPartyPositionForSynchronizationWithAccount refreshPosition = positionServices.createRefreshPosition(positionId, thirdPartAccountData.getId());
 
         if (refreshPosition == null || refreshPosition.getPosition_info() == null || StringUtils.isNullOrEmpty(refreshPosition.getUser_name())) {
-            logger.warn("position no thirdpartyposition record:{}", positionId);
+            logger.warn("position thirdpartyposition record:{}:{}", refreshPosition);
             return ResultMessage.PROGRAM_PARAM_NOTEXIST.toResponse();
         }
 
