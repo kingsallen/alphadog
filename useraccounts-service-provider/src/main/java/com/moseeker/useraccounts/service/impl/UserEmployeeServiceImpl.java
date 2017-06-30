@@ -40,9 +40,9 @@ public class UserEmployeeServiceImpl {
         return delResource(query);
     }
 
-    public Response postPutUserEmployeeBatch(List<UserEmployeeStruct> update) throws TException {
+    public Response postPutUserEmployeeBatch(List<UserEmployeeStruct> update, int companyId, boolean delNotInclude) throws TException {
         try {
-            return ResponseUtils.success(userEmployeeDao.postPutUserEmployeeBatch(update));
+            return ResponseUtils.success(userEmployeeDao.postPutUserEmployeeBatch(update, companyId, delNotInclude));
         } catch (Exception e) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }

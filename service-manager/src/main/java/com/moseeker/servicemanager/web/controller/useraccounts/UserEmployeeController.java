@@ -11,7 +11,9 @@ import com.moseeker.servicemanager.web.controller.useraccounts.form.UserEmployee
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.useraccounts.service.UserEmployeeService;
+
 import java.util.HashMap;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -76,7 +78,9 @@ public class UserEmployeeController {
     public String getUserEmployee(HttpServletRequest request, HttpServletResponse response, @PathVariable int id) {
         try {
             CommonQuery query = new CommonQuery();
-            query.setEqualFilter(new HashMap<String, String>(){{put("id", String.valueOf(id));}});
+            query.setEqualFilter(new HashMap<String, String>() {{
+                put("id", String.valueOf(id));
+            }});
             Response result = service.getUserEmployee(query);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
@@ -94,11 +98,12 @@ public class UserEmployeeController {
             if (batch == null || batch.getData() == null || batch.getData().size() == 0) {
                 return ResponseLogNotification.fail(request, "没有参数");
             }
-        } catch (Exception e) {
-            return ResponseLogNotification.fail(request, "参数错误");
-        }
-        try {
-            Response result = service.postPutUserEmployeeBatch(batch.getData());
+
+            if(batch.isDelNotInclude() && batch.getCompanyId() == 0){
+                return ResponseLogNotification.fail(request, "使用delNotInclude参数必须指定companyId");
+            }
+
+            Response result = service.postPutUserEmployeeBatch(batch.getData(), batch.getCompanyId(), batch.isDelNotInclude());
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());

@@ -37,7 +37,7 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
 
 
     @Override
-    public Response postPutUserEmployeeBatch(List<UserEmployeeStruct> update) throws TException {
-        return employeeService.postPutUserEmployeeBatch(update);
+    public Response postPutUserEmployeeBatch(List<UserEmployeeStruct> update,int companyId,boolean delNotInclude) throws TException {
+        return employeeService.postPutUserEmployeeBatch(update,companyId,delNotInclude);
     }
 }

@@ -10,6 +10,8 @@ import java.util.List;
  */
 public class UserEmployeeBatch implements Serializable {
     private List<UserEmployeeStruct> data;
+    private boolean delNotInclude;
+    private int companyId;
 
     public List<UserEmployeeStruct> getData() {
         return data;
@@ -17,5 +19,21 @@ public class UserEmployeeBatch implements Serializable {
 
     public void setData(List<UserEmployeeStruct> data) {
         this.data = data;
+    }
+
+    public boolean isDelNotInclude() {
+        return delNotInclude;
+    }
+
+    public void setDelNotInclude(boolean delNotInclude) {
+        this.delNotInclude = delNotInclude;
+    }
+
+    public int getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(int companyId) {
+        this.companyId = companyId;
     }
 }
