@@ -17,6 +17,8 @@ import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCustomFields;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeePosition;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeSection;
 import com.moseeker.baseorm.db.hrdb.tables.HrFeedback;
+import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompany;
+import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompanyRel;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbConfig;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbItems;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbPositionBinding;
@@ -153,6 +155,16 @@ public class Tables {
      * HR反馈表
      */
     public static final HrFeedback HR_FEEDBACK = com.moseeker.baseorm.db.hrdb.tables.HrFeedback.HR_FEEDBACK;
+
+    /**
+     * The table <code>hrdb.hr_group_company</code>.
+     */
+    public static final HrGroupCompany HR_GROUP_COMPANY = com.moseeker.baseorm.db.hrdb.tables.HrGroupCompany.HR_GROUP_COMPANY;
+
+    /**
+     * The table <code>hrdb.hr_group_company_rel</code>.
+     */
+    public static final HrGroupCompanyRel HR_GROUP_COMPANY_REL = com.moseeker.baseorm.db.hrdb.tables.HrGroupCompanyRel.HR_GROUP_COMPANY_REL;
 
     /**
      * 红包配置表
