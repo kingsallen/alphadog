@@ -119,6 +119,9 @@ public class SearchengineController {
             boolean order_by_priority = BeanUtils.convertToBoolean(reqParams.get("order_by_priority"));
             String custom = BeanUtils.converToString(reqParams.get("custom"));
             
+            logger.info(keywords, cities, industries, occupations, scale,
+                    employment_type, candidate_source, experience, degree, salary, company_id, page_from, page_size,
+                    child_company_id,department, order_by_priority, custom,"=============");
             Response result = searchengineServices.query(keywords, cities, industries, occupations, scale,
                     employment_type, candidate_source, experience, degree, salary, company_id, page_from, page_size,
                     child_company_id,department, order_by_priority, custom);
