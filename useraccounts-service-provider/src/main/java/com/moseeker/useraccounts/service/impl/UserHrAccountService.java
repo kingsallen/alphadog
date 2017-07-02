@@ -4,10 +4,15 @@ import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HrSearchConditionDao;
 import com.moseeker.baseorm.dao.hrdb.HrTalentpoolDao;
+import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserSearchConditionDao;
+import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.db.candidatedb.tables.CandidateRecomRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrSearchConditionRecord;
+import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
+import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.tool.QueryConvert;
@@ -24,8 +29,11 @@ import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.Select;
+import com.moseeker.common.util.query.SelectOp;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.common.validation.ValidateUtil;
+import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -33,12 +41,16 @@ import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrTalentpoolDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import com.moseeker.thrift.gen.foundation.chaos.struct.ThirdPartyAccountStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.constant.ResultMessage;
+import com.moseeker.useraccounts.pojo.EmployeeStat;
 import com.moseeker.useraccounts.service.thirdpartyaccount.ThirdPartyAccountSynctor;
+
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
+import org.jooq.Field;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +59,10 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+
 import java.util.*;
+
+import static org.jooq.impl.DSL.count;
 
 /**
  * HR账号服务
@@ -87,6 +102,15 @@ public class UserHrAccountService {
 
     @Autowired
     private ThirdPartyAccountSynctor thirdPartyAccountSynctor;
+
+    @Autowired
+    private UserEmployeeDao userEmployeeDao;
+
+    @Autowired
+    private UserWxUserDao userWxUserDao;
+
+    @Autowired
+    private EmployeeEntity employeeEntity;
 
     /**
      * HR在下载行业报告是注册
@@ -349,7 +373,7 @@ public class UserHrAccountService {
         qu.and(new Condition("binding", 0, ValueOp.NEQ));//有效的状态
         List<ThirdPartAccountData> datas = hrThirdPartyAccountDao.getDatas(qu.buildQuery(), ThirdPartAccountData.class);
 
-        logger.info("allowBind:相同名字的帐号:{}" , JSON.toJSONString(datas));
+        logger.info("allowBind:相同名字的帐号:{}", JSON.toJSONString(datas));
 
         ThirdPartAccountData data = null;
 
@@ -715,5 +739,58 @@ public class UserHrAccountService {
 
     public int updateThirdPartyAccount(HrThirdPartyAccountDO account) throws BIZException, TException {
         return hrThirdPartyAccountDao.updateData(account);
+    }
+
+    /**
+     * 获取列表number
+     * 通过公司ID,查询认证员工和未认证员工数量
+     *
+     * @param keyWord
+     * @param companyId
+     * @return
+     */
+    public Response getListNum(String keyWord, Integer companyId) {
+        Response response = new Response();
+        try {
+            EmployeeStat employeeStat = new EmployeeStat();
+            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+            List<Integer> list = employeeEntity.getCompanyIds(companyId);
+            // 判断是否有关键字查询
+            if (!StringUtils.isEmptyObject(keyWord)) {
+                //
+                Condition cname = new Condition(UserEmployee.USER_EMPLOYEE.CNAME.getName(), keyWord, ValueOp.LIKE);
+                Condition customField = new Condition(UserEmployee.USER_EMPLOYEE.CNAME.getName(), keyWord, ValueOp.LIKE);
+                Condition email = new Condition(UserEmployee.USER_EMPLOYEE.CNAME.getName(), keyWord, ValueOp.LIKE);
+                Condition mobile = new Condition(UserEmployee.USER_EMPLOYEE.CNAME.getName(), keyWord, ValueOp.LIKE);
+                queryBuilder.clear();
+                // 按activation
+                queryBuilder.select(new Select(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), SelectOp.COUNT))
+                        .select(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName());
+                queryBuilder.where(cname)
+                        .or(customField)
+                        .or(email)
+                        .or(mobile)
+                        .orderBy(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName());
+                List<Map<String, Object>> listMap = userEmployeeDao.getMaps(queryBuilder.buildQuery());
+                for (Map hashMap : listMap) {
+                    employeeStat.setRegcount((Integer) hashMap.get(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName() + "_count"));
+                }
+            } else {
+                // 认证的员工 ,员工认证激活状态，0：认证成功，1：认证后取消认证 2：认证失败 3：未认证 4：认证后又认证了其他公司导致本条数据变成未认证
+                Condition company1 = new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), list, ValueOp.IN);
+                queryBuilder.where(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), 0).and(company1);
+                employeeStat.setRegcount(userEmployeeDao.getCount(queryBuilder.buildQuery()));
+                // 未认证的员工
+                Condition condition = new Condition(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), 0, ValueOp.NEQ);
+                Condition company = new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), list, ValueOp.IN);
+                queryBuilder.clear();
+                queryBuilder.where(condition).and(company);
+                employeeStat.setUnregcount(userEmployeeDao.getCount(queryBuilder.buildQuery()));
+            }
+            response.setData(JSON.toJSONString(employeeStat));
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        return response;
     }
 }

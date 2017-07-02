@@ -3,6 +3,7 @@ package com.moseeker.baseorm.dao.userdb;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
+import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.query.Query;
@@ -11,6 +12,8 @@ import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Result;
@@ -140,4 +143,8 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
         }
         return count;
     }
+
+
+
+
 }

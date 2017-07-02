@@ -394,14 +394,6 @@ public class CandidateEntity implements Candidate {
         if (!StringUtils.isNullOrEmpty(message)) {
             throw CandidateExceptionFactory.buildCheckFailedException(message);
         }
-
-        /** 是否开启被动求职者
-         boolean passiveSeeker = candidateDBDao.isStartPassiveSeeker(companyId);
-         logger.info("CandidateEntity getRecommendatorySorting passiveSeeker:{}", passiveSeeker);
-         if (!passiveSeeker) {
-         throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_NOT_START);
-         }
-         */
         /** 查找员工信息 */
         List<UserEmployeeDO> employeeDOList = employeeEntity.getUserEmployeeDOList(companyId);
         logger.info("CandidateEntity getRecommendatorySorting employeeDOList:{}", employeeDOList);

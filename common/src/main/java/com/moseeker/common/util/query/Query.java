@@ -21,14 +21,13 @@ public class Query {
     protected List<String> groups; // optional
     protected int pageSize; // optional
     protected int pageNum; // optional
-    protected Map<String,String> extras; // optional
+    protected Map<String, String> extras; // optional
 
     protected Query() {
         this.attributes = new ArrayList<>();
         this.orders = new ArrayList<>();
         this.extras = new HashMap<>();
     }
-
 
 
     public static class QueryBuilder {
@@ -39,7 +38,7 @@ public class Query {
         private List<String> groups; // optional
         private int pageSize; // optional
         private int pageNum; // optional
-        private Map<String,String> extras; // optional
+        private Map<String, String> extras; // optional
         private Condition index;
 
         public QueryBuilder() {
@@ -54,7 +53,7 @@ public class Query {
         }
 
         public QueryBuilder select(String field, SelectOp selectOp) {
-            if(StringUtils.isNotNullOrEmpty(field)) {
+            if (StringUtils.isNotNullOrEmpty(field)) {
                 Select select = new Select(field, SelectOp.FIELD);
                 attributes.add(select);
             }
@@ -62,14 +61,14 @@ public class Query {
         }
 
         public QueryBuilder select(Select select) {
-            if(select != null) {
+            if (select != null) {
                 attributes.add(select);
             }
             return this;
         }
 
         public QueryBuilder removeSelect(String field) {
-            if(StringUtils.isNotNullOrEmpty(field)) {
+            if (StringUtils.isNotNullOrEmpty(field)) {
                 attributes.remove(field);
             }
             return this;
@@ -90,7 +89,7 @@ public class Query {
         }
 
         public QueryBuilder and(Condition condition) throws ConditionNotExist {
-            if(this.index != null) {
+            if (this.index != null) {
                 index.andCondition(condition);
             } else {
                 setConditions(condition);
@@ -105,10 +104,10 @@ public class Query {
         }
 
         public QueryBuilder or(Condition condition) throws ConditionNotExist {
-            if(condition == null) {
+            if (condition == null) {
                 throw new ConditionNotExist();
             }
-            if(this.index != null) {
+            if (this.index != null) {
                 index.addCondition(condition, ConditionOp.OR);
             } else {
                 setConditions(condition);
@@ -136,7 +135,7 @@ public class Query {
         }
 
         public QueryBuilder addInnerCondition(Condition condition, ConditionOp op) throws ConditionNotExist {
-            if(index == null) {
+            if (index == null) {
                 throw new ConditionNotExist();
             }
             index.addInnerCondition(condition, op);
@@ -187,7 +186,7 @@ public class Query {
             if (groups == null) {
                 groups = new ArrayList<>();
             }
-            if(StringUtils.isNotNullOrEmpty(field)) {
+            if (StringUtils.isNotNullOrEmpty(field)) {
                 groups.add(field);
             }
             return this;
@@ -197,7 +196,7 @@ public class Query {
             if (orders == null) {
                 orders = new ArrayList<>();
             }
-            if(StringUtils.isNotNullOrEmpty(field)) {
+            if (StringUtils.isNotNullOrEmpty(field)) {
                 OrderBy orderBy = new OrderBy(field, Order.ASC);
                 orders.add(orderBy);
             }
@@ -208,7 +207,7 @@ public class Query {
             if (orders == null) {
                 orders = new ArrayList<>();
             }
-            if(StringUtils.isNotNullOrEmpty(field)) {
+            if (StringUtils.isNotNullOrEmpty(field)) {
                 OrderBy orderBy = new OrderBy(field, order);
                 orders.add(orderBy);
             }
@@ -219,7 +218,7 @@ public class Query {
             if (orders == null) {
                 orders = new ArrayList<>();
             }
-            if(orderBy != null && orderBy.getField() != null && orderBy.getOrder() != null) {
+            if (orderBy != null && orderBy.getField() != null && orderBy.getOrder() != null) {
                 orders.add(orderBy);
             }
             return this;
@@ -255,11 +254,12 @@ public class Query {
             this.groups = new ArrayList<>(); // optional
             this.pageSize = 0; // optional
             this.pageNum = 0; // optional
+            this.index = null;
             this.extras = new HashMap<>(); // optional
         }
 
         private void setConditions(Condition conditions) throws ConditionNotExist {
-            if(conditions == null || StringUtils.isNullOrEmpty(conditions.getField()) || conditions.getValue() == null
+            if (conditions == null || StringUtils.isNullOrEmpty(conditions.getField()) || conditions.getValue() == null
                     || conditions.getValueOp() == null) {
                 throw new ConditionNotExist();
             }
