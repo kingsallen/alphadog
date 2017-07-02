@@ -19,7 +19,9 @@ import com.moseeker.baseorm.pojo.JobPositionPojo;
 import com.moseeker.baseorm.pojo.RecommendedPositonPojo;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.position.struct.Position;
@@ -534,4 +536,13 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
         }
         return list;
     }
+	/*
+	 * 根据职位id列表获取职位列表
+	 */
+	public List<JobPositionDO> getPositionList(List<Integer> list){
+		Condition condition=new Condition("id",list.toArray(),ValueOp.IN);
+		Query query=new Query.QueryBuilder().where(condition).and("status",0).buildQuery();
+		List<JobPositionDO> result=this.getDatas(query);
+		return result;
+	}
 }

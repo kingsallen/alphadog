@@ -130,13 +130,12 @@ public class HrCompanyDao extends JooqCrudImpl<HrCompanyDO, HrCompanyRecord> {
         return companies;
     }
     
-    /*
-	 * 根据公司列表获取
+	/*
+	获取公司信息的列表
 	 */
-	public List<HrCompanyDO> getCompanyList(List<Integer> list){
-		Condition condition=new Condition("id",list.toArray(),ValueOp.IN);
-		Query query=new Query.QueryBuilder().where(condition).and("status",0).buildQuery();
-		List<HrCompanyDO> result=this.getDatas(query);
-		return result;
+	public List<HrCompanyDO> getHrCompanyByCompanyIds(List<Integer> ids){
+		Query query=new Query.QueryBuilder().where(new Condition("id",ids.toArray(),ValueOp.IN)).buildQuery();
+		List<HrCompanyDO> list=this.getDatas(query);
+		return list;
 	}
 }

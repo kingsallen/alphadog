@@ -30,14 +30,6 @@ public class PositionPcServiceTest {
         Response res=service.getRecommendPositionPC(page,pageSize);
         System.out.println(res);
     }
-    //测试获取推荐表当中的数据
-    @Test
-    public void getPcRemmendPositionIdListTest(){
-        int page=1;
-        int pageSize=10;
-        List<CampaignPcRecommendPositionDO> list=service.getPcRemmendPositionIdList(page,pageSize);
-        System.out.println(list);
-    }
     @Test
     public void getTeamNumTest(){
     	List<Integer> list=new ArrayList<Integer>();

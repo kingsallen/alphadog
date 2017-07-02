@@ -70,21 +70,12 @@ public class PositionPcService {
 	 */
 	@CounterIface
 	public Response getRecommendPositionPC(int page,int pageSize){
-		List<CampaignPcRecommendPositionDO>  list=getPcRemmendPositionIdList(page,pageSize);
+		List<CampaignPcRecommendPositionDO>  list=campaignPcRecommendPositionDao.getPcRemmendPositionIdList(page,pageSize);
 		List<Integer> positionIds=this.getPCRecommendPositionIds(list);
 		List<Map<String,Object>> result=handleDataJDAndPosition(positionIds,3);
 		Response res= ResponseUtils.success(result);
 		return res;
 	}
-	/*
-	 * 分页获取推荐职位列表
-	 */
-	public  List<CampaignPcRecommendPositionDO> getPcRemmendPositionIdList(int page,int pageSize){
-		Query query=new Query.QueryBuilder().where("disable",0).setPageNum(page).setPageSize(pageSize).buildQuery();
-		List<CampaignPcRecommendPositionDO> list=campaignPcRecommendPositionDao.getDatas(query);
-		return list;
-	}
-	
 	/*
 	 * 根据推荐职位列表获取职位id
 	 */
@@ -96,15 +87,7 @@ public class PositionPcService {
 		}
 		return result;
 	}
-	/*
-	 * 根据职位id列表获取职位列表
-	 */
-	public List<JobPositionDO> getPositionList(List<Integer> list){
-		Condition condition=new Condition("id",list.toArray(),ValueOp.IN);
-		Query query=new Query.QueryBuilder().where(condition).and("status",0).buildQuery();
-		List<JobPositionDO> result=jobPositionDao.getDatas(query);
-		return result;
-	}
+
  	/*
  		获取publisher的列表
     */
@@ -152,25 +135,8 @@ public class PositionPcService {
 		}
 		return result;
 	}
-	/*
-	获取公司信息的列表
-	 */
-	public List<HrCompanyDO> getHrCompanyByCompanyIds(List<Integer> ids){
-		Query query=new Query.QueryBuilder().where(new Condition("id",ids.toArray(),ValueOp.IN)).buildQuery();
-		List<HrCompanyDO> list=hrCompanyDao.getDatas(query);
-		return list;
 
-	}
-	/*
-	获取hrcompanyConf的列表
-	 */
-	public List<HrCompanyConfDO> getHrCompanyConfByCompanyIds(List<Integer> ids){
-		Query query=new Query.QueryBuilder().where(new Condition("company_id",ids.toArray(),ValueOp.IN)).and("newjd_status",2)
-				.buildQuery();
-		 List<HrCompanyConfDO> list=hrCompanyConfDao.getDatas(query);
-		return list;
-		
-	}
+	
 	/*
 		获取所有有jd的公司
 	 */
@@ -213,15 +179,7 @@ public class PositionPcService {
 		}
 		return result;
 	}
-	/*
-	 * 获取所有的职位配置表
-	 */
-	public List<HrCmsPagesDO> getHrCmsPagesByIds(List<Integer> ids,int type){
-		Query query=new Query.QueryBuilder().where(new Condition("config_id",ids.toArray(),ValueOp.IN)).and("disable",0)
-				.and("type",type).buildQuery();
-		 List<HrCmsPagesDO> list=hrCmsPagesDao.getDatas(query);
-		return list;
-	}
+
 	/*
 	 * 获取所有的HrCmsPagesDO.id列表
 	 */
@@ -233,15 +191,7 @@ public class PositionPcService {
 		 }
 		 return result;
 	 }
-	 /*
-	  * 根据page的列表，获取hrcmsmodule列表
-	  */
-	 public List<HrCmsModuleDO> getHrCmsModuleDOBypageIdList(List<Integer> ids){
-		 Query query=new Query.QueryBuilder().where(new Condition("page_id",ids.toArray(),ValueOp.IN)).and("disable",0)
-					.orderBy("page_id").orderBy("order").buildQuery();
-			 List<HrCmsModuleDO> list=hrCmsModuleDao.getDatas(query);
-			return list;
-	 }
+	
 	 /*
 	  * 获取modul.id列表
 	  */
@@ -252,17 +202,7 @@ public class PositionPcService {
 			 result.add(moduleDO.getId());
 		 }
 		 return result;
-	 }
-	 /*
-	  * 根据module.id的列表获取HrCmsMdeia列表
-	  */
-	 public List<HrCmsMediaDO> getHrCmsMediaDOByModuleIdList(List<Integer> ids){
-		 Query query=new Query.QueryBuilder().where(new Condition("module_id",ids.toArray(),ValueOp.IN)).and("disable",0).and("is_show",0)
-					.orderBy("module_id").orderBy("order").buildQuery();
-			 List<HrCmsMediaDO> list=hrCmsMediaDao.getDatas(query);
-			return list;
-	 }
-	
+	 }	
 	 /*
 	  * 获取res.id
 	  */
@@ -274,16 +214,9 @@ public class PositionPcService {
 		 }
 		 return result;
 	 }
-	 /*
-	  * 通过res.id列表获取资源列表
-	  */
-	 public List<HrResourceDO> getHrCmsResourceByIdList(List<Integer> ids){
-			Query query=new Query.QueryBuilder().where(new Condition("id",ids.toArray(),ValueOp.IN)).and("disable",0).buildQuery();
-		    List<HrResourceDO> list=hrResourceDao.getDatas(query);
-			return list;
-	 }
+
 	 public List<Map<String,Object>> getResourceByPositionId(List<Integer> ids,int type){
-		 List<HrCmsPagesDO> list1=this.getHrCmsPagesByIds(ids,type);
+		 List<HrCmsPagesDO> list1=hrCmsPagesDao.getHrCmsPagesByIds(ids,type);
 		 List<Map<String,Object>> maps1=new ArrayList<Map<String,Object>>();
 		 Map<String,Object> map=null;
 		 for(int i=0;i<list1.size();i++){
@@ -296,7 +229,7 @@ public class PositionPcService {
 			 maps1.add(map);
 		 }
 		 List<Integer> pageIds=this.getCmsPageIdList(list1);
-		 List<HrCmsModuleDO> list2=this.getHrCmsModuleDOBypageIdList(pageIds);
+		 List<HrCmsModuleDO> list2=hrCmsModuleDao.getHrCmsModuleDOBypageIdList(pageIds);
 		 for(int i=0;i<list2.size();i++){
 			 HrCmsModuleDO moduleDO=list2.get(i);
 			 int pageId=moduleDO.getPageId();
@@ -313,7 +246,7 @@ public class PositionPcService {
 			 }
 		 }
 		 List<Integer> moduleIds=this.getModuleIdList(list2);
-		 List<HrCmsMediaDO> list3=this.getHrCmsMediaDOByModuleIdList(moduleIds);
+		 List<HrCmsMediaDO> list3=hrCmsMediaDao.getHrCmsMediaDOByModuleIdList(moduleIds);
 		 for(int i=0;i<list3.size();i++){
 			 HrCmsMediaDO mediaDO=list3.get(i);
 			 int moduleId=mediaDO.getModuleId();
@@ -332,7 +265,7 @@ public class PositionPcService {
 			 }
 		 }
 		 List<Integer> resIds=this.getResIdList(list3);
-		 List<HrResourceDO> list4=this.getHrCmsResourceByIdList(resIds);
+		 List<HrResourceDO> list4=hrResourceDao.getHrCmsResourceByIdList(resIds);
 		 for(int i=0;i<list4.size();i++){
 			 HrResourceDO resourceDO=list4.get(i);
 			 int id=resourceDO.getId();
@@ -363,29 +296,33 @@ public class PositionPcService {
 			 int publisher=positionDo.getPublisher();
 			 int teamId=positionDo.getTeamId();
 			 Map<String,Object> map=new HashMap<String,Object>();
-			 map.put("position",positionDo);
 			 for(int j=0;j<companyList.size();j++){
 				 HrCompanyDO companyDO=companyList.get(j);
 				 int companyId=companyDO.getId();
+				// 本出如此做是为了过滤掉已经删除的子公司的信息
 				 for(int z=0;z<publisherAndCompanyId.size();z++){
 					 Map<String,Integer> maps=publisherAndCompanyId.get(z);
 					 Integer oripublisher=maps.get("publisher");
 					 Integer oriCompanyid=maps.get("companyId");
 					 if(oripublisher!=null&&oripublisher==publisher&&oriCompanyid!=null&&oriCompanyid==companyId){
+						 map.put("position",positionDo);
 						 map.put("company",companyDO);
 						 break;
 					 }
 				 }
 							
 			 }
-			 for(HrTeamDO teamDo:teamList){
-			 	int id=teamDo.getId();
-				 if(teamId==id){
-					 map.put("team",teamDo);
-					 break;
+			 // 本出如此做是为了过滤掉已经删除的子公司的信息
+			 if(!map.isEmpty()){
+				 for(HrTeamDO teamDo:teamList){
+				 	int id=teamDo.getId();
+					 if(teamId==id){
+						 map.put("team",teamDo);
+						 break;
+					 }
 				 }
+				 list.add(map);
 			 }
-			 list.add(map);
 		 }
 
 		 return list;
@@ -409,29 +346,31 @@ public class PositionPcService {
 		 return result;
 	 }
 	 /*
-	 	处理jd页数据，获取首张图片
+	 	处理position 或者 Team jd页数据，获取首张图片
 	  */
-	 public List<Map<String,Object>> handleJdPic(List<HrTeamDO> teamList,List<Integer> companyIds,int type){
-		 List<HrCompanyConfDO> AccountList=this.getHrCompanyConfByCompanyIds(companyIds);
+	 public List<Map<String,Object>> handlePositionJdPic(List<HrTeamDO> teamList,List<Integer> companyIds,int type){
+		 List<HrCompanyConfDO> AccountList=hrCompanyConfDao.getHrCompanyConfByCompanyIds(companyIds);
 		 List<Integer> jdCompanyids=this.getJdCompanyIds(AccountList);
 		 List<Integer> jdTeamids=this.getJdTeamIdList(jdCompanyids,teamList);
 		 List<Map<String,Object>> list=getResourceByPositionId(jdTeamids,type);
 	 	return list;
 	 }
+	 
 	/*
 	 总体上处理数据
 	  */
 	 public List<Map<String,Object>> handleDataJDAndPosition(List<Integer> positionIds,int type){
 		 List<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
-		 List<JobPositionDO> positionList=this.getPositionList(positionIds);
+		 List<JobPositionDO> positionList=jobPositionDao.getPositionList(positionIds);
 		 List<Integer> publisherIds=this.getPublisherIdList(positionList);
 		 List<Integer> compantIds=this.getHrCompanyIdList(publisherIds);
-		 List<HrCompanyDO> companyList=this.getHrCompanyByCompanyIds(compantIds);
+		 List<HrCompanyDO> companyList=hrCompanyDao.getHrCompanyByCompanyIds(compantIds);
+		 companyList=this.filterCompanyList(companyList);
 		 List<Map<String,Integer>> publisherAndCompanyId=getPublisherCompanyId(publisherIds);
 		 List<Integer> teamIds=this.getTeamIdList(positionList);
 		 List<HrTeamDO> teamList=this.getTeamList(teamIds);
 		 list=this.handleCompanyAndPositionData(positionList,companyList,teamList,publisherAndCompanyId);
-		 List<Map<String,Object>> jdpictureList=this.handleJdPic(teamList,compantIds,type);
+		 List<Map<String,Object>> jdpictureList=this.handlePositionJdPic(teamList,compantIds,type);
 		 for(Map<String,Object> map:jdpictureList){
 		 	Integer configId=(Integer)map.get("configId");
 		 	String picture=(String)map.get("imgUrl");
@@ -449,7 +388,7 @@ public class PositionPcService {
 	//====================================================== 
 	 //获取仟寻推荐职位接口
 	 public Response getQXRecommendCompanyList(){
-		 List<CampaignPcRecommendCompanyDO>  CampaignPcRecommendCompanyList= getCampaignPcRecommendCompanyList();
+		 List<CampaignPcRecommendCompanyDO>  CampaignPcRecommendCompanyList=campaignPcRecommendCompanyDao.getCampaignPcRecommendCompanyList();
 		 List<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
 		 for(CampaignPcRecommendCompanyDO dO:CampaignPcRecommendCompanyList){
 			 Map<String,Object> map=new HashMap<String,Object>();
@@ -462,20 +401,14 @@ public class PositionPcService {
 				 companyIdList.add(Integer.parseInt(ids[i]));
 			 }
 			 List<Map<String,Object>> result=handleRecommendPcCompanyData(companyIdList);
+			 
 			 map.put("data", result);
 			 list.add(map);
 		 }
 		 Response res= ResponseUtils.success(list);
 		 return res;
 	 }
-	 /*
-	  * 获取所有的千寻推荐公司
-	  */
-	 public List<CampaignPcRecommendCompanyDO> getCampaignPcRecommendCompanyList(){
-		 Query query=new Query.QueryBuilder().where("disable",0).buildQuery();
-		 List<CampaignPcRecommendCompanyDO> list=campaignPcRecommendCompanyDao.getDatas(query);
-		 return list;
-	 }
+
 	 /*
 	  * 获取所推荐公司的publisher列表
 	  */
@@ -508,14 +441,27 @@ public class PositionPcService {
 		 return num;
 	 }
 	 /*
+	  *  获取companyIds的list集合
+	  */
+	 public List<Integer> getCompanyIds(List<HrCompanyDO> list){
+		 List<Integer> result=new ArrayList<Integer>();
+			for(int i=0;i<list.size();i++){
+				HrCompanyDO companyDO=list.get(i);
+				result.add(companyDO.getId());
+			}
+			return result;
+	 }
+	 /*
 	  * 处理数据获取千寻推荐企业严选数据
 	  */
 	 public List<Map<String,Object>> handleRecommendPcCompanyData(List<Integer> companyIds){
 		 List<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
-		 List<HrCompanyDO> companyList=this.getHrCompanyByCompanyIds(companyIds);
+		 List<HrCompanyDO> companyList=hrCompanyDao.getHrCompanyByCompanyIds(companyIds);
 		 Map<String,List<Integer>> companyPulisher=getCompanyAccountListByCompanyIds(companyIds);
 		 List<Map<String,Object>> mapTeamNum=getTeamNum(companyIds);
 		 companyList=filterCompanyList(companyList);
+		 List<Integer> companyids=this.getCompanyIds(companyList);
+		 List<Map<String,Object>> jdlist=getResourceByPositionId(companyids,1);
 		 Map<String,Object> map=null;
 		 for(int i=0;i<companyList.size();i++){
 			 map=new HashMap<String,Object>();
@@ -539,6 +485,15 @@ public class PositionPcService {
 			 }
 			 if(map.get("teamNum")==null){
 				 map.put("teamNum",0);
+			 }
+			 for(Map<String,Object> jdmap:jdlist){
+				 Integer configId=(Integer) jdmap.get("configId");
+				 if(companyId==configId){
+					 if(jdmap.get("imgUrl")!=null){
+						 map.put("jdPic", jdmap.get("imgUrl"));
+					 }
+					 break;
+				 }
 			 }
 			 list.add(map);
 		 }
