@@ -175,6 +175,10 @@ class LocalQuery<R extends Record> {
         return select;
     }
 
+    /**
+     * 组装除limit之外的所有查询字段和查询条件
+     * @return
+     */
     public SelectJoinStep<Record> convertToResult() {
         SelectJoinStep<Record> select = null;
         Collection<? extends SelectField<?>> selectFields = buildSelect();
@@ -199,6 +203,7 @@ class LocalQuery<R extends Record> {
     }
 
     /**
+     * 组装limit
      * 返回解析的查询条件。解析条件包括查询的字段，过滤条件，分组条件，排序条件
      */
     public SelectJoinStep<Record> convertToResultLimit() {
@@ -210,6 +215,10 @@ class LocalQuery<R extends Record> {
         return select;
     }
 
+    /**
+     * 组装只获取一条数据的select
+     * @return
+     */
     public SelectJoinStep<Record> convertToOneResult() {
         SelectJoinStep<Record> select = convertToResult();
         select.limit(1);
