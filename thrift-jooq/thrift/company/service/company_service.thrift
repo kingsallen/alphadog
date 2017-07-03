@@ -13,6 +13,8 @@ service CompanyServices {
     common_struct.Response getAllCompanies(1:common_struct.CommonQuery query);
     common_struct.Response add(1:company_struct.Hrcompany company);
     common_struct.Response getWechat(1:i64 companyId, 2:i64 wechatId);
+    list<company_struct.CompanyForVerifyEmployee> getGroupCompanies(1: i32 companyId) throws (1: common_struct.BIZException e)
+    bool isGroupCompanies(1: i32 companyId) throws (1: common_struct.BIZException e)
 }
 
 service HrTeamServices {

@@ -309,7 +309,7 @@ public class UserQxService {
                 query.and(new Condition("position_id", positionIds, ValueOp.IN));
                 query.and("disable", String.valueOf(0));
                 List<JobApplicationDO> applications = jobApplicationDao.getApplications(query.buildQuery());
-                Map<Integer, Integer> isApplication = applications.stream().map(m -> m.getPositionId()).collect(Collectors.toMap(k -> k, v -> 3));
+                Map<Integer, Integer> isApplication = applications.stream().map(m -> m.getPositionId()).collect(Collectors.toMap(k -> k, v -> 3, (oldKey, newKey) -> newKey));
                 positionIds.removeAll(isApplication.keySet());
                 // 查询已收藏的职位
                 query.clear();
@@ -317,14 +317,14 @@ public class UserQxService {
                 query.and(new Condition("position_id", positionIds, ValueOp.IN));
                 query.and("status", String.valueOf(0));
                 List<UserCollectPositionDO> collectPositions = collectPositionDao.getDatas(query.buildQuery());
-                Map<Integer, Integer> isCollect = collectPositions.stream().map(m -> m.getPositionId()).collect(Collectors.toMap(k -> k, v -> 2));
+                Map<Integer, Integer> isCollect = collectPositions.stream().map(m -> m.getPositionId()).collect(Collectors.toMap(k -> k, v -> 2, (oldKey, newKey) -> newKey));
                 positionIds.removeAll(isCollect.keySet());
                 // 查询已查看的职位
                 query.clear();
                 query.where("user_id", String.valueOf(userId));
                 query.and(new Condition("position_id", positionIds, ValueOp.IN));
                 List<UserViewedPositionDO> userViewedPositions = userViewedPositionDao.getDatas(query.buildQuery());
-                Map<Integer, Integer> isViewed = userViewedPositions.stream().map(m -> m.getPositionId()).collect(Collectors.toMap(k -> k, v -> 1));
+                Map<Integer, Integer> isViewed = userViewedPositions.stream().map(m -> m.getPositionId()).collect(Collectors.toMap(k -> k, v -> 1, (oldKey, newKey) -> newKey));
                 positionIds.removeAll(isViewed.keySet());
                 // 剩下都是未阅读的职位
                 Map<Integer, Integer> dotViewed = positionIds.stream().collect(Collectors.toMap(k -> k, v -> 0));

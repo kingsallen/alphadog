@@ -1,5 +1,9 @@
 package com.moseeker.company.thrift;
 
+import com.moseeker.company.exception.ExceptionCategory;
+import com.moseeker.company.exception.ExceptionFactory;
+import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.company.struct.CompanyForVerifyEmployee;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +15,8 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices.Iface;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
+
+import java.util.List;
 
 @Service
 public class CompanyServicesImpl implements Iface {
@@ -43,6 +49,34 @@ public class CompanyServicesImpl implements Iface {
 	public Response getWechat(long companyId, long wechatId) throws TException {
 		// TODO Auto-generated method stub
 		return service.getWechat(companyId, wechatId);
+	}
+
+	@Override
+	public List<CompanyForVerifyEmployee> getGroupCompanies(int companyId) throws BIZException, TException {
+		try {
+			return service.getGroupCompanies(companyId);
+		} catch (Exception e) {
+			if (e instanceof BIZException) {
+				throw e;
+			} else {
+				logger.error(e.getMessage(), e);
+				throw ExceptionFactory.buildException(ExceptionCategory.PROGRAM_EXCEPTION);
+			}
+		}
+	}
+
+	@Override
+	public boolean isGroupCompanies(int companyId) throws BIZException, TException {
+		try {
+			return service.isGroupCompanies(companyId);
+		} catch (Exception e) {
+			if (e instanceof BIZException) {
+				throw e;
+			} else {
+				logger.error(e.getMessage(), e);
+				throw ExceptionFactory.buildException(ExceptionCategory.PROGRAM_EXCEPTION);
+			}
+		}
 	}
 }
 

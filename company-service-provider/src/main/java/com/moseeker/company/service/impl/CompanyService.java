@@ -2,6 +2,7 @@ package com.moseeker.company.service.impl;
 
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
+import com.moseeker.baseorm.dao.hrdb.HrGroupCompanyRelDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
@@ -11,15 +12,22 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.company.constant.ResultMessage;
-import com.moseeker.rpccenter.client.ServiceManager;
+import com.moseeker.company.exception.ExceptionCategory;
+import com.moseeker.company.exception.ExceptionFactory;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.company.struct.CompanyForVerifyEmployee;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
-import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrGroupCompanyRelDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,20 +35,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CompanyService{
 	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	
-	ChaosServices.Iface chaosService = ServiceManager.SERVICEMANAGER.getService(ChaosServices.Iface.class);
-
     @Autowired
     protected HrCompanyDao companyDao;
     
     @Autowired
     protected HrWxWechatDao wechatDao;
+
+    @Autowired
+	HrGroupCompanyRelDao hrGroupCompanyRelDao;
 
     @Autowired
     private HRThirdPartyAccountDao hrThirdPartyAccountDao;
@@ -178,5 +187,87 @@ public class CompanyService{
 			//do nothing
 		}
 		return response;
+	}
+
+	/**
+	 * 查找公司所属的集团下的所有公司信息
+	 * @param companyId 公司编号
+	 * @return 公司集合
+	 * @throws BIZException 业务异常
+	 */
+	public List<CompanyForVerifyEmployee> getGroupCompanies(int companyId) throws BIZException {
+		HrGroupCompanyRelDO groupCompanyDO= findGroupCompanyRelByCompanyId(companyId);
+		if (groupCompanyDO == null) {
+			throw ExceptionFactory.buildException(ExceptionCategory.COMPANY_NOT_BELONG_GROUPCOMPANY);
+		}
+
+		Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+		queryBuilder.clear();
+		queryBuilder.where("group_id", groupCompanyDO.getGroupId());
+		List<HrGroupCompanyRelDO> groupCompanyRelDOList = hrGroupCompanyRelDao.getDatas(queryBuilder.buildQuery());
+
+		if (groupCompanyRelDOList == null || groupCompanyRelDOList.size() == 0) {
+			throw ExceptionFactory.buildException(ExceptionCategory.COMPANY_NOT_BELONG_GROUPCOMPANY);
+		}
+
+		List<Integer> companyIdList = groupCompanyRelDOList.stream().map(gc -> gc.getCompanyId()).collect(Collectors.toList());
+
+		queryBuilder.clear();
+		Condition condition = Condition.buildCommonCondition("id", companyIdList, ValueOp.IN);
+		queryBuilder.where(condition);
+		List<HrCompanyDO> companyDOList = companyDao.getDatas(queryBuilder.buildQuery());
+		if (companyDOList == null || companyDOList.size() == 0) {
+			throw ExceptionFactory.buildException(ExceptionCategory.PROGRAM_DATA_EMPTY);
+		}
+
+		queryBuilder.clear();
+		queryBuilder.select("id").select("company_id").select("signature");
+		Condition condition1 = Condition.buildCommonCondition("company_id", companyIdList, ValueOp.IN);
+		queryBuilder.where(condition1);
+
+		List<HrWxWechatDO> hrWxWechatDOList = wechatDao.getDatas(queryBuilder.buildQuery());
+
+		List<CompanyForVerifyEmployee> companyForVerifyEmployeeList = companyDOList.stream().map(companyDO -> {
+			CompanyForVerifyEmployee companyForVerifyEmployee = new CompanyForVerifyEmployee();
+			companyForVerifyEmployee.setId(companyDO.getId());
+			companyForVerifyEmployee.setName(companyDO.getName());
+			companyForVerifyEmployee.setAbbreviation(companyDO.getAbbreviation());
+			return companyForVerifyEmployee;
+		}).collect(Collectors.toList());
+
+		if (companyForVerifyEmployeeList != null && companyForVerifyEmployeeList.size() > 0
+				&& hrWxWechatDOList != null && hrWxWechatDOList.size() > 0) {
+			for (CompanyForVerifyEmployee companyForVerifyEmployee : companyForVerifyEmployeeList) {
+				for (HrWxWechatDO wechatDO : hrWxWechatDOList) {
+					if (companyForVerifyEmployee.getId() == wechatDO.getCompanyId()) {
+						companyForVerifyEmployee.setSignature(wechatDO.getSignature());
+						break;
+					}
+				}
+			}
+		}
+
+		return companyForVerifyEmployeeList;
+	}
+
+	/**
+	 * 判断一家公司是否属于集团公司
+	 * @param companyId 公司编号
+	 * @return 是否是集团公司 true:集团公司 false:非集团公司
+	 * @throws BIZException 业务异常
+	 */
+	public boolean isGroupCompanies(int companyId) throws BIZException {
+		HrGroupCompanyRelDO hrGroupCompanyRelDO = findGroupCompanyRelByCompanyId(companyId);
+		if (hrGroupCompanyRelDO != null) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	private HrGroupCompanyRelDO findGroupCompanyRelByCompanyId(int companyId) {
+		Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+		queryBuilder.where("company_id", companyId);
+		return hrGroupCompanyRelDao.getData(queryBuilder.buildQuery());
 	}
 }
