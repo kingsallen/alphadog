@@ -2,6 +2,7 @@ package com.moseeker.useraccounts.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrSearchConditionDao;
 import com.moseeker.baseorm.dao.hrdb.HrTalentpoolDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
@@ -9,6 +10,7 @@ import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserSearchConditionDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateRecomRecord;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrSearchConditionRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
@@ -40,6 +42,7 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrTalentpoolDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
@@ -114,6 +117,10 @@ public class UserHrAccountService {
 
     @Autowired
     private EmployeeEntity employeeEntity;
+
+
+    @Autowired
+    private HrCompanyDao hrCompanyDao;
 
     /**
      * HR在下载行业报告是注册
@@ -825,46 +832,102 @@ public class UserHrAccountService {
     }
 
     /**
-     * 员工列表
+     * 员工信息导入
      *
-     * @return
+     * @param companyId
      */
-    public Response employeList(String keyword, Integer companyId) {
+    public Response employeeImport(Integer companyId, List<UserEmployeeDO> userEmployeeList) {
+        Response response = new Response();
+        logger.info("开始导入员工信息");
         try {
-            // 取该公司的所属集团的所有公司ID
-            List<Integer> list = employeeEntity.getCompanyIds(companyId);
+            // 查询公司ID是否设置正确
+            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+            queryBuilder.where(HrCompany.HR_COMPANY.ID.getName(), companyId);
+            HrCompanyDO company = hrCompanyDao.getData(queryBuilder.buildQuery());
+            // 公司ID设置错误
+            if (StringUtils.isEmptyObject(company)) {
+                return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_ID_ISNOTEXIST);
+            }
+            // 通过手机号查询那些员工数据是更新，那些数据是新增
+            List<String> moblies = new ArrayList<>();
+            userEmployeeList.forEach(userEmployeeDO -> {
+                if (!StringUtils.isEmptyObject(userEmployeeDO.getMobile())) {
+                    moblies.add(userEmployeeDO.getMobile());
+                }
+            });
+            Condition condition = new Condition(UserEmployee.USER_EMPLOYEE.MOBILE.getName(), moblies, ValueOp.IN);
+            queryBuilder.clear();
+            queryBuilder.where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyId).and(condition);
+            // 数据库中已经有的员工列表
+            List<UserEmployeeDO> userEmployeeDOS = userEmployeeDao.getDatas(queryBuilder.buildQuery());
+            List<UserEmployeeDO> updateUserEmployee = new ArrayList<>();
+            if (!StringUtils.isEmptyList(userEmployeeDOS)) {
+                // 查询出需要更新的数据
+                for (UserEmployeeDO userEmployeeDOTemp : userEmployeeList) {
+                    for (UserEmployeeDO user : userEmployeeDOS) {
+                        if (userEmployeeDOTemp.getMobile().equals(user.getMobile())) {
+                            userEmployeeDOTemp.setId(user.getId());
+                            updateUserEmployee.add(userEmployeeDOTemp);
+                        }
+                    }
+                }
+                // 更新数据
+                userEmployeeDao.updateDatas(updateUserEmployee);
+                // 去掉需要更新的数据
+                userEmployeeList.removeAll(updateUserEmployee);
+            }
 
-
+            // 新增数据
+            if (!StringUtils.isEmptyList(userEmployeeList)) {
+                List<UserEmployeeDO> customEmployee = new ArrayList<>(); //自定义员工
+                List<UserEmployeeDO> notCustomEmployee = new ArrayList<>();//非自定义员工
+                // 自定义员工和非自定义员工列表
+                userEmployeeList.forEach(userEmployeeDO -> {
+                    if (!StringUtils.isEmptyObject(userEmployeeDO.getCustomField())) {
+                        customEmployee.add(userEmployeeDO);
+                    } else {
+                        notCustomEmployee.add(userEmployeeDO);
+                    }
+                });
+                // 自定义员工，需要判断公司下是否已经存在自定义字段和名称一致的用户
+                if (!StringUtils.isEmptyList(customEmployee)) {
+                    List<String> cnames = new ArrayList<>();
+                    List<String> customfields = new ArrayList<>();
+                    customEmployee.forEach(userEmployeeDO -> {
+                        if (!StringUtils.isEmptyObject(userEmployeeDO.getCname()) && !StringUtils.isEmptyObject(userEmployeeDO.getCustomField())) {
+                            cnames.add(userEmployeeDO.getCname());
+                            customfields.add(userEmployeeDO.getCustomField());
+                        }
+                    });
+                    queryBuilder.clear();
+                    queryBuilder.where(new Condition(UserEmployee.USER_EMPLOYEE.CNAME.getName(), cnames, ValueOp.IN))
+                            .and(new Condition(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.getName(), customfields, ValueOp.IN))
+                            .and(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyId)
+                            .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), 0);
+                    List<UserEmployeeDO> list = userEmployeeDao.getDatas(queryBuilder.buildQuery());
+                    // 去掉自定义字段和名称一致的用户
+                    if (!StringUtils.isEmptyObject(list)) {
+//                        for(Iterator<UserEmployee> iterator = ){
+//
+//                        }
+//                        customEmployee.removeAll(list);
+                    }
+                    if (!StringUtils.isEmptyList(customEmployee)) {
+                        userEmployeeDao.addAllData(customEmployee);
+                    }
+                }
+                // 非自定义员工插入
+                if (!StringUtils.isEmptyObject(notCustomEmployee)) {
+                    userEmployeeDao.addAllData(notCustomEmployee);
+                }
+            }
         } catch (Exception e) {
+            logger.error(e.getMessage(), e);
             e.printStackTrace();
+            response = ResultMessage.PROGRAM_EXCEPTION.toResponse();
         }
-        return null;
+        logger.info("导入员工信息结束");
+        return response;
     }
 
-    /**
-     * 员工解绑
-     *
-     * @return
-     */
-    public Response employeUnbinding() {
-        return null;
-    }
-
-    /**
-     * 删除员工
-     *
-     * @return
-     */
-    public Response deleteEmploye() {
-        return null;
-    }
-
-    /**
-     * 员工积分列表
-     *
-     * @return
-     */
-    public Response awardList() {
-        return null;
-    }
 }
