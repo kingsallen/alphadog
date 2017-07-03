@@ -216,11 +216,17 @@ public class SearchengineController {
     		 String citys=(String) reqParams.get("citys");
     		 String industry=(String) reqParams.get("industry");
     		 String scale=(String) reqParams.get("scale");
-    		 int page=(int) reqParams.get("page");
-    		 int pageSize=(int) reqParams.get("pageSize");
+    		 String page=(String) reqParams.get("page");
+    		 String pageSize=(String) reqParams.get("pageSize");
+    		 if(StringUtils.isNullOrEmpty(page)){
+    			 page="0";
+    		 }
+    		 if(StringUtils.isNullOrEmpty(pageSize)){
+    			 pageSize="10";
+    		 }
     		  logger.info(keyWord, citys, industry, scale, page,
     				  pageSize,"=============");
-    		 Response res=searchengineServices.companyQuery(keyWord,citys,industry,scale,page, pageSize);
+    		 Response res=searchengineServices.companyQuery(keyWord,citys,industry,scale,Integer.parseInt(page), Integer.parseInt(pageSize));
     		 return ResponseLogNotification.success(request,res);
     	 }catch(Exception e){
     		 logger.info(e.getMessage(),e);
