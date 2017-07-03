@@ -256,6 +256,7 @@ public class Query {
             this.pageNum = 0; // optional
             this.index = null;
             this.extras = new HashMap<>(); // optional
+            this.index = null;
         }
 
         private void setConditions(Condition conditions) throws ConditionNotExist {
