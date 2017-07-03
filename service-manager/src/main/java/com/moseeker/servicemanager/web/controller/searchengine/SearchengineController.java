@@ -218,6 +218,8 @@ public class SearchengineController {
     		 String scale=(String) reqParams.get("scale");
     		 int page=(int) reqParams.get("page");
     		 int pageSize=(int) reqParams.get("pageSize");
+    		  logger.info(keyWord, citys, industry, scale, page,
+    				  pageSize,"=============");
     		 Response res=searchengineServices.companyQuery(keyWord,citys,industry,scale,page, pageSize);
     		 return ResponseLogNotification.success(request,res);
     	 }catch(Exception e){
