@@ -28,6 +28,8 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
+import com.moseeker.common.util.query.ConditionJoin;
+import com.moseeker.common.util.query.ConditionOp;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.Select;
 import com.moseeker.common.util.query.SelectOp;
@@ -40,6 +42,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrTalentpoolDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import com.moseeker.thrift.gen.foundation.chaos.struct.ThirdPartyAccountStruct;
@@ -740,6 +743,7 @@ public class UserHrAccountService {
     public int updateThirdPartyAccount(HrThirdPartyAccountDO account) throws BIZException, TException {
         return hrThirdPartyAccountDao.updateData(account);
     }
+    // TODO: 2017/7/3
 
     /**
      * 获取列表number
@@ -754,27 +758,53 @@ public class UserHrAccountService {
         try {
             EmployeeStat employeeStat = new EmployeeStat();
             Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+            // 取该公司的所属集团的所有公司ID
             List<Integer> list = employeeEntity.getCompanyIds(companyId);
             // 判断是否有关键字查询
             if (!StringUtils.isEmptyObject(keyWord)) {
-                //
+                // 取该公司所属集团所有公司的员工列表
+                List<UserEmployeeDO> userEmployeeDOList = employeeEntity.getUserEmployeeDOList(companyId);
+                Set<Integer> sysIdsTemp = new HashSet<>();
+                // 取到员工的sysuser_id
+                userEmployeeDOList.forEach(userEmployeeDO -> {
+                    if (userEmployeeDO.getSysuserId() != 0) { // 过滤不等于0的
+                        sysIdsTemp.add(userEmployeeDO.getSysuserId());
+                    }
+                });
+                Condition sysuserId = new Condition(UserWxUser.USER_WX_USER.SYSUSER_ID.getName(), sysIdsTemp, ValueOp.IN);
+                Condition nickName = new Condition(UserWxUser.USER_WX_USER.NICKNAME.getName(), keyWord, ValueOp.LIKE);
+                queryBuilder.where(sysuserId).and(nickName);
+                // 通过nickname模糊查询sysuser_id
+                List<UserWxUserDO> userWxUser = userWxUserDao.getDatas(queryBuilder.buildQuery());
+                Set<Integer> sysIds = new HashSet<>();
+                userWxUser.forEach(userWxUserDO -> {
+                    sysIds.add(userWxUserDO.getSysuserId());
+                });
+                // 公司ID
+                Condition companyCon = new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), list, ValueOp.IN);
+                // 名字
                 Condition cname = new Condition(UserEmployee.USER_EMPLOYEE.CNAME.getName(), keyWord, ValueOp.LIKE);
-                Condition customField = new Condition(UserEmployee.USER_EMPLOYEE.CNAME.getName(), keyWord, ValueOp.LIKE);
-                Condition email = new Condition(UserEmployee.USER_EMPLOYEE.CNAME.getName(), keyWord, ValueOp.LIKE);
-                Condition mobile = new Condition(UserEmployee.USER_EMPLOYEE.CNAME.getName(), keyWord, ValueOp.LIKE);
+                // 自定义字段
+                Condition customField = new Condition(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.getName(), keyWord, ValueOp.LIKE);
+                // 邮箱
+                Condition email = new Condition(UserEmployee.USER_EMPLOYEE.EMAIL.getName(), keyWord, ValueOp.LIKE);
+                // 手机号码
+                Condition mobile = new Condition(UserEmployee.USER_EMPLOYEE.MOBILE.getName(), keyWord, ValueOp.LIKE);
+                // sysuser_id
+                Condition sysIdsCon = new Condition(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.getName(), sysIds, ValueOp.IN);
                 queryBuilder.clear();
                 // 按activation
                 queryBuilder.select(new Select(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), SelectOp.COUNT))
                         .select(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName());
-                queryBuilder.where(cname)
-                        .or(customField)
-                        .or(email)
-                        .or(mobile)
-                        .orderBy(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName());
+                queryBuilder.where("1", 1)
+                        .orInnerCondition(cname.andCondition(companyCon))
+                        .orInnerCondition(customField.andCondition(companyCon))
+                        .orInnerCondition(email.andCondition(companyCon))
+                        .orInnerCondition(mobile.andCondition(companyCon))
+                        .orInnerCondition(sysIdsCon.andCondition(companyCon))
+                        .groupBy(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName());
                 List<Map<String, Object>> listMap = userEmployeeDao.getMaps(queryBuilder.buildQuery());
-                for (Map hashMap : listMap) {
-                    employeeStat.setRegcount((Integer) hashMap.get(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName() + "_count"));
-                }
+                System.out.println(listMap);
             } else {
                 // 认证的员工 ,员工认证激活状态，0：认证成功，1：认证后取消认证 2：认证失败 3：未认证 4：认证后又认证了其他公司导致本条数据变成未认证
                 Condition company1 = new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), list, ValueOp.IN);
@@ -792,5 +822,49 @@ public class UserHrAccountService {
             logger.error(e.getMessage(), e);
         }
         return response;
+    }
+
+    /**
+     * 员工列表
+     *
+     * @return
+     */
+    public Response employeList(String keyword, Integer companyId) {
+        try {
+            // 取该公司的所属集团的所有公司ID
+            List<Integer> list = employeeEntity.getCompanyIds(companyId);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 员工解绑
+     *
+     * @return
+     */
+    public Response employeUnbinding() {
+        return null;
+    }
+
+    /**
+     * 删除员工
+     *
+     * @return
+     */
+    public Response deleteEmploye() {
+        return null;
+    }
+
+    /**
+     * 员工积分列表
+     *
+     * @return
+     */
+    public Response awardList() {
+        return null;
     }
 }
