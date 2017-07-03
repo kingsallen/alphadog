@@ -499,7 +499,21 @@ public class PositionController {
     @RequestMapping(value = "/positions/apolegamic", method = RequestMethod.GET)
     @ResponseBody
     public String getPcRecommendPosition(HttpServletRequest request, HttpServletResponse response){
-    	
-    	return null;
+    	try{
+	    	Params<String, Object> params = ParamUtils.parseRequestParam(request);
+	        Integer page = params.getInt("page");
+	        Integer pageSize = params.getInt("pageSize");
+	        if(page==null){
+	        	page=0;
+	        }
+	        if(pageSize==null){
+	        	pageSize=15;
+	        }
+	    	Response result=positonServices.getPcRecommand(page,pageSize);
+	    	return ResponseLogNotification.success(request, result);
+    	}catch(Exception e){
+    		 logger.error(e.getMessage());
+    		 return ResponseLogNotification.fail(request, e.getMessage());
+    	}
     }
 }

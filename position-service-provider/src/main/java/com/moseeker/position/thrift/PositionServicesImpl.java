@@ -3,6 +3,7 @@ package com.moseeker.position.thrift;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.moseeker.position.service.fundationbs.PositionPcService;
 import com.moseeker.position.service.fundationbs.PositionQxService;
 import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
 import com.moseeker.thrift.gen.position.struct.Position;
@@ -45,6 +46,8 @@ public class PositionServicesImpl implements Iface {
     private JobPositionDao jobPositionDao;
     @Autowired
     private PositionQxService positionQxService;
+    @Autowired
+    private PositionPcService positionPcService;
 
     /**
      * 获取推荐职位
@@ -245,9 +248,14 @@ public class PositionServicesImpl implements Iface {
     }
 
 	@Override
-	public Response getPcRecommand(int page, int pageSize) throws TException {
+	public Response getPcRecommand(int page, int pageSize)  {
 		// TODO Auto-generated method stub
-		return null;
+		try{
+			return positionPcService.getRecommendPositionPC(page, pageSize);
+		}catch(Exception e){
+			logger.error(e.getMessage(), e);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+		}
 	}
 
 

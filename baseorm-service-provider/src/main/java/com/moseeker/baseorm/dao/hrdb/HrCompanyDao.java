@@ -8,6 +8,7 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
@@ -134,6 +135,9 @@ public class HrCompanyDao extends JooqCrudImpl<HrCompanyDO, HrCompanyRecord> {
 	获取公司信息的列表
 	 */
 	public List<HrCompanyDO> getHrCompanyByCompanyIds(List<Integer> ids){
+		if(StringUtils.isEmptyList(ids)){
+			 return  null;
+		 }
 		Query query=new Query.QueryBuilder().where(new Condition("id",ids.toArray(),ValueOp.IN)).buildQuery();
 		List<HrCompanyDO> list=this.getDatas(query);
 		return list;
