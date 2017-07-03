@@ -207,6 +207,7 @@ public class EmployeeService {
 
                 // 判断该邮箱现在已被占用 或 正在被人认证
                 List<UserEmployeeDO> userEmployees = employeeDao.getDatas(query.buildQuery());
+                log.info("bind userEmployees.size:{}", userEmployees.size());
                 log.info("使用了邮箱:{}, 的用户有:{}", bindingParams.getEmail(), Arrays.toString(userEmployees.toArray()));
                 userEmployees = userEmployees.stream().filter(e -> e.getSysuserId() != bindingParams.getUserId() && e.getId() > 0).collect(Collectors.toList());
                 if (userEmployees.stream().anyMatch(e -> e.getActivation() == 0 || StringUtils.isNotNullOrEmpty(client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, e.getActivationCode())))) {
