@@ -10,6 +10,7 @@ import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.exception.Category;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
@@ -201,6 +202,7 @@ public class CompanyService{
 			throw ExceptionFactory.buildException(ExceptionCategory.COMPANY_NOT_BELONG_GROUPCOMPANY);
 		}
 
+		/** 查找集团信息 */
 		Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
 		queryBuilder.clear();
 		queryBuilder.where("group_id", groupCompanyDO.getGroupId());
@@ -209,7 +211,7 @@ public class CompanyService{
 		if (groupCompanyRelDOList == null || groupCompanyRelDOList.size() == 0) {
 			throw ExceptionFactory.buildException(ExceptionCategory.COMPANY_NOT_BELONG_GROUPCOMPANY);
 		}
-
+		/** 查找集团下公司的编号 */
 		List<Integer> companyIdList = groupCompanyRelDOList.stream().map(gc -> gc.getCompanyId()).collect(Collectors.toList());
 
 		queryBuilder.clear();
@@ -217,9 +219,10 @@ public class CompanyService{
 		queryBuilder.where(condition);
 		List<HrCompanyDO> companyDOList = companyDao.getDatas(queryBuilder.buildQuery());
 		if (companyDOList == null || companyDOList.size() == 0) {
-			throw ExceptionFactory.buildException(ExceptionCategory.PROGRAM_DATA_EMPTY);
+			throw ExceptionFactory.buildException(Category.PROGRAM_DATA_EMPTY);
 		}
 
+		/** 查找公司信息 */
 		queryBuilder.clear();
 		queryBuilder.select("id").select("company_id").select("signature");
 		Condition condition1 = Condition.buildCommonCondition("company_id", companyIdList, ValueOp.IN);
@@ -227,6 +230,7 @@ public class CompanyService{
 
 		List<HrWxWechatDO> hrWxWechatDOList = wechatDao.getDatas(queryBuilder.buildQuery());
 
+		/** 拼装结果 */
 		List<CompanyForVerifyEmployee> companyForVerifyEmployeeList = companyDOList.stream().map(companyDO -> {
 			CompanyForVerifyEmployee companyForVerifyEmployee = new CompanyForVerifyEmployee();
 			companyForVerifyEmployee.setId(companyDO.getId());
