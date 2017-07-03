@@ -210,6 +210,7 @@ public class SearchengineService {
 
             QueryBuilder status_filter = QueryBuilders.matchPhraseQuery("status", "0");
             ((BoolQueryBuilder) query).must(status_filter);
+            logger.info(query.toString()+"===================");
 
             if (order_by_priority) {
 

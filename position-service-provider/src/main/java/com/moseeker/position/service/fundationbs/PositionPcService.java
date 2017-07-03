@@ -69,11 +69,16 @@ public class PositionPcService {
 	public Response getRecommendPositionPC(int page,int pageSize){
 		List<CampaignPcRecommendPositionDO>  list=campaignPcRecommendPositionDao.getPcRemmendPositionIdList(page,pageSize);
 		if(list==null||list.size()==0){
-			return null;
+			return ResponseUtils.success("");
 		}
 		List<Integer> positionIds=this.getPCRecommendPositionIds(list);
 		List<Map<String,Object>> result=handleDataJDAndPosition(positionIds,3);
-		Response res= ResponseUtils.success(result);
+		Response res=null;
+		if(StringUtils.isEmptyList(result)){
+			 res= ResponseUtils.success("");
+		}else{
+			 res= ResponseUtils.success(result);
+		}
 		return res;
 	}
 	/*
