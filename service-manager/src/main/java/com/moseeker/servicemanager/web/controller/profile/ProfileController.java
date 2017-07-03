@@ -12,6 +12,7 @@ import com.moseeker.thrift.gen.application.service.JobApplicationServices;
 import com.moseeker.thrift.gen.application.struct.ApplicationResponse;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
 
+import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -285,20 +286,16 @@ public class ProfileController {
     public String profilesByApplication(HttpServletRequest request, HttpServletResponse response) {
         try {
             Params<String, Object> form = ParamUtils.parseRequestParam(request);
-
-            int companyId = form.getInt("company_id", -1);
-            int sourceId = form.getInt("source_id", -1);
-            int atsStatus = form.getInt("ats_status", 1);
-            boolean recommender = form.getBoolean("recommender", false);
-            boolean dlUrlRequired = form.getBoolean("dl_url_required", false);
-            Map<String, List<String>> filter = (Map<String, List<String>>) form.get("filter");
-            if (companyId == -1) {
+            ProfileApplicationForm profileApplicationForm = ParamUtils.initModelForm(form, ProfileApplicationForm.class);
+            if(profileApplicationForm == null) {
+                return ResponseLogNotification.fail(request, "参数不能为空");
+            }if (!profileApplicationForm.isSetCompany_id()) {
                 return ResponseLogNotification.fail(request, "company_id不能为空");
-            } else if (sourceId == -1) {
+            } else if (!profileApplicationForm.isSetSource_id()) {
                 return ResponseLogNotification.fail(request, "sourceId不能为空");
             }
-            logger.info("profilesByApplication:companyId:{},sourceId:{},atsStatus:{},recommender:{},dlUrlRequired:{}", companyId, sourceId, atsStatus, recommender, dlUrlRequired);
-            Response result = service.getProfileByApplication(companyId, sourceId, atsStatus, recommender, dlUrlRequired, filter);
+            logger.info("/profiles/application params:{}", JSON.toJSONString(profileApplicationForm));
+            Response result = service.getProfileByApplication(profileApplicationForm);
 
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {

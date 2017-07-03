@@ -25,6 +25,7 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
+import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
 import org.jooq.*;
 import org.jooq.impl.TableImpl;
 import org.slf4j.Logger;
@@ -950,20 +951,42 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
         return value;
     };
 
-    public Response getResourceByApplication(String downloadApi, String password, int companyId, int sourceId, int atsStatus, boolean recommender, boolean dl_url_required, Map<String, List<String>> filter) {
+    public Response getResourceByApplication(String downloadApi, String password, ProfileApplicationForm profileApplicationForm) {
         logger.info("getResourceByApplication:=============={}:{}", "start", 0);
         long startTime = System.currentTimeMillis();
+
+        int pageSize = 10;
+        int page = 1;
+
+        if (profileApplicationForm.getConditions() != null) {
+            if (profileApplicationForm.getConditions().containsKey("page")) {
+                page = Integer.valueOf(profileApplicationForm.getConditions().get("page"));
+
+                if (page < 1) page = 1;
+
+            }
+
+            if (profileApplicationForm.getConditions().containsKey("page_size")) {
+                pageSize = Integer.valueOf(profileApplicationForm.getConditions().get("page_size"));
+                if (pageSize < 1) pageSize = 10;
+                if (pageSize > 50) pageSize = 50;
+            }
+        }
+
+
         JobPosition jobposition = JobPosition.JOB_POSITION;
         JobApplication jobApplication = JobApplication.JOB_APPLICATION;
         List<AbstractMap.SimpleEntry<Map<String, Object>, Map<String, Object>>> positionApplications = create
                 .select()
                 .from(jobposition.join(jobApplication).on(JobPosition.ID.eq(JobApplication.POSITION_ID)))
-                .where(JobApplication.EMAIL_STATUS.eq(0).and(JobPosition.COMPANY_ID.eq(companyId)).and(JobPosition.SOURCE_ID.eq(sourceId)).and(JobApplication.ATS_STATUS.eq(atsStatus)))
+                .where(JobApplication.EMAIL_STATUS.eq(0).and(JobPosition.COMPANY_ID.eq(profileApplicationForm.getCompany_id())).and(JobPosition.SOURCE_ID.eq(profileApplicationForm.getSource_id())).and(JobApplication.ATS_STATUS.eq(profileApplicationForm.getAts_status())))
+                .limit(page)
+                .offset((page - 1) * pageSize)
                 .fetch()
                 .stream()
                 .map(record -> new AbstractMap.SimpleEntry<>(record.into(jobposition).intoMap(), record.into(jobApplication).intoMap()))
                 .collect(Collectors.toList());
-        List<Map<String, Object>> datas = getRelatedDataByJobApplication(create, positionApplications, downloadApi, password, recommender, dl_url_required, filter);
+        List<Map<String, Object>> datas = getRelatedDataByJobApplication(create, positionApplications, downloadApi, password, profileApplicationForm.isRecommender(), profileApplicationForm.isDl_url_required(), profileApplicationForm.getFilter());
         logger.info("getResourceByApplication:=============={}:{}", "end", System.currentTimeMillis() - startTime);
         return ResponseUtils.successWithoutStringify(JSON.toJSONString(datas, new SerializeFilter[]{
                         valueFilter,
@@ -1706,7 +1729,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
 
     public ProfileProfileRecord getProfileByUserId(int userId) {
         return create.selectFrom(ProfileProfile.PROFILE_PROFILE)
-                .where(ProfileProfile.PROFILE_PROFILE.USER_ID.equal((int)(userId)))
+                .where(ProfileProfile.PROFILE_PROFILE.USER_ID.equal((int) (userId)))
                 .fetchAny();
     }
 
@@ -1714,7 +1737,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
         Timestamp updateTime = new Timestamp(System.currentTimeMillis());
         return create.update(ProfileProfile.PROFILE_PROFILE)
                 .set(ProfileProfile.PROFILE_PROFILE.UPDATE_TIME, updateTime)
-                .where(ProfileProfile.PROFILE_PROFILE.USER_ID.eq((int)(userId)))
+                .where(ProfileProfile.PROFILE_PROFILE.USER_ID.eq((int) (userId)))
                 .execute();
     }
 }
