@@ -204,4 +204,26 @@ public class SearchengineController {
         }
         return null;
   }
+    
+    //pc端企业搜索的es
+    @RequestMapping(value = "/search/company", method = RequestMethod.GET)
+    @ResponseBody
+    public String searchCompany(HttpServletRequest request, HttpServletResponse response){
+    	 Map<String, Object> reqParams = null;
+    	 try{
+    		 reqParams = ParamUtils.parseRequestParam(request);
+    		 String keyWord=(String) reqParams.get("keyWord");
+    		 String citys=(String) reqParams.get("citys");
+    		 String industry=(String) reqParams.get("industry");
+    		 String scale=(String) reqParams.get("scale");
+    		 int page=(int) reqParams.get("page");
+    		 int pageSize=(int) reqParams.get("pageSize");
+    		 Response res=searchengineServices.companyQuery(keyWord,citys,industry,scale,page, pageSize);
+    		 return ResponseLogNotification.success(request,res);
+    	 }catch(Exception e){
+    		 logger.info(e.getMessage(),e);
+    		 return ResponseLogNotification.fail(request, e.getMessage());
+    	 }
+    	
+    }
 }

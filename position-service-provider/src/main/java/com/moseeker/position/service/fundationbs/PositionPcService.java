@@ -4,16 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.query.SelectOp;
-
-import org.jooq.Record;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.moseeker.baseorm.dao.campaigndb.CampaignPcRecommendCompanyDao;
 import com.moseeker.baseorm.dao.campaigndb.CampaignPcRecommendPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
@@ -386,7 +382,7 @@ public class PositionPcService {
 	 }
 	 
 	//====================================================== 
-	 //获取仟寻推荐职位接口
+	 //获取仟寻推荐公司和相关职位信息接口
 	 public Response getQXRecommendCompanyList(){
 		 List<CampaignPcRecommendCompanyDO>  CampaignPcRecommendCompanyList=campaignPcRecommendCompanyDao.getCampaignPcRecommendCompanyList();
 		 List<Map<String,Object>> list=new ArrayList<Map<String,Object>>();

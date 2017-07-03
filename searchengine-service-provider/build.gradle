@@ -10,6 +10,7 @@ dependencies {
     testCompile deps["junit"]
     compile deps["spring-core"]
     compile deps["spring-context"]
+    testCompile deps["spring-test"]
     compile group: 'org.elasticsearch', name: 'elasticsearch', version: '2.2.1'
 
 }
