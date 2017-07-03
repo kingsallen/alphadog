@@ -201,7 +201,7 @@ class LocalQuery<R extends Record> {
         if (query.getPageSize() > 0) {
             select.limit((getPage() - 1) * getPageSize(), getPageSize());
         }
-        logger.debug(select.getSQL());
+        logger.info(select.getSQL());
         return select;
     }
 }

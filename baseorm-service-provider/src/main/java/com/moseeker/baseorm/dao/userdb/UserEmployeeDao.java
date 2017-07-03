@@ -9,6 +9,7 @@ import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,10 @@ import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Result;
 import org.jooq.SelectJoinStep;
+
+import static org.jooq.impl.DSL.count;
 import static org.jooq.impl.DSL.sum;
+
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
@@ -54,7 +58,7 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
         SelectJoinStep<Record> table = create.select().from(UserEmployee.USER_EMPLOYEE);
         table.where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId))
                 .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte) 0))
-                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte)0));
+                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte) 0));
         Result<Record> result = table.fetch();
         if (result != null && result.size() > 0) {
             for (Record r : result) {
@@ -78,19 +82,19 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
         int[] successArray = new int[userEmployees.size()];
         int i = 0;
         for (UserEmployeeStruct struct : userEmployees) {
-        	Query.QueryBuilder builder=null;
-        	
+            Query.QueryBuilder builder = null;
+
 //            QueryUtil queryUtil = null;
             if (struct.isSetCompany_id() && struct.isSetCustom_field()) {
-            	builder=new Query.QueryBuilder();
-            	builder.where("company_id", struct.getCompany_id())
-            	.and("custom_field", struct.getCustom_field());
+                builder = new Query.QueryBuilder();
+                builder.where("company_id", struct.getCompany_id())
+                        .and("custom_field", struct.getCustom_field());
 //                queryUtil = new QueryUtil();
 //                queryUtil.addEqualFilter("company_id", String.valueOf(struct.getCompany_id()));
 //                queryUtil.addEqualFilter("custom_field", struct.getCustom_field());
             } else if (struct.isSetCompany_id() && struct.isSetCname() && struct.isSetCfname()) {
-            	builder=new Query.QueryBuilder();
-            	builder.where("company_id", struct.getCompany_id()).and("cname", struct.getCname());
+                builder = new Query.QueryBuilder();
+                builder.where("company_id", struct.getCompany_id()).and("cname", struct.getCname());
 //                queryUtil = new QueryUtil();
 //                queryUtil.addEqualFilter("company_id", String.valueOf(struct.getCompany_id()));
 //                queryUtil.addEqualFilter("cname", struct.getCname());
@@ -145,6 +149,20 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
     }
 
 
+    public void getListNum(String keyWord, List<Integer> companyIds) {
+        Condition cname = UserEmployee.USER_EMPLOYEE.CNAME.like(keyWord);
+        Condition customField = UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.like(keyWord);
+        Condition email = UserEmployee.USER_EMPLOYEE.EMAIL.like(keyWord);
+        Condition mobile = UserEmployee.USER_EMPLOYEE.MOBILE.like(keyWord);
+        Condition nickname = UserWxUser.USER_WX_USER.NICKNAME.like(keyWord);
+        Condition company = UserEmployee.USER_EMPLOYEE.COMPANY_ID.in(companyIds);
+        create.select(count(UserEmployee.USER_EMPLOYEE.ID), UserEmployee.USER_EMPLOYEE.ACTIVATION).from(UserEmployee.USER_EMPLOYEE)
+                .leftJoin(UserWxUser.USER_WX_USER)
+                .on(UserEmployee.USER_EMPLOYEE.WXUSER_ID.equal(Integer.valueOf(String.valueOf(UserWxUser.USER_WX_USER.ID))))
+                .where(company)
+                .and(cname.or(customField).or(email).or(mobile).or(nickname))
+                .orderBy(UserEmployee.USER_EMPLOYEE.ACTIVATION).fetch();
+    }
 
 
 }
