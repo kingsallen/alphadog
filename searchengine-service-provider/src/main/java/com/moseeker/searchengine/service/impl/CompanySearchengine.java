@@ -39,7 +39,7 @@ public class CompanySearchengine {
                  this.handleScale(scale, query);
                  SearchResponse response = client.prepareSearch("companys").setTypes("fulltext")
                              .setQuery(query)
-                             .addSort("weight", SortOrder.DESC)
+//                             .addSort("weight", SortOrder.DESC)
                              .addSort("_score", SortOrder.DESC)
                              .setFrom(page)
                              .setSize(pageSize).execute().actionGet();
