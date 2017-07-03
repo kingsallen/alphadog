@@ -1,7 +1,9 @@
 package com.moseeker.entity;
 
+import com.moseeker.baseorm.dao.historydb.HistoryUserEmployeeDao;
 import com.moseeker.baseorm.dao.hrdb.HrGroupCompanyRelDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
+import com.moseeker.baseorm.dao.userdb.UserEmployeePointsRecordDao;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompanyRel;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
@@ -10,14 +12,15 @@ import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrGroupCompanyRelDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
-
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
 import java.util.ArrayList;
+import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by lucky8987 on 17/6/29.
@@ -28,34 +31,17 @@ public class EmployeeEntity {
     @Autowired
     private UserEmployeeDao employeeDao;
 
-
     @Autowired
     private HrGroupCompanyRelDao hrGroupCompanyRelDao;
 
+    @Autowired
+    private HistoryUserEmployeeDao historyUserEmployeeDao;
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    @Autowired
+    private UserEmployeePointsRecordDao ueprDao;
 
 
-    /**
-     * 获取员工详情
-     *
-     * @param employeeId
-     * @return
-     */
-    public UserEmployeeDO getEmployee(int employeeId) {
-        return null;
-    }
-
-    /**
-     * 员工列表
-     *
-     * @param pageSize 每页大小
-     * @param pageNum  页码
-     * @return
-     */
-    public List<UserEmployeeDO> employeeList(int pageSize, int pageNum, String... str) {
-        return null;
-    }
+    private static final Logger logger = LoggerFactory.getLogger(EmployeeEntity.class);
 
     /**
      * 判断某个用户是否属于某个公司的员工
@@ -75,31 +61,86 @@ public class EmployeeEntity {
 
         Query.QueryBuilder query = new Query.QueryBuilder();
 
-        // TODO 查找集团公司列表...
-        query.where("company_id", String.valueOf(companyId)).and("sysuser_id", String.valueOf(userId))
+        // 查找集团公司列表
+        List<Integer> companyIds = getCompanyIds(companyId);
+        companyIds.add(companyId);
+
+        query.where(new Condition("company_id", companyIds, ValueOp.IN)).and("sysuser_id", String.valueOf(userId))
                 .and("disable", "0");
 
         return employeeDao.getData(query.buildQuery());
     }
 
     /**
-     * 增加积点
-     *
+     * 增加员工积点
      * @param employeeId
-     * @param award
-     * @return
+     * @param award (注意: award可以为负数...)
+     * @return 员工当前总积分
      */
-    public int plusReward(int employeeId, int award) {
+    @Transactional
+    public int addReward(int employeeId, int award, String reason) throws Exception {
+        Query.QueryBuilder query = new Query.QueryBuilder();
+        query.where("id", employeeId);
+        UserEmployeeDO userEmployeeDO = employeeDao.getData(query.buildQuery());
+        if (userEmployeeDO != null && userEmployeeDO.getId() > 0) {
+            // 修改用户总积分
+            userEmployeeDO.setAward(userEmployeeDO.getAward() + award);
+            int row = employeeDao.updateData(userEmployeeDO);
+            // 积分记录
+            if (row > 0) {
+                UserEmployeePointsRecordDO ueprDo = new UserEmployeePointsRecordDO();
+                ueprDo.setAward(award);
+                ueprDo.setEmployeeId(employeeId);
+                ueprDo.setReason(reason);
+                ueprDo = ueprDao.addData(ueprDo);
+                if (ueprDo.getId() > 0) {
+                    logger.info("增加用户积分成功：为用户{},添加积分{}点, reason:{}", employeeId, award, reason);
+                    return userEmployeeDO.getAward();
+                } else {
+                    logger.error("增加用户积分失败：为用户{},添加积分{}点, reason:{}", employeeId, award, reason);
+                    throw new RuntimeException("增加积分失败");
+                }
+            }
+        }
         return 0;
     }
 
     /**
-     * 员工删除
-     *
-     * @param employeeId
+     * 员工取消认证（支持批量）
+     * @param employeeIds
+     * @return
      */
-    public void removeEmployee(int employeeId) {
+    public boolean unbind(List<Integer> employeeIds) {
+        Query.QueryBuilder query = new Query.QueryBuilder();
+        query.and(new Condition("id", employeeIds, ValueOp.IN));
+        List<UserEmployeeDO> employeeDOList = employeeDao.getDatas(query.buildQuery());
+        if (employeeDOList != null && employeeDOList.size() > 0) {
+            employeeDOList.stream().filter(f -> f.getActivation() == 0).forEach(e -> {e.setActivation((byte)1); e.setEmailIsvalid((byte)0);});
+            int[] rows = employeeDao.updateDatas(employeeDOList);
+            if(Arrays.stream(rows).sum() > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
 
+    /**
+     * 员工删除(支持批量)
+     * 1.将数据移入到history_user_employee中
+     * 2.user_employee中做物理删除
+     */
+    @Transactional
+    public void removeEmployee(List<Integer> employeeIds) {
+        Query.QueryBuilder query = new Query.QueryBuilder();
+        query.where(new Condition("id", employeeIds, ValueOp.IN));
+        List<UserEmployeeDO> userEmployeeDOList = employeeDao.getDatas(query.buildQuery());
+        if (userEmployeeDOList != null && userEmployeeDOList.size() > 0) {
+            int[] rows = employeeDao.deleteDatas(userEmployeeDOList);
+            // 受影响行数大于零，说明删除成功， 将数据copy到history_user_employee中
+            if(Arrays.stream(rows).sum() > 0) {
+                historyUserEmployeeDao.addAllData(userEmployeeDOList);
+            }
+        }
     }
 
     /**
