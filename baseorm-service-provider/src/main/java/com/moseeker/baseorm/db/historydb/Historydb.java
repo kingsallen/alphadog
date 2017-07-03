@@ -13,6 +13,10 @@ import com.moseeker.baseorm.db.historydb.tables.HistoryJobApplicationConf;
 import com.moseeker.baseorm.db.historydb.tables.HistoryJobApplicationStatusBeisen;
 import com.moseeker.baseorm.db.historydb.tables.HistoryJobOccupationRel;
 import com.moseeker.baseorm.db.historydb.tables.HistoryJobPosition;
+import com.moseeker.baseorm.db.historydb.tables.HistoryUserEmployee;
+import com.moseeker.baseorm.db.historydb.tables.HrWxHrChatList;
+import com.moseeker.baseorm.db.historydb.tables.HrWxHrChatListBak;
+import com.moseeker.baseorm.db.historydb.tables.HrWxHrChatListBakBak;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,7 +42,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Historydb extends SchemaImpl {
 
-    private static final long serialVersionUID = 640177346;
+    private static final long serialVersionUID = -661909742;
 
     /**
      * The reference instance of <code>historydb</code>
@@ -91,6 +95,26 @@ public class Historydb extends SchemaImpl {
     public final HistoryJobPosition HISTORY_JOB_POSITION = com.moseeker.baseorm.db.historydb.tables.HistoryJobPosition.HISTORY_JOB_POSITION;
 
     /**
+     * 员工信息归档表
+     */
+    public final HistoryUserEmployee HISTORY_USER_EMPLOYEE = com.moseeker.baseorm.db.historydb.tables.HistoryUserEmployee.HISTORY_USER_EMPLOYEE;
+
+    /**
+     * IM聊天人关系
+     */
+    public final HrWxHrChatList HR_WX_HR_CHAT_LIST = com.moseeker.baseorm.db.historydb.tables.HrWxHrChatList.HR_WX_HR_CHAT_LIST;
+
+    /**
+     * IM聊天人关系
+     */
+    public final HrWxHrChatListBak HR_WX_HR_CHAT_LIST_BAK = com.moseeker.baseorm.db.historydb.tables.HrWxHrChatListBak.HR_WX_HR_CHAT_LIST_BAK;
+
+    /**
+     * IM聊天人关系
+     */
+    public final HrWxHrChatListBakBak HR_WX_HR_CHAT_LIST_BAK_BAK = com.moseeker.baseorm.db.historydb.tables.HrWxHrChatListBakBak.HR_WX_HR_CHAT_LIST_BAK_BAK;
+
+    /**
      * No further instances allowed
      */
     private Historydb() {
@@ -123,6 +147,10 @@ public class Historydb extends SchemaImpl {
             HistoryJobApplicationConf.HISTORY_JOB_APPLICATION_CONF,
             HistoryJobApplicationStatusBeisen.HISTORY_JOB_APPLICATION_STATUS_BEISEN,
             HistoryJobOccupationRel.HISTORY_JOB_OCCUPATION_REL,
-            HistoryJobPosition.HISTORY_JOB_POSITION);
+            HistoryJobPosition.HISTORY_JOB_POSITION,
+            HistoryUserEmployee.HISTORY_USER_EMPLOYEE,
+            HrWxHrChatList.HR_WX_HR_CHAT_LIST,
+            HrWxHrChatListBak.HR_WX_HR_CHAT_LIST_BAK,
+            HrWxHrChatListBakBak.HR_WX_HR_CHAT_LIST_BAK_BAK);
     }
 }

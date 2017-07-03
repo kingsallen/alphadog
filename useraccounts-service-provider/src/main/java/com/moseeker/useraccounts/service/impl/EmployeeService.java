@@ -19,6 +19,7 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.UserAccountEntity;
 import com.moseeker.entity.UserWxEntity;
 import com.moseeker.rpccenter.client.ServiceManager;
@@ -70,7 +71,7 @@ public class EmployeeService {
     private JobPositionDao positionDao;
 
     @Autowired
-    private UserAccountEntity userAccountEntity;
+    private EmployeeEntity employeeEntity;
 
     @Autowired
     private UserEmployeeDao employeeDao;
@@ -79,13 +80,7 @@ public class EmployeeService {
     private UserWxEntity wxEntity;
 
     @Autowired
-    private HrCompanyDao companyDao;
-
-    @Autowired
     private HrCompanyConfDao hrCompanyConfDao;
-
-    @Autowired
-    private HrWxWechatDao hrWxWechatDao;
 
     @Autowired
     private HrPointsConfDao hrPointsConfDao;
@@ -438,7 +433,6 @@ public class EmployeeService {
 
     /**
      * step 1: 认证当前员工   step 2: 将其他公司的该用户员工设为未认证
-     * @param bindingParams
      * @return
      * @throws TException
      */
@@ -498,10 +492,7 @@ public class EmployeeService {
             response.setSuccess(true);
             response.setMessage("解绑成功");
         } else {
-            employee.setActivation((byte)1);
-            employee.setEmailIsvalid((byte)0);
-            int result = employeeDao.updateData(employee);
-            if (result > 0){
+            if (employeeEntity.unbind(Arrays.asList(employeeId))){
                 response.setSuccess(true);
                 response.setMessage("success");
             } else {
