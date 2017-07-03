@@ -31,7 +31,7 @@ public class UserHrAccountServiceTest {
     @Test
     public void getListNum() {
         try {
-            Response response = userHrAccountService.getListNum("Fz,", 3);
+            Response response = userHrAccountService.getListNum("张婕", 3);
             System.out.println(response);
         } catch (Exception e) {
             e.printStackTrace();

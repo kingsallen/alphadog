@@ -4,14 +4,12 @@ import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HrSearchConditionDao;
 import com.moseeker.baseorm.dao.hrdb.HrTalentpoolDao;
-import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
-import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
-import com.moseeker.baseorm.dao.userdb.UserSearchConditionDao;
-import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.dao.userdb.*;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateRecomRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrSearchConditionRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
+import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.baseorm.redis.RedisClient;
@@ -44,6 +42,7 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrTalentpoolDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import com.moseeker.thrift.gen.foundation.chaos.struct.ThirdPartyAccountStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
@@ -64,6 +63,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.jooq.impl.DSL.count;
 
@@ -111,6 +111,9 @@ public class UserHrAccountService {
 
     @Autowired
     private UserWxUserDao userWxUserDao;
+
+    @Autowired
+    private UserUserDao userUserDao;
 
     @Autowired
     private EmployeeEntity employeeEntity;
@@ -753,58 +756,66 @@ public class UserHrAccountService {
      * @param companyId
      * @return
      */
-    public Response getListNum(String keyWord, Integer companyId) {
+    public Response getListNum(String keyWord, Integer companyId) throws BIZException {
         Response response = new Response();
         try {
             EmployeeStat employeeStat = new EmployeeStat();
             Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+            /*Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
             // 取该公司的所属集团的所有公司ID
             List<Integer> list = employeeEntity.getCompanyIds(companyId);
             // 判断是否有关键字查询
             if (!StringUtils.isEmptyObject(keyWord)) {
                 // 取该公司所属集团所有公司的员工列表
                 List<UserEmployeeDO> userEmployeeDOList = employeeEntity.getUserEmployeeDOList(companyId);
-                Set<Integer> sysIdsTemp = new HashSet<>();
+                *//*Set<Integer> sysIdsTemp = new HashSet<>();
                 // 取到员工的sysuser_id
                 userEmployeeDOList.forEach(userEmployeeDO -> {
                     if (userEmployeeDO.getSysuserId() != 0) { // 过滤不等于0的
                         sysIdsTemp.add(userEmployeeDO.getSysuserId());
                     }
-                });
-                Condition sysuserId = new Condition(UserWxUser.USER_WX_USER.SYSUSER_ID.getName(), sysIdsTemp, ValueOp.IN);
-                Condition nickName = new Condition(UserWxUser.USER_WX_USER.NICKNAME.getName(), keyWord, ValueOp.LIKE);
+                });*//*
+                List<Integer> sysIdsTemp = userEmployeeDOList.stream().filter(userEmployeeDO -> userEmployeeDO.getSysuserId() > 0).map(userEmployeeDO -> userEmployeeDO.getSysuserId()).collect(Collectors.toList());
+                Condition sysuserId = new Condition(UserUser.USER_USER.ID.getName(), sysIdsTemp, ValueOp.IN);
+                Condition nickName = new Condition(UserUser.USER_USER.NICKNAME.getName(), keyWord, ValueOp.LIKE);
                 queryBuilder.where(sysuserId).and(nickName);
                 // 通过nickname模糊查询sysuser_id
-                List<UserWxUserDO> userWxUser = userWxUserDao.getDatas(queryBuilder.buildQuery());
+                *//*List<UserWxUserDO> userWxUser = userWxUserDao.getDatas(queryBuilder.buildQuery());
                 Set<Integer> sysIds = new HashSet<>();
                 userWxUser.forEach(userWxUserDO -> {
                     sysIds.add(userWxUserDO.getSysuserId());
-                });
-                // 公司ID
-                Condition companyCon = new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), list, ValueOp.IN);
-                // 名字
-                Condition cname = new Condition(UserEmployee.USER_EMPLOYEE.CNAME.getName(), keyWord, ValueOp.LIKE);
-                // 自定义字段
-                Condition customField = new Condition(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.getName(), keyWord, ValueOp.LIKE);
-                // 邮箱
-                Condition email = new Condition(UserEmployee.USER_EMPLOYEE.EMAIL.getName(), keyWord, ValueOp.LIKE);
-                // 手机号码
-                Condition mobile = new Condition(UserEmployee.USER_EMPLOYEE.MOBILE.getName(), keyWord, ValueOp.LIKE);
-                // sysuser_id
-                Condition sysIdsCon = new Condition(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.getName(), sysIds, ValueOp.IN);
-                queryBuilder.clear();
-                // 按activation
-                queryBuilder.select(new Select(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), SelectOp.COUNT))
-                        .select(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName());
-                queryBuilder.where("1", 1)
-                        .orInnerCondition(cname.andCondition(companyCon))
-                        .orInnerCondition(customField.andCondition(companyCon))
-                        .orInnerCondition(email.andCondition(companyCon))
-                        .orInnerCondition(mobile.andCondition(companyCon))
-                        .orInnerCondition(sysIdsCon.andCondition(companyCon))
-                        .groupBy(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName());
-                List<Map<String, Object>> listMap = userEmployeeDao.getMaps(queryBuilder.buildQuery());
-                System.out.println(listMap);
+                });*//*
+                List<UserUserDO> userUserDOList = userUserDao.getDatas(queryBuilder.buildQuery());
+                if (userUserDOList != null && userUserDOList.size() > 0) {
+                    List<Integer> sysIds = userUserDOList.stream().map(userUserDO -> userUserDO.getId()).collect(Collectors.toList());
+
+                    // 公司ID
+                    Condition companyCon = new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), list, ValueOp.IN);
+                    // 名字
+                    Condition cname = new Condition(UserEmployee.USER_EMPLOYEE.CNAME.getName(), keyWord, ValueOp.LIKE);
+                    // 自定义字段
+                    Condition customField = new Condition(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.getName(), keyWord, ValueOp.LIKE);
+                    // 邮箱
+                    Condition email = new Condition(UserEmployee.USER_EMPLOYEE.EMAIL.getName(), keyWord, ValueOp.LIKE);
+                    // 手机号码
+                    Condition mobile = new Condition(UserEmployee.USER_EMPLOYEE.MOBILE.getName(), keyWord, ValueOp.LIKE);
+                    // sysuser_id
+                    Condition sysIdsCon = new Condition(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.getName(), sysIds, ValueOp.IN);
+
+                    queryBuilder.clear();
+                    // 按activation
+                    queryBuilder.select(new Select(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), SelectOp.COUNT))
+                            .select(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName());
+                    queryBuilder.where("1", 1)
+                            .orInnerCondition(cname.andCondition(companyCon))
+                            .orInnerCondition(customField.andCondition(companyCon))
+                            .orInnerCondition(email.andCondition(companyCon))
+                            .orInnerCondition(mobile.andCondition(companyCon))
+                            .orInnerCondition(sysIdsCon.andCondition(companyCon))
+                            .groupBy(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName());
+                    List<Map<String, Object>> listMap = userEmployeeDao.getMaps(queryBuilder.buildQuery());
+                    System.out.println(listMap);
+                }
             } else {
                 // 认证的员工 ,员工认证激活状态，0：认证成功，1：认证后取消认证 2：认证失败 3：未认证 4：认证后又认证了其他公司导致本条数据变成未认证
                 Condition company1 = new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), list, ValueOp.IN);
@@ -816,8 +827,51 @@ public class UserHrAccountService {
                 queryBuilder.clear();
                 queryBuilder.where(condition).and(company);
                 employeeStat.setUnregcount(userEmployeeDao.getCount(queryBuilder.buildQuery()));
+            }*/
+
+            queryBuilder.select(new Select(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), SelectOp.COUNT))
+                    .select(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName());
+
+            queryBuilder.where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyId).and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), 0);
+
+            if (StringUtils.isNotNullOrEmpty(keyWord)) {
+                List<UserEmployeeDO> userEmployeeDOList = employeeEntity.getUserEmployeeDOList(companyId);
+                List<Integer> sysIdsTemp = userEmployeeDOList.stream().filter(userEmployeeDO -> userEmployeeDO.getSysuserId() > 0).map(userEmployeeDO -> userEmployeeDO.getSysuserId()).collect(Collectors.toList());
+                Condition sysuserId = new Condition(UserUser.USER_USER.ID.getName(), sysIdsTemp, ValueOp.IN);
+                Condition nickName = new Condition(UserUser.USER_USER.NICKNAME.getName(), keyWord, ValueOp.LIKE);
+
+                Query.QueryBuilder nicknameCondition = new Query.QueryBuilder();
+                nicknameCondition.where(sysuserId).and(nickName);
+                List<UserUserDO> userUserDOList = userUserDao.getDatas(nicknameCondition.buildQuery());
+
+                    List<Integer> sysIds = userUserDOList.stream().map(userUserDO -> userUserDO.getId()).collect(Collectors.toList());
+                    // 名字
+                    Condition cname = new Condition(UserEmployee.USER_EMPLOYEE.CNAME.getName(), keyWord, ValueOp.LIKE);
+                    // 自定义字段
+                    Condition customField = new Condition(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.getName(), keyWord, ValueOp.LIKE);
+                    // 邮箱
+                    Condition email = new Condition(UserEmployee.USER_EMPLOYEE.EMAIL.getName(), keyWord, ValueOp.LIKE);
+                    // 手机号码
+                    Condition mobile = new Condition(UserEmployee.USER_EMPLOYEE.MOBILE.getName(), keyWord, ValueOp.LIKE);
+
+                    queryBuilder.andInnerCondition(cname).or(customField).or(email).or(mobile);
+
+                    if (!StringUtils.isEmptyList(userEmployeeDOList)) {
+                        Condition sysIdsCon = new Condition(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.getName(), sysIds, ValueOp.IN);
+                        queryBuilder.or(sysIdsCon);
+                    }
+
+                    // sysuser_id
+                    Condition sysIdsCon = new Condition(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.getName(), sysIds, ValueOp.IN);
+
+                    queryBuilder.andInnerCondition(cname).or(customField).or(email).or(mobile).or(sysIdsCon);
             }
-            response.setData(JSON.toJSONString(employeeStat));
+
+            queryBuilder.groupBy(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName());
+
+            List<Map<String, Object>> result = userEmployeeDao.getMaps(queryBuilder.buildQuery());
+
+            response.setData(JSON.toJSONString(result));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }

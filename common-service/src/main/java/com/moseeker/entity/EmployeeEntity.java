@@ -2,6 +2,7 @@ package com.moseeker.entity;
 
 import com.moseeker.baseorm.dao.hrdb.HrGroupCompanyRelDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
+import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompanyRel;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
@@ -158,8 +159,11 @@ public class EmployeeEntity {
             // 首先通过CompanyId 查询到该公司集团下所有的公司ID
             List<Integer> companyIds = getCompanyIds(companyId);
             Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+            queryBuilder.select(UserEmployee.USER_EMPLOYEE.ID.getName())
+                    .select(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName())
+                    .select(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.getName());
             Condition condition = new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyIds, ValueOp.IN);
-            queryBuilder.where(condition);
+            queryBuilder.where(condition).and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), AbleFlag.OLDENABLE.getValue());
             userEmployeeDOS = employeeDao.getDatas(queryBuilder.buildQuery());
         }
         return userEmployeeDOS;
