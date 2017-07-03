@@ -1,6 +1,7 @@
 package com.moseeker.company.service.impl;
 
 import com.moseeker.baseorm.dao.hrdb.HrTeamDao;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrTeamDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,13 +16,10 @@ import java.util.Map;
  */
 @Service
 public class HrTeamServicesImpl {
-
-    Logger logger = LoggerFactory.getLogger(this.getClass());
-
     @Autowired
     HrTeamDao hrTeamDao;
 
-    public List<HrTeamDO> getHrTeams(Map<String, String> query) throws Exception {
-        return hrTeamDao.getHrTeams(query);
+    public List<HrTeamDO> getHrTeams(Query query) throws Exception {
+        return hrTeamDao.getDatas(query);
     }
 }
