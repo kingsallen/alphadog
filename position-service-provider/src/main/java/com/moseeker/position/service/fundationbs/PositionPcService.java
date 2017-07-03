@@ -67,6 +67,9 @@ public class PositionPcService {
 	@CounterIface
 	public Response getRecommendPositionPC(int page,int pageSize){
 		List<CampaignPcRecommendPositionDO>  list=campaignPcRecommendPositionDao.getPcRemmendPositionIdList(page,pageSize);
+		if(list==null||list.size()==0){
+			return null;
+		}
 		List<Integer> positionIds=this.getPCRecommendPositionIds(list);
 		List<Map<String,Object>> result=handleDataJDAndPosition(positionIds,3);
 		Response res= ResponseUtils.success(result);
@@ -76,6 +79,9 @@ public class PositionPcService {
 	 * 根据推荐职位列表获取职位id
 	 */
 	private List<Integer> getPCRecommendPositionIds(List<CampaignPcRecommendPositionDO> list){
+		if(list==null||list.size()==0){
+			return null;
+		}
 		List<Integer> result=new ArrayList<Integer>();
 		for(int i=0;i<list.size();i++){
 			CampaignPcRecommendPositionDO record=list.get(i);
@@ -88,6 +94,9 @@ public class PositionPcService {
  		获取publisher的列表
     */
 	private List<Integer> getPublisherIdList(List<JobPositionDO> list){
+		if(list==null||list.size()==0){
+			return null;
+		}
 		List<Integer> result=new ArrayList<Integer>();
 		for(int i=0;i<list.size();i++){
 			JobPositionDO positionDO=list.get(i);
@@ -99,6 +108,9 @@ public class PositionPcService {
 	获取publisher和companyId的对应关系集合
 	 */
 	private List<Map<String,Integer>> getPublisherCompanyId(List<Integer> list){
+		if(list==null||list.size()==0){
+			return null;
+		}
 		List<Map<String,Integer>> result=new ArrayList<Map<String,Integer>>();
 		Map<String,Integer> map=null;
 		Query query=new Query.QueryBuilder().where(new Condition("account_id",list.toArray(),ValueOp.IN)).buildQuery();
@@ -120,6 +132,9 @@ public class PositionPcService {
 	 * 通过publisher的id列表获取公司的id列表
 	 */
 	public List<Integer> getHrCompanyIdList(List<Integer> list){
+		if(list==null||list.size()==0){
+			return null;
+		}
 		List<Integer> result=new ArrayList<Integer>();
 		Query query=new Query.QueryBuilder().where(new Condition("account_id",list.toArray(),ValueOp.IN)).buildQuery();
 		List<HrCompanyAccountDO> records=hrCompanyAccountDao.getDatas(query);
@@ -137,6 +152,9 @@ public class PositionPcService {
 		获取所有有jd的公司
 	 */
 	public List<Integer> getJdCompanyIds(List<HrCompanyConfDO>  list){
+		if(list==null||list.size()==0){
+			return null;
+		}
 		List<Integer> result=new ArrayList<Integer>();
 		for(int i=0;i<list.size();i++){
 			HrCompanyConfDO confDO=list.get(i);
@@ -148,6 +166,9 @@ public class PositionPcService {
  	* 获取团队
  	*/
 	public List<HrTeamDO> getTeamList(List<Integer> list){
+		if(list==null||list.size()==0){
+			return null;
+		}
 		Condition condition=new Condition("id",list.toArray(),ValueOp.IN);
 		Query query=new Query.QueryBuilder().where(condition).and("disable",0).and("is_show",1).buildQuery();
 		List<HrTeamDO> result=hrTeamDao.getDatas(query);
@@ -157,6 +178,9 @@ public class PositionPcService {
 	 * 获取团队数量，通过公司的List<id>
 	 */
 	public List<Map<String,Object>> getTeamNum(List<Integer> list){
+		if(list==null||list.size()==0){
+			return null;
+		}
 		Query query=new Query.QueryBuilder().select(new Select("id", SelectOp.COUNT)).select("company_id")
 				.where(new Condition("company_id",list.toArray(),ValueOp.IN))
 				.and("disale",0).and("is_show",1)
@@ -168,6 +192,9 @@ public class PositionPcService {
 	   获取团队列表
 	 */
 	public List<Integer> getTeamIdList(List<JobPositionDO> list){
+		if(list==null||list.size()==0){
+			return null;
+		}
 		List<Integer> result=new ArrayList<Integer>();
 		for(int i=0;i<list.size();i++){
 			JobPositionDO positionDO=list.get(i);
@@ -180,6 +207,9 @@ public class PositionPcService {
 	 * 获取所有的HrCmsPagesDO.id列表
 	 */
 	 private List<Integer> getCmsPageIdList(List<HrCmsPagesDO> list){
+		 if(list==null||list.size()==0){
+				return null;
+			}
 		 List<Integer> result=new ArrayList<Integer>();
 		 for(int i=0;i<list.size();i++){
 			 HrCmsPagesDO pageDO=list.get(i);
@@ -192,6 +222,9 @@ public class PositionPcService {
 	  * 获取modul.id列表
 	  */
 	 private List<Integer> getModuleIdList(List<HrCmsModuleDO> list){
+		 if(list==null||list.size()==0){
+				return null;
+			}
 		 List<Integer> result=new ArrayList<Integer>();
 		 for(int i=0;i<list.size();i++){
 			 HrCmsModuleDO moduleDO=list.get(i);
@@ -203,6 +236,9 @@ public class PositionPcService {
 	  * 获取res.id
 	  */
 	 private List<Integer> getResIdList(List<HrCmsMediaDO> list){
+		 if(list==null||list.size()==0){
+				return null;
+			}
 		 List<Integer> result=new ArrayList<Integer>();
 		 for(int i=0;i<list.size();i++){
 			 HrCmsMediaDO mediaDO=list.get(i);
@@ -212,7 +248,13 @@ public class PositionPcService {
 	 }
 
 	 public List<Map<String,Object>> getResourceByPositionId(List<Integer> ids,int type){
+		 if(ids==null||ids.size()==0){
+			return null;
+		 }
 		 List<HrCmsPagesDO> list1=hrCmsPagesDao.getHrCmsPagesByIds(ids,type);
+		 if(list1==null||list1.size()==0){
+			 return null;
+		 }
 		 List<Map<String,Object>> maps1=new ArrayList<Map<String,Object>>();
 		 Map<String,Object> map=null;
 		 for(int i=0;i<list1.size();i++){
@@ -226,6 +268,9 @@ public class PositionPcService {
 		 }
 		 List<Integer> pageIds=this.getCmsPageIdList(list1);
 		 List<HrCmsModuleDO> list2=hrCmsModuleDao.getHrCmsModuleDOBypageIdList(pageIds);
+		 if(list2==null||list2.size()==0){
+			 return null;
+		 }
 		 for(int i=0;i<list2.size();i++){
 			 HrCmsModuleDO moduleDO=list2.get(i);
 			 int pageId=moduleDO.getPageId();
