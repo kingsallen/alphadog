@@ -37,6 +37,7 @@ public class CompanySearchengine {
                  this.handleCitys( citys,query);
                  this.handleIndustry(industry, query);
                  this.handleScale(scale, query);
+                 logger.info(query.toString()+"==================================================");
                  SearchResponse response = client.prepareSearch("companys").setTypes("fulltext")
                              .setQuery(query)
 //                             .addSort("weight", SortOrder.DESC)
