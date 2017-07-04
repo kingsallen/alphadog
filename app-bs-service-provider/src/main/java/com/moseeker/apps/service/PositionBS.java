@@ -128,41 +128,39 @@ public class PositionBS {
         List<ThirdPartyPositionForSynchronization> positions = positionServices.changeToThirdPartyPosition(positionFroms, moseekerPosition);
         // 提交到chaos处理
         List<ThirdPartyPositionForSynchronizationWithAccount> PositionsForSynchronizations = new ArrayList<>();
-        if (positions != null && positions.size() > 0) {
-            Query query = new QueryBuilder().where("account_id", moseekerPosition.getPublisher()).buildQuery();
-            HrCompanyAccountDO hrCompanyAccount = hrCompanyAccountDao.getData(query);
-            HrCompanyDO subCompany = null;
-            if (hrCompanyAccount != null) {
-                query = new QueryBuilder().where("id", hrCompanyAccount.getCompanyId()).buildQuery();
-                subCompany = hrCompanyDao.getData(query);
-            }
+        Query query = new QueryBuilder().where("account_id", moseekerPosition.getPublisher()).buildQuery();
+        HrCompanyAccountDO hrCompanyAccount = hrCompanyAccountDao.getData(query);
+        HrCompanyDO subCompany = null;
+        if (hrCompanyAccount != null) {
+            query = new QueryBuilder().where("id", hrCompanyAccount.getCompanyId()).buildQuery();
+            subCompany = hrCompanyDao.getData(query);
+        }
 
-            HrTeamDO hrTeam = null;
-            if (moseekerPosition.getTeamId() > 0) {
-                query = new QueryBuilder().where("id", moseekerPosition.getTeamId()).buildQuery();
-                hrTeam = hrTeamDao.getData(query);
-            }
+        HrTeamDO hrTeam = null;
+        if (moseekerPosition.getTeamId() > 0) {
+            query = new QueryBuilder().where("id", moseekerPosition.getTeamId()).buildQuery();
+            hrTeam = hrTeamDao.getData(query);
+        }
 
-            for (ThirdPartyPositionForSynchronization pos : positions) {
-                ThirdPartyPositionForSynchronizationWithAccount p = new ThirdPartyPositionForSynchronizationWithAccount();
-                p.setPosition_info(pos);
-                for (HrThirdPartyAccountDO account : thirdPartyAccounts) {
-                    if (account.getId() > 0 && account.binding == 1 && account.getRemainNum() > 0 && account.getChannel() == pos.getChannel()) {
-                        if (subCompany != null) {
-                            p.setCompany_name(subCompany.getAbbreviation());
-                        }
-                        if (hrTeam != null) {
-                            p.getPosition_info().setDepartment(hrTeam.getName());
-                        }
-                        p.setAccount_id(account.getId());
-                        p.setChannel(pos.getChannel());
-                        p.setPassword(account.getPassword());
-                        p.setUser_name(account.getUsername());
-                        p.setPosition_id(pos.getPosition_id());
-                        p.setMember_name(account.getMembername());
-                        PositionsForSynchronizations.add(p);
-                        logger.info("ThirdPartyPositionForSynchronization:{}", JSON.toJSONString(p));
+        for (ThirdPartyPositionForSynchronization pos : positions) {
+            ThirdPartyPositionForSynchronizationWithAccount p = new ThirdPartyPositionForSynchronizationWithAccount();
+            p.setPosition_info(pos);
+            for (HrThirdPartyAccountDO account : thirdPartyAccounts) {
+                if (pos.getAccount_id() == account.getId()) {
+                    if (subCompany != null) {
+                        p.setCompany_name(subCompany.getAbbreviation());
                     }
+                    if (hrTeam != null) {
+                        p.getPosition_info().setDepartment(hrTeam.getName());
+                    }
+                    p.setAccount_id(pos.getAccount_id());
+                    p.setChannel(pos.getChannel());
+                    p.setPassword(account.getPassword());
+                    p.setUser_name(account.getUsername());
+                    p.setPosition_id(pos.getPosition_id());
+                    p.setMember_name(account.getMembername());
+                    PositionsForSynchronizations.add(p);
+                    logger.info("ThirdPartyPositionForSynchronization:{}", JSON.toJSONString(p));
                 }
             }
         }
