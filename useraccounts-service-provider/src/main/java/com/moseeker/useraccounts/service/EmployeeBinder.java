@@ -138,7 +138,7 @@ public abstract class EmployeeBinder {
                     e.setMobile(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getMobile(), e.getMobile()));
                     e.setCustomField(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getCustomField(), e.getCustomField()));
                 } else {
-                    e.setActivation((byte)4);
+                    e.setActivation((byte)1);
                 }
             });
         }
