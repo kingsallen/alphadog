@@ -63,11 +63,7 @@ public class LocalCondition<R extends Record> {
                 List list1 = (List) value;
                 return field.notBetween(convertTo(list1.get(0), field.getType()), convertTo(list1.get(1), field.getType()));
             case LIKE:
-                StringBuffer stringBuffer = new StringBuffer();
-                stringBuffer.append("%");
-                stringBuffer.append(convertTo(value, String.class));
-                stringBuffer.append("%");
-                return field.like(stringBuffer.toString());
+                return field.like(convertTo(value, String.class));
             case NLIKE:
                 return field.notLike(convertTo(value, String.class));
             default:

@@ -388,7 +388,7 @@ struct UserEmployeeVO{
     10: optional string creatTime, // 认证时间
 }
 
-
+// 员工详情
 struct UserEmployeeDetailVO{
     1: optional i32 id, // ID
     2: optional string username, // 姓名
@@ -399,4 +399,8 @@ struct UserEmployeeDetailVO{
     7: optional string activation, // 认证状态
     8: optional string companyName, // 公司名称
     9: optional string headImg, // 头像
+}
+
+struct EmployeeOptionVO{
+
 }

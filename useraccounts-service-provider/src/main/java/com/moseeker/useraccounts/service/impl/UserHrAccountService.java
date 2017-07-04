@@ -3,19 +3,21 @@ package com.moseeker.useraccounts.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
+import com.moseeker.baseorm.dao.hrdb.HrImporterMonitorDao;
 import com.moseeker.baseorm.dao.hrdb.HrSearchConditionDao;
 import com.moseeker.baseorm.dao.hrdb.HrTalentpoolDao;
-import com.moseeker.baseorm.dao.userdb.*;
-import com.moseeker.baseorm.db.candidatedb.tables.CandidateRecomRecord;
+import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
+import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
+import com.moseeker.baseorm.dao.userdb.UserSearchConditionDao;
+import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrSearchConditionRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
-import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.baseorm.redis.RedisClient;
-import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.annotation.notify.UpdateEs;
@@ -28,8 +30,6 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
-import com.moseeker.common.util.query.ConditionJoin;
-import com.moseeker.common.util.query.ConditionOp;
 import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.Select;
@@ -38,27 +38,30 @@ import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.thrift.gen.common.struct.BIZException;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrImporterMonitorDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrTalentpoolDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
-import com.moseeker.thrift.gen.foundation.chaos.struct.ThirdPartyAccountStruct;
-import com.moseeker.thrift.gen.useraccounts.struct.*;
+import com.moseeker.thrift.gen.useraccounts.struct.DownloadReport;
+import com.moseeker.thrift.gen.useraccounts.struct.HrNpsResult;
+import com.moseeker.thrift.gen.useraccounts.struct.HrNpsStatistic;
+import com.moseeker.thrift.gen.useraccounts.struct.HrNpsUpdate;
+import com.moseeker.thrift.gen.useraccounts.struct.SearchCondition;
+import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeDetailVO;
+import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeNumStatistic;
+import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVO;
+import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
 import com.moseeker.useraccounts.constant.ResultMessage;
 import com.moseeker.useraccounts.exception.ExceptionCategory;
 import com.moseeker.useraccounts.exception.ExceptionFactory;
-import com.moseeker.useraccounts.pojo.EmployeeStat;
 import com.moseeker.useraccounts.service.thirdpartyaccount.ThirdPartyAccountSynctor;
 
 import org.apache.thrift.TException;
-import org.joda.time.DateTime;
-import org.jooq.Field;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,13 +69,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static org.jooq.impl.DSL.count;
+import javax.annotation.Resource;
 
 /**
  * HR账号服务
@@ -128,6 +134,8 @@ public class UserHrAccountService {
 
     @Autowired
     private HrCompanyDao hrCompanyDao;
+
+
 
     /**
      * HR在下载行业报告是注册
@@ -776,16 +784,19 @@ public class UserHrAccountService {
         Query.QueryBuilder nicknameCondition = new Query.QueryBuilder();
         nicknameCondition.where(sysuserId).and(nickName);
         List<UserUserDO> userUserDOList = userUserDao.getDatas(nicknameCondition.buildQuery());
-
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append("%");
+        stringBuffer.append(keyWord);
+        stringBuffer.append("%");
         List<Integer> sysIds = userUserDOList.stream().map(userUserDO -> userUserDO.getId()).collect(Collectors.toList());
         // 名字
-        Condition cname = new Condition(UserEmployee.USER_EMPLOYEE.CNAME.getName(), keyWord, ValueOp.LIKE);
+        Condition cname = new Condition(UserEmployee.USER_EMPLOYEE.CNAME.getName(), stringBuffer.toString(), ValueOp.LIKE);
         // 自定义字段
-        Condition customField = new Condition(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.getName(), keyWord, ValueOp.LIKE);
+        Condition customField = new Condition(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.getName(), stringBuffer.toString(), ValueOp.LIKE);
         // 邮箱
-        Condition email = new Condition(UserEmployee.USER_EMPLOYEE.EMAIL.getName(), keyWord, ValueOp.LIKE);
+        Condition email = new Condition(UserEmployee.USER_EMPLOYEE.EMAIL.getName(), stringBuffer.toString(), ValueOp.LIKE);
         // 手机号码
-        Condition mobile = new Condition(UserEmployee.USER_EMPLOYEE.MOBILE.getName(), keyWord, ValueOp.LIKE);
+        Condition mobile = new Condition(UserEmployee.USER_EMPLOYEE.MOBILE.getName(), stringBuffer.toString(), ValueOp.LIKE);
 
         queryBuilder.andInnerCondition(cname).or(customField).or(email).or(mobile);
 
@@ -812,6 +823,7 @@ public class UserHrAccountService {
         userEmployeeNumStatistic.setUnregcount(0);
         userEmployeeNumStatistic.setRegcount(0);
         try {
+
             Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
             queryBuilder.select(new Select(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), SelectOp.COUNT))
                     .select(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName());
@@ -920,6 +932,8 @@ public class UserHrAccountService {
                     // 微信昵称
                     if (!StringUtils.isEmptyObject(userMap) && !StringUtils.isEmptyObject(userMap.get(userEmployeeDO.getSysuserId()))) {
                         userEmployeeVO.setNickName(userMap.get(userEmployeeDO.getSysuserId()).getNickname());
+                    } else {
+                        userEmployeeVO.setNickName("未知");
                     }
                     // 公司名称
                     if (!StringUtils.isEmptyObject(companyMap) && !StringUtils.isEmptyObject(companyMap.get(userEmployeeDO.getCompanyId()))) {
@@ -927,7 +941,7 @@ public class UserHrAccountService {
                     }
                     userEmployeeVO.setActivation(userEmployeeDO.getActivation() == 0 ? "已认证" : "未认证");
                     userEmployeeVO.setAward(userEmployeeDO.getAward());
-                    userEmployeeVO.setCreatTime(userEmployeeDO.getCreateTime());
+                    userEmployeeVO.setCreatTime(userEmployeeDO.getBindingTime());
                     userEmployeeVOS.add(userEmployeeVO);
                 }
             }
@@ -981,6 +995,8 @@ public class UserHrAccountService {
                     userEmployeeVO.setEmail(userEmployeeDO.getEmail());
                     if (!StringUtils.isEmptyObject(userMap) && !StringUtils.isEmptyObject(userMap.get(userEmployeeDO.getSysuserId()))) {
                         userEmployeeVO.setNickName(userMap.get(userEmployeeDO.getSysuserId()).getNickname());
+                    } else {
+                        userEmployeeVO.setNickName("未知");
                     }
                     // 公司名称
                     if (!StringUtils.isEmptyObject(companyMap) && !StringUtils.isEmptyObject(companyMap.get(userEmployeeDO.getCompanyId()))) {
@@ -1151,4 +1167,43 @@ public class UserHrAccountService {
         }
         return userEmployeeDetailVO;
     }
+
+    /**
+     * 编辑公司员工信息
+     *
+     * @param cname       姓名
+     * @param mobile      手机号
+     * @param email       邮箱
+     * @param customField 自定义字段
+     * @param id          user_employee.id
+     * @return
+     * @throws BIZException
+     */
+    public Response updateUserEmployee(String cname, String mobile, String email, String customField, Integer id) throws BIZException {
+        Response response = new Response();
+        try {
+            if (StringUtils.isEmptyObject(id)) {
+                throw ExceptionFactory.buildException(ExceptionCategory.USEREMPLOYEES_DATE_EMPTY);
+            }
+            UserEmployeeDO userEmployeeDO = new UserEmployeeDO();
+            userEmployeeDO.setCname(cname);
+            userEmployeeDO.setMobile(mobile);
+            userEmployeeDO.setCustomField(customField);
+            userEmployeeDO.setEmail(email);
+            userEmployeeDO.setId(id);
+            int i = userEmployeeDao.updateData(userEmployeeDO);
+            if (i > 0) {
+                response = ResultMessage.SUCCESS.toResponse();
+            } else {
+                response = ResultMessage.PROGRAM_EXCEPTION.toResponse();
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw ExceptionFactory.buildException(ExceptionCategory.PROGRAM_EXCEPTION);
+        }
+        return response;
+    }
+
+
+
 }
