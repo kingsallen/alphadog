@@ -17,5 +17,5 @@ service CompanyServices {
 }
 
 service HrTeamServices {
-    list<hrdb_struct.HrTeamDO> getHrTeams(1:map<string,string> query);
+    list<hrdb_struct.HrTeamDO> getHrTeams(1:common_struct.CommonQuery query);
 }

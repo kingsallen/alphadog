@@ -9,10 +9,12 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.SelectOp;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrTeamDO;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
@@ -30,7 +32,6 @@ public class HrTeamDao extends JooqCrudImpl<HrTeamDO, HrTeamRecord> {
     public HrTeamDao(TableImpl<HrTeamRecord> table, Class<HrTeamDO> hrTeamDOClass) {
         super(table, hrTeamDOClass);
     }
-
     public List<HrTeamDO> getHrTeams(Map<String, String> query) throws Exception {
         QueryUtil queryUtil = new QueryUtil();
         if (query == null) {
@@ -65,7 +66,4 @@ public class HrTeamDao extends JooqCrudImpl<HrTeamDO, HrTeamRecord> {
         return hrTeamDOList;
 
     }
-    
-
-	
 }
