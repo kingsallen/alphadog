@@ -13,6 +13,7 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.config.AppConfig;
+import com.moseeker.useraccounts.service.impl.UserEmployeeServiceImpl;
 import org.apache.thrift.TException;
 import org.joda.time.LocalDateTime;
 import org.junit.Before;
@@ -150,6 +151,9 @@ public class UserHrAccountServiceImplTest {
     @Autowired
     UserEmployeeDao userEmployeeDao;
 
+    @Autowired
+    UserEmployeeServiceImpl userEmployeeService;
+
     @Test
     public void testUserEmployeeBatch() throws Exception {
 
@@ -157,21 +161,34 @@ public class UserHrAccountServiceImplTest {
 
         //51350 1
 
-        Query query = new Query.QueryBuilder().where("company_id", 51350).setPageSize(Integer.MAX_VALUE).buildQuery();
+        Query query = new Query.QueryBuilder().where("company_id", 51350).setPageSize(1000).buildQuery();
         List<UserEmployeeStruct> employeeStructs = userEmployeeDao.getDatas(query, UserEmployeeStruct.class);
 
-        for(UserEmployeeStruct userEmployeeStruct : employeeStructs){
+        String groupName = "test:"+System.currentTimeMillis();
+
+        System.out.println("groupName:"+groupName);
+
+        for (UserEmployeeStruct userEmployeeStruct : employeeStructs) {
             userEmployeeStruct.setCompany_id(1);
             userEmployeeStruct.setId(0);
             userEmployeeStruct.unsetId();
+            userEmployeeStruct.setGroupname(groupName);
         }
 
         System.out.println(DateUtils.dateToLongTime(new Date()));
 
-        int[] array = userEmployeeDao.postPutUserEmployeeBatch(employeeStructs, 1, false);
+        UserEmployeeBatchForm batchForm = new UserEmployeeBatchForm();
+        batchForm.setAs_task(true);
+        batchForm.setCompany_id(1);
+        batchForm.setData(employeeStructs);
+        batchForm.setDel_not_include(true);
+
+        int[] result = userEmployeeDao.postPutUserEmployeeBatch(batchForm);
 
         System.out.println(DateUtils.dateToLongTime(new Date()));
 
-        System.out.println(array.length+":"+Arrays.toString(array));
+//        Thread.sleep(1000*600);
+
+        System.out.println(result);
     }
 }
