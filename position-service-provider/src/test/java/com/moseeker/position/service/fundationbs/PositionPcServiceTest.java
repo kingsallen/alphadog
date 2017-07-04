@@ -2,6 +2,8 @@ package com.moseeker.position.service.fundationbs;
 
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignPcRecommendPositionDO;
+
+import org.apache.thrift.TException;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -24,7 +26,7 @@ public class PositionPcServiceTest {
     private PositionPcService service;
     //测试总接口
     @Test
-    public void recommendPcPosition(){
+    public void recommendPcPosition() throws TException{
         int page=1;
         int pageSize=10;
         Response res=service.getRecommendPositionPC(page,pageSize);

@@ -7,6 +7,10 @@ import java.util.Map;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.query.SelectOp;
+
+import org.apache.thrift.TException;
+import org.apache.thrift.TSerializer;
+import org.apache.thrift.protocol.TSimpleJSONProtocol;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -74,7 +78,7 @@ public class PositionPcService {
 	 * 获取pc首页职位推荐
 	 */
 	@CounterIface
-	public Response getRecommendPositionPC(int page,int pageSize){
+	public Response getRecommendPositionPC(int page,int pageSize) throws TException{
 		List<CampaignPcRecommendPositionDO>  list=campaignPcRecommendPositionDao.getPcRemmendPositionIdList(page,pageSize);
 		if(list==null||list.size()==0){
 			return ResponseUtils.success("");
@@ -357,7 +361,7 @@ public class PositionPcService {
 	 处理position和company的数据
 	  */
 	 public List<Map<String,Object>> handleCompanyAndPositionData(List<JobPositionDO> positionList, List<HrCompanyDO> companyList,List<HrTeamDO> teamList
-			 ,List<Map<String,Integer>> publisherAndCompanyId,Map<String,List<String>> posittionCitys){
+			 ,List<Map<String,Integer>> publisherAndCompanyId,Map<String,List<String>> posittionCitys) throws TException{
 		 List<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
 		 if(positionList==null||positionList.size()==0){
 			 return null;
@@ -379,8 +383,8 @@ public class PositionPcService {
 							 Integer oripublisher=maps.get("publisher");
 							 Integer oriCompanyid=maps.get("companyId");
 							 if(oripublisher!=null&&oripublisher==publisher&&oriCompanyid!=null&&oriCompanyid==companyId){
-								 map.put("position",positionDo);
-								 map.put("company",companyDO);
+								 map.put("position", new TSerializer(new TSimpleJSONProtocol.Factory()).toString(positionDo));
+								 map.put("company",new TSerializer(new TSimpleJSONProtocol.Factory()).toString(companyDO));
 								 break;
 							 }
 						 }
@@ -398,7 +402,7 @@ public class PositionPcService {
 				 for(HrTeamDO teamDo:teamList){
 				 	int id=teamDo.getId();
 					 if(teamId==id){
-						 map.put("team",teamDo);
+						 map.put("team",new TSerializer(new TSimpleJSONProtocol.Factory()).toString(teamDo));
 						 break;
 					 }
 				 }
@@ -504,7 +508,7 @@ public class PositionPcService {
 	/*
 	 总体上处理数据
 	  */
-	 public List<Map<String,Object>> handleDataJDAndPosition(List<Integer> positionIds,int type){
+	 public List<Map<String,Object>> handleDataJDAndPosition(List<Integer> positionIds,int type) throws TException{
 		 if(StringUtils.isEmptyList(positionIds)){
 			 return  null;
 		 }
