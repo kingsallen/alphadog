@@ -452,4 +452,99 @@ public class UserHrAccountController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
+    // ------------------------------------- 以下接口为hr_354新增---------------------------------------
+
+    //  获取公司积分配置信息
+    @RequestMapping(value = "/hraccount/company/rewardconfig", method = RequestMethod.GET)
+    @ResponseBody
+    public String getCompanyRewardConf(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object>  params = ParamUtils.parseRequestParam(request);
+            int companyId =  params.getInt("companyId", 0);
+            if (companyId == 0) {
+                return ResponseLogNotification.fail(request, "companyId不能为空");
+            } else {
+                // TODO 完善
+            }
+            return null;
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    // 员工取消认证 (支持批量操作)
+    @RequestMapping(value = "/hraccount/employee/unbind", method = RequestMethod.PUT)
+    @ResponseBody
+    public String unbindEmployee(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object>  params = ParamUtils.parseRequestParam(request);
+            List<Integer> ids =  (List)params.get("ids");
+            if (ids == null || ids.isEmpty()) {
+                return ResponseLogNotification.fail(request, "Ids不能为空");
+            } else {
+                // TODO 完善
+            }
+            return null;
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    // 删除员工 (支持批量操作)
+    @RequestMapping(value = "/hraccount/employee", method = RequestMethod.DELETE)
+    @ResponseBody
+    public String removeEmployee(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object>  params = ParamUtils.parseRequestParam(request);
+            List<Integer> ids =  (List)params.get("ids");
+            if (ids == null || ids.isEmpty()) {
+                return ResponseLogNotification.fail(request, "Ids不能为空");
+            } else {
+                // TODO 完善
+            }
+            return null;
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+
+    // 获取员工积分列表
+    @RequestMapping(value = "/hraccount/employee/rewards", method = RequestMethod.GET)
+    @ResponseBody
+    public String getEmployeeRawards(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object>  params = ParamUtils.parseRequestParam(request);
+            int employeeId =  params.getInt("employeeId");
+            if (employeeId == 0) {
+                return ResponseLogNotification.fail(request, "员工Id不能为空");
+            } else {
+                // TODO 完善
+            }
+            return null;
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    // 添加员工积分
+    @RequestMapping(value = "/hraccount/employee/reward/add", method = RequestMethod.PUT)
+    @ResponseBody
+    public String addEmployeeReward(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object>  params = ParamUtils.parseRequestParam(request);
+            int employeeId =  params.getInt("employeeId");
+            int points = params.getInt("points");
+            if (employeeId == 0) {
+                return ResponseLogNotification.fail(request, "员工Id不能为空");
+            } else {
+                // TODO 完善
+            }
+            return null;
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
 }

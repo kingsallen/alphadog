@@ -31,6 +31,7 @@ import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.company.constant.ResultMessage;
 import com.moseeker.company.exception.ExceptionCategory;
 import com.moseeker.company.exception.ExceptionFactory;
+import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -83,6 +84,8 @@ public class CompanyService {
     @Autowired
     UserEmployeeDao userEmployeeDao;
 
+    @Autowired
+    EmployeeEntity employeeEntity;
 
     @Autowired
     private HrImporterMonitorDao hrImporterMonitorDao;
@@ -521,10 +524,43 @@ public class CompanyService {
      * @param emailSuffix 如果邮箱是验证字段，则不能为空
      * @return 操作信息
      */
-    public Response updateHrEmployeeCertConf(Integer id, Integer companyId, String authMode, String emailSuffix, String custom, String customField, String questions) throws BIZException {
+    public Response updateHrEmployeeCertConf(Integer id, Integer companyId, Integer authMode, String emailSuffix, String custom, String customHint, String questions) throws BIZException {
         Response response = new Response();
         try {
-
+            Query.QueryBuilder query = new Query.QueryBuilder();
+            query.where("id", id).and("company_id", companyId);
+            HrEmployeeCertConfDO hrEmployeeCertConfDO = hrEmployeeCertConfDao.getData(query.buildQuery());
+            if (hrEmployeeCertConfDO != null && hrEmployeeCertConfDO.getId() > 0) {
+                Integer oldAuthMode = ((int) hrEmployeeCertConfDO.getAuthMode());
+                if ((oldAuthMode == 2 || oldAuthMode == 4) && (authMode != 2 && authMode != 4)) {
+                    query.clear();
+                    query.select("id");
+                    query.where("company_id", companyId).and(new Condition("activation", 0, ValueOp.NEQ)).and(new Condition("custom_field", "", ValueOp.EQ));
+                    List<Integer> employeeIds = userEmployeeDao.getDatas(query.buildQuery(), Integer.class);
+                    employeeEntity.removeEmployee(employeeIds);
+                }
+                hrEmployeeCertConfDO.setAuthMode(authMode);
+                if(StringUtils.isNotNullOrEmpty(emailSuffix)) {
+                    hrEmployeeCertConfDO.setEmailSuffix(emailSuffix);
+                }
+                if(StringUtils.isNotNullOrEmpty(questions)) {
+                    hrEmployeeCertConfDO.setQuestions(questions);
+                }
+                if(StringUtils.isNotNullOrEmpty(custom)) {
+                    hrEmployeeCertConfDO.setCustom(custom);
+                }
+                if(StringUtils.isNotNullOrEmpty(customHint)) {
+                    hrEmployeeCertConfDO.setCustomHint(customHint);
+                }
+                int resultRow = hrEmployeeCertConfDao.updateData(hrEmployeeCertConfDO);
+                if (resultRow > 0){
+                    response.setStatus(0);
+                    response.setMessage("success");
+                } else {
+                    response.setStatus(99999);
+                    response.setMessage("发生异常，请稍候再试!");
+                }
+            }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw ExceptionFactory.buildException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS);
