@@ -1031,6 +1031,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                 .and(JobPosition.SOURCE_ID.eq(profileApplicationForm.getSource_id()))
                 .and(JobApplication.ATS_STATUS.eq(profileApplicationForm.getAts_status()))
                 .and(buildProfileCondition(profileApplicationForm.getConditions()))
+                .orderBy(JobApplication.JOB_APPLICATION._CREATE_TIME.desc())
                 .limit(pageSize)
                 .offset((page - 1) * pageSize)
                 .fetch()
