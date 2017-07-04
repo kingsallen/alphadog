@@ -191,6 +191,9 @@ public class CompanyService{
 	public Response getPcBannerByPage(int page,int pageSize) throws Exception{
 		Query query=new Query.QueryBuilder().setPageNum(page).setPageSize(pageSize).buildQuery();
 		List<CampaignPcBannerDO> list=campaignPcBannerDao.getDatas(query);
+		if(StringUtils.isEmptyList(list)){
+			ResponseUtils.success("");
+		}
 		return ResponseUtils.success(list);
 	}
 }
