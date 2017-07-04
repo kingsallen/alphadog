@@ -2,16 +2,20 @@ package com.moseeker.company.service.impl;
 
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
+import com.moseeker.baseorm.dao.hrdb.HrEmployeeCertConfDao;
 import com.moseeker.baseorm.dao.hrdb.HrEmployeePositionDao;
 import com.moseeker.baseorm.dao.hrdb.HrEmployeeSectionDao;
 import com.moseeker.baseorm.dao.hrdb.HrGroupCompanyRelDao;
 import com.moseeker.baseorm.dao.hrdb.HrImporterMonitorDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
+import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
+import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCertConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeePosition;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeSection;
 import com.moseeker.baseorm.db.hrdb.tables.HrImporterMonitor;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
+import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
@@ -35,11 +39,13 @@ import com.moseeker.thrift.gen.company.struct.CompanyOptions;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeePositionDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeSectionDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrGroupCompanyRelDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrImporterMonitorDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -47,6 +53,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -69,6 +76,12 @@ public class CompanyService {
 
     @Autowired
     HrEmployeePositionDao hrEmployeePositionDao;
+
+    @Autowired
+    HrEmployeeCertConfDao hrEmployeeCertConfDao;
+
+    @Autowired
+    UserEmployeeDao userEmployeeDao;
 
 
     @Autowired
@@ -423,5 +436,99 @@ public class CompanyService {
             throw ExceptionFactory.buildException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS);
         }
         return hrImporterMonitorDO;
+    }
+
+    /**
+     * 员工认证开关
+     *
+     * @param companyId 部门编号
+     * @param disable   是否开启 0开启 1关闭
+     * @return
+     */
+    public Response bindingSwitch(Integer companyId, Integer disable) throws BIZException {
+        Response response = new Response();
+        try {
+            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+            queryBuilder.where(HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF.COMPANY_ID.getName(), companyId);
+            HrEmployeeCertConfDO hrEmployeeCertConfDO = hrEmployeeCertConfDao.getData(queryBuilder.buildQuery());
+            //判断是否存在改员工认证配置信息
+            if (!StringUtils.isEmptyObject(hrEmployeeCertConfDO)) {
+                hrEmployeeCertConfDO.setDisable(disable);
+                hrEmployeeCertConfDao.updateData(hrEmployeeCertConfDO);
+            } else {
+                hrEmployeeCertConfDO = new HrEmployeeCertConfDO();
+                hrEmployeeCertConfDO.setCompanyId(companyId);
+                hrEmployeeCertConfDO.setEmailSuffix("");
+                hrEmployeeCertConfDao.addData(hrEmployeeCertConfDO);
+            }
+            queryBuilder.clear();
+            List<Integer> activations = new ArrayList<>();
+            activations.add(3);
+            activations.add(4);
+            queryBuilder.where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyId)
+                    .and(new Condition(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), activations, ValueOp.IN));
+            //如果公司下存在未认证的员工，需要置为删除状态
+            List<UserEmployeeDO> list = userEmployeeDao.getDatas(queryBuilder.buildQuery());
+            if (!StringUtils.isEmptyObject(list)) {
+                list.forEach(userEmployeeDO -> {
+                    userEmployeeDO.setDisable(1);
+                });
+                userEmployeeDao.updateDatas(list);
+            }
+            response = ResultMessage.SUCCESS.toResponse();
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw ExceptionFactory.buildException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS);
+        }
+        return response;
+    }
+
+    /**
+     * 获取员工绑定配置信息
+     *
+     * @param companyId 公司ID
+     * @return
+     * @throws BIZException
+     */
+    public HrEmployeeCertConfDO getHrEmployeeCertConf(Integer companyId) throws BIZException {
+        HrEmployeeCertConfDO hrEmployeeCertConfDO = new HrEmployeeCertConfDO();
+        try {
+            if (companyId > 0) {
+                Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+                queryBuilder.where(HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF.COMPANY_ID.getName(), companyId);
+                hrEmployeeCertConfDO = hrEmployeeCertConfDao.getData(queryBuilder.buildQuery());
+                if (hrEmployeeCertConfDO.getId() == 0) {
+                    ExceptionFactory.buildException(ExceptionCategory.COMPANY_PROPERTIY_ELLEGAL);
+                }
+            } else {
+                throw ExceptionFactory.buildException(ExceptionCategory.COMPANY_PROPERTIY_ELLEGAL);
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw ExceptionFactory.buildException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS);
+        }
+        return hrEmployeeCertConfDO;
+    }
+
+    /**
+     * 修改员工绑定配置
+     *
+     * @param id          绑定配置信息编号
+     * @param companyId   公司编号
+     * @param authMode    绑定方式
+     * @param custom      自定义字段内容
+     * @param customField 自定义字段
+     * @param emailSuffix 如果邮箱是验证字段，则不能为空
+     * @return 操作信息
+     */
+    public Response updateHrEmployeeCertConf(Integer id, Integer companyId, String authMode, String emailSuffix, String custom, String customField, String questions) throws BIZException {
+        Response response = new Response();
+        try {
+
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw ExceptionFactory.buildException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS);
+        }
+        return response;
     }
 }
