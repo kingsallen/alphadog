@@ -102,9 +102,8 @@ public class CandidateEntity implements Candidate {
                     logger.error(e.getMessage(), e);
                 }
 
-                /* 1. 如果浏览者是员工，则不生成候选人数据;2. 以后需要加上没有把该公司下的所有职位都投递以便才算候选人；3. 以后需要加上不是这家公司的hr */
-                UserEmployeeDO userEmployeeDO = candidateDBDao.getEmployee(userID, jobPositionDO.getCompanyId());
-                if (userEmployeeDO != null && userEmployeeDO.getId() > 0) {
+                /* 1. 如果浏览者是员工，则不生成候选人数据;2. 以后需要加上没有把该公司下的所有职位都投递以便才算候选人；*/
+                if (employeeEntity.isEmployee(userID, jobPositionDO.getCompanyId())) {
                     return;
                 }
 
@@ -112,9 +111,7 @@ public class CandidateEntity implements Candidate {
                     logger.info("CandidateEntity glancePosition userUserDO:{}, jobPositionDO:{}", userUserDO, jobPositionDO);
                     boolean fromEmployee = false;       //是否是员工转发
                     if (shareChainDO != null) {
-                        UserEmployeeDO employeeDO = candidateDBDao.getEmployee(shareChainDO.getRootRecomUserId(), jobPositionDO.getCompanyId());
-                        logger.info("CandidateEntity glancePosition employeeDO:{}", employeeDO);
-                        if (employeeDO != null && employeeDO.getId() > 0) {
+                        if (employeeEntity.isEmployee(shareChainDO.getRootRecomUserId(), jobPositionDO.getCompanyId())) {
                             fromEmployee = true;
                             logger.info("CandidateEntity glancePosition 是员工转发");
                         }
