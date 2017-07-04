@@ -45,6 +45,7 @@ public class CompanySearchengine {
                              .addSort("_score", SortOrder.DESC)
                              .setFrom(page)
                              .setSize(pageSize).execute().actionGet();
+                 logger.info(response.toString()+"========================================================");
                  SearchHits hit=response.getHits();
                  return hit;
         	 }
