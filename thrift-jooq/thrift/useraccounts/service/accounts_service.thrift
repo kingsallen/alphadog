@@ -152,5 +152,5 @@ service UserEmployeeService {
 
     common_struct.Response delUserEmployee(1: common_struct.CommonQuery query);
 
-    common_struct.Response postPutUserEmployeeBatch(1:list<useraccounts_struct.UserEmployeeStruct> userEmployees);
+    common_struct.Response postPutUserEmployeeBatch(1:useraccounts_struct.UserEmployeeBatchForm batchForm);
 }

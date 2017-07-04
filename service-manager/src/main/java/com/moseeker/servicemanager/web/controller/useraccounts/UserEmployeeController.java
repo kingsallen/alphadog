@@ -2,16 +2,14 @@ package com.moseeker.servicemanager.web.controller.useraccounts;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
-import com.moseeker.servicemanager.web.controller.useraccounts.form.UserEmployeeBatch;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.useraccounts.service.UserEmployeeService;
-import java.util.HashMap;
+import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.AbstractMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -76,7 +75,9 @@ public class UserEmployeeController {
     public String getUserEmployee(HttpServletRequest request, HttpServletResponse response, @PathVariable int id) {
         try {
             CommonQuery query = new CommonQuery();
-            query.setEqualFilter(new HashMap<String, String>(){{put("id", String.valueOf(id));}});
+            query.setEqualFilter(new HashMap<String, String>() {{
+                put("id", String.valueOf(id));
+            }});
             Response result = service.getUserEmployee(query);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
@@ -87,18 +88,19 @@ public class UserEmployeeController {
     @RequestMapping(value = "/user/employee/batchhandler", method = RequestMethod.POST)
     @ResponseBody
     public String addOrUpdateUserEmployees(HttpServletRequest request, HttpServletResponse response) {
-        UserEmployeeBatch batch = null;
+        UserEmployeeBatchForm batchForm = null;
         try {
             Map<String, Object> params = ParamUtils.parseRequestParam(request);
-            batch = JSON.parseObject(JSON.toJSONString(params), UserEmployeeBatch.class);
-            if (batch == null || batch.getData() == null || batch.getData().size() == 0) {
+            batchForm = JSON.parseObject(JSON.toJSONString(params), UserEmployeeBatchForm.class);
+            if (batchForm == null || batchForm.getData() == null || batchForm.getData().size() == 0) {
                 return ResponseLogNotification.fail(request, "没有参数");
             }
-        } catch (Exception e) {
-            return ResponseLogNotification.fail(request, "参数错误");
-        }
-        try {
-            Response result = service.postPutUserEmployeeBatch(batch.getData());
+
+            if (batchForm.isDel_not_include() && batchForm.getCompany_id() == 0) {
+                return ResponseLogNotification.fail(request, "使用del_not_include参数必须指定company_id");
+            }
+
+            Response result = service.postPutUserEmployeeBatch(batchForm);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
