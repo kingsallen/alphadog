@@ -3,6 +3,7 @@ package com.moseeker.useraccounts.service.impl;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.employee.struct.Employee;
+import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVO;
 import com.moseeker.useraccounts.config.AppConfig;
 
 import org.junit.Test;
@@ -36,8 +37,7 @@ public class UserHrAccountServiceTest {
     @Test
     public void getListNum() {
         try {
-            Response response = userHrAccountService.getListNum("张婕", 3);
-            System.out.println(response);
+            System.out.println(userHrAccountService.getListNum("张", 3));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -82,4 +82,20 @@ public class UserHrAccountServiceTest {
             e.printStackTrace();
         }
     }
+
+
+    /**
+     * 员工数据导入
+     */
+    @Test
+    public void employeeList() {
+        try {
+            List<UserEmployeeVO> list = userHrAccountService.employeeList("", 3, 1, "create_time", 1, 0, 0);
+
+            System.out.println(list);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }
