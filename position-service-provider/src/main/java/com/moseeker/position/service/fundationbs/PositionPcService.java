@@ -390,11 +390,12 @@ public class PositionPcService {
 						 }
 					 }
 				 }
-				 if(!posittionCitys.isEmpty()){
+				 if(!posittionCitys.isEmpty()&&!map.isEmpty()){
 					 if(posittionCitys.get(positionId+"")!=null){
 						 map.put("cityList", posittionCitys.get(positionId+""));
 					 }
 				 }
+				 
 			 }
 			
 			 // 本出如此做是为了过滤掉已经删除的子公司的信息
