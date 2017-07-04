@@ -278,7 +278,7 @@ public class ProfileController {
     }
 
     /**
-     * 批量修改职位
+     * 批量获取简历
      */
     @RequestMapping(value = "/profiles/application", method = RequestMethod.POST)
     @ResponseBody

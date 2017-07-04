@@ -1,4 +1,6 @@
-package com.moseeker.thrift.gen.common.struct;
+package com.moseeker.common.exception;
+
+import com.moseeker.thrift.gen.common.struct.BIZException;
 
 import java.util.HashMap;
 
@@ -58,5 +60,12 @@ public abstract class ExceptionFactory {
     public boolean updateException(int code, String msg) {
         BIZException bizException = new BIZException(code, msg);
         return updateException(bizException);
+    }
+
+    public static BIZException buildException(Category category) throws ParamIllegalException {
+        if(category != null) {
+            throw new ParamIllegalException("异常类型不存在");
+        }
+        return buildException(category.getCode(), category.getMsg());
     }
 }

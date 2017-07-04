@@ -3,7 +3,7 @@ package com.moseeker.candidate.service.exception;
 import com.moseeker.common.exception.Category;
 import com.moseeker.common.exception.ParamIllegalException;
 import com.moseeker.thrift.gen.common.struct.BIZException;
-import com.moseeker.thrift.gen.common.struct.ExceptionFactory;
+import com.moseeker.common.exception.ExceptionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,13 +33,6 @@ public class CandidateExceptionFactory extends ExceptionFactory {
             throw new ParamIllegalException("异常类型不存在");
         }
         return buildException(candidateCategory.getCode(), candidateCategory.getMsg());
-    }
-
-    public static BIZException buildException(Category category) throws ParamIllegalException {
-        if(category != null) {
-            throw new ParamIllegalException("异常类型不存在");
-        }
-        return buildException(category.getCode(), category.getMsg());
     }
 
     /**

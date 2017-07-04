@@ -6,8 +6,9 @@ package com.moseeker.company.exception;
 public enum ExceptionCategory {
 
     COMPANY_NOT_BELONG_GROUPCOMPANY(32010, "并非是集团公司！"),
-    PROGRAM_DATA_EMPTY(90010, "公司信息不存在！"),
-    PROGRAM_EXCEPTION(99999, "发生异常，请稍候再试！");
+    COMPANY_NAME_REPEAT(33001, "不允许和拥有超级帐号的公司的公司名称重名！"),
+    COMPANY_SCALE_ELLEGAL(33002, "公司规模不合法！"),
+    COMPANY_PROPERTIY_ELLEGAL(33003, "公司属性不合法!'");
 
     private ExceptionCategory(int code, String msg) {
         this.code = code;
