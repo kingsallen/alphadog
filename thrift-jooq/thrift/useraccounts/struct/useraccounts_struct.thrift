@@ -383,9 +383,9 @@ struct UserEmployeeVO{
     5: optional string customField, // 自定义
     6: optional string nickName, // 微信账号
     7: optional i32 award, // 积分
-    8: optional string activation, // 认证状态
+    8: optional i32 activation, // 认证状态
     9: optional string companyName, // 公司名称
-    10: optional string creatTime, // 认证时间
+    10: optional string bindingTime, // 认证时间
 }
 
 // 员工详情
@@ -396,7 +396,7 @@ struct UserEmployeeDetailVO{
     4: optional string email, // 邮箱
     5: optional string customField, // 自定义
     6: optional string nickName, // 微信账号
-    7: optional string activation, // 认证状态
+    7: optional i32 activation, // 认证状态
     8: optional string companyName, // 公司名称
     9: optional string headImg, // 头像
 }

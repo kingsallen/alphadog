@@ -17,7 +17,7 @@ public class UserEmployeeDetailVO implements org.apache.thrift.TBase<UserEmploye
   private static final org.apache.thrift.protocol.TField EMAIL_FIELD_DESC = new org.apache.thrift.protocol.TField("email", org.apache.thrift.protocol.TType.STRING, (short)4);
   private static final org.apache.thrift.protocol.TField CUSTOM_FIELD_FIELD_DESC = new org.apache.thrift.protocol.TField("customField", org.apache.thrift.protocol.TType.STRING, (short)5);
   private static final org.apache.thrift.protocol.TField NICK_NAME_FIELD_DESC = new org.apache.thrift.protocol.TField("nickName", org.apache.thrift.protocol.TType.STRING, (short)6);
-  private static final org.apache.thrift.protocol.TField ACTIVATION_FIELD_DESC = new org.apache.thrift.protocol.TField("activation", org.apache.thrift.protocol.TType.STRING, (short)7);
+  private static final org.apache.thrift.protocol.TField ACTIVATION_FIELD_DESC = new org.apache.thrift.protocol.TField("activation", org.apache.thrift.protocol.TType.I32, (short)7);
   private static final org.apache.thrift.protocol.TField COMPANY_NAME_FIELD_DESC = new org.apache.thrift.protocol.TField("companyName", org.apache.thrift.protocol.TType.STRING, (short)8);
   private static final org.apache.thrift.protocol.TField HEAD_IMG_FIELD_DESC = new org.apache.thrift.protocol.TField("headImg", org.apache.thrift.protocol.TType.STRING, (short)9);
 
@@ -30,7 +30,7 @@ public class UserEmployeeDetailVO implements org.apache.thrift.TBase<UserEmploye
   public String email; // optional
   public String customField; // optional
   public String nickName; // optional
-  public String activation; // optional
+  public int activation; // optional
   public String companyName; // optional
   public String headImg; // optional
 
@@ -118,6 +118,7 @@ public class UserEmployeeDetailVO implements org.apache.thrift.TBase<UserEmploye
 
   // isset id assignments
   private static final int __ID_ISSET_ID = 0;
+  private static final int __ACTIVATION_ISSET_ID = 1;
   private byte __isset_bitfield = 0;
   private static final _Fields optionals[] = {_Fields.ID,_Fields.USERNAME,_Fields.MOBILE,_Fields.EMAIL,_Fields.CUSTOM_FIELD,_Fields.NICK_NAME,_Fields.ACTIVATION,_Fields.COMPANY_NAME,_Fields.HEAD_IMG};
   public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
@@ -136,7 +137,7 @@ public class UserEmployeeDetailVO implements org.apache.thrift.TBase<UserEmploye
     tmpMap.put(_Fields.NICK_NAME, new org.apache.thrift.meta_data.FieldMetaData("nickName", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.ACTIVATION, new org.apache.thrift.meta_data.FieldMetaData("activation", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.COMPANY_NAME, new org.apache.thrift.meta_data.FieldMetaData("companyName", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.HEAD_IMG, new org.apache.thrift.meta_data.FieldMetaData("headImg", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
@@ -169,9 +170,7 @@ public class UserEmployeeDetailVO implements org.apache.thrift.TBase<UserEmploye
     if (other.isSetNickName()) {
       this.nickName = other.nickName;
     }
-    if (other.isSetActivation()) {
-      this.activation = other.activation;
-    }
+    this.activation = other.activation;
     if (other.isSetCompanyName()) {
       this.companyName = other.companyName;
     }
@@ -193,7 +192,8 @@ public class UserEmployeeDetailVO implements org.apache.thrift.TBase<UserEmploye
     this.email = null;
     this.customField = null;
     this.nickName = null;
-    this.activation = null;
+    setActivationIsSet(false);
+    this.activation = 0;
     this.companyName = null;
     this.headImg = null;
   }
@@ -341,28 +341,27 @@ public class UserEmployeeDetailVO implements org.apache.thrift.TBase<UserEmploye
     }
   }
 
-  public String getActivation() {
+  public int getActivation() {
     return this.activation;
   }
 
-  public UserEmployeeDetailVO setActivation(String activation) {
+  public UserEmployeeDetailVO setActivation(int activation) {
     this.activation = activation;
+    setActivationIsSet(true);
     return this;
   }
 
   public void unsetActivation() {
-    this.activation = null;
+    __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __ACTIVATION_ISSET_ID);
   }
 
   /** Returns true if field activation is set (has been assigned a value) and false otherwise */
   public boolean isSetActivation() {
-    return this.activation != null;
+    return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __ACTIVATION_ISSET_ID);
   }
 
   public void setActivationIsSet(boolean value) {
-    if (!value) {
-      this.activation = null;
-    }
+    __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __ACTIVATION_ISSET_ID, value);
   }
 
   public String getCompanyName() {
@@ -467,7 +466,7 @@ public class UserEmployeeDetailVO implements org.apache.thrift.TBase<UserEmploye
       if (value == null) {
         unsetActivation();
       } else {
-        setActivation((String)value);
+        setActivation((Integer)value);
       }
       break;
 
@@ -626,7 +625,7 @@ public class UserEmployeeDetailVO implements org.apache.thrift.TBase<UserEmploye
     if (this_present_activation || that_present_activation) {
       if (!(this_present_activation && that_present_activation))
         return false;
-      if (!this.activation.equals(that.activation))
+      if (this.activation != that.activation)
         return false;
     }
 
@@ -681,7 +680,7 @@ public class UserEmployeeDetailVO implements org.apache.thrift.TBase<UserEmploye
 
     hashCode = hashCode * 8191 + ((isSetActivation()) ? 131071 : 524287);
     if (isSetActivation())
-      hashCode = hashCode * 8191 + activation.hashCode();
+      hashCode = hashCode * 8191 + activation;
 
     hashCode = hashCode * 8191 + ((isSetCompanyName()) ? 131071 : 524287);
     if (isSetCompanyName())
@@ -870,11 +869,7 @@ public class UserEmployeeDetailVO implements org.apache.thrift.TBase<UserEmploye
     if (isSetActivation()) {
       if (!first) sb.append(", ");
       sb.append("activation:");
-      if (this.activation == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.activation);
-      }
+      sb.append(this.activation);
       first = false;
     }
     if (isSetCompanyName()) {
@@ -991,8 +986,8 @@ public class UserEmployeeDetailVO implements org.apache.thrift.TBase<UserEmploye
             }
             break;
           case 7: // ACTIVATION
-            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-              struct.activation = iprot.readString();
+            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+              struct.activation = iprot.readI32();
               struct.setActivationIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
@@ -1069,12 +1064,10 @@ public class UserEmployeeDetailVO implements org.apache.thrift.TBase<UserEmploye
           oprot.writeFieldEnd();
         }
       }
-      if (struct.activation != null) {
-        if (struct.isSetActivation()) {
-          oprot.writeFieldBegin(ACTIVATION_FIELD_DESC);
-          oprot.writeString(struct.activation);
-          oprot.writeFieldEnd();
-        }
+      if (struct.isSetActivation()) {
+        oprot.writeFieldBegin(ACTIVATION_FIELD_DESC);
+        oprot.writeI32(struct.activation);
+        oprot.writeFieldEnd();
       }
       if (struct.companyName != null) {
         if (struct.isSetCompanyName()) {
@@ -1155,7 +1148,7 @@ public class UserEmployeeDetailVO implements org.apache.thrift.TBase<UserEmploye
         oprot.writeString(struct.nickName);
       }
       if (struct.isSetActivation()) {
-        oprot.writeString(struct.activation);
+        oprot.writeI32(struct.activation);
       }
       if (struct.isSetCompanyName()) {
         oprot.writeString(struct.companyName);
@@ -1194,7 +1187,7 @@ public class UserEmployeeDetailVO implements org.apache.thrift.TBase<UserEmploye
         struct.setNickNameIsSet(true);
       }
       if (incoming.get(6)) {
-        struct.activation = iprot.readString();
+        struct.activation = iprot.readI32();
         struct.setActivationIsSet(true);
       }
       if (incoming.get(7)) {
