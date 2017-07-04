@@ -18,9 +18,9 @@ public class UserEmployeeVO implements org.apache.thrift.TBase<UserEmployeeVO, U
   private static final org.apache.thrift.protocol.TField CUSTOM_FIELD_FIELD_DESC = new org.apache.thrift.protocol.TField("customField", org.apache.thrift.protocol.TType.STRING, (short)5);
   private static final org.apache.thrift.protocol.TField NICK_NAME_FIELD_DESC = new org.apache.thrift.protocol.TField("nickName", org.apache.thrift.protocol.TType.STRING, (short)6);
   private static final org.apache.thrift.protocol.TField AWARD_FIELD_DESC = new org.apache.thrift.protocol.TField("award", org.apache.thrift.protocol.TType.I32, (short)7);
-  private static final org.apache.thrift.protocol.TField ACTIVATION_FIELD_DESC = new org.apache.thrift.protocol.TField("activation", org.apache.thrift.protocol.TType.STRING, (short)8);
+  private static final org.apache.thrift.protocol.TField ACTIVATION_FIELD_DESC = new org.apache.thrift.protocol.TField("activation", org.apache.thrift.protocol.TType.I32, (short)8);
   private static final org.apache.thrift.protocol.TField COMPANY_NAME_FIELD_DESC = new org.apache.thrift.protocol.TField("companyName", org.apache.thrift.protocol.TType.STRING, (short)9);
-  private static final org.apache.thrift.protocol.TField CREAT_TIME_FIELD_DESC = new org.apache.thrift.protocol.TField("creatTime", org.apache.thrift.protocol.TType.STRING, (short)10);
+  private static final org.apache.thrift.protocol.TField BINDING_TIME_FIELD_DESC = new org.apache.thrift.protocol.TField("bindingTime", org.apache.thrift.protocol.TType.STRING, (short)10);
 
   private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new UserEmployeeVOStandardSchemeFactory();
   private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new UserEmployeeVOTupleSchemeFactory();
@@ -32,9 +32,9 @@ public class UserEmployeeVO implements org.apache.thrift.TBase<UserEmployeeVO, U
   public String customField; // optional
   public String nickName; // optional
   public int award; // optional
-  public String activation; // optional
+  public int activation; // optional
   public String companyName; // optional
-  public String creatTime; // optional
+  public String bindingTime; // optional
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -47,7 +47,7 @@ public class UserEmployeeVO implements org.apache.thrift.TBase<UserEmployeeVO, U
     AWARD((short)7, "award"),
     ACTIVATION((short)8, "activation"),
     COMPANY_NAME((short)9, "companyName"),
-    CREAT_TIME((short)10, "creatTime");
+    BINDING_TIME((short)10, "bindingTime");
 
     private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
@@ -80,8 +80,8 @@ public class UserEmployeeVO implements org.apache.thrift.TBase<UserEmployeeVO, U
           return ACTIVATION;
         case 9: // COMPANY_NAME
           return COMPANY_NAME;
-        case 10: // CREAT_TIME
-          return CREAT_TIME;
+        case 10: // BINDING_TIME
+          return BINDING_TIME;
         default:
           return null;
       }
@@ -124,8 +124,9 @@ public class UserEmployeeVO implements org.apache.thrift.TBase<UserEmployeeVO, U
   // isset id assignments
   private static final int __ID_ISSET_ID = 0;
   private static final int __AWARD_ISSET_ID = 1;
+  private static final int __ACTIVATION_ISSET_ID = 2;
   private byte __isset_bitfield = 0;
-  private static final _Fields optionals[] = {_Fields.ID,_Fields.USERNAME,_Fields.MOBILE,_Fields.EMAIL,_Fields.CUSTOM_FIELD,_Fields.NICK_NAME,_Fields.AWARD,_Fields.ACTIVATION,_Fields.COMPANY_NAME,_Fields.CREAT_TIME};
+  private static final _Fields optionals[] = {_Fields.ID,_Fields.USERNAME,_Fields.MOBILE,_Fields.EMAIL,_Fields.CUSTOM_FIELD,_Fields.NICK_NAME,_Fields.AWARD,_Fields.ACTIVATION,_Fields.COMPANY_NAME,_Fields.BINDING_TIME};
   public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
@@ -144,10 +145,10 @@ public class UserEmployeeVO implements org.apache.thrift.TBase<UserEmployeeVO, U
     tmpMap.put(_Fields.AWARD, new org.apache.thrift.meta_data.FieldMetaData("award", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.ACTIVATION, new org.apache.thrift.meta_data.FieldMetaData("activation", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.COMPANY_NAME, new org.apache.thrift.meta_data.FieldMetaData("companyName", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.CREAT_TIME, new org.apache.thrift.meta_data.FieldMetaData("creatTime", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+    tmpMap.put(_Fields.BINDING_TIME, new org.apache.thrift.meta_data.FieldMetaData("bindingTime", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(UserEmployeeVO.class, metaDataMap);
@@ -178,14 +179,12 @@ public class UserEmployeeVO implements org.apache.thrift.TBase<UserEmployeeVO, U
       this.nickName = other.nickName;
     }
     this.award = other.award;
-    if (other.isSetActivation()) {
-      this.activation = other.activation;
-    }
+    this.activation = other.activation;
     if (other.isSetCompanyName()) {
       this.companyName = other.companyName;
     }
-    if (other.isSetCreatTime()) {
-      this.creatTime = other.creatTime;
+    if (other.isSetBindingTime()) {
+      this.bindingTime = other.bindingTime;
     }
   }
 
@@ -204,9 +203,10 @@ public class UserEmployeeVO implements org.apache.thrift.TBase<UserEmployeeVO, U
     this.nickName = null;
     setAwardIsSet(false);
     this.award = 0;
-    this.activation = null;
+    setActivationIsSet(false);
+    this.activation = 0;
     this.companyName = null;
-    this.creatTime = null;
+    this.bindingTime = null;
   }
 
   public int getId() {
@@ -375,28 +375,27 @@ public class UserEmployeeVO implements org.apache.thrift.TBase<UserEmployeeVO, U
     __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __AWARD_ISSET_ID, value);
   }
 
-  public String getActivation() {
+  public int getActivation() {
     return this.activation;
   }
 
-  public UserEmployeeVO setActivation(String activation) {
+  public UserEmployeeVO setActivation(int activation) {
     this.activation = activation;
+    setActivationIsSet(true);
     return this;
   }
 
   public void unsetActivation() {
-    this.activation = null;
+    __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __ACTIVATION_ISSET_ID);
   }
 
   /** Returns true if field activation is set (has been assigned a value) and false otherwise */
   public boolean isSetActivation() {
-    return this.activation != null;
+    return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __ACTIVATION_ISSET_ID);
   }
 
   public void setActivationIsSet(boolean value) {
-    if (!value) {
-      this.activation = null;
-    }
+    __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __ACTIVATION_ISSET_ID, value);
   }
 
   public String getCompanyName() {
@@ -423,27 +422,27 @@ public class UserEmployeeVO implements org.apache.thrift.TBase<UserEmployeeVO, U
     }
   }
 
-  public String getCreatTime() {
-    return this.creatTime;
+  public String getBindingTime() {
+    return this.bindingTime;
   }
 
-  public UserEmployeeVO setCreatTime(String creatTime) {
-    this.creatTime = creatTime;
+  public UserEmployeeVO setBindingTime(String bindingTime) {
+    this.bindingTime = bindingTime;
     return this;
   }
 
-  public void unsetCreatTime() {
-    this.creatTime = null;
+  public void unsetBindingTime() {
+    this.bindingTime = null;
   }
 
-  /** Returns true if field creatTime is set (has been assigned a value) and false otherwise */
-  public boolean isSetCreatTime() {
-    return this.creatTime != null;
+  /** Returns true if field bindingTime is set (has been assigned a value) and false otherwise */
+  public boolean isSetBindingTime() {
+    return this.bindingTime != null;
   }
 
-  public void setCreatTimeIsSet(boolean value) {
+  public void setBindingTimeIsSet(boolean value) {
     if (!value) {
-      this.creatTime = null;
+      this.bindingTime = null;
     }
   }
 
@@ -509,7 +508,7 @@ public class UserEmployeeVO implements org.apache.thrift.TBase<UserEmployeeVO, U
       if (value == null) {
         unsetActivation();
       } else {
-        setActivation((String)value);
+        setActivation((Integer)value);
       }
       break;
 
@@ -521,11 +520,11 @@ public class UserEmployeeVO implements org.apache.thrift.TBase<UserEmployeeVO, U
       }
       break;
 
-    case CREAT_TIME:
+    case BINDING_TIME:
       if (value == null) {
-        unsetCreatTime();
+        unsetBindingTime();
       } else {
-        setCreatTime((String)value);
+        setBindingTime((String)value);
       }
       break;
 
@@ -561,8 +560,8 @@ public class UserEmployeeVO implements org.apache.thrift.TBase<UserEmployeeVO, U
     case COMPANY_NAME:
       return getCompanyName();
 
-    case CREAT_TIME:
-      return getCreatTime();
+    case BINDING_TIME:
+      return getBindingTime();
 
     }
     throw new IllegalStateException();
@@ -593,8 +592,8 @@ public class UserEmployeeVO implements org.apache.thrift.TBase<UserEmployeeVO, U
       return isSetActivation();
     case COMPANY_NAME:
       return isSetCompanyName();
-    case CREAT_TIME:
-      return isSetCreatTime();
+    case BINDING_TIME:
+      return isSetBindingTime();
     }
     throw new IllegalStateException();
   }
@@ -682,7 +681,7 @@ public class UserEmployeeVO implements org.apache.thrift.TBase<UserEmployeeVO, U
     if (this_present_activation || that_present_activation) {
       if (!(this_present_activation && that_present_activation))
         return false;
-      if (!this.activation.equals(that.activation))
+      if (this.activation != that.activation)
         return false;
     }
 
@@ -695,12 +694,12 @@ public class UserEmployeeVO implements org.apache.thrift.TBase<UserEmployeeVO, U
         return false;
     }
 
-    boolean this_present_creatTime = true && this.isSetCreatTime();
-    boolean that_present_creatTime = true && that.isSetCreatTime();
-    if (this_present_creatTime || that_present_creatTime) {
-      if (!(this_present_creatTime && that_present_creatTime))
+    boolean this_present_bindingTime = true && this.isSetBindingTime();
+    boolean that_present_bindingTime = true && that.isSetBindingTime();
+    if (this_present_bindingTime || that_present_bindingTime) {
+      if (!(this_present_bindingTime && that_present_bindingTime))
         return false;
-      if (!this.creatTime.equals(that.creatTime))
+      if (!this.bindingTime.equals(that.bindingTime))
         return false;
     }
 
@@ -741,15 +740,15 @@ public class UserEmployeeVO implements org.apache.thrift.TBase<UserEmployeeVO, U
 
     hashCode = hashCode * 8191 + ((isSetActivation()) ? 131071 : 524287);
     if (isSetActivation())
-      hashCode = hashCode * 8191 + activation.hashCode();
+      hashCode = hashCode * 8191 + activation;
 
     hashCode = hashCode * 8191 + ((isSetCompanyName()) ? 131071 : 524287);
     if (isSetCompanyName())
       hashCode = hashCode * 8191 + companyName.hashCode();
 
-    hashCode = hashCode * 8191 + ((isSetCreatTime()) ? 131071 : 524287);
-    if (isSetCreatTime())
-      hashCode = hashCode * 8191 + creatTime.hashCode();
+    hashCode = hashCode * 8191 + ((isSetBindingTime()) ? 131071 : 524287);
+    if (isSetBindingTime())
+      hashCode = hashCode * 8191 + bindingTime.hashCode();
 
     return hashCode;
   }
@@ -852,12 +851,12 @@ public class UserEmployeeVO implements org.apache.thrift.TBase<UserEmployeeVO, U
         return lastComparison;
       }
     }
-    lastComparison = Boolean.valueOf(isSetCreatTime()).compareTo(other.isSetCreatTime());
+    lastComparison = Boolean.valueOf(isSetBindingTime()).compareTo(other.isSetBindingTime());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetCreatTime()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.creatTime, other.creatTime);
+    if (isSetBindingTime()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.bindingTime, other.bindingTime);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -946,11 +945,7 @@ public class UserEmployeeVO implements org.apache.thrift.TBase<UserEmployeeVO, U
     if (isSetActivation()) {
       if (!first) sb.append(", ");
       sb.append("activation:");
-      if (this.activation == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.activation);
-      }
+      sb.append(this.activation);
       first = false;
     }
     if (isSetCompanyName()) {
@@ -963,13 +958,13 @@ public class UserEmployeeVO implements org.apache.thrift.TBase<UserEmployeeVO, U
       }
       first = false;
     }
-    if (isSetCreatTime()) {
+    if (isSetBindingTime()) {
       if (!first) sb.append(", ");
-      sb.append("creatTime:");
-      if (this.creatTime == null) {
+      sb.append("bindingTime:");
+      if (this.bindingTime == null) {
         sb.append("null");
       } else {
-        sb.append(this.creatTime);
+        sb.append(this.bindingTime);
       }
       first = false;
     }
@@ -1075,8 +1070,8 @@ public class UserEmployeeVO implements org.apache.thrift.TBase<UserEmployeeVO, U
             }
             break;
           case 8: // ACTIVATION
-            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-              struct.activation = iprot.readString();
+            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+              struct.activation = iprot.readI32();
               struct.setActivationIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
@@ -1090,10 +1085,10 @@ public class UserEmployeeVO implements org.apache.thrift.TBase<UserEmployeeVO, U
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 10: // CREAT_TIME
+          case 10: // BINDING_TIME
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-              struct.creatTime = iprot.readString();
-              struct.setCreatTimeIsSet(true);
+              struct.bindingTime = iprot.readString();
+              struct.setBindingTimeIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
@@ -1158,12 +1153,10 @@ public class UserEmployeeVO implements org.apache.thrift.TBase<UserEmployeeVO, U
         oprot.writeI32(struct.award);
         oprot.writeFieldEnd();
       }
-      if (struct.activation != null) {
-        if (struct.isSetActivation()) {
-          oprot.writeFieldBegin(ACTIVATION_FIELD_DESC);
-          oprot.writeString(struct.activation);
-          oprot.writeFieldEnd();
-        }
+      if (struct.isSetActivation()) {
+        oprot.writeFieldBegin(ACTIVATION_FIELD_DESC);
+        oprot.writeI32(struct.activation);
+        oprot.writeFieldEnd();
       }
       if (struct.companyName != null) {
         if (struct.isSetCompanyName()) {
@@ -1172,10 +1165,10 @@ public class UserEmployeeVO implements org.apache.thrift.TBase<UserEmployeeVO, U
           oprot.writeFieldEnd();
         }
       }
-      if (struct.creatTime != null) {
-        if (struct.isSetCreatTime()) {
-          oprot.writeFieldBegin(CREAT_TIME_FIELD_DESC);
-          oprot.writeString(struct.creatTime);
+      if (struct.bindingTime != null) {
+        if (struct.isSetBindingTime()) {
+          oprot.writeFieldBegin(BINDING_TIME_FIELD_DESC);
+          oprot.writeString(struct.bindingTime);
           oprot.writeFieldEnd();
         }
       }
@@ -1224,7 +1217,7 @@ public class UserEmployeeVO implements org.apache.thrift.TBase<UserEmployeeVO, U
       if (struct.isSetCompanyName()) {
         optionals.set(8);
       }
-      if (struct.isSetCreatTime()) {
+      if (struct.isSetBindingTime()) {
         optionals.set(9);
       }
       oprot.writeBitSet(optionals, 10);
@@ -1250,13 +1243,13 @@ public class UserEmployeeVO implements org.apache.thrift.TBase<UserEmployeeVO, U
         oprot.writeI32(struct.award);
       }
       if (struct.isSetActivation()) {
-        oprot.writeString(struct.activation);
+        oprot.writeI32(struct.activation);
       }
       if (struct.isSetCompanyName()) {
         oprot.writeString(struct.companyName);
       }
-      if (struct.isSetCreatTime()) {
-        oprot.writeString(struct.creatTime);
+      if (struct.isSetBindingTime()) {
+        oprot.writeString(struct.bindingTime);
       }
     }
 
@@ -1293,7 +1286,7 @@ public class UserEmployeeVO implements org.apache.thrift.TBase<UserEmployeeVO, U
         struct.setAwardIsSet(true);
       }
       if (incoming.get(7)) {
-        struct.activation = iprot.readString();
+        struct.activation = iprot.readI32();
         struct.setActivationIsSet(true);
       }
       if (incoming.get(8)) {
@@ -1301,8 +1294,8 @@ public class UserEmployeeVO implements org.apache.thrift.TBase<UserEmployeeVO, U
         struct.setCompanyNameIsSet(true);
       }
       if (incoming.get(9)) {
-        struct.creatTime = iprot.readString();
-        struct.setCreatTimeIsSet(true);
+        struct.bindingTime = iprot.readString();
+        struct.setBindingTimeIsSet(true);
       }
     }
   }

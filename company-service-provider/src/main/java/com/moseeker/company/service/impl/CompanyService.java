@@ -441,7 +441,7 @@ public class CompanyService {
     /**
      * 员工认证开关
      *
-     * @param companyId 部门编号
+     * @param companyId 公司Id
      * @param disable   是否开启 0开启 1关闭
      * @return
      */
