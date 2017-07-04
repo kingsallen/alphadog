@@ -369,3 +369,38 @@ struct HrNpsStatistic {
     3: optional i32 page_size,
     4: optional list<HrNpsInfo> data
 }
+
+struct UserEmployeeNumStatistic{
+    1: optional i32 unregcount,
+    2: optional i32 regcount
+}
+
+struct UserEmployeeVO{
+    1: optional i32 id, // ID
+    2: optional string username, // 姓名
+    3: optional string mobile, // 电话
+    4: optional string email, // 邮箱
+    5: optional string customField, // 自定义
+    6: optional string nickName, // 微信账号
+    7: optional i32 award, // 积分
+    8: optional i32 activation, // 认证状态
+    9: optional string companyName, // 公司名称
+    10: optional string bindingTime, // 认证时间
+}
+
+// 员工详情
+struct UserEmployeeDetailVO{
+    1: optional i32 id, // ID
+    2: optional string username, // 姓名
+    3: optional string mobile, // 电话
+    4: optional string email, // 邮箱
+    5: optional string customField, // 自定义
+    6: optional string nickName, // 微信账号
+    7: optional i32 activation, // 认证状态
+    8: optional string companyName, // 公司名称
+    9: optional string headImg, // 头像
+}
+
+struct EmployeeOptionVO{
+
+}
