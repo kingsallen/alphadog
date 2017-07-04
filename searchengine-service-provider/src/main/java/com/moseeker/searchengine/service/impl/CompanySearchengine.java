@@ -1,7 +1,6 @@
 package com.moseeker.searchengine.service.impl;
 
 import java.net.InetAddress;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
 import org.elasticsearch.action.search.SearchResponse;
@@ -11,17 +10,13 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
-import com.moseeker.thrift.gen.common.struct.Response;
 
 @Service
 @CounterIface
@@ -112,7 +107,7 @@ public class CompanySearchengine {
     		QueryBuilder fullf = QueryBuilders.queryStringQuery(keywords)
                   .field("company.name")
                   .field("company.abbreviation");
-    		((BoolQueryBuilder) keyand).should(fullf);
+    		((BoolQueryBuilder) keyand).must(fullf);
             ((BoolQueryBuilder) query).must(keyand);
         }
    }

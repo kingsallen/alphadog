@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.moseeker.baseorm.dao.campaigndb.CampaignPcRecommendCompanyDao;
 import com.moseeker.baseorm.dao.campaigndb.CampaignPcRecommendPositionDao;
+import com.moseeker.baseorm.dao.dictdb.DictCityDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.util.StringUtils;
@@ -22,6 +24,7 @@ import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignPcRecommendCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignPcRecommendPositionDO;
+import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCmsMediaDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCmsModuleDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCmsPagesDO;
@@ -30,6 +33,7 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrResourceDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrTeamDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionCityDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 
 /*
@@ -62,6 +66,10 @@ public class PositionPcService {
 	private HrTeamDao hrTeamDao;
 	@Autowired
 	private CampaignPcRecommendCompanyDao campaignPcRecommendCompanyDao;
+	@Autowired
+	private JobPositionCityDao jobPositionCityDao;
+	@Autowired
+	private DictCityDao dictCityDao;
 	/*
 	 * 获取pc首页职位推荐
 	 */
@@ -348,7 +356,8 @@ public class PositionPcService {
 	 /*
 	 处理position和company的数据
 	  */
-	 public List<Map<String,Object>> handleCompanyAndPositionData(List<JobPositionDO> positionList, List<HrCompanyDO> companyList,List<HrTeamDO> teamList,List<Map<String,Integer>> publisherAndCompanyId){
+	 public List<Map<String,Object>> handleCompanyAndPositionData(List<JobPositionDO> positionList, List<HrCompanyDO> companyList,List<HrTeamDO> teamList
+			 ,List<Map<String,Integer>> publisherAndCompanyId,Map<String,List<String>> posittionCitys){
 		 List<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
 		 if(positionList==null||positionList.size()==0){
 			 return null;
@@ -357,6 +366,7 @@ public class PositionPcService {
 			 JobPositionDO positionDo=positionList.get(i);
 			 int publisher=positionDo.getPublisher();
 			 int teamId=positionDo.getTeamId();
+			 int positionId=positionDo.getId();
 			 Map<String,Object> map=new HashMap<String,Object>();
 			 if(!StringUtils.isEmptyList(companyList)){
 				 for(int j=0;j<companyList.size();j++){
@@ -376,7 +386,13 @@ public class PositionPcService {
 						 }
 					 }
 				 }
+				 if(!posittionCitys.isEmpty()){
+					 if(posittionCitys.get(positionId+"")!=null){
+						 map.put("cityList", posittionCitys.get(positionId+""));
+					 }
+				 }
 			 }
+			
 			 // 本出如此做是为了过滤掉已经删除的子公司的信息
 			 if(!map.isEmpty()){
 				 for(HrTeamDO teamDo:teamList){
@@ -426,7 +442,65 @@ public class PositionPcService {
 		 List<Map<String,Object>> list=getResourceByPositionId(jdTeamids,type);
 	 	return list;
 	 }
-	 
+	 //根据positionid列表获取list的jobPositioncity
+	 public List<JobPositionCityDO> getJObPositionCity(List<Integer> positionIds){
+		 if(StringUtils.isEmptyList(positionIds)){
+			 return null;
+		 }
+		 Query query=new Query.QueryBuilder().where(new Condition("pid",positionIds.toArray(),ValueOp.IN)).buildQuery();
+		 return jobPositionCityDao.getDatas(query);
+	 }
+	 //获取职位的城市格式是map形式，（positionId，List<String>)形式
+	 public Map<String,List<String>> handlePositionCity(List<Integer> list){
+		 if(StringUtils.isEmptyList(list)){
+			 return null;
+		 }
+		 List<JobPositionCityDO>jobPositionCityList=this.getJObPositionCity(list);
+		 if(StringUtils.isEmptyList(jobPositionCityList)){
+			 return null;
+		 }
+		 List<Integer> codes=this.getPositionCodes(jobPositionCityList);
+		 List<DictCityDO> citys=getDictCity(codes);
+		 if(StringUtils.isEmptyList(citys)){
+			 return null;
+		 }
+		 Map<String,List<String>> map=new HashMap<String,List<String>>();
+		 for(JobPositionCityDO jobDo:jobPositionCityList){
+			 List<String> positionCity=new ArrayList<String>();
+			 int positionId=jobDo.getPid();
+			 int code=jobDo.getCode();
+			 for(DictCityDO city:citys){
+				 int code1=city.getCode();
+				 String name=city.getName();
+				 if(code==code1){
+					 positionCity.add(name);
+				 }
+			 }
+			 if(!StringUtils.isEmptyList(positionCity)){
+				 map.put(positionId+"",positionCity);
+			 }
+		 }
+		 return map;
+	 }
+	 //获取position的city code
+	 public List<Integer> getPositionCodes(List<JobPositionCityDO> list){
+		 if(StringUtils.isEmptyList(list)){
+			 return null;
+		 }
+		 List<Integer> codes=new ArrayList<Integer>();
+		 for(JobPositionCityDO jobCity:list){
+			 codes.add(jobCity.getCode());
+		 }
+		 return codes;
+	 }
+	 //获取list的dictcity数据
+	 public List<DictCityDO> getDictCity(List<Integer> codes){
+		 if(StringUtils.isEmptyList(codes)){
+			 return null;
+		 }
+		 Query query=new Query.QueryBuilder().where(new Condition("code",codes.toArray(),ValueOp.IN)).buildQuery();
+		 return dictCityDao.getDatas(query);
+	 }
 	/*
 	 总体上处理数据
 	  */
@@ -443,8 +517,10 @@ public class PositionPcService {
 		 List<Map<String,Integer>> publisherAndCompanyId=getPublisherCompanyId(publisherIds);
 		 List<Integer> teamIds=this.getTeamIdList(positionList);
 		 List<HrTeamDO> teamList=this.getTeamList(teamIds);
-		 list=this.handleCompanyAndPositionData(positionList,companyList,teamList,publisherAndCompanyId);
+		 Map<String,List<String>> positionCitys=this.handlePositionCity(positionIds);
+		 list=this.handleCompanyAndPositionData(positionList,companyList,teamList,publisherAndCompanyId,positionCitys);
 		 List<Map<String,Object>> jdpictureList=this.handlePositionJdPic(teamList,compantIds,type);
+		
 		 if(!StringUtils.isEmptyList(jdpictureList)){
 			 for(Map<String,Object> map:jdpictureList){
 				 	Integer configId=(Integer)map.get("configId");
@@ -456,7 +532,7 @@ public class PositionPcService {
 				 			map1.put("jdPic",picture);
 						}
 					 }
-		 }
+			 }
 		 
 		 }
 	 	return list;
