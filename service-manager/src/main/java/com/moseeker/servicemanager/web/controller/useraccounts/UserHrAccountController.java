@@ -128,6 +128,9 @@ public class UserHrAccountController {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             HrThirdPartyAccountDO struct = ParamUtils.initModelForm(params, HrThirdPartyAccountDO.class);
+            if (params.get("member_name") != null) {
+                struct.setMembername(params.get("member_name").toString());
+            }
             logger.info("bind thirdParyAccount in controller params===========================" + JSON.toJSONString(struct));
             struct = userHrAccountService.bindThirdpartyAccount(params.getInt("user_id", 0), struct, params.getBoolean("sync", false));
             //同步情况下走下面的代码
