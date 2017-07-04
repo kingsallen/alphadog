@@ -1,6 +1,7 @@
 package com.moseeker.servicemanager.web.controller.profile;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -287,13 +288,21 @@ public class ProfileController {
         try {
             Params<String, Object> form = ParamUtils.parseRequestParam(request);
             ProfileApplicationForm profileApplicationForm = ParamUtils.initModelForm(form, ProfileApplicationForm.class);
-            if(profileApplicationForm == null) {
+            if (profileApplicationForm == null) {
                 return ResponseLogNotification.fail(request, "参数不能为空");
-            }if (!profileApplicationForm.isSetCompany_id()) {
+            }
+            if (!profileApplicationForm.isSetCompany_id()) {
                 return ResponseLogNotification.fail(request, "company_id不能为空");
             } else if (!profileApplicationForm.isSetSource_id()) {
                 return ResponseLogNotification.fail(request, "sourceId不能为空");
             }
+            Map<String, String> conditions = new HashMap<>();
+            for (String key : form.keySet()) {
+                conditions.put(key, form.getString(key));
+            }
+
+            profileApplicationForm.setConditions(conditions);
+
             logger.info("/profiles/application params:{}", JSON.toJSONString(profileApplicationForm));
             Response result = service.getProfileByApplication(profileApplicationForm);
 
