@@ -467,9 +467,12 @@ public class PositionPcService {
 		 }
 		 Map<String,List<String>> map=new HashMap<String,List<String>>();
 		 for(JobPositionCityDO jobDo:jobPositionCityList){
-			 List<String> positionCity=new ArrayList<String>();
 			 int positionId=jobDo.getPid();
 			 int code=jobDo.getCode();
+			 List<String> positionCity=new ArrayList<String>();
+			 if(map.get(positionId+"")!=null){
+				 positionCity=map.get(positionId+"");
+			 }			 
 			 for(DictCityDO city:citys){
 				 int code1=city.getCode();
 				 String name=city.getName();
