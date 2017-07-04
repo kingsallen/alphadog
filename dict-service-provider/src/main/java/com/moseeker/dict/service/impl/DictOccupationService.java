@@ -69,7 +69,7 @@ public class DictOccupationService {
 				if(channel==1){
 					return ResponseUtils.success(dict51OccupationDao.getSingle(build.buildQuery()));
 				}else if(channel==2){
-					return ResponseUtils.success(dict51OccupationDao.getSingle(build.buildQuery()));
+					return ResponseUtils.success(dictLiepinOccupationDao.getSingle(build.buildQuery()));
 				}else if(channel==3){
 					return ResponseUtils.success(dictZpinOccupationDao.getSingle(build.buildQuery()));
 				}
