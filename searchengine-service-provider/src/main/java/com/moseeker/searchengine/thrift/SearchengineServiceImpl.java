@@ -1,12 +1,11 @@
 package com.moseeker.searchengine.thrift;
 
 import org.apache.thrift.TException;
-import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.search.SearchHits;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.searchengine.service.impl.CompanySearchengine;
@@ -40,7 +39,10 @@ public class SearchengineServiceImpl implements Iface {
 	public Response companyQuery(String keyWords, String citys, String industry, String scale, int page, int pageSize){
 		// TODO Auto-generated method stub
 		try{
-			SearchResponse res=companySearchengine.queryString(keyWords, citys, industry, scale, page, pageSize);
+			SearchHits res=companySearchengine.queryString(keyWords, citys, industry, scale, page, pageSize);
+			if(res==null){
+				return ResponseUtils.success("");
+			}
 			return ResponseUtils.success(res);
 		}catch(Exception e){
 			logger.info(e.getMessage(),e);

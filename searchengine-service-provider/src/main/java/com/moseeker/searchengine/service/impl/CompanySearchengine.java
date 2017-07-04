@@ -11,6 +11,8 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +28,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 public class CompanySearchengine {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	//通过queryString
-    public SearchResponse queryString(String keywords,String citys,String industry,String scale,Integer page,Integer pageSize) throws TException {
+    public SearchHits queryString(String keywords,String citys,String industry,String scale,Integer page,Integer pageSize) throws TException {
          try{
         	 TransportClient client=this.getEsClient();
         	 if(client!=null){
@@ -37,14 +39,19 @@ public class CompanySearchengine {
                  this.handleCitys( citys,query);
                  this.handleIndustry(industry, query);
                  this.handleScale(scale, query);
-                 logger.info(query.toString()+"==================================================");
+                 logger.info(client.prepareSearch("companys").setTypes("fulltext")
+                         .setQuery(query)
+                         .addSort("_score", SortOrder.DESC)
+                         .setFrom(page)
+                         .setSize(pageSize).toString()+"==================================================");
+ 
                  SearchResponse response = client.prepareSearch("companys").setTypes("fulltext")
                              .setQuery(query)
-//                             .addSort("weight", SortOrder.DESC)
                              .addSort("_score", SortOrder.DESC)
                              .setFrom(page)
                              .setSize(pageSize).execute().actionGet();
-                 return response;
+                 SearchHits hit=response.getHits();
+                 return hit;
         	 }
              
          }catch(Exception e){
@@ -53,7 +60,7 @@ public class CompanySearchengine {
     	return null;
     }
     //通过prefix搜索
-    public SearchResponse queryPrefix(String keywords,String citys,String industry,String scale,Integer page,Integer pageSize) throws TException {
+    public SearchHits queryPrefix(String keywords,String citys,String industry,String scale,Integer page,Integer pageSize) throws TException {
         try{
        	 TransportClient client=this.getEsClient();
        	 if(client!=null){
@@ -70,7 +77,8 @@ public class CompanySearchengine {
                             .addSort("_score", SortOrder.DESC)
                             .setFrom(page)
                             .setSize(pageSize).execute().actionGet();
-                return response;
+                SearchHits hit=response.getHits();
+                return hit;
        	 }
             
         }catch(Exception e){

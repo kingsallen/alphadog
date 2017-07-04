@@ -1,6 +1,6 @@
 package com.moseeker.search;
 
-import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.search.SearchHits;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ public class CompanyIndexTest {
 	private CompanySearchengine companySearchengine;
 	@Test
 	public void queryStringTest() throws Exception{
-		SearchResponse res=companySearchengine.queryString("上海", null, null, null, 0, 10);
+		SearchHits res=companySearchengine.queryString("上海", null, null, null, 0, 10);
 		System.out.println(res);
 	}
 
