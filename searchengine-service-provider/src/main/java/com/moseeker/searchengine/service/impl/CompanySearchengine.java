@@ -112,7 +112,7 @@ public class CompanySearchengine {
     		QueryBuilder fullf = QueryBuilders.queryStringQuery(keywords)
                   .field("company.name")
                   .field("company.abbreviation");
-    		((BoolQueryBuilder) keyand).must(fullf);
+    		((BoolQueryBuilder) keyand).should(fullf);
             ((BoolQueryBuilder) query).must(keyand);
         }
    }

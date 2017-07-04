@@ -101,15 +101,15 @@ public class CompanyController {
 	public String getPcBanner(HttpServletRequest request, HttpServletResponse response) {
 		try{
 			Map<String, Object> data = ParamUtils.parseRequestParam(request);
-			Integer page=(Integer) data.get("page");
-			Integer pageSize=(Integer) data.get("pagesize");
+			String page=(String) data.get("page");
+			String pageSize=(String) data.get("pagesize");
 			if(page==null){
-				 return ResponseLogNotification.fail(request, "page不能为空");
+				 page="1";
 			}
 			if(pageSize==null){
-				pageSize=10;
+				pageSize="15";
 			}
-			Response res=companyServices.getPcBanner(page, pageSize);
+			Response res=companyServices.getPcBanner(Integer.parseInt(page), Integer.parseInt(pageSize));
 			return ResponseLogNotification.success(request, res);
 		}catch(Exception e){
 			logger.info(e.getMessage(),e);
