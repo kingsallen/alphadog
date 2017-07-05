@@ -35,7 +35,7 @@ public enum ChannelType {
 			}
 			return result;
 		}
-	}, LIANPIAN(2, "liepin","猎聘") {
+	}, LIEPIN(2, "liepin","猎聘") {
 		@Override
 		public String getOrigin(String origin) {
 			String result;
