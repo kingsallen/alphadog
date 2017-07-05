@@ -3,6 +3,7 @@ package com.moseeker.servicemanager.web.controller.useraccounts;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.RespnoseUtil;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -460,8 +461,8 @@ public class UserHrAccountController {
     @ResponseBody
     public String getCompanyRewardConf(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Params<String, Object>  params = ParamUtils.parseRequestParam(request);
-            int companyId =  params.getInt("companyId", 0);
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int companyId = params.getInt("companyId", 0);
             if (companyId == 0) {
                 return ResponseLogNotification.fail(request, "companyId不能为空");
             } else {
@@ -478,8 +479,8 @@ public class UserHrAccountController {
     @ResponseBody
     public String unbindEmployee(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Params<String, Object>  params = ParamUtils.parseRequestParam(request);
-            List<Integer> ids =  (List)params.get("ids");
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            List<Integer> ids = (List) params.get("ids");
             if (ids == null || ids.isEmpty()) {
                 return ResponseLogNotification.fail(request, "Ids不能为空");
             } else {
@@ -496,8 +497,8 @@ public class UserHrAccountController {
     @ResponseBody
     public String removeEmployee(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Params<String, Object>  params = ParamUtils.parseRequestParam(request);
-            List<Integer> ids =  (List)params.get("ids");
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            List<Integer> ids = (List) params.get("ids");
             if (ids == null || ids.isEmpty()) {
                 return ResponseLogNotification.fail(request, "Ids不能为空");
             } else {
@@ -515,8 +516,8 @@ public class UserHrAccountController {
     @ResponseBody
     public String getEmployeeRawards(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Params<String, Object>  params = ParamUtils.parseRequestParam(request);
-            int employeeId =  params.getInt("employeeId");
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int employeeId = params.getInt("employeeId");
             if (employeeId == 0) {
                 return ResponseLogNotification.fail(request, "员工Id不能为空");
             } else {
@@ -533,8 +534,8 @@ public class UserHrAccountController {
     @ResponseBody
     public String addEmployeeReward(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Params<String, Object>  params = ParamUtils.parseRequestParam(request);
-            int employeeId =  params.getInt("employeeId");
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int employeeId = params.getInt("employeeId");
             int points = params.getInt("points");
             if (employeeId == 0) {
                 return ResponseLogNotification.fail(request, "员工Id不能为空");
@@ -547,4 +548,139 @@ public class UserHrAccountController {
         }
     }
 
+    /**
+     * 获取列表number
+     * 通过公司ID,查询认证员工和未认证员工数量
+     *
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/hraccount/employe/number", method = RequestMethod.GET)
+    @ResponseBody
+    public String getListNum(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            String keyWord = params.getString("keyword");
+            int companyId = params.getInt("companyId");
+            UserEmployeeNumStatistic userEmployeeNumStatistic = userHrAccountService.getListNum(keyWord, companyId);
+            return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(userEmployeeNumStatistic)));
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+
+    /**
+     * 员工列表
+     *
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/hraccount/employe/list", method = RequestMethod.GET)
+    @ResponseBody
+    public String employeeList(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            String keyWord = params.getString("keyword") != null ? params.getString("keyword") : "";
+            int companyId = params.getInt("companyId") != null ? params.getInt("companyId") : 0;
+            int filter = params.getInt("filter") != null ? params.getInt("filter") : 0;
+            String order = params.getString("order") != null ? params.getString("order") : "";
+            int by = params.getInt("by") != null ? params.getInt("by") : 0;
+            int pageNumber = params.getInt("pageNumber") != null ? params.getInt("pageNumber") : 0;
+            int pageSize = params.getInt("pageSize") != null ? params.getInt("pageSize") : 0;
+            UserEmployeeVOPageVO userEmployeeVOPageVO = userHrAccountService.employeeList(keyWord, companyId, filter, order, by, pageNumber, pageSize);
+            return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(userEmployeeVOPageVO)));
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+
+    /**
+     * 员工信息导出
+     *
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/hraccount/employe/export", method = RequestMethod.POST)
+    @ResponseBody
+    public String employeeExport(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            // 员工ID列表
+            if (!StringUtils.isEmptyList((List<Integer>) params.get("userEmployees"))) {
+                List<Integer> userEmployees = (List<Integer>) params.get("userEmployees");
+                List<UserEmployeeVO> userEmployeeVOS = userHrAccountService.employeeExport(userEmployees);
+                return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(userEmployeeVOS)));
+            } else {
+                return ResponseLogNotification.fail(request, ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
+            }
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+
+    /**
+     * 员工信息
+     *
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/hraccount/employe/details", method = RequestMethod.GET)
+    @ResponseBody
+    public String employeeDetails(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int userEmployeeId = params.getInt("userEmployeeId") != null ? params.getInt("userEmployeeId") : 0;
+            UserEmployeeDetailVO userEmployeeDetailVO = userHrAccountService.userEmployeeDetail(userEmployeeId);
+            return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(userEmployeeDetailVO)));
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+
+    /**
+     * 更新公司员工信息
+     *
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/hraccount/employe/update", method = RequestMethod.PUT)
+    @ResponseBody
+    public String updateUserEmployee(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int userEmployeeId = params.getInt("userEmployeeId") != null ? params.getInt("userEmployeeId") : 0;
+            String cname = params.getString("cname") != null ? params.getString("cname") : "";
+            String mobile = params.getString("mobile") != null ? params.getString("mobile") : "";
+            String email = params.getString("email") != null ? params.getString("email") : "";
+            String customField = params.getString("customField") != null ? params.getString("customField") : "";
+            Response res = userHrAccountService.updateUserEmployee(cname, mobile, email, customField, userEmployeeId);
+            return ResponseLogNotification.success(request, res);
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 }

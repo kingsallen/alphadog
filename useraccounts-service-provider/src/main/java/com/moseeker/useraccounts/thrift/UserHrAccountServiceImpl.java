@@ -10,6 +10,7 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService.Iface;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.service.impl.UserHrAccountService;
+
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,8 +38,7 @@ public class UserHrAccountServiceImpl implements Iface {
      *
      * @param mobile 手机号
      * @param code   验证码
-     * @param source 系统区分
-     *               1:雇主 2:官网 3:微信扫描 4:我也要招人(聚合号) 5:我也要招人(企业号)
+     * @param source 系统区分 1:雇主 2:官网 3:微信扫描 4:我也要招人(聚合号) 5:我也要招人(企业号)
      */
     @Override
     public Response sendMobileVerifiyCode(String mobile, String code, int source) throws TException {
@@ -195,6 +195,73 @@ public class UserHrAccountServiceImpl implements Iface {
         } catch (Exception e) {
             throw new TException(e);
         }
+    }
 
+
+    /**
+     * 获取列表number
+     * 通过公司ID,查询认证员工和未认证员工数量
+     *
+     * @param keyWord   关键字
+     * @param companyId 公司ID
+     * @return
+     */
+    @Override
+    public UserEmployeeNumStatistic getListNum(String keyWord, int companyId) throws BIZException, TException {
+        return service.getListNum(keyWord, companyId);
+    }
+
+
+    /**
+     * 员工列表
+     *
+     * @param keyword    关键字搜索
+     * @param companyId  公司ID
+     * @param filter     过滤条件，0：全部，1：已认证，2：未认证,默认：0
+     * @param order      排序条件
+     * @param by         正序，倒序 0: 正序,1:倒序 默认
+     * @param pageNumber 第几页
+     * @param pageSize   每页的条数
+     */
+    @Override
+    public UserEmployeeVOPageVO employeeList(String keyword, int companyId, int filter, String order, int by, int pageNumber, int pageSize) throws BIZException, TException {
+        return service.employeeList(keyword, companyId, filter, order, by, pageNumber, pageSize);
+    }
+
+    /**
+     * 员工信息导出
+     *
+     * @param userEmployees 员工ID列表
+     * @return
+     */
+    @Override
+    public List<UserEmployeeVO> employeeExport(List<Integer> userEmployees) throws BIZException, TException {
+        return service.employeeExport(userEmployees);
+    }
+
+    /**
+     * 员工信息
+     *
+     * @param userEmployeeId 员工ID
+     */
+    @Override
+    public UserEmployeeDetailVO userEmployeeDetail(int userEmployeeId) throws BIZException, TException {
+        return service.userEmployeeDetail(userEmployeeId);
+    }
+
+    /**
+     * 编辑公司员工信息
+     *
+     * @param cname          姓名
+     * @param mobile         手机号
+     * @param email          邮箱
+     * @param customField    自定义字段
+     * @param userEmployeeId user_employee.id
+     * @return
+     * @throws BIZException
+     */
+    @Override
+    public Response updateUserEmployee(String cname, String mobile, String email, String customField, int userEmployeeId) throws BIZException, TException {
+        return service.updateUserEmployee(cname, mobile, email, customField, userEmployeeId);
     }
 }

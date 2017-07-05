@@ -53,6 +53,7 @@ import com.moseeker.thrift.gen.useraccounts.struct.SearchCondition;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeDetailVO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeNumStatistic;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVO;
+import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
 import com.moseeker.useraccounts.constant.ResultMessage;
 import com.moseeker.useraccounts.exception.ExceptionCategory;
@@ -820,8 +821,10 @@ public class UserHrAccountService {
         UserEmployeeNumStatistic userEmployeeNumStatistic = new UserEmployeeNumStatistic();
         userEmployeeNumStatistic.setUnregcount(0);
         userEmployeeNumStatistic.setRegcount(0);
+        if (companyId == 0) {
+            throw ExceptionFactory.buildException(ExceptionCategory.PROGRAM_DATA_EMPTY);
+        }
         try {
-
             Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
             queryBuilder.select(new Select(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), SelectOp.COUNT))
                     .select(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName());
@@ -850,6 +853,7 @@ public class UserHrAccountService {
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
+            throw ExceptionFactory.buildException(ExceptionCategory.PROGRAM_EXCEPTION);
         }
         return userEmployeeNumStatistic;
     }
@@ -858,7 +862,7 @@ public class UserHrAccountService {
     /**
      * 员工列表
      *
-     * @param keword     关键字搜索
+     * @param keyword     关键字搜索
      * @param companyId  公司ID
      * @param filter     过滤条件，0：全部，1：已认证，2：未认证,默认：0
      * @param order      排序条件
@@ -866,9 +870,10 @@ public class UserHrAccountService {
      * @param pageNumber 第几页
      * @param pageSize   每页的条数
      */
-    public List<UserEmployeeVO> employeeList(String keword, Integer companyId, Integer filter, String order, Integer by, Integer pageNumber, Integer pageSize) throws BIZException {
-        List<UserEmployeeVO> userEmployeeVOS = new ArrayList<>();
+    public UserEmployeeVOPageVO employeeList(String keword, Integer companyId, Integer filter, String order, Integer by, Integer pageNumber, Integer pageSize) throws BIZException {
+        UserEmployeeVOPageVO userEmployeeVOPageVO = new UserEmployeeVOPageVO();
         try {
+            List<UserEmployeeVO> userEmployeeVOS = new ArrayList<>();
             Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
             List<Integer> list = employeeEntity.getCompanyIds(companyId);
             Condition companyIdCon = new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), list, ValueOp.IN);
@@ -901,10 +906,15 @@ public class UserHrAccountService {
                     }
                 }
             }
+            // 查询总条数
+            int counts = userEmployeeDao.getCount(queryBuilder.buildQuery());
+            if (counts == 0) {
+                throw ExceptionFactory.buildException(ExceptionCategory.USEREMPLOYEES_EMPTY);
+            }
             // 默认第一页
             queryBuilder.setPageNum(pageNumber > 0 ? pageNumber : 1);
             // 默认每页15条数据
-            queryBuilder.setPageSize(pageSize > 0 ? pageNumber : 15);
+            queryBuilder.setPageSize(pageSize > 0 ? pageSize : 15);
             List<UserEmployeeDO> userEmployeeDOS = userEmployeeDao.getDatas(queryBuilder.buildQuery());
             Set<Integer> sysuserId = userEmployeeDOS.stream().filter(userUserDO -> userUserDO.getSysuserId() > 0)
                     .map(UserEmployeeDO::getSysuserId).collect(Collectors.toSet());
@@ -937,17 +947,21 @@ public class UserHrAccountService {
                     if (!StringUtils.isEmptyObject(companyMap) && !StringUtils.isEmptyObject(companyMap.get(userEmployeeDO.getCompanyId()))) {
                         userEmployeeVO.setCompanyName(companyMap.get(userEmployeeDO.getCompanyId()).getName());
                     }
-                    userEmployeeVO.setActivation(Integer.valueOf(String.valueOf(userEmployeeDO.getActivation())));
+                    userEmployeeVO.setActivation((new Double(userEmployeeDO.getActivation())).intValue());
                     userEmployeeVO.setAward(userEmployeeDO.getAward());
                     userEmployeeVO.setBindingTime(userEmployeeDO.getBindingTime());
                     userEmployeeVOS.add(userEmployeeVO);
                 }
+                userEmployeeVOPageVO.setData(userEmployeeVOS);
+                userEmployeeVOPageVO.setPageSize(pageSize);
+                userEmployeeVOPageVO.setPageNumber(pageNumber);
+                userEmployeeVOPageVO.setTotalRow(counts);
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw ExceptionFactory.buildException(ExceptionCategory.PROGRAM_EXCEPTION);
         }
-        return userEmployeeVOS;
+        return userEmployeeVOPageVO;
     }
 
     /**
@@ -1000,7 +1014,7 @@ public class UserHrAccountService {
                     if (!StringUtils.isEmptyObject(companyMap) && !StringUtils.isEmptyObject(companyMap.get(userEmployeeDO.getCompanyId()))) {
                         userEmployeeVO.setCompanyName(companyMap.get(userEmployeeDO.getCompanyId()).getName());
                     }
-                    userEmployeeVO.setActivation(Integer.valueOf(String.valueOf(userEmployeeDO.getActivation())));
+                    userEmployeeVO.setActivation((new Double(userEmployeeDO.getActivation())).intValue());
                     userEmployeeVO.setAward(userEmployeeDO.getAward());
                     userEmployeeVO.setBindingTime(userEmployeeDO.getCreateTime());
                     userEmployeeVOS.add(userEmployeeVO);
@@ -1155,7 +1169,7 @@ public class UserHrAccountService {
             userEmployeeDetailVO.setMobile(userEmployeeDO.getMobile());
             userEmployeeDetailVO.setCustomField(userEmployeeDO.getCustomField());
             userEmployeeDetailVO.setEmail(userEmployeeDO.getEmail());
-            userEmployeeDetailVO.setActivation(Integer.valueOf(String.valueOf(userEmployeeDO.getActivation())));
+            userEmployeeDetailVO.setActivation((new Double(userEmployeeDO.getActivation())).intValue());
             // 查询微信信息
             if (userEmployeeDO.getSysuserId() > 0) {
                 queryBuilder.clear();
@@ -1195,15 +1209,23 @@ public class UserHrAccountService {
      */
     public Response updateUserEmployee(String cname, String mobile, String email, String customField, Integer userEmployeeId) throws BIZException {
         Response response = new Response();
+        if (StringUtils.isEmptyObject(userEmployeeId)) {
+            throw ExceptionFactory.buildException(ExceptionCategory.USEREMPLOYEES_DATE_EMPTY);
+        }
         try {
-            if (StringUtils.isEmptyObject(userEmployeeId)) {
-                throw ExceptionFactory.buildException(ExceptionCategory.USEREMPLOYEES_DATE_EMPTY);
-            }
             UserEmployeeDO userEmployeeDO = new UserEmployeeDO();
-            userEmployeeDO.setCname(cname);
-            userEmployeeDO.setMobile(mobile);
-            userEmployeeDO.setCustomField(customField);
-            userEmployeeDO.setEmail(email);
+            if (!StringUtils.isEmptyObject(cname)) {
+                userEmployeeDO.setCname(cname);
+            }
+            if (!StringUtils.isEmptyObject(mobile)) {
+                userEmployeeDO.setMobile(mobile);
+            }
+            if (!StringUtils.isEmptyObject(customField)) {
+                userEmployeeDO.setCustomField(customField);
+            }
+            if (!StringUtils.isEmptyObject(email)) {
+                userEmployeeDO.setEmail(email);
+            }
             userEmployeeDO.setId(userEmployeeId);
             int i = userEmployeeDao.updateData(userEmployeeDO);
             if (i > 0) {
