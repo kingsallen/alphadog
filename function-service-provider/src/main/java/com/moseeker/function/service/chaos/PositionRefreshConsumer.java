@@ -72,6 +72,7 @@ public class PositionRefreshConsumer extends RedisConsumer<PositionForSyncResult
         HrThirdPartyPositionDO data = new HrThirdPartyPositionDO();
         data.setChannel(Byte.valueOf(pojo.getChannel()));
         data.setPositionId(Integer.valueOf(pojo.getPosition_id()));
+        data.setThirdPartyAccountId(pojo.getAccount_id());
         if (pojo.getStatus() == 0) {
             data.setIsRefresh((byte) PositionRefreshType.refreshed.getValue());
             data.setRefreshTime(pojo.getSync_time());
