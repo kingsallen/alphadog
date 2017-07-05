@@ -5,6 +5,7 @@ import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.company.service.HrTeamServices;
@@ -29,19 +30,15 @@ public class HrTeamController {
 
     Logger logger = LoggerFactory.getLogger(HrTeamController.class);
 
-    CompanyServices.Iface companyServices = ServiceManager.SERVICEMANAGER.getService(CompanyServices.Iface.class);
-
     HrTeamServices.Iface hrTeamServices = ServiceManager.SERVICEMANAGER.getService(HrTeamServices.Iface.class);
 
     @RequestMapping(value = "/hrteam", method = RequestMethod.GET)
     @ResponseBody
     public String getHrTeam(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Map<String, String> map = ParamUtils.parseRequestParam(request).entrySet().stream()
-                    .map(entry -> new AbstractMap.SimpleEntry<>(entry.getKey(), entry.getValue().toString()))
-                    .collect(Collectors.toMap((t -> t.getKey()), (s -> s.getValue())));
+            CommonQuery commonQuery = ParamUtils.initCommonQuery(request,CommonQuery.class);
 
-            List<HrTeamDO> hrTeamDOList = hrTeamServices.getHrTeams(map);
+            List<HrTeamDO> hrTeamDOList = hrTeamServices.getHrTeams(commonQuery);
 
             Response result = ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(hrTeamDOList));
             return ResponseLogNotification.success(request, result);
