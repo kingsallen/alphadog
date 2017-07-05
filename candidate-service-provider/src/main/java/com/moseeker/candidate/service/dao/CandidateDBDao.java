@@ -392,19 +392,6 @@ public class CandidateDBDao {
     }
 
     /**
-     * 查找公司下的员工信息
-     *
-     * @param companyId 公司编号
-     * @return 员工集合
-     */
-    public List<UserEmployeeDO> listUserEmployee(int companyId) {
-        Query query = new Query.QueryBuilder().select("id").select("sysuser_id")
-                .where("company_id", companyId).and("disable", Constant.ENABLE_OLD)
-                .and("activation", EmployeeType.AUTH_SUCCESS.getValue()).buildQuery();
-        return userEmployeeDao.getDatas(query);
-    }
-
-    /**
      * 查找推荐排名
      *
      * @param employeeIdList 员工编号
