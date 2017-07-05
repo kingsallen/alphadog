@@ -52,6 +52,8 @@ public class UserHrAccountService {
 
     public com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeNumStatistic getListNum(java.lang.String keyWord, int companyId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
+    public com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO employeeList(java.lang.String keword, int companyId, int filter, java.lang.String order, int by, int pageNumber, int pageSize) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
+
   }
 
   public interface AsyncIface {
@@ -91,6 +93,8 @@ public class UserHrAccountService {
     public void updateThirdPartyAccount(com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO account, org.apache.thrift.async.AsyncMethodCallback<java.lang.Integer> resultHandler) throws org.apache.thrift.TException;
 
     public void getListNum(java.lang.String keyWord, int companyId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeNumStatistic> resultHandler) throws org.apache.thrift.TException;
+
+    public void employeeList(java.lang.String keword, int companyId, int filter, java.lang.String order, int by, int pageNumber, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO> resultHandler) throws org.apache.thrift.TException;
 
   }
 
@@ -564,6 +568,38 @@ public class UserHrAccountService {
         throw result.e;
       }
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getListNum failed: unknown result");
+    }
+
+    public com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO employeeList(java.lang.String keword, int companyId, int filter, java.lang.String order, int by, int pageNumber, int pageSize) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    {
+      send_employeeList(keword, companyId, filter, order, by, pageNumber, pageSize);
+      return recv_employeeList();
+    }
+
+    public void send_employeeList(java.lang.String keword, int companyId, int filter, java.lang.String order, int by, int pageNumber, int pageSize) throws org.apache.thrift.TException
+    {
+      employeeList_args args = new employeeList_args();
+      args.setKeword(keword);
+      args.setCompanyId(companyId);
+      args.setFilter(filter);
+      args.setOrder(order);
+      args.setBy(by);
+      args.setPageNumber(pageNumber);
+      args.setPageSize(pageSize);
+      sendBase("employeeList", args);
+    }
+
+    public com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO recv_employeeList() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    {
+      employeeList_result result = new employeeList_result();
+      receiveBase(result, "employeeList");
+      if (result.isSetSuccess()) {
+        return result.success;
+      }
+      if (result.e != null) {
+        throw result.e;
+      }
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "employeeList failed: unknown result");
     }
 
   }
@@ -1211,6 +1247,56 @@ public class UserHrAccountService {
       }
     }
 
+    public void employeeList(java.lang.String keword, int companyId, int filter, java.lang.String order, int by, int pageNumber, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO> resultHandler) throws org.apache.thrift.TException {
+      checkReady();
+      employeeList_call method_call = new employeeList_call(keword, companyId, filter, order, by, pageNumber, pageSize, resultHandler, this, ___protocolFactory, ___transport);
+      this.___currentMethod = method_call;
+      ___manager.call(method_call);
+    }
+
+    public static class employeeList_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO> {
+      private java.lang.String keword;
+      private int companyId;
+      private int filter;
+      private java.lang.String order;
+      private int by;
+      private int pageNumber;
+      private int pageSize;
+      public employeeList_call(java.lang.String keword, int companyId, int filter, java.lang.String order, int by, int pageNumber, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+        super(client, protocolFactory, transport, resultHandler, false);
+        this.keword = keword;
+        this.companyId = companyId;
+        this.filter = filter;
+        this.order = order;
+        this.by = by;
+        this.pageNumber = pageNumber;
+        this.pageSize = pageSize;
+      }
+
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("employeeList", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        employeeList_args args = new employeeList_args();
+        args.setKeword(keword);
+        args.setCompanyId(companyId);
+        args.setFilter(filter);
+        args.setOrder(order);
+        args.setBy(by);
+        args.setPageNumber(pageNumber);
+        args.setPageSize(pageSize);
+        args.write(prot);
+        prot.writeMessageEnd();
+      }
+
+      public com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO getResult() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
+        }
+        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
+        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
+        return (new Client(prot)).recv_employeeList();
+      }
+    }
+
   }
 
   public static class Processor<I extends Iface> extends org.apache.thrift.TBaseProcessor<I> implements org.apache.thrift.TProcessor {
@@ -1242,6 +1328,7 @@ public class UserHrAccountService {
       processMap.put("getThirdPartyAccounts", new getThirdPartyAccounts());
       processMap.put("updateThirdPartyAccount", new updateThirdPartyAccount());
       processMap.put("getListNum", new getListNum());
+      processMap.put("employeeList", new employeeList());
       return processMap;
     }
 
@@ -1634,6 +1721,30 @@ public class UserHrAccountService {
       }
     }
 
+    public static class employeeList<I extends Iface> extends org.apache.thrift.ProcessFunction<I, employeeList_args> {
+      public employeeList() {
+        super("employeeList");
+      }
+
+      public employeeList_args getEmptyArgsInstance() {
+        return new employeeList_args();
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public employeeList_result getResult(I iface, employeeList_args args) throws org.apache.thrift.TException {
+        employeeList_result result = new employeeList_result();
+        try {
+          result.success = iface.employeeList(args.keword, args.companyId, args.filter, args.order, args.by, args.pageNumber, args.pageSize);
+        } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
+          result.e = e;
+        }
+        return result;
+      }
+    }
+
   }
 
   public static class AsyncProcessor<I extends AsyncIface> extends org.apache.thrift.TBaseAsyncProcessor<I> {
@@ -1665,6 +1776,7 @@ public class UserHrAccountService {
       processMap.put("getThirdPartyAccounts", new getThirdPartyAccounts());
       processMap.put("updateThirdPartyAccount", new updateThirdPartyAccount());
       processMap.put("getListNum", new getListNum());
+      processMap.put("employeeList", new employeeList());
       return processMap;
     }
 
@@ -2792,6 +2904,71 @@ public class UserHrAccountService {
 
       public void start(I iface, getListNum_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeNumStatistic> resultHandler) throws org.apache.thrift.TException {
         iface.getListNum(args.keyWord, args.companyId,resultHandler);
+      }
+    }
+
+    public static class employeeList<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, employeeList_args, com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO> {
+      public employeeList() {
+        super("employeeList");
+      }
+
+      public employeeList_args getEmptyArgsInstance() {
+        return new employeeList_args();
+      }
+
+      public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
+        final org.apache.thrift.AsyncProcessFunction fcall = this;
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO>() { 
+          public void onComplete(com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO o) {
+            employeeList_result result = new employeeList_result();
+            result.success = o;
+            try {
+              fcall.sendResponse(fb, result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
+            } catch (org.apache.thrift.transport.TTransportException e) {
+              _LOGGER.error("TTransportException writing to internal frame buffer", e);
+              fb.close();
+            } catch (java.lang.Exception e) {
+              _LOGGER.error("Exception writing to internal frame buffer", e);
+              onError(e);
+            }
+          }
+          public void onError(java.lang.Exception e) {
+            byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
+            org.apache.thrift.TSerializable msg;
+            employeeList_result result = new employeeList_result();
+            if (e instanceof com.moseeker.thrift.gen.common.struct.BIZException) {
+              result.e = (com.moseeker.thrift.gen.common.struct.BIZException) e;
+              result.setEIsSet(true);
+              msg = result;
+            } else if (e instanceof org.apache.thrift.transport.TTransportException) {
+              _LOGGER.error("TTransportException inside handler", e);
+              fb.close();
+              return;
+            } else if (e instanceof org.apache.thrift.TApplicationException) {
+              _LOGGER.error("TApplicationException inside handler", e);
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = (org.apache.thrift.TApplicationException)e;
+            } else {
+              _LOGGER.error("Exception inside handler", e);
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
+            }
+            try {
+              fcall.sendResponse(fb,msg,msgType,seqid);
+            } catch (java.lang.Exception ex) {
+              _LOGGER.error("Exception writing to internal frame buffer", ex);
+              fb.close();
+            }
+          }
+        };
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public void start(I iface, employeeList_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO> resultHandler) throws org.apache.thrift.TException {
+        iface.employeeList(args.keword, args.companyId, args.filter, args.order, args.by, args.pageNumber, args.pageSize,resultHandler);
       }
     }
 
@@ -18484,6 +18661,1429 @@ public class UserHrAccountService {
         java.util.BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
           struct.success = new com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeNumStatistic();
+          struct.success.read(iprot);
+          struct.setSuccessIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+          struct.e.read(iprot);
+          struct.setEIsSet(true);
+        }
+      }
+    }
+
+    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+    }
+  }
+
+  public static class employeeList_args implements org.apache.thrift.TBase<employeeList_args, employeeList_args._Fields>, java.io.Serializable, Cloneable, Comparable<employeeList_args>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("employeeList_args");
+
+    private static final org.apache.thrift.protocol.TField KEWORD_FIELD_DESC = new org.apache.thrift.protocol.TField("keword", org.apache.thrift.protocol.TType.STRING, (short)1);
+    private static final org.apache.thrift.protocol.TField COMPANY_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("companyId", org.apache.thrift.protocol.TType.I32, (short)2);
+    private static final org.apache.thrift.protocol.TField FILTER_FIELD_DESC = new org.apache.thrift.protocol.TField("filter", org.apache.thrift.protocol.TType.I32, (short)3);
+    private static final org.apache.thrift.protocol.TField ORDER_FIELD_DESC = new org.apache.thrift.protocol.TField("order", org.apache.thrift.protocol.TType.STRING, (short)4);
+    private static final org.apache.thrift.protocol.TField BY_FIELD_DESC = new org.apache.thrift.protocol.TField("by", org.apache.thrift.protocol.TType.I32, (short)5);
+    private static final org.apache.thrift.protocol.TField PAGE_NUMBER_FIELD_DESC = new org.apache.thrift.protocol.TField("pageNumber", org.apache.thrift.protocol.TType.I32, (short)6);
+    private static final org.apache.thrift.protocol.TField PAGE_SIZE_FIELD_DESC = new org.apache.thrift.protocol.TField("pageSize", org.apache.thrift.protocol.TType.I32, (short)7);
+
+    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new employeeList_argsStandardSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new employeeList_argsTupleSchemeFactory();
+
+    public java.lang.String keword; // required
+    public int companyId; // required
+    public int filter; // required
+    public java.lang.String order; // required
+    public int by; // required
+    public int pageNumber; // required
+    public int pageSize; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      KEWORD((short)1, "keword"),
+      COMPANY_ID((short)2, "companyId"),
+      FILTER((short)3, "filter"),
+      ORDER((short)4, "order"),
+      BY((short)5, "by"),
+      PAGE_NUMBER((short)6, "pageNumber"),
+      PAGE_SIZE((short)7, "pageSize");
+
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+      static {
+        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 1: // KEWORD
+            return KEWORD;
+          case 2: // COMPANY_ID
+            return COMPANY_ID;
+          case 3: // FILTER
+            return FILTER;
+          case 4: // ORDER
+            return ORDER;
+          case 5: // BY
+            return BY;
+          case 6: // PAGE_NUMBER
+            return PAGE_NUMBER;
+          case 7: // PAGE_SIZE
+            return PAGE_SIZE;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(java.lang.String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final java.lang.String _fieldName;
+
+      _Fields(short thriftId, java.lang.String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public java.lang.String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    private static final int __COMPANYID_ISSET_ID = 0;
+    private static final int __FILTER_ISSET_ID = 1;
+    private static final int __BY_ISSET_ID = 2;
+    private static final int __PAGENUMBER_ISSET_ID = 3;
+    private static final int __PAGESIZE_ISSET_ID = 4;
+    private byte __isset_bitfield = 0;
+    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.KEWORD, new org.apache.thrift.meta_data.FieldMetaData("keword", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("companyId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.FILTER, new org.apache.thrift.meta_data.FieldMetaData("filter", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.ORDER, new org.apache.thrift.meta_data.FieldMetaData("order", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+      tmpMap.put(_Fields.BY, new org.apache.thrift.meta_data.FieldMetaData("by", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.PAGE_NUMBER, new org.apache.thrift.meta_data.FieldMetaData("pageNumber", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.PAGE_SIZE, new org.apache.thrift.meta_data.FieldMetaData("pageSize", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(employeeList_args.class, metaDataMap);
+    }
+
+    public employeeList_args() {
+    }
+
+    public employeeList_args(
+      java.lang.String keword,
+      int companyId,
+      int filter,
+      java.lang.String order,
+      int by,
+      int pageNumber,
+      int pageSize)
+    {
+      this();
+      this.keword = keword;
+      this.companyId = companyId;
+      setCompanyIdIsSet(true);
+      this.filter = filter;
+      setFilterIsSet(true);
+      this.order = order;
+      this.by = by;
+      setByIsSet(true);
+      this.pageNumber = pageNumber;
+      setPageNumberIsSet(true);
+      this.pageSize = pageSize;
+      setPageSizeIsSet(true);
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public employeeList_args(employeeList_args other) {
+      __isset_bitfield = other.__isset_bitfield;
+      if (other.isSetKeword()) {
+        this.keword = other.keword;
+      }
+      this.companyId = other.companyId;
+      this.filter = other.filter;
+      if (other.isSetOrder()) {
+        this.order = other.order;
+      }
+      this.by = other.by;
+      this.pageNumber = other.pageNumber;
+      this.pageSize = other.pageSize;
+    }
+
+    public employeeList_args deepCopy() {
+      return new employeeList_args(this);
+    }
+
+    @Override
+    public void clear() {
+      this.keword = null;
+      setCompanyIdIsSet(false);
+      this.companyId = 0;
+      setFilterIsSet(false);
+      this.filter = 0;
+      this.order = null;
+      setByIsSet(false);
+      this.by = 0;
+      setPageNumberIsSet(false);
+      this.pageNumber = 0;
+      setPageSizeIsSet(false);
+      this.pageSize = 0;
+    }
+
+    public java.lang.String getKeword() {
+      return this.keword;
+    }
+
+    public employeeList_args setKeword(java.lang.String keword) {
+      this.keword = keword;
+      return this;
+    }
+
+    public void unsetKeword() {
+      this.keword = null;
+    }
+
+    /** Returns true if field keword is set (has been assigned a value) and false otherwise */
+    public boolean isSetKeword() {
+      return this.keword != null;
+    }
+
+    public void setKewordIsSet(boolean value) {
+      if (!value) {
+        this.keword = null;
+      }
+    }
+
+    public int getCompanyId() {
+      return this.companyId;
+    }
+
+    public employeeList_args setCompanyId(int companyId) {
+      this.companyId = companyId;
+      setCompanyIdIsSet(true);
+      return this;
+    }
+
+    public void unsetCompanyId() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __COMPANYID_ISSET_ID);
+    }
+
+    /** Returns true if field companyId is set (has been assigned a value) and false otherwise */
+    public boolean isSetCompanyId() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __COMPANYID_ISSET_ID);
+    }
+
+    public void setCompanyIdIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __COMPANYID_ISSET_ID, value);
+    }
+
+    public int getFilter() {
+      return this.filter;
+    }
+
+    public employeeList_args setFilter(int filter) {
+      this.filter = filter;
+      setFilterIsSet(true);
+      return this;
+    }
+
+    public void unsetFilter() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __FILTER_ISSET_ID);
+    }
+
+    /** Returns true if field filter is set (has been assigned a value) and false otherwise */
+    public boolean isSetFilter() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __FILTER_ISSET_ID);
+    }
+
+    public void setFilterIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __FILTER_ISSET_ID, value);
+    }
+
+    public java.lang.String getOrder() {
+      return this.order;
+    }
+
+    public employeeList_args setOrder(java.lang.String order) {
+      this.order = order;
+      return this;
+    }
+
+    public void unsetOrder() {
+      this.order = null;
+    }
+
+    /** Returns true if field order is set (has been assigned a value) and false otherwise */
+    public boolean isSetOrder() {
+      return this.order != null;
+    }
+
+    public void setOrderIsSet(boolean value) {
+      if (!value) {
+        this.order = null;
+      }
+    }
+
+    public int getBy() {
+      return this.by;
+    }
+
+    public employeeList_args setBy(int by) {
+      this.by = by;
+      setByIsSet(true);
+      return this;
+    }
+
+    public void unsetBy() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __BY_ISSET_ID);
+    }
+
+    /** Returns true if field by is set (has been assigned a value) and false otherwise */
+    public boolean isSetBy() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __BY_ISSET_ID);
+    }
+
+    public void setByIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __BY_ISSET_ID, value);
+    }
+
+    public int getPageNumber() {
+      return this.pageNumber;
+    }
+
+    public employeeList_args setPageNumber(int pageNumber) {
+      this.pageNumber = pageNumber;
+      setPageNumberIsSet(true);
+      return this;
+    }
+
+    public void unsetPageNumber() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __PAGENUMBER_ISSET_ID);
+    }
+
+    /** Returns true if field pageNumber is set (has been assigned a value) and false otherwise */
+    public boolean isSetPageNumber() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __PAGENUMBER_ISSET_ID);
+    }
+
+    public void setPageNumberIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __PAGENUMBER_ISSET_ID, value);
+    }
+
+    public int getPageSize() {
+      return this.pageSize;
+    }
+
+    public employeeList_args setPageSize(int pageSize) {
+      this.pageSize = pageSize;
+      setPageSizeIsSet(true);
+      return this;
+    }
+
+    public void unsetPageSize() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __PAGESIZE_ISSET_ID);
+    }
+
+    /** Returns true if field pageSize is set (has been assigned a value) and false otherwise */
+    public boolean isSetPageSize() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __PAGESIZE_ISSET_ID);
+    }
+
+    public void setPageSizeIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __PAGESIZE_ISSET_ID, value);
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
+      switch (field) {
+      case KEWORD:
+        if (value == null) {
+          unsetKeword();
+        } else {
+          setKeword((java.lang.String)value);
+        }
+        break;
+
+      case COMPANY_ID:
+        if (value == null) {
+          unsetCompanyId();
+        } else {
+          setCompanyId((java.lang.Integer)value);
+        }
+        break;
+
+      case FILTER:
+        if (value == null) {
+          unsetFilter();
+        } else {
+          setFilter((java.lang.Integer)value);
+        }
+        break;
+
+      case ORDER:
+        if (value == null) {
+          unsetOrder();
+        } else {
+          setOrder((java.lang.String)value);
+        }
+        break;
+
+      case BY:
+        if (value == null) {
+          unsetBy();
+        } else {
+          setBy((java.lang.Integer)value);
+        }
+        break;
+
+      case PAGE_NUMBER:
+        if (value == null) {
+          unsetPageNumber();
+        } else {
+          setPageNumber((java.lang.Integer)value);
+        }
+        break;
+
+      case PAGE_SIZE:
+        if (value == null) {
+          unsetPageSize();
+        } else {
+          setPageSize((java.lang.Integer)value);
+        }
+        break;
+
+      }
+    }
+
+    public java.lang.Object getFieldValue(_Fields field) {
+      switch (field) {
+      case KEWORD:
+        return getKeword();
+
+      case COMPANY_ID:
+        return getCompanyId();
+
+      case FILTER:
+        return getFilter();
+
+      case ORDER:
+        return getOrder();
+
+      case BY:
+        return getBy();
+
+      case PAGE_NUMBER:
+        return getPageNumber();
+
+      case PAGE_SIZE:
+        return getPageSize();
+
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new java.lang.IllegalArgumentException();
+      }
+
+      switch (field) {
+      case KEWORD:
+        return isSetKeword();
+      case COMPANY_ID:
+        return isSetCompanyId();
+      case FILTER:
+        return isSetFilter();
+      case ORDER:
+        return isSetOrder();
+      case BY:
+        return isSetBy();
+      case PAGE_NUMBER:
+        return isSetPageNumber();
+      case PAGE_SIZE:
+        return isSetPageSize();
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(java.lang.Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof employeeList_args)
+        return this.equals((employeeList_args)that);
+      return false;
+    }
+
+    public boolean equals(employeeList_args that) {
+      if (that == null)
+        return false;
+      if (this == that)
+        return true;
+
+      boolean this_present_keword = true && this.isSetKeword();
+      boolean that_present_keword = true && that.isSetKeword();
+      if (this_present_keword || that_present_keword) {
+        if (!(this_present_keword && that_present_keword))
+          return false;
+        if (!this.keword.equals(that.keword))
+          return false;
+      }
+
+      boolean this_present_companyId = true;
+      boolean that_present_companyId = true;
+      if (this_present_companyId || that_present_companyId) {
+        if (!(this_present_companyId && that_present_companyId))
+          return false;
+        if (this.companyId != that.companyId)
+          return false;
+      }
+
+      boolean this_present_filter = true;
+      boolean that_present_filter = true;
+      if (this_present_filter || that_present_filter) {
+        if (!(this_present_filter && that_present_filter))
+          return false;
+        if (this.filter != that.filter)
+          return false;
+      }
+
+      boolean this_present_order = true && this.isSetOrder();
+      boolean that_present_order = true && that.isSetOrder();
+      if (this_present_order || that_present_order) {
+        if (!(this_present_order && that_present_order))
+          return false;
+        if (!this.order.equals(that.order))
+          return false;
+      }
+
+      boolean this_present_by = true;
+      boolean that_present_by = true;
+      if (this_present_by || that_present_by) {
+        if (!(this_present_by && that_present_by))
+          return false;
+        if (this.by != that.by)
+          return false;
+      }
+
+      boolean this_present_pageNumber = true;
+      boolean that_present_pageNumber = true;
+      if (this_present_pageNumber || that_present_pageNumber) {
+        if (!(this_present_pageNumber && that_present_pageNumber))
+          return false;
+        if (this.pageNumber != that.pageNumber)
+          return false;
+      }
+
+      boolean this_present_pageSize = true;
+      boolean that_present_pageSize = true;
+      if (this_present_pageSize || that_present_pageSize) {
+        if (!(this_present_pageSize && that_present_pageSize))
+          return false;
+        if (this.pageSize != that.pageSize)
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hashCode = 1;
+
+      hashCode = hashCode * 8191 + ((isSetKeword()) ? 131071 : 524287);
+      if (isSetKeword())
+        hashCode = hashCode * 8191 + keword.hashCode();
+
+      hashCode = hashCode * 8191 + companyId;
+
+      hashCode = hashCode * 8191 + filter;
+
+      hashCode = hashCode * 8191 + ((isSetOrder()) ? 131071 : 524287);
+      if (isSetOrder())
+        hashCode = hashCode * 8191 + order.hashCode();
+
+      hashCode = hashCode * 8191 + by;
+
+      hashCode = hashCode * 8191 + pageNumber;
+
+      hashCode = hashCode * 8191 + pageSize;
+
+      return hashCode;
+    }
+
+    @Override
+    public int compareTo(employeeList_args other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = java.lang.Boolean.valueOf(isSetKeword()).compareTo(other.isSetKeword());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetKeword()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.keword, other.keword);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetCompanyId()).compareTo(other.isSetCompanyId());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetCompanyId()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.companyId, other.companyId);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetFilter()).compareTo(other.isSetFilter());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetFilter()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.filter, other.filter);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetOrder()).compareTo(other.isSetOrder());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetOrder()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.order, other.order);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetBy()).compareTo(other.isSetBy());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetBy()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.by, other.by);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetPageNumber()).compareTo(other.isSetPageNumber());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetPageNumber()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.pageNumber, other.pageNumber);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetPageSize()).compareTo(other.isSetPageSize());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetPageSize()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.pageSize, other.pageSize);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      scheme(iprot).read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      scheme(oprot).write(oprot, this);
+    }
+
+    @Override
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("employeeList_args(");
+      boolean first = true;
+
+      sb.append("keword:");
+      if (this.keword == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.keword);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("companyId:");
+      sb.append(this.companyId);
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("filter:");
+      sb.append(this.filter);
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("order:");
+      if (this.order == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.order);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("by:");
+      sb.append(this.by);
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("pageNumber:");
+      sb.append(this.pageNumber);
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("pageSize:");
+      sb.append(this.pageSize);
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+      try {
+        // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
+        __isset_bitfield = 0;
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class employeeList_argsStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public employeeList_argsStandardScheme getScheme() {
+        return new employeeList_argsStandardScheme();
+      }
+    }
+
+    private static class employeeList_argsStandardScheme extends org.apache.thrift.scheme.StandardScheme<employeeList_args> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, employeeList_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            case 1: // KEWORD
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                struct.keword = iprot.readString();
+                struct.setKewordIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 2: // COMPANY_ID
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.companyId = iprot.readI32();
+                struct.setCompanyIdIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 3: // FILTER
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.filter = iprot.readI32();
+                struct.setFilterIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 4: // ORDER
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                struct.order = iprot.readString();
+                struct.setOrderIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 5: // BY
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.by = iprot.readI32();
+                struct.setByIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 6: // PAGE_NUMBER
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.pageNumber = iprot.readI32();
+                struct.setPageNumberIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 7: // PAGE_SIZE
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.pageSize = iprot.readI32();
+                struct.setPageSizeIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, employeeList_args struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.keword != null) {
+          oprot.writeFieldBegin(KEWORD_FIELD_DESC);
+          oprot.writeString(struct.keword);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldBegin(COMPANY_ID_FIELD_DESC);
+        oprot.writeI32(struct.companyId);
+        oprot.writeFieldEnd();
+        oprot.writeFieldBegin(FILTER_FIELD_DESC);
+        oprot.writeI32(struct.filter);
+        oprot.writeFieldEnd();
+        if (struct.order != null) {
+          oprot.writeFieldBegin(ORDER_FIELD_DESC);
+          oprot.writeString(struct.order);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldBegin(BY_FIELD_DESC);
+        oprot.writeI32(struct.by);
+        oprot.writeFieldEnd();
+        oprot.writeFieldBegin(PAGE_NUMBER_FIELD_DESC);
+        oprot.writeI32(struct.pageNumber);
+        oprot.writeFieldEnd();
+        oprot.writeFieldBegin(PAGE_SIZE_FIELD_DESC);
+        oprot.writeI32(struct.pageSize);
+        oprot.writeFieldEnd();
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class employeeList_argsTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public employeeList_argsTupleScheme getScheme() {
+        return new employeeList_argsTupleScheme();
+      }
+    }
+
+    private static class employeeList_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<employeeList_args> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, employeeList_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetKeword()) {
+          optionals.set(0);
+        }
+        if (struct.isSetCompanyId()) {
+          optionals.set(1);
+        }
+        if (struct.isSetFilter()) {
+          optionals.set(2);
+        }
+        if (struct.isSetOrder()) {
+          optionals.set(3);
+        }
+        if (struct.isSetBy()) {
+          optionals.set(4);
+        }
+        if (struct.isSetPageNumber()) {
+          optionals.set(5);
+        }
+        if (struct.isSetPageSize()) {
+          optionals.set(6);
+        }
+        oprot.writeBitSet(optionals, 7);
+        if (struct.isSetKeword()) {
+          oprot.writeString(struct.keword);
+        }
+        if (struct.isSetCompanyId()) {
+          oprot.writeI32(struct.companyId);
+        }
+        if (struct.isSetFilter()) {
+          oprot.writeI32(struct.filter);
+        }
+        if (struct.isSetOrder()) {
+          oprot.writeString(struct.order);
+        }
+        if (struct.isSetBy()) {
+          oprot.writeI32(struct.by);
+        }
+        if (struct.isSetPageNumber()) {
+          oprot.writeI32(struct.pageNumber);
+        }
+        if (struct.isSetPageSize()) {
+          oprot.writeI32(struct.pageSize);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, employeeList_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(7);
+        if (incoming.get(0)) {
+          struct.keword = iprot.readString();
+          struct.setKewordIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.companyId = iprot.readI32();
+          struct.setCompanyIdIsSet(true);
+        }
+        if (incoming.get(2)) {
+          struct.filter = iprot.readI32();
+          struct.setFilterIsSet(true);
+        }
+        if (incoming.get(3)) {
+          struct.order = iprot.readString();
+          struct.setOrderIsSet(true);
+        }
+        if (incoming.get(4)) {
+          struct.by = iprot.readI32();
+          struct.setByIsSet(true);
+        }
+        if (incoming.get(5)) {
+          struct.pageNumber = iprot.readI32();
+          struct.setPageNumberIsSet(true);
+        }
+        if (incoming.get(6)) {
+          struct.pageSize = iprot.readI32();
+          struct.setPageSizeIsSet(true);
+        }
+      }
+    }
+
+    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+    }
+  }
+
+  public static class employeeList_result implements org.apache.thrift.TBase<employeeList_result, employeeList_result._Fields>, java.io.Serializable, Cloneable, Comparable<employeeList_result>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("employeeList_result");
+
+    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
+    private static final org.apache.thrift.protocol.TField E_FIELD_DESC = new org.apache.thrift.protocol.TField("e", org.apache.thrift.protocol.TType.STRUCT, (short)1);
+
+    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new employeeList_resultStandardSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new employeeList_resultTupleSchemeFactory();
+
+    public com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO success; // required
+    public com.moseeker.thrift.gen.common.struct.BIZException e; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      SUCCESS((short)0, "success"),
+      E((short)1, "e");
+
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+      static {
+        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 0: // SUCCESS
+            return SUCCESS;
+          case 1: // E
+            return E;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(java.lang.String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final java.lang.String _fieldName;
+
+      _Fields(short thriftId, java.lang.String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public java.lang.String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO.class)));
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
+      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(employeeList_result.class, metaDataMap);
+    }
+
+    public employeeList_result() {
+    }
+
+    public employeeList_result(
+      com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO success,
+      com.moseeker.thrift.gen.common.struct.BIZException e)
+    {
+      this();
+      this.success = success;
+      this.e = e;
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public employeeList_result(employeeList_result other) {
+      if (other.isSetSuccess()) {
+        this.success = new com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO(other.success);
+      }
+      if (other.isSetE()) {
+        this.e = new com.moseeker.thrift.gen.common.struct.BIZException(other.e);
+      }
+    }
+
+    public employeeList_result deepCopy() {
+      return new employeeList_result(this);
+    }
+
+    @Override
+    public void clear() {
+      this.success = null;
+      this.e = null;
+    }
+
+    public com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO getSuccess() {
+      return this.success;
+    }
+
+    public employeeList_result setSuccess(com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO success) {
+      this.success = success;
+      return this;
+    }
+
+    public void unsetSuccess() {
+      this.success = null;
+    }
+
+    /** Returns true if field success is set (has been assigned a value) and false otherwise */
+    public boolean isSetSuccess() {
+      return this.success != null;
+    }
+
+    public void setSuccessIsSet(boolean value) {
+      if (!value) {
+        this.success = null;
+      }
+    }
+
+    public com.moseeker.thrift.gen.common.struct.BIZException getE() {
+      return this.e;
+    }
+
+    public employeeList_result setE(com.moseeker.thrift.gen.common.struct.BIZException e) {
+      this.e = e;
+      return this;
+    }
+
+    public void unsetE() {
+      this.e = null;
+    }
+
+    /** Returns true if field e is set (has been assigned a value) and false otherwise */
+    public boolean isSetE() {
+      return this.e != null;
+    }
+
+    public void setEIsSet(boolean value) {
+      if (!value) {
+        this.e = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
+      switch (field) {
+      case SUCCESS:
+        if (value == null) {
+          unsetSuccess();
+        } else {
+          setSuccess((com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO)value);
+        }
+        break;
+
+      case E:
+        if (value == null) {
+          unsetE();
+        } else {
+          setE((com.moseeker.thrift.gen.common.struct.BIZException)value);
+        }
+        break;
+
+      }
+    }
+
+    public java.lang.Object getFieldValue(_Fields field) {
+      switch (field) {
+      case SUCCESS:
+        return getSuccess();
+
+      case E:
+        return getE();
+
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new java.lang.IllegalArgumentException();
+      }
+
+      switch (field) {
+      case SUCCESS:
+        return isSetSuccess();
+      case E:
+        return isSetE();
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(java.lang.Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof employeeList_result)
+        return this.equals((employeeList_result)that);
+      return false;
+    }
+
+    public boolean equals(employeeList_result that) {
+      if (that == null)
+        return false;
+      if (this == that)
+        return true;
+
+      boolean this_present_success = true && this.isSetSuccess();
+      boolean that_present_success = true && that.isSetSuccess();
+      if (this_present_success || that_present_success) {
+        if (!(this_present_success && that_present_success))
+          return false;
+        if (!this.success.equals(that.success))
+          return false;
+      }
+
+      boolean this_present_e = true && this.isSetE();
+      boolean that_present_e = true && that.isSetE();
+      if (this_present_e || that_present_e) {
+        if (!(this_present_e && that_present_e))
+          return false;
+        if (!this.e.equals(that.e))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hashCode = 1;
+
+      hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
+      if (isSetSuccess())
+        hashCode = hashCode * 8191 + success.hashCode();
+
+      hashCode = hashCode * 8191 + ((isSetE()) ? 131071 : 524287);
+      if (isSetE())
+        hashCode = hashCode * 8191 + e.hashCode();
+
+      return hashCode;
+    }
+
+    @Override
+    public int compareTo(employeeList_result other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSuccess()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetE()).compareTo(other.isSetE());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetE()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.e, other.e);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      scheme(iprot).read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      scheme(oprot).write(oprot, this);
+      }
+
+    @Override
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("employeeList_result(");
+      boolean first = true;
+
+      sb.append("success:");
+      if (this.success == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.success);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("e:");
+      if (this.e == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.e);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+      if (success != null) {
+        success.validate();
+      }
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class employeeList_resultStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public employeeList_resultStandardScheme getScheme() {
+        return new employeeList_resultStandardScheme();
+      }
+    }
+
+    private static class employeeList_resultStandardScheme extends org.apache.thrift.scheme.StandardScheme<employeeList_result> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, employeeList_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            case 0: // SUCCESS
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.success = new com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO();
+                struct.success.read(iprot);
+                struct.setSuccessIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 1: // E
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+                struct.e.read(iprot);
+                struct.setEIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, employeeList_result struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.success != null) {
+          oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
+          struct.success.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        if (struct.e != null) {
+          oprot.writeFieldBegin(E_FIELD_DESC);
+          struct.e.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class employeeList_resultTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public employeeList_resultTupleScheme getScheme() {
+        return new employeeList_resultTupleScheme();
+      }
+    }
+
+    private static class employeeList_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<employeeList_result> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, employeeList_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetSuccess()) {
+          optionals.set(0);
+        }
+        if (struct.isSetE()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
+        if (struct.isSetSuccess()) {
+          struct.success.write(oprot);
+        }
+        if (struct.isSetE()) {
+          struct.e.write(oprot);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, employeeList_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(2);
+        if (incoming.get(0)) {
+          struct.success = new com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO();
           struct.success.read(iprot);
           struct.setSuccessIsSet(true);
         }

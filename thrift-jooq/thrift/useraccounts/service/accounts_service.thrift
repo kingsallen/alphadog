@@ -122,7 +122,8 @@ service UserHrAccountService {
      // 通过公司ID和关键字,查询认证员工和未认证员工数量
     useraccounts_struct.UserEmployeeNumStatistic getListNum(1:string keyWord, 2:i32 companyId) throws (1: common_struct.BIZException e);
 
-    useraccounts_struct.UserEmployeeNumStatistic getListNum(1:string keyWord, 2:i32 companyId) throws (1: common_struct.BIZException e);
+    // 员工列表
+    useraccounts_struct.UserEmployeeVOPageVO employeeList(1:string keword, 2:i32 companyId, 3:i32 filter, 4:string order, 5:i32 by, 6:i32 pageNumber, 7:i32 pageSize) throws (1: common_struct.BIZException e);
 }
 
 

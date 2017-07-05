@@ -210,4 +210,9 @@ public class UserHrAccountServiceImpl implements Iface {
     public UserEmployeeNumStatistic getListNum(String keyWord, int companyId) throws BIZException, TException {
         return service.getListNum(keyWord, companyId);
     }
+
+    @Override
+    public UserEmployeeVOPageVO employeeList(String keword, int companyId, int filter, String order, int by, int pageNumber, int pageSize) throws BIZException, TException {
+        return service.employeeList(keword, companyId, filter, order, by, pageNumber, pageSize);
+    }
 }

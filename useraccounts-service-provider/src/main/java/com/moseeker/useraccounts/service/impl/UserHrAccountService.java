@@ -947,7 +947,7 @@ public class UserHrAccountService {
                     if (!StringUtils.isEmptyObject(companyMap) && !StringUtils.isEmptyObject(companyMap.get(userEmployeeDO.getCompanyId()))) {
                         userEmployeeVO.setCompanyName(companyMap.get(userEmployeeDO.getCompanyId()).getName());
                     }
-                    userEmployeeVO.setActivation(Integer.valueOf(String.valueOf(userEmployeeDO.getActivation())));
+                    userEmployeeVO.setActivation((new Double(userEmployeeDO.getActivation())).intValue());
                     userEmployeeVO.setAward(userEmployeeDO.getAward());
                     userEmployeeVO.setBindingTime(userEmployeeDO.getBindingTime());
                     userEmployeeVOS.add(userEmployeeVO);
@@ -1014,7 +1014,7 @@ public class UserHrAccountService {
                     if (!StringUtils.isEmptyObject(companyMap) && !StringUtils.isEmptyObject(companyMap.get(userEmployeeDO.getCompanyId()))) {
                         userEmployeeVO.setCompanyName(companyMap.get(userEmployeeDO.getCompanyId()).getName());
                     }
-                    userEmployeeVO.setActivation(Integer.valueOf(String.valueOf(userEmployeeDO.getActivation())));
+                    userEmployeeVO.setActivation((new Double(userEmployeeDO.getActivation())).intValue());
                     userEmployeeVO.setAward(userEmployeeDO.getAward());
                     userEmployeeVO.setBindingTime(userEmployeeDO.getCreateTime());
                     userEmployeeVOS.add(userEmployeeVO);
