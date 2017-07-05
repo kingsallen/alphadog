@@ -28,7 +28,7 @@ public class HrCmsMediaDao extends JooqCrudImpl<HrCmsMediaDO, HrCmsMediaRecord> 
 	  */
 	 public List<HrCmsMediaDO> getHrCmsMediaDOByModuleIdList(List<Integer> ids){
 		 Query query=new Query.QueryBuilder().where(new Condition("module_id",ids.toArray(),ValueOp.IN)).and("disable",0).and("is_show",0)
-					.orderBy("module_id").orderBy("order").buildQuery();
+					.orderBy("module_id").orderBy("orders").buildQuery();
 			 List<HrCmsMediaDO> list=this.getDatas(query);
 			return list;
 	 }

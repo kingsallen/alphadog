@@ -28,7 +28,7 @@ public class HrCmsModuleDao extends JooqCrudImpl<HrCmsModuleDO, HrCmsModuleRecor
 	  */
 	 public List<HrCmsModuleDO> getHrCmsModuleDOBypageIdList(List<Integer> ids){
 		 Query query=new Query.QueryBuilder().where(new Condition("page_id",ids.toArray(),ValueOp.IN)).and("disable",0)
-					.orderBy("page_id").orderBy("order").buildQuery();
+					.orderBy("page_id").orderBy("orders").buildQuery();
 			 List<HrCmsModuleDO> list=this.getDatas(query);
 			return list;
 	 }

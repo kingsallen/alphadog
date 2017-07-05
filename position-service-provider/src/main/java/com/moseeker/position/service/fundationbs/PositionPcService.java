@@ -7,9 +7,16 @@ import java.util.Map;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.query.SelectOp;
+
+import org.apache.thrift.TException;
+import org.apache.thrift.TSerializer;
+import org.apache.thrift.protocol.TSimpleJSONProtocol;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.campaigndb.CampaignPcRecommendCompanyDao;
 import com.moseeker.baseorm.dao.campaigndb.CampaignPcRecommendPositionDao;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
@@ -74,7 +81,7 @@ public class PositionPcService {
 	 * 获取pc首页职位推荐
 	 */
 	@CounterIface
-	public Response getRecommendPositionPC(int page,int pageSize){
+	public Response getRecommendPositionPC(int page,int pageSize) throws TException{
 		List<CampaignPcRecommendPositionDO>  list=campaignPcRecommendPositionDao.getPcRemmendPositionIdList(page,pageSize);
 		if(list==null||list.size()==0){
 			return ResponseUtils.success("");
@@ -261,7 +268,7 @@ public class PositionPcService {
 		 return result;
 	 }
 
-	 public List<Map<String,Object>> getResourceByPositionId(List<Integer> ids,int type){
+	 public List<Map<String,Object>> HandleCmsResource(List<Integer> ids,int type) throws TException{
 		 if(ids==null||ids.size()==0){
 			return null;
 		 }
@@ -270,36 +277,13 @@ public class PositionPcService {
 			 return null;
 		 }
 		 List<Map<String,Object>> maps1=new ArrayList<Map<String,Object>>();
-		 Map<String,Object> map=null;
-		 for(int i=0;i<list1.size();i++){
-			 HrCmsPagesDO pagesDO=list1.get(i);
-			 int configId=pagesDO.getConfigId();
-			 int pageId=pagesDO.getId();
-			 map=new HashMap<String,Object>();
-			 map.put("pageId",pageId);
-			 map.put("configId",configId);
-			 maps1.add(map);
-		 }
+		 this.handlePageListData(maps1,list1);
 		 List<Integer> pageIds=this.getCmsPageIdList(list1);
 		 List<HrCmsModuleDO> list2=hrCmsModuleDao.getHrCmsModuleDOBypageIdList(pageIds);
 		 if(list2==null||list2.size()==0){
 			 return null;
 		 }
-		 for(int i=0;i<list2.size();i++){
-			 HrCmsModuleDO moduleDO=list2.get(i);
-			 int pageId=moduleDO.getPageId();
-			 int ModuleId=moduleDO.getId();
-			 for(int j=0;j<maps1.size();j++){
-				 Map<String,Object> map1=maps1.get(j);
-				 Integer originPageId=(Integer)map1.get("pageId");
-				 if(originPageId==pageId){
-				 	if(map1.get("moudleId")==null) {
-						map1.put("moduleId",ModuleId);
-						break;
-					}
-				 }
-			 }
-		 }
+		 this.handleModuleListData(maps1, list2);
 		 List<Integer> moduleIds=this.getModuleIdList(list2);
 		 if(moduleIds==null||moduleIds.size()==0){
 			 return null;
@@ -308,23 +292,7 @@ public class PositionPcService {
 		 if(list3==null||list3.size()==0){
 			 return null;
 		 }
-		 for(int i=0;i<list3.size();i++){
-			 HrCmsMediaDO mediaDO=list3.get(i);
-			 int moduleId=mediaDO.getModuleId();
-			 int id=mediaDO.getId();
-			 int resId=mediaDO.getResId();
-			 for(int j=0;j<maps1.size();j++){
-			 	Map<String,Object> map2=maps1.get(j);
-			 	Integer originModuleId=(Integer)map2.get("moduleId");
-			 	if(originModuleId==moduleId) {
-					if (map2.get("mediaId") == null) {
-						map2.put("mediaId",id);
-						map2.put("resId",resId);
-						break;
-					}
-				}
-			 }
-		 }
+		 this.handleMediaListdata(maps1,list3);
 		 List<Integer> resIds=this.getResIdList(list3);
 		 if(resIds==null||resIds.size()==0){
 			 return null;
@@ -333,31 +301,158 @@ public class PositionPcService {
 		 if(list4==null||list4.size()==0){
 			 return null;
 		 }
-		 for(int i=0;i<list4.size();i++){
-			 HrResourceDO resourceDO=list4.get(i);
-			 int id=resourceDO.getId();
-			 int resType=resourceDO.getResType();
-			 if(resType==0) {
-				 for (int j = 0; j < maps1.size(); j++) {
-					 Map<String, Object> map3 = maps1.get(j);
-					 Integer resId = (Integer)map3.get("resId");
-					 if (resId == id) {
-						 if (map3.get("imgUrl")==null){
-						 	String imgUrl=resourceDO.getResUrl();
-						 	map3.put("imgUrl",imgUrl);
-						 }
-					 }
+		 this.handleResourceListPic(maps1,list4);
+		 this.handleResourceListData(maps1, list4);
+		 return maps1;
+	 }
+	 
+	//处理hrcmspages的数据将之处理完放在map当中
+	 private void handlePageListData(List<Map<String,Object>> mapList,List<HrCmsPagesDO> list) throws TException{
+		 Map<String,Object> map=null;
+		 for(int i=0;i<list.size();i++){
+			 map=new HashMap<String,Object>();
+			 HrCmsPagesDO pagesDO=list.get(i);
+			 int configId=pagesDO.getConfigId();
+			 int pageId=pagesDO.getId();
+			 map.put("pageId",pageId);
+			 map.put("configId",configId);
+			 String pageDataString=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(pagesDO);
+			 Map<String,Object> pageData=JSON.parseObject(pageDataString, Map.class);
+			 map.put("data",pageData);
+			 mapList.add(map);
+		 }
+	 }
+	 //处理hrcmsmodule的数据将之处理完放在map当中
+	 private void handleModuleListData(List<Map<String,Object>> mapList,List<HrCmsModuleDO> list) throws TException{
+		 for(int i=0;i<list.size();i++){
+			 HrCmsModuleDO moduleDO=list.get(i);
+			 int pageId=moduleDO.getPageId();
+			 int ModuleId=moduleDO.getId();
+			 for(int j=0;j<mapList.size();j++){
+				 Map<String,Object> map1=mapList.get(j);
+				 Integer originPageId=(Integer)map1.get("pageId");
+				 if(originPageId==pageId){
+					 Map<String,Object> pageData=(Map<String, Object>) map1.get("data");
+					 String moudleDataString=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(moduleDO);
+					 Map<String,Object> moudleData=JSON.parseObject(moudleDataString, Map.class);
+					 List<Map<String,Object>> moduleDataList=new ArrayList<Map<String,Object>>();
+					 List<Integer> moduleIdList=new ArrayList<Integer>();;
+				 	 if(map1.get("moduleId")!=null) {
+						moduleDataList=(List<Map<String, Object>>) pageData.get("moduleData");
+						moduleIdList=(List<Integer>) map1.get("moduleId");
+					}
+				 	moduleIdList.add(ModuleId);
+				 	moduleDataList.add(moudleData);
+				 	pageData.put("moduleData", moduleDataList);
+				 	map1.put("moduleId",moduleIdList);
+				 	break;
 				 }
 			 }
 		 }
-
-		 return maps1;
+	 }
+	 //处理hrcmsmedia的信息，将它处理之后放到map理
+	 private void handleMediaListdata(List<Map<String,Object>> mapList,List<HrCmsMediaDO> list) throws TException{
+		 for(HrCmsMediaDO DO:list){
+			 int moduleId=DO.getModuleId();
+			 int resId=DO.getResId();
+			 for( Map<String,Object> map:mapList){
+				List<Integer> moduleIdList=(List<Integer>) map.get("moduleId");
+				Map<String,Object> data=(Map<String, Object>) map.get("data");
+				List<Map<String,Object>> moduleDataList=(List<Map<String, Object>>) data.get("moduleData");
+				for(Map<String,Object> moduleData:moduleDataList){
+					int mapModuleId=(int) moduleData.get("id");
+					if(mapModuleId==moduleId){
+						 String mediaDataString=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
+						 Map<String,Object> mediaData=JSON.parseObject(mediaDataString, Map.class);
+						List<Map<String,Object>> mediaDataList=new ArrayList<Map<String,Object>>();
+						if(moduleData.get("mediaData")!=null){
+							mediaDataList=(List<Map<String, Object>>) moduleData.get("mediaData");
+						}
+						mediaDataList.add(mediaData);
+						moduleData.put("mediaData",mediaDataList);
+					}
+				}
+				if(resId!=0){
+					 for(Integer mapModuleId:moduleIdList){
+							if(mapModuleId==moduleId){
+									List<Integer> resIdList=new ArrayList<Integer>();
+									if (map.get("resId") != null) {
+										resIdList=(List<Integer>) map.get("resId");
+									}
+									resIdList.add(resId);
+									map.put("resId",resIdList);
+									break;
+								}
+							}
+					}
+				 }
+			 }
+	 }
+	 //处理图片，将第一张图片放在map
+	 private void handleResourceListPic(List<Map<String,Object>> mapList,List<HrResourceDO> list) throws TException{
+		 for(int i=0;i<list.size();i++){
+			 HrResourceDO resourceDO=list.get(i);
+			 int id=resourceDO.getId();
+			 int resType=resourceDO.getResType();
+			 if(resType==0) {
+				 for (int j = 0; j < mapList.size(); j++) {
+					 Map<String, Object> map3 = mapList.get(j);
+					 if(map3.get("imgUrl")==null){
+						 List<Integer> resIdList = (List<Integer>)map3.get("resId");
+						 if(!StringUtils.isEmptyList(resIdList)){
+							 for(Integer resId:resIdList){
+								 if (resId == id) {
+									 	String imgUrl=resourceDO.getResUrl();
+									 	map3.put("imgUrl",imgUrl);
+									 	break;
+									 } 
+							 } 
+						 }
+						 
+					 }
+					 
+					 
+				 }
+			 }
+		 }
+	 }
+	 //处理hrresource的数据，将之放在map
+	 private void handleResourceListData(List<Map<String,Object>> mapList,List<HrResourceDO> list) throws TException{
+		 for(int i=0;i<list.size();i++){
+			 HrResourceDO resourceDO=list.get(i);
+			 int id=resourceDO.getId();
+			 for (int j = 0; j < mapList.size(); j++) {
+				 Map<String, Object> map = mapList.get(j);
+				 if(!map.isEmpty()){
+					 Map<String,Object> data=(Map<String, Object>) map.get("data");
+					 if(!data.isEmpty()){
+						 List<Map<String,Object>> moduledDataList=(List<Map<String, Object>>) data.get("moduleData");
+						 if(!StringUtils.isEmptyList(moduledDataList)){
+							 for(Map<String,Object> moduledData: moduledDataList){
+								 List<Map<String,Object>> mediaList=(List<Map<String, Object>>) moduledData.get("mediaData");
+								 if(!StringUtils.isEmptyList(mediaList)){
+									 for(Map<String,Object> mediaData:mediaList){
+										 int resId=(int) mediaData.get("resId");
+										 if(resId==id&&resId!=0){
+											 String resourceDataString=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(resourceDO);
+											 Map<String,Object> resourceData=JSON.parseObject(resourceDataString, Map.class);
+											 mediaData.put("resource", resourceData);
+										 }
+									 }
+								 }
+							 }
+						 }
+					}
+				 }
+				 
+			 }
+		 }
 	 }
 	 /*
 	 处理position和company的数据
 	  */
 	 public List<Map<String,Object>> handleCompanyAndPositionData(List<JobPositionDO> positionList, List<HrCompanyDO> companyList,List<HrTeamDO> teamList
-			 ,List<Map<String,Integer>> publisherAndCompanyId,Map<String,List<String>> posittionCitys){
+			 ,List<Map<String,Integer>> publisherAndCompanyId,Map<String,List<String>> posittionCitys) throws TException{
 		 List<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
 		 if(positionList==null||positionList.size()==0){
 			 return null;
@@ -379,8 +474,12 @@ public class PositionPcService {
 							 Integer oripublisher=maps.get("publisher");
 							 Integer oriCompanyid=maps.get("companyId");
 							 if(oripublisher!=null&&oripublisher==publisher&&oriCompanyid!=null&&oriCompanyid==companyId){
-								 map.put("position", positionDo);
-								 map.put("company",companyDO);
+								 String companyDOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(companyDO);
+								 Map<String,Object> companyData=JSON.parseObject(companyDOs, Map.class);
+								 String positionDOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(companyDO);
+								 Map<String,Object> positionData=JSON.parseObject(positionDOs, Map.class);
+								 map.put("position", positionData);
+								 map.put("company",companyData);
 								 break;
 							 }
 						 }
@@ -399,7 +498,9 @@ public class PositionPcService {
 				 for(HrTeamDO teamDo:teamList){
 				 	int id=teamDo.getId();
 					 if(teamId==id){
-						 map.put("team",teamDo);
+						 String teamDos=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(teamDo);
+						 Map<String,Object> teamData=JSON.parseObject(teamDos, Map.class);
+						 map.put("team",teamData);
 						 break;
 					 }
 				 }
@@ -424,11 +525,9 @@ public class PositionPcService {
 		 		for(Integer id:companyIds){
 			 		if(id==companyId){
 						result.add(teamId);
-						break;
 					}
 				}
 		 	}
-		 	
 
 		 }
 		 return result;
@@ -436,11 +535,11 @@ public class PositionPcService {
 	 /*
 	 	处理position 或者 Team jd页数据，获取首张图片
 	  */
-	 public List<Map<String,Object>> handlePositionJdPic(List<HrTeamDO> teamList,List<Integer> companyIds,int type){
+	 public List<Map<String,Object>> handlePositionJdPic(List<HrTeamDO> teamList,List<Integer> companyIds,int type) throws TException{
 		 List<HrCompanyConfDO> AccountList=hrCompanyConfDao.getHrCompanyConfByCompanyIds(companyIds);
 		 List<Integer> jdCompanyids=this.getJdCompanyIds(AccountList);
 		 List<Integer> jdTeamids=this.getJdTeamIdList(jdCompanyids,teamList);
-		 List<Map<String,Object>> list=getResourceByPositionId(jdTeamids,type);
+		 List<Map<String,Object>> list=HandleCmsResource(jdTeamids,type);
 	 	return list;
 	 }
 	 //根据positionid列表获取list的jobPositioncity
@@ -508,7 +607,7 @@ public class PositionPcService {
 	/*
 	 总体上处理数据
 	  */
-	 public List<Map<String,Object>> handleDataJDAndPosition(List<Integer> positionIds,int type){
+	 public List<Map<String,Object>> handleDataJDAndPosition(List<Integer> positionIds,int type) throws TException{
 		 if(StringUtils.isEmptyList(positionIds)){
 			 return  null;
 		 }
@@ -544,7 +643,7 @@ public class PositionPcService {
 	 
 	//====================================================== 
 	 //获取仟寻推荐公司和相关职位信息接口
-	 public Response getQXRecommendCompanyList(){
+	 public Response getQXRecommendCompanyList() throws TException{
 		 List<CampaignPcRecommendCompanyDO>  CampaignPcRecommendCompanyList=campaignPcRecommendCompanyDao.getCampaignPcRecommendCompanyList();
 		 if(StringUtils.isEmptyList(CampaignPcRecommendCompanyList)){
 			 return  null;
@@ -622,7 +721,7 @@ public class PositionPcService {
 	 /*
 	  * 处理数据获取千寻推荐企业严选数据
 	  */
-	 public List<Map<String,Object>> handleRecommendPcCompanyData(List<Integer> companyIds){
+	 public List<Map<String,Object>> handleRecommendPcCompanyData(List<Integer> companyIds) throws TException{
 		 if(StringUtils.isEmptyList(companyIds)){
 			 return  null;
 		 }
@@ -638,13 +737,15 @@ public class PositionPcService {
 			 return  null;
 		 }
 		 List<Integer> companyids=this.getCompanyIds(companyList);
-		 List<Map<String,Object>> jdlist=getResourceByPositionId(companyids,1);
+		 List<Map<String,Object>> jdlist=HandleCmsResource(companyids,1);
 		 Map<String,Object> map=null;
 		 for(int i=0;i<companyList.size();i++){
 			 map=new HashMap<String,Object>();
 			 HrCompanyDO companyDO=companyList.get(i);
 			 int companyId=companyDO.getId();
-			 map.put("company", companyDO);
+			 String companyDOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(companyDO);
+			 Map<String,Object> companyData=JSON.parseObject(companyDOs, Map.class);
+			 map.put("company", companyData);
 			 List<Integer> publisherIds=companyPulisher.get(companyId+"");
 			 if(publisherIds!=null&&publisherIds.size()>0){
 				int num=this.getPositionNum(publisherIds);

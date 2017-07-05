@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.junit.runner.RunWith;
+
+import com.alibaba.fastjson.JSON;
 import com.moseeker.position.config.AppConfig;
 
 import java.util.ArrayList;
@@ -77,8 +79,20 @@ public class PositionPcServiceTest {
   }
   
   @Test
-  public void getQXRecommendCompanyListTest(){
+  public void getQXRecommendCompanyListTest() throws TException{
 	  Response res=service.getQXRecommendCompanyList();
 	  System.out.println(res);
+  }
+  @Test
+  public void getJDMaps() throws TException{
+	  List<Integer> list=new ArrayList<Integer>();
+	  list.add(1404);
+	  list.add(1414);
+	  List<Map<String,Object>> map=(List<Map<String, Object>>) service.HandleCmsResource(list,2);
+	  for(Map<String,Object> map1:map){
+		  System.out.println(JSON.toJSONString(map1));
+	  }
+	  
+	  
   }
 }
