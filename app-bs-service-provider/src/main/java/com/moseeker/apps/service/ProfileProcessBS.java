@@ -439,25 +439,26 @@ public class ProfileProcessBS {
         for (UserEmployeeStruct data : employeesToBeUpdates) {
             records.add(Long.parseLong(data.getId() + ""));
         }
-        List<UserEmployeePointSum> list=userEmployeePointsRecordDao.getSumRecord(records);
-        List<UserEmployeeRecord> UserEmployeeList = new ArrayList<UserEmployeeRecord>();
-        if (list!=null&&list.size()>0) {
-            for (UserEmployeeStruct employee : employeesToBeUpdates) {
-            	
-            	UserEmployeeRecord userEmployeeRecord=BeanUtils.structToDB(employee, UserEmployeeRecord.class);
-                for (UserEmployeePointSum point : list) {
-                    if (Long.parseLong(employee.getId() + "") == point
-                            .getEmployee_id()) {
-                        employee.setAward(point.getAward());
-                        userEmployeeRecord.setAward((int)point.getAward());
-                        break;
-                    }
-
-                }
-                UserEmployeeList.add(userEmployeeRecord);
-            }
-            userEmployeeDao.updateRecords(UserEmployeeList);
-        }
+        if(records!=null&&records.size()>0){
+	        List<UserEmployeePointSum> list=userEmployeePointsRecordDao.getSumRecord(records);
+	        List<UserEmployeeRecord> UserEmployeeList = new ArrayList<UserEmployeeRecord>();
+	        if (list!=null&&list.size()>0) {
+	            for (UserEmployeeStruct employee : employeesToBeUpdates) {
+	            	UserEmployeeRecord userEmployeeRecord=BeanUtils.structToDB(employee, UserEmployeeRecord.class);
+	                for (UserEmployeePointSum point : list) {
+	                    if (Long.parseLong(employee.getId() + "") == point
+	                            .getEmployee_id()) {
+	                        employee.setAward(point.getAward());
+	                        userEmployeeRecord.setAward((int)point.getAward());
+	                        break;
+	                    }
+	
+	                }
+	                UserEmployeeList.add(userEmployeeRecord);
+	            }
+	            userEmployeeDao.updateRecords(UserEmployeeList);
+	        }
+       }
     }
 
     // 当 progress_status！=13&&progress_status！=99时的操作
@@ -468,7 +469,6 @@ public class ProfileProcessBS {
         Query query=new Query.QueryBuilder().buildQuery();
         List<ConfigSysPointsConfTpl> list =configSysPointsConfTplDao.getDatas(query, ConfigSysPointsConfTpl.class);
         if (list!=null&&list.size()>0) {
-          
             List<JobApplication> app = new ArrayList<JobApplication>();
             JobApplication jobApplication = null;
             for (ProcessValidationStruct data : applications) {
