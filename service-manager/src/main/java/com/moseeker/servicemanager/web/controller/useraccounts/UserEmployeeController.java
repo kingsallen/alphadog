@@ -18,10 +18,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Created by eddie on 2017/3/7.
@@ -36,12 +34,12 @@ public class UserEmployeeController {
     @ResponseBody
     public String deleteUserEmployee(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Map<String, String> filter = ParamUtils.parseRequestParam(request).entrySet().stream()
-                    .map(entry -> new AbstractMap.SimpleEntry<>(entry.getKey(), entry.getValue().toString()))
-                    .collect(Collectors.toMap((t -> t.getKey()), (s -> s.getValue())));
-            String companyId = filter.get("company_id");
-            String customField = filter.get("custom_field");
-            String id = filter.get("id");
+            CommonQuery commonQuery = ParamUtils.initCommonQuery(request, CommonQuery.class);
+
+            if (commonQuery.getEqualFilter() == null) commonQuery.setEqualFilter(new HashMap<>());
+            String companyId = commonQuery.getEqualFilter().get("company_id");
+            String customField = commonQuery.getEqualFilter().get("custom_field");
+            String id = commonQuery.getEqualFilter().get("id");
             if (StringUtils.isNullOrEmpty(id)) {
                 if (StringUtils.isNullOrEmpty(companyId)) {
                     return ResponseLogNotification.fail(request, "company_id不能为空");
@@ -49,9 +47,7 @@ public class UserEmployeeController {
                     return ResponseLogNotification.fail(request, "custom_field不能为空");
                 }
             }
-            CommonQuery query = new CommonQuery();
-            query.setEqualFilter(filter);
-            Response result = service.delUserEmployee(query);
+            Response result = service.delUserEmployee(commonQuery);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
