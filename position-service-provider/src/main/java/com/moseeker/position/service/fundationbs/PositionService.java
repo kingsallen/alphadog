@@ -311,7 +311,9 @@ public class PositionService {
         logger.info("search position");
         JobPositionDO position = jobPositionDao.getData(findPositionById);
         logger.info("position:" + JSON.toJSONString(position));
-        if (position != null || position.getId() == 0) return false;
+
+        if (position == null || position.getId() == 0) return false;
+
         Query queryUtil = new Query.QueryBuilder().where("id", account_id).buildQuery();
 
         HrThirdPartyAccountDO account = thirdPartyAccountDao.getData(queryUtil);
