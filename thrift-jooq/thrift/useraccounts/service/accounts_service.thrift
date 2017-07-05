@@ -67,6 +67,7 @@ service UseraccountsServices {
     // 换绑操作
     common_struct.Response userChangeBind(1:string unionid, 2:string mobile);
 
+
 }
 
 /**
@@ -117,7 +118,13 @@ service UserHrAccountService {
     list<hr_third_party_account_struct.HrThirdPartyAccountDO> getThirdPartyAccounts(1: common_struct.CommonQuery query);
 
     i32 updateThirdPartyAccount(1: hr_third_party_account_struct.HrThirdPartyAccountDO account)  throws (1: common_struct.BIZException e);
+
+     // 通过公司ID和关键字,查询认证员工和未认证员工数量
+    useraccounts_struct.UserEmployeeNumStatistic getListNum(1:string keyWord, 2:i32 companyId) throws (1: common_struct.BIZException e);
+
+    useraccounts_struct.UserEmployeeNumStatistic getListNum(1:string keyWord, 2:i32 companyId) throws (1: common_struct.BIZException e);
 }
+
 
 /**
 * 所有用户通用的服务

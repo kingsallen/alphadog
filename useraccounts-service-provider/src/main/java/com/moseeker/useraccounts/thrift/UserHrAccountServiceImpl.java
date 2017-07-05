@@ -10,6 +10,7 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService.Iface;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.service.impl.UserHrAccountService;
+
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,8 +38,7 @@ public class UserHrAccountServiceImpl implements Iface {
      *
      * @param mobile 手机号
      * @param code   验证码
-     * @param source 系统区分
-     *               1:雇主 2:官网 3:微信扫描 4:我也要招人(聚合号) 5:我也要招人(企业号)
+     * @param source 系统区分 1:雇主 2:官网 3:微信扫描 4:我也要招人(聚合号) 5:我也要招人(企业号)
      */
     @Override
     public Response sendMobileVerifiyCode(String mobile, String code, int source) throws TException {
@@ -195,6 +195,19 @@ public class UserHrAccountServiceImpl implements Iface {
         } catch (Exception e) {
             throw new TException(e);
         }
+    }
 
+
+    /**
+     * 获取列表number
+     * 通过公司ID,查询认证员工和未认证员工数量
+     *
+     * @param keyWord   关键字
+     * @param companyId 公司ID
+     * @return
+     */
+    @Override
+    public UserEmployeeNumStatistic getListNum(String keyWord, int companyId) throws BIZException, TException {
+        return service.getListNum(keyWord, companyId);
     }
 }
