@@ -35,7 +35,7 @@ import org.springframework.stereotype.Service;
 /**
  * Created by lucky8987 on 17/6/29.
  */
-@Service("auth_method_emial")
+@Service("auth_method_email")
 public class EmployeeBindByEmail extends EmployeeBinder{
 
     private static final Logger log = LoggerFactory.getLogger(EmployeeBindByEmail.class);

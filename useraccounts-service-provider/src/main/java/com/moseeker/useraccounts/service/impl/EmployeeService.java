@@ -420,7 +420,7 @@ public class EmployeeService {
 //            default:
 //                break;
 //        }
-        String authMethod = "auth_method".concat(bindingParams.getType().toString().toLowerCase());
+        String authMethod = "auth_method_".concat(bindingParams.getType().toString().toLowerCase());
         if(!employeeBinder.containsKey(authMethod)) {
             response.setSuccess(false);
             response.setMessage("暂不支持该认证方式");

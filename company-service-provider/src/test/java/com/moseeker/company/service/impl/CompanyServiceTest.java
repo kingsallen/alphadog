@@ -1,24 +1,31 @@
 package com.moseeker.company.service.impl;
 
 import com.moseeker.company.config.AppConfig;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.company.struct.CompanyForVerifyEmployee;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * Created by lucky8987 on 17/5/10.
  */
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(classes = AppConfig.class)
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = AppConfig.class)
 public class CompanyServiceTest {
 
-//    @Autowired
+    Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    @Autowired
     private CompanyService service;
 
     //@Test
@@ -62,4 +69,13 @@ public class CompanyServiceTest {
         System.out.println(response);
     }
 
+    @Test
+    public void getGroupCompanies() {
+        try {
+            List<CompanyForVerifyEmployee> employeeList = service.getGroupCompanies(3);
+            System.out.println(employeeList);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
 }

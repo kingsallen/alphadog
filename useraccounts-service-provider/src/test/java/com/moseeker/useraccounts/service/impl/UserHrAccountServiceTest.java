@@ -90,9 +90,9 @@ public class UserHrAccountServiceTest {
     @Test
     public void employeeList() {
         try {
-            List<UserEmployeeVO> list = userHrAccountService.employeeList("", 3, 1, "create_time", 1, 0, 0);
+//            List<UserEmployeeVO> list = userHrAccountService.employeeList("", 3, 1, "create_time", 1, 0, 0);
 
-            System.out.println(list);
+//            System.out.println(list);
         } catch (Exception e) {
             e.printStackTrace();
         }

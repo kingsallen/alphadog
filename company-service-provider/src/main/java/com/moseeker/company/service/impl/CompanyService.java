@@ -241,18 +241,14 @@ public class CompanyService {
             throw ExceptionFactory.buildException(ExceptionCategory.COMPANY_NOT_BELONG_GROUPCOMPANY);
         }
 
-        /** 查找集团信息 */
-        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-        queryBuilder.clear();
-        queryBuilder.where("group_id", groupCompanyDO.getGroupId());
-        List<HrGroupCompanyRelDO> groupCompanyRelDOList = hrGroupCompanyRelDao.getDatas(queryBuilder.buildQuery());
+        /** 查找集团下公司的编号 */
+        List<Integer> companyIdList = employeeEntity.getCompanyIds(companyId);
 
-        if (groupCompanyRelDOList == null || groupCompanyRelDOList.size() == 0) {
+        if (companyIdList == null || companyIdList.size() == 0) {
             throw ExceptionFactory.buildException(ExceptionCategory.COMPANY_NOT_BELONG_GROUPCOMPANY);
         }
-        /** 查找集团下公司的编号 */
-        List<Integer> companyIdList = groupCompanyRelDOList.stream().map(gc -> gc.getCompanyId()).collect(Collectors.toList());
 
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         queryBuilder.clear();
         Condition condition = Condition.buildCommonCondition("id", companyIdList, ValueOp.IN);
         queryBuilder.where(condition);
@@ -260,7 +256,6 @@ public class CompanyService {
         if (companyDOList == null || companyDOList.size() == 0) {
             throw ExceptionFactory.buildException(Category.PROGRAM_DATA_EMPTY);
         }
-
         /** 查找公司信息 */
         queryBuilder.clear();
         queryBuilder.select("id").select("company_id").select("signature");
@@ -519,9 +514,10 @@ public class CompanyService {
      * @param id          绑定配置信息编号
      * @param companyId   公司编号
      * @param authMode    绑定方式
-     * @param custom      自定义字段内容
-     * @param customField 自定义字段
      * @param emailSuffix 如果邮箱是验证字段，则不能为空
+     * @param custom      自定义字段内容
+     * @param customHint 自定义字段
+     * @param questions  问答
      * @return 操作信息
      */
     public Response updateHrEmployeeCertConf(Integer id, Integer companyId, Integer authMode, String emailSuffix, String custom, String customHint, String questions) throws BIZException {

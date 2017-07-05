@@ -53,6 +53,7 @@ import com.moseeker.thrift.gen.useraccounts.struct.SearchCondition;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeDetailVO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeNumStatistic;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVO;
+import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
 import com.moseeker.useraccounts.constant.ResultMessage;
 import com.moseeker.useraccounts.exception.ExceptionCategory;
@@ -820,8 +821,10 @@ public class UserHrAccountService {
         UserEmployeeNumStatistic userEmployeeNumStatistic = new UserEmployeeNumStatistic();
         userEmployeeNumStatistic.setUnregcount(0);
         userEmployeeNumStatistic.setRegcount(0);
+        if (companyId == 0) {
+            throw ExceptionFactory.buildException(ExceptionCategory.PROGRAM_DATA_EMPTY);
+        }
         try {
-
             Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
             queryBuilder.select(new Select(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), SelectOp.COUNT))
                     .select(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName());
@@ -850,6 +853,7 @@ public class UserHrAccountService {
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
+            throw ExceptionFactory.buildException(ExceptionCategory.PROGRAM_EXCEPTION);
         }
         return userEmployeeNumStatistic;
     }
@@ -866,9 +870,10 @@ public class UserHrAccountService {
      * @param pageNumber 第几页
      * @param pageSize   每页的条数
      */
-    public List<UserEmployeeVO> employeeList(String keword, Integer companyId, Integer filter, String order, Integer by, Integer pageNumber, Integer pageSize) throws BIZException {
-        List<UserEmployeeVO> userEmployeeVOS = new ArrayList<>();
+    public UserEmployeeVOPageVO employeeList(String keword, Integer companyId, Integer filter, String order, Integer by, Integer pageNumber, Integer pageSize) throws BIZException {
+        UserEmployeeVOPageVO userEmployeeVOPageVO = new UserEmployeeVOPageVO();
         try {
+            List<UserEmployeeVO> userEmployeeVOS = new ArrayList<>();
             Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
             List<Integer> list = employeeEntity.getCompanyIds(companyId);
             Condition companyIdCon = new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), list, ValueOp.IN);
@@ -900,6 +905,11 @@ public class UserHrAccountService {
                         queryBuilder.orderBy(UserEmployee.USER_EMPLOYEE.field(order).getName(), Order.DESC);
                     }
                 }
+            }
+            // 查询总条数
+            int counts = userEmployeeDao.getCount(queryBuilder.buildQuery());
+            if (counts == 0) {
+                throw ExceptionFactory.buildException(ExceptionCategory.USEREMPLOYEES_EMPTY);
             }
             // 默认第一页
             queryBuilder.setPageNum(pageNumber > 0 ? pageNumber : 1);
@@ -942,12 +952,16 @@ public class UserHrAccountService {
                     userEmployeeVO.setBindingTime(userEmployeeDO.getBindingTime());
                     userEmployeeVOS.add(userEmployeeVO);
                 }
+                userEmployeeVOPageVO.setData(userEmployeeVOS);
+                userEmployeeVOPageVO.setPageSize(pageSize);
+                userEmployeeVOPageVO.setPageNumber(pageNumber);
+                userEmployeeVOPageVO.setTotalRow(counts);
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw ExceptionFactory.buildException(ExceptionCategory.PROGRAM_EXCEPTION);
         }
-        return userEmployeeVOS;
+        return userEmployeeVOPageVO;
     }
 
     /**

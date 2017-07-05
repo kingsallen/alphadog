@@ -69,6 +69,7 @@ service UseraccountsServices {
     // 换绑操作
     common_struct.Response userChangeBind(1:string unionid, 2:string mobile);
 
+
 }
 
 /**
@@ -132,7 +133,11 @@ service UserHrAccountService {
 
     boolean updateEmployeeBindConf(1: i32 id, 2: i32 companyId, 3: i32 authMode, 4: string emailSuffix, 5: string custom, 6: string customHint, 7: string questions) throws (1: common_struct.BIZException e);
 
+     // 通过公司ID和关键字,查询认证员工和未认证员工数量
+    useraccounts_struct.UserEmployeeNumStatistic getListNum(1:string keyWord, 2:i32 companyId) throws (1: common_struct.BIZException e);
+
 }
+
 
 /**
 * 所有用户通用的服务

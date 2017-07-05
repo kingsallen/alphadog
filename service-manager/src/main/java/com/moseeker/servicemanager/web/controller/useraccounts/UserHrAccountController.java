@@ -484,8 +484,8 @@ public class UserHrAccountController {
     @ResponseBody
     public String getCompanyRewardConf(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Params<String, Object>  params = ParamUtils.parseRequestParam(request);
-            int companyId =  params.getInt("companyId", 0);
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int companyId = params.getInt("companyId", 0);
             if (companyId == 0) {
                 return ResponseLogNotification.fail(request, "companyId不能为空");
             } else {
@@ -502,8 +502,8 @@ public class UserHrAccountController {
     @ResponseBody
     public String unbindEmployee(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Params<String, Object>  params = ParamUtils.parseRequestParam(request);
-            List<Integer> ids =  (List)params.get("ids");
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            List<Integer> ids = (List) params.get("ids");
             if (ids == null || ids.isEmpty()) {
                 return ResponseLogNotification.fail(request, "Ids不能为空");
             } else {
@@ -520,8 +520,8 @@ public class UserHrAccountController {
     @ResponseBody
     public String removeEmployee(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Params<String, Object>  params = ParamUtils.parseRequestParam(request);
-            List<Integer> ids =  (List)params.get("ids");
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            List<Integer> ids = (List) params.get("ids");
             if (ids == null || ids.isEmpty()) {
                 return ResponseLogNotification.fail(request, "Ids不能为空");
             } else {
@@ -539,8 +539,8 @@ public class UserHrAccountController {
     @ResponseBody
     public String getEmployeeRawards(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Params<String, Object>  params = ParamUtils.parseRequestParam(request);
-            int employeeId =  params.getInt("employeeId");
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int employeeId = params.getInt("employeeId");
             if (employeeId == 0) {
                 return ResponseLogNotification.fail(request, "员工Id不能为空");
             } else {
@@ -557,8 +557,8 @@ public class UserHrAccountController {
     @ResponseBody
     public String addEmployeeReward(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Params<String, Object>  params = ParamUtils.parseRequestParam(request);
-            int employeeId =  params.getInt("employeeId");
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int employeeId = params.getInt("employeeId");
             int points = params.getInt("points");
             if (employeeId == 0) {
                 return ResponseLogNotification.fail(request, "员工Id不能为空");
@@ -570,5 +570,31 @@ public class UserHrAccountController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
+    /**
+     * 获取列表number
+     * 通过公司ID,查询认证员工和未认证员工数量
+     *
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/hraccount/employe/number", method = RequestMethod.GET)
+    @ResponseBody
+    public String getListNum(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            String keyWord = params.getString("keyword");
+            int companyId = params.getInt("companyId");
+            UserEmployeeNumStatistic userEmployeeNumStatistic = userHrAccountService.getListNum(keyWord, companyId);
+            return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(userEmployeeNumStatistic)));
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
 
 }

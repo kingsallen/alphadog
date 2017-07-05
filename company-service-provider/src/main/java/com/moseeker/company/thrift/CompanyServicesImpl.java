@@ -1,5 +1,6 @@
 package com.moseeker.company.thrift;
 
+import com.moseeker.common.exception.Category;
 import com.moseeker.company.exception.ExceptionCategory;
 import com.moseeker.company.exception.ExceptionFactory;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -60,7 +61,7 @@ public class CompanyServicesImpl implements Iface {
 				throw e;
 			} else {
 				logger.error(e.getMessage(), e);
-				throw ExceptionFactory.buildException(ExceptionCategory.PROGRAM_EXCEPTION);
+				throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
 			}
 		}
 	}
@@ -74,7 +75,7 @@ public class CompanyServicesImpl implements Iface {
 				throw e;
 			} else {
 				logger.error(e.getMessage(), e);
-				throw ExceptionFactory.buildException(ExceptionCategory.PROGRAM_EXCEPTION);
+				throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
 			}
 		}
 	}

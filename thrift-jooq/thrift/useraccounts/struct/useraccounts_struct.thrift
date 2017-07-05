@@ -387,7 +387,13 @@ struct UserEmployeeVO{
     9: optional string companyName, // 公司名称
     10: optional string bindingTime, // 认证时间
 }
-
+// 员工列表分页实体
+struct UserEmployeeVOPageVO{
+    1:optional i32 pageNumber, // 当前第几页
+    2:optional i32 pageSize,// 每页多少条
+    3:optional i32 totalRow,// 总共多少条
+    4:optional list<UserEmployeeVO> data,
+}
 // 员工详情
 struct UserEmployeeDetailVO{
     1: optional i32 id, // ID
