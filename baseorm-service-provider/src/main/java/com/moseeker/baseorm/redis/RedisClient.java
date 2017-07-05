@@ -588,13 +588,13 @@ public abstract class RedisClient {
 		}
 		String getResult = get(0, keyIdentifier, pattern);
 		if (getResult == null) {
-			set(0, keyIdentifier, pattern, null,defautValue, dateTime);
+			set(0, keyIdentifier, pattern, null, defautValue, dateTime);
 			return true;
 		} else if (Long.valueOf(getResult) < limit) {
 			incr(0, keyIdentifier, pattern);
 			return true;
 		} else {
-			logger.info("用户 {} 导入简历超过上限。上线是：{}", pattern, limit);
+			logger.info("每日操作次数达到上线。关键词：{}, 上线是：{}", pattern, limit);
 			return false;
 		}
 	}
