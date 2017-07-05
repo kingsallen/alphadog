@@ -306,33 +306,38 @@ public class PositionService {
      */
     @CounterIface
     public boolean ifAllowRefresh(int positionId, int account_id) {
-        boolean permission = false;
         logger.info("ifAllowRefresh");
         Query findPositionById = new Query.QueryBuilder().where("id", positionId).buildQuery();
         logger.info("search position");
-        Position position = jobPositionDao.getData(findPositionById, Position.class);
+        JobPositionDO position = jobPositionDao.getData(findPositionById);
         logger.info("position:" + JSON.toJSONString(position));
-        if (position.getId() > 0) {
-            Query queryUtil = new Query.QueryBuilder()
-                    .where("id", account_id)
-                    .buildQuery();
-            HrThirdPartyAccountDO account = thirdPartyAccountDao.getData(queryUtil);
-            logger.info("ifAllowRefresh third party account:" + JSON.toJSONString(account));
-            logger.info("search thirdparyposition");
-            HrThirdPartyPositionDO thirdPartyPosition = thirdpartyPositionDao.getThirdPartyPosition(positionId, account_id);
-            logger.info("thirdparyposition" + JSON.toJSONString(thirdPartyPosition));
-            if (account != null && account.getBinding() == AccountSync.bound.getValue() && thirdPartyPosition.getId() > 0
-                    && thirdPartyPosition.getIsSynchronization() == PositionSync.bound.getValue()) {
-                logger.info("data allow");
-                String str = redisClient.get(AppId.APPID_ALPHADOG.getValue(),
-                        KeyIdentifier.THIRD_PARTY_POSITION_REFRESH.toString(), String.valueOf(positionId), String.valueOf(account_id));
-                if (StringUtils.isNullOrEmpty(str)) {
-                    logger.info("cache allow");
-                    permission = true;
-                }
-            }
+        if (position != null || position.getId() == 0) return false;
+        Query queryUtil = new Query.QueryBuilder().where("id", account_id).buildQuery();
+
+        HrThirdPartyAccountDO account = thirdPartyAccountDao.getData(queryUtil);
+
+        if (account == null || account.binding == AccountSync.unbind.getValue() || account.binding == AccountSync.binding.getValue()
+                || account.binding == AccountSync.accountpasserror.getValue() || account.binding == AccountSync.error.getValue()
+                || account.binding == AccountSync.bingdingerror.getValue()) {
+            return false;
         }
-        return permission;
+
+        logger.info("ifAllowRefresh third party account:" + JSON.toJSONString(account));
+        HrThirdPartyPositionDO thirdPartyPosition = thirdpartyPositionDao.getThirdPartyPosition(positionId, account_id);
+        logger.info("thirdparyposition" + JSON.toJSONString(thirdPartyPosition));
+
+        if (thirdPartyPosition == null || thirdPartyPosition.getIsSynchronization() != PositionSync.bound.getValue()) {
+            return false;
+        }
+
+
+        logger.info("data allow");
+        String str = redisClient.get(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH.toString(), String.valueOf(positionId), String.valueOf(account_id));
+        if (!StringUtils.isNullOrEmpty(str)) {
+            //return false;
+        }
+        logger.info("cache allow");
+        return true;
     }
 
     /**
