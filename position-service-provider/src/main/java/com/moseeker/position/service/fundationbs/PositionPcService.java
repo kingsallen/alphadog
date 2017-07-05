@@ -128,42 +128,38 @@ public class PositionPcService {
 	/*
 	获取publisher和companyId的对应关系集合
 	 */
-	private List<Map<String,Integer>> getPublisherCompanyId(List<Integer> list){
+	private List<Map<String,Integer>> getPublisherCompanyId(List<HrCompanyAccountDO> list){
 		if(list==null||list.size()==0){
 			return null;
 		}
 		List<Map<String,Integer>> result=new ArrayList<Map<String,Integer>>();
 		Map<String,Integer> map=null;
-		Query query=new Query.QueryBuilder().where(new Condition("account_id",list.toArray(),ValueOp.IN)).buildQuery();
-		List<HrCompanyAccountDO> records=hrCompanyAccountDao.getDatas(query);
-		if(records!=null&&records.size()>0){
-			for(int i=0;i<records.size();i++){
-				HrCompanyAccountDO accountDo=records.get(i);
-				int publisher=accountDo.getAccountId();
-				int companyId=accountDo.getCompanyId();
+			for(HrCompanyAccountDO DO:list){
+				int publisher=DO.getAccountId();
+				int companyId=DO.getCompanyId();
 				map=new HashMap<String,Integer>();
 				map.put("companyId",companyId);
 				map.put("publisher",publisher);
 				result.add(map);
 			}
-		}
 		return result;
+	}
+	//获取hrcompanyAccount列表
+	public List<HrCompanyAccountDO> getCompanyAccountList(List<Integer> list){
+		Query query=new Query.QueryBuilder().where(new Condition("account_id",list.toArray(),ValueOp.IN)).buildQuery();
+		List<HrCompanyAccountDO> records=hrCompanyAccountDao.getDatas(query);
+		return records;
 	}
 	/*
 	 * 通过publisher的id列表获取公司的id列表
 	 */
-	public List<Integer> getHrCompanyIdList(List<Integer> list){
+	public List<Integer> getHrCompanyIdList(List<HrCompanyAccountDO> list){
 		if(list==null||list.size()==0){
 			return null;
 		}
 		List<Integer> result=new ArrayList<Integer>();
-		Query query=new Query.QueryBuilder().where(new Condition("account_id",list.toArray(),ValueOp.IN)).buildQuery();
-		List<HrCompanyAccountDO> records=hrCompanyAccountDao.getDatas(query);
-		if(records!=null&&records.size()>0){
-			for(int i=0;i<records.size();i++){
-				HrCompanyAccountDO accountDo=records.get(i);
-				result.add(accountDo.getCompanyId());
-			}
+		for(HrCompanyAccountDO DO:list){
+			result.add(DO.getCompanyId());
 		}
 		return result;
 	}
@@ -390,30 +386,34 @@ public class PositionPcService {
 	 }
 	 //处理图片，将第一张图片放在map
 	 private void handleResourceListPic(List<Map<String,Object>> mapList,List<HrResourceDO> list) throws TException{
-		 for(int i=0;i<list.size();i++){
-			 HrResourceDO resourceDO=list.get(i);
-			 int id=resourceDO.getId();
-			 int resType=resourceDO.getResType();
-			 if(resType==0) {
-				 for (int j = 0; j < mapList.size(); j++) {
-					 Map<String, Object> map3 = mapList.get(j);
-					 if(map3.get("imgUrl")==null){
-						 List<Integer> resIdList = (List<Integer>)map3.get("resId");
-						 if(!StringUtils.isEmptyList(resIdList)){
-							 for(Integer resId:resIdList){
+		 for (int j = 0; j < mapList.size(); j++) {
+			 Map<String, Object> map3 = mapList.get(j);
+			 if(map3.get("imgUrl")==null){
+				 List<Integer> resIdList = (List<Integer>)map3.get("resId");
+				 if(!StringUtils.isEmptyList(resIdList)){
+					 for(Integer resId:resIdList){
+						 for(int i=0;i<list.size();i++){
+							 HrResourceDO resourceDO=list.get(i);
+							 int id=resourceDO.getId();
+							 int resType=resourceDO.getResType();
+							 if(resType==0) {
 								 if (resId == id) {
 									 	String imgUrl=resourceDO.getResUrl();
 									 	map3.put("imgUrl",imgUrl);
 									 	break;
 									 } 
-							 } 
+							 }
+						 }
+						 if(map3.get("imgUrl")!=null){
+							 break;
 						 }
 						 
-					 }
-					 
-					 
+					 } 
 				 }
+				 
 			 }
+			 
+			 
 		 }
 	 }
 	 //处理hrresource的数据，将之放在map
@@ -467,7 +467,7 @@ public class PositionPcService {
 				 for(int j=0;j<companyList.size();j++){
 					 HrCompanyDO companyDO=companyList.get(j);
 					 int companyId=companyDO.getId();
-					// 本出如此做是为了过滤掉已经删除的子公司的信息
+					// 本处如此做是为了过滤掉已经删除的子公司的信息
 					 if(!StringUtils.isEmptyList(publisherAndCompanyId)){
 						 for(int z=0;z<publisherAndCompanyId.size();z++){
 							 Map<String,Integer> maps=publisherAndCompanyId.get(z);
@@ -476,7 +476,7 @@ public class PositionPcService {
 							 if(oripublisher!=null&&oripublisher==publisher&&oriCompanyid!=null&&oriCompanyid==companyId){
 								 String companyDOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(companyDO);
 								 Map<String,Object> companyData=JSON.parseObject(companyDOs, Map.class);
-								 String positionDOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(companyDO);
+								 String positionDOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(positionDo);
 								 Map<String,Object> positionData=JSON.parseObject(positionDOs, Map.class);
 								 map.put("position", positionData);
 								 map.put("company",companyData);
@@ -485,7 +485,7 @@ public class PositionPcService {
 						 }
 					 }
 				 }
-				 if(!posittionCitys.isEmpty()&&!map.isEmpty()){
+				 if(posittionCitys!=null&&!posittionCitys.isEmpty()&&!map.isEmpty()){
 					 if(posittionCitys.get(positionId+"")!=null){
 						 map.put("cityList", posittionCitys.get(positionId+""));
 					 }
@@ -501,7 +501,6 @@ public class PositionPcService {
 						 String teamDos=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(teamDo);
 						 Map<String,Object> teamData=JSON.parseObject(teamDos, Map.class);
 						 map.put("team",teamData);
-						 break;
 					 }
 				 }
 				 list.add(map);
@@ -614,10 +613,11 @@ public class PositionPcService {
 		 List<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
 		 List<JobPositionDO> positionList=jobPositionDao.getPositionList(positionIds);
 		 List<Integer> publisherIds=this.getPublisherIdList(positionList);
-		 List<Integer> compantIds=this.getHrCompanyIdList(publisherIds);
+		 List<HrCompanyAccountDO> companyAccountList= getCompanyAccountList(publisherIds);
+		 List<Integer> compantIds=this.getHrCompanyIdList(companyAccountList);
 		 List<HrCompanyDO> companyList=hrCompanyDao.getHrCompanyByCompanyIds(compantIds);
 		 companyList=this.filterCompanyList(companyList);
-		 List<Map<String,Integer>> publisherAndCompanyId=getPublisherCompanyId(publisherIds);
+		 List<Map<String,Integer>> publisherAndCompanyId=getPublisherCompanyId(companyAccountList);
 		 List<Integer> teamIds=this.getTeamIdList(positionList);
 		 List<HrTeamDO> teamList=this.getTeamList(teamIds);
 		 Map<String,List<String>> positionCitys=this.handlePositionCity(positionIds);
@@ -629,11 +629,14 @@ public class PositionPcService {
 				 	Integer configId=(Integer)map.get("configId");
 				 	String picture=(String)map.get("imgUrl");
 				 	for(Map<String,Object> map1:list){
-				 		HrTeamDO teamDO=(HrTeamDO)map1.get("team");
-				 		int id=teamDO.getId();
-				 		if(id==configId){
-				 			map1.put("jdPic",picture);
-						}
+				 		Map<String,Object> teamDO=(Map<String, Object>) map1.get("team");
+				 		if(teamDO!=null&&!teamDO.isEmpty()){
+				 			int id=(int) teamDO.get("id");
+					 		if(id==configId){
+					 			map1.put("jdPic",picture);
+							}
+				 		}
+				 		
 					 }
 			 }
 		 
