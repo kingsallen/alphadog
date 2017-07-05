@@ -2,27 +2,27 @@ package com.moseeker.servicemanager.web.controller.useraccounts;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.providerutils.QueryUtil;
+import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.web.controller.useraccounts.form.UserEmployeeBatch;
+import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.useraccounts.service.UserEmployeeService;
+import java.util.AbstractMap;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.AbstractMap;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Created by eddie on 2017/3/7.
@@ -100,6 +100,26 @@ public class UserEmployeeController {
         try {
             Response result = service.postPutUserEmployeeBatch(batch.getData());
             return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value="/user/employee/check", method = RequestMethod.GET)
+    @ResponseBody
+    public String checkUserIsEmployee(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int userId = params.getInt("userId");
+            int compnayId = params.getInt("compnayId");
+            if (compnayId == 0) {
+                return ResponseLogNotification.fail(request, "公司Id不能为空");
+            } else if (userId == 0) {
+                return ResponseLogNotification.fail(request, "员工Id不能为空");
+            } else {
+                boolean result = service.isEmployee(userId, compnayId);
+                return ResponseLogNotification.success(request, ResponseUtils.success(new HashMap<String, Object>(){{put("result", result);}}));
+            }
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
         }

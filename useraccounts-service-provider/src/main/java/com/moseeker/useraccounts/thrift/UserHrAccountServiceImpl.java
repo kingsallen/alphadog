@@ -3,12 +3,16 @@ package com.moseeker.useraccounts.thrift;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
+import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import com.moseeker.thrift.gen.employee.struct.Reward;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService.Iface;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
+import com.moseeker.useraccounts.exception.ExceptionCategory;
+import com.moseeker.useraccounts.exception.ExceptionFactory;
 import com.moseeker.useraccounts.service.impl.UserHrAccountService;
 
 import org.apache.thrift.TException;
@@ -32,6 +36,9 @@ public class UserHrAccountServiceImpl implements Iface {
 
     @Autowired
     private UserHrAccountService service;
+
+    @Autowired
+    private EmployeeEntity employeeEntity;
 
     /**
      * HR在下载行业报告是注册
@@ -197,6 +204,38 @@ public class UserHrAccountServiceImpl implements Iface {
         }
     }
 
+    @Override
+    public boolean unbindEmployee(List<Integer> ids) throws BIZException, TException {
+        return employeeEntity.unbind(ids);
+    }
+
+    @Override
+    public boolean delEmployee(List<Integer> ids) throws BIZException, TException {
+        try {
+            return employeeEntity.removeEmployee(ids);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            ExceptionFactory.buildException(ExceptionCategory.PROGRAM_EXCEPTION);
+        }
+        return false;
+    }
+
+    @Override
+    public List<Reward> getEmployeeRewards(int employeeId) throws BIZException, TException {
+        return null;
+    }
+
+    @Override
+    public int addEmployeeReward(int employeeId, int points, String reason) throws BIZException, TException {
+        try {
+            return employeeEntity.addReward(employeeId, points, reason);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            ExceptionFactory.buildException(ExceptionCategory.PROGRAM_EXCEPTION);
+        }
+        return 0;
+    }
+
 
     /**
      * 获取列表number
@@ -209,5 +248,10 @@ public class UserHrAccountServiceImpl implements Iface {
     @Override
     public UserEmployeeNumStatistic getListNum(String keyWord, int companyId) throws BIZException, TException {
         return service.getListNum(keyWord, companyId);
+    }
+
+    @Override
+    public UserEmployeeVOPageVO employeeList(String keword, int companyId, int filter, String order, int by, int pageNumber, int pageSize) throws BIZException, TException {
+        return service.employeeList(keword, companyId, filter, order, by, pageNumber, pageSize);
     }
 }

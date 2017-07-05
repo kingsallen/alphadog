@@ -57,6 +57,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CompanyService {
@@ -518,49 +519,37 @@ public class CompanyService {
      * @param custom      自定义字段内容
      * @param customHint 自定义字段
      * @param questions  问答
-     * @return 操作信息
+     * @return 受影响行数
      */
-    public Response updateHrEmployeeCertConf(Integer id, Integer companyId, Integer authMode, String emailSuffix, String custom, String customHint, String questions) throws BIZException {
-        Response response = new Response();
-        try {
-            Query.QueryBuilder query = new Query.QueryBuilder();
-            query.where("id", id).and("company_id", companyId);
-            HrEmployeeCertConfDO hrEmployeeCertConfDO = hrEmployeeCertConfDao.getData(query.buildQuery());
-            if (hrEmployeeCertConfDO != null && hrEmployeeCertConfDO.getId() > 0) {
-                Integer oldAuthMode = ((int) hrEmployeeCertConfDO.getAuthMode());
-                if ((oldAuthMode == 2 || oldAuthMode == 4) && (authMode != 2 && authMode != 4)) {
-                    query.clear();
-                    query.select("id");
-                    query.where("company_id", companyId).and(new Condition("activation", 0, ValueOp.NEQ)).and(new Condition("custom_field", "", ValueOp.EQ));
-                    List<Integer> employeeIds = userEmployeeDao.getDatas(query.buildQuery(), Integer.class);
-                    employeeEntity.removeEmployee(employeeIds);
-                }
-                hrEmployeeCertConfDO.setAuthMode(authMode);
-                if(StringUtils.isNotNullOrEmpty(emailSuffix)) {
-                    hrEmployeeCertConfDO.setEmailSuffix(emailSuffix);
-                }
-                if(StringUtils.isNotNullOrEmpty(questions)) {
-                    hrEmployeeCertConfDO.setQuestions(questions);
-                }
-                if(StringUtils.isNotNullOrEmpty(custom)) {
-                    hrEmployeeCertConfDO.setCustom(custom);
-                }
-                if(StringUtils.isNotNullOrEmpty(customHint)) {
-                    hrEmployeeCertConfDO.setCustomHint(customHint);
-                }
-                int resultRow = hrEmployeeCertConfDao.updateData(hrEmployeeCertConfDO);
-                if (resultRow > 0){
-                    response.setStatus(0);
-                    response.setMessage("success");
-                } else {
-                    response.setStatus(99999);
-                    response.setMessage("发生异常，请稍候再试!");
-                }
+    @Transactional
+    public int updateHrEmployeeCertConf(Integer id, Integer companyId, Integer authMode, String emailSuffix, String custom, String customHint, String questions) throws BIZException {
+        Query.QueryBuilder query = new Query.QueryBuilder();
+        query.where("id", id).and("company_id", companyId);
+        HrEmployeeCertConfDO hrEmployeeCertConfDO = hrEmployeeCertConfDao.getData(query.buildQuery());
+        if (hrEmployeeCertConfDO != null && hrEmployeeCertConfDO.getId() > 0) {
+            Integer oldAuthMode = ((int) hrEmployeeCertConfDO.getAuthMode());
+            if ((oldAuthMode == 2 || oldAuthMode == 4) && (authMode != 2 && authMode != 4)) {
+                query.clear();
+                query.select("id");
+                query.where("company_id", companyId).and(new Condition("activation", 0, ValueOp.NEQ)).and(new Condition("custom_field", "", ValueOp.EQ));
+                List<Integer> employeeIds = userEmployeeDao.getDatas(query.buildQuery(), Integer.class);
+                employeeEntity.removeEmployee(employeeIds);
             }
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw ExceptionFactory.buildException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS);
+            hrEmployeeCertConfDO.setAuthMode(authMode);
+            if(StringUtils.isNotNullOrEmpty(emailSuffix)) {
+                hrEmployeeCertConfDO.setEmailSuffix(emailSuffix);
+            }
+            if(StringUtils.isNotNullOrEmpty(questions)) {
+                hrEmployeeCertConfDO.setQuestions(questions);
+            }
+            if(StringUtils.isNotNullOrEmpty(custom)) {
+                hrEmployeeCertConfDO.setCustom(custom);
+            }
+            if(StringUtils.isNotNullOrEmpty(customHint)) {
+                hrEmployeeCertConfDO.setCustomHint(customHint);
+            }
+            return hrEmployeeCertConfDao.updateData(hrEmployeeCertConfDO);
         }
-        return response;
+        return 0;
     }
 }
