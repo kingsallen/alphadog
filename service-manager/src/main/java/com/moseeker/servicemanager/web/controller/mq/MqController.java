@@ -53,21 +53,21 @@ public class MqController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
-    
+
     @RequestMapping(value = "/email/sendEMail", method = RequestMethod.POST)
     @ResponseBody
     public String sendEMail(HttpServletRequest request, HttpServletResponse response) {
         try {
             // 发送消息模板
         	EmailStruct emailStruct = ParamUtils.initModelForm(request, EmailStruct.class);
-        	
+
             Response result = mqService.sendEMail(emailStruct);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
-    
+
     @RequestMapping(value = "/email/sendMandrillEmail", method = RequestMethod.POST)
     @ResponseBody
     public String sendMandrillEmail(HttpServletRequest request, HttpServletResponse response) {
@@ -80,49 +80,49 @@ public class MqController {
         	if (StringUtils.isNotNullOrEmpty(templateName)){
             	mandrillEmailStruct.setTemplateName(templateName);
         	}
-        	
+
         	String to_email = (String)params.get("to_email");
         	if (StringUtils.isNotNullOrEmpty(to_email)){
             	mandrillEmailStruct.setTo_email(to_email);
-        	}      
+        	}
 
         	String to_name = (String)params.get("to_name");
         	if (StringUtils.isNotNullOrEmpty(to_name)){
             	mandrillEmailStruct.setTo_name(to_name);
-        	}           	
-        	
+        	}
+
         	String strMergeVars = (String)params.get("mergeVars");
         	if (StringUtils.isNotNullOrEmpty(strMergeVars)){
         		HashMap mergeVars = JSON.parseObject(strMergeVars, HashMap.class);
             	mandrillEmailStruct.setMergeVars(mergeVars);
-        	}         	
+        	}
         	String subject = (String)params.get("subject");
         	if (StringUtils.isNotNullOrEmpty(subject)){
             	mandrillEmailStruct.setSubject(subject);
-        	}  
+        	}
         	String from_email = (String)params.get("from_email");
         	if (StringUtils.isNotNullOrEmpty(from_email)){
             	mandrillEmailStruct.setFrom_email(from_email);
-        	}     
-        	
+        	}
+
         	String from_name = (String)params.get("from_name");
         	if (StringUtils.isNotNullOrEmpty(from_name)){
             	mandrillEmailStruct.setFrom_name(from_name);
-        	} 
-        	
+        	}
+
             Response result = mqService.sendMandrilEmail(mandrillEmailStruct);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
-    }      
+    }
 
     /**
      * 转换消息模板通知的thrift MessageTemplateNoticeStruct 对象
      *
      * @param request
      * @return
-     * @throws Exception 
+     * @throws Exception
      */
     private MessageTemplateNoticeStruct getMessageTemplateNoticeStruct(HttpServletRequest request) throws Exception{
         MessageTemplateNoticeStruct messageTemplateNoticeStruct = new MessageTemplateNoticeStruct();
@@ -146,6 +146,9 @@ public class MqController {
             if(paramMap.get("validators") != null) {
             	messageTemplateNoticeStruct.setValidators((String)paramMap.get("validators"));
             }
+            if(paramMap.get("validators_params") != null) {
+                messageTemplateNoticeStruct.setValidators_params((String)paramMap.get("validators_params"));
+            }
             return messageTemplateNoticeStruct;
         }
         return null;
@@ -166,6 +169,6 @@ public class MqController {
         }
         return data;
     }
-    
-    
+
+
 }
