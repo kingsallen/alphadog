@@ -65,7 +65,7 @@ public class CrawlerUtils {
 					break;
 			}
 			logger.info("fetchFirstResume:"+result);
-			return cleanning(result, lang, source, completeness, appid, user_id, ua);
+			return cleanning(result, lang, source, completeness, appid, user_id, ua, channelType);
 		} else {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_SERVICE_IMPORT_UPPER_LIMIT);
 		}
@@ -96,8 +96,28 @@ public class CrawlerUtils {
 		}
 	}
 
+	/**
+	 * 如果导入失败，减少导入次数
+	 * @param user_id 用户编号
+	 * @param channelType 导入渠道
+	 * @return
+	 */
+	private void decre(int user_id, ChannelType channelType) {
+
+		if (channelType == null) {
+			return;
+		}
+		StringBuffer sb = new StringBuffer();
+		sb.append(user_id);
+		sb.append("_");
+		sb.append(channelType);
+		String userIdStr = sb.toString();
+		redisClient.decr(0, PROFILE_IMPORT_UPPER_LIMIT, userIdStr, channelType.name());
+	}
+
 	@SuppressWarnings("unchecked")
-	private Response cleanning(String result, int lang, int source, int completeness, int appid, int user_id, int ua) {
+	private Response cleanning(String result, int lang, int source, int completeness, int appid, int user_id, int ua,
+							   ChannelType channelType) {
 		Object obj = JSON.parse(result);
 		Map<String, Object> messagBean = null;
 		if (obj instanceof Map) {
@@ -147,17 +167,22 @@ public class CrawlerUtils {
 		} else if (messagBean.get("status") != null && (Integer) messagBean.get("status") == 1) {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_USER_NOPERMITION);
 		} else if (messagBean.get("status") != null && (Integer) messagBean.get("status") == 2) {
+			decre(user_id, channelType);
 			return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_IMPORT_FAILED);
 		} else if (messagBean.get("status") != null
 				&& (Integer) messagBean.get("status") == 3 ) {
+			decre(user_id, channelType);
 			return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_LOGIN_FAILED);
 		} else if (messagBean.get("status") != null
 				&& (Integer) messagBean.get("status") == 4) {
+			decre(user_id, channelType);
 			return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_LOGIN2_FAILED);
 		} else if (messagBean.get("status") != null
 				&& (Integer) messagBean.get("status") == 5) {
+			decre(user_id, channelType);
 			return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_SERVICE_PARAM_ERROR);
 		}
+		decre(user_id, channelType);
 		return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_PARAM_ILLEGAL);
 	}
 
