@@ -455,6 +455,30 @@ public class UserHrAccountController {
 
     // ------------------------------------- 以下接口为hr_354新增---------------------------------------
 
+    // 修改公司员工认证配置
+    @RequestMapping(value = "/hraccount/company/employeebindconf", method = RequestMethod.GET)
+    @ResponseBody
+    public String updateEmployeeBindConf(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object>  params = ParamUtils.parseRequestParam(request);
+            int id = params.getInt("id", 0);
+            int companyId =  params.getInt("companyId", 0);
+            Integer authMode = params.getInt("authMode");
+            String emailSuffix = params.getString("emailSuffix");
+            String custom = params.getString("custom");
+            String customHint = params.getString("customHint");
+            String questions = params.getString("questions");
+            if (companyId == 0 || id == 0 || authMode == null) {
+                return ResponseLogNotification.fail(request, "companyId不能为空");
+            } else {
+                // TODO 完善
+            }
+            return null;
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
     //  获取公司积分配置信息
     @RequestMapping(value = "/hraccount/company/rewardconfig", method = RequestMethod.GET)
     @ResponseBody

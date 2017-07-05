@@ -6,6 +6,8 @@ include "../../foundataionbs/wordpress/struct/wordpress_foundation_strcut.thrift
 include "../struct/bindtype_struct.thrift"
 include "../../dao/struct/userdb/user_user_struct.thrift"
 include "../../dao/struct/hrdb/hr_third_party_account_struct.thrift"
+include "../struct/employee_struct.thrift"
+
 
 namespace java com.moseeker.thrift.gen.useraccounts.service
 
@@ -117,6 +119,19 @@ service UserHrAccountService {
     list<hr_third_party_account_struct.HrThirdPartyAccountDO> getThirdPartyAccounts(1: common_struct.CommonQuery query);
 
     i32 updateThirdPartyAccount(1: hr_third_party_account_struct.HrThirdPartyAccountDO account)  throws (1: common_struct.BIZException e);
+
+    boolean unbindEmployee(1: list<i32> ids) throws (1: common_struct.BIZException e);
+
+    boolean delEmployee(1: list<i32> ids) throws (1: common_struct.BIZException e);
+
+    list<employee_struct.RewardConfig> getCompanyRewardConf(1: i32 companyId) throws (1: common_struct.BIZException e);
+
+    list<employee_struct.Reward> getCompanyRewards(1: i32 employeeId) throws (1: common_struct.BIZException e);
+
+    i32 addEmployeeReward(1: i32 employeeId, 2: i32 points) throws (1: common_struct.BIZException e);
+
+    boolean updateEmployeeBindConf(1: i32 id, 2: i32 companyId, 3: i32 authMode, 4: string emailSuffix, 5: string custom, 6: string customHint, 7: string questions) throws (1: common_struct.BIZException e);
+
 }
 
 /**
