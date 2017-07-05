@@ -211,8 +211,57 @@ public class UserHrAccountServiceImpl implements Iface {
         return service.getListNum(keyWord, companyId);
     }
 
+
+    /**
+     * 员工列表
+     *
+     * @param keyword    关键字搜索
+     * @param companyId  公司ID
+     * @param filter     过滤条件，0：全部，1：已认证，2：未认证,默认：0
+     * @param order      排序条件
+     * @param by         正序，倒序 0: 正序,1:倒序 默认
+     * @param pageNumber 第几页
+     * @param pageSize   每页的条数
+     */
     @Override
-    public UserEmployeeVOPageVO employeeList(String keword, int companyId, int filter, String order, int by, int pageNumber, int pageSize) throws BIZException, TException {
-        return service.employeeList(keword, companyId, filter, order, by, pageNumber, pageSize);
+    public UserEmployeeVOPageVO employeeList(String keyword, int companyId, int filter, String order, int by, int pageNumber, int pageSize) throws BIZException, TException {
+        return service.employeeList(keyword, companyId, filter, order, by, pageNumber, pageSize);
+    }
+
+    /**
+     * 员工信息导出
+     *
+     * @param userEmployees 员工ID列表
+     * @return
+     */
+    @Override
+    public List<UserEmployeeVO> employeeExport(List<Integer> userEmployees) throws BIZException, TException {
+        return service.employeeExport(userEmployees);
+    }
+
+    /**
+     * 员工信息
+     *
+     * @param userEmployeeId 员工ID
+     */
+    @Override
+    public UserEmployeeDetailVO userEmployeeDetail(int userEmployeeId) throws BIZException, TException {
+        return service.userEmployeeDetail(userEmployeeId);
+    }
+
+    /**
+     * 编辑公司员工信息
+     *
+     * @param cname          姓名
+     * @param mobile         手机号
+     * @param email          邮箱
+     * @param customField    自定义字段
+     * @param userEmployeeId user_employee.id
+     * @return
+     * @throws BIZException
+     */
+    @Override
+    public Response updateUserEmployee(String cname, String mobile, String email, String customField, int userEmployeeId) throws BIZException, TException {
+        return service.updateUserEmployee(cname, mobile, email, customField, userEmployeeId);
     }
 }
