@@ -25,7 +25,7 @@ public class CrawlerUtils {
 	
 	Logger logger = LoggerFactory.getLogger(CrawlerUtils.class);
 
-	private static final String PROFILE_IMPORT_UPPER_LIMIT = "PROFILE_IMPORT_UPPER_LIMIT_CHANNEL";
+	private static final String PROFILE_IMPORT_UPPER_LIMIT = "PROFILE_IMPORT_UPPER_LIMIT";
 
 	@Resource(name = "cacheClient")
 	private RedisClient redisClient;
