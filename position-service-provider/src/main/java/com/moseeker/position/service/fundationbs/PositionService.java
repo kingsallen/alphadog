@@ -316,8 +316,9 @@ public class PositionService {
 
         HrThirdPartyAccountDO account = thirdPartyAccountDao.getData(queryUtil);
 
-        if (account == null || account.binding == AccountSync.unbind.getValue() || account.binding == AccountSync.binding.getValue()
-                || account.binding == AccountSync.accountpasserror.getValue() || account.binding == AccountSync.error.getValue()
+        if (account == null || account.binding == AccountSync.unbind.getValue()
+                || account.binding == AccountSync.accountpasserror.getValue()
+                || account.binding == AccountSync.error.getValue()
                 || account.binding == AccountSync.bingdingerror.getValue()) {
             return false;
         }
