@@ -135,6 +135,7 @@ public class SearchengineController {
             }
 
         } catch (Exception e) {
+        	logger.info(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
