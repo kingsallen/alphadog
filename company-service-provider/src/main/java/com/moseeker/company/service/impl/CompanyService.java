@@ -236,6 +236,10 @@ public class CompanyService {
      * @throws BIZException 业务异常
      */
     public List<CompanyForVerifyEmployee> getGroupCompanies(int companyId) throws BIZException {
+
+        /** 如果是子公司的话，则查找母公司的所属集团 */
+        companyId = findSuperCompanyId(companyId);
+
         HrGroupCompanyRelDO groupCompanyDO = findGroupCompanyRelByCompanyId(companyId);
         if (groupCompanyDO == null) {
             throw ExceptionFactory.buildException(ExceptionCategory.COMPANY_NOT_BELONG_GROUPCOMPANY);
@@ -296,12 +300,36 @@ public class CompanyService {
      * @throws BIZException 业务异常
      */
     public boolean isGroupCompanies(int companyId) throws BIZException {
+
+        /** 如果是子公司的话，则查找母公司的所属集团 */
+        companyId = findSuperCompanyId(companyId);
+
         HrGroupCompanyRelDO hrGroupCompanyRelDO = findGroupCompanyRelByCompanyId(companyId);
         if (hrGroupCompanyRelDO != null) {
             return true;
         } else {
             return false;
         }
+    }
+
+    /**
+     * 如果是子公司的，那么则查找对应母公司的公司编号
+     * @param companyId 公司编号
+     * @return 公司编号
+     */
+    private int findSuperCompanyId(int companyId) throws BIZException {
+        /** 如果是子公司的话，则查找母公司的所属集团 */
+        Query.QueryBuilder findCompanyInfo = new Query.QueryBuilder();
+        findCompanyInfo.select("parent_id").select("id");
+        findCompanyInfo.where("id", companyId);
+        HrCompanyDO hrCompanyDO = companyDao.getData(findCompanyInfo.buildQuery());
+        if (findCompanyInfo == null) {
+            throw ExceptionFactory.buildException(Category.PROGRAM_DATA_EMPTY);
+        }
+        if (hrCompanyDO.getParentId() > 0) {
+            companyId = hrCompanyDO.getParentId();
+        }
+        return companyId;
     }
 
     private HrGroupCompanyRelDO findGroupCompanyRelByCompanyId(int companyId) {
