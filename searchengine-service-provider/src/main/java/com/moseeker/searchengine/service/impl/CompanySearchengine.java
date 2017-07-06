@@ -68,7 +68,7 @@ public class CompanySearchengine {
                 this.handleScale(scale, query);
                 String scripts="double score = _score; weight=_source.other.weight;if(weight>0){score=weight};return score;";
                 Script script=new Script(scripts);//(scripts,"groovy");
-                SortBuilder builder=new ScriptSortBuilder(script,"groovy");
+                SortBuilder builder=new ScriptSortBuilder(script,"number");
                 builder.order( SortOrder.DESC);
                
                 SearchRequestBuilder responseBuilder=client.prepareSearch("companys").setTypes("company")
