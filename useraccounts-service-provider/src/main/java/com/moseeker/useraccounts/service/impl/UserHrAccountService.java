@@ -862,7 +862,7 @@ public class UserHrAccountService {
     /**
      * 员工列表
      *
-     * @param keword     关键字搜索
+     * @param keyword     关键字搜索
      * @param companyId  公司ID
      * @param filter     过滤条件，0：全部，1：已认证，2：未认证,默认：0
      * @param order      排序条件
@@ -914,7 +914,7 @@ public class UserHrAccountService {
             // 默认第一页
             queryBuilder.setPageNum(pageNumber > 0 ? pageNumber : 1);
             // 默认每页15条数据
-            queryBuilder.setPageSize(pageSize > 0 ? pageNumber : 15);
+            queryBuilder.setPageSize(pageSize > 0 ? pageSize : 15);
             List<UserEmployeeDO> userEmployeeDOS = userEmployeeDao.getDatas(queryBuilder.buildQuery());
             Set<Integer> sysuserId = userEmployeeDOS.stream().filter(userUserDO -> userUserDO.getSysuserId() > 0)
                     .map(UserEmployeeDO::getSysuserId).collect(Collectors.toSet());
@@ -1169,7 +1169,7 @@ public class UserHrAccountService {
             userEmployeeDetailVO.setMobile(userEmployeeDO.getMobile());
             userEmployeeDetailVO.setCustomField(userEmployeeDO.getCustomField());
             userEmployeeDetailVO.setEmail(userEmployeeDO.getEmail());
-            userEmployeeDetailVO.setActivation(Integer.valueOf(String.valueOf(userEmployeeDO.getActivation())));
+            userEmployeeDetailVO.setActivation((new Double(userEmployeeDO.getActivation())).intValue());
             // 查询微信信息
             if (userEmployeeDO.getSysuserId() > 0) {
                 queryBuilder.clear();
@@ -1209,15 +1209,23 @@ public class UserHrAccountService {
      */
     public Response updateUserEmployee(String cname, String mobile, String email, String customField, Integer userEmployeeId) throws BIZException {
         Response response = new Response();
+        if (StringUtils.isEmptyObject(userEmployeeId)) {
+            throw ExceptionFactory.buildException(ExceptionCategory.USEREMPLOYEES_DATE_EMPTY);
+        }
         try {
-            if (StringUtils.isEmptyObject(userEmployeeId)) {
-                throw ExceptionFactory.buildException(ExceptionCategory.USEREMPLOYEES_DATE_EMPTY);
-            }
             UserEmployeeDO userEmployeeDO = new UserEmployeeDO();
-            userEmployeeDO.setCname(cname);
-            userEmployeeDO.setMobile(mobile);
-            userEmployeeDO.setCustomField(customField);
-            userEmployeeDO.setEmail(email);
+            if (!StringUtils.isEmptyObject(cname)) {
+                userEmployeeDO.setCname(cname);
+            }
+            if (!StringUtils.isEmptyObject(mobile)) {
+                userEmployeeDO.setMobile(mobile);
+            }
+            if (!StringUtils.isEmptyObject(customField)) {
+                userEmployeeDO.setCustomField(customField);
+            }
+            if (!StringUtils.isEmptyObject(email)) {
+                userEmployeeDO.setEmail(email);
+            }
             userEmployeeDO.setId(userEmployeeId);
             int i = userEmployeeDao.updateData(userEmployeeDO);
             if (i > 0) {

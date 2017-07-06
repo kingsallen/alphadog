@@ -406,7 +406,3 @@ struct UserEmployeeDetailVO{
     8: optional string companyName, // 公司名称
     9: optional string headImg, // 头像
 }
-
-struct EmployeeOptionVO{
-
-}

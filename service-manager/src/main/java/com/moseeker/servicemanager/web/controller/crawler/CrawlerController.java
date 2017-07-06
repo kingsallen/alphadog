@@ -62,7 +62,7 @@ public class CrawlerController {
 						form.getType(), form.getLang(), form.getSource(), form.getCompleteness(), form.getAppid(),
 						form.getUser_id(), form.getUa());
 				if (res != null && res.getStatus() == 0) {
-					logger.info("/crawler    profile:"+res.getData());
+					logger.info("/crawler profile:"+res.getData());
 					res = profileService.importCV(res.getData(), form.getUser_id());
 					return ResponseLogNotification.success(request, res);
 				} else {

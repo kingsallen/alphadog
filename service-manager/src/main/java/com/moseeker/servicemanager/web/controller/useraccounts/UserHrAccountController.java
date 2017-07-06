@@ -1,10 +1,9 @@
 package com.moseeker.servicemanager.web.controller.useraccounts;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
@@ -660,14 +659,66 @@ public class UserHrAccountController {
     public String employeeExport(HttpServletRequest request, HttpServletResponse response) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            int companyId = params.getInt("companyId") != null ? params.getInt("companyId") : 0;
             // 员工ID列表
-            List<Integer> userEmployees = (List<Integer>) params.get("userEmployees");
+            if (!StringUtils.isEmptyList((List<Integer>) params.get("userEmployees"))) {
+                List<Integer> userEmployees = (List<Integer>) params.get("userEmployees");
+                List<UserEmployeeVO> userEmployeeVOS = userHrAccountService.employeeExport(userEmployees);
+                return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(userEmployeeVOS)));
+            } else {
+                return ResponseLogNotification.fail(request, ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
+            }
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 
-//            UserEmployeeVOPageVO userEmployeeVOPageVO = userHrAccountService.employeeList(keyWord, companyId, filter, order, by, pageNumber, pageSize);
-//            return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(userEmployeeVOPageVO)));
-//            return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(userEmployeeVOPageVO)));
-            return null;
+
+    /**
+     * 员工信息
+     *
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/hraccount/employe/details", method = RequestMethod.GET)
+    @ResponseBody
+    public String employeeDetails(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int userEmployeeId = params.getInt("userEmployeeId") != null ? params.getInt("userEmployeeId") : 0;
+            UserEmployeeDetailVO userEmployeeDetailVO = userHrAccountService.userEmployeeDetail(userEmployeeId);
+            return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(userEmployeeDetailVO)));
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+
+    /**
+     * 更新公司员工信息
+     *
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/hraccount/employe/update", method = RequestMethod.PUT)
+    @ResponseBody
+    public String updateUserEmployee(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int userEmployeeId = params.getInt("userEmployeeId") != null ? params.getInt("userEmployeeId") : 0;
+            String cname = params.getString("cname") != null ? params.getString("cname") : "";
+            String mobile = params.getString("mobile") != null ? params.getString("mobile") : "";
+            String email = params.getString("email") != null ? params.getString("email") : "";
+            String customField = params.getString("customField") != null ? params.getString("customField") : "";
+            Response res = userHrAccountService.updateUserEmployee(cname, mobile, email, customField, userEmployeeId);
+            return ResponseLogNotification.success(request, res);
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
