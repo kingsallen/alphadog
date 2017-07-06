@@ -7,7 +7,7 @@ public enum ExceptionCategory {
 
     COMPANY_NOT_BELONG_GROUPCOMPANY(32010, "并非是集团公司！"),
     COMPANY_NAME_REPEAT(33001, "不允许和拥有超级帐号的公司的公司名称重名！"),
-    COMPANY_SCALE_ELLEGAL(33002, "公司规模不合法"),
+    COMPANY_SCALE_ELLEGAL(33002, "公司规模不合法!"),
     COMPANY_PROPERTIY_ELLEGAL(33003, "公司属性不合法!"),
     ADD_IMPORTERMONITOR_PARAMETER(33004, "添加公司认证配置参数设置有误:{MESSAGE}"),
     ADD_IMPORTERMONITOR_FAILED(33005, "添加公司认证配置文件失败"),
