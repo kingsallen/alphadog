@@ -27,9 +27,9 @@ public abstract class RedisConsumer<T> {
     protected void fetchToData(int appid, String key) {
         try {
             String redisString = fetchFromRedis(appid, key);
-//            if (StringUtils.isNotNullOrEmpty(redisString)) {
+            if (StringUtils.isNotNullOrEmpty(redisString)) {
                 onComplete(convertData(redisString));
-//            }
+            }
         } catch (Exception e) {
             e.printStackTrace();
             LoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
@@ -38,6 +38,7 @@ public abstract class RedisConsumer<T> {
 
     /**
      * 从队列中取出
+     *
      * @param appid
      * @param key
      * @return
