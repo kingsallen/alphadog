@@ -40,7 +40,7 @@ public class CompanySearchengine {
                          .addSort("_score", SortOrder.DESC)
                          .setFrom(page)
                          .setSize(pageSize);
- 
+                 logger.info(responseBuilder.toString());
                  SearchResponse response = responseBuilder.execute().actionGet();
                  logger.info(response.toString()+"========================================================");
                  SearchHits hit=response.getHits();

@@ -222,6 +222,7 @@ public class SearchengineService {
                             .addSort("_score", SortOrder.DESC)
                             .setFrom(page_from)
                             .setSize(page_size);
+                	logger.info(responseBuilder.toString());
                     response = responseBuilder.execute().actionGet();
          
                 } else {
@@ -231,6 +232,7 @@ public class SearchengineService {
                             .addSort("update_time", SortOrder.DESC)
                             .setFrom(page_from)
                             .setSize(page_size);
+                	logger.info(responseBuilder.toString());
                     response = responseBuilder.execute().actionGet();
                 }
 
@@ -240,6 +242,7 @@ public class SearchengineService {
                         .addSort("_score", SortOrder.DESC)
                         .setFrom(page_from)
                         .setSize(page_size);
+            	logger.info(responseBuilder.toString());
                 response = responseBuilder.execute().actionGet();
             }
 
