@@ -8,6 +8,7 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.employee.struct.Reward;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService.Iface;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
@@ -16,6 +17,7 @@ import com.moseeker.useraccounts.exception.ExceptionFactory;
 import com.moseeker.useraccounts.service.impl.UserHrAccountService;
 
 import java.util.ArrayList;
+
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -310,5 +312,33 @@ public class UserHrAccountServiceImpl implements Iface {
     @Override
     public Response updateUserEmployee(String cname, String mobile, String email, String customField, int userEmployeeId) throws BIZException, TException {
         return service.updateUserEmployee(cname, mobile, email, customField, userEmployeeId);
+    }
+
+    /**
+     * 员工信息导入
+     *
+     * @param userEmployeeDOS
+     * @param companyId
+     * @return
+     * @throws BIZException
+     * @throws TException
+     */
+    @Override
+    public Response employeeImport(List<UserEmployeeDO> userEmployeeDOS, int companyId) throws BIZException, TException {
+        return service.employeeImport(companyId, userEmployeeDOS);
+    }
+
+    /**
+     * 检查员工重复(批量导入之前验证)
+     *
+     * @param userEmployeeDOS
+     * @param companyId
+     * @return
+     * @throws BIZException
+     * @throws TException
+     */
+    @Override
+    public Response checkBatchInsert(List<UserEmployeeDO> userEmployeeDOS, int companyId) throws BIZException, TException {
+        return service.checkBatchInsert(userEmployeeDOS, companyId);
     }
 }

@@ -385,8 +385,9 @@ struct UserEmployeeVO{
     6: optional string nickName, // 微信账号
     7: optional i32 award, // 积分
     8: optional i32 activation, // 认证状态
-    9: optional string companyName, // 公司名称
-    10: optional string bindingTime, // 认证时间
+    9: optional i32 companyId, // 公司ID
+    10: optional string companyName, // 公司名称
+    11: optional string bindingTime, // 认证时间
 }
 // 员工列表分页实体
 struct UserEmployeeVOPageVO{

@@ -11,6 +11,7 @@ public enum ExceptionCategory {
     PROGRAM_DATA_EMPTY(90010, "公司信息不存在！"),
     PROGRAM_EXCEPTION(99999, "发生异常，请稍候再试！");
 
+
     private ExceptionCategory(int code, String msg) {
         this.code = code;
         this.msg = msg;
