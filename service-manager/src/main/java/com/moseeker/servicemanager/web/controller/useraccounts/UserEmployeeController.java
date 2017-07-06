@@ -110,14 +110,14 @@ public class UserEmployeeController {
     public String checkUserIsEmployee(HttpServletRequest request, HttpServletResponse response) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            int userId = params.getInt("userId");
-            int compnayId = params.getInt("compnayId");
-            if (compnayId == 0) {
+            int userId = params.getInt("userId", 0);
+            int companyId = params.getInt("companyId", 0);
+            if (companyId == 0) {
                 return ResponseLogNotification.fail(request, "公司Id不能为空");
             } else if (userId == 0) {
                 return ResponseLogNotification.fail(request, "员工Id不能为空");
             } else {
-                boolean result = service.isEmployee(userId, compnayId);
+                boolean result = service.isEmployee(userId, companyId);
                 return ResponseLogNotification.success(request, ResponseUtils.success(new HashMap<String, Object>(){{put("result", result);}}));
             }
         } catch (Exception e) {

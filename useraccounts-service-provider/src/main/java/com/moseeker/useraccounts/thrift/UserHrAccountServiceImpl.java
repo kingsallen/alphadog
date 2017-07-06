@@ -15,6 +15,7 @@ import com.moseeker.useraccounts.exception.ExceptionCategory;
 import com.moseeker.useraccounts.exception.ExceptionFactory;
 import com.moseeker.useraccounts.service.impl.UserHrAccountService;
 
+import java.util.ArrayList;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -222,7 +223,14 @@ public class UserHrAccountServiceImpl implements Iface {
 
     @Override
     public List<Reward> getEmployeeRewards(int employeeId) throws BIZException, TException {
-        return null;
+        List<Reward> result = new ArrayList<>();
+        try {
+            result = employeeEntity.getEmployeePointsRecords(employeeId);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            ExceptionFactory.buildException(ExceptionCategory.PROGRAM_EXCEPTION);
+        }
+        return result;
     }
 
     @Override
