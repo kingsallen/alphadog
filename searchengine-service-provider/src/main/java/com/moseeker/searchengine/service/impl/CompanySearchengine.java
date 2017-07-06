@@ -11,7 +11,10 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.script.Script;
 import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.sort.ScriptSortBuilder;
+import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,9 +66,14 @@ public class CompanySearchengine {
                 this.handleCitys( citys,query);
                 this.handleIndustry(industry, query);
                 this.handleScale(scale, query);
+                String scripts="double score = _score; weight=_source.other.weight;if(weight>0){score=weight};return score;";
+                Script script=new Script(scripts);//(scripts,"groovy");
+                SortBuilder builder=new ScriptSortBuilder(script,"groovy");
+                builder.order( SortOrder.DESC);
+               
                 SearchRequestBuilder responseBuilder=client.prepareSearch("companys").setTypes("company")
                         .setQuery(query)
-                        .addSort("_score", SortOrder.DESC)
+                        .addSort(builder)
                         .setFrom(page)
                         .setSize(pageSize);
                 logger.info(responseBuilder.toString());
