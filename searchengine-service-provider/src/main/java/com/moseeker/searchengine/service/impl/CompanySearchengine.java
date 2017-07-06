@@ -73,6 +73,7 @@ public class CompanySearchengine {
                 sb.append("{score=score*100}");
                 sb.append("else if(abbreviation.startWith("+keywords+")&&name.startWith("+keywords+"))");
                 sb.append("{score=score*50};return score;");
+                String scripts=sb.toString();
                 Script script=new Script(scripts);
                 SortBuilder builder=new ScriptSortBuilder(script,"number");
                 builder.order( SortOrder.DESC);
