@@ -69,9 +69,9 @@ public class CompanySearchengine {
                 StringBuffer sb=new StringBuffer();
                 sb.append("double score = _score;abbreviation=_source.company.abbreviation;");
                 sb.append("name=_source.company.name ;");
-                sb.append("if(abbreviation.startWith("+keywords+")&&name.startWith("+keywords+"))");
+                sb.append("if(abbreviation.startsWith('"+keywords+"')&&name.startsWith('"+keywords+"'))");
                 sb.append("{score=score*100}");
-                sb.append("else if(abbreviation.startWith("+keywords+")&&name.startWith("+keywords+"))");
+                sb.append("else if(abbreviation.startsWith('"+keywords+"')||name.startsWith('"+keywords+"'))");
                 sb.append("{score=score*50};return score;");
                 String scripts=sb.toString();
                 Script script=new Script(scripts);
