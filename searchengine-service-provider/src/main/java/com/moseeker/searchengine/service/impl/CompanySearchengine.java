@@ -81,10 +81,11 @@ public class CompanySearchengine {
    }
     private void handleKeyWordForPrefix(String keywords,boolean hasKey,QueryBuilder query){
     	QueryBuilder keyand = QueryBuilders.boolQuery();
-		QueryBuilder fullf = QueryBuilders.prefixQuery("company.name", keywords);
+		QueryBuilder fullf = QueryBuilders.matchPhrasePrefixQuery("company.name", keywords);
 		((BoolQueryBuilder) keyand).should(fullf);
-		QueryBuilder fullf1 = QueryBuilders.prefixQuery("company.abbreviation", keywords);
+		QueryBuilder fullf1 = QueryBuilders.matchPhrasePrefixQuery("company.abbreviation", keywords);
 		((BoolQueryBuilder) keyand).should(fullf1);
+		((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
         ((BoolQueryBuilder) query).must(keyand);
     }
     
