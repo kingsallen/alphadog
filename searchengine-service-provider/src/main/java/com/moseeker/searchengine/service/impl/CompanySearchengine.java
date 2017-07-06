@@ -63,11 +63,13 @@ public class CompanySearchengine {
                 this.handleCitys( citys,query);
                 this.handleIndustry(industry, query);
                 this.handleScale(scale, query);
-                SearchResponse response = client.prepareSearch("companys").setTypes("company")
-                            .setQuery(query)
-                            .addSort("_score", SortOrder.DESC)
-                            .setFrom(page)
-                            .setSize(pageSize).execute().actionGet();
+                SearchRequestBuilder responseBuilder=client.prepareSearch("companys").setTypes("company")
+                        .setQuery(query)
+                        .addSort("_score", SortOrder.DESC)
+                        .setFrom(page)
+                        .setSize(pageSize);
+                logger.info(responseBuilder.toString());
+                SearchResponse response = responseBuilder.execute().actionGet();
                 SearchHits hit=response.getHits();
                 return hit;
        	 }
