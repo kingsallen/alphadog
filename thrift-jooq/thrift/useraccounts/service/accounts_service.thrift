@@ -143,7 +143,7 @@ service UserHrAccountService {
     // 员工信息导入
     common_struct.Response employeeImport(1:list<user_employee_struct.UserEmployeeDO> userEmployeeDOS, 2:i32 companyId) throws (1: common_struct.BIZException e)
     // 检查员工重复
-    common_struct.Response checkBatchInsert(1:list<user_employee_struct.UserEmployeeDO> userEmployeeDOS, 2:i32 companyId) throws (1: common_struct.BIZException e)
+    useraccounts_struct.ImportUserEmployeeStatistic checkBatchInsert(1:list<user_employee_struct.UserEmployeeDO> userEmployeeDOS, 2:i32 companyId) throws (1: common_struct.BIZException e)
 }
 
 

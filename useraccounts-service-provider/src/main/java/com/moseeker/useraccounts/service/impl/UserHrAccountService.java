@@ -877,7 +877,11 @@ public class UserHrAccountService {
         try {
             List<UserEmployeeVO> userEmployeeVOS = new ArrayList<>();
             Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-            List<Integer> list = employeeEntity.getCompanyIds(companyId);
+            queryBuilder.where(HrCompany.HR_COMPANY.ID.getName(), companyId);
+            // 是否是子公司，如果是查询母公司ID
+            HrCompanyDO hrCompanyDO = hrCompanyDao.getData(queryBuilder.buildQuery());
+            List<Integer> list = employeeEntity.getCompanyIds(hrCompanyDO.getParentId() > 0 ? hrCompanyDO.getParentId() : companyId);
+            queryBuilder.clear();
             Condition companyIdCon = new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), list, ValueOp.IN);
             queryBuilder.where(companyIdCon).and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), 0);
             // 如果有关键字，拼接关键字
@@ -970,7 +974,7 @@ public class UserHrAccountService {
     /**
      * 员工信息导出
      *
-     * @param userEmployees 员工ID列表
+     * @param userEmployees 员工ID
      * @return
      */
     public List<UserEmployeeVO> employeeExport(List<Integer> userEmployees) throws BIZException {
@@ -1045,8 +1049,8 @@ public class UserHrAccountService {
         try {
             // 判断是否有重复数据
             ImportUserEmployeeStatistic importUserEmployeeStatistic = repetitionFilter(userEmployeeList, companyId);
-            if (StringUtils.isEmptyObject(importUserEmployeeStatistic) && !importUserEmployeeStatistic.flag) {
-                response = ResultMessage.SUCCESS.toResponse(importUserEmployeeStatistic);
+            if (StringUtils.isEmptyObject(importUserEmployeeStatistic) && !importUserEmployeeStatistic.insertAccept) {
+                throw ExceptionFactory.buildException(ExceptionCategory.IMPORT_DATA_WRONG);
             }
             // 查询公司ID是否设置正确
             Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
@@ -1075,6 +1079,7 @@ public class UserHrAccountService {
                     for (UserEmployeeDO user : userEmployeeDOS) {
                         if (userEmployeeDOTemp.getMobile().equals(user.getMobile())) {
                             userEmployeeDOTemp.setId(user.getId());
+                            userEmployeeDOTemp.setSource(8);
                             updateUserEmployee.add(userEmployeeDOTemp);
                         }
                     }
@@ -1107,16 +1112,8 @@ public class UserHrAccountService {
      * @param companyId
      * @return
      */
-    public Response checkBatchInsert(List<UserEmployeeDO> userEmployeeDOS, Integer companyId) throws BIZException {
-        Response response = new Response();
-        try {
-            ImportUserEmployeeStatistic importUserEmployeeStatistic = repetitionFilter(userEmployeeDOS, companyId);
-            response = ResultMessage.SUCCESS.toResponse(importUserEmployeeStatistic);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw ExceptionFactory.buildException(ExceptionCategory.PROGRAM_EXCEPTION);
-        }
-        return response;
+    public ImportUserEmployeeStatistic checkBatchInsert(List<UserEmployeeDO> userEmployeeDOS, Integer companyId) throws BIZException {
+        return repetitionFilter(userEmployeeDOS, companyId);
     }
 
     /**
@@ -1128,6 +1125,7 @@ public class UserHrAccountService {
     public ImportUserEmployeeStatistic repetitionFilter(List<UserEmployeeDO> userEmployeeDOS, Integer companyId) {
         ImportUserEmployeeStatistic importUserEmployeeStatistic = new ImportUserEmployeeStatistic();
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        // 查找已经存在的数据
         queryBuilder.where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyId)
                 .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), 0);
         // 数据库中取出来的数据
@@ -1136,7 +1134,8 @@ public class UserHrAccountService {
         List<ImportErrorUserEmployee> importErrorUserEmployees = new ArrayList<>();
         int repetitionCounts = 0;
         int errorCounts = 0;
-        if (StringUtils.isEmptyList(dbEmployeeDOList)) {
+        if (!StringUtils.isEmptyList(dbEmployeeDOList)) {
+            // 提交上的数据
             for (UserEmployeeDO userEmployeeDO : userEmployeeDOS) {
                 ImportErrorUserEmployee importErrorUserEmployee = new ImportErrorUserEmployee();
                 // 判断上传的数据是否有字段长度的错误
@@ -1148,13 +1147,14 @@ public class UserHrAccountService {
                     importErrorUserEmployees.add(importErrorUserEmployee);
                     continue;
                 }
+                if (StringUtils.isEmptyObject(userEmployeeDO.getCustomField())) {
+                    continue;
+                }
+                // 数据库的数据
                 for (UserEmployeeDO dbUserEmployeeDO : dbEmployeeDOList) {
                     // 非自定义员工,忽略检查
                     if (StringUtils.isEmptyObject(dbUserEmployeeDO.getCustomField())
                             || StringUtils.isEmptyObject(dbUserEmployeeDO.getCname())) {
-                        continue;
-                    }
-                    if (StringUtils.isEmptyObject(userEmployeeDO.getCustomField())) {
                         continue;
                     }
                     // 当提交的数据和数据库中的数据，cname和customField都相等时候，认为是重复数据
@@ -1162,12 +1162,13 @@ public class UserHrAccountService {
                             && userEmployeeDO.getCustomField().equals(dbUserEmployeeDO.getCustomField())) {
                         repetitionCounts = repetitionCounts + 1;
                         importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
-                        importErrorUserEmployee.setMessage("cname和customField和数据中的数据一致");
+                        importErrorUserEmployee.setMessage("cname和customField和数据库的数据一致");
                         importErrorUserEmployees.add(importErrorUserEmployee);
                     }
                 }
             }
         }
+        importUserEmployeeStatistic.setTotalCounts(userEmployeeDOS.size());
         importUserEmployeeStatistic.setErrorCounts(errorCounts);
         importUserEmployeeStatistic.setRepetitionCounts(repetitionCounts);
         if (!StringUtils.isEmptyList(importErrorUserEmployees)) {
@@ -1175,9 +1176,9 @@ public class UserHrAccountService {
         }
 
         if (repetitionCounts == 0 && errorCounts == 0) {
-            importUserEmployeeStatistic.setFlag(true);
+            importUserEmployeeStatistic.setInsertAccept(true);
         } else {
-            importUserEmployeeStatistic.setFlag(false);
+            importUserEmployeeStatistic.setInsertAccept(false);
         }
         return importUserEmployeeStatistic;
     }

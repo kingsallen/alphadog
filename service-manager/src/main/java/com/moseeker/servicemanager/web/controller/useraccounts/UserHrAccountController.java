@@ -11,22 +11,29 @@ import com.moseeker.common.validation.rules.DateType;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
+import com.moseeker.servicemanager.web.controller.position.PositionParamUtils;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.employee.struct.Reward;
 import com.moseeker.thrift.gen.employee.struct.RewardConfig;
+import com.moseeker.thrift.gen.position.struct.City;
+import com.moseeker.thrift.gen.position.struct.JobPostrionObj;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -462,9 +469,9 @@ public class UserHrAccountController {
     @ResponseBody
     public String updateEmployeeBindConf(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Params<String, Object>  params = ParamUtils.parseRequestParam(request);
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
             int id = params.getInt("id", 0);
-            int companyId =  params.getInt("companyId", 0);
+            int companyId = params.getInt("companyId", 0);
             Integer authMode = params.getInt("authMode");
             String emailSuffix = params.getString("emailSuffix");
             String custom = params.getString("custom");
@@ -478,7 +485,9 @@ public class UserHrAccountController {
                 return ResponseLogNotification.fail(request, "认证方式不能为空");
             } else {
                 boolean result = companyService.updateEmployeeBindConf(id, companyId, authMode, emailSuffix, custom, customHint, questions);
-                return ResponseLogNotification.success(request, ResponseUtils.success(new HashMap<String, Object>(){{put("result", result);}}));
+                return ResponseLogNotification.success(request, ResponseUtils.success(new HashMap<String, Object>() {{
+                    put("result", result);
+                }}));
             }
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
@@ -519,7 +528,9 @@ public class UserHrAccountController {
                 return ResponseLogNotification.fail(request, "Ids不能为空");
             } else {
                 boolean result = userHrAccountService.unbindEmployee(ids);
-                return ResponseLogNotification.success(request, ResponseUtils.success(new HashMap<String, Object>(){{put("result", result);}}));
+                return ResponseLogNotification.success(request, ResponseUtils.success(new HashMap<String, Object>() {{
+                    put("result", result);
+                }}));
             }
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
@@ -539,7 +550,9 @@ public class UserHrAccountController {
                 return ResponseLogNotification.fail(request, "Ids不能为空");
             } else {
                 boolean result = userHrAccountService.delEmployee(ids);
-                return ResponseLogNotification.success(request, ResponseUtils.success(new HashMap<String, Object>(){{put("result", result);}}));
+                return ResponseLogNotification.success(request, ResponseUtils.success(new HashMap<String, Object>() {{
+                    put("result", result);
+                }}));
             }
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
@@ -582,7 +595,9 @@ public class UserHrAccountController {
                 return ResponseLogNotification.fail(request, "员工Id不能为空");
             } else {
                 int result = userHrAccountService.addEmployeeReward(employeeId, points, reason);
-                return ResponseLogNotification.success(request, ResponseUtils.success(new HashMap<String, Integer>(){{put("totalPoint", result);}}));
+                return ResponseLogNotification.success(request, ResponseUtils.success(new HashMap<String, Integer>() {{
+                    put("totalPoint", result);
+                }}));
             }
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
@@ -718,6 +733,52 @@ public class UserHrAccountController {
             String email = params.getString("email") != null ? params.getString("email") : "";
             String customField = params.getString("customField") != null ? params.getString("customField") : "";
             Response res = userHrAccountService.updateUserEmployee(cname, mobile, email, customField, userEmployeeId);
+            return ResponseLogNotification.success(request, res);
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     * 检查员工重复(批量导入之前验证)
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/hraccount/employee/checkbatchinsert", method = RequestMethod.POST)
+    @ResponseBody
+    public String checkBatchInsert(HttpServletRequest request) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int companyId = params.getInt("companyId") != null ? params.getInt("companyId") : 0;
+            List<UserEmployeeDO> userEmployees = UserHrAccountParamUtils.parseUserEmployeeDO((List<HashMap<String, Object>>) params.get("userEmployees"));
+            ImportUserEmployeeStatistic res = userHrAccountService.checkBatchInsert(userEmployees, companyId);
+            return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(res)));
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     * 员工信息导入
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/hraccount/employe/import", method = RequestMethod.POST)
+    @ResponseBody
+    public String employeeImport(HttpServletRequest request) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int companyId = params.getInt("companyId") != null ? params.getInt("companyId") : 0;
+            List<UserEmployeeDO> userEmployees = UserHrAccountParamUtils.parseUserEmployeeDO((List<HashMap<String, Object>>) params.get("userEmployees"));
+            Response res = userHrAccountService.employeeImport(userEmployees, companyId);
             return ResponseLogNotification.success(request, res);
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));

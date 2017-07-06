@@ -338,7 +338,7 @@ public class UserHrAccountServiceImpl implements Iface {
      * @throws TException
      */
     @Override
-    public Response checkBatchInsert(List<UserEmployeeDO> userEmployeeDOS, int companyId) throws BIZException, TException {
+    public ImportUserEmployeeStatistic checkBatchInsert(List<UserEmployeeDO> userEmployeeDOS, int companyId) throws BIZException, TException {
         return service.checkBatchInsert(userEmployeeDOS, companyId);
     }
 }

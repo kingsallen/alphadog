@@ -421,5 +421,6 @@ struct ImportUserEmployeeStatistic{
     2: optional i32 errorCounts;
     3: optional string message, // 错误原因
     4: optional list<ImportErrorUserEmployee> userEmployeeDO, // 员工实体
-    5: optional bool flag // 是否通过
+    5: optional i32 totalCounts, //总条数
+    6: optional bool insertAccept // 是否允许插入
 }

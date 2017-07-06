@@ -70,7 +70,7 @@ public class UserHrAccountService {
 
     public com.moseeker.thrift.gen.common.struct.Response employeeImport(java.util.List<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> userEmployeeDOS, int companyId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response checkBatchInsert(java.util.List<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> userEmployeeDOS, int companyId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.useraccounts.struct.ImportUserEmployeeStatistic checkBatchInsert(java.util.List<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> userEmployeeDOS, int companyId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
   }
 
@@ -130,7 +130,7 @@ public class UserHrAccountService {
 
     public void employeeImport(java.util.List<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> userEmployeeDOS, int companyId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
-    public void checkBatchInsert(java.util.List<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> userEmployeeDOS, int companyId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+    public void checkBatchInsert(java.util.List<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> userEmployeeDOS, int companyId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.ImportUserEmployeeStatistic> resultHandler) throws org.apache.thrift.TException;
 
   }
 
@@ -853,7 +853,7 @@ public class UserHrAccountService {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "employeeImport failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response checkBatchInsert(java.util.List<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> userEmployeeDOS, int companyId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    public com.moseeker.thrift.gen.useraccounts.struct.ImportUserEmployeeStatistic checkBatchInsert(java.util.List<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> userEmployeeDOS, int companyId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
       send_checkBatchInsert(userEmployeeDOS, companyId);
       return recv_checkBatchInsert();
@@ -867,7 +867,7 @@ public class UserHrAccountService {
       sendBase("checkBatchInsert", args);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response recv_checkBatchInsert() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    public com.moseeker.thrift.gen.useraccounts.struct.ImportUserEmployeeStatistic recv_checkBatchInsert() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
       checkBatchInsert_result result = new checkBatchInsert_result();
       receiveBase(result, "checkBatchInsert");
@@ -1852,17 +1852,17 @@ public class UserHrAccountService {
       }
     }
 
-    public void checkBatchInsert(java.util.List<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> userEmployeeDOS, int companyId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+    public void checkBatchInsert(java.util.List<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> userEmployeeDOS, int companyId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.ImportUserEmployeeStatistic> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       checkBatchInsert_call method_call = new checkBatchInsert_call(userEmployeeDOS, companyId, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
-    public static class checkBatchInsert_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
+    public static class checkBatchInsert_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.useraccounts.struct.ImportUserEmployeeStatistic> {
       private java.util.List<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> userEmployeeDOS;
       private int companyId;
-      public checkBatchInsert_call(java.util.List<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> userEmployeeDOS, int companyId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public checkBatchInsert_call(java.util.List<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> userEmployeeDOS, int companyId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.ImportUserEmployeeStatistic> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.userEmployeeDOS = userEmployeeDOS;
         this.companyId = companyId;
@@ -1877,7 +1877,7 @@ public class UserHrAccountService {
         prot.writeMessageEnd();
       }
 
-      public com.moseeker.thrift.gen.common.struct.Response getResult() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException {
+      public com.moseeker.thrift.gen.useraccounts.struct.ImportUserEmployeeStatistic getResult() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new java.lang.IllegalStateException("Method call not finished!");
         }
@@ -4322,7 +4322,7 @@ public class UserHrAccountService {
       }
     }
 
-    public static class checkBatchInsert<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, checkBatchInsert_args, com.moseeker.thrift.gen.common.struct.Response> {
+    public static class checkBatchInsert<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, checkBatchInsert_args, com.moseeker.thrift.gen.useraccounts.struct.ImportUserEmployeeStatistic> {
       public checkBatchInsert() {
         super("checkBatchInsert");
       }
@@ -4331,10 +4331,10 @@ public class UserHrAccountService {
         return new checkBatchInsert_args();
       }
 
-      public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
+      public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.ImportUserEmployeeStatistic> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
-          public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.ImportUserEmployeeStatistic>() { 
+          public void onComplete(com.moseeker.thrift.gen.useraccounts.struct.ImportUserEmployeeStatistic o) {
             checkBatchInsert_result result = new checkBatchInsert_result();
             result.success = o;
             try {
@@ -4382,7 +4382,7 @@ public class UserHrAccountService {
         return false;
       }
 
-      public void start(I iface, checkBatchInsert_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+      public void start(I iface, checkBatchInsert_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.ImportUserEmployeeStatistic> resultHandler) throws org.apache.thrift.TException {
         iface.checkBatchInsert(args.userEmployeeDOS, args.companyId,resultHandler);
       }
     }
@@ -29698,7 +29698,7 @@ public class UserHrAccountService {
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new checkBatchInsert_resultStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new checkBatchInsert_resultTupleSchemeFactory();
 
-    public com.moseeker.thrift.gen.common.struct.Response success; // required
+    public com.moseeker.thrift.gen.useraccounts.struct.ImportUserEmployeeStatistic success; // required
     public com.moseeker.thrift.gen.common.struct.BIZException e; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
@@ -29767,7 +29767,7 @@ public class UserHrAccountService {
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.useraccounts.struct.ImportUserEmployeeStatistic.class)));
       tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
@@ -29778,7 +29778,7 @@ public class UserHrAccountService {
     }
 
     public checkBatchInsert_result(
-      com.moseeker.thrift.gen.common.struct.Response success,
+      com.moseeker.thrift.gen.useraccounts.struct.ImportUserEmployeeStatistic success,
       com.moseeker.thrift.gen.common.struct.BIZException e)
     {
       this();
@@ -29791,7 +29791,7 @@ public class UserHrAccountService {
      */
     public checkBatchInsert_result(checkBatchInsert_result other) {
       if (other.isSetSuccess()) {
-        this.success = new com.moseeker.thrift.gen.common.struct.Response(other.success);
+        this.success = new com.moseeker.thrift.gen.useraccounts.struct.ImportUserEmployeeStatistic(other.success);
       }
       if (other.isSetE()) {
         this.e = new com.moseeker.thrift.gen.common.struct.BIZException(other.e);
@@ -29808,11 +29808,11 @@ public class UserHrAccountService {
       this.e = null;
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response getSuccess() {
+    public com.moseeker.thrift.gen.useraccounts.struct.ImportUserEmployeeStatistic getSuccess() {
       return this.success;
     }
 
-    public checkBatchInsert_result setSuccess(com.moseeker.thrift.gen.common.struct.Response success) {
+    public checkBatchInsert_result setSuccess(com.moseeker.thrift.gen.useraccounts.struct.ImportUserEmployeeStatistic success) {
       this.success = success;
       return this;
     }
@@ -29862,7 +29862,7 @@ public class UserHrAccountService {
         if (value == null) {
           unsetSuccess();
         } else {
-          setSuccess((com.moseeker.thrift.gen.common.struct.Response)value);
+          setSuccess((com.moseeker.thrift.gen.useraccounts.struct.ImportUserEmployeeStatistic)value);
         }
         break;
 
@@ -30066,7 +30066,7 @@ public class UserHrAccountService {
           switch (schemeField.id) {
             case 0: // SUCCESS
               if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-                struct.success = new com.moseeker.thrift.gen.common.struct.Response();
+                struct.success = new com.moseeker.thrift.gen.useraccounts.struct.ImportUserEmployeeStatistic();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
               } else { 
@@ -30145,7 +30145,7 @@ public class UserHrAccountService {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
-          struct.success = new com.moseeker.thrift.gen.common.struct.Response();
+          struct.success = new com.moseeker.thrift.gen.useraccounts.struct.ImportUserEmployeeStatistic();
           struct.success.read(iprot);
           struct.setSuccessIsSet(true);
         }
