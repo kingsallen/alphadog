@@ -66,8 +66,14 @@ public class CompanySearchengine {
                 this.handleCitys( citys,query);
                 this.handleIndustry(industry, query);
                 this.handleScale(scale, query);
-                String scripts="double score = _score; weight=_source.other.weight;if(weight>0){score=weight};return score;";
-                Script script=new Script(scripts);//(scripts,"groovy");
+                StringBuffer sb=new StringBuffer();
+                sb.append("double score = _score;abbreviation=_source.company.abbreviation;");
+                sb.append("name=_source.company.name ;");
+                sb.append("if(abbreviation.startWith("+keywords+")&&name.startWith("+keywords+"))");
+                sb.append("{score=score*100}");
+                sb.append("else if(abbreviation.startWith("+keywords+")&&name.startWith("+keywords+"))");
+                sb.append("{score=score*50};return score;");
+                Script script=new Script(scripts);
                 SortBuilder builder=new ScriptSortBuilder(script,"number");
                 builder.order( SortOrder.DESC);
                
