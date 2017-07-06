@@ -42,7 +42,6 @@ public class CompanySearchengine {
                          .setSize(pageSize);
                  logger.info(responseBuilder.toString());
                  SearchResponse response = responseBuilder.execute().actionGet();
-                 logger.info(response.toString()+"========================================================");
                  SearchHits hit=response.getHits();
                  return hit;
         	 }
@@ -64,9 +63,8 @@ public class CompanySearchengine {
                 this.handleCitys( citys,query);
                 this.handleIndustry(industry, query);
                 this.handleScale(scale, query);
-                SearchResponse response = client.prepareSearch("companys").setTypes("fulltext")
+                SearchResponse response = client.prepareSearch("companys").setTypes("company")
                             .setQuery(query)
-                            .addSort("weight", SortOrder.DESC)
                             .addSort("_score", SortOrder.DESC)
                             .setFrom(page)
                             .setSize(pageSize).execute().actionGet();
