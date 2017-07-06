@@ -35,7 +35,7 @@ public class CompanySearchengine {
                  this.handleCitys( citys,query);
                  this.handleIndustry(industry, query);
                  this.handleScale(scale, query);
-                 SearchRequestBuilder responseBuilder=client.prepareSearch("companys")
+                 SearchRequestBuilder responseBuilder=client.prepareSearch("companys").setTypes("company")
                          .setQuery(query)
                          .addSort("_score", SortOrder.DESC)
                          .setFrom(page)
