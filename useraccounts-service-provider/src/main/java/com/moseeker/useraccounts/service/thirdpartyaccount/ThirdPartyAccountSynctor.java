@@ -10,16 +10,14 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
-import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
+import javax.mail.event.TransportEvent;
+import javax.mail.event.TransportListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -110,7 +108,7 @@ public class ThirdPartyAccountSynctor {
 
     //发送同步失败的邮件
     private void sendFailureMail(int syncType, HrThirdPartyAccountDO thirdPartyAccount, String message) {
-        logger.info("发送同步错误的邮件:syncType{}:thirdPartyAccount:{}:message:{}", syncType, JSON.toJSONString(thirdPartyAccount), message);
+        logger.info("发送同步或刷新错误的邮件:syncType{}:thirdPartyAccount:{}:message:{}", syncType, JSON.toJSONString(thirdPartyAccount), message);
 
         if (mails == null || mails.size() == 0) {
             logger.error("没有配置同步邮箱地址!");
@@ -144,7 +142,37 @@ public class ThirdPartyAccountSynctor {
 
             emailBuilder.setSubject(titleBuilder.toString());
             emailBuilder.setContent(messageBuilder.toString());
-            emailBuilder.build().send();
+            Email email = emailBuilder.build();
+            email.send(new TransportListener() {
+                int i = 3;//重试三次邮件
+
+                @Override
+                public void messageDelivered(TransportEvent e) {
+                    logger.info("email send messageDelivered");
+                }
+
+                @Override
+                public void messageNotDelivered(TransportEvent e) {
+                    if (i > 0) {
+                        logger.info("email send messageNotDelivered retry {}", i);
+                        email.send(this);
+                        i--;
+                    } else {
+                        logger.error("发送绑定失败的邮件发生错误：{}", e.getMessage());
+                    }
+                }
+
+                @Override
+                public void messagePartiallyDelivered(TransportEvent e) {
+                    if (i > 0) {
+                        logger.info("email send messagePartiallyDelivered retry {}", i);
+                        email.send(this);
+                        i--;
+                    } else {
+                        logger.error("发送绑定失败的邮件发生错误：{}", e.getMessage());
+                    }
+                }
+            });
         } catch (Exception e) {
             logger.error("发送绑定失败的邮件发生错误：{}", e.getMessage());
             e.printStackTrace();
