@@ -95,6 +95,7 @@ public class UserHrAccountServiceTest {
             e.printStackTrace();
         }
     }
+//            List<UserEmployeeVO> list = userHrAccountService.employeeList("", 3, 1, "create_time", 1, 0, 0);
 
 
     /**
@@ -106,6 +107,7 @@ public class UserHrAccountServiceTest {
             List<UserEmployeeDO> list = new ArrayList<>();
             userHrAccountService.repetitionFilter(list, 3);
 
+//            System.out.println(list);
         } catch (Exception e) {
             e.printStackTrace();
         }

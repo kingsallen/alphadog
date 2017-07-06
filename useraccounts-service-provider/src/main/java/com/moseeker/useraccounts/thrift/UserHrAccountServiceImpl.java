@@ -3,14 +3,19 @@ package com.moseeker.useraccounts.thrift;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
+import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import com.moseeker.thrift.gen.employee.struct.Reward;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService.Iface;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
+import com.moseeker.useraccounts.exception.ExceptionCategory;
+import com.moseeker.useraccounts.exception.ExceptionFactory;
 import com.moseeker.useraccounts.service.impl.UserHrAccountService;
 
+import java.util.ArrayList;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +37,9 @@ public class UserHrAccountServiceImpl implements Iface {
 
     @Autowired
     private UserHrAccountService service;
+
+    @Autowired
+    private EmployeeEntity employeeEntity;
 
     /**
      * HR在下载行业报告是注册
@@ -195,6 +203,45 @@ public class UserHrAccountServiceImpl implements Iface {
         } catch (Exception e) {
             throw new TException(e);
         }
+    }
+
+    @Override
+    public boolean unbindEmployee(List<Integer> ids) throws BIZException, TException {
+        return employeeEntity.unbind(ids);
+    }
+
+    @Override
+    public boolean delEmployee(List<Integer> ids) throws BIZException, TException {
+        try {
+            return employeeEntity.removeEmployee(ids);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            ExceptionFactory.buildException(ExceptionCategory.PROGRAM_EXCEPTION);
+        }
+        return false;
+    }
+
+    @Override
+    public List<Reward> getEmployeeRewards(int employeeId) throws BIZException, TException {
+        List<Reward> result = new ArrayList<>();
+        try {
+            result = employeeEntity.getEmployeePointsRecords(employeeId);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            ExceptionFactory.buildException(ExceptionCategory.PROGRAM_EXCEPTION);
+        }
+        return result;
+    }
+
+    @Override
+    public int addEmployeeReward(int employeeId, int points, String reason) throws BIZException, TException {
+        try {
+            return employeeEntity.addReward(employeeId, points, reason);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            ExceptionFactory.buildException(ExceptionCategory.PROGRAM_EXCEPTION);
+        }
+        return 0;
     }
 
 

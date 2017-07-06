@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @Service("auth_method_customfield")
 public class EmployeeBindByCustomfield extends EmployeeBinder {
 
-    private UserEmployeeDO employee;
+    private ThreadLocal<UserEmployeeDO> employeeThreadLocal;
 
     @Override
     protected void paramCheck(BindingParams bindingParams, HrEmployeeCertConfDO certConf) throws Exception {
@@ -23,35 +23,35 @@ public class EmployeeBindByCustomfield extends EmployeeBinder {
                 .and("custom_field", bindingParams.getCustomField())
                 .and("disable", "0");
 
-        employee = employeeDao.getData(query.buildQuery());
-        if (employee == null || employee.getId() == 0) {
+        employeeThreadLocal.set(employeeDao.getData(query.buildQuery()));
+        if (employeeThreadLocal.get() == null || employeeThreadLocal.get().getId() == 0) {
             throw new RuntimeException("员工认证信息不正确");
-        } else if (employee.getActivation() == 0) {
+        } else if (employeeThreadLocal.get().getActivation() == 0) {
             throw new RuntimeException("该员工已绑定");
         }
     }
 
     @Override
     protected int createEmployee(BindingParams bindingParams) {
-        if (employee.getSysuserId() == 0) { // sysuserId =  0 说明员工信息是批量上传的未设置user_id
-            if (userEmployee != null && userEmployee.getId() != 0) {
-                return userEmployee.getId();
+        if (employeeThreadLocal.get().getSysuserId() == 0) { // sysuserId =  0 说明员工信息是批量上传的未设置user_id
+            if (userEmployeeDOThreadLocal.get() != null && userEmployeeDOThreadLocal.get().getId() != 0) {
+                return userEmployeeDOThreadLocal.get().getId();
             } else {
-                employee.setSysuserId(bindingParams.getUserId());
-                int rownum = employeeDao.updateData(employee);
+                employeeThreadLocal.get().setSysuserId(bindingParams.getUserId());
+                int rownum = employeeDao.updateData(employeeThreadLocal.get());
                 if (rownum > 0){
-                    return employee.getId();
+                    return employeeThreadLocal.get().getId();
                 } else {
                     throw new RuntimeException("fail");
                 }
             }
-        } else if (employee.getSysuserId() == bindingParams.getUserId()) {
-            if (userEmployee != null && userEmployee.getId() != 0) {
-                return userEmployee.getId();
+        } else if (employeeThreadLocal.get().getSysuserId() == bindingParams.getUserId()) {
+            if (userEmployeeDOThreadLocal.get() != null && userEmployeeDOThreadLocal.get().getId() != 0) {
+                return userEmployeeDOThreadLocal.get().getId();
             }
         } else {  // 说明 employee.user_id != bindingParams.user_id 用户提供的信息与员工信息不匹配
             throw new RuntimeException("员工认证信息不匹配");
         }
-        return userEmployee.getId();
+        return userEmployeeDOThreadLocal.get().getId();
     }
 }

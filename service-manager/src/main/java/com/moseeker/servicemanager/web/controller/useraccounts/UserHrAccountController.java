@@ -4,8 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.constants.RespnoseUtil;
-import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
@@ -17,10 +15,18 @@ import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import com.moseeker.thrift.gen.employee.struct.Reward;
+import com.moseeker.thrift.gen.employee.struct.RewardConfig;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
-
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,13 +34,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * HR账号服务
@@ -51,6 +50,8 @@ public class UserHrAccountController {
 
     UserHrAccountService.Iface userHrAccountService = ServiceManager.SERVICEMANAGER
             .getService(UserHrAccountService.Iface.class);
+
+    CompanyServices.Iface companyService = ServiceManager.SERVICEMANAGER.getService(CompanyServices.Iface.class);
 
     /**
      * 注册HR发送验证码
@@ -456,6 +457,36 @@ public class UserHrAccountController {
 
     // ------------------------------------- 以下接口为hr_354新增---------------------------------------
 
+    // 修改公司员工认证配置
+    @RequestMapping(value = "/hraccount/company/employeebindconf", method = RequestMethod.GET)
+    @ResponseBody
+    public String updateEmployeeBindConf(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object>  params = ParamUtils.parseRequestParam(request);
+            int id = params.getInt("id", 0);
+            int companyId =  params.getInt("companyId", 0);
+            Integer authMode = params.getInt("authMode");
+            String emailSuffix = params.getString("emailSuffix");
+            String custom = params.getString("custom");
+            String customHint = params.getString("customHint");
+            String questions = params.getString("questions");
+            if (companyId == 0 || id == 0 || authMode == null) {
+                return ResponseLogNotification.fail(request, "公司Id不能为空");
+            } else if (id == 0) {
+                return ResponseLogNotification.fail(request, "Id不能为空");
+            } else if (authMode == null) {
+                return ResponseLogNotification.fail(request, "认证方式不能为空");
+            } else {
+                boolean result = companyService.updateEmployeeBindConf(id, companyId, authMode, emailSuffix, custom, customHint, questions);
+                return ResponseLogNotification.success(request, ResponseUtils.success(new HashMap<String, Object>(){{put("result", result);}}));
+            }
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
     //  获取公司积分配置信息
     @RequestMapping(value = "/hraccount/company/rewardconfig", method = RequestMethod.GET)
     @ResponseBody
@@ -464,11 +495,14 @@ public class UserHrAccountController {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             int companyId = params.getInt("companyId", 0);
             if (companyId == 0) {
-                return ResponseLogNotification.fail(request, "companyId不能为空");
+                return ResponseLogNotification.fail(request, "公司Id不能为空");
             } else {
-                // TODO 完善
+                List<RewardConfig> result = companyService.getCompanyRewardConf(companyId);
+
+                return ResponseLogNotification.success(request, ResponseUtils.success(BeanUtils.convertStructToJSON(result)));
             }
-            return null;
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
@@ -480,13 +514,15 @@ public class UserHrAccountController {
     public String unbindEmployee(HttpServletRequest request, HttpServletResponse response) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            List<Integer> ids = (List) params.get("ids");
+            List<Integer> ids = (ArrayList<Integer>) params.get("ids");
             if (ids == null || ids.isEmpty()) {
                 return ResponseLogNotification.fail(request, "Ids不能为空");
             } else {
-                // TODO 完善
+                boolean result = userHrAccountService.unbindEmployee(ids);
+                return ResponseLogNotification.success(request, ResponseUtils.success(new HashMap<String, Object>(){{put("result", result);}}));
             }
-            return null;
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
@@ -498,13 +534,15 @@ public class UserHrAccountController {
     public String removeEmployee(HttpServletRequest request, HttpServletResponse response) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            List<Integer> ids = (List) params.get("ids");
+            List<Integer> ids = (ArrayList<Integer>) params.get("ids");
             if (ids == null || ids.isEmpty()) {
                 return ResponseLogNotification.fail(request, "Ids不能为空");
             } else {
-                // TODO 完善
+                boolean result = userHrAccountService.delEmployee(ids);
+                return ResponseLogNotification.success(request, ResponseUtils.success(new HashMap<String, Object>(){{put("result", result);}}));
             }
-            return null;
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
@@ -521,9 +559,11 @@ public class UserHrAccountController {
             if (employeeId == 0) {
                 return ResponseLogNotification.fail(request, "员工Id不能为空");
             } else {
-                // TODO 完善
+                List<Reward> result = userHrAccountService.getEmployeeRewards(employeeId);
+                return ResponseLogNotification.success(request, ResponseUtils.success(BeanUtils.convertStructToJSON(result)));
             }
-            return null;
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
@@ -537,12 +577,15 @@ public class UserHrAccountController {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             int employeeId = params.getInt("employeeId");
             int points = params.getInt("points");
+            String reason = params.getString("reason");
             if (employeeId == 0) {
                 return ResponseLogNotification.fail(request, "员工Id不能为空");
             } else {
-                // TODO 完善
+                int result = userHrAccountService.addEmployeeReward(employeeId, points, reason);
+                return ResponseLogNotification.success(request, ResponseUtils.success(new HashMap<String, Integer>(){{put("totalPoint", result);}}));
             }
-            return null;
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
