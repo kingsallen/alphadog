@@ -81,6 +81,7 @@ public class CompanySearchengine {
                 SearchRequestBuilder responseBuilder=client.prepareSearch("companys").setTypes("company")
                         .setQuery(query)
                         .addSort(builder)
+                        .setTrackScores(true)
                         .setFrom(page)
                         .setSize(pageSize);
                 logger.info(responseBuilder.toString());
