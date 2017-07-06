@@ -407,7 +407,7 @@ struct UserEmployeeDetailVO{
     7: optional i32 activation, // 认证状态
     8: optional string companyName, // 公司名称
     9: optional string headImg, // 头像
-    10: optional i32 companyId, // 头像
+    10: optional i32 companyId, //
 }
 // 员工导入统计数据
 struct ImportErrorUserEmployee{

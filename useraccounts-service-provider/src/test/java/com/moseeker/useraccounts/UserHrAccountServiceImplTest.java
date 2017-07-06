@@ -140,4 +140,7 @@ public class UserHrAccountServiceImplTest {
         hrThirdPartyAccountDO.setChannel((short) 2);
         userHrAccountService.bindThirdAccount(82847,hrThirdPartyAccountDO);
     }
+
+
+
 }

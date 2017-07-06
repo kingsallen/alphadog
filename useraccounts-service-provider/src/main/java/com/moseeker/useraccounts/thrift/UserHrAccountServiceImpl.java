@@ -207,15 +207,33 @@ public class UserHrAccountServiceImpl implements Iface {
         }
     }
 
+    /**
+     * 员工取消认证(支持批量)
+     *
+     * @param ids       员工ID列表
+     * @param companyId 公司ID
+     * @return
+     * @throws BIZException
+     * @throws TException
+     */
     @Override
-    public boolean unbindEmployee(List<Integer> ids) throws BIZException, TException {
-        return employeeEntity.unbind(ids);
+    public boolean unbindEmployee(List<Integer> ids, int companyId) throws BIZException, TException {
+        return employeeEntity.unbind(ids, companyId);
     }
 
+    /**
+     * 删除员工 (支持批量)
+     *
+     * @param ids       员工ID列表
+     * @param companyId 公司ID
+     * @return
+     * @throws BIZException
+     * @throws TException
+     */
     @Override
-    public boolean delEmployee(List<Integer> ids) throws BIZException, TException {
+    public boolean delEmployee(List<Integer> ids, int companyId) throws BIZException, TException {
         try {
-            return employeeEntity.removeEmployee(ids);
+            return employeeEntity.removeEmployee(ids, companyId);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             ExceptionFactory.buildException(ExceptionCategory.PROGRAM_EXCEPTION);
@@ -223,11 +241,20 @@ public class UserHrAccountServiceImpl implements Iface {
         return false;
     }
 
+    /**
+     * 积分列表
+     *
+     * @param employeeId 员工ID
+     * @param companyId  公司ID
+     * @return
+     * @throws BIZException
+     * @throws TException
+     */
     @Override
-    public List<Reward> getEmployeeRewards(int employeeId) throws BIZException, TException {
+    public List<Reward> getEmployeeRewards(int employeeId, int companyId) throws BIZException, TException {
         List<Reward> result = new ArrayList<>();
         try {
-            result = employeeEntity.getEmployeePointsRecords(employeeId);
+            result = employeeEntity.getEmployeePointsRecords(employeeId, companyId);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             ExceptionFactory.buildException(ExceptionCategory.PROGRAM_EXCEPTION);
@@ -235,10 +262,21 @@ public class UserHrAccountServiceImpl implements Iface {
         return result;
     }
 
+    /**
+     * 员工积分添加
+     *
+     * @param employeeId 员工ID
+     * @param points     积分
+     * @param reason     描述
+     * @param companyId  公司ID
+     * @return
+     * @throws BIZException
+     * @throws TException
+     */
     @Override
-    public int addEmployeeReward(int employeeId, int points, String reason) throws BIZException, TException {
+    public int addEmployeeReward(int employeeId, int points, String reason, int companyId) throws BIZException, TException {
         try {
-            return employeeEntity.addReward(employeeId, points, reason);
+            return employeeEntity.addReward(employeeId, points, reason, companyId);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             ExceptionFactory.buildException(ExceptionCategory.PROGRAM_EXCEPTION);
@@ -281,21 +319,23 @@ public class UserHrAccountServiceImpl implements Iface {
      * 员工信息导出
      *
      * @param userEmployees 员工ID列表
+     * @param companyId     公司ID
      * @return
      */
     @Override
-    public List<UserEmployeeVO> employeeExport(List<Integer> userEmployees) throws BIZException, TException {
-        return service.employeeExport(userEmployees);
+    public List<UserEmployeeVO> employeeExport(List<Integer> userEmployees, int companyId) throws BIZException, TException {
+        return service.employeeExport(userEmployees, companyId);
     }
 
     /**
      * 员工信息
      *
      * @param userEmployeeId 员工ID
+     * @param companyId      公司ID
      */
     @Override
-    public UserEmployeeDetailVO userEmployeeDetail(int userEmployeeId) throws BIZException, TException {
-        return service.userEmployeeDetail(userEmployeeId);
+    public UserEmployeeDetailVO userEmployeeDetail(int userEmployeeId, int companyId) throws BIZException, TException {
+        return service.userEmployeeDetail(userEmployeeId, companyId);
     }
 
     /**
@@ -306,12 +346,13 @@ public class UserHrAccountServiceImpl implements Iface {
      * @param email          邮箱
      * @param customField    自定义字段
      * @param userEmployeeId user_employee.id
+     * @param companyId      公司ID
      * @return
      * @throws BIZException
      */
     @Override
-    public Response updateUserEmployee(String cname, String mobile, String email, String customField, int userEmployeeId) throws BIZException, TException {
-        return service.updateUserEmployee(cname, mobile, email, customField, userEmployeeId);
+    public Response updateUserEmployee(String cname, String mobile, String email, String customField, int userEmployeeId, int companyId) throws BIZException, TException {
+        return service.updateUserEmployee(cname, mobile, email, customField, userEmployeeId, companyId);
     }
 
     /**

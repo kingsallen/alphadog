@@ -50,23 +50,23 @@ public class UserHrAccountService {
 
     public int updateThirdPartyAccount(com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO account) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
-    public boolean unbindEmployee(java.util.List<java.lang.Integer> ids) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
+    public boolean unbindEmployee(java.util.List<java.lang.Integer> ids, int companyId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
-    public boolean delEmployee(java.util.List<java.lang.Integer> ids) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
+    public boolean delEmployee(java.util.List<java.lang.Integer> ids, int companyId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
-    public java.util.List<com.moseeker.thrift.gen.employee.struct.Reward> getEmployeeRewards(int employeeId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
+    public java.util.List<com.moseeker.thrift.gen.employee.struct.Reward> getEmployeeRewards(int employeeId, int companyId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
-    public int addEmployeeReward(int employeeId, int points, java.lang.String reason) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
+    public int addEmployeeReward(int employeeId, int points, java.lang.String reason, int companyId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
     public com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeNumStatistic getListNum(java.lang.String keyWord, int companyId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO employeeList(java.lang.String keword, int companyId, int filter, java.lang.String order, int by, int pageNumber, int pageSize) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO employeeList(java.lang.String keword, int companyId, int filter, java.lang.String order, int asc, int pageNumber, int pageSize) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
-    public java.util.List<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVO> employeeExport(java.util.List<java.lang.Integer> userEmployees) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
+    public java.util.List<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVO> employeeExport(java.util.List<java.lang.Integer> userEmployees, int companyId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeDetailVO userEmployeeDetail(int userEmployeeId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeDetailVO userEmployeeDetail(int userEmployeeId, int companyId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response updateUserEmployee(java.lang.String cname, java.lang.String mobile, java.lang.String email, java.lang.String customField, int userEmployeeId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.common.struct.Response updateUserEmployee(java.lang.String cname, java.lang.String mobile, java.lang.String email, java.lang.String customField, int userEmployeeId, int companyId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
     public com.moseeker.thrift.gen.common.struct.Response employeeImport(java.util.List<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> userEmployeeDOS, int companyId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
@@ -110,23 +110,23 @@ public class UserHrAccountService {
 
     public void updateThirdPartyAccount(com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO account, org.apache.thrift.async.AsyncMethodCallback<java.lang.Integer> resultHandler) throws org.apache.thrift.TException;
 
-    public void unbindEmployee(java.util.List<java.lang.Integer> ids, org.apache.thrift.async.AsyncMethodCallback<java.lang.Boolean> resultHandler) throws org.apache.thrift.TException;
+    public void unbindEmployee(java.util.List<java.lang.Integer> ids, int companyId, org.apache.thrift.async.AsyncMethodCallback<java.lang.Boolean> resultHandler) throws org.apache.thrift.TException;
 
-    public void delEmployee(java.util.List<java.lang.Integer> ids, org.apache.thrift.async.AsyncMethodCallback<java.lang.Boolean> resultHandler) throws org.apache.thrift.TException;
+    public void delEmployee(java.util.List<java.lang.Integer> ids, int companyId, org.apache.thrift.async.AsyncMethodCallback<java.lang.Boolean> resultHandler) throws org.apache.thrift.TException;
 
-    public void getEmployeeRewards(int employeeId, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.employee.struct.Reward>> resultHandler) throws org.apache.thrift.TException;
+    public void getEmployeeRewards(int employeeId, int companyId, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.employee.struct.Reward>> resultHandler) throws org.apache.thrift.TException;
 
-    public void addEmployeeReward(int employeeId, int points, java.lang.String reason, org.apache.thrift.async.AsyncMethodCallback<java.lang.Integer> resultHandler) throws org.apache.thrift.TException;
+    public void addEmployeeReward(int employeeId, int points, java.lang.String reason, int companyId, org.apache.thrift.async.AsyncMethodCallback<java.lang.Integer> resultHandler) throws org.apache.thrift.TException;
 
     public void getListNum(java.lang.String keyWord, int companyId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeNumStatistic> resultHandler) throws org.apache.thrift.TException;
 
-    public void employeeList(java.lang.String keword, int companyId, int filter, java.lang.String order, int by, int pageNumber, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO> resultHandler) throws org.apache.thrift.TException;
+    public void employeeList(java.lang.String keword, int companyId, int filter, java.lang.String order, int asc, int pageNumber, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO> resultHandler) throws org.apache.thrift.TException;
 
-    public void employeeExport(java.util.List<java.lang.Integer> userEmployees, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVO>> resultHandler) throws org.apache.thrift.TException;
+    public void employeeExport(java.util.List<java.lang.Integer> userEmployees, int companyId, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVO>> resultHandler) throws org.apache.thrift.TException;
 
-    public void userEmployeeDetail(int userEmployeeId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeDetailVO> resultHandler) throws org.apache.thrift.TException;
+    public void userEmployeeDetail(int userEmployeeId, int companyId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeDetailVO> resultHandler) throws org.apache.thrift.TException;
 
-    public void updateUserEmployee(java.lang.String cname, java.lang.String mobile, java.lang.String email, java.lang.String customField, int userEmployeeId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+    public void updateUserEmployee(java.lang.String cname, java.lang.String mobile, java.lang.String email, java.lang.String customField, int userEmployeeId, int companyId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
     public void employeeImport(java.util.List<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> userEmployeeDOS, int companyId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
@@ -579,16 +579,17 @@ public class UserHrAccountService {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "updateThirdPartyAccount failed: unknown result");
     }
 
-    public boolean unbindEmployee(java.util.List<java.lang.Integer> ids) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    public boolean unbindEmployee(java.util.List<java.lang.Integer> ids, int companyId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
-      send_unbindEmployee(ids);
+      send_unbindEmployee(ids, companyId);
       return recv_unbindEmployee();
     }
 
-    public void send_unbindEmployee(java.util.List<java.lang.Integer> ids) throws org.apache.thrift.TException
+    public void send_unbindEmployee(java.util.List<java.lang.Integer> ids, int companyId) throws org.apache.thrift.TException
     {
       unbindEmployee_args args = new unbindEmployee_args();
       args.setIds(ids);
+      args.setCompanyId(companyId);
       sendBase("unbindEmployee", args);
     }
 
@@ -605,16 +606,17 @@ public class UserHrAccountService {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "unbindEmployee failed: unknown result");
     }
 
-    public boolean delEmployee(java.util.List<java.lang.Integer> ids) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    public boolean delEmployee(java.util.List<java.lang.Integer> ids, int companyId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
-      send_delEmployee(ids);
+      send_delEmployee(ids, companyId);
       return recv_delEmployee();
     }
 
-    public void send_delEmployee(java.util.List<java.lang.Integer> ids) throws org.apache.thrift.TException
+    public void send_delEmployee(java.util.List<java.lang.Integer> ids, int companyId) throws org.apache.thrift.TException
     {
       delEmployee_args args = new delEmployee_args();
       args.setIds(ids);
+      args.setCompanyId(companyId);
       sendBase("delEmployee", args);
     }
 
@@ -631,16 +633,17 @@ public class UserHrAccountService {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "delEmployee failed: unknown result");
     }
 
-    public java.util.List<com.moseeker.thrift.gen.employee.struct.Reward> getEmployeeRewards(int employeeId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    public java.util.List<com.moseeker.thrift.gen.employee.struct.Reward> getEmployeeRewards(int employeeId, int companyId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
-      send_getEmployeeRewards(employeeId);
+      send_getEmployeeRewards(employeeId, companyId);
       return recv_getEmployeeRewards();
     }
 
-    public void send_getEmployeeRewards(int employeeId) throws org.apache.thrift.TException
+    public void send_getEmployeeRewards(int employeeId, int companyId) throws org.apache.thrift.TException
     {
       getEmployeeRewards_args args = new getEmployeeRewards_args();
       args.setEmployeeId(employeeId);
+      args.setCompanyId(companyId);
       sendBase("getEmployeeRewards", args);
     }
 
@@ -657,18 +660,19 @@ public class UserHrAccountService {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getEmployeeRewards failed: unknown result");
     }
 
-    public int addEmployeeReward(int employeeId, int points, java.lang.String reason) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    public int addEmployeeReward(int employeeId, int points, java.lang.String reason, int companyId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
-      send_addEmployeeReward(employeeId, points, reason);
+      send_addEmployeeReward(employeeId, points, reason, companyId);
       return recv_addEmployeeReward();
     }
 
-    public void send_addEmployeeReward(int employeeId, int points, java.lang.String reason) throws org.apache.thrift.TException
+    public void send_addEmployeeReward(int employeeId, int points, java.lang.String reason, int companyId) throws org.apache.thrift.TException
     {
       addEmployeeReward_args args = new addEmployeeReward_args();
       args.setEmployeeId(employeeId);
       args.setPoints(points);
       args.setReason(reason);
+      args.setCompanyId(companyId);
       sendBase("addEmployeeReward", args);
     }
 
@@ -712,20 +716,20 @@ public class UserHrAccountService {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getListNum failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO employeeList(java.lang.String keword, int companyId, int filter, java.lang.String order, int by, int pageNumber, int pageSize) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    public com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO employeeList(java.lang.String keword, int companyId, int filter, java.lang.String order, int asc, int pageNumber, int pageSize) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
-      send_employeeList(keword, companyId, filter, order, by, pageNumber, pageSize);
+      send_employeeList(keword, companyId, filter, order, asc, pageNumber, pageSize);
       return recv_employeeList();
     }
 
-    public void send_employeeList(java.lang.String keword, int companyId, int filter, java.lang.String order, int by, int pageNumber, int pageSize) throws org.apache.thrift.TException
+    public void send_employeeList(java.lang.String keword, int companyId, int filter, java.lang.String order, int asc, int pageNumber, int pageSize) throws org.apache.thrift.TException
     {
       employeeList_args args = new employeeList_args();
       args.setKeword(keword);
       args.setCompanyId(companyId);
       args.setFilter(filter);
       args.setOrder(order);
-      args.setBy(by);
+      args.setAsc(asc);
       args.setPageNumber(pageNumber);
       args.setPageSize(pageSize);
       sendBase("employeeList", args);
@@ -744,16 +748,17 @@ public class UserHrAccountService {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "employeeList failed: unknown result");
     }
 
-    public java.util.List<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVO> employeeExport(java.util.List<java.lang.Integer> userEmployees) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    public java.util.List<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVO> employeeExport(java.util.List<java.lang.Integer> userEmployees, int companyId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
-      send_employeeExport(userEmployees);
+      send_employeeExport(userEmployees, companyId);
       return recv_employeeExport();
     }
 
-    public void send_employeeExport(java.util.List<java.lang.Integer> userEmployees) throws org.apache.thrift.TException
+    public void send_employeeExport(java.util.List<java.lang.Integer> userEmployees, int companyId) throws org.apache.thrift.TException
     {
       employeeExport_args args = new employeeExport_args();
       args.setUserEmployees(userEmployees);
+      args.setCompanyId(companyId);
       sendBase("employeeExport", args);
     }
 
@@ -770,16 +775,17 @@ public class UserHrAccountService {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "employeeExport failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeDetailVO userEmployeeDetail(int userEmployeeId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    public com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeDetailVO userEmployeeDetail(int userEmployeeId, int companyId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
-      send_userEmployeeDetail(userEmployeeId);
+      send_userEmployeeDetail(userEmployeeId, companyId);
       return recv_userEmployeeDetail();
     }
 
-    public void send_userEmployeeDetail(int userEmployeeId) throws org.apache.thrift.TException
+    public void send_userEmployeeDetail(int userEmployeeId, int companyId) throws org.apache.thrift.TException
     {
       userEmployeeDetail_args args = new userEmployeeDetail_args();
       args.setUserEmployeeId(userEmployeeId);
+      args.setCompanyId(companyId);
       sendBase("userEmployeeDetail", args);
     }
 
@@ -796,13 +802,13 @@ public class UserHrAccountService {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "userEmployeeDetail failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response updateUserEmployee(java.lang.String cname, java.lang.String mobile, java.lang.String email, java.lang.String customField, int userEmployeeId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response updateUserEmployee(java.lang.String cname, java.lang.String mobile, java.lang.String email, java.lang.String customField, int userEmployeeId, int companyId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
-      send_updateUserEmployee(cname, mobile, email, customField, userEmployeeId);
+      send_updateUserEmployee(cname, mobile, email, customField, userEmployeeId, companyId);
       return recv_updateUserEmployee();
     }
 
-    public void send_updateUserEmployee(java.lang.String cname, java.lang.String mobile, java.lang.String email, java.lang.String customField, int userEmployeeId) throws org.apache.thrift.TException
+    public void send_updateUserEmployee(java.lang.String cname, java.lang.String mobile, java.lang.String email, java.lang.String customField, int userEmployeeId, int companyId) throws org.apache.thrift.TException
     {
       updateUserEmployee_args args = new updateUserEmployee_args();
       args.setCname(cname);
@@ -810,6 +816,7 @@ public class UserHrAccountService {
       args.setEmail(email);
       args.setCustomField(customField);
       args.setUserEmployeeId(userEmployeeId);
+      args.setCompanyId(companyId);
       sendBase("updateUserEmployee", args);
     }
 
@@ -1490,24 +1497,27 @@ public class UserHrAccountService {
       }
     }
 
-    public void unbindEmployee(java.util.List<java.lang.Integer> ids, org.apache.thrift.async.AsyncMethodCallback<java.lang.Boolean> resultHandler) throws org.apache.thrift.TException {
+    public void unbindEmployee(java.util.List<java.lang.Integer> ids, int companyId, org.apache.thrift.async.AsyncMethodCallback<java.lang.Boolean> resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      unbindEmployee_call method_call = new unbindEmployee_call(ids, resultHandler, this, ___protocolFactory, ___transport);
+      unbindEmployee_call method_call = new unbindEmployee_call(ids, companyId, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
     public static class unbindEmployee_call extends org.apache.thrift.async.TAsyncMethodCall<java.lang.Boolean> {
       private java.util.List<java.lang.Integer> ids;
-      public unbindEmployee_call(java.util.List<java.lang.Integer> ids, org.apache.thrift.async.AsyncMethodCallback<java.lang.Boolean> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private int companyId;
+      public unbindEmployee_call(java.util.List<java.lang.Integer> ids, int companyId, org.apache.thrift.async.AsyncMethodCallback<java.lang.Boolean> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.ids = ids;
+        this.companyId = companyId;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("unbindEmployee", org.apache.thrift.protocol.TMessageType.CALL, 0));
         unbindEmployee_args args = new unbindEmployee_args();
         args.setIds(ids);
+        args.setCompanyId(companyId);
         args.write(prot);
         prot.writeMessageEnd();
       }
@@ -1522,24 +1532,27 @@ public class UserHrAccountService {
       }
     }
 
-    public void delEmployee(java.util.List<java.lang.Integer> ids, org.apache.thrift.async.AsyncMethodCallback<java.lang.Boolean> resultHandler) throws org.apache.thrift.TException {
+    public void delEmployee(java.util.List<java.lang.Integer> ids, int companyId, org.apache.thrift.async.AsyncMethodCallback<java.lang.Boolean> resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      delEmployee_call method_call = new delEmployee_call(ids, resultHandler, this, ___protocolFactory, ___transport);
+      delEmployee_call method_call = new delEmployee_call(ids, companyId, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
     public static class delEmployee_call extends org.apache.thrift.async.TAsyncMethodCall<java.lang.Boolean> {
       private java.util.List<java.lang.Integer> ids;
-      public delEmployee_call(java.util.List<java.lang.Integer> ids, org.apache.thrift.async.AsyncMethodCallback<java.lang.Boolean> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private int companyId;
+      public delEmployee_call(java.util.List<java.lang.Integer> ids, int companyId, org.apache.thrift.async.AsyncMethodCallback<java.lang.Boolean> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.ids = ids;
+        this.companyId = companyId;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("delEmployee", org.apache.thrift.protocol.TMessageType.CALL, 0));
         delEmployee_args args = new delEmployee_args();
         args.setIds(ids);
+        args.setCompanyId(companyId);
         args.write(prot);
         prot.writeMessageEnd();
       }
@@ -1554,24 +1567,27 @@ public class UserHrAccountService {
       }
     }
 
-    public void getEmployeeRewards(int employeeId, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.employee.struct.Reward>> resultHandler) throws org.apache.thrift.TException {
+    public void getEmployeeRewards(int employeeId, int companyId, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.employee.struct.Reward>> resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      getEmployeeRewards_call method_call = new getEmployeeRewards_call(employeeId, resultHandler, this, ___protocolFactory, ___transport);
+      getEmployeeRewards_call method_call = new getEmployeeRewards_call(employeeId, companyId, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
     public static class getEmployeeRewards_call extends org.apache.thrift.async.TAsyncMethodCall<java.util.List<com.moseeker.thrift.gen.employee.struct.Reward>> {
       private int employeeId;
-      public getEmployeeRewards_call(int employeeId, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.employee.struct.Reward>> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private int companyId;
+      public getEmployeeRewards_call(int employeeId, int companyId, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.employee.struct.Reward>> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.employeeId = employeeId;
+        this.companyId = companyId;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("getEmployeeRewards", org.apache.thrift.protocol.TMessageType.CALL, 0));
         getEmployeeRewards_args args = new getEmployeeRewards_args();
         args.setEmployeeId(employeeId);
+        args.setCompanyId(companyId);
         args.write(prot);
         prot.writeMessageEnd();
       }
@@ -1586,9 +1602,9 @@ public class UserHrAccountService {
       }
     }
 
-    public void addEmployeeReward(int employeeId, int points, java.lang.String reason, org.apache.thrift.async.AsyncMethodCallback<java.lang.Integer> resultHandler) throws org.apache.thrift.TException {
+    public void addEmployeeReward(int employeeId, int points, java.lang.String reason, int companyId, org.apache.thrift.async.AsyncMethodCallback<java.lang.Integer> resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      addEmployeeReward_call method_call = new addEmployeeReward_call(employeeId, points, reason, resultHandler, this, ___protocolFactory, ___transport);
+      addEmployeeReward_call method_call = new addEmployeeReward_call(employeeId, points, reason, companyId, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
@@ -1597,11 +1613,13 @@ public class UserHrAccountService {
       private int employeeId;
       private int points;
       private java.lang.String reason;
-      public addEmployeeReward_call(int employeeId, int points, java.lang.String reason, org.apache.thrift.async.AsyncMethodCallback<java.lang.Integer> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private int companyId;
+      public addEmployeeReward_call(int employeeId, int points, java.lang.String reason, int companyId, org.apache.thrift.async.AsyncMethodCallback<java.lang.Integer> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.employeeId = employeeId;
         this.points = points;
         this.reason = reason;
+        this.companyId = companyId;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
@@ -1610,6 +1628,7 @@ public class UserHrAccountService {
         args.setEmployeeId(employeeId);
         args.setPoints(points);
         args.setReason(reason);
+        args.setCompanyId(companyId);
         args.write(prot);
         prot.writeMessageEnd();
       }
@@ -1659,9 +1678,9 @@ public class UserHrAccountService {
       }
     }
 
-    public void employeeList(java.lang.String keword, int companyId, int filter, java.lang.String order, int by, int pageNumber, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO> resultHandler) throws org.apache.thrift.TException {
+    public void employeeList(java.lang.String keword, int companyId, int filter, java.lang.String order, int asc, int pageNumber, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO> resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      employeeList_call method_call = new employeeList_call(keword, companyId, filter, order, by, pageNumber, pageSize, resultHandler, this, ___protocolFactory, ___transport);
+      employeeList_call method_call = new employeeList_call(keword, companyId, filter, order, asc, pageNumber, pageSize, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
@@ -1671,16 +1690,16 @@ public class UserHrAccountService {
       private int companyId;
       private int filter;
       private java.lang.String order;
-      private int by;
+      private int asc;
       private int pageNumber;
       private int pageSize;
-      public employeeList_call(java.lang.String keword, int companyId, int filter, java.lang.String order, int by, int pageNumber, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public employeeList_call(java.lang.String keword, int companyId, int filter, java.lang.String order, int asc, int pageNumber, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.keword = keword;
         this.companyId = companyId;
         this.filter = filter;
         this.order = order;
-        this.by = by;
+        this.asc = asc;
         this.pageNumber = pageNumber;
         this.pageSize = pageSize;
       }
@@ -1692,7 +1711,7 @@ public class UserHrAccountService {
         args.setCompanyId(companyId);
         args.setFilter(filter);
         args.setOrder(order);
-        args.setBy(by);
+        args.setAsc(asc);
         args.setPageNumber(pageNumber);
         args.setPageSize(pageSize);
         args.write(prot);
@@ -1709,24 +1728,27 @@ public class UserHrAccountService {
       }
     }
 
-    public void employeeExport(java.util.List<java.lang.Integer> userEmployees, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVO>> resultHandler) throws org.apache.thrift.TException {
+    public void employeeExport(java.util.List<java.lang.Integer> userEmployees, int companyId, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVO>> resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      employeeExport_call method_call = new employeeExport_call(userEmployees, resultHandler, this, ___protocolFactory, ___transport);
+      employeeExport_call method_call = new employeeExport_call(userEmployees, companyId, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
     public static class employeeExport_call extends org.apache.thrift.async.TAsyncMethodCall<java.util.List<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVO>> {
       private java.util.List<java.lang.Integer> userEmployees;
-      public employeeExport_call(java.util.List<java.lang.Integer> userEmployees, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVO>> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private int companyId;
+      public employeeExport_call(java.util.List<java.lang.Integer> userEmployees, int companyId, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVO>> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.userEmployees = userEmployees;
+        this.companyId = companyId;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("employeeExport", org.apache.thrift.protocol.TMessageType.CALL, 0));
         employeeExport_args args = new employeeExport_args();
         args.setUserEmployees(userEmployees);
+        args.setCompanyId(companyId);
         args.write(prot);
         prot.writeMessageEnd();
       }
@@ -1741,24 +1763,27 @@ public class UserHrAccountService {
       }
     }
 
-    public void userEmployeeDetail(int userEmployeeId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeDetailVO> resultHandler) throws org.apache.thrift.TException {
+    public void userEmployeeDetail(int userEmployeeId, int companyId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeDetailVO> resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      userEmployeeDetail_call method_call = new userEmployeeDetail_call(userEmployeeId, resultHandler, this, ___protocolFactory, ___transport);
+      userEmployeeDetail_call method_call = new userEmployeeDetail_call(userEmployeeId, companyId, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
     public static class userEmployeeDetail_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeDetailVO> {
       private int userEmployeeId;
-      public userEmployeeDetail_call(int userEmployeeId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeDetailVO> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private int companyId;
+      public userEmployeeDetail_call(int userEmployeeId, int companyId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeDetailVO> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.userEmployeeId = userEmployeeId;
+        this.companyId = companyId;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("userEmployeeDetail", org.apache.thrift.protocol.TMessageType.CALL, 0));
         userEmployeeDetail_args args = new userEmployeeDetail_args();
         args.setUserEmployeeId(userEmployeeId);
+        args.setCompanyId(companyId);
         args.write(prot);
         prot.writeMessageEnd();
       }
@@ -1773,9 +1798,9 @@ public class UserHrAccountService {
       }
     }
 
-    public void updateUserEmployee(java.lang.String cname, java.lang.String mobile, java.lang.String email, java.lang.String customField, int userEmployeeId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+    public void updateUserEmployee(java.lang.String cname, java.lang.String mobile, java.lang.String email, java.lang.String customField, int userEmployeeId, int companyId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      updateUserEmployee_call method_call = new updateUserEmployee_call(cname, mobile, email, customField, userEmployeeId, resultHandler, this, ___protocolFactory, ___transport);
+      updateUserEmployee_call method_call = new updateUserEmployee_call(cname, mobile, email, customField, userEmployeeId, companyId, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
@@ -1786,13 +1811,15 @@ public class UserHrAccountService {
       private java.lang.String email;
       private java.lang.String customField;
       private int userEmployeeId;
-      public updateUserEmployee_call(java.lang.String cname, java.lang.String mobile, java.lang.String email, java.lang.String customField, int userEmployeeId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private int companyId;
+      public updateUserEmployee_call(java.lang.String cname, java.lang.String mobile, java.lang.String email, java.lang.String customField, int userEmployeeId, int companyId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.cname = cname;
         this.mobile = mobile;
         this.email = email;
         this.customField = customField;
         this.userEmployeeId = userEmployeeId;
+        this.companyId = companyId;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
@@ -1803,6 +1830,7 @@ public class UserHrAccountService {
         args.setEmail(email);
         args.setCustomField(customField);
         args.setUserEmployeeId(userEmployeeId);
+        args.setCompanyId(companyId);
         args.write(prot);
         prot.writeMessageEnd();
       }
@@ -2312,7 +2340,7 @@ public class UserHrAccountService {
       public unbindEmployee_result getResult(I iface, unbindEmployee_args args) throws org.apache.thrift.TException {
         unbindEmployee_result result = new unbindEmployee_result();
         try {
-          result.success = iface.unbindEmployee(args.ids);
+          result.success = iface.unbindEmployee(args.ids, args.companyId);
           result.setSuccessIsSet(true);
         } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
           result.e = e;
@@ -2337,7 +2365,7 @@ public class UserHrAccountService {
       public delEmployee_result getResult(I iface, delEmployee_args args) throws org.apache.thrift.TException {
         delEmployee_result result = new delEmployee_result();
         try {
-          result.success = iface.delEmployee(args.ids);
+          result.success = iface.delEmployee(args.ids, args.companyId);
           result.setSuccessIsSet(true);
         } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
           result.e = e;
@@ -2362,7 +2390,7 @@ public class UserHrAccountService {
       public getEmployeeRewards_result getResult(I iface, getEmployeeRewards_args args) throws org.apache.thrift.TException {
         getEmployeeRewards_result result = new getEmployeeRewards_result();
         try {
-          result.success = iface.getEmployeeRewards(args.employeeId);
+          result.success = iface.getEmployeeRewards(args.employeeId, args.companyId);
         } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
           result.e = e;
         }
@@ -2386,7 +2414,7 @@ public class UserHrAccountService {
       public addEmployeeReward_result getResult(I iface, addEmployeeReward_args args) throws org.apache.thrift.TException {
         addEmployeeReward_result result = new addEmployeeReward_result();
         try {
-          result.success = iface.addEmployeeReward(args.employeeId, args.points, args.reason);
+          result.success = iface.addEmployeeReward(args.employeeId, args.points, args.reason, args.companyId);
           result.setSuccessIsSet(true);
         } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
           result.e = e;
@@ -2435,7 +2463,7 @@ public class UserHrAccountService {
       public employeeList_result getResult(I iface, employeeList_args args) throws org.apache.thrift.TException {
         employeeList_result result = new employeeList_result();
         try {
-          result.success = iface.employeeList(args.keword, args.companyId, args.filter, args.order, args.by, args.pageNumber, args.pageSize);
+          result.success = iface.employeeList(args.keword, args.companyId, args.filter, args.order, args.asc, args.pageNumber, args.pageSize);
         } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
           result.e = e;
         }
@@ -2459,7 +2487,7 @@ public class UserHrAccountService {
       public employeeExport_result getResult(I iface, employeeExport_args args) throws org.apache.thrift.TException {
         employeeExport_result result = new employeeExport_result();
         try {
-          result.success = iface.employeeExport(args.userEmployees);
+          result.success = iface.employeeExport(args.userEmployees, args.companyId);
         } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
           result.e = e;
         }
@@ -2483,7 +2511,7 @@ public class UserHrAccountService {
       public userEmployeeDetail_result getResult(I iface, userEmployeeDetail_args args) throws org.apache.thrift.TException {
         userEmployeeDetail_result result = new userEmployeeDetail_result();
         try {
-          result.success = iface.userEmployeeDetail(args.userEmployeeId);
+          result.success = iface.userEmployeeDetail(args.userEmployeeId, args.companyId);
         } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
           result.e = e;
         }
@@ -2507,7 +2535,7 @@ public class UserHrAccountService {
       public updateUserEmployee_result getResult(I iface, updateUserEmployee_args args) throws org.apache.thrift.TException {
         updateUserEmployee_result result = new updateUserEmployee_result();
         try {
-          result.success = iface.updateUserEmployee(args.cname, args.mobile, args.email, args.customField, args.userEmployeeId);
+          result.success = iface.updateUserEmployee(args.cname, args.mobile, args.email, args.customField, args.userEmployeeId, args.companyId);
         } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
           result.e = e;
         }
@@ -3731,7 +3759,7 @@ public class UserHrAccountService {
       }
 
       public void start(I iface, unbindEmployee_args args, org.apache.thrift.async.AsyncMethodCallback<java.lang.Boolean> resultHandler) throws org.apache.thrift.TException {
-        iface.unbindEmployee(args.ids,resultHandler);
+        iface.unbindEmployee(args.ids, args.companyId,resultHandler);
       }
     }
 
@@ -3797,7 +3825,7 @@ public class UserHrAccountService {
       }
 
       public void start(I iface, delEmployee_args args, org.apache.thrift.async.AsyncMethodCallback<java.lang.Boolean> resultHandler) throws org.apache.thrift.TException {
-        iface.delEmployee(args.ids,resultHandler);
+        iface.delEmployee(args.ids, args.companyId,resultHandler);
       }
     }
 
@@ -3862,7 +3890,7 @@ public class UserHrAccountService {
       }
 
       public void start(I iface, getEmployeeRewards_args args, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.employee.struct.Reward>> resultHandler) throws org.apache.thrift.TException {
-        iface.getEmployeeRewards(args.employeeId,resultHandler);
+        iface.getEmployeeRewards(args.employeeId, args.companyId,resultHandler);
       }
     }
 
@@ -3928,7 +3956,7 @@ public class UserHrAccountService {
       }
 
       public void start(I iface, addEmployeeReward_args args, org.apache.thrift.async.AsyncMethodCallback<java.lang.Integer> resultHandler) throws org.apache.thrift.TException {
-        iface.addEmployeeReward(args.employeeId, args.points, args.reason,resultHandler);
+        iface.addEmployeeReward(args.employeeId, args.points, args.reason, args.companyId,resultHandler);
       }
     }
 
@@ -4058,7 +4086,7 @@ public class UserHrAccountService {
       }
 
       public void start(I iface, employeeList_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO> resultHandler) throws org.apache.thrift.TException {
-        iface.employeeList(args.keword, args.companyId, args.filter, args.order, args.by, args.pageNumber, args.pageSize,resultHandler);
+        iface.employeeList(args.keword, args.companyId, args.filter, args.order, args.asc, args.pageNumber, args.pageSize,resultHandler);
       }
     }
 
@@ -4123,7 +4151,7 @@ public class UserHrAccountService {
       }
 
       public void start(I iface, employeeExport_args args, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVO>> resultHandler) throws org.apache.thrift.TException {
-        iface.employeeExport(args.userEmployees,resultHandler);
+        iface.employeeExport(args.userEmployees, args.companyId,resultHandler);
       }
     }
 
@@ -4188,7 +4216,7 @@ public class UserHrAccountService {
       }
 
       public void start(I iface, userEmployeeDetail_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeDetailVO> resultHandler) throws org.apache.thrift.TException {
-        iface.userEmployeeDetail(args.userEmployeeId,resultHandler);
+        iface.userEmployeeDetail(args.userEmployeeId, args.companyId,resultHandler);
       }
     }
 
@@ -4253,7 +4281,7 @@ public class UserHrAccountService {
       }
 
       public void start(I iface, updateUserEmployee_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
-        iface.updateUserEmployee(args.cname, args.mobile, args.email, args.customField, args.userEmployeeId,resultHandler);
+        iface.updateUserEmployee(args.cname, args.mobile, args.email, args.customField, args.userEmployeeId, args.companyId,resultHandler);
       }
     }
 
@@ -19161,15 +19189,18 @@ public class UserHrAccountService {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("unbindEmployee_args");
 
     private static final org.apache.thrift.protocol.TField IDS_FIELD_DESC = new org.apache.thrift.protocol.TField("ids", org.apache.thrift.protocol.TType.LIST, (short)1);
+    private static final org.apache.thrift.protocol.TField COMPANY_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("companyId", org.apache.thrift.protocol.TType.I32, (short)2);
 
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new unbindEmployee_argsStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new unbindEmployee_argsTupleSchemeFactory();
 
     public java.util.List<java.lang.Integer> ids; // required
+    public int companyId; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      IDS((short)1, "ids");
+      IDS((short)1, "ids"),
+      COMPANY_ID((short)2, "companyId");
 
       private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
@@ -19186,6 +19217,8 @@ public class UserHrAccountService {
         switch(fieldId) {
           case 1: // IDS
             return IDS;
+          case 2: // COMPANY_ID
+            return COMPANY_ID;
           default:
             return null;
         }
@@ -19226,12 +19259,16 @@ public class UserHrAccountService {
     }
 
     // isset id assignments
+    private static final int __COMPANYID_ISSET_ID = 0;
+    private byte __isset_bitfield = 0;
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.IDS, new org.apache.thrift.meta_data.FieldMetaData("ids", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
               new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32))));
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("companyId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(unbindEmployee_args.class, metaDataMap);
     }
@@ -19240,20 +19277,25 @@ public class UserHrAccountService {
     }
 
     public unbindEmployee_args(
-      java.util.List<java.lang.Integer> ids)
+      java.util.List<java.lang.Integer> ids,
+      int companyId)
     {
       this();
       this.ids = ids;
+      this.companyId = companyId;
+      setCompanyIdIsSet(true);
     }
 
     /**
      * Performs a deep copy on <i>other</i>.
      */
     public unbindEmployee_args(unbindEmployee_args other) {
+      __isset_bitfield = other.__isset_bitfield;
       if (other.isSetIds()) {
         java.util.List<java.lang.Integer> __this__ids = new java.util.ArrayList<java.lang.Integer>(other.ids);
         this.ids = __this__ids;
       }
+      this.companyId = other.companyId;
     }
 
     public unbindEmployee_args deepCopy() {
@@ -19263,6 +19305,8 @@ public class UserHrAccountService {
     @Override
     public void clear() {
       this.ids = null;
+      setCompanyIdIsSet(false);
+      this.companyId = 0;
     }
 
     public int getIdsSize() {
@@ -19304,6 +19348,29 @@ public class UserHrAccountService {
       }
     }
 
+    public int getCompanyId() {
+      return this.companyId;
+    }
+
+    public unbindEmployee_args setCompanyId(int companyId) {
+      this.companyId = companyId;
+      setCompanyIdIsSet(true);
+      return this;
+    }
+
+    public void unsetCompanyId() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __COMPANYID_ISSET_ID);
+    }
+
+    /** Returns true if field companyId is set (has been assigned a value) and false otherwise */
+    public boolean isSetCompanyId() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __COMPANYID_ISSET_ID);
+    }
+
+    public void setCompanyIdIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __COMPANYID_ISSET_ID, value);
+    }
+
     public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case IDS:
@@ -19314,6 +19381,14 @@ public class UserHrAccountService {
         }
         break;
 
+      case COMPANY_ID:
+        if (value == null) {
+          unsetCompanyId();
+        } else {
+          setCompanyId((java.lang.Integer)value);
+        }
+        break;
+
       }
     }
 
@@ -19321,6 +19396,9 @@ public class UserHrAccountService {
       switch (field) {
       case IDS:
         return getIds();
+
+      case COMPANY_ID:
+        return getCompanyId();
 
       }
       throw new java.lang.IllegalStateException();
@@ -19335,6 +19413,8 @@ public class UserHrAccountService {
       switch (field) {
       case IDS:
         return isSetIds();
+      case COMPANY_ID:
+        return isSetCompanyId();
       }
       throw new java.lang.IllegalStateException();
     }
@@ -19363,6 +19443,15 @@ public class UserHrAccountService {
           return false;
       }
 
+      boolean this_present_companyId = true;
+      boolean that_present_companyId = true;
+      if (this_present_companyId || that_present_companyId) {
+        if (!(this_present_companyId && that_present_companyId))
+          return false;
+        if (this.companyId != that.companyId)
+          return false;
+      }
+
       return true;
     }
 
@@ -19373,6 +19462,8 @@ public class UserHrAccountService {
       hashCode = hashCode * 8191 + ((isSetIds()) ? 131071 : 524287);
       if (isSetIds())
         hashCode = hashCode * 8191 + ids.hashCode();
+
+      hashCode = hashCode * 8191 + companyId;
 
       return hashCode;
     }
@@ -19391,6 +19482,16 @@ public class UserHrAccountService {
       }
       if (isSetIds()) {
         lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.ids, other.ids);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetCompanyId()).compareTo(other.isSetCompanyId());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetCompanyId()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.companyId, other.companyId);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -19422,6 +19523,10 @@ public class UserHrAccountService {
         sb.append(this.ids);
       }
       first = false;
+      if (!first) sb.append(", ");
+      sb.append("companyId:");
+      sb.append(this.companyId);
+      first = false;
       sb.append(")");
       return sb.toString();
     }
@@ -19441,6 +19546,8 @@ public class UserHrAccountService {
 
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
+        // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
+        __isset_bitfield = 0;
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
@@ -19483,6 +19590,14 @@ public class UserHrAccountService {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
+            case 2: // COMPANY_ID
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.companyId = iprot.readI32();
+                struct.setCompanyIdIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -19510,6 +19625,9 @@ public class UserHrAccountService {
           }
           oprot.writeFieldEnd();
         }
+        oprot.writeFieldBegin(COMPANY_ID_FIELD_DESC);
+        oprot.writeI32(struct.companyId);
+        oprot.writeFieldEnd();
         oprot.writeFieldStop();
         oprot.writeStructEnd();
       }
@@ -19531,7 +19649,10 @@ public class UserHrAccountService {
         if (struct.isSetIds()) {
           optionals.set(0);
         }
-        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetCompanyId()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
         if (struct.isSetIds()) {
           {
             oprot.writeI32(struct.ids.size());
@@ -19541,12 +19662,15 @@ public class UserHrAccountService {
             }
           }
         }
+        if (struct.isSetCompanyId()) {
+          oprot.writeI32(struct.companyId);
+        }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, unbindEmployee_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet incoming = iprot.readBitSet(1);
+        java.util.BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
           {
             org.apache.thrift.protocol.TList _list29 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, iprot.readI32());
@@ -19559,6 +19683,10 @@ public class UserHrAccountService {
             }
           }
           struct.setIdsIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.companyId = iprot.readI32();
+          struct.setCompanyIdIsSet(true);
         }
       }
     }
@@ -20038,15 +20166,18 @@ public class UserHrAccountService {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("delEmployee_args");
 
     private static final org.apache.thrift.protocol.TField IDS_FIELD_DESC = new org.apache.thrift.protocol.TField("ids", org.apache.thrift.protocol.TType.LIST, (short)1);
+    private static final org.apache.thrift.protocol.TField COMPANY_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("companyId", org.apache.thrift.protocol.TType.I32, (short)2);
 
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new delEmployee_argsStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new delEmployee_argsTupleSchemeFactory();
 
     public java.util.List<java.lang.Integer> ids; // required
+    public int companyId; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      IDS((short)1, "ids");
+      IDS((short)1, "ids"),
+      COMPANY_ID((short)2, "companyId");
 
       private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
@@ -20063,6 +20194,8 @@ public class UserHrAccountService {
         switch(fieldId) {
           case 1: // IDS
             return IDS;
+          case 2: // COMPANY_ID
+            return COMPANY_ID;
           default:
             return null;
         }
@@ -20103,12 +20236,16 @@ public class UserHrAccountService {
     }
 
     // isset id assignments
+    private static final int __COMPANYID_ISSET_ID = 0;
+    private byte __isset_bitfield = 0;
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.IDS, new org.apache.thrift.meta_data.FieldMetaData("ids", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
               new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32))));
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("companyId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(delEmployee_args.class, metaDataMap);
     }
@@ -20117,20 +20254,25 @@ public class UserHrAccountService {
     }
 
     public delEmployee_args(
-      java.util.List<java.lang.Integer> ids)
+      java.util.List<java.lang.Integer> ids,
+      int companyId)
     {
       this();
       this.ids = ids;
+      this.companyId = companyId;
+      setCompanyIdIsSet(true);
     }
 
     /**
      * Performs a deep copy on <i>other</i>.
      */
     public delEmployee_args(delEmployee_args other) {
+      __isset_bitfield = other.__isset_bitfield;
       if (other.isSetIds()) {
         java.util.List<java.lang.Integer> __this__ids = new java.util.ArrayList<java.lang.Integer>(other.ids);
         this.ids = __this__ids;
       }
+      this.companyId = other.companyId;
     }
 
     public delEmployee_args deepCopy() {
@@ -20140,6 +20282,8 @@ public class UserHrAccountService {
     @Override
     public void clear() {
       this.ids = null;
+      setCompanyIdIsSet(false);
+      this.companyId = 0;
     }
 
     public int getIdsSize() {
@@ -20181,6 +20325,29 @@ public class UserHrAccountService {
       }
     }
 
+    public int getCompanyId() {
+      return this.companyId;
+    }
+
+    public delEmployee_args setCompanyId(int companyId) {
+      this.companyId = companyId;
+      setCompanyIdIsSet(true);
+      return this;
+    }
+
+    public void unsetCompanyId() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __COMPANYID_ISSET_ID);
+    }
+
+    /** Returns true if field companyId is set (has been assigned a value) and false otherwise */
+    public boolean isSetCompanyId() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __COMPANYID_ISSET_ID);
+    }
+
+    public void setCompanyIdIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __COMPANYID_ISSET_ID, value);
+    }
+
     public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case IDS:
@@ -20191,6 +20358,14 @@ public class UserHrAccountService {
         }
         break;
 
+      case COMPANY_ID:
+        if (value == null) {
+          unsetCompanyId();
+        } else {
+          setCompanyId((java.lang.Integer)value);
+        }
+        break;
+
       }
     }
 
@@ -20198,6 +20373,9 @@ public class UserHrAccountService {
       switch (field) {
       case IDS:
         return getIds();
+
+      case COMPANY_ID:
+        return getCompanyId();
 
       }
       throw new java.lang.IllegalStateException();
@@ -20212,6 +20390,8 @@ public class UserHrAccountService {
       switch (field) {
       case IDS:
         return isSetIds();
+      case COMPANY_ID:
+        return isSetCompanyId();
       }
       throw new java.lang.IllegalStateException();
     }
@@ -20240,6 +20420,15 @@ public class UserHrAccountService {
           return false;
       }
 
+      boolean this_present_companyId = true;
+      boolean that_present_companyId = true;
+      if (this_present_companyId || that_present_companyId) {
+        if (!(this_present_companyId && that_present_companyId))
+          return false;
+        if (this.companyId != that.companyId)
+          return false;
+      }
+
       return true;
     }
 
@@ -20250,6 +20439,8 @@ public class UserHrAccountService {
       hashCode = hashCode * 8191 + ((isSetIds()) ? 131071 : 524287);
       if (isSetIds())
         hashCode = hashCode * 8191 + ids.hashCode();
+
+      hashCode = hashCode * 8191 + companyId;
 
       return hashCode;
     }
@@ -20268,6 +20459,16 @@ public class UserHrAccountService {
       }
       if (isSetIds()) {
         lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.ids, other.ids);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetCompanyId()).compareTo(other.isSetCompanyId());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetCompanyId()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.companyId, other.companyId);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -20299,6 +20500,10 @@ public class UserHrAccountService {
         sb.append(this.ids);
       }
       first = false;
+      if (!first) sb.append(", ");
+      sb.append("companyId:");
+      sb.append(this.companyId);
+      first = false;
       sb.append(")");
       return sb.toString();
     }
@@ -20318,6 +20523,8 @@ public class UserHrAccountService {
 
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
+        // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
+        __isset_bitfield = 0;
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
@@ -20360,6 +20567,14 @@ public class UserHrAccountService {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
+            case 2: // COMPANY_ID
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.companyId = iprot.readI32();
+                struct.setCompanyIdIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -20387,6 +20602,9 @@ public class UserHrAccountService {
           }
           oprot.writeFieldEnd();
         }
+        oprot.writeFieldBegin(COMPANY_ID_FIELD_DESC);
+        oprot.writeI32(struct.companyId);
+        oprot.writeFieldEnd();
         oprot.writeFieldStop();
         oprot.writeStructEnd();
       }
@@ -20408,7 +20626,10 @@ public class UserHrAccountService {
         if (struct.isSetIds()) {
           optionals.set(0);
         }
-        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetCompanyId()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
         if (struct.isSetIds()) {
           {
             oprot.writeI32(struct.ids.size());
@@ -20418,12 +20639,15 @@ public class UserHrAccountService {
             }
           }
         }
+        if (struct.isSetCompanyId()) {
+          oprot.writeI32(struct.companyId);
+        }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, delEmployee_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet incoming = iprot.readBitSet(1);
+        java.util.BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
           {
             org.apache.thrift.protocol.TList _list37 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, iprot.readI32());
@@ -20436,6 +20660,10 @@ public class UserHrAccountService {
             }
           }
           struct.setIdsIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.companyId = iprot.readI32();
+          struct.setCompanyIdIsSet(true);
         }
       }
     }
@@ -20915,15 +21143,18 @@ public class UserHrAccountService {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getEmployeeRewards_args");
 
     private static final org.apache.thrift.protocol.TField EMPLOYEE_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("employeeId", org.apache.thrift.protocol.TType.I32, (short)1);
+    private static final org.apache.thrift.protocol.TField COMPANY_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("companyId", org.apache.thrift.protocol.TType.I32, (short)2);
 
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getEmployeeRewards_argsStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getEmployeeRewards_argsTupleSchemeFactory();
 
     public int employeeId; // required
+    public int companyId; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      EMPLOYEE_ID((short)1, "employeeId");
+      EMPLOYEE_ID((short)1, "employeeId"),
+      COMPANY_ID((short)2, "companyId");
 
       private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
@@ -20940,6 +21171,8 @@ public class UserHrAccountService {
         switch(fieldId) {
           case 1: // EMPLOYEE_ID
             return EMPLOYEE_ID;
+          case 2: // COMPANY_ID
+            return COMPANY_ID;
           default:
             return null;
         }
@@ -20981,11 +21214,14 @@ public class UserHrAccountService {
 
     // isset id assignments
     private static final int __EMPLOYEEID_ISSET_ID = 0;
+    private static final int __COMPANYID_ISSET_ID = 1;
     private byte __isset_bitfield = 0;
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.EMPLOYEE_ID, new org.apache.thrift.meta_data.FieldMetaData("employeeId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("companyId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getEmployeeRewards_args.class, metaDataMap);
@@ -20995,11 +21231,14 @@ public class UserHrAccountService {
     }
 
     public getEmployeeRewards_args(
-      int employeeId)
+      int employeeId,
+      int companyId)
     {
       this();
       this.employeeId = employeeId;
       setEmployeeIdIsSet(true);
+      this.companyId = companyId;
+      setCompanyIdIsSet(true);
     }
 
     /**
@@ -21008,6 +21247,7 @@ public class UserHrAccountService {
     public getEmployeeRewards_args(getEmployeeRewards_args other) {
       __isset_bitfield = other.__isset_bitfield;
       this.employeeId = other.employeeId;
+      this.companyId = other.companyId;
     }
 
     public getEmployeeRewards_args deepCopy() {
@@ -21018,6 +21258,8 @@ public class UserHrAccountService {
     public void clear() {
       setEmployeeIdIsSet(false);
       this.employeeId = 0;
+      setCompanyIdIsSet(false);
+      this.companyId = 0;
     }
 
     public int getEmployeeId() {
@@ -21043,6 +21285,29 @@ public class UserHrAccountService {
       __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __EMPLOYEEID_ISSET_ID, value);
     }
 
+    public int getCompanyId() {
+      return this.companyId;
+    }
+
+    public getEmployeeRewards_args setCompanyId(int companyId) {
+      this.companyId = companyId;
+      setCompanyIdIsSet(true);
+      return this;
+    }
+
+    public void unsetCompanyId() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __COMPANYID_ISSET_ID);
+    }
+
+    /** Returns true if field companyId is set (has been assigned a value) and false otherwise */
+    public boolean isSetCompanyId() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __COMPANYID_ISSET_ID);
+    }
+
+    public void setCompanyIdIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __COMPANYID_ISSET_ID, value);
+    }
+
     public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case EMPLOYEE_ID:
@@ -21053,6 +21318,14 @@ public class UserHrAccountService {
         }
         break;
 
+      case COMPANY_ID:
+        if (value == null) {
+          unsetCompanyId();
+        } else {
+          setCompanyId((java.lang.Integer)value);
+        }
+        break;
+
       }
     }
 
@@ -21060,6 +21333,9 @@ public class UserHrAccountService {
       switch (field) {
       case EMPLOYEE_ID:
         return getEmployeeId();
+
+      case COMPANY_ID:
+        return getCompanyId();
 
       }
       throw new java.lang.IllegalStateException();
@@ -21074,6 +21350,8 @@ public class UserHrAccountService {
       switch (field) {
       case EMPLOYEE_ID:
         return isSetEmployeeId();
+      case COMPANY_ID:
+        return isSetCompanyId();
       }
       throw new java.lang.IllegalStateException();
     }
@@ -21102,6 +21380,15 @@ public class UserHrAccountService {
           return false;
       }
 
+      boolean this_present_companyId = true;
+      boolean that_present_companyId = true;
+      if (this_present_companyId || that_present_companyId) {
+        if (!(this_present_companyId && that_present_companyId))
+          return false;
+        if (this.companyId != that.companyId)
+          return false;
+      }
+
       return true;
     }
 
@@ -21110,6 +21397,8 @@ public class UserHrAccountService {
       int hashCode = 1;
 
       hashCode = hashCode * 8191 + employeeId;
+
+      hashCode = hashCode * 8191 + companyId;
 
       return hashCode;
     }
@@ -21128,6 +21417,16 @@ public class UserHrAccountService {
       }
       if (isSetEmployeeId()) {
         lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.employeeId, other.employeeId);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetCompanyId()).compareTo(other.isSetCompanyId());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetCompanyId()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.companyId, other.companyId);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -21154,6 +21453,10 @@ public class UserHrAccountService {
 
       sb.append("employeeId:");
       sb.append(this.employeeId);
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("companyId:");
+      sb.append(this.companyId);
       first = false;
       sb.append(")");
       return sb.toString();
@@ -21208,6 +21511,14 @@ public class UserHrAccountService {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
+            case 2: // COMPANY_ID
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.companyId = iprot.readI32();
+                struct.setCompanyIdIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -21225,6 +21536,9 @@ public class UserHrAccountService {
         oprot.writeStructBegin(STRUCT_DESC);
         oprot.writeFieldBegin(EMPLOYEE_ID_FIELD_DESC);
         oprot.writeI32(struct.employeeId);
+        oprot.writeFieldEnd();
+        oprot.writeFieldBegin(COMPANY_ID_FIELD_DESC);
+        oprot.writeI32(struct.companyId);
         oprot.writeFieldEnd();
         oprot.writeFieldStop();
         oprot.writeStructEnd();
@@ -21247,19 +21561,29 @@ public class UserHrAccountService {
         if (struct.isSetEmployeeId()) {
           optionals.set(0);
         }
-        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetCompanyId()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
         if (struct.isSetEmployeeId()) {
           oprot.writeI32(struct.employeeId);
+        }
+        if (struct.isSetCompanyId()) {
+          oprot.writeI32(struct.companyId);
         }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, getEmployeeRewards_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet incoming = iprot.readBitSet(1);
+        java.util.BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
           struct.employeeId = iprot.readI32();
           struct.setEmployeeIdIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.companyId = iprot.readI32();
+          struct.setCompanyIdIsSet(true);
         }
       }
     }
@@ -21797,6 +22121,7 @@ public class UserHrAccountService {
     private static final org.apache.thrift.protocol.TField EMPLOYEE_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("employeeId", org.apache.thrift.protocol.TType.I32, (short)1);
     private static final org.apache.thrift.protocol.TField POINTS_FIELD_DESC = new org.apache.thrift.protocol.TField("points", org.apache.thrift.protocol.TType.I32, (short)2);
     private static final org.apache.thrift.protocol.TField REASON_FIELD_DESC = new org.apache.thrift.protocol.TField("reason", org.apache.thrift.protocol.TType.STRING, (short)3);
+    private static final org.apache.thrift.protocol.TField COMPANY_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("companyId", org.apache.thrift.protocol.TType.I32, (short)4);
 
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new addEmployeeReward_argsStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new addEmployeeReward_argsTupleSchemeFactory();
@@ -21804,12 +22129,14 @@ public class UserHrAccountService {
     public int employeeId; // required
     public int points; // required
     public java.lang.String reason; // required
+    public int companyId; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       EMPLOYEE_ID((short)1, "employeeId"),
       POINTS((short)2, "points"),
-      REASON((short)3, "reason");
+      REASON((short)3, "reason"),
+      COMPANY_ID((short)4, "companyId");
 
       private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
@@ -21830,6 +22157,8 @@ public class UserHrAccountService {
             return POINTS;
           case 3: // REASON
             return REASON;
+          case 4: // COMPANY_ID
+            return COMPANY_ID;
           default:
             return null;
         }
@@ -21872,6 +22201,7 @@ public class UserHrAccountService {
     // isset id assignments
     private static final int __EMPLOYEEID_ISSET_ID = 0;
     private static final int __POINTS_ISSET_ID = 1;
+    private static final int __COMPANYID_ISSET_ID = 2;
     private byte __isset_bitfield = 0;
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
@@ -21882,6 +22212,8 @@ public class UserHrAccountService {
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       tmpMap.put(_Fields.REASON, new org.apache.thrift.meta_data.FieldMetaData("reason", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("companyId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(addEmployeeReward_args.class, metaDataMap);
     }
@@ -21892,7 +22224,8 @@ public class UserHrAccountService {
     public addEmployeeReward_args(
       int employeeId,
       int points,
-      java.lang.String reason)
+      java.lang.String reason,
+      int companyId)
     {
       this();
       this.employeeId = employeeId;
@@ -21900,6 +22233,8 @@ public class UserHrAccountService {
       this.points = points;
       setPointsIsSet(true);
       this.reason = reason;
+      this.companyId = companyId;
+      setCompanyIdIsSet(true);
     }
 
     /**
@@ -21912,6 +22247,7 @@ public class UserHrAccountService {
       if (other.isSetReason()) {
         this.reason = other.reason;
       }
+      this.companyId = other.companyId;
     }
 
     public addEmployeeReward_args deepCopy() {
@@ -21925,6 +22261,8 @@ public class UserHrAccountService {
       setPointsIsSet(false);
       this.points = 0;
       this.reason = null;
+      setCompanyIdIsSet(false);
+      this.companyId = 0;
     }
 
     public int getEmployeeId() {
@@ -21997,6 +22335,29 @@ public class UserHrAccountService {
       }
     }
 
+    public int getCompanyId() {
+      return this.companyId;
+    }
+
+    public addEmployeeReward_args setCompanyId(int companyId) {
+      this.companyId = companyId;
+      setCompanyIdIsSet(true);
+      return this;
+    }
+
+    public void unsetCompanyId() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __COMPANYID_ISSET_ID);
+    }
+
+    /** Returns true if field companyId is set (has been assigned a value) and false otherwise */
+    public boolean isSetCompanyId() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __COMPANYID_ISSET_ID);
+    }
+
+    public void setCompanyIdIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __COMPANYID_ISSET_ID, value);
+    }
+
     public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case EMPLOYEE_ID:
@@ -22023,6 +22384,14 @@ public class UserHrAccountService {
         }
         break;
 
+      case COMPANY_ID:
+        if (value == null) {
+          unsetCompanyId();
+        } else {
+          setCompanyId((java.lang.Integer)value);
+        }
+        break;
+
       }
     }
 
@@ -22036,6 +22405,9 @@ public class UserHrAccountService {
 
       case REASON:
         return getReason();
+
+      case COMPANY_ID:
+        return getCompanyId();
 
       }
       throw new java.lang.IllegalStateException();
@@ -22054,6 +22426,8 @@ public class UserHrAccountService {
         return isSetPoints();
       case REASON:
         return isSetReason();
+      case COMPANY_ID:
+        return isSetCompanyId();
       }
       throw new java.lang.IllegalStateException();
     }
@@ -22100,6 +22474,15 @@ public class UserHrAccountService {
           return false;
       }
 
+      boolean this_present_companyId = true;
+      boolean that_present_companyId = true;
+      if (this_present_companyId || that_present_companyId) {
+        if (!(this_present_companyId && that_present_companyId))
+          return false;
+        if (this.companyId != that.companyId)
+          return false;
+      }
+
       return true;
     }
 
@@ -22114,6 +22497,8 @@ public class UserHrAccountService {
       hashCode = hashCode * 8191 + ((isSetReason()) ? 131071 : 524287);
       if (isSetReason())
         hashCode = hashCode * 8191 + reason.hashCode();
+
+      hashCode = hashCode * 8191 + companyId;
 
       return hashCode;
     }
@@ -22156,6 +22541,16 @@ public class UserHrAccountService {
           return lastComparison;
         }
       }
+      lastComparison = java.lang.Boolean.valueOf(isSetCompanyId()).compareTo(other.isSetCompanyId());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetCompanyId()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.companyId, other.companyId);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
       return 0;
     }
 
@@ -22190,6 +22585,10 @@ public class UserHrAccountService {
       } else {
         sb.append(this.reason);
       }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("companyId:");
+      sb.append(this.companyId);
       first = false;
       sb.append(")");
       return sb.toString();
@@ -22260,6 +22659,14 @@ public class UserHrAccountService {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
+            case 4: // COMPANY_ID
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.companyId = iprot.readI32();
+                struct.setCompanyIdIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -22286,6 +22693,9 @@ public class UserHrAccountService {
           oprot.writeString(struct.reason);
           oprot.writeFieldEnd();
         }
+        oprot.writeFieldBegin(COMPANY_ID_FIELD_DESC);
+        oprot.writeI32(struct.companyId);
+        oprot.writeFieldEnd();
         oprot.writeFieldStop();
         oprot.writeStructEnd();
       }
@@ -22313,7 +22723,10 @@ public class UserHrAccountService {
         if (struct.isSetReason()) {
           optionals.set(2);
         }
-        oprot.writeBitSet(optionals, 3);
+        if (struct.isSetCompanyId()) {
+          optionals.set(3);
+        }
+        oprot.writeBitSet(optionals, 4);
         if (struct.isSetEmployeeId()) {
           oprot.writeI32(struct.employeeId);
         }
@@ -22323,12 +22736,15 @@ public class UserHrAccountService {
         if (struct.isSetReason()) {
           oprot.writeString(struct.reason);
         }
+        if (struct.isSetCompanyId()) {
+          oprot.writeI32(struct.companyId);
+        }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, addEmployeeReward_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet incoming = iprot.readBitSet(3);
+        java.util.BitSet incoming = iprot.readBitSet(4);
         if (incoming.get(0)) {
           struct.employeeId = iprot.readI32();
           struct.setEmployeeIdIsSet(true);
@@ -22340,6 +22756,10 @@ public class UserHrAccountService {
         if (incoming.get(2)) {
           struct.reason = iprot.readString();
           struct.setReasonIsSet(true);
+        }
+        if (incoming.get(3)) {
+          struct.companyId = iprot.readI32();
+          struct.setCompanyIdIsSet(true);
         }
       }
     }
@@ -23757,7 +24177,7 @@ public class UserHrAccountService {
     private static final org.apache.thrift.protocol.TField COMPANY_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("companyId", org.apache.thrift.protocol.TType.I32, (short)2);
     private static final org.apache.thrift.protocol.TField FILTER_FIELD_DESC = new org.apache.thrift.protocol.TField("filter", org.apache.thrift.protocol.TType.I32, (short)3);
     private static final org.apache.thrift.protocol.TField ORDER_FIELD_DESC = new org.apache.thrift.protocol.TField("order", org.apache.thrift.protocol.TType.STRING, (short)4);
-    private static final org.apache.thrift.protocol.TField BY_FIELD_DESC = new org.apache.thrift.protocol.TField("by", org.apache.thrift.protocol.TType.I32, (short)5);
+    private static final org.apache.thrift.protocol.TField ASC_FIELD_DESC = new org.apache.thrift.protocol.TField("asc", org.apache.thrift.protocol.TType.I32, (short)5);
     private static final org.apache.thrift.protocol.TField PAGE_NUMBER_FIELD_DESC = new org.apache.thrift.protocol.TField("pageNumber", org.apache.thrift.protocol.TType.I32, (short)6);
     private static final org.apache.thrift.protocol.TField PAGE_SIZE_FIELD_DESC = new org.apache.thrift.protocol.TField("pageSize", org.apache.thrift.protocol.TType.I32, (short)7);
 
@@ -23768,7 +24188,7 @@ public class UserHrAccountService {
     public int companyId; // required
     public int filter; // required
     public java.lang.String order; // required
-    public int by; // required
+    public int asc; // required
     public int pageNumber; // required
     public int pageSize; // required
 
@@ -23778,7 +24198,7 @@ public class UserHrAccountService {
       COMPANY_ID((short)2, "companyId"),
       FILTER((short)3, "filter"),
       ORDER((short)4, "order"),
-      BY((short)5, "by"),
+      ASC((short)5, "asc"),
       PAGE_NUMBER((short)6, "pageNumber"),
       PAGE_SIZE((short)7, "pageSize");
 
@@ -23803,8 +24223,8 @@ public class UserHrAccountService {
             return FILTER;
           case 4: // ORDER
             return ORDER;
-          case 5: // BY
-            return BY;
+          case 5: // ASC
+            return ASC;
           case 6: // PAGE_NUMBER
             return PAGE_NUMBER;
           case 7: // PAGE_SIZE
@@ -23851,7 +24271,7 @@ public class UserHrAccountService {
     // isset id assignments
     private static final int __COMPANYID_ISSET_ID = 0;
     private static final int __FILTER_ISSET_ID = 1;
-    private static final int __BY_ISSET_ID = 2;
+    private static final int __ASC_ISSET_ID = 2;
     private static final int __PAGENUMBER_ISSET_ID = 3;
     private static final int __PAGESIZE_ISSET_ID = 4;
     private byte __isset_bitfield = 0;
@@ -23866,7 +24286,7 @@ public class UserHrAccountService {
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       tmpMap.put(_Fields.ORDER, new org.apache.thrift.meta_data.FieldMetaData("order", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-      tmpMap.put(_Fields.BY, new org.apache.thrift.meta_data.FieldMetaData("by", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.ASC, new org.apache.thrift.meta_data.FieldMetaData("asc", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       tmpMap.put(_Fields.PAGE_NUMBER, new org.apache.thrift.meta_data.FieldMetaData("pageNumber", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
@@ -23884,7 +24304,7 @@ public class UserHrAccountService {
       int companyId,
       int filter,
       java.lang.String order,
-      int by,
+      int asc,
       int pageNumber,
       int pageSize)
     {
@@ -23895,8 +24315,8 @@ public class UserHrAccountService {
       this.filter = filter;
       setFilterIsSet(true);
       this.order = order;
-      this.by = by;
-      setByIsSet(true);
+      this.asc = asc;
+      setAscIsSet(true);
       this.pageNumber = pageNumber;
       setPageNumberIsSet(true);
       this.pageSize = pageSize;
@@ -23916,7 +24336,7 @@ public class UserHrAccountService {
       if (other.isSetOrder()) {
         this.order = other.order;
       }
-      this.by = other.by;
+      this.asc = other.asc;
       this.pageNumber = other.pageNumber;
       this.pageSize = other.pageSize;
     }
@@ -23933,8 +24353,8 @@ public class UserHrAccountService {
       setFilterIsSet(false);
       this.filter = 0;
       this.order = null;
-      setByIsSet(false);
-      this.by = 0;
+      setAscIsSet(false);
+      this.asc = 0;
       setPageNumberIsSet(false);
       this.pageNumber = 0;
       setPageSizeIsSet(false);
@@ -24035,27 +24455,27 @@ public class UserHrAccountService {
       }
     }
 
-    public int getBy() {
-      return this.by;
+    public int getAsc() {
+      return this.asc;
     }
 
-    public employeeList_args setBy(int by) {
-      this.by = by;
-      setByIsSet(true);
+    public employeeList_args setAsc(int asc) {
+      this.asc = asc;
+      setAscIsSet(true);
       return this;
     }
 
-    public void unsetBy() {
-      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __BY_ISSET_ID);
+    public void unsetAsc() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __ASC_ISSET_ID);
     }
 
-    /** Returns true if field by is set (has been assigned a value) and false otherwise */
-    public boolean isSetBy() {
-      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __BY_ISSET_ID);
+    /** Returns true if field asc is set (has been assigned a value) and false otherwise */
+    public boolean isSetAsc() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __ASC_ISSET_ID);
     }
 
-    public void setByIsSet(boolean value) {
-      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __BY_ISSET_ID, value);
+    public void setAscIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __ASC_ISSET_ID, value);
     }
 
     public int getPageNumber() {
@@ -24138,11 +24558,11 @@ public class UserHrAccountService {
         }
         break;
 
-      case BY:
+      case ASC:
         if (value == null) {
-          unsetBy();
+          unsetAsc();
         } else {
-          setBy((java.lang.Integer)value);
+          setAsc((java.lang.Integer)value);
         }
         break;
 
@@ -24179,8 +24599,8 @@ public class UserHrAccountService {
       case ORDER:
         return getOrder();
 
-      case BY:
-        return getBy();
+      case ASC:
+        return getAsc();
 
       case PAGE_NUMBER:
         return getPageNumber();
@@ -24207,8 +24627,8 @@ public class UserHrAccountService {
         return isSetFilter();
       case ORDER:
         return isSetOrder();
-      case BY:
-        return isSetBy();
+      case ASC:
+        return isSetAsc();
       case PAGE_NUMBER:
         return isSetPageNumber();
       case PAGE_SIZE:
@@ -24268,12 +24688,12 @@ public class UserHrAccountService {
           return false;
       }
 
-      boolean this_present_by = true;
-      boolean that_present_by = true;
-      if (this_present_by || that_present_by) {
-        if (!(this_present_by && that_present_by))
+      boolean this_present_asc = true;
+      boolean that_present_asc = true;
+      if (this_present_asc || that_present_asc) {
+        if (!(this_present_asc && that_present_asc))
           return false;
-        if (this.by != that.by)
+        if (this.asc != that.asc)
           return false;
       }
 
@@ -24314,7 +24734,7 @@ public class UserHrAccountService {
       if (isSetOrder())
         hashCode = hashCode * 8191 + order.hashCode();
 
-      hashCode = hashCode * 8191 + by;
+      hashCode = hashCode * 8191 + asc;
 
       hashCode = hashCode * 8191 + pageNumber;
 
@@ -24371,12 +24791,12 @@ public class UserHrAccountService {
           return lastComparison;
         }
       }
-      lastComparison = java.lang.Boolean.valueOf(isSetBy()).compareTo(other.isSetBy());
+      lastComparison = java.lang.Boolean.valueOf(isSetAsc()).compareTo(other.isSetAsc());
       if (lastComparison != 0) {
         return lastComparison;
       }
-      if (isSetBy()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.by, other.by);
+      if (isSetAsc()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.asc, other.asc);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -24445,8 +24865,8 @@ public class UserHrAccountService {
       }
       first = false;
       if (!first) sb.append(", ");
-      sb.append("by:");
-      sb.append(this.by);
+      sb.append("asc:");
+      sb.append(this.asc);
       first = false;
       if (!first) sb.append(", ");
       sb.append("pageNumber:");
@@ -24533,10 +24953,10 @@ public class UserHrAccountService {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
-            case 5: // BY
+            case 5: // ASC
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-                struct.by = iprot.readI32();
-                struct.setByIsSet(true);
+                struct.asc = iprot.readI32();
+                struct.setAscIsSet(true);
               } else { 
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
@@ -24588,8 +25008,8 @@ public class UserHrAccountService {
           oprot.writeString(struct.order);
           oprot.writeFieldEnd();
         }
-        oprot.writeFieldBegin(BY_FIELD_DESC);
-        oprot.writeI32(struct.by);
+        oprot.writeFieldBegin(ASC_FIELD_DESC);
+        oprot.writeI32(struct.asc);
         oprot.writeFieldEnd();
         oprot.writeFieldBegin(PAGE_NUMBER_FIELD_DESC);
         oprot.writeI32(struct.pageNumber);
@@ -24627,7 +25047,7 @@ public class UserHrAccountService {
         if (struct.isSetOrder()) {
           optionals.set(3);
         }
-        if (struct.isSetBy()) {
+        if (struct.isSetAsc()) {
           optionals.set(4);
         }
         if (struct.isSetPageNumber()) {
@@ -24649,8 +25069,8 @@ public class UserHrAccountService {
         if (struct.isSetOrder()) {
           oprot.writeString(struct.order);
         }
-        if (struct.isSetBy()) {
-          oprot.writeI32(struct.by);
+        if (struct.isSetAsc()) {
+          oprot.writeI32(struct.asc);
         }
         if (struct.isSetPageNumber()) {
           oprot.writeI32(struct.pageNumber);
@@ -24681,8 +25101,8 @@ public class UserHrAccountService {
           struct.setOrderIsSet(true);
         }
         if (incoming.get(4)) {
-          struct.by = iprot.readI32();
-          struct.setByIsSet(true);
+          struct.asc = iprot.readI32();
+          struct.setAscIsSet(true);
         }
         if (incoming.get(5)) {
           struct.pageNumber = iprot.readI32();
@@ -25177,15 +25597,18 @@ public class UserHrAccountService {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("employeeExport_args");
 
     private static final org.apache.thrift.protocol.TField USER_EMPLOYEES_FIELD_DESC = new org.apache.thrift.protocol.TField("userEmployees", org.apache.thrift.protocol.TType.LIST, (short)1);
+    private static final org.apache.thrift.protocol.TField COMPANY_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("companyId", org.apache.thrift.protocol.TType.I32, (short)2);
 
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new employeeExport_argsStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new employeeExport_argsTupleSchemeFactory();
 
     public java.util.List<java.lang.Integer> userEmployees; // required
+    public int companyId; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      USER_EMPLOYEES((short)1, "userEmployees");
+      USER_EMPLOYEES((short)1, "userEmployees"),
+      COMPANY_ID((short)2, "companyId");
 
       private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
@@ -25202,6 +25625,8 @@ public class UserHrAccountService {
         switch(fieldId) {
           case 1: // USER_EMPLOYEES
             return USER_EMPLOYEES;
+          case 2: // COMPANY_ID
+            return COMPANY_ID;
           default:
             return null;
         }
@@ -25242,12 +25667,16 @@ public class UserHrAccountService {
     }
 
     // isset id assignments
+    private static final int __COMPANYID_ISSET_ID = 0;
+    private byte __isset_bitfield = 0;
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.USER_EMPLOYEES, new org.apache.thrift.meta_data.FieldMetaData("userEmployees", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
               new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32))));
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("companyId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(employeeExport_args.class, metaDataMap);
     }
@@ -25256,20 +25685,25 @@ public class UserHrAccountService {
     }
 
     public employeeExport_args(
-      java.util.List<java.lang.Integer> userEmployees)
+      java.util.List<java.lang.Integer> userEmployees,
+      int companyId)
     {
       this();
       this.userEmployees = userEmployees;
+      this.companyId = companyId;
+      setCompanyIdIsSet(true);
     }
 
     /**
      * Performs a deep copy on <i>other</i>.
      */
     public employeeExport_args(employeeExport_args other) {
+      __isset_bitfield = other.__isset_bitfield;
       if (other.isSetUserEmployees()) {
         java.util.List<java.lang.Integer> __this__userEmployees = new java.util.ArrayList<java.lang.Integer>(other.userEmployees);
         this.userEmployees = __this__userEmployees;
       }
+      this.companyId = other.companyId;
     }
 
     public employeeExport_args deepCopy() {
@@ -25279,6 +25713,8 @@ public class UserHrAccountService {
     @Override
     public void clear() {
       this.userEmployees = null;
+      setCompanyIdIsSet(false);
+      this.companyId = 0;
     }
 
     public int getUserEmployeesSize() {
@@ -25320,6 +25756,29 @@ public class UserHrAccountService {
       }
     }
 
+    public int getCompanyId() {
+      return this.companyId;
+    }
+
+    public employeeExport_args setCompanyId(int companyId) {
+      this.companyId = companyId;
+      setCompanyIdIsSet(true);
+      return this;
+    }
+
+    public void unsetCompanyId() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __COMPANYID_ISSET_ID);
+    }
+
+    /** Returns true if field companyId is set (has been assigned a value) and false otherwise */
+    public boolean isSetCompanyId() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __COMPANYID_ISSET_ID);
+    }
+
+    public void setCompanyIdIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __COMPANYID_ISSET_ID, value);
+    }
+
     public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case USER_EMPLOYEES:
@@ -25330,6 +25789,14 @@ public class UserHrAccountService {
         }
         break;
 
+      case COMPANY_ID:
+        if (value == null) {
+          unsetCompanyId();
+        } else {
+          setCompanyId((java.lang.Integer)value);
+        }
+        break;
+
       }
     }
 
@@ -25337,6 +25804,9 @@ public class UserHrAccountService {
       switch (field) {
       case USER_EMPLOYEES:
         return getUserEmployees();
+
+      case COMPANY_ID:
+        return getCompanyId();
 
       }
       throw new java.lang.IllegalStateException();
@@ -25351,6 +25821,8 @@ public class UserHrAccountService {
       switch (field) {
       case USER_EMPLOYEES:
         return isSetUserEmployees();
+      case COMPANY_ID:
+        return isSetCompanyId();
       }
       throw new java.lang.IllegalStateException();
     }
@@ -25379,6 +25851,15 @@ public class UserHrAccountService {
           return false;
       }
 
+      boolean this_present_companyId = true;
+      boolean that_present_companyId = true;
+      if (this_present_companyId || that_present_companyId) {
+        if (!(this_present_companyId && that_present_companyId))
+          return false;
+        if (this.companyId != that.companyId)
+          return false;
+      }
+
       return true;
     }
 
@@ -25389,6 +25870,8 @@ public class UserHrAccountService {
       hashCode = hashCode * 8191 + ((isSetUserEmployees()) ? 131071 : 524287);
       if (isSetUserEmployees())
         hashCode = hashCode * 8191 + userEmployees.hashCode();
+
+      hashCode = hashCode * 8191 + companyId;
 
       return hashCode;
     }
@@ -25407,6 +25890,16 @@ public class UserHrAccountService {
       }
       if (isSetUserEmployees()) {
         lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.userEmployees, other.userEmployees);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetCompanyId()).compareTo(other.isSetCompanyId());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetCompanyId()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.companyId, other.companyId);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -25438,6 +25931,10 @@ public class UserHrAccountService {
         sb.append(this.userEmployees);
       }
       first = false;
+      if (!first) sb.append(", ");
+      sb.append("companyId:");
+      sb.append(this.companyId);
+      first = false;
       sb.append(")");
       return sb.toString();
     }
@@ -25457,6 +25954,8 @@ public class UserHrAccountService {
 
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
+        // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
+        __isset_bitfield = 0;
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
@@ -25499,6 +25998,14 @@ public class UserHrAccountService {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
+            case 2: // COMPANY_ID
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.companyId = iprot.readI32();
+                struct.setCompanyIdIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -25526,6 +26033,9 @@ public class UserHrAccountService {
           }
           oprot.writeFieldEnd();
         }
+        oprot.writeFieldBegin(COMPANY_ID_FIELD_DESC);
+        oprot.writeI32(struct.companyId);
+        oprot.writeFieldEnd();
         oprot.writeFieldStop();
         oprot.writeStructEnd();
       }
@@ -25547,7 +26057,10 @@ public class UserHrAccountService {
         if (struct.isSetUserEmployees()) {
           optionals.set(0);
         }
-        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetCompanyId()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
         if (struct.isSetUserEmployees()) {
           {
             oprot.writeI32(struct.userEmployees.size());
@@ -25557,12 +26070,15 @@ public class UserHrAccountService {
             }
           }
         }
+        if (struct.isSetCompanyId()) {
+          oprot.writeI32(struct.companyId);
+        }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, employeeExport_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet incoming = iprot.readBitSet(1);
+        java.util.BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
           {
             org.apache.thrift.protocol.TList _list53 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, iprot.readI32());
@@ -25575,6 +26091,10 @@ public class UserHrAccountService {
             }
           }
           struct.setUserEmployeesIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.companyId = iprot.readI32();
+          struct.setCompanyIdIsSet(true);
         }
       }
     }
@@ -26110,15 +26630,18 @@ public class UserHrAccountService {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("userEmployeeDetail_args");
 
     private static final org.apache.thrift.protocol.TField USER_EMPLOYEE_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("userEmployeeId", org.apache.thrift.protocol.TType.I32, (short)1);
+    private static final org.apache.thrift.protocol.TField COMPANY_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("companyId", org.apache.thrift.protocol.TType.I32, (short)2);
 
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new userEmployeeDetail_argsStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new userEmployeeDetail_argsTupleSchemeFactory();
 
     public int userEmployeeId; // required
+    public int companyId; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      USER_EMPLOYEE_ID((short)1, "userEmployeeId");
+      USER_EMPLOYEE_ID((short)1, "userEmployeeId"),
+      COMPANY_ID((short)2, "companyId");
 
       private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
@@ -26135,6 +26658,8 @@ public class UserHrAccountService {
         switch(fieldId) {
           case 1: // USER_EMPLOYEE_ID
             return USER_EMPLOYEE_ID;
+          case 2: // COMPANY_ID
+            return COMPANY_ID;
           default:
             return null;
         }
@@ -26176,11 +26701,14 @@ public class UserHrAccountService {
 
     // isset id assignments
     private static final int __USEREMPLOYEEID_ISSET_ID = 0;
+    private static final int __COMPANYID_ISSET_ID = 1;
     private byte __isset_bitfield = 0;
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.USER_EMPLOYEE_ID, new org.apache.thrift.meta_data.FieldMetaData("userEmployeeId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("companyId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(userEmployeeDetail_args.class, metaDataMap);
@@ -26190,11 +26718,14 @@ public class UserHrAccountService {
     }
 
     public userEmployeeDetail_args(
-      int userEmployeeId)
+      int userEmployeeId,
+      int companyId)
     {
       this();
       this.userEmployeeId = userEmployeeId;
       setUserEmployeeIdIsSet(true);
+      this.companyId = companyId;
+      setCompanyIdIsSet(true);
     }
 
     /**
@@ -26203,6 +26734,7 @@ public class UserHrAccountService {
     public userEmployeeDetail_args(userEmployeeDetail_args other) {
       __isset_bitfield = other.__isset_bitfield;
       this.userEmployeeId = other.userEmployeeId;
+      this.companyId = other.companyId;
     }
 
     public userEmployeeDetail_args deepCopy() {
@@ -26213,6 +26745,8 @@ public class UserHrAccountService {
     public void clear() {
       setUserEmployeeIdIsSet(false);
       this.userEmployeeId = 0;
+      setCompanyIdIsSet(false);
+      this.companyId = 0;
     }
 
     public int getUserEmployeeId() {
@@ -26238,6 +26772,29 @@ public class UserHrAccountService {
       __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __USEREMPLOYEEID_ISSET_ID, value);
     }
 
+    public int getCompanyId() {
+      return this.companyId;
+    }
+
+    public userEmployeeDetail_args setCompanyId(int companyId) {
+      this.companyId = companyId;
+      setCompanyIdIsSet(true);
+      return this;
+    }
+
+    public void unsetCompanyId() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __COMPANYID_ISSET_ID);
+    }
+
+    /** Returns true if field companyId is set (has been assigned a value) and false otherwise */
+    public boolean isSetCompanyId() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __COMPANYID_ISSET_ID);
+    }
+
+    public void setCompanyIdIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __COMPANYID_ISSET_ID, value);
+    }
+
     public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case USER_EMPLOYEE_ID:
@@ -26248,6 +26805,14 @@ public class UserHrAccountService {
         }
         break;
 
+      case COMPANY_ID:
+        if (value == null) {
+          unsetCompanyId();
+        } else {
+          setCompanyId((java.lang.Integer)value);
+        }
+        break;
+
       }
     }
 
@@ -26255,6 +26820,9 @@ public class UserHrAccountService {
       switch (field) {
       case USER_EMPLOYEE_ID:
         return getUserEmployeeId();
+
+      case COMPANY_ID:
+        return getCompanyId();
 
       }
       throw new java.lang.IllegalStateException();
@@ -26269,6 +26837,8 @@ public class UserHrAccountService {
       switch (field) {
       case USER_EMPLOYEE_ID:
         return isSetUserEmployeeId();
+      case COMPANY_ID:
+        return isSetCompanyId();
       }
       throw new java.lang.IllegalStateException();
     }
@@ -26297,6 +26867,15 @@ public class UserHrAccountService {
           return false;
       }
 
+      boolean this_present_companyId = true;
+      boolean that_present_companyId = true;
+      if (this_present_companyId || that_present_companyId) {
+        if (!(this_present_companyId && that_present_companyId))
+          return false;
+        if (this.companyId != that.companyId)
+          return false;
+      }
+
       return true;
     }
 
@@ -26305,6 +26884,8 @@ public class UserHrAccountService {
       int hashCode = 1;
 
       hashCode = hashCode * 8191 + userEmployeeId;
+
+      hashCode = hashCode * 8191 + companyId;
 
       return hashCode;
     }
@@ -26323,6 +26904,16 @@ public class UserHrAccountService {
       }
       if (isSetUserEmployeeId()) {
         lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.userEmployeeId, other.userEmployeeId);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetCompanyId()).compareTo(other.isSetCompanyId());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetCompanyId()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.companyId, other.companyId);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -26349,6 +26940,10 @@ public class UserHrAccountService {
 
       sb.append("userEmployeeId:");
       sb.append(this.userEmployeeId);
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("companyId:");
+      sb.append(this.companyId);
       first = false;
       sb.append(")");
       return sb.toString();
@@ -26403,6 +26998,14 @@ public class UserHrAccountService {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
+            case 2: // COMPANY_ID
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.companyId = iprot.readI32();
+                struct.setCompanyIdIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -26420,6 +27023,9 @@ public class UserHrAccountService {
         oprot.writeStructBegin(STRUCT_DESC);
         oprot.writeFieldBegin(USER_EMPLOYEE_ID_FIELD_DESC);
         oprot.writeI32(struct.userEmployeeId);
+        oprot.writeFieldEnd();
+        oprot.writeFieldBegin(COMPANY_ID_FIELD_DESC);
+        oprot.writeI32(struct.companyId);
         oprot.writeFieldEnd();
         oprot.writeFieldStop();
         oprot.writeStructEnd();
@@ -26442,19 +27048,29 @@ public class UserHrAccountService {
         if (struct.isSetUserEmployeeId()) {
           optionals.set(0);
         }
-        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetCompanyId()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
         if (struct.isSetUserEmployeeId()) {
           oprot.writeI32(struct.userEmployeeId);
+        }
+        if (struct.isSetCompanyId()) {
+          oprot.writeI32(struct.companyId);
         }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, userEmployeeDetail_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet incoming = iprot.readBitSet(1);
+        java.util.BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
           struct.userEmployeeId = iprot.readI32();
           struct.setUserEmployeeIdIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.companyId = iprot.readI32();
+          struct.setCompanyIdIsSet(true);
         }
       }
     }
@@ -26945,6 +27561,7 @@ public class UserHrAccountService {
     private static final org.apache.thrift.protocol.TField EMAIL_FIELD_DESC = new org.apache.thrift.protocol.TField("email", org.apache.thrift.protocol.TType.STRING, (short)3);
     private static final org.apache.thrift.protocol.TField CUSTOM_FIELD_FIELD_DESC = new org.apache.thrift.protocol.TField("customField", org.apache.thrift.protocol.TType.STRING, (short)4);
     private static final org.apache.thrift.protocol.TField USER_EMPLOYEE_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("userEmployeeId", org.apache.thrift.protocol.TType.I32, (short)5);
+    private static final org.apache.thrift.protocol.TField COMPANY_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("companyId", org.apache.thrift.protocol.TType.I32, (short)6);
 
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new updateUserEmployee_argsStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new updateUserEmployee_argsTupleSchemeFactory();
@@ -26954,6 +27571,7 @@ public class UserHrAccountService {
     public java.lang.String email; // required
     public java.lang.String customField; // required
     public int userEmployeeId; // required
+    public int companyId; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -26961,7 +27579,8 @@ public class UserHrAccountService {
       MOBILE((short)2, "mobile"),
       EMAIL((short)3, "email"),
       CUSTOM_FIELD((short)4, "customField"),
-      USER_EMPLOYEE_ID((short)5, "userEmployeeId");
+      USER_EMPLOYEE_ID((short)5, "userEmployeeId"),
+      COMPANY_ID((short)6, "companyId");
 
       private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
@@ -26986,6 +27605,8 @@ public class UserHrAccountService {
             return CUSTOM_FIELD;
           case 5: // USER_EMPLOYEE_ID
             return USER_EMPLOYEE_ID;
+          case 6: // COMPANY_ID
+            return COMPANY_ID;
           default:
             return null;
         }
@@ -27027,6 +27648,7 @@ public class UserHrAccountService {
 
     // isset id assignments
     private static final int __USEREMPLOYEEID_ISSET_ID = 0;
+    private static final int __COMPANYID_ISSET_ID = 1;
     private byte __isset_bitfield = 0;
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
@@ -27041,6 +27663,8 @@ public class UserHrAccountService {
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
       tmpMap.put(_Fields.USER_EMPLOYEE_ID, new org.apache.thrift.meta_data.FieldMetaData("userEmployeeId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("companyId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(updateUserEmployee_args.class, metaDataMap);
     }
@@ -27053,7 +27677,8 @@ public class UserHrAccountService {
       java.lang.String mobile,
       java.lang.String email,
       java.lang.String customField,
-      int userEmployeeId)
+      int userEmployeeId,
+      int companyId)
     {
       this();
       this.cname = cname;
@@ -27062,6 +27687,8 @@ public class UserHrAccountService {
       this.customField = customField;
       this.userEmployeeId = userEmployeeId;
       setUserEmployeeIdIsSet(true);
+      this.companyId = companyId;
+      setCompanyIdIsSet(true);
     }
 
     /**
@@ -27082,6 +27709,7 @@ public class UserHrAccountService {
         this.customField = other.customField;
       }
       this.userEmployeeId = other.userEmployeeId;
+      this.companyId = other.companyId;
     }
 
     public updateUserEmployee_args deepCopy() {
@@ -27096,6 +27724,8 @@ public class UserHrAccountService {
       this.customField = null;
       setUserEmployeeIdIsSet(false);
       this.userEmployeeId = 0;
+      setCompanyIdIsSet(false);
+      this.companyId = 0;
     }
 
     public java.lang.String getCname() {
@@ -27217,6 +27847,29 @@ public class UserHrAccountService {
       __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __USEREMPLOYEEID_ISSET_ID, value);
     }
 
+    public int getCompanyId() {
+      return this.companyId;
+    }
+
+    public updateUserEmployee_args setCompanyId(int companyId) {
+      this.companyId = companyId;
+      setCompanyIdIsSet(true);
+      return this;
+    }
+
+    public void unsetCompanyId() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __COMPANYID_ISSET_ID);
+    }
+
+    /** Returns true if field companyId is set (has been assigned a value) and false otherwise */
+    public boolean isSetCompanyId() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __COMPANYID_ISSET_ID);
+    }
+
+    public void setCompanyIdIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __COMPANYID_ISSET_ID, value);
+    }
+
     public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case CNAME:
@@ -27259,6 +27912,14 @@ public class UserHrAccountService {
         }
         break;
 
+      case COMPANY_ID:
+        if (value == null) {
+          unsetCompanyId();
+        } else {
+          setCompanyId((java.lang.Integer)value);
+        }
+        break;
+
       }
     }
 
@@ -27278,6 +27939,9 @@ public class UserHrAccountService {
 
       case USER_EMPLOYEE_ID:
         return getUserEmployeeId();
+
+      case COMPANY_ID:
+        return getCompanyId();
 
       }
       throw new java.lang.IllegalStateException();
@@ -27300,6 +27964,8 @@ public class UserHrAccountService {
         return isSetCustomField();
       case USER_EMPLOYEE_ID:
         return isSetUserEmployeeId();
+      case COMPANY_ID:
+        return isSetCompanyId();
       }
       throw new java.lang.IllegalStateException();
     }
@@ -27364,6 +28030,15 @@ public class UserHrAccountService {
           return false;
       }
 
+      boolean this_present_companyId = true;
+      boolean that_present_companyId = true;
+      if (this_present_companyId || that_present_companyId) {
+        if (!(this_present_companyId && that_present_companyId))
+          return false;
+        if (this.companyId != that.companyId)
+          return false;
+      }
+
       return true;
     }
 
@@ -27388,6 +28063,8 @@ public class UserHrAccountService {
         hashCode = hashCode * 8191 + customField.hashCode();
 
       hashCode = hashCode * 8191 + userEmployeeId;
+
+      hashCode = hashCode * 8191 + companyId;
 
       return hashCode;
     }
@@ -27450,6 +28127,16 @@ public class UserHrAccountService {
           return lastComparison;
         }
       }
+      lastComparison = java.lang.Boolean.valueOf(isSetCompanyId()).compareTo(other.isSetCompanyId());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetCompanyId()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.companyId, other.companyId);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
       return 0;
     }
 
@@ -27504,6 +28191,10 @@ public class UserHrAccountService {
       if (!first) sb.append(", ");
       sb.append("userEmployeeId:");
       sb.append(this.userEmployeeId);
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("companyId:");
+      sb.append(this.companyId);
       first = false;
       sb.append(")");
       return sb.toString();
@@ -27590,6 +28281,14 @@ public class UserHrAccountService {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
+            case 6: // COMPANY_ID
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.companyId = iprot.readI32();
+                struct.setCompanyIdIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -27628,6 +28327,9 @@ public class UserHrAccountService {
         oprot.writeFieldBegin(USER_EMPLOYEE_ID_FIELD_DESC);
         oprot.writeI32(struct.userEmployeeId);
         oprot.writeFieldEnd();
+        oprot.writeFieldBegin(COMPANY_ID_FIELD_DESC);
+        oprot.writeI32(struct.companyId);
+        oprot.writeFieldEnd();
         oprot.writeFieldStop();
         oprot.writeStructEnd();
       }
@@ -27661,7 +28363,10 @@ public class UserHrAccountService {
         if (struct.isSetUserEmployeeId()) {
           optionals.set(4);
         }
-        oprot.writeBitSet(optionals, 5);
+        if (struct.isSetCompanyId()) {
+          optionals.set(5);
+        }
+        oprot.writeBitSet(optionals, 6);
         if (struct.isSetCname()) {
           oprot.writeString(struct.cname);
         }
@@ -27677,12 +28382,15 @@ public class UserHrAccountService {
         if (struct.isSetUserEmployeeId()) {
           oprot.writeI32(struct.userEmployeeId);
         }
+        if (struct.isSetCompanyId()) {
+          oprot.writeI32(struct.companyId);
+        }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, updateUserEmployee_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet incoming = iprot.readBitSet(5);
+        java.util.BitSet incoming = iprot.readBitSet(6);
         if (incoming.get(0)) {
           struct.cname = iprot.readString();
           struct.setCnameIsSet(true);
@@ -27702,6 +28410,10 @@ public class UserHrAccountService {
         if (incoming.get(4)) {
           struct.userEmployeeId = iprot.readI32();
           struct.setUserEmployeeIdIsSet(true);
+        }
+        if (incoming.get(5)) {
+          struct.companyId = iprot.readI32();
+          struct.setCompanyIdIsSet(true);
         }
       }
     }

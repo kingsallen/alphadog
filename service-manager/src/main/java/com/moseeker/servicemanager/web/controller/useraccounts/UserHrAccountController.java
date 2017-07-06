@@ -524,10 +524,11 @@ public class UserHrAccountController {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             List<Integer> ids = (ArrayList<Integer>) params.get("ids");
+            int companyId = params.getInt("companyId") != null ? params.getInt("companyId") : 0;
             if (ids == null || ids.isEmpty()) {
                 return ResponseLogNotification.fail(request, "Ids不能为空");
             } else {
-                boolean result = userHrAccountService.unbindEmployee(ids);
+                boolean result = userHrAccountService.unbindEmployee(ids, companyId);
                 return ResponseLogNotification.success(request, ResponseUtils.success(new HashMap<String, Object>() {{
                     put("result", result);
                 }}));
@@ -546,10 +547,11 @@ public class UserHrAccountController {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             List<Integer> ids = (ArrayList<Integer>) params.get("ids");
+            int companyId = params.getInt("companyId") != null ? params.getInt("companyId") : 0;
             if (ids == null || ids.isEmpty()) {
                 return ResponseLogNotification.fail(request, "Ids不能为空");
             } else {
-                boolean result = userHrAccountService.delEmployee(ids);
+                boolean result = userHrAccountService.delEmployee(ids, companyId);
                 return ResponseLogNotification.success(request, ResponseUtils.success(new HashMap<String, Object>() {{
                     put("result", result);
                 }}));
@@ -569,10 +571,11 @@ public class UserHrAccountController {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             int employeeId = params.getInt("employeeId");
+            int companyId = params.getInt("companyId") != null ? params.getInt("companyId") : 0;
             if (employeeId == 0) {
                 return ResponseLogNotification.fail(request, "员工Id不能为空");
             } else {
-                List<Reward> result = userHrAccountService.getEmployeeRewards(employeeId);
+                List<Reward> result = userHrAccountService.getEmployeeRewards(employeeId, companyId);
                 return ResponseLogNotification.success(request, ResponseUtils.success(BeanUtils.convertStructToJSON(result)));
             }
         } catch (BIZException e) {
@@ -591,10 +594,11 @@ public class UserHrAccountController {
             int employeeId = params.getInt("employeeId");
             int points = params.getInt("points");
             String reason = params.getString("reason");
+            int companyId = params.getInt("companyId") != null ? params.getInt("companyId") : 0;
             if (employeeId == 0) {
                 return ResponseLogNotification.fail(request, "员工Id不能为空");
             } else {
-                int result = userHrAccountService.addEmployeeReward(employeeId, points, reason);
+                int result = userHrAccountService.addEmployeeReward(employeeId, points, reason, companyId);
                 return ResponseLogNotification.success(request, ResponseUtils.success(new HashMap<String, Integer>() {{
                     put("totalPoint", result);
                 }}));
@@ -648,10 +652,10 @@ public class UserHrAccountController {
             int companyId = params.getInt("companyId") != null ? params.getInt("companyId") : 0;
             int filter = params.getInt("filter") != null ? params.getInt("filter") : 0;
             String order = params.getString("order") != null ? params.getString("order") : "";
-            int by = params.getInt("by") != null ? params.getInt("by") : 0;
+            int asc = params.getInt("asc") != null ? params.getInt("asc") : 0;
             int pageNumber = params.getInt("pageNumber") != null ? params.getInt("pageNumber") : 0;
             int pageSize = params.getInt("pageSize") != null ? params.getInt("pageSize") : 0;
-            UserEmployeeVOPageVO userEmployeeVOPageVO = userHrAccountService.employeeList(keyWord, companyId, filter, order, by, pageNumber, pageSize);
+            UserEmployeeVOPageVO userEmployeeVOPageVO = userHrAccountService.employeeList(keyWord, companyId, filter, order, asc, pageNumber, pageSize);
             return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(userEmployeeVOPageVO)));
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
@@ -674,10 +678,11 @@ public class UserHrAccountController {
     public String employeeExport(HttpServletRequest request, HttpServletResponse response) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int companyId = params.getInt("companyId") != null ? params.getInt("companyId") : 0;
             // 员工ID列表
             if (!StringUtils.isEmptyList((List<Integer>) params.get("userEmployees"))) {
                 List<Integer> userEmployees = (List<Integer>) params.get("userEmployees");
-                List<UserEmployeeVO> userEmployeeVOS = userHrAccountService.employeeExport(userEmployees);
+                List<UserEmployeeVO> userEmployeeVOS = userHrAccountService.employeeExport(userEmployees, companyId);
                 return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(userEmployeeVOS)));
             } else {
                 return ResponseLogNotification.fail(request, ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
@@ -704,7 +709,8 @@ public class UserHrAccountController {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             int userEmployeeId = params.getInt("userEmployeeId") != null ? params.getInt("userEmployeeId") : 0;
-            UserEmployeeDetailVO userEmployeeDetailVO = userHrAccountService.userEmployeeDetail(userEmployeeId);
+            int companyId = params.getInt("companyId") != null ? params.getInt("companyId") : 0;
+            UserEmployeeDetailVO userEmployeeDetailVO = userHrAccountService.userEmployeeDetail(userEmployeeId, companyId);
             return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(userEmployeeDetailVO)));
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
@@ -732,7 +738,8 @@ public class UserHrAccountController {
             String mobile = params.getString("mobile") != null ? params.getString("mobile") : "";
             String email = params.getString("email") != null ? params.getString("email") : "";
             String customField = params.getString("customField") != null ? params.getString("customField") : "";
-            Response res = userHrAccountService.updateUserEmployee(cname, mobile, email, customField, userEmployeeId);
+            int companyId = params.getInt("companyId") != null ? params.getInt("companyId") : 0;
+            Response res = userHrAccountService.updateUserEmployee(cname, mobile, email, customField, userEmployeeId, companyId);
             return ResponseLogNotification.success(request, res);
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
