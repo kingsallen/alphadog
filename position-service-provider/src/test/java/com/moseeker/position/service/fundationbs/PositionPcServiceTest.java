@@ -34,15 +34,6 @@ public class PositionPcServiceTest {
         Response res=service.getRecommendPositionPC(page,pageSize);
         System.out.println(res);
     }
-    @Test
-    public void getTeamNumTest(){
-    	List<Integer> list=new ArrayList<Integer>();
-    	list.add(39978);
-    	list.add(71176);
-    	List<Map<String,Object>> result=service.getTeamNum(list);
-    	System.out.println(result);
-    	
-    }
   @Test
   public void getPositionNumTest(){
 	  List<Integer> list=new ArrayList<Integer>();

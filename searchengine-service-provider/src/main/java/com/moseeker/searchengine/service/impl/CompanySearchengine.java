@@ -3,6 +3,7 @@ package com.moseeker.searchengine.service.impl;
 import java.net.InetAddress;
 import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
+import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
@@ -34,17 +35,13 @@ public class CompanySearchengine {
                  this.handleCitys( citys,query);
                  this.handleIndustry(industry, query);
                  this.handleScale(scale, query);
-                 logger.info(client.prepareSearch("companys").setTypes("fulltext")
+                 SearchRequestBuilder responseBuilder=client.prepareSearch("companys").setTypes("fulltext")
                          .setQuery(query)
                          .addSort("_score", SortOrder.DESC)
                          .setFrom(page)
-                         .setSize(pageSize).toString()+"==================================================");
+                         .setSize(pageSize);
  
-                 SearchResponse response = client.prepareSearch("companys").setTypes("fulltext")
-                             .setQuery(query)
-                             .addSort("_score", SortOrder.DESC)
-                             .setFrom(page)
-                             .setSize(pageSize).execute().actionGet();
+                 SearchResponse response = responseBuilder.execute().actionGet();
                  logger.info(response.toString()+"========================================================");
                  SearchHits hit=response.getHits();
                  return hit;

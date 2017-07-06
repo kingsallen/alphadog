@@ -179,32 +179,7 @@ public class PositionPcService {
 		}
 		return result;
 	}
-	/*
- 	* 获取团队
- 	*/
-	public List<HrTeamDO> getTeamList(List<Integer> list){
-		if(list==null||list.size()==0){
-			return null;
-		}
-		Condition condition=new Condition("id",list.toArray(),ValueOp.IN);
-		Query query=new Query.QueryBuilder().where(condition).and("disable",0).and("is_show",1).buildQuery();
-		List<HrTeamDO> result=hrTeamDao.getDatas(query);
-		return result;
-	}
-	/*
-	 * 获取团队数量，通过公司的List<id>
-	 */
-	public List<Map<String,Object>> getTeamNum(List<Integer> list){
-		if(list==null||list.size()==0){
-			return null;
-		}
-		Query query=new Query.QueryBuilder().select(new Select("id", SelectOp.COUNT)).select("company_id")
-				.where(new Condition("company_id",list.toArray(),ValueOp.IN))
-				.and("disale",0).and("is_show",1)
-				.groupBy("company_id").buildQuery();
-		List<Map<String,Object>> result=hrTeamDao.getMaps(query);
-		return result;
-	}
+	
 	/*
 	   获取团队列表
 	 */
@@ -263,7 +238,17 @@ public class PositionPcService {
 		 }
 		 return result;
 	 }
-
+	 private List<Integer> getResIdListByTeam(List<HrTeamDO> list){
+		 if(list==null||list.size()==0){
+				return null;
+			}
+		 List<Integer> result=new ArrayList<Integer>();
+		 for(int i=0;i<list.size();i++){
+			 HrTeamDO teamDO=list.get(i);
+			 result.add(teamDO.getResId());
+		 }
+		 return result;
+	 }
 	 public List<Map<String,Object>> HandleCmsResource(List<Integer> ids,int type) throws TException{
 		 if(ids==null||ids.size()==0){
 			return null;
@@ -619,11 +604,15 @@ public class PositionPcService {
 		 companyList=this.filterCompanyList(companyList);
 		 List<Map<String,Integer>> publisherAndCompanyId=getPublisherCompanyId(companyAccountList);
 		 List<Integer> teamIds=this.getTeamIdList(positionList);
-		 List<HrTeamDO> teamList=this.getTeamList(teamIds);
+		 List<HrTeamDO> teamList=hrTeamDao.getTeamList(teamIds);
 		 Map<String,List<String>> positionCitys=this.handlePositionCity(positionIds);
 		 list=this.handleCompanyAndPositionData(positionList,companyList,teamList,publisherAndCompanyId,positionCitys);
 		 List<Map<String,Object>> jdpictureList=this.handlePositionJdPic(teamList,compantIds,type);
-		
+		 this.handleJDAndPosition(list, jdpictureList);
+	 	 return list;
+	 }
+	 //处理jd页和position的信息
+	 private void handleJDAndPosition( List<Map<String,Object>> list, List<Map<String,Object>> jdpictureList){
 		 if(!StringUtils.isEmptyList(jdpictureList)){
 			 for(Map<String,Object> map:jdpictureList){
 				 	Integer configId=(Integer)map.get("configId");
@@ -641,7 +630,6 @@ public class PositionPcService {
 			 }
 		 
 		 }
-	 	return list;
 	 }
 	 
 	//====================================================== 
@@ -734,7 +722,7 @@ public class PositionPcService {
 			 return  null;
 		 }
 		 Map<String,List<Integer>> companyPulisher=getCompanyAccountListByCompanyIds(companyIds);
-		 List<Map<String,Object>> mapTeamNum=getTeamNum(companyIds);
+		 List<Map<String,Object>> mapTeamNum=hrTeamDao.getTeamNum(companyIds);
 		 companyList=filterCompanyList(companyList);
 		 if(StringUtils.isEmptyList(companyList)){
 			 return  null;

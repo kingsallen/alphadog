@@ -10,6 +10,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
 import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
@@ -215,28 +216,31 @@ public class SearchengineService {
             if (order_by_priority) {
 
                 if (haskey) {
-                	
-                    response = client.prepareSearch("index").setTypes("fulltext")
+                	SearchRequestBuilder responseBuilder=client.prepareSearch("index").setTypes("fulltext")
                             .setQuery(query)
                             .addSort("priority", SortOrder.ASC)
                             .addSort("_score", SortOrder.DESC)
                             .setFrom(page_from)
-                            .setSize(page_size).execute().actionGet();
+                            .setSize(page_size);
+                    response = responseBuilder.execute().actionGet();
+         
                 } else {
-                    response = client.prepareSearch("index").setTypes("fulltext")
+                	SearchRequestBuilder responseBuilder=client.prepareSearch("index").setTypes("fulltext")
                             .setQuery(query)
                             .addSort("priority", SortOrder.ASC)
                             .addSort("update_time", SortOrder.DESC)
                             .setFrom(page_from)
-                            .setSize(page_size).execute().actionGet();
+                            .setSize(page_size);
+                    response = responseBuilder.execute().actionGet();
                 }
 
             } else {
-                response = client.prepareSearch("index").setTypes("fulltext")
+            	SearchRequestBuilder responseBuilder=client.prepareSearch("index").setTypes("fulltext")
                         .setQuery(query)
                         .addSort("_score", SortOrder.DESC)
                         .setFrom(page_from)
-                        .setSize(page_size).execute().actionGet();
+                        .setSize(page_size);
+                response = responseBuilder.execute().actionGet();
             }
 
             for (SearchHit hit : response.getHits()) {

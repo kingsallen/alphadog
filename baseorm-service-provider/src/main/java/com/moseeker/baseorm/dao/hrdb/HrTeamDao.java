@@ -6,6 +6,7 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrTeamRecord;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.Select;
 import com.moseeker.common.util.query.SelectOp;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrTeamDO;
@@ -66,4 +67,30 @@ public class HrTeamDao extends JooqCrudImpl<HrTeamDO, HrTeamRecord> {
         return hrTeamDOList;
 
     }
+    /*
+ 	* 获取团队
+ 	*/
+	public List<HrTeamDO> getTeamList(List<Integer> list){
+		if(list==null||list.size()==0){
+			return null;
+		}
+		Condition condition=new Condition("id",list.toArray(),ValueOp.IN);
+		Query query=new Query.QueryBuilder().where(condition).and("disable",0).and("is_show",1).buildQuery();
+		List<HrTeamDO> result=this.getDatas(query);
+		return result;
+	}
+	/*
+	 * 获取团队数量，通过公司的List<id>
+	 */
+	public List<Map<String,Object>> getTeamNum(List<Integer> list){
+		if(list==null||list.size()==0){
+			return null;
+		}
+		Query query=new Query.QueryBuilder().select(new Select("id", SelectOp.COUNT)).select("company_id")
+				.where(new Condition("company_id",list.toArray(),ValueOp.IN))
+				.and("disale",0).and("is_show",1)
+				.groupBy("company_id").buildQuery();
+		List<Map<String,Object>> result=this.getMaps(query);
+		return result;
+	}
 }
