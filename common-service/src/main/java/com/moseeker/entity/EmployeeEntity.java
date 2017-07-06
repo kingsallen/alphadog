@@ -2,6 +2,8 @@ package com.moseeker.entity;
 
 import com.moseeker.baseorm.dao.historydb.HistoryUserEmployeeDao;
 import com.moseeker.baseorm.dao.hrdb.HrGroupCompanyRelDao;
+import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.baseorm.dao.userdb.UserEmployeePointsRecordDao;
@@ -12,15 +14,17 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrGroupCompanyRelDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
-import java.util.ArrayList;
-import java.util.Arrays;
+import com.moseeker.thrift.gen.employee.struct.Reward;
+import java.util.*;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -40,6 +44,15 @@ public class EmployeeEntity {
 
     @Autowired
     private UserEmployeePointsRecordDao ueprDao;
+
+    @Autowired
+    private UserEmployeePointsRecordDao employeePointsRecordDao;
+
+    @Autowired
+    private JobApplicationDao applicationDao;
+
+    @Autowired
+    private JobPositionDao positionDao;
 
 
     private static final Logger logger = LoggerFactory.getLogger(EmployeeEntity.class);
@@ -106,6 +119,42 @@ public class EmployeeEntity {
         return 0;
     }
 
+    public List<Reward> getEmployeePointsRecords(int employeeId) {
+        // 用户积分记录：
+        List<Reward> rewards = new ArrayList<>();
+        List<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO> points = employeePointsRecordDao.getDatas(new Query.QueryBuilder().where("employee_id", employeeId).buildQuery());
+        if (!StringUtils.isEmptyList(points)) {
+            List<Double> aids = points.stream().map(m -> m.getApplicationId()).collect(Collectors.toList());
+            Query.QueryBuilder query = new Query.QueryBuilder();
+            query.where(new Condition("id", aids, ValueOp.IN));
+            List<JobApplicationDO> applications = applicationDao.getDatas(query.buildQuery());
+            final Map<Integer, Integer> appMap = new HashMap<>();
+            final Map<Integer, String> positionMap = new HashMap<>();
+            // 转成map -> k: applicationId, v: positionId
+            if (!StringUtils.isEmptyList(applications)) {
+                appMap.putAll(applications.stream().collect(Collectors.toMap(JobApplicationDO::getId, JobApplicationDO::getPositionId)));
+                query.clear();
+                query.where(new Condition("id", appMap.values().toArray(), ValueOp.IN));
+                List<JobPositionDO> positions = positionDao.getPositions(query.buildQuery());
+                // 转成map -> k: positionId, v: positionTitle
+                if (!StringUtils.isEmptyList(points)) {
+                    positionMap.putAll(positions.stream().collect(Collectors.toMap(JobPositionDO::getId, JobPositionDO::getTitle)));
+                }
+            }
+
+            points.stream().filter(p -> p.getAward() != 0).forEach(point -> {
+                Reward reward = new Reward();
+                reward.setReason(point.getReason());
+                reward.setPoints(point.getAward());
+                reward.setUpdateTime(point.getUpdateTime());
+                reward.setTitle(positionMap.getOrDefault(appMap.get(point.getApplicationId()), ""));
+                rewards.add(reward);
+            });
+        }
+        return rewards;
+    }
+
+
     /**
      * 员工取消认证（支持批量）
      * @param employeeIds
@@ -131,7 +180,7 @@ public class EmployeeEntity {
      * 2.user_employee中做物理删除
      */
     @Transactional
-    public void removeEmployee(List<Integer> employeeIds) {
+    public boolean removeEmployee(List<Integer> employeeIds) {
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.where(new Condition("id", employeeIds, ValueOp.IN));
         List<UserEmployeeDO> userEmployeeDOList = employeeDao.getDatas(query.buildQuery());
@@ -140,8 +189,10 @@ public class EmployeeEntity {
             // 受影响行数大于零，说明删除成功， 将数据copy到history_user_employee中
             if(Arrays.stream(rows).sum() > 0) {
                 historyUserEmployeeDao.addAllData(userEmployeeDOList);
+                return true;
             }
         }
+        return false;
     }
 
     /**

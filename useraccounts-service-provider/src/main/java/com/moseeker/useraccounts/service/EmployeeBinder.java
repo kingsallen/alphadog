@@ -52,15 +52,15 @@ public abstract class EmployeeBinder {
     @Autowired
     protected HrEmployeeCertConfDao hrEmployeeCertConfDao;
 
-    protected UserEmployeeDO userEmployee;
+    protected ThreadLocal<UserEmployeeDO> userEmployeeDOThreadLocal = new ThreadLocal<>();
 
     public Result bind(BindingParams bindingParams) {
         log.info("bind param: BindingParams={}", bindingParams);
         Result response = new Result();
         Query.QueryBuilder query = new Query.QueryBuilder();
         try {
-            userEmployee = employeeEntity.getCompanyEmployee(bindingParams.getUserId(), bindingParams.getCompanyId());
-            if (userEmployee != null && userEmployee.getId() > 0 && userEmployee.getActivation() == 0) {
+            userEmployeeDOThreadLocal.set(employeeEntity.getCompanyEmployee(bindingParams.getUserId(), bindingParams.getCompanyId()));
+            if (userEmployeeDOThreadLocal.get() != null && userEmployeeDOThreadLocal.get().getId() > 0 && userEmployeeDOThreadLocal.get().getActivation() == 0) {
                 throw new RuntimeException("该员工已绑定");
             }
             query.where("company_id", String.valueOf(bindingParams.getCompanyId())).and("disable", String.valueOf(0));
@@ -79,8 +79,8 @@ public abstract class EmployeeBinder {
     }
 
     protected int createEmployee(BindingParams bindingParams) {
-        if (userEmployee == null || userEmployee.getId() == 0) {
-            userEmployee = new UserEmployeeDO();
+        if (userEmployeeDOThreadLocal.get() == null || userEmployeeDOThreadLocal.get().getId() == 0) {
+            UserEmployeeDO userEmployee = new UserEmployeeDO();
             userEmployee.setCompanyId(bindingParams.getCompanyId());
             userEmployee.setEmployeeid(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getMobile(), ""));
             userEmployee.setSysuserId(bindingParams.getUserId());
@@ -97,9 +97,10 @@ public abstract class EmployeeBinder {
                 throw new RuntimeException("认证失败，请检查员工信息");
             }
             userEmployee.setId(primaryKey);
+            userEmployeeDOThreadLocal.set(userEmployee);
             return primaryKey;
         }
-        return userEmployee.getId();
+        return userEmployeeDOThreadLocal.get().getId();
     }
 
 
@@ -138,6 +139,7 @@ public abstract class EmployeeBinder {
                     e.setMobile(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getMobile(), e.getMobile()));
                     e.setCustomField(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getCustomField(), e.getCustomField()));
                 } else {
+                    e.setEmailIsvalid((byte)0);
                     e.setActivation((byte)1);
                 }
             });

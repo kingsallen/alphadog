@@ -35,7 +35,7 @@ import org.springframework.stereotype.Service;
 /**
  * Created by lucky8987 on 17/6/29.
  */
-@Service("auth_method_emial")
+@Service("auth_method_email")
 public class EmployeeBindByEmail extends EmployeeBinder{
 
     private static final Logger log = LoggerFactory.getLogger(EmployeeBindByEmail.class);
@@ -70,7 +70,7 @@ public class EmployeeBindByEmail extends EmployeeBinder{
             throw new RuntimeException("该邮箱已被认证\n请使用其他邮箱");
         }
 
-        if (StringUtils.isNotNullOrEmpty(client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, userEmployee.getActivationCode()))) {
+        if (StringUtils.isNotNullOrEmpty(client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, userEmployeeDOThreadLocal.get().getActivationCode()))) {
             throw new RuntimeException("已发送过邮件到指定邮箱，24h内请勿重复该操作");
         }
     }
@@ -87,10 +87,10 @@ public class EmployeeBindByEmail extends EmployeeBinder{
         HrWxWechatDO hrwechatResult = hrWxWechatDao.getData(query.buildQuery());
         if (companyDO != null && companyDO.getId() != 0 && hrwechatResult != null && hrwechatResult.getId() != 0) {
             // 激活码(MD5)： employee-email-timestamp
-            String activationCode = MD5Util.encryptSHA(userEmployee.getId()+"-"+bindingParams.getEmail()+"-"+System.currentTimeMillis());
+            String activationCode = MD5Util.encryptSHA(userEmployeeDOThreadLocal.get().getId()+"-"+bindingParams.getEmail()+"-"+System.currentTimeMillis());
             Map<String, String> mesBody = new HashMap<>();
             mesBody.put("#company_log#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(companyDO.getLogo(), ""));
-            mesBody.put("#employee_name#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(userEmployee.getCname(), userAccountEntity.genUsername(userEmployee.getSysuserId())));
+            mesBody.put("#employee_name#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(userEmployeeDOThreadLocal.get().getCname(), userAccountEntity.genUsername(userEmployeeDOThreadLocal.get().getSysuserId())));
             mesBody.put("#company_abbr#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(companyDO.getAbbreviation(), ""));
             mesBody.put("#official_account_name#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(hrwechatResult.getName(), ""));
             mesBody.put("#official_account_qrcode#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(hrwechatResult.getQrcode(), ""));
@@ -108,10 +108,10 @@ public class EmployeeBindByEmail extends EmployeeBinder{
                 String redStr = client.set(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, activationCode, JSONObject.toJSONString(bindingParams));
                 log.info("set redis result: ", redStr);
                 // 修改用户邮箱
-                userEmployee.setEmail(bindingParams.getEmail());
-                userEmployee.setUpdateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-                userEmployee.setActivationCode(activationCode);
-                employeeDao.updateData(userEmployee);
+                userEmployeeDOThreadLocal.get().setEmail(bindingParams.getEmail());
+                userEmployeeDOThreadLocal.get().setUpdateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+                userEmployeeDOThreadLocal.get().setActivationCode(activationCode);
+                employeeDao.updateData(userEmployeeDOThreadLocal.get());
                 response.setSuccess(true);
                 response.setMessage("发送激活邮件成功");
             } else {

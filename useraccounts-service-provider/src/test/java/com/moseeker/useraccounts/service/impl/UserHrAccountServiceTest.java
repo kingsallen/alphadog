@@ -90,9 +90,24 @@ public class UserHrAccountServiceTest {
     @Test
     public void employeeList() {
         try {
-            List<UserEmployeeVO> list = userHrAccountService.employeeList("", 3, 1, "create_time", 1, 0, 0);
+            userHrAccountService.employeeList("", 3, 1, "create_time", 1, 0, 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+//            List<UserEmployeeVO> list = userHrAccountService.employeeList("", 3, 1, "create_time", 1, 0, 0);
 
-            System.out.println(list);
+
+    /**
+     * 检查员工重复(批量导入之前验证)
+     */
+    @Test
+    public void checkBatchInsert() {
+        try {
+            List<UserEmployeeDO> list = new ArrayList<>();
+            userHrAccountService.repetitionFilter(list, 3);
+
+//            System.out.println(list);
         } catch (Exception e) {
             e.printStackTrace();
         }

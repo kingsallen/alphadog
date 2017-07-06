@@ -1,8 +1,9 @@
 # file: useraccounts.struct
 
 namespace java com.moseeker.thrift.gen.useraccounts.struct
+include "../../dao/struct/userdb_struct.thrift"
 
-typedef string Timestamp;
+typedef string Timestamp
 
 
 struct Userloginreq { 
@@ -324,8 +325,8 @@ struct HrNpsDO {
 
 	1: optional i32 id,
 	2: optional i32 hr_account_id,	//hr帐号
-	3: optional byte intention,	//推荐同行的意愿【0-10】
-	4: optional byte accept_contact,	// 是否愿意接听电话 0-未确认，1-愿意，2-不愿意
+	3: optional i8 intention,	//推荐同行的意愿【0-10】
+	4: optional i8 accept_contact,	// 是否愿意接听电话 0-未确认，1-愿意，2-不愿意
 	5: optional string create_time,	//分配账号的时间
 	6: optional string update_time	//更新时间
 
@@ -340,8 +341,8 @@ struct HrNpsUpdate {
     1: optional i32 user_id,
     2: optional string start_date,
     3: optional string end_date,
-    4: optional byte intention,
-    5: optional byte accept_contact,
+    4: optional i8 intention,
+    5: optional i8 accept_contact,
     6: optional string username,
     7: optional string mobile,
     8: optional string company
@@ -352,10 +353,10 @@ struct HrNpsInfo {
     2: optional string date,
     3: optional i32 hr_account_id,
     4: optional string hr_mobile,
-    5: optional byte hr_account_type,
+    5: optional i8 hr_account_type,
     6: optional string company,
-    7: optional byte intention,
-    8: optional byte accept_contact,
+    7: optional i8 intention,
+    8: optional i8 accept_contact,
     9: optional string recommend_user,
     10: optional string recommend_mobile,
     11: optional string recommend_company,
@@ -405,8 +406,19 @@ struct UserEmployeeDetailVO{
     7: optional i32 activation, // 认证状态
     8: optional string companyName, // 公司名称
     9: optional string headImg, // 头像
+    10: optional i32 companyId, // 头像
+}
+// 员工导入统计数据
+struct ImportErrorUserEmployee{
+    1: optional i32 row, // 第几条数据
+    2: optional string message, // 错误原因
+    3: optional userdb_struct.UserEmployeeDO userEmployeeDO // 员工实体
 }
 
-struct EmployeeOptionVO{
-
+struct ImportUserEmployeeStatistic{
+    1: optional i32 repetitionCounts;
+    2: optional i32 errorCounts;
+    3: optional string message, // 错误原因
+    4: optional list<ImportErrorUserEmployee> userEmployeeDO, // 员工实体
+    5: optional bool flag // 是否通过
 }

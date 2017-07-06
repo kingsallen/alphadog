@@ -57,6 +57,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CompanyService {
@@ -372,7 +373,7 @@ public class CompanyService {
     }
 
     /**
-     * 添加公司认证模板数据
+     * 添加公司员工认证模板数据
      *
      * @param comanyId    公司编号
      * @param hraccountId HR ID
@@ -385,35 +386,35 @@ public class CompanyService {
      */
     public Response addImporterMonitor(Integer comanyId, Integer hraccountId, Integer type, String file, Integer status, String message, String fileName) throws BIZException {
         Response response = new Response();
-        try {
-            ValidateUtil vu = new ValidateUtil();
-            vu.addRequiredValidate("公司编号", comanyId, null, null);
-            vu.addRequiredValidate("HR账号", hraccountId, null, null);
-            vu.addIntTypeValidate("导入的数据类型", type, null, null, 0, 10);
-            vu.addIntTypeValidate("导入状态", status, null, null, 0, 10);
-            vu.addStringLengthValidate("导入文件的绝对路径", file, null, null, 0, 257);
-            vu.addStringLengthValidate("操作信息", message, null, null, 0, 513);
-            vu.addStringLengthValidate("导入的文件", fileName, null, null, 0, 257);
+        ValidateUtil vu = new ValidateUtil();
+        vu.addIntTypeValidate("HR账号", hraccountId, "不能为空", null, 1, 1000000);
+        vu.addIntTypeValidate("公司编号", comanyId, "不能为空", null, 1, 1000000);
+        vu.addIntTypeValidate("导入的数据类型", type, "不能为空", null, 0, 100);
+        vu.addIntTypeValidate("导入状态", status, "不能为空", null, 0, 100);
+        vu.addRequiredStringValidate("导入文件的绝对路径", file, "不能为空", null);
+        vu.addRequiredStringValidate("操作信息", message, "不能为空", null);
+        vu.addRequiredStringValidate("导入的文件", fileName, "不能为空", null);
 
-            String errorMessage = vu.validate();
-            if (StringUtils.isNullOrEmpty(errorMessage)) {
-                HrImporterMonitorDO hrImporterMonitorDO = new HrImporterMonitorDO();
-                hrImporterMonitorDO.setCompanyId(comanyId);
-                hrImporterMonitorDO.setHraccountId(hraccountId);
-                hrImporterMonitorDO.setType(type);
-                hrImporterMonitorDO.setFile(file);
-                hrImporterMonitorDO.setMessage(message);
-                hrImporterMonitorDO.setStatus(status);
-                hrImporterMonitorDO.setName(fileName);
-                HrImporterMonitorDO temp = hrImporterMonitorDao.addData(hrImporterMonitorDO);
-                if (StringUtils.isEmptyObject(temp)) {
-                    throw ExceptionFactory.buildException(ExceptionCategory.ADD_IMPORTERMONITOR_FAILED);
-                } else {
-                    response = ResultMessage.SUCCESS.toResponse();
-                }
+        String errorMessage = vu.validate();
+        if (!StringUtils.isNullOrEmpty(errorMessage)) {
+            throw ExceptionFactory.buildException(ExceptionCategory.ADD_IMPORTERMONITOR_PARAMETER.getCode(), ExceptionCategory.ADD_IMPORTERMONITOR_PARAMETER.getMsg().replace("{MESSAGE}", errorMessage));
+        }
+
+        HrImporterMonitorDO hrImporterMonitorDO = new HrImporterMonitorDO();
+        hrImporterMonitorDO.setCompanyId(comanyId);
+        hrImporterMonitorDO.setHraccountId(hraccountId);
+        hrImporterMonitorDO.setType(type);
+        hrImporterMonitorDO.setFile(file);
+        hrImporterMonitorDO.setMessage(message);
+        hrImporterMonitorDO.setStatus(status);
+        hrImporterMonitorDO.setName(fileName);
+        hrImporterMonitorDO.setSys(2);
+        HrImporterMonitorDO temp = hrImporterMonitorDao.addData(hrImporterMonitorDO);
+        try {
+            if (StringUtils.isEmptyObject(temp)) {
+                throw ExceptionFactory.buildException(ExceptionCategory.ADD_IMPORTERMONITOR_FAILED);
             } else {
-                ExceptionCategory.ADD_IMPORTERMONITOR_PARAMETER.getMsg().replace("{MESSAGE}", errorMessage);
-                throw ExceptionFactory.buildException(ExceptionCategory.ADD_IMPORTERMONITOR_PARAMETER);
+                response = ResultMessage.SUCCESS.toResponse();
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -433,33 +434,25 @@ public class CompanyService {
      */
     public HrImporterMonitorDO getImporterMonitor(Integer comanyId, Integer hraccountId, Integer type) throws BIZException {
         HrImporterMonitorDO hrImporterMonitorDO = new HrImporterMonitorDO();
-        try {
-            ValidateUtil vu = new ValidateUtil();
-            vu.addRequiredValidate("公司编号", comanyId, null, null);
-            vu.addIntTypeValidate("导入类型", type, null, null, 0, 10);
-            String errorMessage = vu.validate();
-            if (StringUtils.isNullOrEmpty(errorMessage)) {
-                Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-                queryBuilder.where(HrImporterMonitor.HR_IMPORTER_MONITOR.COMPANY_ID.getName(), comanyId).and(HrImporterMonitor.HR_IMPORTER_MONITOR.TYPE.getName(), type);
-                if (hraccountId > 0) {
-                    queryBuilder.and(HrImporterMonitor.HR_IMPORTER_MONITOR.HRACCOUNT_ID.getName(), hraccountId);
-                }
-                // 时间的倒序
-                queryBuilder.orderBy(HrImporterMonitor.HR_IMPORTER_MONITOR.HRACCOUNT_ID.getName(), Order.ASC);
-                List<HrImporterMonitorDO> hrImporterMonitorDOS = hrImporterMonitorDao.getDatas(queryBuilder.buildQuery());
 
-                if (StringUtils.isEmptyList(hrImporterMonitorDOS)) {
-                    hrImporterMonitorDO = hrImporterMonitorDOS.get(0);
-                } else {
-                    throw ExceptionFactory.buildException(ExceptionCategory.IMPORTERMONITOR_EMPTY);
-                }
-            } else {
-                ExceptionCategory.ADD_IMPORTERMONITOR_PARAMETER.getMsg().replace("{MESSAGE}", errorMessage);
-                throw ExceptionFactory.buildException(ExceptionCategory.ADD_IMPORTERMONITOR_PARAMETER);
-            }
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw ExceptionFactory.buildException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS);
+        ValidateUtil vu = new ValidateUtil();
+        vu.addIntTypeValidate("公司编号", comanyId, null, null, 1, 1000000);
+        vu.addIntTypeValidate("导入类型", type, null, "不能为空", 0, 10);
+        vu.addIntTypeValidate("HR账号", hraccountId, null, null, 0, 1000000);
+        String errorMessage = vu.validate();
+        if (!StringUtils.isNullOrEmpty(errorMessage)) {
+            throw ExceptionFactory.buildException(ExceptionCategory.ADD_IMPORTERMONITOR_PARAMETER.getCode(), ExceptionCategory.ADD_IMPORTERMONITOR_PARAMETER.getMsg().replace("{MESSAGE}", errorMessage));
+        }
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where(HrImporterMonitor.HR_IMPORTER_MONITOR.COMPANY_ID.getName(), comanyId).and(HrImporterMonitor.HR_IMPORTER_MONITOR.TYPE.getName(), type);
+        queryBuilder.and(HrImporterMonitor.HR_IMPORTER_MONITOR.HRACCOUNT_ID.getName(), hraccountId);
+        // 时间的倒序
+        queryBuilder.orderBy(HrImporterMonitor.HR_IMPORTER_MONITOR.UPDATE_TIME.getName(), Order.DESC);
+        List<HrImporterMonitorDO> hrImporterMonitorDOS = hrImporterMonitorDao.getDatas(queryBuilder.buildQuery());
+        if (!StringUtils.isEmptyList(hrImporterMonitorDOS)) {
+            hrImporterMonitorDO = hrImporterMonitorDOS.get(0);
+        } else {
+            throw ExceptionFactory.buildException(ExceptionCategory.IMPORTERMONITOR_EMPTY);
         }
         return hrImporterMonitorDO;
     }
@@ -492,13 +485,15 @@ public class CompanyService {
             activations.add(3);
             activations.add(4);
             queryBuilder.where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyId)
-                    .and(new Condition(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), activations, ValueOp.IN));
+                    .and(new Condition(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), activations, ValueOp.IN))
+                    .and(new Condition(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), 1, ValueOp.NEQ));
             //如果公司下存在未认证的员工，需要置为删除状态
             List<UserEmployeeDO> list = userEmployeeDao.getDatas(queryBuilder.buildQuery());
-            if (!StringUtils.isEmptyObject(list)) {
+            if (!StringUtils.isEmptyList(list)) {
                 list.forEach(userEmployeeDO -> {
                     userEmployeeDO.setDisable(1);
                 });
+                // 数据太大会造成性能不行，有待提高
                 userEmployeeDao.updateDatas(list);
             }
             response = ResultMessage.SUCCESS.toResponse();
@@ -517,21 +512,14 @@ public class CompanyService {
      * @throws BIZException
      */
     public HrEmployeeCertConfDO getHrEmployeeCertConf(Integer companyId) throws BIZException {
-        HrEmployeeCertConfDO hrEmployeeCertConfDO = new HrEmployeeCertConfDO();
-        try {
-            if (companyId > 0) {
-                Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-                queryBuilder.where(HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF.COMPANY_ID.getName(), companyId);
-                hrEmployeeCertConfDO = hrEmployeeCertConfDao.getData(queryBuilder.buildQuery());
-                if (hrEmployeeCertConfDO.getId() == 0) {
-                    ExceptionFactory.buildException(ExceptionCategory.COMPANY_PROPERTIY_ELLEGAL);
-                }
-            } else {
-                throw ExceptionFactory.buildException(ExceptionCategory.COMPANY_PROPERTIY_ELLEGAL);
-            }
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw ExceptionFactory.buildException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS);
+        if (companyId == 0) {
+            throw ExceptionFactory.buildException(ExceptionCategory.COMPANY_ID_EMPTY);
+        }
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where(HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF.COMPANY_ID.getName(), companyId);
+        HrEmployeeCertConfDO hrEmployeeCertConfDO = hrEmployeeCertConfDao.getData(queryBuilder.buildQuery());
+        if (StringUtils.isEmptyObject(hrEmployeeCertConfDO)) {
+            throw ExceptionFactory.buildException(ExceptionCategory.HREMPLOYEECERTCONF_EMPTY);
         }
         return hrEmployeeCertConfDO;
     }
@@ -546,49 +534,37 @@ public class CompanyService {
      * @param custom      自定义字段内容
      * @param customHint 自定义字段
      * @param questions  问答
-     * @return 操作信息
+     * @return 受影响行数
      */
-    public Response updateHrEmployeeCertConf(Integer id, Integer companyId, Integer authMode, String emailSuffix, String custom, String customHint, String questions) throws BIZException {
-        Response response = new Response();
-        try {
-            Query.QueryBuilder query = new Query.QueryBuilder();
-            query.where("id", id).and("company_id", companyId);
-            HrEmployeeCertConfDO hrEmployeeCertConfDO = hrEmployeeCertConfDao.getData(query.buildQuery());
-            if (hrEmployeeCertConfDO != null && hrEmployeeCertConfDO.getId() > 0) {
-                Integer oldAuthMode = ((int) hrEmployeeCertConfDO.getAuthMode());
-                if ((oldAuthMode == 2 || oldAuthMode == 4) && (authMode != 2 && authMode != 4)) {
-                    query.clear();
-                    query.select("id");
-                    query.where("company_id", companyId).and(new Condition("activation", 0, ValueOp.NEQ)).and(new Condition("custom_field", "", ValueOp.EQ));
-                    List<Integer> employeeIds = userEmployeeDao.getDatas(query.buildQuery(), Integer.class);
-                    employeeEntity.removeEmployee(employeeIds);
-                }
-                hrEmployeeCertConfDO.setAuthMode(authMode);
-                if(StringUtils.isNotNullOrEmpty(emailSuffix)) {
-                    hrEmployeeCertConfDO.setEmailSuffix(emailSuffix);
-                }
-                if(StringUtils.isNotNullOrEmpty(questions)) {
-                    hrEmployeeCertConfDO.setQuestions(questions);
-                }
-                if(StringUtils.isNotNullOrEmpty(custom)) {
-                    hrEmployeeCertConfDO.setCustom(custom);
-                }
-                if(StringUtils.isNotNullOrEmpty(customHint)) {
-                    hrEmployeeCertConfDO.setCustomHint(customHint);
-                }
-                int resultRow = hrEmployeeCertConfDao.updateData(hrEmployeeCertConfDO);
-                if (resultRow > 0){
-                    response.setStatus(0);
-                    response.setMessage("success");
-                } else {
-                    response.setStatus(99999);
-                    response.setMessage("发生异常，请稍候再试!");
-                }
+    @Transactional
+    public int updateHrEmployeeCertConf(Integer id, Integer companyId, Integer authMode, String emailSuffix, String custom, String customHint, String questions) throws BIZException {
+        Query.QueryBuilder query = new Query.QueryBuilder();
+        query.where("id", id).and("company_id", companyId);
+        HrEmployeeCertConfDO hrEmployeeCertConfDO = hrEmployeeCertConfDao.getData(query.buildQuery());
+        if (hrEmployeeCertConfDO != null && hrEmployeeCertConfDO.getId() > 0) {
+            Integer oldAuthMode = ((int) hrEmployeeCertConfDO.getAuthMode());
+            if ((oldAuthMode == 2 || oldAuthMode == 4) && (authMode != 2 && authMode != 4)) {
+                query.clear();
+                query.select("id");
+                query.where("company_id", companyId).and(new Condition("activation", 0, ValueOp.NEQ)).and(new Condition("custom_field", "", ValueOp.EQ));
+                List<Integer> employeeIds = userEmployeeDao.getDatas(query.buildQuery(), Integer.class);
+                employeeEntity.removeEmployee(employeeIds);
             }
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw ExceptionFactory.buildException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS);
+            hrEmployeeCertConfDO.setAuthMode(authMode);
+            if(StringUtils.isNotNullOrEmpty(emailSuffix)) {
+                hrEmployeeCertConfDO.setEmailSuffix(emailSuffix);
+            }
+            if(StringUtils.isNotNullOrEmpty(questions)) {
+                hrEmployeeCertConfDO.setQuestions(questions);
+            }
+            if(StringUtils.isNotNullOrEmpty(custom)) {
+                hrEmployeeCertConfDO.setCustom(custom);
+            }
+            if(StringUtils.isNotNullOrEmpty(customHint)) {
+                hrEmployeeCertConfDO.setCustomHint(customHint);
+            }
+            return hrEmployeeCertConfDao.updateData(hrEmployeeCertConfDO);
         }
-        return response;
+        return 0;
     }
 }

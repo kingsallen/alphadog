@@ -49,6 +49,7 @@ import com.moseeker.thrift.gen.useraccounts.struct.DownloadReport;
 import com.moseeker.thrift.gen.useraccounts.struct.HrNpsResult;
 import com.moseeker.thrift.gen.useraccounts.struct.HrNpsStatistic;
 import com.moseeker.thrift.gen.useraccounts.struct.HrNpsUpdate;
+import com.moseeker.thrift.gen.useraccounts.struct.ImportErrorUserEmployee;
 import com.moseeker.thrift.gen.useraccounts.struct.SearchCondition;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeDetailVO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeNumStatistic;
@@ -862,7 +863,7 @@ public class UserHrAccountService {
     /**
      * 员工列表
      *
-     * @param keyword     关键字搜索
+     * @param keyword    关键字搜索
      * @param companyId  公司ID
      * @param filter     过滤条件，0：全部，1：已认证，2：未认证,默认：0
      * @param order      排序条件
@@ -1029,7 +1030,6 @@ public class UserHrAccountService {
         return userEmployeeVOS;
     }
 
-    // TODO: 2017/7/4  
 
     /**
      * 员工信息导入
@@ -1041,10 +1041,10 @@ public class UserHrAccountService {
         Response response = new Response();
         logger.info("开始导入员工信息");
         try {
-            // 判断是否有重复数据
-            if (repetitionFilter(userEmployeeList, companyId)) {
-
-            }
+//            // 判断是否有重复数据
+//            if (repetitionFilter(userEmployeeList, companyId)) {
+//
+//            }
 
             // 查询公司ID是否设置正确
             Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
@@ -1097,7 +1097,6 @@ public class UserHrAccountService {
         return response;
     }
 
-    // TODO: 2017/7/4
 
     /**
      * 检查员工重复(批量导入之前验证)
@@ -1109,6 +1108,7 @@ public class UserHrAccountService {
     public Response checkBatchInsert(List<UserEmployeeDO> userEmployeeDOS, Integer companyId) throws BIZException {
         Response response = new Response();
         try {
+
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -1123,29 +1123,48 @@ public class UserHrAccountService {
      * @param userEmployeeDOS
      * @param companyId
      */
-    private Boolean repetitionFilter(List<UserEmployeeDO> userEmployeeDOS, Integer companyId) {
-        Boolean flag = false;
+    public void repetitionFilter(List<UserEmployeeDO> userEmployeeDOS, Integer companyId) {
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-        queryBuilder.where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyId).and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), 0);
+        queryBuilder.where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyId)
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), 0);
         // 数据库中取出来的数据
         List<UserEmployeeDO> dbEmployeeDOList = userEmployeeDao.getDatas(queryBuilder.buildQuery());
+        // 重复的对象
+        List<ImportErrorUserEmployee> repetitionObj = new ArrayList<>();
+        // 错误的对象
+        List<UserEmployeeDO> errorObj = new ArrayList<>();
+        int repetitionCounts = 0;
         if (StringUtils.isEmptyList(dbEmployeeDOList)) {
             for (UserEmployeeDO userEmployeeDO : userEmployeeDOS) {
+                ImportErrorUserEmployee importErrorUserEmployee = new ImportErrorUserEmployee();
+                // 判断上传的数据是否有字段长度的错误
+                // 姓名不能为空
+                if (StringUtils.isEmptyObject(userEmployeeDO.getCname())) {
+                    importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
+                    importErrorUserEmployee.setMessage("cname不能为空");
+                    errorObj.add(userEmployeeDO);
+                    continue;
+                }
                 for (UserEmployeeDO dbUserEmployeeDO : dbEmployeeDOList) {
-                    if (!StringUtils.isEmptyObject(userEmployeeDO.getCname())
-                            && !StringUtils.isEmptyObject(userEmployeeDO.getCustomField())
-                            && !StringUtils.isEmptyObject(dbUserEmployeeDO.getCname())
-                            && !StringUtils.isEmptyObject(dbUserEmployeeDO.getCustomField())) {
-                        if (userEmployeeDO.getCname().equals(dbUserEmployeeDO.getCname()) && userEmployeeDO.getCustomField().equals(dbUserEmployeeDO.getCustomField())) {
-                            flag = true;
-                            break;
-                        }
+                    // 非自定义员工,忽略检查
+                    if (StringUtils.isEmptyObject(dbUserEmployeeDO.getCustomField())
+                            || StringUtils.isEmptyObject(dbUserEmployeeDO.getCname())) {
+                        continue;
                     }
-
+                    if (StringUtils.isEmptyObject(userEmployeeDO.getCustomField())) {
+                        continue;
+                    }
+                    // 当提交的数据和数据库中的数据，cname和customField都相等时候，认为是重复数据
+                    if (userEmployeeDO.getCname().equals(dbUserEmployeeDO.getCname())
+                            && userEmployeeDO.getCustomField().equals(dbUserEmployeeDO.getCustomField())) {
+                        repetitionCounts = repetitionCounts + 1;
+                        importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
+                        importErrorUserEmployee.setMessage("cname和customField和数据中的数据一致");
+                        repetitionObj.add(importErrorUserEmployee);
+                    }
                 }
             }
         }
-        return flag;
     }
 
 

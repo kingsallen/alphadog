@@ -6,6 +6,8 @@ include "../../foundataionbs/wordpress/struct/wordpress_foundation_strcut.thrift
 include "../struct/bindtype_struct.thrift"
 include "../../dao/struct/userdb/user_user_struct.thrift"
 include "../../dao/struct/hrdb/hr_third_party_account_struct.thrift"
+include "../../employee/struct/employee_struct.thrift"
+
 
 namespace java com.moseeker.thrift.gen.useraccounts.service
 
@@ -119,6 +121,14 @@ service UserHrAccountService {
 
     i32 updateThirdPartyAccount(1: hr_third_party_account_struct.HrThirdPartyAccountDO account)  throws (1: common_struct.BIZException e);
 
+    bool unbindEmployee(1: list<i32> ids) throws (1: common_struct.BIZException e);
+
+    bool delEmployee(1: list<i32> ids) throws (1: common_struct.BIZException e);
+
+    list<employee_struct.Reward> getEmployeeRewards(1: i32 employeeId) throws (1: common_struct.BIZException e);
+
+    i32 addEmployeeReward(1: i32 employeeId, 2: i32 points, 3: string reason) throws (1: common_struct.BIZException e);
+
      // 通过公司ID和关键字,查询认证员工和未认证员工数量
     useraccounts_struct.UserEmployeeNumStatistic getListNum(1:string keyWord, 2:i32 companyId) throws (1: common_struct.BIZException e);
     // 员工列表
@@ -168,4 +178,6 @@ service UserEmployeeService {
     common_struct.Response delUserEmployee(1: common_struct.CommonQuery query);
 
     common_struct.Response postPutUserEmployeeBatch(1:list<useraccounts_struct.UserEmployeeStruct> userEmployees);
+
+    bool isEmployee(1: i32 userId, 2: i32 companyId) throws (1: common_struct.BIZException e);
 }
