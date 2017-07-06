@@ -154,7 +154,7 @@ public class DictLiepinOccupationDao extends JooqCrudImpl<DictLiepinOccupationDO
 
         if (StringUtils.isNullOrEmpty(occupation)) return fullOccupations;
 
-        String currentField = "other_code";
+        String currentField = DictLiepinOccupation.DICT_LIEPIN_OCCUPATION.OTHER_CODE.getName();
         Object currentValue = occupation;
 
         Query query = null;
@@ -174,7 +174,7 @@ public class DictLiepinOccupationDao extends JooqCrudImpl<DictLiepinOccupationDO
                 if (dictLiepinOccupationDO.getParentId() == 0) {
                     break;
                 }
-                currentField = "code";
+                currentField = DictLiepinOccupation.DICT_LIEPIN_OCCUPATION.CODE.getName();
                 currentValue = dictLiepinOccupationDO.getParentId();
             }
         }

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 public class DictCityMapDao extends JooqCrudImpl<DictCityMapDO, DictCityMapRecord> {
@@ -47,10 +48,12 @@ public class DictCityMapDao extends JooqCrudImpl<DictCityMapDO, DictCityMapRecor
 
         Set<Integer> moseekerCodes = new HashSet<>();
         for (DictCityDO cityDO : dictCitys) {
-            List<Integer> moseekerCityLevels = getMoseekerCityLevel(cityDO);
+            List<DictCityDO> moseekerCityLevels = dictCityDao.getMoseekerCityLevel(cityDO);
             if (moseekerCityLevels != null && moseekerCityLevels.size() > 0) {
-                moseekerCodes.addAll(moseekerCityLevels);
-                orginCodes.add(moseekerCityLevels);
+                for (DictCityDO dictCityDO : moseekerCityLevels) {
+                    moseekerCodes.add(dictCityDO.getCode());
+                }
+                orginCodes.add(moseekerCityLevels.stream().map(city -> city.getCode()).collect(Collectors.toList()));
             }
         }
 
@@ -70,7 +73,7 @@ public class DictCityMapDao extends JooqCrudImpl<DictCityMapDO, DictCityMapRecor
                         otherCity.add(otherCode);
                     }
                 }
-                if(otherCity.size() > 0) {
+                if (otherCity.size() > 0) {
                     otherCodes.add(otherCity);
                 }
             }
@@ -87,72 +90,5 @@ public class DictCityMapDao extends JooqCrudImpl<DictCityMapDO, DictCityMapRecor
         }
 
         return null;
-    }
-
-
-    /**
-     * 获取完整的城市级别
-     * 例:徐家汇 -> 上海，徐家汇
-     *
-     * @param cityDO
-     * @return
-     */
-    public List<Integer> getMoseekerCityLevel(DictCityDO cityDO) {
-        List<Integer> cityLevels = new ArrayList<>();
-        if (cityDO == null) {
-            cityLevels.add(111111);
-            return cityLevels;
-        }
-        //如果给的城市的level为0，那么取它的上一级做为最后一级
-        if (cityDO.getLevel() == 0) {
-            DictCityDO upperLevel = getUpperLevel(cityDO.getCode());
-            return getMoseekerCityLevel(upperLevel);
-        } else if (cityDO.getLevel() == 1) {
-            //如果级别为1，那么直接返回
-            cityLevels.add(cityDO.getCode());
-        } else {
-            cityLevels.add(0, cityDO.getCode());
-            DictCityDO upperLevel = null;
-            while ((upperLevel = getUpperLevel(cityDO.getCode())) != null) {
-                cityLevels.add(0, upperLevel.getCode());
-                if (upperLevel.getLevel() == 1) {
-                    break;
-                }
-            }
-        }
-
-        return cityLevels;
-    }
-
-    /**
-     * 获取更高的级别
-     * 例子:徐家汇->上海
-     *
-     * @return
-     */
-    public DictCityDO getUpperLevel(int code) {
-
-        if (code <= 0) {
-            return null;
-        }
-
-        int newLevelCode;
-
-        int divide = 10;
-
-        while ((newLevelCode = (code / divide) * divide) == code) {
-            divide *= 10;
-        }
-
-        Query query = new Query.QueryBuilder().where("code", newLevelCode).buildQuery();
-
-        DictCityDO upperLevel = dictCityDao.getData(query);
-
-        //找不到父级或者父级的level=0那么继续向上找
-        if (upperLevel == null || upperLevel.getLevel() == 0) {
-            return getUpperLevel(newLevelCode);
-        }
-
-        return upperLevel;
     }
 }

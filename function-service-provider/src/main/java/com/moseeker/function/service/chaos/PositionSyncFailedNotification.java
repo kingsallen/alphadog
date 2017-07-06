@@ -1,14 +1,16 @@
 package com.moseeker.function.service.chaos;
 
 import com.alibaba.fastjson.JSON;
-import com.moseeker.baseorm.dao.dictdb.DictLiepinOccupationDao;
+import com.moseeker.baseorm.dao.dictdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.email.Email;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.thrift.gen.dao.struct.dictdb.Dict51jobOccupationDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictLiepinOccupationDO;
+import com.moseeker.thrift.gen.dao.struct.dictdb.DictZhilianOccupationDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import org.slf4j.Logger;
@@ -36,6 +38,15 @@ public class PositionSyncFailedNotification {
 
     @Autowired
     DictLiepinOccupationDao dictLiepinOccupationDao;
+
+    @Autowired
+    Dict51OccupationDao dict51OccupationDao;
+
+    @Autowired
+    DictZhilianOccupationDao dictZhilianOccupationDao;
+
+    @Autowired
+    DictCityDao dictCityDao;
 
     private String getConfigString(String key) {
         try {
@@ -145,11 +156,12 @@ public class PositionSyncFailedNotification {
         emailMessgeBuilder.append("【标题】：").append(moseekerPosition.getTitle()).append(divider);
         emailMessgeBuilder.append("【城市】：").append(getCitys(moseekerPosition.getId())).append(divider);
         emailMessgeBuilder.append("【地址】：").append(getAddress(thirdPartyPositionDO.getAddress())).append(divider);
-        emailMessgeBuilder.append("【职能】：").append(getOccupation(thirdPartyPositionDO.getOccupation())).append(divider);
+        emailMessgeBuilder.append("【职能】：").append(getOccupation(thirdPartyPositionDO.getChannel(), thirdPartyPositionDO.getOccupation())).append(divider);
         emailMessgeBuilder.append("【部门】：").append(thirdPartyPositionDO.getDepartment()).append(divider);
-        emailMessgeBuilder.append("【月薪】：").append(thirdPartyPositionDO.getSalaryBottom()).append("-").append(thirdPartyPositionDO.getSalaryTop()).append(divider);
-        emailMessgeBuilder.append("【面议】：").append(thirdPartyPositionDO.getSalaryDiscuss() == 0 ? "否" : "是");
-        emailMessgeBuilder.append("【发放月数】：").append(thirdPartyPositionDO.getSalaryMonth());
+        emailMessgeBuilder.append("【月薪】：").append(Double.valueOf(moseekerPosition.getSalaryBottom()).intValue()).append("-").append(Double.valueOf(moseekerPosition.getSalaryTop()).intValue()).append(divider);
+        emailMessgeBuilder.append("【面议】：").append(thirdPartyPositionDO.getSalaryDiscuss() == 0 ? "否" : "是").append(divider);
+        emailMessgeBuilder.append("【招聘人数】：").append(Double.valueOf(moseekerPosition.getCount()).intValue()).append(divider);
+        emailMessgeBuilder.append("【发放月数】：").append(thirdPartyPositionDO.getSalaryMonth()).append(divider);
         emailMessgeBuilder.append("【工作年限】：").append(moseekerPosition.getExperience()).append(divider);
         emailMessgeBuilder.append("【学历要求】：").append(getDegree(moseekerPosition.getDegree())).append(divider);
         emailMessgeBuilder.append("【反馈时长】：").append(thirdPartyPositionDO.getFeedbackPeriod()).append(divider);
@@ -239,14 +251,34 @@ public class PositionSyncFailedNotification {
         }
     }
 
-    private String getOccupation(String occupationCode) {
-        List<DictLiepinOccupationDO> occupationDOS = dictLiepinOccupationDao.getFullOccupations(occupationCode);
-        if (occupationDOS == null || occupationDOS.size() == 0) {
+    private String getOccupation(int channel, String occupationCode) {
+        if (StringUtils.isNullOrEmpty(occupationCode)) {
+            return "无";
+        }
+        List<String> occupationNames = new ArrayList<>();
+        if (ChannelType.JOB51.getValue() == channel) {
+            List<Dict51jobOccupationDO> dict51jobOccupationDOS = dict51OccupationDao.getFullOccupations(occupationCode);
+            for (Dict51jobOccupationDO occupationDO : dict51jobOccupationDOS) {
+                occupationNames.add(occupationDO.getName());
+            }
+        } else if (ChannelType.ZHILIAN.getValue() == channel) {
+            List<DictZhilianOccupationDO> zhilianOccupationDOS = dictZhilianOccupationDao.getFullOccupations(occupationCode);
+            for (DictZhilianOccupationDO occupationDO : zhilianOccupationDOS) {
+                occupationNames.add(occupationDO.getName());
+            }
+        } else if (ChannelType.LIEPIN.getValue() == channel) {
+            List<DictLiepinOccupationDO> liepinOccupationDOS = dictLiepinOccupationDao.getFullOccupations(occupationCode);
+            for (DictLiepinOccupationDO occupationDO : liepinOccupationDOS) {
+                occupationNames.add(occupationDO.getName());
+            }
+        }
+
+        if (occupationNames.size() == 0) {
             return "无";
         }
         StringBuilder occupationBuilder = new StringBuilder();
-        for (DictLiepinOccupationDO occupationDO : occupationDOS) {
-            occupationBuilder.append('【').append(occupationDO.getName()).append('】');
+        for (String name : occupationNames) {
+            occupationBuilder.append('【').append(name).append('】');
         }
         return occupationBuilder.toString();
     }
@@ -257,10 +289,21 @@ public class PositionSyncFailedNotification {
             return "无";
         }
 
-        StringBuilder cityBuilder = new StringBuilder();
+        List<List<DictCityDO>> fullCitys = dictCityDao.getFullCity(dictCityDOS);
 
-        for (DictCityDO dictCityDO : dictCityDOS) {
-            cityBuilder.append('【').append(dictCityDO.getName()).append('】');
+        StringBuilder cityBuilder = new StringBuilder();
+        StringBuilder innerBuilder = new StringBuilder();
+        for (List<DictCityDO> cityDOS : fullCitys) {
+            cityBuilder.append("【");
+            innerBuilder.delete(0, innerBuilder.length());
+            for (DictCityDO cityDO : cityDOS) {
+                innerBuilder.append(',').append(cityDO.getName());
+            }
+            if (innerBuilder.length() > 0) {
+                innerBuilder.delete(0, 1);
+            }
+            cityBuilder.append(innerBuilder);
+            cityBuilder.append("】");
         }
         return cityBuilder.toString();
     }
