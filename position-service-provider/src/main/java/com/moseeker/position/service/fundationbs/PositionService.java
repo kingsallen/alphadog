@@ -45,6 +45,7 @@ import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionCityDO;
 import com.moseeker.thrift.gen.position.struct.*;
 import org.apache.thrift.TException;
 import org.jooq.Field;
@@ -249,9 +250,10 @@ public class PositionService {
             sb.deleteCharAt(sb.length() - 1);
             jobPositionPojo.province = sb.toString();
         }
-
+       
         return ResponseUtils.success(jobPositionPojo);
     }
+    
     /*
      * 获取城市
      */
