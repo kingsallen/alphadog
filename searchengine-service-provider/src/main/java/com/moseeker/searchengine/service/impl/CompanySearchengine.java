@@ -26,18 +26,35 @@ import com.moseeker.common.util.ConfigPropertiesUtil;
 @CounterIface
 public class CompanySearchengine {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
+	public SearchHits  query(String keywords,String citys,String industry,String scale,Integer page,Integer pageSize) throws TException{
+		SearchHits hits=queryPrefix(keywords,citys,industry,scale,page,pageSize);
+		long hitNum=hits.getTotalHits();
+		if(hitNum==0){
+			SearchHits hitsData=queryString(keywords,citys,industry,scale,page,pageSize);
+			return hitsData;
+		}else{
+			return hits;
+		}
+		
+		
+	}
+	//构建
+	private QueryBuilder buildQueryForString(String keywords,String citys,String industry,String scale){
+		QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
+        QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
+        boolean hasKey = false;
+        this.handleKeyWordforQueryString(keywords,hasKey,query);
+        this.handleCitys( citys,query);
+        this.handleIndustry(industry, query);
+        this.handleScale(scale, query);
+        return query;
+	}
 	//通过queryString
     public SearchHits queryString(String keywords,String citys,String industry,String scale,Integer page,Integer pageSize) throws TException {
          try{
         	 TransportClient client=this.getEsClient();
         	 if(client!=null){
-        		 QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
-                 QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
-                 boolean hasKey = false;
-                 this.handleKeyWordforQueryString(keywords,hasKey,query);
-                 this.handleCitys( citys,query);
-                 this.handleIndustry(industry, query);
-                 this.handleScale(scale, query);
+        		 QueryBuilder query=this.buildQueryForString(keywords, citys, industry, scale);
                  SearchRequestBuilder responseBuilder=client.prepareSearch("companys").setTypes("company")
                          .setQuery(query)
                          .addSort("_score", SortOrder.DESC)
@@ -54,30 +71,18 @@ public class CompanySearchengine {
          }
     	return null;
     }
+    
+   
     //通过prefix搜索
     public SearchHits queryPrefix(String keywords,String citys,String industry,String scale,Integer page,Integer pageSize) throws TException {
         try{
        	 TransportClient client=this.getEsClient();
        	 if(client!=null){
-       		 QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
-                QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
-                boolean hasKey = false;
-                this.handleKeyWordForPrefix(keywords,hasKey,query);
-                this.handleCitys( citys,query);
-                this.handleIndustry(industry, query);
-                this.handleScale(scale, query);
-                StringBuffer sb=new StringBuffer();
-                sb.append("double score = _score;abbreviation=_source.company.abbreviation;");
-                sb.append("name=_source.company.name ;");
-                sb.append("if(abbreviation.startsWith('"+keywords+"')&&name.startsWith('"+keywords+"'))");
-                sb.append("{score=score*100}");
-                sb.append("else if(abbreviation.startsWith('"+keywords+"')||name.startsWith('"+keywords+"'))");
-                sb.append("{score=score*50};return score;");
-                String scripts=sb.toString();
-                Script script=new Script(scripts);
+       		 	QueryBuilder query = QueryBuilders.boolQuery();
+       		    this.buildQueryForPrefix(keywords, citys, industry, scale,query);
+       		    Script script=this.buildScriptSort(keywords);
                 SortBuilder builder=new ScriptSortBuilder(script,"number");
                 builder.order( SortOrder.DESC);
-               
                 SearchRequestBuilder responseBuilder=client.prepareSearch("companys").setTypes("company")
                         .setQuery(query)
                         .addSort(builder)
@@ -95,6 +100,17 @@ public class CompanySearchengine {
         }
    	return null;
    }
+    //构建prefix查询的语句
+    private void buildQueryForPrefix(String keywords,String citys,String industry,String scale,QueryBuilder query ){
+    	QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
+    	((BoolQueryBuilder) query).must(defaultquery);
+    	 boolean hasKey = false;
+         this.handleKeyWordForPrefix(keywords,hasKey,query);
+         this.handleCitys( citys,query);
+         this.handleIndustry(industry, query);
+         this.handleScale(scale, query);
+    }
+    //组装prefix关键字查询语句
     private void handleKeyWordForPrefix(String keywords,boolean hasKey,QueryBuilder query){
     	QueryBuilder keyand = QueryBuilders.boolQuery();
 		QueryBuilder fullf = QueryBuilders.matchPhrasePrefixQuery("company.name", keywords);
@@ -104,20 +120,24 @@ public class CompanySearchengine {
 		((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
         ((BoolQueryBuilder) query).must(keyand);
     }
+    //组装sort的script
+    private Script buildScriptSort(String keywords){
+   	 StringBuffer sb=new StringBuffer();
+   	 sb.append("double score = _score;abbreviation=_source.company.abbreviation;");
+        sb.append("name=_source.company.name ;");
+        sb.append("if(abbreviation.startsWith('"+keywords+"')&&name.startsWith('"+keywords+"'))");
+        sb.append("{score=score*100}");
+        sb.append("else if(abbreviation.startsWith('"+keywords+"')||name.startsWith('"+keywords+"'))");
+        sb.append("{score=score*50};return score;");
+        String scripts=sb.toString();
+        Script script=new Script(scripts);
+        return script;
+   }
     
-    //组装关键字
+    //组装query_string关键字查询语句
     private void handleKeyWordforQueryString(String keywords,boolean hasKey,QueryBuilder query){
     	if(!StringUtils.isEmpty(keywords)){
     		hasKey=true;
-//            String[] keyword_list = keywords.split(",");
-//            QueryBuilder keyand = QueryBuilders.boolQuery();
-//            for (int i = 0; i < keyword_list.length; i++) {
-//                String keyword = keyword_list[i];
-//                QueryBuilder fullf = QueryBuilders.queryStringQuery(keyword)
-//                        .field("company.name")
-//                        .field("company.abbreviation");
-//                ((BoolQueryBuilder) keyand).should(fullf);
-//            }
     		QueryBuilder keyand = QueryBuilders.boolQuery();
     		QueryBuilder fullf = QueryBuilders.queryStringQuery(keywords)
                   .field("company.name")
