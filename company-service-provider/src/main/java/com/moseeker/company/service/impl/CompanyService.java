@@ -550,7 +550,7 @@ public class CompanyService {
                 query.select("id");
                 query.where("company_id", companyId).and(new Condition("activation", 0, ValueOp.NEQ)).and(new Condition("custom_field", "", ValueOp.EQ));
                 List<Integer> employeeIds = userEmployeeDao.getDatas(query.buildQuery(), Integer.class);
-                employeeEntity.removeEmployee(employeeIds, companyId);
+                employeeEntity.removeEmployee(employeeIds);
             }
             hrEmployeeCertConfDO.setAuthMode(authMode);
             if (StringUtils.isNotNullOrEmpty(emailSuffix)) {
