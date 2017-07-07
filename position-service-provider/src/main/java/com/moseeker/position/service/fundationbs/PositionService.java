@@ -336,8 +336,8 @@ public class PositionService {
 
         logger.info("data allow");
         String str = redisClient.get(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH.toString(), String.valueOf(positionId), String.valueOf(account_id));
-        if (!StringUtils.isNullOrEmpty(str)) {
-            //return false;
+        if (StringUtils.isNotNullOrEmpty(str)) {
+            return false;
         }
         logger.info("cache allow");
         return true;
