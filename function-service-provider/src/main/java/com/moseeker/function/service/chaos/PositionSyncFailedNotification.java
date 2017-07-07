@@ -162,7 +162,7 @@ public class PositionSyncFailedNotification {
         emailMessgeBuilder.append("【面议】：").append(thirdPartyPositionDO.getSalaryDiscuss() == 0 ? "否" : "是").append(divider);
         emailMessgeBuilder.append("【招聘人数】：").append(Double.valueOf(moseekerPosition.getCount()).intValue()).append(divider);
         emailMessgeBuilder.append("【发放月数】：").append(thirdPartyPositionDO.getSalaryMonth()).append(divider);
-        emailMessgeBuilder.append("【工作年限】：").append(moseekerPosition.getExperience()).append(divider);
+        emailMessgeBuilder.append("【工作年限】：").append(getExperience(moseekerPosition.getExperience())).append(divider);
         emailMessgeBuilder.append("【学历要求】：").append(getDegree(moseekerPosition.getDegree())).append(divider);
         emailMessgeBuilder.append("【反馈时长】：").append(thirdPartyPositionDO.getFeedbackPeriod()).append(divider);
         emailMessgeBuilder.append("【职位描述】：").append(divider);
@@ -221,6 +221,13 @@ public class PositionSyncFailedNotification {
             logger.error(e.getMessage(), e);
             logger.error("发送职位同步刷新错误的邮件失败了:EmailTO:{}:Title:{}:Message:{}", recipients, subject.toString(), content.toString());
         }
+    }
+
+    private String getExperience(String experience) {
+        if(StringUtils.isNullOrEmpty(experience)){
+            return "不限";
+        }
+        return experience;
     }
 
     private String getDegree(double degree) {
