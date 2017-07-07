@@ -326,7 +326,7 @@ public class CompanyService {
         findCompanyInfo.select("parent_id").select("id");
         findCompanyInfo.where("id", companyId);
         HrCompanyDO hrCompanyDO = companyDao.getData(findCompanyInfo.buildQuery());
-        if (findCompanyInfo == null) {
+        if (hrCompanyDO == null) {
             throw ExceptionFactory.buildException(Category.PROGRAM_DATA_EMPTY);
         }
         if (hrCompanyDO.getParentId() > 0) {
