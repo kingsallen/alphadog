@@ -45,6 +45,7 @@ import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionCityDO;
 import com.moseeker.thrift.gen.position.struct.*;
 import org.apache.thrift.TException;
 import org.jooq.Field;
@@ -249,8 +250,64 @@ public class PositionService {
             sb.deleteCharAt(sb.length() - 1);
             jobPositionPojo.province = sb.toString();
         }
-
+        String citynames=this.handlerCity(positionId);
+        logger.info("job_position_city的city信息是＝＝＝＝＝＝＝＝＝＝＝＝＝"+citynames);
+        if(StringUtils.isNotNullOrEmpty(citynames)){
+          jobPositionPojo.city=citynames;
+        }
         return ResponseUtils.success(jobPositionPojo);
+    }
+    /*
+     * 处理城市数据
+     */
+    private String handlerCity(int positionId){
+      String citys="";
+      List<JobPositionCityDO> jobCityList=this.getJobPositionCityList(positionId);
+      List<Integer> codeList=this.getCodeIdlist(jobCityList);
+      List<DictCityDO> dictList=this.getDictCityList(codeList);
+      if(!StringUtils.isEmptyList(dictList)){
+        for(DictCityDO dict:dictList){
+          String name=dict.getName();
+          citys+=name+",";
+        }
+      }
+      if(StringUtils.isNotNullOrEmpty(citys)){
+        citys=citys.substring(0, citys.lastIndexOf(","));
+      }
+      return citys;
+    }
+    
+    /*
+     * 获取job_position_city的数据
+     */
+    private List<JobPositionCityDO> getJobPositionCityList(int positionId){
+      Query query=new Query.QueryBuilder().where("pid",positionId).buildQuery();
+      List<JobPositionCityDO> list=jobPositionCityDao.getDatas(query);
+      return list;
+    }
+    /*
+     * 获取code的list
+     */
+    private List<Integer> getCodeIdlist(List<JobPositionCityDO> list){
+      if(!StringUtils.isEmptyList(list)){
+        return null;
+      }
+      List<Integer> result=new ArrayList<Integer>();
+      for(JobPositionCityDO DO:list){
+        result.add(DO.getCode());
+      }
+      return result;
+    }
+    /*
+     * 获取dictcity的数据
+     */
+    public List<DictCityDO> getDictCityList(List<Integer> codes){
+      if(!StringUtils.isEmptyList(codes)){
+        return null;
+      }
+      Query query=new Query.QueryBuilder().where(new Condition("code",codes.toArray(),ValueOp.IN)).buildQuery();
+      List<DictCityDO> list=dictCityDao.getDatas(query);
+      return list;
     }
     /*
      * 获取城市
