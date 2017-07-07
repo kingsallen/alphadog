@@ -57,6 +57,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -315,6 +316,7 @@ public class CompanyService {
 
     /**
      * 如果是子公司的，那么则查找对应母公司的公司编号
+     *
      * @param companyId 公司编号
      * @return 公司编号
      */
@@ -532,8 +534,8 @@ public class CompanyService {
      * @param authMode    绑定方式
      * @param emailSuffix 如果邮箱是验证字段，则不能为空
      * @param custom      自定义字段内容
-     * @param customHint 自定义字段
-     * @param questions  问答
+     * @param customHint  自定义字段
+     * @param questions   问答
      * @return 受影响行数
      */
     @Transactional
@@ -548,19 +550,19 @@ public class CompanyService {
                 query.select("id");
                 query.where("company_id", companyId).and(new Condition("activation", 0, ValueOp.NEQ)).and(new Condition("custom_field", "", ValueOp.EQ));
                 List<Integer> employeeIds = userEmployeeDao.getDatas(query.buildQuery(), Integer.class);
-                employeeEntity.removeEmployee(employeeIds);
+                employeeEntity.removeEmployee(employeeIds, companyId);
             }
             hrEmployeeCertConfDO.setAuthMode(authMode);
-            if(StringUtils.isNotNullOrEmpty(emailSuffix)) {
+            if (StringUtils.isNotNullOrEmpty(emailSuffix)) {
                 hrEmployeeCertConfDO.setEmailSuffix(emailSuffix);
             }
-            if(StringUtils.isNotNullOrEmpty(questions)) {
+            if (StringUtils.isNotNullOrEmpty(questions)) {
                 hrEmployeeCertConfDO.setQuestions(questions);
             }
-            if(StringUtils.isNotNullOrEmpty(custom)) {
+            if (StringUtils.isNotNullOrEmpty(custom)) {
                 hrEmployeeCertConfDO.setCustom(custom);
             }
-            if(StringUtils.isNotNullOrEmpty(customHint)) {
+            if (StringUtils.isNotNullOrEmpty(customHint)) {
                 hrEmployeeCertConfDO.setCustomHint(customHint);
             }
             return hrEmployeeCertConfDao.updateData(hrEmployeeCertConfDO);

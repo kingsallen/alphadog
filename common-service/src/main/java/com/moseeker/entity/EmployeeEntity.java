@@ -81,16 +81,12 @@ public class EmployeeEntity {
     }
 
     public UserEmployeeDO getCompanyEmployee(int userId, int companyId) {
-
         Query.QueryBuilder query = new Query.QueryBuilder();
-
         // 查找集团公司列表
         List<Integer> companyIds = getCompanyIds(companyId);
         companyIds.add(companyId);
-
         query.where(new Condition("company_id", companyIds, ValueOp.IN)).and("sysuser_id", String.valueOf(userId))
                 .and("disable", "0");
-
         return employeeDao.getData(query.buildQuery());
     }
 
@@ -102,7 +98,7 @@ public class EmployeeEntity {
      * @return 员工当前总积分
      */
     @Transactional
-    public int addReward(int employeeId, int award, String reason, int companyId) throws Exception {
+    public int addReward(int employeeId, int award, String reason) throws Exception {
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.where("id", employeeId);
         UserEmployeeDO userEmployeeDO = employeeDao.getData(query.buildQuery());
@@ -135,11 +131,7 @@ public class EmployeeEntity {
      * @param employeeId
      * @return
      */
-    public List<Reward> getEmployeePointsRecords(int employeeId, int companyId) {
-        // 权限认证
-        if (permissionJudge(employeeId, companyId)) {
-
-        }
+    public List<Reward> getEmployeePointsRecords(int employeeId) {
         // 用户积分记录：
         List<Reward> rewards = new ArrayList<>();
         List<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO> points = employeePointsRecordDao.getDatas(new Query.QueryBuilder()
@@ -162,7 +154,6 @@ public class EmployeeEntity {
                     positionMap.putAll(positions.stream().collect(Collectors.toMap(JobPositionDO::getId, JobPositionDO::getTitle)));
                 }
             }
-
             points.stream().filter(p -> p.getAward() != 0).forEach(point -> {
                 Reward reward = new Reward();
                 reward.setReason(point.getReason());
@@ -182,11 +173,7 @@ public class EmployeeEntity {
      * @param employeeIds
      * @return
      */
-    public boolean unbind(List<Integer> employeeIds, int companyId) {
-        // 权限认证
-        if (permissionJudge(employeeIds, companyId)) {
-
-        }
+    public boolean unbind(List<Integer> employeeIds) {
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.and(new Condition("id", employeeIds, ValueOp.IN));
         List<UserEmployeeDO> employeeDOList = employeeDao.getDatas(query.buildQuery());
@@ -209,11 +196,7 @@ public class EmployeeEntity {
      * 2.user_employee中做物理删除
      */
     @Transactional
-    public boolean removeEmployee(List<Integer> employeeIds, int companyId) {
-        // 权限认证
-        if (permissionJudge(employeeIds, companyId)) {
-
-        }
+    public boolean removeEmployee(List<Integer> employeeIds) {
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.where(new Condition("id", employeeIds, ValueOp.IN));
         List<UserEmployeeDO> userEmployeeDOList = employeeDao.getDatas(query.buildQuery());

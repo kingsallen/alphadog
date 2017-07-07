@@ -464,7 +464,14 @@ public class UserHrAccountController {
 
     // ------------------------------------- 以下接口为hr_354新增---------------------------------------
 
-    // 修改公司员工认证配置
+
+    /**
+     * 修改公司员工认证配置
+     *
+     * @param request
+     * @param response
+     * @return
+     */
     @RequestMapping(value = "/hraccount/company/employeebindconf", method = RequestMethod.GET)
     @ResponseBody
     public String updateEmployeeBindConf(HttpServletRequest request, HttpServletResponse response) {
@@ -496,7 +503,13 @@ public class UserHrAccountController {
         }
     }
 
-    //  获取公司积分配置信息
+    /**
+     * 获取公司积分配置信息
+     *
+     * @param request
+     * @param response
+     * @return
+     */
     @RequestMapping(value = "/hraccount/company/rewardconfig", method = RequestMethod.GET)
     @ResponseBody
     public String getCompanyRewardConf(HttpServletRequest request, HttpServletResponse response) {
@@ -507,7 +520,6 @@ public class UserHrAccountController {
                 return ResponseLogNotification.fail(request, "公司Id不能为空");
             } else {
                 List<RewardConfig> result = companyService.getCompanyRewardConf(companyId);
-
                 return ResponseLogNotification.success(request, ResponseUtils.success(BeanUtils.convertStructToJSON(result)));
             }
         } catch (BIZException e) {
@@ -517,18 +529,30 @@ public class UserHrAccountController {
         }
     }
 
-    // 员工取消认证 (支持批量操作)
+
+    /**
+     * 员工取消认证 (支持批量操作)
+     *
+     * @param request
+     * @param response
+     * @return
+     */
     @RequestMapping(value = "/hraccount/employee/unbind", method = RequestMethod.PUT)
     @ResponseBody
     public String unbindEmployee(HttpServletRequest request, HttpServletResponse response) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             List<Integer> ids = (ArrayList<Integer>) params.get("ids");
-            int companyId = params.getInt("companyId") != null ? params.getInt("companyId") : 0;
+            int companyId = params.getInt("companyId", 0);
             if (ids == null || ids.isEmpty()) {
                 return ResponseLogNotification.fail(request, "Ids不能为空");
             } else {
-                boolean result = userHrAccountService.unbindEmployee(ids, companyId);
+                // 权限判断
+                Boolean permission = userHrAccountService.permissionJudgeWithUserEmployeeIdsAndCompanyId(ids, companyId);
+                if (!permission) {
+                    return ResponseLogNotification.fail(request, ConstantErrorCodeMessage.PERMISSION_DENIED);
+                }
+                boolean result = userHrAccountService.unbindEmployee(ids);
                 return ResponseLogNotification.success(request, ResponseUtils.success(new HashMap<String, Object>() {{
                     put("result", result);
                 }}));
@@ -540,18 +564,30 @@ public class UserHrAccountController {
         }
     }
 
-    // 删除员工 (支持批量操作)
+
+    /**
+     * 删除员工 (支持批量操作)
+     *
+     * @param request
+     * @param response
+     * @return
+     */
     @RequestMapping(value = "/hraccount/employee", method = RequestMethod.DELETE)
     @ResponseBody
     public String removeEmployee(HttpServletRequest request, HttpServletResponse response) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             List<Integer> ids = (ArrayList<Integer>) params.get("ids");
-            int companyId = params.getInt("companyId") != null ? params.getInt("companyId") : 0;
+            int companyId = params.getInt("companyId", 0);
             if (ids == null || ids.isEmpty()) {
                 return ResponseLogNotification.fail(request, "Ids不能为空");
             } else {
-                boolean result = userHrAccountService.delEmployee(ids, companyId);
+                // 权限判断
+                Boolean permission = userHrAccountService.permissionJudgeWithUserEmployeeIdsAndCompanyId(ids, companyId);
+                if (!permission) {
+                    return ResponseLogNotification.fail(request, ConstantErrorCodeMessage.PERMISSION_DENIED);
+                }
+                boolean result = userHrAccountService.delEmployee(ids);
                 return ResponseLogNotification.success(request, ResponseUtils.success(new HashMap<String, Object>() {{
                     put("result", result);
                 }}));
@@ -564,18 +600,29 @@ public class UserHrAccountController {
     }
 
 
-    // 获取员工积分列表
+    /**
+     * 获取员工积分列表
+     *
+     * @param request
+     * @param response
+     * @return
+     */
     @RequestMapping(value = "/hraccount/employee/rewards", method = RequestMethod.GET)
     @ResponseBody
     public String getEmployeeRawards(HttpServletRequest request, HttpServletResponse response) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            int employeeId = params.getInt("employeeId");
-            int companyId = params.getInt("companyId") != null ? params.getInt("companyId") : 0;
+            int employeeId = params.getInt("employeeId", 0);
+            int companyId = params.getInt("companyId", 0);
             if (employeeId == 0) {
                 return ResponseLogNotification.fail(request, "员工Id不能为空");
             } else {
-                List<Reward> result = userHrAccountService.getEmployeeRewards(employeeId, companyId);
+                // 权限判断
+                Boolean permission = userHrAccountService.permissionJudgeWithUserEmployeeIdAndCompanyId(employeeId, companyId);
+                if (!permission) {
+                    return ResponseLogNotification.fail(request, ConstantErrorCodeMessage.PERMISSION_DENIED);
+                }
+                List<Reward> result = userHrAccountService.getEmployeeRewards(employeeId);
                 return ResponseLogNotification.success(request, ResponseUtils.success(BeanUtils.convertStructToJSON(result)));
             }
         } catch (BIZException e) {
@@ -585,20 +632,32 @@ public class UserHrAccountController {
         }
     }
 
-    // 添加员工积分
+
+    /**
+     * 添加员工积分
+     *
+     * @param request
+     * @param response
+     * @return
+     */
     @RequestMapping(value = "/hraccount/employee/reward/add", method = RequestMethod.PUT)
     @ResponseBody
     public String addEmployeeReward(HttpServletRequest request, HttpServletResponse response) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            int employeeId = params.getInt("employeeId");
+            int employeeId = params.getInt("employeeId", 0);
             int points = params.getInt("points");
             String reason = params.getString("reason");
-            int companyId = params.getInt("companyId") != null ? params.getInt("companyId") : 0;
+            int companyId = params.getInt("companyId", 0);
             if (employeeId == 0) {
                 return ResponseLogNotification.fail(request, "员工Id不能为空");
             } else {
-                int result = userHrAccountService.addEmployeeReward(employeeId, points, reason, companyId);
+                // 权限判断
+                Boolean permission = userHrAccountService.permissionJudgeWithUserEmployeeIdAndCompanyId(employeeId, companyId);
+                if (!permission) {
+                    return ResponseLogNotification.fail(request, ConstantErrorCodeMessage.PERMISSION_DENIED);
+                }
+                int result = userHrAccountService.addEmployeeReward(employeeId, points, reason);
                 return ResponseLogNotification.success(request, ResponseUtils.success(new HashMap<String, Integer>() {{
                     put("totalPoint", result);
                 }}));
@@ -624,7 +683,7 @@ public class UserHrAccountController {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             String keyWord = params.getString("keyword");
-            int companyId = params.getInt("companyId");
+            int companyId = params.getInt("companyId", 0);
             UserEmployeeNumStatistic userEmployeeNumStatistic = userHrAccountService.getListNum(keyWord, companyId);
             return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(userEmployeeNumStatistic)));
         } catch (BIZException e) {
@@ -648,13 +707,13 @@ public class UserHrAccountController {
     public String employeeList(HttpServletRequest request, HttpServletResponse response) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            String keyWord = params.getString("keyword") != null ? params.getString("keyword") : "";
-            int companyId = params.getInt("companyId") != null ? params.getInt("companyId") : 0;
-            int filter = params.getInt("filter") != null ? params.getInt("filter") : 0;
-            String order = params.getString("order") != null ? params.getString("order") : "";
-            int asc = params.getInt("asc") != null ? params.getInt("asc") : 0;
-            int pageNumber = params.getInt("pageNumber") != null ? params.getInt("pageNumber") : 0;
-            int pageSize = params.getInt("pageSize") != null ? params.getInt("pageSize") : 0;
+            String keyWord = params.getString("keyword", "");
+            int companyId = params.getInt("companyId", 0);
+            int filter = params.getInt("filter", 0);
+            String order = params.getString("order", "");
+            int asc = params.getInt("asc", 0);
+            int pageNumber = params.getInt("pageNumber", 0);
+            int pageSize = params.getInt("pageSize", 0);
             UserEmployeeVOPageVO userEmployeeVOPageVO = userHrAccountService.employeeList(keyWord, companyId, filter, order, asc, pageNumber, pageSize);
             return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(userEmployeeVOPageVO)));
         } catch (BIZException e) {
@@ -678,7 +737,7 @@ public class UserHrAccountController {
     public String employeeExport(HttpServletRequest request, HttpServletResponse response) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            int companyId = params.getInt("companyId") != null ? params.getInt("companyId") : 0;
+            int companyId = params.getInt("companyId", 0);
             // 员工ID列表
             if (!StringUtils.isEmptyList((List<Integer>) params.get("userEmployees"))) {
                 List<Integer> userEmployees = (List<Integer>) params.get("userEmployees");
@@ -708,8 +767,8 @@ public class UserHrAccountController {
     public String employeeDetails(HttpServletRequest request, HttpServletResponse response) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            int userEmployeeId = params.getInt("userEmployeeId") != null ? params.getInt("userEmployeeId") : 0;
-            int companyId = params.getInt("companyId") != null ? params.getInt("companyId") : 0;
+            int userEmployeeId = params.getInt("userEmployeeId", 0);
+            int companyId = params.getInt("companyId", 0);
             UserEmployeeDetailVO userEmployeeDetailVO = userHrAccountService.userEmployeeDetail(userEmployeeId, companyId);
             return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(userEmployeeDetailVO)));
         } catch (BIZException e) {
@@ -733,12 +792,12 @@ public class UserHrAccountController {
     public String updateUserEmployee(HttpServletRequest request, HttpServletResponse response) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            int userEmployeeId = params.getInt("userEmployeeId") != null ? params.getInt("userEmployeeId") : 0;
-            String cname = params.getString("cname") != null ? params.getString("cname") : "";
-            String mobile = params.getString("mobile") != null ? params.getString("mobile") : "";
-            String email = params.getString("email") != null ? params.getString("email") : "";
-            String customField = params.getString("customField") != null ? params.getString("customField") : "";
-            int companyId = params.getInt("companyId") != null ? params.getInt("companyId") : 0;
+            int userEmployeeId = params.getInt("userEmployeeId", 0);
+            String cname = params.getString("cname", "");
+            String mobile = params.getString("mobile", "");
+            String email = params.getString("email", "");
+            String customField = params.getString("customField", "");
+            int companyId = params.getInt("companyId", 0);
             Response res = userHrAccountService.updateUserEmployee(cname, mobile, email, customField, userEmployeeId, companyId);
             return ResponseLogNotification.success(request, res);
         } catch (BIZException e) {
@@ -760,7 +819,7 @@ public class UserHrAccountController {
     public String checkBatchInsert(HttpServletRequest request) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            int companyId = params.getInt("companyId") != null ? params.getInt("companyId") : 0;
+            int companyId = params.getInt("companyId", 0);
             List<UserEmployeeDO> userEmployees = UserHrAccountParamUtils.parseUserEmployeeDO((List<HashMap<String, Object>>) params.get("userEmployees"));
             ImportUserEmployeeStatistic res = userHrAccountService.checkBatchInsert(userEmployees, companyId);
             return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(res)));
@@ -783,7 +842,7 @@ public class UserHrAccountController {
     public String employeeImport(HttpServletRequest request) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            int companyId = params.getInt("companyId") != null ? params.getInt("companyId") : 0;
+            int companyId = params.getInt("companyId", 0);
             List<UserEmployeeDO> userEmployees = UserHrAccountParamUtils.parseUserEmployeeDO((List<HashMap<String, Object>>) params.get("userEmployees"));
             Response res = userHrAccountService.employeeImport(userEmployees, companyId);
             return ResponseLogNotification.success(request, res);

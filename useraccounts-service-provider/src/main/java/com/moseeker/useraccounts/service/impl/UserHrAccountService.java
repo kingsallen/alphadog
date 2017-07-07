@@ -828,9 +828,12 @@ public class UserHrAccountService {
         }
         try {
             Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+            queryBuilder.where(HrCompany.HR_COMPANY.ID.getName(), companyId);
+            // 是否是子公司，如果是查询母公司ID
+            HrCompanyDO hrCompanyDO = hrCompanyDao.getData(queryBuilder.buildQuery());
+            List<Integer> list = employeeEntity.getCompanyIds(hrCompanyDO.getParentId() > 0 ? hrCompanyDO.getParentId() : companyId);
             queryBuilder.select(new Select(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), SelectOp.COUNT))
                     .select(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName());
-            List<Integer> list = employeeEntity.getCompanyIds(companyId);
             Condition companyIdCon = new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), list, ValueOp.IN);
             queryBuilder.where(companyIdCon).and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), 0);
             if (!StringUtils.isEmptyObject(keyWord)) {
@@ -916,6 +919,11 @@ public class UserHrAccountService {
             int counts = userEmployeeDao.getCount(queryBuilder.buildQuery());
             if (counts == 0) {
                 throw ExceptionFactory.buildException(ExceptionCategory.USEREMPLOYEES_EMPTY);
+            }
+            // 分页数据
+            if (pageNumber > 0 && pageSize > 0) {
+                queryBuilder.setPageNum(pageNumber);
+                queryBuilder.setPageSize(pageSize);
             }
             List<UserEmployeeDO> userEmployeeDOS = userEmployeeDao.getDatas(queryBuilder.buildQuery());
             Set<Integer> sysuserId = userEmployeeDOS.stream().filter(userUserDO -> userUserDO.getSysuserId() > 0)
