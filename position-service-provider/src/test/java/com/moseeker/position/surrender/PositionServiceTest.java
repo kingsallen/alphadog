@@ -31,7 +31,7 @@
 //	}
 //	@Test
 //	public void getPositionByIdTest() throws Exception{
-//		Response res=service.getPositionById(106002);
+//		Response res=service.getPositionById(39277);
 //		System.out.println(res);
 //	}
 //	//@Test

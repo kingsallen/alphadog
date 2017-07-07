@@ -289,7 +289,7 @@ public class PositionService {
      * 获取code的list
      */
     private List<Integer> getCodeIdlist(List<JobPositionCityDO> list){
-      if(!StringUtils.isEmptyList(list)){
+      if(StringUtils.isEmptyList(list)){
         return null;
       }
       List<Integer> result=new ArrayList<Integer>();
@@ -302,7 +302,7 @@ public class PositionService {
      * 获取dictcity的数据
      */
     public List<DictCityDO> getDictCityList(List<Integer> codes){
-      if(!StringUtils.isEmptyList(codes)){
+      if(StringUtils.isEmptyList(codes)){
         return null;
       }
       Query query=new Query.QueryBuilder().where(new Condition("code",codes.toArray(),ValueOp.IN)).buildQuery();
