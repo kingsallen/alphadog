@@ -520,7 +520,7 @@ public class UserHrAccountController {
                 // 权限判断
                 Boolean permission = userHrAccountService.permissionJudgeWithUserEmployeeIdsAndCompanyId(ids, companyId);
                 if (!permission) {
-                    return ResponseLogNotification.fail(request, ConstantErrorCodeMessage.PERMISSION_DENIED);
+                    return ResponseLogNotification.failResponse(request, ConstantErrorCodeMessage.PERMISSION_DENIED);
                 }
                 boolean result = userHrAccountService.delEmployee(ids);
                 return ResponseLogNotification.success(request, ResponseUtils.success(new HashMap<String, Object>() {{
@@ -555,7 +555,7 @@ public class UserHrAccountController {
                 // 权限判断
                 Boolean permission = userHrAccountService.permissionJudgeWithUserEmployeeIdAndCompanyId(employeeId, companyId);
                 if (!permission) {
-                    return ResponseLogNotification.fail(request, ConstantErrorCodeMessage.PERMISSION_DENIED);
+                    return ResponseLogNotification.failResponse(request, ConstantErrorCodeMessage.PERMISSION_DENIED);
                 }
                 List<Reward> result = userHrAccountService.getEmployeeRewards(employeeId);
                 return ResponseLogNotification.success(request, ResponseUtils.success(BeanUtils.convertStructToJSON(result)));
@@ -590,7 +590,7 @@ public class UserHrAccountController {
                 // 权限判断
                 Boolean permission = userHrAccountService.permissionJudgeWithUserEmployeeIdAndCompanyId(employeeId, companyId);
                 if (!permission) {
-                    return ResponseLogNotification.fail(request, ConstantErrorCodeMessage.PERMISSION_DENIED);
+                    return ResponseLogNotification.failResponse(request, ConstantErrorCodeMessage.PERMISSION_DENIED);
                 }
                 int result = userHrAccountService.addEmployeeReward(employeeId, points, reason);
                 return ResponseLogNotification.success(request, ResponseUtils.success(new HashMap<String, Integer>() {{
