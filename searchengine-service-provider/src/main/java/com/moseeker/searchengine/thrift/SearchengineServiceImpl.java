@@ -39,7 +39,7 @@ public class SearchengineServiceImpl implements Iface {
 	public Response companyQuery(String keyWords, String citys, String industry, String scale, int page, int pageSize){
 		// TODO Auto-generated method stub
 		try{
-			SearchHits res=companySearchengine.queryPrefix(keyWords, citys, industry, scale, page, pageSize);
+			SearchHits res=companySearchengine.query(keyWords, citys, industry, scale, page, pageSize);
 			if(res==null){
 				return ResponseUtils.success("");
 			}
