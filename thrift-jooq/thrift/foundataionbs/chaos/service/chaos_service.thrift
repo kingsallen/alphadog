@@ -2,6 +2,7 @@
 
 include "../../../common/struct/common_struct.thrift"
 include "../../../dao/struct/hrdb/hr_third_party_account_struct.thrift"
+include "../../../dao/struct/hrdb/hr_third_party_position_struct.thrift"
 include "../../../position/struct/position_struct.thrift"
 namespace java com.moseeker.thrift.gen.foundation.chaos.service
 
@@ -16,8 +17,8 @@ service ChaosServices {
     //同步可发布职位数
     hr_third_party_account_struct.HrThirdPartyAccountDO synchronization(1:hr_third_party_account_struct.HrThirdPartyAccountDO thirdPartyAccount) throws (1: common_struct.BIZException e);
     //同步职位
-    common_struct.Response synchronizePosition(1:list<position_struct.ThirdPartyPositionForSynchronizationWithAccount> positions); 
+    void synchronizePosition(1:list<position_struct.ThirdPartyPositionForSynchronizationWithAccount> positions) throws (1: common_struct.BIZException e);
     //刷新职位
-    common_struct.Response refreshPosition(1:position_struct.ThirdPartyPositionForSynchronizationWithAccount position); 
+    void refreshPosition(1:position_struct.ThirdPartyPositionForSynchronizationWithAccount position) throws (1: common_struct.BIZException e);
 }
 
