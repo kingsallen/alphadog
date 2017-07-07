@@ -1,6 +1,8 @@
 package com.moseeker.company.thrift;
 
+import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.company.service.impl.HrTeamServicesImpl;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.company.service.HrTeamServices;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrTeamDO;
 import org.apache.thrift.TException;
@@ -22,9 +24,9 @@ public class HrTeamThriftServicesImpl implements HrTeamServices.Iface {
     HrTeamServicesImpl hrTeamServices;
 
     @Override
-    public List<HrTeamDO> getHrTeams(Map<String, String> query) throws TException {
+    public List<HrTeamDO> getHrTeams(CommonQuery query) throws TException {
         try {
-            return hrTeamServices.getHrTeams(query);
+            return hrTeamServices.getHrTeams(QueryConvert.commonQueryConvertToQuery(query));
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);

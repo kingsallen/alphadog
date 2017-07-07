@@ -20,6 +20,10 @@ public class IntentionParamUtil {
 
 	/**
 	 * 将参数中通用解析方式无法解析的行业、职能、城市信息补填到Intention中
+	 *
+	 * "positions[0][position_code]" -> "120202"
+	 * "cities[0][city_code]" -> "310000"
+	 *
 	 * @param reqParams 从request中解析出来的参数
 	 * @param intention 感兴趣信息
 	 */
