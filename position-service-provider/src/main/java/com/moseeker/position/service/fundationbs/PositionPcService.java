@@ -434,7 +434,7 @@ public class PositionPcService {
 		 }
 	 }
 	 /*
-	 处理position和company的数据
+	  *处理position和company的数据
 	  */
 	 public List<Map<String,Object>> handleCompanyAndPositionData(List<JobPositionDO> positionList, List<HrCompanyDO> companyList,List<HrTeamDO> teamList
 			 ,List<Map<String,Integer>> publisherAndCompanyId,Map<String,List<String>> posittionCitys) throws TException{
@@ -656,6 +656,24 @@ public class PositionPcService {
 		 }
 		 Response res= ResponseUtils.success(list);
 		 return res;
+	 }
+	 //获取全部公司
+	 public List<Map<String,Object>> getAllCompanyRecommend() throws TException{
+		 List<CampaignPcRecommendCompanyDO>  CampaignPcRecommendCompanyList=campaignPcRecommendCompanyDao.getCampaignPcRecommendCompanyList();
+		 if(StringUtils.isEmptyList(CampaignPcRecommendCompanyList)){
+			 return  null;
+		 }
+		 List<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
+		 List<Integer> companyIdList=new ArrayList<Integer>();
+		 for(CampaignPcRecommendCompanyDO dO:CampaignPcRecommendCompanyList){
+			 String companyIds=dO.getCompanyIds();
+			 String [] ids=companyIds.split(",");
+			 for(int i=0;i<ids.length;i++){
+				 companyIdList.add(Integer.parseInt(ids[i]));
+			 }
+		 }
+		 List<Map<String,Object>> result=handleRecommendPcCompanyData(companyIdList);
+		 return result;
 	 }
 
 	 /*
