@@ -466,46 +466,6 @@ public class UserHrAccountController {
 
 
     /**
-     * 修改公司员工认证配置
-     *
-     * @param request
-     * @param response
-     * @return
-     */
-    @RequestMapping(value = "/hraccount/company/employeebindconf", method = RequestMethod.GET)
-    @ResponseBody
-    public String updateEmployeeBindConf(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            int id = params.getInt("id", 0);
-            int companyId = params.getInt("companyId", 0);
-            Integer authMode = params.getInt("authMode");
-            String emailSuffix = params.getString("emailSuffix");
-            String custom = params.getString("custom");
-            String customHint = params.getString("customHint");
-            String questions = params.getString("questions");
-            if (companyId == 0 || id == 0 || authMode == null) {
-                return ResponseLogNotification.fail(request, "公司Id不能为空");
-            } else if (id == 0) {
-                return ResponseLogNotification.fail(request, "Id不能为空");
-            } else if (authMode == null) {
-                return ResponseLogNotification.fail(request, "认证方式不能为空");
-            } else {
-                boolean result = companyService.updateEmployeeBindConf(id, companyId, authMode, emailSuffix, custom, customHint, questions);
-                return ResponseLogNotification.success(request, ResponseUtils.success(new HashMap<String, Object>() {{
-                    put("result", result);
-                }}));
-            }
-        } catch (BIZException e) {
-            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
-        } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
-        }
-    }
-
-
-
-    /**
      * 员工取消认证 (支持批量操作)
      *
      * @param request

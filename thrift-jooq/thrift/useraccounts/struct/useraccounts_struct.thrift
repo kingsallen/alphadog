@@ -387,7 +387,8 @@ struct UserEmployeeVO{
     8: optional i32 activation, // 认证状态
     9: optional i32 companyId, // 公司ID
     10: optional string companyName, // 公司名称
-    11: optional string bindingTime, // 认证时间
+    11: optional string companyAbbreviation, // 公司简称
+    12: optional string bindingTime, // 认证时间
 }
 // 员工列表分页实体
 struct UserEmployeeVOPageVO{
@@ -408,7 +409,8 @@ struct UserEmployeeDetailVO{
     8: optional string companyName, // 公司名称
     9: optional string headImg, // 头像
     10: optional i32 companyId, //
-    11: optional string bindingTime // 绑定时间
+    11: optional string companyAbbreviation, // 公司简称
+    12: optional string bindingTime // 绑定时间
 }
 // 员工导入统计数据
 struct ImportErrorUserEmployee{

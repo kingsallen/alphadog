@@ -11,7 +11,7 @@ public enum ExceptionCategory {
     IMPORT_DATA_WRONG(42009, "导入员工数据有误！"),
     PERMISSION_DENIED(42010, "员工ID和公司ID不匹配！"),
     COMPANYID_ENPTY(42011, "公司ID不能为空！"),
-    PROGRAM_DATA_EMPTY(90010, "公司信息不存在！"),
+    COMPANY_DATA_EMPTY(90010, "公司信息不存在！"),
     PROGRAM_EXCEPTION(99999, "发生异常，请稍候再试！");
 
 
