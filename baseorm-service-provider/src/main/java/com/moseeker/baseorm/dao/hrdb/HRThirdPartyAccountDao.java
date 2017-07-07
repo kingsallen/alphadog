@@ -2,18 +2,15 @@ package com.moseeker.baseorm.dao.hrdb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
-import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccountHr;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountHrRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.query.Condition;
-import com.moseeker.common.util.query.ConditionOp;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountHrDO;
 import org.apache.thrift.TException;
@@ -25,12 +22,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * HR帐号数据库持久类
@@ -84,35 +77,6 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
             dbrecord.setRemainNum(record.getRemainNum());
             dbrecord.setSyncTime(record.getSyncTime());
             count = dbrecord.update();
-        }
-        return count;
-    }
-
-    /**
-     * 修改第三方帐号信息
-     *
-     * @param account
-     * @return
-     */
-    public int updatePartyAccountByCompanyIdChannel(ThirdPartAccountData account) {
-        logger.info("updatePartyAccountByCompanyIdChannel");
-        int count = 0;
-        try {
-            Date date = sdf.parse(account.getSync_time());
-            HrThirdPartyAccountRecord record = create.selectFrom(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
-                    .where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.COMPANY_ID
-                            .equal((int) (account.getCompany_id())))
-                    .and(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.CHANNEL.equal((short) account.getChannel()))
-                    .fetchOne();
-            if (record != null) {
-                logger.info("HrThirdPartyAccount.id:{}", record.getId().intValue());
-                logger.info("remainume:{}", account.getRemain_num());
-                record.setSyncTime(new Timestamp(date.getTime()));
-                record.setRemainNum((int) (account.getRemain_num()));
-                count = record.update();
-            }
-        } catch (ParseException e) {
-            logger.error(e.getMessage(), e);
         }
         return count;
     }
@@ -187,20 +151,33 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
         return null;
     }
 
-    public List<ThirdPartAccountData> getThirdPartyAccountsByUserId(int user_id) {
+    public List<HrThirdPartyAccountDO> getThirdPartyAccountsByUserId(int user_id) {
         logger.info("getThirdPartyAccountsByUserId:" + user_id);
-        List<Integer> thirdPartyAccounts = create.select(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.THIRD_PARTY_ACCOUNT_ID).from(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR)
-                .where(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.HR_ACCOUNT_ID.eq(user_id))
-                .and(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.STATUS.eq((byte) 1)).fetch(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.THIRD_PARTY_ACCOUNT_ID);
+        Query query = new Query.QueryBuilder().select("third_party_account_id").where("hr_account_id",user_id).and("status",1).buildQuery();
 
-        if (thirdPartyAccounts != null && thirdPartyAccounts.size() > 0) {
-            List<ThirdPartAccountData> datas = create.select().from(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
-                    .where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID.in(thirdPartyAccounts))
-                    .fetchInto(ThirdPartAccountData.class);
-            logger.info("getThirdPartyAccountsByUserId:size" + datas.size());
-            return datas;
+        //所有绑定的第三方帐号的ID的合集
+        List<HrThirdPartyAccountHrDO> thirdPartyAccounts  = thirdPartyAccountHrDao.getDatas(query);
+
+        if(thirdPartyAccounts == null || thirdPartyAccounts.size() == 0){
+            return new ArrayList<>();
         }
-        return new ArrayList<>();
+
+        Set<Integer> thirdPartyAccountIds = new HashSet<>();
+
+        for(HrThirdPartyAccountHrDO thirdPartyAccountHrDO : thirdPartyAccounts){
+            thirdPartyAccountIds.add(thirdPartyAccountHrDO.getThirdPartyAccountId());
+        }
+
+        Short[] valiableBinding = new Short[]{(short) 1, (short) 3, (short) 7};//有效的状态:已绑定，刷新中，刷新程序错误
+
+        query = new Query.QueryBuilder()
+                .where(new Condition("id",thirdPartyAccountIds,ValueOp.IN))
+                .and(new Condition("binding", Arrays.asList(valiableBinding),ValueOp.IN))
+                .buildQuery();
+
+        List<HrThirdPartyAccountDO> hrThirdPartyAccountDOS = getDatas(query);
+
+        return hrThirdPartyAccountDOS == null ? new ArrayList<>():hrThirdPartyAccountDOS;
     }
 
 

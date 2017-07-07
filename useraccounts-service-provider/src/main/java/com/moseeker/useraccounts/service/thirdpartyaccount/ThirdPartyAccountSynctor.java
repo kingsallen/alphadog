@@ -5,19 +5,21 @@ import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.email.Email;
 import com.moseeker.common.util.ConfigPropertiesUtil;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
-import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+
+import javax.mail.event.TransportEvent;
+import javax.mail.event.TransportListener;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by zhangdi on 2017/6/16.
@@ -33,12 +35,21 @@ public class ThirdPartyAccountSynctor {
 
     static ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil.getInstance();
 
-    static String csEmail;
+    static List<String> mails = new ArrayList<>();
 
     static {
         try {
             propertiesUtils.loadResource("setting.properties");
-            csEmail = propertiesUtils.get("THIRD_PARTY_ACCOUNT_SYNC_EMAIL", String.class);
+            String emailConfig = propertiesUtils.get("THIRD_PARTY_ACCOUNT_SYNC_EMAIL", String.class);
+
+            if (StringUtils.isNotNullOrEmpty(emailConfig)) {
+
+                String[] emailArrays = emailConfig.split(",");
+
+                for (String s : emailArrays) {
+                    mails.add(s);
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
@@ -97,36 +108,71 @@ public class ThirdPartyAccountSynctor {
 
     //发送同步失败的邮件
     private void sendFailureMail(int syncType, HrThirdPartyAccountDO thirdPartyAccount, String message) {
-        logger.info("发送同步错误的邮件:syncType{}:thirdPartyAccount:{}:message:{}", syncType, JSON.toJSONString(thirdPartyAccount), message);
+        logger.info("发送同步或刷新错误的邮件:syncType{}:thirdPartyAccount:{}:message:{}", syncType, JSON.toJSONString(thirdPartyAccount), message);
 
-        if (csEmail == null) {
+        if (mails == null || mails.size() == 0) {
             logger.error("没有配置同步邮箱地址!");
             return;
         }
 
         try {
 
-            Email.EmailBuilder emailBuilder = new Email.EmailBuilder(csEmail);
+            Email.EmailBuilder emailBuilder = new Email.EmailBuilder(mails);
 
             ChannelType channelType = ChannelType.instaceFromInteger(thirdPartyAccount.getChannel());
 
-            String content = new StringBuilder()
-                    .append("这是一条")
-                    .append(syncType == 0 ? "绑定" : "同步")
-                    .append(channelType.getAlias())
-                    .append("帐号失败的消息")
-                    .append("<br/>")
-                    .append("用户名:").append("<br/>")
-                    .append("ID:").append(thirdPartyAccount.getId()).append("<br/>")
-                    .append("帐号:").append(thirdPartyAccount.getUsername()).append("<br/>")
-                    .append("会员名:").append(thirdPartyAccount.getMembername() == null ? "" : thirdPartyAccount.getMembername()).append("<br/>")
-                    .append("失败信息:").append("<br/>")
-                    .append(message == null ? "" : message)
-                    .toString();
+            StringBuilder titleBuilder = new StringBuilder();
+            titleBuilder.append("【第三方帐号").append(syncType == 0 ? "绑定" : "刷新").append("失败】");
+            titleBuilder.append(":【").append(channelType.getAlias()).append("】");
+            titleBuilder.append(":【").append(thirdPartyAccount.getId()).append("】");
 
-            emailBuilder.setSubject("【" + channelType.getAlias() + "】【账号" + (syncType == 0 ? "绑定" : "刷新") + "失败】");
-            emailBuilder.setContent(content);
-            emailBuilder.build().send();
+            String br = "<br/>";
+
+            StringBuilder messageBuilder = new StringBuilder();
+
+            messageBuilder.append("【第三方帐号ID】：").append(thirdPartyAccount.getId()).append(br);
+            messageBuilder.append("【帐号名】：").append(thirdPartyAccount.getUsername()).append(br);
+            if (StringUtils.isNotNullOrEmpty(thirdPartyAccount.getMembername())) {
+                messageBuilder.append("【会员名】：").append(thirdPartyAccount.getMembername()).append(br);
+            }
+            if (StringUtils.isNotNullOrEmpty(message)) {
+                messageBuilder.append("【失败信息】:").append(br);
+                messageBuilder.append(message).append(br);
+            }
+
+            emailBuilder.setSubject(titleBuilder.toString());
+            emailBuilder.setContent(messageBuilder.toString());
+            Email email = emailBuilder.build();
+            email.send(new TransportListener() {
+                int i = 3;//重试三次邮件
+
+                @Override
+                public void messageDelivered(TransportEvent e) {
+                    logger.info("email send messageDelivered");
+                }
+
+                @Override
+                public void messageNotDelivered(TransportEvent e) {
+                    if (i > 0) {
+                        logger.info("email send messageNotDelivered retry {}", i);
+                        email.send(this);
+                        i--;
+                    } else {
+                        logger.error("发送绑定失败的邮件发生错误：{}", e.getMessage());
+                    }
+                }
+
+                @Override
+                public void messagePartiallyDelivered(TransportEvent e) {
+                    if (i > 0) {
+                        logger.info("email send messagePartiallyDelivered retry {}", i);
+                        email.send(this);
+                        i--;
+                    } else {
+                        logger.error("发送绑定失败的邮件发生错误：{}", e.getMessage());
+                    }
+                }
+            });
         } catch (Exception e) {
             logger.error("发送绑定失败的邮件发生错误：{}", e.getMessage());
             e.printStackTrace();
@@ -140,12 +186,12 @@ public class ThirdPartyAccountSynctor {
      *
      * @param hrId
      * @param thirdPartyAccount
-     * @param async
+     * @param sync
      * @return
      * @throws Exception
      */
-    public HrThirdPartyAccountDO bindThirdPartyAccount(int hrId, HrThirdPartyAccountDO thirdPartyAccount, boolean async) throws Exception {
-        return async ? asyncWithBindThirdPartyAccount(hrId, thirdPartyAccount) : syncWithBindThirdPartyAccount(hrId, thirdPartyAccount);
+    public HrThirdPartyAccountDO bindThirdPartyAccount(int hrId, HrThirdPartyAccountDO thirdPartyAccount, boolean sync) throws Exception {
+        return sync ? syncWithBindThirdPartyAccount(hrId, thirdPartyAccount) : asyncWithBindThirdPartyAccount(hrId, thirdPartyAccount);
     }
 
     /**
@@ -200,8 +246,8 @@ public class ThirdPartyAccountSynctor {
      * @return
      * @throws Exception
      */
-    public HrThirdPartyAccountDO syncThirdPartyAccount(HrThirdPartyAccountDO thirdPartyAccount, boolean async) throws Exception {
-        return async ? asyncWithSyncThirdPartyAccount(thirdPartyAccount) : syncWithSyncThirdPartyAccount(thirdPartyAccount);
+    public HrThirdPartyAccountDO syncThirdPartyAccount(HrThirdPartyAccountDO thirdPartyAccount, boolean sync) throws Exception {
+        return sync ? syncWithSyncThirdPartyAccount(thirdPartyAccount) : asyncWithSyncThirdPartyAccount(thirdPartyAccount);
     }
 
     /**
