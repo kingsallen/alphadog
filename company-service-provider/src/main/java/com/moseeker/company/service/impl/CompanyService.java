@@ -7,12 +7,15 @@ import com.moseeker.baseorm.dao.hrdb.HrEmployeePositionDao;
 import com.moseeker.baseorm.dao.hrdb.HrEmployeeSectionDao;
 import com.moseeker.baseorm.dao.hrdb.HrGroupCompanyRelDao;
 import com.moseeker.baseorm.dao.hrdb.HrImporterMonitorDao;
+import com.moseeker.baseorm.dao.hrdb.HrPointsConfDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCertConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeePosition;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeSection;
 import com.moseeker.baseorm.db.hrdb.tables.HrImporterMonitor;
+import com.moseeker.baseorm.db.hrdb.tables.HrPointsConf;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
@@ -45,8 +48,10 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeePositionDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeSectionDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrGroupCompanyRelDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrImporterMonitorDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrPointsConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
+import com.moseeker.thrift.gen.employee.struct.RewardConfig;
 
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -88,6 +93,9 @@ public class CompanyService {
 
     @Autowired
     EmployeeEntity employeeEntity;
+
+    @Autowired
+    HrPointsConfDao hrPointsConfDao;
 
     @Autowired
     private HrImporterMonitorDao hrImporterMonitorDao;
@@ -292,6 +300,43 @@ public class CompanyService {
         }
 
         return companyForVerifyEmployeeList;
+    }
+
+
+    /**
+     * 更新公司积分配置
+     *
+     * @return
+     */
+    @Transactional
+    public Response updateCompanyRewardConf(Integer companyId, List<RewardConfig> rewardConfigs) throws BIZException {
+        if (companyId == 0) {
+            throw ExceptionFactory.buildException(ExceptionCategory.COMPANY_ID_EMPTY);
+        }
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where(HrCompany.HR_COMPANY.ID.getName(), companyId);
+        // 判断公司信息是否正确
+        HrCompanyDO hrCompanyDO = companyDao.getData(queryBuilder.buildQuery());
+        if (StringUtils.isEmptyObject(hrCompanyDO)) {
+            throw ExceptionFactory.buildException(Category.COMPANY_DATA_EMPTY);
+        }
+        // 更新数据
+        if (!StringUtils.isEmptyList(rewardConfigs)) {
+            List<HrPointsConfDO> hrPointsConfDOS = new ArrayList<>();
+            for (RewardConfig rewardConfig : rewardConfigs) {
+                if (rewardConfig.getId() == 0) {
+                    continue;
+                }
+                HrPointsConfDO hrPointsConfDO = new HrPointsConfDO();
+                hrPointsConfDO.setReward(rewardConfig.getPoints());
+                hrPointsConfDO.setCompanyId(companyId);
+                hrPointsConfDO.setId(rewardConfig.getId());
+                hrPointsConfDOS.add(hrPointsConfDO);
+            }
+            hrPointsConfDao.updateDatas(hrPointsConfDOS);
+        }
+        Response response = ResultMessage.SUCCESS.toResponse();
+        return response;
     }
 
     /**
@@ -503,7 +548,7 @@ public class CompanyService {
     }
 
     /**
-     * 获取员工绑定配置信息
+     * 获取公司认证配置信息
      *
      * @param companyId 公司ID
      * @return
@@ -523,7 +568,7 @@ public class CompanyService {
     }
 
     /**
-     * 修改员工绑定配置
+     * 更新公司员工认证配置
      *
      * @param id          绑定配置信息编号
      * @param companyId   公司编号
@@ -535,11 +580,19 @@ public class CompanyService {
      * @return 受影响行数
      */
     @Transactional
-    public int updateHrEmployeeCertConf(Integer id, Integer companyId, Integer authMode, String emailSuffix, String custom, String customHint, String questions) throws BIZException {
+    public int updateHrEmployeeCertConf(Integer companyId, Integer authMode, String emailSuffix, String custom, String customHint, String questions) throws BIZException {
+        if (companyId == 0) {
+            throw ExceptionFactory.buildException(ExceptionCategory.COMPANY_ID_EMPTY);
+        }
         Query.QueryBuilder query = new Query.QueryBuilder();
-        query.where("id", id).and("company_id", companyId);
+        query.where("company_id", companyId);
         HrEmployeeCertConfDO hrEmployeeCertConfDO = hrEmployeeCertConfDao.getData(query.buildQuery());
-        if (hrEmployeeCertConfDO != null && hrEmployeeCertConfDO.getId() > 0) {
+        // 员工认证信息为空需要新建
+        int falg = 0;
+        if (StringUtils.isEmptyObject(hrEmployeeCertConfDO)) {
+            hrEmployeeCertConfDO = new HrEmployeeCertConfDO();
+            falg = 1;
+        } else {
             Integer oldAuthMode = ((int) hrEmployeeCertConfDO.getAuthMode());
             if ((oldAuthMode == 2 || oldAuthMode == 4) && (authMode != 2 && authMode != 4)) {
                 query.clear();
@@ -548,21 +601,30 @@ public class CompanyService {
                 List<Integer> employeeIds = userEmployeeDao.getDatas(query.buildQuery(), Integer.class);
                 employeeEntity.removeEmployee(employeeIds);
             }
-            hrEmployeeCertConfDO.setAuthMode(authMode);
-            if (StringUtils.isNotNullOrEmpty(emailSuffix)) {
-                hrEmployeeCertConfDO.setEmailSuffix(emailSuffix);
-            }
-            if (StringUtils.isNotNullOrEmpty(questions)) {
-                hrEmployeeCertConfDO.setQuestions(questions);
-            }
-            if (StringUtils.isNotNullOrEmpty(custom)) {
-                hrEmployeeCertConfDO.setCustom(custom);
-            }
-            if (StringUtils.isNotNullOrEmpty(customHint)) {
-                hrEmployeeCertConfDO.setCustomHint(customHint);
-            }
-            return hrEmployeeCertConfDao.updateData(hrEmployeeCertConfDO);
         }
-        return 0;
+        hrEmployeeCertConfDO.setAuthMode(authMode);
+        if (StringUtils.isNotNullOrEmpty(emailSuffix)) {
+            hrEmployeeCertConfDO.setEmailSuffix(emailSuffix);
+        }
+        if (StringUtils.isNotNullOrEmpty(questions)) {
+            hrEmployeeCertConfDO.setQuestions(questions);
+        }
+        if (StringUtils.isNotNullOrEmpty(custom)) {
+            hrEmployeeCertConfDO.setCustom(custom);
+        }
+        if (StringUtils.isNotNullOrEmpty(customHint)) {
+            hrEmployeeCertConfDO.setCustomHint(customHint);
+        }
+        try {
+            if (falg == 0) {
+                hrEmployeeCertConfDao.updateData(hrEmployeeCertConfDO);
+            } else if (falg == 1) {
+                hrEmployeeCertConfDao.addData(hrEmployeeCertConfDO);
+            }
+        } catch (Exception e) {
+            return 0;
+        }
+        return 1;
     }
+
 }

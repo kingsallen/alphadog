@@ -1,13 +1,14 @@
 package com.moseeker.servicemanager.web.controller.company;
 
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
-import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.web.controller.company.forms.Validator;
+import com.moseeker.servicemanager.web.controller.useraccounts.UserHrAccountParamUtils;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -28,11 +29,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 //@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
 @Controller
@@ -160,6 +163,50 @@ public class CompanyController {
         }
     }
 
+
+    /**
+     * 更新公司积分配置信息
+     *
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/hraccount/company/rewardconfig", method = RequestMethod.PUT)
+    @ResponseBody
+    public String updateCompanyRewardConf(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int companyId = params.getInt("companyId", 0);
+            if (companyId == 0) {
+                return ResponseLogNotification.fail(request, "公司Id不能为空");
+            } else {
+                if (params.get("rewardConfigs") != null) {
+                    List<HashMap<String, Object>> datas = (List<HashMap<String, Object>>) params.get("rewardConfigs");
+                    List<RewardConfig> cs = new ArrayList<>();
+                    if (datas != null) {
+                        datas.forEach(rewardConfig -> {
+                            try {
+                                RewardConfig c = ParamUtils.initModelForm(rewardConfig, RewardConfig.class);
+                                cs.add(c);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                LoggerFactory.getLogger(UserHrAccountParamUtils.class).error(e.getMessage(), e);
+                            }
+                        });
+                    }
+                    Response result = companyServices.updateCompanyRewardConf(companyId, cs);
+                    return ResponseLogNotification.success(request, result);
+                } else {
+                    return ResponseLogNotification.fail(request, "积分配置信息为空!");
+                }
+            }
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
     /**
      * 添加员工认证模板
      *
@@ -265,6 +312,44 @@ public class CompanyController {
     }
 
     /**
+     * 修改公司员工认证配置
+     *
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/hraccount/company/employeebindconf", method = RequestMethod.GET)
+    @ResponseBody
+    public String updateEmployeeBindConf(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int id = params.getInt("id", 0);
+            int companyId = params.getInt("companyId", 0);
+            Integer authMode = params.getInt("authMode");
+            String emailSuffix = params.getString("emailSuffix");
+            String custom = params.getString("custom");
+            String customHint = params.getString("customHint");
+            String questions = params.getString("questions");
+            if (companyId == 0 || id == 0 || authMode == null) {
+                return ResponseLogNotification.fail(request, "公司Id不能为空");
+            } else if (id == 0) {
+                return ResponseLogNotification.fail(request, "Id不能为空");
+            } else if (authMode == null) {
+                return ResponseLogNotification.fail(request, "认证方式不能为空");
+            } else {
+                boolean result = companyServices.updateEmployeeBindConf(companyId, authMode, emailSuffix, custom, customHint, questions);
+                return ResponseLogNotification.success(request, ResponseUtils.success(new HashMap<String, Object>() {{
+                    put("result", result);
+                }}));
+            }
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
      * 查找公司账号的集团账号信息
      *
      * @param request
@@ -274,7 +359,6 @@ public class CompanyController {
     @ResponseBody
     public String getGroupCompanies(@PathVariable int companyId, HttpServletRequest request) {
         try {
-
             List<CompanyForVerifyEmployee> companyForVerifyEmployeeList = companyServices.getGroupCompanies(companyId);
             return ResponseLogNotification.success(request,
                     ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(companyForVerifyEmployeeList)));
@@ -285,6 +369,7 @@ public class CompanyController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
 
     /**
      * 判断一家公司是否是集团公司GroupCompany

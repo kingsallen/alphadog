@@ -92,9 +92,8 @@ public class CompanyServicesImpl implements Iface {
     }
 
     /**
-     * 更新员工认证配置
+     * 更新公司员工认证配置
      *
-     * @param id
      * @param companyId
      * @param authMode
      * @param emailSuffix
@@ -106,9 +105,9 @@ public class CompanyServicesImpl implements Iface {
      * @throws TException
      */
     @Override
-    public boolean updateEmployeeBindConf(int id, int companyId, int authMode, String emailSuffix, String custom, String customHint, String questions) throws BIZException, TException {
+    public boolean updateEmployeeBindConf(int companyId, int authMode, String emailSuffix, String custom, String customHint, String questions) throws BIZException, TException {
         try {
-            int result = service.updateHrEmployeeCertConf(id, companyId, authMode, emailSuffix, custom, customHint, questions);
+            int result = service.updateHrEmployeeCertConf(companyId, authMode, emailSuffix, custom, customHint, questions);
             if (result > 0) {
                 return true;
             }
@@ -117,6 +116,18 @@ public class CompanyServicesImpl implements Iface {
             throw ExceptionFactory.buildException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS);
         }
         return false;
+    }
+
+    /**
+     * 获取公司员工认证配置
+     *
+     * @param companyId 公司ID
+     * @return
+     * @throws
+     */
+    @Override
+    public HrEmployeeCertConfDO getHrEmployeeCertConf(int companyId) throws BIZException, TException {
+        return service.getHrEmployeeCertConf(companyId);
     }
 
     /**
@@ -138,6 +149,21 @@ public class CompanyServicesImpl implements Iface {
         }
         return result;
     }
+
+    /**
+     * 更新公司积分配置
+     *
+     * @param companyId
+     * @param rewardConfigs
+     * @return
+     * @throws BIZException
+     * @throws TException
+     */
+    @Override
+    public Response updateCompanyRewardConf(int companyId, List<RewardConfig> rewardConfigs) throws BIZException, TException {
+        return service.updateCompanyRewardConf(companyId, rewardConfigs);
+    }
+
 
     /**
      * 获取公司部门与职能信息(员工认证补填字段显示)
@@ -195,16 +221,6 @@ public class CompanyServicesImpl implements Iface {
         return service.bindingSwitch(companyId, disable);
     }
 
-    /**
-     * 获取员工绑定配置信息
-     *
-     * @param companyId 公司ID
-     * @return
-     * @throws
-     */
-    @Override
-    public HrEmployeeCertConfDO getHrEmployeeCertConf(int companyId) throws BIZException, TException {
-        return service.getHrEmployeeCertConf(companyId);
-    }
+
 }
 
