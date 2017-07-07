@@ -835,6 +835,7 @@ public class UserHrAccountService {
         }
         try {
             List<Integer> list = employeeEntity.getCompanyIds(hrCompanyDO.getParentId() > 0 ? hrCompanyDO.getParentId() : companyId);
+            queryBuilder.clear();
             queryBuilder.select(new Select(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), SelectOp.COUNT))
                     .select(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName());
             Condition companyIdCon = new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), list, ValueOp.IN);
@@ -930,24 +931,31 @@ public class UserHrAccountService {
         }
         // 分页数据
         if (pageNumber > 0 && pageSize > 0) {
-            queryBuilder.setPageNum(pageNumber);
-            queryBuilder.setPageSize(pageSize);
+            // 取的数据超过了分页数，取最第一页数据
+            if ((pageNumber * pageSize) > counts) {
+                queryBuilder.setPageSize(pageSize);
+                pageNumber = 1;
+                queryBuilder.setPageNum(pageNumber);
+            } else {
+                queryBuilder.setPageNum(pageNumber);
+                queryBuilder.setPageSize(pageSize);
+            }
         }
         List<UserEmployeeDO> userEmployeeDOS = userEmployeeDao.getDatas(queryBuilder.buildQuery());
-        Set<Integer> sysuserId = userEmployeeDOS.stream().filter(userUserDO -> userUserDO.getSysuserId() > 0)
-                .map(UserEmployeeDO::getSysuserId).collect(Collectors.toSet());
-        queryBuilder.clear();
-        queryBuilder.where(new Condition(UserUser.USER_USER.ID.getName(), sysuserId, ValueOp.IN));
-        // 查询微信昵称
-        List<UserUserDO> userUserDOList = userUserDao.getDatas(queryBuilder.buildQuery());
-        Map<Integer, UserUserDO> userMap = userUserDOList.stream().collect(Collectors.toMap(UserUserDO::getId, Function.identity()));
-
-        queryBuilder.clear();
-        queryBuilder.where(new Condition(HrCompany.HR_COMPANY.ID.getName(), list, ValueOp.IN));
-        List<HrCompanyDO> companyList = hrCompanyDao.getDatas(queryBuilder.buildQuery());
-        // 查询公司信息
-        Map<Integer, HrCompanyDO> companyMap = companyList.stream().collect(Collectors.toMap(HrCompanyDO::getId, Function.identity()));
         if (!StringUtils.isEmptyList(userEmployeeDOS)) {
+            Set<Integer> sysuserId = userEmployeeDOS.stream().filter(userUserDO -> userUserDO.getSysuserId() > 0)
+                    .map(UserEmployeeDO::getSysuserId).collect(Collectors.toSet());
+            queryBuilder.clear();
+            queryBuilder.where(new Condition(UserUser.USER_USER.ID.getName(), sysuserId, ValueOp.IN));
+            // 查询微信昵称
+            List<UserUserDO> userUserDOList = userUserDao.getDatas(queryBuilder.buildQuery());
+            Map<Integer, UserUserDO> userMap = userUserDOList.stream().collect(Collectors.toMap(UserUserDO::getId, Function.identity()));
+
+            queryBuilder.clear();
+            queryBuilder.where(new Condition(HrCompany.HR_COMPANY.ID.getName(), list, ValueOp.IN));
+            List<HrCompanyDO> companyList = hrCompanyDao.getDatas(queryBuilder.buildQuery());
+            // 查询公司信息
+            Map<Integer, HrCompanyDO> companyMap = companyList.stream().collect(Collectors.toMap(HrCompanyDO::getId, Function.identity()));
             for (UserEmployeeDO userEmployeeDO : userEmployeeDOS) {
                 UserEmployeeVO userEmployeeVO = new UserEmployeeVO();
                 userEmployeeVO.setId(userEmployeeDO.getId());
@@ -956,6 +964,7 @@ public class UserHrAccountService {
                 userEmployeeVO.setCompanyId(userEmployeeDO.getCompanyId());
                 userEmployeeVO.setEmail(userEmployeeDO.getEmail());
                 userEmployeeVO.setCustomField(userEmployeeDO.getCustomField());
+                userEmployeeVO.setBindingTime(userEmployeeDO.getBindingTime());
                 // 微信昵称
                 if (!StringUtils.isEmptyObject(userMap) && !StringUtils.isEmptyObject(userMap.get(userEmployeeDO.getSysuserId()))) {
                     userEmployeeVO.setNickName(userMap.get(userEmployeeDO.getSysuserId()).getNickname());
@@ -979,6 +988,8 @@ public class UserHrAccountService {
                 userEmployeeVOPageVO.setPageNumber(pageNumber);
             }
             userEmployeeVOPageVO.setTotalRow(counts);
+        } else {
+            throw ExceptionFactory.buildException(ExceptionCategory.USEREMPLOYEES_EMPTY);
         }
         return userEmployeeVOPageVO;
     }
@@ -996,6 +1007,10 @@ public class UserHrAccountService {
             throw ExceptionFactory.buildException(ExceptionCategory.COMPANYID_ENPTY);
         }
         if (!StringUtils.isEmptyObject(userEmployees)) {
+            // 查询是否有权限修改
+            if (!employeeEntity.permissionJudge(userEmployees, companyId)) {
+                throw ExceptionFactory.buildException(ExceptionCategory.PERMISSION_DENIED);
+            }
             Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
             queryBuilder.where(new Condition(UserEmployee.USER_EMPLOYEE.ID.getName(), userEmployees, ValueOp.IN))
                     .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), 0);
@@ -1006,10 +1021,6 @@ public class UserHrAccountService {
             }
             Set<Integer> sysuserId = list.stream().filter(userUserDO -> userUserDO.getSysuserId() > 0)
                     .map(UserEmployeeDO::getSysuserId).collect(Collectors.toSet());
-            // 查询是否有权限修改
-            if (!employeeEntity.permissionJudge(userEmployees, companyId)) {
-                throw ExceptionFactory.buildException(ExceptionCategory.PERMISSION_DENIED);
-            }
             queryBuilder.clear();
             queryBuilder.where(new Condition(UserUser.USER_USER.ID.getName(), sysuserId, ValueOp.IN));
             // 查询微信昵称
@@ -1064,16 +1075,8 @@ public class UserHrAccountService {
         logger.info("开始导入员工信息");
         // 判断是否有重复数据
         ImportUserEmployeeStatistic importUserEmployeeStatistic = repetitionFilter(userEmployeeList, companyId);
-        if (StringUtils.isEmptyObject(importUserEmployeeStatistic) && !importUserEmployeeStatistic.insertAccept) {
+        if (!StringUtils.isEmptyObject(importUserEmployeeStatistic) && !importUserEmployeeStatistic.insertAccept) {
             throw ExceptionFactory.buildException(ExceptionCategory.IMPORT_DATA_WRONG);
-        }
-        // 查询公司ID是否设置正确
-        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-        queryBuilder.where(HrCompany.HR_COMPANY.ID.getName(), companyId);
-        HrCompanyDO company = hrCompanyDao.getData(queryBuilder.buildQuery());
-        // 公司ID设置错误
-        if (StringUtils.isEmptyObject(company)) {
-            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_ID_ISNOTEXIST);
         }
         // 通过手机号查询那些员工数据是更新，那些数据是新增
         List<String> moblies = new ArrayList<>();
@@ -1082,8 +1085,8 @@ public class UserHrAccountService {
                 moblies.add(userEmployeeDO.getMobile());
             }
         });
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         Condition condition = new Condition(UserEmployee.USER_EMPLOYEE.MOBILE.getName(), moblies, ValueOp.IN);
-        queryBuilder.clear();
         queryBuilder.where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyId).and(condition);
         // 数据库中已经有的员工列表
         List<UserEmployeeDO> userEmployeeDOS = userEmployeeDao.getDatas(queryBuilder.buildQuery());
@@ -1109,8 +1112,8 @@ public class UserHrAccountService {
         // 新增数据
         if (!StringUtils.isEmptyList(userEmployeeList)) {
             userEmployeeDao.addAllData(userEmployeeList);
-            response = ResultMessage.SUCCESS.toResponse();
         }
+        response = ResultMessage.SUCCESS.toResponse();
         logger.info("导入员工信息结束");
         return response;
     }
@@ -1133,10 +1136,20 @@ public class UserHrAccountService {
      * @param userEmployeeDOS
      * @param companyId
      */
-    public ImportUserEmployeeStatistic repetitionFilter(List<UserEmployeeDO> userEmployeeDOS, Integer companyId) {
-        ImportUserEmployeeStatistic importUserEmployeeStatistic = new ImportUserEmployeeStatistic();
+    public ImportUserEmployeeStatistic repetitionFilter(List<UserEmployeeDO> userEmployeeDOS, Integer companyId) throws BIZException {
+        if (companyId == 0) {
+            throw ExceptionFactory.buildException(ExceptionCategory.COMPANYID_ENPTY);
+        }
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where(HrCompany.HR_COMPANY.ID.getName(), companyId);
+        HrCompanyDO company = hrCompanyDao.getData(queryBuilder.buildQuery());
+        // 公司ID设置错误
+        if (StringUtils.isEmptyObject(company)) {
+            throw ExceptionFactory.buildException(ExceptionCategory.PROGRAM_DATA_EMPTY);
+        }
+        ImportUserEmployeeStatistic importUserEmployeeStatistic = new ImportUserEmployeeStatistic();
         // 查找已经存在的数据
+        queryBuilder.clear();
         queryBuilder.where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyId)
                 .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), 0);
         // 数据库中取出来的数据
@@ -1145,22 +1158,25 @@ public class UserHrAccountService {
         List<ImportErrorUserEmployee> importErrorUserEmployees = new ArrayList<>();
         int repetitionCounts = 0;
         int errorCounts = 0;
-        if (!StringUtils.isEmptyList(dbEmployeeDOList)) {
-            // 提交上的数据
-            for (UserEmployeeDO userEmployeeDO : userEmployeeDOS) {
-                ImportErrorUserEmployee importErrorUserEmployee = new ImportErrorUserEmployee();
-                // 判断上传的数据是否有字段长度的错误
-                // 姓名不能为空
-                if (StringUtils.isEmptyObject(userEmployeeDO.getCname())) {
-                    importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
-                    importErrorUserEmployee.setMessage("cname不能为空");
-                    errorCounts = errorCounts + 1;
-                    importErrorUserEmployees.add(importErrorUserEmployee);
-                    continue;
-                }
-                if (StringUtils.isEmptyObject(userEmployeeDO.getCustomField())) {
-                    continue;
-                }
+        // 提交上的数据
+        for (UserEmployeeDO userEmployeeDO : userEmployeeDOS) {
+            ImportErrorUserEmployee importErrorUserEmployee = new ImportErrorUserEmployee();
+            // 判断上传的数据是否有字段长度的错误
+            // 姓名不能为空
+            if (StringUtils.isEmptyObject(userEmployeeDO.getCname())) {
+                importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
+                importErrorUserEmployee.setMessage("cname不能为空");
+                errorCounts = errorCounts + 1;
+                importErrorUserEmployees.add(importErrorUserEmployee);
+                continue;
+            }
+            if (userEmployeeDO.getCompanyId() == 0) {
+                userEmployeeDO.setCompanyId(companyId);
+            }
+            if (StringUtils.isEmptyObject(userEmployeeDO.getCustomField())) {
+                continue;
+            }
+            if (!StringUtils.isEmptyList(dbEmployeeDOList)) {
                 // 数据库的数据
                 for (UserEmployeeDO dbUserEmployeeDO : dbEmployeeDOList) {
                     // 非自定义员工,忽略检查
@@ -1170,7 +1186,8 @@ public class UserHrAccountService {
                     }
                     // 当提交的数据和数据库中的数据，cname和customField都相等时候，认为是重复数据
                     if (userEmployeeDO.getCname().equals(dbUserEmployeeDO.getCname())
-                            && userEmployeeDO.getCustomField().equals(dbUserEmployeeDO.getCustomField())) {
+                            && userEmployeeDO.getCustomField().equals(dbUserEmployeeDO.getCustomField())
+                            && !userEmployeeDO.getMobile().equals(dbUserEmployeeDO.getMobile())) {
                         repetitionCounts = repetitionCounts + 1;
                         importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
                         importErrorUserEmployee.setMessage("cname和customField和数据库的数据一致");
@@ -1220,6 +1237,7 @@ public class UserHrAccountService {
         userEmployeeDetailVO.setMobile(userEmployeeDO.getMobile());
         userEmployeeDetailVO.setCustomField(userEmployeeDO.getCustomField());
         userEmployeeDetailVO.setEmail(userEmployeeDO.getEmail());
+        userEmployeeDetailVO.setBindingTime(userEmployeeDO.getBindingTime());
         userEmployeeDetailVO.setActivation((new Double(userEmployeeDO.getActivation())).intValue());
         // 查询微信信息
         if (userEmployeeDO.getSysuserId() > 0) {
@@ -1260,6 +1278,9 @@ public class UserHrAccountService {
         Response response = new Response();
         if (StringUtils.isEmptyObject(userEmployeeId)) {
             throw ExceptionFactory.buildException(ExceptionCategory.USEREMPLOYEES_DATE_EMPTY);
+        }
+        if (companyId == 0) {
+            throw ExceptionFactory.buildException(ExceptionCategory.COMPANYID_ENPTY);
         }
         // 查询是否有权限修改
         if (!employeeEntity.permissionJudge(userEmployeeId, companyId)) {

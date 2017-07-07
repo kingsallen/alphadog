@@ -350,26 +350,22 @@ public class CompanyService {
      */
     public CompanyOptions getCompanyOptions(Integer companyId) throws BIZException {
         CompanyOptions companyOptions = new CompanyOptions();
-        try {
-            if (companyId > 0) {
-                //员工部门信息
-                Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-                queryBuilder.where(HrEmployeeSection.HR_EMPLOYEE_SECTION.COMPANY_ID.getName(), companyId);
-                List<HrEmployeeSectionDO> hrEmployeeSectionDOS = hrEmployeeSectionDao.getDatas(queryBuilder.buildQuery());
-                if (!StringUtils.isEmptyList(hrEmployeeSectionDOS)) {
-                    companyOptions.setHrEmployeeSection(hrEmployeeSectionDOS);
-                }
-                // 员工职能信息
-                queryBuilder.clear();
-                queryBuilder.where(HrEmployeePosition.HR_EMPLOYEE_POSITION.COMPANY_ID.getName(), companyId);
-                List<HrEmployeePositionDO> hrEmployeePositionDOS = hrEmployeePositionDao.getDatas(queryBuilder.buildQuery());
-                if (!StringUtils.isEmptyList(hrEmployeePositionDOS)) {
-                    companyOptions.setHrEmployeePosition(hrEmployeePositionDOS);
-                }
-            }
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw ExceptionFactory.buildException(ExceptionCategory.COMPANY_NOT_BELONG_GROUPCOMPANY);
+        if (companyId == 0) {
+            throw ExceptionFactory.buildException(ExceptionCategory.COMPANY_ID_EMPTY);
+        }
+        //员工部门信息
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where(HrEmployeeSection.HR_EMPLOYEE_SECTION.COMPANY_ID.getName(), companyId);
+        List<HrEmployeeSectionDO> hrEmployeeSectionDOS = hrEmployeeSectionDao.getDatas(queryBuilder.buildQuery());
+        if (!StringUtils.isEmptyList(hrEmployeeSectionDOS)) {
+            companyOptions.setHrEmployeeSection(hrEmployeeSectionDOS);
+        }
+        // 员工职能信息
+        queryBuilder.clear();
+        queryBuilder.where(HrEmployeePosition.HR_EMPLOYEE_POSITION.COMPANY_ID.getName(), companyId);
+        List<HrEmployeePositionDO> hrEmployeePositionDOS = hrEmployeePositionDao.getDatas(queryBuilder.buildQuery());
+        if (!StringUtils.isEmptyList(hrEmployeePositionDOS)) {
+            companyOptions.setHrEmployeePosition(hrEmployeePositionDOS);
         }
         return companyOptions;
     }

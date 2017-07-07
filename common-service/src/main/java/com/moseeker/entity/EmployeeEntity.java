@@ -270,6 +270,9 @@ public class EmployeeEntity {
         queryBuilder.where(HrCompany.HR_COMPANY.ID.getName(), companyId);
         // 是否是子公司，如果是查询母公司ID
         HrCompanyDO hrCompanyDO = hrCompanyDao.getData(queryBuilder.buildQuery());
+        if (StringUtils.isEmptyObject(hrCompanyDO)) {
+            return false;
+        }
         List<Integer> list = getCompanyIds(hrCompanyDO.getParentId() > 0 ? hrCompanyDO.getParentId() : companyId);
         return permissionJudge(userEmployeeIds, list);
     }

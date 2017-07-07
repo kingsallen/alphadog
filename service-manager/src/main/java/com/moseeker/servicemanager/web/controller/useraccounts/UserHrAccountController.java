@@ -503,31 +503,6 @@ public class UserHrAccountController {
         }
     }
 
-    /**
-     * 获取公司积分配置信息
-     *
-     * @param request
-     * @param response
-     * @return
-     */
-    @RequestMapping(value = "/hraccount/company/rewardconfig", method = RequestMethod.GET)
-    @ResponseBody
-    public String getCompanyRewardConf(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            int companyId = params.getInt("companyId", 0);
-            if (companyId == 0) {
-                return ResponseLogNotification.fail(request, "公司Id不能为空");
-            } else {
-                List<RewardConfig> result = companyService.getCompanyRewardConf(companyId);
-                return ResponseLogNotification.success(request, ResponseUtils.success(BeanUtils.convertStructToJSON(result)));
-            }
-        } catch (BIZException e) {
-            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
-        } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
-        }
-    }
 
 
     /**

@@ -408,6 +408,7 @@ struct UserEmployeeDetailVO{
     8: optional string companyName, // 公司名称
     9: optional string headImg, // 头像
     10: optional i32 companyId, //
+    11: optional string bindingTime // 绑定时间
 }
 // 员工导入统计数据
 struct ImportErrorUserEmployee{
