@@ -12,8 +12,10 @@ import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.*;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityPostcodeRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbConfig;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrTeamRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyPositionRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.*;
@@ -35,7 +37,12 @@ import com.moseeker.position.pojo.DictConstantPojo;
 import com.moseeker.position.pojo.JobPositionFailMess;
 import com.moseeker.position.pojo.JobPostionResponse;
 import com.moseeker.position.pojo.PositionForSynchronizationPojo;
+import com.moseeker.position.service.position.DegreeChangeUtil;
 import com.moseeker.position.service.position.PositionChangeUtil;
+import com.moseeker.position.service.position.PositionForAlipaycampusPojo;
+import com.moseeker.position.service.position.WorkTypeChangeUtil;
+import com.moseeker.position.service.position.qianxun.Degree;
+import com.moseeker.position.service.position.qianxun.WorkType;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -1503,6 +1510,106 @@ public class PositionService {
             }
         });
         return result;
+    }
+
+
+    /**
+     * @param  positionId      职位id
+     * @param  channel        部门名称
+     */
+    @CounterIface
+    public Response getPositionForThirdParty(int positionId, int channel) {
+        Query query=new Query.QueryBuilder().where("id",positionId).buildQuery();
+        JobPositionRecord positionRecord = jobPositionDao.getRecord(query);
+        int company_id = positionRecord.getCompanyId();
+        if (positionRecord == null) {
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_POSITION_NOTEXIST);
+        }else{
+            int publisher = positionRecord.getPublisher();
+            // 获取子账号公司信息
+            query=new Query.QueryBuilder().where("account_id",publisher).buildQuery();
+            HrCompanyAccountRecord record = hrCompanyAccountDao.getRecord(query);
+            if (record != null && record.getCompanyId() != null) {
+                if (company_id != record.getCompanyId()) {
+                    company_id = record.getCompanyId();
+                }
+            }
+        }
+
+        HrCompanyRecord hrCompanyRecord = hrCompanyDao.getCompanyById(company_id);
+
+        PositionForAlipaycampusPojo positionForAlipaycampusPojo = new PositionForAlipaycampusPojo();
+        positionForAlipaycampusPojo.setSource_id(positionRecord.getId().toString());
+        positionForAlipaycampusPojo.setJob_name(positionRecord.getTitle());
+        positionForAlipaycampusPojo.setJob_desc(PositionChangeUtil.convertDescription(positionRecord.getAccountabilities(),
+                positionRecord.getRequirement());
+
+
+        // 职业分类 todo
+        positionForAlipaycampusPojo.setJob_tier_one_code();
+        positionForAlipaycampusPojo.setJob_tier_one_name();
+        positionForAlipaycampusPojo.setJob_tier_two_code();
+        positionForAlipaycampusPojo.setJob_tier_two_name();
+
+
+
+
+        positionForAlipaycampusPojo.setJob_hire_number(positionRecord.getCount());
+        positionForAlipaycampusPojo.setJob_perk(positionRecord.getBenefits());
+
+        WorkType workType = WorkType.instanceFromInt(positionRecord.getEmploymentType());
+        positionForAlipaycampusPojo.setJob_type(Integer.valueOf(WorkTypeChangeUtil.getAlipaycampusWorkType(workType).getValue()));
+
+
+        Degree degree = Degree.instanceFromCode(String.valueOf(positionRecord.getDegree()));
+        positionForAlipaycampusPojo.setJob_rq_education(Integer.valueOf(DegreeChangeUtil.getAlipaycampusDegree(degree).getValue()));
+
+
+        //positionForAlipaycampusPojo.setJob_resume_lg();
+        positionForAlipaycampusPojo.setPayment_min(positionRecord.getSalaryBottom());
+        positionForAlipaycampusPojo.setPayment_max(positionRecord.getSalaryTop());
+        positionForAlipaycampusPojo.setPayment_unit(2);//month
+
+        // 公司
+        positionForAlipaycampusPojo.setCompany_source("");
+        positionForAlipaycampusPojo.setCompany_name(hrCompanyRecord.getAbbreviation());
+        positionForAlipaycampusPojo.setCompany_lawname(hrCompanyRecord.getAbbreviation());
+        positionForAlipaycampusPojo.setCompany_logo("https://cdn.moseeker.com/" + hrCompanyRecord.getLogo());
+
+        // 省市
+        query=new Query.QueryBuilder().where("pid",positionRecord.getId()).buildQuery();
+        JobPositionCityRecord jobPositionCityRecord = jobPositionCityDao.getRecord(query);
+        Integer citycode = jobPositionCityRecord.getCode();
+
+        // 全国的职位需要忽略吗？
+        if (citycode == 111111) {
+            // todo.
+
+        }
+
+        DictCityRecord dictCityRecord = dictCityDao.getCityByCode(citycode);
+        Integer parentCityCode = citycode/10000 * 10000 ; //取 code的前面2位数 + 4个0， 获取省份code
+
+        DictCityRecord parentDictCityRecord = dictCityDao.getCityByCode(parentCityCode);
+
+        positionForAlipaycampusPojo.setArea_province_code(parentDictCityRecord.getCode());
+        positionForAlipaycampusPojo.setArea_province_name(parentDictCityRecord.getName());
+        positionForAlipaycampusPojo.setArea_city_code(dictCityRecord.getCode().toString());
+        positionForAlipaycampusPojo.setArea_city_name(dictCityRecord.getName());
+
+
+
+        // 时间 ,3个月过期，1天前刷新。
+        positionForAlipaycampusPojo.setGmt_expired(String.valueOf(positionRecord.getUpdateTime().getTime()+7776000000L));
+        positionForAlipaycampusPojo.setGmt_refresh(String.valueOf(System.currentTimeMillis()-864000000L));
+
+
+
+
+
+
+
+        return ResponseUtils.success("");
     }
 
 

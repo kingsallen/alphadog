@@ -31,6 +31,9 @@ service PositionServices {
     // 通过companyId和部门名获取TeamId
     common_struct.Response getTeamIdByDepartmentName(1:i32 companyId, 2:string departmentName);
 
+    // 通过职位id，返回第三方渠道需要的格式，用于职位同步， channel=10，支付宝
+    common_struct.Response getPositionForThirdParty(1:i32 positionId, 2:i32 channel);
+
     //微信端职位列表
     list<position_struct.WechatPositionListData> getPositionList(1: position_struct.WechatPositionListQuery query);
 

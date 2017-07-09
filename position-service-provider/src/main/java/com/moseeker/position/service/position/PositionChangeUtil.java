@@ -190,8 +190,8 @@ public class PositionChangeUtil {
 		WorkType workType = WorkType.instanceFromInt(employment_type);
 		ChannelType channelType = ChannelType.instaceFromInteger(channel);
 		switch(channelType) {
-		case JOB51: position.setType_code(String.valueOf(WordTypeChangeUtil.getJob51EmployeeType(workType).getValue())); break;
-		case ZHILIAN: position.setType_code(String.valueOf(WordTypeChangeUtil.getZhilianEmployeeType(workType).getValue()));break;
+		case JOB51: position.setType_code(String.valueOf(WorkTypeChangeUtil.getJob51EmployeeType(workType).getValue())); break;
+		case ZHILIAN: position.setType_code(String.valueOf(WorkTypeChangeUtil.getZhilianEmployeeType(workType).getValue()));break;
 		default : position.setType_code("");
 		}
 	}
@@ -250,7 +250,7 @@ public class PositionChangeUtil {
 		return cityCodeStr;
 	}
 	
-	private static String convertDescription(String accounTabilities,String requirement){
+	public static String convertDescription(String accounTabilities,String requirement){
 		StringBuffer descript=new StringBuffer();
 		if(StringUtils.isNotNullOrEmpty(accounTabilities)){
 			StringBuffer tablities=new StringBuffer();
