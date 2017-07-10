@@ -499,7 +499,7 @@ public class UserHrAccountController {
             } else {
                 List<RewardConfig> result = companyService.getCompanyRewardConf(companyId);
 
-                return ResponseLogNotification.success(request, ResponseUtils.success(BeanUtils.convertStructToJSON(result)));
+                return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(result)));
             }
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
@@ -560,7 +560,7 @@ public class UserHrAccountController {
                 return ResponseLogNotification.fail(request, "员工Id不能为空");
             } else {
                 List<Reward> result = userHrAccountService.getEmployeeRewards(employeeId);
-                return ResponseLogNotification.success(request, ResponseUtils.success(BeanUtils.convertStructToJSON(result)));
+                return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(result)));
             }
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
