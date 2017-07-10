@@ -2,14 +2,13 @@ package com.moseeker.baseorm.dao.hrdb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
+import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccountHr;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountHrRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.query.Condition;
-import com.moseeker.common.util.query.Query;
-import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.common.util.query.*;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountHrDO;
@@ -26,18 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- * HR帐号数据库持久类
- * <p>
- * Company: MoSeeker
- * </P>
- * <p>
- * date: Nov 9, 2016
- * </p>
- * <p>
- * Email: wjf2255@gmail.com
- * </p>
- *
- * @author wjf
+ * 第三方帐号数据访问层
  */
 @Repository
 public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, HrThirdPartyAccountRecord> {
@@ -153,31 +141,31 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
 
     public List<HrThirdPartyAccountDO> getThirdPartyAccountsByUserId(int user_id) {
         logger.info("getThirdPartyAccountsByUserId:" + user_id);
-        Query query = new Query.QueryBuilder().select("third_party_account_id").where("hr_account_id",user_id).and("status",1).buildQuery();
+        Query query = new Query.QueryBuilder().select("third_party_account_id").where("hr_account_id", user_id).and("status", 1).buildQuery();
 
         //所有绑定的第三方帐号的ID的合集
-        List<HrThirdPartyAccountHrDO> thirdPartyAccounts  = thirdPartyAccountHrDao.getDatas(query);
+        List<HrThirdPartyAccountHrDO> thirdPartyAccounts = thirdPartyAccountHrDao.getDatas(query);
 
-        if(thirdPartyAccounts == null || thirdPartyAccounts.size() == 0){
+        if (thirdPartyAccounts == null || thirdPartyAccounts.size() == 0) {
             return new ArrayList<>();
         }
 
         Set<Integer> thirdPartyAccountIds = new HashSet<>();
 
-        for(HrThirdPartyAccountHrDO thirdPartyAccountHrDO : thirdPartyAccounts){
+        for (HrThirdPartyAccountHrDO thirdPartyAccountHrDO : thirdPartyAccounts) {
             thirdPartyAccountIds.add(thirdPartyAccountHrDO.getThirdPartyAccountId());
         }
 
         Short[] valiableBinding = new Short[]{(short) 1, (short) 3, (short) 7};//有效的状态:已绑定，刷新中，刷新程序错误
 
         query = new Query.QueryBuilder()
-                .where(new Condition("id",thirdPartyAccountIds,ValueOp.IN))
-                .and(new Condition("binding", Arrays.asList(valiableBinding),ValueOp.IN))
+                .where(new Condition("id", thirdPartyAccountIds, ValueOp.IN))
+                .and(new Condition("binding", Arrays.asList(valiableBinding), ValueOp.IN))
                 .buildQuery();
 
         List<HrThirdPartyAccountDO> hrThirdPartyAccountDOS = getDatas(query);
 
-        return hrThirdPartyAccountDOS == null ? new ArrayList<>():hrThirdPartyAccountDOS;
+        return hrThirdPartyAccountDOS == null ? new ArrayList<>() : hrThirdPartyAccountDOS;
     }
 
 

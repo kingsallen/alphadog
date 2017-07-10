@@ -20,6 +20,7 @@ import javax.mail.event.TransportEvent;
 import javax.mail.event.TransportListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by zhangdi on 2017/6/16.
@@ -66,18 +67,20 @@ public class ThirdPartyAccountSynctor {
     class ThirdPartyAccountSyncTask implements Runnable {
 
         HrThirdPartyAccountDO hrThirdPartyAccount;
+        Map<String, String> extras;
 
         int syncType; //绑定0,刷新1
 
-        ThirdPartyAccountSyncTask(int syncType, HrThirdPartyAccountDO hrThirdPartyAccount) {
+        ThirdPartyAccountSyncTask(int syncType, HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras) {
             this.syncType = syncType;
             this.hrThirdPartyAccount = hrThirdPartyAccount;
+            this.extras = extras;
         }
 
         @Override
         public void run() {
             try {
-                HrThirdPartyAccountDO result = syncType == 0 ? chaosService.binding(hrThirdPartyAccount) : chaosService.synchronization(hrThirdPartyAccount);
+                HrThirdPartyAccountDO result = syncType == 0 ? chaosService.binding(hrThirdPartyAccount, extras) : chaosService.synchronization(hrThirdPartyAccount, extras);
                 //刷新成功
 
                 //更新到数据库
@@ -190,8 +193,8 @@ public class ThirdPartyAccountSynctor {
      * @return
      * @throws Exception
      */
-    public HrThirdPartyAccountDO bindThirdPartyAccount(int hrId, HrThirdPartyAccountDO thirdPartyAccount, boolean sync) throws Exception {
-        return sync ? syncWithBindThirdPartyAccount(hrId, thirdPartyAccount) : asyncWithBindThirdPartyAccount(hrId, thirdPartyAccount);
+    public HrThirdPartyAccountDO bindThirdPartyAccount(int hrId, HrThirdPartyAccountDO thirdPartyAccount, Map<String, String> extras, boolean sync) throws Exception {
+        return sync ? syncWithBindThirdPartyAccount(hrId, thirdPartyAccount, extras) : asyncWithBindThirdPartyAccount(hrId, thirdPartyAccount, extras);
     }
 
     /**
@@ -201,7 +204,7 @@ public class ThirdPartyAccountSynctor {
      * @param thirdPartyAccount
      * @return
      */
-    private HrThirdPartyAccountDO asyncWithBindThirdPartyAccount(int hrId, HrThirdPartyAccountDO thirdPartyAccount) throws Exception {
+    private HrThirdPartyAccountDO asyncWithBindThirdPartyAccount(int hrId, HrThirdPartyAccountDO thirdPartyAccount, Map<String, String> extras) throws Exception {
         //先保存信息到数据库,状态为2绑定中
         thirdPartyAccount.setBinding(Short.valueOf("2"));
         if (thirdPartyAccount.getId() > 0) {
@@ -213,7 +216,7 @@ public class ThirdPartyAccountSynctor {
             thirdPartyAccount = hrThirdPartyAccountDao.addThirdPartyAccount(hrId, thirdPartyAccount);
         }
         //开启线程后台取处理第三方账号同步
-        new Thread(new ThirdPartyAccountSyncTask(0, thirdPartyAccount)).start();
+        new Thread(new ThirdPartyAccountSyncTask(0, thirdPartyAccount, extras)).start();
         return thirdPartyAccount;
     }
 
@@ -225,9 +228,9 @@ public class ThirdPartyAccountSynctor {
      * @param thirdPartyAccount
      * @return
      */
-    private HrThirdPartyAccountDO syncWithBindThirdPartyAccount(int hrId, HrThirdPartyAccountDO thirdPartyAccount) throws Exception {
+    private HrThirdPartyAccountDO syncWithBindThirdPartyAccount(int hrId, HrThirdPartyAccountDO thirdPartyAccount, Map<String, String> extras) throws Exception {
         //先绑定
-        HrThirdPartyAccountDO bindResult = chaosService.binding(thirdPartyAccount);
+        HrThirdPartyAccountDO bindResult = chaosService.binding(thirdPartyAccount, extras);
         //绑定成功之后添加到数据库
         if (thirdPartyAccount.getId() > 0) {
             bindResult.setId(thirdPartyAccount.getId());
@@ -246,8 +249,8 @@ public class ThirdPartyAccountSynctor {
      * @return
      * @throws Exception
      */
-    public HrThirdPartyAccountDO syncThirdPartyAccount(HrThirdPartyAccountDO thirdPartyAccount, boolean sync) throws Exception {
-        return sync ? syncWithSyncThirdPartyAccount(thirdPartyAccount) : asyncWithSyncThirdPartyAccount(thirdPartyAccount);
+    public HrThirdPartyAccountDO syncThirdPartyAccount(HrThirdPartyAccountDO thirdPartyAccount, Map<String, String> extras, boolean sync) throws Exception {
+        return sync ? syncWithSyncThirdPartyAccount(thirdPartyAccount, extras) : asyncWithSyncThirdPartyAccount(thirdPartyAccount, extras);
     }
 
     /**
@@ -256,7 +259,7 @@ public class ThirdPartyAccountSynctor {
      * @param hrThirdPartyAccount
      * @return
      */
-    private HrThirdPartyAccountDO asyncWithSyncThirdPartyAccount(HrThirdPartyAccountDO hrThirdPartyAccount) throws Exception {
+    private HrThirdPartyAccountDO asyncWithSyncThirdPartyAccount(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras) throws Exception {
         //先更新数据库的状态为刷新中3
         hrThirdPartyAccount.setBinding(Short.valueOf("3"));
         int updateResult = updateThirdPartyAccount(hrThirdPartyAccount);
@@ -265,7 +268,7 @@ public class ThirdPartyAccountSynctor {
             throw new BIZException(-1, "系统异常,请重试");
         }
 
-        new Thread(new ThirdPartyAccountSyncTask(1, hrThirdPartyAccount)).start();
+        new Thread(new ThirdPartyAccountSyncTask(1, hrThirdPartyAccount, extras)).start();
 
         return hrThirdPartyAccount;
     }
@@ -276,8 +279,8 @@ public class ThirdPartyAccountSynctor {
      * @param hrThirdPartyAccount
      * @return
      */
-    private HrThirdPartyAccountDO syncWithSyncThirdPartyAccount(HrThirdPartyAccountDO hrThirdPartyAccount) throws Exception {
-        HrThirdPartyAccountDO syncResult = chaosService.synchronization(hrThirdPartyAccount);
+    private HrThirdPartyAccountDO syncWithSyncThirdPartyAccount(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras) throws Exception {
+        HrThirdPartyAccountDO syncResult = chaosService.synchronization(hrThirdPartyAccount, extras);
         //更新回数据库
         syncResult.setUpdateTime((new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
         syncResult.setSyncTime(syncResult.getUpdateTime());

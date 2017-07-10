@@ -76,9 +76,9 @@ public class UserHrAccountServiceImpl implements Iface {
     }
 
     @Override
-    public HrThirdPartyAccountDO syncThirdpartyAccount(int id, boolean sync) throws BIZException, TException {
+    public HrThirdPartyAccountDO syncThirdpartyAccount(int hrId, int id, boolean sync) throws BIZException, TException {
         try {
-            return service.synchronizeThirdpartyAccount(id, sync);
+            return service.synchronizeThirdpartyAccount(hrId, id, sync);
         } catch (BIZException e) {
             throw e;
         } catch (Exception e) {

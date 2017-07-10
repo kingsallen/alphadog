@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 第三方渠道（比如51，智联）服务
@@ -100,14 +101,14 @@ public class ChaosServiceImpl {
      * @param hrThirdPartyAccount
      * @return
      */
-    public HrThirdPartyAccountDO bind(HrThirdPartyAccountDO hrThirdPartyAccount) throws Exception {
+    public HrThirdPartyAccountDO bind(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras) throws Exception {
         logger.info("ChaosServiceImpl bind");
         String domain = getDomain();
 
         ChannelType chnnelType = ChannelType.instaceFromInteger(hrThirdPartyAccount.getChannel());
         String bindURI = chnnelType.getBindURI(domain);
         logger.info("ChaosServiceImpl bind bindURI:" + bindURI);
-        String params = ChaosTool.getParams(hrThirdPartyAccount.getUsername(), hrThirdPartyAccount.getPassword(), hrThirdPartyAccount.getMembername(), chnnelType);
+        String params = ChaosTool.getParams(hrThirdPartyAccount, extras);
         logger.info("ChaosServiceImpl bind params:" + params);
         String data = UrlUtil.sendPost(bindURI, params, Constant.CONNECTION_TIME_OUT, Constant.READ_TIME_OUT);
         logger.info("ChaosServiceImpl bind data:" + data);
@@ -124,12 +125,12 @@ public class ChaosServiceImpl {
      * @param hrThirdPartyAccount
      * @return
      */
-    public HrThirdPartyAccountDO synchronization(HrThirdPartyAccountDO hrThirdPartyAccount) throws Exception {
+    public HrThirdPartyAccountDO synchronization(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras) throws Exception {
 
         String domain = getDomain();
         ChannelType chnnelType = ChannelType.instaceFromInteger(hrThirdPartyAccount.getChannel());
         String synchronizationURI = chnnelType.getRemainURI(domain);
-        String params = ChaosTool.getParams(hrThirdPartyAccount.getUsername(), hrThirdPartyAccount.getPassword(), hrThirdPartyAccount.getMembername(), chnnelType);
+        String params = ChaosTool.getParams(hrThirdPartyAccount, extras);
         logger.info("ChaosServiceImpl refresh refreshURI:" + synchronizationURI);
         String data = UrlUtil.sendPost(synchronizationURI, params, Constant.CONNECTION_TIME_OUT, Constant.READ_TIME_OUT);
         logger.info("ChaosServiceImpl refresh params:" + params);

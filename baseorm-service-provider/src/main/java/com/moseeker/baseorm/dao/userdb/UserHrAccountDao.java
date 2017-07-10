@@ -53,6 +53,14 @@ public class UserHrAccountDao extends JooqCrudImpl<UserHrAccountDO, UserHrAccoun
         super(table, userHrAccountDOClass);
     }
 
+    public UserHrAccountDO getValidAccount(int id) {
+        Query query = new Query.QueryBuilder()
+                .where(UserHrAccount.USER_HR_ACCOUNT.ID.getName(), id)
+                .and(UserHrAccount.USER_HR_ACCOUNT.ACTIVATION.getName(), 1)
+                .and(UserHrAccount.USER_HR_ACCOUNT.DISABLE.getName(), 1).buildQuery();
+        return getData(query);
+    }
+
     public List<UserHrAccountDO> listHRFromCompany(int comanyId) throws TException {
         Query.QueryBuilder qu = new Query.QueryBuilder();
         qu.where("company_id", String.valueOf(comanyId));

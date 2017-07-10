@@ -156,7 +156,13 @@ public class UserHrAccountController {
                 return ResponseLogNotification.fail(request, "id不能为空");
             }
 
-            HrThirdPartyAccountDO hrThirdPartyAccountDO = userHrAccountService.syncThirdpartyAccount(id, params.getBoolean("sync", false));
+            Integer userId = params.getInt("user_id", 0);
+
+            if(userId == null){
+                return ResponseLogNotification.fail(request, "user_id不能为空");
+            }
+
+            HrThirdPartyAccountDO hrThirdPartyAccountDO = userHrAccountService.syncThirdpartyAccount(userId,id, params.getBoolean("sync", false));
 
             return ResponseLogNotification.success(request, ResponseUtils.success(thirdpartyAccountToMap(hrThirdPartyAccountDO)));
         } catch (Exception e) {
