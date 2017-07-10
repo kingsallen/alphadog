@@ -55,6 +55,7 @@ service PositionServices {
     position_struct.PositionDetailsListVO similarityPositionDetailsList(1:i32 pid, 2:i32 page, 3:i32 per_age);
     //获取pc端职位推荐
     common_struct.Response getPcRecommand(1:i32 page,2:i32 pageSize);
+    common_struct.Response getPcRecommandCompany();
 }
 /*
 	查询第三方自定义职能

@@ -10,6 +10,8 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
+import com.moseeker.thrift.gen.position.service.PositionServices;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -29,6 +31,8 @@ public class CompanyController {
 	Logger logger = LoggerFactory.getLogger(CompanyController.class);
 
 	CompanyServices.Iface companyServices = ServiceManager.SERVICEMANAGER.getService(CompanyServices.Iface.class);
+	
+	private PositionServices.Iface positonServices = ServiceManager.SERVICEMANAGER.getService(PositionServices.Iface.class);
 
 	@RequestMapping(value = "/company", method = RequestMethod.GET)
 	@ResponseBody
@@ -96,6 +100,9 @@ public class CompanyController {
 			// do nothing
 		}
 	}
+	/*
+	 * 获取pc端五个广告位
+	 */
 	@RequestMapping(value = "/company/strictselection", method = RequestMethod.GET)
 	@ResponseBody
 	public String getPcBanner(HttpServletRequest request, HttpServletResponse response) {
@@ -110,6 +117,21 @@ public class CompanyController {
 				pageSize="15";
 			}
 			Response res=companyServices.getPcBanner(Integer.parseInt(page), Integer.parseInt(pageSize));
+			return ResponseLogNotification.success(request, res);
+		}catch(Exception e){
+			logger.info(e.getMessage(),e);
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
+	/*
+	 * 获取pc端仟寻推荐的企业
+	 */
+	@RequestMapping(value = "/company/apolegamic", method = RequestMethod.GET)
+	@ResponseBody
+	public String getPcQXRecommendCompany(HttpServletRequest request, HttpServletResponse response) {
+		try{
+			Map<String, Object> data = ParamUtils.parseRequestParam(request);
+			Response res=positonServices.getPcRecommandCompany();
 			return ResponseLogNotification.success(request, res);
 		}catch(Exception e){
 			logger.info(e.getMessage(),e);

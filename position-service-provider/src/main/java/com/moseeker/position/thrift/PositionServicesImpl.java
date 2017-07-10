@@ -258,5 +258,16 @@ public class PositionServicesImpl implements Iface {
 		}
 	}
 
+	@Override
+	public Response getPcRecommandCompany() throws TException {
+		// TODO Auto-generated method stub
+		try{
+			return positionPcService.getQXRecommendCompanyList();
+		}catch(Exception e){
+			logger.info(e.getMessage(),e);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+		}
+	}
+
 
 }
