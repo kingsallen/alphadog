@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * HR账号服务
@@ -371,28 +372,28 @@ public class UserHrAccountServiceImpl implements Iface {
     /**
      * 员工信息导入
      *
-     * @param userEmployeeDOS
+     * @param userEmployeeDOMap
      * @param companyId
      * @return
      * @throws BIZException
      * @throws TException
      */
     @Override
-    public Response employeeImport(List<UserEmployeeDO> userEmployeeDOS, int companyId) throws BIZException, TException {
-        return service.employeeImport(companyId, userEmployeeDOS);
+    public Response employeeImport(Map<Integer,UserEmployeeDO> userEmployeeDOMap, int companyId) throws BIZException, TException {
+        return service.employeeImport(companyId, userEmployeeDOMap);
     }
 
     /**
      * 检查员工重复(批量导入之前验证)
      *
-     * @param userEmployeeDOS
+     * @param userEmployeeDOMap
      * @param companyId
      * @return
      * @throws BIZException
      * @throws TException
      */
     @Override
-    public ImportUserEmployeeStatistic checkBatchInsert(List<UserEmployeeDO> userEmployeeDOS, int companyId) throws BIZException, TException {
-        return service.checkBatchInsert(userEmployeeDOS, companyId);
+    public ImportUserEmployeeStatistic checkBatchInsert(Map<Integer,UserEmployeeDO> userEmployeeDOMap, int companyId) throws BIZException, TException {
+        return service.checkBatchInsert(userEmployeeDOMap, companyId);
     }
 }

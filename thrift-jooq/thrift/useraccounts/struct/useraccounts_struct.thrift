@@ -414,7 +414,7 @@ struct UserEmployeeDetailVO{
 }
 // 员工导入统计数据
 struct ImportErrorUserEmployee{
-    1: optional i32 row, // 第几条数据
+    1: optional i32 rowNum, // 第几条数据
     2: optional string message, // 错误原因
     3: optional userdb_struct.UserEmployeeDO userEmployeeDO // 员工实体
 }

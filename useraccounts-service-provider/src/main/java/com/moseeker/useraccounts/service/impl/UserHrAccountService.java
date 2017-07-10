@@ -73,6 +73,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -1072,23 +1073,23 @@ public class UserHrAccountService {
     /**
      * 员工信息导入
      *
-     * @param userEmployeeList 员工信息列表
-     * @param companyId        公司ID
+     * @param userEmployeeMap 员工信息列表
+     * @param companyId       公司ID
      */
-    public Response employeeImport(Integer companyId, List<UserEmployeeDO> userEmployeeList) throws BIZException {
+    public Response employeeImport(Integer companyId, Map<Integer, UserEmployeeDO> userEmployeeMap) throws BIZException {
         Response response = new Response();
         logger.info("开始导入员工信息");
         // 判断是否有重复数据
-        ImportUserEmployeeStatistic importUserEmployeeStatistic = repetitionFilter(userEmployeeList, companyId);
+        ImportUserEmployeeStatistic importUserEmployeeStatistic = repetitionFilter(userEmployeeMap, companyId);
         if (!StringUtils.isEmptyObject(importUserEmployeeStatistic) && !importUserEmployeeStatistic.insertAccept) {
             throw ExceptionFactory.buildException(ExceptionCategory.IMPORT_DATA_WRONG);
         }
         // 通过手机号查询那些员工数据是更新，那些数据是新增
         List<String> moblies = new ArrayList<>();
-        userEmployeeList.forEach(userEmployeeDO -> {
-            if (!StringUtils.isEmptyObject(userEmployeeDO.getMobile())) {
-                moblies.add(userEmployeeDO.getMobile());
-            }
+        List<UserEmployeeDO> userEmployeeList = new ArrayList<>();
+        userEmployeeMap.forEach((k, v) -> {
+            userEmployeeList.add(v);
+            moblies.add(v.getMobile());
         });
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         Condition condition = new Condition(UserEmployee.USER_EMPLOYEE.MOBILE.getName(), moblies, ValueOp.IN);
@@ -1127,23 +1128,26 @@ public class UserHrAccountService {
     /**
      * 检查员工重复(批量导入之前验证)
      *
-     * @param userEmployeeDOS
+     * @param userEmployeeMap
      * @param companyId
      * @return
      */
-    public ImportUserEmployeeStatistic checkBatchInsert(List<UserEmployeeDO> userEmployeeDOS, Integer companyId) throws BIZException {
-        return repetitionFilter(userEmployeeDOS, companyId);
+    public ImportUserEmployeeStatistic checkBatchInsert(Map<Integer, UserEmployeeDO> userEmployeeMap, Integer companyId) throws BIZException {
+        return repetitionFilter(userEmployeeMap, companyId);
     }
 
     /**
      * 查询是否有重复数据
      *
-     * @param userEmployeeDOS
+     * @param userEmployeeMap
      * @param companyId
      */
-    public ImportUserEmployeeStatistic repetitionFilter(List<UserEmployeeDO> userEmployeeDOS, Integer companyId) throws BIZException {
+    public ImportUserEmployeeStatistic repetitionFilter(Map<Integer, UserEmployeeDO> userEmployeeMap, Integer companyId) throws BIZException {
         if (companyId == 0) {
             throw ExceptionFactory.buildException(ExceptionCategory.COMPANYID_ENPTY);
+        }
+        if (userEmployeeMap.size() == 0) {
+            throw ExceptionFactory.buildException(ExceptionCategory.IMPORT_DATA_EMPTY);
         }
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         queryBuilder.where(HrCompany.HR_COMPANY.ID.getName(), companyId);
@@ -1164,14 +1168,15 @@ public class UserHrAccountService {
         int repetitionCounts = 0;
         int errorCounts = 0;
         // 提交上的数据
-        for (UserEmployeeDO userEmployeeDO : userEmployeeDOS) {
+        for (Map.Entry<Integer, UserEmployeeDO> entry : userEmployeeMap.entrySet()) {
+            UserEmployeeDO userEmployeeDO = entry.getValue();
             ImportErrorUserEmployee importErrorUserEmployee = new ImportErrorUserEmployee();
-            // 判断上传的数据是否有字段长度的错误
             // 姓名不能为空
             if (StringUtils.isEmptyObject(userEmployeeDO.getCname())) {
                 importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
                 importErrorUserEmployee.setMessage("cname不能为空");
                 errorCounts = errorCounts + 1;
+                importErrorUserEmployee.setRowNum(entry.getKey());
                 importErrorUserEmployees.add(importErrorUserEmployee);
                 continue;
             }
@@ -1195,19 +1200,19 @@ public class UserHrAccountService {
                             && !userEmployeeDO.getMobile().equals(dbUserEmployeeDO.getMobile())) {
                         repetitionCounts = repetitionCounts + 1;
                         importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
+                        importErrorUserEmployee.setRowNum(entry.getKey());
                         importErrorUserEmployee.setMessage("cname和customField和数据库的数据一致");
                         importErrorUserEmployees.add(importErrorUserEmployee);
                     }
                 }
             }
         }
-        importUserEmployeeStatistic.setTotalCounts(userEmployeeDOS.size());
+        importUserEmployeeStatistic.setTotalCounts(userEmployeeMap.size());
         importUserEmployeeStatistic.setErrorCounts(errorCounts);
         importUserEmployeeStatistic.setRepetitionCounts(repetitionCounts);
         if (!StringUtils.isEmptyList(importErrorUserEmployees)) {
             importUserEmployeeStatistic.setUserEmployeeDO(importErrorUserEmployees);
         }
-
         if (repetitionCounts == 0 && errorCounts == 0) {
             importUserEmployeeStatistic.setInsertAccept(true);
         } else {

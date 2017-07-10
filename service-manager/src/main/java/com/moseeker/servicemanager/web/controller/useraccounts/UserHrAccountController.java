@@ -755,13 +755,12 @@ public class UserHrAccountController {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             int companyId = params.getInt("companyId", 0);
-            List<UserEmployeeDO> userEmployees = UserHrAccountParamUtils.parseUserEmployeeDO((List<HashMap<String, Object>>) params.get("userEmployees"));
+            Map userEmployees = UserHrAccountParamUtils.parseUserEmployeeDO((List<HashMap<String, Object>>) params.get("userEmployees"));
             ImportUserEmployeeStatistic res = userHrAccountService.checkBatchInsert(userEmployees, companyId);
             return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(res)));
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
@@ -778,7 +777,7 @@ public class UserHrAccountController {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             int companyId = params.getInt("companyId", 0);
-            List<UserEmployeeDO> userEmployees = UserHrAccountParamUtils.parseUserEmployeeDO((List<HashMap<String, Object>>) params.get("userEmployees"));
+            Map userEmployees = UserHrAccountParamUtils.parseUserEmployeeDO((List<HashMap<String, Object>>) params.get("userEmployees"));
             Response res = userHrAccountService.employeeImport(userEmployees, companyId);
             return ResponseLogNotification.success(request, res);
         } catch (BIZException e) {
