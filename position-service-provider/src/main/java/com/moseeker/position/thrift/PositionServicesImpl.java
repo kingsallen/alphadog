@@ -2,7 +2,6 @@ package com.moseeker.position.thrift;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import com.moseeker.position.service.fundationbs.PositionPcService;
 import com.moseeker.position.service.fundationbs.PositionQxService;
@@ -26,7 +25,6 @@ import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.query.Query;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.position.service.JobOccupationService;
 import com.moseeker.position.service.fundationbs.PositionService;
@@ -81,14 +79,7 @@ public class PositionServicesImpl implements Iface {
     @Override
     public Response getResources(CommonQuery query) throws TException {
     	try {
-    		Map<String,String> map=query.getEqualFilter();
-    		logger.info(map.toString()+"=============");
-    		if(map==null||map.isEmpty()){
-    			query.setPage(1);
-    			query.setPer_page(1);
-    		}
-    		Query query1=QueryConvert.commonQueryConvertToQuery(query);
-    		List<JobPositionRecord> list=jobPositionDao.getRecords(query1);
+    		List<JobPositionRecord> list=jobPositionDao.getRecords(QueryConvert.commonQueryConvertToQuery(query));
 			List<Position> structs = BeanUtils.DBToStruct(Position.class, list);
 			
 			if (!structs.isEmpty()){
