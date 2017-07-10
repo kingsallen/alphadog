@@ -585,7 +585,8 @@ public class CompanyService {
             throw ExceptionFactory.buildException(ExceptionCategory.COMPANY_ID_EMPTY);
         }
         Query.QueryBuilder query = new Query.QueryBuilder();
-        query.where("company_id", companyId);
+        query.where("company_id", companyId)
+                .and(HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF.DISABLE.getName(), 0);
         HrEmployeeCertConfDO hrEmployeeCertConfDO = hrEmployeeCertConfDao.getData(query.buildQuery());
         // 员工认证信息为空需要新建
         int falg = 0;
