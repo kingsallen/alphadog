@@ -54,11 +54,9 @@ public class PositionBS {
     @Autowired
     private HRThirdPartyPositionDao hRThirdPartyPositionDao;
     @Autowired
-    private HrCompanyAccountDao hrCompanyAccountDao;
-    @Autowired
-    private HrTeamDao hrTeamDao;
-    @Autowired
     private HRThirdPartyPositionDao thirdPartyPositionDao;
+    @Autowired
+    private HrCompanyAccountDao hrCompanyAccountDao;
 
     /**
      * @param position
@@ -127,32 +125,18 @@ public class PositionBS {
         // 转成第三方渠道职位
         List<ThirdPartyPositionForSynchronization> positions = positionServices.changeToThirdPartyPosition(positionFroms, moseekerPosition);
         // 提交到chaos处理
+        HrCompanyDO subCompany = hrCompanyAccountDao.getHrCompany(moseekerPosition.getPublisher());
         List<ThirdPartyPositionForSynchronizationWithAccount> PositionsForSynchronizations = new ArrayList<>();
-        Query query = new QueryBuilder().where("account_id", moseekerPosition.getPublisher()).buildQuery();
-        HrCompanyAccountDO hrCompanyAccount = hrCompanyAccountDao.getData(query);
-        HrCompanyDO subCompany = null;
-        if (hrCompanyAccount != null) {
-            query = new QueryBuilder().where("id", hrCompanyAccount.getCompanyId()).buildQuery();
-            subCompany = hrCompanyDao.getData(query);
-        }
-
-        HrTeamDO hrTeam = null;
-        if (moseekerPosition.getTeamId() > 0) {
-            query = new QueryBuilder().where("id", moseekerPosition.getTeamId()).buildQuery();
-            hrTeam = hrTeamDao.getData(query);
-        }
-
         for (ThirdPartyPositionForSynchronization pos : positions) {
             ThirdPartyPositionForSynchronizationWithAccount p = new ThirdPartyPositionForSynchronizationWithAccount();
+            if(subCompany!=null){
+                p.setCompany_name(subCompany.getAbbreviation());
+            }else{
+                p.setCompany_name("");
+            }
             p.setPosition_info(pos);
             for (HrThirdPartyAccountDO account : thirdPartyAccounts) {
                 if (pos.getAccount_id() == account.getId()) {
-                    if (subCompany != null) {
-                        p.setCompany_name(subCompany.getAbbreviation());
-                    }
-                    if (hrTeam != null) {
-                        p.getPosition_info().setDepartment(hrTeam.getName());
-                    }
                     p.setAccount_id(pos.getAccount_id());
                     p.setChannel(pos.getChannel());
                     p.setPassword(account.getPassword());

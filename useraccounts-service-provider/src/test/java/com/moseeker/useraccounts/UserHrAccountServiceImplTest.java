@@ -1,7 +1,7 @@
 package com.moseeker.useraccounts;
 
-import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
+import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.DateUtils;
@@ -16,7 +16,6 @@ import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.config.AppConfig;
 import com.moseeker.useraccounts.service.impl.UserEmployeeServiceImpl;
 import org.apache.thrift.TException;
-import org.joda.time.LocalDateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -123,7 +121,7 @@ public class UserHrAccountServiceImplTest {
 
     @Test
     public void testNpsList() throws Exception {
-        HrNpsStatistic result = userHrAccountDao.npsList(null,null,1,500);
+        HrNpsStatistic result = userHrAccountDao.npsList(null, null, 1, 500);
         System.out.println(BeanUtils.convertStructToJSON(result));
     }
 
@@ -146,10 +144,17 @@ public class UserHrAccountServiceImplTest {
     @Test
     public void testBinding() throws Exception {
         HrThirdPartyAccountDO hrThirdPartyAccountDO = new HrThirdPartyAccountDO();
-        hrThirdPartyAccountDO.setUsername("xxxxx");
-        hrThirdPartyAccountDO.setPassword("xxxxx");
-        hrThirdPartyAccountDO.setChannel((short) 2);
-        userHrAccountService.bindThirdAccount(82847, hrThirdPartyAccountDO);
+        hrThirdPartyAccountDO.setUsername("fiqb60145062");
+        hrThirdPartyAccountDO.setPassword("2892c63f12e0e8849f2a7dd981375331");
+        hrThirdPartyAccountDO.setChannel((short) 3);
+        userHrAccountService.bindThirdAccount(82752, hrThirdPartyAccountDO, false);
+
+        Thread.sleep(1000000);
+    }
+
+    @Test
+    public void testRefresh() throws Exception {
+        userHrAccountService.synchronizeThirdpartyAccount(82752,66,true);
     }
 
 
@@ -169,9 +174,9 @@ public class UserHrAccountServiceImplTest {
         Query query = new Query.QueryBuilder().where("company_id", 51350).setPageSize(1000).buildQuery();
         List<UserEmployeeStruct> employeeStructs = userEmployeeDao.getDatas(query, UserEmployeeStruct.class);
 
-        String groupName = "test:"+System.currentTimeMillis();
+        String groupName = "test:" + System.currentTimeMillis();
 
-        System.out.println("groupName:"+groupName);
+        System.out.println("groupName:" + groupName);
 
         for (UserEmployeeStruct userEmployeeStruct : employeeStructs) {
             userEmployeeStruct.setCompany_id(1);

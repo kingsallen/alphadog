@@ -4,6 +4,7 @@ import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.hrdb.tables.HrTeam;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrTeamRecord;
 import com.moseeker.common.providerutils.QueryUtil;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrTeamDO;
 
 import java.util.ArrayList;
@@ -27,5 +28,10 @@ public class HrTeamDao extends JooqCrudImpl<HrTeamDO, HrTeamRecord> {
 
     public HrTeamDao(TableImpl<HrTeamRecord> table, Class<HrTeamDO> hrTeamDOClass) {
         super(table, hrTeamDOClass);
+    }
+
+    public HrTeamDO getHrTeam(int id) {
+        Query query = new Query.QueryBuilder().where("id", id).buildQuery();
+        return getData(query);
     }
 }
