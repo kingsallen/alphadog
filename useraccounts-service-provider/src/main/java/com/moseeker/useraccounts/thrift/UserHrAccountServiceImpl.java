@@ -8,6 +8,7 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.employee.struct.Reward;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService.Iface;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
@@ -16,6 +17,7 @@ import com.moseeker.useraccounts.exception.ExceptionFactory;
 import com.moseeker.useraccounts.service.impl.UserHrAccountService;
 
 import java.util.ArrayList;
+
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -206,10 +208,43 @@ public class UserHrAccountServiceImpl implements Iface {
     }
 
     @Override
+    public boolean permissionJudgeWithUserEmployeeIdsAndCompanyIds(List<Integer> userEmployeeIds, List<Integer> companyIds) throws BIZException, TException {
+        return employeeEntity.permissionJudge(userEmployeeIds, companyIds);
+    }
+
+    @Override
+    public boolean permissionJudgeWithUserEmployeeIdsAndCompanyId(List<Integer> userEmployeeIds, int companyId) throws BIZException, TException {
+        return employeeEntity.permissionJudge(userEmployeeIds, companyId);
+    }
+
+
+    @Override
+    public boolean permissionJudgeWithUserEmployeeIdAndCompanyId(int userEmployeeId, int companyId) throws BIZException, TException {
+        return employeeEntity.permissionJudge(userEmployeeId, companyId);
+    }
+
+
+    /**
+     * 员工取消认证(支持批量)
+     *
+     * @param ids 员工ID列表
+     * @return
+     * @throws BIZException
+     * @throws TException
+     */
+    @Override
     public boolean unbindEmployee(List<Integer> ids) throws BIZException, TException {
         return employeeEntity.unbind(ids);
     }
 
+    /**
+     * 删除员工 (支持批量)
+     *
+     * @param ids 员工ID列表
+     * @return
+     * @throws BIZException
+     * @throws TException
+     */
     @Override
     public boolean delEmployee(List<Integer> ids) throws BIZException, TException {
         try {
@@ -221,6 +256,14 @@ public class UserHrAccountServiceImpl implements Iface {
         return false;
     }
 
+    /**
+     * 积分列表
+     *
+     * @param employeeId 员工ID
+     * @return
+     * @throws BIZException
+     * @throws TException
+     */
     @Override
     public List<Reward> getEmployeeRewards(int employeeId) throws BIZException, TException {
         List<Reward> result = new ArrayList<>();
@@ -233,6 +276,16 @@ public class UserHrAccountServiceImpl implements Iface {
         return result;
     }
 
+    /**
+     * 员工积分添加
+     *
+     * @param employeeId 员工ID
+     * @param points     积分
+     * @param reason     描述
+     * @return
+     * @throws BIZException
+     * @throws TException
+     */
     @Override
     public int addEmployeeReward(int employeeId, int points, String reason) throws BIZException, TException {
         try {
@@ -279,21 +332,23 @@ public class UserHrAccountServiceImpl implements Iface {
      * 员工信息导出
      *
      * @param userEmployees 员工ID列表
+     * @param companyId     公司ID
      * @return
      */
     @Override
-    public List<UserEmployeeVO> employeeExport(List<Integer> userEmployees) throws BIZException, TException {
-        return service.employeeExport(userEmployees);
+    public List<UserEmployeeVO> employeeExport(List<Integer> userEmployees, int companyId) throws BIZException, TException {
+        return service.employeeExport(userEmployees, companyId);
     }
 
     /**
      * 员工信息
      *
      * @param userEmployeeId 员工ID
+     * @param companyId      公司ID
      */
     @Override
-    public UserEmployeeDetailVO userEmployeeDetail(int userEmployeeId) throws BIZException, TException {
-        return service.userEmployeeDetail(userEmployeeId);
+    public UserEmployeeDetailVO userEmployeeDetail(int userEmployeeId, int companyId) throws BIZException, TException {
+        return service.userEmployeeDetail(userEmployeeId, companyId);
     }
 
     /**
@@ -304,11 +359,40 @@ public class UserHrAccountServiceImpl implements Iface {
      * @param email          邮箱
      * @param customField    自定义字段
      * @param userEmployeeId user_employee.id
+     * @param companyId      公司ID
      * @return
      * @throws BIZException
      */
     @Override
-    public Response updateUserEmployee(String cname, String mobile, String email, String customField, int userEmployeeId) throws BIZException, TException {
-        return service.updateUserEmployee(cname, mobile, email, customField, userEmployeeId);
+    public Response updateUserEmployee(String cname, String mobile, String email, String customField, int userEmployeeId, int companyId) throws BIZException, TException {
+        return service.updateUserEmployee(cname, mobile, email, customField, userEmployeeId, companyId);
+    }
+
+    /**
+     * 员工信息导入
+     *
+     * @param userEmployeeDOS
+     * @param companyId
+     * @return
+     * @throws BIZException
+     * @throws TException
+     */
+    @Override
+    public Response employeeImport(List<UserEmployeeDO> userEmployeeDOS, int companyId) throws BIZException, TException {
+        return service.employeeImport(companyId, userEmployeeDOS);
+    }
+
+    /**
+     * 检查员工重复(批量导入之前验证)
+     *
+     * @param userEmployeeDOS
+     * @param companyId
+     * @return
+     * @throws BIZException
+     * @throws TException
+     */
+    @Override
+    public ImportUserEmployeeStatistic checkBatchInsert(List<UserEmployeeDO> userEmployeeDOS, int companyId) throws BIZException, TException {
+        return service.checkBatchInsert(userEmployeeDOS, companyId);
     }
 }

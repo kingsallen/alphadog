@@ -63,7 +63,7 @@ public abstract class ExceptionFactory {
     }
 
     public static BIZException buildException(Category category) throws ParamIllegalException {
-        if(category != null) {
+        if(category == null) {
             throw new ParamIllegalException("异常类型不存在");
         }
         return buildException(category.getCode(), category.getMsg());

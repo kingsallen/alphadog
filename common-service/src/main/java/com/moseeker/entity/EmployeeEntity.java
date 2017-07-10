@@ -1,10 +1,12 @@
 package com.moseeker.entity;
 
 import com.moseeker.baseorm.dao.historydb.HistoryUserEmployeeDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrGroupCompanyRelDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.baseorm.dao.userdb.UserEmployeePointsRecordDao;
 import com.moseeker.common.util.query.Query;
@@ -13,14 +15,17 @@ import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrGroupCompanyRelDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
 import com.moseeker.thrift.gen.employee.struct.Reward;
+
 import java.util.*;
 import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,11 +59,15 @@ public class EmployeeEntity {
     @Autowired
     private JobPositionDao positionDao;
 
+    @Autowired
+    private HrCompanyDao hrCompanyDao;
+
 
     private static final Logger logger = LoggerFactory.getLogger(EmployeeEntity.class);
 
     /**
      * 判断某个用户是否属于某个公司的员工
+     *
      * @param userId
      * @param companyId 如果公司属于集团公司，需验证用户是否在集团下的所有公司中认证过员工
      * @return
@@ -72,23 +81,20 @@ public class EmployeeEntity {
     }
 
     public UserEmployeeDO getCompanyEmployee(int userId, int companyId) {
-
         Query.QueryBuilder query = new Query.QueryBuilder();
-
         // 查找集团公司列表
         List<Integer> companyIds = getCompanyIds(companyId);
         companyIds.add(companyId);
-
         query.where(new Condition("company_id", companyIds, ValueOp.IN)).and("sysuser_id", String.valueOf(userId))
                 .and("disable", "0");
-
         return employeeDao.getData(query.buildQuery());
     }
 
     /**
      * 增加员工积点
+     *
      * @param employeeId
-     * @param award (注意: award可以为负数...)
+     * @param award      (注意: award可以为负数...)
      * @return 员工当前总积分
      */
     @Transactional
@@ -119,10 +125,17 @@ public class EmployeeEntity {
         return 0;
     }
 
+    /**
+     * 积分列表
+     *
+     * @param employeeId
+     * @return
+     */
     public List<Reward> getEmployeePointsRecords(int employeeId) {
         // 用户积分记录：
         List<Reward> rewards = new ArrayList<>();
-        List<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO> points = employeePointsRecordDao.getDatas(new Query.QueryBuilder().where("employee_id", employeeId).buildQuery());
+        List<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO> points = employeePointsRecordDao.getDatas(new Query.QueryBuilder()
+                .where("employee_id", employeeId).buildQuery());
         if (!StringUtils.isEmptyList(points)) {
             List<Double> aids = points.stream().map(m -> m.getApplicationId()).collect(Collectors.toList());
             Query.QueryBuilder query = new Query.QueryBuilder();
@@ -141,7 +154,6 @@ public class EmployeeEntity {
                     positionMap.putAll(positions.stream().collect(Collectors.toMap(JobPositionDO::getId, JobPositionDO::getTitle)));
                 }
             }
-
             points.stream().filter(p -> p.getAward() != 0).forEach(point -> {
                 Reward reward = new Reward();
                 reward.setReason(point.getReason());
@@ -157,6 +169,7 @@ public class EmployeeEntity {
 
     /**
      * 员工取消认证（支持批量）
+     *
      * @param employeeIds
      * @return
      */
@@ -165,9 +178,12 @@ public class EmployeeEntity {
         query.and(new Condition("id", employeeIds, ValueOp.IN));
         List<UserEmployeeDO> employeeDOList = employeeDao.getDatas(query.buildQuery());
         if (employeeDOList != null && employeeDOList.size() > 0) {
-            employeeDOList.stream().filter(f -> f.getActivation() == 0).forEach(e -> {e.setActivation((byte)1); e.setEmailIsvalid((byte)0);});
+            employeeDOList.stream().filter(f -> f.getActivation() == 0).forEach(e -> {
+                e.setActivation((byte) 1);
+                e.setEmailIsvalid((byte) 0);
+            });
             int[] rows = employeeDao.updateDatas(employeeDOList);
-            if(Arrays.stream(rows).sum() > 0) {
+            if (Arrays.stream(rows).sum() > 0) {
                 return true;
             }
         }
@@ -187,7 +203,7 @@ public class EmployeeEntity {
         if (userEmployeeDOList != null && userEmployeeDOList.size() > 0) {
             int[] rows = employeeDao.deleteDatas(userEmployeeDOList);
             // 受影响行数大于零，说明删除成功， 将数据copy到history_user_employee中
-            if(Arrays.stream(rows).sum() > 0) {
+            if (Arrays.stream(rows).sum() > 0) {
                 historyUserEmployeeDao.addAllData(userEmployeeDOList);
                 return true;
             }
@@ -206,6 +222,74 @@ public class EmployeeEntity {
         return null;
     }
 
+
+    /**
+     * 权限的判断
+     *
+     * @param userEmployeeIds 员工ID
+     * @param companyIds      HR所在公司ID
+     * @return
+     */
+    public Boolean permissionJudge(List<Integer> userEmployeeIds, List<Integer> companyIds) {
+        Condition companyIdCondition = null;
+        if (companyIds.size() == 1) {
+            companyIdCondition = new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyIds.get(0), ValueOp.EQ);
+        } else {
+            companyIdCondition = new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyIds, ValueOp.IN);
+        }
+        Condition userEmployeeId = null;
+        if (userEmployeeIds.size() == 1) {
+            userEmployeeId = new Condition(UserEmployee.USER_EMPLOYEE.ID.getName(), userEmployeeIds.get(0), ValueOp.EQ);
+        } else {
+            userEmployeeId = new Condition(UserEmployee.USER_EMPLOYEE.ID.getName(), userEmployeeIds, ValueOp.IN);
+        }
+        // 查询公司的员工ID
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where(companyIdCondition).and(userEmployeeId)
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), 0);
+
+        List<UserEmployeeDO> list = employeeDao.getDatas(queryBuilder.buildQuery());
+        if (StringUtils.isEmptyList(list)) {
+            return false;
+        }
+        if (list.size() != userEmployeeIds.size()) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 权限的判断
+     *
+     * @param userEmployeeIds 员工ID列表
+     * @param companyId       HR所在公司ID
+     * @return
+     */
+    public Boolean permissionJudge(List<Integer> userEmployeeIds, Integer companyId) {
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where(HrCompany.HR_COMPANY.ID.getName(), companyId);
+        // 是否是子公司，如果是查询母公司ID
+        HrCompanyDO hrCompanyDO = hrCompanyDao.getData(queryBuilder.buildQuery());
+        if (StringUtils.isEmptyObject(hrCompanyDO)) {
+            return false;
+        }
+        List<Integer> list = getCompanyIds(hrCompanyDO.getParentId() > 0 ? hrCompanyDO.getParentId() : companyId);
+        return permissionJudge(userEmployeeIds, list);
+    }
+
+
+    /**
+     * 权限的判断
+     *
+     * @param userEmployeeId 员工ID
+     * @param companyId      HR所在公司ID
+     * @return
+     */
+    public Boolean permissionJudge(Integer userEmployeeId, Integer companyId) {
+        List<Integer> sysuserIds = new ArrayList<>();
+        sysuserIds.add(userEmployeeId);
+        return permissionJudge(sysuserIds, companyId);
+    }
 
     /**
      * 通过companyId 查询集团下所有的公司ID列表

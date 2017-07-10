@@ -1,8 +1,9 @@
 # file: useraccounts.struct
 
 namespace java com.moseeker.thrift.gen.useraccounts.struct
+include "../../dao/struct/userdb_struct.thrift"
 
-typedef string Timestamp;
+typedef string Timestamp
 
 
 struct Userloginreq { 
@@ -384,8 +385,10 @@ struct UserEmployeeVO{
     6: optional string nickName, // 微信账号
     7: optional i32 award, // 积分
     8: optional i32 activation, // 认证状态
-    9: optional string companyName, // 公司名称
-    10: optional string bindingTime, // 认证时间
+    9: optional i32 companyId, // 公司ID
+    10: optional string companyName, // 公司名称
+    11: optional string companyAbbreviation, // 公司简称
+    12: optional string bindingTime, // 认证时间
 }
 // 员工列表分页实体
 struct UserEmployeeVOPageVO{
@@ -405,4 +408,22 @@ struct UserEmployeeDetailVO{
     7: optional i32 activation, // 认证状态
     8: optional string companyName, // 公司名称
     9: optional string headImg, // 头像
+    10: optional i32 companyId, //
+    11: optional string companyAbbreviation, // 公司简称
+    12: optional string bindingTime // 绑定时间
+}
+// 员工导入统计数据
+struct ImportErrorUserEmployee{
+    1: optional i32 row, // 第几条数据
+    2: optional string message, // 错误原因
+    3: optional userdb_struct.UserEmployeeDO userEmployeeDO // 员工实体
+}
+
+struct ImportUserEmployeeStatistic{
+    1: optional i32 repetitionCounts;
+    2: optional i32 errorCounts;
+    3: optional string message, // 错误原因
+    4: optional list<ImportErrorUserEmployee> userEmployeeDO, // 员工实体
+    5: optional i32 totalCounts, //总条数
+    6: optional bool insertAccept // 是否允许插入
 }
