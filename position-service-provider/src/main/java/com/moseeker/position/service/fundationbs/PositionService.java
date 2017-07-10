@@ -4,15 +4,15 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.ValueFilter;
+import com.moseeker.baseorm.dao.dictdb.DictAlipaycampusJobcategoryDao;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.baseorm.dao.dictdb.DictCityPostcodeDao;
 import com.moseeker.baseorm.dao.dictdb.DictConstantDao;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.*;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictAlipaycampusJobcategoryRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityPostcodeRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
-import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
-import com.moseeker.baseorm.db.hrdb.tables.HrHbConfig;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrTeamRecord;
@@ -98,6 +98,8 @@ public class PositionService {
     @Autowired
     private DictCityPostcodeDao dictCityPostcodeDao;
     @Autowired
+    private DictAlipaycampusJobcategoryDao dictAlipaycampusJobcategoryDao;
+    @Autowired
     private HrCompanyDao hrCompanyDao;
     @Autowired
     private HrHbConfigDao hrHbConfigDao;
@@ -112,8 +114,12 @@ public class PositionService {
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
 
+    private static List<DictAlipaycampusJobcategoryRecord> alipaycampusJobcategory;
+
+
     SearchengineServices.Iface searchengineServices = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
 
+    private static List dictAlipaycampusJobcategorylist;
     /**
      * 获取推荐职位
      * <p>
@@ -1534,6 +1540,21 @@ public class PositionService {
         return result;
     }
 
+    private List<DictAlipaycampusJobcategoryRecord> getAllDictAlipaycampusJobcategory(){
+
+        if (alipaycampusJobcategory == null){
+
+            synchronized(PositionService.class){
+                if (alipaycampusJobcategory == null){
+                    alipaycampusJobcategory = dictAlipaycampusJobcategoryDao.getRecords(null);
+                }
+            }
+        }
+
+
+        return alipaycampusJobcategory;
+    }
+
 
     /**
      * @param  positionId      职位id
@@ -1566,13 +1587,45 @@ public class PositionService {
         positionForAlipaycampusPojo.setJob_desc(PositionChangeUtil.convertDescription(positionRecord.getAccountabilities(), positionRecord.getRequirement()));
 
 
-        // 职业分类 todo
-        positionForAlipaycampusPojo.setJob_tier_one_code(null);
-        positionForAlipaycampusPojo.setJob_tier_one_name(null);
-        positionForAlipaycampusPojo.setJob_tier_two_code(null);
-        positionForAlipaycampusPojo.setJob_tier_two_name(null);
+        // 职业分类
+        List<DictAlipaycampusJobcategoryRecord> allDictAlipaycampusJobcategory = this.getAllDictAlipaycampusJobcategory();
+        for( int i = 0 ; i < allDictAlipaycampusJobcategory.size() ; i++) {
+            DictAlipaycampusJobcategoryRecord dictAlipaycampusJobcategoryRecord = allDictAlipaycampusJobcategory.get(i);
+            String keyword = dictAlipaycampusJobcategoryRecord.getName();
+            if (positionRecord.getTitle().indexOf(keyword)>=0){
+                int level = dictAlipaycampusJobcategoryRecord.getLevel();
+                if (level == 3){
+                    query=new Query.QueryBuilder().where("code",dictAlipaycampusJobcategoryRecord.getParentCode()).buildQuery();
+                    dictAlipaycampusJobcategoryRecord = dictAlipaycampusJobcategoryDao.getRecord(query);
+                    // level should equals 2 here.
+                    level = dictAlipaycampusJobcategoryRecord.getLevel();
+                }
 
+                if ( level == 2){
+                    positionForAlipaycampusPojo.setJob_tier_two_code(dictAlipaycampusJobcategoryRecord.getCode());
+                    positionForAlipaycampusPojo.setJob_tier_two_name(dictAlipaycampusJobcategoryRecord.getName());
+                    query=new Query.QueryBuilder().where("code",dictAlipaycampusJobcategoryRecord.getParentCode()).buildQuery();
+                    dictAlipaycampusJobcategoryRecord = dictAlipaycampusJobcategoryDao.getRecord(query);
+                    // level should equals 1 here.
+                    level = dictAlipaycampusJobcategoryRecord.getLevel();
 
+                }
+
+                if ( level == 1){
+                    positionForAlipaycampusPojo.setJob_tier_one_code(dictAlipaycampusJobcategoryRecord.getCode());
+                    positionForAlipaycampusPojo.setJob_tier_one_name(dictAlipaycampusJobcategoryRecord.getName());
+
+                }
+
+                break;
+            }
+
+        }
+
+        if (positionForAlipaycampusPojo.getJob_tier_one_code() != null){
+            positionForAlipaycampusPojo.setJob_tier_one_code("opj_e4tvvgcavs2j");
+            positionForAlipaycampusPojo.setJob_tier_one_name("其他类型");
+        }
 
 
         positionForAlipaycampusPojo.setJob_hire_number(positionRecord.getCount());
@@ -1605,13 +1658,51 @@ public class PositionService {
         // 全国的职位需要忽略吗？
         if (citycode == 111111) {
             // todo.
+            return null;
 
         }
 
-        DictCityRecord dictCityRecord = dictCityDao.getCityByCode(citycode);
-        Integer parentCityCode = citycode/10000 * 10000 ; //取 code的前面2位数 + 4个0， 获取省份code
+        if (citycode == null) {
+            // todo
+            return null;
+        }
 
+        DictCityRecord dictCityRecord = dictCityDao.getCityByCode(citycode);
+        int cityclevel = dictCityRecord.getLevel();
+        if (cityclevel == 3) {
+            citycode = citycode/100 * 100 ; // 取 code的前面4位数 + 2个0， 获取城市code
+            dictCityRecord = dictCityDao.getCityByCode(citycode);
+        }
+
+
+        Integer parentCityCode = citycode/10000 * 10000 ; //取 code的前面2位数 + 4个0， 获取省份code
         DictCityRecord parentDictCityRecord = dictCityDao.getCityByCode(parentCityCode);
+
+        // moseeker 使用的是 310000表示上海， 支付宝是 310100 表示上海， 直辖市需要特殊处理。
+        switch (parentCityCode){
+            case 310000:
+                parentDictCityRecord.setCode(310100);
+                parentDictCityRecord.setName("上海市");
+                dictCityRecord = parentDictCityRecord;
+                break;
+            case 110000:
+                parentDictCityRecord.setCode(110100);
+                parentDictCityRecord.setName("北京市");
+                dictCityRecord = parentDictCityRecord;
+                break;
+            case 120000:
+                parentDictCityRecord.setCode(120100);
+                parentDictCityRecord.setName("天津市");
+                dictCityRecord = parentDictCityRecord;
+                break;
+            case 500000:
+                parentDictCityRecord.setCode(500100);
+                parentDictCityRecord.setName("重庆市");
+                dictCityRecord = parentDictCityRecord;
+                break;
+            default:
+
+        }
 
         positionForAlipaycampusPojo.setArea_province_code(parentDictCityRecord.getCode());
         positionForAlipaycampusPojo.setArea_province_name(parentDictCityRecord.getName());
