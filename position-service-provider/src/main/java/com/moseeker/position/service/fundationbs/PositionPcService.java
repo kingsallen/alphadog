@@ -634,8 +634,8 @@ public class PositionPcService {
 	 
 	//====================================================== 
 	 //获取仟寻推荐公司和相关职位信息接口
-	 public Response getQXRecommendCompanyList() throws TException{
-		 List<CampaignPcRecommendCompanyDO>  CampaignPcRecommendCompanyList=campaignPcRecommendCompanyDao.getCampaignPcRecommendCompanyList();
+	 public Response getQXRecommendCompanyList(int page,int pageSize) throws TException{
+		 List<CampaignPcRecommendCompanyDO>  CampaignPcRecommendCompanyList=campaignPcRecommendCompanyDao.getCampaignPcRecommendCompanyList(page,pageSize);
 		 if(StringUtils.isEmptyList(CampaignPcRecommendCompanyList)){
 			 return  null;
 		 }
@@ -658,8 +658,8 @@ public class PositionPcService {
 		 return res;
 	 }
 	 //获取全部公司
-	 public List<Map<String,Object>> getAllCompanyRecommend() throws TException{
-		 List<CampaignPcRecommendCompanyDO>  CampaignPcRecommendCompanyList=campaignPcRecommendCompanyDao.getCampaignPcRecommendCompanyList();
+	 public List<Map<String,Object>> getAllCompanyRecommend(int page,int pageSize) throws TException{
+		 List<CampaignPcRecommendCompanyDO>  CampaignPcRecommendCompanyList=campaignPcRecommendCompanyDao.getCampaignPcRecommendCompanyList(page,pageSize);
 		 if(StringUtils.isEmptyList(CampaignPcRecommendCompanyList)){
 			 return  null;
 		 }

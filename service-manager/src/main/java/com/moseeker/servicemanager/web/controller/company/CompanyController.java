@@ -6,6 +6,7 @@ import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
+import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices;
@@ -130,12 +131,45 @@ public class CompanyController {
 	@ResponseBody
 	public String getPcQXRecommendCompany(HttpServletRequest request, HttpServletResponse response) {
 		try{
-			Map<String, Object> data = ParamUtils.parseRequestParam(request);
-			Response res=positonServices.getPcRecommandCompany();
+			Params<String, Object> params = ParamUtils.parseRequestParam(request);
+	        Integer page = params.getInt("page");
+	        Integer pageSize = params.getInt("pageSize");
+	        if(page==null){
+	        	page=1;
+	        }
+	        if(pageSize==null){
+	        	pageSize=15;
+	        }
+			Response res=positonServices.getPcRecommandCompany(page,pageSize);
 			return ResponseLogNotification.success(request, res);
 		}catch(Exception e){
 			logger.info(e.getMessage(),e);
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}
 	}
+	/*
+	 * 获取pc端全部的企业
+	 */
+	@RequestMapping(value = "/company/apolegamicall", method = RequestMethod.GET)
+	@ResponseBody
+	public String getPcQXRecommendAll(HttpServletRequest request, HttpServletResponse response) {
+		try{
+			Params<String, Object> params = ParamUtils.parseRequestParam(request);
+	        Integer page = params.getInt("page");
+	        Integer pageSize = params.getInt("pageSize");
+	        if(page==null){
+	        	page=1;
+	        }
+	        if(pageSize==null){
+	        	pageSize=15;
+	        }
+	        
+			Response res=positonServices.getPcRecommandCompanyAll(page,pageSize);
+			return ResponseLogNotification.success(request, res);
+		}catch(Exception e){
+			logger.info(e.getMessage(),e);
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
+	
 }

@@ -27,8 +27,8 @@ public class CampaignPcRecommendCompanyDao extends JooqCrudImpl<CampaignPcRecomm
 	 /*
 	  * 获取所有的千寻推荐公司
 	  */
-	 public List<CampaignPcRecommendCompanyDO> getCampaignPcRecommendCompanyList(){
-		 Query query=new Query.QueryBuilder().where("disable",0).buildQuery();
+	 public List<CampaignPcRecommendCompanyDO> getCampaignPcRecommendCompanyList(int page,int pageSize){
+		 Query query=new Query.QueryBuilder().where("disable",0).setPageNum(page).setPageSize(pageSize).buildQuery();
 		 List<CampaignPcRecommendCompanyDO> list=this.getDatas(query);
 		 return list;
 	 }

@@ -57,7 +57,9 @@ public class PositionServices {
 
     public com.moseeker.thrift.gen.common.struct.Response getPcRecommand(int page, int pageSize) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response getPcRecommandCompany() throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.common.struct.Response getPcRecommandCompany(int page, int pageSize) throws org.apache.thrift.TException;
+
+    public com.moseeker.thrift.gen.common.struct.Response getPcRecommandCompanyAll(int page, int pageSize) throws org.apache.thrift.TException;
 
   }
 
@@ -105,7 +107,9 @@ public class PositionServices {
 
     public void getPcRecommand(int page, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
-    public void getPcRecommandCompany(org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+    public void getPcRecommandCompany(int page, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+
+    public void getPcRecommandCompanyAll(int page, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
   }
 
@@ -620,15 +624,17 @@ public class PositionServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getPcRecommand failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response getPcRecommandCompany() throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response getPcRecommandCompany(int page, int pageSize) throws org.apache.thrift.TException
     {
-      send_getPcRecommandCompany();
+      send_getPcRecommandCompany(page, pageSize);
       return recv_getPcRecommandCompany();
     }
 
-    public void send_getPcRecommandCompany() throws org.apache.thrift.TException
+    public void send_getPcRecommandCompany(int page, int pageSize) throws org.apache.thrift.TException
     {
       getPcRecommandCompany_args args = new getPcRecommandCompany_args();
+      args.setPage(page);
+      args.setPageSize(pageSize);
       sendBase("getPcRecommandCompany", args);
     }
 
@@ -640,6 +646,30 @@ public class PositionServices {
         return result.success;
       }
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getPcRecommandCompany failed: unknown result");
+    }
+
+    public com.moseeker.thrift.gen.common.struct.Response getPcRecommandCompanyAll(int page, int pageSize) throws org.apache.thrift.TException
+    {
+      send_getPcRecommandCompanyAll(page, pageSize);
+      return recv_getPcRecommandCompanyAll();
+    }
+
+    public void send_getPcRecommandCompanyAll(int page, int pageSize) throws org.apache.thrift.TException
+    {
+      getPcRecommandCompanyAll_args args = new getPcRecommandCompanyAll_args();
+      args.setPage(page);
+      args.setPageSize(pageSize);
+      sendBase("getPcRecommandCompanyAll", args);
+    }
+
+    public com.moseeker.thrift.gen.common.struct.Response recv_getPcRecommandCompanyAll() throws org.apache.thrift.TException
+    {
+      getPcRecommandCompanyAll_result result = new getPcRecommandCompanyAll_result();
+      receiveBase(result, "getPcRecommandCompanyAll");
+      if (result.isSetSuccess()) {
+        return result.success;
+      }
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getPcRecommandCompanyAll failed: unknown result");
     }
 
   }
@@ -1356,21 +1386,27 @@ public class PositionServices {
       }
     }
 
-    public void getPcRecommandCompany(org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+    public void getPcRecommandCompany(int page, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      getPcRecommandCompany_call method_call = new getPcRecommandCompany_call(resultHandler, this, ___protocolFactory, ___transport);
+      getPcRecommandCompany_call method_call = new getPcRecommandCompany_call(page, pageSize, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
     public static class getPcRecommandCompany_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
-      public getPcRecommandCompany_call(org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private int page;
+      private int pageSize;
+      public getPcRecommandCompany_call(int page, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
+        this.page = page;
+        this.pageSize = pageSize;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("getPcRecommandCompany", org.apache.thrift.protocol.TMessageType.CALL, 0));
         getPcRecommandCompany_args args = new getPcRecommandCompany_args();
+        args.setPage(page);
+        args.setPageSize(pageSize);
         args.write(prot);
         prot.writeMessageEnd();
       }
@@ -1382,6 +1418,41 @@ public class PositionServices {
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
         return (new Client(prot)).recv_getPcRecommandCompany();
+      }
+    }
+
+    public void getPcRecommandCompanyAll(int page, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+      checkReady();
+      getPcRecommandCompanyAll_call method_call = new getPcRecommandCompanyAll_call(page, pageSize, resultHandler, this, ___protocolFactory, ___transport);
+      this.___currentMethod = method_call;
+      ___manager.call(method_call);
+    }
+
+    public static class getPcRecommandCompanyAll_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
+      private int page;
+      private int pageSize;
+      public getPcRecommandCompanyAll_call(int page, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+        super(client, protocolFactory, transport, resultHandler, false);
+        this.page = page;
+        this.pageSize = pageSize;
+      }
+
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("getPcRecommandCompanyAll", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        getPcRecommandCompanyAll_args args = new getPcRecommandCompanyAll_args();
+        args.setPage(page);
+        args.setPageSize(pageSize);
+        args.write(prot);
+        prot.writeMessageEnd();
+      }
+
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
+        }
+        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
+        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
+        return (new Client(prot)).recv_getPcRecommandCompanyAll();
       }
     }
 
@@ -1420,6 +1491,7 @@ public class PositionServices {
       processMap.put("similarityPositionDetailsList", new similarityPositionDetailsList());
       processMap.put("getPcRecommand", new getPcRecommand());
       processMap.put("getPcRecommandCompany", new getPcRecommandCompany());
+      processMap.put("getPcRecommandCompanyAll", new getPcRecommandCompanyAll());
       return processMap;
     }
 
@@ -1859,7 +1931,27 @@ public class PositionServices {
 
       public getPcRecommandCompany_result getResult(I iface, getPcRecommandCompany_args args) throws org.apache.thrift.TException {
         getPcRecommandCompany_result result = new getPcRecommandCompany_result();
-        result.success = iface.getPcRecommandCompany();
+        result.success = iface.getPcRecommandCompany(args.page, args.pageSize);
+        return result;
+      }
+    }
+
+    public static class getPcRecommandCompanyAll<I extends Iface> extends org.apache.thrift.ProcessFunction<I, getPcRecommandCompanyAll_args> {
+      public getPcRecommandCompanyAll() {
+        super("getPcRecommandCompanyAll");
+      }
+
+      public getPcRecommandCompanyAll_args getEmptyArgsInstance() {
+        return new getPcRecommandCompanyAll_args();
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public getPcRecommandCompanyAll_result getResult(I iface, getPcRecommandCompanyAll_args args) throws org.apache.thrift.TException {
+        getPcRecommandCompanyAll_result result = new getPcRecommandCompanyAll_result();
+        result.success = iface.getPcRecommandCompanyAll(args.page, args.pageSize);
         return result;
       }
     }
@@ -1899,6 +1991,7 @@ public class PositionServices {
       processMap.put("similarityPositionDetailsList", new similarityPositionDetailsList());
       processMap.put("getPcRecommand", new getPcRecommand());
       processMap.put("getPcRecommandCompany", new getPcRecommandCompany());
+      processMap.put("getPcRecommandCompanyAll", new getPcRecommandCompanyAll());
       return processMap;
     }
 
@@ -3241,7 +3334,68 @@ public class PositionServices {
       }
 
       public void start(I iface, getPcRecommandCompany_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
-        iface.getPcRecommandCompany(resultHandler);
+        iface.getPcRecommandCompany(args.page, args.pageSize,resultHandler);
+      }
+    }
+
+    public static class getPcRecommandCompanyAll<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, getPcRecommandCompanyAll_args, com.moseeker.thrift.gen.common.struct.Response> {
+      public getPcRecommandCompanyAll() {
+        super("getPcRecommandCompanyAll");
+      }
+
+      public getPcRecommandCompanyAll_args getEmptyArgsInstance() {
+        return new getPcRecommandCompanyAll_args();
+      }
+
+      public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
+        final org.apache.thrift.AsyncProcessFunction fcall = this;
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+          public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
+            getPcRecommandCompanyAll_result result = new getPcRecommandCompanyAll_result();
+            result.success = o;
+            try {
+              fcall.sendResponse(fb, result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
+            } catch (org.apache.thrift.transport.TTransportException e) {
+              _LOGGER.error("TTransportException writing to internal frame buffer", e);
+              fb.close();
+            } catch (java.lang.Exception e) {
+              _LOGGER.error("Exception writing to internal frame buffer", e);
+              onError(e);
+            }
+          }
+          public void onError(java.lang.Exception e) {
+            byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
+            org.apache.thrift.TSerializable msg;
+            getPcRecommandCompanyAll_result result = new getPcRecommandCompanyAll_result();
+            if (e instanceof org.apache.thrift.transport.TTransportException) {
+              _LOGGER.error("TTransportException inside handler", e);
+              fb.close();
+              return;
+            } else if (e instanceof org.apache.thrift.TApplicationException) {
+              _LOGGER.error("TApplicationException inside handler", e);
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = (org.apache.thrift.TApplicationException)e;
+            } else {
+              _LOGGER.error("Exception inside handler", e);
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
+            }
+            try {
+              fcall.sendResponse(fb,msg,msgType,seqid);
+            } catch (java.lang.Exception ex) {
+              _LOGGER.error("Exception writing to internal frame buffer", ex);
+              fb.close();
+            }
+          }
+        };
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public void start(I iface, getPcRecommandCompanyAll_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+        iface.getPcRecommandCompanyAll(args.page, args.pageSize,resultHandler);
       }
     }
 
@@ -19650,14 +19804,19 @@ public class PositionServices {
   public static class getPcRecommandCompany_args implements org.apache.thrift.TBase<getPcRecommandCompany_args, getPcRecommandCompany_args._Fields>, java.io.Serializable, Cloneable, Comparable<getPcRecommandCompany_args>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getPcRecommandCompany_args");
 
+    private static final org.apache.thrift.protocol.TField PAGE_FIELD_DESC = new org.apache.thrift.protocol.TField("page", org.apache.thrift.protocol.TType.I32, (short)1);
+    private static final org.apache.thrift.protocol.TField PAGE_SIZE_FIELD_DESC = new org.apache.thrift.protocol.TField("pageSize", org.apache.thrift.protocol.TType.I32, (short)2);
 
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getPcRecommandCompany_argsStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getPcRecommandCompany_argsTupleSchemeFactory();
 
+    public int page; // required
+    public int pageSize; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-;
+      PAGE((short)1, "page"),
+      PAGE_SIZE((short)2, "pageSize");
 
       private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
@@ -19672,6 +19831,10 @@ public class PositionServices {
        */
       public static _Fields findByThriftId(int fieldId) {
         switch(fieldId) {
+          case 1: // PAGE
+            return PAGE;
+          case 2: // PAGE_SIZE
+            return PAGE_SIZE;
           default:
             return null;
         }
@@ -19710,9 +19873,18 @@ public class PositionServices {
         return _fieldName;
       }
     }
+
+    // isset id assignments
+    private static final int __PAGE_ISSET_ID = 0;
+    private static final int __PAGESIZE_ISSET_ID = 1;
+    private byte __isset_bitfield = 0;
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.PAGE, new org.apache.thrift.meta_data.FieldMetaData("page", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.PAGE_SIZE, new org.apache.thrift.meta_data.FieldMetaData("pageSize", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getPcRecommandCompany_args.class, metaDataMap);
     }
@@ -19720,10 +19892,24 @@ public class PositionServices {
     public getPcRecommandCompany_args() {
     }
 
+    public getPcRecommandCompany_args(
+      int page,
+      int pageSize)
+    {
+      this();
+      this.page = page;
+      setPageIsSet(true);
+      this.pageSize = pageSize;
+      setPageSizeIsSet(true);
+    }
+
     /**
      * Performs a deep copy on <i>other</i>.
      */
     public getPcRecommandCompany_args(getPcRecommandCompany_args other) {
+      __isset_bitfield = other.__isset_bitfield;
+      this.page = other.page;
+      this.pageSize = other.pageSize;
     }
 
     public getPcRecommandCompany_args deepCopy() {
@@ -19732,15 +19918,87 @@ public class PositionServices {
 
     @Override
     public void clear() {
+      setPageIsSet(false);
+      this.page = 0;
+      setPageSizeIsSet(false);
+      this.pageSize = 0;
+    }
+
+    public int getPage() {
+      return this.page;
+    }
+
+    public getPcRecommandCompany_args setPage(int page) {
+      this.page = page;
+      setPageIsSet(true);
+      return this;
+    }
+
+    public void unsetPage() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __PAGE_ISSET_ID);
+    }
+
+    /** Returns true if field page is set (has been assigned a value) and false otherwise */
+    public boolean isSetPage() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __PAGE_ISSET_ID);
+    }
+
+    public void setPageIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __PAGE_ISSET_ID, value);
+    }
+
+    public int getPageSize() {
+      return this.pageSize;
+    }
+
+    public getPcRecommandCompany_args setPageSize(int pageSize) {
+      this.pageSize = pageSize;
+      setPageSizeIsSet(true);
+      return this;
+    }
+
+    public void unsetPageSize() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __PAGESIZE_ISSET_ID);
+    }
+
+    /** Returns true if field pageSize is set (has been assigned a value) and false otherwise */
+    public boolean isSetPageSize() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __PAGESIZE_ISSET_ID);
+    }
+
+    public void setPageSizeIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __PAGESIZE_ISSET_ID, value);
     }
 
     public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
+      case PAGE:
+        if (value == null) {
+          unsetPage();
+        } else {
+          setPage((java.lang.Integer)value);
+        }
+        break;
+
+      case PAGE_SIZE:
+        if (value == null) {
+          unsetPageSize();
+        } else {
+          setPageSize((java.lang.Integer)value);
+        }
+        break;
+
       }
     }
 
     public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
+      case PAGE:
+        return getPage();
+
+      case PAGE_SIZE:
+        return getPageSize();
+
       }
       throw new java.lang.IllegalStateException();
     }
@@ -19752,6 +20010,10 @@ public class PositionServices {
       }
 
       switch (field) {
+      case PAGE:
+        return isSetPage();
+      case PAGE_SIZE:
+        return isSetPageSize();
       }
       throw new java.lang.IllegalStateException();
     }
@@ -19771,12 +20033,34 @@ public class PositionServices {
       if (this == that)
         return true;
 
+      boolean this_present_page = true;
+      boolean that_present_page = true;
+      if (this_present_page || that_present_page) {
+        if (!(this_present_page && that_present_page))
+          return false;
+        if (this.page != that.page)
+          return false;
+      }
+
+      boolean this_present_pageSize = true;
+      boolean that_present_pageSize = true;
+      if (this_present_pageSize || that_present_pageSize) {
+        if (!(this_present_pageSize && that_present_pageSize))
+          return false;
+        if (this.pageSize != that.pageSize)
+          return false;
+      }
+
       return true;
     }
 
     @Override
     public int hashCode() {
       int hashCode = 1;
+
+      hashCode = hashCode * 8191 + page;
+
+      hashCode = hashCode * 8191 + pageSize;
 
       return hashCode;
     }
@@ -19789,6 +20073,26 @@ public class PositionServices {
 
       int lastComparison = 0;
 
+      lastComparison = java.lang.Boolean.valueOf(isSetPage()).compareTo(other.isSetPage());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetPage()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.page, other.page);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetPageSize()).compareTo(other.isSetPageSize());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetPageSize()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.pageSize, other.pageSize);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
       return 0;
     }
 
@@ -19809,6 +20113,13 @@ public class PositionServices {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("getPcRecommandCompany_args(");
       boolean first = true;
 
+      sb.append("page:");
+      sb.append(this.page);
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("pageSize:");
+      sb.append(this.pageSize);
+      first = false;
       sb.append(")");
       return sb.toString();
     }
@@ -19828,6 +20139,8 @@ public class PositionServices {
 
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
+        // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
+        __isset_bitfield = 0;
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
@@ -19852,6 +20165,22 @@ public class PositionServices {
             break;
           }
           switch (schemeField.id) {
+            case 1: // PAGE
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.page = iprot.readI32();
+                struct.setPageIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 2: // PAGE_SIZE
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.pageSize = iprot.readI32();
+                struct.setPageSizeIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -19867,6 +20196,12 @@ public class PositionServices {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
+        oprot.writeFieldBegin(PAGE_FIELD_DESC);
+        oprot.writeI32(struct.page);
+        oprot.writeFieldEnd();
+        oprot.writeFieldBegin(PAGE_SIZE_FIELD_DESC);
+        oprot.writeI32(struct.pageSize);
+        oprot.writeFieldEnd();
         oprot.writeFieldStop();
         oprot.writeStructEnd();
       }
@@ -19884,11 +20219,34 @@ public class PositionServices {
       @Override
       public void write(org.apache.thrift.protocol.TProtocol prot, getPcRecommandCompany_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetPage()) {
+          optionals.set(0);
+        }
+        if (struct.isSetPageSize()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
+        if (struct.isSetPage()) {
+          oprot.writeI32(struct.page);
+        }
+        if (struct.isSetPageSize()) {
+          oprot.writeI32(struct.pageSize);
+        }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, getPcRecommandCompany_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(2);
+        if (incoming.get(0)) {
+          struct.page = iprot.readI32();
+          struct.setPageIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.pageSize = iprot.readI32();
+          struct.setPageSizeIsSet(true);
+        }
       }
     }
 
@@ -20249,6 +20607,827 @@ public class PositionServices {
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, getPcRecommandCompany_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(1);
+        if (incoming.get(0)) {
+          struct.success = new com.moseeker.thrift.gen.common.struct.Response();
+          struct.success.read(iprot);
+          struct.setSuccessIsSet(true);
+        }
+      }
+    }
+
+    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+    }
+  }
+
+  public static class getPcRecommandCompanyAll_args implements org.apache.thrift.TBase<getPcRecommandCompanyAll_args, getPcRecommandCompanyAll_args._Fields>, java.io.Serializable, Cloneable, Comparable<getPcRecommandCompanyAll_args>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getPcRecommandCompanyAll_args");
+
+    private static final org.apache.thrift.protocol.TField PAGE_FIELD_DESC = new org.apache.thrift.protocol.TField("page", org.apache.thrift.protocol.TType.I32, (short)1);
+    private static final org.apache.thrift.protocol.TField PAGE_SIZE_FIELD_DESC = new org.apache.thrift.protocol.TField("pageSize", org.apache.thrift.protocol.TType.I32, (short)2);
+
+    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getPcRecommandCompanyAll_argsStandardSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getPcRecommandCompanyAll_argsTupleSchemeFactory();
+
+    public int page; // required
+    public int pageSize; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      PAGE((short)1, "page"),
+      PAGE_SIZE((short)2, "pageSize");
+
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+      static {
+        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 1: // PAGE
+            return PAGE;
+          case 2: // PAGE_SIZE
+            return PAGE_SIZE;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(java.lang.String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final java.lang.String _fieldName;
+
+      _Fields(short thriftId, java.lang.String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public java.lang.String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    private static final int __PAGE_ISSET_ID = 0;
+    private static final int __PAGESIZE_ISSET_ID = 1;
+    private byte __isset_bitfield = 0;
+    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.PAGE, new org.apache.thrift.meta_data.FieldMetaData("page", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.PAGE_SIZE, new org.apache.thrift.meta_data.FieldMetaData("pageSize", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getPcRecommandCompanyAll_args.class, metaDataMap);
+    }
+
+    public getPcRecommandCompanyAll_args() {
+    }
+
+    public getPcRecommandCompanyAll_args(
+      int page,
+      int pageSize)
+    {
+      this();
+      this.page = page;
+      setPageIsSet(true);
+      this.pageSize = pageSize;
+      setPageSizeIsSet(true);
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public getPcRecommandCompanyAll_args(getPcRecommandCompanyAll_args other) {
+      __isset_bitfield = other.__isset_bitfield;
+      this.page = other.page;
+      this.pageSize = other.pageSize;
+    }
+
+    public getPcRecommandCompanyAll_args deepCopy() {
+      return new getPcRecommandCompanyAll_args(this);
+    }
+
+    @Override
+    public void clear() {
+      setPageIsSet(false);
+      this.page = 0;
+      setPageSizeIsSet(false);
+      this.pageSize = 0;
+    }
+
+    public int getPage() {
+      return this.page;
+    }
+
+    public getPcRecommandCompanyAll_args setPage(int page) {
+      this.page = page;
+      setPageIsSet(true);
+      return this;
+    }
+
+    public void unsetPage() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __PAGE_ISSET_ID);
+    }
+
+    /** Returns true if field page is set (has been assigned a value) and false otherwise */
+    public boolean isSetPage() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __PAGE_ISSET_ID);
+    }
+
+    public void setPageIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __PAGE_ISSET_ID, value);
+    }
+
+    public int getPageSize() {
+      return this.pageSize;
+    }
+
+    public getPcRecommandCompanyAll_args setPageSize(int pageSize) {
+      this.pageSize = pageSize;
+      setPageSizeIsSet(true);
+      return this;
+    }
+
+    public void unsetPageSize() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __PAGESIZE_ISSET_ID);
+    }
+
+    /** Returns true if field pageSize is set (has been assigned a value) and false otherwise */
+    public boolean isSetPageSize() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __PAGESIZE_ISSET_ID);
+    }
+
+    public void setPageSizeIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __PAGESIZE_ISSET_ID, value);
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
+      switch (field) {
+      case PAGE:
+        if (value == null) {
+          unsetPage();
+        } else {
+          setPage((java.lang.Integer)value);
+        }
+        break;
+
+      case PAGE_SIZE:
+        if (value == null) {
+          unsetPageSize();
+        } else {
+          setPageSize((java.lang.Integer)value);
+        }
+        break;
+
+      }
+    }
+
+    public java.lang.Object getFieldValue(_Fields field) {
+      switch (field) {
+      case PAGE:
+        return getPage();
+
+      case PAGE_SIZE:
+        return getPageSize();
+
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new java.lang.IllegalArgumentException();
+      }
+
+      switch (field) {
+      case PAGE:
+        return isSetPage();
+      case PAGE_SIZE:
+        return isSetPageSize();
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(java.lang.Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof getPcRecommandCompanyAll_args)
+        return this.equals((getPcRecommandCompanyAll_args)that);
+      return false;
+    }
+
+    public boolean equals(getPcRecommandCompanyAll_args that) {
+      if (that == null)
+        return false;
+      if (this == that)
+        return true;
+
+      boolean this_present_page = true;
+      boolean that_present_page = true;
+      if (this_present_page || that_present_page) {
+        if (!(this_present_page && that_present_page))
+          return false;
+        if (this.page != that.page)
+          return false;
+      }
+
+      boolean this_present_pageSize = true;
+      boolean that_present_pageSize = true;
+      if (this_present_pageSize || that_present_pageSize) {
+        if (!(this_present_pageSize && that_present_pageSize))
+          return false;
+        if (this.pageSize != that.pageSize)
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hashCode = 1;
+
+      hashCode = hashCode * 8191 + page;
+
+      hashCode = hashCode * 8191 + pageSize;
+
+      return hashCode;
+    }
+
+    @Override
+    public int compareTo(getPcRecommandCompanyAll_args other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = java.lang.Boolean.valueOf(isSetPage()).compareTo(other.isSetPage());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetPage()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.page, other.page);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetPageSize()).compareTo(other.isSetPageSize());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetPageSize()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.pageSize, other.pageSize);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      scheme(iprot).read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      scheme(oprot).write(oprot, this);
+    }
+
+    @Override
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("getPcRecommandCompanyAll_args(");
+      boolean first = true;
+
+      sb.append("page:");
+      sb.append(this.page);
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("pageSize:");
+      sb.append(this.pageSize);
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+      try {
+        // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
+        __isset_bitfield = 0;
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class getPcRecommandCompanyAll_argsStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public getPcRecommandCompanyAll_argsStandardScheme getScheme() {
+        return new getPcRecommandCompanyAll_argsStandardScheme();
+      }
+    }
+
+    private static class getPcRecommandCompanyAll_argsStandardScheme extends org.apache.thrift.scheme.StandardScheme<getPcRecommandCompanyAll_args> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, getPcRecommandCompanyAll_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            case 1: // PAGE
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.page = iprot.readI32();
+                struct.setPageIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 2: // PAGE_SIZE
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.pageSize = iprot.readI32();
+                struct.setPageSizeIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, getPcRecommandCompanyAll_args struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        oprot.writeFieldBegin(PAGE_FIELD_DESC);
+        oprot.writeI32(struct.page);
+        oprot.writeFieldEnd();
+        oprot.writeFieldBegin(PAGE_SIZE_FIELD_DESC);
+        oprot.writeI32(struct.pageSize);
+        oprot.writeFieldEnd();
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class getPcRecommandCompanyAll_argsTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public getPcRecommandCompanyAll_argsTupleScheme getScheme() {
+        return new getPcRecommandCompanyAll_argsTupleScheme();
+      }
+    }
+
+    private static class getPcRecommandCompanyAll_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<getPcRecommandCompanyAll_args> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, getPcRecommandCompanyAll_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetPage()) {
+          optionals.set(0);
+        }
+        if (struct.isSetPageSize()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
+        if (struct.isSetPage()) {
+          oprot.writeI32(struct.page);
+        }
+        if (struct.isSetPageSize()) {
+          oprot.writeI32(struct.pageSize);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, getPcRecommandCompanyAll_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(2);
+        if (incoming.get(0)) {
+          struct.page = iprot.readI32();
+          struct.setPageIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.pageSize = iprot.readI32();
+          struct.setPageSizeIsSet(true);
+        }
+      }
+    }
+
+    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+    }
+  }
+
+  public static class getPcRecommandCompanyAll_result implements org.apache.thrift.TBase<getPcRecommandCompanyAll_result, getPcRecommandCompanyAll_result._Fields>, java.io.Serializable, Cloneable, Comparable<getPcRecommandCompanyAll_result>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getPcRecommandCompanyAll_result");
+
+    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
+
+    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getPcRecommandCompanyAll_resultStandardSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getPcRecommandCompanyAll_resultTupleSchemeFactory();
+
+    public com.moseeker.thrift.gen.common.struct.Response success; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      SUCCESS((short)0, "success");
+
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+      static {
+        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 0: // SUCCESS
+            return SUCCESS;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(java.lang.String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final java.lang.String _fieldName;
+
+      _Fields(short thriftId, java.lang.String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public java.lang.String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
+      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getPcRecommandCompanyAll_result.class, metaDataMap);
+    }
+
+    public getPcRecommandCompanyAll_result() {
+    }
+
+    public getPcRecommandCompanyAll_result(
+      com.moseeker.thrift.gen.common.struct.Response success)
+    {
+      this();
+      this.success = success;
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public getPcRecommandCompanyAll_result(getPcRecommandCompanyAll_result other) {
+      if (other.isSetSuccess()) {
+        this.success = new com.moseeker.thrift.gen.common.struct.Response(other.success);
+      }
+    }
+
+    public getPcRecommandCompanyAll_result deepCopy() {
+      return new getPcRecommandCompanyAll_result(this);
+    }
+
+    @Override
+    public void clear() {
+      this.success = null;
+    }
+
+    public com.moseeker.thrift.gen.common.struct.Response getSuccess() {
+      return this.success;
+    }
+
+    public getPcRecommandCompanyAll_result setSuccess(com.moseeker.thrift.gen.common.struct.Response success) {
+      this.success = success;
+      return this;
+    }
+
+    public void unsetSuccess() {
+      this.success = null;
+    }
+
+    /** Returns true if field success is set (has been assigned a value) and false otherwise */
+    public boolean isSetSuccess() {
+      return this.success != null;
+    }
+
+    public void setSuccessIsSet(boolean value) {
+      if (!value) {
+        this.success = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
+      switch (field) {
+      case SUCCESS:
+        if (value == null) {
+          unsetSuccess();
+        } else {
+          setSuccess((com.moseeker.thrift.gen.common.struct.Response)value);
+        }
+        break;
+
+      }
+    }
+
+    public java.lang.Object getFieldValue(_Fields field) {
+      switch (field) {
+      case SUCCESS:
+        return getSuccess();
+
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new java.lang.IllegalArgumentException();
+      }
+
+      switch (field) {
+      case SUCCESS:
+        return isSetSuccess();
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(java.lang.Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof getPcRecommandCompanyAll_result)
+        return this.equals((getPcRecommandCompanyAll_result)that);
+      return false;
+    }
+
+    public boolean equals(getPcRecommandCompanyAll_result that) {
+      if (that == null)
+        return false;
+      if (this == that)
+        return true;
+
+      boolean this_present_success = true && this.isSetSuccess();
+      boolean that_present_success = true && that.isSetSuccess();
+      if (this_present_success || that_present_success) {
+        if (!(this_present_success && that_present_success))
+          return false;
+        if (!this.success.equals(that.success))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hashCode = 1;
+
+      hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
+      if (isSetSuccess())
+        hashCode = hashCode * 8191 + success.hashCode();
+
+      return hashCode;
+    }
+
+    @Override
+    public int compareTo(getPcRecommandCompanyAll_result other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSuccess()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      scheme(iprot).read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      scheme(oprot).write(oprot, this);
+      }
+
+    @Override
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("getPcRecommandCompanyAll_result(");
+      boolean first = true;
+
+      sb.append("success:");
+      if (this.success == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.success);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+      if (success != null) {
+        success.validate();
+      }
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class getPcRecommandCompanyAll_resultStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public getPcRecommandCompanyAll_resultStandardScheme getScheme() {
+        return new getPcRecommandCompanyAll_resultStandardScheme();
+      }
+    }
+
+    private static class getPcRecommandCompanyAll_resultStandardScheme extends org.apache.thrift.scheme.StandardScheme<getPcRecommandCompanyAll_result> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, getPcRecommandCompanyAll_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            case 0: // SUCCESS
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.success = new com.moseeker.thrift.gen.common.struct.Response();
+                struct.success.read(iprot);
+                struct.setSuccessIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, getPcRecommandCompanyAll_result struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.success != null) {
+          oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
+          struct.success.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class getPcRecommandCompanyAll_resultTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public getPcRecommandCompanyAll_resultTupleScheme getScheme() {
+        return new getPcRecommandCompanyAll_resultTupleScheme();
+      }
+    }
+
+    private static class getPcRecommandCompanyAll_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<getPcRecommandCompanyAll_result> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, getPcRecommandCompanyAll_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetSuccess()) {
+          optionals.set(0);
+        }
+        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetSuccess()) {
+          struct.success.write(oprot);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, getPcRecommandCompanyAll_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {

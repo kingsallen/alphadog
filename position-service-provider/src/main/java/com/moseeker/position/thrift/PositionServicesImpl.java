@@ -2,6 +2,7 @@ package com.moseeker.position.thrift;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.moseeker.position.service.fundationbs.PositionPcService;
 import com.moseeker.position.service.fundationbs.PositionQxService;
@@ -259,10 +260,23 @@ public class PositionServicesImpl implements Iface {
 	}
 
 	@Override
-	public Response getPcRecommandCompany() throws TException {
+	public Response getPcRecommandCompany(int page,int pageSize) throws TException {
 		// TODO Auto-generated method stub
 		try{
-			return positionPcService.getQXRecommendCompanyList();
+			return positionPcService.getQXRecommendCompanyList(page,pageSize);
+		}catch(Exception e){
+			logger.info(e.getMessage(),e);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+		}
+	}
+
+	@Override
+	public Response getPcRecommandCompanyAll(int page, int pageSize) throws TException {
+		// TODO Auto-generated method stub
+		try{
+			List<Map<String,Object>> list= positionPcService.getAllCompanyRecommend(page,pageSize);
+			Response res= ResponseUtils.success(list);
+			return res;
 		}catch(Exception e){
 			logger.info(e.getMessage(),e);
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());

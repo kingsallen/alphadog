@@ -71,7 +71,7 @@ public class PositionPcServiceTest {
   
   @Test
   public void getQXRecommendCompanyListTest() throws TException{
-	  Response res=service.getQXRecommendCompanyList();
+	  Response res=service.getQXRecommendCompanyList(1,10);
 	  System.out.println(res);
   }
   @Test
@@ -83,7 +83,11 @@ public class PositionPcServiceTest {
 	  for(Map<String,Object> map1:map){
 		  System.out.println(JSON.toJSONString(map1));
 	  }
-	  
-	  
+  }
+  
+  @Test
+  public void getAllCompanyRecommendTest() throws Exception{
+	  List<Map<String,Object>> list=service.getAllCompanyRecommend(1,10);
+	  System.out.println(list);
   }
 }
