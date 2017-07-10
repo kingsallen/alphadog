@@ -7,19 +7,25 @@ import com.moseeker.rpccenter.config.ClientConfig;
 import com.moseeker.rpccenter.config.RegistryConfig;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import com.moseeker.thrift.gen.employee.struct.Reward;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import com.moseeker.thrift.gen.useraccounts.struct.HrNpsResult;
 import com.moseeker.thrift.gen.useraccounts.struct.HrNpsStatistic;
 import com.moseeker.thrift.gen.useraccounts.struct.HrNpsUpdate;
 import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
 import com.moseeker.useraccounts.config.AppConfig;
+import com.moseeker.useraccounts.thrift.UserHrAccountServiceImpl;
+import java.util.Arrays;
+import java.util.List;
 import org.apache.thrift.TException;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * HR账号服务
@@ -132,6 +138,9 @@ public class UserHrAccountServiceImplTest {
     @Autowired
     com.moseeker.useraccounts.service.impl.UserHrAccountService userHrAccountService;
 
+    @Autowired
+    UserHrAccountServiceImpl userHrAccountServiceImpl;
+
     @Test
     public void testBinding() throws Exception {
         HrThirdPartyAccountDO hrThirdPartyAccountDO = new HrThirdPartyAccountDO();
@@ -141,6 +150,43 @@ public class UserHrAccountServiceImplTest {
         userHrAccountService.bindThirdAccount(82847,hrThirdPartyAccountDO);
     }
 
+//    @Test
+//    @Transactional
+    public void addReawrdTest() {
+        try {
+            userHrAccountServiceImpl.addEmployeeReward(658112, 100, "加积分");
+        } catch (TException e) {
+            e.printStackTrace();
+        }
+    }
 
+//    @Test
+    public void getEmployeeRewardsTest() {
+        try {
+            List<Reward> list  = userHrAccountServiceImpl.getEmployeeRewards(658112);
+            System.out.println(BeanUtils.convertStructToJSON(list));
+        } catch (TException e) {
+            e.printStackTrace();
+        }
+    }
 
+//    @Test
+//    @Transactional
+    public void removeEmployeeTest() {
+        try {
+            Assert.assertTrue(userHrAccountServiceImpl.delEmployee(Arrays.asList(3352, 3353)));
+        } catch (TException e) {
+            e.printStackTrace();
+        }
+    }
+
+//    @Test
+//    @Transactional
+    public void unbindTest() {
+        try {
+            Assert.assertTrue(userHrAccountServiceImpl.unbindEmployee(Arrays.asList(3394, 658112, 3402)));
+        } catch (TException e) {
+            e.printStackTrace();
+        }
+    }
 }
