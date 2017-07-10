@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.tool.QueryConvert;
@@ -8,6 +9,7 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 import org.apache.thrift.TException;
 import org.slf4j.LoggerFactory;
@@ -40,9 +42,24 @@ public class UserEmployeeServiceImpl {
         return delResource(query);
     }
 
-    public Response postPutUserEmployeeBatch(List<UserEmployeeStruct> update) throws TException {
+    public Response postPutUserEmployeeBatch(UserEmployeeBatchForm batchForm) throws TException {
         try {
-            return ResponseUtils.success(userEmployeeDao.postPutUserEmployeeBatch(update));
+            if (batchForm.as_task) {
+                new Thread(() -> {
+                    try {
+                        userEmployeeDao.postPutUserEmployeeBatch(batchForm);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }).start();
+                Response response = new Response();
+                response.setStatus(0);
+                response.setMessage("任务已提交，数据处理中");
+                response.setData(JSON.toJSONString(new int[0]));
+                return response;
+            } else {
+                return ResponseUtils.success(userEmployeeDao.postPutUserEmployeeBatch(batchForm));
+            }
         } catch (Exception e) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }

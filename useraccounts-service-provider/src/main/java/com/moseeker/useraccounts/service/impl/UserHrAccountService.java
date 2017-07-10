@@ -10,7 +10,6 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrSearchConditionRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.baseorm.redis.RedisClient;
-import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.annotation.notify.UpdateEs;
@@ -27,18 +26,13 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.thrift.gen.common.struct.BIZException;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrTalentpoolDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
-import com.moseeker.thrift.gen.foundation.chaos.struct.ThirdPartyAccountStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
-import com.moseeker.useraccounts.constant.ResultMessage;
 import com.moseeker.useraccounts.service.thirdpartyaccount.ThirdPartyAccountSynctor;
 import org.apache.thrift.TException;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +41,10 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * HR账号服务
@@ -296,7 +293,7 @@ public class UserHrAccountService {
      * @param account
      * @return
      */
-    public HrThirdPartyAccountDO bindThirdAccount(int hrId, HrThirdPartyAccountDO account) throws Exception {
+    public HrThirdPartyAccountDO bindThirdAccount(int hrId, HrThirdPartyAccountDO account, boolean sync) throws Exception {
         logger.info("-------bindThirdAccount--------{}:{}", hrId, JSON.toJSONString(account));
         // 判断Channel是否合法
         ChannelType channelType = ChannelType.instaceFromInteger(account.getChannel());
@@ -326,7 +323,7 @@ public class UserHrAccountService {
         }
 
         //allowStatus==0,绑定之后将hrId和帐号关联起来，allowStatus==1,只绑定不关联
-        HrThirdPartyAccountDO result = thirdPartyAccountSynctor.bindThirdPartyAccount(allowStatus == 0 ? hrId : 0, account, true);
+        HrThirdPartyAccountDO result = thirdPartyAccountSynctor.bindThirdPartyAccount(allowStatus == 0 ? hrId : 0, account, sync);
 
 
         return result;
@@ -347,13 +344,13 @@ public class UserHrAccountService {
         qu.and("channel", thirdPartyAccount.getChannel());
         qu.and("username", thirdPartyAccount.getUsername());
         qu.and(new Condition("binding", 0, ValueOp.NEQ));//有效的状态
-        List<ThirdPartAccountData> datas = hrThirdPartyAccountDao.getDatas(qu.buildQuery(), ThirdPartAccountData.class);
+        List<HrThirdPartyAccountDO> datas = hrThirdPartyAccountDao.getDatas(qu.buildQuery());
 
-        logger.info("allowBind:相同名字的帐号:{}" , JSON.toJSONString(datas));
+        logger.info("allowBind:相同名字的帐号:{}", JSON.toJSONString(datas));
 
-        ThirdPartAccountData data = null;
+        HrThirdPartyAccountDO data = null;
 
-        for (ThirdPartAccountData d : datas) {
+        for (HrThirdPartyAccountDO d : datas) {
             ///数据库中username是不区分大小写的，如果大小写不同，那么认为不是一个账号
             if (d.getUsername().equals(thirdPartyAccount.getUsername())) {
                 data = d;
@@ -411,7 +408,7 @@ public class UserHrAccountService {
      * @return
      */
 
-    public HrThirdPartyAccountDO synchronizeThirdpartyAccount(int id) throws Exception {
+    public HrThirdPartyAccountDO synchronizeThirdpartyAccount(int id, boolean sync) throws Exception {
         //查找第三方帐号
         Query qu = new Query.QueryBuilder().where("id", id).buildQuery();
         HrThirdPartyAccountDO hrThirdPartyAccount = hrThirdPartyAccountDao.getData(qu);
@@ -420,7 +417,7 @@ public class UserHrAccountService {
             throw new BIZException(-1, "无效的第三方帐号");
         }
         //如果是绑定状态，则进行
-        hrThirdPartyAccount = thirdPartyAccountSynctor.syncThirdPartyAccount(hrThirdPartyAccount, true);
+        hrThirdPartyAccount = thirdPartyAccountSynctor.syncThirdPartyAccount(hrThirdPartyAccount, sync);
 
         //刷新成功
         return hrThirdPartyAccount;
@@ -661,40 +658,6 @@ public class UserHrAccountService {
             logger.error(e.getMessage(), e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
-    }
-
-    /**
-     * 判断是否有权限发布职位
-     *
-     * @param companyId 公司编号
-     * @param channel   渠道号
-     * @return
-     */
-    public Response ifSynchronizePosition(int companyId, int channel) {
-        Response response = ResultMessage.PROGRAM_EXHAUSTED.toResponse();
-        Query.QueryBuilder qu = new Query.QueryBuilder();
-        qu.where("company_id", String.valueOf(companyId)).and("channel", String.valueOf(channel));
-        try {
-            ThirdPartAccountData data = hrThirdPartyAccountDao.getData(qu.buildQuery(), ThirdPartAccountData.class);
-            if (data.getId() == 0 || data.getBinding() != 1) {
-                response = ResultMessage.THIRD_PARTY_ACCOUNT_UNBOUND.toResponse();
-            }
-            if (data.getRemain_num() == 0) {
-                response = ResultMessage.THIRD_PARTY_ACCOUNT_HAVE_NO_REMAIN_NUM.toResponse();
-            }
-            if (data.getId() > 0 && data.binding == 1 && data.getRemain_num() > 0) {
-                response = ResultMessage.SUCCESS.toResponse();
-            } else {
-                response = ResultMessage.THIRD_PARTY_ACCOUNT_UNBOUND.toResponse();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            response = ResultMessage.PROGRAM_EXHAUSTED.toResponse();
-            logger.error(e.getMessage(), e);
-        } finally {
-            //do nothing
-        }
-        return response;
     }
 
     public HrNpsResult npsStatus(int userId, String startDate, String endDate) throws Exception {

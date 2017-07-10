@@ -14,6 +14,10 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
+import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.position.service.PositionServices.Iface;
 import com.moseeker.thrift.gen.position.struct.*;
 import org.apache.thrift.TException;
@@ -21,6 +25,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import com.moseeker.thrift.gen.position.struct.*;
+import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,23 +81,23 @@ public class PositionServicesImpl implements Iface {
 
     @Override
     public Response getResources(CommonQuery query) throws TException {
-    	try {
-    		List<JobPositionRecord> list=jobPositionDao.getRecords(QueryConvert.commonQueryConvertToQuery(query));
-			List<Position> structs = BeanUtils.DBToStruct(Position.class, list);
-			
-			if (!structs.isEmpty()){
-				return ResponseUtils.success(structs);
-			}
-			
-		} catch (Exception e) {
-			logger.error("getResources error", e);
-			return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-		} finally {
-			//do nothing
-		}
-		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+        try {
+            List<JobPositionRecord> list = jobPositionDao.getRecords(QueryConvert.commonQueryConvertToQuery(query));
+            List<Position> structs = BeanUtils.DBToStruct(Position.class, list);
+
+            if (!structs.isEmpty()) {
+                return ResponseUtils.success(structs);
+            }
+
+        } catch (Exception e) {
+            logger.error("getResources error", e);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+        } finally {
+            //do nothing
+        }
+        return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
     }
- 
+
     /**
      * @return response
      * @throws TException time 2016-11-21
@@ -97,14 +111,14 @@ public class PositionServicesImpl implements Iface {
 
     @Override
     public List<ThirdPartyPositionForSynchronization> changeToThirdPartyPosition(List<ThirdPartyPosition> forms,
-                                                                                 Position position) throws TException {
+                                                                                 JobPositionDO position) throws TException {
         return service.changeToThirdPartyPosition(forms, position);
     }
 
     @Override
-    public boolean ifAllowRefresh(int positionId,int account_id) {
+    public boolean ifAllowRefresh(int positionId, int account_id) {
         try {
-            return service.ifAllowRefresh(positionId,account_id);
+            return service.ifAllowRefresh(positionId, account_id);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return false;
@@ -185,12 +199,13 @@ public class PositionServicesImpl implements Iface {
     }
 
     @Override
-    public List<ThirdPartyPositionData> getThirdPartyPositions(CommonQuery query) throws TException {
+    public List<HrThirdPartyPositionDO> getThirdPartyPositions(CommonQuery query) throws TException {
         try {
-            return service.getThirdPartyPositions(query);
+            return service.getThirdPartyPositions(QueryConvert.commonQueryConvertToQuery(query));
         } catch (Exception e) {
+            e.printStackTrace();
             logger.error(e.getMessage(), e);
-            return new ArrayList<>();
+            throw new TException(e);
         }
     }
 

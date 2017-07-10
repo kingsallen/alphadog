@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictCityMap extends TableImpl<DictCityMapRecord> {
 
-    private static final long serialVersionUID = -1231832298;
+    private static final long serialVersionUID = -90829378;
 
     /**
      * The reference instance of <code>dictdb.dict_city_map</code>
@@ -62,9 +62,9 @@ public class DictCityMap extends TableImpl<DictCityMapRecord> {
     public final TableField<DictCityMapRecord, Integer> CODE = createField("CODE", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "千寻城市字典code");
 
     /**
-     * The column <code>dictdb.dict_city_map.code_other</code>. 第三方城市字典code
+     * The column <code>dictdb.dict_city_map.code_other</code>.
      */
-    public final TableField<DictCityMapRecord, Integer> CODE_OTHER = createField("code_other", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "第三方城市字典code");
+    public final TableField<DictCityMapRecord, String> CODE_OTHER = createField("code_other", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false), this, "");
 
     /**
      * The column <code>dictdb.dict_city_map.channel</code>. 渠道 1 51job 2 猎聘 3 智联 4 linkedin

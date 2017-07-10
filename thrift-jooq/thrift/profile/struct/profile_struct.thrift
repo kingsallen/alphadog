@@ -231,3 +231,14 @@ struct Works {
     7: optional Timestamp create_time,
     8: optional Timestamp update_time
 }
+
+//1:i32 companyId,2:i32 sourceId,3:i32 ats_status,4:bool recommender,5:bool dl_url_required,6:map<string,list<string>> filter
+struct ProfileApplicationForm{
+    1: optional i32 company_id,
+    2: optional i32 source_id,
+    3: optional i32 ats_status,
+    4: optional bool recommender,
+    5: optional bool dl_url_required,
+    6: optional map<string,list<string>> filter,
+    7: optional map<string,string> conditions
+}
