@@ -74,6 +74,7 @@ public class PositionController {
             Response result = positonServices.getPositionById(id);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
+        	logger.info(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
