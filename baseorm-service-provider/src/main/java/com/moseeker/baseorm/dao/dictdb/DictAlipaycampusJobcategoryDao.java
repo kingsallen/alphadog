@@ -5,7 +5,9 @@ import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusJobcategory;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictAlipaycampusJobcategoryRecord;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictAlipaycampusJobcategoryDO;
 import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class DictAlipaycampusJobcategoryDao extends JooqCrudImpl<DictAlipaycampusJobcategoryDO, DictAlipaycampusJobcategoryRecord> {
 
     public DictAlipaycampusJobcategoryDao() {
