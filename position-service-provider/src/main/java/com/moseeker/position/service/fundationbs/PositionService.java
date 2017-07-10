@@ -36,6 +36,7 @@ import com.moseeker.position.pojo.JobPositionFailMess;
 import com.moseeker.position.pojo.JobPostionResponse;
 import com.moseeker.position.pojo.PositionForSynchronizationPojo;
 import com.moseeker.position.service.position.PositionChangeUtil;
+import com.moseeker.position.utils.CommonPositionUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -104,6 +105,9 @@ public class PositionService {
     private HrHbPositionBindingDao hrHbPositionBindingDao;
     @Autowired
     private HrHbItemsDao hrHbItemsDao;
+    @Autowired
+    private CommonPositionUtils commonPositionUtils;
+    
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
     com.moseeker.thrift.gen.searchengine.service.SearchengineServices.Iface searchengineServices = ServiceManager.SERVICEMANAGER
@@ -230,10 +234,7 @@ public class PositionService {
                     jobPositionPojo.occupation = jobOccupationRecord.getName();
                 }
             }
-
-
         }
-
         // 修改更新时间
         jobPositionPojo.publish_date_view = DateUtils.dateToPattern(jobPositionPojo.publish_date,
                 DateUtils.SHOT_TIME);
@@ -250,65 +251,14 @@ public class PositionService {
             sb.deleteCharAt(sb.length() - 1);
             jobPositionPojo.province = sb.toString();
         }
-        String citynames=this.handlerCity(positionId);
+        String citynames=commonPositionUtils.handlerCity(positionId);
         logger.info("job_position_city的city信息是＝＝＝＝＝＝＝＝＝＝＝＝＝"+citynames);
         if(StringUtils.isNotNullOrEmpty(citynames)){
           jobPositionPojo.city=citynames;
         }
         return ResponseUtils.success(jobPositionPojo);
     }
-    /*
-     * 处理城市数据
-     */
-    private String handlerCity(int positionId){
-      String citys="";
-      List<JobPositionCityDO> jobCityList=this.getJobPositionCityList(positionId);
-      List<Integer> codeList=this.getCodeIdlist(jobCityList);
-      List<DictCityDO> dictList=this.getDictCityList(codeList);
-      if(!StringUtils.isEmptyList(dictList)){
-        for(DictCityDO dict:dictList){
-          String name=dict.getName();
-          citys+=name+",";
-        }
-      }
-      if(StringUtils.isNotNullOrEmpty(citys)){
-        citys=citys.substring(0, citys.lastIndexOf(","));
-      }
-      return citys;
-    }
     
-    /*
-     * 获取job_position_city的数据
-     */
-    private List<JobPositionCityDO> getJobPositionCityList(int positionId){
-      Query query=new Query.QueryBuilder().where("pid",positionId).buildQuery();
-      List<JobPositionCityDO> list=jobPositionCityDao.getDatas(query);
-      return list;
-    }
-    /*
-     * 获取code的list
-     */
-    private List<Integer> getCodeIdlist(List<JobPositionCityDO> list){
-      if(StringUtils.isEmptyList(list)){
-        return null;
-      }
-      List<Integer> result=new ArrayList<Integer>();
-      for(JobPositionCityDO DO:list){
-        result.add(DO.getCode());
-      }
-      return result;
-    }
-    /*
-     * 获取dictcity的数据
-     */
-    public List<DictCityDO> getDictCityList(List<Integer> codes){
-      if(StringUtils.isEmptyList(codes)){
-        return null;
-      }
-      Query query=new Query.QueryBuilder().where(new Condition("code",codes.toArray(),ValueOp.IN)).buildQuery();
-      List<DictCityDO> list=dictCityDao.getDatas(query);
-      return list;
-    }
     /*
      * 获取城市
      */
@@ -1234,6 +1184,7 @@ public class PositionService {
                 Condition con=new Condition("id", jdIdList.toArray(),ValueOp.IN);
 				Query q = new Query.QueryBuilder().where(con).buildQuery();
                 List<JobPositionRecord> jobRecords = jobPositionDao.getRecords(q);
+                Map<Integer,List<String>> cityMap=commonPositionUtils.handlePositionCity(jdIdList);
                 for(int i=0;i<jdIdList.size();i++){
                 	int positionId=jdIdList.get(i);
                 	 for (JobPositionRecord jr : jobRecords) {
@@ -1249,7 +1200,6 @@ public class PositionService {
 	 	                    } else {
 	 	                        e.setSalary_top(jr.getSalaryTop());
 	 	                    }
-	 	
 	 	                    if (jr.getSalaryBottom() == null) {
 	 	                        e.setSalary_bottom(0);
 	 	                    } else {
@@ -1261,6 +1211,12 @@ public class PositionService {
 	 	                    e.setIn_hb(jr.getHbStatus() > 0);
 	 	                    e.setCount(jr.getCount());
 	 	                    e.setCity(jr.getCity());
+	 	                    if(cityMap!=null&&!cityMap.isEmpty()){
+	 	                    	List<String> positionCity=cityMap.get(jr.getId());
+	 	                    	if(positionCity!=null&&positionCity.size()>0){
+	 	                    		 e.setCity(positionCity.toString());
+	 	                    	}
+	 	                    }
 	 	                    e.setPriority(jr.getPriority());
 	 	                    e.setPublisher(jr.getPublisher()); // will be used for fetching sub company info
 	 	                    dataList.add(e);
