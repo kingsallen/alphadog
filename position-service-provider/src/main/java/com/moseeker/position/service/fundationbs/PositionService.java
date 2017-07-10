@@ -1563,15 +1563,14 @@ public class PositionService {
         PositionForAlipaycampusPojo positionForAlipaycampusPojo = new PositionForAlipaycampusPojo();
         positionForAlipaycampusPojo.setSource_id(positionRecord.getId().toString());
         positionForAlipaycampusPojo.setJob_name(positionRecord.getTitle());
-        positionForAlipaycampusPojo.setJob_desc(PositionChangeUtil.convertDescription(positionRecord.getAccountabilities(),
-                positionRecord.getRequirement());
+        positionForAlipaycampusPojo.setJob_desc(PositionChangeUtil.convertDescription(positionRecord.getAccountabilities(), positionRecord.getRequirement()));
 
 
         // 职业分类 todo
-        positionForAlipaycampusPojo.setJob_tier_one_code();
-        positionForAlipaycampusPojo.setJob_tier_one_name();
-        positionForAlipaycampusPojo.setJob_tier_two_code();
-        positionForAlipaycampusPojo.setJob_tier_two_name();
+        positionForAlipaycampusPojo.setJob_tier_one_code(null);
+        positionForAlipaycampusPojo.setJob_tier_one_name(null);
+        positionForAlipaycampusPojo.setJob_tier_two_code(null);
+        positionForAlipaycampusPojo.setJob_tier_two_name(null);
 
 
 
