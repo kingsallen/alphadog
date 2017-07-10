@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 /**
  * Created by lucky8987 on 17/6/29.
  */
-@Service("auth_method_question")
+@Service("auth_method_questions")
 public class EmployeeBindByQuestion extends EmployeeBinder{
 
     private static final Logger log = LoggerFactory.getLogger(EmployeeBindByQuestion.class);
