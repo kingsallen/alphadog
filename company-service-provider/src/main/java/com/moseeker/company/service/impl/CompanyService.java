@@ -25,12 +25,14 @@ import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.company.struct.CompanyCertConf;
 import com.moseeker.thrift.gen.company.struct.CompanyForVerifyEmployee;
 import com.moseeker.thrift.gen.company.struct.CompanyOptions;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.employee.struct.RewardConfig;
+
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -383,7 +385,8 @@ public class CompanyService {
 
         String errorMessage = vu.validate();
         if (!StringUtils.isNullOrEmpty(errorMessage)) {
-            throw ExceptionFactory.buildException(ExceptionCategory.ADD_IMPORTERMONITOR_PARAMETER.getCode(), ExceptionCategory.ADD_IMPORTERMONITOR_PARAMETER.getMsg().replace("{MESSAGE}", errorMessage));
+            throw ExceptionFactory.buildException(ExceptionCategory.ADD_IMPORTERMONITOR_PARAMETER.getCode(),
+                    ExceptionCategory.ADD_IMPORTERMONITOR_PARAMETER.getMsg().replace("{MESSAGE}", errorMessage));
         }
 
         HrImporterMonitorDO hrImporterMonitorDO = new HrImporterMonitorDO();
@@ -424,7 +427,7 @@ public class CompanyService {
         ValidateUtil vu = new ValidateUtil();
         vu.addIntTypeValidate("公司编号", comanyId, null, null, 1, 1000000);
         vu.addIntTypeValidate("导入类型", type, null, "不能为空", 0, 10);
-        vu.addIntTypeValidate("HR账号", hraccountId, null, null, 0, 1000000);
+        vu.addIntTypeValidate("HR账号", hraccountId, null, null, 1, 1000000);
         String errorMessage = vu.validate();
         if (!StringUtils.isNullOrEmpty(errorMessage)) {
             throw ExceptionFactory.buildException(ExceptionCategory.ADD_IMPORTERMONITOR_PARAMETER.getCode(), ExceptionCategory.ADD_IMPORTERMONITOR_PARAMETER.getMsg().replace("{MESSAGE}", errorMessage));
@@ -437,8 +440,6 @@ public class CompanyService {
         List<HrImporterMonitorDO> hrImporterMonitorDOS = hrImporterMonitorDao.getDatas(queryBuilder.buildQuery());
         if (!StringUtils.isEmptyList(hrImporterMonitorDOS)) {
             hrImporterMonitorDO = hrImporterMonitorDOS.get(0);
-        } else {
-            throw ExceptionFactory.buildException(ExceptionCategory.IMPORTERMONITOR_EMPTY);
         }
         return hrImporterMonitorDO;
     }
@@ -497,7 +498,8 @@ public class CompanyService {
      * @return
      * @throws BIZException
      */
-    public HrEmployeeCertConfDO getHrEmployeeCertConf(Integer companyId) throws BIZException {
+    public CompanyCertConf getHrEmployeeCertConf(Integer companyId, Integer type, Integer hraccountId) throws BIZException {
+        CompanyCertConf companyCertConf = new CompanyCertConf();
         if (companyId == 0) {
             throw ExceptionFactory.buildException(ExceptionCategory.COMPANY_ID_EMPTY);
         }
@@ -507,7 +509,11 @@ public class CompanyService {
         if (StringUtils.isEmptyObject(hrEmployeeCertConfDO)) {
             throw ExceptionFactory.buildException(ExceptionCategory.HREMPLOYEECERTCONF_EMPTY);
         }
-        return hrEmployeeCertConfDO;
+        HrImporterMonitorDO hrImporterMonitorDO = getImporterMonitor(companyId, hraccountId, type);
+        companyCertConf.setHrImporterMonitor(hrImporterMonitorDO);
+        companyCertConf.setHrEmployeeCertConf(hrEmployeeCertConfDO);
+
+        return companyCertConf;
     }
 
     /**
@@ -522,7 +528,7 @@ public class CompanyService {
      * @return 受影响行数
      */
     @Transactional
-    public int updateHrEmployeeCertConf(Integer companyId, Integer authMode, String emailSuffix, String custom, String customHint, String questions) throws BIZException {
+    public int updateHrEmployeeCertConf(Integer companyId, Integer authMode, String emailSuffix, String custom, String customHint, String questions, String filePath, String fileName, Integer type, Integer hraccountId) throws BIZException {
         if (companyId == 0) {
             throw ExceptionFactory.buildException(ExceptionCategory.COMPANY_ID_EMPTY);
         }
@@ -566,6 +572,34 @@ public class CompanyService {
             }
         } catch (Exception e) {
             return 0;
+        }
+
+        // 开始添加导入日志数据
+        ValidateUtil vu = new ValidateUtil();
+        vu.addIntTypeValidate("导入的数据类型", type, "不能为空", null, 0, 100);
+        vu.addIntTypeValidate("HR账号", hraccountId, "不能为空", null, 1, 1000000);
+        vu.addRequiredStringValidate("导入文件的绝对路径", filePath, "不能为空", null);
+        vu.addRequiredStringValidate("导入的文件名", fileName, "不能为空", null);
+
+        String errorMessage = vu.validate();
+        if (!StringUtils.isNullOrEmpty(errorMessage)) {
+            throw ExceptionFactory.buildException(ExceptionCategory.ADD_IMPORTERMONITOR_PARAMETER.getCode(),
+                    ExceptionCategory.ADD_IMPORTERMONITOR_PARAMETER.getMsg().replace("{MESSAGE}", errorMessage));
+        }
+        try {
+            HrImporterMonitorDO hrImporterMonitorDO = new HrImporterMonitorDO();
+            hrImporterMonitorDO.setFile(filePath);
+            hrImporterMonitorDO.setSys(2);
+            hrImporterMonitorDO.setCompanyId(companyId);
+            hrImporterMonitorDO.setName(fileName);
+            hrImporterMonitorDO.setStatus(2);
+            hrImporterMonitorDO.setType(type);
+            hrImporterMonitorDO.setMessage("导入成功");
+            hrImporterMonitorDO.setHraccountId(hraccountId);
+            hrImporterMonitorDao.addData(hrImporterMonitorDO);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw ExceptionFactory.buildException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS);
         }
         return 1;
     }

@@ -15,9 +15,9 @@ service CompanyServices {
     common_struct.Response add(1:company_struct.Hrcompany company);
     common_struct.Response getWechat(1:i64 companyId, 2:i64 wechatId);
     // 更新公司员工认证配置
-    bool updateEmployeeBindConf(1:i32 companyId,2:i32 authMode,3:string emailSuffix,4:string custom, 5:string customHint, 6:string questions) throws (1: common_struct.BIZException e);
+    bool updateEmployeeBindConf(1:i32 companyId,2:i32 authMode,3:string emailSuffix,4:string custom, 5:string customHint, 6:string questions,7:string filePath,8:string fileName,9:i32 type,10:i32 hraccountId) throws (1: common_struct.BIZException e);
     // 获取公司员工认证配置
-    hrdb_struct.HrEmployeeCertConfDO getHrEmployeeCertConf(1:i32 companyId) throws (1: common_struct.BIZException e)
+    company_struct.CompanyCertConf getHrEmployeeCertConf(1:i32 companyId,2:i32 type 3:i32 hraccountId) throws (1: common_struct.BIZException e)
     // 获取公司积分配置信息
     list<employee_struct.RewardConfig> getCompanyRewardConf(1: i32 companyId) throws (1: common_struct.BIZException e);
     // 更新公司积分配置信息

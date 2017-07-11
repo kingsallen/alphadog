@@ -145,7 +145,7 @@ service UserHrAccountService {
     // 更新公司员工信息
     common_struct.Response updateUserEmployee(1:string cname, 2:string mobile, 3:string email, 4:string customField, 5:i32 userEmployeeId,6:i32 companyId) throws (1: common_struct.BIZException e)
     // 员工信息导入
-    common_struct.Response employeeImport(1:map<i32,user_employee_struct.UserEmployeeDO> userEmployeeDOS, 2:i32 companyId) throws (1: common_struct.BIZException e)
+    common_struct.Response employeeImport(1:map<i32,user_employee_struct.UserEmployeeDO> userEmployeeDOS, 2:i32 companyId,3:string filePath,4:string fileName,5:i32 type,6:i32 hraccountId) throws (1: common_struct.BIZException e)
     // 检查员工重复
     useraccounts_struct.ImportUserEmployeeStatistic checkBatchInsert(1:map<i32,user_employee_struct.UserEmployeeDO> userEmployeeDOS, 2:i32 companyId) throws (1: common_struct.BIZException e)
 }

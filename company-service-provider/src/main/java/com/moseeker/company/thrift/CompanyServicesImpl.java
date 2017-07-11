@@ -5,6 +5,7 @@ import com.moseeker.common.exception.Category;
 import com.moseeker.company.exception.ExceptionFactory;
 import com.moseeker.entity.CompanyConfigEntity;
 import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.company.struct.CompanyCertConf;
 import com.moseeker.thrift.gen.company.struct.CompanyForVerifyEmployee;
 import com.moseeker.thrift.gen.employee.struct.RewardConfig;
 
@@ -105,15 +106,10 @@ public class CompanyServicesImpl implements Iface {
      * @throws TException
      */
     @Override
-    public boolean updateEmployeeBindConf(int companyId, int authMode, String emailSuffix, String custom, String customHint, String questions) throws BIZException, TException {
-        try {
-            int result = service.updateHrEmployeeCertConf(companyId, authMode, emailSuffix, custom, customHint, questions);
-            if (result > 0) {
-                return true;
-            }
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw ExceptionFactory.buildException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS);
+    public boolean updateEmployeeBindConf(int companyId, int authMode, String emailSuffix, String custom, String customHint, String questions, String filePath, String fileName, int type, int hraccountId) throws BIZException, TException {
+        int result = service.updateHrEmployeeCertConf(companyId, authMode, emailSuffix, custom, customHint, questions, filePath, fileName, type, hraccountId);
+        if (result > 0) {
+            return true;
         }
         return false;
     }
@@ -126,8 +122,8 @@ public class CompanyServicesImpl implements Iface {
      * @throws
      */
     @Override
-    public HrEmployeeCertConfDO getHrEmployeeCertConf(int companyId) throws BIZException, TException {
-        return service.getHrEmployeeCertConf(companyId);
+    public CompanyCertConf getHrEmployeeCertConf(int companyId, int type, int accountId) throws BIZException, TException {
+        return service.getHrEmployeeCertConf(companyId, type, accountId);
     }
 
     /**

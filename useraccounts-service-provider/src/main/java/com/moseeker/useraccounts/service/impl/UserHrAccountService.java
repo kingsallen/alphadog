@@ -3,6 +3,7 @@ package com.moseeker.useraccounts.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
+import com.moseeker.baseorm.dao.hrdb.HrImporterMonitorDao;
 import com.moseeker.baseorm.dao.hrdb.HrSearchConditionDao;
 import com.moseeker.baseorm.dao.hrdb.HrTalentpoolDao;
 import com.moseeker.baseorm.dao.userdb.*;
@@ -30,6 +31,7 @@ import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrImporterMonitorDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrTalentpoolDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
@@ -107,6 +109,9 @@ public class UserHrAccountService {
 
     @Autowired
     private HrCompanyDao hrCompanyDao;
+
+    @Autowired
+    private HrImporterMonitorDao hrImporterMonitorDao;
 
 
     /**
@@ -1013,7 +1018,8 @@ public class UserHrAccountService {
      * @param userEmployeeMap 员工信息列表
      * @param companyId       公司ID
      */
-    public Response employeeImport(Integer companyId, Map<Integer, UserEmployeeDO> userEmployeeMap) throws BIZException {
+    @Transactional
+    public Response employeeImport(Integer companyId, Map<Integer, UserEmployeeDO> userEmployeeMap, String filePath, String fileName, Integer type, Integer hraccountId) throws BIZException {
         Response response = new Response();
         logger.info("开始导入员工信息");
         // 判断是否有重复数据
@@ -1055,6 +1061,32 @@ public class UserHrAccountService {
         // 新增数据
         if (!StringUtils.isEmptyList(userEmployeeList)) {
             userEmployeeDao.addAllData(userEmployeeList);
+        }
+        // 员工导入信息日志
+        ValidateUtil vu = new ValidateUtil();
+        vu.addIntTypeValidate("导入的数据类型", type, "不能为空", null, 0, 100);
+        vu.addIntTypeValidate("HR账号", hraccountId, "不能为空", null, 1, 1000000);
+        vu.addRequiredStringValidate("导入文件的绝对路径", filePath, "不能为空", null);
+        vu.addRequiredStringValidate("导入的文件名", fileName, "不能为空", null);
+
+        String errorMessage = vu.validate();
+        if (!StringUtils.isNullOrEmpty(errorMessage)) {
+            throw ExceptionFactory.buildException(ExceptionCategory.ADD_IMPORTERMONITOR_FAILED.getCode(),
+                    ExceptionCategory.ADD_IMPORTERMONITOR_FAILED.getMsg().replace("{MESSAGE}", errorMessage));
+        }
+        try {
+            HrImporterMonitorDO hrImporterMonitorDO = new HrImporterMonitorDO();
+            hrImporterMonitorDO.setSys(2);
+            hrImporterMonitorDO.setFile(filePath);
+            hrImporterMonitorDO.setCompanyId(companyId);
+            hrImporterMonitorDO.setName(fileName);
+            hrImporterMonitorDO.setStatus(2);
+            hrImporterMonitorDO.setMessage("导入成功");
+            hrImporterMonitorDO.setHraccountId(hraccountId);
+            hrImporterMonitorDao.addData(hrImporterMonitorDO);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw ExceptionFactory.buildException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS);
         }
         response = ResultMessage.SUCCESS.toResponse();
         logger.info("导入员工信息结束");
