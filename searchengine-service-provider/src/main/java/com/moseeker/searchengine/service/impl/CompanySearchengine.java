@@ -23,6 +23,7 @@ import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.Aggregations;
+import org.elasticsearch.search.aggregations.InternalAggregation;
 import org.elasticsearch.search.aggregations.metrics.MetricsAggregationBuilder;
 import org.elasticsearch.search.sort.ScriptSortBuilder;
 import org.elasticsearch.search.sort.SortBuilder;
@@ -122,9 +123,10 @@ public class CompanySearchengine {
     private Map<String,Object> handleData(SearchResponse response){
     	Map<String,Object> data=new HashMap<String,Object>();
     	Aggregations aggs=response.getAggregations();
-    	for(String key:aggs.getAsMap().keySet()){
-    		System.out.println(aggs.getAsMap().get(key).getMetaData()+"==============");
-    		System.out.println(aggs.getAsMap().get(key).getName()+"==============");
+    	for(Aggregation aggregation :aggs){
+    		System.out.println(aggregation.getName()+"==============");
+    		System.out.println(aggregation.getMetaData()+"==============");
+    		System.out.println(aggregation.toString()+"==============");
     	}
     	Map<String, Object> aggsMap=handleAggs(aggs);
     	data.put("aggs", aggsMap);
@@ -299,7 +301,7 @@ public class CompanySearchengine {
     	sb.append("city=_source.position_city;");
     	sb.append("for(ss in city){");
     	sb.append("if(ss  in _agg['transactions'] ){}");
-    	sb.append("else{_agg['transactions'].add(city)};}");
+    	sb.append("else{_agg['transactions'].add(ss)};}");
     	String mapScript=sb.toString();
     	StringBuffer sb1=new StringBuffer();
     	sb1.append("jsay=[];");
