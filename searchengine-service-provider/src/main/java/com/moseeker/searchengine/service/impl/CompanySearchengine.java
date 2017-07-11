@@ -122,7 +122,8 @@ public class CompanySearchengine {
     private Map<String,Object> handleData(SearchResponse response){
     	Map<String,Object> data=new HashMap<String,Object>();
     	Aggregations aggs=response.getAggregations();
-    	Map<String, Aggregation> aggsMap=aggs.asMap();
+    	System.out.println(aggs.toString()+"==============");
+    	Map<String, Object> aggsMap=handleAggs(aggs);
     	data.put("aggs", aggsMap);
     	SearchHits hit=response.getHits();
     	long totalNum=hit.getTotalHits();
@@ -137,6 +138,17 @@ public class CompanySearchengine {
     		data.put("companies", list);
     	}
     	return data;
+    }
+    
+    private Map<String,Object> handleAggs(Aggregations aggs){
+    	List<Aggregation> list=aggs.asList();
+    	Map<String,Object> map=new HashMap<String,Object>();
+    	for(Aggregation agg:list){
+    		String name=agg.getName();
+    		Map<String,Object> data=agg.getMetaData();
+    		map.put("name", data);
+    	}
+    	return map;
     }
     //构建prefix查询的语句
     private void buildQueryForPrefix(String keywords,String citys,String industry,String scale,QueryBuilder query ){
