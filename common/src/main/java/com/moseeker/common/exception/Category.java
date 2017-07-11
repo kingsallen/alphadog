@@ -15,7 +15,8 @@ public enum Category {
     PROGRAM_DEL_FAILED(90013, "删除失败!"),
     VALIDATE_FAILED(90014, null),
     PROGRAM_PARAM_NOTEXIST(90015, "参数不正确!"),
-    PROGRAM_CONFIG_INCOMPLETE(90016, "配置信息丢失!");
+    PROGRAM_CONFIG_INCOMPLETE(90016, "配置信息丢失!"),
+    PROGRAM_ELLEGAL_EXCEPTION(90017, "错误异常!");
 
     private Category(int code, String msg) {
         this.code = code;

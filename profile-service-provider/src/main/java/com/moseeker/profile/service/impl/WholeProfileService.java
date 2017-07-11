@@ -21,6 +21,7 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.thread.ThreadPool;
@@ -30,6 +31,8 @@ import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.OrderBy;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.profile.constants.StatisticsForChannelmportVO;
+import com.moseeker.profile.entity.ProfileEntity;
+import com.moseeker.profile.service.impl.retriveprofile.RetriveProfile;
 import com.moseeker.profile.service.impl.serviceutils.ProfilePojo;
 import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -454,20 +457,20 @@ public class WholeProfileService {
             ((Map<String, Object>) resume.get("profile")).put("origin", profileDB.getOrigin());
             ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord);
             int profileId = profileDB.getId().intValue();
-            improveUser(userRecord);
-            improveProfile(profilePojo.getProfileRecord(), profileDB);
-            improveBasic(profilePojo.getBasicRecord(), profileId);
-            improveAttachment(profilePojo.getAttachmentRecords(), profileId);
-            improveAwards(profilePojo.getAwardsRecords(), profileId);
-            improveCredentials(profilePojo.getCredentialsRecords(), profileId);
-            improveEducation(profilePojo.getEducationRecords(), profileId);
-            improveIntention(profilePojo.getIntentionRecords(), profileId);
-            improveLanguage(profilePojo.getLanguageRecords(), profileId);
-            improveOther(profilePojo.getOtherRecord(), profileId);
-            improveProjectexp(profilePojo.getProjectExps(), profileId);
-            improveSkill(profilePojo.getSkillRecords(), profileId);
-            improveWorkexp(profilePojo.getWorkexpRecords(), profileId);
-            improveWorks(profilePojo.getWorksRecords(), profileId);
+            profileEntity.improveUser(userRecord);
+            profileEntity.improveProfile(profilePojo.getProfileRecord(), profileDB);
+            profileEntity.improveBasic(profilePojo.getBasicRecord(), profileId);
+            profileEntity.improveAttachment(profilePojo.getAttachmentRecords(), profileId);
+            profileEntity.improveAwards(profilePojo.getAwardsRecords(), profileId);
+            profileEntity.improveCredentials(profilePojo.getCredentialsRecords(), profileId);
+            profileEntity.improveEducation(profilePojo.getEducationRecords(), profileId);
+            profileEntity.improveIntention(profilePojo.getIntentionRecords(), profileId);
+            profileEntity.improveLanguage(profilePojo.getLanguageRecords(), profileId);
+            profileEntity.improveOther(profilePojo.getOtherRecord(), profileId);
+            profileEntity.improveProjectexp(profilePojo.getProjectExps(), profileId);
+            profileEntity.improveSkill(profilePojo.getSkillRecords(), profileId);
+            profileEntity.improveWorkexp(profilePojo.getWorkexpRecords(), profileId);
+            profileEntity.improveWorks(profilePojo.getWorksRecords(), profileId);
             completenessImpl.getCompleteness1(0, null, profileId);
 
             try {
@@ -526,25 +529,25 @@ public class WholeProfileService {
                 ProfileOtherRecord destOther = otherDao.getRecord(queryUtil);
                 List<ProfileProjectexpRecord> destProjectexps = projectExpDao.getRecords(queryUtil);
                 List<ProfileSkillRecord> destSkills = skillDao.getRecords(queryUtil);
-                List<ProfileWorkexpEntity> destWorkxps = new ArrayList<ProfileWorkexpEntity>();
+                List<ProfileWorkexpEntity> destWorkxps = new ArrayList<>();
                 workExpDao.getRecords(queryUtil).forEach(workexp -> {
                     ProfileWorkexpEntity workexpEntity = new ProfileWorkexpEntity(workexp);
                     destWorkxps.add(workexpEntity);
                 });
                 List<ProfileWorksRecord> destWorks = worksDao.getRecords(queryUtil);
                 int originProfileId = originProfile.getId().intValue();
-                improveBasic(destRecord, originProfileId);
-                improveAttachment(destAttachments, originProfileId);
-                improveAwards(destAwards, originProfileId);
-                improveCredentials(destCredentials, originProfileId);
-                improveEducation(destEducations, originProfileId);
-                improveIntention(destIntentions, originProfileId);
-                improveLanguage(destLanguages, originProfileId);
-                improveOther(destOther, originProfileId);
-                improveProjectexp(destProjectexps, originProfileId);
-                improveSkill(destSkills, originProfileId);
-                improveWorks(destWorks, originProfileId);
-                improveWorkexp(destWorkxps, originProfileId);
+                profileEntity.improveBasic(destRecord, originProfileId);
+                profileEntity.improveAttachment(destAttachments, originProfileId);
+                profileEntity.improveAwards(destAwards, originProfileId);
+                profileEntity.improveCredentials(destCredentials, originProfileId);
+                profileEntity.improveEducation(destEducations, originProfileId);
+                profileEntity.improveIntention(destIntentions, originProfileId);
+                profileEntity.improveLanguage(destLanguages, originProfileId);
+                profileEntity.improveOther(destOther, originProfileId);
+                profileEntity.improveProjectexp(destProjectexps, originProfileId);
+                profileEntity.improveSkill(destSkills, originProfileId);
+                profileEntity.improveWorks(destWorks, originProfileId);
+                profileEntity.improveWorkexp(destWorkxps, originProfileId);
                 completenessImpl.getCompleteness(0, null, originProfile.getId().intValue());
             }
         } catch (Exception e) {
@@ -552,6 +555,17 @@ public class WholeProfileService {
             ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
         return ResponseUtils.success(null);
+    }
+
+    /**
+     * 简历回收
+     * @param parameter 参数
+     * @return 执行结果
+     * @throws CommonException 业务异常
+     */
+    @CounterIface
+    public boolean retrieveProfile(String parameter) throws CommonException {
+        return retriveProfile.retrieve(parameter);
     }
 
     private static StatisticsForChannelmportVO createStaticstics(int profileId, int userId, byte operation, ProfileImportRecord record) {
@@ -570,246 +584,7 @@ public class WholeProfileService {
         return statisticsForChannelmportVO;
     }
 
-    @Transactional
-    private void improveUser(UserUserRecord userRecord) {
-        if (userRecord != null) {
-            userDao.updateRecord(userRecord);
-        }
-    }
 
-    @Transactional
-    private void improveWorks(List<ProfileWorksRecord> worksRecords, int profileId) {
-        if (worksRecords != null && worksRecords.size() > 0) {
-            worksDao.delWorksByProfileId(profileId);
-            worksRecords.forEach(skill -> {
-                skill.setId(null);
-                skill.setProfileId((int) (profileId));
-            });
-            worksDao.addAllRecord(worksRecords);
-        }
-    }
-
-    @Transactional
-    private void improveWorkexp(List<ProfileWorkexpEntity> workexpRecords, int profileId) {
-        if (workexpRecords != null && workexpRecords.size() > 0) {
-            workExpDao.delWorkExpsByProfileId(profileId);
-            List<ProfileWorkexpEntity> records = new ArrayList<>();
-
-            workexpRecords.forEach(skill -> {
-                skill.setId(null);
-                skill.setProfileId((int) (profileId));
-                records.add(skill);
-            });
-            workExpDao.postWordExps(records);
-        }
-    }
-
-    @Transactional
-    private void improveSkill(List<ProfileSkillRecord> skillRecords, int profileId) {
-        if (skillRecords != null && skillRecords.size() > 0) {
-            skillDao.delSkillByProfileId(profileId);
-            skillRecords.forEach(skill -> {
-                skill.setId(null);
-                skill.setProfileId((int) (profileId));
-            });
-            skillDao.addAllRecord(skillRecords);
-        }
-    }
-
-    @Transactional
-    private void improveProjectexp(List<ProfileProjectexpRecord> projectExps, int profileId) {
-        if (projectExps != null && projectExps.size() > 0) {
-            projectExpDao.delProjectExpByProfileId(profileId);
-            projectExps.forEach(language -> {
-                language.setId(null);
-                language.setProfileId((int) (profileId));
-            });
-            projectExpDao.addAllRecord(projectExps);
-        }
-    }
-
-    @Transactional
-    private void improveOther(ProfileOtherRecord otherRecord, int profileId) {
-        if (otherRecord != null && StringUtils.isNotNullOrEmpty(otherRecord.getOther())) {
-            QueryUtil qu = new QueryUtil();
-            qu.addEqualFilter("profile_id", String.valueOf(profileId));
-            ProfileOtherRecord record = otherDao.getRecord(qu);
-            if (record == null && otherRecord != null) {
-                otherRecord.setProfileId((int) (profileId));
-                otherDao.addRecord(otherRecord);
-            }
-        }
-    }
-
-    @Transactional
-    private void improveLanguage(List<ProfileLanguageRecord> languageRecords, int profileId) {
-        if (languageRecords != null && languageRecords.size() > 0) {
-            languageDao.delLanguageByProfileId(profileId);
-            languageRecords.forEach(language -> {
-                language.setId(null);
-                language.setProfileId((int) (profileId));
-            });
-            languageDao.addAllRecord(languageRecords);
-        }
-    }
-
-    @Transactional
-    private void improveIntention(List<IntentionRecord> intentionRecords, int profileId) {
-        if (intentionRecords != null && intentionRecords.size() > 0) {
-            intentionDao.delIntentionsByProfileId(profileId);
-            intentionRecords.forEach(intention -> {
-                intention.setId(null);
-                intention.setProfileId((int) (profileId));
-            });
-            intentionDao.postIntentions(intentionRecords);
-        }
-    }
-
-    @Transactional
-    private void improveEducation(List<ProfileEducationRecord> educationRecords, int profileId) {
-        if (educationRecords != null && educationRecords.size() > 0) {
-            educationDao.delEducationsByProfileId(profileId);
-            educationRecords.forEach(education -> {
-                education.setId(null);
-                education.setProfileId((int) (profileId));
-            });
-
-            educationDao.saveEducations(educationRecords);
-        }
-    }
-
-    @Transactional
-    private void improveCredentials(List<ProfileCredentialsRecord> credentialsRecords, int profileId) {
-        if (credentialsRecords != null && credentialsRecords.size() > 0) {
-            credentialsDao.delCredentialsByProfileId(profileId);
-            credentialsRecords.forEach(credential -> {
-                credential.setId(null);
-                credential.setProfileId((int) (profileId));
-            });
-            credentialsDao.addAllRecord(credentialsRecords);
-        }
-    }
-
-    @Transactional
-    private void improveAwards(List<ProfileAwardsRecord> awardsRecords, int profileId) {
-        if (awardsRecords != null && awardsRecords.size() > 0) {
-            awardsDao.delAwardsByProfileId(profileId);
-            awardsRecords.forEach(award -> {
-                award.setId(null);
-                award.setProfileId((int) (profileId));
-            });
-            awardsDao.addAllRecord(awardsRecords);
-        }
-    }
-
-    @Transactional
-    private void improveAttachment(List<ProfileAttachmentRecord> attachmentRecords, int profileId) {
-        if (attachmentRecords != null && attachmentRecords.size() > 0) {
-            attachmentDao.delAttachmentsByProfileId(profileId);
-            attachmentRecords.forEach(attachment -> {
-                attachment.setId(null);
-                attachment.setProfileId((int) (profileId));
-            });
-            attachmentDao.addAllRecord(attachmentRecords);
-        }
-    }
-
-    /**
-     * 完善基本信息
-     *
-     * @param basicRecord
-     * @param profileId
-     */
-    @Transactional
-    private void improveBasic(ProfileBasicRecord basicRecord, int profileId) {
-        if (basicRecord != null) {
-            QueryUtil qu = new QueryUtil();
-            qu.addEqualFilter("profile_id", String.valueOf(profileId));
-            boolean flag = false;
-            ProfileBasicRecord basic = profileBasicDao.getRecord(qu);
-            if (basic != null) {
-                if (StringUtils.isNotNullOrEmpty(basicRecord.getName()) && StringUtils.isNullOrEmpty(basic.getName())) {
-                    basic.setName(basicRecord.getName());
-                    flag = true;
-                }
-                if (basicRecord.getGender() != null && basic.getGender() == null) {
-                    basic.setGender(basicRecord.getGender());
-                    flag = true;
-                }
-                if (basicRecord.getNationalityCode() != null && basic.getNationalityCode() == null) {
-                    basic.setNationalityCode(basicRecord.getNationalityCode());
-                    flag = true;
-                }
-                if (StringUtils.isNotNullOrEmpty(basicRecord.getNationalityName()) && StringUtils.isNullOrEmpty(basic.getNationalityName())) {
-                    basic.setNationalityName(basicRecord.getNationalityName());
-                    flag = true;
-                }
-                if (basicRecord.getCityCode() != null && basic.getCityCode() == null) {
-                    basic.setCityCode(basicRecord.getCityCode());
-                    flag = true;
-                }
-                if (StringUtils.isNotNullOrEmpty(basicRecord.getCityName()) && StringUtils.isNullOrEmpty(basic.getCityName())) {
-                    basic.setCityName(basicRecord.getCityName());
-                    flag = true;
-                }
-                if (basicRecord.getBirth() != null && basic.getBirth() == null) {
-                    basic.setBirth(basicRecord.getBirth());
-                    flag = true;
-                }
-                if (StringUtils.isNotNullOrEmpty(basicRecord.getWeixin()) && StringUtils.isNullOrEmpty(basic.getWeixin())) {
-                    basic.setWeixin(basicRecord.getWeixin());
-                    flag = true;
-                }
-                if (StringUtils.isNotNullOrEmpty(basicRecord.getQq()) && StringUtils.isNullOrEmpty(basic.getQq())) {
-                    basic.setQq(basicRecord.getQq());
-                    flag = true;
-                }
-                if (StringUtils.isNotNullOrEmpty(basicRecord.getMotto()) && StringUtils.isNullOrEmpty(basic.getMotto())) {
-                    basic.setMotto(basicRecord.getMotto());
-                    flag = true;
-                }
-                if (StringUtils.isNotNullOrEmpty(basicRecord.getSelfIntroduction()) && StringUtils.isNullOrEmpty(basic.getSelfIntroduction())) {
-                    basic.setSelfIntroduction(basicRecord.getSelfIntroduction());
-                    flag = true;
-                }
-                if (flag) {
-                    profileBasicDao.updateRecord(basic);
-                }
-            } else {
-                basicRecord.setProfileId((int) (profileId));
-                profileBasicDao.addRecord(basicRecord);
-            }
-        }
-    }
-
-    /**
-     * 更新profile_profile数据
-     *
-     * @param profileRecord
-     * @param record
-     */
-    @Transactional
-    private void improveProfile(ProfileProfileRecord profileRecord, ProfileProfileRecord record) {
-        if (profileRecord != null) {
-            if (record != null) {
-                boolean flag = false;
-                try {
-                    if (profileRecord.getOrigin() != null && record.getOrigin() != null && !profileRecord.getOrigin().equals(record.getOrigin())) {
-                        record.setOrigin(profileRecord.getOrigin());
-                        flag = true;
-                    }
-                    if (flag) {
-                        profileDao.updateRecord(record);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    logger.error(e.getMessage(), e);
-                } finally {
-                    //do nothing
-                }
-            }
-        }
-    }
 
     public Response verifyRequires(int userId, int positionId) throws TException {
         UserUserRecord userRecord = userDao.getUserById(userId);
@@ -1175,6 +950,9 @@ public class WholeProfileService {
     }
 
     @Autowired
+    ProfileEntity profileEntity;
+
+    @Autowired
     private DictIndustryDao dictIndustryDao;
 
     @Autowired
@@ -1264,4 +1042,6 @@ public class WholeProfileService {
     @Autowired
     private ProfileCompletenessImpl completenessImpl;
 
+    @Autowired
+    RetriveProfile retriveProfile;
 }

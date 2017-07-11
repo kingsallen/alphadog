@@ -1,7 +1,9 @@
 package com.moseeker.candidate.thrift;
 
+import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.candidate.service.Candidate;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.thrift.gen.candidate.service.CandidateService;
 import com.moseeker.thrift.gen.candidate.struct.*;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -51,6 +53,8 @@ public class CandidateThriftService implements CandidateService.Iface {
     public List<CandidateList> candidateList(CandidateListParam param) throws BIZException, TException {
         try {
             return candidate.candidateList(param);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new CURDException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
@@ -61,6 +65,8 @@ public class CandidateThriftService implements CandidateService.Iface {
     public RecommendResult getRecomendations(int companyId, List<Integer> idList) throws BIZException, TException {
         try {
             return candidate.getRecommendations(companyId, idList);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new CURDException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
@@ -71,6 +77,8 @@ public class CandidateThriftService implements CandidateService.Iface {
     public RecommendResult recommend(RecommmendParam param) throws BIZException, TException {
         try {
             return candidate.recommend(param);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new CURDException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
@@ -81,6 +89,8 @@ public class CandidateThriftService implements CandidateService.Iface {
     public RecomRecordResult getRecommendation(int id, int postUserId) throws BIZException, TException {
         try {
             return candidate.getRecommendation(id, postUserId);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new CURDException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
@@ -91,6 +101,8 @@ public class CandidateThriftService implements CandidateService.Iface {
     public SortResult getRecommendatorySorting(int postUserId, int companyId) throws BIZException, TException {
         try {
             return candidate.getRecommendatorySorting(postUserId, companyId);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new CURDException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
@@ -101,6 +113,8 @@ public class CandidateThriftService implements CandidateService.Iface {
     public RecommendResult ignore(int id, int companyId, int postUserId, String clickTime) throws BIZException, TException {
         try {
             return candidate.ignore(id, companyId, postUserId, clickTime);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new CURDException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());

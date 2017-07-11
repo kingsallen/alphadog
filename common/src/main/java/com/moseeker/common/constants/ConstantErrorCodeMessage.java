@@ -106,6 +106,9 @@ public final class ConstantErrorCodeMessage {
     public static final String POSITION_JOBPOSITION_COMPANY_ID_BLANK = "{'status':51012,'message':'未找到该公司'}";
     public static final String POSITION_DATA_OCCUPATION_ERROR = "{'status':51013,'message':'该职位职能信息设置错误,未设置的职能为:{MESSAGE}'}";
     public static final String POSITION_DATA_CUSTOM_ERROR = "{'status':51014,'message':'该职位自定义字段设置错误,未设置的职位自定义字段为:{MESSAGE}'}";
+
+    //APPBS错误代码61000
+
     // 工具类错误
     public static final String USER_SMS_LIMITED = "{'status':80001,'message':'短信发送异常!'}";
 }

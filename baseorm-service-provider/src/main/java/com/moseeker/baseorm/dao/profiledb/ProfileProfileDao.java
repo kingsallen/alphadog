@@ -48,8 +48,6 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
 
     private static final Logger log = LoggerFactory.getLogger(ProfileProfileDao.class);
 
-    private CompletenessCalculator completenessCalculator = new CompletenessCalculator();
-
     public ProfileProfileDao() {
         super(ProfileProfile.PROFILE_PROFILE, ProfileProfileDO.class);
     }
@@ -216,7 +214,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                 }
                 basicRecord.insert();
                 birthDay = basicRecord.getBirth();
-                int basicCompleteness = completenessCalculator.calculateProfileBasic(basicRecord, userRecord.getMobile());
+                int basicCompleteness = CompletenessCalculator.calculateProfileBasic(basicRecord, userRecord.getMobile());
                 completenessRecord.setProfileBasic(basicCompleteness);
             }
             if (attachmentRecords != null && attachmentRecords.size() > 0) {
@@ -234,7 +232,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     create.attach(awardsRecord);
                     awardsRecord.insert();
                 });
-                int awardCompleteness = completenessCalculator.calculateAwards(awardsRecords);
+                int awardCompleteness = CompletenessCalculator.calculateAwards(awardsRecords);
                 completenessRecord.setProfileAwards(awardCompleteness);
             }
             if (credentialsRecords != null && credentialsRecords.size() > 0) {
@@ -244,7 +242,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     create.attach(credentialsRecord);
                     credentialsRecord.insert();
                 });
-                int credentialsCompleteness = completenessCalculator.calculateCredentials(credentialsRecords);
+                int credentialsCompleteness = CompletenessCalculator.calculateCredentials(credentialsRecords);
                 completenessRecord.setProfileCredentials(credentialsCompleteness);
             }
             if (educationRecords != null && educationRecords.size() > 0) {
@@ -263,7 +261,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     create.attach(educationRecord);
                     educationRecord.insert();
                 });
-                int educationCompleteness = completenessCalculator.calculateProfileEducations(educationRecords);
+                int educationCompleteness = CompletenessCalculator.calculateProfileEducations(educationRecords);
                 completenessRecord.setProfileEducation(educationCompleteness);
             }
             if (importRecord != null && importRecord.size() > 0) {
@@ -328,7 +326,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                         });
                     }
                 });
-                int intentionCompleteness = completenessCalculator.calculateIntentions(intentionRecords,
+                int intentionCompleteness = CompletenessCalculator.calculateIntentions(intentionRecords,
                         intentionCityRecords, intentionPositionRecords);
                 completenessRecord.setProfileIntention(intentionCompleteness);
             }
@@ -339,7 +337,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     create.attach(language);
                     language.insert();
                 });
-                int languageCompleteness = completenessCalculator.calculateLanguages(languages);
+                int languageCompleteness = CompletenessCalculator.calculateLanguages(languages);
                 completenessRecord.setProfileLanguage(languageCompleteness);
             }
             if (otherRecord != null) {
@@ -355,7 +353,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     create.attach(skill);
                     skill.insert();
                 });
-                int skillCompleteness = completenessCalculator.calculateSkills(skillRecords);
+                int skillCompleteness = CompletenessCalculator.calculateSkills(skillRecords);
                 completenessRecord.setProfileSkill(skillCompleteness);
             }
             if (workexpRecords != null && workexpRecords.size() > 0) {
@@ -407,7 +405,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     create.attach(workexp);
                     workexp.insert();
                 });
-                int workExpCompleteness = completenessCalculator.calculateProfileWorkexps(workexpRecords,
+                int workExpCompleteness = CompletenessCalculator.calculateProfileWorkexps(workexpRecords,
                         educationRecords, birthDay);
                 completenessRecord.setProfileWorkexp(workExpCompleteness);
             }
@@ -418,7 +416,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     create.attach(projectExp);
                     projectExp.insert();
                 });
-                int projectExpCompleteness = completenessCalculator.calculateProjectexps(projectExps, workexpRecords);
+                int projectExpCompleteness = CompletenessCalculator.calculateProjectexps(projectExps, workexpRecords);
                 completenessRecord.setProfileProjectexp(projectExpCompleteness);
             }
 
@@ -429,7 +427,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     create.attach(worksRecord);
                     worksRecord.insert();
                 });
-                int worksCompleteness = completenessCalculator.calculateWorks(worksRecords);
+                int worksCompleteness = CompletenessCalculator.calculateWorks(worksRecords);
                 completenessRecord.setProfileWorks(worksCompleteness);
             }
             if (userRecord != null) {
@@ -443,7 +441,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                         .fetchOne();
                 UserSettingsRecord settingRecord = create.selectFrom(UserSettings.USER_SETTINGS)
                         .where(UserSettings.USER_SETTINGS.USER_ID.equal(userRecord.getId())).limit(1).fetchOne();
-                int userCompleteness = completenessCalculator.calculateUserUser(userRecord, settingRecord,
+                int userCompleteness = CompletenessCalculator.calculateUserUser(userRecord, settingRecord,
                         wxuserRecord);
                 completenessRecord.setUserUser(userCompleteness);
             }
@@ -527,7 +525,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                 basicRecord.insert();
                 birthDay = basicRecord.getBirth();
                 //计算basic完整度，由于修改规则，mobile或者微信号有一个即计入，为了不改变数据库表结构所以将mobile传入basic的完整度计算程序当中
-                int basicCompleteness = completenessCalculator.calculateProfileBasic(basicRecord, userRecord.getMobile());
+                int basicCompleteness = CompletenessCalculator.calculateProfileBasic(basicRecord, userRecord.getMobile());
                 completenessRecord.setProfileBasic(basicCompleteness);
             }
             if (attachmentRecords != null && attachmentRecords.size() > 0) {
@@ -546,7 +544,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     awardsRecord.insert();
                 });
                 // 计算奖项完整度
-                int awardCompleteness = completenessCalculator.calculateAwards(awardsRecords);
+                int awardCompleteness = CompletenessCalculator.calculateAwards(awardsRecords);
                 completenessRecord.setProfileAwards(awardCompleteness);
             }
             if (credentialsRecords != null && credentialsRecords.size() > 0) {
@@ -557,7 +555,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     credentialsRecord.insert();
                 });
                 //计算证书完整度
-                int credentialsCompleteness = completenessCalculator.calculateCredentials(credentialsRecords);
+                int credentialsCompleteness = CompletenessCalculator.calculateCredentials(credentialsRecords);
                 completenessRecord.setProfileCredentials(credentialsCompleteness);
             }
             if (educationRecords != null && educationRecords.size() > 0) {
@@ -577,7 +575,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     educationRecord.insert();
                 });
                 //计算教育经历完整度
-                int educationCompleteness = completenessCalculator.calculateProfileEducations(educationRecords);
+                int educationCompleteness = CompletenessCalculator.calculateProfileEducations(educationRecords);
                 completenessRecord.setProfileEducation(educationCompleteness);
             }
             if (importRecord != null) {
@@ -643,7 +641,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     }
                 });
                 //计算求职意向完整度
-                int intentionCompleteness = completenessCalculator.calculateIntentions(intentionRecords,
+                int intentionCompleteness = CompletenessCalculator.calculateIntentions(intentionRecords,
                         intentionCityRecords, intentionPositionRecords);
                 completenessRecord.setProfileIntention(intentionCompleteness);
             }
@@ -655,7 +653,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     language.insert();
                 });
                 //计算语言完整度
-                int languageCompleteness = completenessCalculator.calculateLanguages(languages);
+                int languageCompleteness = CompletenessCalculator.calculateLanguages(languages);
                 completenessRecord.setProfileLanguage(languageCompleteness);
             }
             if (otherRecord != null) {
@@ -673,7 +671,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     skill.insert();
                 });
                 //计算技能完整度
-                int skillCompleteness = completenessCalculator.calculateSkills(skillRecords);
+                int skillCompleteness = CompletenessCalculator.calculateSkills(skillRecords);
                 completenessRecord.setProfileSkill(skillCompleteness);
             }
             if (workexpRecords != null && workexpRecords.size() > 0) {
@@ -726,7 +724,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     workexp.insert();
                 });
                 //计算工作经历完整度
-                int workExpCompleteness = completenessCalculator.calculateProfileWorkexps(workexpRecords, educationRecords, birthDay);
+                int workExpCompleteness = CompletenessCalculator.calculateProfileWorkexps(workexpRecords, educationRecords, birthDay);
                 completenessRecord.setProfileWorkexp(workExpCompleteness);
             }
             if (projectExps != null && projectExps.size() > 0) {
@@ -737,7 +735,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     projectExp.insert();
                 });
                 //计算项目经历完整度
-                int projectExpCompleteness = completenessCalculator.calculateProjectexps(projectExps, workexpRecords);
+                int projectExpCompleteness = CompletenessCalculator.calculateProjectexps(projectExps, workexpRecords);
                 completenessRecord.setProfileProjectexp(projectExpCompleteness);
             }
             if (worksRecords != null && worksRecords.size() > 0) {
@@ -747,7 +745,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     create.attach(worksRecord);
                     worksRecord.insert();
                 });
-                int worksCompleteness = completenessCalculator.calculateWorks(worksRecords);
+                int worksCompleteness = CompletenessCalculator.calculateWorks(worksRecords);
                 completenessRecord.setProfileWorks(worksCompleteness);
             }
             //========================发现原来没有，现在添加上＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
@@ -762,7 +760,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                         .fetchOne();
                 UserSettingsRecord settingRecord = create.selectFrom(UserSettings.USER_SETTINGS)
                         .where(UserSettings.USER_SETTINGS.USER_ID.equal(userRecord.getId())).limit(1).fetchOne();
-                int userCompleteness = completenessCalculator.calculateUserUser(userRecord, settingRecord,
+                int userCompleteness = CompletenessCalculator.calculateUserUser(userRecord, settingRecord,
                         wxuserRecord);
                 completenessRecord.setUserUser(userCompleteness);
             }
@@ -1706,7 +1704,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
 
     public ProfileProfileRecord getProfileByUserId(int userId) {
         return create.selectFrom(ProfileProfile.PROFILE_PROFILE)
-                .where(ProfileProfile.PROFILE_PROFILE.USER_ID.equal((int)(userId)))
+                .where(ProfileProfile.PROFILE_PROFILE.USER_ID.equal(userId))
                 .fetchAny();
     }
 
@@ -1714,7 +1712,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
         Timestamp updateTime = new Timestamp(System.currentTimeMillis());
         return create.update(ProfileProfile.PROFILE_PROFILE)
                 .set(ProfileProfile.PROFILE_PROFILE.UPDATE_TIME, updateTime)
-                .where(ProfileProfile.PROFILE_PROFILE.USER_ID.eq((int)(userId)))
+                .where(ProfileProfile.PROFILE_PROFILE.USER_ID.eq(userId))
                 .execute();
     }
 }

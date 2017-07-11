@@ -1,12 +1,6 @@
-package com.moseeker.useraccounts.service.impl;
+package com.moseeker.baseorm.util;
 
 
-import com.moseeker.common.util.StringUtils;
-import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.logdb.LogSmsSendrecordDao;
@@ -15,13 +9,20 @@ import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CacheConfigNotExistException;
 import com.moseeker.common.util.ConfigPropertiesUtil;
+import com.moseeker.common.util.StringUtils;
 import com.taobao.api.ApiException;
 import com.taobao.api.DefaultTaobaoClient;
 import com.taobao.api.TaobaoClient;
 import com.taobao.api.request.AlibabaAliqinFcSmsNumSendRequest;
 import com.taobao.api.response.AlibabaAliqinFcSmsNumSendResponse;
-import java.util.HashMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import javax.annotation.Resource;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -67,7 +68,7 @@ public class SmsSender {
      * @param params 需要的变量map
      *
      * */
-    public boolean sendSMS(String mobile, String templateCode, HashMap<String, String> params){
+    public boolean sendSMS(String mobile, String templateCode, Map<String, String> params){
         initTaobaoClientInstance();
         
         if (StringUtils.isNullOrEmpty(mobile)){
@@ -247,7 +248,7 @@ public class SmsSender {
      * 生成数字随机验证码
      *
      * */
-    private static String getRandomStr(){
+    public String getRandomStr(){
         return String.valueOf((int) (Math.random()*9000+1000));
     }
 

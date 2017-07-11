@@ -83,6 +83,10 @@ public class ParamUtils {
         return data;
     }
 
+    public static String parseJsonParam(HttpServletRequest request) {
+        return getParamFromBody(request);
+    }
+
     /**
      * 解析参数中的不在通用查询约定的属性，将其放入通用参数等比较集合中
      *
@@ -225,7 +229,16 @@ public class ParamUtils {
      */
     private static Map<String, Object> initParamFromRequestBody(
             HttpServletRequest request) {
+        Map<String, Object> map = JsonToMap.parseJSON2Map(getParamFromBody(request));
+        return map;
+    }
 
+    /**
+     * 从request的body中读取参数
+     * @param request 请求
+     * @return 参数
+     */
+    private static String getParamFromBody(HttpServletRequest request) {
         StringBuffer jb = new StringBuffer();
         String line = null;
         try {
@@ -237,8 +250,7 @@ public class ParamUtils {
             LoggerFactory.getLogger(ParamUtils.class).error(e.getMessage(), e);
         }
         LoggerFactory.getLogger(ParamUtils.class).info("----initParamFromRequestBody:{}", jb.toString());
-        Map<String, Object> map = JsonToMap.parseJSON2Map(jb.toString());
-        return map;
+        return jb.toString();
     }
 
     public static String getLocalHostIp() {
