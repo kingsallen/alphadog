@@ -1210,9 +1210,7 @@ public class UserHrAccountService {
         importUserEmployeeStatistic.setTotalCounts(userEmployeeMap.size());
         importUserEmployeeStatistic.setErrorCounts(errorCounts);
         importUserEmployeeStatistic.setRepetitionCounts(repetitionCounts);
-        if (!StringUtils.isEmptyList(importErrorUserEmployees)) {
-            importUserEmployeeStatistic.setUserEmployeeDO(importErrorUserEmployees);
-        }
+        importUserEmployeeStatistic.setUserEmployeeDO(importErrorUserEmployees);
         if (repetitionCounts == 0 && errorCounts == 0) {
             importUserEmployeeStatistic.setInsertAccept(true);
         } else {
