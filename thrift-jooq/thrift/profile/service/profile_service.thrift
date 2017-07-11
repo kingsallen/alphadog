@@ -48,7 +48,7 @@ service ProfileServices {
     common_struct.Response getCompleteness(1:i32 user_id, 2: string uuid, 3: i32 profile_id);
     common_struct.Response reCalculateUserCompleteness(1:i32 userId, 2:string mobile);
     common_struct.Response reCalculateUserCompletenessBySettingId(1:i32 id);
-    common_struct.Response getProfileByApplication(1:i32 companyId,2:i32 sourceId,3:i32 ats_status,4:bool recommender,5:bool dl_url_required,6:map<string,list<string>> filter);
+    common_struct.Response getProfileByApplication(1:profile_struct.ProfileApplicationForm profileForm);
 }
 
 service AttachmentServices {

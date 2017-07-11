@@ -584,8 +584,6 @@ public class WholeProfileService {
         return statisticsForChannelmportVO;
     }
 
-
-
     public Response verifyRequires(int userId, int positionId) throws TException {
         UserUserRecord userRecord = userDao.getUserById(userId);
         JobPositionRecord positionRecord = jobPositionDao.getPositionById(positionId);

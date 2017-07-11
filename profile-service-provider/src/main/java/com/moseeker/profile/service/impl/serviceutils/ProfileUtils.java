@@ -220,6 +220,7 @@ public class ProfileUtils {
 										&& cityRecord.getCityCode().intValue() != 0)
 										|| !StringUtils.isNullOrEmpty(cityRecord.getCityName()))) {
 									record.getCities().add(cityRecord);
+									break;
 								}
 							}
 						}
@@ -235,6 +236,7 @@ public class ProfileUtils {
 										&& positionRecord.getPositionCode().intValue() != 0)
 										|| !StringUtils.isNullOrEmpty(positionRecord.getPositionName()))) {
 									record.getPositions().add(positionRecord);
+									break;
 								}
 							}
 						}
@@ -250,6 +252,7 @@ public class ProfileUtils {
 										&& industryRecord.getIndustryCode().intValue() != 0)
 										|| !StringUtils.isNullOrEmpty(industryRecord.getIndustryName()))) {
 									record.getIndustries().add(industryRecord);
+									break;
 								}
 							}
 						}

@@ -10,6 +10,8 @@ import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.event.ConnectionListener;
+import javax.mail.event.TransportListener;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
@@ -31,28 +33,45 @@ public class Email {
     private static final String password = propertiesReader.get("email.password", String.class);
 
     private final Message message;
-    
+
     public Email(EmailBuilder builder) {
         this.message = builder.message;
     }
 
     public void send() {
-    	
-    	new Thread(() -> {
-    		 try {
-				Transport transport = this.message.getSession().getTransport();
-				    try {
-				        transport.connect(serverDomain, serverPort, userName, password);
-				        transport.sendMessage(this.message, this.message.getAllRecipients());
-				    } finally {
-				        transport.close();
-				    }
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-    	}).start();
+        send(null, null);
     }
-    
+
+    public void send(TransportListener transportListener) {
+        send(null, transportListener);
+    }
+
+    public void send(ConnectionListener connectionListener, TransportListener transportListener) {
+
+        new Thread(() -> {
+            try {
+                Transport transport = this.message.getSession().getTransport();
+                try {
+                    if (connectionListener != null) {
+                        transport.addConnectionListener(connectionListener);
+                    }
+                    if (transportListener != null) {
+                        transport.addTransportListener(transportListener);
+                    }
+                    transport.connect(serverDomain, serverPort, userName, password);
+                    transport.sendMessage(this.message, this.message.getAllRecipients());
+                } finally {
+                    transport.close();
+                }
+            } catch (Exception e) {
+                if (transportListener != null) {
+                    transportListener.messageNotDelivered(null);
+                }
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
     public static class EmailBuilder {
 
         static private ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
@@ -74,7 +93,7 @@ public class Email {
         public EmailBuilder(String recipient) throws MessagingException {
             this.recipients.add(recipient);
         }
-        
+
         public EmailBuilder setSender(String sender) {
             this.senderAddress = sender;
             return this;

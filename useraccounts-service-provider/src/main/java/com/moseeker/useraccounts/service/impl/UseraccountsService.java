@@ -732,7 +732,7 @@ public class UseraccountsService {
      * @param userId     用户ID
      * @param positionId 职位ID //@param favorite 0:收藏, 1:取消收藏, 2:感兴趣
      * @return data : {true //感兴趣} {false //不感兴趣}
-     *
+     * <p>
      * TODO : 不知道以后职位收藏啥逻辑, 赞不支持
      */
     public Response getUserFavPositionCountByUserIdAndPositionId(int userId, int positionId) throws TException {
@@ -1074,25 +1074,11 @@ public class UseraccountsService {
 
     public boolean ifExistProfile(String mobile) {
         Query.QueryBuilder qu = new Query.QueryBuilder();
-        qu.where("username", mobile);
-        try {
-            UserUserDO user = userdao.getData(qu.buildQuery());
-            if (user == null || user.getId() == 0) {
-                qu.clear();
-                qu.where("mobile", mobile).and("source", String.valueOf(UserSource.RETRIEVE_PROFILE.getValue()));
-                user = userdao.getData(qu.buildQuery());
-            }
-            if (user != null && user.getId() > 0) {
-                ProfileProfileRecord record = profileDao.getProfileByUserId((int) user.getId());
-                if (record != null) {
-                    return true;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-        } finally {
-            //do nothing
+        qu.where("mobile", mobile).and("source", String.valueOf(UserSource.RETRIEVE_PROFILE.getValue()));
+        UserUserDO user = userdao.getData(qu.buildQuery());
+        ProfileProfileRecord record = profileDao.getProfileByUserId(user.getId());
+        if (record != null) {
+            return true;
         }
         return false;
     }

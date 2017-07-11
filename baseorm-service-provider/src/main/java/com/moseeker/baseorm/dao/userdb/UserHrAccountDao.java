@@ -163,8 +163,8 @@ public class UserHrAccountDao extends JooqCrudImpl<UserHrAccountDO, UserHrAccoun
      */
     public HrNpsStatistic npsList(String startDate, String endDate, int page, int pageSize) throws Exception {
         //默认当前季度的起止时间
-        LocalDateTime dateStart = DateUtils.getCurrentQuarterStartTime();
-        LocalDateTime dateEnd = DateUtils.getCurrentQuarterEndTime();
+        LocalDateTime dateStart = DateUtils.getCurrentTwoMonthStartTime();
+        LocalDateTime dateEnd = DateUtils.getCurrentTwoMonthEndTime();
 
         if (!StringUtils.isEmpty(startDate) && !StringUtils.isEmpty(endDate)) {
             try {
@@ -300,8 +300,8 @@ public class UserHrAccountDao extends JooqCrudImpl<UserHrAccountDO, UserHrAccoun
      */
     public HrNpsResult npsStatus(int userId, String startDate, String endDate) throws Exception {
         //默认当前季度的起止时间
-        LocalDateTime dateStart = DateUtils.getCurrentQuarterStartTime();
-        LocalDateTime dateEnd = DateUtils.getCurrentQuarterEndTime();
+        LocalDateTime dateStart = DateUtils.getCurrentTwoMonthStartTime();
+        LocalDateTime dateEnd = DateUtils.getCurrentTwoMonthEndTime();
 
         if (!StringUtils.isEmpty(startDate) && !StringUtils.isEmpty(endDate)) {
             try {
@@ -357,8 +357,8 @@ public class UserHrAccountDao extends JooqCrudImpl<UserHrAccountDO, UserHrAccoun
     @Transactional
     public HrNpsResult npsUpdate(HrNpsUpdate npsUpdate) throws Exception {
         //默认当前季度的起止时间
-        LocalDateTime dateStart = DateUtils.getCurrentQuarterStartTime();
-        LocalDateTime dateEnd = DateUtils.getCurrentQuarterEndTime();
+        LocalDateTime dateStart = DateUtils.getCurrentTwoMonthStartTime();
+        LocalDateTime dateEnd = DateUtils.getCurrentTwoMonthEndTime();
         LocalDateTime dateNow = LocalDateTime.now();
         if (!StringUtils.isEmpty(npsUpdate.getStart_date()) && !StringUtils.isEmpty(npsUpdate.getEnd_date())) {
             try {

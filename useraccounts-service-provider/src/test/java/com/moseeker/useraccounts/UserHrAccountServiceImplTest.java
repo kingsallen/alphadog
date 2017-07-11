@@ -1,25 +1,32 @@
 package com.moseeker.useraccounts;
 
+import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
+import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.util.DateUtils;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.rpccenter.config.ClientConfig;
 import com.moseeker.rpccenter.config.RegistryConfig;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
-import com.moseeker.thrift.gen.useraccounts.struct.HrNpsResult;
-import com.moseeker.thrift.gen.useraccounts.struct.HrNpsStatistic;
-import com.moseeker.thrift.gen.useraccounts.struct.HrNpsUpdate;
-import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
+import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.config.AppConfig;
+import com.moseeker.useraccounts.service.impl.UserEmployeeServiceImpl;
 import org.apache.thrift.TException;
+import org.joda.time.LocalDateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 /**
  * HR账号服务
@@ -84,7 +91,7 @@ public class UserHrAccountServiceImplTest {
         service = ServiceManager.SERVICEMANAGER.getService(UserHrAccountService.Iface.class);
     }
 
-//    @Test
+    //    @Test
     public void testNpsStatus() throws TException {
         HrNpsResult result = service.npsStatus(82690, null, null);
         System.out.println(BeanUtils.convertStructToJSON(result));
@@ -110,21 +117,25 @@ public class UserHrAccountServiceImplTest {
         System.out.println(BeanUtils.convertStructToJSON(result));
     }
 
-    //    @Test
-    public void testNpsList() throws TException {
-        HrNpsStatistic result = service.npsList(null, null, 0, 0);
+
+    @Autowired
+    UserHrAccountDao userHrAccountDao;
+
+    @Test
+    public void testNpsList() throws Exception {
+        HrNpsStatistic result = userHrAccountDao.npsList(null,null,1,500);
         System.out.println(BeanUtils.convertStructToJSON(result));
     }
 
 
     @Test
-    public void testStructToDB(){
+    public void testStructToDB() {
         HrThirdPartyAccountDO hrThirdPartyAccountDO = new HrThirdPartyAccountDO();
         hrThirdPartyAccountDO.setChannel(Short.valueOf("2"));
         hrThirdPartyAccountDO.setUsername("fdfdsaf");
         hrThirdPartyAccountDO.setPassword("fdfdsfdpwd");
         hrThirdPartyAccountDO.setBinding(Short.valueOf("1"));
-        HrThirdPartyAccountRecord record = BeanUtils.structToDB(hrThirdPartyAccountDO,HrThirdPartyAccountRecord.class);
+        HrThirdPartyAccountRecord record = BeanUtils.structToDB(hrThirdPartyAccountDO, HrThirdPartyAccountRecord.class);
 
         record.toString();
     }
@@ -138,6 +149,51 @@ public class UserHrAccountServiceImplTest {
         hrThirdPartyAccountDO.setUsername("xxxxx");
         hrThirdPartyAccountDO.setPassword("xxxxx");
         hrThirdPartyAccountDO.setChannel((short) 2);
-        userHrAccountService.bindThirdAccount(82847,hrThirdPartyAccountDO);
+        userHrAccountService.bindThirdAccount(82847, hrThirdPartyAccountDO);
+    }
+
+
+    @Autowired
+    UserEmployeeDao userEmployeeDao;
+
+    @Autowired
+    UserEmployeeServiceImpl userEmployeeService;
+
+    @Test
+    public void testUserEmployeeBatch() throws Exception {
+
+        System.out.println(DateUtils.dateToLongTime(new Date()));
+
+        //51350 1
+
+        Query query = new Query.QueryBuilder().where("company_id", 51350).setPageSize(1000).buildQuery();
+        List<UserEmployeeStruct> employeeStructs = userEmployeeDao.getDatas(query, UserEmployeeStruct.class);
+
+        String groupName = "test:"+System.currentTimeMillis();
+
+        System.out.println("groupName:"+groupName);
+
+        for (UserEmployeeStruct userEmployeeStruct : employeeStructs) {
+            userEmployeeStruct.setCompany_id(1);
+            userEmployeeStruct.setId(0);
+            userEmployeeStruct.unsetId();
+            userEmployeeStruct.setGroupname(groupName);
+        }
+
+        System.out.println(DateUtils.dateToLongTime(new Date()));
+
+        UserEmployeeBatchForm batchForm = new UserEmployeeBatchForm();
+        batchForm.setAs_task(true);
+        batchForm.setCompany_id(1);
+        batchForm.setData(employeeStructs);
+        batchForm.setDel_not_include(true);
+
+        int[] result = userEmployeeDao.postPutUserEmployeeBatch(batchForm);
+
+        System.out.println(DateUtils.dateToLongTime(new Date()));
+
+//        Thread.sleep(1000*600);
+
+        System.out.println(result);
     }
 }
