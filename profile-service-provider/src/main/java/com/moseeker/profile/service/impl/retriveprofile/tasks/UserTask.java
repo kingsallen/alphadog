@@ -9,7 +9,7 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.profile.exception.Category;
 import com.moseeker.profile.exception.ExceptionFactory;
-import com.moseeker.profile.service.impl.retriveprofile.RetriveParam;
+import com.moseeker.profile.service.impl.retriveprofile.RetrieveParam;
 import com.moseeker.profile.service.impl.retriveprofile.Task;
 import com.moseeker.profile.service.impl.serviceutils.ProfilePojo;
 import org.slf4j.Logger;
@@ -30,7 +30,7 @@ public class UserTask extends Task {
     UserUserDao userUserDao;
 
     @Override
-    protected void handler(RetriveParam param) throws CommonException {
+    protected void handler(RetrieveParam param) throws CommonException {
         if (param.getUserUserRecord() != null) {
             UserUserRecord userUserRecord = param.getUserUserRecord();
             ValidateUtil validateUtil = new ValidateUtil();

@@ -9,7 +9,7 @@ import com.moseeker.profile.service.impl.serviceutils.ProfilePojo;
  * 简历回收参数
  * Created by jack on 10/07/2017.
  */
-public class RetriveParam {
+public class RetrieveParam {
 
     private JobPositionRecord positionRecord;           //职位信息
     private ChannelType channelType;                    //渠道

@@ -28,7 +28,7 @@ public abstract class RetrievalFlow {
      * @return 执行结果
      * @throws BIZException 业务异常
      */
-    public boolean retrieveProfile(RetriveParam parameter) throws CommonException {
+    public boolean retrieveProfile(RetrieveParam parameter) throws CommonException {
         if (excutor == null) {
             this.excutor = customExcutor();
             if (excutor == null) {

@@ -28,6 +28,8 @@ public class AliPayRetrievalFlow extends RetrievalFlow {
         Executor secondExecutor = flowMap.get("createPassword_executor");
         Executor thirdExecutor = flowMap.get("profile_executor");
         Executor fourthExecutor = flowMap.get("application_executor");
+        Executor fifthExecutor = flowMap.get("job_resume_executor");
+        fourthExecutor.setNextExcutor(fifthExecutor);
         thirdExecutor.setNextExcutor(fourthExecutor);
         secondExecutor.setNextExcutor(thirdExecutor);
         firstExecutor.setNextExcutor(secondExecutor);

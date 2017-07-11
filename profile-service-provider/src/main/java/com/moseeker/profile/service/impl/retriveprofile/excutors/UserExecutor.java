@@ -4,7 +4,7 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.profile.exception.Category;
 import com.moseeker.profile.exception.ExceptionFactory;
 import com.moseeker.profile.service.impl.retriveprofile.Executor;
-import com.moseeker.profile.service.impl.retriveprofile.RetriveParam;
+import com.moseeker.profile.service.impl.retriveprofile.RetrieveParam;
 import com.moseeker.profile.service.impl.retriveprofile.Task;
 import com.moseeker.profile.service.impl.retriveprofile.tasks.UserTask;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ public class UserExecutor extends Executor {
     UserTask userTask;
 
     @Override
-    public boolean checkParam(RetriveParam param) throws CommonException {
+    public boolean checkParam(RetrieveParam param) throws CommonException {
         if (param.getUserUserRecord() == null) {
             ExceptionFactory.buildException(Category.VALIDATION_USER_ILLEGAL_PARAM);
         }

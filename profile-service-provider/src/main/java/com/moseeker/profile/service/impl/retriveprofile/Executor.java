@@ -16,7 +16,7 @@ public abstract class Executor {
      * @param param 参数
      * @throws CommonException 业务异常
      */
-    public void execute(RetriveParam param) throws CommonException {
+    public void execute(RetrieveParam param) throws CommonException {
         if (task == null) {
             task = initTask();
         }
@@ -25,7 +25,7 @@ public abstract class Executor {
         }
     }
 
-    public abstract boolean checkParam(RetriveParam param) throws CommonException;
+    public abstract boolean checkParam(RetrieveParam param) throws CommonException;
 
     public abstract Task initTask() throws CommonException;
 

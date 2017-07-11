@@ -9,7 +9,11 @@ import com.moseeker.profile.service.impl.retriveprofile.flows.AliPayRetrievalFlo
  */
 public class FlowFactory {
 
-
+    /**
+     * 根据渠道生成对应的profile回收类
+     * @param channelType 渠道类型
+     * @return 具体的profile回收业务类
+     */
     public static RetrievalFlow createRetrieveFlow(ChannelType channelType) {
         RetrievalFlow retrievalFlow = null;
         switch (channelType) {

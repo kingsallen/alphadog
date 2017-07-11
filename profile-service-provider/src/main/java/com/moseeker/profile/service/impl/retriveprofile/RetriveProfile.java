@@ -40,7 +40,7 @@ public class RetriveProfile {
      * @throws CommonException 异常
      */
     public boolean retrieve(String parameter) throws CommonException {
-        RetriveParam param = parseParam(parameter);
+        RetrieveParam param = parseParam(parameter);
         RetrievalFlow retrievalFlow = flowMap.get(param.getChannelType().toString().toLowerCase()+"_retrieval_flow");
         return retrievalFlow.retrieveProfile(param);
     }
@@ -51,8 +51,8 @@ public class RetriveProfile {
      * @return 参数结构体
      * @throws BIZException 业务异常
      */
-    protected RetriveParam parseParam(String parameter) throws CommonException {
-        RetriveParam param = new RetriveParam();
+    protected RetrieveParam parseParam(String parameter) throws CommonException {
+        RetrieveParam param = new RetrieveParam();
 
         Map<String, Object> paramMap = JSON.parseObject(parameter);
         int positionId = 0;

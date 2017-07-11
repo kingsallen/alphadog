@@ -1,34 +1,33 @@
 package com.moseeker.profile.service.impl.retriveprofile.excutors;
 
 import com.moseeker.common.exception.CommonException;
-import com.moseeker.profile.exception.Category;
-import com.moseeker.profile.exception.ExceptionFactory;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.profile.service.impl.retriveprofile.Executor;
 import com.moseeker.profile.service.impl.retriveprofile.RetrieveParam;
 import com.moseeker.profile.service.impl.retriveprofile.Task;
-import com.moseeker.profile.service.impl.retriveprofile.tasks.ProfileTask;
+import com.moseeker.profile.service.impl.retriveprofile.tasks.JobResumeTask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * Created by jack on 10/07/2017.
+ * Created by jack on 11/07/2017.
  */
-@Component("profile_executor")
-public class ProfileExecutor extends Executor {
+@Component("job_resume_executor")
+public class JobResumeExecutor extends Executor {
 
     @Autowired
-    ProfileTask profileTask;
+    JobResumeTask jobResumeTask;
 
     @Override
     public boolean checkParam(RetrieveParam param) throws CommonException {
-        if (param.getProfilePojo() == null || param.getProfilePojo().getProfileRecord() == null) {
-            ExceptionFactory.buildException(Category.PROFILE_ILLEGAL);
+        if (StringUtils.isNotNullOrEmpty(param.getJobResume()) && param.getApplicationId() > 0) {
+            return true;
         }
-        return true;
+        return false;
     }
 
     @Override
     public Task initTask() throws CommonException {
-        return profileTask;
+        return jobResumeTask;
     }
 }

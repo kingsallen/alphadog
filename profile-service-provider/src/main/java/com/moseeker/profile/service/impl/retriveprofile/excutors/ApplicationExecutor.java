@@ -4,7 +4,7 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.profile.exception.Category;
 import com.moseeker.profile.exception.ExceptionFactory;
 import com.moseeker.profile.service.impl.retriveprofile.Executor;
-import com.moseeker.profile.service.impl.retriveprofile.RetriveParam;
+import com.moseeker.profile.service.impl.retriveprofile.RetrieveParam;
 import com.moseeker.profile.service.impl.retriveprofile.Task;
 import com.moseeker.profile.service.impl.retriveprofile.tasks.ApplicationTask;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class ApplicationExecutor extends Executor {
     ApplicationTask applicationTask;
 
     @Override
-    public boolean checkParam(RetriveParam param) throws CommonException {
+    public boolean checkParam(RetrieveParam param) throws CommonException {
         if (param.getUserUserRecord() == null || param.getUserUserRecord().getId() == null) {
             ExceptionFactory.buildException(Category.PROFILE_ALLREADY_EXIST);
         }
