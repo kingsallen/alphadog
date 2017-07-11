@@ -126,7 +126,7 @@ public class CompanySearchengine {
     	for(Aggregation aggregation :aggs){
     		System.out.println(aggregation.getName()+"==============");
     		System.out.println(aggregation.getMetaData()+"==============");
-    		System.out.println(aggregation.toString()+"==============");
+    		System.out.println(aggregation.getProperty(aggregation.getName())+"==============");
     	}
     	Map<String, Object> aggsMap=handleAggs(aggs);
     	data.put("aggs", aggsMap);
