@@ -244,7 +244,7 @@ public class PositionServicesImpl implements Iface {
             return service.getPositionForThirdParty(positionId, channel);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, " "+e.getMessage());
         }    }
 
 

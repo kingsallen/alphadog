@@ -1564,10 +1564,11 @@ public class PositionService {
     public Response getPositionForThirdParty(int positionId, int channel) {
         Query query=new Query.QueryBuilder().where("id",positionId).buildQuery();
         JobPositionRecord positionRecord = jobPositionDao.getRecord(query);
-        int company_id = positionRecord.getCompanyId();
+        int company_id;
         if (positionRecord == null) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_POSITION_NOTEXIST);
         }else{
+            company_id = positionRecord.getCompanyId();
             int publisher = positionRecord.getPublisher();
             // 获取子账号公司信息
             query=new Query.QueryBuilder().where("account_id",publisher).buildQuery();
@@ -1645,7 +1646,7 @@ public class PositionService {
         }else{
 
         }
-        if (positionRecord.getSalaryTop() != null || positionRecord.getSalaryTop() != 999){
+        if (positionRecord.getSalaryTop() != null && positionRecord.getSalaryTop() != 999){
             positionForAlipaycampusPojo.setPayment_max(positionRecord.getSalaryTop());
         }
 

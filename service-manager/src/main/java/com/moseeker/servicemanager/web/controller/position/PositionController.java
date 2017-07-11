@@ -523,6 +523,7 @@ public class PositionController {
 
         } catch (Exception e) {
             logger.error(e.getMessage());
+            ResponseLogNotification.fail(request,e.getMessage());
         }
         return null;
     }
