@@ -176,9 +176,10 @@ class LocalQuery<R extends Record> {
     }
 
     /**
-     * 返回解析的查询条件。解析条件包括查询的字段，过滤条件，分组条件，排序条件
+     * 组装除limit之外的所有查询字段和查询条件
+     * @return
      */
-    public SelectJoinStep<Record> convertToResultQuery() {
+    public SelectJoinStep<Record> convertToResult() {
         SelectJoinStep<Record> select = null;
         Collection<? extends SelectField<?>> selectFields = buildSelect();
         if (selectFields != null && selectFields.size() > 0) {
@@ -198,10 +199,29 @@ class LocalQuery<R extends Record> {
         if (orders != null && orders.size() > 0) {
             select.orderBy(orders);
         }
+        return select;
+    }
+
+    /**
+     * 组装limit
+     * 返回解析的查询条件。解析条件包括查询的字段，过滤条件，分组条件，排序条件
+     */
+    public SelectJoinStep<Record> convertToResultLimit() {
+        SelectJoinStep<Record> select = convertToResult();
         if (query.getPageSize() > 0) {
             select.limit((getPage() - 1) * getPageSize(), getPageSize());
         }
         logger.info(select.getSQL());
+        return select;
+    }
+
+    /**
+     * 组装只获取一条数据的select
+     * @return
+     */
+    public SelectJoinStep<Record> convertToOneResult() {
+        SelectJoinStep<Record> select = convertToResult();
+        select.limit(1);
         return select;
     }
 }

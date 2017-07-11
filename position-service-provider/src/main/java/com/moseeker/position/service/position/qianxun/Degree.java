@@ -10,8 +10,17 @@ import java.util.Map;
  */
 public enum Degree {
 
-	None("", "0"), SpecicalSecondarySchool("中专", "6"), HighSchool("高中", "7"), JuniorCollege("大专", "1"), College("本科", "2"), Master("硕士", "3"), Doctor("博士", "5"), MBA("MBA","4");
-	
+	None("", "0"),
+	SpecicalSecondarySchool("中专", "6"),
+	HighSchool("高中", "7"),
+	JuniorCollege("大专", "1"),
+	College("本科", "2"),
+	Master("硕士", "3"),
+	Doctor("博士", "5"),
+	MBA("MBA","4"),
+	PostDoctor("博士后","8"),
+	Junior("初中","9");
+
 	private String name;
 	private String value;
 	

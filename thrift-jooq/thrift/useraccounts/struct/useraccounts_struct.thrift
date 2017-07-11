@@ -197,6 +197,14 @@ struct UserEmployeeStruct {
 	49: optional string custom_field_values,
 	50: optional string departmentname
 }
+
+struct UserEmployeeBatchForm{
+    1:list<UserEmployeeStruct> data,//批量处理的数据
+    2:i32 company_id,//公司
+    3:bool del_not_include,//是否将不在此数据集中的数据从数据库中删除
+    4:bool as_task//是否作为一个task处理，如果作为task那么会后台处理这一批数据
+}
+
 struct UserEmployeePointStruct {
    1: optional i32 id,
    2: optional double employee_id,
@@ -414,7 +422,7 @@ struct UserEmployeeDetailVO{
 }
 // 员工导入统计数据
 struct ImportErrorUserEmployee{
-    1: optional i32 row, // 第几条数据
+    1: optional i32 rowNum, // 第几条数据
     2: optional string message, // 错误原因
     3: optional userdb_struct.UserEmployeeDO userEmployeeDO // 员工实体
 }

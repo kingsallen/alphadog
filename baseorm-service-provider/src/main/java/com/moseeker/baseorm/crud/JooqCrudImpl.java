@@ -105,12 +105,12 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> extends Crud<S, R> {
 
     @Override
     public R getRecord(Query query) {
-        return new LocalQuery<>(create, table, query).convertToResultQuery().limit(1).fetchAnyInto(table.getRecordType());
+        return new LocalQuery<>(create, table, query).convertToOneResult().fetchAnyInto(table.getRecordType());
     }
 
     @Override
     public List<R> getRecords(Query query) {
-        return new LocalQuery<>(create, table, query).convertToResultQuery().fetchInto(table.getRecordType());
+        return new LocalQuery<>(create, table, query).convertToResultLimit().fetchInto(table.getRecordType());
     }
 
     @Override
@@ -119,6 +119,6 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> extends Crud<S, R> {
     }
 
     public List<Map<String, Object>> getMaps(Query query) {
-        return new LocalQuery<>(create, table, query).convertToResultQuery().fetchMaps();
+        return new LocalQuery<>(create, table, query).convertToResultLimit().fetchMaps();
     }
 }

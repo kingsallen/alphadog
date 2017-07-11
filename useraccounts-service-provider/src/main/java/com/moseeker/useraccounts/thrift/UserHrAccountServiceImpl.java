@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * HR账号服务
@@ -74,9 +75,9 @@ public class UserHrAccountServiceImpl implements Iface {
     }
 
     @Override
-    public HrThirdPartyAccountDO bindThirdpartyAccount(int hrId, HrThirdPartyAccountDO account) throws BIZException, TException {
+    public HrThirdPartyAccountDO bindThirdpartyAccount(int hrId, HrThirdPartyAccountDO account, boolean sync) throws BIZException, TException {
         try {
-            return service.bindThirdAccount(hrId, account);
+            return service.bindThirdAccount(hrId, account, sync);
         } catch (BIZException e) {
             throw e;
         } catch (Exception e) {
@@ -86,9 +87,9 @@ public class UserHrAccountServiceImpl implements Iface {
     }
 
     @Override
-    public HrThirdPartyAccountDO syncThirdpartyAccount(int id) throws BIZException, TException {
+    public HrThirdPartyAccountDO syncThirdpartyAccount(int id, boolean sync) throws BIZException, TException {
         try {
-            return service.synchronizeThirdpartyAccount(id);
+            return service.synchronizeThirdpartyAccount(id, sync);
         } catch (BIZException e) {
             throw e;
         } catch (Exception e) {
@@ -136,12 +137,6 @@ public class UserHrAccountServiceImpl implements Iface {
     @Override
     public Response userHrAccount(int company_id, int disable, int page, int per_age) throws TException {
         return service.userHrAccount(company_id, disable, page, per_age);
-    }
-
-    @Override
-    public Response ifSynchronizePosition(int companyId, int channel) throws TException {
-        // TODO Auto-generated method stub
-        return service.ifSynchronizePosition(companyId, channel);
     }
 
     @Override
@@ -371,28 +366,28 @@ public class UserHrAccountServiceImpl implements Iface {
     /**
      * 员工信息导入
      *
-     * @param userEmployeeDOS
+     * @param userEmployeeDOMap
      * @param companyId
      * @return
      * @throws BIZException
      * @throws TException
      */
     @Override
-    public Response employeeImport(List<UserEmployeeDO> userEmployeeDOS, int companyId) throws BIZException, TException {
-        return service.employeeImport(companyId, userEmployeeDOS);
+    public Response employeeImport(Map<Integer,UserEmployeeDO> userEmployeeDOMap, int companyId) throws BIZException, TException {
+        return service.employeeImport(companyId, userEmployeeDOMap);
     }
 
     /**
      * 检查员工重复(批量导入之前验证)
      *
-     * @param userEmployeeDOS
+     * @param userEmployeeDOMap
      * @param companyId
      * @return
      * @throws BIZException
      * @throws TException
      */
     @Override
-    public ImportUserEmployeeStatistic checkBatchInsert(List<UserEmployeeDO> userEmployeeDOS, int companyId) throws BIZException, TException {
-        return service.checkBatchInsert(userEmployeeDOS, companyId);
+    public ImportUserEmployeeStatistic checkBatchInsert(Map<Integer,UserEmployeeDO> userEmployeeDOMap, int companyId) throws BIZException, TException {
+        return service.checkBatchInsert(userEmployeeDOMap, companyId);
     }
 }
