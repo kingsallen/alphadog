@@ -89,6 +89,8 @@ public class ChaosServiceImpl {
             throw new BIZException(3, opName + "失败了，请重试！");
         } else if (status == 4) {
             throw new BIZException(4, opName + "失败了，请稍后重试！");
+        } else if (status == 31) {
+            throw new BIZException(31, opName + "失败了," + jsonObject.getString("message"));
         } else {
             throw new BIZException(5, opName + "发生异常，请稍后重试！");
         }
