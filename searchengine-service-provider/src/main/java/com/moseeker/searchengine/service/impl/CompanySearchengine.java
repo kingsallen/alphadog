@@ -268,7 +268,7 @@ public class CompanySearchengine {
     	StringBuffer sb2=new StringBuffer();
     	sb2.append("jsay=[];");
     	sb2.append("for(ss in _agg['transactions']){");
-    	sb2.append("for(a in ss){jsay.add(ss)};");
+    	sb2.append("for(a in ss){jsay.add(ss)}};");
     	sb2.append("return jsay");
     	String combinScript=sb2.toString();
     	MetricsAggregationBuilder build=AggregationBuilders.scriptedMetric("city")
