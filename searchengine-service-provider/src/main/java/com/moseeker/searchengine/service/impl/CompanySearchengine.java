@@ -243,7 +243,7 @@ public class CompanySearchengine {
     	sb2.append("for(ss in _agg['transactions']){jsay.add(ss)};");
     	sb2.append("return jsay");
     	String combinScript=sb2.toString();
-    	MetricsAggregationBuilder build=AggregationBuilders.scriptedMetric("agg")
+    	MetricsAggregationBuilder build=AggregationBuilders.scriptedMetric("industry")
                 .initScript(new Script("_agg['transactions'] = []"))
                 .mapScript(new Script(mapScript))
                 .reduceScript(new Script(reduceScript))
@@ -271,7 +271,7 @@ public class CompanySearchengine {
     	sb2.append("for(a in ss){jsay.add(ss)};");
     	sb2.append("return jsay");
     	String combinScript=sb2.toString();
-    	MetricsAggregationBuilder build=AggregationBuilders.scriptedMetric("agg")
+    	MetricsAggregationBuilder build=AggregationBuilders.scriptedMetric("city")
                 .initScript(new Script("_agg['transactions'] = []"))
                 .mapScript(new Script(mapScript))
                 .reduceScript(new Script(reduceScript))
@@ -297,7 +297,7 @@ public class CompanySearchengine {
     	sb2.append("for(ss in _agg['transactions']){jsay.add(ss)};");
     	sb2.append("return jsay");
     	String combinScript=sb2.toString();
-    	MetricsAggregationBuilder build=AggregationBuilders.scriptedMetric("agg")
+    	MetricsAggregationBuilder build=AggregationBuilders.scriptedMetric("scale")
                 .initScript(new Script("_agg['transactions'] = []"))
                 .mapScript(new Script(mapScript))
                 .reduceScript(new Script(reduceScript))
