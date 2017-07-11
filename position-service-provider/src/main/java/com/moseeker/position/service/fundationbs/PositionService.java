@@ -4,12 +4,10 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.ValueFilter;
-import com.moseeker.baseorm.dao.dictdb.DictAlipaycampusJobcategoryDao;
-import com.moseeker.baseorm.dao.dictdb.DictCityDao;
-import com.moseeker.baseorm.dao.dictdb.DictCityPostcodeDao;
-import com.moseeker.baseorm.dao.dictdb.DictConstantDao;
+import com.moseeker.baseorm.dao.dictdb.*;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.*;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictAlipaycampusCityRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictAlipaycampusJobcategoryRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityPostcodeRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
@@ -99,6 +97,8 @@ public class PositionService {
     private DictCityPostcodeDao dictCityPostcodeDao;
     @Autowired
     private DictAlipaycampusJobcategoryDao dictAlipaycampusJobcategoryDao;
+    @Autowired
+    private DictAlipaycampusCityDao dictAlipaycampusCityDao;
     @Autowired
     private HrCompanyDao hrCompanyDao;
     @Autowired
@@ -1661,7 +1661,16 @@ public class PositionService {
         // 省市
         query=new Query.QueryBuilder().where("pid",positionRecord.getId()).buildQuery();
         JobPositionCityRecord jobPositionCityRecord = jobPositionCityDao.getRecord(query);
+
+        if (jobPositionCityRecord == null){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.POSITION_DATA_NOCITYCODE_ERROR);
+        }
         Integer citycode = jobPositionCityRecord.getCode();
+
+        if (citycode == null) {
+            // todo
+            return ResponseUtils.fail(ConstantErrorCodeMessage.POSITION_DATA_NOCITYCODE_ERROR);
+        }
 
         // 全国的职位需要忽略吗？
         if (citycode == 111111) {
@@ -1670,53 +1679,67 @@ public class PositionService {
 
         }
 
-        if (citycode == null) {
-            // todo
-            return ResponseUtils.fail(ConstantErrorCodeMessage.POSITION_DATA_NOCITYCODE_ERROR);
+
+        query=new Query.QueryBuilder().where("id",citycode).buildQuery();
+
+        DictAlipaycampusCityRecord dictAlipaycampusCityRecord = dictAlipaycampusCityDao.getRecord(query);
+
+        if (dictAlipaycampusCityRecord != null && dictAlipaycampusCityRecord.getLevel() == 3){
+            citycode = dictAlipaycampusCityRecord.getPid();
+            query=new Query.QueryBuilder().where("id",citycode).buildQuery();
+            dictAlipaycampusCityRecord = dictAlipaycampusCityDao.getRecord(query);
         }
 
-        DictCityRecord dictCityRecord = dictCityDao.getCityByCode(citycode);
-        int cityclevel = dictCityRecord.getLevel();
-        if (cityclevel == 3) {
-            citycode = citycode/100 * 100 ; // 取 code的前面4位数 + 2个0， 获取城市code
-            dictCityRecord = dictCityDao.getCityByCode(citycode);
+        if (dictAlipaycampusCityRecord != null  && dictAlipaycampusCityRecord.getLevel() == 2){
+            positionForAlipaycampusPojo.setArea_city_code(dictAlipaycampusCityRecord.getId().toString());
+            positionForAlipaycampusPojo.setArea_city_name(dictAlipaycampusCityRecord.getName());
+            citycode = dictAlipaycampusCityRecord.getPid();
+            query=new Query.QueryBuilder().where("id",citycode).buildQuery();
+            dictAlipaycampusCityRecord = dictAlipaycampusCityDao.getRecord(query);
         }
 
-
-        Integer parentCityCode = citycode/10000 * 10000 ; //取 code的前面2位数 + 4个0， 获取省份code
-        DictCityRecord parentDictCityRecord = dictCityDao.getCityByCode(parentCityCode);
-
-        // moseeker 使用的是 310000表示上海， 支付宝是 310100 表示上海， 直辖市需要特殊处理。
-        switch (parentCityCode){
-            case 310000:
-                parentDictCityRecord.setCode(310100);
-                parentDictCityRecord.setName("上海市");
-                dictCityRecord = parentDictCityRecord;
-                break;
-            case 110000:
-                parentDictCityRecord.setCode(110100);
-                parentDictCityRecord.setName("北京市");
-                dictCityRecord = parentDictCityRecord;
-                break;
-            case 120000:
-                parentDictCityRecord.setCode(120100);
-                parentDictCityRecord.setName("天津市");
-                dictCityRecord = parentDictCityRecord;
-                break;
-            case 500000:
-                parentDictCityRecord.setCode(500100);
-                parentDictCityRecord.setName("重庆市");
-                dictCityRecord = parentDictCityRecord;
-                break;
-            default:
+        if (dictAlipaycampusCityRecord != null  && dictAlipaycampusCityRecord.getLevel() == 1){
+            positionForAlipaycampusPojo.setArea_province_code(dictAlipaycampusCityRecord.getId());
+            positionForAlipaycampusPojo.setArea_province_name(dictAlipaycampusCityRecord.getName());
 
         }
 
-        positionForAlipaycampusPojo.setArea_province_code(parentDictCityRecord.getCode());
-        positionForAlipaycampusPojo.setArea_province_name(parentDictCityRecord.getName());
-        positionForAlipaycampusPojo.setArea_city_code(dictCityRecord.getCode().toString());
-        positionForAlipaycampusPojo.setArea_city_name(dictCityRecord.getName());
+        // 直辖市特殊处理
+        if (dictAlipaycampusCityRecord == null || positionForAlipaycampusPojo.getArea_city_code()==null
+                || positionForAlipaycampusPojo.getArea_province_code()==0 ){
+            Integer specialcitycode = jobPositionCityRecord.getCode();
+            specialcitycode = specialcitycode/10000 * 10000; // 取 code的前面2位数 + 4个0， 获取省份code
 
+            switch (specialcitycode){
+                case 310000:
+                    positionForAlipaycampusPojo.setArea_province_code(310100);
+                    positionForAlipaycampusPojo.setArea_province_name("上海市");
+                    positionForAlipaycampusPojo.setArea_city_code("310100");
+                    positionForAlipaycampusPojo.setArea_city_name("上海市");
+                    break;
+                case 110000:
+                    positionForAlipaycampusPojo.setArea_province_code(110100);
+                    positionForAlipaycampusPojo.setArea_province_name("北京市");
+                    positionForAlipaycampusPojo.setArea_city_code("110100");
+                    positionForAlipaycampusPojo.setArea_city_name("北京市");
+                    break;
+                case 120000:
+                    positionForAlipaycampusPojo.setArea_province_code(120100);
+                    positionForAlipaycampusPojo.setArea_province_name("天津市");
+                    positionForAlipaycampusPojo.setArea_city_code("120100");
+                    positionForAlipaycampusPojo.setArea_city_name("天津市");
+                    break;
+                case 500000:
+                    positionForAlipaycampusPojo.setArea_province_code(500100);
+                    positionForAlipaycampusPojo.setArea_province_name("重庆市");
+                    positionForAlipaycampusPojo.setArea_city_code("500100");
+                    positionForAlipaycampusPojo.setArea_city_name("重庆市");
+                    break;
+                default:
+                    logger.info("city code unknown,code:" + specialcitycode + ",position_id:" + positionId);
+            }
+
+        }
 
 
         // 时间 ,3个月过期，1天前刷新。
