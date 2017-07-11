@@ -172,7 +172,7 @@ public class PositionSyncFailedNotification {
         emailMessgeBuilder.append("【学历要求】：").append(getDegree(moseekerPosition.getDegree())).append(divider);
         emailMessgeBuilder.append("【反馈时长】：").append(thirdPartyPositionDO.getFeedbackPeriod()).append(divider);
         emailMessgeBuilder.append("【职位描述】：").append(divider);
-        emailMessgeBuilder.append("【邮件地址】：").append("cv_").append(moseekerPosition.getId()).append(positionEmail).append(divider);
+        emailMessgeBuilder.append("【简历邮箱】：").append("cv_").append(moseekerPosition.getId()).append(positionEmail).append(divider);
 
         if (StringUtils.isNotNullOrEmpty(moseekerPosition.getAccountabilities())) {
             emailMessgeBuilder.append(moseekerPosition.getAccountabilities().replaceAll("\n", divider)).append(divider);
