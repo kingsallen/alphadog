@@ -21,5 +21,6 @@ public class RabbitMqTest {
     @Test
     public void testHello() throws InterruptedException {
         sender.send("vincent");
+        Thread.currentThread().sleep(10000000);
     }
 }

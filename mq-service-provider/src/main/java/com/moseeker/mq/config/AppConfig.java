@@ -3,8 +3,7 @@ package com.moseeker.mq.config;
 import com.rabbitmq.client.ConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.core.AmqpAdmin;
-import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
@@ -48,13 +47,14 @@ public class AppConfig {
     @Bean
     public RabbitTemplate rabbitTemplate() {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(cachingConnectionFactory());
-        rabbitTemplate.setChannelTransacted(true);
         return rabbitTemplate;
     }
 
     @Bean
     public AmqpAdmin amqpAdmin() {
-        return new RabbitAdmin(cachingConnectionFactory());
+        RabbitAdmin rabbitAdmin = new RabbitAdmin(cachingConnectionFactory());
+        rabbitAdmin.setIgnoreDeclarationExceptions(true);
+        return rabbitAdmin;
     }
 
     @Bean
@@ -66,8 +66,20 @@ public class AppConfig {
 
     @Bean
     public Queue helloQueue() {
-        Queue queue = new Queue("hello");
+        Queue queue = new Queue("hello", false, false, true);
         return queue;
+    }
+
+    @Bean
+    public TopicExchange topicExchange() {
+        TopicExchange topicExchange = new TopicExchange("topic-exchange", false, true);
+        topicExchange.setDelayed(true);
+        return topicExchange;
+    }
+
+    @Bean
+    public Binding binding() {
+       return BindingBuilder.bind(helloQueue()).to(topicExchange()).with("hello.#");
     }
 
 }
