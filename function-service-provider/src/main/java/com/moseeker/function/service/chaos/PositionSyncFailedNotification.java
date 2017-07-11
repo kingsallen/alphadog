@@ -139,6 +139,12 @@ public class PositionSyncFailedNotification {
             return;
         }
 
+        String positionEmail = getConfigString("chaos.email");
+        if (positionEmail == null) {
+            logger.error("没有配置职位回收邮箱！");
+            return;
+        }
+
         StringBuilder emailTitle = new StringBuilder();
 
         StringBuilder emailMessgeBuilder = new StringBuilder();
@@ -166,6 +172,7 @@ public class PositionSyncFailedNotification {
         emailMessgeBuilder.append("【学历要求】：").append(getDegree(moseekerPosition.getDegree())).append(divider);
         emailMessgeBuilder.append("【反馈时长】：").append(thirdPartyPositionDO.getFeedbackPeriod()).append(divider);
         emailMessgeBuilder.append("【职位描述】：").append(divider);
+        emailMessgeBuilder.append("【邮件地址】：").append("cv_").append(moseekerPosition.getId()).append(positionEmail).append(divider);
 
         if (StringUtils.isNotNullOrEmpty(moseekerPosition.getAccountabilities())) {
             emailMessgeBuilder.append(moseekerPosition.getAccountabilities().replaceAll("\n", divider)).append(divider);
@@ -224,7 +231,7 @@ public class PositionSyncFailedNotification {
     }
 
     private String getExperience(String experience) {
-        if(StringUtils.isNullOrEmpty(experience)){
+        if (StringUtils.isNullOrEmpty(experience)) {
             return "不限";
         }
         return experience;
