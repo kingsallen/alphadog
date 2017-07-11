@@ -507,4 +507,25 @@ public class PositionController {
         }
         return null;
     }
+
+    /**
+     * 职位相关职位接口
+     */
+    @RequestMapping(value = "/position/alipaycampus", method = RequestMethod.GET)
+    @ResponseBody
+    public String getPositionForThirdParty(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer pid = params.getInt("positionId");
+            Integer channel = params.getInt("channel");
+            Response res =  positonServices.getPositionForThirdParty(pid, channel);
+            return ResponseLogNotification.success(request, res);
+
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+        return null;
+    }
+
+
 }

@@ -1622,7 +1622,7 @@ public class PositionService {
 
         }
 
-        if (positionForAlipaycampusPojo.getJob_tier_one_code() != null){
+        if (positionForAlipaycampusPojo.getJob_tier_one_code() == null){
             positionForAlipaycampusPojo.setJob_tier_one_code("opj_e4tvvgcavs2j");
             positionForAlipaycampusPojo.setJob_tier_one_name("其他类型");
         }
@@ -1640,8 +1640,15 @@ public class PositionService {
 
 
         //positionForAlipaycampusPojo.setJob_resume_lg();
-        positionForAlipaycampusPojo.setPayment_min(positionRecord.getSalaryBottom());
-        positionForAlipaycampusPojo.setPayment_max(positionRecord.getSalaryTop());
+        if (positionRecord.getSalaryBottom() != null){
+            positionForAlipaycampusPojo.setPayment_min(positionRecord.getSalaryBottom());
+        }else{
+
+        }
+        if (positionRecord.getSalaryTop() != null || positionRecord.getSalaryTop() != 999){
+            positionForAlipaycampusPojo.setPayment_max(positionRecord.getSalaryTop());
+        }
+
         positionForAlipaycampusPojo.setPayment_unit(2);//month
 
         // 公司
@@ -1658,13 +1665,13 @@ public class PositionService {
         // 全国的职位需要忽略吗？
         if (citycode == 111111) {
             // todo.
-            return null;
+            return ResponseUtils.fail(ConstantErrorCodeMessage.POSITION_DATA_ALLCITY_ERROR);
 
         }
 
         if (citycode == null) {
             // todo
-            return null;
+            return ResponseUtils.fail(ConstantErrorCodeMessage.POSITION_DATA_NOCITYCODE_ERROR);
         }
 
         DictCityRecord dictCityRecord = dictCityDao.getCityByCode(citycode);
@@ -1715,13 +1722,7 @@ public class PositionService {
         positionForAlipaycampusPojo.setGmt_expired(String.valueOf(positionRecord.getUpdateTime().getTime()+7776000000L));
         positionForAlipaycampusPojo.setGmt_refresh(String.valueOf(System.currentTimeMillis()-864000000L));
 
-
-
-
-
-
-
-        return ResponseUtils.success("");
+        return ResponseUtils.successWithoutStringify(positionForAlipaycampusPojo.toString());
     }
 
 

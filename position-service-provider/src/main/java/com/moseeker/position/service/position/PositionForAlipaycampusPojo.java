@@ -1,5 +1,10 @@
 package com.moseeker.position.service.position;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
+
+import java.util.HashMap;
+
 /**
  * 
  * 用于同步职位给支付宝校园招聘
@@ -313,5 +318,73 @@ public class PositionForAlipaycampusPojo {
 
 	public void setGmt_refresh(String gmt_refresh) {
 		this.gmt_refresh = gmt_refresh;
+	}
+
+	@Override
+	public String toString() {
+		// "{'source_code':'101','source_id':'123123'}"
+		HashMap hashMap = new HashMap();
+		hashMap.put("source_id",source_id);
+		hashMap.put("job_name",job_name);
+		hashMap.put("job_desc",job_desc);
+		hashMap.put("job_tier_one_code",job_tier_one_code);
+		if (job_tier_two_code != null){
+			hashMap.put("job_tier_two_code",job_tier_two_code);
+		}
+
+		hashMap.put("job_tier_one_name",job_tier_one_name);
+		if (job_tier_two_name != null){
+			hashMap.put("job_tier_two_name",job_tier_two_name);
+		}
+
+		if (job_perk != null) {
+			hashMap.put("job_perk",job_perk);
+		}
+		if ( job_hire_number > 0) {
+			hashMap.put("job_hire_number",job_hire_number);
+		}
+
+		hashMap.put("job_type",job_type);
+		hashMap.put("job_rq_education",job_rq_education);
+
+		hashMap.put("payment_min",payment_min);
+
+		if (payment_max != 0 ) {
+			hashMap.put("payment_max",payment_max);
+		}
+
+		hashMap.put("payment_unit",payment_unit);
+
+		hashMap.put("company_source",company_source);
+		hashMap.put("company_name",company_name);
+		hashMap.put("company_lawname",company_lawname);
+
+		if (company_logo != null){
+			hashMap.put("company_logo",company_logo);
+		}
+
+		hashMap.put("area_province_code",area_province_code);
+		hashMap.put("area_province_name",area_province_name);
+		hashMap.put("area_city_code",area_city_code);
+		hashMap.put("area_city_name",area_city_name);
+
+
+		hashMap.put("gmt_expired",gmt_expired);
+		hashMap.put("gmt_refresh",gmt_refresh);
+
+
+		String s =  JSON.toJSONString(hashMap, SerializerFeature.UseSingleQuotes);
+		System.out.print(s);
+		return s;
+
+//		return "{" +
+//				"id=" + id +
+//				", code=" + code +
+//				", name='" + name + '\'' +
+//				", priority=" + priority +
+//				", parent_code=" + parent_code +
+//				", create_time=" + create_time +
+//				", update_time=" + update_time +
+//				'}';
 	}
 }
