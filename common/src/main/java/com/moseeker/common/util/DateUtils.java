@@ -1,15 +1,16 @@
 package com.moseeker.common.util;
 
+import org.joda.time.DateTime;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
-import java.time.temporal.TemporalQuery;
+import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Calendar;
 import java.util.Date;
-
-import org.joda.time.DateTime;
 
 public class DateUtils {
 
@@ -90,6 +91,73 @@ public class DateUtils {
      */
     public static long calcCurrMonthSurplusSeconds() {
         return (getLastDayOfMonth() - System.currentTimeMillis()) / 1000;
+    }
+
+    public static int getLastDayOfMonth(int year, int month) {
+        LocalDate localDate = LocalDate.of(year, month, 1);
+        LocalDate lastData = localDate.with(TemporalAdjusters.lastDayOfMonth());
+        return lastData.getDayOfMonth();
+    }
+
+    /**
+     * 当前季度的开始时间，即2012-01-1 00:00:00
+     *
+     * @return
+     */
+    public static LocalDateTime getCurrentTwoMonthStartTime() {
+        Calendar c = Calendar.getInstance();
+        int currentMonth = c.get(Calendar.MONTH) + 1;
+        LocalDateTime now = null;
+        try {
+            if (currentMonth >= 1 && currentMonth <= 2)
+                c.set(Calendar.MONTH, 0);
+            else if (currentMonth >= 3 && currentMonth <= 4)
+                c.set(Calendar.MONTH, 2);
+            else if (currentMonth >= 5 && currentMonth <= 6)
+                c.set(Calendar.MONTH, 4);
+            else if (currentMonth >= 7 && currentMonth <= 8)
+                c.set(Calendar.MONTH, 6);
+            else if (currentMonth >= 9 && currentMonth <= 10)
+                c.set(Calendar.MONTH, 8);
+            else if (currentMonth >= 11 && currentMonth <= 12)
+                c.set(Calendar.MONTH, 10);
+            c.set(Calendar.DATE, 1);
+            now = LocalDateTime.parse(normalDateSDF.format(c.getTime()) + " 00:00:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return now;
+    }
+
+    /**
+     * 当前季度的结束时间，即2012-03-31 23:59:59
+     *
+     * @return
+     */
+    public static LocalDateTime getCurrentTwoMonthEndTime() {
+        Calendar c = Calendar.getInstance();
+        int currentMonth = c.get(Calendar.MONTH) + 1;
+        LocalDateTime now = null;
+        try {
+            if (currentMonth >= 1 && currentMonth <= 2) {
+                c.set(Calendar.MONTH, 1);
+            } else if (currentMonth >= 3 && currentMonth <= 4) {
+                c.set(Calendar.MONTH, 3);
+            } else if (currentMonth >= 5 && currentMonth <= 6) {
+                c.set(Calendar.MONTH, 5);
+            } else if (currentMonth >= 7 && currentMonth <= 8) {
+                c.set(Calendar.MONTH, 7);
+            } else if (currentMonth >= 9 && currentMonth <= 10) {
+                c.set(Calendar.MONTH, 9);
+            } else if (currentMonth >= 11 && currentMonth <= 12) {
+                c.set(Calendar.MONTH, 11);
+            }
+            c.set(Calendar.DATE, getLastDayOfMonth(LocalDate.now().getYear(), c.get(Calendar.MONTH)+1));
+            now = LocalDateTime.parse(normalDateSDF.format(c.getTime()) + " 23:59:59", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return now;
     }
 
     /**

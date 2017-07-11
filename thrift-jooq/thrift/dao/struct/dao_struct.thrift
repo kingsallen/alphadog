@@ -59,22 +59,6 @@ struct ThirdPartAccountData{
         10: Timestamp sync_time
         11: i32 remain_profile_num,
 }
-//第三方渠道职位
-struct ThirdPartyPositionData {
-	1: i32 id,
-	2: i32 position_id,
-	3: string third_part_position_id,
-	4: i8 channel,
-	5: i8 is_synchronization,
-	6: i8 is_refresh,
-	7: string sync_time,
-	8: string refresh_time,
-	9: string update_time,
-	10: string occupation,
-	11: string address,
-	12: string sync_fail_reason,
-	13: string account_id,
-}
 
 struct HRCompanyConfData{
     1:i32 company_id,

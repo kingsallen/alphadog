@@ -3,6 +3,7 @@ package com.moseeker.rpccenter.client;
 import com.moseeker.thrift.gen.apps.positionbs.service.PositionBS;
 import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
+import com.moseeker.thrift.gen.useraccounts.service.UserEmployeeService;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import org.apache.commons.pool.impl.GenericKeyedObjectPool;
 import org.apache.thrift.TServiceClient;
@@ -43,8 +44,8 @@ public class IfaceFactory<T> {
         customtimeOutService.put(ChaosServices.Iface.class,300*1000);
         customtimeOutService.put(UserHrAccountService.Iface.class,120*1000);
         customtimeOutService.put(PositionBS.Iface.class,120*1000);
-        customtimeOutService.put(PositionBS.Iface.class,120*1000);
         customtimeOutService.put(ProfileServices.Iface.class,300*1000);
+        customtimeOutService.put(UserEmployeeService.Iface.class,300*1000);
     }
 
     /**

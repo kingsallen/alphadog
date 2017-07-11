@@ -4,6 +4,7 @@ import com.moseeker.apps.constants.ResultMessage;
 
 import java.util.List;
 
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,8 @@ public class PositionBSThriftService implements Iface {
     public Response synchronizePositionToThirdPartyPlatform(ThirdPartyPositionForm position) throws TException {
         try {
             return positionBS.synchronizePositionToThirdPartyPlatform(position);
+        } catch (BIZException e) {
+            throw e;
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
@@ -42,26 +45,26 @@ public class PositionBSThriftService implements Iface {
      */
     @Override
     public Response refreshPositionToThirdPartyPlatform(int positionId, int channel) throws TException {
-        return positionBS.refreshPosition(positionId, channel);
+        try {
+            return positionBS.refreshPosition(positionId, channel);
+        } catch (BIZException e) {
+            throw e;
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new TException(e);
+        }
     }
 
-    public PositionBS getPositionBS() {
-        return positionBS;
-    }
-
-    public void setPositionBS(PositionBS positionBS) {
-        this.positionBS = positionBS;
-    }
-
-	@Override
-	public Response refreshPositionQXPlatform(List<Integer> positionIds) {
-		// TODO Auto-generated method stub
-		try{
-			return positionBS.refreshPositionQX(positionIds);
-		}catch(Exception e){
+    @Override
+    public Response refreshPositionQXPlatform(List<Integer> positionIds) throws TException {
+        // TODO Auto-generated method stub
+        try {
+            return positionBS.refreshPositionQX(positionIds);
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResultMessage.PROGRAM_EXCEPTION.toResponse();
-		}
-		
-	}
+        }
+
+    }
 }

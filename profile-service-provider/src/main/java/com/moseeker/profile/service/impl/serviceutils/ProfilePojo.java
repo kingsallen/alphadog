@@ -52,7 +52,6 @@ public class ProfilePojo {
 	 * 解析profile生成ProfilePojo类
 	 * @param resume
 	 * @param userRecord
-	 * @param profileDB 
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")

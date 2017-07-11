@@ -7,12 +7,12 @@ public class PositionForSyncResultPojo {
 	private String job_id;
 	private String position_id;
 	private String channel;
-	private int remain_number;
-	private int resume_number;
+	private int remain_number = -1;
+	private int resume_number = -1;
 	private String sync_time;
 	private String pub_place_name;
 	private int account_id;
-	
+
 	public int getStatus() {
 		return status;
 	}

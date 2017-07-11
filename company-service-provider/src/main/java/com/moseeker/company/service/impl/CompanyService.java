@@ -1,21 +1,8 @@
 package com.moseeker.company.service.impl;
 
-import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
-import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
-import com.moseeker.baseorm.dao.hrdb.HrEmployeeCertConfDao;
-import com.moseeker.baseorm.dao.hrdb.HrEmployeePositionDao;
-import com.moseeker.baseorm.dao.hrdb.HrEmployeeSectionDao;
-import com.moseeker.baseorm.dao.hrdb.HrGroupCompanyRelDao;
-import com.moseeker.baseorm.dao.hrdb.HrImporterMonitorDao;
-import com.moseeker.baseorm.dao.hrdb.HrPointsConfDao;
-import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
+import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
-import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
-import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCertConf;
-import com.moseeker.baseorm.db.hrdb.tables.HrEmployeePosition;
-import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeSection;
-import com.moseeker.baseorm.db.hrdb.tables.HrImporterMonitor;
-import com.moseeker.baseorm.db.hrdb.tables.HrPointsConf;
+import com.moseeker.baseorm.db.hrdb.tables.*;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
@@ -41,29 +28,19 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.CompanyForVerifyEmployee;
 import com.moseeker.thrift.gen.company.struct.CompanyOptions;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
-import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeePositionDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeSectionDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrGroupCompanyRelDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrImporterMonitorDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrPointsConfDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.employee.struct.RewardConfig;
-
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CompanyService {
@@ -202,40 +179,6 @@ public class CompanyService {
             logger.error(e.getMessage(), e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
-    }
-
-    /**
-     * 判断是否有权限发布职位
-     *
-     * @param companyId 公司编号
-     * @param channel   渠道号
-     * @return
-     */
-    @CounterIface
-    public Response ifSynchronizePosition(int companyId, int channel) {
-        Response response = ResultMessage.PROGRAM_EXHAUSTED.toResponse();
-        Query.QueryBuilder qu = new Query.QueryBuilder();
-        qu.where("company_id", String.valueOf(companyId)).and("channel", String.valueOf(channel));
-        try {
-            ThirdPartAccountData data = hrThirdPartyAccountDao.getData(qu.buildQuery(), ThirdPartAccountData.class);
-            if (data.getId() == 0 || data.getBinding() != 1) {
-                response = ResultMessage.THIRD_PARTY_ACCOUNT_UNBOUND.toResponse();
-            }
-            if (data.getRemain_num() == 0) {
-                response = ResultMessage.THIRD_PARTY_ACCOUNT_HAVE_NO_REMAIN_NUM.toResponse();
-            }
-            if (data.getId() > 0 && data.binding == 1 && data.getRemain_num() > 0) {
-                response = ResultMessage.SUCCESS.toResponse();
-            } else {
-                response = ResultMessage.THIRD_PARTY_ACCOUNT_UNBOUND.toResponse();
-            }
-        } catch (Exception e) {
-            response = ResultMessage.PROGRAM_EXHAUSTED.toResponse();
-            logger.error(e.getMessage(), e);
-        } finally {
-            //do nothing
-        }
-        return response;
     }
 
     /**
@@ -570,7 +513,6 @@ public class CompanyService {
     /**
      * 更新公司员工认证配置
      *
-     * @param id          绑定配置信息编号
      * @param companyId   公司编号
      * @param authMode    绑定方式
      * @param emailSuffix 如果邮箱是验证字段，则不能为空

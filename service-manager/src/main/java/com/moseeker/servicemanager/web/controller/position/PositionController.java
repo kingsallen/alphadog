@@ -12,23 +12,17 @@ import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
+import com.moseeker.servicemanager.web.controller.position.bean.ThirdPartyPositionVO;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.apps.positionbs.service.PositionBS;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
-import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.position.struct.*;
-import java.util.ArrayList;
-import static java.util.Arrays.asList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.jooq.tools.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +32,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static java.util.Arrays.asList;
 
 //@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
 @Controller
@@ -168,53 +172,39 @@ public class PositionController {
     }
 
     @RequestMapping(value = "/thirdparty/joboccupation", method = RequestMethod.GET)
-	@ResponseBody
-	public String occupation(HttpServletRequest request, HttpServletResponse response) {
-		try {
-			Map<String,Object> map=ParamUtils.parseRequestParam(request);
-			String company_id= (String) map.get("company_id");
-            Query.QueryBuilder query = new Query.QueryBuilder();
-			query.where("company_id", company_id);
-			query.setPageSize(Integer.MAX_VALUE);
-			Response result = ResponseUtils.success(occuPationdao.getDatas(query.buildQuery(), com.moseeker.thrift.gen.position.struct.dao.JobOccupationCustom.class));
-			return ResponseLogNotification.success(request, result);
-		} catch (Exception e) {	
-			logger.error(e.getMessage(), e);
-			return ResponseLogNotification.fail(request, e.getMessage());
-		}
-	}
-    
-	@RequestMapping(value = "/position/sync", method = RequestMethod.POST)
-	@ResponseBody
-	public String synchronizePosition(HttpServletRequest request, HttpServletResponse response) {
-		try {
-			ThirdPartyPositionForm form = PositionParamUtils.parseSyncParam(request);
-			logger.info("-----------synchronizePosition------------");
-			logger.info("params:"+JSON.toJSONString(form));
-			Response result = positionBS.synchronizePositionToThirdPartyPlatform(form);
-			logger.info("result:"+JSON.toJSONString(result));
-			logger.info("-----------synchronizePosition end------------");
-			return ResponseLogNotification.success(request, result);
-		} catch (Exception e) {	
-			e.printStackTrace();
-			logger.error(e.getMessage(), e);
-			return ResponseLogNotification.fail(request, e.getMessage());
-		}
-	}
-
-    @RequestMapping(value = "/thirdparty/position", method = RequestMethod.GET)
     @ResponseBody
-    public String thirdpartyposition(HttpServletRequest request, HttpServletResponse response) {
+    public String occupation(HttpServletRequest request, HttpServletResponse response) {
         try {
-            CommonQuery qu = ParamUtils.initCommonQuery(request, CommonQuery.class);
-            List<ThirdPartyPositionData> datas = positonServices.getThirdPartyPositions(qu);
-            Response result = ResponseUtils.success(datas);
+            Map<String, Object> map = ParamUtils.parseRequestParam(request);
+            String company_id = (String) map.get("company_id");
+            Query.QueryBuilder query = new Query.QueryBuilder();
+            query.where("company_id", company_id);
+            query.setPageSize(Integer.MAX_VALUE);
+            Response result = ResponseUtils.success(occuPationdao.getDatas(query.buildQuery(), com.moseeker.thrift.gen.position.struct.dao.JobOccupationCustom.class));
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
-        } finally {
-            //do nothing
+        }
+    }
+
+    @RequestMapping(value = "/position/sync", method = RequestMethod.POST)
+    @ResponseBody
+    public String synchronizePosition(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            ThirdPartyPositionForm form = PositionParamUtils.parseSyncParam(request);
+            logger.info("-----------synchronizePosition------------");
+            logger.info("params:" + JSON.toJSONString(form));
+            Response result = positionBS.synchronizePositionToThirdPartyPlatform(form);
+            logger.info("result:" + JSON.toJSONString(result));
+            logger.info("-----------synchronizePosition end------------");
+            return ResponseLogNotification.success(request, result);
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
 
@@ -236,11 +226,11 @@ public class PositionController {
                         try {
                             //同步到智联的第三方职位不刷新
                             if (ChannelType.ZHILIAN.getValue() == channel) {
-                                logger.info("synchronize position:{}:zhilian skip",positionId);
-                                List<Integer> positionIds =new ArrayList<Integer>();
+                                logger.info("synchronize position:{}:zhilian skip", positionId);
+                                List<Integer> positionIds = new ArrayList<Integer>();
                                 positionIds.add(positionId);
                                 positionBS.refreshPositionQXPlatform(positionIds);
-                            }else {
+                            } else {
                                 logger.info("positionId:" + positionId + "    channel:" + channel);
                                 Response refreshPositionResponse = positionBS.refreshPositionToThirdPartyPlatform(positionId, channel);
                                 logger.info("data:" + refreshPositionResponse.getData());
@@ -260,15 +250,40 @@ public class PositionController {
                         }
                     });
                 });
-            }else{
-            	List< Integer> paramQXList = PositionParamUtils.parseRefreshParamQX(params);
-            	positionBS.refreshPositionQXPlatform(paramQXList);
+            } else {
+                List<Integer> paramQXList = PositionParamUtils.parseRefreshParamQX(params);
+                positionBS.refreshPositionQXPlatform(paramQXList);
             }
             Response res = ResponseUtils.success(refreshResult);
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/thirdparty/position", method = RequestMethod.GET)
+    @ResponseBody
+    public String thirdpartyposition(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            CommonQuery qu = ParamUtils.initCommonQuery(request, CommonQuery.class);
+            List<HrThirdPartyPositionDO> datas = positonServices.getThirdPartyPositions(qu);
+
+            if (datas == null) datas = new ArrayList<>();
+
+            List<ThirdPartyPositionVO> vos = new ArrayList<>();
+
+            for (HrThirdPartyPositionDO positionDO : datas) {
+                vos.add(new ThirdPartyPositionVO().copyDO(positionDO));
+            }
+
+            Response result = ResponseUtils.success(vos);
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        } finally {
+            //do nothing
         }
     }
 

@@ -1,5 +1,6 @@
 package com.moseeker.profile.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.profiledb.ProfileCompletenessDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.userdb.UserSettingsDao;
@@ -18,9 +19,12 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.struct.Profile;
+
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -171,7 +175,7 @@ public class ProfileService {
 
     }
 
-    public Response getProfileByApplication(int companyId, int sourceId, int ats_status, boolean recommender, boolean dl_url_required, Map<String, List<String>> filter) throws TException {
+    public Response getProfileByApplication(ProfileApplicationForm profileApplicationForm) throws TException {
         ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil.getInstance();
         try {
             propertiesUtils.loadResource("setting.properties");
@@ -180,7 +184,7 @@ public class ProfileService {
         }
         String downloadUrl = propertiesUtils.get("GENERATE_USER_ID", String.class);
         String password = propertiesUtils.get("GENERATE_USER_PASSWORD", String.class);
-        logger.info("profilesByApplication:{},companyId:{},sourceId:{},atsStatus:{},recommender:{},dlUrlRequired:{}", downloadUrl, companyId, sourceId, ats_status, recommender, dl_url_required);
-        return dao.getResourceByApplication(downloadUrl, password, companyId, sourceId, ats_status, recommender, dl_url_required, filter);
+        logger.info("profilesByApplication:{}", JSON.toJSONString(profileApplicationForm));
+        return dao.getResourceByApplication(downloadUrl, password, profileApplicationForm);
     }
 }
