@@ -122,7 +122,10 @@ public class CompanySearchengine {
     private Map<String,Object> handleData(SearchResponse response){
     	Map<String,Object> data=new HashMap<String,Object>();
     	Aggregations aggs=response.getAggregations();
-    	System.out.println(aggs.toString()+"==============");
+    	for(String key:aggs.getAsMap().keySet()){
+    		System.out.println(aggs.getAsMap().get(key).getMetaData()+"==============");
+    		System.out.println(aggs.getAsMap().get(key).getName()+"==============");
+    	}
     	Map<String, Object> aggsMap=handleAggs(aggs);
     	data.put("aggs", aggsMap);
     	SearchHits hit=response.getHits();
