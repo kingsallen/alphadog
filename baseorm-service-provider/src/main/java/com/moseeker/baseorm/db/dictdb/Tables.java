@@ -4,6 +4,7 @@
 package com.moseeker.baseorm.db.dictdb;
 
 
+import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusCity;
 import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusJobcategory;
 import com.moseeker.baseorm.db.dictdb.tables.DictCity;
 import com.moseeker.baseorm.db.dictdb.tables.DictCityMap;
@@ -39,6 +40,11 @@ public class Tables {
      * 51的职位表
      */
     public static final Dict_51jobOccupation DICT_51JOB_OCCUPATION = com.moseeker.baseorm.db.dictdb.tables.Dict_51jobOccupation.DICT_51JOB_OCCUPATION;
+
+    /**
+     * The table <code>dictdb.dict_alipaycampus_city</code>.
+     */
+    public static final DictAlipaycampusCity DICT_ALIPAYCAMPUS_CITY = com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusCity.DICT_ALIPAYCAMPUS_CITY;
 
     /**
      * dict_alipaycampus_jobcategory[alipay校园招聘-职位类别]
