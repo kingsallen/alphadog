@@ -1,6 +1,8 @@
 package com.moseeker.position.service.position;
 
 import com.moseeker.baseorm.dao.dictdb.DictCityMapDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
+import com.moseeker.baseorm.dao.hrdb.HrTeamDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.util.StringUtils;
@@ -9,6 +11,8 @@ import com.moseeker.position.service.position.qianxun.Degree;
 import com.moseeker.position.service.position.qianxun.WorkType;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityMapDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrTeamDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionCityDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
@@ -39,6 +43,9 @@ public class PositionChangeUtil {
 
     @Autowired
     private JobPositionCityDao jobPositionCityDao;
+
+    @Autowired
+    private HrTeamDao hrTeamDao;
 
     /**
      * 将仟寻职位转成第卅方职位
@@ -116,7 +123,8 @@ public class PositionChangeUtil {
         //反馈时间
         position.setFeedback_period(form.getFeedback_period());
 
-        position.setDepartment(form.getDepartment());
+
+        setDepartment(form, positionDB, position);
 
         //有效时间
         DateTime dt = new DateTime();
@@ -126,6 +134,23 @@ public class PositionChangeUtil {
         setCities(positionDB, position, channelType);
 
         return position;
+    }
+
+    private void setDepartment(ThirdPartyPosition form, JobPositionDO positionDO, ThirdPartyPositionForSynchronization position) {
+        ChannelType channelType = ChannelType.instaceFromInteger(form.getChannel());
+        switch (channelType) {
+            case LIEPIN:
+                position.setDepartment(form.getDepartment());
+                break;
+            case JOB51:
+                HrTeamDO hrTeam = hrTeamDao.getHrTeam(positionDO.getTeamId());
+                if (hrTeam != null) {
+                    position.setDepartment(hrTeam.getName());
+                }else{
+                    position.setDepartment("");
+                }
+                break;
+        }
     }
 
     private static void setSalaryBottom(int salaryBottom, int salaryBottomDB,
