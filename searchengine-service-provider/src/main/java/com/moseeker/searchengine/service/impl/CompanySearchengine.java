@@ -38,16 +38,16 @@ import com.moseeker.common.util.ConfigPropertiesUtil;
 @CounterIface
 public class CompanySearchengine {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
-	public SearchResponse  query(String keywords,String citys,String industry,String scale,Integer page,Integer pageSize) throws TException{
+	public Map<String,Object>  query(String keywords,String citys,String industry,String scale,Integer page,Integer pageSize) throws TException{
 		SearchResponse hits=queryPrefix(keywords,citys,industry,scale,page,pageSize);
 		long hitNum=hits.getHits().getTotalHits();
 		if(hitNum==0){
 			SearchResponse hitsData=queryString(keywords,citys,industry,scale,page,pageSize);
 			Map<String,Object> map=this.handleData(hitsData);
-			return hitsData;
+			return map;
 		}else{
 			Map<String,Object> map=this.handleData(hits);
-			return hits;
+			return map;
 		}
 		
 		
@@ -123,11 +123,6 @@ public class CompanySearchengine {
     private Map<String,Object> handleData(SearchResponse response){
     	Map<String,Object> data=new HashMap<String,Object>();
     	Aggregations aggs=response.getAggregations();
-    	for(Aggregation aggregation :aggs){
-    		System.out.println(aggregation.getName()+"==============");
-    		System.out.println(aggregation.getMetaData()+"==============");
-    		System.out.println(aggregation.getProperty("value")+"==============");
-    	}
     	Map<String, Object> aggsMap=handleAggs(aggs);
     	data.put("aggs", aggsMap);
     	SearchHits hit=response.getHits();
@@ -150,7 +145,7 @@ public class CompanySearchengine {
     	Map<String,Object> map=new HashMap<String,Object>();
     	for(Aggregation agg:list){
     		String name=agg.getName();
-    		Object data=agg.getMetaData();
+    		Object data=agg.getProperty("value");
     		map.put(name, data);
     	}
     	return map;
