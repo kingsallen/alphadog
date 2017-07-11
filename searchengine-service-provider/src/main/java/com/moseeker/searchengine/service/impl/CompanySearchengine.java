@@ -1,6 +1,11 @@
 package com.moseeker.searchengine.service.impl;
 
 import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -12,9 +17,12 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.script.Script;
+import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
+import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.aggregations.metrics.MetricsAggregationBuilder;
 import org.elasticsearch.search.sort.ScriptSortBuilder;
 import org.elasticsearch.search.sort.SortBuilder;
@@ -29,14 +37,16 @@ import com.moseeker.common.util.ConfigPropertiesUtil;
 @CounterIface
 public class CompanySearchengine {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
-	public SearchHits  query(String keywords,String citys,String industry,String scale,Integer page,Integer pageSize) throws TException{
-		SearchHits hits=queryPrefix(keywords,citys,industry,scale,page,pageSize);
-		long hitNum=hits.getTotalHits();
+	public Map<String,Object>  query(String keywords,String citys,String industry,String scale,Integer page,Integer pageSize) throws TException{
+		SearchResponse hits=queryPrefix(keywords,citys,industry,scale,page,pageSize);
+		long hitNum=hits.getHits().getTotalHits();
 		if(hitNum==0){
-			SearchHits hitsData=queryString(keywords,citys,industry,scale,page,pageSize);
-			return hitsData;
+			SearchResponse hitsData=queryString(keywords,citys,industry,scale,page,pageSize);
+			Map<String,Object> map=this.handleData(hitsData);
+			return map;
 		}else{
-			return hits;
+			Map<String,Object> map=this.handleData(hits);
+			return map;
 		}
 		
 		
@@ -53,7 +63,7 @@ public class CompanySearchengine {
         return query;
 	}
 	//通过queryString
-    public SearchHits queryString(String keywords,String citys,String industry,String scale,Integer page,Integer pageSize) throws TException {
+    public SearchResponse queryString(String keywords,String citys,String industry,String scale,Integer page,Integer pageSize) throws TException {
          try{
         	 TransportClient client=this.getEsClient();
         	 if(client!=null){
@@ -68,8 +78,7 @@ public class CompanySearchengine {
                          .addAggregation(this.handleAggScale());
                  logger.info(responseBuilder.toString());
                  SearchResponse response = responseBuilder.execute().actionGet();
-                 SearchHits hit=response.getHits();
-                 return hit;
+                 return response;
         	 }
              
          }catch(Exception e){
@@ -80,7 +89,7 @@ public class CompanySearchengine {
     
    
     //通过prefix搜索
-    public SearchHits queryPrefix(String keywords,String citys,String industry,String scale,Integer page,Integer pageSize) throws TException {
+    public SearchResponse queryPrefix(String keywords,String citys,String industry,String scale,Integer page,Integer pageSize) throws TException {
         try{
        	 TransportClient client=this.getEsClient();
        	 if(client!=null){
@@ -100,8 +109,8 @@ public class CompanySearchengine {
                         .addAggregation(this.handleAggScale());
                 logger.info(responseBuilder.toString());
                 SearchResponse response = responseBuilder.execute().actionGet();
-                SearchHits hit=response.getHits();
-                return hit;
+                
+                return response;
        	 }
             
         }catch(Exception e){
@@ -109,6 +118,26 @@ public class CompanySearchengine {
         }
    	return null;
    }
+    
+    private Map<String,Object> handleData(SearchResponse response){
+    	Map<String,Object> data=new HashMap<String,Object>();
+    	Aggregations aggs=response.getAggregations();
+    	Map<String, Aggregation> aggsMap=aggs.asMap();
+    	data.put("aggs", aggsMap);
+    	SearchHits hit=response.getHits();
+    	long totalNum=hit.getTotalHits();
+    	data.put("totalNum", totalNum);
+    	SearchHit[] searchData=hit.getHits();
+    	if(searchData!=null&&searchData.length>0){
+    		List<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
+    		for(SearchHit ss:searchData){
+    			Map<String,Object> obj=ss.getSource();
+    			list.add(obj);
+    		}
+    		data.put("companies", list);
+    	}
+    	return data;
+    }
     //构建prefix查询的语句
     private void buildQueryForPrefix(String keywords,String citys,String industry,String scale,QueryBuilder query ){
     	QueryBuilder defaultquery = QueryBuilders.matchAllQuery();

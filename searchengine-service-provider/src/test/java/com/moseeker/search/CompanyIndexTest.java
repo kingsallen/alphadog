@@ -1,5 +1,7 @@
 package com.moseeker.search;
 
+import java.util.Map;
+
 import org.elasticsearch.search.SearchHits;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,7 +18,7 @@ public class CompanyIndexTest {
 	private CompanySearchengine companySearchengine;
 	@Test
 	public void queryStringTest() throws Exception{
-		SearchHits res=companySearchengine.queryString("上海", null, null, null, 0, 10);
+		Map<String,Object> res=companySearchengine.query("上海", null, null, null, 0, 10);
 		System.out.println(res);
 	}
 
