@@ -659,7 +659,7 @@ public class WholeProfileService {
             intentionDao.delIntentionsByProfileId(profileId);
             intentionRecords.forEach(intention -> {
                 intention.setId(null);
-                intention.setProfileId((int) (profileId));
+                intention.setProfileId(profileId);
             });
             intentionDao.postIntentions(intentionRecords);
         }

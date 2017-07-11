@@ -14,6 +14,7 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices;
+import com.moseeker.thrift.gen.company.struct.CompanyCertConf;
 import com.moseeker.thrift.gen.company.struct.CompanyForVerifyEmployee;
 import com.moseeker.thrift.gen.company.struct.CompanyOptions;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
@@ -300,9 +301,11 @@ public class CompanyController {
     public String getHrEmployeeCertConf(HttpServletRequest request, HttpServletResponse response) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            int companyId = params.getInt("companyId") != null ? params.getInt("companyId") : 0;
-            HrEmployeeCertConfDO hrEmployeeCertConfDO = companyServices.getHrEmployeeCertConf(companyId);
-            return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(hrEmployeeCertConfDO)));
+            int companyId = params.getInt("companyId", 0);
+            int hraccountId = params.getInt("hraccountId", 0);
+            int type = params.getInt("type", 0);
+            CompanyCertConf companyCertConf = companyServices.getHrEmployeeCertConf(companyId, type, hraccountId);
+            return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(companyCertConf)));
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {

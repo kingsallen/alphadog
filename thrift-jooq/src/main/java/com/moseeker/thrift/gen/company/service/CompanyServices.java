@@ -24,7 +24,7 @@ public class CompanyServices {
 
     public boolean updateEmployeeBindConf(int companyId, int authMode, java.lang.String emailSuffix, java.lang.String custom, java.lang.String customHint, java.lang.String questions, java.lang.String filePath, java.lang.String fileName, int type, int hraccountId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO getHrEmployeeCertConf(int companyId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.company.struct.CompanyCertConf getHrEmployeeCertConf(int companyId, int type, int hraccountId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
     public java.util.List<com.moseeker.thrift.gen.employee.struct.RewardConfig> getCompanyRewardConf(int companyId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
@@ -58,7 +58,7 @@ public class CompanyServices {
 
     public void updateEmployeeBindConf(int companyId, int authMode, java.lang.String emailSuffix, java.lang.String custom, java.lang.String customHint, java.lang.String questions, java.lang.String filePath, java.lang.String fileName, int type, int hraccountId, org.apache.thrift.async.AsyncMethodCallback<java.lang.Boolean> resultHandler) throws org.apache.thrift.TException;
 
-    public void getHrEmployeeCertConf(int companyId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO> resultHandler) throws org.apache.thrift.TException;
+    public void getHrEmployeeCertConf(int companyId, int type, int hraccountId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.company.struct.CompanyCertConf> resultHandler) throws org.apache.thrift.TException;
 
     public void getCompanyRewardConf(int companyId, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.employee.struct.RewardConfig>> resultHandler) throws org.apache.thrift.TException;
 
@@ -249,20 +249,22 @@ public class CompanyServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "updateEmployeeBindConf failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO getHrEmployeeCertConf(int companyId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    public com.moseeker.thrift.gen.company.struct.CompanyCertConf getHrEmployeeCertConf(int companyId, int type, int hraccountId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
-      send_getHrEmployeeCertConf(companyId);
+      send_getHrEmployeeCertConf(companyId, type, hraccountId);
       return recv_getHrEmployeeCertConf();
     }
 
-    public void send_getHrEmployeeCertConf(int companyId) throws org.apache.thrift.TException
+    public void send_getHrEmployeeCertConf(int companyId, int type, int hraccountId) throws org.apache.thrift.TException
     {
       getHrEmployeeCertConf_args args = new getHrEmployeeCertConf_args();
       args.setCompanyId(companyId);
+      args.setType(type);
+      args.setHraccountId(hraccountId);
       sendBase("getHrEmployeeCertConf", args);
     }
 
-    public com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO recv_getHrEmployeeCertConf() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    public com.moseeker.thrift.gen.company.struct.CompanyCertConf recv_getHrEmployeeCertConf() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
       getHrEmployeeCertConf_result result = new getHrEmployeeCertConf_result();
       receiveBase(result, "getHrEmployeeCertConf");
@@ -733,29 +735,35 @@ public class CompanyServices {
       }
     }
 
-    public void getHrEmployeeCertConf(int companyId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO> resultHandler) throws org.apache.thrift.TException {
+    public void getHrEmployeeCertConf(int companyId, int type, int hraccountId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.company.struct.CompanyCertConf> resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      getHrEmployeeCertConf_call method_call = new getHrEmployeeCertConf_call(companyId, resultHandler, this, ___protocolFactory, ___transport);
+      getHrEmployeeCertConf_call method_call = new getHrEmployeeCertConf_call(companyId, type, hraccountId, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
-    public static class getHrEmployeeCertConf_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO> {
+    public static class getHrEmployeeCertConf_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.company.struct.CompanyCertConf> {
       private int companyId;
-      public getHrEmployeeCertConf_call(int companyId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private int type;
+      private int hraccountId;
+      public getHrEmployeeCertConf_call(int companyId, int type, int hraccountId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.company.struct.CompanyCertConf> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.companyId = companyId;
+        this.type = type;
+        this.hraccountId = hraccountId;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("getHrEmployeeCertConf", org.apache.thrift.protocol.TMessageType.CALL, 0));
         getHrEmployeeCertConf_args args = new getHrEmployeeCertConf_args();
         args.setCompanyId(companyId);
+        args.setType(type);
+        args.setHraccountId(hraccountId);
         args.write(prot);
         prot.writeMessageEnd();
       }
 
-      public com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO getResult() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException {
+      public com.moseeker.thrift.gen.company.struct.CompanyCertConf getResult() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new java.lang.IllegalStateException("Method call not finished!");
         }
@@ -1223,7 +1231,7 @@ public class CompanyServices {
       public getHrEmployeeCertConf_result getResult(I iface, getHrEmployeeCertConf_args args) throws org.apache.thrift.TException {
         getHrEmployeeCertConf_result result = new getHrEmployeeCertConf_result();
         try {
-          result.success = iface.getHrEmployeeCertConf(args.companyId);
+          result.success = iface.getHrEmployeeCertConf(args.companyId, args.type, args.hraccountId);
         } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
           result.e = e;
         }
@@ -1826,7 +1834,7 @@ public class CompanyServices {
       }
     }
 
-    public static class getHrEmployeeCertConf<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, getHrEmployeeCertConf_args, com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO> {
+    public static class getHrEmployeeCertConf<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, getHrEmployeeCertConf_args, com.moseeker.thrift.gen.company.struct.CompanyCertConf> {
       public getHrEmployeeCertConf() {
         super("getHrEmployeeCertConf");
       }
@@ -1835,10 +1843,10 @@ public class CompanyServices {
         return new getHrEmployeeCertConf_args();
       }
 
-      public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
+      public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.company.struct.CompanyCertConf> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO>() { 
-          public void onComplete(com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO o) {
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.company.struct.CompanyCertConf>() { 
+          public void onComplete(com.moseeker.thrift.gen.company.struct.CompanyCertConf o) {
             getHrEmployeeCertConf_result result = new getHrEmployeeCertConf_result();
             result.success = o;
             try {
@@ -1886,8 +1894,8 @@ public class CompanyServices {
         return false;
       }
 
-      public void start(I iface, getHrEmployeeCertConf_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO> resultHandler) throws org.apache.thrift.TException {
-        iface.getHrEmployeeCertConf(args.companyId,resultHandler);
+      public void start(I iface, getHrEmployeeCertConf_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.company.struct.CompanyCertConf> resultHandler) throws org.apache.thrift.TException {
+        iface.getHrEmployeeCertConf(args.companyId, args.type, args.hraccountId,resultHandler);
       }
     }
 
@@ -7911,15 +7919,21 @@ public class CompanyServices {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getHrEmployeeCertConf_args");
 
     private static final org.apache.thrift.protocol.TField COMPANY_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("companyId", org.apache.thrift.protocol.TType.I32, (short)1);
+    private static final org.apache.thrift.protocol.TField TYPE_FIELD_DESC = new org.apache.thrift.protocol.TField("type", org.apache.thrift.protocol.TType.I32, (short)2);
+    private static final org.apache.thrift.protocol.TField HRACCOUNT_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("hraccountId", org.apache.thrift.protocol.TType.I32, (short)3);
 
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getHrEmployeeCertConf_argsStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getHrEmployeeCertConf_argsTupleSchemeFactory();
 
     public int companyId; // required
+    public int type; // required
+    public int hraccountId; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      COMPANY_ID((short)1, "companyId");
+      COMPANY_ID((short)1, "companyId"),
+      TYPE((short)2, "type"),
+      HRACCOUNT_ID((short)3, "hraccountId");
 
       private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
@@ -7936,6 +7950,10 @@ public class CompanyServices {
         switch(fieldId) {
           case 1: // COMPANY_ID
             return COMPANY_ID;
+          case 2: // TYPE
+            return TYPE;
+          case 3: // HRACCOUNT_ID
+            return HRACCOUNT_ID;
           default:
             return null;
         }
@@ -7977,11 +7995,17 @@ public class CompanyServices {
 
     // isset id assignments
     private static final int __COMPANYID_ISSET_ID = 0;
+    private static final int __TYPE_ISSET_ID = 1;
+    private static final int __HRACCOUNTID_ISSET_ID = 2;
     private byte __isset_bitfield = 0;
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("companyId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.TYPE, new org.apache.thrift.meta_data.FieldMetaData("type", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.HRACCOUNT_ID, new org.apache.thrift.meta_data.FieldMetaData("hraccountId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getHrEmployeeCertConf_args.class, metaDataMap);
@@ -7991,11 +8015,17 @@ public class CompanyServices {
     }
 
     public getHrEmployeeCertConf_args(
-      int companyId)
+      int companyId,
+      int type,
+      int hraccountId)
     {
       this();
       this.companyId = companyId;
       setCompanyIdIsSet(true);
+      this.type = type;
+      setTypeIsSet(true);
+      this.hraccountId = hraccountId;
+      setHraccountIdIsSet(true);
     }
 
     /**
@@ -8004,6 +8034,8 @@ public class CompanyServices {
     public getHrEmployeeCertConf_args(getHrEmployeeCertConf_args other) {
       __isset_bitfield = other.__isset_bitfield;
       this.companyId = other.companyId;
+      this.type = other.type;
+      this.hraccountId = other.hraccountId;
     }
 
     public getHrEmployeeCertConf_args deepCopy() {
@@ -8014,6 +8046,10 @@ public class CompanyServices {
     public void clear() {
       setCompanyIdIsSet(false);
       this.companyId = 0;
+      setTypeIsSet(false);
+      this.type = 0;
+      setHraccountIdIsSet(false);
+      this.hraccountId = 0;
     }
 
     public int getCompanyId() {
@@ -8039,6 +8075,52 @@ public class CompanyServices {
       __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __COMPANYID_ISSET_ID, value);
     }
 
+    public int getType() {
+      return this.type;
+    }
+
+    public getHrEmployeeCertConf_args setType(int type) {
+      this.type = type;
+      setTypeIsSet(true);
+      return this;
+    }
+
+    public void unsetType() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __TYPE_ISSET_ID);
+    }
+
+    /** Returns true if field type is set (has been assigned a value) and false otherwise */
+    public boolean isSetType() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __TYPE_ISSET_ID);
+    }
+
+    public void setTypeIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __TYPE_ISSET_ID, value);
+    }
+
+    public int getHraccountId() {
+      return this.hraccountId;
+    }
+
+    public getHrEmployeeCertConf_args setHraccountId(int hraccountId) {
+      this.hraccountId = hraccountId;
+      setHraccountIdIsSet(true);
+      return this;
+    }
+
+    public void unsetHraccountId() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __HRACCOUNTID_ISSET_ID);
+    }
+
+    /** Returns true if field hraccountId is set (has been assigned a value) and false otherwise */
+    public boolean isSetHraccountId() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __HRACCOUNTID_ISSET_ID);
+    }
+
+    public void setHraccountIdIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __HRACCOUNTID_ISSET_ID, value);
+    }
+
     public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case COMPANY_ID:
@@ -8049,6 +8131,22 @@ public class CompanyServices {
         }
         break;
 
+      case TYPE:
+        if (value == null) {
+          unsetType();
+        } else {
+          setType((java.lang.Integer)value);
+        }
+        break;
+
+      case HRACCOUNT_ID:
+        if (value == null) {
+          unsetHraccountId();
+        } else {
+          setHraccountId((java.lang.Integer)value);
+        }
+        break;
+
       }
     }
 
@@ -8056,6 +8154,12 @@ public class CompanyServices {
       switch (field) {
       case COMPANY_ID:
         return getCompanyId();
+
+      case TYPE:
+        return getType();
+
+      case HRACCOUNT_ID:
+        return getHraccountId();
 
       }
       throw new java.lang.IllegalStateException();
@@ -8070,6 +8174,10 @@ public class CompanyServices {
       switch (field) {
       case COMPANY_ID:
         return isSetCompanyId();
+      case TYPE:
+        return isSetType();
+      case HRACCOUNT_ID:
+        return isSetHraccountId();
       }
       throw new java.lang.IllegalStateException();
     }
@@ -8098,6 +8206,24 @@ public class CompanyServices {
           return false;
       }
 
+      boolean this_present_type = true;
+      boolean that_present_type = true;
+      if (this_present_type || that_present_type) {
+        if (!(this_present_type && that_present_type))
+          return false;
+        if (this.type != that.type)
+          return false;
+      }
+
+      boolean this_present_hraccountId = true;
+      boolean that_present_hraccountId = true;
+      if (this_present_hraccountId || that_present_hraccountId) {
+        if (!(this_present_hraccountId && that_present_hraccountId))
+          return false;
+        if (this.hraccountId != that.hraccountId)
+          return false;
+      }
+
       return true;
     }
 
@@ -8106,6 +8232,10 @@ public class CompanyServices {
       int hashCode = 1;
 
       hashCode = hashCode * 8191 + companyId;
+
+      hashCode = hashCode * 8191 + type;
+
+      hashCode = hashCode * 8191 + hraccountId;
 
       return hashCode;
     }
@@ -8124,6 +8254,26 @@ public class CompanyServices {
       }
       if (isSetCompanyId()) {
         lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.companyId, other.companyId);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetType()).compareTo(other.isSetType());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetType()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.type, other.type);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetHraccountId()).compareTo(other.isSetHraccountId());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetHraccountId()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.hraccountId, other.hraccountId);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -8150,6 +8300,14 @@ public class CompanyServices {
 
       sb.append("companyId:");
       sb.append(this.companyId);
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("type:");
+      sb.append(this.type);
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("hraccountId:");
+      sb.append(this.hraccountId);
       first = false;
       sb.append(")");
       return sb.toString();
@@ -8204,6 +8362,22 @@ public class CompanyServices {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
+            case 2: // TYPE
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.type = iprot.readI32();
+                struct.setTypeIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 3: // HRACCOUNT_ID
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.hraccountId = iprot.readI32();
+                struct.setHraccountIdIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -8221,6 +8395,12 @@ public class CompanyServices {
         oprot.writeStructBegin(STRUCT_DESC);
         oprot.writeFieldBegin(COMPANY_ID_FIELD_DESC);
         oprot.writeI32(struct.companyId);
+        oprot.writeFieldEnd();
+        oprot.writeFieldBegin(TYPE_FIELD_DESC);
+        oprot.writeI32(struct.type);
+        oprot.writeFieldEnd();
+        oprot.writeFieldBegin(HRACCOUNT_ID_FIELD_DESC);
+        oprot.writeI32(struct.hraccountId);
         oprot.writeFieldEnd();
         oprot.writeFieldStop();
         oprot.writeStructEnd();
@@ -8243,19 +8423,39 @@ public class CompanyServices {
         if (struct.isSetCompanyId()) {
           optionals.set(0);
         }
-        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetType()) {
+          optionals.set(1);
+        }
+        if (struct.isSetHraccountId()) {
+          optionals.set(2);
+        }
+        oprot.writeBitSet(optionals, 3);
         if (struct.isSetCompanyId()) {
           oprot.writeI32(struct.companyId);
+        }
+        if (struct.isSetType()) {
+          oprot.writeI32(struct.type);
+        }
+        if (struct.isSetHraccountId()) {
+          oprot.writeI32(struct.hraccountId);
         }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, getHrEmployeeCertConf_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet incoming = iprot.readBitSet(1);
+        java.util.BitSet incoming = iprot.readBitSet(3);
         if (incoming.get(0)) {
           struct.companyId = iprot.readI32();
           struct.setCompanyIdIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.type = iprot.readI32();
+          struct.setTypeIsSet(true);
+        }
+        if (incoming.get(2)) {
+          struct.hraccountId = iprot.readI32();
+          struct.setHraccountIdIsSet(true);
         }
       }
     }
@@ -8274,7 +8474,7 @@ public class CompanyServices {
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getHrEmployeeCertConf_resultStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getHrEmployeeCertConf_resultTupleSchemeFactory();
 
-    public com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO success; // required
+    public com.moseeker.thrift.gen.company.struct.CompanyCertConf success; // required
     public com.moseeker.thrift.gen.common.struct.BIZException e; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
@@ -8343,7 +8543,7 @@ public class CompanyServices {
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO.class)));
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.company.struct.CompanyCertConf.class)));
       tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
@@ -8354,7 +8554,7 @@ public class CompanyServices {
     }
 
     public getHrEmployeeCertConf_result(
-      com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO success,
+      com.moseeker.thrift.gen.company.struct.CompanyCertConf success,
       com.moseeker.thrift.gen.common.struct.BIZException e)
     {
       this();
@@ -8367,7 +8567,7 @@ public class CompanyServices {
      */
     public getHrEmployeeCertConf_result(getHrEmployeeCertConf_result other) {
       if (other.isSetSuccess()) {
-        this.success = new com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO(other.success);
+        this.success = new com.moseeker.thrift.gen.company.struct.CompanyCertConf(other.success);
       }
       if (other.isSetE()) {
         this.e = new com.moseeker.thrift.gen.common.struct.BIZException(other.e);
@@ -8384,11 +8584,11 @@ public class CompanyServices {
       this.e = null;
     }
 
-    public com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO getSuccess() {
+    public com.moseeker.thrift.gen.company.struct.CompanyCertConf getSuccess() {
       return this.success;
     }
 
-    public getHrEmployeeCertConf_result setSuccess(com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO success) {
+    public getHrEmployeeCertConf_result setSuccess(com.moseeker.thrift.gen.company.struct.CompanyCertConf success) {
       this.success = success;
       return this;
     }
@@ -8438,7 +8638,7 @@ public class CompanyServices {
         if (value == null) {
           unsetSuccess();
         } else {
-          setSuccess((com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO)value);
+          setSuccess((com.moseeker.thrift.gen.company.struct.CompanyCertConf)value);
         }
         break;
 
@@ -8642,7 +8842,7 @@ public class CompanyServices {
           switch (schemeField.id) {
             case 0: // SUCCESS
               if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-                struct.success = new com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO();
+                struct.success = new com.moseeker.thrift.gen.company.struct.CompanyCertConf();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
               } else { 
@@ -8721,7 +8921,7 @@ public class CompanyServices {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
-          struct.success = new com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO();
+          struct.success = new com.moseeker.thrift.gen.company.struct.CompanyCertConf();
           struct.success.read(iprot);
           struct.setSuccessIsSet(true);
         }

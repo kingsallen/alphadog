@@ -17,7 +17,7 @@ service CompanyServices {
     // 更新公司员工认证配置
     bool updateEmployeeBindConf(1:i32 companyId,2:i32 authMode,3:string emailSuffix,4:string custom, 5:string customHint, 6:string questions,7:string filePath,8:string fileName,9:i32 type,10:i32 hraccountId) throws (1: common_struct.BIZException e);
     // 获取公司员工认证配置
-    hrdb_struct.HrEmployeeCertConfDO getHrEmployeeCertConf(1:i32 companyId) throws (1: common_struct.BIZException e)
+    company_struct.CompanyCertConf getHrEmployeeCertConf(1:i32 companyId,2:i32 type 3:i32 hraccountId) throws (1: common_struct.BIZException e)
     // 获取公司积分配置信息
     list<employee_struct.RewardConfig> getCompanyRewardConf(1: i32 companyId) throws (1: common_struct.BIZException e);
     // 更新公司积分配置信息
@@ -36,5 +36,5 @@ service CompanyServices {
 }
 
 service HrTeamServices {
-    list<hrdb_struct.HrTeamDO> getHrTeams(1:map<string,string> query);
+    list<hrdb_struct.HrTeamDO> getHrTeams(1:common_struct.CommonQuery query);
 }

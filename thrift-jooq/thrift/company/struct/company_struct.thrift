@@ -41,3 +41,9 @@ struct CompanyOptions{
     1:list <hrdb_struct.HrEmployeePositionDO> hrEmployeePosition,
     2:list <hrdb_struct.HrEmployeeSectionDO> hrEmployeeSection
 }
+
+// 公司认证配置
+struct CompanyCertConf{
+    1:hrdb_struct.HrEmployeeCertConfDO hrEmployeeCertConf,
+    2:hrdb_struct.HrImporterMonitorDO hrImporterMonitor
+}

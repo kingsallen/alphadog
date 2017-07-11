@@ -11,10 +11,10 @@ namespace java com.moseeker.thrift.gen.apps.positionbs.service
  
 service PositionBS {
    	//职位同步
-	common_struct.Response synchronizePositionToThirdPartyPlatform(1: appbs_struct.ThirdPartyPositionForm position);
+	common_struct.Response synchronizePositionToThirdPartyPlatform(1: appbs_struct.ThirdPartyPositionForm position) throws (1: common_struct.BIZException e);
 	//刷新职位
-	common_struct.Response refreshPositionToThirdPartyPlatform(1: i32 positionId, 2:i32 channel);
+	common_struct.Response refreshPositionToThirdPartyPlatform(1: i32 positionId, 2:i32 channel) throws (1: common_struct.BIZException e);
 	//刷新职位，千寻平台
-	common_struct.Response refreshPositionQXPlatform(1: list<i32> positionIds);
+	common_struct.Response refreshPositionQXPlatform(1: list<i32> positionIds) throws (1: common_struct.BIZException e);
 }
 

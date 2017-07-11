@@ -5,6 +5,7 @@ import com.moseeker.common.exception.Category;
 import com.moseeker.company.exception.ExceptionFactory;
 import com.moseeker.entity.CompanyConfigEntity;
 import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.company.struct.CompanyCertConf;
 import com.moseeker.thrift.gen.company.struct.CompanyForVerifyEmployee;
 import com.moseeker.thrift.gen.employee.struct.RewardConfig;
 
@@ -121,8 +122,8 @@ public class CompanyServicesImpl implements Iface {
      * @throws
      */
     @Override
-    public HrEmployeeCertConfDO getHrEmployeeCertConf(int companyId) throws BIZException, TException {
-        return service.getHrEmployeeCertConf(companyId);
+    public CompanyCertConf getHrEmployeeCertConf(int companyId, int type, int accountId) throws BIZException, TException {
+        return service.getHrEmployeeCertConf(companyId, type, accountId);
     }
 
     /**

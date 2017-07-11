@@ -1,5 +1,6 @@
 package com.moseeker.mq.rabbit;
 
+import java.time.LocalDateTime;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class Receiver {
 
     @RabbitHandler
-    public void process(String hello) {
-        System.out.println("Receiver: " + hello);
+    public void process(byte[] str) {
+        System.out.println("Receiver: " + new String(str) + "; " + LocalDateTime.now().withNano(0).toString());
     }
 }

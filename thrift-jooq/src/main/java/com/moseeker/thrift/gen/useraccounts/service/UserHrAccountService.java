@@ -22,11 +22,9 @@ public class UserHrAccountService {
 
     public com.moseeker.thrift.gen.common.struct.Response putResource(com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount userHrAccount) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO bindThirdpartyAccount(int hrId, com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO account) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO bindThirdpartyAccount(int hrId, com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO account, boolean sync) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO syncThirdpartyAccount(int id) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
-
-    public com.moseeker.thrift.gen.common.struct.Response ifSynchronizePosition(int companyId, int channel) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO syncThirdpartyAccount(int id, boolean sync) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
     public com.moseeker.thrift.gen.common.struct.Response getSearchCondition(int hrAccountId, int type) throws org.apache.thrift.TException;
 
@@ -88,11 +86,9 @@ public class UserHrAccountService {
 
     public void putResource(com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount userHrAccount, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
-    public void bindThirdpartyAccount(int hrId, com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO account, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO> resultHandler) throws org.apache.thrift.TException;
+    public void bindThirdpartyAccount(int hrId, com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO account, boolean sync, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO> resultHandler) throws org.apache.thrift.TException;
 
-    public void syncThirdpartyAccount(int id, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO> resultHandler) throws org.apache.thrift.TException;
-
-    public void ifSynchronizePosition(int companyId, int channel, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+    public void syncThirdpartyAccount(int id, boolean sync, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO> resultHandler) throws org.apache.thrift.TException;
 
     public void getSearchCondition(int hrAccountId, int type, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
@@ -237,17 +233,18 @@ public class UserHrAccountService {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "putResource failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO bindThirdpartyAccount(int hrId, com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO account) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    public com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO bindThirdpartyAccount(int hrId, com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO account, boolean sync) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
-      send_bindThirdpartyAccount(hrId, account);
+      send_bindThirdpartyAccount(hrId, account, sync);
       return recv_bindThirdpartyAccount();
     }
 
-    public void send_bindThirdpartyAccount(int hrId, com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO account) throws org.apache.thrift.TException
+    public void send_bindThirdpartyAccount(int hrId, com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO account, boolean sync) throws org.apache.thrift.TException
     {
       bindThirdpartyAccount_args args = new bindThirdpartyAccount_args();
       args.setHrId(hrId);
       args.setAccount(account);
+      args.setSync(sync);
       sendBase("bindThirdpartyAccount", args);
     }
 
@@ -264,16 +261,17 @@ public class UserHrAccountService {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "bindThirdpartyAccount failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO syncThirdpartyAccount(int id) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    public com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO syncThirdpartyAccount(int id, boolean sync) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
-      send_syncThirdpartyAccount(id);
+      send_syncThirdpartyAccount(id, sync);
       return recv_syncThirdpartyAccount();
     }
 
-    public void send_syncThirdpartyAccount(int id) throws org.apache.thrift.TException
+    public void send_syncThirdpartyAccount(int id, boolean sync) throws org.apache.thrift.TException
     {
       syncThirdpartyAccount_args args = new syncThirdpartyAccount_args();
       args.setId(id);
+      args.setSync(sync);
       sendBase("syncThirdpartyAccount", args);
     }
 
@@ -288,30 +286,6 @@ public class UserHrAccountService {
         throw result.e;
       }
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "syncThirdpartyAccount failed: unknown result");
-    }
-
-    public com.moseeker.thrift.gen.common.struct.Response ifSynchronizePosition(int companyId, int channel) throws org.apache.thrift.TException
-    {
-      send_ifSynchronizePosition(companyId, channel);
-      return recv_ifSynchronizePosition();
-    }
-
-    public void send_ifSynchronizePosition(int companyId, int channel) throws org.apache.thrift.TException
-    {
-      ifSynchronizePosition_args args = new ifSynchronizePosition_args();
-      args.setCompanyId(companyId);
-      args.setChannel(channel);
-      sendBase("ifSynchronizePosition", args);
-    }
-
-    public com.moseeker.thrift.gen.common.struct.Response recv_ifSynchronizePosition() throws org.apache.thrift.TException
-    {
-      ifSynchronizePosition_result result = new ifSynchronizePosition_result();
-      receiveBase(result, "ifSynchronizePosition");
-      if (result.isSetSuccess()) {
-        return result.success;
-      }
-      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "ifSynchronizePosition failed: unknown result");
     }
 
     public com.moseeker.thrift.gen.common.struct.Response getSearchCondition(int hrAccountId, int type) throws org.apache.thrift.TException
@@ -1100,9 +1074,9 @@ public class UserHrAccountService {
       }
     }
 
-    public void bindThirdpartyAccount(int hrId, com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO account, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO> resultHandler) throws org.apache.thrift.TException {
+    public void bindThirdpartyAccount(int hrId, com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO account, boolean sync, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO> resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      bindThirdpartyAccount_call method_call = new bindThirdpartyAccount_call(hrId, account, resultHandler, this, ___protocolFactory, ___transport);
+      bindThirdpartyAccount_call method_call = new bindThirdpartyAccount_call(hrId, account, sync, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
@@ -1110,10 +1084,12 @@ public class UserHrAccountService {
     public static class bindThirdpartyAccount_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO> {
       private int hrId;
       private com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO account;
-      public bindThirdpartyAccount_call(int hrId, com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO account, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private boolean sync;
+      public bindThirdpartyAccount_call(int hrId, com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO account, boolean sync, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.hrId = hrId;
         this.account = account;
+        this.sync = sync;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
@@ -1121,6 +1097,7 @@ public class UserHrAccountService {
         bindThirdpartyAccount_args args = new bindThirdpartyAccount_args();
         args.setHrId(hrId);
         args.setAccount(account);
+        args.setSync(sync);
         args.write(prot);
         prot.writeMessageEnd();
       }
@@ -1135,24 +1112,27 @@ public class UserHrAccountService {
       }
     }
 
-    public void syncThirdpartyAccount(int id, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO> resultHandler) throws org.apache.thrift.TException {
+    public void syncThirdpartyAccount(int id, boolean sync, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO> resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      syncThirdpartyAccount_call method_call = new syncThirdpartyAccount_call(id, resultHandler, this, ___protocolFactory, ___transport);
+      syncThirdpartyAccount_call method_call = new syncThirdpartyAccount_call(id, sync, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
     public static class syncThirdpartyAccount_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO> {
       private int id;
-      public syncThirdpartyAccount_call(int id, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private boolean sync;
+      public syncThirdpartyAccount_call(int id, boolean sync, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.id = id;
+        this.sync = sync;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("syncThirdpartyAccount", org.apache.thrift.protocol.TMessageType.CALL, 0));
         syncThirdpartyAccount_args args = new syncThirdpartyAccount_args();
         args.setId(id);
+        args.setSync(sync);
         args.write(prot);
         prot.writeMessageEnd();
       }
@@ -1164,41 +1144,6 @@ public class UserHrAccountService {
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
         return (new Client(prot)).recv_syncThirdpartyAccount();
-      }
-    }
-
-    public void ifSynchronizePosition(int companyId, int channel, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
-      checkReady();
-      ifSynchronizePosition_call method_call = new ifSynchronizePosition_call(companyId, channel, resultHandler, this, ___protocolFactory, ___transport);
-      this.___currentMethod = method_call;
-      ___manager.call(method_call);
-    }
-
-    public static class ifSynchronizePosition_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
-      private int companyId;
-      private int channel;
-      public ifSynchronizePosition_call(int companyId, int channel, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
-        super(client, protocolFactory, transport, resultHandler, false);
-        this.companyId = companyId;
-        this.channel = channel;
-      }
-
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
-        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("ifSynchronizePosition", org.apache.thrift.protocol.TMessageType.CALL, 0));
-        ifSynchronizePosition_args args = new ifSynchronizePosition_args();
-        args.setCompanyId(companyId);
-        args.setChannel(channel);
-        args.write(prot);
-        prot.writeMessageEnd();
-      }
-
-      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
-          throw new java.lang.IllegalStateException("Method call not finished!");
-        }
-        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
-        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
-        return (new Client(prot)).recv_ifSynchronizePosition();
       }
     }
 
@@ -2131,7 +2076,6 @@ public class UserHrAccountService {
       processMap.put("putResource", new putResource());
       processMap.put("bindThirdpartyAccount", new bindThirdpartyAccount());
       processMap.put("syncThirdpartyAccount", new syncThirdpartyAccount());
-      processMap.put("ifSynchronizePosition", new ifSynchronizePosition());
       processMap.put("getSearchCondition", new getSearchCondition());
       processMap.put("postSearchCondition", new postSearchCondition());
       processMap.put("delSearchCondition", new delSearchCondition());
@@ -2236,7 +2180,7 @@ public class UserHrAccountService {
       public bindThirdpartyAccount_result getResult(I iface, bindThirdpartyAccount_args args) throws org.apache.thrift.TException {
         bindThirdpartyAccount_result result = new bindThirdpartyAccount_result();
         try {
-          result.success = iface.bindThirdpartyAccount(args.hrId, args.account);
+          result.success = iface.bindThirdpartyAccount(args.hrId, args.account, args.sync);
         } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
           result.e = e;
         }
@@ -2260,30 +2204,10 @@ public class UserHrAccountService {
       public syncThirdpartyAccount_result getResult(I iface, syncThirdpartyAccount_args args) throws org.apache.thrift.TException {
         syncThirdpartyAccount_result result = new syncThirdpartyAccount_result();
         try {
-          result.success = iface.syncThirdpartyAccount(args.id);
+          result.success = iface.syncThirdpartyAccount(args.id, args.sync);
         } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
           result.e = e;
         }
-        return result;
-      }
-    }
-
-    public static class ifSynchronizePosition<I extends Iface> extends org.apache.thrift.ProcessFunction<I, ifSynchronizePosition_args> {
-      public ifSynchronizePosition() {
-        super("ifSynchronizePosition");
-      }
-
-      public ifSynchronizePosition_args getEmptyArgsInstance() {
-        return new ifSynchronizePosition_args();
-      }
-
-      protected boolean isOneway() {
-        return false;
-      }
-
-      public ifSynchronizePosition_result getResult(I iface, ifSynchronizePosition_args args) throws org.apache.thrift.TException {
-        ifSynchronizePosition_result result = new ifSynchronizePosition_result();
-        result.success = iface.ifSynchronizePosition(args.companyId, args.channel);
         return result;
       }
     }
@@ -2885,7 +2809,6 @@ public class UserHrAccountService {
       processMap.put("putResource", new putResource());
       processMap.put("bindThirdpartyAccount", new bindThirdpartyAccount());
       processMap.put("syncThirdpartyAccount", new syncThirdpartyAccount());
-      processMap.put("ifSynchronizePosition", new ifSynchronizePosition());
       processMap.put("getSearchCondition", new getSearchCondition());
       processMap.put("postSearchCondition", new postSearchCondition());
       processMap.put("delSearchCondition", new delSearchCondition());
@@ -3158,7 +3081,7 @@ public class UserHrAccountService {
       }
 
       public void start(I iface, bindThirdpartyAccount_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO> resultHandler) throws org.apache.thrift.TException {
-        iface.bindThirdpartyAccount(args.hrId, args.account,resultHandler);
+        iface.bindThirdpartyAccount(args.hrId, args.account, args.sync,resultHandler);
       }
     }
 
@@ -3223,68 +3146,7 @@ public class UserHrAccountService {
       }
 
       public void start(I iface, syncThirdpartyAccount_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO> resultHandler) throws org.apache.thrift.TException {
-        iface.syncThirdpartyAccount(args.id,resultHandler);
-      }
-    }
-
-    public static class ifSynchronizePosition<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, ifSynchronizePosition_args, com.moseeker.thrift.gen.common.struct.Response> {
-      public ifSynchronizePosition() {
-        super("ifSynchronizePosition");
-      }
-
-      public ifSynchronizePosition_args getEmptyArgsInstance() {
-        return new ifSynchronizePosition_args();
-      }
-
-      public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
-        final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
-          public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
-            ifSynchronizePosition_result result = new ifSynchronizePosition_result();
-            result.success = o;
-            try {
-              fcall.sendResponse(fb, result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
-            } catch (org.apache.thrift.transport.TTransportException e) {
-              _LOGGER.error("TTransportException writing to internal frame buffer", e);
-              fb.close();
-            } catch (java.lang.Exception e) {
-              _LOGGER.error("Exception writing to internal frame buffer", e);
-              onError(e);
-            }
-          }
-          public void onError(java.lang.Exception e) {
-            byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
-            org.apache.thrift.TSerializable msg;
-            ifSynchronizePosition_result result = new ifSynchronizePosition_result();
-            if (e instanceof org.apache.thrift.transport.TTransportException) {
-              _LOGGER.error("TTransportException inside handler", e);
-              fb.close();
-              return;
-            } else if (e instanceof org.apache.thrift.TApplicationException) {
-              _LOGGER.error("TApplicationException inside handler", e);
-              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
-              msg = (org.apache.thrift.TApplicationException)e;
-            } else {
-              _LOGGER.error("Exception inside handler", e);
-              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
-              msg = new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
-            }
-            try {
-              fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (java.lang.Exception ex) {
-              _LOGGER.error("Exception writing to internal frame buffer", ex);
-              fb.close();
-            }
-          }
-        };
-      }
-
-      protected boolean isOneway() {
-        return false;
-      }
-
-      public void start(I iface, ifSynchronizePosition_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
-        iface.ifSynchronizePosition(args.companyId, args.channel,resultHandler);
+        iface.syncThirdpartyAccount(args.id, args.sync,resultHandler);
       }
     }
 
@@ -7300,17 +7162,20 @@ public class UserHrAccountService {
 
     private static final org.apache.thrift.protocol.TField HR_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("hrId", org.apache.thrift.protocol.TType.I32, (short)1);
     private static final org.apache.thrift.protocol.TField ACCOUNT_FIELD_DESC = new org.apache.thrift.protocol.TField("account", org.apache.thrift.protocol.TType.STRUCT, (short)2);
+    private static final org.apache.thrift.protocol.TField SYNC_FIELD_DESC = new org.apache.thrift.protocol.TField("sync", org.apache.thrift.protocol.TType.BOOL, (short)3);
 
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new bindThirdpartyAccount_argsStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new bindThirdpartyAccount_argsTupleSchemeFactory();
 
     public int hrId; // required
     public com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO account; // required
+    public boolean sync; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       HR_ID((short)1, "hrId"),
-      ACCOUNT((short)2, "account");
+      ACCOUNT((short)2, "account"),
+      SYNC((short)3, "sync");
 
       private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
@@ -7329,6 +7194,8 @@ public class UserHrAccountService {
             return HR_ID;
           case 2: // ACCOUNT
             return ACCOUNT;
+          case 3: // SYNC
+            return SYNC;
           default:
             return null;
         }
@@ -7370,6 +7237,7 @@ public class UserHrAccountService {
 
     // isset id assignments
     private static final int __HRID_ISSET_ID = 0;
+    private static final int __SYNC_ISSET_ID = 1;
     private byte __isset_bitfield = 0;
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
@@ -7378,6 +7246,8 @@ public class UserHrAccountService {
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       tmpMap.put(_Fields.ACCOUNT, new org.apache.thrift.meta_data.FieldMetaData("account", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO.class)));
+      tmpMap.put(_Fields.SYNC, new org.apache.thrift.meta_data.FieldMetaData("sync", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BOOL)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(bindThirdpartyAccount_args.class, metaDataMap);
     }
@@ -7387,12 +7257,15 @@ public class UserHrAccountService {
 
     public bindThirdpartyAccount_args(
       int hrId,
-      com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO account)
+      com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO account,
+      boolean sync)
     {
       this();
       this.hrId = hrId;
       setHrIdIsSet(true);
       this.account = account;
+      this.sync = sync;
+      setSyncIsSet(true);
     }
 
     /**
@@ -7404,6 +7277,7 @@ public class UserHrAccountService {
       if (other.isSetAccount()) {
         this.account = new com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO(other.account);
       }
+      this.sync = other.sync;
     }
 
     public bindThirdpartyAccount_args deepCopy() {
@@ -7415,6 +7289,8 @@ public class UserHrAccountService {
       setHrIdIsSet(false);
       this.hrId = 0;
       this.account = null;
+      setSyncIsSet(false);
+      this.sync = false;
     }
 
     public int getHrId() {
@@ -7464,6 +7340,29 @@ public class UserHrAccountService {
       }
     }
 
+    public boolean isSync() {
+      return this.sync;
+    }
+
+    public bindThirdpartyAccount_args setSync(boolean sync) {
+      this.sync = sync;
+      setSyncIsSet(true);
+      return this;
+    }
+
+    public void unsetSync() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __SYNC_ISSET_ID);
+    }
+
+    /** Returns true if field sync is set (has been assigned a value) and false otherwise */
+    public boolean isSetSync() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __SYNC_ISSET_ID);
+    }
+
+    public void setSyncIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __SYNC_ISSET_ID, value);
+    }
+
     public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case HR_ID:
@@ -7482,6 +7381,14 @@ public class UserHrAccountService {
         }
         break;
 
+      case SYNC:
+        if (value == null) {
+          unsetSync();
+        } else {
+          setSync((java.lang.Boolean)value);
+        }
+        break;
+
       }
     }
 
@@ -7492,6 +7399,9 @@ public class UserHrAccountService {
 
       case ACCOUNT:
         return getAccount();
+
+      case SYNC:
+        return isSync();
 
       }
       throw new java.lang.IllegalStateException();
@@ -7508,6 +7418,8 @@ public class UserHrAccountService {
         return isSetHrId();
       case ACCOUNT:
         return isSetAccount();
+      case SYNC:
+        return isSetSync();
       }
       throw new java.lang.IllegalStateException();
     }
@@ -7545,6 +7457,15 @@ public class UserHrAccountService {
           return false;
       }
 
+      boolean this_present_sync = true;
+      boolean that_present_sync = true;
+      if (this_present_sync || that_present_sync) {
+        if (!(this_present_sync && that_present_sync))
+          return false;
+        if (this.sync != that.sync)
+          return false;
+      }
+
       return true;
     }
 
@@ -7557,6 +7478,8 @@ public class UserHrAccountService {
       hashCode = hashCode * 8191 + ((isSetAccount()) ? 131071 : 524287);
       if (isSetAccount())
         hashCode = hashCode * 8191 + account.hashCode();
+
+      hashCode = hashCode * 8191 + ((sync) ? 131071 : 524287);
 
       return hashCode;
     }
@@ -7585,6 +7508,16 @@ public class UserHrAccountService {
       }
       if (isSetAccount()) {
         lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.account, other.account);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetSync()).compareTo(other.isSetSync());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSync()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.sync, other.sync);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -7619,6 +7552,10 @@ public class UserHrAccountService {
       } else {
         sb.append(this.account);
       }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("sync:");
+      sb.append(this.sync);
       first = false;
       sb.append(")");
       return sb.toString();
@@ -7685,6 +7622,14 @@ public class UserHrAccountService {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
+            case 3: // SYNC
+              if (schemeField.type == org.apache.thrift.protocol.TType.BOOL) {
+                struct.sync = iprot.readBool();
+                struct.setSyncIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -7708,6 +7653,9 @@ public class UserHrAccountService {
           struct.account.write(oprot);
           oprot.writeFieldEnd();
         }
+        oprot.writeFieldBegin(SYNC_FIELD_DESC);
+        oprot.writeBool(struct.sync);
+        oprot.writeFieldEnd();
         oprot.writeFieldStop();
         oprot.writeStructEnd();
       }
@@ -7732,19 +7680,25 @@ public class UserHrAccountService {
         if (struct.isSetAccount()) {
           optionals.set(1);
         }
-        oprot.writeBitSet(optionals, 2);
+        if (struct.isSetSync()) {
+          optionals.set(2);
+        }
+        oprot.writeBitSet(optionals, 3);
         if (struct.isSetHrId()) {
           oprot.writeI32(struct.hrId);
         }
         if (struct.isSetAccount()) {
           struct.account.write(oprot);
         }
+        if (struct.isSetSync()) {
+          oprot.writeBool(struct.sync);
+        }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, bindThirdpartyAccount_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet incoming = iprot.readBitSet(2);
+        java.util.BitSet incoming = iprot.readBitSet(3);
         if (incoming.get(0)) {
           struct.hrId = iprot.readI32();
           struct.setHrIdIsSet(true);
@@ -7753,6 +7707,10 @@ public class UserHrAccountService {
           struct.account = new com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO();
           struct.account.read(iprot);
           struct.setAccountIsSet(true);
+        }
+        if (incoming.get(2)) {
+          struct.sync = iprot.readBool();
+          struct.setSyncIsSet(true);
         }
       }
     }
@@ -8239,15 +8197,18 @@ public class UserHrAccountService {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("syncThirdpartyAccount_args");
 
     private static final org.apache.thrift.protocol.TField ID_FIELD_DESC = new org.apache.thrift.protocol.TField("id", org.apache.thrift.protocol.TType.I32, (short)1);
+    private static final org.apache.thrift.protocol.TField SYNC_FIELD_DESC = new org.apache.thrift.protocol.TField("sync", org.apache.thrift.protocol.TType.BOOL, (short)2);
 
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new syncThirdpartyAccount_argsStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new syncThirdpartyAccount_argsTupleSchemeFactory();
 
     public int id; // required
+    public boolean sync; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      ID((short)1, "id");
+      ID((short)1, "id"),
+      SYNC((short)2, "sync");
 
       private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
@@ -8264,6 +8225,8 @@ public class UserHrAccountService {
         switch(fieldId) {
           case 1: // ID
             return ID;
+          case 2: // SYNC
+            return SYNC;
           default:
             return null;
         }
@@ -8305,12 +8268,15 @@ public class UserHrAccountService {
 
     // isset id assignments
     private static final int __ID_ISSET_ID = 0;
+    private static final int __SYNC_ISSET_ID = 1;
     private byte __isset_bitfield = 0;
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.ID, new org.apache.thrift.meta_data.FieldMetaData("id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.SYNC, new org.apache.thrift.meta_data.FieldMetaData("sync", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BOOL)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(syncThirdpartyAccount_args.class, metaDataMap);
     }
@@ -8319,11 +8285,14 @@ public class UserHrAccountService {
     }
 
     public syncThirdpartyAccount_args(
-      int id)
+      int id,
+      boolean sync)
     {
       this();
       this.id = id;
       setIdIsSet(true);
+      this.sync = sync;
+      setSyncIsSet(true);
     }
 
     /**
@@ -8332,6 +8301,7 @@ public class UserHrAccountService {
     public syncThirdpartyAccount_args(syncThirdpartyAccount_args other) {
       __isset_bitfield = other.__isset_bitfield;
       this.id = other.id;
+      this.sync = other.sync;
     }
 
     public syncThirdpartyAccount_args deepCopy() {
@@ -8342,6 +8312,8 @@ public class UserHrAccountService {
     public void clear() {
       setIdIsSet(false);
       this.id = 0;
+      setSyncIsSet(false);
+      this.sync = false;
     }
 
     public int getId() {
@@ -8367,6 +8339,29 @@ public class UserHrAccountService {
       __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __ID_ISSET_ID, value);
     }
 
+    public boolean isSync() {
+      return this.sync;
+    }
+
+    public syncThirdpartyAccount_args setSync(boolean sync) {
+      this.sync = sync;
+      setSyncIsSet(true);
+      return this;
+    }
+
+    public void unsetSync() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __SYNC_ISSET_ID);
+    }
+
+    /** Returns true if field sync is set (has been assigned a value) and false otherwise */
+    public boolean isSetSync() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __SYNC_ISSET_ID);
+    }
+
+    public void setSyncIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __SYNC_ISSET_ID, value);
+    }
+
     public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case ID:
@@ -8377,6 +8372,14 @@ public class UserHrAccountService {
         }
         break;
 
+      case SYNC:
+        if (value == null) {
+          unsetSync();
+        } else {
+          setSync((java.lang.Boolean)value);
+        }
+        break;
+
       }
     }
 
@@ -8384,6 +8387,9 @@ public class UserHrAccountService {
       switch (field) {
       case ID:
         return getId();
+
+      case SYNC:
+        return isSync();
 
       }
       throw new java.lang.IllegalStateException();
@@ -8398,6 +8404,8 @@ public class UserHrAccountService {
       switch (field) {
       case ID:
         return isSetId();
+      case SYNC:
+        return isSetSync();
       }
       throw new java.lang.IllegalStateException();
     }
@@ -8426,6 +8434,15 @@ public class UserHrAccountService {
           return false;
       }
 
+      boolean this_present_sync = true;
+      boolean that_present_sync = true;
+      if (this_present_sync || that_present_sync) {
+        if (!(this_present_sync && that_present_sync))
+          return false;
+        if (this.sync != that.sync)
+          return false;
+      }
+
       return true;
     }
 
@@ -8434,6 +8451,8 @@ public class UserHrAccountService {
       int hashCode = 1;
 
       hashCode = hashCode * 8191 + id;
+
+      hashCode = hashCode * 8191 + ((sync) ? 131071 : 524287);
 
       return hashCode;
     }
@@ -8452,6 +8471,16 @@ public class UserHrAccountService {
       }
       if (isSetId()) {
         lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.id, other.id);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetSync()).compareTo(other.isSetSync());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSync()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.sync, other.sync);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -8478,6 +8507,10 @@ public class UserHrAccountService {
 
       sb.append("id:");
       sb.append(this.id);
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("sync:");
+      sb.append(this.sync);
       first = false;
       sb.append(")");
       return sb.toString();
@@ -8532,6 +8565,14 @@ public class UserHrAccountService {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
+            case 2: // SYNC
+              if (schemeField.type == org.apache.thrift.protocol.TType.BOOL) {
+                struct.sync = iprot.readBool();
+                struct.setSyncIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -8549,6 +8590,9 @@ public class UserHrAccountService {
         oprot.writeStructBegin(STRUCT_DESC);
         oprot.writeFieldBegin(ID_FIELD_DESC);
         oprot.writeI32(struct.id);
+        oprot.writeFieldEnd();
+        oprot.writeFieldBegin(SYNC_FIELD_DESC);
+        oprot.writeBool(struct.sync);
         oprot.writeFieldEnd();
         oprot.writeFieldStop();
         oprot.writeStructEnd();
@@ -8571,19 +8615,29 @@ public class UserHrAccountService {
         if (struct.isSetId()) {
           optionals.set(0);
         }
-        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetSync()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
         if (struct.isSetId()) {
           oprot.writeI32(struct.id);
+        }
+        if (struct.isSetSync()) {
+          oprot.writeBool(struct.sync);
         }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, syncThirdpartyAccount_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet incoming = iprot.readBitSet(1);
+        java.util.BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
           struct.id = iprot.readI32();
           struct.setIdIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.sync = iprot.readBool();
+          struct.setSyncIsSet(true);
         }
       }
     }
@@ -9057,827 +9111,6 @@ public class UserHrAccountService {
           struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
           struct.e.read(iprot);
           struct.setEIsSet(true);
-        }
-      }
-    }
-
-    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
-      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
-    }
-  }
-
-  public static class ifSynchronizePosition_args implements org.apache.thrift.TBase<ifSynchronizePosition_args, ifSynchronizePosition_args._Fields>, java.io.Serializable, Cloneable, Comparable<ifSynchronizePosition_args>   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("ifSynchronizePosition_args");
-
-    private static final org.apache.thrift.protocol.TField COMPANY_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("companyId", org.apache.thrift.protocol.TType.I32, (short)1);
-    private static final org.apache.thrift.protocol.TField CHANNEL_FIELD_DESC = new org.apache.thrift.protocol.TField("channel", org.apache.thrift.protocol.TType.I32, (short)2);
-
-    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new ifSynchronizePosition_argsStandardSchemeFactory();
-    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new ifSynchronizePosition_argsTupleSchemeFactory();
-
-    public int companyId; // required
-    public int channel; // required
-
-    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
-    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      COMPANY_ID((short)1, "companyId"),
-      CHANNEL((short)2, "channel");
-
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
-
-      static {
-        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
-          byName.put(field.getFieldName(), field);
-        }
-      }
-
-      /**
-       * Find the _Fields constant that matches fieldId, or null if its not found.
-       */
-      public static _Fields findByThriftId(int fieldId) {
-        switch(fieldId) {
-          case 1: // COMPANY_ID
-            return COMPANY_ID;
-          case 2: // CHANNEL
-            return CHANNEL;
-          default:
-            return null;
-        }
-      }
-
-      /**
-       * Find the _Fields constant that matches fieldId, throwing an exception
-       * if it is not found.
-       */
-      public static _Fields findByThriftIdOrThrow(int fieldId) {
-        _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
-        return fields;
-      }
-
-      /**
-       * Find the _Fields constant that matches name, or null if its not found.
-       */
-      public static _Fields findByName(java.lang.String name) {
-        return byName.get(name);
-      }
-
-      private final short _thriftId;
-      private final java.lang.String _fieldName;
-
-      _Fields(short thriftId, java.lang.String fieldName) {
-        _thriftId = thriftId;
-        _fieldName = fieldName;
-      }
-
-      public short getThriftFieldId() {
-        return _thriftId;
-      }
-
-      public java.lang.String getFieldName() {
-        return _fieldName;
-      }
-    }
-
-    // isset id assignments
-    private static final int __COMPANYID_ISSET_ID = 0;
-    private static final int __CHANNEL_ISSET_ID = 1;
-    private byte __isset_bitfield = 0;
-    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
-    static {
-      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("companyId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.CHANNEL, new org.apache.thrift.meta_data.FieldMetaData("channel", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(ifSynchronizePosition_args.class, metaDataMap);
-    }
-
-    public ifSynchronizePosition_args() {
-    }
-
-    public ifSynchronizePosition_args(
-      int companyId,
-      int channel)
-    {
-      this();
-      this.companyId = companyId;
-      setCompanyIdIsSet(true);
-      this.channel = channel;
-      setChannelIsSet(true);
-    }
-
-    /**
-     * Performs a deep copy on <i>other</i>.
-     */
-    public ifSynchronizePosition_args(ifSynchronizePosition_args other) {
-      __isset_bitfield = other.__isset_bitfield;
-      this.companyId = other.companyId;
-      this.channel = other.channel;
-    }
-
-    public ifSynchronizePosition_args deepCopy() {
-      return new ifSynchronizePosition_args(this);
-    }
-
-    @Override
-    public void clear() {
-      setCompanyIdIsSet(false);
-      this.companyId = 0;
-      setChannelIsSet(false);
-      this.channel = 0;
-    }
-
-    public int getCompanyId() {
-      return this.companyId;
-    }
-
-    public ifSynchronizePosition_args setCompanyId(int companyId) {
-      this.companyId = companyId;
-      setCompanyIdIsSet(true);
-      return this;
-    }
-
-    public void unsetCompanyId() {
-      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __COMPANYID_ISSET_ID);
-    }
-
-    /** Returns true if field companyId is set (has been assigned a value) and false otherwise */
-    public boolean isSetCompanyId() {
-      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __COMPANYID_ISSET_ID);
-    }
-
-    public void setCompanyIdIsSet(boolean value) {
-      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __COMPANYID_ISSET_ID, value);
-    }
-
-    public int getChannel() {
-      return this.channel;
-    }
-
-    public ifSynchronizePosition_args setChannel(int channel) {
-      this.channel = channel;
-      setChannelIsSet(true);
-      return this;
-    }
-
-    public void unsetChannel() {
-      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __CHANNEL_ISSET_ID);
-    }
-
-    /** Returns true if field channel is set (has been assigned a value) and false otherwise */
-    public boolean isSetChannel() {
-      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __CHANNEL_ISSET_ID);
-    }
-
-    public void setChannelIsSet(boolean value) {
-      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __CHANNEL_ISSET_ID, value);
-    }
-
-    public void setFieldValue(_Fields field, java.lang.Object value) {
-      switch (field) {
-      case COMPANY_ID:
-        if (value == null) {
-          unsetCompanyId();
-        } else {
-          setCompanyId((java.lang.Integer)value);
-        }
-        break;
-
-      case CHANNEL:
-        if (value == null) {
-          unsetChannel();
-        } else {
-          setChannel((java.lang.Integer)value);
-        }
-        break;
-
-      }
-    }
-
-    public java.lang.Object getFieldValue(_Fields field) {
-      switch (field) {
-      case COMPANY_ID:
-        return getCompanyId();
-
-      case CHANNEL:
-        return getChannel();
-
-      }
-      throw new java.lang.IllegalStateException();
-    }
-
-    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
-    public boolean isSet(_Fields field) {
-      if (field == null) {
-        throw new java.lang.IllegalArgumentException();
-      }
-
-      switch (field) {
-      case COMPANY_ID:
-        return isSetCompanyId();
-      case CHANNEL:
-        return isSetChannel();
-      }
-      throw new java.lang.IllegalStateException();
-    }
-
-    @Override
-    public boolean equals(java.lang.Object that) {
-      if (that == null)
-        return false;
-      if (that instanceof ifSynchronizePosition_args)
-        return this.equals((ifSynchronizePosition_args)that);
-      return false;
-    }
-
-    public boolean equals(ifSynchronizePosition_args that) {
-      if (that == null)
-        return false;
-      if (this == that)
-        return true;
-
-      boolean this_present_companyId = true;
-      boolean that_present_companyId = true;
-      if (this_present_companyId || that_present_companyId) {
-        if (!(this_present_companyId && that_present_companyId))
-          return false;
-        if (this.companyId != that.companyId)
-          return false;
-      }
-
-      boolean this_present_channel = true;
-      boolean that_present_channel = true;
-      if (this_present_channel || that_present_channel) {
-        if (!(this_present_channel && that_present_channel))
-          return false;
-        if (this.channel != that.channel)
-          return false;
-      }
-
-      return true;
-    }
-
-    @Override
-    public int hashCode() {
-      int hashCode = 1;
-
-      hashCode = hashCode * 8191 + companyId;
-
-      hashCode = hashCode * 8191 + channel;
-
-      return hashCode;
-    }
-
-    @Override
-    public int compareTo(ifSynchronizePosition_args other) {
-      if (!getClass().equals(other.getClass())) {
-        return getClass().getName().compareTo(other.getClass().getName());
-      }
-
-      int lastComparison = 0;
-
-      lastComparison = java.lang.Boolean.valueOf(isSetCompanyId()).compareTo(other.isSetCompanyId());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetCompanyId()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.companyId, other.companyId);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      lastComparison = java.lang.Boolean.valueOf(isSetChannel()).compareTo(other.isSetChannel());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetChannel()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.channel, other.channel);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      return 0;
-    }
-
-    public _Fields fieldForId(int fieldId) {
-      return _Fields.findByThriftId(fieldId);
-    }
-
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
-      scheme(iprot).read(iprot, this);
-    }
-
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
-      scheme(oprot).write(oprot, this);
-    }
-
-    @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("ifSynchronizePosition_args(");
-      boolean first = true;
-
-      sb.append("companyId:");
-      sb.append(this.companyId);
-      first = false;
-      if (!first) sb.append(", ");
-      sb.append("channel:");
-      sb.append(this.channel);
-      first = false;
-      sb.append(")");
-      return sb.toString();
-    }
-
-    public void validate() throws org.apache.thrift.TException {
-      // check for required fields
-      // check for sub-struct validity
-    }
-
-    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
-      try {
-        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
-        throw new java.io.IOException(te);
-      }
-    }
-
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
-      try {
-        // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
-        __isset_bitfield = 0;
-        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
-        throw new java.io.IOException(te);
-      }
-    }
-
-    private static class ifSynchronizePosition_argsStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
-      public ifSynchronizePosition_argsStandardScheme getScheme() {
-        return new ifSynchronizePosition_argsStandardScheme();
-      }
-    }
-
-    private static class ifSynchronizePosition_argsStandardScheme extends org.apache.thrift.scheme.StandardScheme<ifSynchronizePosition_args> {
-
-      public void read(org.apache.thrift.protocol.TProtocol iprot, ifSynchronizePosition_args struct) throws org.apache.thrift.TException {
-        org.apache.thrift.protocol.TField schemeField;
-        iprot.readStructBegin();
-        while (true)
-        {
-          schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
-            break;
-          }
-          switch (schemeField.id) {
-            case 1: // COMPANY_ID
-              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-                struct.companyId = iprot.readI32();
-                struct.setCompanyIdIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            case 2: // CHANNEL
-              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-                struct.channel = iprot.readI32();
-                struct.setChannelIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            default:
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-          }
-          iprot.readFieldEnd();
-        }
-        iprot.readStructEnd();
-
-        // check for required fields of primitive type, which can't be checked in the validate method
-        struct.validate();
-      }
-
-      public void write(org.apache.thrift.protocol.TProtocol oprot, ifSynchronizePosition_args struct) throws org.apache.thrift.TException {
-        struct.validate();
-
-        oprot.writeStructBegin(STRUCT_DESC);
-        oprot.writeFieldBegin(COMPANY_ID_FIELD_DESC);
-        oprot.writeI32(struct.companyId);
-        oprot.writeFieldEnd();
-        oprot.writeFieldBegin(CHANNEL_FIELD_DESC);
-        oprot.writeI32(struct.channel);
-        oprot.writeFieldEnd();
-        oprot.writeFieldStop();
-        oprot.writeStructEnd();
-      }
-
-    }
-
-    private static class ifSynchronizePosition_argsTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
-      public ifSynchronizePosition_argsTupleScheme getScheme() {
-        return new ifSynchronizePosition_argsTupleScheme();
-      }
-    }
-
-    private static class ifSynchronizePosition_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<ifSynchronizePosition_args> {
-
-      @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, ifSynchronizePosition_args struct) throws org.apache.thrift.TException {
-        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet optionals = new java.util.BitSet();
-        if (struct.isSetCompanyId()) {
-          optionals.set(0);
-        }
-        if (struct.isSetChannel()) {
-          optionals.set(1);
-        }
-        oprot.writeBitSet(optionals, 2);
-        if (struct.isSetCompanyId()) {
-          oprot.writeI32(struct.companyId);
-        }
-        if (struct.isSetChannel()) {
-          oprot.writeI32(struct.channel);
-        }
-      }
-
-      @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, ifSynchronizePosition_args struct) throws org.apache.thrift.TException {
-        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet incoming = iprot.readBitSet(2);
-        if (incoming.get(0)) {
-          struct.companyId = iprot.readI32();
-          struct.setCompanyIdIsSet(true);
-        }
-        if (incoming.get(1)) {
-          struct.channel = iprot.readI32();
-          struct.setChannelIsSet(true);
-        }
-      }
-    }
-
-    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
-      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
-    }
-  }
-
-  public static class ifSynchronizePosition_result implements org.apache.thrift.TBase<ifSynchronizePosition_result, ifSynchronizePosition_result._Fields>, java.io.Serializable, Cloneable, Comparable<ifSynchronizePosition_result>   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("ifSynchronizePosition_result");
-
-    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
-
-    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new ifSynchronizePosition_resultStandardSchemeFactory();
-    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new ifSynchronizePosition_resultTupleSchemeFactory();
-
-    public com.moseeker.thrift.gen.common.struct.Response success; // required
-
-    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
-    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      SUCCESS((short)0, "success");
-
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
-
-      static {
-        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
-          byName.put(field.getFieldName(), field);
-        }
-      }
-
-      /**
-       * Find the _Fields constant that matches fieldId, or null if its not found.
-       */
-      public static _Fields findByThriftId(int fieldId) {
-        switch(fieldId) {
-          case 0: // SUCCESS
-            return SUCCESS;
-          default:
-            return null;
-        }
-      }
-
-      /**
-       * Find the _Fields constant that matches fieldId, throwing an exception
-       * if it is not found.
-       */
-      public static _Fields findByThriftIdOrThrow(int fieldId) {
-        _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
-        return fields;
-      }
-
-      /**
-       * Find the _Fields constant that matches name, or null if its not found.
-       */
-      public static _Fields findByName(java.lang.String name) {
-        return byName.get(name);
-      }
-
-      private final short _thriftId;
-      private final java.lang.String _fieldName;
-
-      _Fields(short thriftId, java.lang.String fieldName) {
-        _thriftId = thriftId;
-        _fieldName = fieldName;
-      }
-
-      public short getThriftFieldId() {
-        return _thriftId;
-      }
-
-      public java.lang.String getFieldName() {
-        return _fieldName;
-      }
-    }
-
-    // isset id assignments
-    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
-    static {
-      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(ifSynchronizePosition_result.class, metaDataMap);
-    }
-
-    public ifSynchronizePosition_result() {
-    }
-
-    public ifSynchronizePosition_result(
-      com.moseeker.thrift.gen.common.struct.Response success)
-    {
-      this();
-      this.success = success;
-    }
-
-    /**
-     * Performs a deep copy on <i>other</i>.
-     */
-    public ifSynchronizePosition_result(ifSynchronizePosition_result other) {
-      if (other.isSetSuccess()) {
-        this.success = new com.moseeker.thrift.gen.common.struct.Response(other.success);
-      }
-    }
-
-    public ifSynchronizePosition_result deepCopy() {
-      return new ifSynchronizePosition_result(this);
-    }
-
-    @Override
-    public void clear() {
-      this.success = null;
-    }
-
-    public com.moseeker.thrift.gen.common.struct.Response getSuccess() {
-      return this.success;
-    }
-
-    public ifSynchronizePosition_result setSuccess(com.moseeker.thrift.gen.common.struct.Response success) {
-      this.success = success;
-      return this;
-    }
-
-    public void unsetSuccess() {
-      this.success = null;
-    }
-
-    /** Returns true if field success is set (has been assigned a value) and false otherwise */
-    public boolean isSetSuccess() {
-      return this.success != null;
-    }
-
-    public void setSuccessIsSet(boolean value) {
-      if (!value) {
-        this.success = null;
-      }
-    }
-
-    public void setFieldValue(_Fields field, java.lang.Object value) {
-      switch (field) {
-      case SUCCESS:
-        if (value == null) {
-          unsetSuccess();
-        } else {
-          setSuccess((com.moseeker.thrift.gen.common.struct.Response)value);
-        }
-        break;
-
-      }
-    }
-
-    public java.lang.Object getFieldValue(_Fields field) {
-      switch (field) {
-      case SUCCESS:
-        return getSuccess();
-
-      }
-      throw new java.lang.IllegalStateException();
-    }
-
-    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
-    public boolean isSet(_Fields field) {
-      if (field == null) {
-        throw new java.lang.IllegalArgumentException();
-      }
-
-      switch (field) {
-      case SUCCESS:
-        return isSetSuccess();
-      }
-      throw new java.lang.IllegalStateException();
-    }
-
-    @Override
-    public boolean equals(java.lang.Object that) {
-      if (that == null)
-        return false;
-      if (that instanceof ifSynchronizePosition_result)
-        return this.equals((ifSynchronizePosition_result)that);
-      return false;
-    }
-
-    public boolean equals(ifSynchronizePosition_result that) {
-      if (that == null)
-        return false;
-      if (this == that)
-        return true;
-
-      boolean this_present_success = true && this.isSetSuccess();
-      boolean that_present_success = true && that.isSetSuccess();
-      if (this_present_success || that_present_success) {
-        if (!(this_present_success && that_present_success))
-          return false;
-        if (!this.success.equals(that.success))
-          return false;
-      }
-
-      return true;
-    }
-
-    @Override
-    public int hashCode() {
-      int hashCode = 1;
-
-      hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
-      if (isSetSuccess())
-        hashCode = hashCode * 8191 + success.hashCode();
-
-      return hashCode;
-    }
-
-    @Override
-    public int compareTo(ifSynchronizePosition_result other) {
-      if (!getClass().equals(other.getClass())) {
-        return getClass().getName().compareTo(other.getClass().getName());
-      }
-
-      int lastComparison = 0;
-
-      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetSuccess()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      return 0;
-    }
-
-    public _Fields fieldForId(int fieldId) {
-      return _Fields.findByThriftId(fieldId);
-    }
-
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
-      scheme(iprot).read(iprot, this);
-    }
-
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
-      scheme(oprot).write(oprot, this);
-      }
-
-    @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("ifSynchronizePosition_result(");
-      boolean first = true;
-
-      sb.append("success:");
-      if (this.success == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.success);
-      }
-      first = false;
-      sb.append(")");
-      return sb.toString();
-    }
-
-    public void validate() throws org.apache.thrift.TException {
-      // check for required fields
-      // check for sub-struct validity
-      if (success != null) {
-        success.validate();
-      }
-    }
-
-    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
-      try {
-        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
-        throw new java.io.IOException(te);
-      }
-    }
-
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
-      try {
-        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
-        throw new java.io.IOException(te);
-      }
-    }
-
-    private static class ifSynchronizePosition_resultStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
-      public ifSynchronizePosition_resultStandardScheme getScheme() {
-        return new ifSynchronizePosition_resultStandardScheme();
-      }
-    }
-
-    private static class ifSynchronizePosition_resultStandardScheme extends org.apache.thrift.scheme.StandardScheme<ifSynchronizePosition_result> {
-
-      public void read(org.apache.thrift.protocol.TProtocol iprot, ifSynchronizePosition_result struct) throws org.apache.thrift.TException {
-        org.apache.thrift.protocol.TField schemeField;
-        iprot.readStructBegin();
-        while (true)
-        {
-          schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
-            break;
-          }
-          switch (schemeField.id) {
-            case 0: // SUCCESS
-              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-                struct.success = new com.moseeker.thrift.gen.common.struct.Response();
-                struct.success.read(iprot);
-                struct.setSuccessIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            default:
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-          }
-          iprot.readFieldEnd();
-        }
-        iprot.readStructEnd();
-
-        // check for required fields of primitive type, which can't be checked in the validate method
-        struct.validate();
-      }
-
-      public void write(org.apache.thrift.protocol.TProtocol oprot, ifSynchronizePosition_result struct) throws org.apache.thrift.TException {
-        struct.validate();
-
-        oprot.writeStructBegin(STRUCT_DESC);
-        if (struct.success != null) {
-          oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
-          struct.success.write(oprot);
-          oprot.writeFieldEnd();
-        }
-        oprot.writeFieldStop();
-        oprot.writeStructEnd();
-      }
-
-    }
-
-    private static class ifSynchronizePosition_resultTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
-      public ifSynchronizePosition_resultTupleScheme getScheme() {
-        return new ifSynchronizePosition_resultTupleScheme();
-      }
-    }
-
-    private static class ifSynchronizePosition_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<ifSynchronizePosition_result> {
-
-      @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, ifSynchronizePosition_result struct) throws org.apache.thrift.TException {
-        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet optionals = new java.util.BitSet();
-        if (struct.isSetSuccess()) {
-          optionals.set(0);
-        }
-        oprot.writeBitSet(optionals, 1);
-        if (struct.isSetSuccess()) {
-          struct.success.write(oprot);
-        }
-      }
-
-      @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, ifSynchronizePosition_result struct) throws org.apache.thrift.TException {
-        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet incoming = iprot.readBitSet(1);
-        if (incoming.get(0)) {
-          struct.success = new com.moseeker.thrift.gen.common.struct.Response();
-          struct.success.read(iprot);
-          struct.setSuccessIsSet(true);
         }
       }
     }
