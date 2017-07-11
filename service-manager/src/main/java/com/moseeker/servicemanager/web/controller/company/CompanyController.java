@@ -289,7 +289,7 @@ public class CompanyController {
 
 
     /**
-     * 获取员工认证配置
+     * 获取公司员工认证配置
      *
      * @param request
      * @param response
@@ -318,26 +318,27 @@ public class CompanyController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/hraccount/company/employeebindconf", method = RequestMethod.GET)
+    @RequestMapping(value = "/hraccount/company/employeebindconf", method = RequestMethod.PUT)
     @ResponseBody
     public String updateEmployeeBindConf(HttpServletRequest request, HttpServletResponse response) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            int id = params.getInt("id", 0);
             int companyId = params.getInt("companyId", 0);
             Integer authMode = params.getInt("authMode");
             String emailSuffix = params.getString("emailSuffix");
             String custom = params.getString("custom");
             String customHint = params.getString("customHint");
             String questions = params.getString("questions");
-            if (companyId == 0 || id == 0 || authMode == null) {
+            int type = params.getInt("type", 0);
+            int hraccountId = params.getInt("hraccountId", 0);
+            String fileName = params.getString("fileName", "");
+            String filePath = params.getString("filePath", "");
+            if (companyId == 0 || authMode == null) {
                 return ResponseLogNotification.fail(request, "公司Id不能为空");
-            } else if (id == 0) {
-                return ResponseLogNotification.fail(request, "Id不能为空");
             } else if (authMode == null) {
                 return ResponseLogNotification.fail(request, "认证方式不能为空");
             } else {
-                boolean result = companyServices.updateEmployeeBindConf(companyId, authMode, emailSuffix, custom, customHint, questions);
+                boolean result = companyServices.updateEmployeeBindConf(companyId, authMode, emailSuffix, custom, customHint, questions, filePath, fileName, type, hraccountId);
                 return ResponseLogNotification.success(request, ResponseUtils.success(new HashMap<String, Object>() {{
                     put("result", result);
                 }}));

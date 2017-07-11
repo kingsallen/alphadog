@@ -2,6 +2,7 @@ package com.moseeker.servicemanager.web.controller.useraccounts;
 
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.servicemanager.common.ParamUtils;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrImporterMonitorDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 
 import org.apache.commons.beanutils.BeanUtils;

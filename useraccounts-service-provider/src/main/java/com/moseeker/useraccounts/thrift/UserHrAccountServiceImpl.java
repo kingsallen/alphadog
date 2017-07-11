@@ -379,8 +379,8 @@ public class UserHrAccountServiceImpl implements Iface {
      * @throws TException
      */
     @Override
-    public Response employeeImport(Map<Integer,UserEmployeeDO> userEmployeeDOMap, int companyId) throws BIZException, TException {
-        return service.employeeImport(companyId, userEmployeeDOMap);
+    public Response employeeImport(Map<Integer, UserEmployeeDO> userEmployeeDOMap, int companyId, String filePath, String fileName, int type, int hraccountId) throws BIZException, TException {
+        return service.employeeImport(companyId, userEmployeeDOMap, filePath, fileName, type, hraccountId);
     }
 
     /**
@@ -393,7 +393,7 @@ public class UserHrAccountServiceImpl implements Iface {
      * @throws TException
      */
     @Override
-    public ImportUserEmployeeStatistic checkBatchInsert(Map<Integer,UserEmployeeDO> userEmployeeDOMap, int companyId) throws BIZException, TException {
+    public ImportUserEmployeeStatistic checkBatchInsert(Map<Integer, UserEmployeeDO> userEmployeeDOMap, int companyId) throws BIZException, TException {
         return service.checkBatchInsert(userEmployeeDOMap, companyId);
     }
 }
