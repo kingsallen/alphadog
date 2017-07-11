@@ -38,16 +38,16 @@ import com.moseeker.common.util.ConfigPropertiesUtil;
 @CounterIface
 public class CompanySearchengine {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
-	public Map<String,Object>  query(String keywords,String citys,String industry,String scale,Integer page,Integer pageSize) throws TException{
+	public SearchResponse  query(String keywords,String citys,String industry,String scale,Integer page,Integer pageSize) throws TException{
 		SearchResponse hits=queryPrefix(keywords,citys,industry,scale,page,pageSize);
 		long hitNum=hits.getHits().getTotalHits();
 		if(hitNum==0){
 			SearchResponse hitsData=queryString(keywords,citys,industry,scale,page,pageSize);
 			Map<String,Object> map=this.handleData(hitsData);
-			return map;
+			return hitsData;
 		}else{
 			Map<String,Object> map=this.handleData(hits);
-			return map;
+			return hits;
 		}
 		
 		
