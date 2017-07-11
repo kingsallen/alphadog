@@ -146,7 +146,7 @@ public class CompanySearchengine {
     	for(Aggregation agg:list){
     		String name=agg.getName();
     		Map<String,Object> data=agg.getMetaData();
-    		map.put("name", data);
+    		map.put(name, data);
     	}
     	return map;
     }
