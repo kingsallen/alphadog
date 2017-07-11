@@ -110,6 +110,9 @@ public final class ConstantErrorCodeMessage {
     public static final String POSITION_DATA_NOCITYCODE_ERROR = "{'status':51016,'message':'无city code的职位暂不同步到支付宝'}";
 
 
+    //APPBS错误代码61000
+
+
     // 工具类错误
     public static final String USER_SMS_LIMITED = "{'status':80001,'message':'短信发送异常!'}";
 }

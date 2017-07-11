@@ -315,4 +315,25 @@ public class ProfileController {
             // do nothing
         }
     }
+
+    /**
+     * 回收简历
+     * 用于替换retrieveProfile
+     */
+    @RequestMapping(value = "/retrieval/profile", method = RequestMethod.POST)
+    @ResponseBody
+    public String retrieveProfileNew(HttpServletRequest request, HttpServletResponse response) {
+        try {
+
+            String parameter = ParamUtils.parseJsonParam(request);
+            boolean result = profileService.retrieveProfile(parameter);
+            return ResponseLogNotification.success(request, new Response(0, String.valueOf(result)));
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        } finally {
+            // do nothing
+        }
+    }
 }

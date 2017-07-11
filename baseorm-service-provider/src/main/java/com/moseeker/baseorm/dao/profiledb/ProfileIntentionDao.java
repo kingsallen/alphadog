@@ -32,8 +32,6 @@ import java.util.List;
 @Repository
 public class ProfileIntentionDao extends JooqCrudImpl<ProfileIntentionDO, ProfileIntentionRecord> {
 
-    private CompletenessCalculator completenessCalculator = new CompletenessCalculator();
-
     public ProfileIntentionDao() {
         super(ProfileIntention.PROFILE_INTENTION, ProfileIntentionDO.class);
     }
@@ -150,7 +148,7 @@ public class ProfileIntentionDao extends JooqCrudImpl<ProfileIntentionDO, Profil
                     });
                 }
             });
-            int intentionCompleteness = completenessCalculator.calculateIntentions(intentionRecords, intentionCityRecords, intentionPositionRecords);
+            int intentionCompleteness = CompletenessCalculator.calculateIntentions(intentionRecords, intentionCityRecords, intentionPositionRecords);
             completenessRecord.setProfileIntention(intentionCompleteness);
         }
         return 0;

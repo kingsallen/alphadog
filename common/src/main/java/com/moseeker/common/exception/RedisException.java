@@ -42,7 +42,7 @@ public class RedisException extends RuntimeException {
 	}
 	
 	/**
-	 * @param Exception 异常
+	 * @param e 异常
 	 * @param appid 项目appid
 	 * @param location 出错位置(this.getClass().getName())
 	 * @param eventKey 事件类型

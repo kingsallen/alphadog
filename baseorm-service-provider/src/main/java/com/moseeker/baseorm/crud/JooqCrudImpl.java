@@ -1,9 +1,9 @@
 package com.moseeker.baseorm.crud;
 
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.Update;
-import com.moseeker.common.util.query.Condition;
 import org.jooq.Field;
 import org.jooq.UpdatableRecord;
 import org.jooq.UpdateSetFirstStep;
@@ -12,7 +12,6 @@ import org.jooq.impl.DefaultDSLContext;
 import org.jooq.impl.TableImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -49,6 +48,7 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> extends Crud<S, R> {
 
     @Override
     public R addRecord(R r) {
+        create.execute("set names utf8mb4");
         create.attach(r);
         r.insert();
         return r;
@@ -78,6 +78,7 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> extends Crud<S, R> {
 
     @Override
     public int updateRecord(R r) {
+        create.execute("set names utf8mb4");
         create.attach(r);
         return create.executeUpdate(r);
     }

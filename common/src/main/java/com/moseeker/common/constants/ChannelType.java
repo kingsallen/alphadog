@@ -1,9 +1,9 @@
 package com.moseeker.common.constants;
 
+import com.moseeker.common.util.StringUtils;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import com.moseeker.common.util.StringUtils;
 
 /**
  * 
@@ -78,6 +78,25 @@ public enum ChannelType {
 		public String getOrigin(String origin) {
 			
 			return null;
+		}
+	}, ALIPAY(5, "alipay","支付宝") {
+		@Override
+		public String getOrigin(String origin) {
+			String result;
+			if(StringUtils.isNullOrEmpty(origin)) {
+				result = String.valueOf(10000000000000000l);
+			} else {
+				if(origin.length() >= 18) {
+					if(origin.charAt(origin.length()-18) == '0') {
+						result = String.valueOf(Long.valueOf(origin)+100000000000000000l);
+					} else {
+						result = origin;
+					}
+				} else {
+					result = String.valueOf(Long.valueOf(origin)+100000000000000000l);
+				}
+			}
+			return result;
 		}
 	};
 	

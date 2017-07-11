@@ -51,7 +51,9 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.profile.constants.ValidationMessage;
 import com.moseeker.profile.utils.ProfileValidation;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ProfileUtils {
 
 	Logger logger = LoggerFactory.getLogger(ProfileUtils.class);
