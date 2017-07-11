@@ -13,6 +13,9 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.script.Script;
 import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.metrics.MetricsAggregationBuilder;
 import org.elasticsearch.search.sort.ScriptSortBuilder;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
@@ -59,7 +62,10 @@ public class CompanySearchengine {
                          .setQuery(query)
                          .addSort("_score", SortOrder.DESC)
                          .setFrom(page)
-                         .setSize(pageSize);
+                         .setSize(pageSize)
+                         .addAggregation(this.handleAggIndustry())
+                         .addAggregation(this.handleAggPositionCity())
+                         .addAggregation(this.handleAggScale());
                  logger.info(responseBuilder.toString());
                  SearchResponse response = responseBuilder.execute().actionGet();
                  SearchHits hit=response.getHits();
@@ -88,7 +94,10 @@ public class CompanySearchengine {
                         .addSort(builder)
                         .setTrackScores(true)
                         .setFrom(page)
-                        .setSize(pageSize);
+                        .setSize(pageSize)
+                        .addAggregation(this.handleAggIndustry())
+                        .addAggregation(this.handleAggPositionCity())
+                        .addAggregation(this.handleAggScale());
                 logger.info(responseBuilder.toString());
                 SearchResponse response = responseBuilder.execute().actionGet();
                 SearchHits hit=response.getHits();
@@ -213,5 +222,86 @@ public class CompanySearchengine {
         	client=null;
         }
         return client;
+    }
+    
+    private AbstractAggregationBuilder handleAggIndustry(){
+    	StringBuffer sb=new StringBuffer();
+    	sb.append("industry=_source.company.industry;");
+    	sb.append("if(industry  in _agg['transactions'] ){}");
+    	sb.append("else{_agg['transactions'].add(industry)};");
+    	String mapScript=sb.toString();
+    	StringBuffer sb1=new StringBuffer();
+    	sb1.append("jsay=[];");
+    	sb1.append("for(a in _aggs){");
+    	sb1.append("for(ss in a){");
+    	sb1.append("if(ss in jsay){}");
+    	sb1.append("else{jsay.add(ss);}}};");
+    	sb1.append("return jsay");
+    	String reduceScript=sb1.toString();
+    	StringBuffer sb2=new StringBuffer();
+    	sb2.append("jsay=[];");
+    	sb2.append("for(ss in _agg['transactions']){jsay.add(ss)};");
+    	sb2.append("return jsay");
+    	String combinScript=sb2.toString();
+    	MetricsAggregationBuilder build=AggregationBuilders.scriptedMetric("agg")
+                .initScript(new Script("_agg['transactions'] = []"))
+                .mapScript(new Script(mapScript))
+                .reduceScript(new Script(reduceScript))
+                .combineScript(new Script(combinScript));
+        return build;
+    }
+    private AbstractAggregationBuilder handleAggPositionCity(){
+    	StringBuffer sb=new StringBuffer();
+    	sb.append("city=_source.position_city;");
+    	sb.append("for(ss in city){");
+    	sb.append("if(ss  in _agg['transactions'] ){}");
+    	sb.append("else{_agg['transactions'].add(city)};}");
+    	String mapScript=sb.toString();
+    	StringBuffer sb1=new StringBuffer();
+    	sb1.append("jsay=[];");
+    	sb1.append("for(a in _aggs){");
+    	sb1.append("for(ss in a){");
+    	sb1.append("if(ss in jsay){}");
+    	sb1.append("else{jsay.add(ss);}}};");
+    	sb1.append("return jsay");
+    	String reduceScript=sb1.toString();
+    	StringBuffer sb2=new StringBuffer();
+    	sb2.append("jsay=[];");
+    	sb2.append("for(ss in _agg['transactions']){");
+    	sb2.append("for(a in ss){jsay.add(ss)};");
+    	sb2.append("return jsay");
+    	String combinScript=sb2.toString();
+    	MetricsAggregationBuilder build=AggregationBuilders.scriptedMetric("agg")
+                .initScript(new Script("_agg['transactions'] = []"))
+                .mapScript(new Script(mapScript))
+                .reduceScript(new Script(reduceScript))
+                .combineScript(new Script(combinScript));
+        return build;
+    }
+    private AbstractAggregationBuilder handleAggScale(){
+    	StringBuffer sb=new StringBuffer();
+    	sb.append("scale=_source.company.scale;");
+    	sb.append("if(scale  in _agg['transactions'] ){}");
+    	sb.append("else{_agg['transactions'].add(scale)};");
+    	String mapScript=sb.toString();
+    	StringBuffer sb1=new StringBuffer();
+    	sb1.append("jsay=[];");
+    	sb1.append("for(a in _aggs){");
+    	sb1.append("for(ss in a){");
+    	sb1.append("if(ss in jsay){}");
+    	sb1.append("else{jsay.add(ss);}}};");
+    	sb1.append("return jsay");
+    	String reduceScript=sb1.toString();
+    	StringBuffer sb2=new StringBuffer();
+    	sb2.append("jsay=[];");
+    	sb2.append("for(ss in _agg['transactions']){jsay.add(ss)};");
+    	sb2.append("return jsay");
+    	String combinScript=sb2.toString();
+    	MetricsAggregationBuilder build=AggregationBuilders.scriptedMetric("agg")
+                .initScript(new Script("_agg['transactions'] = []"))
+                .mapScript(new Script(mapScript))
+                .reduceScript(new Script(reduceScript))
+                .combineScript(new Script(combinScript));
+        return build;
     }
 }
