@@ -586,7 +586,9 @@ public class PositionService {
                     jobPositionFailMessPojo.setSourceId(jobPositionHandlerDate.getSource_id());
                     jobPositionFailMessPojo.setJobPostionId(jobPositionHandlerDate.getId());
                     jobPositionFailMessPojo.setDepartment(jobPositionHandlerDate.getDepartment());
-                    jobPositionFailMessPojo.setMessage(ConstantErrorCodeMessage.POSITION_DATA_DEPARTMENT_ERROR);
+                    JSONObject jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.POSITION_DATA_DEPARTMENT_ERROR);
+                    jobPositionFailMessPojo.setMessage(jsonObject.getString("message"));
+                    jobPositionFailMessPojo.setStatus(jsonObject.getInteger("status"));
                     jobPositionFailMessPojos.add(jobPositionFailMessPojo);
                     continue;
                 }
@@ -606,7 +608,6 @@ public class PositionService {
                     jobOccupation.setCompanyId(companyId);
                     jobOccupation.setStatus((byte) 0);
                     jobOccupation.setName(jobPositionHandlerDate.getOccupation());
-
                     JobOccupationDO jobOccupationDO = jobOccupationDao.addData(jobOccupation);
                     jobOccupationId = jobOccupationDO.getId();
 
@@ -633,7 +634,9 @@ public class PositionService {
                     jobPositionFailMessPojo.setJobNumber(jobPositionHandlerDate.getJobnumber());
                     jobPositionFailMessPojo.setSourceId(jobPositionHandlerDate.getSource_id());
                     jobPositionFailMessPojo.setJobPostionId(jobPositionHandlerDate.getId());
-                    jobPositionFailMessPojo.setMessage(ConstantErrorCodeMessage.POSITION_DATA_CUSTOM_ERROR.replace("{MESSAGE}", jobPositionHandlerDate.getCustom()));
+                    JSONObject jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.POSITION_DATA_CUSTOM_ERROR);
+                    jobPositionFailMessPojo.setMessage(jsonObject.getString("message").replace("{MESSAGE}", jobPositionHandlerDate.getCustom()));
+                    jobPositionFailMessPojo.setStatus(jsonObject.getInteger("status"));
                     jobPositionFailMessPojos.add(jobPositionFailMessPojo);
                     continue;
                 }
