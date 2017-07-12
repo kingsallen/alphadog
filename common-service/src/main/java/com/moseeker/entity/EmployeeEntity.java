@@ -176,9 +176,10 @@ public class EmployeeEntity {
      * @param employeeIds
      * @return
      */
-    public boolean unbind(List<Integer> employeeIds) throws BIZException{
+    public boolean unbind(List<Integer> employeeIds) throws BIZException {
         Query.QueryBuilder query = new Query.QueryBuilder();
-        query.and(new Condition("id", employeeIds, ValueOp.IN));
+        query.and(new Condition("id", employeeIds, ValueOp.IN))
+                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), 0);
         List<UserEmployeeDO> employeeDOList = employeeDao.getDatas(query.buildQuery());
         if (employeeDOList != null && employeeDOList.size() > 0) {
             employeeDOList.stream().filter(f -> f.getActivation() == 0).forEach(e -> {
@@ -188,7 +189,7 @@ public class EmployeeEntity {
             int[] rows = employeeDao.updateDatas(employeeDOList);
             if (Arrays.stream(rows).sum() > 0) {
                 return true;
-            }else{
+            } else {
                 throw ExceptionFactory.buildException(ExceptionCategory.EMPLOYEE_IS_UNBIND);
             }
         }
@@ -217,8 +218,6 @@ public class EmployeeEntity {
         }
         return false;
     }
-
-
 
 
     /**
