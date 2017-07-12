@@ -510,7 +510,7 @@ public class CandidateEntity implements Candidate {
      * @return 操作结果
      */
     private RecommendResult assembleRecommendResult(int id, int postUserId, String
-            clickTime, int companyId) throws BIZException {
+            clickTime, int companyId) throws CommonException {
         RecommendResult recommendResult = new RecommendResult();
         recommendResult.setId(id);
 
