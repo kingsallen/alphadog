@@ -1,12 +1,11 @@
 package com.moseeker.useraccounts.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
-import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
-import com.moseeker.baseorm.dao.hrdb.HrImporterMonitorDao;
-import com.moseeker.baseorm.dao.hrdb.HrSearchConditionDao;
-import com.moseeker.baseorm.dao.hrdb.HrTalentpoolDao;
-import com.moseeker.baseorm.dao.userdb.*;
+import com.moseeker.baseorm.dao.hrdb.*;
+import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
+import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
+import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrSearchConditionRecord;
@@ -30,10 +29,7 @@ import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrImporterMonitorDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrTalentpoolDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
@@ -42,7 +38,6 @@ import com.moseeker.useraccounts.constant.ResultMessage;
 import com.moseeker.useraccounts.exception.ExceptionCategory;
 import com.moseeker.useraccounts.exception.ExceptionFactory;
 import com.moseeker.useraccounts.service.thirdpartyaccount.ThirdPartyAccountSynctor;
-
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +47,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -91,16 +85,13 @@ public class UserHrAccountService {
     private HRThirdPartyAccountDao hrThirdPartyAccountDao;
 
     @Autowired
-    private UserSearchConditionDao searchConditionDao;
+    private HRThirdPartyAccountHrDao thirdPartyAccountHrDao;
 
     @Autowired
     private ThirdPartyAccountSynctor thirdPartyAccountSynctor;
 
     @Autowired
     private UserEmployeeDao userEmployeeDao;
-
-    @Autowired
-    private UserWxUserDao userWxUserDao;
 
     @Autowired
     private UserUserDao userUserDao;
@@ -110,11 +101,14 @@ public class UserHrAccountService {
 
 
     @Autowired
-    private HrCompanyDao hrCompanyDao;
-
-    @Autowired
     private HrImporterMonitorDao hrImporterMonitorDao;
 
+
+    @Autowired
+    private HrCompanyAccountDao hrCompanyAccountDao;
+
+    @Autowired
+    private HrCompanyDao hrCompanyDao;
 
     /**
      * HR在下载行业报告是注册
@@ -343,7 +337,20 @@ public class UserHrAccountService {
             throw new BIZException(-1, "无效的HR帐号");
         }
 
-        account.setCompanyId(userHrAccount.getCompanyId());
+        //获取子公司简称和ID
+        HrCompanyDO hrCompanyDO = hrCompanyAccountDao.getHrCompany(hrId);
+
+        if (hrCompanyDO != null) {
+            account.setCompanyId(hrCompanyDO.getId());
+        } else {
+            hrCompanyDO = hrCompanyDao.getCompanyById(userHrAccount.getCompanyId());
+
+            if (hrCompanyDO == null) {
+                throw new BIZException(-1, "无效的HR账号");
+            }
+
+            account.setCompanyId(userHrAccount.getCompanyId());
+        }
 
         int allowStatus = allowBind(userHrAccount, account);
 
@@ -353,8 +360,16 @@ public class UserHrAccountService {
             account.setId(allowStatus);
         }
 
+
+        Map<String, String> extras = new HashMap<>();
+
+        //智联的帐号同步带上子公司简称
+        if (account.getChannel() == ChannelType.ZHILIAN.getValue()) {
+            extras.put("company", hrCompanyDO.getAbbreviation());
+        }
+
         //allowStatus==0,绑定之后将hrId和帐号关联起来，allowStatus==1,只绑定不关联
-        HrThirdPartyAccountDO result = thirdPartyAccountSynctor.bindThirdPartyAccount(allowStatus == 0 ? hrId : 0, account, sync);
+        HrThirdPartyAccountDO result = thirdPartyAccountSynctor.bindThirdPartyAccount(allowStatus == 0 ? hrId : 0, account, extras, sync);
 
 
         return result;
@@ -439,19 +454,67 @@ public class UserHrAccountService {
      * @return
      */
 
-    public HrThirdPartyAccountDO synchronizeThirdpartyAccount(int id, boolean sync) throws Exception {
+    public HrThirdPartyAccountDO synchronizeThirdpartyAccount(int hrId, int id, boolean sync) throws Exception {
         //查找第三方帐号
         Query qu = new Query.QueryBuilder().where("id", id).buildQuery();
+
         HrThirdPartyAccountDO hrThirdPartyAccount = hrThirdPartyAccountDao.getData(qu);
+
+        UserHrAccountDO hrAccountDO = userHrAccountDao.getValidAccount(hrId);
+
+        if (hrAccountDO == null) {
+            throw new BIZException(-1, "无效的HR帐号");
+        }
 
         if (hrThirdPartyAccount == null || hrThirdPartyAccount.getBinding() == 0) {
             throw new BIZException(-1, "无效的第三方帐号");
         }
+
+        Map<String, String> extras = new HashMap<>();
+        //智联的帐号
+        if (hrThirdPartyAccount.getChannel() == ChannelType.ZHILIAN.getValue()) {
+            buildZhilianCompany(hrAccountDO, hrThirdPartyAccount, extras);
+        }
+
         //如果是绑定状态，则进行
-        hrThirdPartyAccount = thirdPartyAccountSynctor.syncThirdPartyAccount(hrThirdPartyAccount, sync);
+        hrThirdPartyAccount = thirdPartyAccountSynctor.syncThirdPartyAccount(hrThirdPartyAccount, extras, sync);
 
         //刷新成功
         return hrThirdPartyAccount;
+    }
+
+    private void buildZhilianCompany(UserHrAccountDO hrAccountDO, HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras) throws BIZException {
+        List<HrThirdPartyAccountHrDO> binders = thirdPartyAccountHrDao.getBinders(hrThirdPartyAccount.getId());
+
+        int finalHrId = hrAccountDO.getId();//如果该帐号没有分配给任何人，谁刷新的使用谁的所属公司的简称
+
+        if (binders != null && binders.size() > 0) {
+            finalHrId = binders.get(0).getHrAccountId();//默认选择第一个关联的hr帐号
+
+            for (HrThirdPartyAccountHrDO binder : binders) {
+                if (binder.getHrAccountId() == hrAccountDO.getId()) {
+                    finalHrId = binder.getHrAccountId();//如果该帐号关联了自己，那么选择自己的公司简称
+                    logger.info("buildZhilianCompany,使用自己的所在公司的简称");
+                    break;
+                }
+            }
+        }
+
+        HrCompanyDO companyDO = hrCompanyAccountDao.getHrCompany(finalHrId);
+
+        if(hrAccountDO.getId() != finalHrId){
+            hrAccountDO = userHrAccountDao.getValidAccount(finalHrId);
+        }
+
+        if (companyDO == null) {
+            companyDO = hrCompanyDao.getCompanyById(hrAccountDO.getCompanyId());
+        }
+
+        if (companyDO == null) {
+            throw new BIZException(-1, "无效的HR帐号");
+        }
+
+        extras.put("company", companyDO.getAbbreviation());
     }
 
     /**

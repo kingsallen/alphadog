@@ -37,6 +37,11 @@ public class HrCompanyDao extends JooqCrudImpl<HrCompanyDO, HrCompanyRecord> {
         super(table, hrCompanyDOClass);
     }
 
+    public HrCompanyDO getCompanyById(int id){
+        Query query = new Query.QueryBuilder().where(HrCompany.HR_COMPANY.ID.getName(),id).buildQuery();
+        return getData(query);
+    }
+
     public List<HrCompanyRecord> getAllCompanies(CommonQuery query) throws Exception {
         List<HrCompanyRecord> records = new ArrayList<>();
         try {
@@ -109,7 +114,7 @@ public class HrCompanyDao extends JooqCrudImpl<HrCompanyDO, HrCompanyRecord> {
         return records;
     }
 
-    public HrCompanyRecord getCompanyById(int companyId) {
+    public HrCompanyRecord getCompanyRecordById(int companyId) {
         HrCompanyRecord record = null;
         if(companyId > 0) {
             Result<HrCompanyRecord> result = create.selectFrom(HrCompany.HR_COMPANY)

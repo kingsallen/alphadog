@@ -94,7 +94,7 @@ service UserHrAccountService {
     //绑定第三方帐号 
     hr_third_party_account_struct.HrThirdPartyAccountDO bindThirdpartyAccount(1:i32 hrId,2:hr_third_party_account_struct.HrThirdPartyAccountDO account,3:bool sync) throws (1: common_struct.BIZException e);
     //同步第三方帐号
-    hr_third_party_account_struct.HrThirdPartyAccountDO syncThirdpartyAccount(1:i32 id,2:bool sync) throws (1: common_struct.BIZException e);
+    hr_third_party_account_struct.HrThirdPartyAccountDO syncThirdpartyAccount(1:i32 hrId,2:i32 id,3:bool sync) throws (1: common_struct.BIZException e);
     // 获取常用筛选项
     common_struct.Response getSearchCondition(1: i32 hrAccountId, 2: i32 type); 
     // 保存常用筛选项
