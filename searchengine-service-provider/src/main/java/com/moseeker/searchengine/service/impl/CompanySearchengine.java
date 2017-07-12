@@ -290,7 +290,7 @@ public class CompanySearchengine {
     	StringBuffer sb=new StringBuffer();
     	sb.append("city=_source.position_city;");
     	sb.append("for(ss in city){");
-    	sb.append("if(ss  in _agg['transactions']z|| !ss ){}");
+    	sb.append("if(ss  in _agg['transactions'] || !ss ){}");
     	sb.append("else{_agg['transactions'].add(ss)};}");
     	String mapScript=sb.toString();
     	StringBuffer sb1=new StringBuffer();
