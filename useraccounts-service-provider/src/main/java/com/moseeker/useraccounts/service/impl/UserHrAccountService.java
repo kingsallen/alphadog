@@ -1091,8 +1091,8 @@ public class UserHrAccountService {
         ValidateUtil vu = new ValidateUtil();
         vu.addIntTypeValidate("导入的数据类型", type, "不能为空", null, 0, 100);
         vu.addIntTypeValidate("HR账号", hraccountId, "不能为空", null, 1, 1000000);
-        vu.addRequiredStringValidate("导入文件的绝对路径", filePath, "不能为空", null);
-        vu.addRequiredStringValidate("导入的文件名", fileName, "不能为空", null);
+        vu.addStringLengthValidate("导入文件的绝对路径", filePath, null, null,0,257);
+        vu.addStringLengthValidate("导入的文件名", fileName, null, null,0,257);
 
         String errorMessage = vu.validate();
         if (!StringUtils.isNullOrEmpty(errorMessage)) {
