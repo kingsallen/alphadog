@@ -511,7 +511,7 @@ public class PositionController {
     /**
      * 职位相关职位接口
      */
-    @RequestMapping(value = "/position/alipaycampus", method = RequestMethod.GET)
+    @RequestMapping(value = "/position/thirdpartyposition", method = RequestMethod.GET)
     @ResponseBody
     public String getPositionForThirdParty(HttpServletRequest request, HttpServletResponse response) {
         try {

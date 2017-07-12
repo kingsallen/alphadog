@@ -4,6 +4,7 @@ import com.moseeker.baseorm.dao.dictdb.DictCityMapDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HrTeamDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
+import com.moseeker.baseorm.db.dictdb.tables.DictCityMap;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
@@ -268,9 +269,9 @@ public class PositionChangeUtil {
         }
     }
 
-    private String changeCity(int cityCode, int channel) {
+    public String changeCity(int cityCode, int channel) {
 
-        Query qu = new Query.QueryBuilder().where("code", cityCode).where("channel", channel).buildQuery();
+        Query qu = new Query.QueryBuilder().where(DictCityMap.DICT_CITY_MAP.CODE.getName(), cityCode).where("channel", channel).buildQuery();
         DictCityMapDO cityMap = cityMapDao.getData(qu);
         String cityCodeStr = "";
         try {
