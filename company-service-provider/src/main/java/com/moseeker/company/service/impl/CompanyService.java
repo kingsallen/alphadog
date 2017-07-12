@@ -13,12 +13,10 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.validation.ValidateUtil;
-import com.moseeker.company.constant.ResultMessage;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
-import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -146,37 +144,5 @@ public class CompanyService{
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 		}
 	}
-	
-	/**
-	 * 判断是否有权限发布职位
-	 * @param companyId 公司编号
-	 * @param channel 渠道号
-	 * @return
-	 */
-	@CounterIface
-	public Response ifSynchronizePosition(int companyId, int channel) {
-		Response response = ResultMessage.PROGRAM_EXHAUSTED.toResponse();
-		Query.QueryBuilder qu = new Query.QueryBuilder();
-		qu.where("company_id", String.valueOf(companyId)).and("channel", String.valueOf(channel));
-		try {
-			ThirdPartAccountData data = hrThirdPartyAccountDao.getData(qu.buildQuery(), ThirdPartAccountData.class);
-			if(data.getId() == 0 || data.getBinding() != 1) {
-				response = ResultMessage.THIRD_PARTY_ACCOUNT_UNBOUND.toResponse();
-			}
-			if(data.getRemain_num() == 0) {
-				response = ResultMessage.THIRD_PARTY_ACCOUNT_HAVE_NO_REMAIN_NUM.toResponse();
-			}
-			if(data.getId() > 0 && data.binding == 1 && data.getRemain_num() > 0) {
-				response = ResultMessage.SUCCESS.toResponse();
-			} else {
-				response = ResultMessage.THIRD_PARTY_ACCOUNT_UNBOUND.toResponse();
-			}
-		} catch (Exception e) {
-			response = ResultMessage.PROGRAM_EXHAUSTED.toResponse();
-			logger.error(e.getMessage(), e);
-		} finally {
-			//do nothing
-		}
-		return response;
-	}
+
 }

@@ -362,7 +362,7 @@ public class ProfileIntentionService {
         List<ProfileIntentionPositionRecord> selectedPositionRecords = intentionPositionDao.getRecords(selectedPositionQuery);
 
         // 待添加的期望工作行业
-        List<ProfileIntentionPositionRecord> toBeAddList = new ArrayList<>();
+        ProfileIntentionPositionRecord toBeAddIntentionPosition = null;
 
         if (struct.getPositions() != null) {
             Map<String, Integer> positions = struct.getPositions();
@@ -390,16 +390,16 @@ public class ProfileIntentionService {
                             }
                         }
                         if (legalRecord != null) {
-                            ProfileIntentionPositionRecord tobeAddPositionRecord = new ProfileIntentionPositionRecord();
-                            tobeAddPositionRecord.setPositionCode(legalRecord.getCode());
-                            tobeAddPositionRecord.setPositionName(legalRecord.getName());
-                            tobeAddPositionRecord.setProfileIntentionId((int) (intentionId));
-                            toBeAddList.add(tobeAddPositionRecord);
+                            toBeAddIntentionPosition = new ProfileIntentionPositionRecord();
+                            toBeAddIntentionPosition.setPositionCode(legalRecord.getCode());
+                            toBeAddIntentionPosition.setPositionName(legalRecord.getName());
+                            toBeAddIntentionPosition.setProfileIntentionId(intentionId);
+                            break;
                         }
                     } else {
                         //如果没有key的情况下，只有name有值才有意义
                         if (!StringUtils.isNullOrEmpty(entry.getKey())) {
-                            ProfileIntentionPositionRecord tobeAddPositionRecord = new ProfileIntentionPositionRecord();
+                            toBeAddIntentionPosition = new ProfileIntentionPositionRecord();
                             DictPositionRecord legalRecord = null;
                             for (DictPositionRecord dictPositionRecord : positionRecordList) {
                                 if (dictPositionRecord.getName().equals(entry.getKey().trim())) {
@@ -408,18 +408,18 @@ public class ProfileIntentionService {
                                 }
                             }
                             if (legalRecord != null) {
-                                tobeAddPositionRecord.setPositionCode(legalRecord.getCode());
+                                toBeAddIntentionPosition.setPositionCode(legalRecord.getCode());
                             }
-                            tobeAddPositionRecord.setPositionName(entry.getKey());
-                            tobeAddPositionRecord.setProfileIntentionId((int) (intentionId));
-                            toBeAddList.add(tobeAddPositionRecord);
+                            toBeAddIntentionPosition.setPositionName(entry.getKey());
+                            toBeAddIntentionPosition.setProfileIntentionId(intentionId);
+                            break;
                         }
                     }
                 }
             }
         }
-        if (toBeAddList.size() > 0) {
-            intentionPositionDao.addAllRecord(toBeAddList);
+        if (toBeAddIntentionPosition != null) {
+            intentionPositionDao.addRecord(toBeAddIntentionPosition);
         }
         if (selectedPositionRecords != null && selectedPositionRecords.size() > 0) {
             intentionPositionDao.deleteRecords(selectedPositionRecords);
@@ -437,7 +437,7 @@ public class ProfileIntentionService {
         List<ProfileIntentionIndustryRecord> selectedIndustryRecords = intentionIndustryDao.getRecords(selectedIndustryQuery);
 
         // 待添加的期望工作行业
-        List<ProfileIntentionIndustryRecord> toBeAddList = new ArrayList<>();
+        ProfileIntentionIndustryRecord toBeAddIntentionIndustry = null;
 
         if (struct.getIndustries() != null) {
             Map<String, Integer> industries = struct.getIndustries();
@@ -465,16 +465,16 @@ public class ProfileIntentionService {
                             }
                         }
                         if (legalRecord != null) {
-                            ProfileIntentionIndustryRecord tobeAddIndustryRecord = new ProfileIntentionIndustryRecord();
-                            tobeAddIndustryRecord.setIndustryCode(legalRecord.getCode());
-                            tobeAddIndustryRecord.setIndustryName(legalRecord.getName());
-                            tobeAddIndustryRecord.setProfileIntentionId((int) (intentionId));
-                            toBeAddList.add(tobeAddIndustryRecord);
+                            toBeAddIntentionIndustry = new ProfileIntentionIndustryRecord();
+                            toBeAddIntentionIndustry.setIndustryCode(legalRecord.getCode());
+                            toBeAddIntentionIndustry.setIndustryName(legalRecord.getName());
+                            toBeAddIntentionIndustry.setProfileIntentionId(intentionId);
+                            break;
                         }
                     } else {
                         //如果没有key的情况下，只有name有值才有意义
                         if (!StringUtils.isNullOrEmpty(entry.getKey())) {
-                            ProfileIntentionIndustryRecord tobeAddIndustryRecord = new ProfileIntentionIndustryRecord();
+                            toBeAddIntentionIndustry = new ProfileIntentionIndustryRecord();
                             DictIndustryRecord legalRecord = null;
                             for (DictIndustryRecord dictIndustryRecord : industryRecordList) {
                                 if (dictIndustryRecord.getName().equals(entry.getKey())) {
@@ -483,18 +483,18 @@ public class ProfileIntentionService {
                                 }
                             }
                             if (legalRecord != null) {
-                                tobeAddIndustryRecord.setIndustryCode(legalRecord.getCode());
+                                toBeAddIntentionIndustry.setIndustryCode(legalRecord.getCode());
                             }
-                            tobeAddIndustryRecord.setIndustryName(entry.getKey());
-                            tobeAddIndustryRecord.setProfileIntentionId((int) (intentionId));
-                            toBeAddList.add(tobeAddIndustryRecord);
+                            toBeAddIntentionIndustry.setIndustryName(entry.getKey());
+                            toBeAddIntentionIndustry.setProfileIntentionId(intentionId);
+                            break;
                         }
                     }
                 }
             }
         }
-        if (toBeAddList.size() > 0) {
-            intentionIndustryDao.addAllRecord(toBeAddList);
+        if (toBeAddIntentionIndustry != null) {
+            intentionIndustryDao.addRecord(toBeAddIntentionIndustry);
         }
         if (selectedIndustryRecords != null && selectedIndustryRecords.size() > 0) {
             intentionIndustryDao.deleteRecords(selectedIndustryRecords);
@@ -519,7 +519,7 @@ public class ProfileIntentionService {
         List<ProfileIntentionCityRecord> selectedCityRecords = intentionCityDao.getRecords(selectedCityQuery);
 
         // 待添加的期望工作城市
-        List<ProfileIntentionCityRecord> toBeAddList = new ArrayList<>();
+        ProfileIntentionCityRecord tobeAddCityRecord = null;
 
         if (struct.getCities() != null) {
             Map<String, Integer> cities = struct.getCities();
@@ -547,16 +547,16 @@ public class ProfileIntentionService {
                             }
                         }
                         if (legalRecord != null) {
-                            ProfileIntentionCityRecord tobeAddCityRecord = new ProfileIntentionCityRecord();
+                            tobeAddCityRecord = new ProfileIntentionCityRecord();
                             tobeAddCityRecord.setCityCode(legalRecord.getCode());
                             tobeAddCityRecord.setCityName(legalRecord.getName());
-                            tobeAddCityRecord.setProfileIntentionId((int) (intentionId));
-                            toBeAddList.add(tobeAddCityRecord);
+                            tobeAddCityRecord.setProfileIntentionId(intentionId);
+                            break;
                         }
                     } else {
                         //如果没有key的情况下，只有name有值才有意义
                         if (!StringUtils.isNullOrEmpty(entry.getKey())) {
-                            ProfileIntentionCityRecord tobeAddCityRecord = new ProfileIntentionCityRecord();
+                            tobeAddCityRecord = new ProfileIntentionCityRecord();
                             DictCityRecord legalRecord = null;
                             for (DictCityRecord dictCityRecord : cityRecordList) {
                                 if (dictCityRecord.getName().equals(entry.getKey())) {
@@ -569,14 +569,13 @@ public class ProfileIntentionService {
                             }
                             tobeAddCityRecord.setCityName(entry.getKey());
                             tobeAddCityRecord.setProfileIntentionId((int) (intentionId));
-                            toBeAddList.add(tobeAddCityRecord);
                         }
                     }
                 }
             }
         }
-        if (toBeAddList.size() > 0) {
-            intentionCityDao.addAllRecord(toBeAddList);
+        if (tobeAddCityRecord != null) {
+            intentionCityDao.addRecord(tobeAddCityRecord);
         }
         if (selectedCityRecords != null && selectedCityRecords.size() > 0) {
             intentionCityDao.deleteRecords(selectedCityRecords);

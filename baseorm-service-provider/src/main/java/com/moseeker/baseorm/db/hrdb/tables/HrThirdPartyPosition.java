@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyPosition extends TableImpl<HrThirdPartyPositionRecord> {
 
-    private static final long serialVersionUID = 157289926;
+    private static final long serialVersionUID = 1888989734;
 
     /**
      * The reference instance of <code>hrdb.hr_third_party_position</code>
@@ -120,6 +120,36 @@ public class HrThirdPartyPosition extends TableImpl<HrThirdPartyPositionRecord> 
      * The column <code>hrdb.hr_third_party_position.third_party_account_id</code>. 第三方账号ID
      */
     public final TableField<HrThirdPartyPositionRecord, Integer> THIRD_PARTY_ACCOUNT_ID = createField("third_party_account_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "第三方账号ID");
+
+    /**
+     * The column <code>hrdb.hr_third_party_position.department</code>. 同步时自定义或者匹配的部门名
+     */
+    public final TableField<HrThirdPartyPositionRecord, String> DEPARTMENT = createField("department", org.jooq.impl.SQLDataType.VARCHAR.length(100), this, "同步时自定义或者匹配的部门名");
+
+    /**
+     * The column <code>hrdb.hr_third_party_position.salary_month</code>. 发放月薪数
+     */
+    public final TableField<HrThirdPartyPositionRecord, Integer> SALARY_MONTH = createField("salary_month", org.jooq.impl.SQLDataType.INTEGER, this, "发放月薪数");
+
+    /**
+     * The column <code>hrdb.hr_third_party_position.feedback_period</code>. 招聘反馈时长
+     */
+    public final TableField<HrThirdPartyPositionRecord, Integer> FEEDBACK_PERIOD = createField("feedback_period", org.jooq.impl.SQLDataType.INTEGER, this, "招聘反馈时长");
+
+    /**
+     * The column <code>hrdb.hr_third_party_position.salary_discuss</code>. 是否显示为面议0否1是
+     */
+    public final TableField<HrThirdPartyPositionRecord, Short> SALARY_DISCUSS = createField("salary_discuss", org.jooq.impl.SQLDataType.SMALLINT.defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "是否显示为面议0否1是");
+
+    /**
+     * The column <code>hrdb.hr_third_party_position.salary_bottom</code>. 薪资底线
+     */
+    public final TableField<HrThirdPartyPositionRecord, Integer> SALARY_BOTTOM = createField("salary_bottom", org.jooq.impl.SQLDataType.INTEGER, this, "薪资底线");
+
+    /**
+     * The column <code>hrdb.hr_third_party_position.salary_top</code>. 薪资封顶
+     */
+    public final TableField<HrThirdPartyPositionRecord, Integer> SALARY_TOP = createField("salary_top", org.jooq.impl.SQLDataType.INTEGER, this, "薪资封顶");
 
     /**
      * Create a <code>hrdb.hr_third_party_position</code> table reference
