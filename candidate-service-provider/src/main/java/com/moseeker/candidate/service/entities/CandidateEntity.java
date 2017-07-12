@@ -209,7 +209,8 @@ public class CandidateEntity implements Candidate {
         }
 
         /** 查找公司下的职位 */
-        List<Integer> positionIdList = positionDao.getPositionIds(param.getCompanyId());
+        List<Integer> companyIdList = employeeEntity.getCompanyIds(param.getCompanyId());
+        List<Integer> positionIdList = positionDao.getPositionIds(companyIdList);
         if (positionIdList == null && positionIdList.size() == 0) {
             throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_CANDIDATES_POSITION_NOT_EXIST);
         }
@@ -283,7 +284,8 @@ public class CandidateEntity implements Candidate {
         recommendResult.setNextOne(false);
 
         /** 查找公司下的职位 */
-        List<Integer> positionIdList = positionDao.getPositionIds(companyId);
+        List<Integer> companyIdList = employeeEntity.getCompanyIds(companyId);
+        List<Integer> positionIdList = positionDao.getPositionIds(companyIdList);
         if (positionIdList == null && positionIdList.size() == 0) {
             throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_CANDIDATES_POSITION_NOT_EXIST);
         }
@@ -415,7 +417,8 @@ public class CandidateEntity implements Candidate {
         }*/
 
         /** 查找公司下的职位 */
-        List<Integer> positionIdList = positionDao.getPositionIds(companyId);
+        List<Integer> companyIdList = employeeEntity.getCompanyIds(companyId);
+        List<Integer> positionIdList = positionDao.getPositionIds(companyIdList);
         if (positionIdList == null && positionIdList.size() == 0) {
             throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_CANDIDATES_POSITION_NOT_EXIST);
         }
@@ -540,7 +543,8 @@ public class CandidateEntity implements Candidate {
         }};
 
         /** 查找公司下的职位 */
-        List<Integer> positionIdList = positionDao.getPositionIds(companyId);
+        List<Integer> companyIdList = employeeEntity.getCompanyIds(companyId);
+        List<Integer> positionIdList = positionDao.getPositionIds(companyIdList);
         if (positionIdList == null && positionIdList.size() == 0) {
             throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_CANDIDATES_POSITION_NOT_EXIST);
         }

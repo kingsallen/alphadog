@@ -468,10 +468,11 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
         return list;
     }
 
-    public List<Integer> getPositionIds(int companyId) {
+    public List<Integer> getPositionIds(List<Integer> companyId) {
+
         Result<Record1<Integer>> result = create.select(JobPosition.JOB_POSITION.ID)
                 .from(JobPosition.JOB_POSITION)
-                .where(JobPosition.JOB_POSITION.COMPANY_ID.eq(companyId))
+                .where(JobPosition.JOB_POSITION.COMPANY_ID.in(companyId))
                 .fetch();
         if (result != null && result.size() > 0) {
             return result.stream().filter(record1 -> record1.value1() != null && record1.value1().intValue() > 0)
