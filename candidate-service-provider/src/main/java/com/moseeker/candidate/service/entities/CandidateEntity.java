@@ -272,10 +272,10 @@ public class CandidateEntity implements Candidate {
         }
 
         /** 是否开启被动求职者 */
-        boolean passiveSeeker = candidateDBDao.isStartPassiveSeeker(companyId);
+        /*boolean passiveSeeker = candidateDBDao.isStartPassiveSeeker(companyId);
         if (!passiveSeeker) {
             throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_NOT_START);
-        }
+        }*/
 
         RecommendResult recommendResult = new RecommendResult();
         recommendResult.setRecomTotal(idList.size());
@@ -325,11 +325,11 @@ public class CandidateEntity implements Candidate {
         }
 
         /** 是否开启被动求职者 */
-        boolean passiveSeeker = candidateDBDao.isStartPassiveSeeker(param.getCompanyId());
+        /*boolean passiveSeeker = candidateDBDao.isStartPassiveSeeker(param.getCompanyId());
         if (!passiveSeeker) {
             logger.info("CandidateEntiry recommend 未开启挖掘被动求职者");
             throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_NOT_START);
-        }
+        }*/
 
         //修改参数长度
         refineParam(param);
@@ -453,11 +453,11 @@ public class CandidateEntity implements Candidate {
         }
 
         /** 是否开启被动求职者 */
-        boolean passiveSeeker = candidateDBDao.isStartPassiveSeeker(companyId);
+        /*boolean passiveSeeker = candidateDBDao.isStartPassiveSeeker(companyId);
         if (!passiveSeeker) {
             logger.info("CandidateEntiry ignore 未开启挖掘被动求职者");
             throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_NOT_START);
-        }
+        }*/
 
         CandidateRecomRecordDO recomRecordDO = candidateDBDao.getCandidateRecomRecordDO(id, postUserId);
         logger.info("CandidateEntiry recommend recomRecordDO:{}", recomRecordDO);
