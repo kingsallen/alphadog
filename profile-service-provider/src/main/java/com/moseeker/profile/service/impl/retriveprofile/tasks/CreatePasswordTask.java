@@ -4,14 +4,10 @@ import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.util.SmsSender;
 import com.moseeker.common.exception.CommonException;
-import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.profile.exception.Category;
-import com.moseeker.profile.exception.ExceptionFactory;
-import com.moseeker.profile.service.impl.retriveprofile.RetriveParam;
+import com.moseeker.profile.service.impl.retriveprofile.RetrieveParam;
 import com.moseeker.profile.service.impl.retriveprofile.Task;
-import com.moseeker.profile.utils.WarnService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +16,7 @@ import java.util.Map;
 
 /**
  * 创建密码
+ * 密码发送失败，不影响整体流程
  * Created by jack on 10/07/2017.
  */
 @Component
@@ -32,7 +29,7 @@ public class CreatePasswordTask extends Task {
     UserUserDao userUserDao;
 
     @Override
-    protected void handler(RetriveParam param) throws CommonException {
+    protected void handler(RetrieveParam param) throws CommonException {
         String plainPassword = StringUtils.getRandomString(6);
         UserUserRecord userUserRecord = param.getUserUserRecord();
         Map<String, String> params = new HashMap<>();

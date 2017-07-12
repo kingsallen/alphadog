@@ -1,14 +1,12 @@
 package com.moseeker.profile.service.impl.retriveprofile.tasks;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.profile.constants.StatisticsForChannelmportVO;
 import com.moseeker.profile.entity.ProfileEntity;
 import com.moseeker.profile.service.impl.ProfileCompletenessImpl;
-import com.moseeker.profile.service.impl.retriveprofile.RetriveParam;
+import com.moseeker.profile.service.impl.retriveprofile.RetrieveParam;
 import com.moseeker.profile.service.impl.retriveprofile.Task;
 import com.moseeker.profile.service.impl.serviceutils.ProfilePojo;
 import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
@@ -16,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
-import java.util.HashMap;
 
 /**
  * profile业务处理。
@@ -38,7 +35,7 @@ public class ProfileTask extends Task {
     private ProfileCompletenessImpl completenessImpl;
 
     @Override
-    protected void handler(RetriveParam param) throws CommonException {
+    protected void handler(RetrieveParam param) throws CommonException {
         if (param.getProfilePojo() != null) {
 
             System.out.println(profileDao);

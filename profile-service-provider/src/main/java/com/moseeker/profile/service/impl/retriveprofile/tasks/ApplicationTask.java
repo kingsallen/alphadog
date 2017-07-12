@@ -12,7 +12,7 @@ import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.profile.exception.Category;
 import com.moseeker.profile.exception.ExceptionFactory;
-import com.moseeker.profile.service.impl.retriveprofile.RetriveParam;
+import com.moseeker.profile.service.impl.retriveprofile.RetrieveParam;
 import com.moseeker.profile.service.impl.retriveprofile.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -42,7 +42,7 @@ public class ApplicationTask extends Task {
     private RedisClient redisClient;
 
     @Override
-    protected void handler(RetriveParam param) throws CommonException {
+    protected void handler(RetrieveParam param) throws CommonException {
 
         if (!checkoutApplyLimit(param.getUserUserRecord().getId(), param.getPositionRecord().getCompanyId())) {
             throw ExceptionFactory.buildException(Category.VALIDATION_APPLICATION_UPPER_LIMIT);
@@ -64,6 +64,7 @@ public class ApplicationTask extends Task {
         } else {
             //do nothing
         }
+        param.setApplicationId(aplicationRecord.getId());
     }
 
     /**
