@@ -156,13 +156,14 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
         return candidateRecomRecordDOList;
     }
 
-    public List<CandidateRecomRecordDO> listCandidateRecomRecord(int postUserId, String clickTime, List<Integer> recoms) {
+    public List<CandidateRecomRecordDO> listCandidateRecomRecord(int postUserId, String clickTime, List<Integer> recoms, List<Integer> positionIdList) {
         List<CandidateRecomRecordDO> candidateRecomRecordDOList = new ArrayList<>();
         DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd");
         DateTime dateTime = DateTime.parse(clickTime, format);
         Condition condition = CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(postUserId)
                 .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME.greaterOrEqual(new Timestamp(dateTime.getMillis())))
-                .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME.lessThan(new Timestamp(dateTime.plusDays(1).getMillis())));
+                .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME.lessThan(new Timestamp(dateTime.plusDays(1).getMillis())))
+                .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID.in(positionIdList));
         if (recoms != null && recoms.size() > 0) {
             condition.and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.IS_RECOM.in(recoms));
         }
@@ -185,14 +186,16 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
         return candidateRecomRecordDOList;
     }
 
-    public List<CandidateRecomRecordDO> listCandidateRecomRecordExceptId(int id, int postUserId, String clickTime, List<Integer> recoms) {
+    public List<CandidateRecomRecordDO> listCandidateRecomRecordExceptId(int id, int postUserId, String clickTime,
+                                                                         List<Integer> recoms, List<Integer> positionIdList) {
         List<CandidateRecomRecordDO> candidateRecomRecordDOList = new ArrayList<>();
         DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd");
         DateTime dateTime = DateTime.parse(clickTime, format);
         Condition condition = CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(postUserId)
                 .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID.notEqual(id))
                 .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME.greaterOrEqual(new Timestamp(dateTime.getMillis())))
-                .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME.lessThan(new Timestamp(dateTime.plusDays(1).getMillis())));
+                .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME.lessThan(new Timestamp(dateTime.plusDays(1).getMillis())))
+                .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID.in(positionIdList));
         if (recoms != null && recoms.size() > 0) {
             condition.and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.IS_RECOM.in(recoms));
         }
@@ -210,13 +213,14 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
         return candidateRecomRecordDOList;
     }
 
-    public int countCandidateRecomRecordCustom(int postUserId, String clickTime, List<Integer> recoms) {
+    public int countCandidateRecomRecordCustom(int postUserId, String clickTime, List<Integer> recoms, List<Integer> positionIdList) {
         int count = 0;
         DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd");
         DateTime dateTime = DateTime.parse(clickTime, format);
         Condition condition = CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(postUserId)
                 .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME.greaterOrEqual(new Timestamp(dateTime.getMillis())))
-                .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME.lessThan(new Timestamp(dateTime.plusDays(1).getMillis())));
+                .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME.lessThan(new Timestamp(dateTime.plusDays(1).getMillis())))
+                .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID.in(positionIdList));
         if (recoms != null && recoms.size() > 0) {
             condition = condition.and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.IS_RECOM.in(recoms));
         }
@@ -230,13 +234,15 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
         return count;
     }
 
-    public List<CandidateRecomRecordSortingDO> listCandidateRecomRecordSorting(List<Integer> postUserId) {
+    public List<CandidateRecomRecordSortingDO> listCandidateRecomRecordSorting(List<Integer> postUserId, List<Integer> positionIdList) {
         List<CandidateRecomRecordSortingDO> recoms = new ArrayList<>();
         Field<Integer> count = count(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID);
         Result<Record2<Integer, Integer>> result = create.select(count,
                 CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID)
                 .from(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
-                .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.IS_RECOM.equal(0).and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.in(postUserId)))
+                .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.IS_RECOM.equal(0)
+                        .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.in(postUserId))
+                        .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID.in(positionIdList)))
                 .groupBy(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID)
                 .orderBy(count.desc())
                 .fetch();
