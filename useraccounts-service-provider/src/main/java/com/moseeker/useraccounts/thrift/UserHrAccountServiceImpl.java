@@ -87,9 +87,9 @@ public class UserHrAccountServiceImpl implements Iface {
     }
 
     @Override
-    public HrThirdPartyAccountDO syncThirdpartyAccount(int id, boolean sync) throws BIZException, TException {
+    public HrThirdPartyAccountDO syncThirdpartyAccount(int hrId, int id, boolean sync) throws BIZException, TException {
         try {
-            return service.synchronizeThirdpartyAccount(id, sync);
+            return service.synchronizeThirdpartyAccount(hrId, id, sync);
         } catch (BIZException e) {
             throw e;
         } catch (Exception e) {
@@ -319,8 +319,8 @@ public class UserHrAccountServiceImpl implements Iface {
      * @param pageSize   每页的条数
      */
     @Override
-    public UserEmployeeVOPageVO employeeList(String keyword, int companyId, int filter, String order, int by, int pageNumber, int pageSize) throws BIZException, TException {
-        return service.employeeList(keyword, companyId, filter, order, by, pageNumber, pageSize);
+    public UserEmployeeVOPageVO employeeList(String keyword, int companyId, int filter, String order, String asc, int pageNumber, int pageSize) throws BIZException, TException {
+        return service.employeeList(keyword, companyId, filter, order, asc, pageNumber, pageSize);
     }
 
     /**

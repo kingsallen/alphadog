@@ -374,6 +374,12 @@ public class PositionService {
             return syncAccount;
         }
 
+        HrCompanyDO subCompany = hrCompanyAccountDao.getHrCompany(position.getPublisher());
+
+        if (subCompany != null) {
+            syncAccount.setCompany_name(subCompany.getAbbreviation());
+        }
+
         syncAccount.setUser_name(thirdPartyAccount.getUsername());
         syncAccount.setMember_name(thirdPartyAccount.getMembername());
         syncAccount.setPassword(thirdPartyAccount.getPassword());

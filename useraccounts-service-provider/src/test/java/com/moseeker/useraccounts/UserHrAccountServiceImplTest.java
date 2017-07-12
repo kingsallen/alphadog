@@ -1,7 +1,7 @@
 package com.moseeker.useraccounts;
 
-import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
+import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.DateUtils;
@@ -30,7 +30,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -129,7 +128,7 @@ public class UserHrAccountServiceImplTest {
 
     @Test
     public void testNpsList() throws Exception {
-        HrNpsStatistic result = userHrAccountDao.npsList(null,null,1,500);
+        HrNpsStatistic result = userHrAccountDao.npsList(null, null, 1, 500);
         System.out.println(BeanUtils.convertStructToJSON(result));
     }
 
@@ -155,6 +154,18 @@ public class UserHrAccountServiceImplTest {
     @Test
     public void testBinding() throws Exception {
         HrThirdPartyAccountDO hrThirdPartyAccountDO = new HrThirdPartyAccountDO();
+        hrThirdPartyAccountDO.setUsername("fiqb60145062");
+        hrThirdPartyAccountDO.setPassword("2892c63f12e0e8849f2a7dd981375331");
+        hrThirdPartyAccountDO.setChannel((short) 3);
+        userHrAccountService.bindThirdAccount(82752, hrThirdPartyAccountDO, false);
+
+        Thread.sleep(1000000);
+    }
+
+    @Test
+    public void testRefresh() throws Exception {
+        userHrAccountService.synchronizeThirdpartyAccount(82752,66,true);
+        HrThirdPartyAccountDO hrThirdPartyAccountDO = new HrThirdPartyAccountDO();
         hrThirdPartyAccountDO.setUsername("xxxxx");
         hrThirdPartyAccountDO.setPassword("xxxxx");
         hrThirdPartyAccountDO.setChannel((short) 2);
@@ -178,9 +189,9 @@ public class UserHrAccountServiceImplTest {
         Query query = new Query.QueryBuilder().where("company_id", 51350).setPageSize(1000).buildQuery();
         List<UserEmployeeStruct> employeeStructs = userEmployeeDao.getDatas(query, UserEmployeeStruct.class);
 
-        String groupName = "test:"+System.currentTimeMillis();
+        String groupName = "test:" + System.currentTimeMillis();
 
-        System.out.println("groupName:"+groupName);
+        System.out.println("groupName:" + groupName);
 
         for (UserEmployeeStruct userEmployeeStruct : employeeStructs) {
             userEmployeeStruct.setCompany_id(1);

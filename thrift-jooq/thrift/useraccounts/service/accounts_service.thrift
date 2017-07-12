@@ -94,7 +94,7 @@ service UserHrAccountService {
     //绑定第三方帐号 
     hr_third_party_account_struct.HrThirdPartyAccountDO bindThirdpartyAccount(1:i32 hrId,2:hr_third_party_account_struct.HrThirdPartyAccountDO account,3:bool sync) throws (1: common_struct.BIZException e);
     //同步第三方帐号
-    hr_third_party_account_struct.HrThirdPartyAccountDO syncThirdpartyAccount(1:i32 id,2:bool sync) throws (1: common_struct.BIZException e);
+    hr_third_party_account_struct.HrThirdPartyAccountDO syncThirdpartyAccount(1:i32 hrId,2:i32 id,3:bool sync) throws (1: common_struct.BIZException e);
     // 获取常用筛选项
     common_struct.Response getSearchCondition(1: i32 hrAccountId, 2: i32 type); 
     // 保存常用筛选项
@@ -137,7 +137,7 @@ service UserHrAccountService {
     // 通过公司ID和关键字,查询认证员工和未认证员工数量
     useraccounts_struct.UserEmployeeNumStatistic getListNum(1:string keyWord, 2:i32 companyId) throws (1: common_struct.BIZException e);
     // 员工列表
-    useraccounts_struct.UserEmployeeVOPageVO employeeList(1:string keword, 2:i32 companyId, 3:i32 filter, 4:string order, 5:i32 asc, 6:i32 pageNumber, 7:i32 pageSize) throws (1: common_struct.BIZException e);
+    useraccounts_struct.UserEmployeeVOPageVO employeeList(1:string keword, 2:i32 companyId, 3:i32 filter, 4:string order, 5:string asc, 6:i32 pageNumber, 7:i32 pageSize) throws (1: common_struct.BIZException e);
     // 员工信息导出
     list<useraccounts_struct.UserEmployeeVO> employeeExport(1:list<i32> userEmployees,2:i32 companyId) throws (1: common_struct.BIZException e);
     // 员工信息

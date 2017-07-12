@@ -1,12 +1,11 @@
 package com.moseeker.useraccounts.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
-import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
-import com.moseeker.baseorm.dao.hrdb.HrImporterMonitorDao;
-import com.moseeker.baseorm.dao.hrdb.HrSearchConditionDao;
-import com.moseeker.baseorm.dao.hrdb.HrTalentpoolDao;
-import com.moseeker.baseorm.dao.userdb.*;
+import com.moseeker.baseorm.dao.hrdb.*;
+import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
+import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
+import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrSearchConditionRecord;
@@ -30,10 +29,7 @@ import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrImporterMonitorDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrTalentpoolDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
@@ -89,16 +85,13 @@ public class UserHrAccountService {
     private HRThirdPartyAccountDao hrThirdPartyAccountDao;
 
     @Autowired
-    private UserSearchConditionDao searchConditionDao;
+    private HRThirdPartyAccountHrDao thirdPartyAccountHrDao;
 
     @Autowired
     private ThirdPartyAccountSynctor thirdPartyAccountSynctor;
 
     @Autowired
     private UserEmployeeDao userEmployeeDao;
-
-    @Autowired
-    private UserWxUserDao userWxUserDao;
 
     @Autowired
     private UserUserDao userUserDao;
@@ -108,11 +101,14 @@ public class UserHrAccountService {
 
 
     @Autowired
-    private HrCompanyDao hrCompanyDao;
-
-    @Autowired
     private HrImporterMonitorDao hrImporterMonitorDao;
 
+
+    @Autowired
+    private HrCompanyAccountDao hrCompanyAccountDao;
+
+    @Autowired
+    private HrCompanyDao hrCompanyDao;
 
     /**
      * HR在下载行业报告是注册
@@ -341,7 +337,20 @@ public class UserHrAccountService {
             throw new BIZException(-1, "无效的HR帐号");
         }
 
-        account.setCompanyId(userHrAccount.getCompanyId());
+        //获取子公司简称和ID
+        HrCompanyDO hrCompanyDO = hrCompanyAccountDao.getHrCompany(hrId);
+
+        if (hrCompanyDO != null) {
+            account.setCompanyId(hrCompanyDO.getId());
+        } else {
+            hrCompanyDO = hrCompanyDao.getCompanyById(userHrAccount.getCompanyId());
+
+            if (hrCompanyDO == null) {
+                throw new BIZException(-1, "无效的HR账号");
+            }
+
+            account.setCompanyId(userHrAccount.getCompanyId());
+        }
 
         int allowStatus = allowBind(userHrAccount, account);
 
@@ -351,8 +360,16 @@ public class UserHrAccountService {
             account.setId(allowStatus);
         }
 
+
+        Map<String, String> extras = new HashMap<>();
+
+        //智联的帐号同步带上子公司简称
+        if (account.getChannel() == ChannelType.ZHILIAN.getValue()) {
+            extras.put("company", hrCompanyDO.getAbbreviation());
+        }
+
         //allowStatus==0,绑定之后将hrId和帐号关联起来，allowStatus==1,只绑定不关联
-        HrThirdPartyAccountDO result = thirdPartyAccountSynctor.bindThirdPartyAccount(allowStatus == 0 ? hrId : 0, account, sync);
+        HrThirdPartyAccountDO result = thirdPartyAccountSynctor.bindThirdPartyAccount(allowStatus == 0 ? hrId : 0, account, extras, sync);
 
 
         return result;
@@ -437,19 +454,67 @@ public class UserHrAccountService {
      * @return
      */
 
-    public HrThirdPartyAccountDO synchronizeThirdpartyAccount(int id, boolean sync) throws Exception {
+    public HrThirdPartyAccountDO synchronizeThirdpartyAccount(int hrId, int id, boolean sync) throws Exception {
         //查找第三方帐号
         Query qu = new Query.QueryBuilder().where("id", id).buildQuery();
+
         HrThirdPartyAccountDO hrThirdPartyAccount = hrThirdPartyAccountDao.getData(qu);
+
+        UserHrAccountDO hrAccountDO = userHrAccountDao.getValidAccount(hrId);
+
+        if (hrAccountDO == null) {
+            throw new BIZException(-1, "无效的HR帐号");
+        }
 
         if (hrThirdPartyAccount == null || hrThirdPartyAccount.getBinding() == 0) {
             throw new BIZException(-1, "无效的第三方帐号");
         }
+
+        Map<String, String> extras = new HashMap<>();
+        //智联的帐号
+        if (hrThirdPartyAccount.getChannel() == ChannelType.ZHILIAN.getValue()) {
+            buildZhilianCompany(hrAccountDO, hrThirdPartyAccount, extras);
+        }
+
         //如果是绑定状态，则进行
-        hrThirdPartyAccount = thirdPartyAccountSynctor.syncThirdPartyAccount(hrThirdPartyAccount, sync);
+        hrThirdPartyAccount = thirdPartyAccountSynctor.syncThirdPartyAccount(hrThirdPartyAccount, extras, sync);
 
         //刷新成功
         return hrThirdPartyAccount;
+    }
+
+    private void buildZhilianCompany(UserHrAccountDO hrAccountDO, HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras) throws BIZException {
+        List<HrThirdPartyAccountHrDO> binders = thirdPartyAccountHrDao.getBinders(hrThirdPartyAccount.getId());
+
+        int finalHrId = hrAccountDO.getId();//如果该帐号没有分配给任何人，谁刷新的使用谁的所属公司的简称
+
+        if (binders != null && binders.size() > 0) {
+            finalHrId = binders.get(0).getHrAccountId();//默认选择第一个关联的hr帐号
+
+            for (HrThirdPartyAccountHrDO binder : binders) {
+                if (binder.getHrAccountId() == hrAccountDO.getId()) {
+                    finalHrId = binder.getHrAccountId();//如果该帐号关联了自己，那么选择自己的公司简称
+                    logger.info("buildZhilianCompany,使用自己的所在公司的简称");
+                    break;
+                }
+            }
+        }
+
+        HrCompanyDO companyDO = hrCompanyAccountDao.getHrCompany(finalHrId);
+
+        if(hrAccountDO.getId() != finalHrId){
+            hrAccountDO = userHrAccountDao.getValidAccount(finalHrId);
+        }
+
+        if (companyDO == null) {
+            companyDO = hrCompanyDao.getCompanyById(hrAccountDO.getCompanyId());
+        }
+
+        if (companyDO == null) {
+            throw new BIZException(-1, "无效的HR帐号");
+        }
+
+        extras.put("company", companyDO.getAbbreviation());
     }
 
     /**
@@ -822,7 +887,7 @@ public class UserHrAccountService {
      * @param pageNumber 第几页
      * @param pageSize   每页的条数
      */
-    public UserEmployeeVOPageVO employeeList(String keyword, Integer companyId, Integer filter, String order, Integer asc, Integer pageNumber, Integer pageSize) throws BIZException {
+    public UserEmployeeVOPageVO employeeList(String keyword, Integer companyId, Integer filter, String order, String asc, Integer pageNumber, Integer pageSize) throws BIZException {
         if (companyId == 0) {
             throw ExceptionFactory.buildException(ExceptionCategory.COMPANYID_ENPTY);
         }
@@ -858,19 +923,42 @@ public class UserHrAccountService {
         }
         // 排序条件
         if (!StringUtils.isEmptyObject(order)) {
-            // 首先判断排序的条件是否正确
-            if (!StringUtils.isEmptyObject(UserEmployee.USER_EMPLOYEE.field(order).getName())) {
-                if (asc.intValue() == 0) {  // 正序
-                    queryBuilder.orderBy(UserEmployee.USER_EMPLOYEE.field(order).getName(), Order.ASC);
-                } else if (asc.intValue() == 1) { //倒序
-                    queryBuilder.orderBy(UserEmployee.USER_EMPLOYEE.field(order).getName(), Order.DESC);
+            // 多个条件
+            if (order.indexOf(",") > -1 && asc.indexOf(",") > -1) {
+                String[] orders = order.split(",");
+                String[] ascs = asc.split(",");
+                // 排序条件设置错误
+                if (orders.length != ascs.length) {
+                    throw ExceptionFactory.buildException(ExceptionCategory.USEREMPLOYEES_EMPTY);
+                }
+                for (String orderTemp : orders) {
+                    for (String ascTemp : ascs) {
+                        // 首先判断排序的条件是否正确
+                        if (!StringUtils.isEmptyObject(UserEmployee.USER_EMPLOYEE.field(orderTemp))) {
+                            if (Integer.valueOf(ascTemp).intValue() == 1) {   //倒序
+                                queryBuilder.orderBy(UserEmployee.USER_EMPLOYEE.field(orderTemp).getName(), Order.DESC);
+                            } else if (Integer.valueOf(ascTemp).intValue() == 0) {// 正序
+                                queryBuilder.orderBy(UserEmployee.USER_EMPLOYEE.field(orderTemp).getName(), Order.ASC);
+                            }
+                        }
+                    }
+                }
+            } else {
+                // 首先判断排序的条件是否正确
+                if (!StringUtils.isEmptyObject(UserEmployee.USER_EMPLOYEE.field(order))) {
+                    if (Integer.valueOf(asc).intValue() == 0) {  // 正序
+                        queryBuilder.orderBy(UserEmployee.USER_EMPLOYEE.field(order).getName(), Order.ASC);
+                    } else if (Integer.valueOf(asc).intValue() == 1) { //倒序
+                        queryBuilder.orderBy(UserEmployee.USER_EMPLOYEE.field(order).getName(), Order.DESC);
+                    }
                 }
             }
+
         }
         // 查询总条数
         int counts = userEmployeeDao.getCount(queryBuilder.buildQuery());
         if (counts == 0) {
-            throw ExceptionFactory.buildException(ExceptionCategory.USEREMPLOYEES_EMPTY);
+            throw ExceptionFactory.buildException(ExceptionCategory.ORDER_ERROR);
         }
         // 分页数据
         if (pageNumber > 0 && pageSize > 0) {
@@ -1066,13 +1154,13 @@ public class UserHrAccountService {
         ValidateUtil vu = new ValidateUtil();
         vu.addIntTypeValidate("导入的数据类型", type, "不能为空", null, 0, 100);
         vu.addIntTypeValidate("HR账号", hraccountId, "不能为空", null, 1, 1000000);
-        vu.addRequiredStringValidate("导入文件的绝对路径", filePath, "不能为空", null);
-        vu.addRequiredStringValidate("导入的文件名", fileName, "不能为空", null);
+        vu.addStringLengthValidate("导入文件的绝对路径", filePath, null, null,0,257);
+        vu.addStringLengthValidate("导入的文件名", fileName, null, null,0,257);
 
         String errorMessage = vu.validate();
         if (!StringUtils.isNullOrEmpty(errorMessage)) {
             throw ExceptionFactory.buildException(ExceptionCategory.ADD_IMPORTERMONITOR_FAILED.getCode(),
-                    ExceptionCategory.ADD_IMPORTERMONITOR_FAILED.getMsg().replace("{MESSAGE}", errorMessage));
+                    ExceptionCategory.ADD_IMPORTERMONITOR_PARAMETER.getMsg().replace("{MESSAGE}", errorMessage));
         }
         try {
             HrImporterMonitorDO hrImporterMonitorDO = new HrImporterMonitorDO();
@@ -1273,6 +1361,29 @@ public class UserHrAccountService {
         if (!employeeEntity.permissionJudge(userEmployeeId, companyId)) {
             throw ExceptionFactory.buildException(ExceptionCategory.PERMISSION_DENIED);
         }
+        // 判断邮箱是否重复,公司重复检查
+        if (!StringUtils.isEmptyObject(email)) {
+            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+            queryBuilder.where(UserEmployee.USER_EMPLOYEE.EMAIL.getName(), email)
+                    .and(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyId)
+                    .and(new Condition(UserEmployee.USER_EMPLOYEE.ID.getName(), userEmployeeId, ValueOp.NEQ));
+            UserEmployeeDO userEmployeeDO = userEmployeeDao.getData(queryBuilder.buildQuery());
+            if (!StringUtils.isEmptyObject(userEmployeeDO)) {
+                throw ExceptionFactory.buildException(ExceptionCategory.EMAIL_REPETITION);
+            }
+        }
+        // 判断自定义字段是否重复
+        if (!StringUtils.isEmptyObject(cname) && !StringUtils.isEmptyObject(customField)) {
+            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+            queryBuilder.where(UserEmployee.USER_EMPLOYEE.CNAME.getName(), cname)
+                    .and(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.getName(), customField)
+                    .and(new Condition(UserEmployee.USER_EMPLOYEE.ID.getName(), userEmployeeId, ValueOp.NEQ));
+            UserEmployeeDO userEmployeeDO = userEmployeeDao.getData(queryBuilder.buildQuery());
+            if (!StringUtils.isEmptyObject(userEmployeeDO)) {
+                throw ExceptionFactory.buildException(ExceptionCategory.CUSTOM_FIELD_REPETITION);
+            }
+        }
+
         try {
             UserEmployeeDO userEmployeeDO = new UserEmployeeDO();
             if (!StringUtils.isEmptyObject(cname)) {

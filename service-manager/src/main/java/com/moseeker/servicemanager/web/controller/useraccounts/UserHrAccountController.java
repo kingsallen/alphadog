@@ -166,7 +166,13 @@ public class UserHrAccountController {
                 return ResponseLogNotification.fail(request, "id不能为空");
             }
 
-            HrThirdPartyAccountDO hrThirdPartyAccountDO = userHrAccountService.syncThirdpartyAccount(id, params.getBoolean("sync", false));
+            Integer userId = params.getInt("user_id", 0);
+
+            if(userId == null){
+                return ResponseLogNotification.fail(request, "user_id不能为空");
+            }
+
+            HrThirdPartyAccountDO hrThirdPartyAccountDO = userHrAccountService.syncThirdpartyAccount(userId,id, params.getBoolean("sync", false));
 
             return ResponseLogNotification.success(request, ResponseUtils.success(thirdpartyAccountToMap(hrThirdPartyAccountDO)));
         } catch (Exception e) {
@@ -511,7 +517,7 @@ public class UserHrAccountController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/hraccount/employee", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/hraccount/employee", method = RequestMethod.POST)
     @ResponseBody
     public String removeEmployee(HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -650,7 +656,7 @@ public class UserHrAccountController {
             int companyId = params.getInt("companyId", 0);
             int filter = params.getInt("filter", 0);
             String order = params.getString("order", "");
-            int asc = params.getInt("asc", 0);
+            String asc = params.getString("asc", "");
             int pageNumber = params.getInt("pageNumber", 0);
             int pageSize = params.getInt("pageSize", 0);
             UserEmployeeVOPageVO userEmployeeVOPageVO = userHrAccountService.employeeList(keyWord, companyId, filter, order, asc, pageNumber, pageSize);
