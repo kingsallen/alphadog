@@ -15,6 +15,9 @@ import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.entity.exception.ExceptionCategory;
+import com.moseeker.entity.exception.ExceptionFactory;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrGroupCompanyRelDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
@@ -173,7 +176,7 @@ public class EmployeeEntity {
      * @param employeeIds
      * @return
      */
-    public boolean unbind(List<Integer> employeeIds) {
+    public boolean unbind(List<Integer> employeeIds) throws BIZException{
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.and(new Condition("id", employeeIds, ValueOp.IN));
         List<UserEmployeeDO> employeeDOList = employeeDao.getDatas(query.buildQuery());
@@ -185,6 +188,8 @@ public class EmployeeEntity {
             int[] rows = employeeDao.updateDatas(employeeDOList);
             if (Arrays.stream(rows).sum() > 0) {
                 return true;
+            }else{
+                throw ExceptionFactory.buildException(ExceptionCategory.EMPLOYEE_IS_UNBIND);
             }
         }
         return false;
@@ -196,7 +201,7 @@ public class EmployeeEntity {
      * 2.user_employee中做物理删除
      */
     @Transactional
-    public boolean removeEmployee(List<Integer> employeeIds) {
+    public boolean removeEmployee(List<Integer> employeeIds) throws BIZException {
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.where(new Condition("id", employeeIds, ValueOp.IN));
         List<UserEmployeeDO> userEmployeeDOList = employeeDao.getDatas(query.buildQuery());
@@ -206,21 +211,14 @@ public class EmployeeEntity {
             if (Arrays.stream(rows).sum() > 0) {
                 historyUserEmployeeDao.addAllData(userEmployeeDOList);
                 return true;
+            } else {
+                throw ExceptionFactory.buildException(ExceptionCategory.EMPLOYEE_HASBEENDELETEOR);
             }
         }
         return false;
     }
 
-    /**
-     * 员工信息去重
-     *
-     * @param data
-     * @param companyId
-     * @return
-     */
-    public List<UserEmployeeDO> distinctEmployee(List<UserEmployeeDO> data, int companyId) {
-        return null;
-    }
+
 
 
     /**
