@@ -1,5 +1,6 @@
 package com.moseeker.candidate.service.entities;
 
+import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.candidate.constant.RecomType;
 import com.moseeker.candidate.service.Candidate;
 import com.moseeker.candidate.service.checkout.ParamCheckTool;
@@ -21,13 +22,11 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.CandidateRecomRecordSortingDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.*;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrPointsConfDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
-import com.moseeker.thrift.gen.employee.struct.Employee;
-
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
@@ -61,9 +60,11 @@ public class CandidateEntity implements Candidate {
     @Autowired
     private CandidateDBDao candidateDBDao;
 
-
     @Autowired
     private EmployeeEntity employeeEntity;
+
+    @Autowired
+    private JobPositionDao positionDao;
 
     /**
      * C端用户查看职位，判断是否生成候选人数据
@@ -207,9 +208,16 @@ public class CandidateEntity implements Candidate {
             throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_NOT_START);
         }
 
+        /** 查找公司下的职位 */
+        List<Integer> positionIdList = positionDao.getPositionIds(param.getCompanyId());
+        if (positionIdList == null && positionIdList.size() == 0) {
+            throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_CANDIDATES_POSITION_NOT_EXIST);
+        }
+
         /** 查找职位转发浏览记录 */
         List<CandidateRecomRecordDO> candidateRecomRecordDOList =
-                candidateDBDao.listCandidateRecomRecordDO(param.getPostUserId(), param.getClickTime(), param.getRecoms());
+                candidateDBDao.listCandidateRecomRecordDO(param.getPostUserId(), param.getClickTime(),
+                        param.getRecoms(), positionIdList);
 
         if (candidateRecomRecordDOList != null && candidateRecomRecordDOList.size() > 0) {
 
@@ -225,6 +233,7 @@ public class CandidateEntity implements Candidate {
                 jobPositionDOList = (List<JobPositionDO>) positionFuture.get();
                 logger.info("CandidateEntity candidateList jobPositionDOList:{}", jobPositionDOList);
                 if (jobPositionDOList != null && jobPositionDOList.size() > 0) {
+
                     List<UserUserDO> presenteeUserList = convertFuture(presenteeFuture);    //候选人
                     List<UserUserDO> repostUserList = convertFuture(repostFuture);             //推荐者
                     List<CandidatePositionDO> candidatePositionDOList = convertFuture(candidatePositionFuture); //候选人查看职位记录
@@ -273,9 +282,14 @@ public class CandidateEntity implements Candidate {
         recommendResult.setRecomIgnore(0);
         recommendResult.setNextOne(false);
 
-        /** 查找职位转发浏览记录 */
+        /** 查找公司下的职位 */
+        List<Integer> positionIdList = positionDao.getPositionIds(companyId);
+        if (positionIdList == null && positionIdList.size() == 0) {
+            throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_CANDIDATES_POSITION_NOT_EXIST);
+        }
 
-        List<CandidateRecomRecordDO> candidateRecomRecordDOList = candidateDBDao.getCandidateRecomRecordDOByIdList(idList);
+        /** 查找职位转发浏览记录 */
+        List<CandidateRecomRecordDO> candidateRecomRecordDOList = candidateDBDao.getCandidateRecomRecordDOByIdList(idList, positionIdList);
         if (candidateRecomRecordDOList != null && candidateRecomRecordDOList.size() > 0) {
             candidateRecomRecordDOList.forEach(candidateRecomRecordDO -> {
                 candidateRecomRecordDO.setIsRecom((byte) RecomType.SELECTED.getValue());
@@ -314,9 +328,10 @@ public class CandidateEntity implements Candidate {
             logger.info("CandidateEntiry recommend 未开启挖掘被动求职者");
             throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_NOT_START);
         }
+
         //修改参数长度
         refineParam(param);
-        CandidateRecomRecordDO candidateRecomRecordDO = candidateDBDao.getCandidateRecomRecordDO(param.getId());
+        CandidateRecomRecordDO candidateRecomRecordDO = candidateDBDao.getCandidateRecomRecordDO(param.getId(), param.getPostUserId());
         logger.info("CandidateEntiry recommend candidateRecomRecordDO:{}", candidateRecomRecordDO);
         if (candidateRecomRecordDO == null) {
             throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_CANDIDATES_RECORD_NOT_EXIST);
@@ -362,8 +377,9 @@ public class CandidateEntity implements Candidate {
         if (!StringUtils.isNullOrEmpty(message)) {
             throw CandidateExceptionFactory.buildCheckFailedException(message);
         }
-        CandidateRecomRecordDO candidateRecomRecordDO = candidateDBDao.getCandidateRecomRecordDO(id);
-        if (candidateRecomRecordDO == null || candidateRecomRecordDO.getPostUserId() != postUserId) {
+
+        CandidateRecomRecordDO candidateRecomRecordDO = candidateDBDao.getCandidateRecomRecordDO(id, postUserId);
+        if (candidateRecomRecordDO == null) {
             throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_CANDIDATES_RECORD_NOT_EXIST);
         }
 
@@ -391,6 +407,19 @@ public class CandidateEntity implements Candidate {
         if (!StringUtils.isNullOrEmpty(message)) {
             throw CandidateExceptionFactory.buildCheckFailedException(message);
         }
+        /** 是否开启被动求职者 */
+        /*boolean passiveSeeker = candidateDBDao.isStartPassiveSeeker(companyId);
+        logger.info("CandidateEntity getRecommendatorySorting passiveSeeker:{}", passiveSeeker);
+        if (!passiveSeeker) {
+            throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_NOT_START);
+        }*/
+
+        /** 查找公司下的职位 */
+        List<Integer> positionIdList = positionDao.getPositionIds(companyId);
+        if (positionIdList == null && positionIdList.size() == 0) {
+            throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_CANDIDATES_POSITION_NOT_EXIST);
+        }
+
         /** 查找员工信息 */
         List<UserEmployeeDO> employeeDOList = employeeEntity.getUserEmployeeDOList(companyId);
         logger.info("CandidateEntity getRecommendatorySorting employeeDOList:{}", employeeDOList);
@@ -398,8 +427,9 @@ public class CandidateEntity implements Candidate {
             throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_SORT_COLLEAGUE_NOT_EXIST);
         }
         List<Integer> employeeIdList = employeeDOList.stream().map(userEmployeeDO -> userEmployeeDO.getSysuserId()).collect(Collectors.toList());
+
         /** 查找排名 */
-        List<CandidateRecomRecordSortingDO> sortingDOList = candidateDBDao.listSorting(employeeIdList);
+        List<CandidateRecomRecordSortingDO> sortingDOList = candidateDBDao.listSorting(employeeIdList, positionIdList);
         if (sortingDOList == null || sortingDOList.size() == 0) {
             throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_SORT_USER_NOT_EXIST);
         }
@@ -425,7 +455,8 @@ public class CandidateEntity implements Candidate {
             logger.info("CandidateEntiry ignore 未开启挖掘被动求职者");
             throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_NOT_START);
         }
-        CandidateRecomRecordDO recomRecordDO = candidateDBDao.getCandidateRecomRecordDO(id);
+
+        CandidateRecomRecordDO recomRecordDO = candidateDBDao.getCandidateRecomRecordDO(id, postUserId);
         logger.info("CandidateEntiry recommend recomRecordDO:{}", recomRecordDO);
         if (recomRecordDO == null) {
             throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_CANDIDATES_RECORD_NOT_EXIST);
@@ -486,7 +517,7 @@ public class CandidateEntity implements Candidate {
      * @return 操作结果
      */
     private RecommendResult assembleRecommendResult(int id, int postUserId, String
-            clickTime, int companyId) {
+            clickTime, int companyId) throws BIZException {
         RecommendResult recommendResult = new RecommendResult();
         recommendResult.setId(id);
 
@@ -508,9 +539,15 @@ public class CandidateEntity implements Candidate {
             add(3);
         }};
 
+        /** 查找公司下的职位 */
+        List<Integer> positionIdList = positionDao.getPositionIds(companyId);
+        if (positionIdList == null && positionIdList.size() == 0) {
+            throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_CANDIDATES_POSITION_NOT_EXIST);
+        }
+
         List<CandidateRecomRecordDO> candidateRecomRecordDOList =
                 candidateDBDao.listCandidateRecomRecordDOExceptId(id, postUserId,
-                        clickTime, selected);
+                        clickTime, selected, positionIdList);
         if (candidateRecomRecordDOList != null && candidateRecomRecordDOList.size() > 0) {
             CandidateRecomRecordDO candidateRecomRecordDO = candidateRecomRecordDOList.get(0);
             Future positionFuture = findPositionFutureById(candidateRecomRecordDO.getPositionId());
@@ -522,19 +559,19 @@ public class CandidateEntity implements Candidate {
 
         try {
             int exceptNotRecommendedCount = candidateDBDao.countRecommendation(postUserId,
-                    clickTime, exceptNotRecommend);
+                    clickTime, exceptNotRecommend, positionIdList);
             recommendResult.setRecomTotal(exceptNotRecommendedCount);
         } catch (TException e) {
             logger.error(e.getMessage(), e);
         }
         try {
-            int recommendedCount = candidateDBDao.countRecommendation(postUserId, clickTime, recommended);
+            int recommendedCount = candidateDBDao.countRecommendation(postUserId, clickTime, recommended, positionIdList);
             recommendResult.setRecomIndex(recommendedCount);
         } catch (TException e) {
             logger.error(e.getMessage(), e);
         }
         try {
-            int ignoreCount = candidateDBDao.countRecommendation(postUserId, clickTime, ignore);
+            int ignoreCount = candidateDBDao.countRecommendation(postUserId, clickTime, ignore, positionIdList);
             recommendResult.setRecomIgnore(ignoreCount);
         } catch (TException e) {
             logger.error(e.getMessage(), e);
