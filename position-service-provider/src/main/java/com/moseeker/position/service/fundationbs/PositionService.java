@@ -1571,11 +1571,16 @@ public class PositionService {
                 logger.info("---Start ES Search Engine---");
                 for (Integer jobPositionId : list) {
                     Response result = getPositionById(jobPositionId);
+                    if (StringUtils.isEmptyObject(result.data)) {
+                        continue;
+                    }
                     position = result.data;
                     Map position_map = JSON.parseObject(position, Map.class);
+                    if (StringUtils.isEmptyObject(position_map.get("company_id"))) {
+                        continue;
+                    }
                     String company_id = BeanUtils.converToString(position_map.get("company_id"));
                     Query query = new Query.QueryBuilder().where("id", company_id).buildQuery();
-
                     List<Hrcompany> company_maps = hrCompanyDao.getDatas(query, Hrcompany.class);
                     if (company_maps != null && company_maps.size() > 0) {
 
