@@ -509,7 +509,7 @@ public class PositionController {
     }
 
     /**
-     * 职位相关职位接口
+     * 职位同步到第三方接口
      */
     @RequestMapping(value = "/position/thirdpartyposition", method = RequestMethod.GET)
     @ResponseBody
@@ -523,9 +523,32 @@ public class PositionController {
 
         } catch (Exception e) {
             logger.error(e.getMessage());
-            ResponseLogNotification.fail(request,e.getMessage());
+            return ResponseLogNotification.fail(request,e.getMessage());
         }
-        return null;
+    }
+
+
+
+    /**
+     * 职位同步到第三方接口
+     */
+    @RequestMapping(value = "/positions/thirdpartypositions", method = RequestMethod.GET)
+    @ResponseBody
+    public String getPositionListForThirdParty(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer channel = params.getInt("channel");
+            Integer type = params.getInt("type");
+            String start_time = params.getString("start_time");
+            String end_time = params.getString("end_time");
+            List<Integer> positions =  positonServices.getPositionListForThirdParty(channel,type,start_time,end_time);
+            Response res = ResponseUtils.success(positions);
+            return ResponseLogNotification.success(request, res);
+
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request,e.getMessage());
+        }
     }
 
 

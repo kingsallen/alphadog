@@ -1749,6 +1749,43 @@ public class PositionService {
         return ResponseUtils.successWithoutStringify(positionForAlipaycampusPojo.toString());
     }
 
+    public List<Integer> getPositionListForThirdParty(int channel, int type, String start_time, String end_time){
+        Query query;
+        switch (type){
+            case 0: //创建or更新
+                query=new Query.QueryBuilder().select("id").where("status",0)
+                        .and(new Condition("update_time",start_time,ValueOp.GE))
+                        .and(new Condition("update_time",end_time,ValueOp.LT)).buildQuery();
+                break;
+            case 1: //刷新
+                query=new Query.QueryBuilder().select("id").where("status",0)
+                        .and(new Condition("update_time",start_time,ValueOp.GE))
+                        .and(new Condition("update_time",end_time,ValueOp.LT)).buildQuery();
+                break;
+            case 2:
+                query=new Query.QueryBuilder().select("id").where(new Condition("status",0,ValueOp.NEQ))
+                        .and(new Condition("update_time",start_time,ValueOp.GE))
+                        .and(new Condition("update_time",end_time,ValueOp.LT)).buildQuery();
+                break;
+            default:
+                return null;
+        }
+
+
+        List<JobPositionDO>  jobPositionList = jobPositionDao.getPositions(query);
+        List<Integer> positionlist = null;
+        if (jobPositionList != null){
+            positionlist = new ArrayList<>(jobPositionList.size());
+            for (JobPositionDO position : jobPositionList){
+                positionlist.add(position.getId());
+
+            }
+        }
+
+        return positionlist;
+    }
+
+
 
     private String replaceBlank(String str) {
         String dest = "";
