@@ -511,7 +511,7 @@ public class UserHrAccountController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/hraccount/employee", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/hraccount/employee", method = RequestMethod.POST)
     @ResponseBody
     public String removeEmployee(HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -650,7 +650,7 @@ public class UserHrAccountController {
             int companyId = params.getInt("companyId", 0);
             int filter = params.getInt("filter", 0);
             String order = params.getString("order", "");
-            int asc = params.getInt("asc", 0);
+            String asc = params.getString("asc", "");
             int pageNumber = params.getInt("pageNumber", 0);
             int pageSize = params.getInt("pageSize", 0);
             UserEmployeeVOPageVO userEmployeeVOPageVO = userHrAccountService.employeeList(keyWord, companyId, filter, order, asc, pageNumber, pageSize);

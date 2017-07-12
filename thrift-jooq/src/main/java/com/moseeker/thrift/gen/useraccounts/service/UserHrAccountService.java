@@ -64,7 +64,7 @@ public class UserHrAccountService {
 
     public com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeNumStatistic getListNum(java.lang.String keyWord, int companyId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO employeeList(java.lang.String keword, int companyId, int filter, java.lang.String order, int asc, int pageNumber, int pageSize) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO employeeList(java.lang.String keword, int companyId, int filter, java.lang.String order, java.lang.String asc, int pageNumber, int pageSize) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
     public java.util.List<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVO> employeeExport(java.util.List<java.lang.Integer> userEmployees, int companyId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
@@ -128,7 +128,7 @@ public class UserHrAccountService {
 
     public void getListNum(java.lang.String keyWord, int companyId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeNumStatistic> resultHandler) throws org.apache.thrift.TException;
 
-    public void employeeList(java.lang.String keword, int companyId, int filter, java.lang.String order, int asc, int pageNumber, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO> resultHandler) throws org.apache.thrift.TException;
+    public void employeeList(java.lang.String keword, int companyId, int filter, java.lang.String order, java.lang.String asc, int pageNumber, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO> resultHandler) throws org.apache.thrift.TException;
 
     public void employeeExport(java.util.List<java.lang.Integer> userEmployees, int companyId, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVO>> resultHandler) throws org.apache.thrift.TException;
 
@@ -779,13 +779,13 @@ public class UserHrAccountService {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getListNum failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO employeeList(java.lang.String keword, int companyId, int filter, java.lang.String order, int asc, int pageNumber, int pageSize) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    public com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO employeeList(java.lang.String keword, int companyId, int filter, java.lang.String order, java.lang.String asc, int pageNumber, int pageSize) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
       send_employeeList(keword, companyId, filter, order, asc, pageNumber, pageSize);
       return recv_employeeList();
     }
 
-    public void send_employeeList(java.lang.String keword, int companyId, int filter, java.lang.String order, int asc, int pageNumber, int pageSize) throws org.apache.thrift.TException
+    public void send_employeeList(java.lang.String keword, int companyId, int filter, java.lang.String order, java.lang.String asc, int pageNumber, int pageSize) throws org.apache.thrift.TException
     {
       employeeList_args args = new employeeList_args();
       args.setKeword(keword);
@@ -1809,7 +1809,7 @@ public class UserHrAccountService {
       }
     }
 
-    public void employeeList(java.lang.String keword, int companyId, int filter, java.lang.String order, int asc, int pageNumber, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO> resultHandler) throws org.apache.thrift.TException {
+    public void employeeList(java.lang.String keword, int companyId, int filter, java.lang.String order, java.lang.String asc, int pageNumber, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       employeeList_call method_call = new employeeList_call(keword, companyId, filter, order, asc, pageNumber, pageSize, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -1821,10 +1821,10 @@ public class UserHrAccountService {
       private int companyId;
       private int filter;
       private java.lang.String order;
-      private int asc;
+      private java.lang.String asc;
       private int pageNumber;
       private int pageSize;
-      public employeeList_call(java.lang.String keword, int companyId, int filter, java.lang.String order, int asc, int pageNumber, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public employeeList_call(java.lang.String keword, int companyId, int filter, java.lang.String order, java.lang.String asc, int pageNumber, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.keword = keword;
         this.companyId = companyId;
@@ -26422,7 +26422,7 @@ public class UserHrAccountService {
     private static final org.apache.thrift.protocol.TField COMPANY_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("companyId", org.apache.thrift.protocol.TType.I32, (short)2);
     private static final org.apache.thrift.protocol.TField FILTER_FIELD_DESC = new org.apache.thrift.protocol.TField("filter", org.apache.thrift.protocol.TType.I32, (short)3);
     private static final org.apache.thrift.protocol.TField ORDER_FIELD_DESC = new org.apache.thrift.protocol.TField("order", org.apache.thrift.protocol.TType.STRING, (short)4);
-    private static final org.apache.thrift.protocol.TField ASC_FIELD_DESC = new org.apache.thrift.protocol.TField("asc", org.apache.thrift.protocol.TType.I32, (short)5);
+    private static final org.apache.thrift.protocol.TField ASC_FIELD_DESC = new org.apache.thrift.protocol.TField("asc", org.apache.thrift.protocol.TType.STRING, (short)5);
     private static final org.apache.thrift.protocol.TField PAGE_NUMBER_FIELD_DESC = new org.apache.thrift.protocol.TField("pageNumber", org.apache.thrift.protocol.TType.I32, (short)6);
     private static final org.apache.thrift.protocol.TField PAGE_SIZE_FIELD_DESC = new org.apache.thrift.protocol.TField("pageSize", org.apache.thrift.protocol.TType.I32, (short)7);
 
@@ -26433,7 +26433,7 @@ public class UserHrAccountService {
     public int companyId; // required
     public int filter; // required
     public java.lang.String order; // required
-    public int asc; // required
+    public java.lang.String asc; // required
     public int pageNumber; // required
     public int pageSize; // required
 
@@ -26516,9 +26516,8 @@ public class UserHrAccountService {
     // isset id assignments
     private static final int __COMPANYID_ISSET_ID = 0;
     private static final int __FILTER_ISSET_ID = 1;
-    private static final int __ASC_ISSET_ID = 2;
-    private static final int __PAGENUMBER_ISSET_ID = 3;
-    private static final int __PAGESIZE_ISSET_ID = 4;
+    private static final int __PAGENUMBER_ISSET_ID = 2;
+    private static final int __PAGESIZE_ISSET_ID = 3;
     private byte __isset_bitfield = 0;
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
@@ -26532,7 +26531,7 @@ public class UserHrAccountService {
       tmpMap.put(_Fields.ORDER, new org.apache.thrift.meta_data.FieldMetaData("order", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
       tmpMap.put(_Fields.ASC, new org.apache.thrift.meta_data.FieldMetaData("asc", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
       tmpMap.put(_Fields.PAGE_NUMBER, new org.apache.thrift.meta_data.FieldMetaData("pageNumber", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       tmpMap.put(_Fields.PAGE_SIZE, new org.apache.thrift.meta_data.FieldMetaData("pageSize", org.apache.thrift.TFieldRequirementType.DEFAULT, 
@@ -26549,7 +26548,7 @@ public class UserHrAccountService {
       int companyId,
       int filter,
       java.lang.String order,
-      int asc,
+      java.lang.String asc,
       int pageNumber,
       int pageSize)
     {
@@ -26561,7 +26560,6 @@ public class UserHrAccountService {
       setFilterIsSet(true);
       this.order = order;
       this.asc = asc;
-      setAscIsSet(true);
       this.pageNumber = pageNumber;
       setPageNumberIsSet(true);
       this.pageSize = pageSize;
@@ -26581,7 +26579,9 @@ public class UserHrAccountService {
       if (other.isSetOrder()) {
         this.order = other.order;
       }
-      this.asc = other.asc;
+      if (other.isSetAsc()) {
+        this.asc = other.asc;
+      }
       this.pageNumber = other.pageNumber;
       this.pageSize = other.pageSize;
     }
@@ -26598,8 +26598,7 @@ public class UserHrAccountService {
       setFilterIsSet(false);
       this.filter = 0;
       this.order = null;
-      setAscIsSet(false);
-      this.asc = 0;
+      this.asc = null;
       setPageNumberIsSet(false);
       this.pageNumber = 0;
       setPageSizeIsSet(false);
@@ -26700,27 +26699,28 @@ public class UserHrAccountService {
       }
     }
 
-    public int getAsc() {
+    public java.lang.String getAsc() {
       return this.asc;
     }
 
-    public employeeList_args setAsc(int asc) {
+    public employeeList_args setAsc(java.lang.String asc) {
       this.asc = asc;
-      setAscIsSet(true);
       return this;
     }
 
     public void unsetAsc() {
-      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __ASC_ISSET_ID);
+      this.asc = null;
     }
 
     /** Returns true if field asc is set (has been assigned a value) and false otherwise */
     public boolean isSetAsc() {
-      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __ASC_ISSET_ID);
+      return this.asc != null;
     }
 
     public void setAscIsSet(boolean value) {
-      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __ASC_ISSET_ID, value);
+      if (!value) {
+        this.asc = null;
+      }
     }
 
     public int getPageNumber() {
@@ -26807,7 +26807,7 @@ public class UserHrAccountService {
         if (value == null) {
           unsetAsc();
         } else {
-          setAsc((java.lang.Integer)value);
+          setAsc((java.lang.String)value);
         }
         break;
 
@@ -26933,12 +26933,12 @@ public class UserHrAccountService {
           return false;
       }
 
-      boolean this_present_asc = true;
-      boolean that_present_asc = true;
+      boolean this_present_asc = true && this.isSetAsc();
+      boolean that_present_asc = true && that.isSetAsc();
       if (this_present_asc || that_present_asc) {
         if (!(this_present_asc && that_present_asc))
           return false;
-        if (this.asc != that.asc)
+        if (!this.asc.equals(that.asc))
           return false;
       }
 
@@ -26979,7 +26979,9 @@ public class UserHrAccountService {
       if (isSetOrder())
         hashCode = hashCode * 8191 + order.hashCode();
 
-      hashCode = hashCode * 8191 + asc;
+      hashCode = hashCode * 8191 + ((isSetAsc()) ? 131071 : 524287);
+      if (isSetAsc())
+        hashCode = hashCode * 8191 + asc.hashCode();
 
       hashCode = hashCode * 8191 + pageNumber;
 
@@ -27111,7 +27113,11 @@ public class UserHrAccountService {
       first = false;
       if (!first) sb.append(", ");
       sb.append("asc:");
-      sb.append(this.asc);
+      if (this.asc == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.asc);
+      }
       first = false;
       if (!first) sb.append(", ");
       sb.append("pageNumber:");
@@ -27199,8 +27205,8 @@ public class UserHrAccountService {
               }
               break;
             case 5: // ASC
-              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-                struct.asc = iprot.readI32();
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                struct.asc = iprot.readString();
                 struct.setAscIsSet(true);
               } else { 
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
@@ -27253,9 +27259,11 @@ public class UserHrAccountService {
           oprot.writeString(struct.order);
           oprot.writeFieldEnd();
         }
-        oprot.writeFieldBegin(ASC_FIELD_DESC);
-        oprot.writeI32(struct.asc);
-        oprot.writeFieldEnd();
+        if (struct.asc != null) {
+          oprot.writeFieldBegin(ASC_FIELD_DESC);
+          oprot.writeString(struct.asc);
+          oprot.writeFieldEnd();
+        }
         oprot.writeFieldBegin(PAGE_NUMBER_FIELD_DESC);
         oprot.writeI32(struct.pageNumber);
         oprot.writeFieldEnd();
@@ -27315,7 +27323,7 @@ public class UserHrAccountService {
           oprot.writeString(struct.order);
         }
         if (struct.isSetAsc()) {
-          oprot.writeI32(struct.asc);
+          oprot.writeString(struct.asc);
         }
         if (struct.isSetPageNumber()) {
           oprot.writeI32(struct.pageNumber);
@@ -27346,7 +27354,7 @@ public class UserHrAccountService {
           struct.setOrderIsSet(true);
         }
         if (incoming.get(4)) {
-          struct.asc = iprot.readI32();
+          struct.asc = iprot.readString();
           struct.setAscIsSet(true);
         }
         if (incoming.get(5)) {

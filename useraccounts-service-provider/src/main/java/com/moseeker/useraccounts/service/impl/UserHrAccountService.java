@@ -42,6 +42,7 @@ import com.moseeker.useraccounts.constant.ResultMessage;
 import com.moseeker.useraccounts.exception.ExceptionCategory;
 import com.moseeker.useraccounts.exception.ExceptionFactory;
 import com.moseeker.useraccounts.service.thirdpartyaccount.ThirdPartyAccountSynctor;
+
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +52,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -822,7 +824,7 @@ public class UserHrAccountService {
      * @param pageNumber 第几页
      * @param pageSize   每页的条数
      */
-    public UserEmployeeVOPageVO employeeList(String keyword, Integer companyId, Integer filter, String order, Integer asc, Integer pageNumber, Integer pageSize) throws BIZException {
+    public UserEmployeeVOPageVO employeeList(String keyword, Integer companyId, Integer filter, String order, String asc, Integer pageNumber, Integer pageSize) throws BIZException {
         if (companyId == 0) {
             throw ExceptionFactory.buildException(ExceptionCategory.COMPANYID_ENPTY);
         }
@@ -858,19 +860,42 @@ public class UserHrAccountService {
         }
         // 排序条件
         if (!StringUtils.isEmptyObject(order)) {
-            // 首先判断排序的条件是否正确
-            if (!StringUtils.isEmptyObject(UserEmployee.USER_EMPLOYEE.field(order).getName())) {
-                if (asc.intValue() == 0) {  // 正序
-                    queryBuilder.orderBy(UserEmployee.USER_EMPLOYEE.field(order).getName(), Order.ASC);
-                } else if (asc.intValue() == 1) { //倒序
-                    queryBuilder.orderBy(UserEmployee.USER_EMPLOYEE.field(order).getName(), Order.DESC);
+            // 多个条件
+            if (order.indexOf(",") > -1 && asc.indexOf(",") > -1) {
+                String[] orders = order.split(",");
+                String[] ascs = asc.split(",");
+                // 排序条件设置错误
+                if (orders.length != ascs.length) {
+                    throw ExceptionFactory.buildException(ExceptionCategory.USEREMPLOYEES_EMPTY);
+                }
+                for (String orderTemp : orders) {
+                    for (String ascTemp : ascs) {
+                        // 首先判断排序的条件是否正确
+                        if (!StringUtils.isEmptyObject(UserEmployee.USER_EMPLOYEE.field(orderTemp))) {
+                            if (Integer.valueOf(ascTemp).intValue() == 1) {   //倒序
+                                queryBuilder.orderBy(UserEmployee.USER_EMPLOYEE.field(orderTemp).getName(), Order.DESC);
+                            } else if (Integer.valueOf(ascTemp).intValue() == 0) {// 正序
+                                queryBuilder.orderBy(UserEmployee.USER_EMPLOYEE.field(orderTemp).getName(), Order.ASC);
+                            }
+                        }
+                    }
+                }
+            } else {
+                // 首先判断排序的条件是否正确
+                if (!StringUtils.isEmptyObject(UserEmployee.USER_EMPLOYEE.field(order))) {
+                    if (Integer.valueOf(asc).intValue() == 0) {  // 正序
+                        queryBuilder.orderBy(UserEmployee.USER_EMPLOYEE.field(order).getName(), Order.ASC);
+                    } else if (Integer.valueOf(asc).intValue() == 1) { //倒序
+                        queryBuilder.orderBy(UserEmployee.USER_EMPLOYEE.field(order).getName(), Order.DESC);
+                    }
                 }
             }
+
         }
         // 查询总条数
         int counts = userEmployeeDao.getCount(queryBuilder.buildQuery());
         if (counts == 0) {
-            throw ExceptionFactory.buildException(ExceptionCategory.USEREMPLOYEES_EMPTY);
+            throw ExceptionFactory.buildException(ExceptionCategory.ORDER_ERROR);
         }
         // 分页数据
         if (pageNumber > 0 && pageSize > 0) {
@@ -1072,7 +1097,7 @@ public class UserHrAccountService {
         String errorMessage = vu.validate();
         if (!StringUtils.isNullOrEmpty(errorMessage)) {
             throw ExceptionFactory.buildException(ExceptionCategory.ADD_IMPORTERMONITOR_FAILED.getCode(),
-                    ExceptionCategory.ADD_IMPORTERMONITOR_FAILED.getMsg().replace("{MESSAGE}", errorMessage));
+                    ExceptionCategory.ADD_IMPORTERMONITOR_PARAMETER.getMsg().replace("{MESSAGE}", errorMessage));
         }
         try {
             HrImporterMonitorDO hrImporterMonitorDO = new HrImporterMonitorDO();
@@ -1273,6 +1298,29 @@ public class UserHrAccountService {
         if (!employeeEntity.permissionJudge(userEmployeeId, companyId)) {
             throw ExceptionFactory.buildException(ExceptionCategory.PERMISSION_DENIED);
         }
+        // 判断邮箱是否重复,公司重复检查
+        if (!StringUtils.isEmptyObject(email)) {
+            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+            queryBuilder.where(UserEmployee.USER_EMPLOYEE.EMAIL.getName(), email)
+                    .and(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyId)
+                    .and(new Condition(UserEmployee.USER_EMPLOYEE.ID.getName(), userEmployeeId, ValueOp.NEQ));
+            UserEmployeeDO userEmployeeDO = userEmployeeDao.getData(queryBuilder.buildQuery());
+            if (!StringUtils.isEmptyObject(userEmployeeDO)) {
+                throw ExceptionFactory.buildException(ExceptionCategory.EMAIL_REPETITION);
+            }
+        }
+        // 判断自定义字段是否重复
+        if (!StringUtils.isEmptyObject(cname) && !StringUtils.isEmptyObject(customField)) {
+            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+            queryBuilder.where(UserEmployee.USER_EMPLOYEE.CNAME.getName(), cname)
+                    .and(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.getName(), customField)
+                    .and(new Condition(UserEmployee.USER_EMPLOYEE.ID.getName(), userEmployeeId, ValueOp.NEQ));
+            UserEmployeeDO userEmployeeDO = userEmployeeDao.getData(queryBuilder.buildQuery());
+            if (!StringUtils.isEmptyObject(userEmployeeDO)) {
+                throw ExceptionFactory.buildException(ExceptionCategory.CUSTOM_FIELD_REPETITION);
+            }
+        }
+
         try {
             UserEmployeeDO userEmployeeDO = new UserEmployeeDO();
             if (!StringUtils.isEmptyObject(cname)) {

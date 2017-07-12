@@ -14,6 +14,9 @@ public enum ExceptionCategory {
     COMPANYID_ENPTY(42011, "公司ID不能为空！"),
     ADD_IMPORTERMONITOR_FAILED(42012, "添加公司认证配置文件失败"),
     ADD_IMPORTERMONITOR_PARAMETER(42013, "添加公司认证配置参数设置有误:{MESSAGE}"),
+    ORDER_ERROR(42014, "排序条件设置错误"),
+    EMAIL_REPETITION(42015, "员工邮箱信息重复"),
+    CUSTOM_FIELD_REPETITION(42016, "员工姓名和自定义字段信息重复"),
     COMPANY_DATA_EMPTY(90010, "公司信息不存在！"),
     PROGRAM_EXCEPTION(99999, "发生异常，请稍候再试！");
 
