@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -23,7 +22,6 @@ import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.Aggregations;
-import org.elasticsearch.search.aggregations.InternalAggregation;
 import org.elasticsearch.search.aggregations.metrics.MetricsAggregationBuilder;
 import org.elasticsearch.search.sort.ScriptSortBuilder;
 import org.elasticsearch.search.sort.SortBuilder;
@@ -38,6 +36,7 @@ import com.moseeker.common.util.ConfigPropertiesUtil;
 @CounterIface
 public class CompanySearchengine {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
+	//搜索信息
 	public Map<String,Object>  query(String keywords,String citys,String industry,String scale,Integer page,Integer pageSize) throws TException{
 		SearchResponse hits=queryPrefix(keywords,citys,industry,scale,page,pageSize);
 		long hitNum=hits.getHits().getTotalHits();
@@ -52,7 +51,7 @@ public class CompanySearchengine {
 		
 		
 	}
-	//构建
+	//构建查询语句query_string
 	private QueryBuilder buildQueryForString(String keywords,String citys,String industry,String scale){
 		QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
@@ -63,7 +62,7 @@ public class CompanySearchengine {
         this.handleScale(scale, query);
         return query;
 	}
-	//通过queryString
+	//通过queryString查询es
     public SearchResponse queryString(String keywords,String citys,String industry,String scale,Integer page,Integer pageSize) throws TException {
          try{
         	 TransportClient client=this.getEsClient();
@@ -110,7 +109,6 @@ public class CompanySearchengine {
                         .addAggregation(this.handleAggScale());
                 logger.info(responseBuilder.toString());
                 SearchResponse response = responseBuilder.execute().actionGet();
-                
                 return response;
        	 }
             
@@ -119,7 +117,7 @@ public class CompanySearchengine {
         }
    	return null;
    }
-    
+    //处理es的返回数据
     private Map<String,Object> handleData(SearchResponse response){
     	Map<String,Object> data=new HashMap<String,Object>();
     	Aggregations aggs=response.getAggregations();
@@ -139,7 +137,7 @@ public class CompanySearchengine {
     	}
     	return data;
     }
-    
+    //处理聚合的结果
     private Map<String,Object> handleAggs(Aggregations aggs){
     	List<Aggregation> list=aggs.asList();
     	Map<String,Object> map=new HashMap<String,Object>();
@@ -183,7 +181,6 @@ public class CompanySearchengine {
         Script script=new Script(scripts);
         return script;
    }
-    
     //组装query_string关键字查询语句
     private void handleKeyWordforQueryString(String keywords,boolean hasKey,QueryBuilder query){
     	if(!StringUtils.isEmpty(keywords)){
@@ -201,14 +198,13 @@ public class CompanySearchengine {
      */
     private void handleCitys(String citys,QueryBuilder query){
     	if (!StringUtils.isEmpty(citys)) {
+    		List<Integer> codes=new ArrayList<Integer>();
             String[] city_list = citys.split(",");
-            QueryBuilder cityor = QueryBuilders.boolQuery();
-            for (int i = 0; i < city_list.length; i++) {
-                String city = city_list[i];
-                QueryBuilder cityfilter = QueryBuilders.matchPhraseQuery("position_city", city);
-                ((BoolQueryBuilder) cityor).should(cityfilter);
+            for(String code:city_list){
+            	codes.add(Integer.parseInt(code));
             }
-            ((BoolQueryBuilder) query).must(cityor);
+            QueryBuilder cityfilter = QueryBuilders.termsQuery("company.position_city.code", codes);
+            ((BoolQueryBuilder) query).must(cityfilter);
         }
     }
     /*
@@ -216,14 +212,13 @@ public class CompanySearchengine {
      */
     private void handleIndustry(String industries,QueryBuilder query){
     	if (!StringUtils.isEmpty(industries)) {
+    		List<Integer> codes=new ArrayList<Integer>();
             String[] industry_list = industries.split(",");
-            QueryBuilder industryor = QueryBuilders.boolQuery();
-            for (int i = 0; i < industry_list.length; i++) {
-                String industry = industry_list[i];
-                QueryBuilder industryfilter = QueryBuilders.matchPhraseQuery("industry", industry);
-                ((BoolQueryBuilder) industryor).should(industryfilter);
+            for (String code:industry_list) {
+                codes.add(Integer.parseInt(code));
             }
-            ((BoolQueryBuilder) query).must(industryor);
+            QueryBuilder industryfilter = QueryBuilders.matchPhraseQuery("company.industry.code", codes);
+            ((BoolQueryBuilder) query).must(industryfilter);
         }
     }
     /*
@@ -231,14 +226,14 @@ public class CompanySearchengine {
      */
     private void handleScale(String scales,QueryBuilder query){
     	if(!StringUtils.isEmpty(scales)){
+    		 List<Integer> codes=new ArrayList<Integer>();
     		 String[] scaleList = scales.split(",");
-             QueryBuilder scaleor = QueryBuilders.boolQuery();
-             for(int i = 0; i < scaleList.length; i++){
-            	 int scale=Integer.parseInt(scaleList[i]);
-            	 QueryBuilder scaleFilter = QueryBuilders.matchQuery("scale", scale);
-            	 ((BoolQueryBuilder) scaleor).should(scaleFilter);
+             for(String code:scaleList){
+            	 int scale=Integer.parseInt(code);
+            	 codes.add(scale);
              }
-             ((BoolQueryBuilder) query).must(scaleor);
+             QueryBuilder industryfilter = QueryBuilders.matchPhraseQuery("company.industry.scale", codes);
+             ((BoolQueryBuilder) query).must(industryfilter);
     	}
     }
     //启动es客户端
