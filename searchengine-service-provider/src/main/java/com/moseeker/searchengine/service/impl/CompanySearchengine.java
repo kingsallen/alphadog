@@ -263,7 +263,7 @@ public class CompanySearchengine {
     private AbstractAggregationBuilder handleAggIndustry(){
     	StringBuffer sb=new StringBuffer();
     	sb.append("industry=_source.company.industry;");
-    	sb.append("if(industry  in _agg['transactions'] ){}");
+    	sb.append("if(industry  in _agg['transactions'] || !industry){}");
     	sb.append("else{_agg['transactions'].add(industry)};");
     	String mapScript=sb.toString();
     	StringBuffer sb1=new StringBuffer();
@@ -290,7 +290,7 @@ public class CompanySearchengine {
     	StringBuffer sb=new StringBuffer();
     	sb.append("city=_source.position_city;");
     	sb.append("for(ss in city){");
-    	sb.append("if(ss  in _agg['transactions'] ){}");
+    	sb.append("if(ss  in _agg['transactions']z|| !ss ){}");
     	sb.append("else{_agg['transactions'].add(ss)};}");
     	String mapScript=sb.toString();
     	StringBuffer sb1=new StringBuffer();
