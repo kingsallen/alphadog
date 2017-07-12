@@ -38,6 +38,7 @@ import com.moseeker.useraccounts.constant.ResultMessage;
 import com.moseeker.useraccounts.exception.ExceptionCategory;
 import com.moseeker.useraccounts.exception.ExceptionFactory;
 import com.moseeker.useraccounts.service.thirdpartyaccount.ThirdPartyAccountSynctor;
+
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +48,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -502,7 +504,7 @@ public class UserHrAccountService {
 
         HrCompanyDO companyDO = hrCompanyAccountDao.getHrCompany(finalHrId);
 
-        if(hrAccountDO.getId() != finalHrId){
+        if (hrAccountDO.getId() != finalHrId) {
             hrAccountDO = userHrAccountDao.getValidAccount(finalHrId);
         }
 
@@ -962,10 +964,14 @@ public class UserHrAccountService {
         }
         // 分页数据
         if (pageNumber > 0 && pageSize > 0) {
-            // 取的数据超过了分页数，取最第一页数据
+            // 取的数据超过了分页数，取最最后一页数据
             if ((pageNumber * pageSize) > counts) {
                 queryBuilder.setPageSize(pageSize);
-                pageNumber = 1;
+                if ((counts % pageSize) == 0) {
+                    pageNumber = counts / pageSize;
+                } else {
+                    pageNumber = counts / pageSize + 1;
+                }
                 queryBuilder.setPageNum(pageNumber);
             } else {
                 queryBuilder.setPageNum(pageNumber);
@@ -1154,8 +1160,8 @@ public class UserHrAccountService {
         ValidateUtil vu = new ValidateUtil();
         vu.addIntTypeValidate("导入的数据类型", type, "不能为空", null, 0, 100);
         vu.addIntTypeValidate("HR账号", hraccountId, "不能为空", null, 1, 1000000);
-        vu.addStringLengthValidate("导入文件的绝对路径", filePath, null, null,0,257);
-        vu.addStringLengthValidate("导入的文件名", fileName, null, null,0,257);
+        vu.addStringLengthValidate("导入文件的绝对路径", filePath, null, null, 0, 257);
+        vu.addStringLengthValidate("导入的文件名", fileName, null, null, 0, 257);
 
         String errorMessage = vu.validate();
         if (!StringUtils.isNullOrEmpty(errorMessage)) {
