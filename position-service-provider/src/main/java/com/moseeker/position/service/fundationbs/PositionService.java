@@ -609,7 +609,7 @@ public class PositionService {
                     jobOccupation.setStatus((byte) 1);
                     jobOccupation.setName(jobPositionHandlerDate.getOccupation());
                     JobOccupationDO jobOccupationDOTemp = jobOccupationDao.addData(jobOccupation);
-                    jobOccupationId = jobOccupationDO.getId();
+                    jobOccupationId = jobOccupationDOTemp.getId();
                     jobOccupationMap.put(jobOccupationDO.getName().trim(), jobOccupationDOTemp);
 
 
