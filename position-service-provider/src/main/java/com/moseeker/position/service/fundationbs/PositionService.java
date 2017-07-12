@@ -610,7 +610,7 @@ public class PositionService {
                     jobOccupation.setName(jobPositionHandlerDate.getOccupation());
                     JobOccupationDO jobOccupationDOTemp = jobOccupationDao.addData(jobOccupation);
                     jobOccupationId = jobOccupationDOTemp.getId();
-                    jobOccupationMap.put(jobOccupationDO.getName().trim(), jobOccupationDOTemp);
+                    jobOccupationMap.put(jobOccupationDOTemp.getName().trim(), jobOccupationDOTemp);
 
 
 //                    JobPositionFailMess jobPositionFailMessPojo = new JobPositionFailMess();
