@@ -470,9 +470,9 @@ public class PositionService {
                 .where("company_id", companyId)
                 .and("status", 1)
                 .buildQuery();
-        List<JobOccupationRecord> jobOccupationList = jobOccupationDao.getRecords(jobOccupationQuery);
-        for (JobOccupationRecord jobOccupationRecord : jobOccupationList) {
-            jobOccupationMap.put(jobOccupationRecord.getName().trim(), jobOccupationRecord);
+        List<JobOccupationDO> jobOccupationList = jobOccupationDao.getDatas(jobOccupationQuery);
+        for (JobOccupationDO jobOccupationDO : jobOccupationList) {
+            jobOccupationMap.put(jobOccupationDO.getName().trim(), jobOccupationDO);
         }
 
         // 公司下职位自定义字段
@@ -598,18 +598,20 @@ public class PositionService {
             int jobOccupationId = 0;
             // 验证职能信息是否正确
             if (!com.moseeker.common.util.StringUtils.isNullOrEmpty(jobPositionHandlerDate.getOccupation())) {
-                JobOccupationRecord jobOccupationRecord = (JobOccupationRecord) jobOccupationMap.get(jobPositionHandlerDate.getOccupation().trim());
-                if (jobOccupationRecord != null) {
-                    jobOccupationId = jobOccupationRecord.getId();
+                JobOccupationDO jobOccupationDO = (JobOccupationDO) jobOccupationMap.get(jobPositionHandlerDate.getOccupation().trim());
+                if (jobOccupationDO != null) {
+                    jobOccupationId = jobOccupationDO.getId();
                 } else {
                     logger.info("-----职位职能不存在,新建一条职能,职能信息为:" + jobPositionHandlerDate.getOccupation());
                     // 职能错误的时候，自动添加一条职能新
                     JobOccupationDO jobOccupation = new JobOccupationDO();
                     jobOccupation.setCompanyId(companyId);
-                    jobOccupation.setStatus((byte) 0);
+                    jobOccupation.setStatus((byte) 1);
                     jobOccupation.setName(jobPositionHandlerDate.getOccupation());
-                    JobOccupationDO jobOccupationDO = jobOccupationDao.addData(jobOccupation);
+                    JobOccupationDO jobOccupationDOTemp = jobOccupationDao.addData(jobOccupation);
                     jobOccupationId = jobOccupationDO.getId();
+                    jobOccupationMap.put(jobOccupationDO.getName().trim(), jobOccupationDOTemp);
+
 
 //                    JobPositionFailMess jobPositionFailMessPojo = new JobPositionFailMess();
 //                    jobPositionFailMessPojo.setCompanyId(jobPositionHandlerDate.getCompany_id());
