@@ -424,7 +424,7 @@ public class CandidateEntity implements Candidate {
         }
 
         /** 查找员工信息 */
-        List<UserEmployeeDO> employeeDOList = employeeEntity.getUserEmployeeDOList(companyId);
+        List<UserEmployeeDO> employeeDOList = employeeEntity.getVerifiedUserEmployeeDOList(companyId);
         logger.info("CandidateEntity getRecommendatorySorting employeeDOList:{}", employeeDOList);
         if (employeeDOList == null || employeeDOList.size() == 0) {
             throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_SORT_COLLEAGUE_NOT_EXIST);
