@@ -146,7 +146,7 @@ public class PositionChangeUtil {
                 HrTeamDO hrTeam = hrTeamDao.getHrTeam(positionDO.getTeamId());
                 if (hrTeam != null) {
                     position.setDepartment(hrTeam.getName());
-                }else{
+                } else {
                     position.setDepartment("");
                 }
                 break;
@@ -370,7 +370,7 @@ public class PositionChangeUtil {
 
         logger.info("setCities:{}", positionCityCodes);
         //转城市
-        if (channelType == ChannelType.LIEPIN) {
+        if (channelType == ChannelType.LIEPIN || channelType == ChannelType.ZHILIAN) {
             List<List<String>> otherCityCodes = cityMapDao.getOtherCityFunllLevel(ChannelType.LIEPIN, positionCityCodes);
             syncPosition.setCities(otherCityCodes);
             logger.info("setCities:otherCityCodes:{}", otherCityCodes);
