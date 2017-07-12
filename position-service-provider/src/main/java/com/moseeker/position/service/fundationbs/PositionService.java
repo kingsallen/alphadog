@@ -13,6 +13,7 @@ import com.moseeker.baseorm.db.dictdb.tables.records.DictCityPostcodeRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrTeamRecord;
+import com.moseeker.baseorm.db.jobdb.tables.JobOccupation;
 import com.moseeker.baseorm.db.jobdb.tables.records.*;
 import com.moseeker.baseorm.pojo.JobPositionPojo;
 import com.moseeker.baseorm.pojo.RecommendedPositonPojo;
@@ -38,9 +39,11 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobOccupationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.position.struct.*;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
+
 import org.apache.thrift.TException;
 import org.jooq.Field;
 import org.slf4j.Logger;
@@ -50,6 +53,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -97,7 +101,6 @@ public class PositionService {
     private HrHbPositionBindingDao hrHbPositionBindingDao;
     @Autowired
     private HrHbItemsDao hrHbItemsDao;
-
     @Autowired
     private PositionChangeUtil positionChangeUtil;
 
@@ -597,15 +600,24 @@ public class PositionService {
                 if (jobOccupationRecord != null) {
                     jobOccupationId = jobOccupationRecord.getId();
                 } else {
-                    logger.info("-----职位职能设置错误,职能为:" + jobPositionHandlerDate.getOccupation());
-                    JobPositionFailMess jobPositionFailMessPojo = new JobPositionFailMess();
-                    jobPositionFailMessPojo.setCompanyId(jobPositionHandlerDate.getCompany_id());
-                    jobPositionFailMessPojo.setJobNumber(jobPositionHandlerDate.getJobnumber());
-                    jobPositionFailMessPojo.setSourceId(jobPositionHandlerDate.getSource_id());
-                    jobPositionFailMessPojo.setJobPostionId(jobPositionHandlerDate.getId());
-                    jobPositionFailMessPojo.setMessage(ConstantErrorCodeMessage.POSITION_DATA_OCCUPATION_ERROR.replace("{MESSAGE}", jobPositionHandlerDate.getOccupation()));
-                    jobPositionFailMessPojos.add(jobPositionFailMessPojo);
-                    continue;
+                    logger.info("-----职位职能不存在,新建一条职能,职能信息为:" + jobPositionHandlerDate.getOccupation());
+                    // 职能错误的时候，自动添加一条职能新
+                    JobOccupationDO jobOccupation = new JobOccupationDO();
+                    jobOccupation.setCompanyId(companyId);
+                    jobOccupation.setStatus((byte) 0);
+                    jobOccupation.setName(jobPositionHandlerDate.getOccupation());
+
+                    JobOccupationDO jobOccupationDO = jobOccupationDao.addData(jobOccupation);
+                    jobOccupationId = jobOccupationDO.getId();
+
+//                    JobPositionFailMess jobPositionFailMessPojo = new JobPositionFailMess();
+//                    jobPositionFailMessPojo.setCompanyId(jobPositionHandlerDate.getCompany_id());
+//                    jobPositionFailMessPojo.setJobNumber(jobPositionHandlerDate.getJobnumber());
+//                    jobPositionFailMessPojo.setSourceId(jobPositionHandlerDate.getSource_id());
+//                    jobPositionFailMessPojo.setJobPostionId(jobPositionHandlerDate.getId());
+//                    jobPositionFailMessPojo.setMessage(ConstantErrorCodeMessage.POSITION_DATA_OCCUPATION_ERROR.replace("{MESSAGE}", jobPositionHandlerDate.getOccupation()));
+//                    jobPositionFailMessPojos.add(jobPositionFailMessPojo);
+//                    continue;
                 }
             }
             // 验证职位自定义字段
@@ -805,7 +817,7 @@ public class PositionService {
             return ResponseUtils.success(jobPostionResponse);
         }
         logger.info("-------批量修改职位结束---------");
-        return ResponseUtils.fail(1, JSONArray.toJSONString(jobPostionResponse));
+        return ResponseUtils.fail(1, "failed", jobPostionResponse);
     }
 
     /**
