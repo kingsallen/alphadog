@@ -16,6 +16,7 @@ import java.util.Map;
 
 /**
  * 创建密码
+ * 密码发送失败，不影响整体流程
  * Created by jack on 10/07/2017.
  */
 @Component
