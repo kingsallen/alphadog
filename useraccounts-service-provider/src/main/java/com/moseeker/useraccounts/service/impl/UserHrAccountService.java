@@ -446,13 +446,7 @@ public class UserHrAccountService {
 
             logger.info("这个帐号已经被其它人绑定了");
             //公司下已经有人绑定了这个第三方账号，则这个公司谁都不能再绑定这个账号了
-            if (data.getBinding() == 1) {
-                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.HRACCOUNT_ALREADY_BOUND);
-            } else if (data.getBinding() == 2) {
-                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.HRACCOUNT_BINDING);
-            } else {
-                return 0;
-            }
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.HRACCOUNT_ALREADY_BOUND);
         }
     }
 
