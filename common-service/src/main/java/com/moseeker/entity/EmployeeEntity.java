@@ -177,17 +177,26 @@ public class EmployeeEntity {
      * @param employeeIds
      * @return
      */
-    public boolean unbind(List<Integer> employeeIds) throws BIZException {
+    public boolean unbind(Collection<Integer> employeeIds) throws BIZException {
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.and(new Condition("id", employeeIds, ValueOp.IN))
                 .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), 0);
         List<UserEmployeeDO> employeeDOList = employeeDao.getDatas(query.buildQuery());
-        if (employeeDOList != null && employeeDOList.size() > 0) {
-            employeeDOList.stream().filter(f -> f.getActivation() == 0).forEach(e -> {
+        return unbind(employeeDOList);
+    }
+
+    /**
+     * 员工取消认证（支持批量）-- 重载
+     * @param employees
+     * @return
+     */
+    public boolean unbind(List<UserEmployeeDO> employees) throws BIZException {
+        if (employees != null && employees.size() > 0) {
+            employees.stream().filter(f -> f.getActivation() == 0).forEach(e -> {
                 e.setActivation((byte) 1);
                 e.setEmailIsvalid((byte) 0);
             });
-            int[] rows = employeeDao.updateDatas(employeeDOList);
+            int[] rows = employeeDao.updateDatas(employees);
             if (Arrays.stream(rows).sum() > 0) {
                 return true;
             } else {
@@ -196,6 +205,7 @@ public class EmployeeEntity {
         }
         return false;
     }
+
 
     /**
      * 员工删除(支持批量)

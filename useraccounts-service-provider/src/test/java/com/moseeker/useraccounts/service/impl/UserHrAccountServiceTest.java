@@ -76,8 +76,8 @@ public class UserHrAccountServiceTest {
             userEmployeeDO.setCustomField("test");
             list.add(userEmployeeDO);
 
-            Response response = userHrAccountService.employeeImport(3, list);
-            System.out.println(response);
+//            Response response = userHrAccountService.employeeImport(3, list);
+//            System.out.println(response);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -90,7 +90,7 @@ public class UserHrAccountServiceTest {
     @Test
     public void employeeList() {
         try {
-            userHrAccountService.employeeList("", 3, 1, "create_time", 1, 0, 0);
+//            userHrAccountService.employeeList("", 3, 1, "create_time", 1, 0, 0);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -105,7 +105,7 @@ public class UserHrAccountServiceTest {
     public void checkBatchInsert() {
         try {
             List<UserEmployeeDO> list = new ArrayList<>();
-            userHrAccountService.repetitionFilter(list, 3);
+//            userHrAccountService.repetitionFilter(list, 3);
 
 //            System.out.println(list);
         } catch (Exception e) {

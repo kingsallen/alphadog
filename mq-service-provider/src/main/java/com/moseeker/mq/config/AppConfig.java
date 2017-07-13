@@ -1,6 +1,8 @@
 package com.moseeker.mq.config;
 
 import com.rabbitmq.client.ConnectionFactory;
+import java.util.ArrayList;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.*;
@@ -13,6 +15,8 @@ import org.springframework.amqp.rabbit.listener.RabbitListenerContainerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
+import org.springframework.retry.backoff.ExponentialBackOffPolicy;
+import org.springframework.retry.support.RetryTemplate;
 
 /**
  * Created by lucky8987 on 17/5/11.
@@ -47,8 +51,17 @@ public class AppConfig {
     @Bean
     public RabbitTemplate rabbitTemplate() {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(cachingConnectionFactory());
+        RetryTemplate retryTemplate = new RetryTemplate();
+        // 重试机制
+        ExponentialBackOffPolicy backOffPolicy = new ExponentialBackOffPolicy();
+        backOffPolicy.setInitialInterval(500);
+        backOffPolicy.setMultiplier(10.0);
+        backOffPolicy.setMaxInterval(10000);
+        retryTemplate.setBackOffPolicy(backOffPolicy);
+        rabbitTemplate.setRetryTemplate(retryTemplate);
         return rabbitTemplate;
     }
+
 
     @Bean
     public AmqpAdmin amqpAdmin() {
@@ -61,6 +74,8 @@ public class AppConfig {
     public RabbitListenerContainerFactory rabbitListenerContainerFactory() {
         SimpleRabbitListenerContainerFactory listenerContainerFactory = new SimpleRabbitListenerContainerFactory();
         listenerContainerFactory.setConnectionFactory(cachingConnectionFactory());
+        // 设置手动 ACK
+        listenerContainerFactory.setAcknowledgeMode(AcknowledgeMode.MANUAL);
         return listenerContainerFactory;
     }
 
@@ -78,8 +93,16 @@ public class AppConfig {
     }
 
     @Bean
-    public Binding binding() {
-       return BindingBuilder.bind(helloQueue()).to(topicExchange()).with("hello.#");
+    public List<Binding> binding() {
+       return new ArrayList<Binding>(){{
+           add(BindingBuilder.bind(helloQueue()).to(topicExchange()).with("hello.#"));
+           add(BindingBuilder.bind(qxQueue()).to(topicExchange()).with("qx.#"));
+       }};
     }
 
+    @Bean
+    public Queue qxQueue() {
+        Queue queue = new Queue("qx", false, false, true);
+        return queue;
+    }
 }

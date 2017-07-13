@@ -213,27 +213,33 @@ public class EmployeeService {
         log.info("unbind param: employeeId={}, companyId={}, userId={}", employeeId, companyId, userId);
         Result response = new Result();
         Query.QueryBuilder query = new Query.QueryBuilder();
-        query.where("sysuser_id", String.valueOf(userId)).and("company_id", String.valueOf(companyId))
-                .and("id", String.valueOf(employeeId));
-        UserEmployeeDO employee = employeeDao.getData(query.buildQuery());
-        log.info("select employee by: {} , result: {}", query, employee);
-        if (employee == null || employee.getId() == 0) {
+        // 查询集团公司companyID列表
+        List<Integer> companyIds = employeeEntity.getCompanyIds(companyId);
+        query.where("sysuser_id", String.valueOf(userId)).and(new Condition("company_id", companyIds, ValueOp.IN));
+        List<UserEmployeeDO> employees = employeeDao.getDatas(query.buildQuery());
+        log.info("select employee by: {} , result: {}", query, Arrays.toString(employees.toArray()));
+        if (employees == null || employees.isEmpty()) {
             response.setSuccess(false);
             response.setMessage("员工信息不存在");
+            return response;
         }
+
         // 如果是email激活发送了激活邮件，但用户未激活(状态为PENDING)，此时用户进行取消绑定操作，删除员工认证的redis信息
-        if (StringUtils.isNotNullOrEmpty(client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, employee.getActivationCode()))) {
-            client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, employee.getActivationCode());
-            response.setSuccess(true);
-            response.setMessage("解绑成功");
-        } else {
-            if (employeeEntity.unbind(Arrays.asList(employeeId))){
+        employees.stream().forEach(employee -> {
+            if (StringUtils.isNotNullOrEmpty(client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, employee.getActivationCode()))) {
+                client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, employee.getActivationCode());
                 response.setSuccess(true);
-                response.setMessage("success");
-            } else {
-                response.setSuccess(false);
-                response.setMessage("fail");
+                response.setMessage("解绑成功");
             }
+        });
+
+        // 解绑
+        if (employeeEntity.unbind(employees.stream().filter(f -> f.getActivation() == 0).collect(Collectors.toList()))) {
+            response.setSuccess(true);
+            response.setMessage("success");
+        } else {
+            response.setSuccess(false);
+            response.setMessage("fail");
         }
         log.info("unbind response: {}", response);
         return response;
