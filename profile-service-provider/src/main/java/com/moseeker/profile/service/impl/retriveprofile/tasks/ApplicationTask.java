@@ -56,7 +56,7 @@ public class ApplicationTask extends Task {
         if (aplicationRecord == null) {
             JobApplicationRecord applicationRecord = initApplication(param.getUserUserRecord().getId(), positionRecord.getId(),
                     positionRecord.getCompanyId());
-            jobApplicationDao.addRecord(applicationRecord);
+            applicationRecord = jobApplicationDao.addRecord(applicationRecord);
             redisClient.incr(Constant.APPID_ALPHADOG, REDIS_KEY_APPLICATION_COUNT_CHECK,
                     String.valueOf(applicationRecord.getApplierId()), String.valueOf(applicationRecord.getCompanyId()));
             logger.info("ApplicationTask 简历回收 生成申请信息。 id:{}", applicationRecord.getId());
