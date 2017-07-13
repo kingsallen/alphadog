@@ -1749,6 +1749,13 @@ public class PositionService {
         return ResponseUtils.successWithoutStringify(positionForAlipaycampusPojo.toString());
     }
 
+    /**
+     * @param  channel      5，支付宝
+     * @param  type        0：创建、更新， 1 刷新， 2 下架
+     * @param  start_time   "2017-04-05 11:34:43"
+     * @param  end_time
+     */
+    @CounterIface
     public List<Integer> getPositionListForThirdParty(int channel, int type, String start_time, String end_time){
         Query query;
         switch (type){

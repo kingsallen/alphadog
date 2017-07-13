@@ -530,7 +530,7 @@ public class PositionController {
 
 
     /**
-     * 职位同步到第三方接口
+     * 职位列表id同步到第三方接口
      */
     @RequestMapping(value = "/positions/thirdpartypositions", method = RequestMethod.GET)
     @ResponseBody
