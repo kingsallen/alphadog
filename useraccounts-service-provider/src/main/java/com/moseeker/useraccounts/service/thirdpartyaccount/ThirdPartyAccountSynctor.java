@@ -88,29 +88,29 @@ public class ThirdPartyAccountSynctor {
                 result.setUpdateTime((new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
                 result.setSyncTime(result.getUpdateTime());
                 logger.info("Chaos回传解析成功:{}:{}", syncType, JSON.toJSONString(hrThirdPartyAccount));
-                updateThirdPartyAccount(result, syncType, null);
+                updateThirdPartyAccount(result, extras, syncType, null);
             } catch (BIZException e) {
                 if (e.getCode() == 1) {
                     //帐号密码错误，将状态改为4
                     hrThirdPartyAccount.setBinding(Short.valueOf("4"));
-                    updateThirdPartyAccount(hrThirdPartyAccount, syncType, e.getMessage());
+                    updateThirdPartyAccount(hrThirdPartyAccount, extras, syncType, e.getMessage());
                 } else {
                     //Chaos那边的其它异常，发送邮件
                     hrThirdPartyAccount.setBinding(Short.valueOf(syncType == 0 ? "6" : "7"));
-                    updateThirdPartyAccount(hrThirdPartyAccount, syncType, "Chaos异常:" + e.getMessage());
+                    updateThirdPartyAccount(hrThirdPartyAccount, extras, syncType, "Chaos异常:" + e.getMessage());
                 }
             } catch (Exception e) {
                 e.printStackTrace();
                 logger.error(e.getMessage(), e);
                 //系统的异常
                 hrThirdPartyAccount.setBinding(Short.valueOf(syncType == 0 ? "6" : "7"));
-                updateThirdPartyAccount(hrThirdPartyAccount, syncType, "系统异常：" + e.getMessage() == null ? "" : e.getMessage());
+                updateThirdPartyAccount(hrThirdPartyAccount, extras, syncType, "系统异常：" + e.getMessage() == null ? "" : e.getMessage());
             }
         }
     }
 
     //发送同步失败的邮件
-    private void sendFailureMail(int syncType, HrThirdPartyAccountDO thirdPartyAccount, String message) {
+    private void sendFailureMail(HrThirdPartyAccountDO thirdPartyAccount, Map<String, String> extras, int syncType, String message) {
         logger.info("发送同步或刷新错误的邮件:syncType{}:thirdPartyAccount:{}:message:{}", syncType, JSON.toJSONString(thirdPartyAccount), message);
 
         if (mails == null || mails.size() == 0) {
@@ -138,6 +138,11 @@ public class ThirdPartyAccountSynctor {
             if (StringUtils.isNotNullOrEmpty(thirdPartyAccount.getMembername())) {
                 messageBuilder.append("【会员名】：").append(thirdPartyAccount.getMembername()).append(br);
             }
+
+            if (extras != null && StringUtils.isNotNullOrEmpty(extras.get("company"))) {
+                messageBuilder.append("【公司名称】:").append(extras.get("company"));
+            }
+
             if (StringUtils.isNotNullOrEmpty(message)) {
                 messageBuilder.append("【失败信息】:").append(br);
                 messageBuilder.append(message).append(br);
@@ -298,7 +303,7 @@ public class ThirdPartyAccountSynctor {
      * @param hrThirdPartyAccount
      * @return
      */
-    private void updateThirdPartyAccount(HrThirdPartyAccountDO hrThirdPartyAccount, int syncType, String emailMsg) {
+    private void updateThirdPartyAccount(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras, int syncType, String emailMsg) {
         int updateResult = updateThirdPartyAccount(hrThirdPartyAccount);
 
         if (updateResult < 1) {
@@ -308,20 +313,20 @@ public class ThirdPartyAccountSynctor {
         if (hrThirdPartyAccount.getBinding() == 1) {
             if (updateResult < 1) {
                 logger.warn("Chaos回传解析成功 更改数据信息失败:{}:更改状态:{}", syncType, updateResult);
-                sendFailureMail(syncType, hrThirdPartyAccount, (syncType == 0 ? "同步" : "刷新") + "数据无法保存到数据库");
+                sendFailureMail(hrThirdPartyAccount, extras, syncType, (syncType == 0 ? "同步" : "刷新") + "数据无法保存到数据库");
             }
         } else if (hrThirdPartyAccount.getBinding() == 4) {
             logger.info("账号密码错误");
             if (updateResult < 1) {
                 //更新失败，发送邮件
-                sendFailureMail(syncType, hrThirdPartyAccount, "密码错误，但无法更新到数据库");
+                sendFailureMail(hrThirdPartyAccount, extras, syncType, "密码错误，但无法更新到数据库");
             }
         } else if (hrThirdPartyAccount.getBinding() == 6 || hrThirdPartyAccount.getBinding() == 7) {
             if (updateResult > 0) {
-                sendFailureMail(syncType, hrThirdPartyAccount, emailMsg);
+                sendFailureMail(hrThirdPartyAccount, extras, syncType, emailMsg);
             } else {
                 //程序错误，并且状态无法更新到数据库
-                sendFailureMail(syncType, hrThirdPartyAccount, emailMsg + ":数据库状态无法更改");
+                sendFailureMail(hrThirdPartyAccount, extras, syncType, emailMsg + ":数据库状态无法更改");
             }
         }
 
