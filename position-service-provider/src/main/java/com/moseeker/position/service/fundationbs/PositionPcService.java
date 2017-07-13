@@ -2,8 +2,11 @@ package com.moseeker.position.service.fundationbs;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.query.SelectOp;
@@ -437,7 +440,7 @@ public class PositionPcService {
 	  *处理position和company的数据
 	  */
 	 public List<Map<String,Object>> handleCompanyAndPositionData(List<JobPositionDO> positionList, List<HrCompanyDO> companyList,List<HrTeamDO> teamList
-			 ,List<Map<String,Integer>> publisherAndCompanyId,Map<String,List<String>> posittionCitys) throws TException{
+			 ,List<Map<String,Integer>> publisherAndCompanyId,Map<Integer,List<String>> positionCitys) throws TException{
 		 List<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
 		 if(positionList==null||positionList.size()==0){
 			 return null;
@@ -470,9 +473,9 @@ public class PositionPcService {
 						 }
 					 }
 				 }
-				 if(posittionCitys!=null&&!posittionCitys.isEmpty()&&!map.isEmpty()){
-					 if(posittionCitys.get(positionId+"")!=null){
-						 map.put("cityList", posittionCitys.get(positionId+""));
+				 if(positionCitys!=null&&!positionCitys.isEmpty()&&!map.isEmpty()){
+					 if(positionCitys.get(positionId)!=null){
+						 map.put("cityList", positionCitys.get(positionId));
 					 }
 				 }
 				 
@@ -527,7 +530,7 @@ public class PositionPcService {
 	 	return list;
 	 }
 	 //根据positionid列表获取list的jobPositioncity
-	 public List<JobPositionCityDO> getJObPositionCity(List<Integer> positionIds){
+	 public List<JobPositionCityDO> getJobPositionCity(List<Integer> positionIds){
 		 if(StringUtils.isEmptyList(positionIds)){
 			 return null;
 		 }
@@ -535,11 +538,11 @@ public class PositionPcService {
 		 return jobPositionCityDao.getDatas(query);
 	 }
 	 //获取职位的城市格式是map形式，（positionId，List<String>)形式
-	 public Map<String,List<String>> handlePositionCity(List<Integer> list){
+	 public Map<Integer,List<String>> handlePositionCity(List<Integer> list){
 		 if(StringUtils.isEmptyList(list)){
 			 return null;
 		 }
-		 List<JobPositionCityDO>jobPositionCityList=this.getJObPositionCity(list);
+		 List<JobPositionCityDO>jobPositionCityList=this.getJobPositionCity(list);
 		 if(StringUtils.isEmptyList(jobPositionCityList)){
 			 return null;
 		 }
@@ -548,13 +551,13 @@ public class PositionPcService {
 		 if(StringUtils.isEmptyList(citys)){
 			 return null;
 		 }
-		 Map<String,List<String>> map=new HashMap<String,List<String>>();
+		 Map<Integer,List<String>> map=new HashMap<Integer,List<String>>();
 		 for(JobPositionCityDO jobDo:jobPositionCityList){
 			 int positionId=jobDo.getPid();
 			 int code=jobDo.getCode();
 			 List<String> positionCity=new ArrayList<String>();
-			 if(map.get(positionId+"")!=null){
-				 positionCity=map.get(positionId+"");
+			 if(map.get(positionId)!=null){
+				 positionCity=map.get(positionId);
 			 }			 
 			 for(DictCityDO city:citys){
 				 int code1=city.getCode();
@@ -564,7 +567,7 @@ public class PositionPcService {
 				 }
 			 }
 			 if(!StringUtils.isEmptyList(positionCity)){
-				 map.put(positionId+"",positionCity);
+				 map.put(positionId,positionCity);
 			 }
 		 }
 		 return map;
@@ -605,7 +608,7 @@ public class PositionPcService {
 		 List<Map<String,Integer>> publisherAndCompanyId=getPublisherCompanyId(companyAccountList);
 		 List<Integer> teamIds=this.getTeamIdList(positionList);
 		 List<HrTeamDO> teamList=hrTeamDao.getTeamList(teamIds);
-		 Map<String,List<String>> positionCitys=this.handlePositionCity(positionIds);
+		 Map<Integer,List<String>> positionCitys=this.handlePositionCity(positionIds);
 		 list=this.handleCompanyAndPositionData(positionList,companyList,teamList,publisherAndCompanyId,positionCitys);
 		 List<Map<String,Object>> jdpictureList=this.handlePositionJdPic(teamList,compantIds,type);
 		 this.handleJDAndPosition(list, jdpictureList);
@@ -679,27 +682,104 @@ public class PositionPcService {
 	 /*
 	  * 获取所推荐公司的publisher列表
 	  */
-	 public Map<String,List<Integer>> getCompanyAccountListByCompanyIds(List<Integer> companyIds){
+	 public List<HrCompanyAccountDO> getCompanyAccountListByCompanyIds(List<Integer> companyIds){
 		 if(StringUtils.isEmptyList(companyIds)){
-			 return  new HashMap<String,List<Integer>>();
+			 return  null;
 		 }
-		 Map<String,List<Integer>> map=new HashMap<String,List<Integer>>();
 		 Query query=new Query.QueryBuilder().where(new Condition("company_id",companyIds.toArray(),ValueOp.IN)).buildQuery();
 		 List<HrCompanyAccountDO> list=hrCompanyAccountDao.getDatas(query);
-		 for(HrCompanyAccountDO accountDO:list){
-			 int companyId=accountDO.getCompanyId();
-			 int pulisher=accountDO.getAccountId();
-			 if(map.get(companyId+"")!=null){
-				 List<Integer> publisherList=map.get(companyId+"");
-				 publisherList.add(pulisher);
-			 }else{
-				 List<Integer> publisherList=new ArrayList<Integer>();
-				 publisherList.add(pulisher);
-				 map.put(companyId+"",publisherList);
+		 return list;
+	 }
+	 // 获取所有公司包括子公司
+	 public List<HrCompanyDO> getAllCommpany(List<Integer> companyIds){
+		 Query query=new Query.QueryBuilder()
+				 .where(new Condition("id",companyIds.toArray(),ValueOp.IN))
+				 .or(new Condition("parent_id",companyIds.toArray(),ValueOp.IN))
+				 .buildQuery();
+		 List<HrCompanyDO> list=hrCompanyDao.getDatas(query);
+		 return list;
+	 }
+	 //获取所有的公司信息以及自己的子公司
+	 public Map<Integer,Set<Integer>> getCompanySubAndSelf(List<HrCompanyDO> list,List<Integer> companyIds){
+		 if(StringUtils.isEmptyList(list)||StringUtils.isEmptyList(companyIds)){
+			 return null;
+		 }
+		 Map<Integer,Set<Integer>> data=new HashMap<Integer,Set<Integer>>();
+		 for(Integer companyId:companyIds){
+			 for(HrCompanyDO DO:list){
+				 int parentId=DO.getParentId();
+				 int id=DO.getId();
+				 int status=DO.getDisable();
+				 if(status==0&&parentId!=0){
+					 continue;
+				 }
+				 if(companyId==id||parentId==companyId){
+					 if(data.get(companyId)!=null){
+						 data.get(companyId).add(id);
+					 }else{
+						 Set<Integer> companySet=new HashSet<Integer>();
+						 companySet.add(id);
+						 data.put(companyId, companySet);
+					 }
+				 }
 			 }
 		 }
+		 return data;
+	 }
+	 //获取所有公司
+	 public List<Integer> getAllCompanyIds(Map<Integer,Set<Integer>> data){
+		 if(data==null||data.isEmpty()){
+			 return null;
+		 }
+		 List<Integer> companyIdList=new ArrayList<Integer>();
+		 for(Integer key:data.keySet()){
+			 companyIdList.addAll(data.get(key));
+		 }
+		 return companyIdList;
+	 }
+	 //获取企业id和publisher的集合
+	 public Map<Integer,List<Integer>> handleCompanyPublisher(List<Integer> compantIdsList){
+		 if(StringUtils.isEmptyList(compantIdsList)){
+			 return null;
+		 }
+		 List<HrCompanyDO> companyList=getAllCommpany(compantIdsList);
+		 if(companyList==null||companyList.isEmpty()){
+			 return null;
+		 }
+		 Map<Integer,Set<Integer>> companySubData=getCompanySubAndSelf(companyList,compantIdsList);
+		 if(companySubData==null||companySubData.isEmpty()){
+			 return null;
+		 }
+		 List<HrCompanyAccountDO> accountList=getCompanyAccountListByCompanyIds(compantIdsList);
+		 if(StringUtils.isEmptyList(accountList)){
+			 return null;
+		 }
+		 Map<Integer,List<Integer>> map=new HashMap<Integer,List<Integer>>();
+		 HandleCompanyPublisher(companySubData,accountList,map);
 		 return map;
 	 }
+	 //将数据处理成Map<companyId,List<pulisher>>的形式
+	 public void HandleCompanyPublisher(Map<Integer,Set<Integer>> companySubData,List<HrCompanyAccountDO> accountList, Map<Integer,List<Integer>> map){
+		 for(HrCompanyAccountDO DO:accountList){
+			 int id=DO.getCompanyId();
+			 int accountId=DO.getAccountId();
+			 for(Integer companyId:companySubData.keySet()){
+				 Set<Integer> data=companySubData.get(companyId);
+				 if(data!=null||!data.isEmpty()){
+					 if(data.contains(id)){
+						 if(map.get(companyId)==null){
+							 List<Integer> accountIdList=new ArrayList<Integer>();
+							 accountIdList.add(accountId);
+							 map.put(companyId, accountIdList);
+						 }else{
+							 map.get(companyId).add(accountId);
+						 }
+					 }
+				 }
+			 }
+		 }
+	 }
+	 
 	 /*
 	  * 获取该公司id列表下的职位数量
 	  */
@@ -734,19 +814,27 @@ public class PositionPcService {
 		 if(StringUtils.isEmptyList(companyIds)){
 			 return  null;
 		 }
-		 List<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
 		 List<HrCompanyDO> companyList=hrCompanyDao.getHrCompanyByCompanyIds(companyIds);
 		 if(StringUtils.isEmptyList(companyList)){
 			 return  null;
 		 }
-		 Map<String,List<Integer>> companyPulisher=getCompanyAccountListByCompanyIds(companyIds);
-		 List<Map<String,Object>> mapTeamNum=hrTeamDao.getTeamNum(companyIds);
 		 companyList=filterCompanyList(companyList);
 		 if(StringUtils.isEmptyList(companyList)){
 			 return  null;
 		 }
+		 Map<Integer,List<Integer>> companyPulisher=handleCompanyPublisher(companyIds);
+		 List<Map<String,Object>> mapTeamNum=hrTeamDao.getTeamNum(companyIds);
 		 List<Integer> companyids=this.getCompanyIds(companyList);
 		 List<Map<String,Object>> jdlist=HandleCmsResource(companyids,1);
+		 Map<Integer,Set<String>> companyPositionCityData=handlerCompanyPositionCity(companyPulisher);
+		 List<Map<String,Object>> list=handleDataForCompanyRecommend(companyList,companyPulisher,mapTeamNum,jdlist,companyPositionCityData);
+		 return list;
+	 }
+	 //处理企业信息的组合问题
+	 public List<Map<String,Object>> handleDataForCompanyRecommend( List<HrCompanyDO> companyList,
+			 Map<Integer,List<Integer>> companyPulisher,List<Map<String,Object>> mapTeamNum
+			 ,List<Map<String,Object>> jdlist,Map<Integer,Set<String>> companyPositionCityData) throws TException{
+		 List<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
 		 Map<String,Object> map=null;
 		 for(int i=0;i<companyList.size();i++){
 			 map=new HashMap<String,Object>();
@@ -755,13 +843,18 @@ public class PositionPcService {
 			 String companyDOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(companyDO);
 			 Map<String,Object> companyData=JSON.parseObject(companyDOs, Map.class);
 			 map.put("company", companyData);
-			 List<Integer> publisherIds=companyPulisher.get(companyId+"");
-			 if(publisherIds!=null&&publisherIds.size()>0){
-				int num=this.getPositionNum(publisherIds);
-				map.put("positionNum", num);
+			 if(companyPulisher!=null&&!companyPulisher.isEmpty()){
+				 List<Integer> publisherIds=companyPulisher.get(companyId);
+				 if(publisherIds!=null&&publisherIds.size()>0){
+					int num=this.getPositionNum(publisherIds);
+					map.put("positionNum", num);
+				 }else{
+					map.put("positionNum", 0);
+				 }
 			 }else{
-				map.put("positionNum", 0);
+				 map.put("positionNum", 0);
 			 }
+			 
 			 if(!StringUtils.isEmptyList(companyList)){
 				 for(Map teamMap:mapTeamNum){
 					 int companyId1=(int) teamMap.get("company_id");
@@ -784,6 +877,11 @@ public class PositionPcService {
 						 }
 						 break;
 					 }
+				 }
+			 }
+			 if(companyPositionCityData!=null&&!companyPositionCityData.isEmpty()){
+				 if(companyPositionCityData.get(companyId)!=null){
+					 map.put("cityList", companyPositionCityData.get(companyId));
 				 }
 			 }
 			 
@@ -812,5 +910,111 @@ public class PositionPcService {
 			 }
 		 }
 		 return newList;
+	 }
+	 /*
+	  * 获取公司hr下的职位
+	  */
+	 public List<JobPositionDO> getPositionByPublisher(List<Integer> publisherList){
+		 if(StringUtils.isEmptyList(publisherList)){
+			 return null;
+		 }
+		 Query query=new Query.QueryBuilder()
+				    .where(new Condition("publisher",publisherList.toArray(),ValueOp.IN))
+				    .and("status",0)
+				    .setPageNum(1)
+				    .setPageSize(300)
+				    .buildQuery();
+		 List<JobPositionDO> list=jobPositionDao.getDatas(query);
+		 return list;
+	 }
+	 /*
+	  * 处理公司信息，获取公司下的positionId
+	  */
+	 public Map<Integer,Set<Integer>> getCompanyPositionIds(Map<Integer,List<Integer>> companyPublisher,List<JobPositionDO> positionData){
+		 if(StringUtils.isEmptyList(positionData)){
+			 return null;
+		 }
+		 Map<Integer,Set<Integer>> map=new HashMap<Integer,Set<Integer>>();
+		 for(JobPositionDO DO:positionData){
+			 int publisher=DO.getPublisher();
+			 int positionId=DO.getId();
+			 for(Integer key:companyPublisher.keySet()){
+				List<Integer> publishers=companyPublisher.get(key);
+				if(publishers.contains(publisher)){
+					if(map.get(key)!=null){
+						map.get(key).add(positionId);
+					}else{
+						Set<Integer> positionIdSet=new HashSet<Integer>();
+						positionIdSet.add(positionId);
+						map.put(key, positionIdSet);
+					}
+				}
+			 }
+		 }
+		 return map;
+	 }
+	 
+	 //获取所有的publisher
+	 public List<Integer> getAllPulisherByCompanyPublisher(Map<Integer,List<Integer>> companyPublisher){
+		 if(companyPublisher==null||companyPublisher.isEmpty()){
+			 return null;
+		 }
+		 List<Integer> list=new ArrayList<Integer>();
+		 for(Integer key:companyPublisher.keySet()){
+			 List<Integer> publishers=companyPublisher.get(key);
+			 list.addAll(publishers);
+		 }
+		 return list;
+	 }
+	 //获取positionId，通过职位列表
+	 public List<Integer> getIdByPositionList( List<JobPositionDO> list){
+		 if(list==null||list.size()==0){
+				return null;
+			}
+			List<Integer> result=new ArrayList<Integer>();
+			for(int i=0;i<list.size();i++){
+				JobPositionDO record=list.get(i);
+				result.add(record.getId());
+			}
+			return result;
+	 }
+	 //处理公司下面的地址
+	 public Map<Integer,Set<String>> handlerCompanyPositionCity(Map<Integer,List<Integer>> companyPublisher){
+		 List<Integer> publisherList=getAllPulisherByCompanyPublisher(companyPublisher);
+		 List<JobPositionDO> positionData=getPositionByPublisher(publisherList);
+		 List<Integer> positionIdList=this.getIdByPositionList(positionData);
+		 Map<Integer,Set<Integer>> companyPosition=getCompanyPositionIds(companyPublisher,positionData);
+		 if(companyPosition==null||companyPosition.isEmpty()){
+			 return null;
+		 }
+		 Map<Integer,List<String>> positionCityMap=handlePositionCity(positionIdList);
+		 if(positionCityMap==null||positionCityMap.isEmpty()){
+			 return null;
+		 }
+		 Map<Integer,Set<String>> data=handlerDataCompanyCity(companyPosition,positionCityMap);
+		 return data;
+	 }
+	 //处理数据获取Set<companyId,Set<city>>的数据
+	 public Map<Integer,Set<String>> handlerDataCompanyCity(Map<Integer,Set<Integer>> companyPosition,Map<Integer,List<String>> positionCityMap){
+		
+		 Map<Integer,Set<String>> data=new HashMap<Integer,Set<String>>();
+		 for(Integer key1:positionCityMap.keySet()){
+			 List<String> cities=positionCityMap.get(key1);
+			 if(StringUtils.isEmptyList(cities)){
+				 for(Integer key2:companyPosition.keySet()){
+					 Set<Integer> positionIds=companyPosition.get(key2);
+					 if(positionIds.contains(key1)){
+						 if(data.get(key2)==null){
+							 Set<String> cityData=new HashSet<String>(); 
+							 cityData.addAll(cities);
+							 data.put(key2, cityData);
+						 }else{
+							 data.get(key2).addAll(cities) ;
+						 }
+					 }
+				 }
+			 }
+		 }
+		 return data;
 	 }
 }
