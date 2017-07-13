@@ -1052,10 +1052,6 @@ public class UserHrAccountService {
         if (StringUtils.isEmptyObject(userEmployees) && type.intValue() == 0) {
             throw ExceptionFactory.buildException(ExceptionCategory.USEREMPLOYEES_EMPTY);
         }
-        // 查询是否有权限修改
-        if (!employeeEntity.permissionJudge(userEmployees, companyId)) {
-            throw ExceptionFactory.buildException(ExceptionCategory.PERMISSION_DENIED);
-        }
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
 
         if (type.intValue() == 1) {  // 导出所有，取该公司下所有的员工ID
@@ -1064,6 +1060,10 @@ public class UserHrAccountService {
         } else {
             queryBuilder.where(new Condition(UserEmployee.USER_EMPLOYEE.ID.getName(), userEmployees, ValueOp.IN))
                     .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), 0);
+            // 查询是否有权限修改
+            if (!employeeEntity.permissionJudge(userEmployees, companyId)) {
+                throw ExceptionFactory.buildException(ExceptionCategory.PERMISSION_DENIED);
+            }
         }
         // 员工列表
         List<UserEmployeeDO> list = userEmployeeDao.getDatas(queryBuilder.buildQuery());
@@ -1364,7 +1364,7 @@ public class UserHrAccountService {
      */
     public Response updateUserEmployee(String cname, String mobile, String email, String customField, Integer userEmployeeId, Integer companyId) throws BIZException {
         Response response = new Response();
-        if (StringUtils.isEmptyObject(userEmployeeId)) {
+        if (userEmployeeId == 0) {
             throw ExceptionFactory.buildException(ExceptionCategory.USEREMPLOYEES_DATE_EMPTY);
         }
         if (companyId == 0) {
