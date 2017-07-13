@@ -356,6 +356,18 @@ public class UserHrAccountService {
         return result;
     }
 
+    public int checkRebinding(HrThirdPartyAccountDO bindingAccount) throws BIZException {
+        if (bindingAccount.getBinding() == 1 || bindingAccount.getBinding() == 3 || bindingAccount.getBinding() == 7) {
+            throw new BIZException(-1, "已经绑定该帐号了");
+        } else if (bindingAccount.getBinding() == 2 || bindingAccount.getBinding() == 6) {
+            throw new BIZException(-1, "该帐号已经在绑定中了");
+        } else {
+            //重新绑定
+            logger.info("重新绑定:{}", bindingAccount.getId());
+            return bindingAccount.getId();
+        }
+    }
+
     /**
      * 是否允许执行绑定
      * <0,主张号已绑定，
@@ -365,9 +377,16 @@ public class UserHrAccountService {
     @CounterIface
     public int allowBind(UserHrAccountDO hrAccount, HrThirdPartyAccountDO thirdPartyAccount) throws Exception {
 
+        HrThirdPartyAccountDO bindingAccount = hrThirdPartyAccountDao.getThirdPartyAccountByUserId(hrAccount.getId(), thirdPartyAccount.getChannel());
+
+        //如果当前hr已经绑定了该帐号
+        if (bindingAccount != null && bindingAccount.getUsername().equals(bindingAccount.getUsername())) {
+            return checkRebinding(bindingAccount);
+        }
+
         //主账号或者没有绑定第三方账号，检查公司下该渠道已经绑定过相同的第三方账号
         Query.QueryBuilder qu = new Query.QueryBuilder();
-        qu.where("company_id", thirdPartyAccount.getCompanyId());
+        qu.where("company_id", hrAccount.getCompanyId());
         qu.and("channel", thirdPartyAccount.getChannel());
         qu.and("username", thirdPartyAccount.getUsername());
         qu.and(new Condition("binding", 0, ValueOp.NEQ));//有效的状态
@@ -387,7 +406,6 @@ public class UserHrAccountService {
 
         if (data == null || data.getId() == 0) {
             //检查该用户是否绑定了其它相同渠道的账号
-            HrThirdPartyAccountDO bindingAccount = hrThirdPartyAccountDao.getThirdPartyAccountByUserId(hrAccount.getId(), thirdPartyAccount.getChannel());
             logger.info("该用户绑定渠道{}的帐号:{}", thirdPartyAccount.getChannel(), JSON.toJSONString(bindingAccount));
             if (bindingAccount != null && bindingAccount.getId() > 0 && bindingAccount.getBinding() != 0) {
                 if (hrAccount.getAccountType() == 0) {
@@ -403,18 +421,11 @@ public class UserHrAccountService {
                 return 0;
             }
         } else {
-            //如果尝试绑定相同的帐号
-            if (data.getUsername().equals(thirdPartyAccount.getUsername())) {
-                if (data.getBinding() == 1 || data.getBinding() == 3 || data.getBinding() == 7) {
-                    throw new BIZException(-1, "已经绑定该帐号了");
-                } else if (data.getBinding() == 2 || data.getBinding() == 6) {
-                    throw new BIZException(-1, "该帐号已经在绑定中了");
-                } else if (data.getBinding() == 4 || data.getBinding() == 5) {
-                    //重新绑定
-                    logger.info("重新绑定:{}", data.getId());
-                    return data.getId();
-                }
+            //主张号发现已经有子帐号已经绑定了这个帐号
+            if (hrAccount.getAccountType() == 0 && data.getUsername().equals(thirdPartyAccount.getUsername())) {
+                return checkRebinding(data);
             }
+
             logger.info("这个帐号已经被其它人绑定了");
             //公司下已经有人绑定了这个第三方账号，则这个公司谁都不能再绑定这个账号了
             if (data.getBinding() == 1) {
@@ -483,7 +494,7 @@ public class UserHrAccountService {
 
         HrCompanyDO companyDO = hrCompanyAccountDao.getHrCompany(finalHrId);
 
-        if(hrAccountDO.getId() != finalHrId){
+        if (hrAccountDO.getId() != finalHrId) {
             hrAccountDO = userHrAccountDao.getValidAccount(finalHrId);
         }
 
