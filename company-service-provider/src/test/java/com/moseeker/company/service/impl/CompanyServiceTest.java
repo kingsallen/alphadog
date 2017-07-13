@@ -56,10 +56,4 @@ public class CompanyServiceTest {
         System.out.println(response);
     }
 
-    //@Test
-    public void ifSynchronizePosition() throws Exception {
-        Response response = service.ifSynchronizePosition(54545, (byte) 1);
-        System.out.println(response);
-    }
-
 }

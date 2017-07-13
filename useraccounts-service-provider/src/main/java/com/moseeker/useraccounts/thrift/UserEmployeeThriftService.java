@@ -3,6 +3,7 @@ package com.moseeker.useraccounts.thrift;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.useraccounts.service.UserEmployeeService;
+import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,7 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
 
 
     @Override
-    public Response postPutUserEmployeeBatch(List<UserEmployeeStruct> update) throws TException {
-        return employeeService.postPutUserEmployeeBatch(update);
+    public Response postPutUserEmployeeBatch(UserEmployeeBatchForm batchForm) throws TException {
+        return employeeService.postPutUserEmployeeBatch(batchForm);
     }
 }

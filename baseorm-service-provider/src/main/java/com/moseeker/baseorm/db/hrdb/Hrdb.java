@@ -17,6 +17,8 @@ import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCustomFields;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeePosition;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeSection;
 import com.moseeker.baseorm.db.hrdb.tables.HrFeedback;
+import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompany;
+import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompanyRel;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbConfig;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbItems;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbPositionBinding;
@@ -87,7 +89,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Hrdb extends SchemaImpl {
 
-    private static final long serialVersionUID = -297774913;
+    private static final long serialVersionUID = 1834886235;
 
     /**
      * The reference instance of <code>hrdb</code>
@@ -168,6 +170,16 @@ public class Hrdb extends SchemaImpl {
      * HR反馈表
      */
     public final HrFeedback HR_FEEDBACK = com.moseeker.baseorm.db.hrdb.tables.HrFeedback.HR_FEEDBACK;
+
+    /**
+     * The table <code>hrdb.hr_group_company</code>.
+     */
+    public final HrGroupCompany HR_GROUP_COMPANY = com.moseeker.baseorm.db.hrdb.tables.HrGroupCompany.HR_GROUP_COMPANY;
+
+    /**
+     * The table <code>hrdb.hr_group_company_rel</code>.
+     */
+    public final HrGroupCompanyRel HR_GROUP_COMPANY_REL = com.moseeker.baseorm.db.hrdb.tables.HrGroupCompanyRel.HR_GROUP_COMPANY_REL;
 
     /**
      * 红包配置表
@@ -424,6 +436,8 @@ public class Hrdb extends SchemaImpl {
             HrEmployeePosition.HR_EMPLOYEE_POSITION,
             HrEmployeeSection.HR_EMPLOYEE_SECTION,
             HrFeedback.HR_FEEDBACK,
+            HrGroupCompany.HR_GROUP_COMPANY,
+            HrGroupCompanyRel.HR_GROUP_COMPANY_REL,
             HrHbConfig.HR_HB_CONFIG,
             HrHbItems.HR_HB_ITEMS,
             HrHbPositionBinding.HR_HB_POSITION_BINDING,
