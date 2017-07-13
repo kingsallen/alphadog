@@ -401,7 +401,7 @@ public class UserHrAccountService {
         HrThirdPartyAccountDO bindingAccount = hrThirdPartyAccountDao.getThirdPartyAccountByUserId(hrAccount.getId(), thirdPartyAccount.getChannel());
 
         //如果当前hr已经绑定了该帐号
-        if (bindingAccount != null && bindingAccount.getUsername().equals(bindingAccount.getUsername())) {
+        if (bindingAccount != null && bindingAccount.getUsername().equals(thirdPartyAccount.getUsername())) {
             return checkRebinding(bindingAccount);
         }
 
