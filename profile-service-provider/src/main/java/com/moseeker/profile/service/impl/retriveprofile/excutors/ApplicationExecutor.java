@@ -25,7 +25,9 @@ public class ApplicationExecutor extends Executor {
         if (param.getUserUserRecord() == null || param.getUserUserRecord().getId() == null) {
             ExceptionFactory.buildException(Category.PROFILE_ALLREADY_EXIST);
         }
-        if (param.getPositionRecord() == null || param.getPositionRecord().getId() == 0
+        if (param.getPositionRecord() == null || param.getPositionRecord().getId() == null
+                || param.getPositionRecord().getId() == 0
+                || param.getPositionRecord().getCompanyId() == null
                 || param.getPositionRecord().getCompanyId() == 0) {
             ExceptionFactory.buildException(Category.VALIDATION_POSITION_NOT_EXIST);
         }
