@@ -160,13 +160,15 @@ public class CompanySearchengine {
     }
     //组装prefix关键字查询语句
     private void handleKeyWordForPrefix(String keywords,boolean hasKey,QueryBuilder query){
-    	QueryBuilder keyand = QueryBuilders.boolQuery();
-		QueryBuilder fullf = QueryBuilders.matchPhrasePrefixQuery("company.name", keywords);
-		((BoolQueryBuilder) keyand).should(fullf);
-		QueryBuilder fullf1 = QueryBuilders.matchPhrasePrefixQuery("company.abbreviation", keywords);
-		((BoolQueryBuilder) keyand).should(fullf1);
-		((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
-        ((BoolQueryBuilder) query).must(keyand);
+    	if(!com.moseeker.common.util.StringUtils.isNullOrEmpty(keywords)){
+    		QueryBuilder keyand = QueryBuilders.boolQuery();
+    		QueryBuilder fullf = QueryBuilders.matchPhrasePrefixQuery("company.name", keywords);
+    		((BoolQueryBuilder) keyand).should(fullf);
+    		QueryBuilder fullf1 = QueryBuilders.matchPhrasePrefixQuery("company.abbreviation", keywords);
+    		((BoolQueryBuilder) keyand).should(fullf1);
+    		((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+            ((BoolQueryBuilder) query).must(keyand);
+    	}
     }
     //组装sort的script
     private Script buildScriptSort(String keywords){
