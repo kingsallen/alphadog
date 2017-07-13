@@ -1039,12 +1039,19 @@ public class UserHrAccountService {
      *
      * @param userEmployees 员工ID
      * @param companyId     公司ID
+     * @param type          1:导出所有，0:按照userEmployees导出
      * @return
      */
-    public List<UserEmployeeVO> employeeExport(List<Integer> userEmployees, Integer companyId) throws BIZException {
+    public List<UserEmployeeVO> employeeExport(List<Integer> userEmployees, Integer companyId, Integer type) throws BIZException {
         List<UserEmployeeVO> userEmployeeVOS = new ArrayList<>();
         if (companyId == 0) {
             throw ExceptionFactory.buildException(ExceptionCategory.COMPANYID_ENPTY);
+        }
+        if (type.intValue() == 1) {  // 导出所有，取该公司下所有的员工ID
+            List<Integer> companyIds = employeeEntity.getCompanyIds(companyId);
+            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+            queryBuilder.where(new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyId, ValueOp.IN));
+//            userEmployees =
         }
         if (!StringUtils.isEmptyObject(userEmployees)) {
             // 查询是否有权限修改
