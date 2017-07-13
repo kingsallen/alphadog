@@ -70,12 +70,14 @@ public class CompanySearchengine {
         		 QueryBuilder query=this.buildQueryForString(keywords, citys, industry, scale);
                  SearchRequestBuilder responseBuilder=client.prepareSearch("companys").setTypes("company")
                          .setQuery(query)
-                         .addSort("_score", SortOrder.DESC)
                          .setFrom(page)
                          .setSize(pageSize)
                          .addAggregation(this.handleAggIndustry())
                          .addAggregation(this.handleAggPositionCity())
                          .addAggregation(this.handleAggScale());
+                 if(!org.springframework.util.StringUtils.isEmpty(keywords)){
+                	 responseBuilder.addSort("_score", SortOrder.DESC);
+                 }
                  logger.info(responseBuilder.toString());
                  SearchResponse response = responseBuilder.execute().actionGet();
                  return response;
@@ -95,12 +97,8 @@ public class CompanySearchengine {
        	 if(client!=null){
        		 	QueryBuilder query = QueryBuilders.boolQuery();
        		    this.buildQueryForPrefix(keywords, citys, industry, scale,query);
-       		    Script script=this.buildScriptSort(keywords);
-                SortBuilder builder=new ScriptSortBuilder(script,"number");
-                builder.order( SortOrder.DESC);
                 SearchRequestBuilder responseBuilder=client.prepareSearch("companys").setTypes("company")
                         .setQuery(query)
-                        .addSort(builder)
                         .setTrackScores(true)
                         .setFrom(page)
                         .setSize(pageSize)
@@ -108,10 +106,15 @@ public class CompanySearchengine {
                         .addAggregation(this.handleAggPositionCity())
                         .addAggregation(this.handleAggScale());
                 logger.info(responseBuilder.toString());
+                if(!org.springframework.util.StringUtils.isEmpty(keywords)){
+                	 Script script=this.buildScriptSort(keywords);
+                     SortBuilder builder=new ScriptSortBuilder(script,"number");
+                     builder.order( SortOrder.DESC);
+                     responseBuilder.addSort(builder);
+                }
                 SearchResponse response = responseBuilder.execute().actionGet();
                 return response;
        	 }
-            
         }catch(Exception e){
        	 logger.info(e.getMessage(),e);
         }
