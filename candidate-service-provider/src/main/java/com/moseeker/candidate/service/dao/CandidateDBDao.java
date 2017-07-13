@@ -348,8 +348,9 @@ public class CandidateDBDao {
         list.add(1);
         list.add(2);
         list.add(3);
-        Query query = new Query.QueryBuilder().select("id").select("position_id").select("presentee_user_id").
-                where(new Condition("is_recom", list, ValueOp.IN))
+        Query query = new Query.QueryBuilder().select("id").select("position_id").select("presentee_user_id")
+                .select("click_time")
+                .where(new Condition("is_recom", list, ValueOp.IN))
                 .and(new Condition("id", idList, ValueOp.IN))
                 .and(new Condition("position_id", positionIdList, ValueOp.IN))
                 .orderBy("position_id").orderBy("click_time").buildQuery();
