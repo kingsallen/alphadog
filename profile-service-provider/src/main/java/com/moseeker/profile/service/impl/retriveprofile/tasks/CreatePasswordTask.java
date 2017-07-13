@@ -33,8 +33,9 @@ public class CreatePasswordTask extends Task {
         String plainPassword = StringUtils.getRandomString(6);
         UserUserRecord userUserRecord = param.getUserUserRecord();
         Map<String, String> params = new HashMap<>();
+        params.put("name", param.getUserUserRecord().getUsername());
         params.put("code", plainPassword);
-        boolean result = smsSender.sendSMS(userUserRecord.getUsername(),"SMS_5755096",params);
+        boolean result = smsSender.sendSMS(userUserRecord.getUsername(),"SMS_5895237",params);
         if (result) {
             userUserRecord.setPassword(MD5Util.encryptSHA(plainPassword));
             userUserDao.updateRecord(userUserRecord);
