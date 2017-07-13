@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.exception;
 
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.exception.ParamIllegalException;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 
@@ -9,7 +10,7 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
  */
 public class ExceptionFactory extends com.moseeker.common.exception.ExceptionFactory {
 
-    public static BIZException buildException(ExceptionCategory exceptionCategory) throws ParamIllegalException {
+    public static CommonException buildException(ExceptionCategory exceptionCategory) throws ParamIllegalException {
         if (exceptionCategory == null) {
             throw new ParamIllegalException("异常类型不存在");
         }

@@ -1,7 +1,9 @@
 package com.moseeker.company.thrift;
 
+import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.Category;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.company.exception.ExceptionFactory;
 import com.moseeker.entity.CompanyConfigEntity;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -68,13 +70,11 @@ public class CompanyServicesImpl implements Iface {
     public List<CompanyForVerifyEmployee> getGroupCompanies(int companyId) throws BIZException, TException {
         try {
             return service.getGroupCompanies(companyId);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
-            if (e instanceof BIZException) {
-                throw e;
-            } else {
-                logger.error(e.getMessage(), e);
-                throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
-            }
+            logger.error(e.getMessage(), e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
         }
     }
 
@@ -82,13 +82,11 @@ public class CompanyServicesImpl implements Iface {
     public boolean isGroupCompanies(int companyId) throws BIZException, TException {
         try {
             return service.isGroupCompanies(companyId);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
-            if (e instanceof BIZException) {
-                throw e;
-            } else {
-                logger.error(e.getMessage(), e);
-                throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
-            }
+            logger.error(e.getMessage(), e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
         }
     }
 
@@ -107,11 +105,18 @@ public class CompanyServicesImpl implements Iface {
      */
     @Override
     public boolean updateEmployeeBindConf(int companyId, int authMode, String emailSuffix, String custom, String customHint, String questions, String filePath, String fileName, int type, int hraccountId) throws BIZException, TException {
-        int result = service.updateHrEmployeeCertConf(companyId, authMode, emailSuffix, custom, customHint, questions, filePath, fileName, type, hraccountId);
-        if (result > 0) {
-            return true;
+        try {
+            int result = service.updateHrEmployeeCertConf(companyId, authMode, emailSuffix, custom, customHint, questions, filePath, fileName, type, hraccountId);
+            if (result > 0) {
+                return true;
+            }
+            return false;
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
         }
-        return false;
     }
 
     /**
@@ -123,7 +128,14 @@ public class CompanyServicesImpl implements Iface {
      */
     @Override
     public CompanyCertConf getHrEmployeeCertConf(int companyId, int type, int accountId) throws BIZException, TException {
-        return service.getHrEmployeeCertConf(companyId, type, accountId);
+        try {
+            return service.getHrEmployeeCertConf(companyId, type, accountId);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
     }
 
     /**
@@ -157,7 +169,14 @@ public class CompanyServicesImpl implements Iface {
      */
     @Override
     public Response updateCompanyRewardConf(int companyId, List<RewardConfig> rewardConfigs) throws BIZException, TException {
-        return service.updateCompanyRewardConf(companyId, rewardConfigs);
+        try {
+            return service.updateCompanyRewardConf(companyId, rewardConfigs);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
     }
 
 
@@ -171,7 +190,14 @@ public class CompanyServicesImpl implements Iface {
      */
     @Override
     public CompanyOptions getCompanyOptions(int companyId) throws BIZException, TException {
-        return service.getCompanyOptions(companyId);
+        try {
+            return service.getCompanyOptions(companyId);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
     }
 
     /**
@@ -188,7 +214,15 @@ public class CompanyServicesImpl implements Iface {
      */
     @Override
     public Response addImporterMonitor(int comanyId, int hraccountId, int type, String file, int status, String message, String fileName) throws BIZException, TException {
-        return service.addImporterMonitor(comanyId, hraccountId, type, file, status, message, fileName);
+        try {
+            return service.addImporterMonitor(comanyId, hraccountId, type, file, status, message, fileName);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+
     }
 
     /**
@@ -202,7 +236,14 @@ public class CompanyServicesImpl implements Iface {
      */
     @Override
     public HrImporterMonitorDO getImporterMonitor(int comanyId, int hraccountId, int type) throws BIZException, TException {
-        return service.getImporterMonitor(comanyId, hraccountId, type);
+        try {
+            return service.getImporterMonitor(comanyId, hraccountId, type);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
     }
 
     /**
@@ -214,9 +255,14 @@ public class CompanyServicesImpl implements Iface {
      */
     @Override
     public Response bindingSwitch(int companyId, int disable) throws BIZException, TException {
-        return service.bindingSwitch(companyId, disable);
+        try {
+            return service.bindingSwitch(companyId, disable);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
     }
-
-
 }
 

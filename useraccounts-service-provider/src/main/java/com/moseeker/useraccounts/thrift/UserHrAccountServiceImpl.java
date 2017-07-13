@@ -1,7 +1,10 @@
 package com.moseeker.useraccounts.thrift;
 
+import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.exception.Category;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -229,7 +232,14 @@ public class UserHrAccountServiceImpl implements Iface {
      */
     @Override
     public boolean unbindEmployee(List<Integer> ids) throws BIZException, TException {
-        return employeeEntity.unbind(ids);
+        try {
+            return employeeEntity.unbind(ids);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
     }
 
     /**
@@ -303,7 +313,15 @@ public class UserHrAccountServiceImpl implements Iface {
      */
     @Override
     public UserEmployeeNumStatistic getListNum(String keyWord, int companyId) throws BIZException, TException {
-        return service.getListNum(keyWord, companyId);
+        try {
+            return service.getListNum(keyWord, companyId);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+
     }
 
 
@@ -320,7 +338,14 @@ public class UserHrAccountServiceImpl implements Iface {
      */
     @Override
     public UserEmployeeVOPageVO employeeList(String keyword, int companyId, int filter, String order, String asc, int pageNumber, int pageSize) throws BIZException, TException {
-        return service.employeeList(keyword, companyId, filter, order, asc, pageNumber, pageSize);
+        try {
+            return service.employeeList(keyword, companyId, filter, order, asc, pageNumber, pageSize);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
     }
 
     /**
@@ -332,7 +357,14 @@ public class UserHrAccountServiceImpl implements Iface {
      */
     @Override
     public List<UserEmployeeVO> employeeExport(List<Integer> userEmployees, int companyId, int type) throws BIZException, TException {
-        return service.employeeExport(userEmployees, companyId, type);
+        try {
+            return service.employeeExport(userEmployees, companyId, type);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
     }
 
     /**
@@ -343,7 +375,14 @@ public class UserHrAccountServiceImpl implements Iface {
      */
     @Override
     public UserEmployeeDetailVO userEmployeeDetail(int userEmployeeId, int companyId) throws BIZException, TException {
-        return service.userEmployeeDetail(userEmployeeId, companyId);
+        try {
+            return service.userEmployeeDetail(userEmployeeId, companyId);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
     }
 
     /**
@@ -360,7 +399,14 @@ public class UserHrAccountServiceImpl implements Iface {
      */
     @Override
     public Response updateUserEmployee(String cname, String mobile, String email, String customField, int userEmployeeId, int companyId) throws BIZException, TException {
-        return service.updateUserEmployee(cname, mobile, email, customField, userEmployeeId, companyId);
+        try {
+            return service.updateUserEmployee(cname, mobile, email, customField, userEmployeeId, companyId);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
     }
 
     /**
@@ -374,7 +420,14 @@ public class UserHrAccountServiceImpl implements Iface {
      */
     @Override
     public Response employeeImport(Map<Integer, UserEmployeeDO> userEmployeeDOMap, int companyId, String filePath, String fileName, int type, int hraccountId) throws BIZException, TException {
-        return service.employeeImport(companyId, userEmployeeDOMap, filePath, fileName, type, hraccountId);
+        try {
+            return service.employeeImport(companyId, userEmployeeDOMap, filePath, fileName, type, hraccountId);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
     }
 
     /**
@@ -388,6 +441,13 @@ public class UserHrAccountServiceImpl implements Iface {
      */
     @Override
     public ImportUserEmployeeStatistic checkBatchInsert(Map<Integer, UserEmployeeDO> userEmployeeDOMap, int companyId) throws BIZException, TException {
-        return service.checkBatchInsert(userEmployeeDOMap, companyId);
+        try {
+            return service.checkBatchInsert(userEmployeeDOMap, companyId);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
     }
 }
