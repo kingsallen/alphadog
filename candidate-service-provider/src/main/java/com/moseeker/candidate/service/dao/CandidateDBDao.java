@@ -25,7 +25,6 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
-
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -220,8 +219,8 @@ public class CandidateDBDao {
      * @return 职位转发浏览记录
      */
     public List<CandidateRecomRecordDO> listCandidateRecomRecordDO(int postUserId, String
-            clickTime, List<Integer> recoms) {
-        return candidateRecomRecordDao.listCandidateRecomRecord(postUserId, clickTime, recoms);
+            clickTime, List<Integer> recoms, List<Integer> positionIdList) {
+        return candidateRecomRecordDao.listCandidateRecomRecord(postUserId, clickTime, recoms, positionIdList);
     }
 
     /**
@@ -256,11 +255,12 @@ public class CandidateDBDao {
      * @param postUserId 转发者编号
      * @param clickTime  点击时间
      * @param recoms     推荐标记
+     * @param positionIdList 职位编号
      * @return 职位转发浏览记录
      */
     public List<CandidateRecomRecordDO> listCandidateRecomRecordDOExceptId(int id,
-                                                                           int postUserId, String clickTime, List<Integer> recoms) {
-        return candidateRecomRecordDao.listCandidateRecomRecordExceptId(id, postUserId, clickTime, recoms);
+                                                                           int postUserId, String clickTime, List<Integer> recoms, List<Integer> positionIdList) {
+        return candidateRecomRecordDao.listCandidateRecomRecordExceptId(id, postUserId, clickTime, recoms, positionIdList);
     }
 
     /**
@@ -297,16 +297,25 @@ public class CandidateDBDao {
     /**
      * 查找未推荐的职位转发记录
      *
+     *
      * @param idList id集合
+     * @param positionIdList 职位ID集合
      * @return 未推荐的职位转发记录
      */
-    public List<CandidateRecomRecordDO> getCandidateRecomRecordDOByIdList(List<Integer> idList) {
+    public List<CandidateRecomRecordDO> getCandidateRecomRecordDOByIdList(List<Integer> idList, List<Integer> positionIdList) {
+//        QueryUtil queryUtil = new QueryUtil();
+//        queryUtil.addSelectAttribute("id").addSelectAttribute("position_id").addSelectAttribute("presentee_user_id");
+//        queryUtil.addEqualFilter("is_recom", "[1,2,3]").addEqualFilter("id", StringUtils.converToArrayStr(idList));
+//        queryUtil.setSortby("position_id,click_time");
+//        queryUtil.setPer_page(2);
         List<Integer> list = new ArrayList<>();
         list.add(1);
         list.add(2);
         list.add(3);
         Query query = new Query.QueryBuilder().select("id").select("position_id").select("presentee_user_id").
-                where(new Condition("is_recom", list, ValueOp.IN)).and(new Condition("id", idList, ValueOp.IN))
+                where(new Condition("is_recom", list, ValueOp.IN))
+                .and(new Condition("id", idList, ValueOp.IN))
+                .and(new Condition("position_id", positionIdList, ValueOp.IN))
                 .orderBy("position_id").orderBy("click_time").buildQuery();
         return candidateRecomRecordDao.getDatas(query);
 
@@ -316,11 +325,13 @@ public class CandidateDBDao {
      * 根据编号查找职位转发浏览记录
      *
      * @param id 职位转发浏览记录编号
+     * @param postUserId 推荐人
      * @return 职位转发浏览记录
      */
-
-    public CandidateRecomRecordDO getCandidateRecomRecordDO(int id) {
-        Query query = new Query.QueryBuilder().where("id", id).buildQuery();
+    public CandidateRecomRecordDO getCandidateRecomRecordDO(int id, int postUserId) {
+//        QueryUtil queryUtil = new QueryUtil();
+//        queryUtil.addEqualFilter("id", id);
+        Query query = new Query.QueryBuilder().where("id", id).and("post_user_id", postUserId).buildQuery();
         return candidateRecomRecordDao.getData(query);
 
     }
@@ -383,22 +394,25 @@ public class CandidateDBDao {
      * @param postUserId    转发者编号
      * @param dateTime      点击时间
      * @param recommendFlag 推荐标识集合
+     * @param positionIdList 职位编号集合
      * @return 职位转发记录数量
      * @throws TException 业务异常
      */
     public int countRecommendation(int postUserId, String
-            dateTime, List<Integer> recommendFlag) throws TException {
-        return candidateRecomRecordDao.countCandidateRecomRecordCustom(postUserId, dateTime, recommendFlag);
+            dateTime, List<Integer> recommendFlag, List<Integer> positionIdList) throws TException {
+        return candidateRecomRecordDao.countCandidateRecomRecordCustom(postUserId, dateTime, recommendFlag, positionIdList);
     }
 
     /**
      * 查找推荐排名
      *
+     *
      * @param employeeIdList 员工编号
+     * @param positionIdList 职位编号
      * @return 推荐排名
      */
-    public List<CandidateRecomRecordSortingDO> listSorting(List<Integer> employeeIdList) {
-        return candidateRecomRecordDao.listCandidateRecomRecordSorting(employeeIdList);
+    public List<CandidateRecomRecordSortingDO> listSorting(List<Integer> employeeIdList, List<Integer> positionIdList) {
+        return candidateRecomRecordDao.listCandidateRecomRecordSorting(employeeIdList, positionIdList);
     }
 
     public List<CandidatePositionDO> listCandidatePositionByUserIdPositionId

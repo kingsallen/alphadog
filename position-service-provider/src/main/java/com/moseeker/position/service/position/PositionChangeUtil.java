@@ -4,6 +4,7 @@ import com.moseeker.baseorm.dao.dictdb.DictCityMapDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HrTeamDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
+import com.moseeker.baseorm.db.dictdb.tables.DictCityMap;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
@@ -146,7 +147,7 @@ public class PositionChangeUtil {
                 HrTeamDO hrTeam = hrTeamDao.getHrTeam(positionDO.getTeamId());
                 if (hrTeam != null) {
                     position.setDepartment(hrTeam.getName());
-                }else{
+                } else {
                     position.setDepartment("");
                 }
                 break;
@@ -268,9 +269,9 @@ public class PositionChangeUtil {
         }
     }
 
-    private String changeCity(int cityCode, int channel) {
+    public String changeCity(int cityCode, int channel) {
 
-        Query qu = new Query.QueryBuilder().where("code", cityCode).where("channel", channel).buildQuery();
+        Query qu = new Query.QueryBuilder().where(DictCityMap.DICT_CITY_MAP.CODE.getName(), cityCode).where("channel", channel).buildQuery();
         DictCityMapDO cityMap = cityMapDao.getData(qu);
         String cityCodeStr = "";
         try {
@@ -370,7 +371,7 @@ public class PositionChangeUtil {
 
         logger.info("setCities:{}", positionCityCodes);
         //转城市
-        if (channelType == ChannelType.LIEPIN) {
+        if (channelType == ChannelType.LIEPIN || channelType == ChannelType.ZHILIAN) {
             List<List<String>> otherCityCodes = cityMapDao.getOtherCityFunllLevel(ChannelType.LIEPIN, positionCityCodes);
             syncPosition.setCities(otherCityCodes);
             logger.info("setCities:otherCityCodes:{}", otherCityCodes);

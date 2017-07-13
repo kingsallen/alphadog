@@ -15,6 +15,7 @@ import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.entity.Constant.EmployeeType;
 import com.moseeker.entity.exception.ExceptionCategory;
 import com.moseeker.entity.exception.ExceptionFactory;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -337,6 +338,30 @@ public class EmployeeEntity {
                     .select(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.getName());
             Condition condition = new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyIds, ValueOp.IN);
             queryBuilder.where(condition).and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), AbleFlag.OLDENABLE.getValue());
+            userEmployeeDOS = employeeDao.getDatas(queryBuilder.buildQuery());
+        }
+        return userEmployeeDOS;
+    }
+
+    /**
+     * 通过公司ID查集团认证过的员工数据
+     *
+     * @param companyId 公司编号
+     * @return
+     */
+    public List<UserEmployeeDO> getVerifiedUserEmployeeDOList(Integer companyId) {
+        List<UserEmployeeDO> userEmployeeDOS = new ArrayList<>();
+        if (companyId != 0) {
+            // 首先通过CompanyId 查询到该公司集团下所有的公司ID
+            List<Integer> companyIds = getCompanyIds(companyId);
+            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+            queryBuilder.select(UserEmployee.USER_EMPLOYEE.ID.getName())
+                    .select(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName())
+                    .select(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.getName());
+            Condition condition = new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyIds, ValueOp.IN);
+            queryBuilder.where(condition)
+                    .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), AbleFlag.OLDENABLE.getValue())
+                    .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), EmployeeType.AUTH_SUCCESS.getValue());
             userEmployeeDOS = employeeDao.getDatas(queryBuilder.buildQuery());
         }
         return userEmployeeDOS;

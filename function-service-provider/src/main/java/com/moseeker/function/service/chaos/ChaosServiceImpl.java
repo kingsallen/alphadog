@@ -11,6 +11,7 @@ import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.UrlUtil;
 import com.moseeker.function.service.chaos.position.Position51WithAccount;
 import com.moseeker.function.service.chaos.position.PositionLiepinWithAccount;
+import com.moseeker.function.service.chaos.position.PositionZhilianWithAccount;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
@@ -165,7 +166,9 @@ public class ChaosServiceImpl {
 
             if (position.getChannel() == ChannelType.LIEPIN.getValue()) {
                 positionJson = JSON.toJSONString(PositionLiepinWithAccount.copyFromSyncPosition(position));
-            } else if (position.getChannel() == ChannelType.JOB51.getValue() || position.getChannel() == ChannelType.ZHILIAN.getValue()) {
+            } else if(position.getChannel() == ChannelType.ZHILIAN.getValue()){
+                positionJson = JSON.toJSONString(PositionZhilianWithAccount.copyFromSyncPosition(position));
+            }else if (position.getChannel() == ChannelType.JOB51.getValue()) {
                 positionJson = JSON.toJSONString(Position51WithAccount.copyFromSyncPosition(position));
             }
 

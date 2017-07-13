@@ -39,6 +39,7 @@ import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.useraccounts.exception.ExceptionCategory;
 import com.moseeker.useraccounts.exception.ExceptionFactory;
 import com.moseeker.useraccounts.service.EmployeeBinder;
+import java.text.BreakIterator;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,19 +86,10 @@ public class EmployeeService {
     private HrCompanyConfDao hrCompanyConfDao;
 
     @Autowired
-    private HrPointsConfDao hrPointsConfDao;
-
-    @Autowired
     private HrEmployeeCertConfDao hrEmployeeCertConfDao;
 
     @Autowired
     private HrEmployeeCustomFieldsDao hrEmployeeCustomFieldsDao;
-
-    @Autowired
-    private ConfigSysPointsConfTplDao configSysPointsConfTplDao;
-
-    @Autowired
-    private UserEmployeePointsRecordDao employeePointsRecordDao;
 
     @Autowired
     private Map<String, EmployeeBinder> employeeBinder;
@@ -108,36 +100,56 @@ public class EmployeeService {
     public EmployeeResponse getEmployee(int userId, int companyId) throws TException {
         log.info("getEmployee param: userId={} , companyId={}", userId, companyId);
         Query.QueryBuilder query = new Query.QueryBuilder();
-        UserEmployeeDO employee;
+        List<UserEmployeeDO> employees = new ArrayList<>();
         EmployeeResponse response = new EmployeeResponse();
         try {
-            query.where("sysuser_id", String.valueOf(userId)).and("company_id", String.valueOf(companyId))
+            // 查询集团公司companyID列表
+            List<Integer> companyIds = employeeEntity.getCompanyIds(companyId);
+            query.where("sysuser_id", String.valueOf(userId)).and(new Condition("company_id", companyIds, ValueOp.IN))
                     .and("disable", String.valueOf(0));
-            employee = employeeDao.getEmployee(query.buildQuery());
-            if (employee != null && employee.getId() != 0) {
-                Employee emp = new Employee();
-                emp.setId(employee.getId());
-                emp.setEmployeeId(employee.getEmployeeid());
-                emp.setCompanyId(employee.getCompanyId());
-                emp.setSysuerId(employee.getSysuserId());
-                emp.setMobile(employee.getMobile());
-                emp.setCname(org.apache.commons.lang.StringUtils.defaultIfBlank(employee.getCname(), ""));
-                emp.setAward(employee.getAward());
-                emp.setIsRpSent(employee.getIsRpSent() == 0 ? false : true);
-                emp.setCustomFieldValues(employee.getCustomFieldValues());
-                emp.setWxuserId(wxEntity.getWxuserId(userId, companyId));
-                emp.setEmail(employee.getEmail());
-                emp.setCustomField(employee.getCustomField());
-                emp.setAuthMethod(employee.getAuthMethod());
-                response.setEmployee(emp);
-
-                if (employee.getActivation() == 0) {
-                    response.setBindStatus(BindStatus.BINDED);
-                } else if (StringUtils.isNotNullOrEmpty(client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, employee.getActivationCode()))) {
-                    response.setBindStatus(BindStatus.PENDING);
-                } else {
-                    response.setBindStatus(BindStatus.UNBIND);
-                }
+            employees = employeeDao.getDatas(query.buildQuery(), UserEmployeeDO.class);
+            Employee emp = new Employee();
+            if (employees != null && !employees.isEmpty()) {
+                employees.stream().filter(f -> f.getId() > 0).forEach(employee -> {
+                    if (employee.getActivation() == 0) {
+                        response.setBindStatus(BindStatus.BINDED);
+                        emp.setId(employee.getId());
+                        emp.setEmployeeId(employee.getEmployeeid());
+                        emp.setCompanyId(employee.getCompanyId());
+                        emp.setSysuerId(employee.getSysuserId());
+                        emp.setMobile(employee.getMobile());
+                        emp.setCname(org.apache.commons.lang.StringUtils.defaultIfBlank(employee.getCname(), ""));
+                        emp.setAward(employee.getAward());
+                        emp.setIsRpSent(employee.getIsRpSent() == 0 ? false : true);
+                        emp.setCustomFieldValues(employee.getCustomFieldValues());
+                        emp.setWxuserId(wxEntity.getWxuserId(userId, companyId));
+                        emp.setEmail(employee.getEmail());
+                        emp.setCustomField(employee.getCustomField());
+                        emp.setAuthMethod(employee.getAuthMethod());
+                        response.setEmployee(emp);
+                        return;
+                    } else {
+                        if (StringUtils.isNotNullOrEmpty(client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, employee.getActivationCode()))) {
+                            response.setBindStatus(BindStatus.PENDING);
+                            emp.setId(employee.getId());
+                            emp.setEmployeeId(employee.getEmployeeid());
+                            emp.setCompanyId(employee.getCompanyId());
+                            emp.setSysuerId(employee.getSysuserId());
+                            emp.setMobile(employee.getMobile());
+                            emp.setCname(org.apache.commons.lang.StringUtils.defaultIfBlank(employee.getCname(), ""));
+                            emp.setAward(employee.getAward());
+                            emp.setIsRpSent(employee.getIsRpSent() == 0 ? false : true);
+                            emp.setCustomFieldValues(employee.getCustomFieldValues());
+                            emp.setWxuserId(wxEntity.getWxuserId(userId, companyId));
+                            emp.setEmail(employee.getEmail());
+                            emp.setCustomField(employee.getCustomField());
+                            emp.setAuthMethod(employee.getAuthMethod());
+                            response.setEmployee(emp);
+                            return;
+                        }
+                        response.setBindStatus(BindStatus.UNBIND);
+                    }
+                });
             } else {
                 response.setBindStatus(BindStatus.UNBIND);
             }
