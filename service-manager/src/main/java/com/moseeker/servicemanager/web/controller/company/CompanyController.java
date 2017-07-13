@@ -3,7 +3,6 @@ package com.moseeker.servicemanager.web.controller.company;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
-import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
@@ -131,7 +130,7 @@ public class CompanyController {
             int companyId = params.getInt("companyId") != null ? params.getInt("companyId") : 0;
             CompanyOptions companyOptions = companyServices.getCompanyOptions(companyId);
             return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(companyOptions)));
-        } catch (CommonException e) {
+        } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
             e.printStackTrace();
@@ -158,7 +157,7 @@ public class CompanyController {
                 List<RewardConfig> result = companyServices.getCompanyRewardConf(companyId);
                 return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(result)));
             }
-        } catch (CommonException e) {
+        } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
@@ -202,7 +201,7 @@ public class CompanyController {
                     return ResponseLogNotification.fail(request, "积分配置信息为空!");
                 }
             }
-        } catch (CommonException e) {
+        } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
@@ -230,7 +229,7 @@ public class CompanyController {
             String fileName = params.getString("fileName") != null ? params.getString("fileName") : "";
             Response res = companyServices.addImporterMonitor(companyId, hraccountId, type, file, status, message, fileName);
             return ResponseLogNotification.success(request, res);
-        } catch (CommonException e) {
+        } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
             e.printStackTrace();
@@ -256,7 +255,7 @@ public class CompanyController {
             int type = params.getInt("type") != null ? params.getInt("type") : 0;
             HrImporterMonitorDO hrImporterMonitorDO = companyServices.getImporterMonitor(companyId, hraccountId, type);
             return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(hrImporterMonitorDO)));
-        } catch (CommonException e) {
+        } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
             e.printStackTrace();
@@ -281,7 +280,7 @@ public class CompanyController {
             int disable = params.getInt("disable") != null ? params.getInt("disable") : 0;
             Response res = companyServices.bindingSwitch(companyId, disable);
             return ResponseLogNotification.success(request, res);
-        } catch (CommonException e) {
+        } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
             e.printStackTrace();
@@ -307,7 +306,7 @@ public class CompanyController {
             int type = params.getInt("type", 0);
             CompanyCertConf companyCertConf = companyServices.getHrEmployeeCertConf(companyId, type, hraccountId);
             return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(companyCertConf)));
-        } catch (CommonException e) {
+        } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
             e.printStackTrace();
@@ -347,7 +346,7 @@ public class CompanyController {
                     put("result", result);
                 }}));
             }
-        } catch (CommonException e) {
+        } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
@@ -367,7 +366,7 @@ public class CompanyController {
             List<CompanyForVerifyEmployee> companyForVerifyEmployeeList = companyServices.getGroupCompanies(companyId);
             return ResponseLogNotification.success(request,
                     ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(companyForVerifyEmployeeList)));
-        } catch (CommonException e) {
+        } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
             e.printStackTrace();
@@ -392,7 +391,7 @@ public class CompanyController {
 
             return ResponseLogNotification.success(request,
                     ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(result)));
-        } catch (CommonException e) {
+        } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
             e.printStackTrace();

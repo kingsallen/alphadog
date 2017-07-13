@@ -303,6 +303,7 @@ public class UserHrAccountServiceImpl implements Iface {
      */
     @Override
     public UserEmployeeNumStatistic getListNum(String keyWord, int companyId) throws BIZException, TException {
+
         return service.getListNum(keyWord, companyId);
     }
 
@@ -360,6 +361,7 @@ public class UserHrAccountServiceImpl implements Iface {
      */
     @Override
     public Response updateUserEmployee(String cname, String mobile, String email, String customField, int userEmployeeId, int companyId) throws BIZException, TException {
+
         return service.updateUserEmployee(cname, mobile, email, customField, userEmployeeId, companyId);
     }
 

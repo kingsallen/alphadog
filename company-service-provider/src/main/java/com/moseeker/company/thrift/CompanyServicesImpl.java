@@ -1,7 +1,9 @@
 package com.moseeker.company.thrift;
 
+import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.Category;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.company.exception.ExceptionFactory;
 import com.moseeker.entity.CompanyConfigEntity;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -68,13 +70,11 @@ public class CompanyServicesImpl implements Iface {
     public List<CompanyForVerifyEmployee> getGroupCompanies(int companyId) throws BIZException, TException {
         try {
             return service.getGroupCompanies(companyId);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
-            if (e instanceof BIZException) {
-                throw e;
-            } else {
-                logger.error(e.getMessage(), e);
-                throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
-            }
+            logger.error(e.getMessage(), e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
         }
     }
 
@@ -82,13 +82,11 @@ public class CompanyServicesImpl implements Iface {
     public boolean isGroupCompanies(int companyId) throws BIZException, TException {
         try {
             return service.isGroupCompanies(companyId);
-        } catch (Exception e) {
-            if (e instanceof BIZException) {
-                throw e;
-            } else {
-                logger.error(e.getMessage(), e);
-                throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
-            }
+        }  catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        }catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
         }
     }
 
