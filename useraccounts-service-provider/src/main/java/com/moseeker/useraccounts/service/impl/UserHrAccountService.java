@@ -339,19 +339,17 @@ public class UserHrAccountService {
             throw new BIZException(-1, "无效的HR帐号");
         }
 
+        account.setCompanyId(userHrAccount.getCompanyId());
+
         //获取子公司简称和ID
         HrCompanyDO hrCompanyDO = hrCompanyAccountDao.getHrCompany(hrId);
 
-        if (hrCompanyDO != null) {
-            account.setCompanyId(hrCompanyDO.getId());
-        } else {
+        if (hrCompanyDO == null) {
             hrCompanyDO = hrCompanyDao.getCompanyById(userHrAccount.getCompanyId());
 
             if (hrCompanyDO == null) {
                 throw new BIZException(-1, "无效的HR账号");
             }
-
-            account.setCompanyId(userHrAccount.getCompanyId());
         }
 
         int allowStatus = allowBind(userHrAccount, account);
@@ -361,7 +359,6 @@ public class UserHrAccountService {
         if (allowStatus > 0) {
             account.setId(allowStatus);
         }
-
 
         Map<String, String> extras = new HashMap<>();
 
