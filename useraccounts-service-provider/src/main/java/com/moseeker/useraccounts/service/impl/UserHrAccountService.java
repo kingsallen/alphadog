@@ -339,19 +339,17 @@ public class UserHrAccountService {
             throw new BIZException(-1, "无效的HR帐号");
         }
 
+        account.setCompanyId(userHrAccount.getCompanyId());
+
         //获取子公司简称和ID
         HrCompanyDO hrCompanyDO = hrCompanyAccountDao.getHrCompany(hrId);
 
-        if (hrCompanyDO != null) {
-            account.setCompanyId(hrCompanyDO.getId());
-        } else {
+        if (hrCompanyDO == null) {
             hrCompanyDO = hrCompanyDao.getCompanyById(userHrAccount.getCompanyId());
 
             if (hrCompanyDO == null) {
                 throw new BIZException(-1, "无效的HR账号");
             }
-
-            account.setCompanyId(userHrAccount.getCompanyId());
         }
 
         int allowStatus = allowBind(userHrAccount, account);
@@ -361,7 +359,6 @@ public class UserHrAccountService {
         if (allowStatus > 0) {
             account.setId(allowStatus);
         }
-
 
         Map<String, String> extras = new HashMap<>();
 
@@ -377,6 +374,18 @@ public class UserHrAccountService {
         return result;
     }
 
+    public int checkRebinding(HrThirdPartyAccountDO bindingAccount) throws BIZException {
+        if (bindingAccount.getBinding() == 1 || bindingAccount.getBinding() == 3 || bindingAccount.getBinding() == 7) {
+            throw new BIZException(-1, "已经绑定该帐号了");
+        } else if (bindingAccount.getBinding() == 2 || bindingAccount.getBinding() == 6) {
+            throw new BIZException(-1, "该帐号已经在绑定中了");
+        } else {
+            //重新绑定
+            logger.info("重新绑定:{}", bindingAccount.getId());
+            return bindingAccount.getId();
+        }
+    }
+
     /**
      * 是否允许执行绑定
      * <0,主张号已绑定，
@@ -386,9 +395,16 @@ public class UserHrAccountService {
     @CounterIface
     public int allowBind(UserHrAccountDO hrAccount, HrThirdPartyAccountDO thirdPartyAccount) throws Exception {
 
+        HrThirdPartyAccountDO bindingAccount = hrThirdPartyAccountDao.getThirdPartyAccountByUserId(hrAccount.getId(), thirdPartyAccount.getChannel());
+
+        //如果当前hr已经绑定了该帐号
+        if (bindingAccount != null && bindingAccount.getUsername().equals(thirdPartyAccount.getUsername())) {
+            return checkRebinding(bindingAccount);
+        }
+
         //主账号或者没有绑定第三方账号，检查公司下该渠道已经绑定过相同的第三方账号
         Query.QueryBuilder qu = new Query.QueryBuilder();
-        qu.where("company_id", thirdPartyAccount.getCompanyId());
+        qu.where("company_id", hrAccount.getCompanyId());
         qu.and("channel", thirdPartyAccount.getChannel());
         qu.and("username", thirdPartyAccount.getUsername());
         qu.and(new Condition("binding", 0, ValueOp.NEQ));//有效的状态
@@ -408,7 +424,6 @@ public class UserHrAccountService {
 
         if (data == null || data.getId() == 0) {
             //检查该用户是否绑定了其它相同渠道的账号
-            HrThirdPartyAccountDO bindingAccount = hrThirdPartyAccountDao.getThirdPartyAccountByUserId(hrAccount.getId(), thirdPartyAccount.getChannel());
             logger.info("该用户绑定渠道{}的帐号:{}", thirdPartyAccount.getChannel(), JSON.toJSONString(bindingAccount));
             if (bindingAccount != null && bindingAccount.getId() > 0 && bindingAccount.getBinding() != 0) {
                 if (hrAccount.getAccountType() == 0) {
@@ -424,27 +439,14 @@ public class UserHrAccountService {
                 return 0;
             }
         } else {
-            //如果尝试绑定相同的帐号
-            if (data.getUsername().equals(thirdPartyAccount.getUsername())) {
-                if (data.getBinding() == 1 || data.getBinding() == 3 || data.getBinding() == 7) {
-                    throw new BIZException(-1, "已经绑定该帐号了");
-                } else if (data.getBinding() == 2 || data.getBinding() == 6) {
-                    throw new BIZException(-1, "该帐号已经在绑定中了");
-                } else if (data.getBinding() == 4 || data.getBinding() == 5) {
-                    //重新绑定
-                    logger.info("重新绑定:{}", data.getId());
-                    return data.getId();
-                }
+            //主张号发现已经有子帐号已经绑定了这个帐号
+            if (hrAccount.getAccountType() == 0) {
+                return checkRebinding(data);
             }
+
             logger.info("这个帐号已经被其它人绑定了");
             //公司下已经有人绑定了这个第三方账号，则这个公司谁都不能再绑定这个账号了
-            if (data.getBinding() == 1) {
-                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.HRACCOUNT_ALREADY_BOUND);
-            } else if (data.getBinding() == 2) {
-                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.HRACCOUNT_BINDING);
-            } else {
-                return 0;
-            }
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.HRACCOUNT_ALREADY_BOUND);
         }
     }
 
@@ -1039,68 +1041,74 @@ public class UserHrAccountService {
      *
      * @param userEmployees 员工ID
      * @param companyId     公司ID
+     * @param type          1:导出所有，0:按照userEmployees导出
      * @return
      */
-    public List<UserEmployeeVO> employeeExport(List<Integer> userEmployees, Integer companyId) throws BIZException {
+    public List<UserEmployeeVO> employeeExport(List<Integer> userEmployees, Integer companyId, Integer type) throws BIZException {
         List<UserEmployeeVO> userEmployeeVOS = new ArrayList<>();
         if (companyId == 0) {
             throw ExceptionFactory.buildException(ExceptionCategory.COMPANYID_ENPTY);
         }
-        if (!StringUtils.isEmptyObject(userEmployees)) {
+        if (StringUtils.isEmptyObject(userEmployees) && type.intValue() == 0) {
+            throw ExceptionFactory.buildException(ExceptionCategory.USEREMPLOYEES_EMPTY);
+        }
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+
+        if (type.intValue() == 1) {  // 导出所有，取该公司下所有的员工ID
+            List<Integer> companyIds = employeeEntity.getCompanyIds(companyId);
+            queryBuilder.where(new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyIds, ValueOp.IN));
+        } else {
+            queryBuilder.where(new Condition(UserEmployee.USER_EMPLOYEE.ID.getName(), userEmployees, ValueOp.IN))
+                    .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), 0);
             // 查询是否有权限修改
             if (!employeeEntity.permissionJudge(userEmployees, companyId)) {
                 throw ExceptionFactory.buildException(ExceptionCategory.PERMISSION_DENIED);
             }
-            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-            queryBuilder.where(new Condition(UserEmployee.USER_EMPLOYEE.ID.getName(), userEmployees, ValueOp.IN))
-                    .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), 0);
-            // 员工列表
-            List<UserEmployeeDO> list = userEmployeeDao.getDatas(queryBuilder.buildQuery());
-            if (StringUtils.isEmptyList(list)) {
-                throw ExceptionFactory.buildException(ExceptionCategory.USEREMPLOYEES_EMPTY);
-            }
-            Set<Integer> sysuserId = list.stream().filter(userUserDO -> userUserDO.getSysuserId() > 0)
-                    .map(UserEmployeeDO::getSysuserId).collect(Collectors.toSet());
-            queryBuilder.clear();
-            queryBuilder.where(new Condition(UserUser.USER_USER.ID.getName(), sysuserId, ValueOp.IN));
-            // 查询微信昵称
-            List<UserUserDO> userUserDOList = userUserDao.getDatas(queryBuilder.buildQuery());
-            Map<Integer, UserUserDO> userMap = userUserDOList.stream().collect(Collectors.toMap(UserUserDO::getId, Function.identity()));
-
-            // 公司ID列表
-            Set<Integer> companyIds = list.stream().filter(userEmployeeDO -> userEmployeeDO.getCompanyId() > 0)
-                    .map(userEmployeeDO -> userEmployeeDO.getCompanyId()).collect(Collectors.toSet());
-            queryBuilder.clear();
-            queryBuilder.where(new Condition(HrCompany.HR_COMPANY.ID.getName(), companyIds, ValueOp.IN));
-            List<HrCompanyDO> companyList = hrCompanyDao.getDatas(queryBuilder.buildQuery());
-            // 查询公司信息
-            Map<Integer, HrCompanyDO> companyMap = companyList.stream().collect(Collectors.toMap(HrCompanyDO::getId, Function.identity()));
-            for (UserEmployeeDO userEmployeeDO : list) {
-                UserEmployeeVO userEmployeeVO = new UserEmployeeVO();
-                userEmployeeVO.setId(userEmployeeDO.getId());
-                userEmployeeVO.setUsername(userEmployeeDO.getCname());
-                userEmployeeVO.setMobile(userEmployeeDO.getMobile());
-                userEmployeeVO.setCustomField(userEmployeeDO.getCustomField());
-                userEmployeeVO.setEmail(userEmployeeDO.getEmail());
-                userEmployeeVO.setCompanyId(userEmployeeDO.getCompanyId());
-                if (!StringUtils.isEmptyObject(userMap) && !StringUtils.isEmptyObject(userMap.get(userEmployeeDO.getSysuserId()))) {
-                    userEmployeeVO.setNickName(userMap.get(userEmployeeDO.getSysuserId()).getNickname());
-                } else {
-                    userEmployeeVO.setNickName("未知");
-                }
-                // 公司名称
-                if (!StringUtils.isEmptyObject(companyMap) && !StringUtils.isEmptyObject(companyMap.get(userEmployeeDO.getCompanyId()))) {
-                    HrCompanyDO companyDO = (HrCompanyDO) companyMap.get(userEmployeeDO.getCompanyId());
-                    userEmployeeVO.setCompanyName(companyDO.getName() != null ? companyDO.getName() : "");
-                    userEmployeeVO.setCompanyAbbreviation(companyDO.getAbbreviation() != null ? companyDO.getAbbreviation() : "");
-                }
-                userEmployeeVO.setActivation((new Double(userEmployeeDO.getActivation())).intValue());
-                userEmployeeVO.setAward(userEmployeeDO.getAward());
-                userEmployeeVO.setBindingTime(userEmployeeDO.getCreateTime());
-                userEmployeeVOS.add(userEmployeeVO);
-            }
-        } else {
+        }
+        // 员工列表
+        List<UserEmployeeDO> list = userEmployeeDao.getDatas(queryBuilder.buildQuery());
+        if (StringUtils.isEmptyList(list)) {
             throw ExceptionFactory.buildException(ExceptionCategory.USEREMPLOYEES_EMPTY);
+        }
+        Set<Integer> sysuserId = list.stream().filter(userUserDO -> userUserDO.getSysuserId() > 0)
+                .map(UserEmployeeDO::getSysuserId).collect(Collectors.toSet());
+        queryBuilder.clear();
+        queryBuilder.where(new Condition(UserUser.USER_USER.ID.getName(), sysuserId, ValueOp.IN));
+        // 查询微信昵称
+        List<UserUserDO> userUserDOList = userUserDao.getDatas(queryBuilder.buildQuery());
+        Map<Integer, UserUserDO> userMap = userUserDOList.stream().collect(Collectors.toMap(UserUserDO::getId, Function.identity()));
+
+        // 公司ID列表
+        Set<Integer> companyIds = list.stream().filter(userEmployeeDO -> userEmployeeDO.getCompanyId() > 0)
+                .map(userEmployeeDO -> userEmployeeDO.getCompanyId()).collect(Collectors.toSet());
+        queryBuilder.clear();
+        queryBuilder.where(new Condition(HrCompany.HR_COMPANY.ID.getName(), companyIds, ValueOp.IN));
+        List<HrCompanyDO> companyList = hrCompanyDao.getDatas(queryBuilder.buildQuery());
+        // 查询公司信息
+        Map<Integer, HrCompanyDO> companyMap = companyList.stream().collect(Collectors.toMap(HrCompanyDO::getId, Function.identity()));
+        for (UserEmployeeDO userEmployeeDO : list) {
+            UserEmployeeVO userEmployeeVO = new UserEmployeeVO();
+            userEmployeeVO.setId(userEmployeeDO.getId());
+            userEmployeeVO.setUsername(userEmployeeDO.getCname());
+            userEmployeeVO.setMobile(userEmployeeDO.getMobile());
+            userEmployeeVO.setCustomField(userEmployeeDO.getCustomField());
+            userEmployeeVO.setEmail(userEmployeeDO.getEmail());
+            userEmployeeVO.setCompanyId(userEmployeeDO.getCompanyId());
+            if (!StringUtils.isEmptyObject(userMap) && !StringUtils.isEmptyObject(userMap.get(userEmployeeDO.getSysuserId()))) {
+                userEmployeeVO.setNickName(userMap.get(userEmployeeDO.getSysuserId()).getNickname());
+            } else {
+                userEmployeeVO.setNickName("未知");
+            }
+            // 公司名称
+            if (!StringUtils.isEmptyObject(companyMap) && !StringUtils.isEmptyObject(companyMap.get(userEmployeeDO.getCompanyId()))) {
+                HrCompanyDO companyDO = (HrCompanyDO) companyMap.get(userEmployeeDO.getCompanyId());
+                userEmployeeVO.setCompanyName(companyDO.getName() != null ? companyDO.getName() : "");
+                userEmployeeVO.setCompanyAbbreviation(companyDO.getAbbreviation() != null ? companyDO.getAbbreviation() : "");
+            }
+            userEmployeeVO.setActivation((new Double(userEmployeeDO.getActivation())).intValue());
+            userEmployeeVO.setAward(userEmployeeDO.getAward());
+            userEmployeeVO.setBindingTime(userEmployeeDO.getCreateTime());
+            userEmployeeVOS.add(userEmployeeVO);
         }
         return userEmployeeVOS;
     }
@@ -1259,8 +1267,7 @@ public class UserHrAccountService {
                     }
                     // 当提交的数据和数据库中的数据，cname和customField都相等时候，认为是重复数据
                     if (userEmployeeDO.getCname().equals(dbUserEmployeeDO.getCname())
-                            && userEmployeeDO.getCustomField().equals(dbUserEmployeeDO.getCustomField())
-                            && !userEmployeeDO.getMobile().equals(dbUserEmployeeDO.getMobile())) {
+                            && userEmployeeDO.getCustomField().equals(dbUserEmployeeDO.getCustomField())) {
                         repetitionCounts = repetitionCounts + 1;
                         importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
                         importErrorUserEmployee.setRowNum(entry.getKey());
@@ -1357,7 +1364,7 @@ public class UserHrAccountService {
      */
     public Response updateUserEmployee(String cname, String mobile, String email, String customField, Integer userEmployeeId, Integer companyId) throws BIZException {
         Response response = new Response();
-        if (StringUtils.isEmptyObject(userEmployeeId)) {
+        if (userEmployeeId == 0) {
             throw ExceptionFactory.buildException(ExceptionCategory.USEREMPLOYEES_DATE_EMPTY);
         }
         if (companyId == 0) {

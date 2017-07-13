@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
@@ -168,11 +169,11 @@ public class UserHrAccountController {
 
             Integer userId = params.getInt("user_id", 0);
 
-            if(userId == null){
+            if (userId == null) {
                 return ResponseLogNotification.fail(request, "user_id不能为空");
             }
 
-            HrThirdPartyAccountDO hrThirdPartyAccountDO = userHrAccountService.syncThirdpartyAccount(userId,id, params.getBoolean("sync", false));
+            HrThirdPartyAccountDO hrThirdPartyAccountDO = userHrAccountService.syncThirdpartyAccount(userId, id, params.getBoolean("sync", false));
 
             return ResponseLogNotification.success(request, ResponseUtils.success(thirdpartyAccountToMap(hrThirdPartyAccountDO)));
         } catch (Exception e) {
@@ -502,7 +503,7 @@ public class UserHrAccountController {
                     put("result", result);
                 }}));
             }
-        } catch (BIZException e) {
+        } catch (CommonException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
@@ -537,7 +538,7 @@ public class UserHrAccountController {
                     put("result", result);
                 }}));
             }
-        } catch (BIZException e) {
+        } catch (CommonException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
@@ -570,7 +571,7 @@ public class UserHrAccountController {
                 List<Reward> result = userHrAccountService.getEmployeeRewards(employeeId);
                 return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(result)));
             }
-        } catch (BIZException e) {
+        } catch (CommonException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
@@ -607,7 +608,7 @@ public class UserHrAccountController {
                     put("totalPoint", result);
                 }}));
             }
-        } catch (BIZException e) {
+        } catch (CommonException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
@@ -631,7 +632,7 @@ public class UserHrAccountController {
             int companyId = params.getInt("companyId", 0);
             UserEmployeeNumStatistic userEmployeeNumStatistic = userHrAccountService.getListNum(keyWord, companyId);
             return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(userEmployeeNumStatistic)));
-        } catch (BIZException e) {
+        } catch (CommonException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
             e.printStackTrace();
@@ -661,7 +662,7 @@ public class UserHrAccountController {
             int pageSize = params.getInt("pageSize", 0);
             UserEmployeeVOPageVO userEmployeeVOPageVO = userHrAccountService.employeeList(keyWord, companyId, filter, order, asc, pageNumber, pageSize);
             return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(userEmployeeVOPageVO)));
-        } catch (BIZException e) {
+        } catch (CommonException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
             e.printStackTrace();
@@ -683,15 +684,11 @@ public class UserHrAccountController {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             int companyId = params.getInt("companyId", 0);
-            // 员工ID列表
-            if (!StringUtils.isEmptyList((List<Integer>) params.get("userEmployees"))) {
-                List<Integer> userEmployees = (List<Integer>) params.get("userEmployees");
-                List<UserEmployeeVO> userEmployeeVOS = userHrAccountService.employeeExport(userEmployees, companyId);
-                return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(userEmployeeVOS)));
-            } else {
-                return ResponseLogNotification.fail(request, ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
-            }
-        } catch (BIZException e) {
+            int type = params.getInt("type", 0);
+            List<Integer> userEmployees = (List<Integer>) params.get("userEmployees");
+            List<UserEmployeeVO> userEmployeeVOS = userHrAccountService.employeeExport(userEmployees, companyId, type);
+            return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(userEmployeeVOS)));
+        } catch (CommonException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
             e.printStackTrace();
@@ -716,7 +713,7 @@ public class UserHrAccountController {
             int companyId = params.getInt("companyId", 0);
             UserEmployeeDetailVO userEmployeeDetailVO = userHrAccountService.userEmployeeDetail(userEmployeeId, companyId);
             return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(userEmployeeDetailVO)));
-        } catch (BIZException e) {
+        } catch (CommonException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
             e.printStackTrace();
@@ -745,7 +742,7 @@ public class UserHrAccountController {
             int companyId = params.getInt("companyId", 0);
             Response res = userHrAccountService.updateUserEmployee(cname, mobile, email, customField, userEmployeeId, companyId);
             return ResponseLogNotification.success(request, res);
-        } catch (BIZException e) {
+        } catch (CommonException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
             e.printStackTrace();
@@ -768,7 +765,7 @@ public class UserHrAccountController {
             Map userEmployees = UserHrAccountParamUtils.parseUserEmployeeDO((List<HashMap<String, Object>>) params.get("userEmployees"));
             ImportUserEmployeeStatistic res = userHrAccountService.checkBatchInsert(userEmployees, companyId);
             return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(res)));
-        } catch (BIZException e) {
+        } catch (CommonException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
@@ -794,7 +791,7 @@ public class UserHrAccountController {
             Map userEmployees = UserHrAccountParamUtils.parseUserEmployeeDO((List<HashMap<String, Object>>) params.get("userEmployees"));
             Response res = userHrAccountService.employeeImport(userEmployees, companyId, filePath, fileName, type, hraccountId);
             return ResponseLogNotification.success(request, res);
-        } catch (BIZException e) {
+        } catch (CommonException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
             e.printStackTrace();
