@@ -208,7 +208,7 @@ public class CompanySearchengine {
             for(String code:city_list){
             	codes.add(Integer.parseInt(code));
             }
-            QueryBuilder cityfilter = QueryBuilders.termsQuery("company.position_city.code", codes);
+            QueryBuilder cityfilter = QueryBuilders.termsQuery("position_city.code", codes);
             ((BoolQueryBuilder) query).must(cityfilter);
         }
     }
@@ -237,7 +237,7 @@ public class CompanySearchengine {
             	 int scale=Integer.parseInt(code);
             	 codes.add(scale);
              }
-             QueryBuilder industryfilter = QueryBuilders.matchPhraseQuery("company.industry.scale", codes);
+             QueryBuilder industryfilter = QueryBuilders.matchPhraseQuery("company.scale", codes);
              ((BoolQueryBuilder) query).must(industryfilter);
     	}
     }
