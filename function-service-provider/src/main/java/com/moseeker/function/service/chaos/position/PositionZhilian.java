@@ -127,7 +127,7 @@ public class PositionZhilian implements Serializable {
         positionLiepin.setOccupation(positionInfo.getOccupation());
         positionLiepin.setSalary_low(String.valueOf(positionInfo.getSalary_bottom()));
         positionLiepin.setSalary_high(String.valueOf(positionInfo.getSalary_top()));
-        positionLiepin.setWorkyears(positionInfo.getExperience());
+        positionLiepin.setWorkyears(positionInfo.getExperience_code());
         positionLiepin.setDegree(positionInfo.getDegree_code());
         positionLiepin.setDescription(positionInfo.getDescription());
         positionLiepin.setEmail(positionInfo.getEmail());
