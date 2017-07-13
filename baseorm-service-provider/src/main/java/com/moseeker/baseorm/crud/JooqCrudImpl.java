@@ -52,6 +52,7 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> extends Crud<S, R> {
 
     @Override
     public R addRecord(R r) {
+        create.execute("set names utf8mb4");
         create.attach(r);
         r.insert();
         return r;
@@ -59,6 +60,7 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> extends Crud<S, R> {
 
     @Override
     public List<R> addAllRecord(List<R> rs) {
+        create.execute("set names utf8mb4");
         create.attach(rs);
         create.batchInsert(rs).execute();
         return rs;
@@ -81,17 +83,20 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> extends Crud<S, R> {
 
     @Override
     public int updateRecord(R r) {
+        create.execute("set names utf8mb4");
         create.attach(r);
         return create.executeUpdate(r);
     }
 
     @Override
     public int[] updateRecords(List<R> rs) {
+        create.execute("set names utf8mb4");
         return create.batchUpdate(rs).execute();
     }
 
     @Override
     public int update(Update update) {
+        create.execute("set names utf8mb4");
         UpdateSetFirstStep updateSetFirstStep = create.update(table);
         UpdateSetMoreStep updateSetMoreStep = null;
         for (String field : update.getFieldValues().keySet()) {
