@@ -1183,6 +1183,7 @@ public class UserHrAccountService {
             hrImporterMonitorDO.setCompanyId(companyId);
             hrImporterMonitorDO.setName(fileName);
             hrImporterMonitorDO.setStatus(2);
+            hrImporterMonitorDO.setType(type);
             hrImporterMonitorDO.setMessage("导入成功");
             hrImporterMonitorDO.setHraccountId(hraccountId);
             hrImporterMonitorDao.addData(hrImporterMonitorDO);
