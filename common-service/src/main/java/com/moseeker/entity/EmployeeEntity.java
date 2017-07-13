@@ -177,7 +177,7 @@ public class EmployeeEntity {
      * @param employeeIds
      * @return
      */
-    public boolean unbind(Collection<Integer> employeeIds) throws BIZException {
+    public boolean unbind(Collection<Integer> employeeIds) throws Exception {
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.and(new Condition("id", employeeIds, ValueOp.IN))
                 .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), 0);
@@ -190,7 +190,7 @@ public class EmployeeEntity {
      * @param employees
      * @return
      */
-    public boolean unbind(List<UserEmployeeDO> employees) throws BIZException {
+    public boolean unbind(List<UserEmployeeDO> employees) throws Exception {
         if (employees != null && employees.size() > 0) {
             employees.stream().filter(f -> f.getActivation() == 0).forEach(e -> {
                 e.setActivation((byte) 1);
@@ -213,7 +213,7 @@ public class EmployeeEntity {
      * 2.user_employee中做物理删除
      */
     @Transactional
-    public boolean removeEmployee(List<Integer> employeeIds) throws BIZException {
+    public boolean removeEmployee(List<Integer> employeeIds) throws Exception {
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.where(new Condition("id", employeeIds, ValueOp.IN));
         List<UserEmployeeDO> userEmployeeDOList = employeeDao.getDatas(query.buildQuery());

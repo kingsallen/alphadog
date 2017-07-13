@@ -19,6 +19,7 @@ import com.moseeker.common.annotation.notify.UpdateEs;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -27,7 +28,6 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.*;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.EmployeeEntity;
-import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
@@ -326,7 +326,7 @@ public class UserHrAccountService {
         ChannelType channelType = ChannelType.instaceFromInteger(account.getChannel());
 
         if (channelType == null) {
-            throw new BIZException(-1, "不支持的渠道类型：" + account.getChannel());
+            throw new CommonException(-1, "不支持的渠道类型：" + account.getChannel());
         }
 
         // 判断是否需要进行帐号绑定
@@ -336,7 +336,7 @@ public class UserHrAccountService {
 
         if (userHrAccount == null || userHrAccount.getActivation() != Byte.valueOf("1") || userHrAccount.getDisable() != 1) {
             //没有找到该hr账号
-            throw new BIZException(-1, "无效的HR帐号");
+            throw new CommonException(-1, "无效的HR帐号");
         }
 
         account.setCompanyId(userHrAccount.getCompanyId());
@@ -348,7 +348,7 @@ public class UserHrAccountService {
             hrCompanyDO = hrCompanyDao.getCompanyById(userHrAccount.getCompanyId());
 
             if (hrCompanyDO == null) {
-                throw new BIZException(-1, "无效的HR账号");
+                throw new CommonException(-1, "无效的HR账号");
             }
         }
 
@@ -374,11 +374,11 @@ public class UserHrAccountService {
         return result;
     }
 
-    public int checkRebinding(HrThirdPartyAccountDO bindingAccount) throws BIZException {
+    public int checkRebinding(HrThirdPartyAccountDO bindingAccount) throws Exception {
         if (bindingAccount.getBinding() == 1 || bindingAccount.getBinding() == 3 || bindingAccount.getBinding() == 7) {
-            throw new BIZException(-1, "已经绑定该帐号了");
+            throw new CommonException(-1, "已经绑定该帐号了");
         } else if (bindingAccount.getBinding() == 2 || bindingAccount.getBinding() == 6) {
-            throw new BIZException(-1, "该帐号已经在绑定中了");
+            throw new CommonException(-1, "该帐号已经在绑定中了");
         } else {
             //重新绑定
             logger.info("重新绑定:{}", bindingAccount.getId());
@@ -467,11 +467,11 @@ public class UserHrAccountService {
         UserHrAccountDO hrAccountDO = userHrAccountDao.getValidAccount(hrId);
 
         if (hrAccountDO == null) {
-            throw new BIZException(-1, "无效的HR帐号");
+            throw new CommonException(-1, "无效的HR帐号");
         }
 
         if (hrThirdPartyAccount == null || hrThirdPartyAccount.getBinding() == 0) {
-            throw new BIZException(-1, "无效的第三方帐号");
+            throw new CommonException(-1, "无效的第三方帐号");
         }
 
         Map<String, String> extras = new HashMap<>();
@@ -487,7 +487,7 @@ public class UserHrAccountService {
         return hrThirdPartyAccount;
     }
 
-    private void buildZhilianCompany(UserHrAccountDO hrAccountDO, HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras) throws BIZException {
+    private void buildZhilianCompany(UserHrAccountDO hrAccountDO, HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras) throws CommonException {
         List<HrThirdPartyAccountHrDO> binders = thirdPartyAccountHrDao.getBinders(hrThirdPartyAccount.getId());
 
         int finalHrId = hrAccountDO.getId();//如果该帐号没有分配给任何人，谁刷新的使用谁的所属公司的简称
@@ -515,7 +515,7 @@ public class UserHrAccountService {
         }
 
         if (companyDO == null) {
-            throw new BIZException(-1, "无效的HR帐号");
+            throw new CommonException(-1, "无效的HR帐号");
         }
 
         extras.put("company", companyDO.getAbbreviation());
@@ -774,7 +774,7 @@ public class UserHrAccountService {
         return hrThirdPartyAccountDao.getDatas(query);
     }
 
-    public int updateThirdPartyAccount(HrThirdPartyAccountDO account) throws BIZException, TException {
+    public int updateThirdPartyAccount(HrThirdPartyAccountDO account) throws CommonException, TException {
         return hrThirdPartyAccountDao.updateData(account);
     }
 
@@ -786,7 +786,7 @@ public class UserHrAccountService {
      * @param companyId    公司ID
      * @return
      */
-    private Query.QueryBuilder getQueryBuilder(Query.QueryBuilder queryBuilder, String keyWord, Integer companyId) throws BIZException {
+    private Query.QueryBuilder getQueryBuilder(Query.QueryBuilder queryBuilder, String keyWord, Integer companyId) throws CommonException {
         List<UserEmployeeDO> userEmployeeDOList = employeeEntity.getUserEmployeeDOList(companyId);
         List<Integer> sysIdsTemp = userEmployeeDOList.stream().filter(userEmployeeDO -> userEmployeeDO.getSysuserId() > 0)
                 .map(userEmployeeDO -> userEmployeeDO.getSysuserId()).collect(Collectors.toList());
@@ -831,7 +831,7 @@ public class UserHrAccountService {
      * @param companyId 公司ID
      * @return
      */
-    public UserEmployeeNumStatistic getListNum(String keyWord, Integer companyId) throws BIZException {
+    public UserEmployeeNumStatistic getListNum(String keyWord, Integer companyId) throws Exception {
         UserEmployeeNumStatistic userEmployeeNumStatistic = new UserEmployeeNumStatistic();
         userEmployeeNumStatistic.setUnregcount(0);
         userEmployeeNumStatistic.setRegcount(0);
@@ -891,7 +891,7 @@ public class UserHrAccountService {
      * @param pageNumber 第几页
      * @param pageSize   每页的条数
      */
-    public UserEmployeeVOPageVO employeeList(String keyword, Integer companyId, Integer filter, String order, String asc, Integer pageNumber, Integer pageSize) throws BIZException {
+    public UserEmployeeVOPageVO employeeList(String keyword, Integer companyId, Integer filter, String order, String asc, Integer pageNumber, Integer pageSize) throws Exception {
         if (companyId == 0) {
             throw ExceptionFactory.buildException(ExceptionCategory.COMPANYID_ENPTY);
         }
@@ -1044,7 +1044,7 @@ public class UserHrAccountService {
      * @param type          1:导出所有，0:按照userEmployees导出
      * @return
      */
-    public List<UserEmployeeVO> employeeExport(List<Integer> userEmployees, Integer companyId, Integer type) throws BIZException {
+    public List<UserEmployeeVO> employeeExport(List<Integer> userEmployees, Integer companyId, Integer type) throws Exception {
         List<UserEmployeeVO> userEmployeeVOS = new ArrayList<>();
         if (companyId == 0) {
             throw ExceptionFactory.buildException(ExceptionCategory.COMPANYID_ENPTY);
@@ -1121,7 +1121,7 @@ public class UserHrAccountService {
      * @param companyId       公司ID
      */
     @Transactional
-    public Response employeeImport(Integer companyId, Map<Integer, UserEmployeeDO> userEmployeeMap, String filePath, String fileName, Integer type, Integer hraccountId) throws BIZException {
+    public Response employeeImport(Integer companyId, Map<Integer, UserEmployeeDO> userEmployeeMap, String filePath, String fileName, Integer type, Integer hraccountId) throws Exception {
         Response response = new Response();
         logger.info("开始导入员工信息");
         // 判断是否有重复数据
@@ -1203,7 +1203,7 @@ public class UserHrAccountService {
      * @param companyId
      * @return
      */
-    public ImportUserEmployeeStatistic checkBatchInsert(Map<Integer, UserEmployeeDO> userEmployeeMap, Integer companyId) throws BIZException {
+    public ImportUserEmployeeStatistic checkBatchInsert(Map<Integer, UserEmployeeDO> userEmployeeMap, Integer companyId) throws Exception {
         return repetitionFilter(userEmployeeMap, companyId);
     }
 
@@ -1213,7 +1213,7 @@ public class UserHrAccountService {
      * @param userEmployeeMap
      * @param companyId
      */
-    public ImportUserEmployeeStatistic repetitionFilter(Map<Integer, UserEmployeeDO> userEmployeeMap, Integer companyId) throws BIZException {
+    public ImportUserEmployeeStatistic repetitionFilter(Map<Integer, UserEmployeeDO> userEmployeeMap, Integer companyId) throws Exception {
         if (companyId == 0) {
             throw ExceptionFactory.buildException(ExceptionCategory.COMPANYID_ENPTY);
         }
@@ -1296,7 +1296,7 @@ public class UserHrAccountService {
      * @param userEmployeeId 员工ID
      * @param companyId      公司id
      */
-    public UserEmployeeDetailVO userEmployeeDetail(Integer userEmployeeId, Integer companyId) throws BIZException {
+    public UserEmployeeDetailVO userEmployeeDetail(Integer userEmployeeId, Integer companyId) throws Exception {
         UserEmployeeDetailVO userEmployeeDetailVO = new UserEmployeeDetailVO();
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         queryBuilder.where(UserEmployee.USER_EMPLOYEE.ID.getName(), userEmployeeId)
@@ -1360,9 +1360,9 @@ public class UserHrAccountService {
      * @param userEmployeeId user_employee.id
      * @param companyId      公司ID
      * @return
-     * @throws BIZException
+     * @throws Exception
      */
-    public Response updateUserEmployee(String cname, String mobile, String email, String customField, Integer userEmployeeId, Integer companyId) throws BIZException {
+    public Response updateUserEmployee(String cname, String mobile, String email, String customField, Integer userEmployeeId, Integer companyId) throws Exception {
         Response response = new Response();
         if (userEmployeeId == 0) {
             throw ExceptionFactory.buildException(ExceptionCategory.USEREMPLOYEES_DATE_EMPTY);

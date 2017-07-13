@@ -190,7 +190,7 @@ public class CompanyService {
      * @return 公司集合
      * @throws BIZException 业务异常
      */
-    public List<CompanyForVerifyEmployee> getGroupCompanies(int companyId) throws BIZException {
+    public List<CompanyForVerifyEmployee> getGroupCompanies(int companyId) throws Exception {
 
         /** 如果是子公司的话，则查找母公司的所属集团 */
         companyId = findSuperCompanyId(companyId);
@@ -254,7 +254,7 @@ public class CompanyService {
      * @return
      */
     @Transactional
-    public Response updateCompanyRewardConf(Integer companyId, List<RewardConfig> rewardConfigs) throws BIZException {
+    public Response updateCompanyRewardConf(Integer companyId, List<RewardConfig> rewardConfigs) throws Exception {
         if (companyId == 0) {
             throw ExceptionFactory.buildException(ExceptionCategory.COMPANY_ID_EMPTY);
         }
@@ -291,7 +291,7 @@ public class CompanyService {
      * @return 是否是集团公司 true:集团公司 false:非集团公司
      * @throws BIZException 业务异常
      */
-    public boolean isGroupCompanies(int companyId) throws BIZException {
+    public boolean isGroupCompanies(int companyId) throws Exception {
 
         /** 如果是子公司的话，则查找母公司的所属集团 */
         companyId = findSuperCompanyId(companyId);
@@ -310,7 +310,7 @@ public class CompanyService {
      * @param companyId 公司编号
      * @return 公司编号
      */
-    private int findSuperCompanyId(int companyId) throws BIZException {
+    private int findSuperCompanyId(int companyId) throws Exception {
         /** 如果是子公司的话，则查找母公司的所属集团 */
         Query.QueryBuilder findCompanyInfo = new Query.QueryBuilder();
         findCompanyInfo.select("parent_id").select("id");
@@ -338,7 +338,7 @@ public class CompanyService {
      * @return companyOptions
      * @throws BIZException
      */
-    public CompanyOptions getCompanyOptions(Integer companyId) throws BIZException {
+    public CompanyOptions getCompanyOptions(Integer companyId) throws Exception {
         CompanyOptions companyOptions = new CompanyOptions();
         if (companyId == 0) {
             throw ExceptionFactory.buildException(ExceptionCategory.COMPANY_ID_EMPTY);
@@ -372,7 +372,7 @@ public class CompanyService {
      * @param fileName    导入的文件名
      * @return response
      */
-    public Response addImporterMonitor(Integer comanyId, Integer hraccountId, Integer type, String file, Integer status, String message, String fileName) throws BIZException {
+    public Response addImporterMonitor(Integer comanyId, Integer hraccountId, Integer type, String file, Integer status, String message, String fileName) throws Exception {
         Response response = new Response();
         ValidateUtil vu = new ValidateUtil();
         vu.addIntTypeValidate("HR账号", hraccountId, "不能为空", null, 1, 1000000);
@@ -421,7 +421,7 @@ public class CompanyService {
      * @return
      * @throws BIZException
      */
-    public HrImporterMonitorDO getImporterMonitor(Integer comanyId, Integer hraccountId, Integer type) throws BIZException {
+    public HrImporterMonitorDO getImporterMonitor(Integer comanyId, Integer hraccountId, Integer type) throws Exception {
         HrImporterMonitorDO hrImporterMonitorDO = new HrImporterMonitorDO();
 
         ValidateUtil vu = new ValidateUtil();
@@ -451,7 +451,7 @@ public class CompanyService {
      * @param disable   是否开启 0开启 1关闭
      * @return
      */
-    public Response bindingSwitch(Integer companyId, Integer disable) throws BIZException {
+    public Response bindingSwitch(Integer companyId, Integer disable) throws Exception {
         Response response = new Response();
         try {
             Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
@@ -498,7 +498,7 @@ public class CompanyService {
      * @return
      * @throws BIZException
      */
-    public CompanyCertConf getHrEmployeeCertConf(Integer companyId, Integer type, Integer hraccountId) throws BIZException {
+    public CompanyCertConf getHrEmployeeCertConf(Integer companyId, Integer type, Integer hraccountId) throws Exception {
         CompanyCertConf companyCertConf = new CompanyCertConf();
         if (companyId == 0) {
             throw ExceptionFactory.buildException(ExceptionCategory.COMPANY_ID_EMPTY);
@@ -528,7 +528,7 @@ public class CompanyService {
      * @return 受影响行数
      */
     @Transactional
-    public int updateHrEmployeeCertConf(Integer companyId, Integer authMode, String emailSuffix, String custom, String customHint, String questions, String filePath, String fileName, Integer type, Integer hraccountId) throws BIZException {
+    public int updateHrEmployeeCertConf(Integer companyId, Integer authMode, String emailSuffix, String custom, String customHint, String questions, String filePath, String fileName, Integer type, Integer hraccountId) throws Exception {
         if (companyId == 0) {
             throw ExceptionFactory.buildException(ExceptionCategory.COMPANY_ID_EMPTY);
         }
