@@ -30,6 +30,7 @@ import com.moseeker.thrift.gen.employee.struct.Reward;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -190,7 +191,7 @@ public class EmployeeEntity {
      * @param employees
      * @return
      */
-    public boolean unbind(List<UserEmployeeDO> employees) throws Exception {
+    public boolean unbind(List<UserEmployeeDO> employees) throws TException {
         if (employees != null && employees.size() > 0) {
             employees.stream().filter(f -> f.getActivation() == 0).forEach(e -> {
                 e.setActivation((byte) 1);
