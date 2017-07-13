@@ -168,11 +168,11 @@ public class UserHrAccountController {
 
             Integer userId = params.getInt("user_id", 0);
 
-            if(userId == null){
+            if (userId == null) {
                 return ResponseLogNotification.fail(request, "user_id不能为空");
             }
 
-            HrThirdPartyAccountDO hrThirdPartyAccountDO = userHrAccountService.syncThirdpartyAccount(userId,id, params.getBoolean("sync", false));
+            HrThirdPartyAccountDO hrThirdPartyAccountDO = userHrAccountService.syncThirdpartyAccount(userId, id, params.getBoolean("sync", false));
 
             return ResponseLogNotification.success(request, ResponseUtils.success(thirdpartyAccountToMap(hrThirdPartyAccountDO)));
         } catch (Exception e) {
@@ -683,10 +683,11 @@ public class UserHrAccountController {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             int companyId = params.getInt("companyId", 0);
+            int type = params.getInt("type", 0);
             // 员工ID列表
             if (!StringUtils.isEmptyList((List<Integer>) params.get("userEmployees"))) {
                 List<Integer> userEmployees = (List<Integer>) params.get("userEmployees");
-                List<UserEmployeeVO> userEmployeeVOS = userHrAccountService.employeeExport(userEmployees, companyId);
+                List<UserEmployeeVO> userEmployeeVOS = userHrAccountService.employeeExport(userEmployees, companyId, type);
                 return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(userEmployeeVOS)));
             } else {
                 return ResponseLogNotification.fail(request, ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);

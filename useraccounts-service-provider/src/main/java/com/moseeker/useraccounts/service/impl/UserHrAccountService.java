@@ -1058,67 +1058,66 @@ public class UserHrAccountService {
         if (companyId == 0) {
             throw ExceptionFactory.buildException(ExceptionCategory.COMPANYID_ENPTY);
         }
+        if (StringUtils.isEmptyObject(userEmployees) && type.intValue() == 0) {
+            throw ExceptionFactory.buildException(ExceptionCategory.USEREMPLOYEES_EMPTY);
+        }
+        // 查询是否有权限修改
+        if (!employeeEntity.permissionJudge(userEmployees, companyId)) {
+            throw ExceptionFactory.buildException(ExceptionCategory.PERMISSION_DENIED);
+        }
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+
         if (type.intValue() == 1) {  // 导出所有，取该公司下所有的员工ID
             List<Integer> companyIds = employeeEntity.getCompanyIds(companyId);
-            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-            queryBuilder.where(new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyId, ValueOp.IN));
-//            userEmployees =
-        }
-        if (!StringUtils.isEmptyObject(userEmployees)) {
-            // 查询是否有权限修改
-            if (!employeeEntity.permissionJudge(userEmployees, companyId)) {
-                throw ExceptionFactory.buildException(ExceptionCategory.PERMISSION_DENIED);
-            }
-            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+            queryBuilder.where(new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyIds, ValueOp.IN));
+        } else {
             queryBuilder.where(new Condition(UserEmployee.USER_EMPLOYEE.ID.getName(), userEmployees, ValueOp.IN))
                     .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), 0);
-            // 员工列表
-            List<UserEmployeeDO> list = userEmployeeDao.getDatas(queryBuilder.buildQuery());
-            if (StringUtils.isEmptyList(list)) {
-                throw ExceptionFactory.buildException(ExceptionCategory.USEREMPLOYEES_EMPTY);
-            }
-            Set<Integer> sysuserId = list.stream().filter(userUserDO -> userUserDO.getSysuserId() > 0)
-                    .map(UserEmployeeDO::getSysuserId).collect(Collectors.toSet());
-            queryBuilder.clear();
-            queryBuilder.where(new Condition(UserUser.USER_USER.ID.getName(), sysuserId, ValueOp.IN));
-            // 查询微信昵称
-            List<UserUserDO> userUserDOList = userUserDao.getDatas(queryBuilder.buildQuery());
-            Map<Integer, UserUserDO> userMap = userUserDOList.stream().collect(Collectors.toMap(UserUserDO::getId, Function.identity()));
-
-            // 公司ID列表
-            Set<Integer> companyIds = list.stream().filter(userEmployeeDO -> userEmployeeDO.getCompanyId() > 0)
-                    .map(userEmployeeDO -> userEmployeeDO.getCompanyId()).collect(Collectors.toSet());
-            queryBuilder.clear();
-            queryBuilder.where(new Condition(HrCompany.HR_COMPANY.ID.getName(), companyIds, ValueOp.IN));
-            List<HrCompanyDO> companyList = hrCompanyDao.getDatas(queryBuilder.buildQuery());
-            // 查询公司信息
-            Map<Integer, HrCompanyDO> companyMap = companyList.stream().collect(Collectors.toMap(HrCompanyDO::getId, Function.identity()));
-            for (UserEmployeeDO userEmployeeDO : list) {
-                UserEmployeeVO userEmployeeVO = new UserEmployeeVO();
-                userEmployeeVO.setId(userEmployeeDO.getId());
-                userEmployeeVO.setUsername(userEmployeeDO.getCname());
-                userEmployeeVO.setMobile(userEmployeeDO.getMobile());
-                userEmployeeVO.setCustomField(userEmployeeDO.getCustomField());
-                userEmployeeVO.setEmail(userEmployeeDO.getEmail());
-                userEmployeeVO.setCompanyId(userEmployeeDO.getCompanyId());
-                if (!StringUtils.isEmptyObject(userMap) && !StringUtils.isEmptyObject(userMap.get(userEmployeeDO.getSysuserId()))) {
-                    userEmployeeVO.setNickName(userMap.get(userEmployeeDO.getSysuserId()).getNickname());
-                } else {
-                    userEmployeeVO.setNickName("未知");
-                }
-                // 公司名称
-                if (!StringUtils.isEmptyObject(companyMap) && !StringUtils.isEmptyObject(companyMap.get(userEmployeeDO.getCompanyId()))) {
-                    HrCompanyDO companyDO = (HrCompanyDO) companyMap.get(userEmployeeDO.getCompanyId());
-                    userEmployeeVO.setCompanyName(companyDO.getName() != null ? companyDO.getName() : "");
-                    userEmployeeVO.setCompanyAbbreviation(companyDO.getAbbreviation() != null ? companyDO.getAbbreviation() : "");
-                }
-                userEmployeeVO.setActivation((new Double(userEmployeeDO.getActivation())).intValue());
-                userEmployeeVO.setAward(userEmployeeDO.getAward());
-                userEmployeeVO.setBindingTime(userEmployeeDO.getCreateTime());
-                userEmployeeVOS.add(userEmployeeVO);
-            }
-        } else {
+        }
+        // 员工列表
+        List<UserEmployeeDO> list = userEmployeeDao.getDatas(queryBuilder.buildQuery());
+        if (StringUtils.isEmptyList(list)) {
             throw ExceptionFactory.buildException(ExceptionCategory.USEREMPLOYEES_EMPTY);
+        }
+        Set<Integer> sysuserId = list.stream().filter(userUserDO -> userUserDO.getSysuserId() > 0)
+                .map(UserEmployeeDO::getSysuserId).collect(Collectors.toSet());
+        queryBuilder.clear();
+        queryBuilder.where(new Condition(UserUser.USER_USER.ID.getName(), sysuserId, ValueOp.IN));
+        // 查询微信昵称
+        List<UserUserDO> userUserDOList = userUserDao.getDatas(queryBuilder.buildQuery());
+        Map<Integer, UserUserDO> userMap = userUserDOList.stream().collect(Collectors.toMap(UserUserDO::getId, Function.identity()));
+
+        // 公司ID列表
+        Set<Integer> companyIds = list.stream().filter(userEmployeeDO -> userEmployeeDO.getCompanyId() > 0)
+                .map(userEmployeeDO -> userEmployeeDO.getCompanyId()).collect(Collectors.toSet());
+        queryBuilder.clear();
+        queryBuilder.where(new Condition(HrCompany.HR_COMPANY.ID.getName(), companyIds, ValueOp.IN));
+        List<HrCompanyDO> companyList = hrCompanyDao.getDatas(queryBuilder.buildQuery());
+        // 查询公司信息
+        Map<Integer, HrCompanyDO> companyMap = companyList.stream().collect(Collectors.toMap(HrCompanyDO::getId, Function.identity()));
+        for (UserEmployeeDO userEmployeeDO : list) {
+            UserEmployeeVO userEmployeeVO = new UserEmployeeVO();
+            userEmployeeVO.setId(userEmployeeDO.getId());
+            userEmployeeVO.setUsername(userEmployeeDO.getCname());
+            userEmployeeVO.setMobile(userEmployeeDO.getMobile());
+            userEmployeeVO.setCustomField(userEmployeeDO.getCustomField());
+            userEmployeeVO.setEmail(userEmployeeDO.getEmail());
+            userEmployeeVO.setCompanyId(userEmployeeDO.getCompanyId());
+            if (!StringUtils.isEmptyObject(userMap) && !StringUtils.isEmptyObject(userMap.get(userEmployeeDO.getSysuserId()))) {
+                userEmployeeVO.setNickName(userMap.get(userEmployeeDO.getSysuserId()).getNickname());
+            } else {
+                userEmployeeVO.setNickName("未知");
+            }
+            // 公司名称
+            if (!StringUtils.isEmptyObject(companyMap) && !StringUtils.isEmptyObject(companyMap.get(userEmployeeDO.getCompanyId()))) {
+                HrCompanyDO companyDO = (HrCompanyDO) companyMap.get(userEmployeeDO.getCompanyId());
+                userEmployeeVO.setCompanyName(companyDO.getName() != null ? companyDO.getName() : "");
+                userEmployeeVO.setCompanyAbbreviation(companyDO.getAbbreviation() != null ? companyDO.getAbbreviation() : "");
+            }
+            userEmployeeVO.setActivation((new Double(userEmployeeDO.getActivation())).intValue());
+            userEmployeeVO.setAward(userEmployeeDO.getAward());
+            userEmployeeVO.setBindingTime(userEmployeeDO.getCreateTime());
+            userEmployeeVOS.add(userEmployeeVO);
         }
         return userEmployeeVOS;
     }
@@ -1277,8 +1276,7 @@ public class UserHrAccountService {
                     }
                     // 当提交的数据和数据库中的数据，cname和customField都相等时候，认为是重复数据
                     if (userEmployeeDO.getCname().equals(dbUserEmployeeDO.getCname())
-                            && userEmployeeDO.getCustomField().equals(dbUserEmployeeDO.getCustomField())
-                            && !userEmployeeDO.getMobile().equals(dbUserEmployeeDO.getMobile())) {
+                            && userEmployeeDO.getCustomField().equals(dbUserEmployeeDO.getCustomField())) {
                         repetitionCounts = repetitionCounts + 1;
                         importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
                         importErrorUserEmployee.setRowNum(entry.getKey());

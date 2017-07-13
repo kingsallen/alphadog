@@ -331,8 +331,8 @@ public class UserHrAccountServiceImpl implements Iface {
      * @return
      */
     @Override
-    public List<UserEmployeeVO> employeeExport(List<Integer> userEmployees, int companyId) throws BIZException, TException {
-        return service.employeeExport(userEmployees, companyId, 0);
+    public List<UserEmployeeVO> employeeExport(List<Integer> userEmployees, int companyId, int type) throws BIZException, TException {
+        return service.employeeExport(userEmployees, companyId, type);
     }
 
     /**
