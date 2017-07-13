@@ -186,34 +186,15 @@ public class PositionSyncFailedNotification {
             emailBuilder.setSubject(subject);
             emailBuilder.setContent(content);
             Email email = emailBuilder.build();
-            email.send(new TransportListener() {
-                int i = 3;//重试三次邮件
-
+            email.send(3, new Email.EmailListener() {
                 @Override
-                public void messageDelivered(TransportEvent e) {
+                public void success() {
                     logger.info("email send messageDelivered");
                 }
 
                 @Override
-                public void messageNotDelivered(TransportEvent e) {
-                    if (i > 0) {
-                        logger.info("email send messageNotDelivered retry {}", i);
-                        email.send(this);
-                        i--;
-                    } else {
-                        logger.error("发送职位同步刷新错误的邮件失败了:EmailTO:{}:Title:{}:Message:{}", recipients, subject.toString(), content.toString());
-                    }
-                }
-
-                @Override
-                public void messagePartiallyDelivered(TransportEvent e) {
-                    if (i > 0) {
-                        logger.info("email send messagePartiallyDelivered retry {}", i);
-                        email.send(this);
-                        i--;
-                    } else {
-                        logger.error("发送职位同步刷新错误的邮件失败了:EmailTO:{}:Title:{}:Message:{}", recipients, subject.toString(), content.toString());
-                    }
+                public void failed(Exception e) {
+                    logger.error("发送职位同步刷新错误的邮件失败了:EmailTO:{}:Title:{}:Message:{}", recipients, subject.toString(), content.toString());
                 }
             });
         } catch (Exception e) {
@@ -224,7 +205,7 @@ public class PositionSyncFailedNotification {
     }
 
     private String getExperience(String experience) {
-        if(StringUtils.isNullOrEmpty(experience)){
+        if (StringUtils.isNullOrEmpty(experience)) {
             return "不限";
         }
         return experience;

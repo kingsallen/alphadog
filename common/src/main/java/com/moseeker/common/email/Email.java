@@ -1,5 +1,6 @@
 package com.moseeker.common.email;
 
+import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -11,6 +12,7 @@ import javax.mail.Multipart;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.event.ConnectionListener;
+import javax.mail.event.TransportEvent;
 import javax.mail.event.TransportListener;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
@@ -19,12 +21,16 @@ import javax.mail.internet.MimeMultipart;
 
 import com.moseeker.common.email.attachment.Attachment;
 import com.moseeker.common.util.ConfigPropertiesUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by chendi on 3/31/16.
  */
 
 public class Email {
+
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
     private static final String serverDomain = propertiesReader.get("email.serverDomain", String.class);
@@ -38,8 +44,55 @@ public class Email {
         this.message = builder.message;
     }
 
+    public interface EmailListener {
+        void success();
+
+        void failed(Exception e);
+    }
+
     public void send() {
         send(null, null);
+
+    }
+
+    public void send(int retryTimes) {
+        send(retryTimes, null);
+    }
+
+    public void send(int retryTimes, EmailListener listener) {
+        send(new TransportListener() {
+            int i = retryTimes;//重试三次邮件
+
+            @Override
+            public void messageDelivered(TransportEvent e) {
+                if (listener != null) {
+                    listener.success();
+                }
+            }
+
+            @Override
+            public void messageNotDelivered(TransportEvent e) {
+                retry();
+            }
+
+            @Override
+            public void messagePartiallyDelivered(TransportEvent e) {
+                retry();
+            }
+
+            void retry() {
+                if (i > 0) {
+                    logger.info("send mail failed,retry at:{}",i);
+                    send(this);
+                    i--;
+                } else {
+                    logger.info("send mail failed after {} times retry",retryTimes);
+                    if (listener != null) {
+                        listener.failed(new ConnectException("cannot send email after " + retryTimes + "times retry!"));
+                    }
+                }
+            }
+        });
     }
 
     public void send(TransportListener transportListener) {

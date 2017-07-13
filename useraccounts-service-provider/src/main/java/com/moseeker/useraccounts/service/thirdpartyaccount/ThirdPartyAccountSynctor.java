@@ -151,34 +151,15 @@ public class ThirdPartyAccountSynctor {
             emailBuilder.setSubject(titleBuilder.toString());
             emailBuilder.setContent(messageBuilder.toString());
             Email email = emailBuilder.build();
-            email.send(new TransportListener() {
-                int i = 3;//重试三次邮件
-
+            email.send(3, new Email.EmailListener() {
                 @Override
-                public void messageDelivered(TransportEvent e) {
+                public void success() {
                     logger.info("email send messageDelivered");
                 }
 
                 @Override
-                public void messageNotDelivered(TransportEvent e) {
-                    if (i > 0) {
-                        logger.info("email send messageNotDelivered retry {}", i);
-                        email.send(this);
-                        i--;
-                    } else {
-                        logger.error("发送绑定失败的邮件发生错误：{}", e.getMessage());
-                    }
-                }
-
-                @Override
-                public void messagePartiallyDelivered(TransportEvent e) {
-                    if (i > 0) {
-                        logger.info("email send messagePartiallyDelivered retry {}", i);
-                        email.send(this);
-                        i--;
-                    } else {
-                        logger.error("发送绑定失败的邮件发生错误：{}", e.getMessage());
-                    }
+                public void failed(Exception e) {
+                    logger.error("发送绑定失败的邮件发生错误：{}", e.getMessage());
                 }
             });
         } catch (Exception e) {

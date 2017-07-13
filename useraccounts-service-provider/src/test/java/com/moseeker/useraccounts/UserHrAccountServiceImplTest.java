@@ -4,6 +4,7 @@ import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.email.Email;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.rpccenter.client.ServiceManager;
@@ -23,6 +24,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import javax.mail.MessagingException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -154,7 +157,7 @@ public class UserHrAccountServiceImplTest {
 
     @Test
     public void testRefresh() throws Exception {
-        userHrAccountService.synchronizeThirdpartyAccount(82752,66,true);
+        userHrAccountService.synchronizeThirdpartyAccount(82752, 66, true);
     }
 
 
@@ -200,5 +203,32 @@ public class UserHrAccountServiceImplTest {
 //        Thread.sleep(1000*600);
 
         System.out.println(result);
+    }
+
+    @Test
+    public void testSendEmail() throws Exception {
+        System.out.println("start");
+        Thread.sleep(1000*10);
+        List<String> recipients = new ArrayList<>();
+        recipients.add("edhlily@163.com");
+        String subject = "测试邮件";
+        String content = "测试邮件内容";
+        Email.EmailBuilder emailBuilder = new Email.EmailBuilder(recipients);
+        emailBuilder.setSubject(subject);
+        emailBuilder.setContent(content);
+        Email email = emailBuilder.build();
+        email.send(3, new Email.EmailListener() {
+            @Override
+            public void success() {
+                System.out.println("email send messageDelivered");
+            }
+
+            @Override
+            public void failed(Exception e) {
+                System.out.println("发送职位同步刷新错误的邮件失败了:EmailTO:" + recipients + ":Title:" + subject.toString() + ":Message:" + content.toString());
+            }
+        });
+
+        Thread.sleep(100000);
     }
 }
