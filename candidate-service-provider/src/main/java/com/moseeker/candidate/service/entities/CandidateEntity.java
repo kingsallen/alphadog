@@ -547,6 +547,7 @@ public class CandidateEntity implements Candidate {
             Future userFuture = findUserFutureById(candidateRecomRecordDO.getPresenteeUserId());
             recommendResult.setPresenteeName(refineUserName(userFuture));
             recommendResult.setPositionName(refinePositionName(positionFuture));
+            recommendResult.setClickTime(candidateRecomRecordDO.getClickTime());
         }
 
 
