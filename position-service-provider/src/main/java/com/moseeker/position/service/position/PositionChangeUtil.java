@@ -233,7 +233,7 @@ public class PositionChangeUtil {
         switch (channelType) {
             case JOB51:
                 position.setDegree_code(DegreeChangeUtil.getJob51Degree(degree).getValue());
-                position.setDegree_code(DegreeChangeUtil.getJob51Degree(degree).getName());
+                position.setDegree(DegreeChangeUtil.getJob51Degree(degree).getName());
                 break;
             case ZHILIAN:
                 position.setDegree_code(DegreeChangeUtil.getZhilianDegree(degree).getValue());

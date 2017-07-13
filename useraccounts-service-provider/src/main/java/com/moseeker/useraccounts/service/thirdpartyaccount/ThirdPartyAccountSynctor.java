@@ -140,7 +140,7 @@ public class ThirdPartyAccountSynctor {
             }
 
             if (extras != null && StringUtils.isNotNullOrEmpty(extras.get("company"))) {
-                messageBuilder.append("【公司名称】:").append(extras.get("company"));
+                messageBuilder.append("【公司名称】:").append(extras.get("company")).append(br);
             }
 
             if (StringUtils.isNotNullOrEmpty(message)) {

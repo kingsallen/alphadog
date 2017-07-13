@@ -52,7 +52,7 @@ public class DegreeChangeUtil {
         ZhilianDegree zhilianDegree = ZhilianDegree.NotRequired;
         switch (degree) {
             case None:
-                zhilianDegree = ZhilianDegree.None;
+                zhilianDegree = ZhilianDegree.NotRequired;
                 break;
             case SpecicalSecondarySchool:
                 zhilianDegree = ZhilianDegree.SpecicalSecondarySchool;
