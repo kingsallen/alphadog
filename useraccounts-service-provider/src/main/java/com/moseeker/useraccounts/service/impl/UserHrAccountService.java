@@ -422,7 +422,7 @@ public class UserHrAccountService {
             }
         } else {
             //主张号发现已经有子帐号已经绑定了这个帐号
-            if (hrAccount.getAccountType() == 0 && data.getUsername().equals(thirdPartyAccount.getUsername())) {
+            if (hrAccount.getAccountType() == 0) {
                 return checkRebinding(data);
             }
 
