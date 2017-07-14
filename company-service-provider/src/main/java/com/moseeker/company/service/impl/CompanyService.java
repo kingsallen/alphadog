@@ -508,9 +508,6 @@ public class CompanyService {
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         queryBuilder.where(new Condition(HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF.COMPANY_ID.getName(), companyIds, ValueOp.IN));
         List<HrEmployeeCertConfDO> hrEmployeeCertConfDO = hrEmployeeCertConfDao.getDatas(queryBuilder.buildQuery());
-        if (StringUtils.isEmptyObject(hrEmployeeCertConfDO)) {
-            throw ExceptionFactory.buildException(ExceptionCategory.HREMPLOYEECERTCONF_EMPTY);
-        }
         HrImporterMonitorDO hrImporterMonitorDO = getImporterMonitor(companyId, hraccountId, type);
         companyCertConf.setHrImporterMonitor(hrImporterMonitorDO);
         companyCertConf.setHrEmployeeCertConf(hrEmployeeCertConfDO);
