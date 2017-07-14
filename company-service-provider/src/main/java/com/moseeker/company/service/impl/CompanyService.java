@@ -503,11 +503,13 @@ public class CompanyService {
         if (companyId == 0) {
             throw ExceptionFactory.buildException(ExceptionCategory.COMPANY_ID_EMPTY);
         }
-
         List<Integer> companyIds = employeeEntity.getCompanyIds(companyId);
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         queryBuilder.where(new Condition(HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF.COMPANY_ID.getName(), companyIds, ValueOp.IN));
         List<HrEmployeeCertConfDO> hrEmployeeCertConfDO = hrEmployeeCertConfDao.getDatas(queryBuilder.buildQuery());
+        if (StringUtils.isEmptyList(hrEmployeeCertConfDO)) {
+            hrEmployeeCertConfDO = new ArrayList<>();
+        }
         HrImporterMonitorDO hrImporterMonitorDO = getImporterMonitor(companyId, hraccountId, type);
         companyCertConf.setHrImporterMonitor(hrImporterMonitorDO);
         companyCertConf.setHrEmployeeCertConf(hrEmployeeCertConfDO);
