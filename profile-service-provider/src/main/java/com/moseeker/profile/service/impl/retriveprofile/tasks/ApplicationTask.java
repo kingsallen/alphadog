@@ -65,7 +65,7 @@ public class ApplicationTask extends Task {
         } else {
             //do nothing
         }
-        if (aplicationRecord.getId() != null) {
+        if (aplicationRecord != null && aplicationRecord.getId() != null) {
             param.setApplicationId(aplicationRecord.getId());
         }
     }
