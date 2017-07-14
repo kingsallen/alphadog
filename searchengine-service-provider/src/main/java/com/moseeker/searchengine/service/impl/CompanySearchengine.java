@@ -43,9 +43,11 @@ public class CompanySearchengine {
 		if(hitNum==0){
 			SearchResponse hitsData=queryString(keywords,citys,industry,scale,page,pageSize);
 			Map<String,Object> map=this.handleData(hitsData);
+			logger.info(map.toString());
 			return map;
 		}else{
 			Map<String,Object> map=this.handleData(hits);
+			logger.info(map.toString());
 			return map;
 		}
 		
