@@ -224,7 +224,7 @@ public class CompanySearchengine {
             for (String code:industry_list) {
                 codes.add(Integer.parseInt(code));
             }
-            QueryBuilder industryfilter = QueryBuilders.matchPhraseQuery("company.industry.code", codes);
+            QueryBuilder industryfilter = QueryBuilders.termsQuery("company.industry.code", codes);
             ((BoolQueryBuilder) query).must(industryfilter);
         }
     }
@@ -239,7 +239,7 @@ public class CompanySearchengine {
             	 int scale=Integer.parseInt(code);
             	 codes.add(scale);
              }
-             QueryBuilder industryfilter = QueryBuilders.matchPhraseQuery("company.scale", codes);
+             QueryBuilder industryfilter = QueryBuilders.termsQuery("company.scale", codes);
              ((BoolQueryBuilder) query).must(industryfilter);
     	}
     }
