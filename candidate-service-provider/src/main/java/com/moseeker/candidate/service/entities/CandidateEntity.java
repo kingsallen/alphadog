@@ -592,7 +592,11 @@ public class CandidateEntity implements Candidate {
                                                         Future positionFuture, Future userFuture) {
         RecomRecordResult recomRecordResult = new RecomRecordResult();
         recomRecordResult.setId(candidateRecomRecordDO.getId());
-        recomRecordResult.setClickTime(candidateRecomRecordDO.getClickTime());
+        String date = candidateRecomRecordDO.getClickTime();
+        if (date != null && date.length() > 10) {
+            date = date.trim().substring(0, 10);
+        }
+        recomRecordResult.setClickTime(date);
         recomRecordResult.setPresenteeName(refineUserName(userFuture));
         recomRecordResult.setTitle(refinePositionName(positionFuture));
         recomRecordResult.setRecom((byte)candidateRecomRecordDO.getIsRecom());
