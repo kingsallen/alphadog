@@ -40,7 +40,7 @@ public class CompanySearchengine {
 	public Map<String,Object>  query(String keywords,String citys,String industry,String scale,Integer page,Integer pageSize) throws TException{
 		SearchResponse hits=queryPrefix(keywords,citys,industry,scale,page,pageSize);
 		long hitNum=hits.getHits().getTotalHits();
-		if(hitNum==0){
+		if(hitNum==0&&keywords!=null&&!"".equals(keywords)){
 			SearchResponse hitsData=queryString(keywords,citys,industry,scale,page,pageSize);
 			Map<String,Object> map=this.handleData(hitsData);
 			logger.info(map.toString());
@@ -132,7 +132,7 @@ public class CompanySearchengine {
     	long totalNum=hit.getTotalHits();
     	data.put("totalNum", totalNum);
     	SearchHit[] searchData=hit.getHits();
-    	if(searchData!=null&&searchData.length>0){
+    	if(totalNum>0){
     		List<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
     		for(SearchHit ss:searchData){
     			Map<String,Object> obj=ss.getSource();
