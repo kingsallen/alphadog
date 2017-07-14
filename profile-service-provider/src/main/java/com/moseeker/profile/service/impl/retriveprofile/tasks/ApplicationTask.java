@@ -14,6 +14,7 @@ import com.moseeker.profile.exception.Category;
 import com.moseeker.profile.exception.ExceptionFactory;
 import com.moseeker.profile.service.impl.retriveprofile.RetrieveParam;
 import com.moseeker.profile.service.impl.retriveprofile.Task;
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -64,7 +65,9 @@ public class ApplicationTask extends Task {
         } else {
             //do nothing
         }
-        param.setApplicationId(aplicationRecord.getId());
+        if (aplicationRecord.getId() != null) {
+            param.setApplicationId(aplicationRecord.getId());
+        }
     }
 
     /**
