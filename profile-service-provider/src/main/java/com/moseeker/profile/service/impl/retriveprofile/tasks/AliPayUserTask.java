@@ -14,6 +14,9 @@ public class AliPayUserTask extends UserTask {
     @Override
     protected UserUserRecord initUser(UserUserRecord userUserRecord) {
         UserUserRecord userUserRecord1 = super.initUser(userUserRecord);
+        if (userUserRecord1.getMobile() == null) {
+            userUserRecord1.setMobile(Long.valueOf(userUserRecord1.getUsername()));
+        }
         userUserRecord1.setSource((short)UserSource.RETRIEVE_PROFILE_ZHIFUBAO.getValue());
         return userUserRecord1;
     }

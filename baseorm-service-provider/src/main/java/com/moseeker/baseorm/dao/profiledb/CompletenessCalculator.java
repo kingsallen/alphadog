@@ -53,7 +53,7 @@ public class CompletenessCalculator {
 		return completeness;
 	}
 
-	public static int calculateProfileBasic(ProfileBasicRecord basicRecord, long mobile) throws ParamIllegalException {
+	public static int calculateProfileBasic(ProfileBasicRecord basicRecord, Long mobile) throws ParamIllegalException {
 		int completeness = 0;
 
 		if (basicRecord == null) {
@@ -84,7 +84,7 @@ public class CompletenessCalculator {
 			completeness += 3;
 		}
 		//这里需要添加对手机好的判断，只要手机号和微信号两个中有一个就可以＋5
-		if (StringUtils.isNotNullOrEmpty(basicRecord.getWeixin())||mobile!=0) {
+		if (StringUtils.isNotNullOrEmpty(basicRecord.getWeixin()) || (mobile != null && mobile != 0)) {
 //			completeness += 3;
 			completeness += 5;
 		}
