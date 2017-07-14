@@ -529,8 +529,6 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                 basicRecord.insert();
                 birthDay = basicRecord.getBirth();
                 //计算basic完整度，由于修改规则，mobile或者微信号有一个即计入，为了不改变数据库表结构所以将mobile传入basic的完整度计算程序当中
-                System.out.println(basicRecord);
-                System.out.println(userRecord);
                 int basicCompleteness = CompletenessCalculator.calculateProfileBasic(basicRecord, userRecord.getMobile());
                 completenessRecord.setProfileBasic(basicCompleteness);
             }

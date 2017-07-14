@@ -78,6 +78,9 @@ public class UserTask extends Task {
                 userUserRecord1.setNickname(userUserRecord.getName());
             }
         }
+        if (userUserRecord1.getMobile() == null) {
+            userUserRecord1.setMobile(Long.valueOf(userUserRecord1.getUsername()));
+        }
         userUserRecord1.setPassword("");
         userUserRecord1.setSource((short) UserSource.RETRIEVE_PROFILE.getValue());
         return userUserRecord1;

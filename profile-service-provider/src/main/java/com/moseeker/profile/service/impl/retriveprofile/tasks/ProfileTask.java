@@ -38,9 +38,6 @@ public class ProfileTask extends Task {
     protected void handler(RetrieveParam param) throws CommonException {
         if (param.getProfilePojo() != null) {
 
-            System.out.println(profileDao);
-            System.out.println(param);
-            System.out.println(param.getUserUserRecord());
             ProfileProfileRecord profileProfileRecord = profileDao.getProfileByUserId(param.getUserUserRecord().getId());
 
             ProfilePojo profilePojo = param.getProfilePojo();
