@@ -503,9 +503,11 @@ public class CompanyService {
         if (companyId == 0) {
             throw ExceptionFactory.buildException(ExceptionCategory.COMPANY_ID_EMPTY);
         }
+
+        List<Integer> companyIds = employeeEntity.getCompanyIds(companyId);
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-        queryBuilder.where(HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF.COMPANY_ID.getName(), companyId);
-        HrEmployeeCertConfDO hrEmployeeCertConfDO = hrEmployeeCertConfDao.getData(queryBuilder.buildQuery());
+        queryBuilder.where(new Condition(HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF.COMPANY_ID.getName(), companyIds, ValueOp.IN));
+        List<HrEmployeeCertConfDO> hrEmployeeCertConfDO = hrEmployeeCertConfDao.getDatas(queryBuilder.buildQuery());
         if (StringUtils.isEmptyObject(hrEmployeeCertConfDO)) {
             throw ExceptionFactory.buildException(ExceptionCategory.HREMPLOYEECERTCONF_EMPTY);
         }
@@ -578,8 +580,8 @@ public class CompanyService {
         ValidateUtil vu = new ValidateUtil();
         vu.addIntTypeValidate("导入的数据类型", type, "不能为空", null, 0, 100);
         vu.addIntTypeValidate("HR账号", hraccountId, "不能为空", null, 1, 1000000);
-        vu.addStringLengthValidate("导入文件的绝对路径", filePath, null, null,0,257);
-        vu.addStringLengthValidate("导入的文件名", fileName, null, null,0,257);
+        vu.addStringLengthValidate("导入文件的绝对路径", filePath, null, null, 0, 257);
+        vu.addStringLengthValidate("导入的文件名", fileName, null, null, 0, 257);
 
         String errorMessage = vu.validate();
         if (!StringUtils.isNullOrEmpty(errorMessage)) {

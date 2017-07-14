@@ -44,6 +44,6 @@ struct CompanyOptions{
 
 // 公司认证配置
 struct CompanyCertConf{
-    1:hrdb_struct.HrEmployeeCertConfDO hrEmployeeCertConf,
+    1:list<hrdb_struct.HrEmployeeCertConfDO> hrEmployeeCertConf,
     2:hrdb_struct.HrImporterMonitorDO hrImporterMonitor
 }
