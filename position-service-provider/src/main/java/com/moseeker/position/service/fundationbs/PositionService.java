@@ -1653,7 +1653,7 @@ public class PositionService {
         positionForAlipaycampusPojo.setPayment_unit(2);//month
 
         // 公司
-        positionForAlipaycampusPojo.setCompany_source("");
+        positionForAlipaycampusPojo.setCompany_source(String.valueOf(company_id));
         positionForAlipaycampusPojo.setCompany_name(hrCompanyRecord.getAbbreviation());
         positionForAlipaycampusPojo.setCompany_lawname(hrCompanyRecord.getAbbreviation());
         positionForAlipaycampusPojo.setCompany_logo("https://cdn.moseeker.com/" + hrCompanyRecord.getLogo());
