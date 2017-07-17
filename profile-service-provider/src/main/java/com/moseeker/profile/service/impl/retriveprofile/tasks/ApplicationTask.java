@@ -54,7 +54,7 @@ public class ApplicationTask extends Task {
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         queryBuilder.where("position_id", positionRecord.getId()).and("applier_id", param.getUserUserRecord().getId());
         JobApplicationRecord aplicationRecord = jobApplicationDao.getRecord(queryBuilder.buildQuery());
-        if (aplicationRecord == null  && positionRecord.getStatus() == 0) {
+        if (aplicationRecord == null && positionRecord.getStatus() == 0) {
             JobApplicationRecord applicationRecord = initApplication(param.getUserUserRecord().getId(), positionRecord.getId(),
                     positionRecord.getCompanyId());
             applicationRecord = jobApplicationDao.addRecord(applicationRecord);
