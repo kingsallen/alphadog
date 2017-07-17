@@ -12,11 +12,13 @@ import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.RabbitListenerContainerFactory;
+import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 import org.springframework.retry.backoff.ExponentialBackOffPolicy;
 import org.springframework.retry.support.RetryTemplate;
+import sun.misc.Cache;
 
 /**
  * Created by lucky8987 on 17/5/11.
@@ -70,6 +72,10 @@ public class AppConfig {
         return rabbitAdmin;
     }
 
+    /**
+     * listener 容器 （consumer 需要手动确认消息）
+     * @return
+     */
     @Bean
     public RabbitListenerContainerFactory rabbitListenerContainerFactory() {
         SimpleRabbitListenerContainerFactory listenerContainerFactory = new SimpleRabbitListenerContainerFactory();
@@ -78,6 +84,18 @@ public class AppConfig {
         listenerContainerFactory.setAcknowledgeMode(AcknowledgeMode.MANUAL);
         return listenerContainerFactory;
     }
+
+    /**
+     * listener 容器 （AcknowledgeMode：auto）
+     * @return
+     */
+    @Bean
+    public RabbitListenerContainerFactory rabbitListenerContainerFactoryAutoAck() {
+        SimpleRabbitListenerContainerFactory listenerContainerFactory = new SimpleRabbitListenerContainerFactory();
+        listenerContainerFactory.setConnectionFactory(cachingConnectionFactory());
+        return listenerContainerFactory;
+    }
+
 
     @Bean
     public Queue helloQueue() {

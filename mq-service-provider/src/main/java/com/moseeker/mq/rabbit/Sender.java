@@ -32,7 +32,7 @@ public class Sender {
     }
 
     public void sendAndReceive(String string) {
-        // 采用应答方式(request/reply) 异步请求
+        // 采用应答方式(request/reply)
         JSONObject jsonObject = JSONObject.parseObject(string);
         jsonObject.put("currentTime", LocalDateTime.now().withNano(0).toString());
         string = jsonObject.toJSONString();

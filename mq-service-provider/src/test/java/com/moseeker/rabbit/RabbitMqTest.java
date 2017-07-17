@@ -26,7 +26,7 @@ public class RabbitMqTest {
 
     @Test
     public void testQx() throws InterruptedException {
-        String string = "{\"name\": \"long\", \"ex\": 1}"; // "recover": true
+        String string = "{\"name\": \"long\", \"ex\": 1, \"recover\": true}"; // "recover": true
         sender.sendAndReceive(string);
         Thread.currentThread().sleep(10000000);
     }

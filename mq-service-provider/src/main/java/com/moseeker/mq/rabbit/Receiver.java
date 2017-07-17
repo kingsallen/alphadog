@@ -17,13 +17,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class Receiver {
 
-    @RabbitListener(queues = "hello")
+    @RabbitListener(queues = "hello", containerFactory = "rabbitListenerContainerFactory")
     @RabbitHandler
     public void process(byte[] str) {
         System.out.println("Receiver: " + new String(str) + "; " + LocalDateTime.now().withNano(0).toString());
     }
 
-    @RabbitListener(queues = "qx")
+    @RabbitListener(queues = "qx", containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
     @SendTo("status")
     public String processQx(Message message, Channel channel) {
