@@ -188,8 +188,12 @@ public class PositionSyncFailedNotification {
     }
 
     private void sendEmail(List<String> recipients, String subject, String content) {
+        if (recipients == null || recipients.size() == 0) return;
         try {
-            Email.EmailBuilder emailBuilder = new Email.EmailBuilder(recipients);
+            Email.EmailBuilder emailBuilder = new Email.EmailBuilder(recipients.subList(0, 1));
+            if (recipients.size() > 1) {
+                emailBuilder.addCCList(recipients.subList(1, recipients.size()));
+            }
             emailBuilder.setSubject(subject);
             emailBuilder.setContent(content);
             Email email = emailBuilder.build();

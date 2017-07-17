@@ -208,12 +208,13 @@ public class UserHrAccountServiceImplTest {
     @Test
     public void testSendEmail() throws Exception {
         System.out.println("start");
-        Thread.sleep(1000*10);
         List<String> recipients = new ArrayList<>();
         recipients.add("edhlily@163.com");
+        recipients.add("zhangdi@moseeker.com");
         String subject = "测试邮件";
         String content = "测试邮件内容";
-        Email.EmailBuilder emailBuilder = new Email.EmailBuilder(recipients);
+        Email.EmailBuilder emailBuilder = new Email.EmailBuilder(recipients.subList(0, 1));
+        emailBuilder.addCCList(recipients.subList(1, recipients.size()));
         emailBuilder.setSubject(subject);
         emailBuilder.setContent(content);
         Email email = emailBuilder.build();

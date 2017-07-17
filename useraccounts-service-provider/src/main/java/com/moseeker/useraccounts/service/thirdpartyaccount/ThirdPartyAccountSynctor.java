@@ -120,7 +120,7 @@ public class ThirdPartyAccountSynctor {
 
         try {
 
-            Email.EmailBuilder emailBuilder = new Email.EmailBuilder(mails);
+            Email.EmailBuilder emailBuilder = new Email.EmailBuilder(mails.subList(0, 1));
 
             ChannelType channelType = ChannelType.instaceFromInteger(thirdPartyAccount.getChannel());
 
@@ -150,6 +150,9 @@ public class ThirdPartyAccountSynctor {
 
             emailBuilder.setSubject(titleBuilder.toString());
             emailBuilder.setContent(messageBuilder.toString());
+            if (mails.size() > 1) {
+                emailBuilder.addCCList(mails.subList(1, mails.size()));
+            }
             Email email = emailBuilder.build();
             email.send(3, new Email.EmailListener() {
                 @Override

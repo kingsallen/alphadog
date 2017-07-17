@@ -2,6 +2,7 @@ package com.moseeker.common.email;
 
 import java.net.ConnectException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -82,11 +83,11 @@ public class Email {
 
             void retry() {
                 if (i > 0) {
-                    logger.info("send mail failed,retry at:{}",i);
+                    logger.info("send mail failed,retry at:{}", i);
                     send(this);
                     i--;
                 } else {
-                    logger.info("send mail failed after {} times retry",retryTimes);
+                    logger.info("send mail failed after {} times retry", retryTimes);
                     if (listener != null) {
                         listener.failed(new ConnectException("cannot send email after " + retryTimes + "times retry!"));
                     }
@@ -130,6 +131,7 @@ public class Email {
         static private ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
         // required
         private ArrayList<String> recipients = new ArrayList<>();
+        private ArrayList<String> ccList = new ArrayList<>();
 
         // optional
         private String senderAddress = propertiesReader.get("email.senderAddress", String.class);
@@ -172,6 +174,16 @@ public class Email {
             return this;
         }
 
+        public EmailBuilder addCCList(List<String> ccList) {
+            this.ccList.addAll(ccList);
+            return this;
+        }
+
+        public EmailBuilder addCC(String cc) {
+            this.ccList.add(cc);
+            return this;
+        }
+
         public EmailBuilder addAttachment(Attachment attachment) {
             this.attachments.add(attachment);
             return this;
@@ -191,7 +203,12 @@ public class Email {
             for (String recipient : this.recipients) {
                 recipients.add(new InternetAddress(recipient));
             }
+            ArrayList<InternetAddress> ccList = new ArrayList<>();
+            for(String cc : this.ccList){
+                ccList.add(new InternetAddress(cc));
+            }
             this.message.setRecipients(RecipientType.TO, recipients.toArray(new InternetAddress[this.recipients.size()]));
+            this.message.setRecipients(RecipientType.CC,ccList.toArray(new InternetAddress[this.recipients.size()]));
             return this;
         }
 
