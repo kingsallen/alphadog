@@ -89,7 +89,7 @@ public class EmployeeBindByEmail extends EmployeeBinder{
             // 激活码(MD5)： employee-email-timestamp
             String activationCode = MD5Util.encryptSHA(userEmployeeDOThreadLocal.get().getId()+"-"+bindingParams.getEmail()+"-"+System.currentTimeMillis());
             Map<String, String> mesBody = new HashMap<>();
-            mesBody.put("#company_log#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(companyDO.getLogo(), ""));
+            mesBody.put("#company_logo#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(companyDO.getLogo(), ""));
             mesBody.put("#employee_name#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(userEmployeeDOThreadLocal.get().getCname(), userAccountEntity.genUsername(userEmployeeDOThreadLocal.get().getSysuserId())));
             mesBody.put("#company_abbr#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(companyDO.getAbbreviation(), ""));
             mesBody.put("#official_account_name#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(hrwechatResult.getName(), ""));
