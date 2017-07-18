@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -507,4 +508,38 @@ public class PositionController {
         }
         return null;
     }
+
+
+    /**
+     * 第三方职位列表详情
+     */
+    @RequestMapping(value = "/thirdparty/position/info", method = RequestMethod.GET)
+    @ResponseBody
+    public String getThirdPartyPositionInfo(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            ThirdPartyPositionInfoForm infoForm = ParamUtils.initModelForm(request, ThirdPartyPositionInfoForm.class);
+            ThirdPartyPositionResult result = positonServices.getThirdPartyPositionInfo(infoForm);
+            return ResponseLogNotification.successJson(request, result);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseLogNotification.failJson(request, e);
+        }
+    }
+
+    /**
+     * 第三方职位列表详情
+     */
+    @RequestMapping(value = "/thirdparty/position", method = RequestMethod.PUT)
+    @ResponseBody
+    public String updateThirdPartyPosition(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            HrThirdPartyPositionDO thirdPartyPosition = ParamUtils.initModelForm(request, HrThirdPartyPositionDO.class);
+            int result = positonServices.updateThirdPartyPosition(thirdPartyPosition);
+            return ResponseLogNotification.successJson(request, result);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseLogNotification.failJson(request, e);
+        }
+    }
+
 }
