@@ -901,10 +901,10 @@ public class UserHrAccountService {
         queryBuilder.where(HrCompany.HR_COMPANY.ID.getName(), companyId);
         // 是否是子公司，如果是查询母公司ID
         HrCompanyDO hrCompanyDO = hrCompanyDao.getData(queryBuilder.buildQuery());
-        List<Integer> list = employeeEntity.getCompanyIds(hrCompanyDO.getParentId() > 0 ? hrCompanyDO.getParentId() : companyId);
         if (StringUtils.isEmptyObject(hrCompanyDO)) {
             throw ExceptionFactory.buildException(ExceptionCategory.COMPANY_DATA_EMPTY);
         }
+        List<Integer> list = employeeEntity.getCompanyIds(hrCompanyDO.getParentId() > 0 ? hrCompanyDO.getParentId() : companyId);
         queryBuilder.clear();
         Condition companyIdCon = new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), list, ValueOp.IN);
         queryBuilder.where(companyIdCon).and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), 0);
