@@ -71,9 +71,10 @@ class LocalQuery<R extends Record> {
             return query.getAttributes().stream()
                     .map(select -> {
                         Field<?> field = table.field(select.getField());
-                        if (StringUtils.isEmptyObject(field)) {
-                            logger.warn("field '" + select.getField() + "' not found in table " + table.getName());
-                            throw ExceptionFactory.buildException(ExceptionCategory.SELECT_FIELD_NOEXIST);
+                        if (field == null) {
+                            logger.warn("field {},not found in table {}", select.getField(), table.getName());
+                            throw ExceptionFactory.buildException(ExceptionCategory.SELECT_FIELD_NOEXIST.getCode(), ExceptionCategory.SELECT_FIELD_NOEXIST.getMsg()
+                                    .replace("{TABLE}", table.getName()).replace("{FIELD}", select.getField()));
                         } else {
                             switch (select.getSelectOp()) {
                                 case AVG:
@@ -119,8 +120,9 @@ class LocalQuery<R extends Record> {
                     .map(groupField -> {
                         Field<?> field = table.field(groupField);
                         if (field == null) {
-                            logger.warn("field '" + groupField + "' not found in table " + table.getName());
-                            throw ExceptionFactory.buildException(ExceptionCategory.GROUPBY_FIELD_NOEXIST);
+                            logger.warn("field {},not found in table {}", groupField, table.getName());
+                            throw ExceptionFactory.buildException(ExceptionCategory.GROUPBY_FIELD_NOEXIST.getCode(), ExceptionCategory.SELECT_FIELD_NOEXIST.getMsg()
+                                    .replace("{TABLE}", table.getName()).replace("{FIELD}", groupField));
                         } else {
                             return field;
                         }
@@ -149,8 +151,9 @@ class LocalQuery<R extends Record> {
                     .map(orderBy -> {
                         Field<?> field = table.field(orderBy.getField());
                         if (field == null) {
-                            logger.warn("field '" + orderBy.getField() + "' not found in table " + table.getName());
-                            throw ExceptionFactory.buildException(ExceptionCategory.ORDER_FIELD_NOEXIST);
+                            logger.warn("field {},not found in table {}", orderBy.getField(), table.getName());
+                            throw ExceptionFactory.buildException(ExceptionCategory.GROUPBY_FIELD_NOEXIST.getCode(), ExceptionCategory.SELECT_FIELD_NOEXIST.getMsg()
+                                    .replace("{TABLE}", table.getName()).replace("{FIELD}", orderBy.getField()));
                         } else {
                             switch (orderBy.getOrder()) {
                                 case DESC:
