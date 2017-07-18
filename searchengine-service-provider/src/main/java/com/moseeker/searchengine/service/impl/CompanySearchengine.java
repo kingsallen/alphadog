@@ -72,7 +72,7 @@ public class CompanySearchengine {
         		 QueryBuilder query=this.buildQueryForString(keywords, citys, industry, scale);
                  SearchRequestBuilder responseBuilder=client.prepareSearch("companys").setTypes("company")
                          .setQuery(query)
-                         .setFrom(page-1)
+                         .setFrom((page-1)*pageSize)
                          .setSize(pageSize)
                          .addAggregation(this.handleAggIndustry())
                          .addAggregation(this.handleAggPositionCity())
@@ -102,7 +102,7 @@ public class CompanySearchengine {
                 SearchRequestBuilder responseBuilder=client.prepareSearch("companys").setTypes("company")
                         .setQuery(query)
                         .setTrackScores(true)
-                        .setFrom(page-1)
+                        .setFrom((page-1)*pageSize)
                         .setSize(pageSize)
                         .addAggregation(this.handleAggIndustry())
                         .addAggregation(this.handleAggPositionCity())
