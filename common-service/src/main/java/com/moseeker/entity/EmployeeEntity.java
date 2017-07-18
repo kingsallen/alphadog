@@ -188,6 +188,7 @@ public class EmployeeEntity {
 
     /**
      * 员工取消认证（支持批量）-- 重载
+     *
      * @param employees
      * @return
      */
@@ -331,6 +332,21 @@ public class EmployeeEntity {
         return list;
     }
 
+    /**
+     * 通过员工ID 查询集团下所有的公司ID列表
+     *
+     * @param userId userdb.user_user.id
+     * @return
+     */
+    public List<Integer> getCompanyIdsByUserId(Integer userId) {
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.getName(), userId);
+        UserEmployeeDO userEmployeeDO = employeeDao.getData(queryBuilder.buildQuery());
+        if (StringUtils.isEmptyObject(userEmployeeDO)) {
+            return new ArrayList<>();
+        }
+        return getCompanyIds(userEmployeeDO.getCompanyId());
+    }
 
     /**
      * 通过公司ID查集团下所有的员工列表
