@@ -25,16 +25,16 @@ public class ThirdPartyPositionInfoForm implements org.apache.thrift.TBase<Third
   private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new ThirdPartyPositionInfoFormStandardSchemeFactory();
   private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new ThirdPartyPositionInfoFormTupleSchemeFactory();
 
-  public int page; // required
-  public int pageSize; // required
-  public String hrName; // required
-  public String thirdAccountName; // required
-  public String companyAbbr; // required
-  public int channel; // required
-  public int status; // required
-  public int positionId; // required
-  public int thirdPositionId; // required
-  public String thirdPositionNumber; // required
+  public int page; // optional
+  public int pageSize; // optional
+  public String hrName; // optional
+  public String thirdAccountName; // optional
+  public String companyAbbr; // optional
+  public int channel; // optional
+  public int status; // optional
+  public int positionId; // optional
+  public int thirdPositionId; // optional
+  public String thirdPositionNumber; // optional
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -129,65 +129,35 @@ public class ThirdPartyPositionInfoForm implements org.apache.thrift.TBase<Third
   private static final int __POSITIONID_ISSET_ID = 4;
   private static final int __THIRDPOSITIONID_ISSET_ID = 5;
   private byte __isset_bitfield = 0;
+  private static final _Fields optionals[] = {_Fields.PAGE,_Fields.PAGE_SIZE,_Fields.HR_NAME,_Fields.THIRD_ACCOUNT_NAME,_Fields.COMPANY_ABBR,_Fields.CHANNEL,_Fields.STATUS,_Fields.POSITION_ID,_Fields.THIRD_POSITION_ID,_Fields.THIRD_POSITION_NUMBER};
   public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-    tmpMap.put(_Fields.PAGE, new org.apache.thrift.meta_data.FieldMetaData("page", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.PAGE, new org.apache.thrift.meta_data.FieldMetaData("page", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-    tmpMap.put(_Fields.PAGE_SIZE, new org.apache.thrift.meta_data.FieldMetaData("pageSize", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.PAGE_SIZE, new org.apache.thrift.meta_data.FieldMetaData("pageSize", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-    tmpMap.put(_Fields.HR_NAME, new org.apache.thrift.meta_data.FieldMetaData("hrName", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.HR_NAME, new org.apache.thrift.meta_data.FieldMetaData("hrName", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.THIRD_ACCOUNT_NAME, new org.apache.thrift.meta_data.FieldMetaData("thirdAccountName", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.THIRD_ACCOUNT_NAME, new org.apache.thrift.meta_data.FieldMetaData("thirdAccountName", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.COMPANY_ABBR, new org.apache.thrift.meta_data.FieldMetaData("companyAbbr", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.COMPANY_ABBR, new org.apache.thrift.meta_data.FieldMetaData("companyAbbr", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.CHANNEL, new org.apache.thrift.meta_data.FieldMetaData("channel", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.CHANNEL, new org.apache.thrift.meta_data.FieldMetaData("channel", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-    tmpMap.put(_Fields.STATUS, new org.apache.thrift.meta_data.FieldMetaData("status", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.STATUS, new org.apache.thrift.meta_data.FieldMetaData("status", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-    tmpMap.put(_Fields.POSITION_ID, new org.apache.thrift.meta_data.FieldMetaData("positionId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.POSITION_ID, new org.apache.thrift.meta_data.FieldMetaData("positionId", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-    tmpMap.put(_Fields.THIRD_POSITION_ID, new org.apache.thrift.meta_data.FieldMetaData("thirdPositionId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.THIRD_POSITION_ID, new org.apache.thrift.meta_data.FieldMetaData("thirdPositionId", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-    tmpMap.put(_Fields.THIRD_POSITION_NUMBER, new org.apache.thrift.meta_data.FieldMetaData("thirdPositionNumber", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.THIRD_POSITION_NUMBER, new org.apache.thrift.meta_data.FieldMetaData("thirdPositionNumber", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(ThirdPartyPositionInfoForm.class, metaDataMap);
   }
 
   public ThirdPartyPositionInfoForm() {
-  }
-
-  public ThirdPartyPositionInfoForm(
-    int page,
-    int pageSize,
-    String hrName,
-    String thirdAccountName,
-    String companyAbbr,
-    int channel,
-    int status,
-    int positionId,
-    int thirdPositionId,
-    String thirdPositionNumber)
-  {
-    this();
-    this.page = page;
-    setPageIsSet(true);
-    this.pageSize = pageSize;
-    setPageSizeIsSet(true);
-    this.hrName = hrName;
-    this.thirdAccountName = thirdAccountName;
-    this.companyAbbr = companyAbbr;
-    this.channel = channel;
-    setChannelIsSet(true);
-    this.status = status;
-    setStatusIsSet(true);
-    this.positionId = positionId;
-    setPositionIdIsSet(true);
-    this.thirdPositionId = thirdPositionId;
-    setThirdPositionIdIsSet(true);
-    this.thirdPositionNumber = thirdPositionNumber;
   }
 
   /**
@@ -640,8 +610,8 @@ public class ThirdPartyPositionInfoForm implements org.apache.thrift.TBase<Third
     if (this == that)
       return true;
 
-    boolean this_present_page = true;
-    boolean that_present_page = true;
+    boolean this_present_page = true && this.isSetPage();
+    boolean that_present_page = true && that.isSetPage();
     if (this_present_page || that_present_page) {
       if (!(this_present_page && that_present_page))
         return false;
@@ -649,8 +619,8 @@ public class ThirdPartyPositionInfoForm implements org.apache.thrift.TBase<Third
         return false;
     }
 
-    boolean this_present_pageSize = true;
-    boolean that_present_pageSize = true;
+    boolean this_present_pageSize = true && this.isSetPageSize();
+    boolean that_present_pageSize = true && that.isSetPageSize();
     if (this_present_pageSize || that_present_pageSize) {
       if (!(this_present_pageSize && that_present_pageSize))
         return false;
@@ -685,8 +655,8 @@ public class ThirdPartyPositionInfoForm implements org.apache.thrift.TBase<Third
         return false;
     }
 
-    boolean this_present_channel = true;
-    boolean that_present_channel = true;
+    boolean this_present_channel = true && this.isSetChannel();
+    boolean that_present_channel = true && that.isSetChannel();
     if (this_present_channel || that_present_channel) {
       if (!(this_present_channel && that_present_channel))
         return false;
@@ -694,8 +664,8 @@ public class ThirdPartyPositionInfoForm implements org.apache.thrift.TBase<Third
         return false;
     }
 
-    boolean this_present_status = true;
-    boolean that_present_status = true;
+    boolean this_present_status = true && this.isSetStatus();
+    boolean that_present_status = true && that.isSetStatus();
     if (this_present_status || that_present_status) {
       if (!(this_present_status && that_present_status))
         return false;
@@ -703,8 +673,8 @@ public class ThirdPartyPositionInfoForm implements org.apache.thrift.TBase<Third
         return false;
     }
 
-    boolean this_present_positionId = true;
-    boolean that_present_positionId = true;
+    boolean this_present_positionId = true && this.isSetPositionId();
+    boolean that_present_positionId = true && that.isSetPositionId();
     if (this_present_positionId || that_present_positionId) {
       if (!(this_present_positionId && that_present_positionId))
         return false;
@@ -712,8 +682,8 @@ public class ThirdPartyPositionInfoForm implements org.apache.thrift.TBase<Third
         return false;
     }
 
-    boolean this_present_thirdPositionId = true;
-    boolean that_present_thirdPositionId = true;
+    boolean this_present_thirdPositionId = true && this.isSetThirdPositionId();
+    boolean that_present_thirdPositionId = true && that.isSetThirdPositionId();
     if (this_present_thirdPositionId || that_present_thirdPositionId) {
       if (!(this_present_thirdPositionId && that_present_thirdPositionId))
         return false;
@@ -737,9 +707,13 @@ public class ThirdPartyPositionInfoForm implements org.apache.thrift.TBase<Third
   public int hashCode() {
     int hashCode = 1;
 
-    hashCode = hashCode * 8191 + page;
+    hashCode = hashCode * 8191 + ((isSetPage()) ? 131071 : 524287);
+    if (isSetPage())
+      hashCode = hashCode * 8191 + page;
 
-    hashCode = hashCode * 8191 + pageSize;
+    hashCode = hashCode * 8191 + ((isSetPageSize()) ? 131071 : 524287);
+    if (isSetPageSize())
+      hashCode = hashCode * 8191 + pageSize;
 
     hashCode = hashCode * 8191 + ((isSetHrName()) ? 131071 : 524287);
     if (isSetHrName())
@@ -753,13 +727,21 @@ public class ThirdPartyPositionInfoForm implements org.apache.thrift.TBase<Third
     if (isSetCompanyAbbr())
       hashCode = hashCode * 8191 + companyAbbr.hashCode();
 
-    hashCode = hashCode * 8191 + channel;
+    hashCode = hashCode * 8191 + ((isSetChannel()) ? 131071 : 524287);
+    if (isSetChannel())
+      hashCode = hashCode * 8191 + channel;
 
-    hashCode = hashCode * 8191 + status;
+    hashCode = hashCode * 8191 + ((isSetStatus()) ? 131071 : 524287);
+    if (isSetStatus())
+      hashCode = hashCode * 8191 + status;
 
-    hashCode = hashCode * 8191 + positionId;
+    hashCode = hashCode * 8191 + ((isSetPositionId()) ? 131071 : 524287);
+    if (isSetPositionId())
+      hashCode = hashCode * 8191 + positionId;
 
-    hashCode = hashCode * 8191 + thirdPositionId;
+    hashCode = hashCode * 8191 + ((isSetThirdPositionId()) ? 131071 : 524287);
+    if (isSetThirdPositionId())
+      hashCode = hashCode * 8191 + thirdPositionId;
 
     hashCode = hashCode * 8191 + ((isSetThirdPositionNumber()) ? 131071 : 524287);
     if (isSetThirdPositionNumber())
@@ -896,61 +878,81 @@ public class ThirdPartyPositionInfoForm implements org.apache.thrift.TBase<Third
     StringBuilder sb = new StringBuilder("ThirdPartyPositionInfoForm(");
     boolean first = true;
 
-    sb.append("page:");
-    sb.append(this.page);
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("pageSize:");
-    sb.append(this.pageSize);
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("hrName:");
-    if (this.hrName == null) {
-      sb.append("null");
-    } else {
-      sb.append(this.hrName);
+    if (isSetPage()) {
+      sb.append("page:");
+      sb.append(this.page);
+      first = false;
     }
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("thirdAccountName:");
-    if (this.thirdAccountName == null) {
-      sb.append("null");
-    } else {
-      sb.append(this.thirdAccountName);
+    if (isSetPageSize()) {
+      if (!first) sb.append(", ");
+      sb.append("pageSize:");
+      sb.append(this.pageSize);
+      first = false;
     }
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("companyAbbr:");
-    if (this.companyAbbr == null) {
-      sb.append("null");
-    } else {
-      sb.append(this.companyAbbr);
+    if (isSetHrName()) {
+      if (!first) sb.append(", ");
+      sb.append("hrName:");
+      if (this.hrName == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.hrName);
+      }
+      first = false;
     }
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("channel:");
-    sb.append(this.channel);
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("status:");
-    sb.append(this.status);
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("positionId:");
-    sb.append(this.positionId);
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("thirdPositionId:");
-    sb.append(this.thirdPositionId);
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("thirdPositionNumber:");
-    if (this.thirdPositionNumber == null) {
-      sb.append("null");
-    } else {
-      sb.append(this.thirdPositionNumber);
+    if (isSetThirdAccountName()) {
+      if (!first) sb.append(", ");
+      sb.append("thirdAccountName:");
+      if (this.thirdAccountName == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.thirdAccountName);
+      }
+      first = false;
     }
-    first = false;
+    if (isSetCompanyAbbr()) {
+      if (!first) sb.append(", ");
+      sb.append("companyAbbr:");
+      if (this.companyAbbr == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.companyAbbr);
+      }
+      first = false;
+    }
+    if (isSetChannel()) {
+      if (!first) sb.append(", ");
+      sb.append("channel:");
+      sb.append(this.channel);
+      first = false;
+    }
+    if (isSetStatus()) {
+      if (!first) sb.append(", ");
+      sb.append("status:");
+      sb.append(this.status);
+      first = false;
+    }
+    if (isSetPositionId()) {
+      if (!first) sb.append(", ");
+      sb.append("positionId:");
+      sb.append(this.positionId);
+      first = false;
+    }
+    if (isSetThirdPositionId()) {
+      if (!first) sb.append(", ");
+      sb.append("thirdPositionId:");
+      sb.append(this.thirdPositionId);
+      first = false;
+    }
+    if (isSetThirdPositionNumber()) {
+      if (!first) sb.append(", ");
+      sb.append("thirdPositionNumber:");
+      if (this.thirdPositionNumber == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.thirdPositionNumber);
+      }
+      first = false;
+    }
     sb.append(")");
     return sb.toString();
   }
@@ -1091,43 +1093,63 @@ public class ThirdPartyPositionInfoForm implements org.apache.thrift.TBase<Third
       struct.validate();
 
       oprot.writeStructBegin(STRUCT_DESC);
-      oprot.writeFieldBegin(PAGE_FIELD_DESC);
-      oprot.writeI32(struct.page);
-      oprot.writeFieldEnd();
-      oprot.writeFieldBegin(PAGE_SIZE_FIELD_DESC);
-      oprot.writeI32(struct.pageSize);
-      oprot.writeFieldEnd();
-      if (struct.hrName != null) {
-        oprot.writeFieldBegin(HR_NAME_FIELD_DESC);
-        oprot.writeString(struct.hrName);
+      if (struct.isSetPage()) {
+        oprot.writeFieldBegin(PAGE_FIELD_DESC);
+        oprot.writeI32(struct.page);
         oprot.writeFieldEnd();
+      }
+      if (struct.isSetPageSize()) {
+        oprot.writeFieldBegin(PAGE_SIZE_FIELD_DESC);
+        oprot.writeI32(struct.pageSize);
+        oprot.writeFieldEnd();
+      }
+      if (struct.hrName != null) {
+        if (struct.isSetHrName()) {
+          oprot.writeFieldBegin(HR_NAME_FIELD_DESC);
+          oprot.writeString(struct.hrName);
+          oprot.writeFieldEnd();
+        }
       }
       if (struct.thirdAccountName != null) {
-        oprot.writeFieldBegin(THIRD_ACCOUNT_NAME_FIELD_DESC);
-        oprot.writeString(struct.thirdAccountName);
-        oprot.writeFieldEnd();
+        if (struct.isSetThirdAccountName()) {
+          oprot.writeFieldBegin(THIRD_ACCOUNT_NAME_FIELD_DESC);
+          oprot.writeString(struct.thirdAccountName);
+          oprot.writeFieldEnd();
+        }
       }
       if (struct.companyAbbr != null) {
-        oprot.writeFieldBegin(COMPANY_ABBR_FIELD_DESC);
-        oprot.writeString(struct.companyAbbr);
+        if (struct.isSetCompanyAbbr()) {
+          oprot.writeFieldBegin(COMPANY_ABBR_FIELD_DESC);
+          oprot.writeString(struct.companyAbbr);
+          oprot.writeFieldEnd();
+        }
+      }
+      if (struct.isSetChannel()) {
+        oprot.writeFieldBegin(CHANNEL_FIELD_DESC);
+        oprot.writeI32(struct.channel);
         oprot.writeFieldEnd();
       }
-      oprot.writeFieldBegin(CHANNEL_FIELD_DESC);
-      oprot.writeI32(struct.channel);
-      oprot.writeFieldEnd();
-      oprot.writeFieldBegin(STATUS_FIELD_DESC);
-      oprot.writeI32(struct.status);
-      oprot.writeFieldEnd();
-      oprot.writeFieldBegin(POSITION_ID_FIELD_DESC);
-      oprot.writeI32(struct.positionId);
-      oprot.writeFieldEnd();
-      oprot.writeFieldBegin(THIRD_POSITION_ID_FIELD_DESC);
-      oprot.writeI32(struct.thirdPositionId);
-      oprot.writeFieldEnd();
-      if (struct.thirdPositionNumber != null) {
-        oprot.writeFieldBegin(THIRD_POSITION_NUMBER_FIELD_DESC);
-        oprot.writeString(struct.thirdPositionNumber);
+      if (struct.isSetStatus()) {
+        oprot.writeFieldBegin(STATUS_FIELD_DESC);
+        oprot.writeI32(struct.status);
         oprot.writeFieldEnd();
+      }
+      if (struct.isSetPositionId()) {
+        oprot.writeFieldBegin(POSITION_ID_FIELD_DESC);
+        oprot.writeI32(struct.positionId);
+        oprot.writeFieldEnd();
+      }
+      if (struct.isSetThirdPositionId()) {
+        oprot.writeFieldBegin(THIRD_POSITION_ID_FIELD_DESC);
+        oprot.writeI32(struct.thirdPositionId);
+        oprot.writeFieldEnd();
+      }
+      if (struct.thirdPositionNumber != null) {
+        if (struct.isSetThirdPositionNumber()) {
+          oprot.writeFieldBegin(THIRD_POSITION_NUMBER_FIELD_DESC);
+          oprot.writeString(struct.thirdPositionNumber);
+          oprot.writeFieldEnd();
+        }
       }
       oprot.writeFieldStop();
       oprot.writeStructEnd();

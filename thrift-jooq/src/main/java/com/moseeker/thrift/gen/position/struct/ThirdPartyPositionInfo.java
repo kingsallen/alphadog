@@ -20,11 +20,11 @@ public class ThirdPartyPositionInfo implements org.apache.thrift.TBase<ThirdPart
   private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new ThirdPartyPositionInfoStandardSchemeFactory();
   private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new ThirdPartyPositionInfoTupleSchemeFactory();
 
-  public com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO position; // required
-  public com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO thirdAccount; // required
-  public com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO thirdPosition; // required
-  public com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO hr; // required
-  public com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO company; // required
+  public com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO position; // optional
+  public com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO thirdAccount; // optional
+  public com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO thirdPosition; // optional
+  public com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO hr; // optional
+  public com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO company; // optional
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -97,39 +97,25 @@ public class ThirdPartyPositionInfo implements org.apache.thrift.TBase<ThirdPart
   }
 
   // isset id assignments
+  private static final _Fields optionals[] = {_Fields.POSITION,_Fields.THIRD_ACCOUNT,_Fields.THIRD_POSITION,_Fields.HR,_Fields.COMPANY};
   public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-    tmpMap.put(_Fields.POSITION, new org.apache.thrift.meta_data.FieldMetaData("position", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.POSITION, new org.apache.thrift.meta_data.FieldMetaData("position", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO.class)));
-    tmpMap.put(_Fields.THIRD_ACCOUNT, new org.apache.thrift.meta_data.FieldMetaData("thirdAccount", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.THIRD_ACCOUNT, new org.apache.thrift.meta_data.FieldMetaData("thirdAccount", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO.class)));
-    tmpMap.put(_Fields.THIRD_POSITION, new org.apache.thrift.meta_data.FieldMetaData("thirdPosition", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.THIRD_POSITION, new org.apache.thrift.meta_data.FieldMetaData("thirdPosition", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO.class)));
-    tmpMap.put(_Fields.HR, new org.apache.thrift.meta_data.FieldMetaData("hr", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.HR, new org.apache.thrift.meta_data.FieldMetaData("hr", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO.class)));
-    tmpMap.put(_Fields.COMPANY, new org.apache.thrift.meta_data.FieldMetaData("company", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.COMPANY, new org.apache.thrift.meta_data.FieldMetaData("company", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO.class)));
     metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(ThirdPartyPositionInfo.class, metaDataMap);
   }
 
   public ThirdPartyPositionInfo() {
-  }
-
-  public ThirdPartyPositionInfo(
-    com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO position,
-    com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO thirdAccount,
-    com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO thirdPosition,
-    com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO hr,
-    com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO company)
-  {
-    this();
-    this.position = position;
-    this.thirdAccount = thirdAccount;
-    this.thirdPosition = thirdPosition;
-    this.hr = hr;
-    this.company = company;
   }
 
   /**
@@ -541,45 +527,55 @@ public class ThirdPartyPositionInfo implements org.apache.thrift.TBase<ThirdPart
     StringBuilder sb = new StringBuilder("ThirdPartyPositionInfo(");
     boolean first = true;
 
-    sb.append("position:");
-    if (this.position == null) {
-      sb.append("null");
-    } else {
-      sb.append(this.position);
+    if (isSetPosition()) {
+      sb.append("position:");
+      if (this.position == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.position);
+      }
+      first = false;
     }
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("thirdAccount:");
-    if (this.thirdAccount == null) {
-      sb.append("null");
-    } else {
-      sb.append(this.thirdAccount);
+    if (isSetThirdAccount()) {
+      if (!first) sb.append(", ");
+      sb.append("thirdAccount:");
+      if (this.thirdAccount == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.thirdAccount);
+      }
+      first = false;
     }
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("thirdPosition:");
-    if (this.thirdPosition == null) {
-      sb.append("null");
-    } else {
-      sb.append(this.thirdPosition);
+    if (isSetThirdPosition()) {
+      if (!first) sb.append(", ");
+      sb.append("thirdPosition:");
+      if (this.thirdPosition == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.thirdPosition);
+      }
+      first = false;
     }
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("hr:");
-    if (this.hr == null) {
-      sb.append("null");
-    } else {
-      sb.append(this.hr);
+    if (isSetHr()) {
+      if (!first) sb.append(", ");
+      sb.append("hr:");
+      if (this.hr == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.hr);
+      }
+      first = false;
     }
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("company:");
-    if (this.company == null) {
-      sb.append("null");
-    } else {
-      sb.append(this.company);
+    if (isSetCompany()) {
+      if (!first) sb.append(", ");
+      sb.append("company:");
+      if (this.company == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.company);
+      }
+      first = false;
     }
-    first = false;
     sb.append(")");
     return sb.toString();
   }
@@ -699,29 +695,39 @@ public class ThirdPartyPositionInfo implements org.apache.thrift.TBase<ThirdPart
 
       oprot.writeStructBegin(STRUCT_DESC);
       if (struct.position != null) {
-        oprot.writeFieldBegin(POSITION_FIELD_DESC);
-        struct.position.write(oprot);
-        oprot.writeFieldEnd();
+        if (struct.isSetPosition()) {
+          oprot.writeFieldBegin(POSITION_FIELD_DESC);
+          struct.position.write(oprot);
+          oprot.writeFieldEnd();
+        }
       }
       if (struct.thirdAccount != null) {
-        oprot.writeFieldBegin(THIRD_ACCOUNT_FIELD_DESC);
-        struct.thirdAccount.write(oprot);
-        oprot.writeFieldEnd();
+        if (struct.isSetThirdAccount()) {
+          oprot.writeFieldBegin(THIRD_ACCOUNT_FIELD_DESC);
+          struct.thirdAccount.write(oprot);
+          oprot.writeFieldEnd();
+        }
       }
       if (struct.thirdPosition != null) {
-        oprot.writeFieldBegin(THIRD_POSITION_FIELD_DESC);
-        struct.thirdPosition.write(oprot);
-        oprot.writeFieldEnd();
+        if (struct.isSetThirdPosition()) {
+          oprot.writeFieldBegin(THIRD_POSITION_FIELD_DESC);
+          struct.thirdPosition.write(oprot);
+          oprot.writeFieldEnd();
+        }
       }
       if (struct.hr != null) {
-        oprot.writeFieldBegin(HR_FIELD_DESC);
-        struct.hr.write(oprot);
-        oprot.writeFieldEnd();
+        if (struct.isSetHr()) {
+          oprot.writeFieldBegin(HR_FIELD_DESC);
+          struct.hr.write(oprot);
+          oprot.writeFieldEnd();
+        }
       }
       if (struct.company != null) {
-        oprot.writeFieldBegin(COMPANY_FIELD_DESC);
-        struct.company.write(oprot);
-        oprot.writeFieldEnd();
+        if (struct.isSetCompany()) {
+          oprot.writeFieldBegin(COMPANY_FIELD_DESC);
+          struct.company.write(oprot);
+          oprot.writeFieldEnd();
+        }
       }
       oprot.writeFieldStop();
       oprot.writeStructEnd();

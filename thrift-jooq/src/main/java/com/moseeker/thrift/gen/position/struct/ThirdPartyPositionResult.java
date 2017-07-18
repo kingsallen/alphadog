@@ -19,10 +19,10 @@ public class ThirdPartyPositionResult implements org.apache.thrift.TBase<ThirdPa
   private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new ThirdPartyPositionResultStandardSchemeFactory();
   private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new ThirdPartyPositionResultTupleSchemeFactory();
 
-  public int page; // required
-  public int pageSize; // required
-  public int total; // required
-  public java.util.List<ThirdPartyPositionInfo> data; // required
+  public int page; // optional
+  public int pageSize; // optional
+  public int total; // optional
+  public java.util.List<ThirdPartyPositionInfo> data; // optional
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -96,16 +96,17 @@ public class ThirdPartyPositionResult implements org.apache.thrift.TBase<ThirdPa
   private static final int __PAGESIZE_ISSET_ID = 1;
   private static final int __TOTAL_ISSET_ID = 2;
   private byte __isset_bitfield = 0;
+  private static final _Fields optionals[] = {_Fields.PAGE,_Fields.PAGE_SIZE,_Fields.TOTAL,_Fields.DATA};
   public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-    tmpMap.put(_Fields.PAGE, new org.apache.thrift.meta_data.FieldMetaData("page", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.PAGE, new org.apache.thrift.meta_data.FieldMetaData("page", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-    tmpMap.put(_Fields.PAGE_SIZE, new org.apache.thrift.meta_data.FieldMetaData("pageSize", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.PAGE_SIZE, new org.apache.thrift.meta_data.FieldMetaData("pageSize", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-    tmpMap.put(_Fields.TOTAL, new org.apache.thrift.meta_data.FieldMetaData("total", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.TOTAL, new org.apache.thrift.meta_data.FieldMetaData("total", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-    tmpMap.put(_Fields.DATA, new org.apache.thrift.meta_data.FieldMetaData("data", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.DATA, new org.apache.thrift.meta_data.FieldMetaData("data", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
             new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, ThirdPartyPositionInfo.class))));
     metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
@@ -113,22 +114,6 @@ public class ThirdPartyPositionResult implements org.apache.thrift.TBase<ThirdPa
   }
 
   public ThirdPartyPositionResult() {
-  }
-
-  public ThirdPartyPositionResult(
-    int page,
-    int pageSize,
-    int total,
-    java.util.List<ThirdPartyPositionInfo> data)
-  {
-    this();
-    this.page = page;
-    setPageIsSet(true);
-    this.pageSize = pageSize;
-    setPageSizeIsSet(true);
-    this.total = total;
-    setTotalIsSet(true);
-    this.data = data;
   }
 
   /**
@@ -360,8 +345,8 @@ public class ThirdPartyPositionResult implements org.apache.thrift.TBase<ThirdPa
     if (this == that)
       return true;
 
-    boolean this_present_page = true;
-    boolean that_present_page = true;
+    boolean this_present_page = true && this.isSetPage();
+    boolean that_present_page = true && that.isSetPage();
     if (this_present_page || that_present_page) {
       if (!(this_present_page && that_present_page))
         return false;
@@ -369,8 +354,8 @@ public class ThirdPartyPositionResult implements org.apache.thrift.TBase<ThirdPa
         return false;
     }
 
-    boolean this_present_pageSize = true;
-    boolean that_present_pageSize = true;
+    boolean this_present_pageSize = true && this.isSetPageSize();
+    boolean that_present_pageSize = true && that.isSetPageSize();
     if (this_present_pageSize || that_present_pageSize) {
       if (!(this_present_pageSize && that_present_pageSize))
         return false;
@@ -378,8 +363,8 @@ public class ThirdPartyPositionResult implements org.apache.thrift.TBase<ThirdPa
         return false;
     }
 
-    boolean this_present_total = true;
-    boolean that_present_total = true;
+    boolean this_present_total = true && this.isSetTotal();
+    boolean that_present_total = true && that.isSetTotal();
     if (this_present_total || that_present_total) {
       if (!(this_present_total && that_present_total))
         return false;
@@ -403,11 +388,17 @@ public class ThirdPartyPositionResult implements org.apache.thrift.TBase<ThirdPa
   public int hashCode() {
     int hashCode = 1;
 
-    hashCode = hashCode * 8191 + page;
+    hashCode = hashCode * 8191 + ((isSetPage()) ? 131071 : 524287);
+    if (isSetPage())
+      hashCode = hashCode * 8191 + page;
 
-    hashCode = hashCode * 8191 + pageSize;
+    hashCode = hashCode * 8191 + ((isSetPageSize()) ? 131071 : 524287);
+    if (isSetPageSize())
+      hashCode = hashCode * 8191 + pageSize;
 
-    hashCode = hashCode * 8191 + total;
+    hashCode = hashCode * 8191 + ((isSetTotal()) ? 131071 : 524287);
+    if (isSetTotal())
+      hashCode = hashCode * 8191 + total;
 
     hashCode = hashCode * 8191 + ((isSetData()) ? 131071 : 524287);
     if (isSetData())
@@ -484,25 +475,33 @@ public class ThirdPartyPositionResult implements org.apache.thrift.TBase<ThirdPa
     StringBuilder sb = new StringBuilder("ThirdPartyPositionResult(");
     boolean first = true;
 
-    sb.append("page:");
-    sb.append(this.page);
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("pageSize:");
-    sb.append(this.pageSize);
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("total:");
-    sb.append(this.total);
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("data:");
-    if (this.data == null) {
-      sb.append("null");
-    } else {
-      sb.append(this.data);
+    if (isSetPage()) {
+      sb.append("page:");
+      sb.append(this.page);
+      first = false;
     }
-    first = false;
+    if (isSetPageSize()) {
+      if (!first) sb.append(", ");
+      sb.append("pageSize:");
+      sb.append(this.pageSize);
+      first = false;
+    }
+    if (isSetTotal()) {
+      if (!first) sb.append(", ");
+      sb.append("total:");
+      sb.append(this.total);
+      first = false;
+    }
+    if (isSetData()) {
+      if (!first) sb.append(", ");
+      sb.append("data:");
+      if (this.data == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.data);
+      }
+      first = false;
+    }
     sb.append(")");
     return sb.toString();
   }
@@ -606,26 +605,34 @@ public class ThirdPartyPositionResult implements org.apache.thrift.TBase<ThirdPa
       struct.validate();
 
       oprot.writeStructBegin(STRUCT_DESC);
-      oprot.writeFieldBegin(PAGE_FIELD_DESC);
-      oprot.writeI32(struct.page);
-      oprot.writeFieldEnd();
-      oprot.writeFieldBegin(PAGE_SIZE_FIELD_DESC);
-      oprot.writeI32(struct.pageSize);
-      oprot.writeFieldEnd();
-      oprot.writeFieldBegin(TOTAL_FIELD_DESC);
-      oprot.writeI32(struct.total);
-      oprot.writeFieldEnd();
-      if (struct.data != null) {
-        oprot.writeFieldBegin(DATA_FIELD_DESC);
-        {
-          oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.data.size()));
-          for (ThirdPartyPositionInfo _iter3 : struct.data)
-          {
-            _iter3.write(oprot);
-          }
-          oprot.writeListEnd();
-        }
+      if (struct.isSetPage()) {
+        oprot.writeFieldBegin(PAGE_FIELD_DESC);
+        oprot.writeI32(struct.page);
         oprot.writeFieldEnd();
+      }
+      if (struct.isSetPageSize()) {
+        oprot.writeFieldBegin(PAGE_SIZE_FIELD_DESC);
+        oprot.writeI32(struct.pageSize);
+        oprot.writeFieldEnd();
+      }
+      if (struct.isSetTotal()) {
+        oprot.writeFieldBegin(TOTAL_FIELD_DESC);
+        oprot.writeI32(struct.total);
+        oprot.writeFieldEnd();
+      }
+      if (struct.data != null) {
+        if (struct.isSetData()) {
+          oprot.writeFieldBegin(DATA_FIELD_DESC);
+          {
+            oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.data.size()));
+            for (ThirdPartyPositionInfo _iter3 : struct.data)
+            {
+              _iter3.write(oprot);
+            }
+            oprot.writeListEnd();
+          }
+          oprot.writeFieldEnd();
+        }
       }
       oprot.writeFieldStop();
       oprot.writeStructEnd();
