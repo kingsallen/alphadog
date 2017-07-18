@@ -588,7 +588,7 @@ public abstract class RedisClient {
 		}
 		String getResult = get(0, keyIdentifier, pattern);
 		if (getResult == null) {
-			set(0, keyIdentifier, pattern, null, defautValue, dateTime);
+			set(0, keyIdentifier, pattern, null, defautValue, dateTime-second);
 			return true;
 		} else if (Long.valueOf(getResult) < limit) {
 			incr(0, keyIdentifier, pattern);
