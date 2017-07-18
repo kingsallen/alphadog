@@ -1,7 +1,17 @@
 package com.moseeker.baseorm.crud;
 
+import com.moseeker.baseorm.exception.ExceptionCategory;
+import com.moseeker.baseorm.exception.ExceptionFactory;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
-import org.jooq.*;
+
+import org.jooq.DSLContext;
+import org.jooq.Field;
+import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.SelectField;
+import org.jooq.SelectJoinStep;
+import org.jooq.SortField;
 import org.jooq.impl.TableImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,9 +71,9 @@ class LocalQuery<R extends Record> {
             return query.getAttributes().stream()
                     .map(select -> {
                         Field<?> field = table.field(select.getField());
-                        if (field == null) {
+                        if (StringUtils.isEmptyObject(field)) {
                             logger.warn("field '" + select.getField() + "' not found in table " + table.getName());
-                            return null;
+                            throw ExceptionFactory.buildException(ExceptionCategory.SELECT_FIELD_NOEXIST);
                         } else {
                             switch (select.getSelectOp()) {
                                 case AVG:
@@ -110,7 +120,7 @@ class LocalQuery<R extends Record> {
                         Field<?> field = table.field(groupField);
                         if (field == null) {
                             logger.warn("field '" + groupField + "' not found in table " + table.getName());
-                            return null;
+                            throw ExceptionFactory.buildException(ExceptionCategory.GROUPBY_FIELD_NOEXIST);
                         } else {
                             return field;
                         }
@@ -140,7 +150,7 @@ class LocalQuery<R extends Record> {
                         Field<?> field = table.field(orderBy.getField());
                         if (field == null) {
                             logger.warn("field '" + orderBy.getField() + "' not found in table " + table.getName());
-                            return null;
+                            throw ExceptionFactory.buildException(ExceptionCategory.ORDER_FIELD_NOEXIST);
                         } else {
                             switch (orderBy.getOrder()) {
                                 case DESC:
@@ -177,6 +187,7 @@ class LocalQuery<R extends Record> {
 
     /**
      * 组装除limit之外的所有查询字段和查询条件
+     *
      * @return
      */
     public SelectJoinStep<Record> convertToResult() {
@@ -217,6 +228,7 @@ class LocalQuery<R extends Record> {
 
     /**
      * 组装只获取一条数据的select
+     *
      * @return
      */
     public SelectJoinStep<Record> convertToOneResult() {

@@ -3,6 +3,7 @@ package com.moseeker.useraccounts;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
+import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.query.Query;
@@ -11,10 +12,12 @@ import com.moseeker.rpccenter.config.ClientConfig;
 import com.moseeker.rpccenter.config.RegistryConfig;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.config.AppConfig;
 import com.moseeker.useraccounts.service.impl.UserEmployeeServiceImpl;
+
 import org.apache.thrift.TException;
 import org.joda.time.LocalDateTime;
 import org.junit.Before;
@@ -123,7 +126,7 @@ public class UserHrAccountServiceImplTest {
 
     @Test
     public void testNpsList() throws Exception {
-        HrNpsStatistic result = userHrAccountDao.npsList(null,null,1,500);
+        HrNpsStatistic result = userHrAccountDao.npsList(null, null, 1, 500);
         System.out.println(BeanUtils.convertStructToJSON(result));
     }
 
@@ -149,7 +152,7 @@ public class UserHrAccountServiceImplTest {
         hrThirdPartyAccountDO.setUsername("xxxxx");
         hrThirdPartyAccountDO.setPassword("xxxxx");
         hrThirdPartyAccountDO.setChannel((short) 2);
-        userHrAccountService.bindThirdAccount(82847, hrThirdPartyAccountDO);
+//        userHrAccountService.bindThirdAccount(82847, hrThirdPartyAccountDO);
     }
 
 
@@ -169,9 +172,9 @@ public class UserHrAccountServiceImplTest {
         Query query = new Query.QueryBuilder().where("company_id", 51350).setPageSize(1000).buildQuery();
         List<UserEmployeeStruct> employeeStructs = userEmployeeDao.getDatas(query, UserEmployeeStruct.class);
 
-        String groupName = "test:"+System.currentTimeMillis();
+        String groupName = "test:" + System.currentTimeMillis();
 
-        System.out.println("groupName:"+groupName);
+        System.out.println("groupName:" + groupName);
 
         for (UserEmployeeStruct userEmployeeStruct : employeeStructs) {
             userEmployeeStruct.setCompany_id(1);
@@ -196,4 +199,13 @@ public class UserHrAccountServiceImplTest {
 
         System.out.println(result);
     }
+
+    @Test
+    public void myTest() {
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where("dsdasdad", 1);
+        List<UserEmployeeDO> list = userEmployeeDao.getDatas(queryBuilder.buildQuery());
+    }
 }
+
+

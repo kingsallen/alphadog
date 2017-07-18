@@ -1,9 +1,14 @@
 package com.moseeker.baseorm.crud;
 
+import com.moseeker.baseorm.exception.ExceptionCategory;
+import com.moseeker.baseorm.exception.ExceptionFactory;
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.*;
 import com.moseeker.common.util.query.Condition;
+
 import java.util.stream.Collectors;
+
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
@@ -55,10 +60,10 @@ public class LocalCondition<R extends Record> {
             case LE:
                 return field.lessOrEqual(convertTo(value, field.getType()));
             case BT:
-                List list = (List)value;
+                List list = (List) value;
                 return field.between(convertTo(list.get(0), field.getType()), convertTo(list.get(1), field.getType()));
             case NBT:
-                List list1 = (List)value;
+                List list1 = (List) value;
                 return field.notBetween(convertTo(list1.get(0), field.getType()), convertTo(list1.get(1), field.getType()));
             case LIKE:
                 return field.like(convertTo(value, String.class));
@@ -70,16 +75,14 @@ public class LocalCondition<R extends Record> {
     }
 
     private org.jooq.Condition convertCondition(Condition condition) {
-
-        if(condition != null) {
+        if (condition != null) {
             Field<?> field = table.field(condition.getField());
-            if(field != null) {
-                org.jooq.Condition jooqCondition = connectValueCondition(field, condition.getValue(),
-                        condition.getValueOp());
-
-                return jooqCondition;
-
+            if (StringUtils.isEmptyObject(field)) {
+                throw ExceptionFactory.buildException(ExceptionCategory.CONDITION_FIELD_NOEXIST);
             }
+            org.jooq.Condition jooqCondition = connectValueCondition(field, condition.getValue(),
+                    condition.getValueOp());
+            return jooqCondition;
         }
         return null;
 
@@ -87,6 +90,7 @@ public class LocalCondition<R extends Record> {
 
     /**
      * 解析查询条件
+     *
      * @param condition
      * @return
      */
@@ -109,7 +113,8 @@ public class LocalCondition<R extends Record> {
 
     /**
      * 组装同级别的查询条件
-     * @param jooqCondition 第一个查询条件
+     *
+     * @param jooqCondition           第一个查询条件
      * @param conditionCollectionList 其余的查询条件集合
      * @return 查询条件
      */
@@ -125,8 +130,9 @@ public class LocalCondition<R extends Record> {
 
     /**
      * 解析condition同级别的查询条件
+     *
      * @param conditionCollectionList 解析结果
-     * @param condition 查询条件
+     * @param condition               查询条件
      */
     private void parseNextCondition(List<ConditionCollection> conditionCollectionList, Condition condition) {
         ConditionJoin temConditionJoin = condition.getConditionJoin();
