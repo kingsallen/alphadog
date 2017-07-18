@@ -130,6 +130,7 @@ public abstract class EmployeeBinder {
             employees.forEach(e -> {
                 if (e.getId() == employeeId) {
                     e.setActivation((byte)0);
+                    e.setCompanyId(bindingParams.getCompanyId());
                     e.setAuthMethod((byte)bindingParams.getType().getValue());
                     e.setWxuserId(wxEntity.getWxuserId(bindingParams.getUserId(), bindingParams.getCompanyId()));
                     e.setEmail(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getEmail(), e.getEmail()));
