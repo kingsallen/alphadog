@@ -935,17 +935,13 @@ public class UserHrAccountService {
                 if (orders.length != ascs.length) {
                     throw ExceptionFactory.buildException(ExceptionCategory.ORDER_ERROR);
                 }
-                for (String orderTemp : orders) {
-                    for (String ascTemp : ascs) {
-                        // 首先判断排序的条件是否正确
-                        if (!StringUtils.isEmptyObject(UserEmployee.USER_EMPLOYEE.field(orderTemp))) {
-                            if (Integer.valueOf(ascTemp).intValue() == 1) {   //倒序
-                                queryBuilder.orderBy(UserEmployee.USER_EMPLOYEE.field(orderTemp).getName(), Order.DESC);
-                                break;
-                            } else if (Integer.valueOf(ascTemp).intValue() == 0) {// 正序
-                                queryBuilder.orderBy(UserEmployee.USER_EMPLOYEE.field(orderTemp).getName(), Order.ASC);
-                                break;
-                            }
+                for (int i = 0; i < orders.length; i++) {
+                    // 首先判断排序的条件是否正确
+                    if (!StringUtils.isEmptyObject(UserEmployee.USER_EMPLOYEE.field(orders[i]))) {
+                        if (Integer.valueOf(ascs[i]).intValue() == 1) {   //倒序
+                            queryBuilder.orderBy(UserEmployee.USER_EMPLOYEE.field(orders[i]).getName(), Order.DESC);
+                        } else if (Integer.valueOf(ascs[i]).intValue() == 0) {// 正序
+                            queryBuilder.orderBy(UserEmployee.USER_EMPLOYEE.field(orders[i]).getName(), Order.ASC);
                         }
                     }
                 }
