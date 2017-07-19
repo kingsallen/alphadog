@@ -3,6 +3,7 @@ package com.moseeker.profile.service.impl.retriveprofile;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserAliUserRecord;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.exception.CommonException;
@@ -15,6 +16,7 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.moseeker.common.exception.Category.PROGRAM_PARAM_NOTEXIST;
@@ -106,6 +108,12 @@ public class RetriveProfile {
             throw ExceptionFactory.buildException(Category.PROFILE_POSITION_NOTEXIST);
         }
         param.setPositionRecord(positionRecord);
+        if (profileMap.get("user") != null) {
+            Map<String, Object>userMap = (Map<String, Object>) profileMap.get("user");
+            UserAliUserRecord aliUserRecord = new UserAliUserRecord();
+            aliUserRecord.setUid(userMap.get("uid").toString());
+            param.setUserAliUserRecord(aliUserRecord);
+        }
 
         return param;
     }

@@ -35,6 +35,7 @@ public class AliPayUserTask extends UserTask {
     @Override
     protected void handler(RetrieveParam param) throws CommonException {
         super.handler(param);
+
         if (checkParam(param.getUserAliUserRecord().getUserId(), param.getUserAliUserRecord().getUid())) {
             saveAliUser(param.getUserAliUserRecord().getUserId(), param.getUserAliUserRecord().getUid());
         }

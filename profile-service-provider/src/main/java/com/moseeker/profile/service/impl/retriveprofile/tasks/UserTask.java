@@ -52,7 +52,7 @@ public class UserTask extends Task {
             }
             param.getProfilePojo().setUserRecord(userUserRecord1);
             param.setUserUserRecord(userUserRecord1);
-
+            param.getUserAliUserRecord().setUserId(userUserRecord1.getId());
         } else {
             throw ExceptionFactory.buildException(Category.VALIDATION_USER_ILLEGAL_PARAM);
         }
