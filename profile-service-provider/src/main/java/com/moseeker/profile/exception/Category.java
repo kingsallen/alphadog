@@ -26,7 +26,8 @@ public enum Category {
     VALIDATION_APPLICATION_UPPER_LIMIT(30027,"投递达到上线无法继续投递！"),
     VALIDATION_POSITION_NOT_EXIST(30028,"参数错误！"),
     VALIDATION_RETRIEVAL_EXCUTOR_NOT_CUSTOMED(30029,"未定制任何执行者！"),
-    VALIDATION_RETRIEVAL_CHANNEL_NOT_CUSTOMED(30030,"渠道信息错误！");
+    VALIDATION_RETRIEVAL_CHANNEL_NOT_CUSTOMED(30030,"渠道信息错误！"),
+    VALIDATION_ALI_USER_ILLEGAL_PARAM(30031, "用户信息错误错误！"),;
 
     private Category(int code, String msg) {
         this.code = code;

@@ -18,10 +18,6 @@ public class AliPayRetrievalFlow extends RetrievalFlow {
     @Autowired
     protected Map<String, Executor> flowMap;
 
-    public AliPayRetrievalFlow() throws CommonException {
-        super();
-    }
-
     @Override
     protected Executor customExcutor() throws CommonException {
         Executor firstExecutor = flowMap.get("ali_pay_user_executor");

@@ -16,7 +16,7 @@ public abstract class Task {
     /**
      * 处理任务
      * @param param  简历信息
-     * @throws BIZException 业务异常
+     * @throws CommonException 业务异常
      * @return 是否执行成功
      */
     protected abstract void handler(RetrieveParam param) throws CommonException;
