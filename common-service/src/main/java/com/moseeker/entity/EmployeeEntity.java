@@ -9,6 +9,7 @@ import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.baseorm.dao.userdb.UserEmployeePointsRecordDao;
+import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompanyRel;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
@@ -140,7 +141,7 @@ public class EmployeeEntity {
         // 用户积分记录：
         List<Reward> rewards = new ArrayList<>();
         List<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO> points = employeePointsRecordDao.getDatas(new Query.QueryBuilder()
-                .where("employee_id", employeeId).buildQuery());
+                .where("employee_id", employeeId).orderBy("update_time", Order.DESC).buildQuery());
         if (!StringUtils.isEmptyList(points)) {
             List<Double> aids = points.stream().map(m -> m.getApplicationId()).collect(Collectors.toList());
             Query.QueryBuilder query = new Query.QueryBuilder();
