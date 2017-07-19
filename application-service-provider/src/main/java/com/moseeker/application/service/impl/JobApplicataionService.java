@@ -1,23 +1,16 @@
 package com.moseeker.application.service.impl;
 
-import com.moseeker.baseorm.redis.RedisClient;
-import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.Map;
-import javax.annotation.Resource;
-import org.apache.thrift.TException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import com.alibaba.fastjson.JSON;
+import com.moseeker.application.service.application.StatusChangeUtil;
+import com.moseeker.application.service.application.alipay_campus.AlipaycampusStatus;
+import com.moseeker.application.service.application.qianxun.Status;
 import com.moseeker.baseorm.dao.historydb.HistoryJobApplicationDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
 import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobResumeOtherDao;
+import com.moseeker.baseorm.dao.userdb.UserAliUserDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.historydb.tables.records.HistoryJobApplicationRecord;
@@ -28,19 +21,39 @@ import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobResumeOtherRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
+import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.DateUtils;
+import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.Query.QueryBuilder;
+import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.application.struct.ApplicationResponse;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.application.struct.JobResumeOther;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserAliUserDO;
+import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author ltf 申请服务 2016年11月3日
@@ -70,6 +83,8 @@ public class JobApplicataionService {
     private HrCompanyConfDao hrCompanyConfDao;
     @Autowired
     private UserUserDao userUserDao;
+    @Autowired
+    private UserAliUserDao userAliUserDao;
     @Autowired
 	private UserEmployeeDao userEmployeedao;
 	@Autowired
@@ -639,7 +654,67 @@ public class JobApplicataionService {
         }
         return applicationResponse;
     }
-    private int archiveApplicationRecord(JobApplicationRecord jobApplicationRecord) throws TException {
+    /**
+     * 根据指定渠道 channel=5（支付宝），指定时间段（"2017-05-10 14:57:14"）， 返回给第三方渠道同步的申请状态。
+     * @param channel
+     * @param start_time
+     * @param end_time
+     * @return
+     */
+
+    public Response getApplicationListForThirdParty(int channel, String start_time, String end_time) {
+        Query query=new Query.QueryBuilder().select("id").select("position_id").select("applier_id").select("update_time").select("not_suitable").select("app_tpl_id")
+                .where(new Condition("update_time",start_time, ValueOp.GE))
+                .and(new Condition("update_time",end_time,ValueOp.LT)).buildQuery();
+
+        List<JobApplicationDO> jobApplicationlist = jobApplicationDao.getApplications(query);
+        if (jobApplicationlist == null ){
+            return ResponseUtils.success(new ArrayList<>());
+        }
+
+        List<Integer> applier_ids = jobApplicationlist.stream().map(JobApplicationDO::getApplierId).collect(Collectors.toList());
+        query=new Query.QueryBuilder().where(new Condition("user_id", applier_ids.toArray(), ValueOp.IN)).buildQuery();
+        List<UserAliUserDO> aliUserList = userAliUserDao.getDatas(query);
+        if (aliUserList == null){
+            return ResponseUtils.success(new ArrayList<>());
+        }
+        HashMap<Integer,String> userToAlidMap = new HashMap<Integer,String>(aliUserList.size());
+        for (UserAliUserDO aliUser :  aliUserList){
+            userToAlidMap.put(aliUser.getUserId(),aliUser.getUid());
+        }
+
+        List<HashMap> syncApplications = new ArrayList<HashMap>();
+        for ( JobApplicationDO applicationDO: jobApplicationlist){
+            String thirdparty_uid = userToAlidMap.get(applicationDO.getApplierId());
+            if (thirdparty_uid != null ){
+                HashMap thirdPartyApplication = new HashMap();
+                thirdPartyApplication.put("source_code", String.valueOf(applicationDO.getPositionId()));
+                thirdPartyApplication.put("alipay_user_id", thirdparty_uid );
+
+                Status status = Status.instanceFromCode(String.valueOf(applicationDO.getAppTplId()));
+                AlipaycampusStatus alipaycampus = StatusChangeUtil.getAlipaycampusStatus(status);
+                if ( alipaycampus == null){
+                    continue; // 忽略不需要要同步的
+                }
+                thirdPartyApplication.put("status",alipaycampus.getValue());
+
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                try {
+                    java.util.Date  update_time = sdf.parse(applicationDO.getUpdateTime());
+                    thirdPartyApplication.put("update_time",String.valueOf(update_time.getTime()));
+                }catch (Exception e){
+                    continue;
+                }
+
+                syncApplications.add(thirdPartyApplication);
+            }
+        }
+
+        return ResponseUtils.success(syncApplications);
+    }
+
+
+        private int archiveApplicationRecord(JobApplicationRecord jobApplicationRecord) throws TException {
 		// TODO Auto-generated method stub
 		int status = 0;
 		try{
@@ -760,5 +835,7 @@ public class JobApplicataionService {
 		 }
 		 return appId;
 	}
+
+
 
 }
