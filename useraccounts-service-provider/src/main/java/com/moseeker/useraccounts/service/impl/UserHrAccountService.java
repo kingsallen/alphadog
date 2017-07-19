@@ -933,7 +933,7 @@ public class UserHrAccountService {
                 String[] ascs = asc.split(",");
                 // 排序条件设置错误
                 if (orders.length != ascs.length) {
-                    throw ExceptionFactory.buildException(ExceptionCategory.USEREMPLOYEES_EMPTY);
+                    throw ExceptionFactory.buildException(ExceptionCategory.ORDER_ERROR);
                 }
                 for (String orderTemp : orders) {
                     for (String ascTemp : ascs) {
@@ -964,7 +964,7 @@ public class UserHrAccountService {
         // 查询总条数
         int counts = userEmployeeDao.getCount(queryBuilder.buildQuery());
         if (counts == 0) {
-            throw ExceptionFactory.buildException(ExceptionCategory.ORDER_ERROR);
+            throw ExceptionFactory.buildException(ExceptionCategory.USEREMPLOYEES_EMPTY);
         }
         // 分页数据
         if (pageNumber > 0 && pageSize > 0) {
