@@ -225,13 +225,14 @@ public class EmployeeService {
         }
 
         // 如果是email激活发送了激活邮件，但用户未激活(状态为PENDING)，此时用户进行取消绑定操作，删除员工认证的redis信息
-        employees.stream().forEach(employee -> {
+        for(UserEmployeeDO employee : employees) {
             if (StringUtils.isNotNullOrEmpty(client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, employee.getActivationCode()))) {
                 client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, employee.getActivationCode());
                 response.setSuccess(true);
                 response.setMessage("解绑成功");
+                return response;
             }
-        });
+        }
 
         // 解绑
         if (employeeEntity.unbind(employees.stream().filter(f -> f.getActivation() == 0).collect(Collectors.toList()))) {
