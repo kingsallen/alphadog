@@ -32,7 +32,7 @@ public class DictCityMapTest {
         cityCodes.add(320200);
         cityCodes.add(440300);
 
-        List<List<String>> result = dictCityMapDao.getOtherCityFunllLevel(ChannelType.LIEPIN, cityCodes);
+        List<List<String>> result = dictCityMapDao.getOtherCityByLastCodes(ChannelType.LIEPIN, cityCodes);
 
         System.out.println("result:"+result.toString());
     }
