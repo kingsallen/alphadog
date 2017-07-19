@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @Service("auth_method_customfield")
 public class EmployeeBindByCustomfield extends EmployeeBinder {
 
-    private ThreadLocal<UserEmployeeDO> employeeThreadLocal;
+    private ThreadLocal<UserEmployeeDO> employeeThreadLocal = new ThreadLocal<>();
 
     @Override
     protected void paramCheck(BindingParams bindingParams, HrEmployeeCertConfDO certConf) throws Exception {

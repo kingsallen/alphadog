@@ -72,9 +72,11 @@ public abstract class EmployeeBinder {
             int userEmployeeId = createEmployee(bindingParams);
             response = doneBind(bindingParams, userEmployeeId);
         } catch (Exception e) {
+            log.error(e.getMessage(), e);
             response.setSuccess(false);
             response.setMessage(e.getMessage());
         }
+        log.info("bind response: {}", response);
         return response;
     }
 
