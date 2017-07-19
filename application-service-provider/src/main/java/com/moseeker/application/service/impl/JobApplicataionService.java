@@ -688,7 +688,7 @@ public class JobApplicataionService {
             String thirdparty_uid = userToAlidMap.get(applicationDO.getApplierId());
             if (thirdparty_uid != null ){
                 HashMap thirdPartyApplication = new HashMap();
-                thirdPartyApplication.put("source_code", String.valueOf(applicationDO.getPositionId()));
+                thirdPartyApplication.put("source_id", String.valueOf(applicationDO.getPositionId()));
                 thirdPartyApplication.put("alipay_user_id", thirdparty_uid );
 
                 Status status = Status.instanceFromCode(String.valueOf(applicationDO.getAppTplId()));
