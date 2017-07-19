@@ -941,8 +941,10 @@ public class UserHrAccountService {
                         if (!StringUtils.isEmptyObject(UserEmployee.USER_EMPLOYEE.field(orderTemp))) {
                             if (Integer.valueOf(ascTemp).intValue() == 1) {   //倒序
                                 queryBuilder.orderBy(UserEmployee.USER_EMPLOYEE.field(orderTemp).getName(), Order.DESC);
+                                continue;
                             } else if (Integer.valueOf(ascTemp).intValue() == 0) {// 正序
                                 queryBuilder.orderBy(UserEmployee.USER_EMPLOYEE.field(orderTemp).getName(), Order.ASC);
+                                continue;
                             }
                         }
                     }
