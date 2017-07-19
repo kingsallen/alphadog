@@ -38,10 +38,11 @@ public class CompanySearchengine {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	//搜索信息
 	public Map<String,Object>  query(String keywords,String citys,String industry,String scale,Integer page,Integer pageSize) throws TException{
-		SearchResponse hits=queryPrefix(keywords,citys,industry,scale,page,pageSize);
+		TransportClient client=this.getEsClient();
+		SearchResponse hits=queryPrefix(keywords,citys,industry,scale,page,pageSize,client);
 		long hitNum=hits.getHits().getTotalHits();
-		if(hitNum==0&&keywords!=null&&!"".equals(keywords)){
-			SearchResponse hitsData=queryString(keywords,citys,industry,scale,page,pageSize);
+		if(hitNum==0&&StringUtils.isNotEmpty(keywords)){
+			SearchResponse hitsData=queryString(keywords,citys,industry,scale,page,pageSize,client);
 			Map<String,Object> map=this.handleData(hitsData);
 			logger.info(map.toString());
 			return map;
@@ -50,11 +51,9 @@ public class CompanySearchengine {
 			logger.info(map.toString());
 			return map;
 		}
-		
-		
 	}
 	//构建查询语句query_string
-	private QueryBuilder buildQueryForString(String keywords,String citys,String industry,String scale){
+	public QueryBuilder buildQueryForString(String keywords,String citys,String industry,String scale){
 		QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
         boolean hasKey = false;
@@ -65,9 +64,8 @@ public class CompanySearchengine {
         return query;
 	}
 	//通过queryString查询es
-    public SearchResponse queryString(String keywords,String citys,String industry,String scale,Integer page,Integer pageSize) throws TException {
+    public SearchResponse queryString(String keywords,String citys,String industry,String scale,Integer page,Integer pageSize,TransportClient client) throws TException {
          try{
-        	 TransportClient client=this.getEsClient();
         	 if(client!=null){
         		 QueryBuilder query=this.buildQueryForString(keywords, citys, industry, scale);
                  SearchRequestBuilder responseBuilder=client.prepareSearch("companys").setTypes("company")
@@ -93,9 +91,8 @@ public class CompanySearchengine {
     
    
     //通过prefix搜索
-    public SearchResponse queryPrefix(String keywords,String citys,String industry,String scale,Integer page,Integer pageSize) throws TException {
+    public SearchResponse queryPrefix(String keywords,String citys,String industry,String scale,Integer page,Integer pageSize,TransportClient client) throws TException {
         try{
-       	 TransportClient client=this.getEsClient();
        	 if(client!=null){
        		 	QueryBuilder query = QueryBuilders.boolQuery();
        		    this.buildQueryForPrefix(keywords, citys, industry, scale,query);
