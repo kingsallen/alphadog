@@ -2,6 +2,7 @@ package com.moseeker.profile.service.impl.retriveprofile;
 
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserAliUser;
+import com.moseeker.baseorm.db.userdb.tables.records.UserAliUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.profile.service.impl.serviceutils.ProfilePojo;
@@ -16,7 +17,7 @@ public class RetrieveParam {
     private ChannelType channelType;                    //渠道
     private ProfilePojo profilePojo;                    //简历数据
     private UserUserRecord userUserRecord;              //用户信息
-    private UserAliUser userAliUser;                    //阿里用户
+    private UserAliUserRecord userAliUserRecord;        //阿里用户
     private int applicationId;                          //申请编号
     private int jobResumeId;                            //该职位的自定义信息编号
     //private
@@ -78,11 +79,11 @@ public class RetrieveParam {
         this.jobResumeId = jobResumeId;
     }
 
-    public UserAliUser getUserAliUser() {
-        return userAliUser;
+    public UserAliUserRecord getUserAliUserRecord() {
+        return userAliUserRecord;
     }
 
-    public void setUserAliUser(UserAliUser userAliUser) {
-        this.userAliUser = userAliUser;
+    public void setUserAliUserRecord(UserAliUserRecord userAliUserRecord) {
+        this.userAliUserRecord = userAliUserRecord;
     }
 }
