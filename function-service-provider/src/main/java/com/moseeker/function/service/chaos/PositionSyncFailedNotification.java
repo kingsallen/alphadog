@@ -156,9 +156,9 @@ public class PositionSyncFailedNotification {
 
         String divider = "<br/>";
 
+        emailMessgeBuilder.append("【同步记录ID】：").append(thirdPartyPositionDO.getId()).append(divider);
         emailMessgeBuilder.append("【职位ID】：").append(pojo.getPosition_id()).append(divider);
         emailMessgeBuilder.append("【第三方帐号ID】：").append(pojo.getAccount_id()).append(divider);
-        emailMessgeBuilder.append("【第三方职位ID】：").append(thirdPartyPositionDO.getId()).append(divider);
         emailMessgeBuilder.append("【标题】：").append(moseekerPosition.getTitle()).append(divider);
         emailMessgeBuilder.append("【城市】：").append(getCitys(moseekerPosition.getId())).append(divider);
         emailMessgeBuilder.append("【地址】：").append(getAddress(thirdPartyPositionDO.getAddress())).append(divider);
@@ -172,7 +172,7 @@ public class PositionSyncFailedNotification {
         emailMessgeBuilder.append("【学历要求】：").append(getDegree(moseekerPosition.getDegree())).append(divider);
         emailMessgeBuilder.append("【反馈时长】：").append(thirdPartyPositionDO.getFeedbackPeriod()).append(divider);
         emailMessgeBuilder.append("【职位描述】：").append(divider);
-        emailMessgeBuilder.append("【简历邮箱】：").append("cv_").append(moseekerPosition.getId()).append(positionEmail).append(divider);
+        emailMessgeBuilder.append("<b style=\"color:red\">【简历邮箱】：").append("cv_").append(moseekerPosition.getId()).append(positionEmail).append("</b>").append(divider);
 
         if (StringUtils.isNotNullOrEmpty(moseekerPosition.getAccountabilities())) {
             emailMessgeBuilder.append(moseekerPosition.getAccountabilities().replaceAll("\n", divider)).append(divider);

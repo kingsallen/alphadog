@@ -212,7 +212,7 @@ public class UserHrAccountServiceImplTest {
         recipients.add("edhlily@163.com");
         recipients.add("zhangdi@moseeker.com");
         String subject = "测试邮件";
-        String content = "测试邮件内容";
+        String content = "ffdafdsafdsfasfdsaf</br><b style=\"color:red\">【简历邮箱】：ffffffff@test.mail</b>";
         Email.EmailBuilder emailBuilder = new Email.EmailBuilder(recipients.subList(0, 1));
         emailBuilder.addCCList(recipients.subList(1, recipients.size()));
         emailBuilder.setSubject(subject);
