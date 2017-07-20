@@ -20,9 +20,11 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.position.struct.*;
+import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import org.jooq.tools.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +55,7 @@ public class PositionController {
 
     private PositionServices.Iface positonServices = ServiceManager.SERVICEMANAGER.getService(PositionServices.Iface.class);
     private PositionBS.Iface positionBS = ServiceManager.SERVICEMANAGER.getService(PositionBS.Iface.class);
+    private UserHrAccountService.Iface userHrAccountService = ServiceManager.SERVICEMANAGER.getService(UserHrAccountService.Iface.class);
 
     @Autowired
     private JobOccupationDao occuPationdao;
@@ -533,9 +536,12 @@ public class PositionController {
     @ResponseBody
     public String updateThirdPartyPosition(HttpServletRequest request, HttpServletResponse response) {
         try {
-            HrThirdPartyPositionDO thirdPartyPosition = ParamUtils.initModelForm(request, HrThirdPartyPositionDO.class);
-            int result = positonServices.updateThirdPartyPosition(thirdPartyPosition);
-            return ResponseLogNotification.successJson(request, result);
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            HrThirdPartyAccountDO thirdPartyAccount = ParamUtils.initModelForm(params, HrThirdPartyAccountDO.class);
+            HrThirdPartyPositionDO thirdPartyPosition = ParamUtils.initModelForm(params, HrThirdPartyPositionDO.class);
+            positonServices.updateThirdPartyPosition(thirdPartyPosition);
+            userHrAccountService.updateThirdPartyAccount(thirdPartyAccount);
+            return ResponseLogNotification.successJson(request, 1);
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseLogNotification.failJson(request, e);
