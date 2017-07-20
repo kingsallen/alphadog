@@ -71,8 +71,10 @@ public class EmployeeBindByEmail extends EmployeeBinder{
             throw new RuntimeException("该邮箱已被认证\n请使用其他邮箱");
         }
 
-        if (StringUtils.isNotNullOrEmpty(client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, userEmployeeDOThreadLocal.get().getActivationCode()))) {
-            throw new RuntimeException("已发送过邮件到指定邮箱，24h内请勿重复该操作");
+        if (userEmployeeDOThreadLocal.get() != null && StringUtils.isNotNullOrEmpty(userEmployeeDOThreadLocal.get().getActivationCode())) {
+            if (StringUtils.isNotNullOrEmpty(client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, userEmployeeDOThreadLocal.get().getActivationCode()))) {
+                throw new RuntimeException("已发送过邮件到指定邮箱，24h内请勿重复该操作");
+            }
         }
     }
 
