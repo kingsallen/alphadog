@@ -6,10 +6,11 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.profile.constants.StatisticsForChannelmportVO;
 import com.moseeker.profile.entity.ProfileEntity;
 import com.moseeker.profile.service.impl.ProfileCompletenessImpl;
-import com.moseeker.profile.service.impl.retriveprofile.RetrieveParam;
 import com.moseeker.profile.service.impl.retriveprofile.Task;
 import com.moseeker.profile.service.impl.serviceutils.ProfilePojo;
 import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +21,9 @@ import java.sql.Timestamp;
  * Created by jack on 09/07/2017.
  */
 @Component
-public class ProfileTask extends Task {
+public class ProfileTask implements Task<ProfilePojo, Integer> {
+
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private ProfileProfileDao profileDao;
@@ -34,16 +37,11 @@ public class ProfileTask extends Task {
     @Autowired
     private ProfileCompletenessImpl completenessImpl;
 
-    @Override
-    protected void handler(RetrieveParam param) throws CommonException {
-        if (param.getProfilePojo() != null) {
+    public Integer handler(ProfilePojo profilePojo) throws CommonException {
+        if (profilePojo != null) {
 
-            ProfileProfileRecord profileProfileRecord = profileDao.getProfileByUserId(param.getUserUserRecord().getId());
+            ProfileProfileRecord profileProfileRecord = profileDao.getProfileByUserId(profilePojo.getUserRecord().getId());
 
-            ProfilePojo profilePojo = param.getProfilePojo();
-            if (profilePojo.getProfileRecord().getUserId() == null) {
-                profilePojo.getProfileRecord().setUserId(param.getUserUserRecord().getId());
-            }
             if (profileProfileRecord == null) {
                 profileDao.saveProfile(profilePojo.getProfileRecord(), profilePojo.getBasicRecord(),
                         profilePojo.getAttachmentRecords(), profilePojo.getAwardsRecords(), profilePojo.getCredentialsRecords(),
@@ -58,17 +56,19 @@ public class ProfileTask extends Task {
             }
 
             int profileId = profileProfileRecord.getId();
-            int userId = param.getProfilePojo().getUserRecord().getId();
+            int userId = profilePojo.getUserRecord().getId();
             Timestamp createTime = null;
-            if (param.getProfilePojo().getImportRecords() != null && param.getProfilePojo().getImportRecords().getCreateTime() != null) {
-                createTime = param.getProfilePojo().getImportRecords().getCreateTime();
+            if (profilePojo.getImportRecords() != null && profilePojo.getImportRecords().getCreateTime() != null) {
+                createTime = profilePojo.getImportRecords().getCreateTime();
             }
             Byte channelType = null;
-            if (param.getProfilePojo().getImportRecords() != null && param.getProfilePojo().getImportRecords().getSource() != null) {
-                channelType = param.getProfilePojo().getImportRecords().getSource();
+            if (profilePojo.getImportRecords() != null && profilePojo.getImportRecords().getSource() != null) {
+                channelType = profilePojo.getImportRecords().getSource();
             }
-            logForStatistics(profileId, userId, createTime, channelType, param.getProfilePojo());
+            logForStatistics(profileId, userId, createTime, channelType, profilePojo);
+            return profileProfileRecord.getId();
         }
+        return null;
     }
 
     /**

@@ -162,4 +162,12 @@ public enum ChannelType {
 	public String getAlias() {
 		return alias;
 	}
+
+	/**
+	 * 简历回收 中  profile_profile.source（简历来源）的值
+	 * @return
+	 */
+	public int getRetrievalSource() {
+		return 210+value;
+	}
 }
