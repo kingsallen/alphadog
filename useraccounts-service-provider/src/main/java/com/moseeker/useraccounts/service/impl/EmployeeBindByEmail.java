@@ -8,7 +8,9 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO;
@@ -58,12 +60,11 @@ public class EmployeeBindByEmail extends EmployeeBinder{
         }
 
         Query.QueryBuilder query = new Query.QueryBuilder();
-        query.where("company_id", String.valueOf(bindingParams.getCompanyId())).and("email", bindingParams.getEmail())
+        query.where(new Condition("company_id", employeeEntity.getCompanyIds(bindingParams.getCompanyId()), ValueOp.IN)).and("email", bindingParams.getEmail())
                 .and("disable", "0");
 
         // 判断该邮箱现在已被占用 或 正在被人认证
         List<UserEmployeeDO> userEmployees = employeeDao.getDatas(query.buildQuery());
-        log.info("使用了邮箱:{}, 的用户有:{}", bindingParams.getEmail(), Arrays.toString(userEmployees.toArray()));
         userEmployees = userEmployees.stream().filter(e -> e.getSysuserId() != bindingParams.getUserId() && e.getId() > 0).collect(Collectors.toList());
         if (userEmployees.stream().anyMatch(e -> e.getActivation() == 0 || StringUtils.isNotNullOrEmpty(client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, e.getActivationCode())))) {
             log.info("邮箱:{} 已被占用", bindingParams.getEmail());

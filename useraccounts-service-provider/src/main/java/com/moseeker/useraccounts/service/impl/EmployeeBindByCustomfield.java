@@ -1,6 +1,8 @@
 package com.moseeker.useraccounts.service.impl;
 
+import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.employee.struct.BindingParams;
@@ -18,7 +20,7 @@ public class EmployeeBindByCustomfield extends EmployeeBinder {
     @Override
     protected void paramCheck(BindingParams bindingParams, HrEmployeeCertConfDO certConf) throws Exception {
         Query.QueryBuilder query = new Query.QueryBuilder();
-        query.where("company_id", String.valueOf(bindingParams.getCompanyId()))
+        query.where(new Condition("company_id", employeeEntity.getCompanyIds(bindingParams.getCompanyId()), ValueOp.IN))
                 .and("cname", bindingParams.getName())
                 .and("custom_field", bindingParams.getCustomField())
                 .and("disable", "0");
