@@ -265,7 +265,7 @@ public class ThirdPositionService {
         if (thirdPostion == null) {
             throw new CommonException(-1, "无效的第三方帐号！");
         }
-        thirdPartyAccount.setId(thirdPostion.getId());
+        thirdPartyAccount.setId(thirdPostion.getThirdPartyAccountId());
         int result = thirdPartyPositionDao.updateData(thirdPartyPosition);
 
         if (result < 1) {
