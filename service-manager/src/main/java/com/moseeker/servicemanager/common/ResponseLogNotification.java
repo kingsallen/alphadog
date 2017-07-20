@@ -64,8 +64,10 @@ public class ResponseLogNotification {
 
     public static String failJson(HttpServletRequest request, Exception e) {
         Map<String, Serializable> result = new HashMap<>();
-
-        if (e instanceof BIZException) {
+        if (e instanceof CommonException) {
+            result.put("status", ((CommonException) e).getCode());
+            result.put("message", e.getMessage());
+        } else if (e instanceof BIZException) {
             result.put("status", ((BIZException) e).getCode());
             result.put("message", e.getMessage());
         } else if (e == null || e.getMessage() == null) {

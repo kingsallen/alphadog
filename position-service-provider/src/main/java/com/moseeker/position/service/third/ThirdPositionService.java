@@ -33,6 +33,7 @@ import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionInfoForm;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -251,6 +252,30 @@ public class ThirdPositionService {
             throw ExceptionUtils.getCommonException(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
         }
 
+        return result;
+    }
+
+    @Transactional
+    public int updateThirdPartyPositionWithAccount(HrThirdPartyPositionDO thirdPartyPosition, HrThirdPartyAccountDO thirdPartyAccount) {
+        if (thirdPartyPosition.getId() == 0) {
+            throw new CommonException(-1, "ID不能为空!");
+        }
+
+        HrThirdPartyPositionDO thirdPostion = thirdPartyPositionDao.getThirdPositionById(thirdPartyPosition.getId());
+        if (thirdPostion == null) {
+            throw new CommonException(-1, "无效的第三方帐号！");
+        }
+        thirdPartyAccount.setId(thirdPostion.getId());
+        int result = thirdPartyPositionDao.updateData(thirdPartyPosition);
+
+        if (result < 1) {
+            throw ExceptionUtils.getCommonException(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
+        }
+
+        result = thirdPartyAccountDao.updateData(thirdPartyAccount);
+        if (result < 1) {
+            throw ExceptionUtils.getCommonException(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
+        }
         return result;
     }
 }

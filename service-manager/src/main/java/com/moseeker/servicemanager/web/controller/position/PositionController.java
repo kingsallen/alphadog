@@ -5,6 +5,7 @@ import com.moseeker.baseorm.dao.jobdb.JobOccupationDao;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
@@ -55,7 +56,6 @@ public class PositionController {
 
     private PositionServices.Iface positonServices = ServiceManager.SERVICEMANAGER.getService(PositionServices.Iface.class);
     private PositionBS.Iface positionBS = ServiceManager.SERVICEMANAGER.getService(PositionBS.Iface.class);
-    private UserHrAccountService.Iface userHrAccountService = ServiceManager.SERVICEMANAGER.getService(UserHrAccountService.Iface.class);
 
     @Autowired
     private JobOccupationDao occuPationdao;
@@ -539,8 +539,14 @@ public class PositionController {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             HrThirdPartyAccountDO thirdPartyAccount = ParamUtils.initModelForm(params, HrThirdPartyAccountDO.class);
             HrThirdPartyPositionDO thirdPartyPosition = ParamUtils.initModelForm(params, HrThirdPartyPositionDO.class);
-            positonServices.updateThirdPartyPosition(thirdPartyPosition);
-            userHrAccountService.updateThirdPartyAccount(thirdPartyAccount);
+
+            if (thirdPartyAccount == null || thirdPartyPosition == null) {
+                throw new CommonException(2201, "参数错误");
+            }
+
+            thirdPartyAccount.setId(0);
+            thirdPartyAccount.unsetId();
+            positonServices.updateThirdPartyPositionWithAccount(thirdPartyPosition, thirdPartyAccount);
             return ResponseLogNotification.successJson(request, 1);
         } catch (Exception e) {
             logger.error(e.getMessage());

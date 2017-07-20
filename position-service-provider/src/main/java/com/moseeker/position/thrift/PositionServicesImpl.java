@@ -262,4 +262,13 @@ public class PositionServicesImpl implements Iface {
             throw ExceptionUtils.convertException(e);
         }
     }
+
+    @Override
+    public int updateThirdPartyPositionWithAccount(HrThirdPartyPositionDO thirdPartyPosition, HrThirdPartyAccountDO thirdPartyAccount) throws BIZException, TException {
+        try {
+            return thirdPositionService.updateThirdPartyPositionWithAccount(thirdPartyPosition, thirdPartyAccount);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
 }
