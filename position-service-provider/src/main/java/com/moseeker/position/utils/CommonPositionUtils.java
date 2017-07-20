@@ -2,8 +2,11 @@ package com.moseeker.position.utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +34,7 @@ public class CommonPositionUtils {
 		 return jobPositionCityDao.getDatas(query);
 	 }
 	 //获取职位的城市格式是map形式，（positionId，List<String>)形式
-	 public Map<Integer,List<String>> handlePositionCity(List<Integer> list){
+	 public Map<Integer,Set<String>> handlePositionCity(List<Integer> list){
 		 if(StringUtils.isEmptyList(list)){
 			 return null;
 		 }
@@ -44,13 +47,13 @@ public class CommonPositionUtils {
 		 if(StringUtils.isEmptyList(citys)){
 			 return null;
 		 }
-		 Map<Integer,List<String>> map=new HashMap<Integer,List<String>>();
+		 Map<Integer,Set<String>> map=new HashMap<Integer,Set<String>>();
 		 for(JobPositionCityDO jobDo:jobPositionCityList){
 			 int positionId=jobDo.getPid();
 			 int code=jobDo.getCode();
-			 List<String> positionCity=new ArrayList<String>();
+			 Set<String> positionCity=new HashSet<String>();
 			 if(map.get(positionId)!=null){
-				 positionCity=map.get(positionId+"");
+				 positionCity=map.get(positionId);
 			 }			 
 			 for(DictCityDO city:citys){
 				 int code1=city.getCode();
@@ -59,7 +62,7 @@ public class CommonPositionUtils {
 					 positionCity.add(name);
 				 }
 			 }
-			 if(!StringUtils.isEmptyList(positionCity)){
+			 if(positionCity!=null&&positionCity.size()>0){
 				 map.put(positionId,positionCity);
 			 }
 		 }
