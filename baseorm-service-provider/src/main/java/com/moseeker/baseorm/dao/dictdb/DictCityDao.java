@@ -123,14 +123,38 @@ public class DictCityDao extends JooqCrudImpl<DictCityDO, DictCityRecord> {
 
         List<DictCityDO> allCities = getDatas(query);
 
+        if (allCities == null || allCities.size() == 0) {
+            return new ArrayList<>();
+        }
+
         Iterator<DictCityDO> cityDOIterator = allCities.iterator();
+        //5开头的由于重庆市的code不符合规范特殊处理
+        if (allCities.get(allCities.size() - 1).getCode() >= 500000 && allCities.get(allCities.size() - 1).getCode() < 510000) {
+            //去掉不属于重庆的
+            while (cityDOIterator.hasNext()) {
+                DictCityDO cityD = cityDOIterator.next();
+                if (cityD.getCode() >= 510000) {
+                    cityDOIterator.remove();
+                }
+            }
+        } else if (allCities.get(allCities.size() - 1).getCode() >= 510000 && allCities.get(allCities.size() - 1).getCode() < 600000) {
+            //去掉属于重庆的
+            while (cityDOIterator.hasNext()) {
+                DictCityDO cityD = cityDOIterator.next();
+                if (cityD.getCode() < 510000) {
+                    cityDOIterator.remove();
+                }
+            }
+        }
+
+        cityDOIterator = allCities.iterator();
         allCodes.clear();
         Set<Byte> uniqLevels = new HashSet<>();
         while (cityDOIterator.hasNext()) {
             DictCityDO cityD = cityDOIterator.next();
-            if(cityD.getLevel() == 0){
+            if (cityD.getLevel() == 0) {
                 cityDOIterator.remove();
-            }else if (uniqLevels.contains(cityD.getLevel())) {
+            } else if (uniqLevels.contains(cityD.getLevel())) {
                 cityDOIterator.remove();
             } else {
                 uniqLevels.add(cityD.getLevel());
