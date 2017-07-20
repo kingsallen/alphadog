@@ -30,9 +30,6 @@ import static com.moseeker.common.exception.Category.VALIDATE_FAILED;
 public class RetriveProfile {
 
     @Autowired
-    JobPositionDao positionDao;
-
-    @Autowired
     protected Map<String, RetrievalFlow> flowMap;
 
     /**

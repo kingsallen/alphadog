@@ -1,6 +1,5 @@
 package com.moseeker.profile.service.impl.retriveprofile;
 
-import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.exception.CommonException;
@@ -31,8 +30,8 @@ public class ExecutorParam {
         Map<String, Object> profileMap = null;
 
         ValidateUtil validateUtil = new ValidateUtil();
-        validateUtil.addRequiredValidate("简历信息", profileMap, null, null);
-        validateUtil.addIntTypeValidate("职位编号", positionId, null, null, 1, null);
+        validateUtil.addRequiredValidate("简历信息", paramMap.get("profile"), null, null);
+        validateUtil.addIntTypeValidate("职位编号", paramMap.get("positionId"), null, null, 1, null);
         String checkoutParamResult = validateUtil.validate();
         if (!StringUtils.isNullOrEmpty(checkoutParamResult)) {
             CommonException exception = ExceptionFactory.buildException(VALIDATE_FAILED);
@@ -46,6 +45,9 @@ public class ExecutorParam {
         if (paramMap.get("profile") != null) {
             profileMap = (Map<String, Object>) paramMap.get("profile");
             setProfile(profileMap);
+            if (profileMap != null && profileMap.get("user") != null) {
+                setUser((Map<String, Object>)profileMap.get("user"));
+            }
         }
     }
 

@@ -8,11 +8,13 @@ import com.moseeker.profile.exception.ExceptionFactory;
 import com.moseeker.profile.service.impl.retriveprofile.Task;
 import com.moseeker.profile.service.impl.retriveprofile.parameters.UserAliTaskParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * 处理userdb.user_ali_user账号信息
  * Created by jack on 19/07/2017.
  */
+@Component
 public class UserAliTask implements Task<UserAliTaskParam, Boolean> {
 
     @Autowired
