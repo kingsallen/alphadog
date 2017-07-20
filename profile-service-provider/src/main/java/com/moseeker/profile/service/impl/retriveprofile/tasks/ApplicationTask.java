@@ -62,9 +62,9 @@ public class ApplicationTask implements Task<ApplicationTaskParam, Integer> {
 
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         queryBuilder.where("position_id", positionRecord.getId()).and("applier_id", param.getUserId());
-        JobApplicationRecord aplicationRecord = jobApplicationDao.getRecord(queryBuilder.buildQuery());
-        if (aplicationRecord == null) {
-            JobApplicationRecord applicationRecord = initApplication(param.getUserId(), positionRecord.getId(),
+        JobApplicationRecord applicationRecord = jobApplicationDao.getRecord(queryBuilder.buildQuery());
+        if (applicationRecord == null) {
+            applicationRecord = initApplication(param.getUserId(), positionRecord.getId(),
                     positionRecord.getCompanyId());
             applicationRecord = jobApplicationDao.addRecord(applicationRecord);
             redisClient.incr(Constant.APPID_ALPHADOG, REDIS_KEY_APPLICATION_COUNT_CHECK,
@@ -74,7 +74,7 @@ public class ApplicationTask implements Task<ApplicationTaskParam, Integer> {
         } else {
             //do nothing
         }
-        return aplicationRecord.getId();
+        return applicationRecord.getId();
     }
 
     /**

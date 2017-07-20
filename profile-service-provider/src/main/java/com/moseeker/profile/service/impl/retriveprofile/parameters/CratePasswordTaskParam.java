@@ -7,7 +7,7 @@ package com.moseeker.profile.service.impl.retriveprofile.parameters;
 public class CratePasswordTaskParam {
 
     private int userId;             //c端用户编号，需要根据这个编号修改密码
-    private String name;            //用户名称，用于发短信时，称呼对方
+    private String mobile;          //用户名称，用于发短信时，称呼对方
 
     public int getUserId() {
         return userId;
@@ -17,11 +17,11 @@ public class CratePasswordTaskParam {
         this.userId = userId;
     }
 
-    public String getName() {
-        return name;
+    public String getMobile() {
+        return mobile;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
     }
 }

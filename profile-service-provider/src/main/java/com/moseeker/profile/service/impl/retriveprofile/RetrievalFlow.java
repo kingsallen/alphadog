@@ -1,5 +1,6 @@
 package com.moseeker.profile.service.impl.retriveprofile;
 
+import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.profile.exception.Category;
 import com.moseeker.profile.exception.ExceptionFactory;
@@ -22,7 +23,7 @@ public abstract class RetrievalFlow {
      * @return 执行结果
      * @throws CommonException 业务异常
      */
-    public boolean retrieveProfile(Map<String, Object> parameter) throws CommonException {
+    public boolean retrieveProfile(Map<String, Object> parameter, ChannelType channelType) throws CommonException {
         if (excutor == null) {
             this.excutor = customExcutor();
             if (excutor == null) {
@@ -30,7 +31,7 @@ public abstract class RetrievalFlow {
             }
         }
         Coupler tmp = excutor;
-        ExecutorParam globalParam = initExecutorParam(parameter);
+        ExecutorParam globalParam = initExecutorParam(parameter, channelType);
         Object tempParam = null;
         while (tmp != null) {
             tempParam = tmp.execute(tempParam, globalParam);
@@ -44,9 +45,9 @@ public abstract class RetrievalFlow {
      * @param parameter
      * @return
      */
-    protected ExecutorParam initExecutorParam(Map<String, Object> parameter) throws CommonException {
+    protected ExecutorParam initExecutorParam(Map<String, Object> parameter, ChannelType channelType) throws CommonException {
         ExecutorParam executorParam = initParam();
-        executorParam.parseParameter(parameter);
+        executorParam.parseParameter(parameter, channelType);
         return executorParam;
     }
 

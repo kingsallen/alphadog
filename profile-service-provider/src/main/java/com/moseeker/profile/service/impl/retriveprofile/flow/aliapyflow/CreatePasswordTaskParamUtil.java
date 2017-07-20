@@ -16,9 +16,9 @@ public class CreatePasswordTaskParamUtil implements CouplerParamUtil<CratePasswo
     @Override
     public CratePasswordTaskParam parseExecutorParam(Integer userId, ExecutorParam globalParam) throws CommonException {
         AliPayRetrievalParam aliPayRetrievalParam = (AliPayRetrievalParam)globalParam;
-        String name = (String)aliPayRetrievalParam.getUser().get("name");
+        String mobile = (String)aliPayRetrievalParam.getUser().get("mobile");
         CratePasswordTaskParam passwordTaskParam = new CratePasswordTaskParam();
-        passwordTaskParam.setName(name);
+        passwordTaskParam.setMobile(mobile);
         passwordTaskParam.setUserId(userId);
         return passwordTaskParam;
     }

@@ -3,6 +3,8 @@ package com.moseeker.profile.service.impl.retriveprofile.tasks;
 import com.moseeker.baseorm.dao.userdb.UserAliUserDao;
 import com.moseeker.baseorm.db.userdb.tables.records.UserAliUserRecord;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.profile.exception.Category;
 import com.moseeker.profile.exception.ExceptionFactory;
 import com.moseeker.profile.service.impl.retriveprofile.Task;
@@ -23,6 +25,12 @@ public class UserAliTask implements Task<UserAliTaskParam, Boolean> {
     @Override
     public Boolean handler(UserAliTaskParam param) throws CommonException {
         try {
+            ValidateUtil validateUtil = new ValidateUtil();
+            validateUtil.addIntTypeValidate("用户编号", param.getUserId(),null, null, 1, null);
+            validateUtil.addRequiredStringValidate("阿里平台用户编号", param.getUid(), null, null);
+            if (!StringUtils.isNullOrEmpty(validateUtil.validate())) {
+                throw ExceptionFactory.buildException(Category.VALIDATION_PROFILE_RETRIEVAL_USER_ALI_TASK);
+            }
             UserAliUserRecord userAliUserRecord = aliUserDao.getByUserId(param.getUserId());
             if (userAliUserRecord == null) {
                 userAliUserRecord = new UserAliUserRecord();
@@ -33,8 +41,10 @@ public class UserAliTask implements Task<UserAliTaskParam, Boolean> {
                 return Boolean.FALSE;
             }
             return Boolean.TRUE;
+        } catch (CommonException e) {
+            throw e;
         } catch (Exception e) {
-            throw ExceptionFactory.buildException(Category.PROFILE_ALLREADY_EXIST);
+            throw ExceptionFactory.buildException(com.moseeker.common.exception.Category.PROGRAM_EXCEPTION);
         }
     }
 }

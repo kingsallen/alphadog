@@ -2,12 +2,15 @@ package com.moseeker.profile.service.impl.retriveprofile;
 
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.ChannelType;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.profile.exception.ExceptionFactory;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import static com.moseeker.common.exception.Category.VALIDATE_FAILED;
 
@@ -23,12 +26,10 @@ public class ExecutorParam {
     private Map<String, Object> user;           //用户信息
     private ChannelType channelType;            //渠道
 
-    public void parseParameter(Map<String, Object> paramMap) throws CommonException {
+    public void parseParameter(Map<String, Object> paramMap, ChannelType channelType) throws CommonException {
         setOriginParam(paramMap);
 
-        int positionId = 0;
-        Map<String, Object> profileMap = null;
-
+        setChannelType(channelType);
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addRequiredValidate("简历信息", paramMap.get("profile"), null, null);
         validateUtil.addIntTypeValidate("职位编号", paramMap.get("positionId"), null, null, 1, null);
@@ -39,16 +40,35 @@ public class ExecutorParam {
             throw exception;
         }
         if (paramMap.get("positionId") != null) {
-            positionId = BeanUtils.converToInteger(paramMap.get("positionId"));
-            setPositionId(positionId);
+            setPositionId(BeanUtils.converToInteger(paramMap.get("positionId")));
         }
         if (paramMap.get("profile") != null) {
-            profileMap = (Map<String, Object>) paramMap.get("profile");
+            Map<String, Object> profileMap = (Map<String, Object>) paramMap.get("profile");
             setProfile(profileMap);
-            if (profileMap != null && profileMap.get("user") != null) {
-                setUser((Map<String, Object>)profileMap.get("user"));
+            if (profileMap != null) {
+
+                if (profileMap.get("user") != null) {
+                    setUser((Map<String, Object>)profileMap.get("user"));
+                }
+                if (profileMap.get("profile") == null) {
+                    Map<String, Object> profile = new HashMap<>();
+                    profile.put("disable", (byte)Constant.ENABLE);
+                    profile.put("uuid", UUID.randomUUID().toString());
+                    profile.put("source", channelType.getRetrievalSource());
+                    profile.put("origin", channelType.getOrigin(null));
+                    profileMap.put("profile", profile);
+                }
+                if (profileMap.get("import") == null) {
+                    Map<String, Object> importParam = new HashMap<>();
+                    importParam.put("source", channelType.getValue());
+                    importParam.put("data", paramMap);
+                    importParam.put("accountId", getUser().get("uid"));
+                    importParam.put("userName", getUser().get("name"));
+                    profileMap.put("import", importParam);
+                }
             }
         }
+
     }
 
     public Map<String, Object> getOriginParam() {

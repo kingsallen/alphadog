@@ -3,6 +3,7 @@ package com.moseeker.profile.service.impl.retriveprofile.tasks;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.profile.constants.StatisticsForChannelmportVO;
 import com.moseeker.profile.entity.ProfileEntity;
 import com.moseeker.profile.service.impl.ProfileCompletenessImpl;

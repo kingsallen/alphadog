@@ -6,6 +6,9 @@ import com.moseeker.profile.service.impl.retriveprofile.executor.CouplerParamUti
 import com.moseeker.profile.service.impl.serviceutils.ProfilePojo;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * profile任务参数生成工具。
  * Created by jack on 20/07/2017.

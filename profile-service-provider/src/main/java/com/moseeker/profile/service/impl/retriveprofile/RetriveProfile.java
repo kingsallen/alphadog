@@ -1,25 +1,15 @@
 package com.moseeker.profile.service.impl.retriveprofile;
 
 import com.alibaba.fastjson.JSON;
-import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
-import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
-import com.moseeker.baseorm.db.userdb.tables.records.UserAliUserRecord;
-import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.exception.CommonException;
-import com.moseeker.common.util.StringUtils;
-import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.profile.exception.Category;
 import com.moseeker.profile.exception.ExceptionFactory;
-import com.moseeker.profile.service.impl.serviceutils.ProfilePojo;
-import com.moseeker.thrift.gen.common.struct.BIZException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
-
-import static com.moseeker.common.exception.Category.PROGRAM_PARAM_NOTEXIST;
-import static com.moseeker.common.exception.Category.VALIDATE_FAILED;
 
 /**
  * 简历回收业务。用于从第三方平台上拉去的简历信息、用户信息和投递的职位信息，从而生成MoSeeker平台的用户信息、简历信息、投递信息等。
@@ -38,6 +28,7 @@ public class RetriveProfile {
      * @return 执行成功与否
      * @throws CommonException 异常
      */
+    @CounterIface
     public boolean retrieve(String parameter) throws CommonException {
         Map<String, Object> paramMap = JSON.parseObject(parameter);
         if (paramMap.get("channel") != null) {
@@ -47,7 +38,7 @@ public class RetriveProfile {
                 throw ExceptionFactory.buildException(Category.VALIDATION_RETRIEVAL_CHANNEL_NOT_CUSTOMED);
             }
             RetrievalFlow retrievalFlow = flowMap.get(channelType.toString().toLowerCase()+"_retrieval_flow");
-            return retrievalFlow.retrieveProfile(paramMap);
+            return retrievalFlow.retrieveProfile(paramMap, channelType);
         } else {
             throw ExceptionFactory.buildException(Category.VALIDATION_RETRIEVAL_CHANNEL_NOT_CUSTOMED);
         }

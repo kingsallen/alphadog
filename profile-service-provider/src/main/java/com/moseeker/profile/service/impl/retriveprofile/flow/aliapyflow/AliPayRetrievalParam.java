@@ -1,6 +1,7 @@
 package com.moseeker.profile.service.impl.retriveprofile.flow.aliapyflow;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.profile.service.impl.retriveprofile.ExecutorParam;
 
@@ -15,8 +16,8 @@ public class AliPayRetrievalParam extends ExecutorParam {
     private String jobResume;
 
     @Override
-    public void parseParameter(Map<String, Object> parameter) throws CommonException {
-        super.parseParameter(parameter);
+    public void parseParameter(Map<String, Object> parameter, ChannelType channelType) throws CommonException {
+        super.parseParameter(parameter, channelType);
         if (this.getOriginParam().get("jobResumeOther") != null) {
             jobResume = JSON.toJSONString(getOriginParam().get("jobResumeOther"));
             setJobResume(jobResume);
