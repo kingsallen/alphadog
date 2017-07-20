@@ -710,7 +710,7 @@ public class PositionPcService {
 				 int parentId=DO.getParentId();
 				 int id=DO.getId();
 				 int status=DO.getDisable();
-				 if(status==0&&parentId!=0){
+				 if(status==1&&parentId!=0){
 					 continue;
 				 }
 				 if(companyId==id||parentId==companyId){
@@ -902,7 +902,7 @@ public class PositionPcService {
 			 int parentId=companyDO.getParentId();
 			 if(parentId!=0){
 				 int disable=companyDO.getDisable();
-				 if(disable==0){
+				 if(disable==1){
 					 newList.add(companyDO);
 				 }
 			 }else{
@@ -1000,7 +1000,7 @@ public class PositionPcService {
 		 Map<Integer,Set<String>> data=new HashMap<Integer,Set<String>>();
 		 for(Integer key1:positionCityMap.keySet()){
 			 List<String> cities=positionCityMap.get(key1);
-			 if(StringUtils.isEmptyList(cities)){
+			 if(!StringUtils.isEmptyList(cities)){
 				 for(Integer key2:companyPosition.keySet()){
 					 Set<Integer> positionIds=companyPosition.get(key2);
 					 if(positionIds.contains(key1)){

@@ -31,7 +31,7 @@ public class UpdateEsAop {
 	 */
 	String ms = "{'tableName':'%s'}";
 
-	@Resource(name = "cacheClient")
+//	@Resource(name = "cacheClient")
 	private RedisClient client;
 	
 	
