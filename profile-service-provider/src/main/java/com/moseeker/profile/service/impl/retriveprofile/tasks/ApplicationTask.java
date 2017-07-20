@@ -2,6 +2,7 @@ package com.moseeker.profile.service.impl.retriveprofile.tasks;
 
 import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
@@ -12,9 +13,10 @@ import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.profile.exception.Category;
 import com.moseeker.profile.exception.ExceptionFactory;
-import com.moseeker.profile.service.impl.retriveprofile.RetrieveParam;
 import com.moseeker.profile.service.impl.retriveprofile.Task;
-import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
+import com.moseeker.profile.service.impl.retriveprofile.parameters.ApplicationTaskParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +27,7 @@ import javax.annotation.Resource;
  * Created by jack on 10/07/2017.
  */
 @Component
-public class ApplicationTask extends Task {
+public class ApplicationTask implements Task<ApplicationTaskParam, Integer> {
 
     // 申请次数redis key
     private static final String REDIS_KEY_APPLICATION_COUNT_CHECK = "APPLICATION_COUNT_CHECK";
@@ -33,29 +35,36 @@ public class ApplicationTask extends Task {
     // 申请次数限制 3次
     private static final int APPLICATION_COUNT_LIMIT = 3;
 
+    Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     JobApplicationDao jobApplicationDao;
 
     @Autowired
     HrCompanyConfDao hrCompanyConfDao;
 
+    @Autowired
+    JobPositionDao positionDao;
+
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
 
-    @Override
-    protected void handler(RetrieveParam param) throws CommonException {
+    public Integer handler(ApplicationTaskParam param) throws CommonException {
 
-        if (!checkoutApplyLimit(param.getUserUserRecord().getId(), param.getPositionRecord().getCompanyId())) {
+        JobPositionRecord positionRecord = positionDao.getPositionById(param.getPositionId());
+        if (positionRecord == null || positionRecord.getStatus() != 0) {
+            throw ExceptionFactory.buildException(Category.PROFILE_POSITION_NOTEXIST);
+        }
+
+        if (!checkoutApplyLimit(param.getUserId(), positionRecord.getCompanyId())) {
             throw ExceptionFactory.buildException(Category.VALIDATION_APPLICATION_UPPER_LIMIT);
         }
 
-        JobPositionRecord positionRecord = param.getPositionRecord();
-
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-        queryBuilder.where("position_id", positionRecord.getId()).and("applier_id", param.getUserUserRecord().getId());
+        queryBuilder.where("position_id", positionRecord.getId()).and("applier_id", param.getUserId());
         JobApplicationRecord aplicationRecord = jobApplicationDao.getRecord(queryBuilder.buildQuery());
-        if (aplicationRecord == null && positionRecord.getStatus() == 0) {
-            JobApplicationRecord applicationRecord = initApplication(param.getUserUserRecord().getId(), positionRecord.getId(),
+        if (aplicationRecord == null) {
+            JobApplicationRecord applicationRecord = initApplication(param.getUserId(), positionRecord.getId(),
                     positionRecord.getCompanyId());
             applicationRecord = jobApplicationDao.addRecord(applicationRecord);
             redisClient.incr(Constant.APPID_ALPHADOG, REDIS_KEY_APPLICATION_COUNT_CHECK,
@@ -65,9 +74,7 @@ public class ApplicationTask extends Task {
         } else {
             //do nothing
         }
-        if (aplicationRecord != null && aplicationRecord.getId() != null) {
-            param.setApplicationId(aplicationRecord.getId());
-        }
+        return aplicationRecord.getId();
     }
 
     /**

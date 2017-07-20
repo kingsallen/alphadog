@@ -1,12 +1,8 @@
 package com.moseeker.profile.service.impl.retriveprofile;
 
 import com.moseeker.common.constants.ChannelType;
-import com.moseeker.profile.config.AppConfig;
-import com.moseeker.profile.service.impl.retriveprofile.flows.AliPayRetrievalFlow;
+import com.moseeker.profile.service.impl.retriveprofile.flow.AliPayRetrievalFlow;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.junit.Assert.*;
 
