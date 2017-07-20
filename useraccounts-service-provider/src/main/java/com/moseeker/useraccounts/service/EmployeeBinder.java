@@ -3,6 +3,8 @@ package com.moseeker.useraccounts.service;
 import com.moseeker.baseorm.dao.hrdb.HrEmployeeCertConfDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.EmployeeEntity;
@@ -18,6 +20,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
+import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +36,9 @@ public abstract class EmployeeBinder {
     private static final Logger log = LoggerFactory.getLogger(EmployeeBinder.class);
 
     protected MqService.Iface mqService = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
+
+    @Resource(name = "cacheClient")
+    protected RedisClient client;
 
     @Autowired
     protected UserUserDao userDao;
@@ -141,6 +147,9 @@ public abstract class EmployeeBinder {
                     e.setCname(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getName(), e.getCname()));
                     e.setMobile(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getMobile(), e.getMobile()));
                     e.setCustomField(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getCustomField(), e.getCustomField()));
+                    if (StringUtils.isNotNullOrEmpty(e.getActivationCode())) {
+                        client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, e.getActivationCode());
+                    }
                 } else {
                     e.setEmailIsvalid((byte)0);
                     e.setActivation((byte)1);

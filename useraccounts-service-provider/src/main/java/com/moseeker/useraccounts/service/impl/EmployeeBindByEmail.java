@@ -27,7 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,9 +40,6 @@ import org.springframework.stereotype.Service;
 public class EmployeeBindByEmail extends EmployeeBinder{
 
     private static final Logger log = LoggerFactory.getLogger(EmployeeBindByEmail.class);
-
-    @Resource(name = "cacheClient")
-    private RedisClient client;
 
     @Autowired
     private HrCompanyDao companyDao;
@@ -137,10 +133,16 @@ public class EmployeeBindByEmail extends EmployeeBinder{
             String value = client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, activationCode);
             if (StringUtils.isNotNullOrEmpty(value)) {
                 BindingParams bindingParams = JSONObject.parseObject(value, BindingParams.class);
-                response = super.doneBind(bindingParams, userEmployeeDO.getId());
-                if (response.success) {
-                    response.setEmployeeId(userEmployeeDO.getId());
+                // 判断当前公司是否还支持邮箱认证
+                query.clear();
+                query.where("company_id", String.valueOf(bindingParams.getCompanyId())).and("disable", String.valueOf(0));
+                HrEmployeeCertConfDO certConf = hrEmployeeCertConfDao.getData(query.buildQuery());
+                if(certConf == null || certConf.getCompanyId() == 0 || certConf.getAuthMode() == 2 || certConf.getAuthMode() == 3 || certConf.getAuthMode() == 5) {
+                    log.warn("公司 company_id = {}, 暂不支持邮箱认证，员工认证邮箱激活失败", bindingParams.getCompanyId());
                     client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, activationCode);
+                } else {
+                    response = super.doneBind(bindingParams, userEmployeeDO.getId());
+                    response.setEmployeeId(userEmployeeDO.getId());
                 }
             }
         }
