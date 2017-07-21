@@ -883,7 +883,7 @@ public class PositionService {
             // 判断JobPosion字段
             for (Field field : jobPositionRecord.fields()) {
                 String str = (String) hashMap.get(field.getName());
-                if (!com.moseeker.common.util.StringUtils.isEmptyObject(str)) {
+                if (com.moseeker.common.util.StringUtils.isEmptyObject(str)) {
                     stringBuffer.append(jobPositionRecord.get(field.getName()));
                 }
             }
