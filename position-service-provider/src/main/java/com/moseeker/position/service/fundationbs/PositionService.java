@@ -98,7 +98,7 @@ public class PositionService {
     private HrHbPositionBindingDao hrHbPositionBindingDao;
     @Autowired
     private HrHbItemsDao hrHbItemsDao;
-//    @Resource(name = "cacheClient")
+    @Resource(name = "cacheClient")
     private RedisClient redisClient;
     com.moseeker.thrift.gen.searchengine.service.SearchengineServices.Iface searchengineServices = ServiceManager.SERVICEMANAGER
             .getService(com.moseeker.thrift.gen.searchengine.service.SearchengineServices.Iface.class);

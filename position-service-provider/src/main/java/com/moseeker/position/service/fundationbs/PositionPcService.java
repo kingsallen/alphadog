@@ -823,16 +823,126 @@ public class PositionPcService {
 			 return  null;
 		 }
 		 Map<Integer,List<Integer>> companyPulisher=handleCompanyPublisher(companyIds);
-		 List<Map<String,Object>> mapTeamNum=hrTeamDao.getTeamNum(companyIds);
+		 Map<Integer,Integer> mapTeamNum=this.getTeamNum(companyList, companyPulisher);
 		 List<Integer> companyids=this.getCompanyIds(companyList);
 		 List<Map<String,Object>> jdlist=HandleCmsResource(companyids,1);
 		 Map<Integer,Set<String>> companyPositionCityData=handlerCompanyPositionCity(companyPulisher);
 		 List<Map<String,Object>> list=handleDataForCompanyRecommend(companyList,companyPulisher,mapTeamNum,jdlist,companyPositionCityData);
 		 return list;
 	 }
+	 //获取推荐公司下边团队的数量
+	 private Map<Integer,Integer> getTeamNum(List<HrCompanyDO> companyList, Map<Integer,List<Integer>> companyPulisher){
+		 if(StringUtils.isEmptyList(companyList)){
+			 return new HashMap<Integer,Integer>();
+		 }
+		 if(companyPulisher==null||companyPulisher.isEmpty()){
+			 return new HashMap<Integer,Integer>();
+		 }
+		 Map<Integer,Integer> motherTeamNum=this.handlerMotherTeamNum(companyList);
+		 Map<Integer,Integer> childteamNum=this.getChildTeamNum(companyList,companyPulisher);
+		 Map<Integer,Integer> result=new HashMap<Integer,Integer>();
+		 if(motherTeamNum!=null&&!motherTeamNum.isEmpty()){
+			 result.putAll(motherTeamNum);
+		 }
+		 if(childteamNum!=null&&!childteamNum.isEmpty()){
+			 result.putAll(childteamNum);
+		 }
+		return result;
+	 }
+	 //获取母公司的团队数量
+	 private  Map<Integer,Integer> handlerMotherTeamNum(List<HrCompanyDO> companyList){
+		 if(StringUtils.isEmptyList(companyList)){
+			 return new HashMap<Integer,Integer>();
+		 }
+		 List<Integer> motherCompanyIdList=this.getMotherCompanyIdList(companyList);
+		 List<Map<String,Object>> motherTeamList=hrTeamDao.getTeamNum(motherCompanyIdList);
+		 if(StringUtils.isEmptyList(motherTeamList)){
+			 return new HashMap<Integer,Integer>();
+		 }
+		 Map<Integer,Integer> result=new HashMap<Integer,Integer>();
+		 for(Map<String,Object> map:motherTeamList){
+			 int number=(int) map.get("id_count");
+			 int companyId=(int) map.get("company_id");
+			 result.put(companyId, number);
+		 }
+		 return result;
+		 
+	 }
+	 //获取子公司的团队数量
+	 public Map<Integer,Integer> getChildTeamNum(List<HrCompanyDO> companyList, Map<Integer,List<Integer>> companyPulisher){
+		Map<Integer,List<Integer>> childCompanyPublisherMap=this.getChildCompanyIdPulisherMap(companyList, companyPulisher);
+		if(childCompanyPublisherMap!=null||!childCompanyPublisherMap.isEmpty()){
+			List<Integer> publisherList=this.getAllPulisherByCompanyPublisher(childCompanyPublisherMap);
+			List<Map<String,Object>> mapList=getChildTeamNumBypublisherList(publisherList);
+			Map<Integer,Integer> result=this.handleChildTeamNum(mapList);
+			return result;
+		}
+		return null;
+	 }
+	 
+	 //从数据库中获取发布人的下的带有team_id的职位
+	 public List<Map<String,Object>> getChildTeamNumBypublisherList(List<Integer> publisherList){
+		 if(StringUtils.isEmptyList(publisherList)){
+			 return null;
+		 }
+		Query  query=new Query.QueryBuilder().select(new Select("team_id", SelectOp.DISTINCT))
+				.select("publisher")
+				.where(new Condition("team_id",0,ValueOp.NEQ))
+				.and(new Condition("publisher",publisherList,ValueOp.IN))
+				.and("status",0)
+				.groupBy("publisher")
+				.buildQuery();
+		List<Map<String,Object>> result=jobPositionDao.getMaps(query);
+		return result;
+	 }
+	 //处理子公司的职位的
+	 private Map<Integer,Integer> handleChildTeamNum(List<Map<String,Object>> list){
+		 if(StringUtils.isEmptyList(list)){
+			 return null;
+		 }
+		 Map<Integer,Integer> result=new HashMap<Integer,Integer>();
+		 for(Map<String,Object> map:list){
+			 int publisher=(int) map.get("publisher");
+			 Integer num=result.get(publisher);
+			 if(num==null){
+				 result.put(publisher, 1);
+			 }else{
+				 result.put(publisher, num+1);
+			 }
+		 }
+		 
+		 return result;
+	 }
+	 //获取列表中所有母公司的id
+	 private List<Integer> getMotherCompanyIdList(List<HrCompanyDO> companyList){
+		 List<Integer> list=new ArrayList<Integer>();
+		 for(HrCompanyDO DO:companyList){
+			 int id=DO.getId();
+			 int parentId=DO.getParentId();
+			 if(parentId==0){
+				 list.add(id);
+			 }
+		 }
+		 return list;
+	 }
+	 //获取列表中所有母公司的id以及他的accountid的map
+	 public Map<Integer,List<Integer>> getChildCompanyIdPulisherMap(List<HrCompanyDO> companyList,Map<Integer,List<Integer>> companyPulisher){
+		 Map<Integer,List<Integer>> map=new HashMap<Integer,List<Integer>>();
+		 for(HrCompanyDO DO:companyList){
+			 int id=DO.getId();
+			 int parentId=DO.getParentId();
+			 int disable=DO.getDisable();
+			 if(parentId!=0&&disable==1){
+				 map.put(id, companyPulisher.get(id));
+			 }
+		 }
+		 return map;
+	 }
+
+	 
 	 //处理企业信息的组合问题
 	 public List<Map<String,Object>> handleDataForCompanyRecommend( List<HrCompanyDO> companyList,
-			 Map<Integer,List<Integer>> companyPulisher,List<Map<String,Object>> mapTeamNum
+			 Map<Integer,List<Integer>> companyPulisher,Map<Integer,Integer> mapTeamNum
 			 ,List<Map<String,Object>> jdlist,Map<Integer,Set<String>> companyPositionCityData) throws TException{
 		 List<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
 		 Map<String,Object> map=null;
@@ -855,18 +965,15 @@ public class PositionPcService {
 				 map.put("positionNum", 0);
 			 }
 			 
-			 if(!StringUtils.isEmptyList(companyList)){
-				 for(Map teamMap:mapTeamNum){
-					 int companyId1=(int) teamMap.get("company_id");
-					 if(companyId1==companyId){
-						 int teamNum=(int) teamMap.get("id_count");
-						 map.put("teamNum", teamNum);
-						 break;
-					 }
+			 if(!StringUtils.isEmptyList(companyList)&&mapTeamNum!=null&&!mapTeamNum.isEmpty()){
+				 Integer teamNum=mapTeamNum.get(companyId);
+				 if(teamNum!=null){
+					 map.put("teamNum", teamNum);
+				 }else{
+					 map.put("teamNum", 0);
 				 }
-			 }
-			 if(map.get("teamNum")==null){
-				 map.put("teamNum",0);
+			 }else{
+				 map.put("teamNum", 0);
 			 }
 			 if(!StringUtils.isEmptyList(jdlist)){
 				 for(Map<String,Object> jdmap:jdlist){
@@ -884,7 +991,6 @@ public class PositionPcService {
 					 map.put("cityList", companyPositionCityData.get(companyId));
 				 }
 			 }
-			 
 			 list.add(map);
 		 }
 		 return list;
@@ -962,7 +1068,9 @@ public class PositionPcService {
 		 List<Integer> list=new ArrayList<Integer>();
 		 for(Integer key:companyPublisher.keySet()){
 			 List<Integer> publishers=companyPublisher.get(key);
-			 list.addAll(publishers);
+			 if(!StringUtils.isEmptyList(publishers)){
+				 list.addAll(publishers);
+			 }
 		 }
 		 return list;
 	 }

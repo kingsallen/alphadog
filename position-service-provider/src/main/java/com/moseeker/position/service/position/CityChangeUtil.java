@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CityChangeUtil {
 
-//    @Resource(name = "cacheClient")
+    @Resource(name = "cacheClient")
     private RedisClient redisClient;
 
 	/**
