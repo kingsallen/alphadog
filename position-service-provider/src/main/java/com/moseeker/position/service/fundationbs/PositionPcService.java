@@ -709,8 +709,8 @@ public class PositionPcService {
 			 for(HrCompanyDO DO:list){
 				 int parentId=DO.getParentId();
 				 int id=DO.getId();
-				 int status=DO.getDisable();
-				 if(status==1&&parentId!=0){
+				 int disable=DO.getDisable();
+				 if(disable==0&&parentId!=0){
 					 continue;
 				 }
 				 if(companyId==id||parentId==companyId){
