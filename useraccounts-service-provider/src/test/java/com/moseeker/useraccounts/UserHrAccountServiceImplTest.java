@@ -28,6 +28,7 @@ import javax.mail.MessagingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * HR账号服务
@@ -231,5 +232,18 @@ public class UserHrAccountServiceImplTest {
         });
 
         Thread.sleep(100000);
+    }
+
+    @Test
+    public void testListToSet(){
+        List<Integer> is = new ArrayList<>();
+        is.add(1);
+        is.add(1);
+        is.add(1);
+        is.add(1);
+        is.add(1);
+        is.add(2);
+
+        System.out.println(is.stream().collect(Collectors.toSet()));
     }
 }

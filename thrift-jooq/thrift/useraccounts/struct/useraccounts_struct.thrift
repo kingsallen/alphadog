@@ -377,3 +377,21 @@ struct HrNpsStatistic {
     3: optional i32 page_size,
     4: optional list<HrNpsInfo> data
 }
+
+struct ThirdPartyAccountHrInfo{
+    1: optional i32 id,
+    2: optional string username,
+    3: optional string mobile
+}
+
+struct ThirdPartyAccountInfo{
+    1: optional i32 bound,
+    2: optional i32 channel,
+    3: optional string username,
+    4: optional string membername,
+    5: optional i32 remain_profile_num,
+    6: optional i32 remain_num,
+    7: optional string sync_time,
+    8: optional i32 company_id,
+    9: optional list<ThirdPartyAccountHrInfo> hrs
+}

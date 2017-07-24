@@ -10,6 +10,7 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService.Iface;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.service.impl.UserHrAccountService;
+import com.moseeker.useraccounts.service.thirdpartyaccount.ThirdPartyAccountService;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +32,9 @@ public class UserHrAccountServiceImpl implements Iface {
 
     @Autowired
     private UserHrAccountService service;
+
+    @Autowired
+    private ThirdPartyAccountService thirdPartyAccountService;
 
     /**
      * HR在下载行业报告是注册
@@ -64,26 +68,52 @@ public class UserHrAccountServiceImpl implements Iface {
     }
 
     @Override
-    public HrThirdPartyAccountDO bindThirdpartyAccount(int hrId, HrThirdPartyAccountDO account, boolean sync) throws BIZException, TException {
+    public HrThirdPartyAccountDO bindThirdPartyAccount(int hrId, HrThirdPartyAccountDO account, boolean sync) throws BIZException, TException {
         try {
-            return service.bindThirdAccount(hrId, account, sync);
-        } catch (BIZException e) {
-            throw e;
+            return thirdPartyAccountService.bindThirdAccount(hrId, account, sync);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw new TException(e.getMessage());
+            logger.info(e.getMessage(), e);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
     @Override
-    public HrThirdPartyAccountDO syncThirdpartyAccount(int hrId, int id, boolean sync) throws BIZException, TException {
+    public HrThirdPartyAccountDO syncThirdPartyAccount(int hrId, int id, boolean sync) throws BIZException, TException {
         try {
-            return service.synchronizeThirdpartyAccount(hrId, id, sync);
-        } catch (BIZException e) {
-            throw e;
+            return thirdPartyAccountService.synchronizeThirdpartyAccount(hrId, id, sync);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw new TException(e.getMessage());
+            logger.info(e.getMessage(), e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public void unbindThirdPartyAccount(int accountId, int userId) throws BIZException, TException {
+        try {
+            thirdPartyAccountService.unbindingAccount(accountId, userId);
+        } catch (Exception e) {
+            logger.info(e.getMessage(), e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public ThirdPartyAccountInfo dispatchThirdPartyAccount(int accountId, List<Integer> hrIds) throws BIZException, TException {
+        try {
+            return thirdPartyAccountService.dispatch(accountId, hrIds);
+        } catch (Exception e) {
+            logger.info(e.getMessage(), e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public ThirdPartyAccountInfo getThirdPartyAccount(int accountId) throws BIZException, TException {
+        try {
+            return thirdPartyAccountService.getThridAccount(accountId);
+        } catch (Exception e) {
+            logger.info(e.getMessage(), e);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
