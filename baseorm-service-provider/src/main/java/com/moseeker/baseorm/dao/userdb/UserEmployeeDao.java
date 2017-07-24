@@ -271,7 +271,7 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
             logger.info("postPutUserEmployeeBatch {},批量更新数据{}条,剩余{}条", batchForm.getCompany_id(), updateDatas.size() - start, 0);
         }
 
-        logger.info("postPutUserEmployeeBatch {},result:{},", batchForm.getCompany_id(), Arrays.toString(dataStatus));
+        logger.info("postPutUserEmployeeBatch {},result:{},", batchForm.getCompany_id(), dataStatus.length < 500?Arrays.toString(dataStatus):("成功处理"+dataStatus.length+"条"));
 
         return dataStatus;
     }
