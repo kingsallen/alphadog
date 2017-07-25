@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.searchengine.service.impl.CompanySearchengine;
+import com.moseeker.searchengine.service.impl.PositionSearchEngine;
 import com.moseeker.searchengine.service.impl.SearchengineService;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices.Iface;
@@ -24,6 +25,8 @@ public class SearchengineServiceImpl implements Iface {
     private SearchengineService service;
     @Autowired
     private CompanySearchengine companySearchengine;
+    @Autowired
+    private PositionSearchEngine positionSearchEngine;
     
     @Override
     public Response query(String keywords, String cities, String industries, String occupations, String scale,
@@ -51,6 +54,22 @@ public class SearchengineServiceImpl implements Iface {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
 		}
 		
+	}
+
+	@Override
+	public Response positionQuery(String keyWords, String citys, String industry, String salaryCode, int page,
+			int pageSize, String startTime, String endTime) throws TException {
+		// TODO Auto-generated method stub
+		try{
+			Map<String,Object> res=positionSearchEngine.search(keyWords, industry, salaryCode, page, pageSize, citys, startTime, endTime);
+			if(res==null){
+				return ResponseUtils.success("");
+			}
+			return ResponseUtils.success(res);
+		}catch(Exception e){
+			logger.info(e.getMessage(),e);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+		}
 	}
 
 }

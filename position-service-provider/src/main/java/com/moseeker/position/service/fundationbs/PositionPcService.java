@@ -874,7 +874,7 @@ public class PositionPcService {
 		if(childCompanyPublisherMap!=null||!childCompanyPublisherMap.isEmpty()){
 			List<Integer> publisherList=this.getAllPulisherByCompanyPublisher(childCompanyPublisherMap);
 			List<Map<String,Object>> mapList=getChildTeamNumBypublisherList(publisherList);
-			Map<Integer,Integer> result=this.handleChildTeamNum(mapList);
+			Map<Integer,Integer> result=this.handleChildTeamNum(mapList,companyPulisher);
 			return result;
 		}
 		return null;
@@ -890,25 +890,36 @@ public class PositionPcService {
 				.where(new Condition("team_id",0,ValueOp.NEQ))
 				.and(new Condition("publisher",publisherList,ValueOp.IN))
 				.and("status",0)
-				.groupBy("publisher")
 				.buildQuery();
 		List<Map<String,Object>> result=jobPositionDao.getMaps(query);
 		return result;
 	 }
 	 //处理子公司的职位的
-	 private Map<Integer,Integer> handleChildTeamNum(List<Map<String,Object>> list){
+	 private Map<Integer,Integer> handleChildTeamNum(List<Map<String,Object>> list,Map<Integer,List<Integer>> companyPulisher){
 		 if(StringUtils.isEmptyList(list)){
+			 return null;
+		 }
+		 if(companyPulisher!=null&&companyPulisher.isEmpty()){
 			 return null;
 		 }
 		 Map<Integer,Integer> result=new HashMap<Integer,Integer>();
 		 for(Map<String,Object> map:list){
 			 int publisher=(int) map.get("publisher");
-			 Integer num=result.get(publisher);
-			 if(num==null){
-				 result.put(publisher, 1);
-			 }else{
-				 result.put(publisher, num+1);
+			 for(Integer key:companyPulisher.keySet()){
+				 List<Integer> publisherList=companyPulisher.get(key);
+				 if(!StringUtils.isEmptyList(publisherList)){
+					 if(publisherList.contains(publisher)){
+						 Integer num=result.get(key);
+						 if(num==null){
+							 result.put(key, 1);
+						 }else{
+							 result.put(key, num+1);
+						 } 
+						 break;
+					 }
+				 }
 			 }
+			 
 		 }
 		 
 		 return result;

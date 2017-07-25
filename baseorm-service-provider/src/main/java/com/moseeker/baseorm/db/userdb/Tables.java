@@ -5,15 +5,18 @@ package com.moseeker.baseorm.db.userdb;
 
 
 import com.moseeker.baseorm.db.userdb.tables.CandidateVJobPositionRecom;
+import com.moseeker.baseorm.db.userdb.tables.UserAliUser;
 import com.moseeker.baseorm.db.userdb.tables.UserBdUser;
 import com.moseeker.baseorm.db.userdb.tables.UserCollectPosition;
 import com.moseeker.baseorm.db.userdb.tables.UserCompanyFollow;
 import com.moseeker.baseorm.db.userdb.tables.UserCompanyVisitReq;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
+import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecordCompanyRel;
 import com.moseeker.baseorm.db.userdb.tables.UserFavPosition;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.UserIntention;
+import com.moseeker.baseorm.db.userdb.tables.UserPositionEmail;
 import com.moseeker.baseorm.db.userdb.tables.UserSearchCondition;
 import com.moseeker.baseorm.db.userdb.tables.UserSettings;
 import com.moseeker.baseorm.db.userdb.tables.UserSysAuthGroup;
@@ -43,6 +46,11 @@ public class Tables {
      * VIEW
      */
     public static final CandidateVJobPositionRecom CANDIDATE_V_JOB_POSITION_RECOM = com.moseeker.baseorm.db.userdb.tables.CandidateVJobPositionRecom.CANDIDATE_V_JOB_POSITION_RECOM;
+
+    /**
+     * 阿里用户信息表
+     */
+    public static final UserAliUser USER_ALI_USER = com.moseeker.baseorm.db.userdb.tables.UserAliUser.USER_ALI_USER;
 
     /**
      * 百度用户信息表
@@ -75,6 +83,11 @@ public class Tables {
     public static final UserEmployeePointsRecord USER_EMPLOYEE_POINTS_RECORD = com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD;
 
     /**
+     * The table <code>userdb.user_employee_points_record_company_rel</code>.
+     */
+    public static final UserEmployeePointsRecordCompanyRel USER_EMPLOYEE_POINTS_RECORD_COMPANY_REL = com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecordCompanyRel.USER_EMPLOYEE_POINTS_RECORD_COMPANY_REL;
+
+    /**
      * 用户职位收藏
      */
     public static final UserFavPosition USER_FAV_POSITION = com.moseeker.baseorm.db.userdb.tables.UserFavPosition.USER_FAV_POSITION;
@@ -88,6 +101,11 @@ public class Tables {
      * 用户求职意向
      */
     public static final UserIntention USER_INTENTION = com.moseeker.baseorm.db.userdb.tables.UserIntention.USER_INTENTION;
+
+    /**
+     * 用户订阅职位推荐邮件
+     */
+    public static final UserPositionEmail USER_POSITION_EMAIL = com.moseeker.baseorm.db.userdb.tables.UserPositionEmail.USER_POSITION_EMAIL;
 
     /**
      * 用户搜索条件(qx职位搜索)

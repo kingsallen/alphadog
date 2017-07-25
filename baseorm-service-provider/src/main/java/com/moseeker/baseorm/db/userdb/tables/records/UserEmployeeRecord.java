@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserEmployeeRecord extends UpdatableRecordImpl<UserEmployeeRecord> {
 
-    private static final long serialVersionUID = 1541675013;
+    private static final long serialVersionUID = 1490409259;
 
     /**
      * Setter for <code>userdb.user_employee.id</code>.
@@ -437,14 +437,14 @@ public class UserEmployeeRecord extends UpdatableRecordImpl<UserEmployeeRecord> 
     }
 
     /**
-     * Setter for <code>userdb.user_employee.activation</code>. 员工认证，0：认证成功 1：未认证 2：认证失败 
+     * Setter for <code>userdb.user_employee.activation</code>. 员工认证激活状态，0：认证成功，1：认证后取消认证 2：认证失败 3：未认证
      */
     public void setActivation(Byte value) {
         set(29, value);
     }
 
     /**
-     * Getter for <code>userdb.user_employee.activation</code>. 员工认证，0：认证成功 1：未认证 2：认证失败 
+     * Getter for <code>userdb.user_employee.activation</code>. 员工认证激活状态，0：认证成功，1：认证后取消认证 2：认证失败 3：未认证
      */
     public Byte getActivation() {
         return (Byte) get(29);

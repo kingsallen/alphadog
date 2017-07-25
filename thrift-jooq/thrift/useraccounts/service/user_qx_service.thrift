@@ -3,6 +3,7 @@ namespace java com.moseeker.thrift.gen.useraccounts.service
 include "../../dao/struct/userdb/user_search_condition_struct.thrift"
 include "../../dao/struct/userdb/user_collect_position_struct.thrift"
 include "../struct/user_qx_struct.thrift"
+include "../../common/struct/common_struct.thrift"
 
 // 仟寻招聘相关的业务接口(version: gamma0.9)
 service UserQxService {
@@ -28,4 +29,8 @@ service UserQxService {
 
     // 记录用户查看的职位
     user_qx_struct.UserViewedPositionVO  userViewedPosition(1: i32 userId, 2: i32 positionId);
+    //推荐职位邮件
+    common_struct.Response sendRecommendPosition(1:i32 userId);
+    //存储推荐的邮件条件
+    common_struct.Response postUserEmailPosition(1:i32 userId,2:string conditions);
 }

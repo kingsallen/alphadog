@@ -5,15 +5,18 @@ package com.moseeker.baseorm.db.userdb;
 
 
 import com.moseeker.baseorm.db.userdb.tables.CandidateVJobPositionRecom;
+import com.moseeker.baseorm.db.userdb.tables.UserAliUser;
 import com.moseeker.baseorm.db.userdb.tables.UserBdUser;
 import com.moseeker.baseorm.db.userdb.tables.UserCollectPosition;
 import com.moseeker.baseorm.db.userdb.tables.UserCompanyFollow;
 import com.moseeker.baseorm.db.userdb.tables.UserCompanyVisitReq;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
+import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecordCompanyRel;
 import com.moseeker.baseorm.db.userdb.tables.UserFavPosition;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.UserIntention;
+import com.moseeker.baseorm.db.userdb.tables.UserPositionEmail;
 import com.moseeker.baseorm.db.userdb.tables.UserSearchCondition;
 import com.moseeker.baseorm.db.userdb.tables.UserSettings;
 import com.moseeker.baseorm.db.userdb.tables.UserSysAuthGroup;
@@ -47,7 +50,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Userdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 757538855;
+    private static final long serialVersionUID = -19771936;
 
     /**
      * The reference instance of <code>userdb</code>
@@ -58,6 +61,11 @@ public class Userdb extends SchemaImpl {
      * VIEW
      */
     public final CandidateVJobPositionRecom CANDIDATE_V_JOB_POSITION_RECOM = com.moseeker.baseorm.db.userdb.tables.CandidateVJobPositionRecom.CANDIDATE_V_JOB_POSITION_RECOM;
+
+    /**
+     * 阿里用户信息表
+     */
+    public final UserAliUser USER_ALI_USER = com.moseeker.baseorm.db.userdb.tables.UserAliUser.USER_ALI_USER;
 
     /**
      * 百度用户信息表
@@ -90,6 +98,11 @@ public class Userdb extends SchemaImpl {
     public final UserEmployeePointsRecord USER_EMPLOYEE_POINTS_RECORD = com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD;
 
     /**
+     * The table <code>userdb.user_employee_points_record_company_rel</code>.
+     */
+    public final UserEmployeePointsRecordCompanyRel USER_EMPLOYEE_POINTS_RECORD_COMPANY_REL = com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecordCompanyRel.USER_EMPLOYEE_POINTS_RECORD_COMPANY_REL;
+
+    /**
      * 用户职位收藏
      */
     public final UserFavPosition USER_FAV_POSITION = com.moseeker.baseorm.db.userdb.tables.UserFavPosition.USER_FAV_POSITION;
@@ -103,6 +116,11 @@ public class Userdb extends SchemaImpl {
      * 用户求职意向
      */
     public final UserIntention USER_INTENTION = com.moseeker.baseorm.db.userdb.tables.UserIntention.USER_INTENTION;
+
+    /**
+     * 用户订阅职位推荐邮件
+     */
+    public final UserPositionEmail USER_POSITION_EMAIL = com.moseeker.baseorm.db.userdb.tables.UserPositionEmail.USER_POSITION_EMAIL;
 
     /**
      * 用户搜索条件(qx职位搜索)
@@ -170,15 +188,18 @@ public class Userdb extends SchemaImpl {
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
             CandidateVJobPositionRecom.CANDIDATE_V_JOB_POSITION_RECOM,
+            UserAliUser.USER_ALI_USER,
             UserBdUser.USER_BD_USER,
             UserCollectPosition.USER_COLLECT_POSITION,
             UserCompanyFollow.USER_COMPANY_FOLLOW,
             UserCompanyVisitReq.USER_COMPANY_VISIT_REQ,
             UserEmployee.USER_EMPLOYEE,
             UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD,
+            UserEmployeePointsRecordCompanyRel.USER_EMPLOYEE_POINTS_RECORD_COMPANY_REL,
             UserFavPosition.USER_FAV_POSITION,
             UserHrAccount.USER_HR_ACCOUNT,
             UserIntention.USER_INTENTION,
+            UserPositionEmail.USER_POSITION_EMAIL,
             UserSearchCondition.USER_SEARCH_CONDITION,
             UserSettings.USER_SETTINGS,
             UserSysAuthGroup.USER_SYS_AUTH_GROUP,

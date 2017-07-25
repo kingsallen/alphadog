@@ -14,10 +14,14 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
+import org.elasticsearch.script.Script;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
 import org.elasticsearch.search.aggregations.Aggregation;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.Aggregations;
+import org.elasticsearch.search.aggregations.metrics.MetricsAggregationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -134,5 +138,32 @@ public class SearchUtil {
             ((BoolQueryBuilder) query).must(keyand);
         }
    }
+    public AbstractAggregationBuilder handle(String fieldName,String name){
+    	StringBuffer sb=new StringBuffer();
+    	sb.append("scale=");
+    	sb.append(fieldName);
+    	sb.append(";if(scale  in _agg['transactions'] ){}");
+    	sb.append("else{_agg['transactions'].add(scale)};");
+    	String mapScript=sb.toString();
+    	StringBuffer sb1=new StringBuffer();
+    	sb1.append("jsay=[];");
+    	sb1.append("for(a in _aggs){");
+    	sb1.append("for(ss in a){");
+    	sb1.append("if(ss in jsay){}");
+    	sb1.append("else{jsay.add(ss);}}};");
+    	sb1.append("return jsay");
+    	String reduceScript=sb1.toString();
+    	StringBuffer sb2=new StringBuffer();
+    	sb2.append("jsay=[];");
+    	sb2.append("for(ss in _agg['transactions']){jsay.add(ss)};");
+    	sb2.append("return jsay");
+    	String combinScript=sb2.toString();
+    	MetricsAggregationBuilder build=AggregationBuilders.scriptedMetric(name)
+                .initScript(new Script("_agg['transactions'] = []"))
+                .mapScript(new Script(mapScript))
+                .reduceScript(new Script(reduceScript))
+                .combineScript(new Script(combinScript));
+        return build;
+    }
     
 }

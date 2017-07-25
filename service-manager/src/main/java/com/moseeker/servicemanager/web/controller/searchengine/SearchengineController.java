@@ -220,7 +220,7 @@ public class SearchengineController {
     		 String page=(String) reqParams.get("page");
     		 String pageSize=(String) reqParams.get("pageSize");
     		 if(StringUtils.isNullOrEmpty(page)){
-    			 page="0";
+    			 page="1";
     		 }
     		 if(StringUtils.isNullOrEmpty(pageSize)){
     			 pageSize="10";
@@ -234,5 +234,36 @@ public class SearchengineController {
     		 return ResponseLogNotification.fail(request, e.getMessage());
     	 }
     	
+    }
+  //pc端企业搜索的es
+    @RequestMapping(value = "/search/pc/position", method = RequestMethod.GET)
+    @ResponseBody
+    public String searchPosition(HttpServletRequest request, HttpServletResponse response){
+    	 Map<String, Object> reqParams = null;
+    	 try{
+    		 reqParams = ParamUtils.parseRequestParam(request);
+    		 String keyWord=(String) reqParams.get("keyWord");
+    		 String citys=(String) reqParams.get("citys");
+    		 String industry=(String) reqParams.get("industry");
+    		 String scale=(String) reqParams.get("scale");
+    		 String page=(String) reqParams.get("page");
+    		 String pageSize=(String) reqParams.get("pageSize");
+    		 String salaryCode=(String) reqParams.get("salaryCode");
+    		 String startTime=(String) reqParams.get("startTime");
+    		 String endTime=(String) reqParams.get("endTime");
+    		 if(StringUtils.isNullOrEmpty(page)){
+    			 page="1";
+    		 }
+    		 if(StringUtils.isNullOrEmpty(pageSize)){
+    			 pageSize="10";
+    		 }
+    		  logger.info(keyWord, citys, industry, scale, page,
+    				  pageSize,"=============");
+    		 Response res=searchengineServices.positionQuery(keyWord, citys, industry, salaryCode, Integer.parseInt(page), Integer.parseInt(pageSize), startTime, endTime);
+    		 return ResponseLogNotification.success(request,res);
+    	 }catch(Exception e){
+    		 logger.info(e.getMessage(),e);
+    		 return ResponseLogNotification.fail(request, e.getMessage());
+    	 }
     }
 }

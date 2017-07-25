@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.thrift;
 
+import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserSearchConditionDO;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.service.impl.UserQxService;
@@ -62,4 +63,16 @@ public class UserQxServiceImpl implements com.moseeker.thrift.gen.useraccounts.s
     public UserViewedPositionVO userViewedPosition(int userId, int positionId) throws TException {
         return service.userViewedPosition(userId, positionId);
     }
+
+	@Override
+	public Response sendRecommendPosition(int userId) throws TException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Response postUserEmailPosition(int userId, String conditions) throws TException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
