@@ -356,7 +356,7 @@ public class ThirdPartyAccountService {
     /*
      *  查询第三方平台的账户,以及该帐号的分配人
      */
-    private ThirdPartyAccountInfo getThridAccount(int accountId) {
+    public ThirdPartyAccountInfo getThridAccount(int accountId) {
         HrThirdPartyAccountDO thirdPartyAccount = thirdPartyAccountDao.getAccountById(accountId);
 
         if (thirdPartyAccount == null || thirdPartyAccount.getBinding() == 0) {
