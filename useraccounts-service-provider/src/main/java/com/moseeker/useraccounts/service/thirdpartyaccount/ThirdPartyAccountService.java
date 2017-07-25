@@ -9,6 +9,7 @@ import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccountHr;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
@@ -67,6 +68,7 @@ public class ThirdPartyAccountService {
      * @param account
      * @return
      */
+    @CounterIface
     public HrThirdPartyAccountDO bindThirdAccount(int hrId, HrThirdPartyAccountDO account, boolean sync) throws Exception {
         logger.info("-------bindThirdAccount--------{}:{}", hrId, JSON.toJSONString(account));
         // 判断Channel是否合法
@@ -204,7 +206,7 @@ public class ThirdPartyAccountService {
      * @param id
      * @return
      */
-
+    @CounterIface
     public HrThirdPartyAccountDO synchronizeThirdpartyAccount(int hrId, int id, boolean sync) throws Exception {
         //查找第三方帐号
         Query qu = new Query.QueryBuilder().where("id", id).buildQuery();
@@ -268,13 +270,26 @@ public class ThirdPartyAccountService {
         extras.put("company", companyDO.getAbbreviation());
     }
 
+    public void autoRefreshThirdPartyAccount(HrThirdPartyAccountDO thirdPartyAccount, int hrId) {
+        logger.info("autoRefreshThirdPartyAccount,accountId:{},binding:{},hrId:{}", thirdPartyAccount.getId(), thirdPartyAccount.getBinding(), hrId);
+        if (thirdPartyAccount.getBinding() == 1 && thirdPartyAccount.getChannel() == ChannelType.ZHILIAN.getValue()) {
+            try {
+                synchronizeThirdpartyAccount(hrId, thirdPartyAccount.getId(), false);
+            } catch (Exception e) {
+                logger.warn("自动刷新出错:{}", e.getMessage());
+            }
+        }
+    }
+
     /**
      * 账号解绑，首先先查询账号在第三方平台表中是否存在，存在就进行解绑
      *
      * @param accountId
      * @param userId
      */
+    @CounterIface
     public void unbindingAccount(int accountId, int userId) {
+        logger.info("帐号解绑,accountId:{},userId:{}", accountId, userId);
         UserHrAccountDO hrAccount = hrAccountDao.getValidAccount(userId);
 
         if (hrAccount == null) {
@@ -299,6 +314,15 @@ public class ThirdPartyAccountService {
             thirdPartyAccount.setBinding(Integer.valueOf(0).shortValue());
             thirdPartyAccountDao.updateData(thirdPartyAccount);
         } else {
+
+            //找到和该帐号绑定的HR
+            List<HrThirdPartyAccountHrDO> binders = thirdPartyAccountHrDao.getBinders(thirdPartyAccount.getId());
+
+            if (binders == null || binders.size() == 0) {
+                logger.warn("子帐号解绑时和该账号没有关联关系,accountId:{},userId:{}", accountId, userId);
+                return;
+            }
+
             logger.info("子账号解绑解除");
             //如果是子账号的话，只是取消分配
             Update update = new Update.UpdateBuilder()
@@ -306,17 +330,45 @@ public class ThirdPartyAccountService {
                     .where(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.THIRD_PARTY_ACCOUNT_ID.getName(), accountId)
                     .and(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.HR_ACCOUNT_ID.getName(), userId)
                     .buildUpdate();
-            thirdPartyAccountHrDao.update(update);
+            int updateResult = thirdPartyAccountHrDao.update(update);
+
+            if (updateResult == 0) {
+                logger.warn("解绑时更新失败");
+                return;
+            }
+
+            //解除绑定的是最后一个绑定这个帐号的人，且当前帐号的状态是绑定成功的状态，那么刷新这个帐号
+            //目前只有智联有这个必要
+            if (binders.get(0).getHrAccountId() == userId) {
+                binders.remove(0);
+                if (binders.size() > 1) {
+                    //子帐号解绑后使用当前帐号的最后一个分配人去刷新
+                    int hrId = binders.get(0).getHrAccountId();
+                    autoRefreshThirdPartyAccount(thirdPartyAccount, hrId);
+                } else {
+                    logger.info("子帐号解绑后该帐号已经没有和任何hr有关联:{}", accountId);
+                }
+
+            }
         }
     }
 
     /*
      *  查询第三方平台的账户,以及该帐号的分配人
      */
-    public ThirdPartyAccountInfo getThridAccount(int accountId) {
+    private ThirdPartyAccountInfo getThridAccount(int accountId) {
         HrThirdPartyAccountDO thirdPartyAccount = thirdPartyAccountDao.getAccountById(accountId);
 
         if (thirdPartyAccount == null || thirdPartyAccount.getBinding() == 0) {
+            return null;
+        }
+
+        return getThridAccount(thirdPartyAccount);
+    }
+
+    private ThirdPartyAccountInfo getThridAccount(HrThirdPartyAccountDO thirdPartyAccount) {
+
+        if (thirdPartyAccount == null) {
             return null;
         }
 
@@ -413,6 +465,7 @@ public class ThirdPartyAccountService {
      * @param accountId
      * @param hrIds
      */
+    @CounterIface
     public ThirdPartyAccountInfo dispatch(int accountId, List<Integer> hrIds) {
 
         logger.info("第三方帐号重新分配:{}:{}", accountId, hrIds);
@@ -425,6 +478,11 @@ public class ThirdPartyAccountService {
         //绑定中，密码错误以及程序绑定失败的话不允许分配
         if (thirdPartyAccount.getBinding() == 2 || thirdPartyAccount.getBinding() == 6) {
             throw new CommonException(-1, "帐号正在同步中,无法分配，请稍后再试！");
+        }
+
+        //刷新中，无法分配帐号
+        if (thirdPartyAccount.getBinding() == 3 || thirdPartyAccount.getBinding() == 7) {
+            throw new CommonException(-1, "帐号正在刷新中，无法分配，请稍后再试");
         }
 
         if (thirdPartyAccount.getBinding() == 4) {
@@ -461,7 +519,9 @@ public class ThirdPartyAccountService {
             }
         }
 
-        //第三方账号
+        //获取原来该帐号绑定的所有hr
+        List<HrThirdPartyAccountHrDO> binders = thirdPartyAccountHrDao.getBinders(thirdPartyAccount.getId());
+
         if (hrIds == null || hrIds.size() == 0) {
             //取消所有hr与该账号的关联
             Update update = new Update.UpdateBuilder()
@@ -470,38 +530,56 @@ public class ThirdPartyAccountService {
                     .buildUpdate();
             thirdPartyAccountHrDao.update(update);
         } else {
-            //获取原来该帐号绑定的所有
-            List<HrThirdPartyAccountHrDO> binders = thirdPartyAccountHrDao.getBinders(thirdPartyAccount.getId());
-
             if (binders == null || binders.size() == 0) {
                 dispathTo(thirdPartyAccount, hrIds);
-                return getThridAccount(accountId);
-            }
+            } else {
+                Set<Integer> binderIds = binders.stream().map(item -> item.getHrAccountId()).collect(Collectors.toSet());
 
-            Set<Integer> binderIds = binders.stream().map(item -> item.getHrAccountId()).collect(Collectors.toSet());
+                //取消分配的hr
+                List<Integer> canceledHrIds = new ArrayList<>();
 
-            //新分配的hr
-            List<Integer> newHrIds = new ArrayList<>();
+                for (Integer hrId : binderIds) {
+                    if (!hrIds.contains(hrId)) {
+                        canceledHrIds.add(hrId);
+                    }
+                }
 
-            //取消分配的hr
-            List<Integer> canceledHrIds = new ArrayList<>();
+                cancelDispath(thirdPartyAccount, canceledHrIds);
 
-            for (Integer hrId : hrIds) {
-                if (!binderIds.contains(hrId)) {
-                    newHrIds.add(hrId);
+                //新分配的hr
+                List<Integer> newHrIds = new ArrayList<>();
+                for (Integer hrId : hrIds) {
+                    if (!binderIds.contains(hrId)) {
+                        newHrIds.add(hrId);
+                    }
+                }
+
+                dispathTo(thirdPartyAccount, newHrIds);
+
+                if (newHrIds.size() > 0) {
+                    logger.info("帐号分配的时候采用最后一个帐号刷新:{}", newHrIds.get(newHrIds.size() - 1));
+                    autoRefreshThirdPartyAccount(thirdPartyAccount, newHrIds.get(newHrIds.size() - 1));
+                } else if (canceledHrIds.size() > 0) {
+                    //如果只是取消分配，这时候如果取消分配的
                 }
             }
-
-            dispathTo(thirdPartyAccount, newHrIds);
-
-            for (Integer hrId : binderIds) {
-                if (!hrIds.contains(hrId)) {
-                    canceledHrIds.add(hrId);
-                }
-            }
-
-            cancelDispath(thirdPartyAccount, canceledHrIds);
         }
-        return getThridAccount(accountId);
+        ThirdPartyAccountInfo accountInfo = getThridAccount(thirdPartyAccount);
+
+        //如果这个帐号和hr还有关联，并且最后一个关联的关系变化，那么重新刷新帐号
+        if (accountInfo.getHrs() != null && accountInfo.getHrs().size() > 0) {
+            //分配之前的最后一个绑定人
+            HrThirdPartyAccountHrDO lastBinder = binders.get(binders.size() - 1);
+            logger.info("分配之前的最后一个绑定人:{}", JSON.toJSONString(lastBinder));
+            //分配之后的最后一个绑定人
+            ThirdPartyAccountHrInfo newLastHr = accountInfo.getHrs().get(accountInfo.getHrs().size() - 1);
+            logger.info("分配之后的最后一个绑定人:{}", JSON.toJSONString(newLastHr));
+            //如果之前没有绑定人或者最后一个绑定人发生了变化，那么刷新该帐号
+            if (lastBinder == null || lastBinder.getHrAccountId() != newLastHr.getId()) {
+                autoRefreshThirdPartyAccount(thirdPartyAccount, newLastHr.getId());
+            }
+        }
+
+        return accountInfo;
     }
 }
