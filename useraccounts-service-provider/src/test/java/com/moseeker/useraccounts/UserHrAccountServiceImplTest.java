@@ -16,6 +16,7 @@ import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.config.AppConfig;
 import com.moseeker.useraccounts.service.impl.UserEmployeeServiceImpl;
+import com.moseeker.useraccounts.service.thirdpartyaccount.ThirdPartyAccountService;
 import org.apache.thrift.TException;
 import org.junit.Before;
 import org.junit.Test;
@@ -143,7 +144,7 @@ public class UserHrAccountServiceImplTest {
     }
 
     @Autowired
-    com.moseeker.useraccounts.service.impl.UserHrAccountService userHrAccountService;
+    ThirdPartyAccountService userHrAccountService;
 
     @Test
     public void testBinding() throws Exception {

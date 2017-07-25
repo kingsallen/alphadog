@@ -385,13 +385,14 @@ struct ThirdPartyAccountHrInfo{
 }
 
 struct ThirdPartyAccountInfo{
-    1: optional i32 bound,
-    2: optional i32 channel,
-    3: optional string username,
-    4: optional string membername,
-    5: optional i32 remain_profile_num,
-    6: optional i32 remain_num,
-    7: optional string sync_time,
-    8: optional i32 company_id,
-    9: optional list<ThirdPartyAccountHrInfo> hrs
+    1: optional i32 id,
+    2: optional i32 bound,
+    3: optional i32 channel,
+    4: optional string username,
+    5: optional string membername,
+    6: optional i32 remain_profile_num,
+    7: optional i32 remain_num,
+    8: optional string sync_time,
+    9: optional i32 company_id,
+    10: optional list<ThirdPartyAccountHrInfo> hrs
 }

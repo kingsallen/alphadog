@@ -321,6 +321,7 @@ public class ThirdPartyAccountService {
         }
 
         ThirdPartyAccountInfo accountInfo = new ThirdPartyAccountInfo();
+        accountInfo.setId(thirdPartyAccount.getId());
         accountInfo.setChannel(thirdPartyAccount.getChannel());
         accountInfo.setBound(thirdPartyAccount.getBinding());
         accountInfo.setMembername(thirdPartyAccount.getMembername());
@@ -447,7 +448,7 @@ public class ThirdPartyAccountService {
                     .buildQuery();
             List<HrThirdPartyAccountDO> otherAccounts = thirdPartyAccountDao.getDatas(query);
             if (otherAccounts != null && otherAccounts.size() > 0) {
-                throw new CommonException(-1, "存在用户已经分配给其它相同渠道，请刷新页面！");
+                throw new CommonException(-1, "分配失败，请刷新页面！");
             } else {
                 //错误的数据进行修复,将这些用户与无效的帐号的关联关系解除
                 Set<Integer> relationIds = otherBinders.stream().map(item -> item.getId()).collect(Collectors.toSet());
@@ -477,11 +478,11 @@ public class ThirdPartyAccountService {
                 return getThridAccount(accountId);
             }
 
-            Set<Integer> binderIds = new HashSet<>();
-            binders.stream().map(item -> item.getHrAccountId()).collect(Collectors.toSet());
+            Set<Integer> binderIds = binders.stream().map(item -> item.getHrAccountId()).collect(Collectors.toSet());
 
             //新分配的hr
             List<Integer> newHrIds = new ArrayList<>();
+
             //取消分配的hr
             List<Integer> canceledHrIds = new ArrayList<>();
 

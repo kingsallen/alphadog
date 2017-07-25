@@ -122,7 +122,7 @@ public class UserHrAccountController {
         return resultMap;
     }
 
-    @RequestMapping(value = "/hraccount/binding", method = RequestMethod.POST)
+    @RequestMapping(value = "/thirdpartyaccount/bind", method = RequestMethod.POST)
     @ResponseBody
     public String bindThirdPartyAccount(HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -132,7 +132,7 @@ public class UserHrAccountController {
                 struct.setMembername(params.get("member_name").toString());
             }
             logger.info("bind thirdParyAccount in controller params===========================" + JSON.toJSONString(struct));
-            struct = userHrAccountService.bindThirdpartyAccount(params.getInt("user_id", 0), struct, params.getBoolean("sync", false));
+            struct = userHrAccountService.bindThirdPartyAccount(params.getInt("user_id", 0), struct, params.getBoolean("sync", false));
             //同步情况下走下面的代码
 
             return ResponseLogNotification.success(request, ResponseUtils.success(thirdpartyAccountToMap(struct)));
@@ -158,11 +158,11 @@ public class UserHrAccountController {
 
             Integer userId = params.getInt("user_id", 0);
 
-            if(userId == null){
+            if (userId == null) {
                 return ResponseLogNotification.fail(request, "user_id不能为空");
             }
 
-            HrThirdPartyAccountDO hrThirdPartyAccountDO = userHrAccountService.syncThirdpartyAccount(userId,id, params.getBoolean("sync", false));
+            HrThirdPartyAccountDO hrThirdPartyAccountDO = userHrAccountService.syncThirdPartyAccount(userId, id, params.getBoolean("sync", false));
 
             return ResponseLogNotification.success(request, ResponseUtils.success(thirdpartyAccountToMap(hrThirdPartyAccountDO)));
         } catch (Exception e) {
@@ -172,6 +172,54 @@ public class UserHrAccountController {
             logger.info("/thirdpartyaccount/refresh start : {}", new DateTime().toString("YYYY-MM-dd HH:mm:ss SSS"));
             long allUseTime = System.currentTimeMillis() - startTime;
             logger.info("refresh thirdParyAccount in controller Use time===========================" + allUseTime);
+        }
+    }
+
+    @RequestMapping(value = "/thirdpartyaccount/unbind", method = RequestMethod.POST)
+    @ResponseBody
+    public String unBindThirdPartyAccount(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer accountId = params.getInt("account_id");
+            if (accountId == null) {
+                return ResponseLogNotification.fail(request, "account_id不能为空");
+            }
+
+            Integer userId = params.getInt("user_id", 0);
+
+            if (userId == null) {
+                return ResponseLogNotification.fail(request, "user_id不能为空");
+            }
+
+            userHrAccountService.unbindThirdPartyAccount(accountId, userId);
+
+            return ResponseLogNotification.successJson(request, 1);
+        } catch (Exception e) {
+            return ResponseLogNotification.failJson(request, e);
+        }
+    }
+
+    @RequestMapping(value = "/thirdpartyaccount/dispatch", method = RequestMethod.POST)
+    @ResponseBody
+    public String dispatchThirdPartyAccount(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer accountId = params.getInt("account_id");
+            if (accountId == null) {
+                return ResponseLogNotification.fail(request, "account_id不能为空");
+            }
+
+            List<Integer> hrIds = (List<Integer>) params.get("hr_ids");
+
+            if (hrIds == null) {
+                return ResponseLogNotification.fail(request, "hr_ids不能为空");
+            }
+
+            ThirdPartyAccountInfo accountInfo = userHrAccountService.dispatchThirdPartyAccount(accountId, hrIds);
+
+            return ResponseLogNotification.successJson(request, accountInfo);
+        } catch (Exception e) {
+            return ResponseLogNotification.failJson(request, e);
         }
     }
 
