@@ -522,6 +522,13 @@ public class ThirdPartyAccountService {
         //获取原来该帐号绑定的所有hr
         List<HrThirdPartyAccountHrDO> binders = thirdPartyAccountHrDao.getBinders(thirdPartyAccount.getId());
 
+        //分配帐号之前最后一个分配的hr
+        int lastBinderId = 0;
+        if (binders != null && binders.size() > 0) {
+            lastBinderId = binders.get(0).getHrAccountId();
+        }
+        //分配帐号之后最后一个分配的hr
+        int newLastBinderId = 0;
         if (hrIds == null || hrIds.size() == 0) {
             //取消所有hr与该账号的关联
             Update update = new Update.UpdateBuilder()
@@ -532,6 +539,7 @@ public class ThirdPartyAccountService {
         } else {
             if (binders == null || binders.size() == 0) {
                 dispathTo(thirdPartyAccount, hrIds);
+                newLastBinderId = hrIds.get(hrIds.size() - 1);
             } else {
                 Set<Integer> binderIds = binders.stream().map(item -> item.getHrAccountId()).collect(Collectors.toSet());
 
@@ -556,30 +564,34 @@ public class ThirdPartyAccountService {
 
                 dispathTo(thirdPartyAccount, newHrIds);
 
+                //有新的绑定关系，肯定需要重新刷新
                 if (newHrIds.size() > 0) {
-                    logger.info("帐号分配的时候采用最后一个帐号刷新:{}", newHrIds.get(newHrIds.size() - 1));
-                    autoRefreshThirdPartyAccount(thirdPartyAccount, newHrIds.get(newHrIds.size() - 1));
+                    newLastBinderId = newHrIds.get(newHrIds.size() - 1);
                 } else if (canceledHrIds.size() > 0) {
-                    //如果只是取消分配，这时候如果取消分配的
+                    int lastContain;
+                    for (lastContain = 0; lastContain < binders.size(); lastContain++) {
+                        if (canceledHrIds.contains(binders.get(lastContain).getHrAccountId())) {
+                            continue;
+                        } else {
+                            break;
+                        }
+                    }
+
+                    if (lastContain > 0 && lastContain < binders.size()) {
+                        newLastBinderId = binders.get(lastContain).getHrAccountId();
+                    }
                 }
             }
         }
-        ThirdPartyAccountInfo accountInfo = getThridAccount(thirdPartyAccount);
 
-        //如果这个帐号和hr还有关联，并且最后一个关联的关系变化，那么重新刷新帐号
-        if (accountInfo.getHrs() != null && accountInfo.getHrs().size() > 0) {
-            //分配之前的最后一个绑定人
-            HrThirdPartyAccountHrDO lastBinder = binders.get(binders.size() - 1);
-            logger.info("分配之前的最后一个绑定人:{}", JSON.toJSONString(lastBinder));
-            //分配之后的最后一个绑定人
-            ThirdPartyAccountHrInfo newLastHr = accountInfo.getHrs().get(accountInfo.getHrs().size() - 1);
-            logger.info("分配之后的最后一个绑定人:{}", JSON.toJSONString(newLastHr));
-            //如果之前没有绑定人或者最后一个绑定人发生了变化，那么刷新该帐号
-            if (lastBinder == null || lastBinder.getHrAccountId() != newLastHr.getId()) {
-                autoRefreshThirdPartyAccount(thirdPartyAccount, newLastHr.getId());
-            }
+        //分配之前的最后一个绑定人
+        logger.info("分配之前的最后一个绑定人:{}", lastBinderId);
+        //分配之后的最后一个绑定人
+        logger.info("分配之后的最后一个绑定人:{}", newLastBinderId);
+        if (newLastBinderId > 0 && newLastBinderId != lastBinderId) {
+            autoRefreshThirdPartyAccount(thirdPartyAccount, newLastBinderId);
         }
 
-        return accountInfo;
+        return getThridAccount(thirdPartyAccount.getId());
     }
 }
