@@ -1570,7 +1570,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                             recommenderMap.put("custom_field", mp.get("custom_field"));
                             recommenderMap.put("custom_field_values", mp.get("custom_field_values"));
                             recommenderMap.put("auth_method", mp.get("auth_method"));
-                            recommenderMap.put("email", mp.get("email"));
+                            recommenderMap.put("employee_email", mp.get("email"));
                             break;
                         }
                     }
