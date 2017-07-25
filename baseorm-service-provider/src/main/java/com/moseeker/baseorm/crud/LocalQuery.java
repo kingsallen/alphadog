@@ -1,7 +1,7 @@
 package com.moseeker.baseorm.crud;
 
+import com.moseeker.baseorm.exception.CoditionException;
 import com.moseeker.baseorm.exception.ExceptionCategory;
-import com.moseeker.baseorm.exception.ExceptionFactory;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 
@@ -73,8 +73,7 @@ class LocalQuery<R extends Record> {
                         Field<?> field = table.field(select.getField());
                         if (field == null) {
                             logger.warn("field {},not found in table {}", select.getField(), table.getName());
-                            throw ExceptionFactory.buildException(ExceptionCategory.SELECT_FIELD_NOEXIST.getCode(), ExceptionCategory.SELECT_FIELD_NOEXIST.getMsg()
-                                    .replace("{TABLE}", table.getName()).replace("{FIELD}", select.getField()));
+                            throw CoditionException.SELECT_FIELD_NOEXIST.setMess("查询的" + table.getName() + "表中" + select.getField() + "字段不存在");
                         } else {
                             switch (select.getSelectOp()) {
                                 case AVG:
@@ -121,8 +120,7 @@ class LocalQuery<R extends Record> {
                         Field<?> field = table.field(groupField);
                         if (field == null) {
                             logger.warn("field {},not found in table {}", groupField, table.getName());
-                            throw ExceptionFactory.buildException(ExceptionCategory.GROUPBY_FIELD_NOEXIST.getCode(), ExceptionCategory.SELECT_FIELD_NOEXIST.getMsg()
-                                    .replace("{TABLE}", table.getName()).replace("{FIELD}", groupField));
+                            throw CoditionException.GROUPBY_FIELD_NOEXIST.setMess("查询的" + table.getName() + "表按" + groupField + "分组的字段不存在");
                         } else {
                             return field;
                         }
@@ -152,8 +150,7 @@ class LocalQuery<R extends Record> {
                         Field<?> field = table.field(orderBy.getField());
                         if (field == null) {
                             logger.warn("field {},not found in table {}", orderBy.getField(), table.getName());
-                            throw ExceptionFactory.buildException(ExceptionCategory.GROUPBY_FIELD_NOEXIST.getCode(), ExceptionCategory.SELECT_FIELD_NOEXIST.getMsg()
-                                    .replace("{TABLE}", table.getName()).replace("{FIELD}", orderBy.getField()));
+                            throw CoditionException.ORDER_FIELD_NOEXIST.setMess("查询的" + table.getName() + "表按" + orderBy.getField() + "排序字段不存在");
                         } else {
                             switch (orderBy.getOrder()) {
                                 case DESC:

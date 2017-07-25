@@ -5,7 +5,6 @@ import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
-import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrSearchConditionRecord;
@@ -36,7 +35,7 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.constant.ResultMessage;
 import com.moseeker.useraccounts.exception.ExceptionCategory;
-import com.moseeker.useraccounts.exception.ExceptionFactory;
+import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.thirdpartyaccount.ThirdPartyAccountSynctor;
 
 import org.apache.thrift.TException;
@@ -66,7 +65,6 @@ public class UserHrAccountService {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static final String REDIS_KEY_HR_SMS_SIGNUP = "HR_SMS_SIGNUP";
-
 
     @Autowired
     private UserHrAccountDao userHrAccountDao;
@@ -836,14 +834,14 @@ public class UserHrAccountService {
         userEmployeeNumStatistic.setUnregcount(0);
         userEmployeeNumStatistic.setRegcount(0);
         if (companyId == 0) {
-            throw ExceptionFactory.buildException(ExceptionCategory.COMPANYID_ENPTY);
+            throw UserAccountException.COMPANY_DATA_EMPTY;
         }
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         queryBuilder.where(HrCompany.HR_COMPANY.ID.getName(), companyId);
         // 是否是子公司，如果是查询母公司ID
         HrCompanyDO hrCompanyDO = hrCompanyDao.getData(queryBuilder.buildQuery());
         if (StringUtils.isEmptyObject(hrCompanyDO)) {
-            throw ExceptionFactory.buildException(ExceptionCategory.COMPANY_DATA_EMPTY);
+            throw UserAccountException.COMPANY_DATA_EMPTY;
         }
         try {
             List<Integer> list = employeeEntity.getCompanyIds(hrCompanyDO.getParentId() > 0 ? hrCompanyDO.getParentId() : companyId);
@@ -874,7 +872,7 @@ public class UserHrAccountService {
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw ExceptionFactory.buildException(ExceptionCategory.PROGRAM_EXCEPTION);
+            throw CommonException.PROGRAM_EXCEPTION;
         }
         return userEmployeeNumStatistic;
     }
@@ -893,7 +891,7 @@ public class UserHrAccountService {
      */
     public UserEmployeeVOPageVO employeeList(String keyword, Integer companyId, Integer filter, String order, String asc, Integer pageNumber, Integer pageSize) throws Exception {
         if (companyId == 0) {
-            throw ExceptionFactory.buildException(ExceptionCategory.COMPANYID_ENPTY);
+            throw UserAccountException.COMPANY_DATA_EMPTY;
         }
         UserEmployeeVOPageVO userEmployeeVOPageVO = new UserEmployeeVOPageVO();
         List<UserEmployeeVO> userEmployeeVOS = new ArrayList<>();
@@ -902,7 +900,7 @@ public class UserHrAccountService {
         // 是否是子公司，如果是查询母公司ID
         HrCompanyDO hrCompanyDO = hrCompanyDao.getData(queryBuilder.buildQuery());
         if (StringUtils.isEmptyObject(hrCompanyDO)) {
-            throw ExceptionFactory.buildException(ExceptionCategory.COMPANY_DATA_EMPTY);
+            throw UserAccountException.COMPANY_DATA_EMPTY;
         }
         List<Integer> list = employeeEntity.getCompanyIds(hrCompanyDO.getParentId() > 0 ? hrCompanyDO.getParentId() : companyId);
         queryBuilder.clear();
@@ -933,7 +931,7 @@ public class UserHrAccountService {
                 String[] ascs = asc.split(",");
                 // 排序条件设置错误
                 if (orders.length != ascs.length) {
-                    throw ExceptionFactory.buildException(ExceptionCategory.ORDER_ERROR);
+                    throw UserAccountException.ORDER_ERROR;
                 }
                 for (int i = 0; i < orders.length; i++) {
                     // 首先判断排序的条件是否正确
@@ -960,7 +958,7 @@ public class UserHrAccountService {
         // 查询总条数
         int counts = userEmployeeDao.getCount(queryBuilder.buildQuery());
         if (counts == 0) {
-            throw ExceptionFactory.buildException(ExceptionCategory.USEREMPLOYEES_EMPTY);
+            throw UserAccountException.USEREMPLOYEES_EMPTY;
         }
         // 分页数据
         if (pageNumber > 0 && pageSize > 0) {
@@ -1029,7 +1027,7 @@ public class UserHrAccountService {
             }
             userEmployeeVOPageVO.setTotalRow(counts);
         } else {
-            throw ExceptionFactory.buildException(ExceptionCategory.USEREMPLOYEES_EMPTY);
+            throw UserAccountException.USEREMPLOYEES_EMPTY;
         }
         return userEmployeeVOPageVO;
     }
@@ -1045,10 +1043,10 @@ public class UserHrAccountService {
     public List<UserEmployeeVO> employeeExport(List<Integer> userEmployees, Integer companyId, Integer type) throws Exception {
         List<UserEmployeeVO> userEmployeeVOS = new ArrayList<>();
         if (companyId == 0) {
-            throw ExceptionFactory.buildException(ExceptionCategory.COMPANYID_ENPTY);
+            throw UserAccountException.COMPANYID_ENPTY;
         }
         if (StringUtils.isEmptyObject(userEmployees) && type.intValue() == 0) {
-            throw ExceptionFactory.buildException(ExceptionCategory.USEREMPLOYEES_EMPTY);
+            throw UserAccountException.USEREMPLOYEES_EMPTY;
         }
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
 
@@ -1060,13 +1058,13 @@ public class UserHrAccountService {
                     .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), 0);
             // 查询是否有权限修改
             if (!employeeEntity.permissionJudge(userEmployees, companyId)) {
-                throw ExceptionFactory.buildException(ExceptionCategory.PERMISSION_DENIED);
+                throw UserAccountException.PERMISSION_DENIED;
             }
         }
         // 员工列表
         List<UserEmployeeDO> list = userEmployeeDao.getDatas(queryBuilder.buildQuery());
         if (StringUtils.isEmptyList(list)) {
-            throw ExceptionFactory.buildException(ExceptionCategory.USEREMPLOYEES_EMPTY);
+            throw UserAccountException.USEREMPLOYEES_EMPTY;
         }
         Set<Integer> sysuserId = list.stream().filter(userUserDO -> userUserDO.getSysuserId() > 0)
                 .map(UserEmployeeDO::getSysuserId).collect(Collectors.toSet());
@@ -1125,7 +1123,7 @@ public class UserHrAccountService {
         // 判断是否有重复数据
         ImportUserEmployeeStatistic importUserEmployeeStatistic = repetitionFilter(userEmployeeMap, companyId);
         if (!StringUtils.isEmptyObject(importUserEmployeeStatistic) && !importUserEmployeeStatistic.insertAccept) {
-            throw ExceptionFactory.buildException(ExceptionCategory.IMPORT_DATA_WRONG);
+            throw UserAccountException.IMPORT_DATA_WRONG;
         }
         // 通过手机号查询那些员工数据是更新，那些数据是新增
         List<String> moblies = new ArrayList<>();
@@ -1171,8 +1169,7 @@ public class UserHrAccountService {
 
         String errorMessage = vu.validate();
         if (!StringUtils.isNullOrEmpty(errorMessage)) {
-            throw ExceptionFactory.buildException(ExceptionCategory.ADD_IMPORTERMONITOR_FAILED.getCode(),
-                    ExceptionCategory.ADD_IMPORTERMONITOR_PARAMETER.getMsg().replace("{MESSAGE}", errorMessage));
+            throw UserAccountException.ADD_IMPORTERMONITOR_PARAMETER.setMess(errorMessage);
         }
         try {
             HrImporterMonitorDO hrImporterMonitorDO = new HrImporterMonitorDO();
@@ -1187,7 +1184,7 @@ public class UserHrAccountService {
             hrImporterMonitorDao.addData(hrImporterMonitorDO);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw ExceptionFactory.buildException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS);
+            throw CommonException.PROGRAM_EXCEPTION;
         }
         response = ResultMessage.SUCCESS.toResponse();
         logger.info("导入员工信息结束");
@@ -1214,17 +1211,17 @@ public class UserHrAccountService {
      */
     public ImportUserEmployeeStatistic repetitionFilter(Map<Integer, UserEmployeeDO> userEmployeeMap, Integer companyId) throws Exception {
         if (companyId == 0) {
-            throw ExceptionFactory.buildException(ExceptionCategory.COMPANYID_ENPTY);
+            throw UserAccountException.COMPANYID_ENPTY;
         }
         if (userEmployeeMap.size() == 0) {
-            throw ExceptionFactory.buildException(ExceptionCategory.IMPORT_DATA_EMPTY);
+            throw UserAccountException.IMPORT_DATA_EMPTY;
         }
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         queryBuilder.where(HrCompany.HR_COMPANY.ID.getName(), companyId);
         HrCompanyDO company = hrCompanyDao.getData(queryBuilder.buildQuery());
         // 公司ID设置错误
         if (StringUtils.isEmptyObject(company)) {
-            throw ExceptionFactory.buildException(ExceptionCategory.COMPANY_DATA_EMPTY);
+            throw UserAccountException.COMPANY_DATA_EMPTY;
         }
         ImportUserEmployeeStatistic importUserEmployeeStatistic = new ImportUserEmployeeStatistic();
         // 查找已经存在的数据
@@ -1303,18 +1300,18 @@ public class UserHrAccountService {
         // 员工基本信息
         UserEmployeeDO userEmployeeDO = userEmployeeDao.getData(queryBuilder.buildQuery());
         if (StringUtils.isEmptyObject(userEmployeeDO)) {
-            throw ExceptionFactory.buildException(ExceptionCategory.USEREMPLOYEES_WRONG);
+            throw UserAccountException.USEREMPLOYEES_WRONG;
         }
         queryBuilder.clear();
         queryBuilder.where(HrCompany.HR_COMPANY.ID.getName(), companyId);
         HrCompanyDO company = hrCompanyDao.getData(queryBuilder.buildQuery());
         // 公司ID设置错误
         if (StringUtils.isEmptyObject(company)) {
-            throw ExceptionFactory.buildException(ExceptionCategory.COMPANY_DATA_EMPTY);
+            throw UserAccountException.COMPANY_DATA_EMPTY;
         }
         // 查询是否有权限修改
         if (!employeeEntity.permissionJudge(userEmployeeId, companyId)) {
-            throw ExceptionFactory.buildException(ExceptionCategory.PERMISSION_DENIED);
+            throw UserAccountException.PERMISSION_DENIED;
         }
         userEmployeeDetailVO.setId(userEmployeeDO.getId());
         userEmployeeDetailVO.setUsername(userEmployeeDO.getCname());
@@ -1364,14 +1361,14 @@ public class UserHrAccountService {
     public Response updateUserEmployee(String cname, String mobile, String email, String customField, Integer userEmployeeId, Integer companyId) throws Exception {
         Response response = new Response();
         if (userEmployeeId == 0) {
-            throw ExceptionFactory.buildException(ExceptionCategory.USEREMPLOYEES_DATE_EMPTY);
+            throw UserAccountException.USEREMPLOYEES_DATE_EMPTY;
         }
         if (companyId == 0) {
-            throw ExceptionFactory.buildException(ExceptionCategory.COMPANYID_ENPTY);
+            throw UserAccountException.COMPANYID_ENPTY;
         }
         // 查询是否有权限修改
         if (!employeeEntity.permissionJudge(userEmployeeId, companyId)) {
-            throw ExceptionFactory.buildException(ExceptionCategory.PERMISSION_DENIED);
+            throw UserAccountException.PERMISSION_DENIED;
         }
         // 判断邮箱是否重复,公司重复检查
         if (!StringUtils.isEmptyObject(email)) {
@@ -1381,7 +1378,7 @@ public class UserHrAccountService {
                     .and(new Condition(UserEmployee.USER_EMPLOYEE.ID.getName(), userEmployeeId, ValueOp.NEQ));
             UserEmployeeDO userEmployeeDO = userEmployeeDao.getData(queryBuilder.buildQuery());
             if (!StringUtils.isEmptyObject(userEmployeeDO)) {
-                throw ExceptionFactory.buildException(ExceptionCategory.EMAIL_REPETITION);
+                throw UserAccountException.EMAIL_REPETITION;
             }
         }
         // 判断自定义字段是否重复
@@ -1392,7 +1389,7 @@ public class UserHrAccountService {
                     .and(new Condition(UserEmployee.USER_EMPLOYEE.ID.getName(), userEmployeeId, ValueOp.NEQ));
             UserEmployeeDO userEmployeeDO = userEmployeeDao.getData(queryBuilder.buildQuery());
             if (!StringUtils.isEmptyObject(userEmployeeDO)) {
-                throw ExceptionFactory.buildException(ExceptionCategory.CUSTOM_FIELD_REPETITION);
+                throw UserAccountException.CUSTOM_FIELD_REPETITION;
             }
         }
 
@@ -1419,10 +1416,8 @@ public class UserHrAccountService {
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw ExceptionFactory.buildException(ExceptionCategory.PROGRAM_EXCEPTION);
+            throw CommonException.PROGRAM_EXCEPTION;
         }
         return response;
     }
-
-
 }
