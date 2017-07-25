@@ -1,6 +1,9 @@
 package com.moseeker.baseorm.crud;
 
+import com.moseeker.baseorm.exception.ExceptionCategory;
+import com.moseeker.baseorm.exception.ExceptionFactory;
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.*;
 import com.moseeker.common.util.query.Condition;
 
@@ -72,16 +75,15 @@ public class LocalCondition<R extends Record> {
     }
 
     private org.jooq.Condition convertCondition(Condition condition) {
-
         if (condition != null) {
             Field<?> field = table.field(condition.getField());
-            if (field != null) {
-                org.jooq.Condition jooqCondition = connectValueCondition(field, condition.getValue(),
-                        condition.getValueOp());
-
-                return jooqCondition;
-
+            if (field == null) {
+                throw ExceptionFactory.buildException(ExceptionCategory.CONDITION_FIELD_NOEXIST.getCode(), ExceptionCategory.SELECT_FIELD_NOEXIST.getMsg()
+                        .replace("{TABLE}", table.getName()).replace("{FIELD}", condition.getField()));
             }
+            org.jooq.Condition jooqCondition = connectValueCondition(field, condition.getValue(),
+                    condition.getValueOp());
+            return jooqCondition;
         }
         return null;
 

@@ -522,7 +522,6 @@ public class CandidateEntity implements Candidate {
     private RecommendResult assembleRecommendResult(int id, int postUserId, String
             clickTime, int companyId) throws BIZException {
         RecommendResult recommendResult = new RecommendResult();
-        recommendResult.setId(id);
 
         List<Integer> exceptNotRecommend = new ArrayList<Integer>() {{
             add(0);
@@ -554,10 +553,16 @@ public class CandidateEntity implements Candidate {
                         clickTime, selected, positionIdList);
         if (candidateRecomRecordDOList != null && candidateRecomRecordDOList.size() > 0) {
             CandidateRecomRecordDO candidateRecomRecordDO = candidateRecomRecordDOList.get(0);
+            recommendResult.setId(candidateRecomRecordDO.getId());
             Future positionFuture = findPositionFutureById(candidateRecomRecordDO.getPositionId());
             Future userFuture = findUserFutureById(candidateRecomRecordDO.getPresenteeUserId());
             recommendResult.setPresenteeName(refineUserName(userFuture));
             recommendResult.setPositionName(refinePositionName(positionFuture));
+            String date = candidateRecomRecordDO.getClickTime();
+            if (date != null && date.length() > 10) {
+                date = date.trim().substring(0, 10);
+            }
+            recommendResult.setClickTime(date);
         }
 
 
@@ -602,7 +607,11 @@ public class CandidateEntity implements Candidate {
                                                         Future positionFuture, Future userFuture) {
         RecomRecordResult recomRecordResult = new RecomRecordResult();
         recomRecordResult.setId(candidateRecomRecordDO.getId());
-        recomRecordResult.setClickTime(candidateRecomRecordDO.getClickTime());
+        String date = candidateRecomRecordDO.getClickTime();
+        if (date != null && date.length() > 10) {
+            date = date.trim().substring(0, 10);
+        }
+        recomRecordResult.setClickTime(date);
         recomRecordResult.setPresenteeName(refineUserName(userFuture));
         recomRecordResult.setTitle(refinePositionName(positionFuture));
         recomRecordResult.setRecom((byte) candidateRecomRecordDO.getIsRecom());
