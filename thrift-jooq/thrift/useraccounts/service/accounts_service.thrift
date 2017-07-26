@@ -25,6 +25,7 @@ service UseraccountsServices {
     common_struct.Response postuserlogin(1: useraccounts_struct.Userloginreq userloginreq);
     common_struct.Response postuserlogout(1: i32 userid);
     common_struct.Response postsendsignupcode(1: string mobile);
+    common_struct.Response postsendsignupcodeVoice(1: string mobile);
     // 用户注册
     //common_struct.Response postusermobilesignup(1: string mobile, 2: string code, 3: string password);
     common_struct.Response postusermobilesignup(1: useraccounts_struct.User user, 2: string code);

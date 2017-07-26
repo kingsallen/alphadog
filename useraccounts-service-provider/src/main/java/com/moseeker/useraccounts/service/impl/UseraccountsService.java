@@ -273,6 +273,35 @@ public class UseraccountsService {
     }
 
     /**
+     * 发送语音验证码
+     * @param mobile
+     * @return
+     */
+    public Response postsendsignupcodeVoice(String mobile) {
+
+        if (mobile.length() < 10) {
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+        }
+
+        String code = redisClient.get(0, "SMS_SIGNUP", mobile);
+        if(StringUtils.isNotNullOrEmpty(code)) {
+            int count  = Integer.getInteger(redisClient.get(0, "SMS_SIGNUP", mobile.concat("_").concat(String.valueOf(code))), 0);
+            if (count == 0) {
+                if (smsSender.sendSMS_signup_voice(mobile, code)) {
+                    redisClient.set(0, "SMS_SIGNUP", mobile.concat("_").concat(String.valueOf(code)), "1");
+                    return ResponseUtils.success(null);
+                } else {
+                    return ResponseUtils.fail(ConstantErrorCodeMessage.USER_SMS_LIMITED);
+                }
+            } else {
+                return ResponseUtils.fail(ConstantErrorCodeMessage.USER_SMS_LIMITED);
+            }
+        } else {
+            return ResponseUtils.fail(ConstantErrorCodeMessage.USER_SMS_LIMITED);
+        }
+    }
+
+    /**
      * 注册手机号用户。 password 为空时， 需要把密码直接发送给用户。
      * <p>
      *
