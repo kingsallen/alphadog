@@ -57,7 +57,7 @@ public class SearchUtil {
      * 拼接city
      */
     public void handleTerms(String conditions,QueryBuilder query,String conditionField){
-    	if (!StringUtils.isEmpty(conditions)) {
+    	if (StringUtils.isNotEmpty(conditions)) {
     		List<Integer> codes=new ArrayList<Integer>();
             String[] conditions_list = conditions.split(",");
             for(String code:conditions_list){
@@ -104,7 +104,7 @@ public class SearchUtil {
     
     //组装prefix关键字查询语句
     public void handleKeyWordForPrefix(String keywords,boolean hasKey,QueryBuilder query,List<String> list){
-    	if(!StringUtils.isNotEmpty(keywords)){
+    	if(StringUtils.isNotEmpty(keywords)){
     		QueryBuilder keyand = QueryBuilders.boolQuery();
     		for(String field:list){
     			QueryBuilder fullf = QueryBuilders.matchPhrasePrefixQuery(field, keywords);
@@ -117,7 +117,7 @@ public class SearchUtil {
     
 	 //组装query_string关键字查询语句
     public void handleKeyWordforQueryString(String keywords,boolean hasKey,QueryBuilder query,List<String> list){
-    	if(!StringUtils.isEmpty(keywords)){
+    	if(StringUtils.isNotEmpty(keywords)){
     		hasKey=true;
     		String words[]=keywords.split(",");
     		QueryBuilder keyand = QueryBuilders.boolQuery();
