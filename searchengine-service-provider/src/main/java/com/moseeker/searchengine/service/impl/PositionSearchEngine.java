@@ -49,7 +49,7 @@ public class PositionSearchEngine {
 			SearchRequestBuilder responseBuilder=client.prepareSearch("positions").setTypes("position")
 	                .setQuery(sentence)
 	                .addAggregation(searchUtil.handle("_source.company.industry_data","industry"))
-	                .addAggregation(searchUtil.handle("_source.position.city_data","city"))
+	                .addAggregation(searchUtil.handleArray("_source.position.city_data","city"))
 	                .addAggregation(searchUtil.handle("_source.position.salary_data","salary"))
 	                .setFrom((page-1)*pageSize)
 	                .setSize(pageSize);
@@ -66,7 +66,7 @@ public class PositionSearchEngine {
 			SearchRequestBuilder responseBuilder=client.prepareSearch("positions").setTypes("position")
 	                .setQuery(sentence)
 	                .addAggregation(searchUtil.handle("_source.company.industry_data","industry"))
-	                .addAggregation(searchUtil.handle("_source.position.city_data","city"))
+	                .addAggregation(searchUtil.handleArray("_source.position.city_data","city"))
 	                .addAggregation(searchUtil.handle("_source.position.salary_data","salary"))
 	                .setFrom((page-1)*pageSize)
 	                .setSize(pageSize);
