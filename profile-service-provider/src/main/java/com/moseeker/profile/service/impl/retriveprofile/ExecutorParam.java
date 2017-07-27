@@ -1,5 +1,7 @@
 package com.moseeker.profile.service.impl.retriveprofile;
 
+import com.alibaba.fastjson.JSON;
+import com.google.common.base.CaseFormat;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.Constant;
@@ -27,6 +29,12 @@ public class ExecutorParam {
     private ChannelType channelType;            //渠道
 
     public void parseParameter(Map<String, Object> paramMap, ChannelType channelType) throws CommonException {
+
+        /**
+         * 将所有的key统一转驼峰
+         */
+        paramMap = StringUtils.convertUnderKeyToCamel(paramMap);
+
         setOriginParam(paramMap);
 
         setChannelType(channelType);
@@ -48,11 +56,11 @@ public class ExecutorParam {
             if (profileMap != null) {
 
                 if (profileMap.get("user") != null) {
-                    setUser((Map<String, Object>)profileMap.get("user"));
+                    setUser((Map<String, Object>) profileMap.get("user"));
                 }
                 if (profileMap.get("profile") == null) {
                     Map<String, Object> profile = new HashMap<>();
-                    profile.put("disable", (byte)Constant.ENABLE);
+                    profile.put("disable", (byte) Constant.ENABLE);
                     profile.put("uuid", UUID.randomUUID().toString());
                     profile.put("source", channelType.getRetrievalSource());
                     profile.put("origin", channelType.getOrigin(null));
@@ -61,7 +69,7 @@ public class ExecutorParam {
                 if (profileMap.get("import") == null) {
                     Map<String, Object> importParam = new HashMap<>();
                     importParam.put("source", channelType.getValue());
-                    importParam.put("data", paramMap);
+                    importParam.put("data", JSON.toJSONString(paramMap));
                     importParam.put("accountId", getUser().get("uid"));
                     importParam.put("userName", getUser().get("name"));
                     profileMap.put("import", importParam);
