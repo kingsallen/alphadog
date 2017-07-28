@@ -133,7 +133,7 @@ public class ThirdPartyAccountSynctor {
             titleBuilder.append("【第三方帐号").append(syncType == 0 ? "绑定" : "刷新").append("失败】");
 
             HrCompanyDO company = companyDao.getCompanyById(thirdPartyAccount.getCompanyId());
-            if(company!=null) {
+            if (company != null) {
                 titleBuilder.append(":【").append(company.getName()).append("】");
             }
             titleBuilder.append(":【").append(channelType.getAlias()).append("】");
@@ -142,7 +142,9 @@ public class ThirdPartyAccountSynctor {
             String br = "<br/>";
 
             StringBuilder messageBuilder = new StringBuilder();
-
+            if (company != null) {
+                messageBuilder.append("【所属公司】：").append(company.getName()).append(br);
+            }
             messageBuilder.append("【第三方帐号ID】：").append(thirdPartyAccount.getId()).append(br);
             messageBuilder.append("【帐号名】：").append(thirdPartyAccount.getUsername()).append(br);
             if (StringUtils.isNotNullOrEmpty(thirdPartyAccount.getMembername())) {
@@ -150,7 +152,7 @@ public class ThirdPartyAccountSynctor {
             }
 
             if (extras != null && StringUtils.isNotNullOrEmpty(extras.get("company"))) {
-                messageBuilder.append("【公司名称】:").append(extras.get("company")).append(br);
+                messageBuilder.append("【子公司简称】:").append(extras.get("company")).append(br);
             }
 
             if (StringUtils.isNotNullOrEmpty(message)) {

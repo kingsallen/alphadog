@@ -2,8 +2,10 @@ package com.moseeker.function.service.chaos;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.dictdb.*;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.email.Email;
 import com.moseeker.common.util.ConfigPropertiesUtil;
@@ -52,6 +54,8 @@ public class PositionSyncFailedNotification {
 
     @Autowired
     HrCompanyDao companyDao;
+    @Autowired
+    HrCompanyAccountDao companyAccountDao;
 
     private String getConfigString(String key) {
         try {
@@ -106,7 +110,9 @@ public class PositionSyncFailedNotification {
 
         StringBuilder emailMessgeBuilder = new StringBuilder();
 
-        String channelName = ChannelType.instaceFromInteger(Integer.valueOf(pojo.getChannel())).getAlias();
+        ChannelType channelType = ChannelType.instaceFromInteger(Integer.valueOf(pojo.getChannel()));
+
+        String channelName = channelType.getAlias();
 
         emailTitle.append("【第三方职位刷新失败】");
         HrCompanyDO companyDO = companyDao.getCompanyById(moseekerPosition.getCompanyId());
@@ -118,7 +124,13 @@ public class PositionSyncFailedNotification {
         emailTitle.append(":【").append(channelName).append("职位:").append(pojo.getJob_id()).append("】");
 
         String divider = "<br/>";
-
+        if (companyDO != null) {
+            emailMessgeBuilder.append("【所属公司】：").append(companyDO.getName()).append(divider);
+        }
+        HrCompanyDO subCompany = companyAccountDao.getHrCompany(moseekerPosition.getPublisher());
+        if (subCompany != null) {
+            emailMessgeBuilder.append("【子公司简称】：").append(subCompany.getAbbreviation()).append(divider);
+        }
         emailMessgeBuilder.append("【职位ID】：").append(pojo.getPosition_id()).append(divider);
         emailMessgeBuilder.append("【第三方帐号ID】：").append(pojo.getAccount_id()).append(divider);
         emailMessgeBuilder.append("【第三方职位ID】：").append(thirdPartyPositionDO.getId()).append(divider);
@@ -162,10 +174,20 @@ public class PositionSyncFailedNotification {
         if (companyDO != null) {
             emailTitle.append("【").append(companyDO.getName()).append("】");
         }
-        emailTitle.append(":【渠道:").append(ChannelType.instaceFromInteger(Integer.valueOf(pojo.getChannel())).getAlias()).append("】")
+        ChannelType channelType = ChannelType.instaceFromInteger(Integer.valueOf(pojo.getChannel()));
+        emailTitle.append(":【渠道:").append(channelType.getAlias()).append("】")
                 .append(":【仟寻职位:").append(pojo.getPosition_id()).append("】");
 
         String divider = "<br/>";
+
+        if (companyDO != null) {
+            emailMessgeBuilder.append("【所属公司】：").append(companyDO.getName()).append(divider);
+        }
+
+        HrCompanyDO subCompany = companyAccountDao.getHrCompany(moseekerPosition.getPublisher());
+        if (subCompany != null) {
+            emailMessgeBuilder.append("【子公司简称】：").append(subCompany.getAbbreviation()).append(divider);
+        }
 
         emailMessgeBuilder.append("【同步记录ID】：").append(thirdPartyPositionDO.getId()).append(divider);
         emailMessgeBuilder.append("【职位ID】：").append(pojo.getPosition_id()).append(divider);
