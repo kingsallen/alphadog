@@ -84,12 +84,13 @@ public class CounterIfaceAop implements Ordered {
     /**
      * throws exception
      */
-    @AfterThrowing(value = POINCUT)
-    public void afterThrowing(JoinPoint call) {
+    @AfterThrowing(value = POINCUT, throwing = "e")
+    public void afterThrowing(JoinPoint call, CommonException e) throws BIZException {
         counterLocal.get().setStatus("fail");
         counterLocal.get().setEndTime(new Date().getTime());
         counterLocal.get().setTime(counterLocal.get().getEndTime() - counterLocal.get().getStartTime());
         save(JSONObject.toJSONString(counterLocal.get()));
+        throw new BIZException(e.getCode(), e.getMessage());
 
     }
 
