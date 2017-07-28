@@ -603,7 +603,7 @@ public class UserHrAccountController {
                 if (!permission) {
                     return ResponseLogNotification.failResponse(request, ConstantErrorCodeMessage.PERMISSION_DENIED);
                 }
-                int result = userHrAccountService.addEmployeeReward(employeeId, points, reason);
+                int result = userHrAccountService.addEmployeeReward(employeeId, companyId, points, reason);
                 return ResponseLogNotification.success(request, ResponseUtils.success(new HashMap<String, Integer>() {{
                     put("totalPoint", result);
                 }}));

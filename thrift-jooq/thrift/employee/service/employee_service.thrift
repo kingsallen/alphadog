@@ -33,4 +33,7 @@ service EmployeeService {
     
     // 员工绑定(邮箱激活)
     employee_struct.Result emailActivation(1: string activationCodee);
+
+    // 积分排行榜
+    list<employee_struct.EmployeeAward> awardRanking(1: i32 employeeId, 2: i32 companyId, 3: employee_struct.Timespan timespan)
 }

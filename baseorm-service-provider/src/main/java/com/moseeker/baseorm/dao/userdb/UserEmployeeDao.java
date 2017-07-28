@@ -276,23 +276,23 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
         return dataStatus;
     }
 
-    public int updateUserEmployeePoint(int id) {
-        int count = 0;
-        Result<Record1<BigDecimal>> result = create.select(sum(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.AWARD))
-                .from(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD)
-                .where(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.EMPLOYEE_ID.equal((long) id)).fetch();
-        if (result != null) {
-            Record1<BigDecimal> record1 = result.get(0);
-            BigDecimal sum = (BigDecimal) record1.get(0);
-            UserEmployeeRecord userEmployeeRecord = new UserEmployeeRecord();
-            userEmployeeRecord.setId(id);
-            userEmployeeRecord.setAward(sum.intValue());
-            create.attach(userEmployeeRecord);
-            userEmployeeRecord.update();
-            count = sum.intValue();
-        }
-        return count;
-    }
+//    public int updateUserEmployeePoint(int id) {
+//        int count = 0;
+//        Result<Record1<BigDecimal>> result = create.select(sum(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.AWARD))
+//                .from(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD)
+//                .where(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.EMPLOYEE_ID.equal((long) id)).fetch();
+//        if (result != null) {
+//            Record1<BigDecimal> record1 = result.get(0);
+//            BigDecimal sum = (BigDecimal) record1.get(0);
+//            UserEmployeeRecord userEmployeeRecord = new UserEmployeeRecord();
+//            userEmployeeRecord.setId(id);
+//            userEmployeeRecord.setAward(sum.intValue());
+//            create.attach(userEmployeeRecord);
+//            userEmployeeRecord.update();
+//            count = sum.intValue();
+//        }
+//        return count;
+//    }
 
 
     public void getListNum(String keyWord, List<Integer> companyIds) {

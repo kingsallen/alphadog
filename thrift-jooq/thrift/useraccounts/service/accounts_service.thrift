@@ -133,7 +133,7 @@ service UserHrAccountService {
     // 获取员工积分列表
     list<employee_struct.Reward> getEmployeeRewards(1: i32 employeeId) throws (1: common_struct.BIZException e);
     // 员工添加积分
-    i32 addEmployeeReward(1: i32 employeeId, 2: i32 points, 3: string reason) throws (1: common_struct.BIZException e);
+    i32 addEmployeeReward(1: i32 employeeId, 2: i32 companyId, 3: i32 points, 4: string reason) throws (1: common_struct.BIZException e);
     // 通过公司ID和关键字,查询认证员工和未认证员工数量
     useraccounts_struct.UserEmployeeNumStatistic getListNum(1:string keyWord, 2:i32 companyId) throws (1: common_struct.BIZException e);
     // 员工列表

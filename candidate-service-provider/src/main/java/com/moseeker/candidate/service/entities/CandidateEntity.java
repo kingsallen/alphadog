@@ -9,6 +9,7 @@ import com.moseeker.candidate.service.exception.CandidateCategory;
 import com.moseeker.candidate.service.exception.CandidateExceptionFactory;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.biztools.RecruitmentScheduleEnum;
+import static com.moseeker.common.biztools.RecruitmentScheduleEnum.*;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.Category;
@@ -22,10 +23,8 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.CandidateRecomRecordSortingDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.*;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrPointsConfDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.thrift.TException;
@@ -355,8 +354,15 @@ public class CandidateEntity implements Candidate {
 
         /** 添加员工积分 */
         if (candidateRecomRecordDO.getPostUserId() > 0) {
-            updateEmployeePoint(candidateRecomRecordDO.getPostUserId(), param.getCompanyId(),
-                    candidateRecomRecordDO.getAppId(), candidateRecomRecordDO.getPositionId());
+            try {
+                UserEmployeeDO employeeDO =
+                        candidateDBDao.getEmployee(candidateRecomRecordDO.getPostUserId(), param.getCompanyId());
+                if (employeeDO != null) {
+                    employeeEntity.addReward(employeeDO.getId(), param.getCompanyId(), "", candidateRecomRecordDO.getAppId(), candidateRecomRecordDO.getPositionId(), IMPROVE_CANDIDATE.getId(), candidateRecomRecordDO.getPresenteeUserId());
+                }
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
         }
 
         return assembleRecommendResult(param.getId(), param.getPostUserId(), param.getClickTime(), param.getCompanyId());
@@ -618,40 +624,6 @@ public class CandidateEntity implements Candidate {
         return recomRecordResult;
     }
 
-    /**
-     * 添加员工积分（完善被推荐人信息）
-     *
-     * @param employeeId 员工编号
-     * @param compnayId  公司编号
-     * @param appId      申请编号
-     * @param positionId 职位编号
-     * @return 员工积分
-     */
-    private int updateEmployeePoint(int employeeId, int compnayId, int appId,
-                                    int positionId) {
-        int point = 0;
-        try {
-            UserEmployeeDO employeeDO =
-                    candidateDBDao.getEmployee(employeeId, compnayId);
-            if (employeeDO != null) {
-                HrPointsConfDO hrPointsConfDO = candidateDBDao.getHrPointConf(compnayId, RecruitmentScheduleEnum.IMPROVE_CANDIDATE);
-                if (hrPointsConfDO != null && hrPointsConfDO.getReward() > 0) {
-                    UserEmployeePointsRecordDO userEmployeePointsRecordDO = new UserEmployeePointsRecordDO();
-                    userEmployeePointsRecordDO.setEmployeeId(employeeDO.getId());
-                    userEmployeePointsRecordDO.setReason(hrPointsConfDO.getStatusName());
-                    userEmployeePointsRecordDO.setAward((int) hrPointsConfDO.getReward());
-                    userEmployeePointsRecordDO.setApplicationId(appId);
-                    userEmployeePointsRecordDO.setPositionId(positionId);
-                    candidateDBDao.saveEmployeePointsRecord(userEmployeePointsRecordDO);
-
-                    point = candidateDBDao.updateEmployeePoint(employeeDO.getId());
-                }
-            }
-        } catch (TException e) {
-            logger.error(e.getMessage(), e);
-        }
-        return point;
-    }
 
     /**
      * 将候选人置为推荐状态

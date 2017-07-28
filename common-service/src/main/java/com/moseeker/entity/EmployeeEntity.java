@@ -1,14 +1,18 @@
 package com.moseeker.entity;
 
+import com.moseeker.baseorm.dao.configdb.ConfigSysPointsConfTplDao;
 import com.moseeker.baseorm.dao.historydb.HistoryUserEmployeeDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrGroupCompanyRelDao;
+import com.moseeker.baseorm.dao.hrdb.HrPointsConfDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
+import com.moseeker.baseorm.dao.userdb.UserEmployeePointsRecordCompanyRelDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.baseorm.dao.userdb.UserEmployeePointsRecordDao;
+import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompanyRel;
@@ -19,18 +23,18 @@ import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.Constant.EmployeeType;
 import com.moseeker.entity.exception.ExceptionCategory;
 import com.moseeker.entity.exception.ExceptionFactory;
-import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysPointsConfTplDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrGroupCompanyRelDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrPointsConfDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordCompanyRelDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
 import com.moseeker.thrift.gen.employee.struct.Reward;
-
 import java.util.*;
 import java.util.stream.Collectors;
-
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,6 +72,15 @@ public class EmployeeEntity {
     @Autowired
     private HrCompanyDao hrCompanyDao;
 
+    @Autowired
+    private UserEmployeePointsRecordCompanyRelDao ueprcrDao;
+
+    @Autowired
+    private HrPointsConfDao hrPointsConfDao;
+
+    @Autowired
+    private ConfigSysPointsConfTplDao configSysPointsConfTplDao;
+
 
     private static final Logger logger = LoggerFactory.getLogger(EmployeeEntity.class);
 
@@ -100,35 +113,71 @@ public class EmployeeEntity {
      * 增加员工积点
      *
      * @param employeeId
-     * @param award      (注意: award可以为负数...)
      * @return 员工当前总积分
      */
     @Transactional
-    public int addReward(int employeeId, int award, String reason) throws Exception {
+    public int addReward(int employeeId, int companyId, UserEmployeePointsRecordDO ueprDo) throws Exception {
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.where("id", employeeId);
         UserEmployeeDO userEmployeeDO = employeeDao.getData(query.buildQuery());
-        if (userEmployeeDO != null && userEmployeeDO.getId() > 0) {
+        if (userEmployeeDO != null && userEmployeeDO.getId() > 0 && ueprDo != null) {
             // 修改用户总积分
-            userEmployeeDO.setAward(userEmployeeDO.getAward() + award);
+            userEmployeeDO.setAward(userEmployeeDO.getAward() + ueprDo.getAward());
             int row = employeeDao.updateData(userEmployeeDO);
             // 积分记录
             if (row > 0) {
-                UserEmployeePointsRecordDO ueprDo = new UserEmployeePointsRecordDO();
-                ueprDo.setAward(award);
-                ueprDo.setEmployeeId(employeeId);
-                ueprDo.setReason(reason);
                 ueprDo = ueprDao.addData(ueprDo);
                 if (ueprDo.getId() > 0) {
-                    logger.info("增加用户积分成功：为用户{},添加积分{}点, reason:{}", employeeId, award, reason);
+                    logger.info("增加用户积分成功：为用户{},添加积分{}点, reason:{}", employeeId, ueprDo.getAward(), ueprDo.getReason());
+                    // 记录积分来源公司
+                    UserEmployeePointsRecordCompanyRelDO ueprcrDo = new UserEmployeePointsRecordCompanyRelDO();
+                    ueprcrDo.setCompanyId(companyId);
+                    ueprcrDo.setEmployeePointsRecordId(ueprDo.getId());
+                    ueprcrDao.addData(ueprcrDo);
                     return userEmployeeDO.getAward();
                 } else {
-                    logger.error("增加用户积分失败：为用户{},添加积分{}点, reason:{}", employeeId, award, reason);
+                    logger.error("增加用户积分失败：为用户{},添加积分{}点, reason:{}", employeeId, ueprDo.getAward(), ueprDo.getReason());
                     throw new RuntimeException("增加积分失败");
                 }
             }
         }
         return 0;
+    }
+
+
+    @Transactional
+    public boolean addReward(int employeeId, int companyId, String reason, int applicationId, int positionId, int templateId, int berecomUserId) throws Exception {
+        // 获取积分点数
+        if(companyId == 0 || templateId == 0) {
+            throw new Exception("参数不完整");
+        } else {
+            int award;
+            Query.QueryBuilder query = new Query.QueryBuilder().where("company_id", companyId).and("template_id", templateId);
+            HrPointsConfDO hrPointsConfDO = hrPointsConfDao.getData(query.buildQuery());
+            if (hrPointsConfDO != null && hrPointsConfDO.getReward() != 0) {
+                award = (int) hrPointsConfDO.getReward();
+                reason = org.apache.commons.lang.StringUtils.defaultIfBlank(reason, hrPointsConfDO.getStatusName());
+            } else {
+                query.clear();
+                query.where("id", templateId);
+                ConfigSysPointsConfTplDO confTplDO = configSysPointsConfTplDao.getData(query.buildQuery());
+                if (confTplDO != null && confTplDO.getAward() != 0) {
+                    award = confTplDO.getAward();
+                    reason = org.apache.commons.lang.StringUtils.defaultIfBlank(reason, confTplDO.getStatus());
+                } else {
+                    throw new Exception("添加积分点数不能为0");
+                }
+            }
+            UserEmployeePointsRecordDO ueprDo = new UserEmployeePointsRecordDO();
+            ueprDo.setReason(reason);
+            ueprDo.setAward(award);
+            ueprDo.setApplicationId(applicationId);
+            ueprDo.setAwardConfigId(hrPointsConfDO.getId());
+            ueprDo.setBerecomUserId(berecomUserId);
+            ueprDo.setPositionId(positionId);
+            addReward(employeeId, companyId, ueprDo);
+        }
+        return true;
     }
 
     /**

@@ -25,8 +25,7 @@ public class Receiver {
 
     @RabbitListener(queues = "qx", containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
-    @SendTo("status")
-    public String processQx(Message message, Channel channel) {
+    public void processQx(Message message, Channel channel) {
         String string = new String(message.getBody());
         JSONObject jsonObject = JSONObject.parseObject(string);
         try {
@@ -50,7 +49,6 @@ public class Receiver {
                 e1.printStackTrace();
             }
         }
-        return "success";
     }
 
     @RabbitListener(queues = "qx")

@@ -308,4 +308,18 @@ public class EmployeeService {
         log.info("setEmployeeCustomInfo response: {}", response);
         return response;
     }
+
+    public List<EmployeeAward> awardRanking(int employeeId, int companyId, Timespan timespan) {
+        List<EmployeeAward> response = new ArrayList<>();
+        Query.QueryBuilder query = new Query.QueryBuilder();
+        query.where("id", employeeId).and("company_id", companyId);
+        UserEmployeeDO employeeDO = employeeDao.getData(query.buildQuery());
+        // 判断员工是否已认证
+        if (employeeDO == null || employeeDO.getId() == 0 || employeeDO.getActivation() != 0) {
+            log.info("员工信息不存在或未认证，employeeInfo = {}", employeeDO);
+            return response;
+        }
+        List<UserEmployeeDO> employeeDOList = employeeEntity.getUserEmployeeDOList(companyId);
+        return response;
+    }
 }

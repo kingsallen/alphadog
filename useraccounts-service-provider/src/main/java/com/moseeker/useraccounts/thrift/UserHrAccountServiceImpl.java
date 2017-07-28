@@ -12,6 +12,7 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
 import com.moseeker.thrift.gen.employee.struct.Reward;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService.Iface;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
@@ -292,9 +293,13 @@ public class UserHrAccountServiceImpl implements Iface {
      * @throws TException
      */
     @Override
-    public int addEmployeeReward(int employeeId, int points, String reason) throws BIZException, TException {
+    public int addEmployeeReward(int employeeId, int companyId, int points, String reason) throws BIZException, TException {
         try {
-            return employeeEntity.addReward(employeeId, points, reason);
+            UserEmployeePointsRecordDO ueprDo = new UserEmployeePointsRecordDO();
+            ueprDo.setAward(points);
+            ueprDo.setEmployeeId(employeeId);
+            ueprDo.setReason(reason);
+            return employeeEntity.addReward(employeeId, companyId, ueprDo);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             ExceptionFactory.buildException(ExceptionCategory.PROGRAM_EXCEPTION);
@@ -332,7 +337,6 @@ public class UserHrAccountServiceImpl implements Iface {
      * @param companyId  公司ID
      * @param filter     过滤条件，0：全部，1：已认证，2：未认证,默认：0
      * @param order      排序条件
-     * @param by         正序，倒序 0: 正序,1:倒序 默认
      * @param pageNumber 第几页
      * @param pageSize   每页的条数
      */

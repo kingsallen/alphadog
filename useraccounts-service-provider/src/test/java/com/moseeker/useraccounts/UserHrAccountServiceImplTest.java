@@ -21,17 +21,13 @@ import java.util.List;
 import com.moseeker.useraccounts.service.impl.UserEmployeeServiceImpl;
 import org.apache.thrift.TException;
 import org.junit.Assert;
-import org.joda.time.LocalDateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.Date;
-import java.util.List;
 
 /**
  * HR账号服务
@@ -221,7 +217,7 @@ public class UserHrAccountServiceImplTest {
 //    @Transactional
     public void addReawrdTest() {
         try {
-            userHrAccountServiceImpl.addEmployeeReward(658112, 100, "加积分");
+            userHrAccountServiceImpl.addEmployeeReward(658112, 100, 100, "加积分");
         } catch (TException e) {
             e.printStackTrace();
         }

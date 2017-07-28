@@ -26,7 +26,6 @@ public class Sender {
         String str = "send: " + name.concat(",").concat(LocalDateTime.now().withNano(0).toString());
         MessageProperties msp = new MessageProperties();
         msp.setDelay(10000); // 延迟10s发送
-        msp.getHeaders().put("auto_ack", true);
         amqpTemplate.send(exchangeName, "hello.test", MessageBuilder.withBody(str.getBytes()).andProperties(msp).build());
         System.out.println("send success...");
     }
@@ -37,6 +36,5 @@ public class Sender {
         jsonObject.put("currentTime", LocalDateTime.now().withNano(0).toString());
         string = jsonObject.toJSONString();
         Message replyMsg = amqpTemplate.sendAndReceive(exchangeName, "qx.test",  MessageBuilder.withBody(string.getBytes()).build());
-        System.out.println("receive reply: " + String.valueOf(replyMsg.getBody()));
     }
 }

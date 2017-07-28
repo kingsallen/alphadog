@@ -118,3 +118,17 @@ struct RecomInfo {
 	15: required i32 view_number = 0;          	// 点击次数
 	16: required string headimgurl = "";        // 微信头像
 }
+
+// 时间跨度（月、季、年）
+enum Timespan {
+    month, quarter, year
+}
+
+// reponse
+struct EmployeeAward {
+    1: optional i32 employeeId,
+    2: optional string name,
+    3: optional i32 ranking,
+    4: optional i32 awardTotal,
+    5: optional string headimgurl
+}
