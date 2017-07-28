@@ -17,7 +17,7 @@ public class LogUtil {
 
         StringBuilder regexBuilder = new StringBuilder();
         for (String senstiveKey : senstiveKeys) {
-            regexBuilder.append('|').append("(\"").append(senstiveKey).append("\\s*\":\\s*\"[^\"]+\",?)");
+            regexBuilder.append('|').append("(\"?").append(senstiveKey).append("\\s*\"?:\\s*\"?[^\"]+\"?,?)");
         }
 
         regexBuilder.delete(0, 1);
