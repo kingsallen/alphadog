@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,13 +51,13 @@ public class WholeProfileServicesImplTest {
 
     @Autowired
     JobApplicationDao jobApplicationDao;
+
     @Test
     public void testCamel() {
         String s = StringUtils.underLineToCamel("user_id");
     }
 
-    @Test
-    public void testMapConvert() {
+    private Map getMap(){
         JSONObject map1 = new JSONObject();
         map1.put("user_id", "user_id");
         map1.put("position_id", "position_id");
@@ -64,13 +65,37 @@ public class WholeProfileServicesImplTest {
         map1.put("p_rofileId", "p_rofileId");
         map1.put("_user_id", "_user_id");
 
-        map1 = StringUtils.convertUnderKeyToCamel(map1);
+        return map1;
+    }
 
-        System.out.println(map1);
+    @Test
+    public void testMapConvert() {
 
-        Map<Object, JSONObject> mp2 = new HashMap<>();
-        mp2.put(map1, map1);
+
+        Map<String, Object> mp2 = new HashMap<>();
+        mp2.put("map", getMap());
+        List<Map> listMap = new ArrayList<>();
+        listMap.add(getMap());
+        mp2.put("list", listMap);
+
+        mp2.put("array", new Map[]{getMap()});
+
+        mp2 = StringUtils.convertUnderKeyToCamel(mp2);
+
         System.out.println(mp2);
+    }
+
+    @Test
+    public void testArray() {
+
+        Object a = new int[]{1, 2, 3};
+
+        if (a.getClass().isArray()) {
+            for (Object item : (Object[]) a) {
+                item.toString();
+            }
+        }
+
     }
 
     //        //@Test
