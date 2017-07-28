@@ -1569,6 +1569,7 @@ public class PositionService {
             String position = "";
             try {
                 logger.info("---Start ES Search Engine---");
+                Thread.sleep(400);
                 for (Integer jobPositionId : list) {
                     Response result = getPositionById(jobPositionId);
                     if (StringUtils.isEmptyObject(result.data)) {
