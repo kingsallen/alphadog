@@ -12,7 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = {"com.moseeker.servicemanager.web", "com.moseeker.servicemanager.config"})
+@ComponentScan(basePackages = {"com.moseeker.servicemanager.web", "com.moseeker.servicemanager.config","com.moseeker.servicemanager.exception"})
 @Import(AppConfig.class)
 public class WebConfig extends WebMvcConfigurerAdapter {
 

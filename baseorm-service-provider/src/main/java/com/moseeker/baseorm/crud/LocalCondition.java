@@ -2,6 +2,7 @@ package com.moseeker.baseorm.crud;
 
 import com.moseeker.baseorm.exception.CoditionException;
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.ConditionJoin;
 import com.moseeker.common.util.query.ConditionOp;
@@ -78,7 +79,6 @@ public class LocalCondition<R extends Record> {
             Field<?> field = table.field(condition.getField());
             if (field == null) {
                 throw CoditionException.CONDITION_FIELD_NOEXIST.setMess("查询的" + table.getName() + "表" + condition.getField() + "字段不存在");
-
             }
             org.jooq.Condition jooqCondition = connectValueCondition(field, condition.getValue(),
                     condition.getValueOp());

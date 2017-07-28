@@ -11,8 +11,6 @@ import com.moseeker.common.exception.CommonException;
  */
 public class CoditionException extends CommonException {
 
-
-
     public static final CoditionException SELECT_FIELD_NOEXIST = new CoditionException(70002, "查询字段不存在！");
     public static final CoditionException GROUPBY_FIELD_NOEXIST = new CoditionException(70003, "排序字段不存在！");
     public static final CoditionException ORDER_FIELD_NOEXIST = new CoditionException(70003, "排序字段不存在！");
