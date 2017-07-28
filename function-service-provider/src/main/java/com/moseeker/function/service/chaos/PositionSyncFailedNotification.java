@@ -2,6 +2,7 @@ package com.moseeker.function.service.chaos;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.dictdb.*;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.email.Email;
@@ -11,6 +12,7 @@ import com.moseeker.thrift.gen.dao.struct.dictdb.Dict51jobOccupationDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictLiepinOccupationDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictZhilianOccupationDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import org.slf4j.Logger;
@@ -47,6 +49,9 @@ public class PositionSyncFailedNotification {
 
     @Autowired
     DictCityDao dictCityDao;
+
+    @Autowired
+    HrCompanyDao companyDao;
 
     private String getConfigString(String key) {
         try {
@@ -103,11 +108,14 @@ public class PositionSyncFailedNotification {
 
         String channelName = ChannelType.instaceFromInteger(Integer.valueOf(pojo.getChannel())).getAlias();
 
-        emailTitle
-                .append("【第三方职位刷新失败】")
-                .append(":【渠道:").append(channelName).append("】")
-                .append(":【仟寻职位:").append(pojo.getPosition_id()).append("】")
-                .append(":【").append(channelName).append("职位:").append(pojo.getJob_id()).append("】");
+        emailTitle.append("【第三方职位刷新失败】");
+        HrCompanyDO companyDO = companyDao.getCompanyById(moseekerPosition.getCompanyId());
+        if (companyDO != null) {
+            emailTitle.append("【").append(companyDO.getName()).append("】");
+        }
+        emailTitle.append(":【渠道:").append(channelName).append("】");
+        emailTitle.append(":【仟寻职位:").append(pojo.getPosition_id()).append("】");
+        emailTitle.append(":【").append(channelName).append("职位:").append(pojo.getJob_id()).append("】");
 
         String divider = "<br/>";
 
@@ -149,9 +157,12 @@ public class PositionSyncFailedNotification {
 
         StringBuilder emailMessgeBuilder = new StringBuilder();
 
-        emailTitle
-                .append("【第三方职位同步失败】")
-                .append(":【渠道:").append(ChannelType.instaceFromInteger(Integer.valueOf(pojo.getChannel())).getAlias()).append("】")
+        emailTitle.append("【第三方职位同步失败】");
+        HrCompanyDO companyDO = companyDao.getCompanyById(moseekerPosition.getCompanyId());
+        if (companyDO != null) {
+            emailTitle.append("【").append(companyDO.getName()).append("】");
+        }
+        emailTitle.append(":【渠道:").append(ChannelType.instaceFromInteger(Integer.valueOf(pojo.getChannel())).getAlias()).append("】")
                 .append(":【仟寻职位:").append(pojo.getPosition_id()).append("】");
 
         String divider = "<br/>";

@@ -2,12 +2,14 @@ package com.moseeker.useraccounts.service.thirdpartyaccount;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.email.Email;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
 import org.joda.time.DateTime;
@@ -32,6 +34,9 @@ public class ThirdPartyAccountSynctor {
     static Logger logger = LoggerFactory.getLogger(ThirdPartyAccountSynctor.class);
 
     ChaosServices.Iface chaosService = ServiceManager.SERVICEMANAGER.getService(ChaosServices.Iface.class);
+
+    @Autowired
+    HrCompanyDao companyDao;
 
 
     static ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil.getInstance();
@@ -126,6 +131,11 @@ public class ThirdPartyAccountSynctor {
 
             StringBuilder titleBuilder = new StringBuilder();
             titleBuilder.append("【第三方帐号").append(syncType == 0 ? "绑定" : "刷新").append("失败】");
+
+            HrCompanyDO company = companyDao.getCompanyById(thirdPartyAccount.getCompanyId());
+            if(company!=null) {
+                titleBuilder.append(":【").append(company.getName()).append("】");
+            }
             titleBuilder.append(":【").append(channelType.getAlias()).append("】");
             titleBuilder.append(":【").append(thirdPartyAccount.getId()).append("】");
 
