@@ -149,7 +149,7 @@ public class SearchUtil {
     	sb1.append("jsay=[];");
     	sb1.append("for(a in _aggs){");
     	sb1.append("for(ss in a){");
-    	sb1.append("if(ss in jsay){}");
+    	sb1.append("if(ss in jsay||!ss){}");
     	sb1.append("else{jsay.add(ss);}}};");
     	sb1.append("return jsay");
     	String reduceScript=sb1.toString();
@@ -177,7 +177,7 @@ public class SearchUtil {
     	sb1.append("jsay=[];");
     	sb1.append("for(a in _aggs){");
     	sb1.append("for(ss in a){");
-    	sb1.append("if(ss in jsay){}");
+    	sb1.append("if(ss in jsay||!ss){}");
     	sb1.append("else{jsay.add(ss);}}};");
     	sb1.append("return jsay");
     	String reduceScript=sb1.toString();

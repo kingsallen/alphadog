@@ -33,4 +33,6 @@ service UserQxService {
     common_struct.Response sendRecommendPosition(1:i32 userId);
     //存储推荐的邮件条件
     common_struct.Response postUserEmailPosition(1:i32 userId,2:string conditions);
+    //发送推荐职位验证邮箱邮件
+    common_struct.Response sendValiddateEmail(1:string email,2:i32 userId,3:string conditions);
 }
