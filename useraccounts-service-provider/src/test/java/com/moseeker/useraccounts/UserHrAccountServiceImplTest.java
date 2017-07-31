@@ -149,7 +149,7 @@ public class UserHrAccountServiceImplTest {
         hrThirdPartyAccountDO.setUsername("xxxxx");
         hrThirdPartyAccountDO.setPassword("xxxxx");
         hrThirdPartyAccountDO.setChannel((short) 2);
-        userHrAccountService.bindThirdAccount(82847, hrThirdPartyAccountDO);
+        userHrAccountService.bindThirdAccount(82847, hrThirdPartyAccountDO, true);
     }
 
 
