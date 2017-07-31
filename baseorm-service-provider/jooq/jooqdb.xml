@@ -29,7 +29,7 @@
             (A Java regular expression. Use the pipe to separate several expressions).
             Excludes match before includes -->
             <excludes></excludes>
-            <!--<unsignedTypes>false</unsignedTypes>-->
+            <unsignedTypes>false</unsignedTypes>
         </database>
         <target>
             <!-- The destination package of your generated classes (within the destination directory) -->

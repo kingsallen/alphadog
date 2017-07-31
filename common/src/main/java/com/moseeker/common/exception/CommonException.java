@@ -36,11 +36,11 @@ public class CommonException extends RuntimeException {
 		return code;
 	}
 
-	protected void setCode(int code) {
+	public void setCode(int code) {
 		this.code = code;
 	}
 
-	protected void setMessage(String msg) {
+	public void setMessage(String msg) {
 		this.message = msg;
 	}
 
