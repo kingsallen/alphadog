@@ -13,6 +13,10 @@ import com.moseeker.baseorm.db.historydb.tables.HistoryJobApplicationConf;
 import com.moseeker.baseorm.db.historydb.tables.HistoryJobApplicationStatusBeisen;
 import com.moseeker.baseorm.db.historydb.tables.HistoryJobOccupationRel;
 import com.moseeker.baseorm.db.historydb.tables.HistoryJobPosition;
+import com.moseeker.baseorm.db.historydb.tables.HistoryUserEmployee;
+import com.moseeker.baseorm.db.historydb.tables.HrWxHrChatList;
+import com.moseeker.baseorm.db.historydb.tables.HrWxHrChatListBak;
+import com.moseeker.baseorm.db.historydb.tables.HrWxHrChatListBakBak;
 import com.moseeker.baseorm.db.historydb.tables.records.HistoryCampaignBaiduUsersRecord;
 import com.moseeker.baseorm.db.historydb.tables.records.HistoryHrChildCompanyRecord;
 import com.moseeker.baseorm.db.historydb.tables.records.HistoryHrCompanyRecord;
@@ -22,6 +26,10 @@ import com.moseeker.baseorm.db.historydb.tables.records.HistoryJobApplicationRec
 import com.moseeker.baseorm.db.historydb.tables.records.HistoryJobApplicationStatusBeisenRecord;
 import com.moseeker.baseorm.db.historydb.tables.records.HistoryJobOccupationRelRecord;
 import com.moseeker.baseorm.db.historydb.tables.records.HistoryJobPositionRecord;
+import com.moseeker.baseorm.db.historydb.tables.records.HistoryUserEmployeeRecord;
+import com.moseeker.baseorm.db.historydb.tables.records.HrWxHrChatListBakBakRecord;
+import com.moseeker.baseorm.db.historydb.tables.records.HrWxHrChatListBakRecord;
+import com.moseeker.baseorm.db.historydb.tables.records.HrWxHrChatListRecord;
 
 import javax.annotation.Generated;
 
@@ -55,6 +63,9 @@ public class Keys {
     public static final Identity<HistoryJobApplicationConfRecord, Integer> IDENTITY_HISTORY_JOB_APPLICATION_CONF = Identities0.IDENTITY_HISTORY_JOB_APPLICATION_CONF;
     public static final Identity<HistoryJobApplicationStatusBeisenRecord, Integer> IDENTITY_HISTORY_JOB_APPLICATION_STATUS_BEISEN = Identities0.IDENTITY_HISTORY_JOB_APPLICATION_STATUS_BEISEN;
     public static final Identity<HistoryJobPositionRecord, Integer> IDENTITY_HISTORY_JOB_POSITION = Identities0.IDENTITY_HISTORY_JOB_POSITION;
+    public static final Identity<HrWxHrChatListRecord, Integer> IDENTITY_HR_WX_HR_CHAT_LIST = Identities0.IDENTITY_HR_WX_HR_CHAT_LIST;
+    public static final Identity<HrWxHrChatListBakRecord, Integer> IDENTITY_HR_WX_HR_CHAT_LIST_BAK = Identities0.IDENTITY_HR_WX_HR_CHAT_LIST_BAK;
+    public static final Identity<HrWxHrChatListBakBakRecord, Integer> IDENTITY_HR_WX_HR_CHAT_LIST_BAK_BAK = Identities0.IDENTITY_HR_WX_HR_CHAT_LIST_BAK_BAK;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
@@ -71,6 +82,10 @@ public class Keys {
     public static final UniqueKey<HistoryJobApplicationStatusBeisenRecord> KEY_HISTORY_JOB_APPLICATION_STATUS_BEISEN_PRIMARY = UniqueKeys0.KEY_HISTORY_JOB_APPLICATION_STATUS_BEISEN_PRIMARY;
     public static final UniqueKey<HistoryJobOccupationRelRecord> KEY_HISTORY_JOB_OCCUPATION_REL_PRIMARY = UniqueKeys0.KEY_HISTORY_JOB_OCCUPATION_REL_PRIMARY;
     public static final UniqueKey<HistoryJobPositionRecord> KEY_HISTORY_JOB_POSITION_PRIMARY = UniqueKeys0.KEY_HISTORY_JOB_POSITION_PRIMARY;
+    public static final UniqueKey<HistoryUserEmployeeRecord> KEY_HISTORY_USER_EMPLOYEE_PRIMARY = UniqueKeys0.KEY_HISTORY_USER_EMPLOYEE_PRIMARY;
+    public static final UniqueKey<HrWxHrChatListRecord> KEY_HR_WX_HR_CHAT_LIST_PRIMARY = UniqueKeys0.KEY_HR_WX_HR_CHAT_LIST_PRIMARY;
+    public static final UniqueKey<HrWxHrChatListBakRecord> KEY_HR_WX_HR_CHAT_LIST_BAK_PRIMARY = UniqueKeys0.KEY_HR_WX_HR_CHAT_LIST_BAK_PRIMARY;
+    public static final UniqueKey<HrWxHrChatListBakBakRecord> KEY_HR_WX_HR_CHAT_LIST_BAK_BAK_PRIMARY = UniqueKeys0.KEY_HR_WX_HR_CHAT_LIST_BAK_BAK_PRIMARY;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -89,6 +104,9 @@ public class Keys {
         public static Identity<HistoryJobApplicationConfRecord, Integer> IDENTITY_HISTORY_JOB_APPLICATION_CONF = createIdentity(HistoryJobApplicationConf.HISTORY_JOB_APPLICATION_CONF, HistoryJobApplicationConf.HISTORY_JOB_APPLICATION_CONF.ID);
         public static Identity<HistoryJobApplicationStatusBeisenRecord, Integer> IDENTITY_HISTORY_JOB_APPLICATION_STATUS_BEISEN = createIdentity(HistoryJobApplicationStatusBeisen.HISTORY_JOB_APPLICATION_STATUS_BEISEN, HistoryJobApplicationStatusBeisen.HISTORY_JOB_APPLICATION_STATUS_BEISEN.ID);
         public static Identity<HistoryJobPositionRecord, Integer> IDENTITY_HISTORY_JOB_POSITION = createIdentity(HistoryJobPosition.HISTORY_JOB_POSITION, HistoryJobPosition.HISTORY_JOB_POSITION.ID);
+        public static Identity<HrWxHrChatListRecord, Integer> IDENTITY_HR_WX_HR_CHAT_LIST = createIdentity(HrWxHrChatList.HR_WX_HR_CHAT_LIST, HrWxHrChatList.HR_WX_HR_CHAT_LIST.ID);
+        public static Identity<HrWxHrChatListBakRecord, Integer> IDENTITY_HR_WX_HR_CHAT_LIST_BAK = createIdentity(HrWxHrChatListBak.HR_WX_HR_CHAT_LIST_BAK, HrWxHrChatListBak.HR_WX_HR_CHAT_LIST_BAK.ID);
+        public static Identity<HrWxHrChatListBakBakRecord, Integer> IDENTITY_HR_WX_HR_CHAT_LIST_BAK_BAK = createIdentity(HrWxHrChatListBakBak.HR_WX_HR_CHAT_LIST_BAK_BAK, HrWxHrChatListBakBak.HR_WX_HR_CHAT_LIST_BAK_BAK.ID);
     }
 
     private static class UniqueKeys0 extends AbstractKeys {
@@ -103,5 +121,9 @@ public class Keys {
         public static final UniqueKey<HistoryJobApplicationStatusBeisenRecord> KEY_HISTORY_JOB_APPLICATION_STATUS_BEISEN_PRIMARY = createUniqueKey(HistoryJobApplicationStatusBeisen.HISTORY_JOB_APPLICATION_STATUS_BEISEN, "KEY_history_job_application_status_beisen_PRIMARY", HistoryJobApplicationStatusBeisen.HISTORY_JOB_APPLICATION_STATUS_BEISEN.ID);
         public static final UniqueKey<HistoryJobOccupationRelRecord> KEY_HISTORY_JOB_OCCUPATION_REL_PRIMARY = createUniqueKey(HistoryJobOccupationRel.HISTORY_JOB_OCCUPATION_REL, "KEY_history_job_occupation_rel_PRIMARY", HistoryJobOccupationRel.HISTORY_JOB_OCCUPATION_REL.PID);
         public static final UniqueKey<HistoryJobPositionRecord> KEY_HISTORY_JOB_POSITION_PRIMARY = createUniqueKey(HistoryJobPosition.HISTORY_JOB_POSITION, "KEY_history_job_position_PRIMARY", HistoryJobPosition.HISTORY_JOB_POSITION.ID);
+        public static final UniqueKey<HistoryUserEmployeeRecord> KEY_HISTORY_USER_EMPLOYEE_PRIMARY = createUniqueKey(HistoryUserEmployee.HISTORY_USER_EMPLOYEE, "KEY_history_user_employee_PRIMARY", HistoryUserEmployee.HISTORY_USER_EMPLOYEE.ID);
+        public static final UniqueKey<HrWxHrChatListRecord> KEY_HR_WX_HR_CHAT_LIST_PRIMARY = createUniqueKey(HrWxHrChatList.HR_WX_HR_CHAT_LIST, "KEY_hr_wx_hr_chat_list_PRIMARY", HrWxHrChatList.HR_WX_HR_CHAT_LIST.ID);
+        public static final UniqueKey<HrWxHrChatListBakRecord> KEY_HR_WX_HR_CHAT_LIST_BAK_PRIMARY = createUniqueKey(HrWxHrChatListBak.HR_WX_HR_CHAT_LIST_BAK, "KEY_hr_wx_hr_chat_list_bak_PRIMARY", HrWxHrChatListBak.HR_WX_HR_CHAT_LIST_BAK.ID);
+        public static final UniqueKey<HrWxHrChatListBakBakRecord> KEY_HR_WX_HR_CHAT_LIST_BAK_BAK_PRIMARY = createUniqueKey(HrWxHrChatListBakBak.HR_WX_HR_CHAT_LIST_BAK_BAK, "KEY_hr_wx_hr_chat_list_bak_bak_PRIMARY", HrWxHrChatListBakBak.HR_WX_HR_CHAT_LIST_BAK_BAK.ID);
     }
 }

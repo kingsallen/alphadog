@@ -1,7 +1,5 @@
 package com.moseeker.common.util;
 
-import com.moseeker.thrift.gen.profile.struct.Intention;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;

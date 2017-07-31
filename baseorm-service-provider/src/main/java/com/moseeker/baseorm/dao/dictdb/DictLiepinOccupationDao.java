@@ -1,5 +1,6 @@
 package com.moseeker.baseorm.dao.dictdb;
 
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.dictdb.tables.DictLiepinOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.Dict_51jobOccupation;
@@ -48,9 +49,23 @@ public class DictLiepinOccupationDao extends JooqCrudImpl<DictLiepinOccupationDO
         return result;
     }
 
-    public List getSingle(Query query) {
+    public List getSingle(JSONObject obj) {
+        Integer level = obj.getInteger("level");
+        Integer id = obj.getInteger("code");
+        Integer parentId = obj.getInteger("parent_id");
+        Query.QueryBuilder build = new Query.QueryBuilder();
+        build.where(DictLiepinOccupation.DICT_LIEPIN_OCCUPATION.STATUS.getName(), 1);
+        if (id != null) {
+            build.and(DictLiepinOccupation.DICT_LIEPIN_OCCUPATION.CODE.getName(), id);
+        }
+        if (parentId != null) {
+            build.and(DictLiepinOccupation.DICT_LIEPIN_OCCUPATION.PARENT_ID.getName(), parentId);
+        }
+        if (level != null) {
+            build.and(DictLiepinOccupation.DICT_LIEPIN_OCCUPATION.LEVEL.getName(), level);
+        }
         List<Map<String, Object>> allData = new ArrayList<>();
-        List<DictLiepinOccupationRecord> list = getRecords(query);
+        List<DictLiepinOccupationRecord> list = getRecords(build.buildQuery());
         if (list != null && list.size() > 0) {
             list.forEach(r -> {
                 Map<String, Object> map = new HashMap<String, Object>();
