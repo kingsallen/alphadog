@@ -150,7 +150,7 @@ public abstract class EmployeeBinder {
                     if (StringUtils.isNotNullOrEmpty(e.getActivationCode())) {
                         client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, e.getActivationCode());
                     }
-                } else {
+                } else if (e.getActivation() == 0) {
                     e.setEmailIsvalid((byte)0);
                     e.setActivation((byte)1);
                 }
