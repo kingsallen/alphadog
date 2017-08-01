@@ -890,7 +890,7 @@ public class UserHrAccountService {
      * @param pageNumber 第几页
      * @param pageSize   每页的条数
      */
-    public UserEmployeeVOPageVO employeeList(String keyword, Integer companyId, Integer filter, String order, String asc, Integer pageNumber, Integer pageSize) throws Exception {
+    public UserEmployeeVOPageVO employeeList(String keyword, Integer companyId, Integer filter, String order, String asc, Integer pageNumber, Integer pageSize) {
         if (companyId == 0) {
             throw UserAccountException.COMPANY_DATA_EMPTY;
         }
@@ -1031,6 +1031,29 @@ public class UserHrAccountService {
             throw UserAccountException.USEREMPLOYEES_EMPTY;
         }
         return userEmployeeVOPageVO;
+    }
+
+    /**
+     * 员工列表
+     *
+     * @param keyword    关键字搜索
+     * @param companyId  公司ID
+     * @param filter     过滤条件，0：全部，1：已认证，2：未认证,默认：0
+     * @param order      排序条件
+     * @param asc        正序，倒序 0: 正序,1:倒序 默认
+     * @param pageNumber 第几页
+     * @param startDate  积分计算开始时间
+     * @param endDate    积分计算结束时间
+     * @param pageSize   每页的条数
+     */
+    public UserEmployeeVOPageVO employeeList(String keyword, Integer companyId, Integer filter, String order, String asc, Integer pageNumber, Integer pageSize, String startDate, String endDate) throws Exception {
+        // 员工列表
+        if (StringUtils.isEmptyObject(startDate) && StringUtils.isEmptyObject(endDate)) {
+            return employeeList(keyword, companyId, filter, order, asc, pageNumber, pageSize);
+        }
+        // 获取积分月，季，年榜单
+
+        return null;
     }
 
     /**
