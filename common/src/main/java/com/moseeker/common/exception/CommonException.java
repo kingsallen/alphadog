@@ -49,6 +49,10 @@ public class CommonException extends RuntimeException {
         this.message = msg;
     }
 
+    public CommonException setMess(String message) {
+        return new CommonException(code, message);
+    }
+
     private int code;
     private String message;
 }

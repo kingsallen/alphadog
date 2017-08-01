@@ -24,8 +24,8 @@ public class ExceptionHandle {
 
     @ExceptionHandler(Exception.class)
     @ResponseBody
-    public String processCommonException(HttpServletRequest request, Exception ex) {
-        return ResponseLogNotification.fail(request, ResponseUtils.fail(99999, ex.getMessage()));
+    public String processException(HttpServletRequest request, Exception ex) {
+        return ResponseLogNotification.fail(request, ResponseUtils.fail(99999, ex.getMessage() != null ? ex.getMessage() : "系统异常!"));
     }
 
 

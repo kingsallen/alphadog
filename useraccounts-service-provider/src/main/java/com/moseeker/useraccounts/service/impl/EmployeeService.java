@@ -34,13 +34,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * @author ltf
- * 员工服务业务实现
- * 2017年3月3日
+ * @author ltf 员工服务业务实现 2017年3月3日
  */
 @Service
 @CounterIface
@@ -148,7 +147,7 @@ public class EmployeeService {
         return response;
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public EmployeeVerificationConfResponse getEmployeeVerificationConf(int companyId)
             throws TException {
         log.info("getEmployeeVerificationConf param: companyId={}", companyId);
@@ -162,7 +161,7 @@ public class EmployeeService {
                 EmployeeVerificationConf evc = new EmployeeVerificationConf();
                 evc.setCompanyId(employeeCertConf.getCompanyId());
                 evc.setEmailSuffix(JSONObject.parseArray(employeeCertConf.getEmailSuffix()).stream().map(m -> String.valueOf(m)).collect(Collectors.toList()));
-                evc.setAuthMode((short)employeeCertConf.getAuthMode());
+                evc.setAuthMode((short) employeeCertConf.getAuthMode());
                 evc.setAuthCode(employeeCertConf.getAuthCode());
                 evc.setCustom(employeeCertConf.getCustom());
                 // 为解决gradle build时无法完成类推导的问题，顾list不指定类型
@@ -170,7 +169,7 @@ public class EmployeeService {
                 evc.setQuestions(questions);
                 evc.setCustomHint(employeeCertConf.getCustomHint());
                 HrCompanyConfDO hrCompanyConfig = hrCompanyConfDao.getData(query.buildQuery());
-                evc.setBindSuccessMessage(hrCompanyConfig == null ? "":hrCompanyConfig.getEmployeeBinding());
+                evc.setBindSuccessMessage(hrCompanyConfig == null ? "" : hrCompanyConfig.getEmployeeBinding());
                 response.setEmployeeVerificationConf(evc);
                 log.info("EmployeeVerificationConfResponse: {}", response.getEmployeeVerificationConf());
                 response.setExists(true);
@@ -186,7 +185,7 @@ public class EmployeeService {
     public Result bind(BindingParams bindingParams) throws TException {
         Result response = new Result();
         String authMethod = "auth_method_".concat(bindingParams.getType().toString().toLowerCase());
-        if(!employeeBinder.containsKey(authMethod)) {
+        if (!employeeBinder.containsKey(authMethod)) {
             response.setSuccess(false);
             response.setMessage("暂不支持该认证方式");
         } else {
@@ -212,7 +211,7 @@ public class EmployeeService {
         }
 
         // 如果是email激活发送了激活邮件，但用户未激活(状态为PENDING)，此时用户进行取消绑定操作，删除员工认证的redis信息
-        for(UserEmployeeDO employee : employees) {
+        for (UserEmployeeDO employee : employees) {
             if (StringUtils.isNotNullOrEmpty(client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, employee.getActivationCode()))) {
                 client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, employee.getActivationCode());
                 response.setSuccess(true);
@@ -243,7 +242,7 @@ public class EmployeeService {
         try {
             customFields = hrEmployeeCustomFieldsDao.getDatas(query.buildQuery());
             log.info("select EmployeeCustomField by: {}, result = {}", query, customFields);
-            if(!StringUtils.isEmptyList(customFields)) {
+            if (!StringUtils.isEmptyList(customFields)) {
                 customFields.forEach(m -> {
                     EmployeeCustomFieldsConf efc = new EmployeeCustomFieldsConf();
                     efc.setId(m.getId());
@@ -271,14 +270,11 @@ public class EmployeeService {
         query.where("id", employeeId);
         UserEmployeeDO userEmployeeDO = employeeDao.getData(query.buildQuery());
         if (userEmployeeDO != null && userEmployeeDO.getId() > 0) {
-            /*
-			 * 开始查询积分规则：
-			 */
+            //开始查询积分规则：
             response.setRewardConfigs(companyConfigEntity.getRerawConfig(companyId));
             // 查询申请职位list
-
             response.setTotal(userEmployeeDO.getAward());
-            response.setRewards(employeeEntity.getEmployeePointsRecords(employeeId));
+            // response.setRewards(employeeEntity.getEmployeePointsRecords(employeeId));
         } else {
             throw ExceptionFactory.buildException(ExceptionCategory.USEREMPLOYEES_EMPTY);
         }
@@ -294,7 +290,7 @@ public class EmployeeService {
         query.where("employeeid", String.valueOf(employeeId));
         List<UserEmployeeDO> userEmployeesDO = employeeDao.getDatas(query.buildQuery());
         log.info("select userEmployee by: {}, result = {}", query, Arrays.toString(userEmployeesDO.toArray()));
-        if(StringUtils.isEmptyList(userEmployeesDO)) {
+        if (StringUtils.isEmptyList(userEmployeesDO)) {
             response.setSuccess(false);
             response.setMessage("员工信息不存在");
         } else {

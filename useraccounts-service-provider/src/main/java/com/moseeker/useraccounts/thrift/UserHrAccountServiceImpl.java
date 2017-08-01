@@ -13,15 +13,12 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
-import com.moseeker.thrift.gen.employee.struct.Reward;
+import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService.Iface;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.exception.ExceptionCategory;
 import com.moseeker.useraccounts.exception.ExceptionFactory;
 import com.moseeker.useraccounts.service.impl.UserHrAccountService;
-
-import java.util.ArrayList;
-
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -262,6 +259,7 @@ public class UserHrAccountServiceImpl implements Iface {
         return false;
     }
 
+
     /**
      * 积分列表
      *
@@ -271,15 +269,8 @@ public class UserHrAccountServiceImpl implements Iface {
      * @throws TException
      */
     @Override
-    public List<Reward> getEmployeeRewards(int employeeId) throws BIZException, TException {
-        List<Reward> result = new ArrayList<>();
-        try {
-            result = employeeEntity.getEmployeePointsRecords(employeeId);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            ExceptionFactory.buildException(ExceptionCategory.PROGRAM_EXCEPTION);
-        }
-        return result;
+    public RewardVOPageVO getEmployeeRewards(int employeeId, int pageNumber, int pageSize) throws BIZException {
+        return employeeEntity.getEmployeePointsRecords(employeeId, pageNumber, pageSize);
     }
 
     /**
@@ -317,16 +308,8 @@ public class UserHrAccountServiceImpl implements Iface {
      * @return
      */
     @Override
-    public UserEmployeeNumStatistic getListNum(String keyWord, int companyId) throws BIZException, TException {
-        try {
-            return service.getListNum(keyWord, companyId);
-        } catch (CommonException e) {
-            throw ExceptionConvertUtil.convertCommonException(e);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
-        }
-
+    public UserEmployeeNumStatistic getListNum(String keyWord, int companyId) throws BIZException {
+        return service.getListNum(keyWord, companyId);
     }
 
 
