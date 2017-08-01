@@ -1,8 +1,10 @@
 # file: company.struct
 
 namespace java com.moseeker.thrift.gen.company.struct
+include "../../dao/struct/hrdb_struct.thrift"
 
-typedef string Timestamp;
+
+typedef string Timestamp
 
 
 struct Hrcompany { 
@@ -27,3 +29,21 @@ struct Hrcompany {
    19: optional i32 source
 }
 
+struct CompanyForVerifyEmployee{
+    1: optional i32 id,                 //公司编号
+    2: optional string name,            //公司名称
+    3: optional string abbreviation,    //公司简称
+    4: optional string signature        //公司简称
+}
+
+// 获取公司部门与职能信息(员工认证补填字段显示)
+struct CompanyOptions{
+    1:list <hrdb_struct.HrEmployeePositionDO> hrEmployeePosition,
+    2:list <hrdb_struct.HrEmployeeSectionDO> hrEmployeeSection
+}
+
+// 公司认证配置
+struct CompanyCertConf{
+    1:list<hrdb_struct.HrEmployeeCertConfDO> hrEmployeeCertConf,
+    2:hrdb_struct.HrImporterMonitorDO hrImporterMonitor
+}

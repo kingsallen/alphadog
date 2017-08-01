@@ -1,8 +1,9 @@
 # file: useraccounts.struct
 
 namespace java com.moseeker.thrift.gen.useraccounts.struct
+include "../../dao/struct/userdb_struct.thrift"
 
-typedef string Timestamp;
+typedef string Timestamp
 
 
 struct Userloginreq { 
@@ -376,4 +377,61 @@ struct HrNpsStatistic {
     2: optional i32 page,
     3: optional i32 page_size,
     4: optional list<HrNpsInfo> data
+}
+
+struct UserEmployeeNumStatistic{
+    1: optional i32 unregcount,
+    2: optional i32 regcount
+}
+
+struct UserEmployeeVO{
+    1: optional i32 id, // ID
+    2: optional string username, // 姓名
+    3: optional string mobile, // 电话
+    4: optional string email, // 邮箱
+    5: optional string customField, // 自定义
+    6: optional string nickName, // 微信账号
+    7: optional i32 award, // 积分
+    8: optional i32 activation, // 认证状态
+    9: optional i32 companyId, // 公司ID
+    10: optional string companyName, // 公司名称
+    11: optional string companyAbbreviation, // 公司简称
+    12: optional string bindingTime, // 认证时间
+}
+// 员工列表分页实体
+struct UserEmployeeVOPageVO{
+    1:optional i32 pageNumber, // 当前第几页
+    2:optional i32 pageSize,// 每页多少条
+    3:optional i32 totalRow,// 总共多少条
+    4:optional list<UserEmployeeVO> data,
+}
+// 员工详情
+struct UserEmployeeDetailVO{
+    1: optional i32 id, // ID
+    2: optional string username, // 姓名
+    3: optional string mobile, // 电话
+    4: optional string email, // 邮箱
+    5: optional string customField, // 自定义
+    6: optional string nickName, // 微信账号
+    7: optional i32 activation, // 认证状态
+    8: optional string companyName, // 公司名称
+    9: optional string headImg, // 头像
+    10: optional i32 companyId, //
+    11: optional string companyAbbreviation, // 公司简称
+    12: optional string bindingTime // 绑定时间
+}
+// 员工导入统计数据
+struct ImportErrorUserEmployee{
+    1: optional i32 rowNum, // 第几条数据
+    2: optional string message, // 错误原因
+    3: optional userdb_struct.UserEmployeeDO userEmployeeDO // 员工实体
+}
+
+struct ImportUserEmployeeStatistic{
+    1: optional i32 repetitionCounts;
+    2: optional i32 errorCounts;
+    3: optional string message, // 错误原因
+    4: optional list<ImportErrorUserEmployee> userEmployeeDO, // 员工实体
+    5: optional i32 totalCounts, //总条数
+    6: optional bool insertAccept // 是否允许插入
 }
