@@ -7,7 +7,7 @@ import java.util.Map;
  * Created by jack on 10/04/2017.
  */
 public enum EmployeeType {
-    AUTH_SUCCESS(0), AUTH_CANCLE(1), AUTH_FAILAIN(2), AUTH_PENDING(3), AUTH_OTHER_COMPANY(4);
+    AUTH_SUCCESS(0), AUTH_CANCLE(1), AUTH_FAILAIN(2), AUTH_PENDING(3);
 
     private int value;
 
