@@ -251,9 +251,14 @@ public class PositionController {
                         }
                     });
                 });
-                positionBS.refreshPositionQXPlatform(paramQXList);
+                if(!StringUtils.isEmptyList(paramQXList)){
+                	 positionBS.refreshPositionQXPlatform(paramQXList);
+                }
+               
             }else{
-              positionBS.refreshPositionQXPlatform(paramQXList);
+            	  if(!StringUtils.isEmptyList(paramQXList)){
+                 	 positionBS.refreshPositionQXPlatform(paramQXList);
+                 }
             }
             Response res = ResponseUtils.success(refreshResult);
             return ResponseLogNotification.success(request, res);
