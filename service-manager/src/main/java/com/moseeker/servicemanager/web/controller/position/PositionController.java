@@ -499,7 +499,7 @@ public class PositionController {
     /*
      *获取pc端推荐职位列表
      */
-    @RequestMapping(value = "/position/apolegamic", method = RequestMethod.GET)
+    @RequestMapping(value = "/positions/apolegamic", method = RequestMethod.GET)
     @ResponseBody
     public String getPcRecommendPosition(HttpServletRequest request, HttpServletResponse response){
     	try{
