@@ -342,6 +342,8 @@ public class EmployeeEntity {
     public List<Integer> getCompanyIdsByUserId(Integer userId) {
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         queryBuilder.where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.getName(), userId);
+        queryBuilder.and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), EmployeeType.AUTH_SUCCESS.getValue());
+        queryBuilder.and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), AbleFlag.OLDENABLE.getValue());
         UserEmployeeDO userEmployeeDO = employeeDao.getData(queryBuilder.buildQuery());
         if (StringUtils.isEmptyObject(userEmployeeDO)) {
             return new ArrayList<>();
