@@ -1399,6 +1399,8 @@ public class UserHrAccountService {
             Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
             queryBuilder.where(UserEmployee.USER_EMPLOYEE.EMAIL.getName(), email)
                     .and(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyId)
+                    .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), 0)
+                    .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), 0)
                     .and(new Condition(UserEmployee.USER_EMPLOYEE.ID.getName(), userEmployeeId, ValueOp.NEQ));
             UserEmployeeDO userEmployeeDO = userEmployeeDao.getData(queryBuilder.buildQuery());
             if (!StringUtils.isEmptyObject(userEmployeeDO)) {
@@ -1410,6 +1412,7 @@ public class UserHrAccountService {
             Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
             queryBuilder.where(UserEmployee.USER_EMPLOYEE.CNAME.getName(), cname)
                     .and(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.getName(), customField)
+                    .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), 0)
                     .and(new Condition(UserEmployee.USER_EMPLOYEE.ID.getName(), userEmployeeId, ValueOp.NEQ));
             UserEmployeeDO userEmployeeDO = userEmployeeDao.getData(queryBuilder.buildQuery());
             if (!StringUtils.isEmptyObject(userEmployeeDO)) {
