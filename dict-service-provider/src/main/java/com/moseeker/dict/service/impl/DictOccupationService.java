@@ -51,27 +51,14 @@ public class DictOccupationService {
 		int single_layer=obj.getIntValue("single_layer");
 		int channel=obj.getIntValue("channel");
 		try{
+
 			if(single_layer==1){
-				Integer level=obj.getInteger("level") ;
-				Integer id=obj.getInteger("code");
-				Integer parentId=obj.getInteger("parent_id");
-				Query.QueryBuilder build=new Query.QueryBuilder();
-				build.where("status",1);
-				if(id!=null){
-					build.and("code", id);
-				}
-				if(parentId!=null){
-					build.and("parent_id", parentId);
-				}
-				if(level!=null){
-					build.and("level", level);
-				}
 				if(channel==1){
-					return ResponseUtils.success(dict51OccupationDao.getSingle(build.buildQuery()));
+					return ResponseUtils.success(dict51OccupationDao.getSingle(obj));
 				}else if(channel==2){
-					return ResponseUtils.success(dictLiepinOccupationDao.getSingle(build.buildQuery()));
+					return ResponseUtils.success(dictLiepinOccupationDao.getSingle(obj));
 				}else if(channel==3){
-					return ResponseUtils.success(dictZpinOccupationDao.getSingle(build.buildQuery()));
+					return ResponseUtils.success(dictZpinOccupationDao.getSingle(obj));
 				}
 			}else{
 				if(channel==1){

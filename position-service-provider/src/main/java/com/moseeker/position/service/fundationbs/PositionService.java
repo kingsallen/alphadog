@@ -377,6 +377,12 @@ public class PositionService {
             return syncAccount;
         }
 
+        HrCompanyDO subCompany = hrCompanyAccountDao.getHrCompany(position.getPublisher());
+
+        if (subCompany != null) {
+            syncAccount.setCompany_name(subCompany.getAbbreviation());
+        }
+
         syncAccount.setUser_name(thirdPartyAccount.getUsername());
         syncAccount.setMember_name(thirdPartyAccount.getMembername());
         syncAccount.setPassword(thirdPartyAccount.getPassword());
@@ -1569,6 +1575,7 @@ public class PositionService {
             String position = "";
             try {
                 logger.info("---Start ES Search Engine---");
+                Thread.sleep(400);
                 for (Integer jobPositionId : list) {
                     Response result = getPositionById(jobPositionId);
                     if (StringUtils.isEmptyObject(result.data)) {

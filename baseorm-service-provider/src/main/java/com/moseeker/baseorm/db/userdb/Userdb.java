@@ -11,6 +11,7 @@ import com.moseeker.baseorm.db.userdb.tables.UserCompanyFollow;
 import com.moseeker.baseorm.db.userdb.tables.UserCompanyVisitReq;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
+import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecordCompanyRel;
 import com.moseeker.baseorm.db.userdb.tables.UserFavPosition;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.UserIntention;
@@ -47,7 +48,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Userdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 757538855;
+    private static final long serialVersionUID = -1992433819;
 
     /**
      * The reference instance of <code>userdb</code>
@@ -88,6 +89,11 @@ public class Userdb extends SchemaImpl {
      * 员工积分记录表
      */
     public final UserEmployeePointsRecord USER_EMPLOYEE_POINTS_RECORD = com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD;
+
+    /**
+     * The table <code>userdb.user_employee_points_record_company_rel</code>.
+     */
+    public final UserEmployeePointsRecordCompanyRel USER_EMPLOYEE_POINTS_RECORD_COMPANY_REL = com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecordCompanyRel.USER_EMPLOYEE_POINTS_RECORD_COMPANY_REL;
 
     /**
      * 用户职位收藏
@@ -176,6 +182,7 @@ public class Userdb extends SchemaImpl {
             UserCompanyVisitReq.USER_COMPANY_VISIT_REQ,
             UserEmployee.USER_EMPLOYEE,
             UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD,
+            UserEmployeePointsRecordCompanyRel.USER_EMPLOYEE_POINTS_RECORD_COMPANY_REL,
             UserFavPosition.USER_FAV_POSITION,
             UserHrAccount.USER_HR_ACCOUNT,
             UserIntention.USER_INTENTION,

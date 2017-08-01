@@ -2,10 +2,12 @@ package com.moseeker.servicemanager.web.controller.useraccounts;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
+import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.useraccounts.service.UserEmployeeService;
@@ -98,6 +100,26 @@ public class UserEmployeeController {
 
             Response result = service.postPutUserEmployeeBatch(batchForm);
             return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value="/user/employee/check", method = RequestMethod.GET)
+    @ResponseBody
+    public String checkUserIsEmployee(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int userId = params.getInt("userId", 0);
+            int companyId = params.getInt("companyId", 0);
+            if (companyId == 0) {
+                return ResponseLogNotification.fail(request, "公司Id不能为空");
+            } else if (userId == 0) {
+                return ResponseLogNotification.fail(request, "员工Id不能为空");
+            } else {
+                boolean result = service.isEmployee(userId, companyId);
+                return ResponseLogNotification.success(request, ResponseUtils.success(new HashMap<String, Object>(){{put("result", result);}}));
+            }
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
