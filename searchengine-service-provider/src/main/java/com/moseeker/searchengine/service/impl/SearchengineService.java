@@ -1,15 +1,19 @@
 package com.moseeker.searchengine.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.util.TypeUtils;
 import com.moseeker.common.util.ConverTools;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.searchengine.util.SearchUtil;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
 import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
@@ -18,11 +22,11 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.sort.SortBuilder;
-import org.elasticsearch.search.sort.SortBuilders;
+import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.moseeker.common.annotation.iface.CounterIface;
@@ -36,6 +40,9 @@ import com.moseeker.thrift.gen.common.struct.Response;
 public class SearchengineService {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    @Autowired
+    private SearchUtil searchUtil;
 
     public Response query(String keywords, String cities, String industries, String occupations, String scale,
                           String employment_type, String candidate_source, String experience, String degree, String salary,
@@ -294,6 +301,27 @@ public class SearchengineService {
         }
 
         return ResponseUtils.success("");
+    }
+
+    public Response queryAwardRanking(List<Integer> employeeIds, String timespan, int pageSize, int pageNum) {
+        QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
+        QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
+        searchUtil.handleTerms(Arrays.toString(employeeIds.toArray()).replaceAll("\\[|\\]| ", ""), query, "employee_id");
+        searchUtil.handleTerms(timespan, query, "awards."+timespan+".timespan");
+        SearchRequestBuilder searchRequestBuilder = searchUtil.getEsClient().prepareSearch("awards").setQuery(query)
+                .addSort("awards."+timespan+".award", SortOrder.DESC)
+                .addSort("awards."+timespan+".last_update_time", SortOrder.ASC)
+                .setFetchSource(new String[]{"employee_id", "awards."+timespan+".award", "awards."+timespan+".last_update_time"}, null);
+        if (pageNum > 0 && pageSize >0) {
+            searchRequestBuilder.setSize(pageSize).setFrom((pageNum - 1) * pageSize);
+        }
+        SearchResponse response = searchRequestBuilder.execute().actionGet();
+        Map<Integer, Object> data = new HashMap<Integer, Object>();
+        for (SearchHit searchHit : response.getHits().getHits()){
+            JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
+            data.put(TypeUtils.castToInt(jsonObject.remove("employee_id")), jsonObject);
+        }
+        return ResponseUtils.success(data);
     }
 
 }

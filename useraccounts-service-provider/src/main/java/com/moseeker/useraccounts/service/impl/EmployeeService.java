@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
@@ -16,10 +17,12 @@ import com.moseeker.entity.CompanyConfigEntity;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.UserWxEntity;
 import com.moseeker.rpccenter.client.ServiceManager;
+import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.employee.struct.*;
 import com.moseeker.thrift.gen.mq.service.MqService;
+import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.moseeker.useraccounts.exception.ExceptionCategory;
 import com.moseeker.useraccounts.exception.ExceptionFactory;
 import com.moseeker.useraccounts.service.EmployeeBinder;
@@ -49,7 +52,7 @@ public class EmployeeService {
     private RedisClient client;
 
     MqService.Iface mqService = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
-
+    SearchengineServices.Iface searchService = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
 
     @Autowired
     private JobApplicationDao applicationDao;
@@ -319,7 +322,18 @@ public class EmployeeService {
             log.info("员工信息不存在或未认证，employeeInfo = {}", employeeDO);
             return response;
         }
-        List<UserEmployeeDO> employeeDOList = employeeEntity.getUserEmployeeDOList(companyId);
+        List<UserEmployeeDO> employeeDOList = employeeEntity.getVerifiedUserEmployeeDOList(companyId);
+        Map<Integer, UserEmployeeDO> employeeDOMap = employeeDOList.stream().collect(Collectors.toMap(k -> k.getId(), v -> v, (ok, nk) -> nk));
+        try {
+            Response result = searchService.queryAwardRanking(employeeDOMap.keySet().stream().collect(Collectors.toList()), "", 0, 0);
+            if (result.getStatus() == 0){
+               // 解析数据
+            } else {
+                log.error("query awardRanking data error");
+            }
+        } catch (TException e) {
+            e.printStackTrace();
+        }
         return response;
     }
 }

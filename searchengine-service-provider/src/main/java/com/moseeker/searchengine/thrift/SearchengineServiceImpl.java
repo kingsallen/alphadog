@@ -1,5 +1,6 @@
 package com.moseeker.searchengine.thrift;
 
+import java.util.List;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +29,11 @@ public class SearchengineServiceImpl implements Iface {
     @Override
     public Response updateposition(String position,int  id) throws TException {
        return service.updateposition(position, id);
+    }
+
+    @Override
+    public Response queryAwardRanking(List<Integer> employeeIds, String timespan, int pageSize, int pageNum) throws TException {
+        return service.queryAwardRanking(employeeIds, timespan, pageSize, pageNum);
     }
 
 }

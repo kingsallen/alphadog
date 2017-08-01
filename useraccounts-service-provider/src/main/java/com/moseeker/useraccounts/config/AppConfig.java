@@ -11,4 +11,5 @@ import org.springframework.context.annotation.Import;
 @ComponentScan({"com.moseeker.useraccounts", "com.moseeker.entity", "com.moseeker.common.aop.iface", "com.moseeker.common.aop.notify"})
 @Import(com.moseeker.baseorm.config.AppConfig.class)
 public class AppConfig {
+
 }

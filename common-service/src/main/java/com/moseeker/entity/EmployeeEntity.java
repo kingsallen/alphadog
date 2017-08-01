@@ -12,7 +12,6 @@ import com.moseeker.baseorm.dao.userdb.UserEmployeePointsRecordCompanyRelDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.baseorm.dao.userdb.UserEmployeePointsRecordDao;
-import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompanyRel;
