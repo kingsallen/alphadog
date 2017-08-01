@@ -218,6 +218,7 @@ public class PositionController {
             logger.info("/position/refresh");
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             List<HashMap<Integer, Integer>> paramList = PositionParamUtils.parseRefreshParam(params);
+            List< Integer> paramQXList = PositionParamUtils.parseRefreshParamQX(params);
             logger.info("/position/refresh paramList.size:" + paramList.size());
             List<Object> refreshResult = new ArrayList<>();
             if (paramList.size() > 0) {
@@ -226,11 +227,11 @@ public class PositionController {
                         try {
                             //同步到智联的第三方职位不刷新
                             if (ChannelType.ZHILIAN.getValue() == channel) {
-                                logger.info("synchronize position:{}:zhilian skip", positionId);
-                                List<Integer> positionIds = new ArrayList<Integer>();
+                                logger.info("synchronize position:{}:zhilian skip",positionId);
+                                List<Integer> positionIds =new ArrayList<Integer>();
                                 positionIds.add(positionId);
                                 positionBS.refreshPositionQXPlatform(positionIds);
-                            } else {
+                            }else {
                                 logger.info("positionId:" + positionId + "    channel:" + channel);
                                 Response refreshPositionResponse = positionBS.refreshPositionToThirdPartyPlatform(positionId, channel);
                                 logger.info("data:" + refreshPositionResponse.getData());
@@ -250,9 +251,9 @@ public class PositionController {
                         }
                     });
                 });
-            } else {
-                List<Integer> paramQXList = PositionParamUtils.parseRefreshParamQX(params);
                 positionBS.refreshPositionQXPlatform(paramQXList);
+            }else{
+              positionBS.refreshPositionQXPlatform(paramQXList);
             }
             Response res = ResponseUtils.success(refreshResult);
             return ResponseLogNotification.success(request, res);
