@@ -22,6 +22,7 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.employee.struct.Reward;
 import com.moseeker.thrift.gen.employee.struct.RewardConfig;
+import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.position.struct.City;
 import com.moseeker.thrift.gen.position.struct.JobPostrionObj;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
@@ -35,6 +36,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -555,27 +557,24 @@ public class UserHrAccountController {
      */
     @RequestMapping(value = "/hraccount/employee/rewards", method = RequestMethod.GET)
     @ResponseBody
-    public String getEmployeeRawards(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            int employeeId = params.getInt("employeeId", 0);
-            int companyId = params.getInt("companyId", 0);
-            if (employeeId == 0) {
-                return ResponseLogNotification.fail(request, "员工Id不能为空");
-            } else {
-                // 权限判断
-                Boolean permission = userHrAccountService.permissionJudgeWithUserEmployeeIdAndCompanyId(employeeId, companyId);
-                if (!permission) {
-                    return ResponseLogNotification.failResponse(request, ConstantErrorCodeMessage.PERMISSION_DENIED);
-                }
-                List<Reward> result = userHrAccountService.getEmployeeRewards(employeeId);
-                return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(result)));
+    public String getEmployeeRawards(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        Params<String, Object> params = ParamUtils.parseRequestParam(request);
+        int employeeId = params.getInt("employeeId", 0);
+        int companyId = params.getInt("companyId", 0);
+        int pageNumber = params.getInt("pageNumber", 0);
+        int pageSize = params.getInt("pageSize", 0);
+        if (employeeId == 0) {
+            return ResponseLogNotification.fail(request, "员工Id不能为空");
+        } else {
+            // 权限判断
+            Boolean permission = userHrAccountService.permissionJudgeWithUserEmployeeIdAndCompanyId(employeeId, companyId);
+            if (!permission) {
+                return ResponseLogNotification.failResponse(request, ConstantErrorCodeMessage.PERMISSION_DENIED);
             }
-        } catch (BIZException e) {
-            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
-        } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            RewardVOPageVO result = userHrAccountService.getEmployeeRewards(employeeId, pageNumber, pageSize);
+            return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(result)));
         }
+
     }
 
 

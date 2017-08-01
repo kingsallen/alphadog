@@ -131,7 +131,7 @@ service UserHrAccountService {
     // 删除员工
     bool delEmployee(1: list<i32> ids) throws (1: common_struct.BIZException e);
     // 获取员工积分列表
-    list<employee_struct.Reward> getEmployeeRewards(1: i32 employeeId) throws (1: common_struct.BIZException e);
+    employee_struct.RewardVOPageVO getEmployeeRewards(1: i32 employeeId,2:i32 pageNumber, 3:i32 pageSize) throws (1: common_struct.BIZException e);
     // 员工添加积分
     i32 addEmployeeReward(1: i32 employeeId, 2: i32 points, 3: string reason) throws (1: common_struct.BIZException e);
     // 通过公司ID和关键字,查询认证员工和未认证员工数量

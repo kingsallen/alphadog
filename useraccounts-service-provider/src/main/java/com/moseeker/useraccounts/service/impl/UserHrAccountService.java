@@ -27,6 +27,7 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.*;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.EmployeeEntity;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
@@ -829,7 +830,7 @@ public class UserHrAccountService {
      * @param companyId 公司ID
      * @return
      */
-    public UserEmployeeNumStatistic getListNum(String keyWord, Integer companyId) throws Exception {
+    public UserEmployeeNumStatistic getListNum(String keyWord, Integer companyId) throws CommonException {
         UserEmployeeNumStatistic userEmployeeNumStatistic = new UserEmployeeNumStatistic();
         userEmployeeNumStatistic.setUnregcount(0);
         userEmployeeNumStatistic.setRegcount(0);
