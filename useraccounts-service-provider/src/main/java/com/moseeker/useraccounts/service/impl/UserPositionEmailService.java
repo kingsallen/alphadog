@@ -52,7 +52,7 @@ public class UserPositionEmailService {
 	}
 	//发送邮箱验证邮件
 	public int  sendEmailvalidation(String email,int userId,String conditions,String urls) throws TException{
-		if(StringUtils.isEmpty(email)||userId==0||StringUtils.isEmpty(conditions)){
+		if(StringUtils.isEmpty(email)||userId==0){
 			return 0;
 		}
 		UserUserDO user=getUserInfobyId(userId);
@@ -61,8 +61,8 @@ public class UserPositionEmailService {
 		}
 		Map<String,String > data=new HashMap<String,String>();
 		String conditionWords=this.convertConditionForEmail(conditions);
-		if(StringUtils.isEmpty(conditions)){
-			return 0;
+		if(conditionWords==null){
+			conditionWords="";
 		}
 		data.put("#auth_url#", urls);
 		data.put("#search_condition#", conditionWords);

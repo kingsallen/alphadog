@@ -31,6 +31,7 @@ public class UserEmailPosition {
 		 Map<String, Object> reqParams = null;
     	 try{
     		 reqParams = ParamUtils.parseRequestParam(request);
+    		 logger.info(JSON.toJSONString(reqParams)+"++++++++++++++++++");
     		 int userId=(int) reqParams.get("userId");
     		 logger.info("向user_id为{}的用户发送职位推荐邮件",userId);
     		 Response res=userQxService.sendRecommendPosition(userId);
