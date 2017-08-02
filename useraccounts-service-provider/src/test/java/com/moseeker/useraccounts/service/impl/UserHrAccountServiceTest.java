@@ -1,5 +1,7 @@
 package com.moseeker.useraccounts.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.employee.struct.Employee;
@@ -14,6 +16,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = AppConfig.class)
@@ -47,7 +50,8 @@ public class UserHrAccountServiceTest {
     @Test
     public void employeeList() {
         try {
-            System.out.println(userHrAccountService.employeeList("", 3, 0, "", "", 10, 1, "201708"));
+
+//            System.out.println(userHrAccountService.employeeList("", 39978, 0, "", "", 1, 10, "2017"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -121,6 +125,31 @@ public class UserHrAccountServiceTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    /**
+     * 主入口
+     *
+     * @param args
+     */
+    public static void main(String args[]){
+        String str = "{\n" +
+                "    29154: {\n" +
+                "        \"awards\": {\n" +
+                "            \"2017\": {\n" +
+                "                \"last_update_time\": \"2017-07-28T19:34:59\",\n" +
+                "                \"award\": 48\n" +
+                "            }\n" +
+                "        }\n" +
+                "    }\n" +
+                "}";
+
+        Map maps = (Map)JSON.parse(str);
+
+        System.out.println(maps.get("29154"));
+
+        System.out.println(maps.size());
     }
 
 

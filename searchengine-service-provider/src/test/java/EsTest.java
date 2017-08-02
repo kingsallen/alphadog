@@ -20,7 +20,7 @@ public class EsTest {
 
     @Test
     public void serachTest() throws TException {
-        Response response = service.queryAwardRanking(Arrays.asList(39978), "2017-08",0, 0);
+        Response response = service.queryAwardRanking(Arrays.asList(39978), "2017",0, 0);
         System.out.println(response);
     }
 }

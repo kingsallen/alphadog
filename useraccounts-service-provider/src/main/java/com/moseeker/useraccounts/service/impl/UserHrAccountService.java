@@ -1,6 +1,7 @@
 package com.moseeker.useraccounts.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
@@ -1061,25 +1062,17 @@ public class UserHrAccountService {
         Condition companyIdCon = new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), list, ValueOp.IN);
         queryBuilder.where(companyIdCon).and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), 0);
         List<Integer> companyIds = employeeEntity.getCompanyIds(companyId);
-
         // 员工列表
-        if (StringUtils.isEmptyObject(timespan)) {
+        if (StringUtils.isNullOrEmpty(timespan)) {
             return employeeList(keyword, companyId, companyIds, filter, order, asc, pageNumber, pageSize);
         }
         // 获取积分月，季，年榜单,先取出该公司下所有的员工
-        queryBuilder.clear();
-        queryBuilder.select(UserEmployee.USER_EMPLOYEE.ID.getName()).where(new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyIds, ValueOp.IN))
-                .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), 0);
-        List<UserEmployeeDO> userEmployeeDOs = userEmployeeDao.getDatas(queryBuilder.buildQuery());
-        List<Integer> userEmployeeIds = userEmployeeDOs.stream().map(m -> m.getId()).collect(Collectors.toList());
-        System.out.println(userEmployeeIds.size());
-        if (StringUtils.isEmptyList(userEmployeeIds)) {
-            throw UserAccountException.USEREMPLOYEES_EMPTY;
-        }
         // 从ES中获取数据
-        Response response = searchengineServices.queryAwardRanking(userEmployeeIds, timespan, pageSize, pageNumber);
+        Response response = searchengineServices.queryAwardRanking(companyIds, timespan, pageSize, pageNumber);
+        // ES取到数据
         if (response.getStatus() == 0) {
 
+            return employeeList(keyword, companyId, companyIds, filter, order, asc, pageNumber, pageSize);
         }
         return null;
     }
@@ -1175,9 +1168,8 @@ public class UserHrAccountService {
      * @param companyId       公司ID
      */
     @Transactional
-    public Response employeeImport(Integer
-                                           companyId, Map<Integer, UserEmployeeDO> userEmployeeMap, String filePath, String
-                                           fileName, Integer type, Integer hraccountId) throws Exception {
+    public Response employeeImport(Integer companyId, Map<Integer, UserEmployeeDO> userEmployeeMap, String filePath, String
+            fileName, Integer type, Integer hraccountId) throws Exception {
         Response response = new Response();
         logger.info("开始导入员工信息");
         // 判断是否有重复数据
@@ -1260,8 +1252,7 @@ public class UserHrAccountService {
      * @return
      */
 
-    public ImportUserEmployeeStatistic checkBatchInsert
-    (Map<Integer, UserEmployeeDO> userEmployeeMap, Integer companyId) throws Exception {
+    public ImportUserEmployeeStatistic checkBatchInsert(Map<Integer, UserEmployeeDO> userEmployeeMap, Integer companyId) throws Exception {
         return repetitionFilter(userEmployeeMap, companyId);
     }
 
@@ -1271,8 +1262,7 @@ public class UserHrAccountService {
      * @param userEmployeeMap
      * @param companyId
      */
-    public ImportUserEmployeeStatistic repetitionFilter
-    (Map<Integer, UserEmployeeDO> userEmployeeMap, Integer companyId) throws Exception {
+    public ImportUserEmployeeStatistic repetitionFilter(Map<Integer, UserEmployeeDO> userEmployeeMap, Integer companyId) throws Exception {
         if (companyId == 0) {
             throw UserAccountException.COMPANYID_ENPTY;
         }
