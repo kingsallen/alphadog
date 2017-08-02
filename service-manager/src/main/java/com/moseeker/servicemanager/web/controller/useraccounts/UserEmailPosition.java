@@ -52,7 +52,7 @@ public class UserEmailPosition {
 			 int userId=Integer.parseInt(reqParams.get("userId")+"");
 	   		 String email= (String) params.get("email");
 	   		 String conditions= (String) params.get("conditions");
-			 String urls=(String) reqParams.get("urls");
+			 String urls=(String) reqParams.get("url");
 	   		 logger.info("向user_id为{}的用户发送邮箱验证邮件",userId);
 	   		 Response res=userQxService.sendValiddateEmail(email, userId, conditions,urls);
 	   		 return ResponseLogNotification.success(request,res);
