@@ -32,7 +32,7 @@ public class UserEmailPosition {
     	 try{
     		 reqParams = ParamUtils.parseRequestParam(request);
     		 logger.info(JSON.toJSONString(reqParams)+"++++++++++++++++++");
-    		 int userId=(int) reqParams.get("userId");
+    		 int userId=Integer.parseInt(reqParams.get("userId")+"");
     		 logger.info("向user_id为{}的用户发送职位推荐邮件",userId);
     		 Response res=userQxService.sendRecommendPosition(userId);
     		 return ResponseLogNotification.success(request,res);
@@ -49,7 +49,7 @@ public class UserEmailPosition {
 	   	 try{
 	   		 reqParams = ParamUtils.parseRequestParam(request);
 	   		 Map<String,Object> params= (Map<String, Object>) reqParams.get("conditions");
-	   		 int userId=(int) params.get("userId");
+			 int userId=Integer.parseInt(reqParams.get("userId")+"");
 	   		 String email= (String) params.get("email");
 	   		 String conditions= (String) params.get("conditions");
 			 String urls=(String) reqParams.get("urls");
@@ -68,7 +68,7 @@ public class UserEmailPosition {
 		Map<String, Object> reqParams = null;
 	   	 try{
 	   		 reqParams = ParamUtils.parseRequestParam(request);
-	   		 int userId=(int) reqParams.get("userId");
+			 int userId=Integer.parseInt(reqParams.get("userId")+"");
 	   		 String conditions=JSON.toJSONString(reqParams.get("conditions"));
 	   		 logger.info("将user_id为{0}的用户查询条件为{1}保存或者更新到数据库",userId,conditions);
 	   		 Response res=userQxService.postUserEmailPosition(userId, conditions);
