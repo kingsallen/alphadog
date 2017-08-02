@@ -1085,8 +1085,6 @@ public class UserHrAccountService {
         // 查询公司信息
         Map<Integer, HrCompanyDO> companyMap = companyList.stream().collect(Collectors.toMap(HrCompanyDO::getId, Function.identity()));
         for (UserEmployeeDO userEmployeeDO : list) {
-            long tempCreate = System.currentTimeMillis();
-            logger.info("employeeExport before create userEmployeeVO date:{}", System.currentTimeMillis());
             UserEmployeeVO userEmployeeVO = new UserEmployeeVO();
             userEmployeeVO.setId(userEmployeeDO.getId());
             userEmployeeVO.setUsername(userEmployeeDO.getCname());
@@ -1094,26 +1092,21 @@ public class UserHrAccountService {
             userEmployeeVO.setCustomField(userEmployeeDO.getCustomField());
             userEmployeeVO.setEmail(userEmployeeDO.getEmail());
             userEmployeeVO.setCompanyId(userEmployeeDO.getCompanyId());
-            logger.info("employeeExport before set nickname date:{}", System.currentTimeMillis());
             if (userMap != null && userMap.size() > 0 && userMap.get(userEmployeeDO.getSysuserId()) != null) {
                 userEmployeeVO.setNickName(userMap.get(userEmployeeDO.getSysuserId()).getNickname());
             } else {
                 userEmployeeVO.setNickName("未知");
             }
-            logger.info("employeeExport before set companyName date:{}", System.currentTimeMillis());
             // 公司名称
             if (companyMap != null && companyMap.size() > 0 && companyMap.get(userEmployeeDO.getCompanyId()) != null) {
                 HrCompanyDO companyDO = companyMap.get(userEmployeeDO.getCompanyId());
                 userEmployeeVO.setCompanyName(companyDO.getName() != null ? companyDO.getName() : "");
                 userEmployeeVO.setCompanyAbbreviation(companyDO.getAbbreviation() != null ? companyDO.getAbbreviation() : "");
             }
-            logger.info("employeeExport before create userEmployeeVO date:{}", System.currentTimeMillis());
             userEmployeeVO.setActivation((new Double(userEmployeeDO.getActivation())).intValue());
             userEmployeeVO.setAward(userEmployeeDO.getAward());
             userEmployeeVO.setBindingTime(userEmployeeDO.getCreateTime());
             userEmployeeVOS.add(userEmployeeVO);
-            logger.info("employeeExport create userEmployeeVO date:{}", System.currentTimeMillis());
-            logger.info("employeeExport userEmployeeVO runtime time:{}", System.currentTimeMillis() - tempCreate);
         }
         return userEmployeeVOS;
     }
