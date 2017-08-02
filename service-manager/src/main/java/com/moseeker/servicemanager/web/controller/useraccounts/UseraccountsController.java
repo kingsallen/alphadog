@@ -188,6 +188,23 @@ public class UseraccountsController {
 		}
 	}
 
+    @RequestMapping(value = "/user/sendsignupcode/voice", method = RequestMethod.POST)
+    @ResponseBody
+    public String postsendsignupcodeVice(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Object mobile = ParamUtils.parseRequestParam(request).get("mobile");
+            Response result = useraccountsServices.postsendsignupcodeVoice(BeanUtils.converToString(mobile));
+            if (result.getStatus() == 0) {
+                return ResponseLogNotification.success(request, result);
+            } else {
+                return ResponseLogNotification.fail(request, result);
+            }
+
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
 	@RequestMapping(value = "/user/wxbindmobile", method = RequestMethod.POST)
 	@ResponseBody
 	public String postuserwxbindmobile(HttpServletRequest request, HttpServletResponse response) {
