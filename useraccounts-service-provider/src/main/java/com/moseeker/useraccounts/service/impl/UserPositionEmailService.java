@@ -6,6 +6,8 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.moseeker.common.annotation.iface.CounterIface;
 import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -47,10 +49,12 @@ public class UserPositionEmailService {
 	private MqService.Iface mqService = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
 	static Logger logger = LoggerFactory.getLogger(UserPositionEmailService.class);
 	//处理职位推荐邮件的的插入或者更新
+	@CounterIface
 	public int postUserPositionEmail(int userId,String conditions){
 		return userPositionEmailDao.insertOrUpdateData(userId, conditions);
 	}
 	//发送邮箱验证邮件
+	@CounterIface
 	public int  sendEmailvalidation(String email,int userId,String conditions,String urls) throws TException{
 		if(StringUtils.isEmpty(email)||userId==0){
 			return 0;
@@ -74,6 +78,7 @@ public class UserPositionEmailService {
 		return 1;
 	}
 	//发送职位推荐邮件
+	@CounterIface
 	public int sendEmailPosition(int userId) throws Exception{
 		UserUserDO userDO=getUserInfobyId(userId);
 		UserPositionEmailDO emailDO=getUserPositionByUserId(userId);
