@@ -58,6 +58,7 @@ public class UserPositionEmailService {
 	public int  sendEmailvalidation(String email,int userId,String conditions,String urls) throws TException{
 		logger.info("email={0},userId={1},conditions={2},urls={3}",email,userId,conditions,urls);
 		if(StringUtils.isEmpty(email)||userId==0){
+			logger.info("***************************************");
 			return 0;
 		}
 		UserUserDO user=getUserInfobyId(userId);
