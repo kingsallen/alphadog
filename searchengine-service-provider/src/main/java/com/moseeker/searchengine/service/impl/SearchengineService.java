@@ -1,6 +1,7 @@
 package com.moseeker.searchengine.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.util.TypeUtils;
 import com.moseeker.common.util.ConverTools;
@@ -303,11 +304,14 @@ public class SearchengineService {
         return ResponseUtils.success("");
     }
 
-    public Response queryAwardRanking(List<Integer> employeeIds, String timespan, int pageSize, int pageNum) {
+    private SearchRequestBuilder getSearchRequestBuilder(List<Integer> companyIds, String activation, int pageSize, int pageNum, String timespan) {
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
-        searchUtil.handleTerms(Arrays.toString(employeeIds.toArray()).replaceAll("\\[|\\]| ", ""), query, "employee_id");
+        searchUtil.handleTerms(Arrays.toString(companyIds.toArray()).replaceAll("\\[|\\]| ", ""), query, "company_id");
         searchUtil.handleTerms(timespan, query, "awards."+timespan+".timespan");
+        if (activation != null) {
+            searchUtil.handleTerms(activation, query, "activtion");
+        }
         SearchRequestBuilder searchRequestBuilder = searchUtil.getEsClient().prepareSearch("awards").setQuery(query)
                 .addSort("awards."+timespan+".award", SortOrder.DESC)
                 .addSort("awards."+timespan+".last_update_time", SortOrder.ASC)
@@ -315,8 +319,14 @@ public class SearchengineService {
         if (pageNum > 0 && pageSize >0) {
             searchRequestBuilder.setSize(pageSize).setFrom((pageNum - 1) * pageSize);
         }
+        return searchRequestBuilder;
+    }
+
+    public Response queryAwardRanking(List<Integer> companyIds, String timespan, int pageSize, int pageNum) {
+        SearchRequestBuilder searchRequestBuilder = getSearchRequestBuilder(companyIds, null, pageSize, pageNum, timespan);
         SearchResponse response = searchRequestBuilder.execute().actionGet();
-        Map<Integer, Object> data = new HashMap<Integer, Object>();
+        // 保证插入有序，使用linkedhashMap
+        Map<Integer, Object> data = new LinkedHashMap<>();
         for (SearchHit searchHit : response.getHits().getHits()){
             JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
             data.put(TypeUtils.castToInt(jsonObject.remove("employee_id")), jsonObject);
@@ -324,4 +334,25 @@ public class SearchengineService {
         return ResponseUtils.success(data);
     }
 
+    public Response queryAwardRankingInWx(List<Integer> companyIds, String timespan, Integer employeeId) {
+        // 查找所有员工的积分排行
+        SearchResponse response =  getSearchRequestBuilder(companyIds, "0", 0, 0, timespan).execute().actionGet();
+        // 保证插入有序，使用linkedhashMap
+        Map<Integer, Object> data = new LinkedHashMap<>();
+        for (SearchHit searchHit : response.getHits().getHits()){
+            JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
+            data.put(jsonObject.getIntValue("employee_id"), jsonObject);
+        }
+        List<Object> allRankingList = new ArrayList<>(data.values());
+        if (!data.isEmpty() && data.containsKey(employeeId)) {
+            int ranking = allRankingList.indexOf(data.get(employeeId)) + 1;
+            if(ranking <= 22) {
+            } else {
+
+            }
+        } else {
+            // 查询前20条
+        }
+        return ResponseUtils.success(data);
+    }
 }
