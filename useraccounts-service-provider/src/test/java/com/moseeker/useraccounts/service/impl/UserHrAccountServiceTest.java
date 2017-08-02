@@ -15,6 +15,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,8 +51,7 @@ public class UserHrAccountServiceTest {
     @Test
     public void employeeList() {
         try {
-
-//            System.out.println(userHrAccountService.employeeList("", 39978, 0, "", "", 1, 10, "2017"));
+            System.out.println(userHrAccountService.employeeList("", 39978, 0, "", "", 1, 10, "2017"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -133,21 +133,10 @@ public class UserHrAccountServiceTest {
      *
      * @param args
      */
-    public static void main(String args[]){
-        String str = "{\n" +
-                "    29154: {\n" +
-                "        \"awards\": {\n" +
-                "            \"2017\": {\n" +
-                "                \"last_update_time\": \"2017-07-28T19:34:59\",\n" +
-                "                \"award\": 48\n" +
-                "            }\n" +
-                "        }\n" +
-                "    }\n" +
-                "}";
+    public static void main(String args[]) {
+        String str = "{105817:\"116183\",3385:\"30237\",60691:\"12108\",44762:\"10136\",57931:\"6550\",80021:\"5527\",65389:\"2825\",147399:\"2777\",71274:\"2730\",57999:\"2680\"}";
 
-        Map maps = (Map)JSON.parse(str);
-
-        System.out.println(maps.get("29154"));
+        HashMap<Integer,Integer> maps = (HashMap<Integer,Integer>) JSON.parse(str);
 
         System.out.println(maps.size());
     }

@@ -1066,13 +1066,16 @@ public class UserHrAccountService {
         if (StringUtils.isNullOrEmpty(timespan)) {
             return employeeList(keyword, companyId, companyIds, filter, order, asc, pageNumber, pageSize);
         }
-        // 获取积分月，季，年榜单,先取出该公司下所有的员工
-        // 从ES中获取数据
+        // 从ES中获取积分月，季，年榜单数据
         Response response = searchengineServices.queryAwardRanking(companyIds, timespan, pageSize, pageNumber);
         // ES取到数据
         if (response.getStatus() == 0) {
+            HashMap<Integer,Integer> maps = (HashMap<Integer,Integer>) JSON.parse(response.getData());
+            for (Map.Entry<Integer, Integer> entry : maps.entrySet()) {
+                System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
 
-            return employeeList(keyword, companyId, companyIds, filter, order, asc, pageNumber, pageSize);
+            }
+            System.out.println(maps.size());
         }
         return null;
     }

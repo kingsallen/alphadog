@@ -10,10 +10,12 @@ import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.ConverTools;
 import com.moseeker.searchengine.util.SearchUtil;
 import com.moseeker.thrift.gen.common.struct.Response;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.*;
 import java.util.stream.Collectors;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
 import org.elasticsearch.action.index.IndexResponse;
@@ -303,12 +305,12 @@ public class SearchengineService {
         return ResponseUtils.success("");
     }
 
-    private SortBuilder buildSortScript(String field, SortOrder sortOrder){
-        StringBuffer sb=new StringBuffer();
-        sb.append("double score=0; award=doc['"+field+"'].value;if(award){score=award}; return score;");
-        String scripts=sb.toString();
-        Script script=new Script(scripts);
-        SortBuilder builder = new ScriptSortBuilder(script,"number");
+    private SortBuilder buildSortScript(String field, SortOrder sortOrder) {
+        StringBuffer sb = new StringBuffer();
+        sb.append("double score=0; award=doc['" + field + "'].value;if(award){score=award}; return score;");
+        String scripts = sb.toString();
+        Script script = new Script(scripts);
+        SortBuilder builder = new ScriptSortBuilder(script, "number");
         builder.order(sortOrder);
         return builder;
     }
@@ -317,7 +319,7 @@ public class SearchengineService {
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
         searchUtil.handleTerms(Arrays.toString(companyIds.toArray()).replaceAll("\\[|\\]| ", ""), query, "company_id");
-        searchUtil.handleTerms(timespan, query, "awards."+timespan+".timespan");
+        searchUtil.handleTerms(timespan, query, "awards." + timespan + ".timespan");
         if (activation != null) {
             searchUtil.handleTerms(activation, query, "activtion");
         }
@@ -337,20 +339,20 @@ public class SearchengineService {
         SearchResponse response = searchRequestBuilder.execute().actionGet();
         // 保证插入有序，使用linkedhashMap
         Map<Integer, Object> data = new LinkedHashMap<>();
-        for (SearchHit searchHit : response.getHits().getHits()){
+        for (SearchHit searchHit : response.getHits().getHits()) {
             JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
-            data.put(TypeUtils.castToInt(jsonObject.remove("employee_id")), jsonObject);
+            data.put(TypeUtils.castToInt(jsonObject.remove("employee_id")), jsonObject.getJSONObject("awards").getJSONObject(timespan).getString("award"));
         }
         return ResponseUtils.success(data);
     }
 
     public Response queryAwardRankingInWx(List<Integer> companyIds, String timespan, Integer employeeId) {
         // 查找所有员工的积分排行
-        SearchResponse response =  getSearchRequestBuilder(companyIds, "0", 0, 0, timespan).execute().actionGet();
+        SearchResponse response = getSearchRequestBuilder(companyIds, "0", 0, 0, timespan).execute().actionGet();
         // 保证插入有序，使用linkedhashMap
         Map<Integer, Object> data = new LinkedHashMap<>();
         int index = 1;
-        for (SearchHit searchHit : response.getHits().getHits()){
+        for (SearchHit searchHit : response.getHits().getHits()) {
             JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
             JSONObject obj = JSON.parseObject("{}");
             obj.put("employee_id", jsonObject.getIntValue("employee_id"));
@@ -365,7 +367,7 @@ public class SearchengineService {
         List<Object> resultList = new ArrayList<>(23);
         if (!data.isEmpty() && data.containsKey(employeeId)) {
             int ranking = allRankingList.indexOf(data.get(employeeId)) + 1;
-            if(ranking <= 22) {
+            if (ranking <= 22) {
                 resultList = allRankingList.subList(0, 22);
             } else {
                 resultList = allRankingList.subList(0, 20);
