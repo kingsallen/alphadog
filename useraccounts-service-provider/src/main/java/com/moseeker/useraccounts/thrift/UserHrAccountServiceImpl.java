@@ -19,6 +19,7 @@ import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.exception.ExceptionCategory;
 import com.moseeker.useraccounts.exception.ExceptionFactory;
 import com.moseeker.useraccounts.service.impl.UserHrAccountService;
+
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -326,7 +327,7 @@ public class UserHrAccountServiceImpl implements Iface {
     @Override
     public UserEmployeeVOPageVO employeeList(String keyword, int companyId, int filter, String order, String asc, int pageNumber, int pageSize) throws BIZException, TException {
         try {
-            return service.employeeList(keyword, companyId, filter, order, asc, pageNumber, pageSize);
+            return service.employeeList(keyword, companyId, filter, order, asc, pageNumber, pageSize, "");
         } catch (CommonException e) {
             throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {

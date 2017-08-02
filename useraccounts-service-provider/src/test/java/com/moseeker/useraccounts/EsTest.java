@@ -1,17 +1,13 @@
 package com.moseeker.useraccounts;
 
 import com.moseeker.useraccounts.config.AppConfig;
-import org.apache.lucene.queries.BooleanFilter;
-import org.apache.lucene.queryparser.xml.builders.BooleanFilterBuilder;
-import org.apache.lucene.queryparser.xml.builders.BooleanQueryBuilder;
+
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
-import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.data.elasticsearch.core.query.GetQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;

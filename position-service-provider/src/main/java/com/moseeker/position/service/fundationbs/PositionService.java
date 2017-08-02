@@ -665,9 +665,9 @@ public class PositionService {
                     .buildQuery();
             JobPositionRecord jobPositionRecord = jobPositionDao.getRecord(queryUtil);
             // 更新或者新增数据
-            if (jobPositionHandlerDate.getId() != 0 || !com.moseeker.common.util.StringUtils.isEmptyObject(jobPositionRecord)) {  // 数据更新
+            if (jobPositionHandlerDate.getId() != 0 || jobPositionRecord != null) {  // 数据更新
                 // 按company_id + .source_id + .jobnumber + source=9取得数据为空时，按Id进行更新
-                if (!com.moseeker.common.util.StringUtils.isEmptyObject(jobPositionRecord)) {
+                if (jobPositionRecord != null) {
                     record.setId(jobPositionRecord.getId());
                     jobPositionIds.add(jobPositionRecord.getId());
                 }
@@ -883,12 +883,12 @@ public class PositionService {
             // 判断JobPosion字段
             for (Field field : jobPositionRecord.fields()) {
                 String str = (String) hashMap.get(field.getName());
-                if (com.moseeker.common.util.StringUtils.isEmptyObject(str)) {
+                if (!com.moseeker.common.util.StringUtils.isNullOrEmpty(str)) {
                     stringBuffer.append(jobPositionRecord.get(field.getName()));
                 }
             }
             String str = (String) hashMap.get("extra");
-            if (!com.moseeker.common.util.StringUtils.isEmptyObject(str)) {
+            if (!com.moseeker.common.util.StringUtils.isNullOrEmpty(str)) {
                 stringBuffer.append(extra);
             }
             md5 = MD5Util.md5(stringBuffer.toString());
@@ -1066,7 +1066,7 @@ public class PositionService {
                             cityCodeQuery.where("postcode", city.getValue());
                             cityPostcodeRecord = dictCityPostcodeDao.getRecord(cityCodeQuery.buildQuery());
                             if (cityPostcodeRecord != null && cityPostcodeRecord.getCity() != null) {
-                                if (com.moseeker.common.util.StringUtils.isEmptyObject(cityPostcodeRecord.getCity())) {
+                                if (com.moseeker.common.util.StringUtils.isNullOrEmpty(cityPostcodeRecord.getCity())) {
                                     stringBuffer.append(cityPostcodeRecord.getProvince());
                                 } else {
                                     stringBuffer.append(cityPostcodeRecord.getCity());
@@ -1104,7 +1104,7 @@ public class PositionService {
                         } else {
                             cityPostcodeRecord = dictCityPostcodeDao.fuzzyGetCityPostCode(postCodeTemp);
                             if (cityPostcodeRecord != null && cityPostcodeRecord.getCity() != null) {
-                                if (!com.moseeker.common.util.StringUtils.isEmptyObject(cityPostcodeRecord.getCity())) {
+                                if (!com.moseeker.common.util.StringUtils.isNullOrEmpty(cityPostcodeRecord.getCity())) {
                                     stringBuffer.append(cityPostcodeRecord.getCity());
                                 } else {
                                     stringBuffer.append(cityPostcodeRecord.getProvince());
@@ -1479,7 +1479,7 @@ public class PositionService {
                 .buildQuery();
 
         HrTeamRecord hrTeamRecord = hrTeamDao.getRecord(queryUtilDepartment);
-        if (com.moseeker.common.util.StringUtils.isEmptyObject(hrTeamRecord)) {
+        if (hrTeamRecord == null) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.POSITION_DATA_DEPARTMENT_ERROR);
         }
         HashMap hashMap = new HashMap();
@@ -1578,12 +1578,12 @@ public class PositionService {
                 Thread.sleep(400);
                 for (Integer jobPositionId : list) {
                     Response result = getPositionById(jobPositionId);
-                    if (StringUtils.isEmptyObject(result.data)) {
+                    if (result.data == null) {
                         continue;
                     }
                     position = result.data;
                     Map position_map = JSON.parseObject(position, Map.class);
-                    if (StringUtils.isEmptyObject(position_map.get("company_id"))) {
+                    if (position_map.get("company_id") == null) {
                         continue;
                     }
                     String company_id = BeanUtils.converToString(position_map.get("company_id"));
