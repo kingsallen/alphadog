@@ -294,10 +294,10 @@ public class JobApplicataionService {
                     String.valueOf(jobApplication.getCompanyId()));
             // 获取当前申请次数 -1
             if (applicationCountCheck != null
-                    && Integer.valueOf(applicationCountCheck) > 0
-                    && Integer.valueOf(applicationCountCheck) <= this
+                    && Integer.parseInt(applicationCountCheck) > 0
+                    && Integer.parseInt(applicationCountCheck) <= this
                     .getApplicationCountLimit(jobApplication
-                            .getCompanyId().intValue())) {
+                            .getCompanyId())) {
 
                 redisClient.decr(Constant.APPID_ALPHADOG,
                         REDIS_KEY_APPLICATION_COUNT_CHECK,
@@ -357,7 +357,7 @@ public class JobApplicataionService {
             if (response.status == 0) {
                 return ResponseUtils.success(this.isAppliedPosition(userId, positionId));
             } else {
-                response.setData(JSON.toJSONString(false));
+                response.setData(JSON.toJSONString(Boolean.FALSE));
                 return response;
             }
         } catch (Exception e) {
@@ -519,7 +519,7 @@ public class JobApplicataionService {
                     String.valueOf(userId), String.valueOf(companyId));
             // 超出申请次数限制, 每月每家公司一个人只能申请3次
             if (applicationCountCheck != null
-                    && Integer.valueOf(applicationCountCheck) >= this
+                    && Integer.parseInt(applicationCountCheck) >= this
                     .getApplicationCountLimit((int) companyId)) {
                 return true;
             }

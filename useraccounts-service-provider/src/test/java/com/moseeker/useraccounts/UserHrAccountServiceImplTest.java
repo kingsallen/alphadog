@@ -2,7 +2,6 @@ package com.moseeker.useraccounts;
 
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.email.Email;
 import com.moseeker.common.util.DateUtils;
@@ -12,24 +11,24 @@ import com.moseeker.rpccenter.config.ClientConfig;
 import com.moseeker.rpccenter.config.RegistryConfig;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import com.moseeker.thrift.gen.employee.struct.Reward;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.config.AppConfig;
 import com.moseeker.useraccounts.service.impl.UserEmployeeServiceImpl;
 import com.moseeker.useraccounts.service.thirdpartyaccount.ThirdPartyAccountService;
+import com.moseeker.useraccounts.thrift.UserHrAccountServiceImpl;
 import org.apache.thrift.TException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import javax.mail.MessagingException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * HR账号服务
@@ -89,7 +88,7 @@ public class UserHrAccountServiceImplTest {
 
     public UserHrAccountService.Iface service;
 
-    @Before
+//    @Before
     public void init() {
         service = ServiceManager.SERVICEMANAGER.getService(UserHrAccountService.Iface.class);
     }
@@ -121,32 +120,23 @@ public class UserHrAccountServiceImplTest {
     }
 
 
-    @Autowired
+//    @Autowired
     UserHrAccountDao userHrAccountDao;
 
-    @Test
+//    @Test
     public void testNpsList() throws Exception {
         HrNpsStatistic result = userHrAccountDao.npsList(null, null, 1, 500);
         System.out.println(BeanUtils.convertStructToJSON(result));
     }
 
 
-    @Test
-    public void testStructToDB() {
-        HrThirdPartyAccountDO hrThirdPartyAccountDO = new HrThirdPartyAccountDO();
-        hrThirdPartyAccountDO.setChannel(Short.valueOf("2"));
-        hrThirdPartyAccountDO.setUsername("fdfdsaf");
-        hrThirdPartyAccountDO.setPassword("fdfdsfdpwd");
-        hrThirdPartyAccountDO.setBinding(Short.valueOf("1"));
-        HrThirdPartyAccountRecord record = BeanUtils.structToDB(hrThirdPartyAccountDO, HrThirdPartyAccountRecord.class);
-
-        record.toString();
-    }
-
     @Autowired
     ThirdPartyAccountService userHrAccountService;
 
-    @Test
+    @Autowired
+    UserHrAccountServiceImpl userHrAccountServiceImpl;
+
+//    @Test
     public void testBinding() throws Exception {
         HrThirdPartyAccountDO hrThirdPartyAccountDO = new HrThirdPartyAccountDO();
         hrThirdPartyAccountDO.setUsername("fiqb60145062");
@@ -157,19 +147,19 @@ public class UserHrAccountServiceImplTest {
         Thread.sleep(1000000);
     }
 
-    @Test
+//    @Test
     public void testRefresh() throws Exception {
         userHrAccountService.synchronizeThirdpartyAccount(82752, 66, true);
     }
 
 
-    @Autowired
+//    @Autowired
     UserEmployeeDao userEmployeeDao;
 
-    @Autowired
+//    @Autowired
     UserEmployeeServiceImpl userEmployeeService;
 
-    @Test
+//    @Test
     public void testUserEmployeeBatch() throws Exception {
 
         System.out.println(DateUtils.dateToLongTime(new Date()));
@@ -207,7 +197,47 @@ public class UserHrAccountServiceImplTest {
         System.out.println(result);
     }
 
-    @Test
+//    @Test
+//    @Transactional
+    public void addReawrdTest() {
+        try {
+            userHrAccountServiceImpl.addEmployeeReward(658112, 100, "加积分");
+        } catch (TException e) {
+            e.printStackTrace();
+        }
+    }
+
+//    @Test
+    public void getEmployeeRewardsTest() {
+        try {
+            List<Reward> list  = userHrAccountServiceImpl.getEmployeeRewards(658112);
+            System.out.println(BeanUtils.convertStructToJSON(list));
+        } catch (TException e) {
+            e.printStackTrace();
+        }
+    }
+
+//    @Test
+//    @Transactional
+    public void removeEmployeeTest() {
+        try {
+            Assert.assertTrue(userHrAccountServiceImpl.delEmployee(Arrays.asList(3352, 3353)));
+        } catch (TException e) {
+            e.printStackTrace();
+        }
+    }
+
+//    @Test
+//    @Transactional
+    public void unbindTest() {
+        try {
+            Assert.assertTrue(userHrAccountServiceImpl.unbindEmployee(Arrays.asList(3394, 658112, 3402)));
+        } catch (TException e) {
+            e.printStackTrace();
+        }
+    }
+
+//    @Test
     public void testSendEmail() throws Exception {
         System.out.println("start");
         List<String> recipients = new ArrayList<>();
@@ -235,16 +265,4 @@ public class UserHrAccountServiceImplTest {
         Thread.sleep(100000);
     }
 
-    @Test
-    public void testListToSet(){
-        List<Integer> is = new ArrayList<>();
-        is.add(1);
-        is.add(1);
-        is.add(1);
-        is.add(1);
-        is.add(1);
-        is.add(2);
-
-        System.out.println(is.stream().collect(Collectors.toSet()));
-    }
 }

@@ -9,6 +9,7 @@ import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.thrift.gen.common.struct.CURDException;
 import com.moseeker.thrift.gen.dao.struct.CandidateRecomRecordSortingDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateRecomRecordDO;
+
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -237,7 +238,7 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
 
     public List<CandidateRecomRecordSortingDO> listCandidateRecomRecordSorting(List<Integer> postUserId, List<Integer> positionIdList) {
         List<CandidateRecomRecordSortingDO> recoms = new ArrayList<>();
-        Field<Integer> count = count(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID);
+        Field<Integer> count = countDistinct(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID);
         Result<Record2<Integer, Integer>> result = create.select(count,
                 CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID)
                 .from(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)

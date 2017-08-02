@@ -3,6 +3,7 @@ package com.moseeker.baseorm.dao.userdb;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
+import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.query.Condition;
@@ -11,19 +12,18 @@ import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
-
-import java.math.BigDecimal;
-import java.util.*;
-
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Result;
 import org.jooq.SelectJoinStep;
-
-import static org.jooq.impl.DSL.sum;
-
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
+
+import java.math.BigDecimal;
+import java.util.*;
+
+import static org.jooq.impl.DSL.count;
+import static org.jooq.impl.DSL.sum;
 
 @Repository
 public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRecord> {
@@ -293,4 +293,22 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
         }
         return count;
     }
+
+
+    public void getListNum(String keyWord, List<Integer> companyIds) {
+        org.jooq.Condition cname = UserEmployee.USER_EMPLOYEE.CNAME.like(keyWord);
+        org.jooq.Condition customField = UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.like(keyWord);
+        org.jooq.Condition email = UserEmployee.USER_EMPLOYEE.EMAIL.like(keyWord);
+        org.jooq.Condition mobile = UserEmployee.USER_EMPLOYEE.MOBILE.like(keyWord);
+        org.jooq.Condition nickname = UserWxUser.USER_WX_USER.NICKNAME.like(keyWord);
+        org.jooq.Condition company = UserEmployee.USER_EMPLOYEE.COMPANY_ID.in(companyIds);
+        create.select(count(UserEmployee.USER_EMPLOYEE.ID), UserEmployee.USER_EMPLOYEE.ACTIVATION).from(UserEmployee.USER_EMPLOYEE)
+                .leftJoin(UserWxUser.USER_WX_USER)
+                .on(UserEmployee.USER_EMPLOYEE.WXUSER_ID.equal(Integer.valueOf(String.valueOf(UserWxUser.USER_WX_USER.ID))))
+                .where(company)
+                .and(cname.or(customField).or(email).or(mobile).or(nickname))
+                .orderBy(UserEmployee.USER_EMPLOYEE.ACTIVATION).fetch();
+    }
+
+
 }

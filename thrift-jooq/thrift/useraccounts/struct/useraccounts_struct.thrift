@@ -1,8 +1,9 @@
 # file: useraccounts.struct
 
 namespace java com.moseeker.thrift.gen.useraccounts.struct
+include "../../dao/struct/userdb_struct.thrift"
 
-typedef string Timestamp;
+typedef string Timestamp
 
 
 struct Userloginreq { 
@@ -332,8 +333,8 @@ struct HrNpsDO {
 
 	1: optional i32 id,
 	2: optional i32 hr_account_id,	//hr帐号
-	3: optional byte intention,	//推荐同行的意愿【0-10】
-	4: optional byte accept_contact,	// 是否愿意接听电话 0-未确认，1-愿意，2-不愿意
+	3: optional i8 intention,	//推荐同行的意愿【0-10】
+	4: optional i8 accept_contact,	// 是否愿意接听电话 0-未确认，1-愿意，2-不愿意
 	5: optional string create_time,	//分配账号的时间
 	6: optional string update_time	//更新时间
 
@@ -348,8 +349,8 @@ struct HrNpsUpdate {
     1: optional i32 user_id,
     2: optional string start_date,
     3: optional string end_date,
-    4: optional byte intention,
-    5: optional byte accept_contact,
+    4: optional i8 intention,
+    5: optional i8 accept_contact,
     6: optional string username,
     7: optional string mobile,
     8: optional string company
@@ -360,10 +361,10 @@ struct HrNpsInfo {
     2: optional string date,
     3: optional i32 hr_account_id,
     4: optional string hr_mobile,
-    5: optional byte hr_account_type,
+    5: optional i8 hr_account_type,
     6: optional string company,
-    7: optional byte intention,
-    8: optional byte accept_contact,
+    7: optional i8 intention,
+    8: optional i8 accept_contact,
     9: optional string recommend_user,
     10: optional string recommend_mobile,
     11: optional string recommend_company,
@@ -376,6 +377,63 @@ struct HrNpsStatistic {
     2: optional i32 page,
     3: optional i32 page_size,
     4: optional list<HrNpsInfo> data
+}
+
+struct UserEmployeeNumStatistic{
+    1: optional i32 unregcount,
+    2: optional i32 regcount
+}
+
+struct UserEmployeeVO{
+    1: optional i32 id, // ID
+    2: optional string username, // 姓名
+    3: optional string mobile, // 电话
+    4: optional string email, // 邮箱
+    5: optional string customField, // 自定义
+    6: optional string nickName, // 微信账号
+    7: optional i32 award, // 积分
+    8: optional i32 activation, // 认证状态
+    9: optional i32 companyId, // 公司ID
+    10: optional string companyName, // 公司名称
+    11: optional string companyAbbreviation, // 公司简称
+    12: optional string bindingTime, // 认证时间
+}
+// 员工列表分页实体
+struct UserEmployeeVOPageVO{
+    1:optional i32 pageNumber, // 当前第几页
+    2:optional i32 pageSize,// 每页多少条
+    3:optional i32 totalRow,// 总共多少条
+    4:optional list<UserEmployeeVO> data,
+}
+// 员工详情
+struct UserEmployeeDetailVO{
+    1: optional i32 id, // ID
+    2: optional string username, // 姓名
+    3: optional string mobile, // 电话
+    4: optional string email, // 邮箱
+    5: optional string customField, // 自定义
+    6: optional string nickName, // 微信账号
+    7: optional i32 activation, // 认证状态
+    8: optional string companyName, // 公司名称
+    9: optional string headImg, // 头像
+    10: optional i32 companyId, //
+    11: optional string companyAbbreviation, // 公司简称
+    12: optional string bindingTime // 绑定时间
+}
+// 员工导入统计数据
+struct ImportErrorUserEmployee{
+    1: optional i32 rowNum, // 第几条数据
+    2: optional string message, // 错误原因
+    3: optional userdb_struct.UserEmployeeDO userEmployeeDO // 员工实体
+}
+
+struct ImportUserEmployeeStatistic{
+    1: optional i32 repetitionCounts;
+    2: optional i32 errorCounts;
+    3: optional string message, // 错误原因
+    4: optional list<ImportErrorUserEmployee> userEmployeeDO, // 员工实体
+    5: optional i32 totalCounts, //总条数
+    6: optional bool insertAccept // 是否允许插入
 }
 
 struct ThirdPartyAccountHrInfo{

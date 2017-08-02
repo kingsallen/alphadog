@@ -1,12 +1,14 @@
 package com.moseeker.candidate.service.entities;
 
-import com.moseeker.candidate.service.Candidate;
+import com.moseeker.candidate.config.AppConfig;
+import com.moseeker.thrift.gen.candidate.struct.SortResult;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 
-import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import static org.junit.Assert.*;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Created by YYF
@@ -15,46 +17,20 @@ import static org.junit.Assert.*;
  *
  * Project_name :alphadog
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = AppConfig.class)
 public class CandidateEntityTest {
 
-    @Autowired
-    private Candidate candidate;
 
+    @Autowired
+    private CandidateEntity candidateEntity;
 
     /**
-     * C端用户查看职位，判断是否生成候选人数据
+     * 查询员工在公司的推荐排名
      */
-    //@Test
-    public void glancePosition() throws Exception {
-//        candidate.glancePosition();
+    @Test
+    public void getRecommendatorySorting() throws BIZException {
+        SortResult sortResult = candidateEntity.getRecommendatorySorting(19811221,16);
+        System.out.println(sortResult);
     }
-
-    //@Test
-    public void changeInteresting() throws Exception {
-    }
-
-    //@Test
-    public void candidateList() throws Exception {
-    }
-
-    //@Test
-    public void getRecommendations() throws Exception {
-    }
-
-    //@Test
-    public void recommend() throws Exception {
-    }
-
-    //@Test
-    public void getRecommendation() throws Exception {
-    }
-
-    //@Test
-    public void getRecommendatorySorting() throws Exception {
-    }
-
-    //@Test
-    public void ignore() throws Exception {
-    }
-
 }
