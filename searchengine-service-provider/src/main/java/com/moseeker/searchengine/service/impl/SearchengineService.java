@@ -305,7 +305,7 @@ public class SearchengineService {
 
     private SortBuilder buildSortScript(String field, SortOrder sortOrder){
         StringBuffer sb=new StringBuffer();
-        sb.append("double score=0; award=doc["+field+"].value;if(award){score=award} return score");
+        sb.append("double score=0; award=doc['"+field+"'].value;if(award){score=award}; return score;");
         String scripts=sb.toString();
         Script script=new Script(scripts);
         SortBuilder builder = new ScriptSortBuilder(script,"number");
