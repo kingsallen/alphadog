@@ -1603,7 +1603,7 @@ public class PositionService {
             }
         }
 
-        HrCompanyRecord hrCompanyRecord = hrCompanyDao.getCompanyById(company_id);
+        HrCompanyRecord hrCompanyRecord = hrCompanyDao.getCompanyRecordById(company_id);
 
         PositionForAlipaycampusPojo positionForAlipaycampusPojo = new PositionForAlipaycampusPojo();
         positionForAlipaycampusPojo.setSource_id(positionRecord.getId().toString());
