@@ -48,7 +48,8 @@ public class UserEmailPosition {
 		 Map<String, Object> reqParams = null;
 	   	 try{
 	   		 reqParams = ParamUtils.parseRequestParam(request);
-	   		 Map<String,Object> params= (Map<String, Object>) reqParams.get("conditions");
+	   		 String Condition= (String) reqParams.get("conditions");
+	   		 Map<String,Object> params= JSON.parseObject(Condition);
 			 int userId=Integer.parseInt(reqParams.get("userId")+"");
 	   		 String email= (String) params.get("email");
 	   		 String conditions= (String) params.get("conditions");
