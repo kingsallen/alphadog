@@ -117,7 +117,7 @@ public class UseraccountsService {
             query.where("unionid", unionid).and("wechat_id", wechatId);
             UserWxUserDO userWxUserDO = wxuserdao.getData(query.buildQuery());
             // 新微信为找到，说明绑定有问题
-            if (StringUtils.isEmptyObject(userWxUserDO)) {
+            if (userWxUserDO == null) {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.WEXIN_IS_INVALID);
             }
             // 需要新绑定的微信已经被其他用户绑定
@@ -128,7 +128,7 @@ public class UseraccountsService {
                 query.where("username", mobile);
                 UserUserDO userUserDO = userdao.getData(query.buildQuery());
                 // 验证手机号码是否正确
-                if (StringUtils.isEmptyObject(userUserDO)) {
+                if (userUserDO == null) {
                     return ResponseUtils.fail(ConstantErrorCodeMessage.MOBILE_IS_INVALID);
                 }
                 // 验证新绑定的微信是否和之前的一样，如果一样则不需要换绑
@@ -730,9 +730,7 @@ public class UseraccountsService {
      *
      * @param userId     用户ID
      * @param positionId 职位ID //@param favorite 0:收藏, 1:取消收藏, 2:感兴趣
-     * @return data : {true //感兴趣} {false //不感兴趣}
-     * <p>
-     * TODO : 不知道以后职位收藏啥逻辑, 赞不支持
+     * @return data : {true //感兴趣} {false //不感兴趣} <p> TODO : 不知道以后职位收藏啥逻辑, 赞不支持
      */
     public Response getUserFavPositionCountByUserIdAndPositionId(int userId, int positionId) throws TException {
         try {
