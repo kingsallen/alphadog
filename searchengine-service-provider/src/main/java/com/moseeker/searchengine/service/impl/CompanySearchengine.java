@@ -185,6 +185,8 @@ public class CompanySearchengine {
         Script script=new Script(scripts);
         return script;
    }
+
+
     //组装query_string关键字查询语句
     private void handleKeyWordforQueryString(String keywords,boolean hasKey,QueryBuilder query){
     	if(!StringUtils.isEmpty(keywords)){
