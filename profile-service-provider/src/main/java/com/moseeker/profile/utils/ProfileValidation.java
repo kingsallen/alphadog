@@ -113,6 +113,8 @@ public class ProfileValidation {
 		ValidationMessage<Skill> vm = new ValidationMessage<>();
 		if(StringUtils.isNullOrEmpty(skill.getName())) {
 			vm.addFailedElement("语言名称", "未填写语言名称");
+		} else if (skill.getName().length() > 100){
+			vm.addFailedElement("语言名称", "超过最长字数限制");
 		}
 		return vm;
 	}
@@ -120,7 +122,9 @@ public class ProfileValidation {
 	public static ValidationMessage<ProfileSkillRecord> verifySkill(ProfileSkillRecord skill) {
 		ValidationMessage<ProfileSkillRecord> vm = new ValidationMessage<>();
 		if(StringUtils.isNullOrEmpty(skill.getName())) {
-			vm.addFailedElement("语言名称", "未填写语言名称");
+			vm.addFailedElement("技能名称", "未填写语言名称");
+		} else if (skill.getName().length() > 128){
+			vm.addFailedElement("技能名称", "超过最长字数限制");
 		}
 		return vm;
 	}

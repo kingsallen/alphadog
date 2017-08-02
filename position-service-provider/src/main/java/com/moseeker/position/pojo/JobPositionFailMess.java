@@ -11,12 +11,20 @@ public class JobPositionFailMess {
 
     // 失败原因
     private String message;
-
+    private Integer status;
     private Integer companyId;
     private Integer sourceId;
     private String jobNumber;
     private String department;
     private Integer jobPostionId;
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
 
     public String getDepartment() {
         return department;

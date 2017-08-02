@@ -13,6 +13,10 @@ import com.moseeker.baseorm.db.historydb.tables.HistoryJobApplicationConf;
 import com.moseeker.baseorm.db.historydb.tables.HistoryJobApplicationStatusBeisen;
 import com.moseeker.baseorm.db.historydb.tables.HistoryJobOccupationRel;
 import com.moseeker.baseorm.db.historydb.tables.HistoryJobPosition;
+import com.moseeker.baseorm.db.historydb.tables.HistoryUserEmployee;
+import com.moseeker.baseorm.db.historydb.tables.HrWxHrChatList;
+import com.moseeker.baseorm.db.historydb.tables.HrWxHrChatListBak;
+import com.moseeker.baseorm.db.historydb.tables.HrWxHrChatListBakBak;
 
 import javax.annotation.Generated;
 
@@ -74,4 +78,24 @@ public class Tables {
      * 职位归档表
      */
     public static final HistoryJobPosition HISTORY_JOB_POSITION = com.moseeker.baseorm.db.historydb.tables.HistoryJobPosition.HISTORY_JOB_POSITION;
+
+    /**
+     * 员工信息归档表
+     */
+    public static final HistoryUserEmployee HISTORY_USER_EMPLOYEE = com.moseeker.baseorm.db.historydb.tables.HistoryUserEmployee.HISTORY_USER_EMPLOYEE;
+
+    /**
+     * IM聊天人关系
+     */
+    public static final HrWxHrChatList HR_WX_HR_CHAT_LIST = com.moseeker.baseorm.db.historydb.tables.HrWxHrChatList.HR_WX_HR_CHAT_LIST;
+
+    /**
+     * IM聊天人关系
+     */
+    public static final HrWxHrChatListBak HR_WX_HR_CHAT_LIST_BAK = com.moseeker.baseorm.db.historydb.tables.HrWxHrChatListBak.HR_WX_HR_CHAT_LIST_BAK;
+
+    /**
+     * IM聊天人关系
+     */
+    public static final HrWxHrChatListBakBak HR_WX_HR_CHAT_LIST_BAK_BAK = com.moseeker.baseorm.db.historydb.tables.HrWxHrChatListBakBak.HR_WX_HR_CHAT_LIST_BAK_BAK;
 }

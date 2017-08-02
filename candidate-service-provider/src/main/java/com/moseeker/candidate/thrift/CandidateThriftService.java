@@ -33,7 +33,7 @@ public class CandidateThriftService implements CandidateService.Iface {
     public void glancePosition(int userId, int positionId, int shareChainId) throws TException {
         try {
             candidate.glancePosition(userId, positionId, shareChainId);
-        } catch (Exception e) {
+        }  catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new CURDException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
@@ -103,6 +103,7 @@ public class CandidateThriftService implements CandidateService.Iface {
             return candidate.getRecommendatorySorting(postUserId, companyId);
         } catch (CommonException e) {
             throw ExceptionConvertUtil.convertCommonException(e);
+
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new CURDException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());

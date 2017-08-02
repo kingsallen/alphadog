@@ -1566,6 +1566,9 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                         if (sysUserId != null && sysUserId > 0 && sysUserId == recommenderId.intValue()) {
                             recommenderMap.put("employeeid", mp.get("employeeid"));
                             recommenderMap.put("custom_field", mp.get("custom_field"));
+                            recommenderMap.put("custom_field_values", mp.get("custom_field_values"));
+                            recommenderMap.put("auth_method", mp.get("auth_method"));
+                            recommenderMap.put("employee_email", mp.get("email"));
                             break;
                         }
                     }

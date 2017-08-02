@@ -14,6 +14,7 @@ import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrTeamRecord;
+import com.moseeker.baseorm.db.jobdb.tables.JobOccupation;
 import com.moseeker.baseorm.db.jobdb.tables.records.*;
 import com.moseeker.baseorm.pojo.JobPositionPojo;
 import com.moseeker.baseorm.pojo.RecommendedPositonPojo;
@@ -44,9 +45,11 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobOccupationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.position.struct.*;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
+
 import org.apache.thrift.TException;
 import org.jooq.Field;
 import org.slf4j.Logger;
@@ -56,6 +59,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -107,7 +111,6 @@ public class PositionService {
     private HrHbPositionBindingDao hrHbPositionBindingDao;
     @Autowired
     private HrHbItemsDao hrHbItemsDao;
-
     @Autowired
     private PositionChangeUtil positionChangeUtil;
 
@@ -388,6 +391,12 @@ public class PositionService {
             return syncAccount;
         }
 
+        HrCompanyDO subCompany = hrCompanyAccountDao.getHrCompany(position.getPublisher());
+
+        if (subCompany != null) {
+            syncAccount.setCompany_name(subCompany.getAbbreviation());
+        }
+
         syncAccount.setUser_name(thirdPartyAccount.getUsername());
         syncAccount.setMember_name(thirdPartyAccount.getMembername());
         syncAccount.setPassword(thirdPartyAccount.getPassword());
@@ -481,9 +490,9 @@ public class PositionService {
                 .where("company_id", companyId)
                 .and("status", 1)
                 .buildQuery();
-        List<JobOccupationRecord> jobOccupationList = jobOccupationDao.getRecords(jobOccupationQuery);
-        for (JobOccupationRecord jobOccupationRecord : jobOccupationList) {
-            jobOccupationMap.put(jobOccupationRecord.getName().trim(), jobOccupationRecord);
+        List<JobOccupationDO> jobOccupationList = jobOccupationDao.getDatas(jobOccupationQuery);
+        for (JobOccupationDO jobOccupationDO : jobOccupationList) {
+            jobOccupationMap.put(jobOccupationDO.getName().trim(), jobOccupationDO);
         }
 
         // 公司下职位自定义字段
@@ -597,7 +606,9 @@ public class PositionService {
                     jobPositionFailMessPojo.setSourceId(jobPositionHandlerDate.getSource_id());
                     jobPositionFailMessPojo.setJobPostionId(jobPositionHandlerDate.getId());
                     jobPositionFailMessPojo.setDepartment(jobPositionHandlerDate.getDepartment());
-                    jobPositionFailMessPojo.setMessage(ConstantErrorCodeMessage.POSITION_DATA_DEPARTMENT_ERROR);
+                    JSONObject jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.POSITION_DATA_DEPARTMENT_ERROR);
+                    jobPositionFailMessPojo.setMessage(jsonObject.getString("message"));
+                    jobPositionFailMessPojo.setStatus(jsonObject.getInteger("status"));
                     jobPositionFailMessPojos.add(jobPositionFailMessPojo);
                     continue;
                 }
@@ -607,19 +618,29 @@ public class PositionService {
             int jobOccupationId = 0;
             // 验证职能信息是否正确
             if (!com.moseeker.common.util.StringUtils.isNullOrEmpty(jobPositionHandlerDate.getOccupation())) {
-                JobOccupationRecord jobOccupationRecord = (JobOccupationRecord) jobOccupationMap.get(jobPositionHandlerDate.getOccupation().trim());
-                if (jobOccupationRecord != null) {
-                    jobOccupationId = jobOccupationRecord.getId();
+                JobOccupationDO jobOccupationDO = (JobOccupationDO) jobOccupationMap.get(jobPositionHandlerDate.getOccupation().trim());
+                if (jobOccupationDO != null) {
+                    jobOccupationId = jobOccupationDO.getId();
                 } else {
-                    logger.info("-----职位职能设置错误,职能为:" + jobPositionHandlerDate.getOccupation());
-                    JobPositionFailMess jobPositionFailMessPojo = new JobPositionFailMess();
-                    jobPositionFailMessPojo.setCompanyId(jobPositionHandlerDate.getCompany_id());
-                    jobPositionFailMessPojo.setJobNumber(jobPositionHandlerDate.getJobnumber());
-                    jobPositionFailMessPojo.setSourceId(jobPositionHandlerDate.getSource_id());
-                    jobPositionFailMessPojo.setJobPostionId(jobPositionHandlerDate.getId());
-                    jobPositionFailMessPojo.setMessage(ConstantErrorCodeMessage.POSITION_DATA_OCCUPATION_ERROR.replace("{MESSAGE}", jobPositionHandlerDate.getOccupation()));
-                    jobPositionFailMessPojos.add(jobPositionFailMessPojo);
-                    continue;
+                    logger.info("-----职位职能不存在,新建一条职能,职能信息为:" + jobPositionHandlerDate.getOccupation());
+                    // 职能错误的时候，自动添加一条职能新
+                    JobOccupationDO jobOccupation = new JobOccupationDO();
+                    jobOccupation.setCompanyId(companyId);
+                    jobOccupation.setStatus((byte) 1);
+                    jobOccupation.setName(jobPositionHandlerDate.getOccupation());
+                    JobOccupationDO jobOccupationDOTemp = jobOccupationDao.addData(jobOccupation);
+                    jobOccupationId = jobOccupationDOTemp.getId();
+                    jobOccupationMap.put(jobOccupationDOTemp.getName().trim(), jobOccupationDOTemp);
+
+
+//                    JobPositionFailMess jobPositionFailMessPojo = new JobPositionFailMess();
+//                    jobPositionFailMessPojo.setCompanyId(jobPositionHandlerDate.getCompany_id());
+//                    jobPositionFailMessPojo.setJobNumber(jobPositionHandlerDate.getJobnumber());
+//                    jobPositionFailMessPojo.setSourceId(jobPositionHandlerDate.getSource_id());
+//                    jobPositionFailMessPojo.setJobPostionId(jobPositionHandlerDate.getId());
+//                    jobPositionFailMessPojo.setMessage(ConstantErrorCodeMessage.POSITION_DATA_OCCUPATION_ERROR.replace("{MESSAGE}", jobPositionHandlerDate.getOccupation()));
+//                    jobPositionFailMessPojos.add(jobPositionFailMessPojo);
+//                    continue;
                 }
             }
             // 验证职位自定义字段
@@ -635,7 +656,9 @@ public class PositionService {
                     jobPositionFailMessPojo.setJobNumber(jobPositionHandlerDate.getJobnumber());
                     jobPositionFailMessPojo.setSourceId(jobPositionHandlerDate.getSource_id());
                     jobPositionFailMessPojo.setJobPostionId(jobPositionHandlerDate.getId());
-                    jobPositionFailMessPojo.setMessage(ConstantErrorCodeMessage.POSITION_DATA_CUSTOM_ERROR.replace("{MESSAGE}", jobPositionHandlerDate.getCustom()));
+                    JSONObject jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.POSITION_DATA_CUSTOM_ERROR);
+                    jobPositionFailMessPojo.setMessage(jsonObject.getString("message").replace("{MESSAGE}", jobPositionHandlerDate.getCustom()));
+                    jobPositionFailMessPojo.setStatus(jsonObject.getInteger("status"));
                     jobPositionFailMessPojos.add(jobPositionFailMessPojo);
                     continue;
                 }
@@ -819,7 +842,7 @@ public class PositionService {
             return ResponseUtils.success(jobPostionResponse);
         }
         logger.info("-------批量修改职位结束---------");
-        return ResponseUtils.fail(1, JSONArray.toJSONString(jobPostionResponse));
+        return ResponseUtils.fail(1, "failed", jobPostionResponse);
     }
 
     /**
@@ -874,7 +897,7 @@ public class PositionService {
             // 判断JobPosion字段
             for (Field field : jobPositionRecord.fields()) {
                 String str = (String) hashMap.get(field.getName());
-                if (!com.moseeker.common.util.StringUtils.isEmptyObject(str)) {
+                if (com.moseeker.common.util.StringUtils.isEmptyObject(str)) {
                     stringBuffer.append(jobPositionRecord.get(field.getName()));
                 }
             }
@@ -1819,13 +1842,19 @@ public class PositionService {
             String position = "";
             try {
                 logger.info("---Start ES Search Engine---");
+                Thread.sleep(400);
                 for (Integer jobPositionId : list) {
                     Response result = getPositionById(jobPositionId);
+                    if (StringUtils.isEmptyObject(result.data)) {
+                        continue;
+                    }
                     position = result.data;
                     Map position_map = JSON.parseObject(position, Map.class);
+                    if (StringUtils.isEmptyObject(position_map.get("company_id"))) {
+                        continue;
+                    }
                     String company_id = BeanUtils.converToString(position_map.get("company_id"));
                     Query query = new Query.QueryBuilder().where("id", company_id).buildQuery();
-
                     List<Hrcompany> company_maps = hrCompanyDao.getDatas(query, Hrcompany.class);
                     if (company_maps != null && company_maps.size() > 0) {
 

@@ -11,8 +11,8 @@ import org.jooq.UpdateSetMoreStep;
 import org.jooq.impl.DefaultDSLContext;
 import org.jooq.impl.TableImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -117,5 +117,9 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> extends Crud<S, R> {
     @Override
     public int getCount(Query query) {
         return new LocalQuery<>(create, table, query).convertForCount().fetchOne().value1();
+    }
+
+    public List<Map<String, Object>> getMaps(Query query) {
+        return new LocalQuery<>(create, table, query).convertToResultLimit().fetchMaps();
     }
 }

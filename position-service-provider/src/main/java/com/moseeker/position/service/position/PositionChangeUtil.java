@@ -147,7 +147,7 @@ public class PositionChangeUtil {
                 HrTeamDO hrTeam = hrTeamDao.getHrTeam(positionDO.getTeamId());
                 if (hrTeam != null) {
                     position.setDepartment(hrTeam.getName());
-                }else{
+                } else {
                     position.setDepartment("");
                 }
                 break;
@@ -234,7 +234,7 @@ public class PositionChangeUtil {
         switch (channelType) {
             case JOB51:
                 position.setDegree_code(DegreeChangeUtil.getJob51Degree(degree).getValue());
-                position.setDegree_code(DegreeChangeUtil.getJob51Degree(degree).getName());
+                position.setDegree(DegreeChangeUtil.getJob51Degree(degree).getName());
                 break;
             case ZHILIAN:
                 position.setDegree_code(DegreeChangeUtil.getZhilianDegree(degree).getValue());
@@ -371,7 +371,7 @@ public class PositionChangeUtil {
 
         logger.info("setCities:{}", positionCityCodes);
         //转城市
-        if (channelType == ChannelType.LIEPIN) {
+        if (channelType == ChannelType.LIEPIN || channelType == ChannelType.ZHILIAN) {
             List<List<String>> otherCityCodes = cityMapDao.getOtherCityFunllLevel(ChannelType.LIEPIN, positionCityCodes);
             syncPosition.setCities(otherCityCodes);
             logger.info("setCities:otherCityCodes:{}", otherCityCodes);

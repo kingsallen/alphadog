@@ -1,8 +1,5 @@
 package com.moseeker.common.util;
 
-import com.google.common.base.CaseFormat;
-import com.moseeker.thrift.gen.profile.struct.Intention;
-
 import java.lang.reflect.Array;
 import java.util.*;
 

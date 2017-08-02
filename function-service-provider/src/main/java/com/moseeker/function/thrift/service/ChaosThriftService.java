@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.net.ConnectException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * chaos服务对接
@@ -33,9 +34,9 @@ public class ChaosThriftService implements Iface {
     private ChaosServiceImpl chaosService;
 
     @Override
-    public HrThirdPartyAccountDO binding(HrThirdPartyAccountDO hrThirdPartyAccount) throws TException {
+    public HrThirdPartyAccountDO binding(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras) throws TException {
         try {
-            return chaosService.bind(hrThirdPartyAccount);
+            return chaosService.bind(hrThirdPartyAccount,extras);
         } catch (BIZException e) {
             throw e;
         } catch (ConnectException e) {
@@ -48,9 +49,9 @@ public class ChaosThriftService implements Iface {
     }
 
     @Override
-    public HrThirdPartyAccountDO synchronization(HrThirdPartyAccountDO thirdPartyAccount) throws TException {
+    public HrThirdPartyAccountDO synchronization(HrThirdPartyAccountDO thirdPartyAccount, Map<String, String> extras) throws TException {
         try {
-            return chaosService.synchronization(thirdPartyAccount);
+            return chaosService.synchronization(thirdPartyAccount,extras);
         } catch (BIZException e) {
             throw e;
         } catch (ConnectException e) {

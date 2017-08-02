@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class ProfilePojo {
-	
+
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	private UserUserRecord userRecord;
@@ -56,14 +56,20 @@ public class ProfilePojo {
 		profileRecord.setUuid(UUID.randomUUID().toString());
 		pojo.setProfileRecord(profileRecord);
 
-		//解析用户信息
-		UserUserRecord crawlerUser = null;
-		try {
-			crawlerUser = profileUtils.mapToUserUserRecord((Map<String, Object>) resume.get("user"));
-			pojo.setUserRecord(crawlerUser);
-		} catch (Exception e1) {
-			LoggerFactory.getLogger(ProfilePojo.class).error(e1.getMessage(), e1);
-		}
+        //解析用户信息
+        UserUserRecord crawlerUser = null;
+        try {
+            Map<String, Object> userMap = (Map<String, Object>) resume.get("user");
+            if (userMap != null) {
+                String mobile = String.valueOf(userMap.get("mobile"));
+                if (!org.apache.commons.lang.StringUtils.isNumeric(mobile)) {
+                    userMap.remove("mobile");
+                }
+                crawlerUser = profileUtils.mapToUserUserRecord(userMap);
+            }
+        } catch (Exception e1) {
+            LoggerFactory.getLogger(ProfilePojo.class).error(e1.getMessage(), e1);
+        }
 
 		//解析基本信息
 		ProfileBasicRecord basicRecord = null;
@@ -195,7 +201,7 @@ public class ProfilePojo {
 
 		return pojo;
 	}
-	
+
 	/**
 	 * 解析profile生成ProfilePojo类
 	 * @param resume
@@ -207,7 +213,7 @@ public class ProfilePojo {
 		LoggerFactory.getLogger(ProfilePojo.class).info("------parseProfile-------");
 		ProfilePojo pojo = new ProfilePojo();
 		ProfileUtils profileUtils = new ProfileUtils();
-		
+
 		//解析profile
 		ProfileProfileRecord profileRecord = profileUtils
 				.mapToProfileRecord((Map<String, Object>) resume.get("profile"));
@@ -222,7 +228,7 @@ public class ProfilePojo {
 			profileRecord.setOrigin(channelType.getOrigin(profileRecord.getOrigin()));
 		}
 		pojo.setProfileRecord(profileRecord);
-		
+
 		//解析用户信息
 		UserUserRecord crawlerUser = null;
 		try {
@@ -240,7 +246,7 @@ public class ProfilePojo {
 		}
 		//更新用户信息
 		profileUtils.updateUser(userRecord, basicRecord, crawlerUser);
-		
+
 		//解析附件信息
 		List<ProfileAttachmentRecord> attachmentRecords = null;
 		try {
@@ -359,10 +365,10 @@ public class ProfilePojo {
 		} catch (Exception e) {
 			LoggerFactory.getLogger(ProfilePojo.class).error(e.getMessage(), e);
 		}
-		
+
 		return pojo;
 	}
-	
+
 	public UserUserRecord getUserRecord() {
 		return userRecord;
 	}
@@ -453,7 +459,7 @@ public class ProfilePojo {
 	public void setWorksRecords(List<ProfileWorksRecord> worksRecords) {
 		this.worksRecords = worksRecords;
 	}
-	
+
 	//@Test
 	public void test() {
 		String stri = "THIRD_PARTY_POSITION_SYNCHRONIZATION_COMPLATED_QUEUE{SYNCHRONIZATION}";
