@@ -262,7 +262,7 @@ public class CompanyService {
         queryBuilder.where(HrCompany.HR_COMPANY.ID.getName(), companyId);
         // 判断公司信息是否正确
         HrCompanyDO hrCompanyDO = companyDao.getData(queryBuilder.buildQuery());
-        if (StringUtils.isEmptyObject(hrCompanyDO)) {
+        if (hrCompanyDO != null) {
             throw ExceptionFactory.buildException(Category.COMPANY_DATA_EMPTY);
         }
         // 更新数据
@@ -400,7 +400,7 @@ public class CompanyService {
         hrImporterMonitorDO.setSys(2);
         HrImporterMonitorDO temp = hrImporterMonitorDao.addData(hrImporterMonitorDO);
         try {
-            if (StringUtils.isEmptyObject(temp)) {
+            if (temp != null) {
                 throw ExceptionFactory.buildException(ExceptionCategory.ADD_IMPORTERMONITOR_FAILED);
             } else {
                 response = ResultMessage.SUCCESS.toResponse();
@@ -458,7 +458,7 @@ public class CompanyService {
             queryBuilder.where(HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF.COMPANY_ID.getName(), companyId);
             HrEmployeeCertConfDO hrEmployeeCertConfDO = hrEmployeeCertConfDao.getData(queryBuilder.buildQuery());
             //判断是否存在改员工认证配置信息
-            if (!StringUtils.isEmptyObject(hrEmployeeCertConfDO)) {
+            if (hrEmployeeCertConfDO != null) {
                 hrEmployeeCertConfDO.setDisable(disable);
                 hrEmployeeCertConfDao.updateData(hrEmployeeCertConfDO);
             } else {
@@ -539,7 +539,7 @@ public class CompanyService {
         HrEmployeeCertConfDO hrEmployeeCertConfDO = hrEmployeeCertConfDao.getData(query.buildQuery());
         // 员工认证信息为空需要新建
         int falg = 0;
-        if (StringUtils.isEmptyObject(hrEmployeeCertConfDO)) {
+        if (hrEmployeeCertConfDO == null) {
             hrEmployeeCertConfDO = new HrEmployeeCertConfDO();
             falg = 1;
         } else {
