@@ -49,11 +49,9 @@ public class UserEmailPosition {
 	   	 try{
 	   		 reqParams = ParamUtils.parseRequestParam(request);
 	   		 logger.info(reqParams+"+++++++++++++++++++/user/email/validate");
-	   		 String Condition= (String) reqParams.get("conditions");
-	   		 Map<String,Object> params= JSON.parseObject(Condition);
 			 int userId=Integer.parseInt(reqParams.get("userId")+"");
-	   		 String email= (String) params.get("email");
-	   		 String conditions= (String) params.get("conditions");
+	   		 String email= (String) reqParams.get("email");
+	   		 String conditions= (String) reqParams.get("conditions");
 			 String urls=(String) reqParams.get("url");
 	   		 logger.info("向user_id为{}的用户发送邮箱验证邮件",userId);
 	   		 Response res=userQxService.sendValiddateEmail(email, userId, conditions,urls);
