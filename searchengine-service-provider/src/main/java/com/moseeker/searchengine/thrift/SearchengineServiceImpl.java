@@ -36,4 +36,9 @@ public class SearchengineServiceImpl implements Iface {
         return service.queryAwardRanking(employeeIds, timespan, pageSize, pageNum);
     }
 
+    @Override
+    public Response queryAwardRankingInWx(List<Integer> companyIds, String timespan, int employeeId) throws TException {
+        return service.queryAwardRankingInWx(companyIds, timespan, employeeId);
+    }
+
 }

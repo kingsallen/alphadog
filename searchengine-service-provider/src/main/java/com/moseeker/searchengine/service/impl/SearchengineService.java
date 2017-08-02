@@ -1,18 +1,19 @@
 package com.moseeker.searchengine.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.util.TypeUtils;
+import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.ConverTools;
-import com.moseeker.common.util.query.Query;
 import com.moseeker.searchengine.util.SearchUtil;
-
+import com.moseeker.thrift.gen.common.struct.Response;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.*;
 import java.util.stream.Collectors;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
 import org.elasticsearch.action.index.IndexResponse;
@@ -24,19 +25,15 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.script.Script;
 import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.sort.ScriptSortBuilder;
+import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.ConfigPropertiesUtil;
-import com.moseeker.thrift.gen.common.struct.Response;
 
 @Service
 @CounterIface
@@ -306,6 +303,16 @@ public class SearchengineService {
         return ResponseUtils.success("");
     }
 
+    private SortBuilder buildSortScript(String field, SortOrder sortOrder){
+        StringBuffer sb=new StringBuffer();
+        sb.append("double score=0; award=doc["+field+"].value;if(award){score=award} return score");
+        String scripts=sb.toString();
+        Script script=new Script(scripts);
+        SortBuilder builder = new ScriptSortBuilder(script,"number");
+        builder.order(sortOrder);
+        return builder;
+    }
+
     private SearchRequestBuilder getSearchRequestBuilder(List<Integer> companyIds, String activation, int pageSize, int pageNum, String timespan) {
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
@@ -314,9 +321,10 @@ public class SearchengineService {
         if (activation != null) {
             searchUtil.handleTerms(activation, query, "activtion");
         }
+
         SearchRequestBuilder searchRequestBuilder = searchUtil.getEsClient().prepareSearch("awards").setQuery(query)
-                .addSort("awards." + timespan + ".award", SortOrder.DESC)
-                .addSort("awards." + timespan + ".last_update_time", SortOrder.ASC)
+                .addSort(buildSortScript("awards." + timespan + ".award", SortOrder.DESC))
+                .addSort(buildSortScript("awards." + timespan + ".last_update_time", SortOrder.ASC))
                 .setFetchSource(new String[]{"employee_id", "awards." + timespan + ".award", "awards." + timespan + ".last_update_time"}, null);
         if (pageNum > 0 && pageSize > 0) {
             searchRequestBuilder.setSize(pageSize).setFrom((pageNum - 1) * pageSize);
@@ -341,20 +349,33 @@ public class SearchengineService {
         SearchResponse response =  getSearchRequestBuilder(companyIds, "0", 0, 0, timespan).execute().actionGet();
         // 保证插入有序，使用linkedhashMap
         Map<Integer, Object> data = new LinkedHashMap<>();
+        int index = 1;
         for (SearchHit searchHit : response.getHits().getHits()){
             JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
-            data.put(jsonObject.getIntValue("employee_id"), jsonObject);
+            JSONObject obj = JSON.parseObject("{}");
+            obj.put("employee_id", jsonObject.getIntValue("employee_id"));
+            obj.put("ranking", index);
+            obj.put("last_update_time", jsonObject.getString("last_update_time"));
+            obj.put("award", jsonObject.getString("award"));
+            data.put(jsonObject.getIntValue("employee_id"), obj);
+            index++;
         }
+        // 当前用户在 >= 22 名，显示返回前22条，小于22条返回前20+用户前一名+用户排名+用户后一名，未上榜返回前20条
         List<Object> allRankingList = new ArrayList<>(data.values());
+        List<Object> resultList = new ArrayList<>(23);
         if (!data.isEmpty() && data.containsKey(employeeId)) {
             int ranking = allRankingList.indexOf(data.get(employeeId)) + 1;
             if(ranking <= 22) {
+                resultList = allRankingList.subList(0, 22);
             } else {
-
+                resultList = allRankingList.subList(0, 20);
+                resultList.addAll(allRankingList.subList(ranking - 2, ranking));
             }
         } else {
             // 查询前20条
+            resultList = allRankingList.subList(0, 20);
         }
+        data = resultList.stream().map(m -> JSONObject.parseObject(JSON.toJSONString(m))).collect(Collectors.toMap(k -> TypeUtils.castToInt(k.remove("employee_id")), v -> v));
         return ResponseUtils.success(data);
     }
 }
