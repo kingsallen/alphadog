@@ -1092,16 +1092,21 @@ public class UserHrAccountService {
             userEmployeeVO.setCustomField(userEmployeeDO.getCustomField());
             userEmployeeVO.setEmail(userEmployeeDO.getEmail());
             userEmployeeVO.setCompanyId(userEmployeeDO.getCompanyId());
-            if (!StringUtils.isEmptyObject(userMap) && !StringUtils.isEmptyObject(userMap.get(userEmployeeDO.getSysuserId()))) {
-                userEmployeeVO.setNickName(userMap.get(userEmployeeDO.getSysuserId()).getNickname());
-            } else {
-                userEmployeeVO.setNickName("未知");
+            if (userMap.size() > 0) {
+                UserUserDO userUserDOTmp = userMap.get(userEmployeeDO.getSysuserId());
+                if (!StringUtils.isEmptyObject(userUserDOTmp)) {
+                    userEmployeeVO.setNickName(userMap.get(userEmployeeDO.getSysuserId()).getNickname());
+                } else {
+                    userEmployeeVO.setNickName("未知");
+                }
             }
             // 公司名称
-            if (!StringUtils.isEmptyObject(companyMap) && !StringUtils.isEmptyObject(companyMap.get(userEmployeeDO.getCompanyId()))) {
-                HrCompanyDO companyDO = (HrCompanyDO) companyMap.get(userEmployeeDO.getCompanyId());
-                userEmployeeVO.setCompanyName(companyDO.getName() != null ? companyDO.getName() : "");
-                userEmployeeVO.setCompanyAbbreviation(companyDO.getAbbreviation() != null ? companyDO.getAbbreviation() : "");
+            if (companyMap.size() > 0) {
+                HrCompanyDO companyDO = companyMap.get(userEmployeeDO.getCompanyId());
+                if (!StringUtils.isEmptyObject(companyDO)) {
+                    userEmployeeVO.setCompanyName(companyDO.getName() != null ? companyDO.getName() : "");
+                    userEmployeeVO.setCompanyAbbreviation(companyDO.getAbbreviation() != null ? companyDO.getAbbreviation() : "");
+                }
             }
             userEmployeeVO.setActivation((new Double(userEmployeeDO.getActivation())).intValue());
             userEmployeeVO.setAward(userEmployeeDO.getAward());
