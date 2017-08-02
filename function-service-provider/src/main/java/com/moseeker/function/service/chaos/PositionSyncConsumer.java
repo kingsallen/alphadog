@@ -104,6 +104,7 @@ public class PositionSyncConsumer extends RedisConsumer<PositionForSyncResultPoj
         }
 
         if (pojo.getStatus() == 2 || pojo.getStatus() == 9) {
+            logger.info("发送同步失败的邮件:{}",pojo.getStatus());
             try {
                 //发送邮件，表示这个职位无法判断是否成功同步到对应的平台，需要确认一下。
                 syncFailedNotification.sendUnKnowResultMail(positionDO, thirdPartyPositionDO, pojo);

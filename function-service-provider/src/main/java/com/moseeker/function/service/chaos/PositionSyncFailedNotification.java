@@ -221,6 +221,9 @@ public class PositionSyncFailedNotification {
     }
 
     private void sendEmail(List<String> recipients, String subject, String content) {
+
+        logger.info("发送邮件:{},{}", recipients, subject);
+
         if (recipients == null || recipients.size() == 0) return;
         try {
             Email.EmailBuilder emailBuilder = new Email.EmailBuilder(recipients.subList(0, 1));
@@ -233,7 +236,7 @@ public class PositionSyncFailedNotification {
             email.send(3, new Email.EmailListener() {
                 @Override
                 public void success() {
-                    logger.info("email send messageDelivered");
+                    logger.info("发送职位同步刷新错误的邮件成功了,{}",subject);
                 }
 
                 @Override
