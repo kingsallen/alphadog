@@ -25,7 +25,7 @@ import com.moseeker.thrift.gen.useraccounts.service.UserQxService;
 public class UserEmailPosition {
 	Logger logger = LoggerFactory.getLogger(getClass());
 	UserQxService.Iface userQxService = ServiceManager.SERVICEMANAGER.getService(UserQxService.Iface.class);
-	@RequestMapping(value = "/user/email/position", method=RequestMethod.GET)
+	@RequestMapping(value = "/user/email/recomendposition", method=RequestMethod.GET)
 	@ResponseBody
 	public String sendEmailPosition(HttpServletRequest request, HttpServletResponse response) {
 		 Map<String, Object> reqParams = null;
