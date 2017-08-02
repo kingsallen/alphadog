@@ -541,6 +541,7 @@ public class CompanyService {
         int falg = 0;
         if (StringUtils.isEmptyObject(hrEmployeeCertConfDO)) {
             hrEmployeeCertConfDO = new HrEmployeeCertConfDO();
+            hrEmployeeCertConfDO.setCompanyId(companyId);
             falg = 1;
         } else {
             Integer oldAuthMode = ((int) hrEmployeeCertConfDO.getAuthMode());
@@ -553,6 +554,7 @@ public class CompanyService {
             }
         }
         hrEmployeeCertConfDO.setAuthMode(authMode);
+        hrEmployeeCertConfDO.setCompanyId(companyId);
         if (StringUtils.isNotNullOrEmpty(emailSuffix)) {
             hrEmployeeCertConfDO.setEmailSuffix(emailSuffix);
         }
