@@ -28,7 +28,7 @@ public class UserEmailPositionTest {
 		Map<String,Object> map=new HashMap<String,Object>();
 		map.put("keyWord","上海" );
 		String conditions=JSON.toJSONString(map);
-		int result=service.sendEmailvalidation(email, userId, conditions);
+		int result=service.sendEmailvalidation(email, userId, conditions,"www.baidu.com");
 		System.out.println("result========="+result);
 	}
 	

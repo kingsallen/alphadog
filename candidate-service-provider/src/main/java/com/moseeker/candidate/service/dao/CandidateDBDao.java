@@ -60,10 +60,8 @@ public class CandidateDBDao {
     @Autowired
     CandidateRemarkDao candidateRemarkDao;
 
-
     @Autowired
     CandidatePositionDao candidatePositionDao;
-
 
     @Autowired
     CandidateShareChainDao candidateShareChainDao;
@@ -84,7 +82,6 @@ public class CandidateDBDao {
     UserEmployeePointsDao userEmployeePointsDao;
 
     /**
-     *
      * @param userID
      * @param companyId
      * @return
@@ -145,19 +142,9 @@ public class CandidateDBDao {
 
     public List<CandidateRemarkDO> getCandidateRemarks(int userID, int companyId) throws
             TException {
-        //QueryUtil qu = new QueryUtil();
-        //qu.addEqualFilter("user_id", String.valueOf(userID));
-        //StringBuffer hraccountIds = new StringBuffer("[");
-        //hrs.forEach(i -> hraccountIds.append(i.getId()).append(","));
-        //hraccountIds.deleteCharAt(hraccountIds.length() - 1).append("]");
-        //qu.addEqualFilter("hraccount_id", hraccountIds.toString());
-
         List<CandidateRemarkDO> remarkDOList = new ArrayList<>();
         List<UserHrAccountDO> hrs = userHRAccountDao.listHRFromCompany(companyId);
         if (hrs.size() > 0) {
-//            StringBuffer hraccountIds = new StringBuffer("[");
-//            hrs.forEach(i -> hraccountIds.append(i.getId() + ""));
-//            hraccountIds.deleteCharAt(hraccountIds.length() - 1).append("]");
             List<Integer> hraccountIds = new ArrayList<>();
             hrs.forEach(i -> hraccountIds.add(i.getId()));
             Condition condition = new Condition("hraccount_id", hraccountIds, ValueOp.IN);
@@ -172,9 +159,6 @@ public class CandidateDBDao {
     }
 
     public Optional<CandidatePositionDO> getCandidatePosition(int positionID, int userID) {
-//        QueryUtil qu = new QueryUtil();
-//        qu.addEqualFilter("user_id", String.valueOf(userID));
-//        qu.addEqualFilter("position_id", String.valueOf(positionID));
         Query query = new Query.QueryBuilder().where("user_id", String.valueOf(userID)).and("position_id", String.valueOf(positionID)).buildQuery();
         CandidatePositionDO candidatePositionDO = candidatePositionDao.getData(query);
         logger.info("getCandidatePosition candidatePositionDO:{}", candidatePositionDO);
@@ -193,16 +177,12 @@ public class CandidateDBDao {
     }
 
     public CandidateShareChainDO getCandidateShareChain(int shareChainID) throws TException {
-//        QueryUtil qu = new QueryUtil();
-//        qu.addEqualFilter("id", shareChainID);
         Query query = new Query.QueryBuilder().where("id", shareChainID).buildQuery();
         return candidateShareChainDao.getData(query);
     }
 
 
     public UserEmployeeDO getEmployee(int userID) throws TException {
-//        QueryUtil qu = new QueryUtil();
-//        qu.addEqualFilter("sysuser_id", userID);
         Query query = new Query.QueryBuilder().where("sysuser_id", userID).
                 and("disable", Constant.ENABLE_OLD).and("activation", EmployeeType.AUTH_SUCCESS.getValue()).buildQuery();
         return userEmployeeDao.getEmployee(query);
@@ -210,10 +190,6 @@ public class CandidateDBDao {
     }
 
     public UserEmployeeDO getEmployee(int userID, int companyId) throws TException {
-//        QueryUtil qu = new QueryUtil();
-//        qu.addEqualFilter("sysuser_id", userID).addEqualFilter("company_id", companyId)
-//                .addEqualFilter("disable", Constant.ENABLE_OLD)
-//                .addEqualFilter("activation", EmployeeType.AUTH_SUCCESS.getValue());
         Query query = new Query.QueryBuilder().where("sysuser_id", userID).and("company_id", companyId)
                 .and("disable", Constant.ENABLE_OLD).and("activation", EmployeeType.AUTH_SUCCESS.getValue()).buildQuery();
         return userEmployeeDao.getEmployee(query);
@@ -226,8 +202,6 @@ public class CandidateDBDao {
      * @return 是否开启被动求职者 false,未开启被动求职者；true，开启被动求职者
      */
     public boolean isStartPassiveSeeker(int companyId) {
-//        QueryUtil queryUtil = new QueryUtil();
-//        queryUtil.addEqualFilter("company_id", companyId).addEqualFilter("passive_seeker", 0);
         Query query = new Query.QueryBuilder().where("company_id", companyId).and("passive_seeker", 0).buildQuery();
         HrWxWechatDO hrWxWechatDO = hrWxWechatDao.getData(query);
         if (hrWxWechatDO != null) {
@@ -245,8 +219,8 @@ public class CandidateDBDao {
      * @return 职位转发浏览记录
      */
     public List<CandidateRecomRecordDO> listCandidateRecomRecordDO(int postUserId, String
-            clickTime, List<Integer> recoms) {
-        return candidateRecomRecordDao.listCandidateRecomRecord(postUserId, clickTime, recoms);
+            clickTime, List<Integer> recoms, List<Integer> positionIdList) {
+        return candidateRecomRecordDao.listCandidateRecomRecord(postUserId, clickTime, recoms, positionIdList);
     }
 
     /**
@@ -281,11 +255,12 @@ public class CandidateDBDao {
      * @param postUserId 转发者编号
      * @param clickTime  点击时间
      * @param recoms     推荐标记
+     * @param positionIdList 职位编号
      * @return 职位转发浏览记录
      */
     public List<CandidateRecomRecordDO> listCandidateRecomRecordDOExceptId(int id,
-                                                                           int postUserId, String clickTime, List<Integer> recoms) {
-        return candidateRecomRecordDao.listCandidateRecomRecordExceptId(id, postUserId, clickTime, recoms);
+                                                                           int postUserId, String clickTime, List<Integer> recoms, List<Integer> positionIdList) {
+        return candidateRecomRecordDao.listCandidateRecomRecordExceptId(id, postUserId, clickTime, recoms, positionIdList);
     }
 
     /**
@@ -295,9 +270,6 @@ public class CandidateDBDao {
      * @return 职位信息集合
      */
     public List<JobPositionDO> getPositionByIdList(List<Integer> positionIdList) {
-//        QueryUtil queryUtil = new QueryUtil();
-//        queryUtil.addSelectAttribute("id").addSelectAttribute("title");
-//        queryUtil.addEqualFilter("id", StringUtils.converToArrayStr(positionIdList));
         Query query = new Query.QueryBuilder().select("id").select("title")
                 .where(new Condition("id", positionIdList, ValueOp.IN)).buildQuery();
         try {
@@ -316,13 +288,6 @@ public class CandidateDBDao {
      * @return 用户信息集合
      */
     public List<UserUserDO> getUserByIDList(List<Integer> userIdList) {
-//        List<UserUserDO> userUserDOList = new ArrayList<>();
-//        QueryUtil queryUtil = new QueryUtil();
-//        queryUtil.addSelectAttribute("id").addSelectAttribute("name").addSelectAttribute("nickname")
-//                .addSelectAttribute("headimg");
-//        queryUtil.addEqualFilter("id", StringUtils.converToArrayStr(userIdList)).addEqualFilter("status", 0);
-//        queryUtil.orderBy("id", Order.ASC);
-//        queryUtil.setOrder("id");
         Query query = new Query.QueryBuilder().select("id").select("name").select("nickname").select("headimg").
                 where(new Condition("id", userIdList, ValueOp.IN)).and("status", 0)
                 .orderBy("id", Order.ASC).buildQuery();
@@ -332,10 +297,12 @@ public class CandidateDBDao {
     /**
      * 查找未推荐的职位转发记录
      *
+     *
      * @param idList id集合
+     * @param positionIdList 职位ID集合
      * @return 未推荐的职位转发记录
      */
-    public List<CandidateRecomRecordDO> getCandidateRecomRecordDOByIdList(List<Integer> idList) {
+    public List<CandidateRecomRecordDO> getCandidateRecomRecordDOByIdList(List<Integer> idList, List<Integer> positionIdList) {
 //        QueryUtil queryUtil = new QueryUtil();
 //        queryUtil.addSelectAttribute("id").addSelectAttribute("position_id").addSelectAttribute("presentee_user_id");
 //        queryUtil.addEqualFilter("is_recom", "[1,2,3]").addEqualFilter("id", StringUtils.converToArrayStr(idList));
@@ -345,8 +312,11 @@ public class CandidateDBDao {
         list.add(1);
         list.add(2);
         list.add(3);
-        Query query = new Query.QueryBuilder().select("id").select("position_id").select("presentee_user_id").
-                where(new Condition("is_recom", list, ValueOp.IN)).and(new Condition("id", idList, ValueOp.IN))
+        Query query = new Query.QueryBuilder().select("id").select("position_id").select("presentee_user_id")
+                .select("click_time")
+                .where(new Condition("is_recom", list, ValueOp.IN))
+                .and(new Condition("id", idList, ValueOp.IN))
+                .and(new Condition("position_id", positionIdList, ValueOp.IN))
                 .orderBy("position_id").orderBy("click_time").buildQuery();
         return candidateRecomRecordDao.getDatas(query);
 
@@ -356,13 +326,13 @@ public class CandidateDBDao {
      * 根据编号查找职位转发浏览记录
      *
      * @param id 职位转发浏览记录编号
+     * @param postUserId 推荐人
      * @return 职位转发浏览记录
      */
-
-    public CandidateRecomRecordDO getCandidateRecomRecordDO(int id) {
+    public CandidateRecomRecordDO getCandidateRecomRecordDO(int id, int postUserId) {
 //        QueryUtil queryUtil = new QueryUtil();
 //        queryUtil.addEqualFilter("id", id);
-        Query query = new Query.QueryBuilder().where("id", id).buildQuery();
+        Query query = new Query.QueryBuilder().where("id", id).and("post_user_id", postUserId).buildQuery();
         return candidateRecomRecordDao.getData(query);
 
     }
@@ -392,8 +362,6 @@ public class CandidateDBDao {
 
     public HrPointsConfDO getHrPointConf(int companyId, RecruitmentScheduleEnum
             recruitmentScheduleEnum) throws TException {
-//        QueryUtil queryUtil = new QueryUtil();
-//        queryUtil.addEqualFilter("company_id", companyId).addEqualFilter("template_id", recruitmentScheduleEnum.IMPROVE_CANDIDATE.getId());
 
         Query query = new Query.QueryBuilder().where("company_id", companyId).and("template_id", recruitmentScheduleEnum.IMPROVE_CANDIDATE.getId()).buildQuery();
         return hrPointsConfDao.getData(query);
@@ -427,35 +395,25 @@ public class CandidateDBDao {
      * @param postUserId    转发者编号
      * @param dateTime      点击时间
      * @param recommendFlag 推荐标识集合
+     * @param positionIdList 职位编号集合
      * @return 职位转发记录数量
      * @throws TException 业务异常
      */
     public int countRecommendation(int postUserId, String
-            dateTime, List<Integer> recommendFlag) throws TException {
-        return candidateRecomRecordDao.countCandidateRecomRecordCustom(postUserId, dateTime, recommendFlag);
-    }
-
-    /**
-     * 查找公司下的员工信息
-     *
-     * @param companyId 公司编号
-     * @return 员工集合
-     */
-    public List<UserEmployeeDO> listUserEmployee(int companyId) {
-        Query query = new Query.QueryBuilder().select("id").select("sysuser_id")
-                .where("company_id", companyId).and("disable", Constant.ENABLE_OLD)
-                .and("activation", EmployeeType.AUTH_SUCCESS.getValue()).buildQuery();
-        return userEmployeeDao.getDatas(query);
+            dateTime, List<Integer> recommendFlag, List<Integer> positionIdList) throws TException {
+        return candidateRecomRecordDao.countCandidateRecomRecordCustom(postUserId, dateTime, recommendFlag, positionIdList);
     }
 
     /**
      * 查找推荐排名
      *
+     *
      * @param employeeIdList 员工编号
+     * @param positionIdList 职位编号
      * @return 推荐排名
      */
-    public List<CandidateRecomRecordSortingDO> listSorting(List<Integer> employeeIdList) {
-        return candidateRecomRecordDao.listCandidateRecomRecordSorting(employeeIdList);
+    public List<CandidateRecomRecordSortingDO> listSorting(List<Integer> employeeIdList, List<Integer> positionIdList) {
+        return candidateRecomRecordDao.listCandidateRecomRecordSorting(employeeIdList, positionIdList);
     }
 
     public List<CandidatePositionDO> listCandidatePositionByUserIdPositionId

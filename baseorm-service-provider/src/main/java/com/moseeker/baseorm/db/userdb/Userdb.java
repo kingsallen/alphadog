@@ -50,7 +50,8 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Userdb extends SchemaImpl {
 
-    private static final long serialVersionUID = -19771936;
+
+    private static final long serialVersionUID = -1992433819;
 
     /**
      * The reference instance of <code>userdb</code>
@@ -116,11 +117,6 @@ public class Userdb extends SchemaImpl {
      * 用户求职意向
      */
     public final UserIntention USER_INTENTION = com.moseeker.baseorm.db.userdb.tables.UserIntention.USER_INTENTION;
-
-    /**
-     * 用户订阅职位推荐邮件
-     */
-    public final UserPositionEmail USER_POSITION_EMAIL = com.moseeker.baseorm.db.userdb.tables.UserPositionEmail.USER_POSITION_EMAIL;
 
     /**
      * 用户搜索条件(qx职位搜索)

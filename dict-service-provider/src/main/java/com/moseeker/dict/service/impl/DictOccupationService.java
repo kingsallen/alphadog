@@ -1,5 +1,6 @@
 package com.moseeker.dict.service.impl;
 
+import com.moseeker.baseorm.dao.dictdb.DictLiepinOccupationDao;
 import com.moseeker.common.annotation.iface.CounterIface;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -35,6 +36,9 @@ public class DictOccupationService {
 	@Autowired
     private DictZpinOccupationDao dictZpinOccupationDao;
 
+	@Autowired
+	private DictLiepinOccupationDao dictLiepinOccupationDao;
+
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
 
@@ -47,25 +51,14 @@ public class DictOccupationService {
 		int single_layer=obj.getIntValue("single_layer");
 		int channel=obj.getIntValue("channel");
 		try{
+
 			if(single_layer==1){
-				Integer level=obj.getInteger("level") ;
-				Integer id=obj.getInteger("code");
-				Integer parentId=obj.getInteger("parent_id");
-				Query.QueryBuilder build=new Query.QueryBuilder();
-				build.where("status",1);
-				if(id!=null){
-					build.and("code", id);
-				}
-				if(parentId!=null){
-					build.and("parent_id", parentId);
-				}
-				if(level!=null){
-					build.and("level", level);
-				}
 				if(channel==1){
-					return ResponseUtils.success(dict51OccupationDao.getSingle(build.buildQuery()));
+					return ResponseUtils.success(dict51OccupationDao.getSingle(obj));
+				}else if(channel==2){
+					return ResponseUtils.success(dictLiepinOccupationDao.getSingle(obj));
 				}else if(channel==3){
-					return ResponseUtils.success(dictZpinOccupationDao.getSingle(build.buildQuery()));
+					return ResponseUtils.success(dictZpinOccupationDao.getSingle(obj));
 				}
 			}else{
 				if(channel==1){
@@ -78,6 +71,19 @@ public class DictOccupationService {
 						Response res=ResponseUtils.success(dict51OccupationDao.getAll());
 						if(res.getStatus()==0&&!StringUtils.isEmpty(res.getData())&&!"[]".equals(res.getData())){
 							redisClient.set(Constant.APPID_ALPHADOG,ConstantEnum.JOB_OCCUPATION_KEY.toString(),key,JSONObject.toJSONString(res));
+						}
+						return res;
+					}
+				}else if(channel==2){
+					String key="liePinList";
+					String result=redisClient.get(Constant.APPID_ALPHADOG,ConstantEnum.JOB_OCCUPATION_KEY.toString(),key);
+					if(!StringUtils.isEmpty(result)){
+						Response res=JSONObject.toJavaObject(JSONObject.parseObject(result), Response.class);
+						return res;
+					}else{
+						Response res=ResponseUtils.success(dictLiepinOccupationDao.getAll());
+						if(res.getStatus()==0&&!StringUtils.isEmpty(res.getData())&&!"[]".equals(res.getData())){
+							redisClient.set(Constant.APPID_ALPHADOG,ConstantEnum.JOB_OCCUPATION_KEY.toString(),key ,JSONObject.toJSONString(res));
 						}
 						return res;
 					}

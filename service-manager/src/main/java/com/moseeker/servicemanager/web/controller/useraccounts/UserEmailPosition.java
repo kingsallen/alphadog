@@ -45,11 +45,13 @@ public class UserEmailPosition {
 		 Map<String, Object> reqParams = null;
 	   	 try{
 	   		 reqParams = ParamUtils.parseRequestParam(request);
-	   		 int userId=(int) reqParams.get("userId");
-	   		 String email= (String) reqParams.get("email");
-	   		 String conditions= (String) reqParams.get("conditions");
+	   		 Map<String,Object> params= (Map<String, Object>) reqParams.get("conditions");
+	   		 int userId=(int) params.get("userId");
+	   		 String email= (String) params.get("email");
+	   		 String conditions= (String) params.get("conditions");
+			 String urls=(String) reqParams.get("urls");
 	   		 logger.info("向user_id为{}的用户发送邮箱验证邮件",userId);
-	   		 Response res=userQxService.sendValiddateEmail(email, userId, conditions);
+	   		 Response res=userQxService.sendValiddateEmail(email, userId, conditions,urls);
 	   		 return ResponseLogNotification.success(request,res);
 	   	 }catch(Exception e){
 	   		 logger.info(e.getMessage(),e);

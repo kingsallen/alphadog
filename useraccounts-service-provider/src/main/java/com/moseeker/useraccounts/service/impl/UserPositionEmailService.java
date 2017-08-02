@@ -51,17 +51,20 @@ public class UserPositionEmailService {
 		return userPositionEmailDao.insertOrUpdateData(userId, conditions);
 	}
 	//发送邮箱验证邮件
-	public int  sendEmailvalidation(String email,int userId,String conditions) throws TException{
+	public int  sendEmailvalidation(String email,int userId,String conditions,String urls) throws TException{
 		if(StringUtils.isEmpty(email)||userId==0||StringUtils.isEmpty(conditions)){
 			return 0;
 		}
+		UserUserDO user=getUserInfobyId(userId);
+		if(user==null){
+			return 0;
+		}
 		Map<String,String > data=new HashMap<String,String>();
-		String url="";
 		String conditionWords=this.convertConditionForEmail(conditions);
 		if(StringUtils.isEmpty(conditions)){
 			return 0;
 		}
-		data.put("#auth_url#", url);
+		data.put("#auth_url#", urls);
 		data.put("#search_condition#", conditionWords);
 		ConfigPropertiesUtil propertiesUtil = ConfigPropertiesUtil.getInstance();
         String senderName = propertiesUtil.get("email.verify.sendName", String.class);

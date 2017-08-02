@@ -9,6 +9,7 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.Select;
 import com.moseeker.common.util.query.SelectOp;
 import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrTeamDO;
 
 import java.util.ArrayList;
@@ -93,4 +94,9 @@ public class HrTeamDao extends JooqCrudImpl<HrTeamDO, HrTeamRecord> {
 		List<Map<String,Object>> result=this.getMaps(query);
 		return result;
 	}
+
+    public HrTeamDO getHrTeam(int id) {
+        Query query = new Query.QueryBuilder().where("id", id).buildQuery();
+        return getData(query);
+    }
 }

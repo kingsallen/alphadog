@@ -13,12 +13,11 @@ import com.moseeker.baseorm.db.dictdb.tables.records.DictCityPostcodeRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrTeamRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyPositionRecord;
+import com.moseeker.baseorm.db.jobdb.tables.JobOccupation;
 import com.moseeker.baseorm.db.jobdb.tables.records.*;
 import com.moseeker.baseorm.pojo.JobPositionPojo;
 import com.moseeker.baseorm.pojo.RecommendedPositonPojo;
 import com.moseeker.baseorm.redis.RedisClient;
-import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.*;
@@ -36,14 +35,15 @@ import com.moseeker.position.pojo.PositionForSynchronizationPojo;
 import com.moseeker.position.service.position.PositionChangeUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
-import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
-import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobOccupationDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.position.struct.*;
+import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
+
 import org.apache.thrift.TException;
 import org.jooq.Field;
 import org.slf4j.Logger;
@@ -51,12 +51,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.annotation.Resource;
+
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
 import static java.lang.Math.round;
 import static java.lang.Math.toIntExact;
 
@@ -83,9 +86,9 @@ public class PositionService {
     @Autowired
     private HrCompanyAccountDao hrCompanyAccountDao;
     @Autowired
-	private HRThirdPartyAccountDao thirdPartyAccountDao;
+    private HRThirdPartyAccountDao thirdPartyAccountDao;
     @Autowired
-	private HRThirdPartyPositionDao thirdpartyPositionDao;
+    private HRThirdPartyPositionDao thirdpartyPositionDao;
     @Autowired
     private JobPositionExtDao jobPositonExtDao;
     @Autowired
@@ -98,17 +101,13 @@ public class PositionService {
     private HrHbPositionBindingDao hrHbPositionBindingDao;
     @Autowired
     private HrHbItemsDao hrHbItemsDao;
+    @Autowired
+    private PositionChangeUtil positionChangeUtil;
+
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
-    com.moseeker.thrift.gen.searchengine.service.SearchengineServices.Iface searchengineServices = ServiceManager.SERVICEMANAGER
-            .getService(com.moseeker.thrift.gen.searchengine.service.SearchengineServices.Iface.class);
-    protected Position DBToStruct(JobPositionRecord r) {
-        return (Position) BeanUtils.DBToStruct(Position.class, r);
-    }
 
-    protected JobPositionRecord structToDB(Position p) {
-        return (JobPositionRecord) BeanUtils.structToDB(p, JobPositionRecord.class);
-    }
+    SearchengineServices.Iface searchengineServices = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
 
     /**
      * 获取推荐职位
@@ -131,10 +130,10 @@ public class PositionService {
             }
         }));
     }
-   
+
     @CounterIface
     public Response verifyCustomize(int positionId) throws TException {
-    	Query query=new Query.QueryBuilder().where("id",positionId).buildQuery();
+        Query query = new Query.QueryBuilder().where("id", positionId).buildQuery();
         JobPositionRecord positionRecord = jobPositionDao.getRecord(query);
         if (positionRecord == null) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_POSITION_NOTEXIST);
@@ -162,29 +161,29 @@ public class PositionService {
                     .fail(ConstantErrorCodeMessage.PROGRAM_VALIDATE_REQUIRED.replace("{0}", "position_id"));
         }
         // NullPoint check
-        Query query=new Query.QueryBuilder().where("id",positionId).buildQuery();
+        Query query = new Query.QueryBuilder().where("id", positionId).buildQuery();
         JobPositionRecord jobPositionRecord = jobPositionDao.getRecord(query);
         if (jobPositionRecord == null) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
         JobPositionPojo jobPositionPojo = jobPositionDao.getPosition(positionId);
-        jobPositionPojo.team_name="";
-        jobPositionPojo.department="";
-        int team_id=jobPositionPojo.team_id;
-        if(team_id!=0){
-            Query query1=new Query.QueryBuilder().where("id",team_id).and("disable", 0).buildQuery();
-            HrTeamRecord hrTeamRecord=hrTeamDao.getRecord(query1);
-            if(hrTeamRecord!=null){
-                jobPositionPojo.department=hrTeamRecord.getName();
-                jobPositionPojo.team_name=hrTeamRecord.getName();
+        jobPositionPojo.team_name = "";
+        jobPositionPojo.department = "";
+        int team_id = jobPositionPojo.team_id;
+        if (team_id != 0) {
+            Query query1 = new Query.QueryBuilder().where("id", team_id).and("disable", 0).buildQuery();
+            HrTeamRecord hrTeamRecord = hrTeamDao.getRecord(query1);
+            if (hrTeamRecord != null) {
+                jobPositionPojo.department = hrTeamRecord.getName();
+                jobPositionPojo.team_name = hrTeamRecord.getName();
             }
         }
 
 
         /** 子公司Id设置 **/
         if (jobPositionPojo.publisher != 0) {
-            Query query2=new Query.QueryBuilder().where("account_id",jobPositionPojo.publisher).buildQuery();
-            HrCompanyAccountRecord hrCompanyAccountRecord =hrCompanyAccountDao.getRecord(query2);
+            Query query2 = new Query.QueryBuilder().where("account_id", jobPositionPojo.publisher).buildQuery();
+            HrCompanyAccountRecord hrCompanyAccountRecord = hrCompanyAccountDao.getRecord(query2);
             // 子公司ID>0
             if (hrCompanyAccountRecord != null && hrCompanyAccountRecord.getCompanyId() > 0) {
                 jobPositionPojo.publisher_company_id = hrCompanyAccountRecord.getCompanyId();
@@ -212,14 +211,14 @@ public class PositionService {
         JobPositionExtRecord jobPositionExtRecord = getJobPositionExtRecord(positionId);
         if (jobPositionExtRecord != null) {
             if (jobPositionExtRecord.getJobCustomId() > 0) {
-                JobCustomRecord jobCustomRecord = jobCustomDao.getRecord(new Query.QueryBuilder().where("id",jobPositionExtRecord.getJobCustomId()).buildQuery());
+                JobCustomRecord jobCustomRecord = jobCustomDao.getRecord(new Query.QueryBuilder().where("id", jobPositionExtRecord.getJobCustomId()).buildQuery());
                 if (jobCustomRecord != null && !"".equals(jobCustomRecord.getName())) {
                     jobPositionPojo.custom = jobCustomRecord.getName();
                 }
             }
             if (jobPositionExtRecord.getJobCustomId() > 0) {
                 JobOccupationRecord jobOccupationRecord =
-                        jobOccupationDao.getRecord(new Query.QueryBuilder().where("id",jobPositionExtRecord.getJobOccupationId()).buildQuery());
+                        jobOccupationDao.getRecord(new Query.QueryBuilder().where("id", jobPositionExtRecord.getJobOccupationId()).buildQuery());
                 if (jobOccupationRecord != null && com.moseeker.common.util.StringUtils.isNotNullOrEmpty(jobOccupationRecord.getName())) {
                     jobPositionPojo.occupation = jobOccupationRecord.getName();
                 }
@@ -244,33 +243,34 @@ public class PositionService {
             sb.deleteCharAt(sb.length() - 1);
             jobPositionPojo.province = sb.toString();
         }
-       
+
         return ResponseUtils.success(jobPositionPojo);
     }
-    
+
     /*
      * 获取城市
      */
-	private List<DictCityRecord> getProvinces(int positionId){
-		Query query=new Query.QueryBuilder().where("pid",positionId).buildQuery();
-		List<JobPositionCityRecord> jobPositionCityRecord=jobPositionCityDao.getRecords(query);
-		if(jobPositionCityRecord!=null&&jobPositionCityRecord.size()>0){
-			List<Integer> pids=new ArrayList<Integer>();
-			jobPositionCityRecord.forEach(record -> {
-				pids.add((int)((record.getCode()/ 10000) * 10000));
-			});
-			Query query2=new Query.QueryBuilder().where(new Condition("code",pids,ValueOp.IN)).buildQuery();
-			List<DictCityRecord>list=dictCityDao.getRecords(query2);
-			return list;
-		}
-		return null;
-	}
+    private List<DictCityRecord> getProvinces(int positionId) {
+        Query query = new Query.QueryBuilder().where("pid", positionId).buildQuery();
+        List<JobPositionCityRecord> jobPositionCityRecord = jobPositionCityDao.getRecords(query);
+        if (jobPositionCityRecord != null && jobPositionCityRecord.size() > 0) {
+            List<Integer> pids = new ArrayList<Integer>();
+            jobPositionCityRecord.forEach(record -> {
+                pids.add((int) ((record.getCode() / 10000) * 10000));
+            });
+            Query query2 = new Query.QueryBuilder().where(new Condition("code", pids, ValueOp.IN)).buildQuery();
+            List<DictCityRecord> list = dictCityDao.getRecords(query2);
+            return list;
+        }
+        return null;
+    }
+
     /**
      * 获取常量字典一条记录
      */
     private String getDictConstantJson(Integer parentCode, Integer code) {
-    	Query query=new Query.QueryBuilder().where("parent_code",parentCode).and("code",code).buildQuery();
-        DictConstantPojo dictConstantPojo =dictConstantDao.getData(query, DictConstantPojo.class);
+        Query query = new Query.QueryBuilder().where("parent_code", parentCode).and("code", code).buildQuery();
+        DictConstantPojo dictConstantPojo = dictConstantDao.getData(query, DictConstantPojo.class);
         return dictConstantPojo != null ? dictConstantPojo.getName() : "";
     }
 
@@ -289,11 +289,11 @@ public class PositionService {
      * 转成第三方渠道职位
      */
     public List<ThirdPartyPositionForSynchronization> changeToThirdPartyPosition(List<ThirdPartyPosition> forms,
-                                                                                 Position position) {
+                                                                                 JobPositionDO position) {
         List<ThirdPartyPositionForSynchronization> positions = new ArrayList<>();
         if (forms != null && forms.size() > 0 && position != null && position.getId() > 0) {
             forms.forEach(form -> {
-                ThirdPartyPositionForSynchronization p = new PositionChangeUtil().changeToThirdPartyPosition(form, position);
+                ThirdPartyPositionForSynchronization p = positionChangeUtil.changeToThirdPartyPosition(form, position);
                 positions.add(p);
             });
         }
@@ -309,34 +309,43 @@ public class PositionService {
      */
     @CounterIface
     public boolean ifAllowRefresh(int positionId, int account_id) {
-        boolean permission = false;
         logger.info("ifAllowRefresh");
-        Query findPositionById=new Query.QueryBuilder().where("id",positionId).buildQuery();
+        Query findPositionById = new Query.QueryBuilder().where("id", positionId).buildQuery();
         logger.info("search position");
-        Position position= jobPositionDao.getData(findPositionById,Position.class);
+        JobPositionDO position = jobPositionDao.getData(findPositionById);
         logger.info("position:" + JSON.toJSONString(position));
-        if (position.getId() > 0) {
-            Query queryUtil=new Query.QueryBuilder()
-            .where("id",account_id)
-            .buildQuery();
-            ThirdPartAccountData account =thirdPartyAccountDao.getData(queryUtil,ThirdPartAccountData.class);
-            logger.info("ifAllowRefresh third party account:" + JSON.toJSONString(account));
-            logger.info("search thirdparyposition");
-            ThirdPartyPositionData p=thirdpartyPositionDao.getThirdPartyPosition(positionId, account_id);
-            logger.info("thirdparyposition" + JSON.toJSONString(p));
-            if (account != null && account.getBinding() == AccountSync.bound.getValue() && p.getId() > 0
-                    && p.getIs_synchronization() == PositionSync.bound.getValue()) {
-                logger.info("data allow");
-                String str = redisClient.get(AppId.APPID_ALPHADOG.getValue(),
-                        KeyIdentifier.THIRD_PARTY_POSITION_REFRESH.toString(), String.valueOf(positionId), String.valueOf(account_id));
-                if (StringUtils.isNullOrEmpty(str)) {
-                    logger.info("cache allow");
-                    permission = true;
-                }
-            }
+
+        if (position == null || position.getId() == 0) return false;
+
+        Query queryUtil = new Query.QueryBuilder().where("id", account_id).buildQuery();
+
+        HrThirdPartyAccountDO account = thirdPartyAccountDao.getData(queryUtil);
+
+        if (account == null || account.binding == AccountSync.unbind.getValue()
+                || account.binding == AccountSync.accountpasserror.getValue()
+                || account.binding == AccountSync.error.getValue()
+                || account.binding == AccountSync.bingdingerror.getValue()) {
+            return false;
         }
-        return permission;
+
+        logger.info("ifAllowRefresh third party account:" + JSON.toJSONString(account));
+        HrThirdPartyPositionDO thirdPartyPosition = thirdpartyPositionDao.getThirdPartyPosition(positionId, account_id);
+        logger.info("thirdparyposition" + JSON.toJSONString(thirdPartyPosition));
+
+        if (thirdPartyPosition == null || thirdPartyPosition.getIsSynchronization() != PositionSync.bound.getValue()) {
+            return false;
+        }
+
+
+        logger.info("data allow");
+        String str = redisClient.get(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH.toString(), String.valueOf(positionId), String.valueOf(account_id));
+        if (StringUtils.isNotNullOrEmpty(str)) {
+            return false;
+        }
+        logger.info("cache allow");
+        return true;
     }
+
     /**
      * 创建刷新职位数据
      *
@@ -344,27 +353,59 @@ public class PositionService {
      * @param account_id 第三方账号ID
      */
     public ThirdPartyPositionForSynchronizationWithAccount createRefreshPosition(int positionId, int account_id) {
-        ThirdPartyPositionForSynchronizationWithAccount account = new ThirdPartyPositionForSynchronizationWithAccount();
-        ThirdPartyPosition form = new ThirdPartyPosition();
-        Query findPosition=new Query.QueryBuilder().where("id", positionId).buildQuery();
-        Position position =jobPositionDao.getData(findPosition,Position.class);
-        ThirdPartyPositionData thirdPartyPosition =thirdpartyPositionDao.getThirdPartyPosition(positionId, account_id);
-        Query findAccount=new Query.QueryBuilder().where("id", account_id).buildQuery();
-        ThirdPartAccountData accountData =thirdPartyAccountDao.getData(findAccount,ThirdPartAccountData.class);
-        account.setUser_name(accountData.getUsername());
-        account.setMember_name(accountData.getMembername());
-        account.setPassword(accountData.getPassword());
-        account.setChannel(String.valueOf(accountData.getChannel()));
-        account.setPosition_id(String.valueOf(positionId));
-        account.setAccount_id(String.valueOf(account_id));
+        ThirdPartyPositionForSynchronizationWithAccount syncAccount = new ThirdPartyPositionForSynchronizationWithAccount();
+        Query findPosition = new Query.QueryBuilder().where("id", positionId).buildQuery();
+        JobPositionDO position = jobPositionDao.getData(findPosition);
 
-        form.setChannel((byte) accountData.getChannel());
-        if (position.getId() > 0 && thirdPartyPosition.getId() > 0) {
-            ThirdPartyPositionForSynchronization p = new PositionChangeUtil().changeToThirdPartyPosition(form, position);
-            p.setJob_id(thirdPartyPosition.getThird_part_position_id());
-            account.setPosition_info(p);
+        if (position == null) {
+            logger.info("createRefreshPosition position null :{}", positionId, account_id);
+            return syncAccount;
         }
-        return account;
+
+        HrThirdPartyPositionDO thirdPartyPosition = thirdpartyPositionDao.getThirdPartyPosition(positionId, account_id);
+
+        if (thirdPartyPosition == null) {
+            logger.info("createRefreshPosition thirdPartyPosition:{}:{}", positionId, account_id);
+            return syncAccount;
+        }
+
+        Query findAccount = new Query.QueryBuilder().where("id", account_id).buildQuery();
+        HrThirdPartyAccountDO thirdPartyAccount = thirdPartyAccountDao.getData(findAccount);
+
+        if (thirdPartyAccount == null) {
+            logger.info("createRefreshPosition thirdPartyAccount null:{}:{}", positionId, account_id);
+            return syncAccount;
+        }
+
+        HrCompanyDO subCompany = hrCompanyAccountDao.getHrCompany(position.getPublisher());
+
+        if (subCompany != null) {
+            syncAccount.setCompany_name(subCompany.getAbbreviation());
+        }
+
+        syncAccount.setUser_name(thirdPartyAccount.getUsername());
+        syncAccount.setMember_name(thirdPartyAccount.getMembername());
+        syncAccount.setPassword(thirdPartyAccount.getPassword());
+        syncAccount.setChannel(thirdPartyAccount.getChannel());
+        syncAccount.setPosition_id(positionId);
+        syncAccount.setAccount_id(account_id);
+
+        ThirdPartyPosition form = new ThirdPartyPosition();
+        form.setChannel((byte) thirdPartyAccount.getChannel());
+        form.setAddress(thirdPartyPosition.getAddress());
+        //count,occupation暂时没有放进去，目前不需要
+        form.setDepartment(thirdPartyPosition.getDepartment());
+        form.setFeedback_period(thirdPartyPosition.getFeedbackPeriod());
+        form.setSalary_bottom(thirdPartyPosition.getSalaryBottom());
+        form.setSalary_top(thirdPartyPosition.getSalaryTop());
+        form.setSalary_discuss(thirdPartyPosition.getSalaryDiscuss() == 0 ? false : true);
+        form.setSalary_month(thirdPartyPosition.getSalaryMonth());
+        form.setUse_company_address(thirdPartyPosition.getUseCompanyAddress() == 0 ? false : true);
+        form.setThird_party_account_id(thirdPartyAccount.getId());
+        ThirdPartyPositionForSynchronization p = positionChangeUtil.changeToThirdPartyPosition(form, position);
+        p.setJob_id(thirdPartyPosition.getThirdPartPositionId());
+        syncAccount.setPosition_info(p);
+        return syncAccount;
     }
 
     /**
@@ -381,7 +422,7 @@ public class PositionService {
         // 如果为true, 数据不能删除. 否则,允许删除, data中的数据根据fields_nohash中以外的字段, 判断data中的记录和数据库中已有记录的关系, 进行添加, 修改,删除
         Boolean noDelete = batchHandlerJobPosition.nodelete;
         // 参数有误
-        if (null == noDelete){
+        if (null == noDelete) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, ConstantErrorCodeMessage.POSITION_NODELETE_BLANK);
         }
         // 提交的数据为空
@@ -390,7 +431,7 @@ public class PositionService {
         }
         Integer companyId;
         if (jobPositionHandlerDates.get(0).getId() != 0) {
-            Query query=new Query.QueryBuilder().where("id",jobPositionHandlerDates.get(0).getId()).buildQuery();
+            Query query = new Query.QueryBuilder().where("id", jobPositionHandlerDates.get(0).getId()).buildQuery();
             JobPositionRecord jobPostionTemp = jobPositionDao.getRecord(query);
             if (jobPostionTemp != null) {
                 companyId = jobPostionTemp.getCompanyId().intValue();
@@ -402,8 +443,8 @@ public class PositionService {
             companyId = jobPositionHandlerDates.get(0).getCompany_id();
         }
         // 将该公司下所有的部位取出来，用于判断更新或者新增数据时，部门设置是否正确
-        Query queryUtilDepartment=new Query.QueryBuilder()
-                .where("company_id",companyId)
+        Query queryUtilDepartment = new Query.QueryBuilder()
+                .where("company_id", companyId)
                 .and("disable", 0)
                 .buildQuery();
         // 取的该公司下的所有部门信息
@@ -431,21 +472,21 @@ public class PositionService {
         }
         // 公司下职能信息
         HashMap jobOccupationMap = new LinkedHashMap();
-        Query jobOccupationQuery=new Query.QueryBuilder()
-                .where("company_id",companyId)
+        Query jobOccupationQuery = new Query.QueryBuilder()
+                .where("company_id", companyId)
                 .and("status", 1)
                 .buildQuery();
-        List<JobOccupationRecord> jobOccupationList = jobOccupationDao.getRecords(jobOccupationQuery);
-        for (JobOccupationRecord jobOccupationRecord : jobOccupationList) {
-            jobOccupationMap.put(jobOccupationRecord.getName().trim(), jobOccupationRecord);
+        List<JobOccupationDO> jobOccupationList = jobOccupationDao.getDatas(jobOccupationQuery);
+        for (JobOccupationDO jobOccupationDO : jobOccupationList) {
+            jobOccupationMap.put(jobOccupationDO.getName().trim(), jobOccupationDO);
         }
 
         // 公司下职位自定义字段
         HashMap jobCustomMap = new LinkedHashMap();
-        jobOccupationQuery=new Query.QueryBuilder()
-        .where("company_id",companyId)
-        .and("status", 1)
-        .buildQuery();
+        jobOccupationQuery = new Query.QueryBuilder()
+                .where("company_id", companyId)
+                .and("status", 1)
+                .buildQuery();
         // 公司下职能信息
         List<JobCustomRecord> jobCustomRecordList = jobCustomDao.getRecords(jobOccupationQuery);
         for (JobCustomRecord jobCustomRecord : jobCustomRecordList) {
@@ -551,7 +592,9 @@ public class PositionService {
                     jobPositionFailMessPojo.setSourceId(jobPositionHandlerDate.getSource_id());
                     jobPositionFailMessPojo.setJobPostionId(jobPositionHandlerDate.getId());
                     jobPositionFailMessPojo.setDepartment(jobPositionHandlerDate.getDepartment());
-                    jobPositionFailMessPojo.setMessage(ConstantErrorCodeMessage.POSITION_DATA_DEPARTMENT_ERROR);
+                    JSONObject jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.POSITION_DATA_DEPARTMENT_ERROR);
+                    jobPositionFailMessPojo.setMessage(jsonObject.getString("message"));
+                    jobPositionFailMessPojo.setStatus(jsonObject.getInteger("status"));
                     jobPositionFailMessPojos.add(jobPositionFailMessPojo);
                     continue;
                 }
@@ -561,19 +604,29 @@ public class PositionService {
             int jobOccupationId = 0;
             // 验证职能信息是否正确
             if (!com.moseeker.common.util.StringUtils.isNullOrEmpty(jobPositionHandlerDate.getOccupation())) {
-                JobOccupationRecord jobOccupationRecord = (JobOccupationRecord) jobOccupationMap.get(jobPositionHandlerDate.getOccupation().trim());
-                if (jobOccupationRecord != null) {
-                    jobOccupationId = jobOccupationRecord.getId();
+                JobOccupationDO jobOccupationDO = (JobOccupationDO) jobOccupationMap.get(jobPositionHandlerDate.getOccupation().trim());
+                if (jobOccupationDO != null) {
+                    jobOccupationId = jobOccupationDO.getId();
                 } else {
-                    logger.info("-----职位职能设置错误,职能为:" + jobPositionHandlerDate.getOccupation());
-                    JobPositionFailMess jobPositionFailMessPojo = new JobPositionFailMess();
-                    jobPositionFailMessPojo.setCompanyId(jobPositionHandlerDate.getCompany_id());
-                    jobPositionFailMessPojo.setJobNumber(jobPositionHandlerDate.getJobnumber());
-                    jobPositionFailMessPojo.setSourceId(jobPositionHandlerDate.getSource_id());
-                    jobPositionFailMessPojo.setJobPostionId(jobPositionHandlerDate.getId());
-                    jobPositionFailMessPojo.setMessage(ConstantErrorCodeMessage.POSITION_DATA_OCCUPATION_ERROR.replace("{MESSAGE}", jobPositionHandlerDate.getOccupation()));
-                    jobPositionFailMessPojos.add(jobPositionFailMessPojo);
-                    continue;
+                    logger.info("-----职位职能不存在,新建一条职能,职能信息为:" + jobPositionHandlerDate.getOccupation());
+                    // 职能错误的时候，自动添加一条职能新
+                    JobOccupationDO jobOccupation = new JobOccupationDO();
+                    jobOccupation.setCompanyId(companyId);
+                    jobOccupation.setStatus((byte) 1);
+                    jobOccupation.setName(jobPositionHandlerDate.getOccupation());
+                    JobOccupationDO jobOccupationDOTemp = jobOccupationDao.addData(jobOccupation);
+                    jobOccupationId = jobOccupationDOTemp.getId();
+                    jobOccupationMap.put(jobOccupationDOTemp.getName().trim(), jobOccupationDOTemp);
+
+
+//                    JobPositionFailMess jobPositionFailMessPojo = new JobPositionFailMess();
+//                    jobPositionFailMessPojo.setCompanyId(jobPositionHandlerDate.getCompany_id());
+//                    jobPositionFailMessPojo.setJobNumber(jobPositionHandlerDate.getJobnumber());
+//                    jobPositionFailMessPojo.setSourceId(jobPositionHandlerDate.getSource_id());
+//                    jobPositionFailMessPojo.setJobPostionId(jobPositionHandlerDate.getId());
+//                    jobPositionFailMessPojo.setMessage(ConstantErrorCodeMessage.POSITION_DATA_OCCUPATION_ERROR.replace("{MESSAGE}", jobPositionHandlerDate.getOccupation()));
+//                    jobPositionFailMessPojos.add(jobPositionFailMessPojo);
+//                    continue;
                 }
             }
             // 验证职位自定义字段
@@ -589,7 +642,9 @@ public class PositionService {
                     jobPositionFailMessPojo.setJobNumber(jobPositionHandlerDate.getJobnumber());
                     jobPositionFailMessPojo.setSourceId(jobPositionHandlerDate.getSource_id());
                     jobPositionFailMessPojo.setJobPostionId(jobPositionHandlerDate.getId());
-                    jobPositionFailMessPojo.setMessage(ConstantErrorCodeMessage.POSITION_DATA_CUSTOM_ERROR.replace("{MESSAGE}", jobPositionHandlerDate.getCustom()));
+                    JSONObject jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.POSITION_DATA_CUSTOM_ERROR);
+                    jobPositionFailMessPojo.setMessage(jsonObject.getString("message").replace("{MESSAGE}", jobPositionHandlerDate.getCustom()));
+                    jobPositionFailMessPojo.setStatus(jsonObject.getInteger("status"));
                     jobPositionFailMessPojos.add(jobPositionFailMessPojo);
                     continue;
                 }
@@ -602,7 +657,7 @@ public class PositionService {
                 record.setSalary(record.getSalaryBottom().intValue() + "K以上");
             }
             // 按company_id + .source_id + .jobnumber + source=9取得数据
-            Query queryUtil=new Query.QueryBuilder()
+            Query queryUtil = new Query.QueryBuilder()
                     .where("company_id", jobPositionHandlerDate.getCompany_id())
                     .and("source", 9)
                     .and("source_id", jobPositionHandlerDate.getSource_id())
@@ -619,7 +674,7 @@ public class PositionService {
                 // 取出数据库中的数据进行对比操作
                 JobPositionRecord jobPositionRecordTemp = (JobPositionRecord) dbListMap.get(record.getId());
                 if (jobPositionRecordTemp != null) {
-                     Query query=new Query.QueryBuilder()
+                    Query query = new Query.QueryBuilder()
                             .where("pid", jobPositionRecordTemp.getId())
                             .buildQuery();
                     JobPositionExtRecord jobPositionExtRecord = jobPositonExtDao.getRecord(query);
@@ -773,7 +828,7 @@ public class PositionService {
             return ResponseUtils.success(jobPostionResponse);
         }
         logger.info("-------批量修改职位结束---------");
-        return ResponseUtils.fail(1, JSONArray.toJSONString(jobPostionResponse));
+        return ResponseUtils.fail(1, "failed", jobPostionResponse);
     }
 
     /**
@@ -782,15 +837,15 @@ public class PositionService {
     public Response deleteJobposition(Integer id, Integer companyId, String jobnumber, Integer sourceId) {
         JobPositionRecord jobPositionRecord = null;
         if (id != null && id.intValue() != 0) {
-            Query queryUtil=new Query.QueryBuilder().where("id",id).buildQuery();
+            Query queryUtil = new Query.QueryBuilder().where("id", id).buildQuery();
             jobPositionRecord = jobPositionDao.getRecord(queryUtil);
 
         } else if (companyId != null && jobnumber != null && sourceId != null) {
-            Query queryUtil=new Query.QueryBuilder()
-                    .where("company_id",companyId)
-                    .and("source",9)
-                    .and("source_id",sourceId)
-                    .and("jobnumber",jobnumber)
+            Query queryUtil = new Query.QueryBuilder()
+                    .where("company_id", companyId)
+                    .and("source", 9)
+                    .and("source_id", sourceId)
+                    .and("jobnumber", jobnumber)
                     .buildQuery();
             jobPositionRecord = jobPositionDao.getRecord(queryUtil);
         } else {
@@ -882,10 +937,10 @@ public class PositionService {
             HashMap cityMap = new LinkedHashMap();
             if (citys != null && citys.size() > 0 && pid != null) {
                 for (City city : citys) {
-                	// 查询DictCityPostCode条件
-                	Query.QueryBuilder cityCodeQuery=new Query.QueryBuilder();
+                    // 查询DictCityPostCode条件
+                    Query.QueryBuilder cityCodeQuery = new Query.QueryBuilder();
                     // 查询DictCity条件
-                	Query.QueryBuilder cityQuery=new Query.QueryBuilder();
+                    Query.QueryBuilder cityQuery = new Query.QueryBuilder();
                     JobPositionCityRecord jobPositionCityRecord = new JobPositionCityRecord();
                     jobPositionCityRecord.setPid(pid);
                     logger.info("城市类型：" + city.getType().toLowerCase());
@@ -900,9 +955,9 @@ public class PositionService {
                         }
                         // 判断下是否是中文还是英文
                         if (isChinese(city.getValue())) { // 是中文
-                        	cityQuery.where("name", city.getValue());
+                            cityQuery.where("name", city.getValue());
                         } else { // 英文
-                        	cityQuery.where("ename", city.getValue());
+                            cityQuery.where("ename", city.getValue());
                         }
                         try {
                             DictCityDO dictCityDO = (DictCityDO) cityMap.get(city.getValue());
@@ -924,7 +979,7 @@ public class PositionService {
                             if (cityPostcodeRecord != null) {
                                 jobPositionCityRecord.setCode(Integer.valueOf(cityPostcodeRecord.getCode()));
                             } else {
-                            	cityCodeQuery.where("postcode",city.getValue());
+                                cityCodeQuery.where("postcode", city.getValue());
                                 cityPostcodeRecord = dictCityPostcodeDao.getRecord(cityCodeQuery.buildQuery());
                                 if (cityPostcodeRecord != null && cityPostcodeRecord.getCode() != null) {
                                     jobPositionCityRecord.setCode(Integer.valueOf(cityPostcodeRecord.getCode()));
@@ -971,7 +1026,7 @@ public class PositionService {
             HashMap cityPostCodeMap = new LinkedHashMap();
             int i = 0;
             for (City city : list) {
-            	Query.QueryBuilder cityCodeQuery=new Query.QueryBuilder();
+                Query.QueryBuilder cityCodeQuery = new Query.QueryBuilder();
                 if (city.getType().toLowerCase().equals("text")) { // 城市名字，转换成cityCode
                     // 判断是不是特殊城市中的
                     String specicalCity = (String) specialCityMap.get(city.getValue());
@@ -981,13 +1036,13 @@ public class PositionService {
                         if (isChinese(city.getValue())) { // 是中文
                             stringBuffer.append(city.getValue());
                         } else { // 英文
-                        	cityCodeQuery.where("ename", city.getValue());
+                            cityCodeQuery.where("ename", city.getValue());
                             try {
                                 DictCityDO dictCityDO = (DictCityDO) cityPostCodeMap.get(city.getValue());
                                 if (dictCityDO != null) {
                                     stringBuffer.append(dictCityDO.getName());
                                 } else {
-                                    dictCityDO =dictCityDao.getData(cityCodeQuery.buildQuery()); //dictOccupationDao.dictCityDO(cityCodeQuery);
+                                    dictCityDO = dictCityDao.getData(cityCodeQuery.buildQuery()); //dictOccupationDao.dictCityDO(cityCodeQuery);
                                     if (dictCityDO != null && dictCityDO.getCode() != 0) {
                                         stringBuffer.append(dictCityDO.getName());
                                         cityPostCodeMap.put(city.getValue(), dictCityDO);
@@ -1073,16 +1128,8 @@ public class PositionService {
         return stringBuffer.toString();
     }
 
-    public List<ThirdPartyPositionData> getThirdPartyPositions(CommonQuery query) {
-        List<ThirdPartyPositionData> datas = new ArrayList<>();
-        List<HrThirdPartyPositionRecord> records = thirdpartyPositionDao.getRecords(QueryConvert.commonQueryConvertToQuery(query));
-        if(records != null && records.size() > 0) {
-            records.forEach(record -> {
-                ThirdPartyPositionData data = BeanUtils.DBToStruct(ThirdPartyPositionData.class, record);
-                datas.add(data);
-            });
-        }
-		return datas;
+    public List<HrThirdPartyPositionDO> getThirdPartyPositions(Query query) {
+        return thirdpartyPositionDao.getDatas(query);
 
     }
 
@@ -1109,9 +1156,9 @@ public class PositionService {
                 // 如果有did, 赋值 childCompanyId
                 childCompanyId = String.valueOf(query.getDid());
             } else {
-                Query qu=new Query.QueryBuilder()
-                		.where("parent_id",companyId)
-                		.buildQuery();
+                Query qu = new Query.QueryBuilder()
+                        .where("parent_id", companyId)
+                        .buildQuery();
                 List<Hrcompany> companies = hrCompanyDao.getCompanies(qu);
 
                 List<Integer> cIds = new ArrayList<>();
@@ -1170,48 +1217,48 @@ public class PositionService {
                 JSONArray jdIdJsonArray = jobj.getJSONArray("jd_id_list");
                 List<Integer> jdIdList = jdIdJsonArray.stream().map(m -> Integer.valueOf(String.valueOf(m))).collect(Collectors.toList());
                 logger.info("jdIdList: " + jdIdList);
-                Condition con=new Condition("id", jdIdList.toArray(),ValueOp.IN);
-				Query q = new Query.QueryBuilder().where(con).buildQuery();
+                Condition con = new Condition("id", jdIdList.toArray(), ValueOp.IN);
+                Query q = new Query.QueryBuilder().where(con).buildQuery();
                 List<JobPositionRecord> jobRecords = jobPositionDao.getRecords(q);
-                for(int i=0;i<jdIdList.size();i++){
-                	int positionId=jdIdList.get(i);
-                	 for (JobPositionRecord jr : jobRecords) {
-                		if(positionId==jr.getId()){
-	 	                    logger.info("pid: " + String.valueOf(jr.getId()));	
-	 	                    WechatPositionListData e = new WechatPositionListData();
-	 	                    e.setTitle(jr.getTitle());
-	 	                    e.setId(jr.getId());
-	 	                    // 数据库的 salary_top 和 salary_bottom 默认是 NULL 不是 0
-	 	                    // 所以这里需要对这两个字段做 null pointer 检查
-	 	                    if (jr.getSalaryTop() == null) {
-	 	                        e.setSalary_top(0);
-	 	                    } else {
-	 	                        e.setSalary_top(jr.getSalaryTop());
-	 	                    }
-	 	
-	 	                    if (jr.getSalaryBottom() == null) {
-	 	                        e.setSalary_bottom(0);
-	 	                    } else {
-	 	                        e.setSalary_bottom(jr.getSalaryBottom());
-	 	                    }
-	 	                    e.setPublish_date(new SimpleDateFormat("YYYY-MM-dd HH:mm:ss").format(jr.getUpdateTime()));
-	 	                    e.setDepartment(jr.getDepartment());
-	 	                    e.setVisitnum(jr.getVisitnum());
-	 	                    e.setIn_hb(jr.getHbStatus() > 0);
-	 	                    e.setCount(jr.getCount());
-	 	                    e.setCity(jr.getCity());
-	 	                    e.setPriority(jr.getPriority());
-	 	                    e.setPublisher(jr.getPublisher()); // will be used for fetching sub company info
-	 	                    dataList.add(e);
-	 	                    break;
-                		}
- 	                }
+                for (int i = 0; i < jdIdList.size(); i++) {
+                    int positionId = jdIdList.get(i);
+                    for (JobPositionRecord jr : jobRecords) {
+                        if (positionId == jr.getId()) {
+                            logger.info("pid: " + String.valueOf(jr.getId()));
+                            WechatPositionListData e = new WechatPositionListData();
+                            e.setTitle(jr.getTitle());
+                            e.setId(jr.getId());
+                            // 数据库的 salary_top 和 salary_bottom 默认是 NULL 不是 0
+                            // 所以这里需要对这两个字段做 null pointer 检查
+                            if (jr.getSalaryTop() == null) {
+                                e.setSalary_top(0);
+                            } else {
+                                e.setSalary_top(jr.getSalaryTop());
+                            }
+
+                            if (jr.getSalaryBottom() == null) {
+                                e.setSalary_bottom(0);
+                            } else {
+                                e.setSalary_bottom(jr.getSalaryBottom());
+                            }
+                            e.setPublish_date(new SimpleDateFormat("YYYY-MM-dd HH:mm:ss").format(jr.getUpdateTime()));
+                            e.setDepartment(jr.getDepartment());
+                            e.setVisitnum(jr.getVisitnum());
+                            e.setIn_hb(jr.getHbStatus() > 0);
+                            e.setCount(jr.getCount());
+                            e.setCity(jr.getCity());
+                            e.setPriority(jr.getPriority());
+                            e.setPublisher(jr.getPublisher()); // will be used for fetching sub company info
+                            dataList.add(e);
+                            break;
+                        }
+                    }
                 }
                 logger.info(dataList.toString());
                 // 获取公司信息，拼装 company abbr, logo 等信息
                 Map<Integer /* publisher id */, HrCompanyDO> publisherCompanyMap = new HashMap<>();
                 //QueryUtil hrm = new QueryUtil();
-                Query.QueryBuilder hrm=new Query.QueryBuilder();
+                Query.QueryBuilder hrm = new Query.QueryBuilder();
                 Set<Integer> publisherSet = dataList.stream().map(WechatPositionListData::getPublisher)
                         .collect(Collectors.toSet());
                 // publisherList 应该不为空
@@ -1220,14 +1267,14 @@ public class PositionService {
                     return new ArrayList<>();
                 }
                 // 根据 publisherSet 查询 hr_company_account_list
-                Condition condition=new Condition("account_id", publisherSet.toArray(), ValueOp.IN);
+                Condition condition = new Condition("account_id", publisherSet.toArray(), ValueOp.IN);
                 hrm.where(condition);
-                List<HrCompanyAccountDO> companyAccountList = hrCompanyAccountDao.getDatas(hrm.buildQuery(),HrCompanyAccountDO.class);
+                List<HrCompanyAccountDO> companyAccountList = hrCompanyAccountDao.getDatas(hrm.buildQuery(), HrCompanyAccountDO.class);
 
                 for (HrCompanyAccountDO hrCompanyAccount : companyAccountList) {
                     hrm = new Query.QueryBuilder();
                     hrm.where("id", hrCompanyAccount.getCompanyId());
-                    HrCompanyDO companyInfo = hrCompanyDao.getData(hrm.buildQuery(),HrCompanyDO.class);
+                    HrCompanyDO companyInfo = hrCompanyDao.getData(hrm.buildQuery(), HrCompanyDO.class);
                     publisherCompanyMap.put(hrCompanyAccount.accountId, companyInfo);
 
                 }
@@ -1262,9 +1309,9 @@ public class PositionService {
         WechatShareData result = new WechatShareData();
 
         Query qu = new Query.QueryBuilder()
-        		.where("id",hb_config_id).buildQuery();
+                .where("id", hb_config_id).buildQuery();
         try {
-            HrHbConfigDO hbConfig = hrHbConfigDao.getData(qu,HrHbConfigDO.class);
+            HrHbConfigDO hbConfig = hrHbConfigDao.getData(qu, HrHbConfigDO.class);
             result.setCover(hbConfig.getShareImg());
             result.setTitle(hbConfig.getShareTitle());
             result.setDescription(hbConfig.getShareDesc());
@@ -1282,7 +1329,7 @@ public class PositionService {
      * @param pids pids
      * @return pids 对应职位红包活动的额外信息
      */
-    public List<RpExtInfo> getPositionListRpExt(List<Integer> pids){
+    public List<RpExtInfo> getPositionListRpExt(List<Integer> pids) {
         List<RpExtInfo> result = new ArrayList<>();
         // 获取 company_id
         int company_id = 0;
@@ -1295,15 +1342,15 @@ public class PositionService {
         } else {
             return result;
         }
-        Condition condition=new Condition("type",new Object[]{2,3},ValueOp.IN);
+        Condition condition = new Condition("type", new Object[]{2, 3}, ValueOp.IN);
         // 获取正在运行的转发类红包活动集合
         Query qu = new Query.QueryBuilder()
                 .where("status", "3")
                 .and("company_id", company_id)
                 .and(condition)
                 .buildQuery();
-        logger.info("qu:",qu.toString());
-        List<HrHbConfigDO> hbConfigs = hrHbConfigDao.getDatas(qu,HrHbConfigDO.class);
+        logger.info("qu:", qu.toString());
+        List<HrHbConfigDO> hbConfigs = hrHbConfigDao.getDatas(qu, HrHbConfigDO.class);
         List<Integer> hbConfgIds = hbConfigs.stream().map(HrHbConfigDO::getId).collect(Collectors.toList());
 
         String allHbConfigIdsFilterString = Arrays.toString(hbConfgIds.toArray());
@@ -1316,15 +1363,16 @@ public class PositionService {
             RpExtInfo rpExtInfo = new RpExtInfo();
 
             qu = new Query.QueryBuilder().where("id", pid).buildQuery();
-            Position p = jobPositionDao.getPositionByQuery(qu);;
+            Position p = jobPositionDao.getPositionByQuery(qu);
+            ;
 
             if (p.getHb_status() == 1 || p.getHb_status() == 2) {
                 // 该职位参与了一个红包活动
 
                 //获取 binding 记录
-                Condition con=new Condition("hb_config_id",hbConfgIds.toArray(),ValueOp.IN);
+                Condition con = new Condition("hb_config_id", hbConfgIds.toArray(), ValueOp.IN);
                 qu = new Query.QueryBuilder().where("position_id", p.getId()).and(con).buildQuery();
-                List<HrHbPositionBindingDO> bindings = hrHbPositionBindingDao.getDatas(qu,HrHbPositionBindingDO.class);
+                List<HrHbPositionBindingDO> bindings = hrHbPositionBindingDao.getDatas(qu, HrHbPositionBindingDO.class);
 
                 logger.info(bindings.toString());
 
@@ -1346,9 +1394,9 @@ public class PositionService {
                     }
 
                     // 根据 binding 获取 hb_items 记录
-                    qu =new Query.QueryBuilder().where("binding_id", bindings.get(0).getId()).and("wxuser_id",0).buildQuery();
+                    qu = new Query.QueryBuilder().where("binding_id", bindings.get(0).getId()).and("wxuser_id", 0).buildQuery();
 
-                    List<HrHbItemsDO> remainItems = hrHbItemsDao.getDatas(qu,HrHbItemsDO.class);
+                    List<HrHbItemsDO> remainItems = hrHbItemsDao.getDatas(qu, HrHbItemsDO.class);
                     Double remain = remainItems.stream().mapToDouble(HrHbItemsDO::getAmount).sum();
                     Integer remainInt = toIntExact(round(remain));
                     if (remainInt < 0) {
@@ -1366,9 +1414,9 @@ public class PositionService {
             } else if (p.getHb_status() == 3) {
                 // 该职位参与了两个红包活动
                 // 获取 binding 记录
-                Condition cons=new Condition("hb_config_id",hbConfgIds.toArray(),ValueOp.IN);
+                Condition cons = new Condition("hb_config_id", hbConfgIds.toArray(), ValueOp.IN);
                 qu = new Query.QueryBuilder().where("position_id", p.getId()).and(cons).buildQuery();
-                List<HrHbPositionBindingDO> bindings = hrHbPositionBindingDao.getDatas(qu,HrHbPositionBindingDO.class);
+                List<HrHbPositionBindingDO> bindings = hrHbPositionBindingDao.getDatas(qu, HrHbPositionBindingDO.class);
                 //获取binding ids
                 logger.info(bindings.toString());
                 //获取 binding ids
@@ -1392,9 +1440,9 @@ public class PositionService {
 
                 String bindingIdsFilterString = Arrays.toString(bindingIds.toArray());
                 // 根据 binding 获取 hb_items 记录
-                Condition condition1=new Condition("binding_id",bindingIds.toArray(),ValueOp.IN);
-                qu = new Query.QueryBuilder().where(condition1).and("wxuser_id",0).buildQuery();
-                List<HrHbItemsDO> remainItems = hrHbItemsDao.getDatas(qu,HrHbItemsDO.class);
+                Condition condition1 = new Condition("binding_id", bindingIds.toArray(), ValueOp.IN);
+                qu = new Query.QueryBuilder().where(condition1).and("wxuser_id", 0).buildQuery();
+                List<HrHbItemsDO> remainItems = hrHbItemsDao.getDatas(qu, HrHbItemsDO.class);
                 Double remain = remainItems.stream().mapToDouble(HrHbItemsDO::getAmount).sum();
                 Integer remainInt = toIntExact(round(remain));
                 if (remainInt < 0) {
@@ -1450,10 +1498,10 @@ public class PositionService {
         Query qu = new Query.QueryBuilder()
                 .where("hb_config_id", hbConfigId)
                 .buildQuery();
-        List<HrHbPositionBindingDO> bindings = hrHbPositionBindingDao.getDatas(qu,HrHbPositionBindingDO.class);
+        List<HrHbPositionBindingDO> bindings = hrHbPositionBindingDao.getDatas(qu, HrHbPositionBindingDO.class);
         List<Integer> pids = bindings.stream().map(HrHbPositionBindingDO::getPositionId).collect(Collectors.toList());
         String pidFilter = "[" + org.apache.commons.lang.StringUtils.join(pids.toArray(), ",") + "]";
-        Condition condition=new Condition("id",pids.toArray(),ValueOp.IN);
+        Condition condition = new Condition("id", pids.toArray(), ValueOp.IN);
         Query q = new Query.QueryBuilder().where(condition).orderBy("priority").buildQuery();
         List<JobPositionRecord> jobRecords = jobPositionDao.getRecords(q);
 
@@ -1478,9 +1526,9 @@ public class PositionService {
 
         // 拼装公司信息
         qu = new Query.QueryBuilder().where("id", hbConfigId).buildQuery();
-        Integer companyId = hrHbConfigDao.getData(qu,HrHbConfigDO.class).getCompanyId();
+        Integer companyId = hrHbConfigDao.getData(qu, HrHbConfigDO.class).getCompanyId();
         qu = new Query.QueryBuilder().where("id", companyId).buildQuery();
-        HrCompanyDO company = hrCompanyDao.getData(qu,HrCompanyDO.class);
+        HrCompanyDO company = hrCompanyDao.getData(qu, HrCompanyDO.class);
         result.forEach(s -> {
             s.setCompany_abbr(company == null ? "" : company.getAbbreviation());
             s.setCompany_logo(company == null ? "" : company.getLogo());
@@ -1527,19 +1575,25 @@ public class PositionService {
             String position = "";
             try {
                 logger.info("---Start ES Search Engine---");
+                Thread.sleep(400);
                 for (Integer jobPositionId : list) {
                     Response result = getPositionById(jobPositionId);
+                    if (StringUtils.isEmptyObject(result.data)) {
+                        continue;
+                    }
                     position = result.data;
                     Map position_map = JSON.parseObject(position, Map.class);
+                    if (StringUtils.isEmptyObject(position_map.get("company_id"))) {
+                        continue;
+                    }
                     String company_id = BeanUtils.converToString(position_map.get("company_id"));
                     Query query = new Query.QueryBuilder().where("id", company_id).buildQuery();
-
                     List<Hrcompany> company_maps = hrCompanyDao.getDatas(query, Hrcompany.class);
-                    if (company_maps!=null&&company_maps.size()>0) {
-                    
-                    	Hrcompany company_map =  company_maps.get(0);
-                        String company_name =company_map.getName();
-                        String scale =company_map.getScale();
+                    if (company_maps != null && company_maps.size() > 0) {
+
+                        Hrcompany company_map = company_maps.get(0);
+                        String company_name = company_map.getName();
+                        String scale = company_map.getScale();
                         position_map.put("company_name", company_name);
                         String degree_name = BeanUtils.converToString(position_map.get("degree_name"));
                         Integer degree_above = BeanUtils.converToInteger(position_map.get("degree_above"));
@@ -1578,6 +1632,6 @@ public class PositionService {
         }
         return flag;
     }
-  
+
 
 }

@@ -1,6 +1,7 @@
 package com.moseeker.servicemanager.web.controller.profile;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +13,7 @@ import com.moseeker.thrift.gen.application.service.JobApplicationServices;
 import com.moseeker.thrift.gen.application.struct.ApplicationResponse;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
 
+import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -278,27 +280,31 @@ public class ProfileController {
     }
 
     /**
-     * 批量修改职位
+     * 批量获取简历
      */
     @RequestMapping(value = "/profiles/application", method = RequestMethod.POST)
     @ResponseBody
     public String profilesByApplication(HttpServletRequest request, HttpServletResponse response) {
         try {
             Params<String, Object> form = ParamUtils.parseRequestParam(request);
-
-            int companyId = form.getInt("company_id", -1);
-            int sourceId = form.getInt("source_id", -1);
-            int atsStatus = form.getInt("ats_status", 1);
-            boolean recommender = form.getBoolean("recommender", false);
-            boolean dlUrlRequired = form.getBoolean("dl_url_required", false);
-            Map<String, List<String>> filter = (Map<String, List<String>>) form.get("filter");
-            if (companyId == -1) {
+            ProfileApplicationForm profileApplicationForm = ParamUtils.initModelForm(form, ProfileApplicationForm.class);
+            if (profileApplicationForm == null) {
+                return ResponseLogNotification.fail(request, "参数不能为空");
+            }
+            if (!profileApplicationForm.isSetCompany_id()) {
                 return ResponseLogNotification.fail(request, "company_id不能为空");
-            } else if (sourceId == -1) {
+            } else if (!profileApplicationForm.isSetSource_id()) {
                 return ResponseLogNotification.fail(request, "sourceId不能为空");
             }
-            logger.info("profilesByApplication:companyId:{},sourceId:{},atsStatus:{},recommender:{},dlUrlRequired:{}", companyId, sourceId, atsStatus, recommender, dlUrlRequired);
-            Response result = service.getProfileByApplication(companyId, sourceId, atsStatus, recommender, dlUrlRequired, filter);
+            Map<String, String> conditions = new HashMap<>();
+            for (String key : form.keySet()) {
+                conditions.put(key, form.getString(key));
+            }
+
+            profileApplicationForm.setConditions(conditions);
+
+            logger.info("/profiles/application params:{}", JSON.toJSONString(profileApplicationForm));
+            Response result = service.getProfileByApplication(profileApplicationForm);
 
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {

@@ -37,16 +37,17 @@ public class UserEmployeePointsRecordDao extends JooqCrudImpl<UserEmployeePoints
 		if(result!=null&&result.size()>0){
 			UserEmployeePointSum point=null;
 			for(Record2<BigDecimal, Long> r:result){
-				point=new UserEmployeePointSum();
 				//由于可能没有记录，所以可能为null
-				if(r.getValue(0)==null){
-					point.setAward(0L);
-				}else{
-					point.setAward(Long.parseLong(r.getValue(0)+""));
+				if(r.getValue(1)!=null){
+					point=new UserEmployeePointSum();
+					point.setEmployee_id((long)r.getValue(1));
+					if(r.getValue(0)==null){
+						point.setAward(0L);
+					}else{
+						point.setAward(Long.parseLong(r.getValue(0)+""));
+					}
+					points.add(point);
 				}
-				//EMPLOYEE_ID不可能为null，所以不判断null
-				point.setEmployee_id((long)r.getValue(1));
-				points.add(point);
 			}
 		}
 		return points;

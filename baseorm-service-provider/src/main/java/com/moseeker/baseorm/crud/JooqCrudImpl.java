@@ -4,6 +4,7 @@ import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.Update;
 import com.moseeker.common.util.query.Condition;
+
 import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.Result;
@@ -15,6 +16,7 @@ import org.jooq.impl.TableImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -52,6 +54,7 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> extends Crud<S, R> {
 
     @Override
     public R addRecord(R r) {
+        create.execute("set names utf8mb4");
         create.attach(r);
         r.insert();
         return r;
@@ -59,6 +62,7 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> extends Crud<S, R> {
 
     @Override
     public List<R> addAllRecord(List<R> rs) {
+        create.execute("set names utf8mb4");
         create.attach(rs);
         create.batchInsert(rs).execute();
         return rs;
@@ -81,17 +85,20 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> extends Crud<S, R> {
 
     @Override
     public int updateRecord(R r) {
+        create.execute("set names utf8mb4");
         create.attach(r);
         return create.executeUpdate(r);
     }
 
     @Override
     public int[] updateRecords(List<R> rs) {
+        create.execute("set names utf8mb4");
         return create.batchUpdate(rs).execute();
     }
 
     @Override
     public int update(Update update) {
+        create.execute("set names utf8mb4");
         UpdateSetFirstStep updateSetFirstStep = create.update(table);
         UpdateSetMoreStep updateSetMoreStep = null;
         for (String field : update.getFieldValues().keySet()) {
@@ -105,24 +112,25 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> extends Crud<S, R> {
 
     @Override
     public R getRecord(Query query) {
-        return new LocalQuery<>(create, table, query).convertToResultQuery().limit(1).fetchAnyInto(table.getRecordType());
+        return new LocalQuery<>(create, table, query).convertToOneResult().fetchAnyInto(table.getRecordType());
     }
 
     @Override
     public List<R> getRecords(Query query) {
-        return new LocalQuery<>(create, table, query).convertToResultQuery().fetchInto(table.getRecordType());
+        return new LocalQuery<>(create, table, query).convertToResultLimit().fetchInto(table.getRecordType());
     }
 
     @Override
     public int getCount(Query query) {
         return new LocalQuery<>(create, table, query).convertForCount().fetchOne().value1();
     }
-    
+
+
     public Map<String,Object> getMap(Query query) {
-        return new LocalQuery<>(create, table, query).convertToResultQuery().fetchAnyMap();
+        return new LocalQuery<>(create, table, query).convertToOneResult().fetchAnyMap();
     }
-    
+
     public List<Map<String,Object>> getMaps(Query query) {
-        return new LocalQuery<>(create, table, query).convertToResultQuery().fetchMaps();
+        return new LocalQuery<>(create, table, query).convertToResultLimit().fetchMaps();
     }
 }

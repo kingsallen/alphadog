@@ -101,10 +101,10 @@ public class UserQxServiceImpl implements com.moseeker.thrift.gen.useraccounts.s
 	}
 
 	@Override
-	public Response sendValiddateEmail(String email, int userId, String conditions) throws TException {
+	public Response sendValiddateEmail(String email, int userId, String conditions,String urls) throws TException {
 		// TODO Auto-generated method stub
 		try{
-			int result=emailService.sendEmailvalidation(email, userId, conditions);
+			int result=emailService.sendEmailvalidation(email, userId, conditions,urls);
 			if(result==0){
 				return ResponseUtils.fail(1, "搜索条件或者邮箱不存在");
 			}

@@ -12,6 +12,7 @@ import com.moseeker.baseorm.db.dictdb.tables.DictConstant;
 import com.moseeker.baseorm.db.dictdb.tables.DictCountry;
 import com.moseeker.baseorm.db.dictdb.tables.DictIndustry;
 import com.moseeker.baseorm.db.dictdb.tables.DictIndustryType;
+import com.moseeker.baseorm.db.dictdb.tables.DictLiepinOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictMajor;
 import com.moseeker.baseorm.db.dictdb.tables.DictPosition;
 import com.moseeker.baseorm.db.dictdb.tables.DictZhilianOccupation;
@@ -41,7 +42,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Dictdb extends SchemaImpl {
 
-    private static final long serialVersionUID = -1859638744;
+    private static final long serialVersionUID = 761583988;
 
     /**
      * The reference instance of <code>dictdb</code>
@@ -74,7 +75,7 @@ public class Dictdb extends SchemaImpl {
     public final DictCollege DICT_COLLEGE = com.moseeker.baseorm.db.dictdb.tables.DictCollege.DICT_COLLEGE;
 
     /**
-     * 常量字典表
+     * The table <code>dictdb.dict_constant</code>.
      */
     public final DictConstant DICT_CONSTANT = com.moseeker.baseorm.db.dictdb.tables.DictConstant.DICT_CONSTANT;
 
@@ -84,7 +85,7 @@ public class Dictdb extends SchemaImpl {
     public final DictCountry DICT_COUNTRY = com.moseeker.baseorm.db.dictdb.tables.DictCountry.DICT_COUNTRY;
 
     /**
-     * 行业二级分类字典表
+     * The table <code>dictdb.dict_industry</code>.
      */
     public final DictIndustry DICT_INDUSTRY = com.moseeker.baseorm.db.dictdb.tables.DictIndustry.DICT_INDUSTRY;
 
@@ -92,6 +93,11 @@ public class Dictdb extends SchemaImpl {
      * 行业一级分类字典表
      */
     public final DictIndustryType DICT_INDUSTRY_TYPE = com.moseeker.baseorm.db.dictdb.tables.DictIndustryType.DICT_INDUSTRY_TYPE;
+
+    /**
+     * The table <code>dictdb.dict_liepin_occupation</code>.
+     */
+    public final DictLiepinOccupation DICT_LIEPIN_OCCUPATION = com.moseeker.baseorm.db.dictdb.tables.DictLiepinOccupation.DICT_LIEPIN_OCCUPATION;
 
     /**
      * 专业字典表
@@ -142,6 +148,7 @@ public class Dictdb extends SchemaImpl {
             DictCountry.DICT_COUNTRY,
             DictIndustry.DICT_INDUSTRY,
             DictIndustryType.DICT_INDUSTRY_TYPE,
+            DictLiepinOccupation.DICT_LIEPIN_OCCUPATION,
             DictMajor.DICT_MAJOR,
             DictPosition.DICT_POSITION,
             DictZhilianOccupation.DICT_ZHILIAN_OCCUPATION);

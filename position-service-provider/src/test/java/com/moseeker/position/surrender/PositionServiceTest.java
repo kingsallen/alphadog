@@ -49,7 +49,7 @@ public class PositionServiceTest {
 		boolean bool=service.ifAllowRefresh(124445, 82671);
 		System.out.println(bool+"==================");
 	}
-	 
+
     @Test
     public void test() throws Exception {
     	List<Integer> list=new ArrayList<Integer>();

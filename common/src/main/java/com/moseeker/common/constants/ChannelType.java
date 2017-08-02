@@ -35,12 +35,12 @@ public enum ChannelType {
 			}
 			return result;
 		}
-	}, LIANPIAN(2, "liepin","猎聘") {
+	}, LIEPIN(2, "liepin","猎聘") {
 		@Override
 		public String getOrigin(String origin) {
 			String result;
 			if(StringUtils.isNullOrEmpty(origin)) {
-				result = String.valueOf(10000000000000000l);
+				result = String.valueOf(100000000000000000l);
 			} else {
 				if(origin.length() >= 18) {
 					if(origin.charAt(origin.length()-18) == '0') {

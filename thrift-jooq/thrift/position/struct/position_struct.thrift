@@ -147,17 +147,17 @@ struct JobOccupationCustom {
 //第三方渠道职位，用于职位同步
 struct ThirdPartyPositionForSynchronization {
     1:  string title="",
-    2:  string category_main_code="",
-    3:  string category_main="",
-    4:  string category_sub_code="",
-    5:  string category_sub="",
-    6:  string quantity="",
+    2:  list<string> occupation,
+    3:  list<list<string>> cities,
+    4:  bool salary_discuss,
+    5:  i32 salary_month,
+    6:  i32 quantity,
     7:  string degree_code="",
     8:  string degree="",
     9:  string experience_code="",
     10: string experience="",
-    11: string salary_low="",
-    12: string salary_high="",
+    11: i32 salary_bottom,
+    12: i32 salary_top,
     13: string description="",
     14: string pub_place_code="",
     15: i32 position_id,
@@ -168,19 +168,20 @@ struct ThirdPartyPositionForSynchronization {
     20: string type_code="",
     21: string job_id="",
     22: string pub_place_name="",
-    23: string department=""
-    24: i32 account_id
+    23: string department="",
+    24: i32 account_id,
+    25:  i32 feedback_period
 }
 
 struct ThirdPartyPositionForSynchronizationWithAccount {
     1: string user_name="",
     2: string password="",
     3: string member_name="",
-    4: string position_id,
-    5: string channel="",
+    4: i32 position_id,
+    5: i32 channel,
     6: ThirdPartyPositionForSynchronization position_info,
     7: string company_name="",
-    8: string account_id
+    8: i32 account_id
 }
 
 struct JobPositionExt{
