@@ -1092,14 +1092,14 @@ public class UserHrAccountService {
             userEmployeeVO.setCustomField(userEmployeeDO.getCustomField());
             userEmployeeVO.setEmail(userEmployeeDO.getEmail());
             userEmployeeVO.setCompanyId(userEmployeeDO.getCompanyId());
-            if (!StringUtils.isEmptyObject(userMap) && !StringUtils.isEmptyObject(userMap.get(userEmployeeDO.getSysuserId()))) {
+            if (userMap != null && userMap.size() > 0 && userMap.get(userEmployeeDO.getSysuserId()) != null) {
                 userEmployeeVO.setNickName(userMap.get(userEmployeeDO.getSysuserId()).getNickname());
             } else {
                 userEmployeeVO.setNickName("未知");
             }
             // 公司名称
-            if (!StringUtils.isEmptyObject(companyMap) && !StringUtils.isEmptyObject(companyMap.get(userEmployeeDO.getCompanyId()))) {
-                HrCompanyDO companyDO = (HrCompanyDO) companyMap.get(userEmployeeDO.getCompanyId());
+            if (companyMap != null && companyMap.size() > 0 && companyMap.get(userEmployeeDO.getCompanyId()) != null) {
+                HrCompanyDO companyDO = companyMap.get(userEmployeeDO.getCompanyId());
                 userEmployeeVO.setCompanyName(companyDO.getName() != null ? companyDO.getName() : "");
                 userEmployeeVO.setCompanyAbbreviation(companyDO.getAbbreviation() != null ? companyDO.getAbbreviation() : "");
             }
