@@ -43,6 +43,16 @@ public class UserHrAccountServiceTest {
         }
     }
 
+
+    @Test
+    public void employeeList() {
+        try {
+            System.out.println(userHrAccountService.employeeList("", 3, 0, "", "", 10, 1, "201708"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * 员工数据导入
      */
@@ -84,18 +94,18 @@ public class UserHrAccountServiceTest {
     }
 
 
-    /**
-     * 员工数据导入
-     */
-    @Test
-    public void employeeList() {
-        try {
-//            userHrAccountService.employeeList("", 3, 1, "create_time", 1, 0, 0);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-//            List<UserEmployeeVO> list = userHrAccountService.employeeList("", 3, 1, "create_time", 1, 0, 0);
+//    /**
+//     * 员工数据导入
+//     */
+//    @Test
+//    public void employeeList() {
+//        try {
+////            userHrAccountService.employeeList("", 3, 1, "create_time", 1, 0, 0);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+////            List<UserEmployeeVO> list = userHrAccountService.employeeList("", 3, 1, "create_time", 1, 0, 0);
 
 
     /**

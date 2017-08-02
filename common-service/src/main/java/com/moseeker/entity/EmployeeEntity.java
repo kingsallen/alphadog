@@ -8,39 +8,29 @@ import com.moseeker.baseorm.dao.hrdb.HrPointsConfDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
-<<<<<<< HEAD
 import com.moseeker.baseorm.dao.userdb.UserEmployeePointsRecordCompanyRelDao;
-=======
+import com.moseeker.baseorm.dao.userdb.UserEmployeePointsRecordDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
->>>>>>> 50f7f788f1d6220db52d6c719a5041e9df834b3e
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
-import com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf;
+import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompanyRel;
 import com.moseeker.baseorm.db.hrdb.tables.HrPointsConf;
+import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
-import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecordCompanyRel;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.AbleFlag;
-import com.moseeker.baseorm.dao.userdb.UserEmployeePointsRecordDao;
 import com.moseeker.common.exception.CommonException;
-import com.moseeker.common.util.query.Order;
-import com.moseeker.common.util.query.Query;
-import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompanyRel;
-import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
+import com.moseeker.common.util.query.Order;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.Constant.EmployeeType;
 import com.moseeker.entity.exception.ExceptionCategory;
 import com.moseeker.entity.exception.ExceptionFactory;
-<<<<<<< HEAD
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysPointsConfTplDO;
-=======
-import com.moseeker.thrift.gen.common.struct.BIZException;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
->>>>>>> 50f7f788f1d6220db52d6c719a5041e9df834b3e
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrGroupCompanyRelDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrPointsConfDO;
@@ -51,23 +41,24 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordCompany
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
-import com.moseeker.thrift.gen.employee.struct.Reward;
-<<<<<<< HEAD
-=======
 import com.moseeker.thrift.gen.employee.struct.RewardVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
-import com.moseeker.thrift.gen.position.struct.Position;
 
->>>>>>> 50f7f788f1d6220db52d6c719a5041e9df834b3e
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Created by lucky8987 on 17/6/29.
@@ -101,15 +92,12 @@ public class EmployeeEntity {
     private HrCompanyDao hrCompanyDao;
 
     @Autowired
-<<<<<<< HEAD
     private UserEmployeePointsRecordCompanyRelDao ueprcrDao;
 
     @Autowired
-    private HrPointsConfDao hrPointsConfDao;
+    private ConfigSysPointsConfTplDao configSysPointsConfTplDao;
 
     @Autowired
-    private ConfigSysPointsConfTplDao configSysPointsConfTplDao;
-=======
     private UserHrAccountDao userHrAccountDao;
 
     @Autowired
@@ -117,7 +105,6 @@ public class EmployeeEntity {
 
     @Autowired
     private HrPointsConfDao hrPointsConfDao;
->>>>>>> 50f7f788f1d6220db52d6c719a5041e9df834b3e
 
 
     private static final Logger logger = LoggerFactory.getLogger(EmployeeEntity.class);
@@ -186,7 +173,7 @@ public class EmployeeEntity {
     @Transactional
     public boolean addReward(int employeeId, int companyId, String reason, int applicationId, int positionId, int templateId, int berecomUserId) throws Exception {
         // 获取积分点数
-        if(companyId == 0 || templateId == 0) {
+        if (companyId == 0 || templateId == 0) {
             throw new Exception("参数不完整");
         } else {
             int award;

@@ -12,13 +12,17 @@ import com.moseeker.rpccenter.config.RegistryConfig;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.employee.struct.Reward;
+import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.config.AppConfig;
 import com.moseeker.useraccounts.thrift.UserHrAccountServiceImpl;
+
 import java.util.Arrays;
 import java.util.List;
+
 import com.moseeker.useraccounts.service.impl.UserEmployeeServiceImpl;
+
 import org.apache.thrift.TException;
 import org.junit.Assert;
 import org.junit.Before;
@@ -27,6 +31,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
 import java.util.Date;
 
 /**
@@ -160,12 +165,12 @@ public class UserHrAccountServiceImplTest {
 
     @Test
     public void testRefresh() throws Exception {
-        userHrAccountService.synchronizeThirdpartyAccount(82752,66,true);
+        userHrAccountService.synchronizeThirdpartyAccount(82752, 66, true);
         HrThirdPartyAccountDO hrThirdPartyAccountDO = new HrThirdPartyAccountDO();
         hrThirdPartyAccountDO.setUsername("xxxxx");
         hrThirdPartyAccountDO.setPassword("xxxxx");
         hrThirdPartyAccountDO.setChannel((short) 2);
-        userHrAccountService.bindThirdAccount(82847, hrThirdPartyAccountDO,true);
+        userHrAccountService.bindThirdAccount(82847, hrThirdPartyAccountDO, true);
     }
 
 
@@ -213,7 +218,7 @@ public class UserHrAccountServiceImplTest {
         System.out.println(result);
     }
 
-//    @Test
+    //    @Test
 //    @Transactional
     public void addReawrdTest() {
         try {
@@ -223,17 +228,17 @@ public class UserHrAccountServiceImplTest {
         }
     }
 
-//    @Test
+    //    @Test
     public void getEmployeeRewardsTest() {
         try {
-            List<Reward> list  = userHrAccountServiceImpl.getEmployeeRewards(658112);
-            System.out.println(BeanUtils.convertStructToJSON(list));
+            RewardVOPageVO rewardVOPageVO = userHrAccountServiceImpl.getEmployeeRewards(658112, 10, 1);
+            System.out.println(BeanUtils.convertStructToJSON(rewardVOPageVO));
         } catch (TException e) {
             e.printStackTrace();
         }
     }
 
-//    @Test
+    //    @Test
 //    @Transactional
     public void removeEmployeeTest() {
         try {
@@ -243,7 +248,7 @@ public class UserHrAccountServiceImplTest {
         }
     }
 
-//    @Test
+    //    @Test
 //    @Transactional
     public void unbindTest() {
         try {

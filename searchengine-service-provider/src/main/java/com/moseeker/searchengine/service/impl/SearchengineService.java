@@ -6,10 +6,12 @@ import com.alibaba.fastjson.util.TypeUtils;
 import com.moseeker.common.util.ConverTools;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.searchengine.util.SearchUtil;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.*;
 import java.util.stream.Collectors;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
 import org.elasticsearch.action.index.IndexResponse;
@@ -94,9 +96,9 @@ public class SearchengineService {
                             .field("title", 20.0f)
                             .field("city", 10.0f)
 //                            .field("company_name", 5.0f)
-                            .field("team_name",5.0f)
-                    		.field("custom",4.0f)
-                    		.field("occupation",3.0f);
+                            .field("team_name", 5.0f)
+                            .field("custom", 4.0f)
+                            .field("occupation", 3.0f);
                     ((BoolQueryBuilder) keyand).must(fullf);
                 }
                 ((BoolQueryBuilder) query).must(keyand);
@@ -158,8 +160,8 @@ public class SearchengineService {
                 QueryBuilder candidatefilter = QueryBuilders.matchPhraseQuery("candidate_source_name", candidate_source);
                 ((BoolQueryBuilder) query).must(candidatefilter);
             }
-            
-            if ( !StringUtils.isEmpty(department)) {
+
+            if (!StringUtils.isEmpty(department)) {
                 QueryBuilder departmentfilter = QueryBuilders.matchPhraseQuery("team_name", department);
                 ((BoolQueryBuilder) query).must(departmentfilter);
             }
@@ -223,7 +225,7 @@ public class SearchengineService {
             if (order_by_priority) {
 
                 if (haskey) {
-                	
+
                     response = client.prepareSearch("index").setTypes("fulltext")
                             .setQuery(query)
                             .addSort("priority", SortOrder.ASC)
@@ -307,17 +309,17 @@ public class SearchengineService {
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
         searchUtil.handleTerms(Arrays.toString(employeeIds.toArray()).replaceAll("\\[|\\]| ", ""), query, "employee_id");
-        searchUtil.handleTerms(timespan, query, "awards."+timespan+".timespan");
+        searchUtil.handleTerms(timespan, query, "awards." + timespan + ".timespan");
         SearchRequestBuilder searchRequestBuilder = searchUtil.getEsClient().prepareSearch("awards").setQuery(query)
-                .addSort("awards."+timespan+".award", SortOrder.DESC)
-                .addSort("awards."+timespan+".last_update_time", SortOrder.ASC)
-                .setFetchSource(new String[]{"employee_id", "awards."+timespan+".award", "awards."+timespan+".last_update_time"}, null);
-        if (pageNum > 0 && pageSize >0) {
+                .addSort("awards." + timespan + ".award", SortOrder.DESC)
+                .addSort("awards." + timespan + ".last_update_time", SortOrder.ASC)
+                .setFetchSource(new String[]{"employee_id", "awards." + timespan + ".award", "awards." + timespan + ".last_update_time"}, null);
+        if (pageNum > 0 && pageSize > 0) {
             searchRequestBuilder.setSize(pageSize).setFrom((pageNum - 1) * pageSize);
         }
         SearchResponse response = searchRequestBuilder.execute().actionGet();
         Map<Integer, Object> data = new HashMap<Integer, Object>();
-        for (SearchHit searchHit : response.getHits().getHits()){
+        for (SearchHit searchHit : response.getHits().getHits()) {
             JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
             data.put(TypeUtils.castToInt(jsonObject.remove("employee_id")), jsonObject);
         }

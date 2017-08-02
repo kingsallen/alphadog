@@ -119,7 +119,6 @@ struct RecomInfo {
 	16: required string headimgurl = "";        // 微信头像
 }
 
-<<<<<<< HEAD
 // 时间跨度（月、季、年）
 enum Timespan {
     month, quarter, year
@@ -132,7 +131,8 @@ struct EmployeeAward {
     3: optional i32 ranking,
     4: optional i32 awardTotal,
     5: optional string headimgurl
-=======
+}
+
 struct RewardVO{
     1: optional string reason, // 说明
     2: optional i32 points, // 积分
@@ -157,5 +157,4 @@ struct RewardVOPageVO{
     3:optional i32 totalRow,// 总共多少条
     4:optional i32 totalPoints; // 积分总数
     5:optional list<RewardVO> data,
->>>>>>> 50f7f788f1d6220db52d6c719a5041e9df834b3e
 }

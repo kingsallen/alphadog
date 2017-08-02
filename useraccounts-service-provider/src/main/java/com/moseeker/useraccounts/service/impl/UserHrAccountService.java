@@ -10,6 +10,7 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrSearchConditionRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
+import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.util.BeanUtils;
@@ -27,12 +28,14 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.*;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.EmployeeEntity;
+import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
+import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.constant.ResultMessage;
 import com.moseeker.useraccounts.exception.ExceptionCategory;
@@ -64,6 +67,10 @@ import java.util.stream.Collectors;
 public class UserHrAccountService {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
+
+
+    SearchengineServices.Iface searchengineServices = ServiceManager.SERVICEMANAGER
+            .getService(SearchengineServices.Iface.class);
 
     private static final String REDIS_KEY_HR_SMS_SIGNUP = "HR_SMS_SIGNUP";
 
@@ -890,23 +897,14 @@ public class UserHrAccountService {
      * @param pageNumber 第几页
      * @param pageSize   每页的条数
      */
-    public UserEmployeeVOPageVO employeeList(String keyword, Integer companyId, Integer filter, String order, String asc, Integer pageNumber, Integer pageSize) {
-        if (companyId == 0) {
-            throw UserAccountException.COMPANY_DATA_EMPTY;
-        }
+    public UserEmployeeVOPageVO employeeList(String keyword, Integer companyId, List<Integer> companyIds, Integer filter, String order, String asc, Integer pageNumber, Integer pageSize) {
         UserEmployeeVOPageVO userEmployeeVOPageVO = new UserEmployeeVOPageVO();
         List<UserEmployeeVO> userEmployeeVOS = new ArrayList<>();
+
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-        queryBuilder.where(HrCompany.HR_COMPANY.ID.getName(), companyId);
-        // 是否是子公司，如果是查询母公司ID
-        HrCompanyDO hrCompanyDO = hrCompanyDao.getData(queryBuilder.buildQuery());
-        if (StringUtils.isEmptyObject(hrCompanyDO)) {
-            throw UserAccountException.COMPANY_DATA_EMPTY;
-        }
-        List<Integer> list = employeeEntity.getCompanyIds(hrCompanyDO.getParentId() > 0 ? hrCompanyDO.getParentId() : companyId);
-        queryBuilder.clear();
-        Condition companyIdCon = new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), list, ValueOp.IN);
+        Condition companyIdCon = new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyIds, ValueOp.IN);
         queryBuilder.where(companyIdCon).and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), 0);
+
         // 如果有关键字，拼接关键字
         if (!StringUtils.isEmptyObject(keyword)) {
             getQueryBuilder(queryBuilder, keyword, companyId);
@@ -988,7 +986,7 @@ public class UserHrAccountService {
             Map<Integer, UserUserDO> userMap = userUserDOList.stream().collect(Collectors.toMap(UserUserDO::getId, Function.identity()));
 
             queryBuilder.clear();
-            queryBuilder.where(new Condition(HrCompany.HR_COMPANY.ID.getName(), list, ValueOp.IN));
+            queryBuilder.where(new Condition(HrCompany.HR_COMPANY.ID.getName(), companyIds, ValueOp.IN));
             List<HrCompanyDO> companyList = hrCompanyDao.getDatas(queryBuilder.buildQuery());
             // 查询公司信息
             Map<Integer, HrCompanyDO> companyMap = companyList.stream().collect(Collectors.toMap(HrCompanyDO::getId, Function.identity()));
@@ -1042,17 +1040,45 @@ public class UserHrAccountService {
      * @param order      排序条件
      * @param asc        正序，倒序 0: 正序,1:倒序 默认
      * @param pageNumber 第几页
-     * @param startDate  积分计算开始时间
-     * @param endDate    积分计算结束时间
+     * @param timespan   月，季，年
      * @param pageSize   每页的条数
      */
-    public UserEmployeeVOPageVO employeeList(String keyword, Integer companyId, Integer filter, String order, String asc, Integer pageNumber, Integer pageSize, String startDate, String endDate) throws Exception {
-        // 员工列表
-        if (StringUtils.isEmptyObject(startDate) && StringUtils.isEmptyObject(endDate)) {
-            return employeeList(keyword, companyId, filter, order, asc, pageNumber, pageSize);
+    public UserEmployeeVOPageVO employeeList(String keyword, Integer companyId, Integer filter, String order, String asc, Integer pageNumber, Integer pageSize, String timespan) throws Exception {
+        if (companyId == 0) {
+            throw UserAccountException.COMPANY_DATA_EMPTY;
         }
-        // 获取积分月，季，年榜单
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where(HrCompany.HR_COMPANY.ID.getName(), companyId);
+        // 是否是子公司，如果是查询母公司ID
+        HrCompanyDO hrCompanyDO = hrCompanyDao.getData(queryBuilder.buildQuery());
+        if (StringUtils.isEmptyObject(hrCompanyDO)) {
+            throw UserAccountException.COMPANY_DATA_EMPTY;
+        }
+        List<Integer> list = employeeEntity.getCompanyIds(hrCompanyDO.getParentId() > 0 ? hrCompanyDO.getParentId() : companyId);
+        queryBuilder.clear();
+        Condition companyIdCon = new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), list, ValueOp.IN);
+        queryBuilder.where(companyIdCon).and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), 0);
+        List<Integer> companyIds = employeeEntity.getCompanyIds(companyId);
 
+        // 员工列表
+        if (StringUtils.isEmptyObject(timespan)) {
+            return employeeList(keyword, companyId, companyIds, filter, order, asc, pageNumber, pageSize);
+        }
+        // 获取积分月，季，年榜单,先取出该公司下所有的员工
+        queryBuilder.clear();
+        queryBuilder.select(UserEmployee.USER_EMPLOYEE.ID.getName()).where(new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyIds, ValueOp.IN))
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), 0);
+        List<UserEmployeeDO> userEmployeeDOs = userEmployeeDao.getDatas(queryBuilder.buildQuery());
+        List<Integer> userEmployeeIds = userEmployeeDOs.stream().map(m -> m.getId()).collect(Collectors.toList());
+        System.out.println(userEmployeeIds.size());
+        if (StringUtils.isEmptyList(userEmployeeIds)) {
+            throw UserAccountException.USEREMPLOYEES_EMPTY;
+        }
+        // 从ES中获取数据
+        Response response = searchengineServices.queryAwardRanking(userEmployeeIds, timespan, pageSize, pageNumber);
+        if (response.getStatus() == 0) {
+
+        }
         return null;
     }
 
