@@ -38,7 +38,7 @@ public class ProfileTask implements Task<ProfilePojo, Integer> {
     private ProfileCompletenessImpl completenessImpl;
 
     public Integer handler(ProfilePojo profilePojo) throws CommonException {
-        if (profilePojo != null) {
+        if (profilePojo != null && profilePojo.getUserRecord() != null) {
 
             ProfileProfileRecord profileProfileRecord = profileDao.getProfileByUserId(profilePojo.getUserRecord().getId());
 

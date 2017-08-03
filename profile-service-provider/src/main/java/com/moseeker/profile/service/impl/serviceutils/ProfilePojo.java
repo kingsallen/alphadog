@@ -66,6 +66,7 @@ public class ProfilePojo {
                     userMap.remove("mobile");
                 }
                 crawlerUser = profileUtils.mapToUserUserRecord(userMap);
+                pojo.setUserRecord(crawlerUser);
             }
         } catch (Exception e1) {
             LoggerFactory.getLogger(ProfilePojo.class).error(e1.getMessage(), e1);
