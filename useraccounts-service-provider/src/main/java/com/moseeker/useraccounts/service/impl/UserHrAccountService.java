@@ -41,6 +41,7 @@ import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.constant.ResultMessage;
 import com.moseeker.useraccounts.exception.ExceptionCategory;
 import com.moseeker.useraccounts.exception.UserAccountException;
+import com.moseeker.useraccounts.pojo.EmployeeRank;
 import com.moseeker.useraccounts.service.thirdpartyaccount.ThirdPartyAccountSynctor;
 
 import org.apache.thrift.TException;
@@ -1013,7 +1014,6 @@ public class UserHrAccountService {
                     HrCompanyDO hrCompanyDOTemp = companyMap.get(userEmployeeDO.getCompanyId());
                     userEmployeeVO.setCompanyName(hrCompanyDOTemp.getName() != null ? hrCompanyDOTemp.getName() : "");
                     userEmployeeVO.setCompanyAbbreviation(hrCompanyDOTemp.getAbbreviation() != null ? hrCompanyDOTemp.getAbbreviation() : "");
-
                 }
                 userEmployeeVO.setActivation((new Double(userEmployeeDO.getActivation())).intValue());
                 userEmployeeVO.setAward(userEmployeeDO.getAward());
@@ -1070,12 +1070,8 @@ public class UserHrAccountService {
         Response response = searchengineServices.queryAwardRanking(companyIds, timespan, pageSize, pageNumber);
         // ES取到数据
         if (response.getStatus() == 0) {
-            HashMap<Integer,Integer> maps = (HashMap<Integer,Integer>) JSON.parse(response.getData());
-            for (Map.Entry<Integer, Integer> entry : maps.entrySet()) {
-                System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+            List<EmployeeRank> employeeRankList = JSONObject.parseArray(response.getData(), EmployeeRank.class);
 
-            }
-            System.out.println(maps.size());
         }
         return null;
     }

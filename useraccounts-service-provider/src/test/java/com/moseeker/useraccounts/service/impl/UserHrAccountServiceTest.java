@@ -7,6 +7,7 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.employee.struct.Employee;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVO;
 import com.moseeker.useraccounts.config.AppConfig;
+import com.moseeker.useraccounts.pojo.EmployeeRank;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -134,11 +136,14 @@ public class UserHrAccountServiceTest {
      * @param args
      */
     public static void main(String args[]) {
-        String str = "{105817:\"116183\",3385:\"30237\",60691:\"12108\",44762:\"10136\",57931:\"6550\",80021:\"5527\",65389:\"2825\",147399:\"2777\",71274:\"2730\",57999:\"2680\"}";
+        String str = "[{\"employeeId\":105817,\"award\":116183},{\"employeeId\":3385,\"award\":30237},{\"employeeId\":60691,\"award\":12108},{\"employeeId\":417142,\"award\":10260},{\"employeeId\":44762,\"award\":10136},{\"employeeId\":57931,\"award\":6550},{\"employeeId\":80021,\"award\":5527},{\"employeeId\":579539,\"award\":4850},{\"employeeId\":497769,\"award\":4710},{\"employeeId\":512268,\"award\":4680}]";
 
-        HashMap<Integer,Integer> maps = (HashMap<Integer,Integer>) JSON.parse(str);
 
-        System.out.println(maps.size());
+        List<EmployeeRank> dataMap = JSONObject.parseArray(str, EmployeeRank.class);
+
+
+
+        System.out.println(dataMap);
     }
 
 

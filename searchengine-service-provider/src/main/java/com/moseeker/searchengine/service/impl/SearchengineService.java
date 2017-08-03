@@ -337,11 +337,13 @@ public class SearchengineService {
     public Response queryAwardRanking(List<Integer> companyIds, String timespan, int pageSize, int pageNum) {
         SearchRequestBuilder searchRequestBuilder = getSearchRequestBuilder(companyIds, null, pageSize, pageNum, timespan);
         SearchResponse response = searchRequestBuilder.execute().actionGet();
-        // 保证插入有序，使用linkedhashMap
-        Map<Integer, Object> data = new LinkedHashMap<>();
+        List<Map<String, Object>> data = new ArrayList<>();
         for (SearchHit searchHit : response.getHits().getHits()) {
+            Map<String, Object> objectMap = new HashMap<>();
             JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
-            data.put(TypeUtils.castToInt(jsonObject.remove("employee_id")), jsonObject.getJSONObject("awards").getJSONObject(timespan).getString("award"));
+            objectMap.put("employeeId", jsonObject.remove("employee_id"));
+            objectMap.put("award", jsonObject.getJSONObject("awards").getJSONObject(timespan).getInteger("award"));
+            data.add(objectMap);
         }
         return ResponseUtils.success(data);
     }
