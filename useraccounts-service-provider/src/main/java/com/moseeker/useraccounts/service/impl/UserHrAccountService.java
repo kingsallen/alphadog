@@ -1092,14 +1092,14 @@ public class UserHrAccountService {
             userEmployeeVO.setCustomField(userEmployeeDO.getCustomField());
             userEmployeeVO.setEmail(userEmployeeDO.getEmail());
             userEmployeeVO.setCompanyId(userEmployeeDO.getCompanyId());
-            if (!StringUtils.isEmptyObject(userMap) && !StringUtils.isEmptyObject(userMap.get(userEmployeeDO.getSysuserId()))) {
+            if (userMap != null && userMap.size() > 0 && userMap.get(userEmployeeDO.getSysuserId()) != null) {
                 userEmployeeVO.setNickName(userMap.get(userEmployeeDO.getSysuserId()).getNickname());
             } else {
                 userEmployeeVO.setNickName("未知");
             }
             // 公司名称
-            if (!StringUtils.isEmptyObject(companyMap) && !StringUtils.isEmptyObject(companyMap.get(userEmployeeDO.getCompanyId()))) {
-                HrCompanyDO companyDO = (HrCompanyDO) companyMap.get(userEmployeeDO.getCompanyId());
+            if (companyMap != null && companyMap.size() > 0 && companyMap.get(userEmployeeDO.getCompanyId()) != null) {
+                HrCompanyDO companyDO = companyMap.get(userEmployeeDO.getCompanyId());
                 userEmployeeVO.setCompanyName(companyDO.getName() != null ? companyDO.getName() : "");
                 userEmployeeVO.setCompanyAbbreviation(companyDO.getAbbreviation() != null ? companyDO.getAbbreviation() : "");
             }
@@ -1378,6 +1378,8 @@ public class UserHrAccountService {
             Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
             queryBuilder.where(UserEmployee.USER_EMPLOYEE.EMAIL.getName(), email)
                     .and(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyId)
+                    .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), 0)
+                    .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), 0)
                     .and(new Condition(UserEmployee.USER_EMPLOYEE.ID.getName(), userEmployeeId, ValueOp.NEQ));
             UserEmployeeDO userEmployeeDO = userEmployeeDao.getData(queryBuilder.buildQuery());
             if (!StringUtils.isEmptyObject(userEmployeeDO)) {
@@ -1389,6 +1391,7 @@ public class UserHrAccountService {
             Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
             queryBuilder.where(UserEmployee.USER_EMPLOYEE.CNAME.getName(), cname)
                     .and(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.getName(), customField)
+                    .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), 0)
                     .and(new Condition(UserEmployee.USER_EMPLOYEE.ID.getName(), userEmployeeId, ValueOp.NEQ));
             UserEmployeeDO userEmployeeDO = userEmployeeDao.getData(queryBuilder.buildQuery());
             if (!StringUtils.isEmptyObject(userEmployeeDO)) {
