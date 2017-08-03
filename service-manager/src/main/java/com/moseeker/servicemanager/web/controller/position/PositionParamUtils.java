@@ -133,7 +133,7 @@ public class PositionParamUtils extends ParamUtils {
                 positions.forEach(position -> {
                     int positionId = (Integer) position.get("position_id");
                     List<Integer> channels = (List<Integer>) position.get("channels");
-                    if (channels == null && channels.size() ==0) {
+                    if (channels == null||channels.size() ==0) {
 	                    if(positionId!=0){
 	                    	paramList.add(positionId);
 	                    }
