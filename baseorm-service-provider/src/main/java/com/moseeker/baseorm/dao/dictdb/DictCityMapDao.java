@@ -30,7 +30,7 @@ public class DictCityMapDao extends JooqCrudImpl<DictCityMapDO, DictCityMapRecor
         super(table, dictCityMapDOClass);
     }
 
-    public List<List<String>> getOtherCityFunllLevel(ChannelType channelType, Collection<Integer> cityCodes) {
+    public List<List<String>> getOtherCityByLastCodes(ChannelType channelType, List<Integer> cityCodes) {
 
         if (cityCodes == null || cityCodes.size() == 0) return new ArrayList<>();
 
@@ -43,19 +43,26 @@ public class DictCityMapDao extends JooqCrudImpl<DictCityMapDO, DictCityMapRecor
         //仟寻的城市层次
         List<List<Integer>> orginCodes = new ArrayList<>();
 
-        //对应的其它渠道的层次
-        List<List<String>> otherCodes = new ArrayList<>();
-
-        Set<Integer> moseekerCodes = new HashSet<>();
         for (DictCityDO cityDO : dictCitys) {
-            List<DictCityDO> moseekerCityLevels = dictCityDao.getMoseekerCityLevel(cityDO);
+            List<DictCityDO> moseekerCityLevels = dictCityDao.getMoseekerLevels(cityDO);
             if (moseekerCityLevels != null && moseekerCityLevels.size() > 0) {
-                for (DictCityDO dictCityDO : moseekerCityLevels) {
-                    moseekerCodes.add(dictCityDO.getCode());
-                }
                 orginCodes.add(moseekerCityLevels.stream().map(city -> city.getCode()).collect(Collectors.toList()));
             }
         }
+
+        return getOtherCityByFullCodes(channelType, orginCodes);
+
+    }
+
+    public List<List<String>> getOtherCityByFullCodes(ChannelType channelType, List<List<Integer>> cityCodes) {
+        Set<Integer> moseekerCodes = new HashSet<>();
+        for (List<Integer> codes : cityCodes) {
+            for (Integer code : codes) {
+                moseekerCodes.add(code);
+            }
+        }
+
+        List<List<String>> otherCodes = new ArrayList<>();
 
         if (moseekerCodes.size() > 0) {
             Query channelCityQuery = new Query.QueryBuilder()
@@ -65,7 +72,7 @@ public class DictCityMapDao extends JooqCrudImpl<DictCityMapDO, DictCityMapRecor
             List<DictCityMapDO> dictCityMapDOS = getDatas(channelCityQuery);
 
             //将仟寻城市级别对应到第三方渠道级别
-            for (List<Integer> moseekerCityLevels : orginCodes) {
+            for (List<Integer> moseekerCityLevels : cityCodes) {
                 List<String> otherCity = new ArrayList<>();
                 for (Integer moseekerCode : moseekerCityLevels) {
                     String otherCode = getOtherCode(moseekerCode, dictCityMapDOS);
