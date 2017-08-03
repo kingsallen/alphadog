@@ -58,7 +58,12 @@ public class UseraccountsServiceImpl implements Iface {
 		return service.postsendsignupcode(mobile);
 	}
 
-	/**
+    @Override
+    public Response postsendsignupcodeVoice(String mobile) throws TException {
+        return service.postsendsignupcodeVoice(mobile);
+    }
+
+    /**
 	 * 注册手机号用户。 password 为空时， 需要把密码直接发送给用户。
 	 * <p>
 	 *

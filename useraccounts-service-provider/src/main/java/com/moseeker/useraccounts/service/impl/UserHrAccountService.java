@@ -1135,21 +1135,16 @@ public class UserHrAccountService {
             userEmployeeVO.setCustomField(userEmployeeDO.getCustomField());
             userEmployeeVO.setEmail(userEmployeeDO.getEmail());
             userEmployeeVO.setCompanyId(userEmployeeDO.getCompanyId());
-            if (userMap.size() > 0) {
-                UserUserDO userUserDOTmp = userMap.get(userEmployeeDO.getSysuserId());
-                if (userUserDOTmp != null) {
-                    userEmployeeVO.setNickName(userMap.get(userEmployeeDO.getSysuserId()).getNickname());
-                } else {
-                    userEmployeeVO.setNickName("未知");
-                }
+            if (userMap != null && userMap.size() > 0 && userMap.get(userEmployeeDO.getSysuserId()) != null) {
+                userEmployeeVO.setNickName(userMap.get(userEmployeeDO.getSysuserId()).getNickname());
+            } else {
+                userEmployeeVO.setNickName("未知");
             }
             // 公司名称
-            if (companyMap.size() > 0) {
+            if (companyMap != null && companyMap.size() > 0 && companyMap.get(userEmployeeDO.getCompanyId()) != null) {
                 HrCompanyDO companyDO = companyMap.get(userEmployeeDO.getCompanyId());
-                if (companyDO != null) {
-                    userEmployeeVO.setCompanyName(companyDO.getName() != null ? companyDO.getName() : "");
-                    userEmployeeVO.setCompanyAbbreviation(companyDO.getAbbreviation() != null ? companyDO.getAbbreviation() : "");
-                }
+                userEmployeeVO.setCompanyName(companyDO.getName() != null ? companyDO.getName() : "");
+                userEmployeeVO.setCompanyAbbreviation(companyDO.getAbbreviation() != null ? companyDO.getAbbreviation() : "");
             }
             userEmployeeVO.setActivation((new Double(userEmployeeDO.getActivation())).intValue());
             userEmployeeVO.setAward(userEmployeeDO.getAward());
