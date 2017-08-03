@@ -10,10 +10,12 @@ import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.ConverTools;
 import com.moseeker.searchengine.util.SearchUtil;
 import com.moseeker.thrift.gen.common.struct.Response;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.*;
 import java.util.stream.Collectors;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
 import org.elasticsearch.action.index.IndexResponse;
@@ -303,12 +305,12 @@ public class SearchengineService {
         return ResponseUtils.success("");
     }
 
-    private SortBuilder buildSortScript(String field, SortOrder sortOrder){
-        StringBuffer sb=new StringBuffer();
-        sb.append("double score=0; award=doc['"+field+"'].value;if(award){score=award}; return score;");
-        String scripts=sb.toString();
-        Script script=new Script(scripts);
-        SortBuilder builder = new ScriptSortBuilder(script,"number");
+    private SortBuilder buildSortScript(String field, SortOrder sortOrder) {
+        StringBuffer sb = new StringBuffer();
+        sb.append("double score=0; award=doc['" + field + "'].value;if(award){score=award}; return score;");
+        String scripts = sb.toString();
+        Script script = new Script(scripts);
+        SortBuilder builder = new ScriptSortBuilder(script, "number");
         builder.order(sortOrder);
         return builder;
     }
@@ -317,7 +319,7 @@ public class SearchengineService {
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
         searchUtil.handleTerms(Arrays.toString(companyIds.toArray()).replaceAll("\\[|\\]| ", ""), query, "company_id");
-        searchUtil.handleTerms(timespan, query, "awards."+timespan+".timespan");
+        searchUtil.handleTerms(timespan, query, "awards." + timespan + ".timespan");
         if (activation != null) {
             searchUtil.handleTerms(activation, query, "activation");
         }
@@ -335,11 +337,13 @@ public class SearchengineService {
     public Response queryAwardRanking(List<Integer> companyIds, String timespan, int pageSize, int pageNum) {
         SearchRequestBuilder searchRequestBuilder = getSearchRequestBuilder(companyIds, null, pageSize, pageNum, timespan);
         SearchResponse response = searchRequestBuilder.execute().actionGet();
-        // 保证插入有序，使用linkedhashMap
-        Map<Integer, Object> data = new LinkedHashMap<>();
-        for (SearchHit searchHit : response.getHits().getHits()){
+        List<Map<String, Object>> data = new ArrayList<>();
+        for (SearchHit searchHit : response.getHits().getHits()) {
+            Map<String, Object> objectMap = new HashMap<>();
             JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
-            data.put(TypeUtils.castToInt(jsonObject.remove("employee_id")), jsonObject);
+            objectMap.put("employeeId", jsonObject.remove("employee_id"));
+            objectMap.put("award", jsonObject.getJSONObject("awards").getJSONObject(timespan).getInteger("award"));
+            data.add(objectMap);
         }
         return ResponseUtils.success(data);
     }
@@ -350,7 +354,7 @@ public class SearchengineService {
         // 保证插入有序，使用linkedhashMap
         Map<Integer, Object> data = new LinkedHashMap<>();
         int index = 1;
-        for (SearchHit searchHit : response.getHits().getHits()){
+        for (SearchHit searchHit : response.getHits().getHits()) {
             JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
             if(jsonObject.getJSONObject("awards").getJSONObject(timespan).getIntValue("award") > 0) {
                 JSONObject obj = JSON.parseObject("{}");

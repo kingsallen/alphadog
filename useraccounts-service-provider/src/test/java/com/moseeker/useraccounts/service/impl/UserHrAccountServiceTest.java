@@ -1,10 +1,13 @@
 package com.moseeker.useraccounts.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.employee.struct.Employee;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVO;
 import com.moseeker.useraccounts.config.AppConfig;
+import com.moseeker.useraccounts.pojo.EmployeeRank;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,7 +16,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = AppConfig.class)
@@ -47,7 +53,7 @@ public class UserHrAccountServiceTest {
     @Test
     public void employeeList() {
         try {
-            System.out.println(userHrAccountService.employeeList("", 3, 0, "", "", 10, 1, "201708"));
+            System.out.println(userHrAccountService.employeeList("", 39978, 0, "", "", 1, 10, "2017"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -121,6 +127,23 @@ public class UserHrAccountServiceTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    /**
+     * 主入口
+     *
+     * @param args
+     */
+    public static void main(String args[]) {
+        String str = "[{\"employeeId\":105817,\"award\":116183},{\"employeeId\":3385,\"award\":30237},{\"employeeId\":60691,\"award\":12108},{\"employeeId\":417142,\"award\":10260},{\"employeeId\":44762,\"award\":10136},{\"employeeId\":57931,\"award\":6550},{\"employeeId\":80021,\"award\":5527},{\"employeeId\":579539,\"award\":4850},{\"employeeId\":497769,\"award\":4710},{\"employeeId\":512268,\"award\":4680}]";
+
+
+        List<EmployeeRank> dataMap = JSONObject.parseArray(str, EmployeeRank.class);
+
+
+
+        System.out.println(dataMap);
     }
 
 

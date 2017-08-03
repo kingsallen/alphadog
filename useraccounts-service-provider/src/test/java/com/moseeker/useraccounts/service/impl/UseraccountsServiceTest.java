@@ -90,6 +90,18 @@ public class UseraccountsServiceTest {
 
     }
 
+//    @Test
+    public void postsendsignupcodeTest() throws TException {
+        Response response = service.postsendsignupcode("13020287221");
+        System.out.println(response);
+    }
+
+//    @Test
+    public void postsendsignupcodeVoiceTest() throws TException {
+        Response response = service.postsendsignupcodeVoice("13020287221");
+        System.out.println(response);
+    }
+
 
     //@Test
     public void checkEmail() throws Exception {
