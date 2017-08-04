@@ -31,7 +31,7 @@ public class AppConfig {
     @Autowired
     private Environment env;
 
-    @Bean
+//    @Bean
     public ConnectionFactory connectionFactory() {
         ConnectionFactory cf = new ConnectionFactory();
         cf.setHost(env.getProperty("rabbitmq.host").trim());
@@ -41,7 +41,7 @@ public class AppConfig {
         return cf;
     }
 
-    @Bean
+//    @Bean
     public RabbitTemplate rabbitTemplate() {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(cachingConnectionFactory());
         RetryTemplate retryTemplate = new RetryTemplate();
@@ -55,13 +55,13 @@ public class AppConfig {
         return rabbitTemplate;
     }
 
-    @Bean
+//    @Bean
     public CachingConnectionFactory cachingConnectionFactory() {
         return new CachingConnectionFactory(connectionFactory());
     }
 
 
-    @Bean
+//    @Bean
     public AmqpAdmin amqpAdmin() {
         RabbitAdmin rabbitAdmin = new RabbitAdmin(cachingConnectionFactory());
         rabbitAdmin.setIgnoreDeclarationExceptions(true);
@@ -72,7 +72,7 @@ public class AppConfig {
      * listener 容器 （consumer 需要手动确认消息）
      * @return
      */
-    @Bean
+//    @Bean
     public RabbitListenerContainerFactory rabbitListenerContainerFactory() {
         SimpleRabbitListenerContainerFactory listenerContainerFactory = new SimpleRabbitListenerContainerFactory();
         listenerContainerFactory.setConnectionFactory(cachingConnectionFactory());
@@ -85,7 +85,7 @@ public class AppConfig {
      * listener 容器 （AcknowledgeMode：auto）
      * @return
      */
-    @Bean
+//    @Bean
     public RabbitListenerContainerFactory rabbitListenerContainerFactoryAutoAck() {
         SimpleRabbitListenerContainerFactory listenerContainerFactory = new SimpleRabbitListenerContainerFactory();
         listenerContainerFactory.setConnectionFactory(cachingConnectionFactory());
@@ -93,20 +93,20 @@ public class AppConfig {
     }
 
 
-    @Bean
+//    @Bean
     public Queue addAwardQue() {
         Queue queue = new Queue("add_award_que", false, false, true);
         return queue;
     }
 
-    @Bean
+//    @Bean
     public TopicExchange topicExchange() {
         TopicExchange topicExchange = new TopicExchange("topic-exchange", false, true);
         topicExchange.setDelayed(true);
         return topicExchange;
     }
 
-    @Bean
+//    @Bean
     public List<Binding> binding() {
         return new ArrayList<Binding>(){{
             add(BindingBuilder.bind(addAwardQue()).to(topicExchange()).with("reward.add"));
