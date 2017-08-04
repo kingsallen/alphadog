@@ -1105,7 +1105,7 @@ public class UserHrAccountService {
             }
             userEmployeeVO.setActivation((new Double(userEmployeeDO.getActivation())).intValue());
             userEmployeeVO.setAward(userEmployeeDO.getAward());
-            userEmployeeVO.setBindingTime(userEmployeeDO.getCreateTime());
+            userEmployeeVO.setBindingTime(userEmployeeDO.getBindingTime());
             userEmployeeVOS.add(userEmployeeVO);
         }
         return userEmployeeVOS;
