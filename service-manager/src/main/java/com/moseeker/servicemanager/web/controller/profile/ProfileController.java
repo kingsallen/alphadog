@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices;
 import com.moseeker.thrift.gen.application.struct.ApplicationResponse;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
 
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
@@ -328,6 +329,12 @@ public class ProfileController {
             String parameter = ParamUtils.parseJsonParam(request);
             boolean result = profileService.retrieveProfile(parameter);
             return ResponseLogNotification.success(request, new Response(0, String.valueOf(result)));
+        } catch (BIZException e) {
+            Response result = new Response();
+            result.setStatus(e.getCode());
+            result.setMessage(e.getMessage());
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, result);
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
