@@ -1,5 +1,7 @@
 package com.moseeker.useraccounts.service;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.HrEmployeeCertConfDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
@@ -20,6 +22,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -106,6 +109,11 @@ public abstract class EmployeeBinder {
             }
             userEmployee.setId(primaryKey);
             userEmployeeDOThreadLocal.set(userEmployee);
+            // 更新ES中useremployee信息
+            JSONObject jobj = new JSONObject();
+            jobj.put("employee_id", Arrays.asList(primaryKey));
+            client.lpush(Constant.APPID_ALPHADOG,"ES_REALTIME_UPDATE_INDEX_AWARD_RANKING", jobj.toJSONString());
+            log.info("lpush ES_REALTIME_UPDATE_INDEX_AWARD_RANKING:{} success", jobj.toJSONString());
             return primaryKey;
         }
         return userEmployeeDOThreadLocal.get().getId();
@@ -161,6 +169,11 @@ public abstract class EmployeeBinder {
         if (Arrays.stream(updateResult).allMatch(m -> m == 1)){
             response.setSuccess(true);
             response.setMessage("success");
+            // 更新ES中useremployee信息
+            JSONObject jobj = new JSONObject();
+            jobj.put("employee_id", employees.stream().map(m -> m.getId()).collect(Collectors.toList()));
+            client.lpush(Constant.APPID_ALPHADOG,"ES_REALTIME_UPDATE_INDEX_AWARD_RANKING", jobj.toJSONString());
+            log.info("lpush ES_REALTIME_UPDATE_INDEX_AWARD_RANKING:{} success", jobj.toJSONString());
         } else {
             response.setSuccess(false);
             response.setMessage("fail");
