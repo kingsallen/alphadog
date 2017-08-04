@@ -1,9 +1,11 @@
 package com.moseeker.useraccounts.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.moseeker.baseorm.dao.hrdb.*;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
+import com.moseeker.baseorm.dao.hrdb.HrEmployeeCertConfDao;
+import com.moseeker.baseorm.dao.hrdb.HrEmployeeCustomFieldsDao;
+import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
@@ -20,27 +22,28 @@ import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.UserWxEntity;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.struct.hrdb.*;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCustomFieldsDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import com.moseeker.thrift.gen.employee.struct.*;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.moseeker.useraccounts.exception.ExceptionCategory;
 import com.moseeker.useraccounts.exception.ExceptionFactory;
 import com.moseeker.useraccounts.service.EmployeeBinder;
-
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author ltf 员工服务业务实现 2017年3月3日
@@ -318,7 +321,7 @@ public class EmployeeService {
         return response;
     }
 
-    public List<EmployeeAward> awardRanking(int employeeId, int companyId, Timespan timespan) {
+    public List<EmployeeAward> awardRanking(int employeeId, int companyId, String timespan) {
         List<EmployeeAward> response = new ArrayList<>();
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.where("id", employeeId);
@@ -330,7 +333,7 @@ public class EmployeeService {
         }
         List<Integer> companyIds = employeeEntity.getCompanyIds(companyId);
         try {
-            Response result = searchService.queryAwardRankingInWx(companyIds, "", employeeId);
+            Response result = searchService.queryAwardRankingInWx(companyIds, timespan, employeeId);
             if (result.getStatus() == 0){
                // 解析数据
                Map<Integer, String> map = JSON.parseObject(result.getData(), Map.class);
