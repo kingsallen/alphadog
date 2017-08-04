@@ -102,18 +102,13 @@ public abstract class EmployeeBinder {
             userEmployee.setAuthMethod((byte)bindingParams.getType().getValue());
             userEmployee.setActivation((byte)3);
             userEmployee.setCreateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-            int primaryKey = employeeDao.addData(userEmployee).getId();
+            int primaryKey = employeeEntity.addEmployee(userEmployee).getId();
             if( primaryKey == 0) {
                 log.info("员工邮箱认证，保存员工信息失败 employee={}", userEmployee);
                 throw new RuntimeException("认证失败，请检查员工信息");
             }
             userEmployee.setId(primaryKey);
             userEmployeeDOThreadLocal.set(userEmployee);
-            // 更新ES中useremployee信息
-            JSONObject jobj = new JSONObject();
-            jobj.put("employee_id", Arrays.asList(primaryKey));
-            client.lpush(Constant.APPID_ALPHADOG,"ES_REALTIME_UPDATE_INDEX_AWARD_RANKING", jobj.toJSONString());
-            log.info("lpush ES_REALTIME_UPDATE_INDEX_AWARD_RANKING:{} success", jobj.toJSONString());
             return primaryKey;
         }
         return userEmployeeDOThreadLocal.get().getId();

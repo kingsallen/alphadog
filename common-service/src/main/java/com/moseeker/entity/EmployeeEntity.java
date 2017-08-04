@@ -8,11 +8,7 @@ import com.moseeker.baseorm.dao.hrdb.HrGroupCompanyRelDao;
 import com.moseeker.baseorm.dao.hrdb.HrPointsConfDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
-import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
-import com.moseeker.baseorm.dao.userdb.UserEmployeePointsRecordCompanyRelDao;
-import com.moseeker.baseorm.dao.userdb.UserEmployeePointsRecordDao;
-import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
-import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.dao.userdb.*;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompanyRel;
 import com.moseeker.baseorm.db.hrdb.tables.HrPointsConf;
@@ -39,14 +35,9 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrGroupCompanyRelDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrPointsConfDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordCompanyRelDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.*;
 import com.moseeker.thrift.gen.employee.struct.RewardVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
-
 import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -55,12 +46,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.annotation.Resource;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -112,6 +99,7 @@ public class EmployeeEntity {
 
     @Resource(name = "cacheClient")
     protected RedisClient client;
+
 
 
     private static final Logger logger = LoggerFactory.getLogger(EmployeeEntity.class);
@@ -605,5 +593,46 @@ public class EmployeeEntity {
             userEmployeeDOS = employeeDao.getDatas(queryBuilder.buildQuery());
         }
         return userEmployeeDOS;
+    }
+
+    /**
+     * 添加员工记录集合。
+     * 会向员工记录中添加数据的同时，往ES员工索引维护队列中增加新增员工记录的任务。
+     * @param userEmployeeList 员工记录集合
+     * @return 添加好的员工记录。如果参数是空，那么返回值是null
+     * @throws CommonException
+     */
+    public List<UserEmployeeDO> addEmployeeList(List<UserEmployeeDO> userEmployeeList) throws CommonException {
+        if (userEmployeeList != null && userEmployeeList.size() > 0) {
+            List<UserEmployeeDO> employeeDOS = employeeDao.addAllData(userEmployeeList);
+
+            JSONObject jobj = new JSONObject();
+            jobj.put("employee_id", employeeDOS.stream().map(m -> m.getId()).collect(Collectors.toList()));
+            client.lpush(Constant.APPID_ALPHADOG,"ES_REALTIME_UPDATE_INDEX_AWARD_RANKING", jobj.toJSONString());
+
+            return employeeDOS;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * 添加员工记录或者员工数据
+     * 会向员工记录中添加数据的同时，往ES员工索引维护队列中增加新增员工记录的任务。
+     * @param userEmployee
+     * @return
+     * @throws CommonException
+     */
+    public UserEmployeeDO addEmployee(UserEmployeeDO userEmployee) throws CommonException {
+        if (userEmployee == null) {
+            return null;
+        }
+        UserEmployeeDO employeeDO = employeeDao.addData(userEmployee);
+
+        JSONObject jobj = new JSONObject();
+        jobj.put("employee_id", Arrays.asList(employeeDO.getId()));
+        client.lpush(Constant.APPID_ALPHADOG,"ES_REALTIME_UPDATE_INDEX_AWARD_RANKING", jobj.toJSONString());
+
+        return employeeDO;
     }
 }
