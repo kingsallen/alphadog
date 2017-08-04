@@ -41,6 +41,7 @@ import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.pojo.EmployeeRank;
 import com.moseeker.useraccounts.pojo.EmployeeRankObj;
 import com.moseeker.useraccounts.service.thirdpartyaccount.ThirdPartyAccountSynctor;
+
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +51,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -967,7 +969,7 @@ public class UserHrAccountService {
      * @param timespan   月，季，年
      * @param pageSize   每页的条数
      */
-    public UserEmployeeVOPageVO employeeList(String keyword, Integer companyId, Integer filter, String order, String asc, Integer pageNumber, Integer pageSize, String timespan) throws Exception {
+    public UserEmployeeVOPageVO employeeList(String keyword, Integer companyId, Integer filter, String order, String asc, Integer pageNumber, Integer pageSize, String timespan) throws CommonException {
         UserEmployeeVOPageVO userEmployeeVOPageVO = new UserEmployeeVOPageVO();
         // 公司ID未设置
         if (companyId == 0) {
@@ -1061,7 +1063,12 @@ public class UserHrAccountService {
             userEmployeeVOPageVO.setData(employeeList(queryBuilder, 0, companyIds, null));
         }
         // 员工列表，从ES中获取积分月，季，年榜单数据
-        Response response = searchengineServices.queryAwardRanking(companyIds, timespan, pageSize, pageNumber);
+        Response response = null;
+        try {
+            response = searchengineServices.queryAwardRanking(companyIds, timespan, pageSize, pageNumber);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
         // 不管ES中有没有数据，员工的分页数据用于一样
         if (pageSize > 0) {
             userEmployeeVOPageVO.setPageSize(pageSize);
@@ -1071,7 +1078,7 @@ public class UserHrAccountService {
         }
         userEmployeeVOPageVO.setTotalRow(counts);
         // ES取到数据
-        if (response.getStatus() == 0) {
+        if (response != null && response.getStatus() == 0) {
             EmployeeRankObj rankObj = JSONObject.parseObject(response.getData(), EmployeeRankObj.class);
             List<EmployeeRank> employeeRankList = rankObj.getData();
             if (employeeRankList != null && employeeRankList.size() > 0) {
@@ -1103,7 +1110,7 @@ public class UserHrAccountService {
      * @param type          1:导出所有，0:按照userEmployees导出
      * @return
      */
-    public List<UserEmployeeVO> employeeExport(List<Integer> userEmployees, Integer companyId, Integer type) throws Exception {
+    public List<UserEmployeeVO> employeeExport(List<Integer> userEmployees, Integer companyId, Integer type) throws CommonException {
         List<UserEmployeeVO> userEmployeeVOS = new ArrayList<>();
         if (companyId == 0) {
             throw UserAccountException.COMPANYID_ENPTY;

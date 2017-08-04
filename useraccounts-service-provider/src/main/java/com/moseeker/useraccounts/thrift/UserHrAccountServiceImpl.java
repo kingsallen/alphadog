@@ -328,14 +328,8 @@ public class UserHrAccountServiceImpl implements Iface {
      */
     @Override
     public UserEmployeeVOPageVO employeeList(String keyword, int companyId, int filter, String order, String asc, int pageNumber, int pageSize, String timeSpan) throws BIZException, TException {
-        try {
-            return service.employeeList(keyword, companyId, filter, order, asc, pageNumber, pageSize, timeSpan);
-        } catch (CommonException e) {
-            throw ExceptionConvertUtil.convertCommonException(e);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
-        }
+        return service.employeeList(keyword, companyId, filter, order, asc, pageNumber, pageSize, timeSpan);
+
     }
 
     /**
@@ -347,14 +341,8 @@ public class UserHrAccountServiceImpl implements Iface {
      */
     @Override
     public List<UserEmployeeVO> employeeExport(List<Integer> userEmployees, int companyId, int type) throws BIZException, TException {
-        try {
-            return service.employeeExport(userEmployees, companyId, type);
-        } catch (CommonException e) {
-            throw ExceptionConvertUtil.convertCommonException(e);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
-        }
+        return service.employeeExport(userEmployees, companyId, type);
+
     }
 
     /**
