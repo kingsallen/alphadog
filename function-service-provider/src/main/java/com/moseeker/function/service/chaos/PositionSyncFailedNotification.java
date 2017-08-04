@@ -1,7 +1,12 @@
 package com.moseeker.function.service.chaos;
 
 import com.alibaba.fastjson.JSON;
-import com.moseeker.baseorm.dao.dictdb.*;
+import com.moseeker.baseorm.dao.dictdb.Dict51OccupationDao;
+import com.moseeker.baseorm.dao.dictdb.DictCityDao;
+import com.moseeker.baseorm.dao.dictdb.DictLiepinOccupationDao;
+import com.moseeker.baseorm.dao.dictdb.DictZhilianOccupationDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.email.Email;
@@ -11,6 +16,7 @@ import com.moseeker.thrift.gen.dao.struct.dictdb.Dict51jobOccupationDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictLiepinOccupationDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictZhilianOccupationDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import org.slf4j.Logger;
@@ -18,10 +24,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.mail.event.ConnectionEvent;
-import javax.mail.event.ConnectionListener;
-import javax.mail.event.TransportEvent;
-import javax.mail.event.TransportListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,6 +49,11 @@ public class PositionSyncFailedNotification {
 
     @Autowired
     DictCityDao dictCityDao;
+
+    @Autowired
+    HrCompanyDao companyDao;
+    @Autowired
+    HrCompanyAccountDao companyAccountDao;
 
     private String getConfigString(String key) {
         try {
@@ -101,16 +108,27 @@ public class PositionSyncFailedNotification {
 
         StringBuilder emailMessgeBuilder = new StringBuilder();
 
-        String channelName = ChannelType.instaceFromInteger(Integer.valueOf(pojo.getChannel())).getAlias();
+        ChannelType channelType = ChannelType.instaceFromInteger(Integer.valueOf(pojo.getChannel()));
 
-        emailTitle
-                .append("【第三方职位刷新失败】")
-                .append(":【渠道:").append(channelName).append("】")
-                .append(":【仟寻职位:").append(pojo.getPosition_id()).append("】")
-                .append(":【").append(channelName).append("职位:").append(pojo.getJob_id()).append("】");
+        String channelName = channelType.getAlias();
+
+        emailTitle.append("【第三方职位刷新失败】");
+        HrCompanyDO companyDO = companyDao.getCompanyById(moseekerPosition.getCompanyId());
+        if (companyDO != null) {
+            emailTitle.append("【").append(companyDO.getName()).append("】");
+        }
+        emailTitle.append(":【渠道:").append(channelName).append("】");
+        emailTitle.append(":【仟寻职位:").append(pojo.getPosition_id()).append("】");
+        emailTitle.append(":【").append(channelName).append("职位:").append(pojo.getJob_id()).append("】");
 
         String divider = "<br/>";
-
+        if (companyDO != null) {
+            emailMessgeBuilder.append("【所属公司】：").append(companyDO.getName()).append(divider);
+        }
+        HrCompanyDO subCompany = companyAccountDao.getHrCompany(moseekerPosition.getPublisher());
+        if (subCompany != null) {
+            emailMessgeBuilder.append("【子公司简称】：").append(subCompany.getAbbreviation()).append(divider);
+        }
         emailMessgeBuilder.append("【职位ID】：").append(pojo.getPosition_id()).append(divider);
         emailMessgeBuilder.append("【第三方帐号ID】：").append(pojo.getAccount_id()).append(divider);
         emailMessgeBuilder.append("【第三方职位ID】：").append(thirdPartyPositionDO.getId()).append(divider);
@@ -149,13 +167,27 @@ public class PositionSyncFailedNotification {
 
         StringBuilder emailMessgeBuilder = new StringBuilder();
 
-        emailTitle
-                .append("【第三方职位同步失败】")
-                .append(":【渠道:").append(ChannelType.instaceFromInteger(Integer.valueOf(pojo.getChannel())).getAlias()).append("】")
+        emailTitle.append("【第三方职位同步失败】");
+        HrCompanyDO companyDO = companyDao.getCompanyById(moseekerPosition.getCompanyId());
+        if (companyDO != null) {
+            emailTitle.append("【").append(companyDO.getName()).append("】");
+        }
+        ChannelType channelType = ChannelType.instaceFromInteger(Integer.valueOf(pojo.getChannel()));
+        emailTitle.append(":【渠道:").append(channelType.getAlias()).append("】")
                 .append(":【仟寻职位:").append(pojo.getPosition_id()).append("】");
 
         String divider = "<br/>";
 
+        if (companyDO != null) {
+            emailMessgeBuilder.append("【所属公司】：").append(companyDO.getName()).append(divider);
+        }
+
+        HrCompanyDO subCompany = companyAccountDao.getHrCompany(moseekerPosition.getPublisher());
+        if (subCompany != null) {
+            emailMessgeBuilder.append("【子公司简称】：").append(subCompany.getAbbreviation()).append(divider);
+        }
+
+        emailMessgeBuilder.append("【同步记录ID】：").append(thirdPartyPositionDO.getId()).append(divider);
         emailMessgeBuilder.append("【职位ID】：").append(pojo.getPosition_id()).append(divider);
         emailMessgeBuilder.append("【第三方帐号ID】：").append(pojo.getAccount_id()).append(divider);
         emailMessgeBuilder.append("【第三方职位ID】：").append(thirdPartyPositionDO.getId()).append(divider);
@@ -171,8 +203,8 @@ public class PositionSyncFailedNotification {
         emailMessgeBuilder.append("【工作年限】：").append(getExperience(moseekerPosition.getExperience())).append(divider);
         emailMessgeBuilder.append("【学历要求】：").append(getDegree(moseekerPosition.getDegree())).append(divider);
         emailMessgeBuilder.append("【反馈时长】：").append(thirdPartyPositionDO.getFeedbackPeriod()).append(divider);
+        emailMessgeBuilder.append("<b style=\"color:red\">【简历邮箱】：").append("cv_").append(moseekerPosition.getId()).append(positionEmail).append("</b>").append(divider);
         emailMessgeBuilder.append("【职位描述】：").append(divider);
-        emailMessgeBuilder.append("【简历邮箱】：").append("cv_").append(moseekerPosition.getId()).append(positionEmail).append(divider);
 
         if (StringUtils.isNotNullOrEmpty(moseekerPosition.getAccountabilities())) {
             emailMessgeBuilder.append(moseekerPosition.getAccountabilities().replaceAll("\n", divider)).append(divider);
@@ -188,39 +220,27 @@ public class PositionSyncFailedNotification {
     }
 
     private void sendEmail(List<String> recipients, String subject, String content) {
+
+        logger.info("发送邮件:{},{}", recipients, subject);
+
+        if (recipients == null || recipients.size() == 0) return;
         try {
-            Email.EmailBuilder emailBuilder = new Email.EmailBuilder(recipients);
+            Email.EmailBuilder emailBuilder = new Email.EmailBuilder(recipients.subList(0, 1));
+            if (recipients.size() > 1) {
+                emailBuilder.addCCList(recipients.subList(1, recipients.size()));
+            }
             emailBuilder.setSubject(subject);
             emailBuilder.setContent(content);
             Email email = emailBuilder.build();
-            email.send(new TransportListener() {
-                int i = 3;//重试三次邮件
-
+            email.send(3, new Email.EmailListener() {
                 @Override
-                public void messageDelivered(TransportEvent e) {
-                    logger.info("email send messageDelivered");
+                public void success() {
+                    logger.info("发送职位同步刷新错误的邮件成功了,{}",subject);
                 }
 
                 @Override
-                public void messageNotDelivered(TransportEvent e) {
-                    if (i > 0) {
-                        logger.info("email send messageNotDelivered retry {}", i);
-                        email.send(this);
-                        i--;
-                    } else {
-                        logger.error("发送职位同步刷新错误的邮件失败了:EmailTO:{}:Title:{}:Message:{}", recipients, subject.toString(), content.toString());
-                    }
-                }
-
-                @Override
-                public void messagePartiallyDelivered(TransportEvent e) {
-                    if (i > 0) {
-                        logger.info("email send messagePartiallyDelivered retry {}", i);
-                        email.send(this);
-                        i--;
-                    } else {
-                        logger.error("发送职位同步刷新错误的邮件失败了:EmailTO:{}:Title:{}:Message:{}", recipients, subject.toString(), content.toString());
-                    }
+                public void failed(Exception e) {
+                    logger.error("发送职位同步刷新错误的邮件失败了:EmailTO:{}:Title:{}:Message:{}", recipients, subject.toString(), content.toString());
                 }
             });
         } catch (Exception e) {

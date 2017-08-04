@@ -1,5 +1,7 @@
 package com.moseeker.useraccounts.thrift;
 
+import com.moseeker.entity.EmployeeEntity;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.useraccounts.service.UserEmployeeService;
@@ -19,6 +21,9 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
 
     @Autowired
     com.moseeker.useraccounts.service.impl.UserEmployeeServiceImpl employeeService;
+
+    @Autowired
+    private EmployeeEntity employeeEntity;
 
 
     @Override
@@ -40,5 +45,10 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
     @Override
     public Response postPutUserEmployeeBatch(UserEmployeeBatchForm batchForm) throws TException {
         return employeeService.postPutUserEmployeeBatch(batchForm);
+    }
+
+    @Override
+    public boolean isEmployee(int userId, int companyId) throws BIZException, TException {
+        return employeeEntity.isEmployee(userId, companyId);
     }
 }

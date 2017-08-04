@@ -3,10 +3,8 @@ package com.moseeker.position.surrender;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.fastjson.JSON;
-import com.moseeker.position.service.third.ThirdPositionService;
-import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionInfoForm;
-import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionResult;
+import com.moseeker.baseorm.dao.dictdb.DictCityMapDao;
+import com.moseeker.common.constants.ChannelType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,68 +15,43 @@ import com.moseeker.position.config.AppConfig;
 import com.moseeker.position.service.fundationbs.PositionService;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.position.struct.RpExtInfo;
-
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = AppConfig.class)
+@ContextConfiguration(classes =AppConfig.class)
 @Transactional
 public class PositionServiceTest {
-    @Autowired
-    private PositionService service;
+	@Autowired
+	private PositionService service;
+	//@Test
+	public void getRecommendedPositionsTest(){
+		Response res=service.getRecommendedPositions(106002);
+		System.out.println(res);
+	}
+	//@Test
+	public void verifyCustomizeTest() throws Exception{
+		Response res=service.verifyCustomize(106002);
+		System.out.println(res);
+	}
+	@Test
+	public void getPositionByIdTest() throws Exception{
+		Response res=service.getPositionById(106002);
+		System.out.println(res);
+	}
+	//@Test
+	public  void deleteJobpositionTest(){
+		Response res=service.deleteJobposition(106002,0,"",0);
+		System.out.println(res);
+	}
+	//@Test
+	public void getTeamIdbyDepartmentNameTest(){
+		Response res=service.getTeamIdbyDepartmentName(71176,"法务部");
+		System.out.println(res);
+	}
+	//@Test
+	public void ifAllowRefreshTest(){
+		boolean bool=service.ifAllowRefresh(124445, 82671);
+		System.out.println(bool+"==================");
+	}
 
-    //@Test
-    public void getRecommendedPositionsTest() {
-        Response res = service.getRecommendedPositions(106002);
-        System.out.println(res);
-    }
-
-    //@Test
-    public void verifyCustomizeTest() throws Exception {
-        Response res = service.verifyCustomize(106002);
-        System.out.println(res);
-    }
-
-    @Test
-    public void getPositionByIdTest() throws Exception {
-        Response res = service.getPositionById(106002);
-        System.out.println(res);
-    }
-
-    //@Test
-    public void deleteJobpositionTest() {
-        Response res = service.deleteJobposition(106002, 0, "", 0);
-        System.out.println(res);
-    }
-
-    //@Test
-    public void getTeamIdbyDepartmentNameTest() {
-        Response res = service.getTeamIdbyDepartmentName(71176, "法务部");
-        System.out.println(res);
-    }
-
-    //@Test
-    public void ifAllowRefreshTest() {
-        boolean bool = service.ifAllowRefresh(124445, 82671);
-        System.out.println(bool + "==================");
-    }
-
-    @Test
-    public void test() throws Exception {
-        List<Integer> list = new ArrayList<Integer>();
-        list.add(124340);
-        list.add(124341);
-        list.add(124342);
-        List<RpExtInfo> res = service.getPositionListRpExt(list);
-        System.out.println(res);
-    }
-
-    @Autowired
-    ThirdPositionService thirdPositionService;
-
-    @Test
-    public void testThirdPartyPosition() {
-        ThirdPartyPositionInfoForm infoForm = new ThirdPartyPositionInfoForm();
-        ThirdPartyPositionResult result = thirdPositionService.getThirdPartyPositionInfo(infoForm);
-
-        System.out.println(JSON.toJSONString(result));
-    }
+	@Autowired
+	DictCityMapDao cityMapDao;
 }

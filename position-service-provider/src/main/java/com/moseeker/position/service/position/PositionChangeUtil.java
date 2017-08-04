@@ -107,12 +107,8 @@ public class PositionChangeUtil {
         position.setSalary_month(form.getSalary_month());
 
         //职位详情
-        String description = "";
-        if (channelType == ChannelType.JOB51 || channelType == ChannelType.LIEPIN) {
-            description = convertDescriptionFor51(positionDB.getAccountabilities(), positionDB.getRequirement());
-        } else {
-            description = convertDescription(positionDB.getAccountabilities(), positionDB.getRequirement());
-        }
+        String description = setDescription(positionDB.getAccountabilities(), positionDB.getRequirement());
+
         position.setDescription(description);
 
         //设置工作地点
@@ -147,7 +143,7 @@ public class PositionChangeUtil {
                 HrTeamDO hrTeam = hrTeamDao.getHrTeam(positionDO.getTeamId());
                 if (hrTeam != null) {
                     position.setDepartment(hrTeam.getName());
-                }else{
+                } else {
                     position.setDepartment("");
                 }
                 break;
@@ -234,7 +230,7 @@ public class PositionChangeUtil {
         switch (channelType) {
             case JOB51:
                 position.setDegree_code(DegreeChangeUtil.getJob51Degree(degree).getValue());
-                position.setDegree_code(DegreeChangeUtil.getJob51Degree(degree).getName());
+                position.setDegree(DegreeChangeUtil.getJob51Degree(degree).getName());
                 break;
             case ZHILIAN:
                 position.setDegree_code(DegreeChangeUtil.getZhilianDegree(degree).getValue());
@@ -336,7 +332,7 @@ public class PositionChangeUtil {
         return descript.toString();
     }
 
-    private static String convertDescriptionFor51(String accounTabilities, String requirement) {
+    private static String setDescription(String accounTabilities, String requirement) {
         StringBuffer descript = new StringBuffer();
         if (StringUtils.isNotNullOrEmpty(accounTabilities)) {
             descript.append(accounTabilities);
@@ -371,8 +367,8 @@ public class PositionChangeUtil {
 
         logger.info("setCities:{}", positionCityCodes);
         //转城市
-        if (channelType == ChannelType.LIEPIN) {
-            List<List<String>> otherCityCodes = cityMapDao.getOtherCityFunllLevel(ChannelType.LIEPIN, positionCityCodes);
+        if (channelType == ChannelType.LIEPIN || channelType == ChannelType.ZHILIAN) {
+            List<List<String>> otherCityCodes = cityMapDao.getOtherCityByLastCodes(channelType, new ArrayList<>(positionCityCodes));
             syncPosition.setCities(otherCityCodes);
             logger.info("setCities:otherCityCodes:{}", otherCityCodes);
         } else {

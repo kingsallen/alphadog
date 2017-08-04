@@ -2,6 +2,7 @@ package com.moseeker.servicemanager.common;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
@@ -13,8 +14,10 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 
 import java.io.Serializable;
+
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -104,6 +107,25 @@ public class ResponseLogNotification {
             Response response = new Response();
             response.setStatus(1);
             response.setMessage(message);
+            String jsonresponse = JSON.toJSONString(CleanJsonResponse.convertFrom(response));
+            logRequestResponse(request, jsonresponse);
+            int appid = 0;
+            if (request.getParameter("appid") != null) {
+                appid = Integer.parseInt(request.getParameter("appid"));
+            }
+            logger.info(JSON.toJSONString(response));
+            //Notification.sendNotification(appid, eventkey, response.getMessage());
+            return jsonresponse;
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+        return ConstantErrorCodeMessage.PROGRAM_EXCEPTION;
+
+    }
+
+    public static String failResponse(HttpServletRequest request, String message) {
+        try {
+            Response response = JSONObject.parseObject(message, Response.class);
             String jsonresponse = JSON.toJSONString(CleanJsonResponse.convertFrom(response));
             logRequestResponse(request, jsonresponse);
             int appid = 0;

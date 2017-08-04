@@ -1,0 +1,26 @@
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+
+// 设置依赖
+dependencies {
+    compile project (":common")
+    compile project (":thrift-jooq")
+    compile project (":baseorm-service-provider")
+    compile deps["spring-core"]
+    compile deps["spring-context"]
+    compile deps["spring-test"]
+    compile deps["spring-beans"]
+    compile deps["spring-core"]
+    compile fileTree(dir:'../libs',include:'libthrift-0.10.0.jar')
+    compile  fileTree(dir:'../libs',include:'jooq*.jar')
+    testCompile 'junit:junit:4.12'
+}
+
+task copyJars(type: Copy) {
+    from configurations.runtime
+    into 'build/libs' // 目标位置
+}
+
+project.description = '''
+    1) 公共业务模块
+'''

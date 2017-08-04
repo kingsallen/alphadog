@@ -2,12 +2,14 @@ package com.moseeker.useraccounts.service.thirdpartyaccount;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.email.Email;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
 import org.joda.time.DateTime;
@@ -20,6 +22,7 @@ import javax.mail.event.TransportEvent;
 import javax.mail.event.TransportListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by zhangdi on 2017/6/16.
@@ -31,6 +34,9 @@ public class ThirdPartyAccountSynctor {
     static Logger logger = LoggerFactory.getLogger(ThirdPartyAccountSynctor.class);
 
     ChaosServices.Iface chaosService = ServiceManager.SERVICEMANAGER.getService(ChaosServices.Iface.class);
+
+    @Autowired
+    HrCompanyDao companyDao;
 
 
     static ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil.getInstance();
@@ -66,18 +72,20 @@ public class ThirdPartyAccountSynctor {
     class ThirdPartyAccountSyncTask implements Runnable {
 
         HrThirdPartyAccountDO hrThirdPartyAccount;
+        Map<String, String> extras;
 
         int syncType; //绑定0,刷新1
 
-        ThirdPartyAccountSyncTask(int syncType, HrThirdPartyAccountDO hrThirdPartyAccount) {
+        ThirdPartyAccountSyncTask(int syncType, HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras) {
             this.syncType = syncType;
             this.hrThirdPartyAccount = hrThirdPartyAccount;
+            this.extras = extras;
         }
 
         @Override
         public void run() {
             try {
-                HrThirdPartyAccountDO result = syncType == 0 ? chaosService.binding(hrThirdPartyAccount) : chaosService.synchronization(hrThirdPartyAccount);
+                HrThirdPartyAccountDO result = syncType == 0 ? chaosService.binding(hrThirdPartyAccount, extras) : chaosService.synchronization(hrThirdPartyAccount, extras);
                 //刷新成功
 
                 //更新到数据库
@@ -85,29 +93,29 @@ public class ThirdPartyAccountSynctor {
                 result.setUpdateTime((new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
                 result.setSyncTime(result.getUpdateTime());
                 logger.info("Chaos回传解析成功:{}:{}", syncType, JSON.toJSONString(hrThirdPartyAccount));
-                updateThirdPartyAccount(result, syncType, null);
+                updateThirdPartyAccount(result, extras, syncType, null);
             } catch (BIZException e) {
                 if (e.getCode() == 1) {
                     //帐号密码错误，将状态改为4
                     hrThirdPartyAccount.setBinding(Short.valueOf("4"));
-                    updateThirdPartyAccount(hrThirdPartyAccount, syncType, e.getMessage());
+                    updateThirdPartyAccount(hrThirdPartyAccount, extras, syncType, e.getMessage());
                 } else {
                     //Chaos那边的其它异常，发送邮件
                     hrThirdPartyAccount.setBinding(Short.valueOf(syncType == 0 ? "6" : "7"));
-                    updateThirdPartyAccount(hrThirdPartyAccount, syncType, "Chaos异常:" + e.getMessage());
+                    updateThirdPartyAccount(hrThirdPartyAccount, extras, syncType, "Chaos异常:" + e.getMessage());
                 }
             } catch (Exception e) {
                 e.printStackTrace();
                 logger.error(e.getMessage(), e);
                 //系统的异常
                 hrThirdPartyAccount.setBinding(Short.valueOf(syncType == 0 ? "6" : "7"));
-                updateThirdPartyAccount(hrThirdPartyAccount, syncType, "系统异常：" + e.getMessage() == null ? "" : e.getMessage());
+                updateThirdPartyAccount(hrThirdPartyAccount, extras, syncType, "系统异常：" + e.getMessage() == null ? "" : e.getMessage());
             }
         }
     }
 
     //发送同步失败的邮件
-    private void sendFailureMail(int syncType, HrThirdPartyAccountDO thirdPartyAccount, String message) {
+    private void sendFailureMail(HrThirdPartyAccountDO thirdPartyAccount, Map<String, String> extras, int syncType, String message) {
         logger.info("发送同步或刷新错误的邮件:syncType{}:thirdPartyAccount:{}:message:{}", syncType, JSON.toJSONString(thirdPartyAccount), message);
 
         if (mails == null || mails.size() == 0) {
@@ -117,24 +125,36 @@ public class ThirdPartyAccountSynctor {
 
         try {
 
-            Email.EmailBuilder emailBuilder = new Email.EmailBuilder(mails);
+            Email.EmailBuilder emailBuilder = new Email.EmailBuilder(mails.subList(0, 1));
 
             ChannelType channelType = ChannelType.instaceFromInteger(thirdPartyAccount.getChannel());
 
             StringBuilder titleBuilder = new StringBuilder();
             titleBuilder.append("【第三方帐号").append(syncType == 0 ? "绑定" : "刷新").append("失败】");
+
+            HrCompanyDO company = companyDao.getCompanyById(thirdPartyAccount.getCompanyId());
+            if (company != null) {
+                titleBuilder.append(":【").append(company.getName()).append("】");
+            }
             titleBuilder.append(":【").append(channelType.getAlias()).append("】");
             titleBuilder.append(":【").append(thirdPartyAccount.getId()).append("】");
 
             String br = "<br/>";
 
             StringBuilder messageBuilder = new StringBuilder();
-
+            if (company != null) {
+                messageBuilder.append("【所属公司】：").append(company.getName()).append(br);
+            }
             messageBuilder.append("【第三方帐号ID】：").append(thirdPartyAccount.getId()).append(br);
             messageBuilder.append("【帐号名】：").append(thirdPartyAccount.getUsername()).append(br);
             if (StringUtils.isNotNullOrEmpty(thirdPartyAccount.getMembername())) {
                 messageBuilder.append("【会员名】：").append(thirdPartyAccount.getMembername()).append(br);
             }
+
+            if (extras != null && StringUtils.isNotNullOrEmpty(extras.get("company"))) {
+                messageBuilder.append("【子公司简称】:").append(extras.get("company")).append(br);
+            }
+
             if (StringUtils.isNotNullOrEmpty(message)) {
                 messageBuilder.append("【失败信息】:").append(br);
                 messageBuilder.append(message).append(br);
@@ -142,35 +162,19 @@ public class ThirdPartyAccountSynctor {
 
             emailBuilder.setSubject(titleBuilder.toString());
             emailBuilder.setContent(messageBuilder.toString());
+            if (mails.size() > 1) {
+                emailBuilder.addCCList(mails.subList(1, mails.size()));
+            }
             Email email = emailBuilder.build();
-            email.send(new TransportListener() {
-                int i = 3;//重试三次邮件
-
+            email.send(3, new Email.EmailListener() {
                 @Override
-                public void messageDelivered(TransportEvent e) {
+                public void success() {
                     logger.info("email send messageDelivered");
                 }
 
                 @Override
-                public void messageNotDelivered(TransportEvent e) {
-                    if (i > 0) {
-                        logger.info("email send messageNotDelivered retry {}", i);
-                        email.send(this);
-                        i--;
-                    } else {
-                        logger.error("发送绑定失败的邮件发生错误：{}", e.getMessage());
-                    }
-                }
-
-                @Override
-                public void messagePartiallyDelivered(TransportEvent e) {
-                    if (i > 0) {
-                        logger.info("email send messagePartiallyDelivered retry {}", i);
-                        email.send(this);
-                        i--;
-                    } else {
-                        logger.error("发送绑定失败的邮件发生错误：{}", e.getMessage());
-                    }
+                public void failed(Exception e) {
+                    logger.error("发送绑定失败的邮件发生错误：{}", e.getMessage());
                 }
             });
         } catch (Exception e) {
@@ -190,8 +194,8 @@ public class ThirdPartyAccountSynctor {
      * @return
      * @throws Exception
      */
-    public HrThirdPartyAccountDO bindThirdPartyAccount(int hrId, HrThirdPartyAccountDO thirdPartyAccount, boolean sync) throws Exception {
-        return sync ? syncWithBindThirdPartyAccount(hrId, thirdPartyAccount) : asyncWithBindThirdPartyAccount(hrId, thirdPartyAccount);
+    public HrThirdPartyAccountDO bindThirdPartyAccount(int hrId, HrThirdPartyAccountDO thirdPartyAccount, Map<String, String> extras, boolean sync) throws Exception {
+        return sync ? syncWithBindThirdPartyAccount(hrId, thirdPartyAccount, extras) : asyncWithBindThirdPartyAccount(hrId, thirdPartyAccount, extras);
     }
 
     /**
@@ -201,7 +205,7 @@ public class ThirdPartyAccountSynctor {
      * @param thirdPartyAccount
      * @return
      */
-    private HrThirdPartyAccountDO asyncWithBindThirdPartyAccount(int hrId, HrThirdPartyAccountDO thirdPartyAccount) throws Exception {
+    private HrThirdPartyAccountDO asyncWithBindThirdPartyAccount(int hrId, HrThirdPartyAccountDO thirdPartyAccount, Map<String, String> extras) throws Exception {
         //先保存信息到数据库,状态为2绑定中
         thirdPartyAccount.setBinding(Short.valueOf("2"));
         if (thirdPartyAccount.getId() > 0) {
@@ -213,7 +217,7 @@ public class ThirdPartyAccountSynctor {
             thirdPartyAccount = hrThirdPartyAccountDao.addThirdPartyAccount(hrId, thirdPartyAccount);
         }
         //开启线程后台取处理第三方账号同步
-        new Thread(new ThirdPartyAccountSyncTask(0, thirdPartyAccount)).start();
+        new Thread(new ThirdPartyAccountSyncTask(0, thirdPartyAccount, extras)).start();
         return thirdPartyAccount;
     }
 
@@ -225,9 +229,9 @@ public class ThirdPartyAccountSynctor {
      * @param thirdPartyAccount
      * @return
      */
-    private HrThirdPartyAccountDO syncWithBindThirdPartyAccount(int hrId, HrThirdPartyAccountDO thirdPartyAccount) throws Exception {
+    private HrThirdPartyAccountDO syncWithBindThirdPartyAccount(int hrId, HrThirdPartyAccountDO thirdPartyAccount, Map<String, String> extras) throws Exception {
         //先绑定
-        HrThirdPartyAccountDO bindResult = chaosService.binding(thirdPartyAccount);
+        HrThirdPartyAccountDO bindResult = chaosService.binding(thirdPartyAccount, extras);
         //绑定成功之后添加到数据库
         if (thirdPartyAccount.getId() > 0) {
             bindResult.setId(thirdPartyAccount.getId());
@@ -246,8 +250,8 @@ public class ThirdPartyAccountSynctor {
      * @return
      * @throws Exception
      */
-    public HrThirdPartyAccountDO syncThirdPartyAccount(HrThirdPartyAccountDO thirdPartyAccount, boolean sync) throws Exception {
-        return sync ? syncWithSyncThirdPartyAccount(thirdPartyAccount) : asyncWithSyncThirdPartyAccount(thirdPartyAccount);
+    public HrThirdPartyAccountDO syncThirdPartyAccount(HrThirdPartyAccountDO thirdPartyAccount, Map<String, String> extras, boolean sync) throws Exception {
+        return sync ? syncWithSyncThirdPartyAccount(thirdPartyAccount, extras) : asyncWithSyncThirdPartyAccount(thirdPartyAccount, extras);
     }
 
     /**
@@ -256,7 +260,7 @@ public class ThirdPartyAccountSynctor {
      * @param hrThirdPartyAccount
      * @return
      */
-    private HrThirdPartyAccountDO asyncWithSyncThirdPartyAccount(HrThirdPartyAccountDO hrThirdPartyAccount) throws Exception {
+    private HrThirdPartyAccountDO asyncWithSyncThirdPartyAccount(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras) throws Exception {
         //先更新数据库的状态为刷新中3
         hrThirdPartyAccount.setBinding(Short.valueOf("3"));
         int updateResult = updateThirdPartyAccount(hrThirdPartyAccount);
@@ -265,7 +269,7 @@ public class ThirdPartyAccountSynctor {
             throw new BIZException(-1, "系统异常,请重试");
         }
 
-        new Thread(new ThirdPartyAccountSyncTask(1, hrThirdPartyAccount)).start();
+        new Thread(new ThirdPartyAccountSyncTask(1, hrThirdPartyAccount, extras)).start();
 
         return hrThirdPartyAccount;
     }
@@ -276,8 +280,8 @@ public class ThirdPartyAccountSynctor {
      * @param hrThirdPartyAccount
      * @return
      */
-    private HrThirdPartyAccountDO syncWithSyncThirdPartyAccount(HrThirdPartyAccountDO hrThirdPartyAccount) throws Exception {
-        HrThirdPartyAccountDO syncResult = chaosService.synchronization(hrThirdPartyAccount);
+    private HrThirdPartyAccountDO syncWithSyncThirdPartyAccount(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras) throws Exception {
+        HrThirdPartyAccountDO syncResult = chaosService.synchronization(hrThirdPartyAccount, extras);
         //更新回数据库
         syncResult.setUpdateTime((new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
         syncResult.setSyncTime(syncResult.getUpdateTime());
@@ -295,7 +299,7 @@ public class ThirdPartyAccountSynctor {
      * @param hrThirdPartyAccount
      * @return
      */
-    private void updateThirdPartyAccount(HrThirdPartyAccountDO hrThirdPartyAccount, int syncType, String emailMsg) {
+    private void updateThirdPartyAccount(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras, int syncType, String emailMsg) {
         int updateResult = updateThirdPartyAccount(hrThirdPartyAccount);
 
         if (updateResult < 1) {
@@ -305,20 +309,20 @@ public class ThirdPartyAccountSynctor {
         if (hrThirdPartyAccount.getBinding() == 1) {
             if (updateResult < 1) {
                 logger.warn("Chaos回传解析成功 更改数据信息失败:{}:更改状态:{}", syncType, updateResult);
-                sendFailureMail(syncType, hrThirdPartyAccount, (syncType == 0 ? "同步" : "刷新") + "数据无法保存到数据库");
+                sendFailureMail(hrThirdPartyAccount, extras, syncType, (syncType == 0 ? "同步" : "刷新") + "数据无法保存到数据库");
             }
         } else if (hrThirdPartyAccount.getBinding() == 4) {
             logger.info("账号密码错误");
             if (updateResult < 1) {
                 //更新失败，发送邮件
-                sendFailureMail(syncType, hrThirdPartyAccount, "密码错误，但无法更新到数据库");
+                sendFailureMail(hrThirdPartyAccount, extras, syncType, "密码错误，但无法更新到数据库");
             }
         } else if (hrThirdPartyAccount.getBinding() == 6 || hrThirdPartyAccount.getBinding() == 7) {
             if (updateResult > 0) {
-                sendFailureMail(syncType, hrThirdPartyAccount, emailMsg);
+                sendFailureMail(hrThirdPartyAccount, extras, syncType, emailMsg);
             } else {
                 //程序错误，并且状态无法更新到数据库
-                sendFailureMail(syncType, hrThirdPartyAccount, emailMsg + ":数据库状态无法更改");
+                sendFailureMail(hrThirdPartyAccount, extras, syncType, emailMsg + ":数据库状态无法更改");
             }
         }
 

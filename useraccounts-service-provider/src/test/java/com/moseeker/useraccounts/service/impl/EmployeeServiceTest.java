@@ -99,8 +99,8 @@ public class EmployeeServiceTest {
     //@Test
     @Transactional
     public void emailActivation() throws Exception {
-        Result result = service.emailActivation("1d6006dbb2296da2");
-        System.out.println(result);
+        //Result result = service.emailActivation("1d6006dbb2296da2");
+        //System.out.println(result);
     }
 
 }

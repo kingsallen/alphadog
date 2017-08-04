@@ -3,7 +3,9 @@ package com.moseeker.baseorm.dao.dictdb;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.dictdb.tables.DictCity;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
+import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.dao.struct.dictdb.CityPojo;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import org.jooq.Condition;
@@ -13,8 +15,7 @@ import org.jooq.SelectWhereStep;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author xxx
@@ -30,6 +31,14 @@ public class DictCityDao extends JooqCrudImpl<DictCityDO, DictCityRecord> {
 
     public DictCityDao(TableImpl<DictCityRecord> table, Class<DictCityDO> dictCityDOClass) {
         super(table, dictCityDOClass);
+    }
+
+    public List<DictCityDO> getCitys(Collection<Integer> cityCodes) {
+        if (cityCodes == null || cityCodes.size() == 0) {
+            return new ArrayList<>();
+        }
+        Query query = new Query.QueryBuilder().where(new com.moseeker.common.util.query.Condition(DictCity.DICT_CITY.CODE.getName(), cityCodes, ValueOp.IN)).buildQuery();
+        return getDatas(query);
     }
 
     public List<CityPojo> getCities(int level) {
@@ -84,72 +93,81 @@ public class DictCityDao extends JooqCrudImpl<DictCityDO, DictCityRecord> {
      * 获取完整的城市级别
      * 例:徐家汇 -> 上海，徐家汇
      *
-     * @param cityDO
+     * @param city
      * @return
      */
-    public List<DictCityDO> getMoseekerCityLevel(DictCityDO cityDO) {
-        List<DictCityDO> cityLevels = new ArrayList<>();
-        if (cityDO == null) {
-            return cityLevels;
+    public List<DictCityDO> getMoseekerLevels(DictCityDO city) {
+
+        if (city == null || city.getCode() == 0) {
+            return new ArrayList<>();
         }
-        //如果给的城市的level为0，那么取它的上一级做为最后一级
-        if (cityDO.getLevel() == 0) {
-            DictCityDO upperLevel = getUpperLevel(cityDO.getCode());
-            return getMoseekerCityLevel(upperLevel);
-        } else if (cityDO.getLevel() == 1) {
-            //如果级别为1，那么直接返回
-            cityLevels.add(cityDO);
-        } else {
-            cityLevels.add(0, cityDO);
-            DictCityDO upperLevel = null;
-            while ((upperLevel = getUpperLevel(cityDO.getCode())) != null) {
-                cityLevels.add(0, upperLevel);
-                if (upperLevel.getLevel() == 1) {
-                    break;
+
+        int divide = 10;
+
+        Set<Integer> allCodes = new HashSet<>();
+        allCodes.add(city.getCode());
+        while (city.getCode() / divide > 0) {
+            allCodes.add((city.getCode() / divide) * divide);
+            divide *= 10;
+        }
+
+        if (allCodes.size() == 0) {
+            List<DictCityDO> fullLevels = new ArrayList<>();
+            fullLevels.add(city);
+            return fullLevels;
+        }
+        Query query = new Query.QueryBuilder()
+                .where(new com.moseeker.common.util.query.Condition(DictCity.DICT_CITY.CODE.getName(), allCodes, ValueOp.IN))
+                .orderBy(DictCity.DICT_CITY.CODE.getName(), Order.ASC)
+                .buildQuery();
+
+        List<DictCityDO> allCities = getDatas(query);
+
+        if (allCities == null || allCities.size() == 0) {
+            return new ArrayList<>();
+        }
+
+        Iterator<DictCityDO> cityDOIterator = allCities.iterator();
+        //5开头的由于重庆市的code不符合规范特殊处理
+        if (allCities.get(allCities.size() - 1).getCode() >= 500000 && allCities.get(allCities.size() - 1).getCode() < 510000) {
+            //去掉不属于重庆的
+            while (cityDOIterator.hasNext()) {
+                DictCityDO cityD = cityDOIterator.next();
+                if (cityD.getCode() >= 510000) {
+                    cityDOIterator.remove();
+                }
+            }
+        } else if (allCities.get(allCities.size() - 1).getCode() >= 510000 && allCities.get(allCities.size() - 1).getCode() < 600000) {
+            //去掉属于重庆的
+            while (cityDOIterator.hasNext()) {
+                DictCityDO cityD = cityDOIterator.next();
+                if (cityD.getCode() < 510000) {
+                    cityDOIterator.remove();
                 }
             }
         }
 
-        return cityLevels;
-    }
-
-
-    /**
-     * 获取更高的级别
-     * 例子:徐家汇->上海
-     *
-     * @return
-     */
-    public DictCityDO getUpperLevel(int code) {
-
-        if (code <= 0) {
-            return null;
+        cityDOIterator = allCities.iterator();
+        allCodes.clear();
+        Set<Byte> uniqLevels = new HashSet<>();
+        while (cityDOIterator.hasNext()) {
+            DictCityDO cityD = cityDOIterator.next();
+            if (cityD.getLevel() == 0) {
+                cityDOIterator.remove();
+            } else if (uniqLevels.contains(cityD.getLevel())) {
+                cityDOIterator.remove();
+            } else {
+                uniqLevels.add(cityD.getLevel());
+            }
         }
 
-        int newLevelCode;
-
-        int divide = 10;
-
-        while ((newLevelCode = (code / divide) * divide) == code) {
-            divide *= 10;
-        }
-
-        Query query = new Query.QueryBuilder().where("code", newLevelCode).buildQuery();
-
-        DictCityDO upperLevel = getData(query);
-
-        //找不到父级或者父级的level=0那么继续向上找
-        if (upperLevel == null || upperLevel.getLevel() == 0) {
-            return getUpperLevel(newLevelCode);
-        }
-
-        return upperLevel;
+        return allCities;
     }
 
     public List<List<DictCityDO>> getFullCity(List<DictCityDO> citys) {
         List<List<DictCityDO>> fullCitys = new ArrayList<>();
         for (DictCityDO city : citys) {
-            fullCitys.add(getMoseekerCityLevel(city));
+            fullCitys.add(getMoseekerLevels(city));
         }
 
         return fullCitys;

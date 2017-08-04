@@ -8,9 +8,12 @@ import com.intellij.database.util.DasUtil
  * 根据table自动生成thrift的struct文件
  */
 
-packageName = "java com.moseeker.thrift.gen.dao.struct"
+javaPackageName = "java com.moseeker.thrift.gen.dao.struct"
+pyPackageName = "py thrift_gen.gen.dao.struct"
 typeMapping = [
-        (~/tinyint/)                   : "i8",
+        (~/tinyint/)                      : "i8",
+        (~/smallint/)                     : "i16",
+        (~/bigint/)                       : "i64",
         (~/(?i)int/)                      : "i32",
         (~/(?i)float|double|decimal|real/): "double",
         (~/(?i)datetime|timestamp/)       : "string",
@@ -19,6 +22,14 @@ typeMapping = [
         (~/(?i)/)                         : "string"
 ]
 
+colNameMapping = ["required" : "needed",
+                  "alias"    : "allonym",
+                  "module" : "component",
+                  "default" : "defMsg",
+                  "start" : "startTime",
+                  "end" : "endTime",
+                  "map" : "mapping"]
+
 FILES.chooseDirectoryAndSave("Choose directory", "Choose where to store generated files") { dir ->
     SELECTION.filter { it instanceof DasTable && it.getKind() == ObjectKind.TABLE }.each { generate(it, dir) }
 }
@@ -26,10 +37,15 @@ FILES.chooseDirectoryAndSave("Choose directory", "Choose where to store generate
 def generate(table, dir) {
     def className = javaName(table.getName(), true)
     def fields = calcFields(table)
-    def strFile = new File(dir, table.getDbParent().getName() + "_struct.thrift")
-    def print = new PrintWriter(new FileWriter(strFile, true))
+    def dirPath = new File(dir.getPath() + "/"+ table.getDbParent().getName())
+    if(!dirPath.isDirectory()){
+        dirPath.mkdir()
+    }
+    def strFile = new File(dirPath, table.getName() + "_struct.thrift")
+    def print = new PrintWriter(new FileWriter(strFile))
     if(strFile.length() == 0) {
-        print.println "namespace $packageName"
+        print.println "namespace $javaPackageName" + ".${table.getDbParent().getName()}"
+        print.println "namespace $pyPackageName" + ".${table.getDbParent().getName()}"
     }
     print.withPrintWriter { out -> generate(out, className, fields) }
 }
@@ -40,7 +56,8 @@ def generate(out, className, fields) {
     out.println "struct ${className}DO {"
     out.println ""
     fields.eachWithIndex { item, index ->
-        out.print "\t${index+1}: optional ${item.type} ${item.name}"
+        out.print "\t${index+1}: optional ${item.type} "
+        out.print colNameMapping.containsKey(item.name) ? colNameMapping[item.name] : item.name
         out.print index == fields.size - 1 ? "" : ","
         out.println "\t//${item.comment}"
     }
@@ -53,7 +70,7 @@ def calcFields(table) {
         def spec = Case.LOWER.apply(col.getDataType().getSpecification())
         def typeStr = typeMapping.find { p, t -> p.matcher(spec).find() }.value
         fields += [[
-                           name : col.getName(),
+                           name : javaName(col.getName(), false),
                            type : typeStr,
                            comment : col.getComment()
                    ]]
