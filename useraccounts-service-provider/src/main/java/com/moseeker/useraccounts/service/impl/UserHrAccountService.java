@@ -1058,17 +1058,7 @@ public class UserHrAccountService {
                 queryBuilder.setPageSize(pageSize);
             }
         }
-        // 员工列表，不需要取排行榜
-        if (StringUtils.isNullOrEmpty(timespan)) {
-            userEmployeeVOPageVO.setData(employeeList(queryBuilder, 0, companyIds, null));
-        }
-        // 员工列表，从ES中获取积分月，季，年榜单数据
-        Response response = null;
-        try {
-            response = searchengineServices.queryAwardRanking(companyIds, timespan, pageSize, pageNumber);
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-        }
+
         // 不管ES中有没有数据，员工的分页数据用于一样
         if (pageSize > 0) {
             userEmployeeVOPageVO.setPageSize(pageSize);
@@ -1077,12 +1067,25 @@ public class UserHrAccountService {
             userEmployeeVOPageVO.setPageNumber(pageNumber);
         }
         userEmployeeVOPageVO.setTotalRow(counts);
+        // 员工列表，不需要取排行榜
+        if (StringUtils.isNullOrEmpty(timespan)) {
+            logger.info("timespan:{}", timespan);
+            userEmployeeVOPageVO.setData(employeeList(queryBuilder, 0, companyIds, null));
+            return userEmployeeVOPageVO;
+        }
+        // 员工列表，从ES中获取积分月，季，年榜单数据
+        Response response = null;
+        try {
+            response = searchengineServices.queryAwardRanking(companyIds, timespan, pageSize, pageNumber);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
         // ES取到数据
         if (response != null && response.getStatus() == 0) {
             EmployeeRankObj rankObj = JSONObject.parseObject(response.getData(), EmployeeRankObj.class);
             List<EmployeeRank> employeeRankList = rankObj.getData();
             if (employeeRankList != null && employeeRankList.size() > 0) {
-                logger.info("ES Data Size:", employeeRankList.size());
+                logger.info("ES Data Size:{}", employeeRankList.size());
                 // 封装查询条件
                 LinkedHashMap<Integer, Integer> employeeMap = new LinkedHashMap();
                 List<Integer> employeeIds = new ArrayList<>();
