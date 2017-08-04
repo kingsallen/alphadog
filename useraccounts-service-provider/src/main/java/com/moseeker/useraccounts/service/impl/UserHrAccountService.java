@@ -1191,7 +1191,7 @@ public class UserHrAccountService {
      */
     @Transactional
     public Response employeeImport(Integer companyId, Map<Integer, UserEmployeeDO> userEmployeeMap, String filePath, String
-            fileName, Integer type, Integer hraccountId) throws Exception {
+            fileName, Integer type, Integer hraccountId) throws CommonException {
         Response response = new Response();
         logger.info("开始导入员工信息");
         // 判断是否有重复数据
@@ -1274,7 +1274,7 @@ public class UserHrAccountService {
      * @return
      */
 
-    public ImportUserEmployeeStatistic checkBatchInsert(Map<Integer, UserEmployeeDO> userEmployeeMap, Integer companyId) throws Exception {
+    public ImportUserEmployeeStatistic checkBatchInsert(Map<Integer, UserEmployeeDO> userEmployeeMap, Integer companyId) throws CommonException {
         return repetitionFilter(userEmployeeMap, companyId);
     }
 
@@ -1284,7 +1284,7 @@ public class UserHrAccountService {
      * @param userEmployeeMap
      * @param companyId
      */
-    public ImportUserEmployeeStatistic repetitionFilter(Map<Integer, UserEmployeeDO> userEmployeeMap, Integer companyId) throws Exception {
+    public ImportUserEmployeeStatistic repetitionFilter(Map<Integer, UserEmployeeDO> userEmployeeMap, Integer companyId) throws CommonException {
         if (companyId == 0) {
             throw UserAccountException.COMPANYID_ENPTY;
         }
