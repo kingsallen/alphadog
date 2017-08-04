@@ -38,6 +38,7 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.*;
 import com.moseeker.thrift.gen.employee.struct.RewardVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
+import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,7 +98,8 @@ public class EmployeeEntity {
     private HrPointsConfDao hrPointsConfDao;
 
     @Resource(name = "cacheClient")
-    private RedisClient redisClient;
+    protected RedisClient client;
+
 
 
     private static final Logger logger = LoggerFactory.getLogger(EmployeeEntity.class);
@@ -156,6 +158,10 @@ public class EmployeeEntity {
                     ueprcrDo.setCompanyId(companyId);
                     ueprcrDo.setEmployeePointsRecordId(ueprDo.getId());
                     ueprcrDao.addData(ueprcrDo);
+                    // 更新ES中的user_employee数据，以便积分排行实时更新
+                    JSONObject jobj = new JSONObject();
+                    jobj.put("employee_id", Arrays.asList(employeeId));
+                    client.lpush(Constant.APPID_ALPHADOG,"ES_REALTIME_UPDATE_INDEX_AWARD_RANKING", jobj.toJSONString());
                     return userEmployeeDO.getAward();
                 } else {
                     logger.error("增加用户积分失败：为用户{},添加积分{}点, reason:{}", employeeId, ueprDo.getAward(), ueprDo.getReason());
@@ -385,6 +391,10 @@ public class EmployeeEntity {
             });
             int[] rows = employeeDao.updateDatas(employees);
             if (Arrays.stream(rows).sum() > 0) {
+                // 更新ES中useremployee信息
+                JSONObject jobj = new JSONObject();
+                jobj.put("employee_id", employees.stream().map(m -> m.getId()).collect(Collectors.toList()));
+                client.lpush(Constant.APPID_ALPHADOG,"ES_REALTIME_UPDATE_INDEX_AWARD_RANKING", jobj.toJSONString());
                 return true;
             } else {
                 throw ExceptionFactory.buildException(ExceptionCategory.EMPLOYEE_IS_UNBIND);
@@ -409,6 +419,10 @@ public class EmployeeEntity {
             // 受影响行数大于零，说明删除成功， 将数据copy到history_user_employee中
             if (Arrays.stream(rows).sum() > 0) {
                 historyUserEmployeeDao.addAllData(userEmployeeDOList);
+                // 更新ES中useremployee信息
+                JSONObject jobj = new JSONObject();
+                jobj.put("employee_id", employeeIds);
+                client.lpush(Constant.APPID_ALPHADOG,"ES_REALTIME_UPDATE_INDEX_AWARD_RANKING", jobj.toJSONString());
                 return true;
             } else {
                 throw ExceptionFactory.buildException(ExceptionCategory.EMPLOYEE_HASBEENDELETEOR);
@@ -594,7 +608,7 @@ public class EmployeeEntity {
 
             JSONObject jobj = new JSONObject();
             jobj.put("employee_id", employeeDOS.stream().map(m -> m.getId()).collect(Collectors.toList()));
-            redisClient.lpush(Constant.APPID_ALPHADOG,"ES_REALTIME_UPDATE_INDEX_AWARD_RANKING", jobj.toJSONString());
+            client.lpush(Constant.APPID_ALPHADOG,"ES_REALTIME_UPDATE_INDEX_AWARD_RANKING", jobj.toJSONString());
 
             return employeeDOS;
         } else {
@@ -616,8 +630,8 @@ public class EmployeeEntity {
         UserEmployeeDO employeeDO = employeeDao.addData(userEmployee);
 
         JSONObject jobj = new JSONObject();
-        jobj.put("employee_id", employeeDO.getId());
-        redisClient.lpush(Constant.APPID_ALPHADOG,"ES_REALTIME_UPDATE_INDEX_AWARD_RANKING", jobj.toJSONString());
+        jobj.put("employee_id", Arrays.asList(employeeDO.getId()));
+        client.lpush(Constant.APPID_ALPHADOG,"ES_REALTIME_UPDATE_INDEX_AWARD_RANKING", jobj.toJSONString());
 
         return employeeDO;
     }
