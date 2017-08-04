@@ -2,28 +2,20 @@ package com.moseeker.baseorm.dao.userdb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
-import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.util.BeanUtils;
-import com.moseeker.common.util.query.Condition;
-import com.moseeker.common.util.query.Query;
-import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
-import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
-import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 import org.jooq.Record;
-import org.jooq.Record1;
 import org.jooq.Result;
 import org.jooq.SelectJoinStep;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.jooq.impl.DSL.count;
-import static org.jooq.impl.DSL.sum;
 
 @Repository
 public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRecord> {
@@ -75,205 +67,6 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
             }
         }
         return 0;
-    }
-
-
-    /**
-     * 为每条UserEmployeeStruct生成唯一的值，该值用来判定这条数据是否插入更新或者不处理
-     *
-     * @param employeeStructs
-     * @return
-     */
-    private void getUniqueFlagsAndStatus(List<UserEmployeeStruct> employeeStructs, List<String> uniqueFlags, int[] dataStatus) {
-
-        String flag;
-        int index = 0;
-        for (UserEmployeeStruct struct : employeeStructs) {
-            if (struct.isSetCompany_id() && struct.isSetCustom_field()) {
-                if (struct.getCustom_field() == null) {
-                    struct.setCustom_field("");
-                }
-                flag = struct.getCompany_id() + "_custom_field_" + struct.getCustom_field().trim();
-                if (uniqueFlags.contains(flag)) {
-                    dataStatus[index] = 0;//重复的数据
-                } else {
-                    dataStatus[index] = 1;
-                }
-                uniqueFlags.add(flag);
-            } else if (struct.isSetCompany_id() && struct.isSetCname()) {
-                if (struct.getCname() == null) {
-                    struct.setCname("");
-                }
-                flag = struct.getCompany_id() + "_cname_" + struct.getCname().trim();
-                if (uniqueFlags.contains(flag)) {
-                    dataStatus[index] = 0;//重复的数据
-                } else {
-                    dataStatus[index] = 1;
-                }
-                uniqueFlags.add(flag);
-            } else {
-                //无效
-                dataStatus[index] = 0;
-            }
-            index++;
-        }
-    }
-
-    /**
-     * 批量更新插入或删除
-     *
-     * @param batchForm
-     * @return
-     * @throws Exception
-     */
-    public int[] postPutUserEmployeeBatch(UserEmployeeBatchForm batchForm) throws Exception {
-
-
-        if (batchForm.getData() == null || batchForm.getData().size() == 0) {
-            return new int[0];
-        }
-
-        logger.info("postPutUserEmployeeBatch {},总数据:{}条", batchForm.getCompany_id(), batchForm.getData().size());
-
-        Query.QueryBuilder builder = null;
-
-        //这批数据的特征值集合
-        List<String> uniqueFlags = new ArrayList<>();
-
-        int[] dataStatus = new int[batchForm.getData().size()];//对应的数据的操作类型1，插入，2：更新，0：无效的数据
-
-        getUniqueFlagsAndStatus(batchForm.getData(), uniqueFlags, dataStatus);
-
-        logger.info("postPutUserEmployeeBatch {},有效的数据:{}条", batchForm.getCompany_id(), uniqueFlags.size());
-
-        Set<Integer> delIds = new HashSet<>();
-        int page = 1;
-        int pageSize = 1000;
-
-        List<UserEmployeeRecord> records;
-
-        //每次取出1000条检查，把不在userEmployees里面的数据的id记录到delIds
-        while (true) {
-            logger.info("postPutUserEmployeeBatch {},检查数据:page:{}", batchForm.getCompany_id(), page);
-            builder = new Query.QueryBuilder();
-            builder.where("company_id", batchForm.getCompany_id());
-            builder.setPageSize(pageSize);
-            builder.setPageNum(page);
-            records = getRecords(builder.buildQuery());
-
-            //取完了
-            if (records == null || records.size() == 0) {
-                break;
-            }
-            int index;
-            String flag1, flag2;
-            //开始检查
-            for (UserEmployeeRecord record : records) {
-                if (record.getCustomField() == null) record.setCustomField("");
-                if (record.getCname() == null) record.setCname("");
-                flag1 = record.getCompanyId() + "_custom_field_" + record.getCustomField().trim();
-                if (uniqueFlags.contains(flag1)) {
-                    //这条数据需要更新
-                    index = uniqueFlags.indexOf(flag1);
-                    dataStatus[index] = 2;
-                    batchForm.getData().get(index).setId(record.getId());
-                } else {
-                    flag2 = record.getCompanyId() + "_cname_" + record.getCname().trim();
-                    if (uniqueFlags.contains(flag2)) {
-                        //这条数据需要更新
-                        index = uniqueFlags.indexOf(flag2);
-                        dataStatus[index] = 2;
-                        batchForm.getData().get(index).setId(record.getId());
-                    } else {
-                        //这条数据需要删除
-                        delIds.add(record.getId());
-                    }
-                }
-            }
-
-            //取完了
-            if (records.size() != pageSize) {
-                break;
-            }
-
-            //继续取下1000条记录检查
-            page++;
-
-        }
-
-        logger.info("postPutUserEmployeeBatch {},不在集合中的数据:{}条", batchForm.getCompany_id(), delIds.size());
-
-        if (batchForm.isDel_not_include() && delIds.size() > 0) {
-            logger.info("postPutUserEmployeeBatch {},删除数据:{}条", batchForm.getCompany_id(), delIds.size());
-            //把不在userEmployees中的数据从数据库中删除
-            int batchDeleteSize = 500;
-            Iterator<Integer> delIterator = delIds.iterator();
-            List<Integer> delBatch = new ArrayList<>();
-
-            //数据太多一次最多删除500个
-            while (delIterator.hasNext()) {
-                delBatch.add(delIterator.next());
-                delIterator.remove();
-                if (delBatch.size() >= 500) {
-                    Condition condition = new Condition("id", delBatch, ValueOp.IN);
-                    delete(condition);
-                    delBatch.clear();
-                }
-            }
-
-            if (delBatch.size() > 0) {
-                Condition condition = new Condition("id", delBatch, ValueOp.IN);
-                delete(condition);
-                delBatch.clear();
-            }
-        }
-
-        //要更新的数据
-        List<UserEmployeeStruct> updateDatas = new ArrayList<>();
-
-        //要添加的数据
-        List<UserEmployeeStruct> addDatas = new ArrayList<>();
-
-        for (int i = 0; i < dataStatus.length; i++) {
-            if (dataStatus[i] == 1) {
-                addDatas.add(batchForm.getData().get(i));
-            } else if (dataStatus[i] == 2) {
-                updateDatas.add(batchForm.getData().get(i));
-            }
-        }
-
-        logger.info("postPutUserEmployeeBatch {},需要添加的数据:{}条", batchForm.getCompany_id(), addDatas.size());
-        logger.info("postPutUserEmployeeBatch {},需要更新的数据:{}条", batchForm.getCompany_id(), updateDatas.size());
-
-        int batchSize = 500;
-
-        if (addDatas.size() > 0) {
-            //每次最多一次插入100条
-            int start = 0;
-            while ((start + batchSize) < addDatas.size()) {
-                addAllRecord(BeanUtils.structToDB(addDatas.subList(start, start + batchSize), UserEmployeeRecord.class));
-                start += batchSize;
-                logger.info("postPutUserEmployeeBatch {},批量插入数据{}条,剩余{}条", batchForm.getCompany_id(), batchSize, addDatas.size() - start);
-            }
-            addAllRecord(BeanUtils.structToDB(addDatas.subList(start, addDatas.size()), UserEmployeeRecord.class));
-            logger.info("postPutUserEmployeeBatch {},批量插入数据{}条,剩余{}条", batchForm.getCompany_id(), addDatas.size() - start, 0);
-        }
-
-        if (updateDatas.size() > 0) {
-            //每次最多一次更新100条
-            int start = 0;
-            while ((start + batchSize) < updateDatas.size()) {
-                updateRecords(BeanUtils.structToDB(updateDatas.subList(start, start + batchSize), UserEmployeeRecord.class));
-                start += batchSize;
-                logger.info("postPutUserEmployeeBatch {},批量更新数据{}条,剩余{}条", batchForm.getCompany_id(), batchSize, updateDatas.size() - start);
-            }
-            updateRecords(BeanUtils.structToDB(updateDatas.subList(start, updateDatas.size()), UserEmployeeRecord.class));
-            logger.info("postPutUserEmployeeBatch {},批量更新数据{}条,剩余{}条", batchForm.getCompany_id(), updateDatas.size() - start, 0);
-        }
-
-        logger.info("postPutUserEmployeeBatch {},result:{},", batchForm.getCompany_id(), dataStatus.length < 500?Arrays.toString(dataStatus):("成功处理"+dataStatus.length+"条"));
-
-        return dataStatus;
     }
 
 //    public int updateUserEmployeePoint(int id) {
