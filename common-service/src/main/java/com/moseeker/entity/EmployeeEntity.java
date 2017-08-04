@@ -38,7 +38,9 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.*;
 import com.moseeker.thrift.gen.employee.struct.RewardVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
+
 import javax.annotation.Resource;
+
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +49,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -101,7 +104,6 @@ public class EmployeeEntity {
     protected RedisClient client;
 
 
-
     private static final Logger logger = LoggerFactory.getLogger(EmployeeEntity.class);
 
     /**
@@ -142,9 +144,9 @@ public class EmployeeEntity {
         UserEmployeeDO userEmployeeDO = employeeDao.getData(query.buildQuery());
         if (userEmployeeDO != null && userEmployeeDO.getId() > 0 && ueprDo != null) {
             // 修改用户总积分, 产品说 积分不能扣成负数 所以为负数 填为 0
-            if ((userEmployeeDO.getAward() + ueprDo.getAward()) >= 0 ){
+            if ((userEmployeeDO.getAward() + ueprDo.getAward()) >= 0) {
                 userEmployeeDO.setAward(userEmployeeDO.getAward() + ueprDo.getAward());
-            } else  {
+            } else {
                 userEmployeeDO.setAward(0);
             }
             int row = employeeDao.updateData(userEmployeeDO);
@@ -161,7 +163,7 @@ public class EmployeeEntity {
                     // 更新ES中的user_employee数据，以便积分排行实时更新
                     JSONObject jobj = new JSONObject();
                     jobj.put("employee_id", Arrays.asList(employeeId));
-                    client.lpush(Constant.APPID_ALPHADOG,"ES_REALTIME_UPDATE_INDEX_AWARD_RANKING", jobj.toJSONString());
+                    client.lpush(Constant.APPID_ALPHADOG, "ES_REALTIME_UPDATE_INDEX_AWARD_RANKING", jobj.toJSONString());
                     return userEmployeeDO.getAward();
                 } else {
                     logger.error("增加用户积分失败：为用户{},添加积分{}点, reason:{}", employeeId, ueprDo.getAward(), ueprDo.getReason());
@@ -305,7 +307,7 @@ public class EmployeeEntity {
                 // 职位ID
                 reward.setPositionId(new Double(point.getPositionId()).intValue());
                 HrPointsConfDO hrPointsConfDO = hrPointsConfMap.get(point.getAwardConfigId());
-                if (!StringUtils.isEmptyObject(hrPointsConfDO)) {
+                if (hrPointsConfDO != null) {
                     reward.setType(hrPointsConfDO.getTemplateId());
                 } else {
                     String reason = reward.getReason();
@@ -338,16 +340,21 @@ public class EmployeeEntity {
                     }
                 }
                 JobPositionDO jobPositionDO = positionMap.get(reward.getPositionId());
-                if (!StringUtils.isEmptyObject(jobPositionDO)) {
+                if (jobPositionDO != null) {
                     // 职位名称
                     reward.setPositionName(jobPositionDO.getTitle());
                     // 发布职位的hrID
                     reward.setPublisherId(jobPositionDO.getPublisher());
                     // 发布职位的HR姓名
-                    reward.setPublisherName(userHrAccountDOMap.get(reward.getPublisherId()).getUsername());
+                    UserHrAccountDO userHrAccountDO = userHrAccountDOMap.get(reward.getPublisherId());
+                    if (userHrAccountDO != null) {
+                        reward.setPublisherName(userHrAccountDOMap.get(reward.getPublisherId()).getUsername());
+                    } else {
+                        reward.setPublisherName("");
+                    }
                 }
                 UserEmployeeDO userEmployeeDO = userEmployeeDOMap.get(point.getBerecomUserId());
-                if (!StringUtils.isEmptyObject(userEmployeeDO)) {
+                if (userEmployeeDO != null) {
                     reward.setEmployeId(userEmployeeDO.getId());
                     reward.setEmployeName(userEmployeeDO.getCname());
                 } else {
@@ -394,7 +401,7 @@ public class EmployeeEntity {
                 // 更新ES中useremployee信息
                 JSONObject jobj = new JSONObject();
                 jobj.put("employee_id", employees.stream().map(m -> m.getId()).collect(Collectors.toList()));
-                client.lpush(Constant.APPID_ALPHADOG,"ES_REALTIME_UPDATE_INDEX_AWARD_RANKING", jobj.toJSONString());
+                client.lpush(Constant.APPID_ALPHADOG, "ES_REALTIME_UPDATE_INDEX_AWARD_RANKING", jobj.toJSONString());
                 return true;
             } else {
                 throw ExceptionFactory.buildException(ExceptionCategory.EMPLOYEE_IS_UNBIND);
@@ -422,7 +429,7 @@ public class EmployeeEntity {
                 // 更新ES中useremployee信息
                 JSONObject jobj = new JSONObject();
                 jobj.put("employee_id", employeeIds);
-                client.lpush(Constant.APPID_ALPHADOG,"ES_REALTIME_UPDATE_INDEX_AWARD_RANKING", jobj.toJSONString());
+                client.lpush(Constant.APPID_ALPHADOG, "ES_REALTIME_UPDATE_INDEX_AWARD_RANKING", jobj.toJSONString());
                 return true;
             } else {
                 throw ExceptionFactory.buildException(ExceptionCategory.EMPLOYEE_HASBEENDELETEOR);
@@ -598,6 +605,7 @@ public class EmployeeEntity {
     /**
      * 添加员工记录集合。
      * 会向员工记录中添加数据的同时，往ES员工索引维护队列中增加新增员工记录的任务。
+     *
      * @param userEmployeeList 员工记录集合
      * @return 添加好的员工记录。如果参数是空，那么返回值是null
      * @throws CommonException
@@ -608,7 +616,7 @@ public class EmployeeEntity {
 
             JSONObject jobj = new JSONObject();
             jobj.put("employee_id", employeeDOS.stream().map(m -> m.getId()).collect(Collectors.toList()));
-            client.lpush(Constant.APPID_ALPHADOG,"ES_REALTIME_UPDATE_INDEX_AWARD_RANKING", jobj.toJSONString());
+            client.lpush(Constant.APPID_ALPHADOG, "ES_REALTIME_UPDATE_INDEX_AWARD_RANKING", jobj.toJSONString());
 
             return employeeDOS;
         } else {
@@ -619,6 +627,7 @@ public class EmployeeEntity {
     /**
      * 添加员工记录或者员工数据
      * 会向员工记录中添加数据的同时，往ES员工索引维护队列中增加新增员工记录的任务。
+     *
      * @param userEmployee
      * @return
      * @throws CommonException
@@ -631,7 +640,7 @@ public class EmployeeEntity {
 
         JSONObject jobj = new JSONObject();
         jobj.put("employee_id", Arrays.asList(employeeDO.getId()));
-        client.lpush(Constant.APPID_ALPHADOG,"ES_REALTIME_UPDATE_INDEX_AWARD_RANKING", jobj.toJSONString());
+        client.lpush(Constant.APPID_ALPHADOG, "ES_REALTIME_UPDATE_INDEX_AWARD_RANKING", jobj.toJSONString());
 
         return employeeDO;
     }
