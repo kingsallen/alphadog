@@ -20,7 +20,13 @@ public class EsTest {
 
     @Test
     public void serachTest() throws TException {
-        Response response = service.queryAwardRanking(Arrays.asList(39978), "2017",0, 0);
+        Response response = service.queryAwardRanking(Arrays.asList(), "2017-04",0, 0);
+        System.out.println(response);
+    }
+
+    @Test
+    public void searchInWxTest() throws TException {
+        Response response = service.queryAwardRankingInWx(Arrays.asList(39978), "2017-04", 0);
         System.out.println(response);
     }
 }

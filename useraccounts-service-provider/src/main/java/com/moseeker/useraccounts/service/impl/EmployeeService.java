@@ -1,11 +1,15 @@
 package com.moseeker.useraccounts.service.impl;
 
-import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.moseeker.baseorm.dao.hrdb.*;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
+import com.moseeker.baseorm.dao.hrdb.HrEmployeeCertConfDao;
+import com.moseeker.baseorm.dao.hrdb.HrEmployeeCustomFieldsDao;
+import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
+import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
@@ -18,7 +22,9 @@ import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.UserWxEntity;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.struct.hrdb.*;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCustomFieldsDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.employee.struct.*;
 import com.moseeker.thrift.gen.mq.service.MqService;
@@ -26,17 +32,18 @@ import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.moseeker.useraccounts.exception.ExceptionCategory;
 import com.moseeker.useraccounts.exception.ExceptionFactory;
 import com.moseeker.useraccounts.service.EmployeeBinder;
-
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author ltf 员工服务业务实现 2017年3月3日
@@ -82,6 +89,12 @@ public class EmployeeService {
 
     @Autowired
     private CompanyConfigEntity companyConfigEntity;
+
+    @Autowired
+    private UserWxUserDao wxUserDao;
+
+    @Autowired
+    private HrWxWechatDao wxWechatDao;
 
     public EmployeeResponse getEmployee(int userId, int companyId) throws TException {
         log.info("getEmployee param: userId={} , companyId={}", userId, companyId);
@@ -308,22 +321,42 @@ public class EmployeeService {
         return response;
     }
 
-    public List<EmployeeAward> awardRanking(int employeeId, int companyId, Timespan timespan) {
+    public List<EmployeeAward> awardRanking(int employeeId, int companyId, String timespan) {
         List<EmployeeAward> response = new ArrayList<>();
         Query.QueryBuilder query = new Query.QueryBuilder();
-        query.where("id", employeeId).and("company_id", companyId);
+        query.where("id", employeeId);
         UserEmployeeDO employeeDO = employeeDao.getData(query.buildQuery());
         // 判断员工是否已认证
         if (employeeDO == null || employeeDO.getId() == 0 || employeeDO.getActivation() != 0) {
             log.info("员工信息不存在或未认证，employeeInfo = {}", employeeDO);
             return response;
         }
-        List<UserEmployeeDO> employeeDOList = employeeEntity.getVerifiedUserEmployeeDOList(companyId);
-        Map<Integer, UserEmployeeDO> employeeDOMap = employeeDOList.stream().collect(Collectors.toMap(k -> k.getId(), v -> v, (ok, nk) -> nk));
+        List<Integer> companyIds = employeeEntity.getCompanyIds(companyId);
         try {
-            Response result = searchService.queryAwardRanking(employeeDOMap.keySet().stream().collect(Collectors.toList()), "", 0, 0);
+            Response result = searchService.queryAwardRankingInWx(companyIds, timespan, employeeId);
             if (result.getStatus() == 0){
                // 解析数据
+               Map<Integer, String> map = JSON.parseObject(result.getData(), Map.class);
+               query.clear();
+               query.where(new Condition("id", map.keySet(), ValueOp.IN));
+               Map<Integer, UserEmployeeDO> employeeDOMap = employeeDao.getDatas(query.buildQuery()).stream().collect(Collectors.toMap(k -> k.getId(), v -> v));
+               List<Integer> userIds = employeeDOMap.values().stream().map(m -> m.getSysuserId()).collect(Collectors.toList());
+               query.clear();
+               query.where(new Condition("company_id", employeeEntity.getCompanyIds(companyId), ValueOp.IN));
+               List<Integer> wechatIds = wxWechatDao.getDatas(query.buildQuery()).stream().map(m -> m.getId()).collect(Collectors.toList());
+               query.clear();
+               query.where(new Condition("user_id", userIds, ValueOp.IN));
+               query.where(new Condition("wechat_id", wechatIds, ValueOp.IN));
+               Map<Integer, String> userWxUserMap = wxUserDao.getDatas(query.buildQuery()).stream().collect(Collectors.toMap(k -> k.getSysuserId(), v -> v.getHeadimgurl()));
+               map.entrySet().stream().forEach(e -> {
+                   EmployeeAward employeeAward = new EmployeeAward();
+                   JSONObject value = JSONObject.parseObject(e.getValue());
+                   employeeAward.setEmployeeId(e.getKey());
+                   employeeAward.setAwardTotal(value.getInteger("award"));
+                   employeeAward.setName(employeeDOMap.get(e.getKey()).getCname());
+                   employeeAward.setHeadimgurl(userWxUserMap.get(employeeDOMap.get(e.getKey()).getSysuserId()));
+                   employeeAward.setRanking(value.getIntValue("ranking"));
+               });
             } else {
                 log.error("query awardRanking data error");
             }

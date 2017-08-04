@@ -321,7 +321,7 @@ public class SearchengineService {
         searchUtil.handleTerms(Arrays.toString(companyIds.toArray()).replaceAll("\\[|\\]| ", ""), query, "company_id");
         searchUtil.handleTerms(timespan, query, "awards." + timespan + ".timespan");
         if (activation != null) {
-            searchUtil.handleTerms(activation, query, "activtion");
+            searchUtil.handleTerms(activation, query, "activation");
         }
 
         SearchRequestBuilder searchRequestBuilder = searchUtil.getEsClient().prepareSearch("awards").setQuery(query)
@@ -353,34 +353,36 @@ public class SearchengineService {
 
     public Response queryAwardRankingInWx(List<Integer> companyIds, String timespan, Integer employeeId) {
         // 查找所有员工的积分排行
-        SearchResponse response = getSearchRequestBuilder(companyIds, "0", 0, 0, timespan).execute().actionGet();
+        SearchResponse response =  getSearchRequestBuilder(companyIds, "0", 0, 0, timespan).setSize(1000).execute().actionGet();
         // 保证插入有序，使用linkedhashMap
         Map<Integer, Object> data = new LinkedHashMap<>();
         int index = 1;
         for (SearchHit searchHit : response.getHits().getHits()) {
             JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
-            JSONObject obj = JSON.parseObject("{}");
-            obj.put("employee_id", jsonObject.getIntValue("employee_id"));
-            obj.put("ranking", index);
-            obj.put("last_update_time", jsonObject.getString("last_update_time"));
-            obj.put("award", jsonObject.getString("award"));
-            data.put(jsonObject.getIntValue("employee_id"), obj);
-            index++;
+            if(jsonObject.getJSONObject("awards").getJSONObject(timespan).getIntValue("award") > 0) {
+                JSONObject obj = JSON.parseObject("{}");
+                obj.put("employee_id", jsonObject.getIntValue("employee_id"));
+                obj.put("ranking", index);
+                obj.put("last_update_time", jsonObject.getJSONObject("awards").getJSONObject(timespan).getString("last_update_time"));
+                obj.put("award", jsonObject.getJSONObject("awards").getJSONObject(timespan).getString("award"));
+                data.put(jsonObject.getIntValue("employee_id"), obj);
+                index++;
+            }
         }
         // 当前用户在 >= 22 名，显示返回前22条，小于22条返回前20+用户前一名+用户排名+用户后一名，未上榜返回前20条
         List<Object> allRankingList = new ArrayList<>(data.values());
         List<Object> resultList = new ArrayList<>(23);
         if (!data.isEmpty() && data.containsKey(employeeId)) {
             int ranking = allRankingList.indexOf(data.get(employeeId)) + 1;
-            if (ranking <= 22) {
-                resultList = allRankingList.subList(0, 22);
+            if(ranking <= 22) {
+                resultList = allRankingList.subList(0, allRankingList.size() >= 22 ? 22 : allRankingList.size());
             } else {
                 resultList = allRankingList.subList(0, 20);
                 resultList.addAll(allRankingList.subList(ranking - 2, ranking));
             }
         } else {
             // 查询前20条
-            resultList = allRankingList.subList(0, 20);
+            resultList = allRankingList.subList(0, allRankingList.size() >= 20 ? 20 : allRankingList.size());
         }
         data = resultList.stream().map(m -> JSONObject.parseObject(JSON.toJSONString(m))).collect(Collectors.toMap(k -> TypeUtils.castToInt(k.remove("employee_id")), v -> v));
         return ResponseUtils.success(data);

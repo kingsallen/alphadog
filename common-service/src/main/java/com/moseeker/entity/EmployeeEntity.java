@@ -146,8 +146,12 @@ public class EmployeeEntity {
         query.where("id", employeeId);
         UserEmployeeDO userEmployeeDO = employeeDao.getData(query.buildQuery());
         if (userEmployeeDO != null && userEmployeeDO.getId() > 0 && ueprDo != null) {
-            // 修改用户总积分
-            userEmployeeDO.setAward(userEmployeeDO.getAward() + ueprDo.getAward());
+            // 修改用户总积分, 产品说 积分不能扣成负数 所以为负数 填为 0
+            if ((userEmployeeDO.getAward() + ueprDo.getAward()) >= 0 ){
+                userEmployeeDO.setAward(userEmployeeDO.getAward() + ueprDo.getAward());
+            } else  {
+                userEmployeeDO.setAward(0);
+            }
             int row = employeeDao.updateData(userEmployeeDO);
             // 积分记录
             if (row > 0) {
