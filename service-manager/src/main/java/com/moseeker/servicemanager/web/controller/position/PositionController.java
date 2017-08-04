@@ -5,6 +5,7 @@ import com.moseeker.baseorm.dao.jobdb.JobOccupationDao;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
@@ -20,9 +21,11 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.position.struct.*;
+import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import org.jooq.tools.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +38,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -513,4 +517,47 @@ public class PositionController {
         }
         return null;
     }
+
+
+    /**
+     * 第三方职位列表详情
+     */
+    @RequestMapping(value = "/thirdparty/position/info", method = RequestMethod.GET)
+    @ResponseBody
+    public String getThirdPartyPositionInfo(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            ThirdPartyPositionInfoForm infoForm = ParamUtils.initModelForm(request, ThirdPartyPositionInfoForm.class);
+            ThirdPartyPositionResult result = positonServices.getThirdPartyPositionInfo(infoForm);
+            return ResponseLogNotification.successJson(request, result);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseLogNotification.failJson(request, e);
+        }
+    }
+
+    /**
+     * 第三方职位列表详情
+     */
+    @RequestMapping(value = "/thirdparty/position", method = RequestMethod.PUT)
+    @ResponseBody
+    public String updateThirdPartyPosition(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            HrThirdPartyAccountDO thirdPartyAccount = ParamUtils.initModelForm(params, HrThirdPartyAccountDO.class);
+            HrThirdPartyPositionDO thirdPartyPosition = ParamUtils.initModelForm(params, HrThirdPartyPositionDO.class);
+
+            if (thirdPartyAccount == null || thirdPartyPosition == null) {
+                throw new CommonException(2201, "参数错误");
+            }
+
+            thirdPartyAccount.setId(0);
+            thirdPartyAccount.unsetId();
+            positonServices.updateThirdPartyPositionWithAccount(thirdPartyPosition, thirdPartyAccount);
+            return ResponseLogNotification.successJson(request, 1);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseLogNotification.failJson(request, e);
+        }
+    }
+
 }

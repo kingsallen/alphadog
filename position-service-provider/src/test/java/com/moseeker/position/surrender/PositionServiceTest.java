@@ -54,15 +54,4 @@ public class PositionServiceTest {
 
 	@Autowired
 	DictCityMapDao cityMapDao;
-
-    @Test
-    public void test() throws Exception {
-        List<Integer> positionCityCodes = new ArrayList<>();
-
-        positionCityCodes.add(350100);
-
-        List<List<String>> otherCityCodes = cityMapDao.getOtherCityFunllLevel(ChannelType.ZHILIAN, positionCityCodes);
-
-        otherCityCodes.toString();
-    }
 }

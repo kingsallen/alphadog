@@ -2,10 +2,18 @@ package com.moseeker.servicemanager.common;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.exception.RedisException;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
+
+import java.io.Serializable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,6 +43,46 @@ public class ResponseLogNotification {
 
     }
 
+    public static String successJson(HttpServletRequest request, Serializable data) {
+        Map<String, Serializable> result = new HashMap<>();
+        result.put("message", "success");
+        result.put("status", 0);
+        result.put("data", data);
+        //转换json的时候去掉thrift结构体中的set方法
+        return BeanUtils.convertStructToJSON(result);
+    }
+
+    public static String failJson(HttpServletRequest request, String message) {
+        return failJson(request, message, null);
+    }
+
+    public static String failJson(HttpServletRequest request, String message, Serializable data) {
+        Map<String, Serializable> result = new HashMap<>();
+        result.put("message", message);
+        result.put("status", 1);
+        result.put("data", data);
+        //转换json的时候去掉thrift结构体中的set方法
+        return BeanUtils.convertStructToJSON(result);
+    }
+
+    public static String failJson(HttpServletRequest request, Exception e) {
+        Map<String, Serializable> result = new HashMap<>();
+        if (e instanceof CommonException) {
+            result.put("status", ((CommonException) e).getCode());
+            result.put("message", e.getMessage());
+        } else if (e instanceof BIZException) {
+            result.put("status", ((BIZException) e).getCode());
+            result.put("message", e.getMessage());
+        } else if (e == null || e.getMessage() == null) {
+            result.put("status", 1);
+            result.put("message", "发生异常，请稍候再试!");
+        } else {
+            result.put("status", 1);
+            result.put("message", e.getMessage());
+        }
+        //转换json的时候去掉thrift结构体中的set方法
+        return BeanUtils.convertStructToJSON(result);
+    }
 
     public static String fail(HttpServletRequest request, Response response) {
         try {
