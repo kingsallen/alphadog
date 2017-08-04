@@ -321,10 +321,7 @@ public class UserHrAccountServiceImpl implements Iface {
      * @param companyId  公司ID
      * @param filter     过滤条件，0：全部，1：已认证，2：未认证,默认：0
      * @param order      排序条件
-<<<<<<< Updated upstream
-=======
      * @param asc        正序，倒序 0: 正序,1:倒序 默认
->>>>>>> Stashed changes
      * @param pageNumber 第几页
      * @param pageSize   每页的条数
      * @param timeSpan   月，季，年 2017 代表年积分，2017-08 代表月积分 20171 代表第一季度的积分
