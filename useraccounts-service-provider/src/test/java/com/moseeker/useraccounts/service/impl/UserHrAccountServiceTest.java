@@ -2,12 +2,14 @@ package com.moseeker.useraccounts.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.parser.Feature;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.employee.struct.Employee;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVO;
 import com.moseeker.useraccounts.config.AppConfig;
 import com.moseeker.useraccounts.pojo.EmployeeRank;
+import com.moseeker.useraccounts.pojo.EmployeeRankObj;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -136,13 +138,13 @@ public class UserHrAccountServiceTest {
      * @param args
      */
     public static void main(String args[]) {
-        String str = "[{\"employeeId\":105817,\"award\":116183},{\"employeeId\":3385,\"award\":30237},{\"employeeId\":60691,\"award\":12108},{\"employeeId\":417142,\"award\":10260},{\"employeeId\":44762,\"award\":10136},{\"employeeId\":57931,\"award\":6550},{\"employeeId\":80021,\"award\":5527},{\"employeeId\":579539,\"award\":4850},{\"employeeId\":497769,\"award\":4710},{\"employeeId\":512268,\"award\":4680}]";
-
-
-        List<EmployeeRank> dataMap = JSONObject.parseArray(str, EmployeeRank.class);
-
-
-
+        String str = "";
+        Map dataMap = (Map) JSONObject.parseObject(str,LinkedHashMap.class, Feature.OrderedField);
+        List<LinkedHashMap<String,Integer>> data = (List<LinkedHashMap<String,Integer>>) dataMap.get("data");
+//        for (Map map : data) {
+//            System.out.println(map.get("award"));
+//            System.out.println(map.get("employeeId"));
+//        }
         System.out.println(dataMap);
     }
 

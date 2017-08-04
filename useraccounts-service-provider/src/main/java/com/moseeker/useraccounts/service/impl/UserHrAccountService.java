@@ -36,12 +36,14 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
+import com.moseeker.thrift.gen.employee.struct.Employee;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.constant.ResultMessage;
 import com.moseeker.useraccounts.exception.ExceptionCategory;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.pojo.EmployeeRank;
+import com.moseeker.useraccounts.pojo.EmployeeRankObj;
 import com.moseeker.useraccounts.service.thirdpartyaccount.ThirdPartyAccountSynctor;
 
 import org.apache.thrift.TException;
@@ -892,23 +894,104 @@ public class UserHrAccountService {
     /**
      * 员工列表
      *
+     * @param flag 是否设置总积分，0 :是，1:否
+     */
+    public List<UserEmployeeVO> employeeList(Query.QueryBuilder queryBuilder, Integer flag, List<Integer> companyIds, LinkedHashMap<Integer, Integer> employeeMap) {
+        List<UserEmployeeVO> userEmployeeVOS = new ArrayList<>();
+        List<UserEmployeeDO> userEmployeeDOS;
+        Boolean reward = false;
+        if (employeeMap != null && employeeMap.size() > 0) {
+            reward = true;
+        }
+        // 员工数据
+        userEmployeeDOS = userEmployeeDao.getDatas(queryBuilder.buildQuery());
+        if (userEmployeeDOS != null && userEmployeeDOS.size() > 0) {
+            Set<Integer> sysuserId = userEmployeeDOS.stream().filter(userUserDO -> userUserDO.getSysuserId() > 0)
+                    .map(UserEmployeeDO::getSysuserId).collect(Collectors.toSet());
+            queryBuilder.clear();
+            queryBuilder.where(new Condition(UserUser.USER_USER.ID.getName(), sysuserId, ValueOp.IN));
+            // 查询微信昵称
+            List<UserUserDO> userUserDOList = userUserDao.getDatas(queryBuilder.buildQuery());
+            Map<Integer, UserUserDO> userMap = userUserDOList.stream().collect(Collectors.toMap(UserUserDO::getId, Function.identity()));
+
+            queryBuilder.clear();
+            queryBuilder.where(new Condition(HrCompany.HR_COMPANY.ID.getName(), companyIds, ValueOp.IN));
+            List<HrCompanyDO> companyList = hrCompanyDao.getDatas(queryBuilder.buildQuery());
+            // 查询公司信息
+            Map<Integer, HrCompanyDO> companyMap = companyList.stream().collect(Collectors.toMap(HrCompanyDO::getId, Function.identity()));
+            for (UserEmployeeDO userEmployeeDO : userEmployeeDOS) {
+                UserEmployeeVO userEmployeeVO = new UserEmployeeVO();
+                userEmployeeVO.setId(userEmployeeDO.getId());
+                userEmployeeVO.setUsername(userEmployeeDO.getCname());
+                userEmployeeVO.setMobile(userEmployeeDO.getMobile());
+                userEmployeeVO.setCompanyId(userEmployeeDO.getCompanyId());
+                userEmployeeVO.setEmail(userEmployeeDO.getEmail());
+                userEmployeeVO.setCustomField(userEmployeeDO.getCustomField());
+                userEmployeeVO.setBindingTime(userEmployeeDO.getBindingTime());
+                // 微信昵称
+                if (userMap.size() > 0 && userMap.get(userEmployeeDO.getSysuserId()) != null) {
+                    userEmployeeVO.setNickName(userMap.get(userEmployeeDO.getSysuserId()).getNickname());
+                } else {
+                    userEmployeeVO.setNickName("未知");
+                }
+                // 公司名称
+                if (companyMap.size() > 0 && companyMap.get(userEmployeeDO.getCompanyId()) != null) {
+                    HrCompanyDO hrCompanyDOTemp = companyMap.get(userEmployeeDO.getCompanyId());
+                    userEmployeeVO.setCompanyName(hrCompanyDOTemp.getName() != null ? hrCompanyDOTemp.getName() : "");
+                    userEmployeeVO.setCompanyAbbreviation(hrCompanyDOTemp.getAbbreviation() != null ? hrCompanyDOTemp.getAbbreviation() : "");
+                }
+                userEmployeeVO.setActivation((new Double(userEmployeeDO.getActivation())).intValue());
+                // 判断是否需要设置积分
+                if (flag.intValue() == 0) {
+                    if (reward) {
+                        userEmployeeDO.setAward(employeeMap.get(userEmployeeDO.getId()));
+                    } else {
+                        userEmployeeVO.setAward(userEmployeeDO.getAward());
+                    }
+                } else if (flag.intValue() == 1) {
+                    userEmployeeVO.setAward(0);
+                }
+                userEmployeeVO.setBindingTime(userEmployeeDO.getBindingTime());
+                userEmployeeVOS.add(userEmployeeVO);
+            }
+
+        } else {
+            throw UserAccountException.USEREMPLOYEES_EMPTY;
+        }
+        return userEmployeeVOS;
+    }
+
+    /**
+     * 员工列表
+     *
      * @param keyword    关键字搜索
      * @param companyId  公司ID
      * @param filter     过滤条件，0：全部，1：已认证，2：未认证,默认：0
      * @param order      排序条件
      * @param asc        正序，倒序 0: 正序,1:倒序 默认
      * @param pageNumber 第几页
+     * @param timespan   月，季，年
      * @param pageSize   每页的条数
      */
-
-    public UserEmployeeVOPageVO employeeList(String keyword, Integer companyId, List<Integer> companyIds, Integer filter, String order, String asc, Integer pageNumber, Integer pageSize) {
+    public UserEmployeeVOPageVO employeeList(String keyword, Integer companyId, Integer filter, String order, String asc, Integer pageNumber, Integer pageSize, String timespan) throws Exception {
         UserEmployeeVOPageVO userEmployeeVOPageVO = new UserEmployeeVOPageVO();
-        List<UserEmployeeVO> userEmployeeVOS = new ArrayList<>();
-
+        // 公司ID未设置
+        if (companyId == 0) {
+            throw UserAccountException.COMPANY_DATA_EMPTY;
+        }
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-        Condition companyIdCon = new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyIds, ValueOp.IN);
+        queryBuilder.where(HrCompany.HR_COMPANY.ID.getName(), companyId);
+        // 是否是子公司，如果是查询母公司ID
+        HrCompanyDO hrCompanyDO = hrCompanyDao.getData(queryBuilder.buildQuery());
+        if (StringUtils.isEmptyObject(hrCompanyDO)) {
+            throw UserAccountException.COMPANY_DATA_EMPTY;
+        }
+        List<Integer> list = employeeEntity.getCompanyIds(hrCompanyDO.getParentId() > 0 ? hrCompanyDO.getParentId() : companyId);
+        queryBuilder.clear();
+        Condition companyIdCon = new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), list, ValueOp.IN);
         queryBuilder.where(companyIdCon).and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), 0);
-
+        // 取公司ID
+        List<Integer> companyIds = employeeEntity.getCompanyIds(companyId);
         // 如果有关键字，拼接关键字
         if (!StringUtils.isNullOrEmpty(keyword)) {
             getQueryBuilder(queryBuilder, keyword, companyId);
@@ -979,101 +1062,43 @@ public class UserHrAccountService {
                 queryBuilder.setPageSize(pageSize);
             }
         }
-        List<UserEmployeeDO> userEmployeeDOS = userEmployeeDao.getDatas(queryBuilder.buildQuery());
-        if (!StringUtils.isEmptyList(userEmployeeDOS)) {
-            Set<Integer> sysuserId = userEmployeeDOS.stream().filter(userUserDO -> userUserDO.getSysuserId() > 0)
-                    .map(UserEmployeeDO::getSysuserId).collect(Collectors.toSet());
-            queryBuilder.clear();
-            queryBuilder.where(new Condition(UserUser.USER_USER.ID.getName(), sysuserId, ValueOp.IN));
-            // 查询微信昵称
-            List<UserUserDO> userUserDOList = userUserDao.getDatas(queryBuilder.buildQuery());
-            Map<Integer, UserUserDO> userMap = userUserDOList.stream().collect(Collectors.toMap(UserUserDO::getId, Function.identity()));
-
-            queryBuilder.clear();
-            queryBuilder.where(new Condition(HrCompany.HR_COMPANY.ID.getName(), companyIds, ValueOp.IN));
-            List<HrCompanyDO> companyList = hrCompanyDao.getDatas(queryBuilder.buildQuery());
-            // 查询公司信息
-            Map<Integer, HrCompanyDO> companyMap = companyList.stream().collect(Collectors.toMap(HrCompanyDO::getId, Function.identity()));
-            for (UserEmployeeDO userEmployeeDO : userEmployeeDOS) {
-                UserEmployeeVO userEmployeeVO = new UserEmployeeVO();
-                userEmployeeVO.setId(userEmployeeDO.getId());
-                userEmployeeVO.setUsername(userEmployeeDO.getCname());
-                userEmployeeVO.setMobile(userEmployeeDO.getMobile());
-                userEmployeeVO.setCompanyId(userEmployeeDO.getCompanyId());
-                userEmployeeVO.setEmail(userEmployeeDO.getEmail());
-                userEmployeeVO.setCustomField(userEmployeeDO.getCustomField());
-                userEmployeeVO.setBindingTime(userEmployeeDO.getBindingTime());
-                // 微信昵称
-                if (userMap.size() > 0 && userMap.get(userEmployeeDO.getSysuserId()) != null) {
-                    userEmployeeVO.setNickName(userMap.get(userEmployeeDO.getSysuserId()).getNickname());
-                } else {
-                    userEmployeeVO.setNickName("未知");
-                }
-                // 公司名称
-                if (companyMap.size() > 0 && companyMap.get(userEmployeeDO.getCompanyId()) != null) {
-                    HrCompanyDO hrCompanyDOTemp = companyMap.get(userEmployeeDO.getCompanyId());
-                    userEmployeeVO.setCompanyName(hrCompanyDOTemp.getName() != null ? hrCompanyDOTemp.getName() : "");
-                    userEmployeeVO.setCompanyAbbreviation(hrCompanyDOTemp.getAbbreviation() != null ? hrCompanyDOTemp.getAbbreviation() : "");
-                }
-                userEmployeeVO.setActivation((new Double(userEmployeeDO.getActivation())).intValue());
-                userEmployeeVO.setAward(userEmployeeDO.getAward());
-                userEmployeeVO.setBindingTime(userEmployeeDO.getBindingTime());
-                userEmployeeVOS.add(userEmployeeVO);
-            }
-            userEmployeeVOPageVO.setData(userEmployeeVOS);
-            if (pageSize > 0) {
-                userEmployeeVOPageVO.setPageSize(pageSize);
-            }
-            if (pageNumber > 0) {
-                userEmployeeVOPageVO.setPageNumber(pageNumber);
-            }
-            userEmployeeVOPageVO.setTotalRow(counts);
-        } else {
-            throw UserAccountException.USEREMPLOYEES_EMPTY;
-        }
-        return userEmployeeVOPageVO;
-    }
-
-    /**
-     * 员工列表
-     *
-     * @param keyword    关键字搜索
-     * @param companyId  公司ID
-     * @param filter     过滤条件，0：全部，1：已认证，2：未认证,默认：0
-     * @param order      排序条件
-     * @param asc        正序，倒序 0: 正序,1:倒序 默认
-     * @param pageNumber 第几页
-     * @param timespan   月，季，年
-     * @param pageSize   每页的条数
-     */
-    public UserEmployeeVOPageVO employeeList(String keyword, Integer companyId, Integer filter, String order, String asc, Integer pageNumber, Integer pageSize, String timespan) throws Exception {
-        if (companyId == 0) {
-            throw UserAccountException.COMPANY_DATA_EMPTY;
-        }
-        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-        queryBuilder.where(HrCompany.HR_COMPANY.ID.getName(), companyId);
-        // 是否是子公司，如果是查询母公司ID
-        HrCompanyDO hrCompanyDO = hrCompanyDao.getData(queryBuilder.buildQuery());
-        if (StringUtils.isEmptyObject(hrCompanyDO)) {
-            throw UserAccountException.COMPANY_DATA_EMPTY;
-        }
-        List<Integer> list = employeeEntity.getCompanyIds(hrCompanyDO.getParentId() > 0 ? hrCompanyDO.getParentId() : companyId);
-        queryBuilder.clear();
-        Condition companyIdCon = new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), list, ValueOp.IN);
-        queryBuilder.where(companyIdCon).and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), 0);
-        List<Integer> companyIds = employeeEntity.getCompanyIds(companyId);
-        // 员工列表
+        // 员工列表，不需要取排行榜
         if (StringUtils.isNullOrEmpty(timespan)) {
-            return employeeList(keyword, companyId, companyIds, filter, order, asc, pageNumber, pageSize);
+            userEmployeeVOPageVO.setData(employeeList(queryBuilder, 0, companyIds, null));
         }
-        // 从ES中获取积分月，季，年榜单数据
+        // 员工列表，从ES中获取积分月，季，年榜单数据
         Response response = searchengineServices.queryAwardRanking(companyIds, timespan, pageSize, pageNumber);
+        // 不管ES中有没有数据，员工的分页数据用于一样
+        if (pageSize > 0) {
+            userEmployeeVOPageVO.setPageSize(pageSize);
+        }
+        if (pageNumber > 0) {
+            userEmployeeVOPageVO.setPageNumber(pageNumber);
+        }
+        userEmployeeVOPageVO.setTotalRow(counts);
         // ES取到数据
         if (response.getStatus() == 0) {
-            List<EmployeeRank> employeeRankList = JSONObject.parseArray(response.getData(), EmployeeRank.class);
-
+            EmployeeRankObj rankObj = JSONObject.parseObject(response.getData(), EmployeeRankObj.class);
+            List<EmployeeRank> employeeRankList = rankObj.getData();
+            if (employeeRankList != null && employeeRankList.size() > 0) {
+                logger.info("ES Data Size:", employeeRankList.size());
+                // 封装查询条件
+                LinkedHashMap<Integer, Integer> employeeMap = new LinkedHashMap();
+                List<Integer> employeeIds = new ArrayList<>();
+                for (EmployeeRank employeeRank : employeeRankList) {
+                    employeeIds.add(employeeRank.getEmployeeId());
+                    employeeMap.put(employeeRank.getEmployeeId(), employeeRank.getAward());
+                }
+                queryBuilder.clear();
+                queryBuilder.where(new Condition(UserEmployee.USER_EMPLOYEE.ID.getName(), employeeIds, ValueOp.IN));
+                userEmployeeVOPageVO.setData(employeeList(queryBuilder, 0, companyIds, employeeMap));
+            } else {
+                // ES没取到数据，从数据库中取数据，但是不设置任何积分
+                logger.info("ES Data is empty!!!!");
+                userEmployeeVOPageVO.setData(employeeList(queryBuilder, 1, companyIds, null));
+            }
         }
-        return null;
+        return userEmployeeVOPageVO;
     }
 
     /**
@@ -1118,7 +1143,6 @@ public class UserHrAccountService {
         // 查询微信昵称
         List<UserUserDO> userUserDOList = userUserDao.getDatas(queryBuilder.buildQuery());
         Map<Integer, UserUserDO> userMap = userUserDOList.stream().collect(Collectors.toMap(UserUserDO::getId, Function.identity()));
-
         // 公司ID列表
         Set<Integer> companyIds = list.stream().filter(userEmployeeDO -> userEmployeeDO.getCompanyId() > 0)
                 .map(userEmployeeDO -> userEmployeeDO.getCompanyId()).collect(Collectors.toSet());

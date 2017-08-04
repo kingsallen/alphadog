@@ -338,6 +338,8 @@ public class SearchengineService {
         SearchRequestBuilder searchRequestBuilder = getSearchRequestBuilder(companyIds, null, pageSize, pageNum, timespan);
         SearchResponse response = searchRequestBuilder.execute().actionGet();
         List<Map<String, Object>> data = new ArrayList<>();
+        Map<String, Object> object = new HashMap<>();
+        object.put("total", response.getHits().getTotalHits());
         for (SearchHit searchHit : response.getHits().getHits()) {
             Map<String, Object> objectMap = new HashMap<>();
             JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
@@ -345,7 +347,8 @@ public class SearchengineService {
             objectMap.put("award", jsonObject.getJSONObject("awards").getJSONObject(timespan).getInteger("award"));
             data.add(objectMap);
         }
-        return ResponseUtils.success(data);
+        object.put("data", data);
+        return ResponseUtils.success(object);
     }
 
     public Response queryAwardRankingInWx(List<Integer> companyIds, String timespan, Integer employeeId) {

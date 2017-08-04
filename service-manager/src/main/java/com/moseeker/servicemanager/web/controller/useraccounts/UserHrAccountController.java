@@ -657,9 +657,10 @@ public class UserHrAccountController {
             int filter = params.getInt("filter", 0);
             String order = params.getString("order", "");
             String asc = params.getString("asc", "");
+            String timeSpan = params.getString("timeSpan", "");
             int pageNumber = params.getInt("pageNumber", 0);
             int pageSize = params.getInt("pageSize", 0);
-            UserEmployeeVOPageVO userEmployeeVOPageVO = userHrAccountService.employeeList(keyWord, companyId, filter, order, asc, pageNumber, pageSize);
+            UserEmployeeVOPageVO userEmployeeVOPageVO = userHrAccountService.employeeList(keyWord, companyId, filter, order, asc, pageNumber, pageSize, timeSpan);
             return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(userEmployeeVOPageVO)));
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
