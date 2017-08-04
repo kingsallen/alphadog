@@ -337,6 +337,8 @@ public class EmployeeEntity {
                         reward.setType(12);
                     } else if (reason.indexOf("完善被推荐人信息") > -1) {
                         reward.setType(13);
+                    } else {
+                        reward.setType(0); // 未知
                     }
                 }
                 JobPositionDO jobPositionDO = positionMap.get(reward.getPositionId());
@@ -352,6 +354,10 @@ public class EmployeeEntity {
                     } else {
                         reward.setPublisherName("");
                     }
+                } else {
+                    reward.setPositionName("");
+                    // 发布职位的hrID
+                    reward.setPublisherId(0);
                 }
                 UserEmployeeDO userEmployeeDO = userEmployeeDOMap.get(point.getBerecomUserId());
                 if (userEmployeeDO != null) {
