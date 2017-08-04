@@ -206,16 +206,18 @@ public class PositionSyncFailedNotification {
         emailMessgeBuilder.append("【反馈时长】：").append(thirdPartyPositionDO.getFeedbackPeriod()).append(divider);
         emailMessgeBuilder.append("<b style=\"color:red\">【简历邮箱】：").append("cv_").append(moseekerPosition.getId()).append(positionEmail).append("</b>").append(divider);
         emailMessgeBuilder.append("【职位描述】：").append(divider);
-
+        StringBuffer descript = new StringBuffer();
         if (StringUtils.isNotNullOrEmpty(moseekerPosition.getAccountabilities())) {
-            emailMessgeBuilder.append(moseekerPosition.getAccountabilities().replaceAll("\n", divider)).append(divider);
-            if (StringUtils.isNotNullOrEmpty(moseekerPosition.getRequirement())) {
-                emailMessgeBuilder.append("职位要求:").append(divider);
-            }
+            descript.append(moseekerPosition.getAccountabilities());
         }
         if (StringUtils.isNotNullOrEmpty(moseekerPosition.getRequirement())) {
-            emailMessgeBuilder.append(moseekerPosition.getRequirement().replaceAll("\n", divider)).append(divider);
+            if (!moseekerPosition.getRequirement().contains("职位要求")) {
+                descript.append("\n职位要求：\n" + moseekerPosition.getRequirement());
+            } else {
+                descript.append(moseekerPosition.getRequirement());
+            }
         }
+        emailMessgeBuilder.append(descript.toString().replaceAll("\n", divider)).append(divider);
 
         sendEmail(emails, emailTitle.toString(), emailMessgeBuilder.toString());
     }
@@ -236,7 +238,7 @@ public class PositionSyncFailedNotification {
             email.send(3, new Email.EmailListener() {
                 @Override
                 public void success() {
-                    logger.info("发送职位同步刷新错误的邮件成功了,{}",subject);
+                    logger.info("发送职位同步刷新错误的邮件成功了,{}", subject);
                 }
 
                 @Override
