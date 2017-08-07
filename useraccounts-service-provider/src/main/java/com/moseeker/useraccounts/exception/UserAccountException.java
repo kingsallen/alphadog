@@ -24,6 +24,7 @@ public class UserAccountException extends CommonException {
     public static final UserAccountException EMAIL_REPETITION = new UserAccountException(42015, "员工邮箱信息重复");
     public static final UserAccountException CUSTOM_FIELD_REPETITION = new UserAccountException(42016, "员工姓名和自定义字段信息重复");
     public static final UserAccountException COMPANY_DATA_EMPTY = new UserAccountException(90010, "公司信息不存在！");
+    public static final UserAccountException SEARCH_ES_ERROR = new UserAccountException(90011, "查询ES数据发生异常!");
 
 
     private final int code;
