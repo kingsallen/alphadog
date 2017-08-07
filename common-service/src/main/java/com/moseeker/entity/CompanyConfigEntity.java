@@ -28,7 +28,7 @@ public class CompanyConfigEntity {
     @Autowired
     private HrPointsConfDao hrPointsConfDao;
 
-    public List<RewardConfig> getRerawConfig(int companyId) {
+    public List<RewardConfig> getRerawConfig(int companyId, boolean showInWx) {
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.where("company_id", String.valueOf(companyId));
         List<RewardConfig> pcfList = new ArrayList<>();
@@ -48,7 +48,7 @@ public class CompanyConfigEntity {
                 if (ctpIds != null) {
                     for (int tempId : ctpIds) {
                         for (HrPointsConfDO pcf : pointsConfs) {
-                            if (pcf.getReward() != 0 && tempId == pcf.getTemplateId()) {
+                            if ((showInWx ? pcf.getReward() > 0 : pcf.getReward() >= 0) && tempId == pcf.getTemplateId()) {
                                 RewardConfig rewardConfig = new RewardConfig();
                                 rewardConfig.setId(pcf.getId());
                                 rewardConfig.setPoints((int) pcf.getReward());
