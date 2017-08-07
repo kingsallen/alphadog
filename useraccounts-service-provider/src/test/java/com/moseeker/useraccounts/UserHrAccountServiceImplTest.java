@@ -209,13 +209,13 @@ public class UserHrAccountServiceImplTest {
         batchForm.setData(employeeStructs);
         batchForm.setDel_not_include(true);
 
-        int[] result = userEmployeeDao.postPutUserEmployeeBatch(batchForm);
+//        int[] result = userEmployeeDao.postPutUserEmployeeBatch(batchForm);
 
         System.out.println(DateUtils.dateToLongTime(new Date()));
 
 //        Thread.sleep(1000*600);
 
-        System.out.println(result);
+//        System.out.println(result);
     }
 
     //    @Test
