@@ -136,7 +136,9 @@ public class PositionSyncFailedNotification {
         emailMessgeBuilder.append("【第三方职位ID】：").append(thirdPartyPositionDO.getId()).append(divider);
         emailMessgeBuilder.append("【").append(channelName).append("职位编号】：").append(thirdPartyPositionDO.getThirdPartPositionId()).append(divider);
         emailMessgeBuilder.append("【职位标题】：").append(moseekerPosition.getTitle()).append(divider);
-
+        emailMessgeBuilder.append(divider).append("<hr>").append(divider);
+        emailMessgeBuilder.append("【错误信息】：").append(divider);
+        emailMessgeBuilder.append(StringUtils.isNullOrEmpty(pojo.getMessage()) ? "无" : pojo.getMessage());
         sendEmail(emails, emailTitle.toString(), emailMessgeBuilder.toString());
     }
 
@@ -218,6 +220,9 @@ public class PositionSyncFailedNotification {
             }
         }
         emailMessgeBuilder.append(descript.toString().replaceAll("\n", divider)).append(divider);
+        emailMessgeBuilder.append(divider).append("<hr>").append(divider);
+        emailMessgeBuilder.append("【错误信息】：").append(divider);
+        emailMessgeBuilder.append(StringUtils.isNullOrEmpty(pojo.getMessage()) ? "无" : pojo.getMessage());
 
         sendEmail(emails, emailTitle.toString(), emailMessgeBuilder.toString());
     }
