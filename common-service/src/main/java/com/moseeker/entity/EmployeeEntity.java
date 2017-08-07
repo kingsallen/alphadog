@@ -16,7 +16,9 @@ import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
+import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.constants.Constant;
@@ -27,6 +29,7 @@ import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.Constant.EmployeeType;
+import com.moseeker.entity.biz.EmployeeEntityBiz;
 import com.moseeker.entity.exception.ExceptionCategory;
 import com.moseeker.entity.exception.ExceptionFactory;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysPointsConfTplDO;
@@ -38,7 +41,8 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.*;
 import com.moseeker.thrift.gen.employee.struct.RewardVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
-import javax.annotation.Resource;
+import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
+import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -101,7 +105,6 @@ public class EmployeeEntity {
     protected RedisClient client;
 
 
-
     private static final Logger logger = LoggerFactory.getLogger(EmployeeEntity.class);
 
     /**
@@ -142,9 +145,9 @@ public class EmployeeEntity {
         UserEmployeeDO userEmployeeDO = employeeDao.getData(query.buildQuery());
         if (userEmployeeDO != null && userEmployeeDO.getId() > 0 && ueprDo != null) {
             // 修改用户总积分, 产品说 积分不能扣成负数 所以为负数 填为 0
-            if ((userEmployeeDO.getAward() + ueprDo.getAward()) >= 0 ){
+            if ((userEmployeeDO.getAward() + ueprDo.getAward()) >= 0) {
                 userEmployeeDO.setAward(userEmployeeDO.getAward() + ueprDo.getAward());
-            } else  {
+            } else {
                 userEmployeeDO.setAward(0);
             }
             int row = employeeDao.updateData(userEmployeeDO);
@@ -161,7 +164,7 @@ public class EmployeeEntity {
                     // 更新ES中的user_employee数据，以便积分排行实时更新
                     JSONObject jobj = new JSONObject();
                     jobj.put("employee_id", Arrays.asList(employeeId));
-                    client.lpush(Constant.APPID_ALPHADOG,"ES_REALTIME_UPDATE_INDEX_AWARD_RANKING", jobj.toJSONString());
+                    client.lpush(Constant.APPID_ALPHADOG, "ES_REALTIME_UPDATE_INDEX_AWARD_RANKING", jobj.toJSONString());
                     return userEmployeeDO.getAward();
                 } else {
                     logger.error("增加用户积分失败：为用户{},添加积分{}点, reason:{}", employeeId, ueprDo.getAward(), ueprDo.getReason());
@@ -305,7 +308,7 @@ public class EmployeeEntity {
                 // 职位ID
                 reward.setPositionId(new Double(point.getPositionId()).intValue());
                 HrPointsConfDO hrPointsConfDO = hrPointsConfMap.get(point.getAwardConfigId());
-                if (!StringUtils.isEmptyObject(hrPointsConfDO)) {
+                if (hrPointsConfDO != null) {
                     reward.setType(hrPointsConfDO.getTemplateId());
                 } else {
                     String reason = reward.getReason();
@@ -335,19 +338,30 @@ public class EmployeeEntity {
                         reward.setType(12);
                     } else if (reason.indexOf("完善被推荐人信息") > -1) {
                         reward.setType(13);
+                    } else {
+                        reward.setType(0); // 未知
                     }
                 }
                 JobPositionDO jobPositionDO = positionMap.get(reward.getPositionId());
-                if (!StringUtils.isEmptyObject(jobPositionDO)) {
+                if (jobPositionDO != null) {
                     // 职位名称
                     reward.setPositionName(jobPositionDO.getTitle());
                     // 发布职位的hrID
                     reward.setPublisherId(jobPositionDO.getPublisher());
                     // 发布职位的HR姓名
-                    reward.setPublisherName(userHrAccountDOMap.get(reward.getPublisherId()).getUsername());
+                    UserHrAccountDO userHrAccountDO = userHrAccountDOMap.get(reward.getPublisherId());
+                    if (userHrAccountDO != null) {
+                        reward.setPublisherName(userHrAccountDOMap.get(reward.getPublisherId()).getUsername());
+                    } else {
+                        reward.setPublisherName("");
+                    }
+                } else {
+                    reward.setPositionName("");
+                    // 发布职位的hrID
+                    reward.setPublisherId(0);
                 }
                 UserEmployeeDO userEmployeeDO = userEmployeeDOMap.get(point.getBerecomUserId());
-                if (!StringUtils.isEmptyObject(userEmployeeDO)) {
+                if (userEmployeeDO != null) {
                     reward.setEmployeId(userEmployeeDO.getId());
                     reward.setEmployeName(userEmployeeDO.getCname());
                 } else {
@@ -394,7 +408,7 @@ public class EmployeeEntity {
                 // 更新ES中useremployee信息
                 JSONObject jobj = new JSONObject();
                 jobj.put("employee_id", employees.stream().map(m -> m.getId()).collect(Collectors.toList()));
-                client.lpush(Constant.APPID_ALPHADOG,"ES_REALTIME_UPDATE_INDEX_AWARD_RANKING", jobj.toJSONString());
+                client.lpush(Constant.APPID_ALPHADOG, "ES_REALTIME_UPDATE_INDEX_AWARD_RANKING", jobj.toJSONString());
                 return true;
             } else {
                 throw ExceptionFactory.buildException(ExceptionCategory.EMPLOYEE_IS_UNBIND);
@@ -422,7 +436,7 @@ public class EmployeeEntity {
                 // 更新ES中useremployee信息
                 JSONObject jobj = new JSONObject();
                 jobj.put("employee_id", employeeIds);
-                client.lpush(Constant.APPID_ALPHADOG,"ES_REALTIME_UPDATE_INDEX_AWARD_RANKING", jobj.toJSONString());
+                client.lpush(Constant.APPID_ALPHADOG, "ES_REALTIME_UPDATE_INDEX_AWARD_RANKING", jobj.toJSONString());
                 return true;
             } else {
                 throw ExceptionFactory.buildException(ExceptionCategory.EMPLOYEE_HASBEENDELETEOR);
@@ -597,7 +611,8 @@ public class EmployeeEntity {
 
     /**
      * 添加员工记录集合。
-     * 会向员工记录中添加数据的同时，往ES员工索引维护队列中增加新增员工记录的任务。
+     * 会向员工记录中添加数据的同时，往ES员工索引维护队列中增加维护员工记录的任务。
+     *
      * @param userEmployeeList 员工记录集合
      * @return 添加好的员工记录。如果参数是空，那么返回值是null
      * @throws CommonException
@@ -608,7 +623,29 @@ public class EmployeeEntity {
 
             JSONObject jobj = new JSONObject();
             jobj.put("employee_id", employeeDOS.stream().map(m -> m.getId()).collect(Collectors.toList()));
-            client.lpush(Constant.APPID_ALPHADOG,"ES_REALTIME_UPDATE_INDEX_AWARD_RANKING", jobj.toJSONString());
+            client.lpush(Constant.APPID_ALPHADOG, "ES_REALTIME_UPDATE_INDEX_AWARD_RANKING", jobj.toJSONString());
+
+            return employeeDOS;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * 添加员工记录集合。
+     * 会向员工记录中添加数据的同时，往ES员工索引维护队列中增加维护员工记录的任务。
+     *
+     * @param userEmployeeList 员工记录集合
+     * @return 添加好的员工记录。如果参数是空，那么返回值是null
+     * @throws CommonException
+     */
+    public List<UserEmployeeRecord> addEmployeeRecordList(List<UserEmployeeRecord> userEmployeeList) throws CommonException {
+        if (userEmployeeList != null && userEmployeeList.size() > 0) {
+            List<UserEmployeeRecord> employeeDOS = employeeDao.addAllRecord(userEmployeeList);
+
+            JSONObject jobj = new JSONObject();
+            jobj.put("employee_id", employeeDOS.stream().map(m -> m.getId()).collect(Collectors.toList()));
+            client.lpush(Constant.APPID_ALPHADOG, "ES_REALTIME_UPDATE_INDEX_AWARD_RANKING", jobj.toJSONString());
 
             return employeeDOS;
         } else {
@@ -618,7 +655,26 @@ public class EmployeeEntity {
 
     /**
      * 添加员工记录或者员工数据
-     * 会向员工记录中添加数据的同时，往ES员工索引维护队列中增加新增员工记录的任务。
+     * 会向员工记录中添加数据的同时，往ES员工索引维护队列中增加维护员工记录的任务。
+     *
+     * @param userEmployeeDOList
+     * @throws CommonException
+     */
+    public void deleteEmployeeList(List<UserEmployeeDO> userEmployeeDOList) throws CommonException {
+        if (userEmployeeDOList == null || userEmployeeDOList.size() == 0) {
+            return;
+        }
+        JSONObject jobj = new JSONObject();
+        jobj.put("employee_id", userEmployeeDOList.stream().map(m -> m.getId()).collect(Collectors.toList()));
+        employeeDao.deleteDatas(userEmployeeDOList);
+
+        client.lpush(Constant.APPID_ALPHADOG, "ES_REALTIME_UPDATE_INDEX_AWARD_RANKING", jobj.toJSONString());
+    }
+
+    /**
+     * 删除员工记录或者员工数据
+     * 会向员工记录中删除数据的同时，往ES员工索引维护队列中增加维护员工记录的任务。
+     *
      * @param userEmployee
      * @return
      * @throws CommonException
@@ -631,8 +687,176 @@ public class EmployeeEntity {
 
         JSONObject jobj = new JSONObject();
         jobj.put("employee_id", Arrays.asList(employeeDO.getId()));
-        client.lpush(Constant.APPID_ALPHADOG,"ES_REALTIME_UPDATE_INDEX_AWARD_RANKING", jobj.toJSONString());
+        client.lpush(Constant.APPID_ALPHADOG, "ES_REALTIME_UPDATE_INDEX_AWARD_RANKING", jobj.toJSONString());
 
         return employeeDO;
+    }
+
+    /**
+     * ATS对接 批量修改员工信息
+     * @param batchForm
+     */
+    public int[] postPutUserEmployeeBatch(UserEmployeeBatchForm batchForm) throws CommonException {
+        if (batchForm.getData() == null || batchForm.getData().size() == 0) {
+            return new int[0];
+        }
+
+        logger.info("postPutUserEmployeeBatch {},总数据:{}条", batchForm.getCompany_id(), batchForm.getData().size());
+
+        Query.QueryBuilder builder = null;
+
+        //这批数据的特征值集合
+        List<String> uniqueFlags = new ArrayList<>();
+
+        int[] dataStatus = new int[batchForm.getData().size()];//对应的数据的操作类型1，插入，2：更新，0：无效的数据
+
+        EmployeeEntityBiz.getUniqueFlagsAndStatus(batchForm.getData(), uniqueFlags, dataStatus);
+
+        logger.info("postPutUserEmployeeBatch {},有效的数据:{}条", batchForm.getCompany_id(), uniqueFlags.size());
+
+        Set<Integer> delIds = new HashSet<>();
+        int page = 1;
+        int pageSize = 1000;
+
+        List<UserEmployeeRecord> records;
+
+        //每次取出1000条检查，把不在userEmployees里面的数据的id记录到delIds
+        while (true) {
+            logger.info("postPutUserEmployeeBatch {},检查数据:page:{}", batchForm.getCompany_id(), page);
+            builder = new Query.QueryBuilder();
+            builder.where("company_id", batchForm.getCompany_id());
+            builder.setPageSize(pageSize);
+            builder.setPageNum(page);
+            records = employeeDao.getRecords(builder.buildQuery());
+
+            //取完了
+            if (records == null || records.size() == 0) {
+                break;
+            }
+            int index;
+            String flag1, flag2;
+            //开始检查
+            for (UserEmployeeRecord record : records) {
+                if (record.getCustomField() == null) record.setCustomField("");
+                if (record.getCname() == null) record.setCname("");
+                flag1 = record.getCompanyId() + "_custom_field_" + record.getCustomField().trim();
+                if (uniqueFlags.contains(flag1)) {
+                    //这条数据需要更新
+                    index = uniqueFlags.indexOf(flag1);
+                    dataStatus[index] = 2;
+                    batchForm.getData().get(index).setId(record.getId());
+                } else {
+                    flag2 = record.getCompanyId() + "_cname_" + record.getCname().trim();
+                    if (uniqueFlags.contains(flag2)) {
+                        //这条数据需要更新
+                        index = uniqueFlags.indexOf(flag2);
+                        dataStatus[index] = 2;
+                        batchForm.getData().get(index).setId(record.getId());
+                    } else {
+                        //这条数据需要删除
+                        delIds.add(record.getId());
+                    }
+                }
+            }
+
+            //取完了
+            if (records.size() != pageSize) {
+                break;
+            }
+
+            //继续取下1000条记录检查
+            page++;
+
+        }
+
+        logger.info("postPutUserEmployeeBatch {},不在集合中的数据:{}条", batchForm.getCompany_id(), delIds.size());
+
+        if (batchForm.isDel_not_include() && delIds.size() > 0) {
+            logger.info("postPutUserEmployeeBatch {},删除数据:{}条", batchForm.getCompany_id(), delIds.size());
+            //把不在userEmployees中的数据从数据库中删除
+            int batchDeleteSize = 500;
+            Iterator<Integer> delIterator = delIds.iterator();
+            List<Integer> delBatch = new ArrayList<>();
+
+            //数据太多一次最多删除500个
+            while (delIterator.hasNext()) {
+                delBatch.add(delIterator.next());
+                delIterator.remove();
+                if (delBatch.size() >= 500) {
+                    Condition condition = new Condition("id", delBatch, ValueOp.IN);
+                    delete(condition);
+                    delBatch.clear();
+                }
+            }
+
+            if (delBatch.size() > 0) {
+                Condition condition = new Condition("id", delBatch, ValueOp.IN);
+                delete(condition);
+                delBatch.clear();
+            }
+        }
+
+        //要更新的数据
+        List<UserEmployeeStruct> updateDatas = new ArrayList<>();
+
+        //要添加的数据
+        List<UserEmployeeStruct> addDatas = new ArrayList<>();
+
+        for (int i = 0; i < dataStatus.length; i++) {
+            if (dataStatus[i] == 1) {
+                addDatas.add(batchForm.getData().get(i));
+            } else if (dataStatus[i] == 2) {
+                updateDatas.add(batchForm.getData().get(i));
+            }
+        }
+
+        logger.info("postPutUserEmployeeBatch {},需要添加的数据:{}条", batchForm.getCompany_id(), addDatas.size());
+        logger.info("postPutUserEmployeeBatch {},需要更新的数据:{}条", batchForm.getCompany_id(), updateDatas.size());
+
+        int batchSize = 500;
+
+        if (addDatas.size() > 0) {
+            //每次最多一次插入100条
+            int start = 0;
+            while ((start + batchSize) < addDatas.size()) {
+                addEmployeeRecordList(BeanUtils.structToDB(addDatas.subList(start, start + batchSize), UserEmployeeRecord.class));
+                start += batchSize;
+                logger.info("postPutUserEmployeeBatch {},批量插入数据{}条,剩余{}条", batchForm.getCompany_id(), batchSize, addDatas.size() - start);
+            }
+            addEmployeeRecordList(BeanUtils.structToDB(addDatas.subList(start, addDatas.size()), UserEmployeeRecord.class));
+            logger.info("postPutUserEmployeeBatch {},批量插入数据{}条,剩余{}条", batchForm.getCompany_id(), addDatas.size() - start, 0);
+        }
+
+        if (updateDatas.size() > 0) {
+            //每次最多一次更新100条
+            int start = 0;
+            while ((start + batchSize) < updateDatas.size()) {
+                employeeDao.updateRecords(BeanUtils.structToDB(updateDatas.subList(start, start + batchSize), UserEmployeeRecord.class));
+                start += batchSize;
+                logger.info("postPutUserEmployeeBatch {},批量更新数据{}条,剩余{}条", batchForm.getCompany_id(), batchSize, updateDatas.size() - start);
+            }
+            employeeDao.updateRecords(BeanUtils.structToDB(updateDatas.subList(start, updateDatas.size()), UserEmployeeRecord.class));
+            logger.info("postPutUserEmployeeBatch {},批量更新数据{}条,剩余{}条", batchForm.getCompany_id(), updateDatas.size() - start, 0);
+        }
+
+        logger.info("postPutUserEmployeeBatch {},result:{},", batchForm.getCompany_id(), dataStatus.length < 500?Arrays.toString(dataStatus):("成功处理"+dataStatus.length+"条"));
+
+        return dataStatus;
+    }
+
+    /**
+     * 根据条件删除员工数据
+     * @param condition 条件
+     */
+    private void delete(Condition condition) throws CommonException {
+        if (condition != null) {
+            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+            queryBuilder.select("id").where(condition);
+            List<UserEmployeeDO> employeeRecordList = employeeDao.getDatas(queryBuilder.buildQuery());
+            deleteEmployeeList(employeeRecordList);
+
+        } else {
+            //do nothing
+        }
     }
 }

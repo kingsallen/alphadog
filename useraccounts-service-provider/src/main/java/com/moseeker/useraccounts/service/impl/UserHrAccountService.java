@@ -940,7 +940,7 @@ public class UserHrAccountService {
                 // 判断是否需要设置积分
                 if (flag.intValue() == 0) {
                     if (reward) {
-                        userEmployeeDO.setAward(employeeMap.get(userEmployeeDO.getId()));
+                        userEmployeeVO.setAward(employeeMap.get(userEmployeeDO.getId()));
                     } else {
                         userEmployeeVO.setAward(userEmployeeDO.getAward());
                     }
@@ -1078,10 +1078,11 @@ public class UserHrAccountService {
         try {
             response = searchengineServices.queryAwardRanking(companyIds, timespan, pageSize, pageNumber);
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            throw UserAccountException.SEARCH_ES_ERROR;
         }
         // ES取到数据
         if (response != null && response.getStatus() == 0) {
+            logger.info("ES date:{}", response.getData());
             EmployeeRankObj rankObj = JSONObject.parseObject(response.getData(), EmployeeRankObj.class);
             List<EmployeeRank> employeeRankList = rankObj.getData();
             if (employeeRankList != null && employeeRankList.size() > 0) {

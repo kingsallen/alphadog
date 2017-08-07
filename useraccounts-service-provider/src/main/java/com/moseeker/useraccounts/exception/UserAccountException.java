@@ -15,7 +15,7 @@ public class UserAccountException extends CommonException {
     public static final UserAccountException USEREMPLOYEES_WRONG = new UserAccountException(42007, "员工ID设置错误！");
     public static final UserAccountException USEREMPLOYEES_EMPTY = new UserAccountException(42008, "员工数据不存在！");
     public static final UserAccountException IMPORT_DATA_WRONG = new UserAccountException(42009, "导入员工数据有误！");
-    public static final UserAccountException IMPORT_DATA_EMPTY = new UserAccountException(42009, "导入员工数据有误！");
+    public static final UserAccountException IMPORT_DATA_EMPTY = new UserAccountException(42005, "导入员工数据为空！");
     public static final UserAccountException PERMISSION_DENIED = new UserAccountException(42010, "员工ID和公司ID不匹配！");
     public static final UserAccountException COMPANYID_ENPTY = new UserAccountException(42011, "公司ID不能为空！");
     public static final UserAccountException ADD_IMPORTERMONITOR_FAILED = new UserAccountException(42012, "添加公司认证配置文件失败");
@@ -24,6 +24,7 @@ public class UserAccountException extends CommonException {
     public static final UserAccountException EMAIL_REPETITION = new UserAccountException(42015, "员工邮箱信息重复");
     public static final UserAccountException CUSTOM_FIELD_REPETITION = new UserAccountException(42016, "员工姓名和自定义字段信息重复");
     public static final UserAccountException COMPANY_DATA_EMPTY = new UserAccountException(90010, "公司信息不存在！");
+    public static final UserAccountException SEARCH_ES_ERROR = new UserAccountException(90011, "查询ES数据发生异常!");
 
 
     private final int code;
