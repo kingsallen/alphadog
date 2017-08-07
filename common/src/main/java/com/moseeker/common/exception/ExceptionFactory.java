@@ -1,4 +1,4 @@
-package com.moseeker.thrift.gen.common.struct;
+package com.moseeker.common.exception;
 
 import java.util.HashMap;
 
@@ -8,17 +8,17 @@ import java.util.HashMap;
  */
 public abstract class ExceptionFactory {
 
-    private static HashMap<Integer, BIZException> exceptionHashMap = new HashMap<>();  //异常消息池
+    private static HashMap<Integer, CommonException> exceptionHashMap = new HashMap<>();  //异常消息池
 
-    public static BIZException buildException(int code) {
+    public static CommonException buildException(int code) {
         return buildException(code, null);
     }
 
-    public static BIZException buildException(int code, String message) {
+    public static CommonException buildException(int code, String message) {
         if(exceptionHashMap.containsKey(code)) {
             return exceptionHashMap.get(code);
         } else {
-            BIZException bizException = new BIZException();
+            CommonException bizException = new CommonException();
             bizException.setCode(code);
             bizException.setMessage(message);
             addException(bizException);
@@ -26,7 +26,7 @@ public abstract class ExceptionFactory {
         }
     }
 
-    protected static boolean addException(BIZException e) {
+    protected static boolean addException(CommonException e) {
         boolean flag = false;
         if(e != null  && e.getCode() > 0) {
             if(!exceptionHashMap.containsKey(e.getCode())) {
@@ -37,14 +37,14 @@ public abstract class ExceptionFactory {
         return flag;
     }
 
-    protected synchronized boolean updateException(BIZException e) {
+    protected synchronized boolean updateException(CommonException e) {
         boolean flag = false;
         if(e != null  && e.getCode() > 0) {
             if(!exceptionHashMap.containsKey(e.getCode())) {
                 exceptionHashMap.put(e.getCode(), e);
                 flag = true;
             } else {
-                BIZException exception = exceptionHashMap.get(e.getCode());
+                CommonException exception = exceptionHashMap.get(e.getCode());
                 exception.setMessage(e.getMessage());
             }
         }
@@ -56,7 +56,14 @@ public abstract class ExceptionFactory {
     }
 
     public boolean updateException(int code, String msg) {
-        BIZException bizException = new BIZException(code, msg);
+        CommonException bizException = new CommonException(code, msg);
         return updateException(bizException);
+    }
+
+    public static CommonException buildException(Category category) throws ParamIllegalException {
+        if(category == null) {
+            throw new ParamIllegalException("异常类型不存在");
+        }
+        return buildException(category.getCode(), category.getMsg());
     }
 }

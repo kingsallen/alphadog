@@ -51,8 +51,8 @@ public class ResponseUtils {
     /**
      * 处理失败响应的数据格式
      *
-     * @param constantErrorCodeMessage json格式的String字符串"{}", 否则会抛异常
-     *                                 eg: syntax error, dao 1, json : JobApplication failed
+     * @param constantErrorCodeMessage json格式的String字符串"{}", 否则会抛异常 eg: syntax error, dao 1, json :
+     *                                 JobApplication failed
      * @return
      * @throws ParamNullException
      */
@@ -86,6 +86,17 @@ public class ResponseUtils {
             throw new ParamNullException();
         }
         response.setData(Constant.NONE_JSON);
+        response.setStatus(status);
+        response.setMessage(message);
+        return response;
+    }
+
+    public static Response fail(int status, String message, Object obj) throws ParamNullException {
+        Response response = new Response();
+        if (StringUtils.isNullOrEmpty(message)) {
+            throw new ParamNullException();
+        }
+        response.setData(JSON.toJSONString(obj));
         response.setStatus(status);
         response.setMessage(message);
         return response;

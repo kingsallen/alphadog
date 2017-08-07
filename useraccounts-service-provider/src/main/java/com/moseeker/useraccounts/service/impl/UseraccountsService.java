@@ -50,6 +50,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -268,6 +269,38 @@ public class UseraccountsService {
         if (smsSender.sendSMS_signup(mobile)) {
             return ResponseUtils.success(null);
         } else {
+            return ResponseUtils.fail(ConstantErrorCodeMessage.USER_SMS_LIMITED);
+        }
+    }
+
+    /**
+     * 发送语音验证码
+     * @param mobile
+     * @return
+     */
+    public Response postsendsignupcodeVoice(String mobile) {
+
+        if (mobile.length() < 10) {
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+        }
+
+        String code = redisClient.get(0, "SMS_SIGNUP", mobile);
+        if(StringUtils.isNotNullOrEmpty(code)) {
+            int count  = NumberUtils.toInt(redisClient.get(0, "SMS_SIGNUP", mobile.concat("_").concat(String.valueOf(code))), 0);
+            if (count == 0) {
+                if (smsSender.sendSMS_signup_voice(mobile, code)) {
+                    redisClient.set(0, "SMS_SIGNUP", mobile.concat("_").concat(String.valueOf(code)), "1");
+                    return ResponseUtils.success(null);
+                } else {
+                    logger.info("语音验证码发送失败，mobile={}，code={}", mobile, code);
+                    return ResponseUtils.fail(ConstantErrorCodeMessage.USER_SMS_LIMITED);
+                }
+            } else {
+                logger.info("用户：{}，已发送过语音验证码：{}，请勿重复操作", mobile, code);
+                return ResponseUtils.fail(ConstantErrorCodeMessage.USER_SMS_LIMITED);
+            }
+        } else {
+            logger.info("用户：{}，请确认发送过短信验证码再进行该操作", mobile);
             return ResponseUtils.fail(ConstantErrorCodeMessage.USER_SMS_LIMITED);
         }
     }
@@ -731,7 +764,7 @@ public class UseraccountsService {
      * @param userId     用户ID
      * @param positionId 职位ID //@param favorite 0:收藏, 1:取消收藏, 2:感兴趣
      * @return data : {true //感兴趣} {false //不感兴趣}
-     *
+     * <p>
      * TODO : 不知道以后职位收藏啥逻辑, 赞不支持
      */
     public Response getUserFavPositionCountByUserIdAndPositionId(int userId, int positionId) throws TException {
@@ -1073,25 +1106,11 @@ public class UseraccountsService {
 
     public boolean ifExistProfile(String mobile) {
         Query.QueryBuilder qu = new Query.QueryBuilder();
-        qu.where("username", mobile);
-        try {
-            UserUserDO user = userdao.getData(qu.buildQuery());
-            if (user == null || user.getId() == 0) {
-                qu.clear();
-                qu.where("mobile", mobile).and("source", String.valueOf(UserSource.RETRIEVE_PROFILE.getValue()));
-                user = userdao.getData(qu.buildQuery());
-            }
-            if (user != null && user.getId() > 0) {
-                ProfileProfileRecord record = profileDao.getProfileByUserId((int) user.getId());
-                if (record != null) {
-                    return true;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-        } finally {
-            //do nothing
+        qu.where("mobile", mobile).and("source", String.valueOf(UserSource.RETRIEVE_PROFILE.getValue()));
+        UserUserDO user = userdao.getData(qu.buildQuery());
+        ProfileProfileRecord record = profileDao.getProfileByUserId(user.getId());
+        if (record != null) {
+            return true;
         }
         return false;
     }

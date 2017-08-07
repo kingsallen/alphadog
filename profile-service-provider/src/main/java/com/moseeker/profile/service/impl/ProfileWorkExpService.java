@@ -151,7 +151,7 @@ public class ProfileWorkExpService {
         if (record != null) {
             DictIndustryRecord industryRecord = industryDao.getIndustryByCode(record.getIndustryCode().intValue());
             DictCityRecord cityRecord = cityDao.getCityByCode(record.getCityCode().intValue());
-            HrCompanyRecord company = companyDao.getCompanyById(record.getCompanyId().intValue());
+            HrCompanyRecord company = companyDao.getCompanyRecordById(record.getCompanyId().intValue());
             DictPositionRecord positionRecord = positionDao.getPositionByCode(record.getPositionCode().intValue());
             WorkExp workExp = DBToStruct(record);
             if (industryRecord != null) {
@@ -203,7 +203,7 @@ public class ProfileWorkExpService {
             }
         }
         if (struct.getCompany_id() > 0) {
-            HrCompanyRecord company = companyDao.getCompanyById(struct.getCompany_id());
+            HrCompanyRecord company = companyDao.getCompanyRecordById(struct.getCompany_id());
             if (company == null) {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.HRCOMPANY_NOTEXIST);
             }
@@ -269,7 +269,7 @@ public class ProfileWorkExpService {
             }
         }
         if (struct.getCompany_id() > 0) {
-            HrCompanyRecord company = companyDao.getCompanyById(struct.getCompany_id());
+            HrCompanyRecord company = companyDao.getCompanyRecordById(struct.getCompany_id());
             if (company == null) {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.HRCOMPANY_NOTEXIST);
             }

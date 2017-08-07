@@ -1,21 +1,18 @@
 package com.moseeker.function.service.chaos;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
-import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
-import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.AppId;
-import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.constants.PositionRefreshType;
-import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
-import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
-import com.moseeker.thrift.gen.position.struct.Position;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,8 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * 监听刷新完成队列
@@ -32,7 +27,7 @@ import java.util.List;
  * @author wjf
  */
 @Component
-public class PositionRefreshConsumer {
+public class PositionRefreshConsumer extends RedisConsumer<PositionForSyncResultPojo> {
 
     private static Logger logger = LoggerFactory.getLogger(PositionRefreshConsumer.class);
 
@@ -46,100 +41,69 @@ public class PositionRefreshConsumer {
     private HRThirdPartyAccountDao thirdPartyAccountDao;
 
     @Autowired
-    private UserHrAccountDao userHrAccountDao;
+    PositionSyncFailedNotification syncFailedNotification;
 
-    @Resource(name = "cacheClient")
-    private RedisClient redisClient;
 
     @PostConstruct
     public void startTask() {
-        new Thread(() -> {
-            while (true) {
-                task();
-            }
-        }).start();
+        loopTask(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH_COMPLETED_QUEUE.toString());
     }
 
-    private void task() {
-        try {
-            String sync = fetchCompledPosition();
-            if (StringUtils.isNotNullOrEmpty(sync)) {
-
-                logger.info(" refresh completed queue :" + sync);
-
-                PositionForSyncResultPojo pojo = JSONObject.parseObject(sync, PositionForSyncResultPojo.class);
-
-                writeBack(pojo);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-        } finally {
-            //do nothing
-        }
+    @Override
+    protected PositionForSyncResultPojo convertData(String redisString) {
+        return JSON.parseObject(redisString, PositionForSyncResultPojo.class);
     }
 
     /**
-     * 监听职位同步完成队列
-     *
-     * @return
-     */
-    private String fetchCompledPosition() {
-        List<String> result = redisClient.brpop(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH_COMPLETED_QUEUE.toString());
-        if (result != null && result.size() > 0) {
-            return result.get(1);
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * 回写数据
+     * 刷新信息回写到数据库
      *
      * @param pojo
      */
     @CounterIface
-    private void writeBack(PositionForSyncResultPojo pojo) {
-        ThirdPartyPositionData data = new ThirdPartyPositionData();
+    @Override
+    protected void onComplete(PositionForSyncResultPojo pojo) {
+
+        if (pojo == null) return;
+
+        HrThirdPartyPositionDO data = new HrThirdPartyPositionDO();
         data.setChannel(Byte.valueOf(pojo.getChannel()));
-        data.setPosition_id(Integer.valueOf(pojo.getPosition_id()));
+        data.setPositionId(Integer.valueOf(pojo.getPosition_id()));
+        data.setThirdPartyAccountId(pojo.getAccount_id());
         if (pojo.getStatus() == 0) {
-            data.setIs_refresh((byte) PositionRefreshType.refreshed.getValue());
-            data.setRefresh_time(pojo.getSync_time());
+            data.setIsRefresh((byte) PositionRefreshType.refreshed.getValue());
+            data.setRefreshTime(pojo.getSync_time());
         } else {
-            data.setIs_refresh((byte) PositionRefreshType.failed.getValue());
-            if (pojo.getStatus() == 2) {
-                data.setSync_fail_reason(Constant.POSITION_SYNCHRONIZATION_FAILED);
-            } else {
-                data.setSync_fail_reason(pojo.getMessage());
-            }
+            data.setIsRefresh((byte) PositionRefreshType.failed.getValue());
         }
+        Query.QueryBuilder qu = new Query.QueryBuilder();
+        qu.where("id", pojo.getPosition_id());
+        JobPositionDO moseekerPosition = positionDao.getData(qu.buildQuery());
+        if (moseekerPosition == null || moseekerPosition.getId() < 1) {
+            logger.warn("刷新完成队列中包含不存在的职位:{}", pojo.getPosition_id());
+            return;
+        }
+
+        HrThirdPartyPositionDO thirdPartyPositionDO = null;
         try {
-            Query.QueryBuilder qu = new Query.QueryBuilder();
-            qu.where("id", pojo.getPosition_id());
-            logger.info("refresh completed queue search position:" + pojo.getPosition_id());
-            Position p = positionDao.getData(qu.buildQuery(), Position.class);
-            if (p != null && p.getId() > 0) {
-                logger.info("refresh completed queue position existî");
-                logger.info("refresh completed queue update thirdpartyposition to synchronized");
-                thirdpartyPositionDao.upsertThirdPartyPosition(data);
-                if (pojo.getStatus() == 0) {
-                    HrThirdPartyAccountDO thirdPartyAccount = new HrThirdPartyAccountDO();
-                    thirdPartyAccount.setId(pojo.getAccount_id());
-                    thirdPartyAccount.setRemainNum(pojo.getRemain_number());
-                    thirdPartyAccount.setRemainProfileNum(pojo.getResume_number());
-                    thirdPartyAccount.setUpdateTime((new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
-                    thirdPartyAccount.setSyncTime(thirdPartyAccount.getUpdateTime());
-                    //positionDao.updatePosition(p);
-                    logger.info("refresh completed queue update thirdpartyposition to synchronized");
-                    thirdPartyAccountDao.updateData(thirdPartyAccount);
-                }
-            }
-        } catch (Exception e) {
+            thirdPartyPositionDO = thirdpartyPositionDao.upsertThirdPartyPosition(data);
+        } catch (BIZException e) {
             e.printStackTrace();
-            logger.error(e.getMessage(), e);
-        } finally {
-            //do nothing
+            logger.error("读取职位刷新队列后无法更新到数据库:{}", JSON.toJSONString(data));
+        }
+
+        if (pojo.getStatus() == 2 || pojo.getStatus() == 9) {
+            syncFailedNotification.sendRefreshFailedMail(moseekerPosition, thirdPartyPositionDO, pojo);
+        }
+
+        if (pojo.getStatus() == 0 && pojo.getRemain_number() > -1 && pojo.getResume_number() > -1) {
+            HrThirdPartyAccountDO thirdPartyAccount = new HrThirdPartyAccountDO();
+            thirdPartyAccount.setId(pojo.getAccount_id());
+            thirdPartyAccount.setRemainNum(pojo.getRemain_number());
+            thirdPartyAccount.setRemainProfileNum(pojo.getResume_number());
+            thirdPartyAccount.setUpdateTime((new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
+            thirdPartyAccount.setSyncTime(thirdPartyAccount.getUpdateTime());
+            logger.info("刷新完成队列中更新第三方帐号信息:{}", JSON.toJSONString(thirdPartyAccount));
+            thirdPartyAccountDao.updateData(thirdPartyAccount);
         }
     }
 

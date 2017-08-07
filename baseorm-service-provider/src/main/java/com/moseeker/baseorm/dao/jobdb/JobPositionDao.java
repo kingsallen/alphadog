@@ -2,14 +2,10 @@ package com.moseeker.baseorm.dao.jobdb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.analytics.tables.StJobSimilarity;
-import com.moseeker.baseorm.db.dictdb.tables.DictCity;
-import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
 import com.moseeker.baseorm.db.hrdb.tables.*;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
-import com.moseeker.baseorm.db.jobdb.tables.JobPositionCity;
-import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionCityRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
@@ -27,11 +23,9 @@ import com.moseeker.thrift.gen.position.struct.PositionDetails;
 
 import org.jooq.*;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -66,49 +60,6 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
 
     public List<JobPositionDO> getPositions(Query query) {
         return this.getDatas(query);
-    }
-
-    public Position getPositionWithCityCode(Query query) {
-
-        logger.info("JobPositionDao getPositionWithCityCode");
-
-        Position position = new Position();
-        JobPositionRecord record = this.getRecord(query);
-        if (record != null) {
-            position = record.into(position);
-            Map<Integer, String> citiesParam = new HashMap<Integer, String>();
-            List<Integer> cityCodes = new ArrayList<>();
-            Result<JobPositionCityRecord> cities = create.selectFrom(JobPositionCity.JOB_POSITION_CITY)
-                    .where(JobPositionCity.JOB_POSITION_CITY.PID.equal(record.getId())).fetch();
-            if (cities != null && cities.size() > 0) {
-                cities.forEach(city -> {
-                    logger.info("code:{}", city.getCode());
-                    if (city.getCode() != null) {
-                        citiesParam.put(city.getCode(), null);
-                        cityCodes.add(city.getCode());
-                    }
-                });
-                logger.info("cityCodes:{}", cityCodes);
-                Result<DictCityRecord> dictDicties = create.selectFrom(DictCity.DICT_CITY).where(DictCity.DICT_CITY.CODE.in(cityCodes)).fetch();
-                if (dictDicties != null && dictDicties.size() > 0) {
-                    dictDicties.forEach(dictCity -> {
-                        citiesParam.entrySet().forEach(entry -> {
-                            if (entry.getKey().intValue() == dictCity.getCode().intValue()) {
-                                logger.info("cityName:{}", dictCity.getName());
-                                entry.setValue(dictCity.getName());
-                            }
-                        });
-                    });
-                }
-            }
-
-            position.setCompany_id(record.getCompanyId().intValue());
-            position.setCities(citiesParam);
-            citiesParam.forEach((cityCode, cityName) -> {
-                logger.info("cityCode:{}, cityName:{}", cityCode, cityName);
-            });
-        }
-        return position;
     }
 
     /**
@@ -492,46 +443,35 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
         return record;
     }
 
-    public int updatePosition(Position position) {
-        int count = 0;
-        if (position.getId() > 0) {
-            JobPositionRecord record = BeanUtils.structToDB(position, JobPositionRecord.class);
-            try {
-                count = this.updateRecord(record);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                logger.error(e.getMessage(), e);
-            } finally {
-                //do nothing
-            }
-        }
-        return count;
-    }
-
     public void updatePositionList(List<Position> list) {
         List<JobPositionRecord> records = BeanUtils.structToDB(list, JobPositionRecord.class);
         this.updateRecords(records);
     }
 
-    public List<Integer> listPositionIdByUserId(int userId) {
+    public List<Integer> listPositionIdByUserId(List<Integer> companyIds) {
         List<Integer> list = new ArrayList<>();
-        UserEmployeeRecord employeeRecord = create.selectFrom(UserEmployee.USER_EMPLOYEE)
-                .where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.equal(userId)
-                        .and(UserEmployee.USER_EMPLOYEE.DISABLE.equal((byte) 0))
-                        .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.equal((byte) 0)))
-                .fetchOne();
-        if (employeeRecord != null) {
-            Result<Record1<Integer>> result = create.select(JobPosition.JOB_POSITION.ID)
-                    .from(JobPosition.JOB_POSITION)
-                    .where(JobPosition.JOB_POSITION.COMPANY_ID.equal(employeeRecord.getCompanyId()))
-                    .fetch();
-            if (result != null && result.size() > 0) {
-                result.forEach(record -> {
-                    list.add(record.value1());
-                });
-            }
+        Result<Record1<Integer>> result = create.select(JobPosition.JOB_POSITION.ID)
+                .from(JobPosition.JOB_POSITION)
+                .where(JobPosition.JOB_POSITION.COMPANY_ID.in(companyIds))
+                .fetch();
+        if (result != null && result.size() > 0) {
+            result.forEach(record -> {
+                list.add(record.value1());
+            });
         }
         return list;
+    }
+
+    public List<Integer> getPositionIds(List<Integer> companyId) {
+
+        Result<Record1<Integer>> result = create.select(JobPosition.JOB_POSITION.ID)
+                .from(JobPosition.JOB_POSITION)
+                .where(JobPosition.JOB_POSITION.COMPANY_ID.in(companyId))
+                .fetch();
+        if (result != null && result.size() > 0) {
+            return result.stream().filter(record1 -> record1.value1() != null && record1.value1().intValue() > 0)
+                    .map(record1 -> record1.value1()).collect(Collectors.toList());
+        }
+        return null;
     }
 }

@@ -22,9 +22,11 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserSettingsRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
+import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
 import org.jooq.*;
 import org.jooq.impl.TableImpl;
 import org.slf4j.Logger;
@@ -32,6 +34,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -950,20 +954,91 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
         return value;
     };
 
-    public Response getResourceByApplication(String downloadApi, String password, int companyId, int sourceId, int atsStatus, boolean recommender, boolean dl_url_required, Map<String, List<String>> filter) {
+    private Condition buildProfileCondition(Map<String, String> conditionsMap) {
+        Condition condition = JobApplication.EMAIL_STATUS.eq(0);
+
+        if (conditionsMap == null || conditionsMap.size() == 0) {
+            return condition;
+        }
+
+        //职位申请开始借书时间
+
+        if (conditionsMap.get("apply_start") != null && FormCheck.isDateTime(conditionsMap.get("apply_start"))) {
+            LocalDateTime start = LocalDateTime.parse(conditionsMap.get("apply_start"), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            condition = condition.and(JobApplication.JOB_APPLICATION._CREATE_TIME.ge(Timestamp.valueOf(start)));
+        }
+
+        if (conditionsMap.get("apply_end") != null && FormCheck.isDateTime(conditionsMap.get("apply_end"))) {
+            LocalDateTime start = LocalDateTime.parse(conditionsMap.get("apply_end"), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            condition = condition.and(JobApplication.JOB_APPLICATION._CREATE_TIME.ge(Timestamp.valueOf(start)));
+        }
+
+
+        return condition;
+    }
+
+    private int getProfilePage(Map<String, String> conditionsMap) {
+        int page = 1;
+
+        if (conditionsMap == null || conditionsMap.size() == 0) {
+            return page;
+        }
+
+        String pageStr = conditionsMap.get("page");
+
+        if (org.apache.commons.lang.StringUtils.isNumeric(pageStr)) {
+            page = Integer.valueOf(pageStr);
+        }
+
+        if (page < 1) page = 1;
+
+        return page;
+
+    }
+
+    private int getProfilePageSize(Map<String, String> conditionsMap) {
+        int pageSize = 10;
+        int maxPageSize = 100;
+
+        if (conditionsMap == null || conditionsMap.size() == 0) {
+            return pageSize;
+        }
+
+        String pageSizeStr = conditionsMap.get("page_size");
+
+        if (org.apache.commons.lang.StringUtils.isNumeric(pageSizeStr)) {
+            pageSize = Integer.valueOf(pageSizeStr);
+        }
+
+        if (pageSize < 1) pageSize = 1;
+        if (pageSize > maxPageSize) pageSize = maxPageSize;
+
+        return pageSize;
+    }
+
+    public Response getResourceByApplication(String downloadApi, String password, ProfileApplicationForm profileApplicationForm) {
         logger.info("getResourceByApplication:=============={}:{}", "start", 0);
         long startTime = System.currentTimeMillis();
+
+        int page = getProfilePage(profileApplicationForm.getConditions());
+        int pageSize = getProfilePageSize(profileApplicationForm.getConditions());
+
         JobPosition jobposition = JobPosition.JOB_POSITION;
         JobApplication jobApplication = JobApplication.JOB_APPLICATION;
-        List<AbstractMap.SimpleEntry<Map<String, Object>, Map<String, Object>>> positionApplications = create
-                .select()
+        List<AbstractMap.SimpleEntry<Map<String, Object>, Map<String, Object>>> positionApplications = create.select()
                 .from(jobposition.join(jobApplication).on(JobPosition.ID.eq(JobApplication.POSITION_ID)))
-                .where(JobApplication.EMAIL_STATUS.eq(0).and(JobPosition.COMPANY_ID.eq(companyId)).and(JobPosition.SOURCE_ID.eq(sourceId)).and(JobApplication.ATS_STATUS.eq(atsStatus)))
+                .where(JobPosition.COMPANY_ID.eq(profileApplicationForm.getCompany_id()))
+                .and(JobPosition.SOURCE_ID.eq(profileApplicationForm.getSource_id()))
+                .and(JobApplication.ATS_STATUS.eq(profileApplicationForm.getAts_status()))
+                .and(buildProfileCondition(profileApplicationForm.getConditions()))
+                .orderBy(JobApplication.JOB_APPLICATION._CREATE_TIME.desc())
+                .limit(pageSize)
+                .offset((page - 1) * pageSize)
                 .fetch()
                 .stream()
                 .map(record -> new AbstractMap.SimpleEntry<>(record.into(jobposition).intoMap(), record.into(jobApplication).intoMap()))
                 .collect(Collectors.toList());
-        List<Map<String, Object>> datas = getRelatedDataByJobApplication(create, positionApplications, downloadApi, password, recommender, dl_url_required, filter);
+        List<Map<String, Object>> datas = getRelatedDataByJobApplication(create, positionApplications, downloadApi, password, profileApplicationForm.isRecommender(), profileApplicationForm.isDl_url_required(), profileApplicationForm.getFilter());
         logger.info("getResourceByApplication:=============={}:{}", "end", System.currentTimeMillis() - startTime);
         return ResponseUtils.successWithoutStringify(JSON.toJSONString(datas, new SerializeFilter[]{
                         valueFilter,
@@ -1493,6 +1568,9 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                         if (sysUserId != null && sysUserId > 0 && sysUserId == recommenderId.intValue()) {
                             recommenderMap.put("employeeid", mp.get("employeeid"));
                             recommenderMap.put("custom_field", mp.get("custom_field"));
+                            recommenderMap.put("custom_field_values", mp.get("custom_field_values"));
+                            recommenderMap.put("auth_method", mp.get("auth_method"));
+                            recommenderMap.put("employee_email", mp.get("email"));
                             break;
                         }
                     }
@@ -1706,7 +1784,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
 
     public ProfileProfileRecord getProfileByUserId(int userId) {
         return create.selectFrom(ProfileProfile.PROFILE_PROFILE)
-                .where(ProfileProfile.PROFILE_PROFILE.USER_ID.equal((int)(userId)))
+                .where(ProfileProfile.PROFILE_PROFILE.USER_ID.equal((int) (userId)))
                 .fetchAny();
     }
 
@@ -1714,7 +1792,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
         Timestamp updateTime = new Timestamp(System.currentTimeMillis());
         return create.update(ProfileProfile.PROFILE_PROFILE)
                 .set(ProfileProfile.PROFILE_PROFILE.UPDATE_TIME, updateTime)
-                .where(ProfileProfile.PROFILE_PROFILE.USER_ID.eq((int)(userId)))
+                .where(ProfileProfile.PROFILE_PROFILE.USER_ID.eq((int) (userId)))
                 .execute();
     }
 }

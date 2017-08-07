@@ -15,18 +15,6 @@ struct City {
 }
 
 /*
- *第三方渠道城市
- */
-struct CityMap {
-    1: i32 id,
-    2: i32 code,
-    3: i32 code_other,
-    4: i32 channel,
-    5: i32 status,
-    6: string create_time
-}
-
-/*
   院校字典实体
 */
 struct College {

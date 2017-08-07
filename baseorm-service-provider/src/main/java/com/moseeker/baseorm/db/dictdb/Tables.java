@@ -12,6 +12,7 @@ import com.moseeker.baseorm.db.dictdb.tables.DictConstant;
 import com.moseeker.baseorm.db.dictdb.tables.DictCountry;
 import com.moseeker.baseorm.db.dictdb.tables.DictIndustry;
 import com.moseeker.baseorm.db.dictdb.tables.DictIndustryType;
+import com.moseeker.baseorm.db.dictdb.tables.DictLiepinOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictMajor;
 import com.moseeker.baseorm.db.dictdb.tables.DictPosition;
 import com.moseeker.baseorm.db.dictdb.tables.DictZhilianOccupation;
@@ -59,7 +60,7 @@ public class Tables {
     public static final DictCollege DICT_COLLEGE = com.moseeker.baseorm.db.dictdb.tables.DictCollege.DICT_COLLEGE;
 
     /**
-     * 常量字典表
+     * The table <code>dictdb.dict_constant</code>.
      */
     public static final DictConstant DICT_CONSTANT = com.moseeker.baseorm.db.dictdb.tables.DictConstant.DICT_CONSTANT;
 
@@ -69,7 +70,7 @@ public class Tables {
     public static final DictCountry DICT_COUNTRY = com.moseeker.baseorm.db.dictdb.tables.DictCountry.DICT_COUNTRY;
 
     /**
-     * 行业二级分类字典表
+     * The table <code>dictdb.dict_industry</code>.
      */
     public static final DictIndustry DICT_INDUSTRY = com.moseeker.baseorm.db.dictdb.tables.DictIndustry.DICT_INDUSTRY;
 
@@ -77,6 +78,11 @@ public class Tables {
      * 行业一级分类字典表
      */
     public static final DictIndustryType DICT_INDUSTRY_TYPE = com.moseeker.baseorm.db.dictdb.tables.DictIndustryType.DICT_INDUSTRY_TYPE;
+
+    /**
+     * The table <code>dictdb.dict_liepin_occupation</code>.
+     */
+    public static final DictLiepinOccupation DICT_LIEPIN_OCCUPATION = com.moseeker.baseorm.db.dictdb.tables.DictLiepinOccupation.DICT_LIEPIN_OCCUPATION;
 
     /**
      * 专业字典表

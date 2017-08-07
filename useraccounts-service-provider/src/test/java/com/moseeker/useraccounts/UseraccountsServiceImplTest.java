@@ -1,5 +1,10 @@
 package com.moseeker.useraccounts;
 
+import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices.Client;
+import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices.Client.Factory;
+import com.moseeker.useraccounts.config.AppConfig;
+import com.moseeker.useraccounts.service.impl.SmsSender;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TCompactProtocol;
 import org.apache.thrift.protocol.TMultiplexedProtocol;
@@ -8,10 +13,10 @@ import org.apache.thrift.transport.TFastFramedTransport;
 import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
 import org.junit.Test;
-
-import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices.Client;
-import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices.Client.Factory;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * 用户服务 客户端测试类
@@ -19,7 +24,12 @@ import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices.Client.
  *
  * Created by zzh on 16/5/25.
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = AppConfig.class)
 public class UseraccountsServiceImplTest {
+
+	@Autowired
+	protected SmsSender smsSender;
 
     ////@Test
     public void testDao() {
@@ -42,4 +52,11 @@ public class UseraccountsServiceImplTest {
 			}
 		}
     }
+
+
+    @Test
+	public  void testVoiceSms(){
+
+		smsSender.sendSMS_signup_voice("18516778987", "897209");
+	}
 }
