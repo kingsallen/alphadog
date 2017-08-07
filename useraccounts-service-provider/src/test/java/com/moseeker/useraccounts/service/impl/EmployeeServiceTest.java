@@ -8,6 +8,7 @@ import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.useraccounts.config.AppConfig;
 import java.util.List;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -21,8 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * Created by lucky8987 on 17/5/17.
  */
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(classes = AppConfig.class)
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = AppConfig.class)
 public class EmployeeServiceTest {
 
     @Autowired
@@ -103,7 +104,7 @@ public class EmployeeServiceTest {
         //System.out.println(result);
     }
 
-//    @Test
+    @Test
     public void awardRankingTest() {
         List<EmployeeAward> response = service.awardRanking(29154, 39978, "2017");
         System.out.println(response);

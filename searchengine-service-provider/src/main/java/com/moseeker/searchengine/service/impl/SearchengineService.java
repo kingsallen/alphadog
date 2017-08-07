@@ -11,8 +11,10 @@ import com.moseeker.common.util.ConverTools;
 import com.moseeker.searchengine.util.SearchUtil;
 import com.moseeker.thrift.gen.common.struct.Response;
 
+import com.sun.jmx.snmp.Timestamp;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -29,6 +31,10 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.script.Script;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.metrics.MetricsAggregationBuilder;
 import org.elasticsearch.search.sort.ScriptSortBuilder;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
@@ -315,7 +321,7 @@ public class SearchengineService {
         return builder;
     }
 
-    private SearchRequestBuilder getSearchRequestBuilder(List<Integer> companyIds, String activation, int pageSize, int pageNum, String timespan) {
+    private SearchRequestBuilder getSearchRequestBuilder(List<Integer> companyIds, Integer employeeId, String activation, int pageSize, int pageNum, String timespan) {
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
         searchUtil.handleTerms(Arrays.toString(companyIds.toArray()).replaceAll("\\[|\\]| ", ""), query, "company_id");
@@ -323,19 +329,53 @@ public class SearchengineService {
         if (activation != null) {
             searchUtil.handleTerms(activation, query, "activation");
         }
-
-        SearchRequestBuilder searchRequestBuilder = searchUtil.getEsClient().prepareSearch("awards").setQuery(query)
+        if (employeeId != null) {
+            searchUtil.handleTerms(String.valueOf(employeeId), query, "employee_id");
+        }
+        SearchRequestBuilder searchRequestBuilder = searchUtil.getEsClient().prepareSearch("awards").setTypes("award").setQuery(query)
                 .addSort(buildSortScript("awards." + timespan + ".award", SortOrder.DESC))
                 .addSort(buildSortScript("awards." + timespan + ".last_update_time", SortOrder.ASC))
                 .setFetchSource(new String[]{"employee_id", "awards." + timespan + ".award", "awards." + timespan + ".last_update_time"}, null);
         if (pageNum > 0 && pageSize > 0) {
             searchRequestBuilder.setSize(pageSize).setFrom((pageNum - 1) * pageSize);
         }
+        logger.info(searchRequestBuilder.toString());
         return searchRequestBuilder;
     }
 
+    /*
+      "scripted_metric": {
+        "init_script": "_agg['transactions'] = []",
+        "map_script": "int i = 0; val=doc['awards.2015'].value;if(val){if(val.award>100){i=i+1}else if(val.awars==100&&val.timespan<1000){i=i+1;}};_agg['transactions'].add(i)",
+        "combine_script": "profit = 0; for (t in _agg.transactions) { profit += t }; return profit",
+        "reduce_script": "profit = 0; for (a in _aggs) { profit += a }; return profit"
+      }
+
+     */
+    private AbstractAggregationBuilder handleAggScale(String nodeName, int award, long lastUpdateTime){
+        StringBuffer sb=new StringBuffer();
+        sb.append("int i = 0;");
+        sb.append(String.format("awardVal = doc['%s.award'].value; lastUpTimeVal = doc['%s.last_update_time'].value;", nodeName, nodeName));
+        sb.append(String.format("if(awardVal > %d) {i = i+1}", award));
+        sb.append(String.format("else if(awardVal == %d && lastUpTimeVal < %d) {i = i+1};", award, lastUpdateTime));
+        sb.append("_agg['transactions'].add(i)");
+        String mapScript=sb.toString();
+        StringBuffer sb1=new StringBuffer();
+        sb1.append("profit = 0; for (t in _agg.transactions) { profit += t }; return profit");
+        String combinScript=sb1.toString();
+        StringBuffer sb2=new StringBuffer();
+        sb2.append("profit = 0; for (a in _aggs) { profit += a }; return profit");
+        String reduceScript=sb2.toString();
+        MetricsAggregationBuilder build= AggregationBuilders.scriptedMetric("ranking")
+                .initScript(new Script("_agg['transactions'] = []"))
+                .mapScript(new Script(mapScript))
+                .reduceScript(new Script(reduceScript))
+                .combineScript(new Script(combinScript));
+        return build;
+    }
+
     public Response queryAwardRanking(List<Integer> companyIds, String timespan, int pageSize, int pageNum) {
-        SearchRequestBuilder searchRequestBuilder = getSearchRequestBuilder(companyIds, null, pageSize, pageNum, timespan);
+        SearchRequestBuilder searchRequestBuilder = getSearchRequestBuilder(companyIds, null, null, pageSize, pageNum, timespan);
         SearchResponse response = searchRequestBuilder.execute().actionGet();
         List<Map<String, Object>> data = new ArrayList<>();
         Map<String, Object> object = new HashMap<>();
@@ -353,7 +393,7 @@ public class SearchengineService {
 
     public Response queryAwardRankingInWx(List<Integer> companyIds, String timespan, Integer employeeId) {
         // 查找所有员工的积分排行
-        SearchResponse response =  getSearchRequestBuilder(companyIds, "0", 0, 0, timespan).setSize(1000).execute().actionGet();
+        SearchResponse response =  getSearchRequestBuilder(companyIds, null, "0", 22, 1, timespan).execute().actionGet();
         // 保证插入有序，使用linkedhashMap
         Map<Integer, Object> data = new LinkedHashMap<>();
         int index = 1;
@@ -372,17 +412,38 @@ public class SearchengineService {
         // 当前用户在 >= 22 名，显示返回前22条，小于22条返回前20+用户前一名+用户排名+用户后一名，未上榜返回前20条
         List<Object> allRankingList = new ArrayList<>(data.values());
         List<Object> resultList = new ArrayList<>(23);
-        if (!data.isEmpty() && data.containsKey(employeeId)) {
-            int ranking = allRankingList.indexOf(data.get(employeeId)) + 1;
-            if(ranking <= 22) {
-                resultList = allRankingList.subList(0, allRankingList.size() >= 22 ? 22 : allRankingList.size());
-            } else {
-                resultList = allRankingList.subList(0, 20);
-                resultList.addAll(allRankingList.subList(ranking - 2, ranking));
-            }
+        if ((!data.isEmpty() && data.containsKey(employeeId)) || (employeeId == null || employeeId == 0)) {
+            resultList = allRankingList.subList(0, allRankingList.size() >= 22 ? 22 : allRankingList.size());
         } else {
-            // 查询前20条
+            // 默认查询前20条
             resultList = allRankingList.subList(0, allRankingList.size() >= 20 ? 20 : allRankingList.size());
+            SearchResponse hitEmployee =  getSearchRequestBuilder(companyIds, employeeId,"0", 0, 0, timespan).execute().actionGet();
+            if (hitEmployee != null && hitEmployee.getHits().getHits().length > 0) {
+                JSONObject employeeJson = JSONObject.parseObject(hitEmployee.getHits().getHits()[0].getSourceAsString()).getJSONObject("awards").getJSONObject(timespan);
+                int employeeAward = employeeJson.getIntValue("award");
+                long lastUpdateTime = java.sql.Timestamp.valueOf(LocalDateTime.parse(employeeJson.getString("last_update_time"))).getTime();
+                if (employeeAward != 0) {
+                    // 获取用户名次
+                    SearchRequestBuilder builder=getSearchRequestBuilder(companyIds, null,"0", 0, 0, timespan).
+                            addAggregation(handleAggScale("awards." + timespan, employeeAward, lastUpdateTime));
+                    logger.info(builder.toString());
+                    SearchResponse hitEmployeeRanking = builder.execute().actionGet();
+                    if (hitEmployeeRanking != null && hitEmployeeRanking.getHits().getHits().length > 0) {
+                        int ranking = (int)hitEmployeeRanking.getAggregations().asMap().get("ranking").getProperty("value");
+                        SearchHits hits = getSearchRequestBuilder(companyIds, null,"0", 0, 0, timespan).setFrom(ranking).setSize(3).execute().actionGet().getHits();
+                        for (SearchHit searchHit : hits.getHits()) {
+                            JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
+                            JSONObject obj = JSON.parseObject("{}");
+                            obj.put("employee_id", jsonObject.getIntValue("employee_id"));
+                            obj.put("ranking", ranking);
+                            obj.put("last_update_time", jsonObject.getJSONObject("awards").getJSONObject(timespan).getString("last_update_time"));
+                            obj.put("award", jsonObject.getJSONObject("awards").getJSONObject(timespan).getString("award"));
+                            resultList.add(obj);
+                            ranking++;
+                        }
+                    }
+                }
+            }
         }
         data = resultList.stream().map(m -> JSONObject.parseObject(JSON.toJSONString(m))).collect(Collectors.toMap(k -> TypeUtils.castToInt(k.remove("employee_id")), v -> v));
         return ResponseUtils.success(data);

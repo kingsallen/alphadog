@@ -13,8 +13,6 @@ dependencies {
 
     compile deps["spring-core"]
     compile deps["spring-context"]
-    compile deps["spring-elasticsearch"]
-    compile deps["spring-rabbit"]
 
     testCompile deps["junit"]
     testCompile deps["mockito"]
