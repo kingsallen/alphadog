@@ -12,6 +12,7 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
+import org.elasticsearch.script.Script;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,7 +83,7 @@ public class PositionSearchEngine {
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
         List<String> list=new ArrayList<String>();
         list.add("position.title");
-        searchUtil.handleKeyWordForPrefix(keyWord, false, query, list);
+        searchUtil.handleKeyWordforQueryString(keyWord, false, query, list);
         CommonQuerySentence(industry, salaryCode,cityCode, startTime, endTime, query);
 		return query;
 	}
@@ -101,12 +102,12 @@ public class PositionSearchEngine {
 	    searchUtil.handleTerms(industry, query, "company.industry.industry_code");
         searchUtil.handleTerms(cityCode, query, "position.city_code.code");
         handleDateGT(startTime, query);
-        handleDateLT(startTime, query);
+        handleDateLT(endTime, query);
         handleSalary(salaryCode, query);
 	}
 	//处理时间范围查询，从xxx来时
 	private void handleDateGT(String startTime, QueryBuilder query){
-		if(!StringUtils.isNotEmpty(startTime)){
+		if(StringUtils.isNotEmpty(startTime)){
     		QueryBuilder keyand = QueryBuilders.boolQuery();
     		RangeQueryBuilder fullf = QueryBuilders.rangeQuery("position.publish_date").format(startTime);
     		((BoolQueryBuilder) keyand).must(fullf);
@@ -115,37 +116,52 @@ public class PositionSearchEngine {
 	}
 	// 小于xxxx时间
 	private void handleDateLT(String endTime, QueryBuilder query){
-		if(!StringUtils.isNotEmpty(endTime)){
+		if(StringUtils.isNotEmpty(endTime)){
     		QueryBuilder keyand = QueryBuilders.boolQuery();
     		RangeQueryBuilder fullf = QueryBuilders.rangeQuery("position.publish_date").to(endTime);
     		((BoolQueryBuilder) keyand).must(fullf);
             ((BoolQueryBuilder) query).must(keyand);
     	}
 	}
-	
-	private void handleSalary(String salaryCode,QueryBuilder query){
-		if(!StringUtils.isNotEmpty(salaryCode)){
+
+	//处理排序
+    private	 Script handleSort(String order,String keywords,QueryBuilder query){
+		StringBuffer sb=new StringBuffer();
+		sb.append("double score = _score;");
+		sb.append("name=_source.position.title;");
+		sb.append("if(name.startsWith('"+keywords+"')");
+		sb.append("{score=score*100}");
+		sb.append(";return score;");
+		String scripts=sb.toString();
+		Script script=new Script(scripts);
+		return script;
+	}
+	//处理工资范围
+	public void handleSalary(String salaryCode,QueryBuilder query){
+		if(StringUtils.isNotEmpty(salaryCode)){
 			List<Map> list=convertToListMap(salaryCode);
-			QueryBuilder keyand = QueryBuilders.boolQuery();
+
+			StringBuffer sb=new StringBuffer();
+			sb.append("top=doc['position.salary_top'].value;bottom=doc['salary_bottom'].value;flag=0");
 			if(list!=null&&list.size()>0){
-				for(Map map:list){
-					QueryBuilder keyand1 = QueryBuilders.boolQuery();
-					int salaryTop=(int) map.get("salaryTop");
-					QueryBuilder top = QueryBuilders.matchQuery("position.salary_top", salaryTop);
-					((BoolQueryBuilder) keyand1).must(top);
-					int salaryBottom=(int) map.get("salaryBottom");
-					QueryBuilder bottom = QueryBuilders.matchQuery("position.salary_bottom", salaryBottom);
-					((BoolQueryBuilder) keyand1).must(bottom);
-					((BoolQueryBuilder) keyand).should(keyand1);
+				for(int i=0;i<list.size();i++){
+					int salaryTop=(int) list.get(i).get("salaryTop");
+					int salaryBottom=(int) list.get(i).get("salaryBottom");
+					sb.append("if(bottom<"+salaryBottom+"&&top>"+salaryTop+"){flag=1}");
+					sb.append("if(bottom<="+salaryBottom+"&&top>"+salaryBottom+"){flag=1}");
+					sb.append("if(bottom<"+salaryTop+"&&top>="+salaryTop+"){flag=1}");
+					sb.append("if(bottom>="+salaryBottom+"&&top<="+salaryTop+"){flag=1}");
 				}
-				((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
-				((BoolQueryBuilder) query).must(keyand);
+				sb.append("if(flag==1){return true}");
 			}
+			String builder=sb.toString();
+			Script script=new Script(builder);
+			QueryBuilder keyand = QueryBuilders.scriptQuery(script);
+			((BoolQueryBuilder) query).filter(keyand);
 		}
 	}
-	
 	private List<Map> convertToListMap(String data){
-		if(!StringUtils.isNotEmpty(data)){
+		if(StringUtils.isNotEmpty(data)){
 			return JSON.parseArray(data, Map.class);
 		}
 		return null;
