@@ -287,7 +287,7 @@ public class EmployeeService {
             /*
 			 * 开始查询积分规则：
 			 */
-            response.setRewardConfigs(companyConfigEntity.getRerawConfig(companyId));
+            response.setRewardConfigs(companyConfigEntity.getRerawConfig(companyId, true));
             // 查询申请职位list
 
             response.setTotal(userEmployeeDO.getAward());
