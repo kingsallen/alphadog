@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.moseeker.searchengine.util.SearchUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -28,6 +30,7 @@ import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.util.ConfigPropertiesUtil;
@@ -36,33 +39,25 @@ import com.moseeker.common.util.ConfigPropertiesUtil;
 @CounterIface
 public class CompanySearchengine {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
+	@Autowired
+	private SearchUtil searchUtil;
 	//搜索信息
 	public Map<String,Object>  query(String keywords,String citys,String industry,String scale,Integer page,Integer pageSize) throws TException{
-		TransportClient client=this.getEsClient();
+		TransportClient client=searchUtil.getEsClient();
 		SearchResponse hits=queryPrefix(keywords,citys,industry,scale,page,pageSize,client);
 		long hitNum=hits.getHits().getTotalHits();
 		if(hitNum==0&&StringUtils.isNotEmpty(keywords)){
 			SearchResponse hitsData=queryString(keywords,citys,industry,scale,page,pageSize,client);
-			Map<String,Object> map=this.handleData(hitsData);
+			Map<String,Object> map=searchUtil.handleData(hitsData,"companies");
 			logger.info(map.toString());
 			return map;
 		}else{
-			Map<String,Object> map=this.handleData(hits);
+			Map<String,Object> map=searchUtil.handleData(hits,"companies");
 			logger.info(map.toString());
 			return map;
 		}
 	}
-	//构建查询语句query_string
-	public QueryBuilder buildQueryForString(String keywords,String citys,String industry,String scale){
-		QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
-        QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
-        boolean hasKey = false;
-        this.handleKeyWordforQueryString(keywords,hasKey,query);
-        this.handleCitys( citys,query);
-        this.handleIndustry(industry, query);
-        this.handleScale(scale, query);
-        return query;
-	}
+
 	//通过queryString查询es
     public SearchResponse queryString(String keywords,String citys,String industry,String scale,Integer page,Integer pageSize,TransportClient client) throws TException {
          try{
@@ -104,13 +99,15 @@ public class CompanySearchengine {
                         .addAggregation(this.handleAggIndustry())
                         .addAggregation(this.handleAggPositionCity())
                         .addAggregation(this.handleAggScale());
-                logger.info(responseBuilder.toString());
-                if(!org.springframework.util.StringUtils.isEmpty(keywords)){
+
+                if(StringUtils.isNotEmpty(keywords)){
                 	 Script script=this.buildScriptSort(keywords);
-                     SortBuilder builder=new ScriptSortBuilder(script,"number");
+					 ScriptSortBuilder builder=new ScriptSortBuilder(script,"number");
                      builder.order( SortOrder.DESC);
+                     builder.sortMode("max");
                      responseBuilder.addSort(builder);
                 }
+			    logger.info(responseBuilder.toString());
                 SearchResponse response = responseBuilder.execute().actionGet();
                 return response;
        	 }
@@ -119,26 +116,6 @@ public class CompanySearchengine {
         }
    	return null;
    }
-    //处理es的返回数据
-    private Map<String,Object> handleData(SearchResponse response){
-    	Map<String,Object> data=new HashMap<String,Object>();
-    	Aggregations aggs=response.getAggregations();
-    	Map<String, Object> aggsMap=handleAggs(aggs);
-    	data.put("aggs", aggsMap);
-    	SearchHits hit=response.getHits();
-    	long totalNum=hit.getTotalHits();
-    	data.put("totalNum", totalNum);
-    	SearchHit[] searchData=hit.getHits();
-    	if(totalNum>0){
-    		List<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
-    		for(SearchHit ss:searchData){
-    			Map<String,Object> obj=ss.getSource();
-    			list.add(obj);
-    		}
-    		data.put("companies", list);
-    	}
-    	return data;
-    }
     //处理聚合的结果
     private Map<String,Object> handleAggs(Aggregations aggs){
     	List<Aggregation> list=aggs.asList();
@@ -155,11 +132,31 @@ public class CompanySearchengine {
     	QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
     	((BoolQueryBuilder) query).must(defaultquery);
     	 boolean hasKey = false;
-         this.handleKeyWordForPrefix(keywords,hasKey,query);
-         this.handleCitys( citys,query);
-         this.handleIndustry(industry, query);
-         this.handleScale(scale, query);
+		List<String> list=new ArrayList<String>();
+		list.add("company.name");
+		list.add("company.abbreviation");
+		searchUtil.handleKeyWordForPrefix(keywords,hasKey,query,list);
+		this.CommonQuerySentence(industry,citys,scale,query);
     }
+	//构建查询语句query_string
+	public QueryBuilder buildQueryForString(String keywords,String citys,String industry,String scale){
+		QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
+		QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
+		boolean hasKey = false;
+		List<String> list=new ArrayList<String>();
+		list.add("company.name");
+		list.add("company.abbreviation");
+		searchUtil.handleKeyWordforQueryString(keywords,hasKey,query,list);
+		CommonQuerySentence(industry,citys,scale,query);
+		return query;
+	}
+
+	//公共查询的条件部分
+	private void CommonQuerySentence(String industry,String cityCode,String scale,QueryBuilder query){
+		searchUtil.handleTerms(industry, query, "company.industry.code");
+		searchUtil.handleTerms(cityCode, query, "position_city.code");
+		searchUtil.handleTerms(scale, query, "company.scale");
+	}
     //组装prefix关键字查询语句
     private void handleKeyWordForPrefix(String keywords,boolean hasKey,QueryBuilder query){
     	if(!com.moseeker.common.util.StringUtils.isNullOrEmpty(keywords)){
@@ -186,86 +183,6 @@ public class CompanySearchengine {
         return script;
    }
 
-
-    //组装query_string关键字查询语句
-    private void handleKeyWordforQueryString(String keywords,boolean hasKey,QueryBuilder query){
-    	if(!StringUtils.isEmpty(keywords)){
-    		hasKey=true;
-    		QueryBuilder keyand = QueryBuilders.boolQuery();
-    		QueryBuilder fullf = QueryBuilders.queryStringQuery(keywords)
-                  .field("company.name")
-                  .field("company.abbreviation");
-    		((BoolQueryBuilder) keyand).must(fullf);
-            ((BoolQueryBuilder) query).must(keyand);
-        }
-   }
-    /*
-     * 拼接city
-     */
-    private void handleCitys(String citys,QueryBuilder query){
-    	if (!StringUtils.isEmpty(citys)) {
-    		List<Integer> codes=new ArrayList<Integer>();
-            String[] city_list = citys.split(",");
-            for(String code:city_list){
-            	codes.add(Integer.parseInt(code));
-            }
-            QueryBuilder cityfilter = QueryBuilders.termsQuery("position_city.code", codes);
-            ((BoolQueryBuilder) query).must(cityfilter);
-        }
-    }
-    /*
-     * 处理行业
-     */
-    private void handleIndustry(String industries,QueryBuilder query){
-    	if (!StringUtils.isEmpty(industries)) {
-    		List<Integer> codes=new ArrayList<Integer>();
-            String[] industry_list = industries.split(",");
-            for (String code:industry_list) {
-                codes.add(Integer.parseInt(code));
-            }
-            QueryBuilder industryfilter = QueryBuilders.termsQuery("company.industry.code", codes);
-            ((BoolQueryBuilder) query).must(industryfilter);
-        }
-    }
-    /*
-     * 公司规模的处理
-     */
-    private void handleScale(String scales,QueryBuilder query){
-    	if(!StringUtils.isEmpty(scales)){
-    		 List<Integer> codes=new ArrayList<Integer>();
-    		 String[] scaleList = scales.split(",");
-             for(String code:scaleList){
-            	 int scale=Integer.parseInt(code);
-            	 codes.add(scale);
-             }
-             QueryBuilder industryfilter = QueryBuilders.termsQuery("company.scale", codes);
-             ((BoolQueryBuilder) query).must(industryfilter);
-    	}
-    }
-    //启动es客户端
-    public TransportClient getEsClient(){
-    	ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
-        try {
-            propertiesReader.loadResource("es.properties");
-        } catch (Exception e1) {
-           logger.info(e1.getMessage(),e1);
-        }
-        String cluster_name = propertiesReader.get("es.cluster.name", String.class);
-        String es_connection = propertiesReader.get("es.connection", String.class);
-        Integer es_port = propertiesReader.get("es.port", Integer.class);
-        TransportClient client = null;
-        try{
-       	 Settings settings = Settings.settingsBuilder().put("cluster.name", cluster_name)
-                    .build();
-         client = TransportClient.builder().settings(settings).build()
-                    .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port));
-        }catch(Exception e){
-        	logger.info(e.getMessage(),e);
-        	client=null;
-        }
-        return client;
-    }
-    
     private AbstractAggregationBuilder handleAggIndustry(){
     	StringBuffer sb=new StringBuffer();
     	sb.append("industry=_source.company.industry;");

@@ -18,7 +18,7 @@ public class CompanyIndexTest {
 	private CompanySearchengine companySearchengine;
 	@Test
 	public void queryStringTest() throws Exception{
-		Map<String,Object> res=companySearchengine.query("上海", null, null, null, 0, 10);
+		Map<String,Object> res=companySearchengine.query("上海那里", null, null, null, 1, 10);
 		System.out.println(res);
 	}
 

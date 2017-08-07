@@ -142,17 +142,17 @@ public class PositionSearchEngine {
 			List<Map> list=convertToListMap(salaryCode);
 
 			StringBuffer sb=new StringBuffer();
-			sb.append("top=doc['position.salary_top'].value;bottom=doc['salary_bottom'].value;flag=0");
+			sb.append("top=doc['position.salary_top'].value;bottom=doc['position.salary_bottom'].value;flag=0;");
 			if(list!=null&&list.size()>0){
 				for(int i=0;i<list.size();i++){
 					int salaryTop=(int) list.get(i).get("salaryTop");
 					int salaryBottom=(int) list.get(i).get("salaryBottom");
-					sb.append("if(bottom<"+salaryBottom+"&&top>"+salaryTop+"){flag=1}");
-					sb.append("if(bottom<="+salaryBottom+"&&top>"+salaryBottom+"){flag=1}");
-					sb.append("if(bottom<"+salaryTop+"&&top>="+salaryTop+"){flag=1}");
-					sb.append("if(bottom>="+salaryBottom+"&&top<="+salaryTop+"){flag=1}");
+					sb.append("if(bottom<"+salaryBottom+"&&top>"+salaryTop+"){flag=1};");
+					sb.append("if(bottom<="+salaryBottom+"&&top>"+salaryBottom+"){flag=1};");
+					sb.append("if(bottom<"+salaryTop+"&&top>="+salaryTop+"){flag=1};");
+					sb.append("if(bottom>="+salaryBottom+"&&top<="+salaryTop+"){flag=1};");
 				}
-				sb.append("if(flag==1){return true}");
+				sb.append("if(flag==1){return true;}");
 			}
 			String builder=sb.toString();
 			Script script=new Script(builder);
