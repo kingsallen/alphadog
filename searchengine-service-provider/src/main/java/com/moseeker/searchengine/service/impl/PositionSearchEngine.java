@@ -25,7 +25,7 @@ public class PositionSearchEngine {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	private SearchUtil searchUtil;
-	
+	//按条件查询，如果prefix的方式无法差的数据，那么转换为query_string的方式查询
 	public Map<String,Object> search(String keyWord,String industry,String salaryCode,int page,int pageSize,String cityCode,String startTime,String endTime){
 		TransportClient client= searchUtil.getEsClient();
 		SearchResponse hits =this.quertPrefix(keyWord, industry, salaryCode, page, pageSize, cityCode,startTime,endTime,client);
@@ -44,6 +44,7 @@ public class PositionSearchEngine {
 		}
 		return new HashMap<String,Object>();
 	}
+	//按照query_string的方式查询数据
 	public SearchResponse quertString(String keyWord,String industry,String salaryCode,int page,int pageSize,String cityCode,String startTime,String endTime,TransportClient client){
 		if(client!=null){
 			QueryBuilder sentence=this.handleStringSearchSentence(keyWord, industry, salaryCode, page, pageSize, cityCode,startTime,endTime);
@@ -60,7 +61,7 @@ public class PositionSearchEngine {
 		}
 		return null;
 	}
-	//查询
+	//按照prefix的方式查询数据
 	public SearchResponse quertPrefix(String keyWord,String industry,String salaryCode,int page,int pageSize,String cityCode,String startTime,String endTime,TransportClient client){
 		if(client!=null){
 			QueryBuilder sentence=this.handlePrefixSearchSentence(keyWord, industry, salaryCode, page, pageSize, cityCode,startTime,endTime);
@@ -123,7 +124,6 @@ public class PositionSearchEngine {
             ((BoolQueryBuilder) query).must(keyand);
     	}
 	}
-
 	//处理排序
     private	 Script handleSort(String order,String keywords,QueryBuilder query){
 		StringBuffer sb=new StringBuffer();

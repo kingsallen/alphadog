@@ -182,7 +182,7 @@ public class CompanySearchengine {
         Script script=new Script(scripts);
         return script;
    }
-
+    //做行业的统计
     private AbstractAggregationBuilder handleAggIndustry(){
     	StringBuffer sb=new StringBuffer();
     	sb.append("industry=_source.company.industry;");
@@ -209,6 +209,7 @@ public class CompanySearchengine {
                 .combineScript(new Script(combinScript));
         return build;
     }
+    //做city的统计
     private AbstractAggregationBuilder handleAggPositionCity(){
     	StringBuffer sb=new StringBuffer();
     	sb.append("city=_source.position_city;");
@@ -237,6 +238,7 @@ public class CompanySearchengine {
                 .combineScript(new Script(combinScript));
         return build;
     }
+    //做scale的统计
     private AbstractAggregationBuilder handleAggScale(){
     	StringBuffer sb=new StringBuffer();
     	sb.append("scale=_source.company.scale;");
