@@ -65,7 +65,6 @@ public class SearchUtil {
             }
             QueryBuilder cityfilter = QueryBuilders.termsQuery(conditionField, codes);
             ((BoolQueryBuilder) query).must(cityfilter);
-            logger.info("组合的条件是=================="+query.toString()+"===========");
         }
     }
     
