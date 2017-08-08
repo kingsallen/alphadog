@@ -1398,6 +1398,7 @@ public class UserHrAccountService {
         userEmployeeDetailVO.setMobile(userEmployeeDO.getMobile());
         userEmployeeDetailVO.setCustomField(userEmployeeDO.getCustomField());
         userEmployeeDetailVO.setEmail(userEmployeeDO.getEmail());
+        userEmployeeDetailVO.setAward(userEmployeeDO.getAward());
         userEmployeeDetailVO.setBindingTime(userEmployeeDO.getBindingTime());
         userEmployeeDetailVO.setActivation((new Double(userEmployeeDO.getActivation())).intValue());
         // 查询微信信息
