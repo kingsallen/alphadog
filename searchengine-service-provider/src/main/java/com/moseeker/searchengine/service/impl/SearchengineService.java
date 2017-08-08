@@ -99,7 +99,9 @@ public class SearchengineService {
 
 
             if (!StringUtils.isEmpty(cities)) {
-                cities=cities+",全国";
+                if(!"全国".equals(cities)&&!cities.contains("全国")){
+                    cities=cities+",全国";
+                }
                 String[] city_list = cities.split(",");
                 QueryBuilder cityor = QueryBuilders.boolQuery();
                 for (int i = 0; i < city_list.length; i++) {
@@ -224,7 +226,7 @@ public class SearchengineService {
 
                 if (haskey) {
                     responseBuilder.addSort("priority", SortOrder.ASC);
-                    if(!StringUtils.isEmpty(cities)){
+                    if(!StringUtils.isEmpty(cities)&&!"全国".equals(cities)){
                         SortBuilder builder=new ScriptSortBuilder(this.buildScriptSort(cities,0),"number");
                         builder.order(SortOrder.DESC);
                         responseBuilder.addSort(builder);
@@ -234,7 +236,7 @@ public class SearchengineService {
 
                 } else {
                     responseBuilder.addSort("priority", SortOrder.ASC);
-                    if(!StringUtils.isEmpty(cities)){
+                    if(!StringUtils.isEmpty(cities)&&!"全国".equals(cities)){
                         SortBuilder builder=new ScriptSortBuilder(this.buildScriptSort(cities,1),"number");
                         builder.order(SortOrder.DESC);
                         responseBuilder.addSort(builder);
@@ -245,7 +247,7 @@ public class SearchengineService {
                 }
 
             } else {
-                if(!StringUtils.isEmpty(cities)){
+                if(!StringUtils.isEmpty(cities)&&!"全国".equals(cities)){
                     SortBuilder builder=new ScriptSortBuilder(this.buildScriptSort(cities,0),"number");
                     builder.order(SortOrder.DESC);
                     responseBuilder.addSort(builder);
@@ -293,12 +295,11 @@ public class SearchengineService {
             if("全国".equals(values[i])){
                 continue;
             }
-            if(i==values.length-2){
-                sb.append("!city.contains('"+values[i]+"')");
-            }else{
-                sb.append("!city.contains('"+values[i]+"')&&");
-            }
+
+            sb.append("!city.contains('"+values[i]+"')&&");
         }
+        sb.deleteCharAt(sb.lastIndexOf("&"));
+        sb.deleteCharAt(sb.lastIndexOf("&"));
         sb.append("){score=score/100;}};return score");
         String scripts=sb.toString();
         Script script=new Script(scripts);

@@ -9,6 +9,7 @@
 //import org.springframework.test.context.ContextConfiguration;
 //import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 //
+//
 ///**
 // * Created by zztaiwll on 17/8/8.
 // */
@@ -26,7 +27,7 @@
 //                          String company_name, int page_from, int page_size, String child_company_name, String department, boolean order_by_priority, String custom
 //         */
 //        String keywords="";
-//        String cities="";
+//        String cities="全国";
 //        String industries="";
 //        String occupations="";
 //        String scale="";
@@ -40,7 +41,7 @@
 //        int page_size=10;
 //        String child_company_name="";
 //        String department="";
-//        boolean order_by_priority=true;
+//        boolean order_by_priority=false;
 //        String custom="";
 //        Response result=service.query(keywords,cities,industries,occupations,scale,employment_type,candidate_source,experience,degree,salary,company_name,page_from,page_size,child_company_name,department,order_by_priority,custom);
 //        System.out.println(result);
