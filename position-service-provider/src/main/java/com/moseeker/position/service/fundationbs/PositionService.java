@@ -1664,7 +1664,7 @@ public class PositionService {
         if (positionRecord.getSalaryBottom() != null){
             positionForAlipaycampusPojo.setPayment_min(1000 * positionRecord.getSalaryBottom());
         }else{
-
+            positionForAlipaycampusPojo.setPayment_min(0);
         }
         if (positionRecord.getSalaryTop() != null && positionRecord.getSalaryTop() != 999){
             positionForAlipaycampusPojo.setPayment_max(1000 * positionRecord.getSalaryTop());
