@@ -99,6 +99,7 @@ public class SearchengineService {
 
 
             if (!StringUtils.isEmpty(cities)) {
+                cities=cities+",全国";
                 String[] city_list = cities.split(",");
                 QueryBuilder cityor = QueryBuilders.boolQuery();
                 for (int i = 0; i < city_list.length; i++) {
@@ -225,32 +226,36 @@ public class SearchengineService {
                     responseBuilder.addSort("priority", SortOrder.ASC);
                     if(!StringUtils.isEmpty(cities)){
                         SortBuilder builder=new ScriptSortBuilder(this.buildScriptSort(cities,0),"number");
+                        builder.order(SortOrder.DESC);
                         responseBuilder.addSort(builder);
                     }else{
                         responseBuilder.addSort("_score", SortOrder.DESC);
                     }
-                    responseBuilder.setFrom(page_from).setSize(page_size);
 
                 } else {
                     responseBuilder.addSort("priority", SortOrder.ASC);
                     if(!StringUtils.isEmpty(cities)){
-                        SortBuilder builder=new ScriptSortBuilder(this.buildScriptSort(cities,0),"number");
+                        SortBuilder builder=new ScriptSortBuilder(this.buildScriptSort(cities,1),"number");
+                        builder.order(SortOrder.DESC);
                         responseBuilder.addSort(builder);
                     }else{
                         responseBuilder.addSort("update_time", SortOrder.DESC);
                     }
-                    responseBuilder .setFrom(page_from).setSize(page_size).execute().actionGet();
+
                 }
 
             } else {
                 if(!StringUtils.isEmpty(cities)){
                     SortBuilder builder=new ScriptSortBuilder(this.buildScriptSort(cities,0),"number");
+                    builder.order(SortOrder.DESC);
                     responseBuilder.addSort(builder);
                 }else{
                     responseBuilder .addSort("_score", SortOrder.DESC);
                 }
-                responseBuilder.setFrom(page_from).setSize(page_size);
             }
+            responseBuilder .setFrom(page_from).setSize(page_size);
+            responseBuilder.setTrackScores(true);
+            logger.info(responseBuilder.toString());
             SearchResponse response = responseBuilder.execute().actionGet();
             for (SearchHit hit : response.getHits()) {
                 //Handle the hit...
@@ -278,23 +283,23 @@ public class SearchengineService {
         StringBuffer sb=new StringBuffer();
         sb.append("double score=0 ;");
         if(flag==1) {
-            sb.append("value=doc['update_time'].value;if(value){score=value}");
+            sb.append("value=doc['update_time'].value;if(value){score=value};");
         }else{
-            sb.append("value=_score;if(value){score=value}}");
+            sb.append("value=_score;if(value){score=value};");
         }
-        sb.append("city=doc['city'];flag=doc['city_flag'].value;if(flag==1){score=score/100;}else{ if(city&&");
+        sb.append("city=_source['city'];flag=doc['city_flag'].value;if(flag==1){score=score/100;}else{ if(city&&");
         String []values=fieldValue.split(",");
         for(int i=0;i<values.length;i++){
             if("全国".equals(values[i])){
                 continue;
             }
-            if(i==values.length-1){
+            if(i==values.length-2){
                 sb.append("!city.contains('"+values[i]+"')");
             }else{
                 sb.append("!city.contains('"+values[i]+"')&&");
             }
         }
-        sb.append("){score=score/100}};return score");
+        sb.append("){score=score/100;}};return score");
         String scripts=sb.toString();
         Script script=new Script(scripts);
         return script;
