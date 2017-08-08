@@ -14,7 +14,6 @@ import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrTeamRecord;
-import com.moseeker.baseorm.db.jobdb.tables.JobOccupation;
 import com.moseeker.baseorm.db.jobdb.tables.records.*;
 import com.moseeker.baseorm.pojo.JobPositionPojo;
 import com.moseeker.baseorm.pojo.RecommendedPositonPojo;
@@ -49,7 +48,6 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobOccupationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.position.struct.*;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
-
 import org.apache.thrift.TException;
 import org.jooq.Field;
 import org.slf4j.Logger;
@@ -59,7 +57,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -1665,12 +1662,12 @@ public class PositionService {
 
         //positionForAlipaycampusPojo.setJob_resume_lg();
         if (positionRecord.getSalaryBottom() != null){
-            positionForAlipaycampusPojo.setPayment_min(positionRecord.getSalaryBottom());
+            positionForAlipaycampusPojo.setPayment_min(1000 * positionRecord.getSalaryBottom());
         }else{
 
         }
         if (positionRecord.getSalaryTop() != null && positionRecord.getSalaryTop() != 999){
-            positionForAlipaycampusPojo.setPayment_max(positionRecord.getSalaryTop());
+            positionForAlipaycampusPojo.setPayment_max(1000 * positionRecord.getSalaryTop());
         }
 
         positionForAlipaycampusPojo.setPayment_unit(2);//month
