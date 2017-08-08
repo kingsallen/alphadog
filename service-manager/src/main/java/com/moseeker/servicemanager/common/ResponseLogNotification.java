@@ -2,26 +2,19 @@ package com.moseeker.servicemanager.common;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.exception.RedisException;
-import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
-
-import java.io.Serializable;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ResponseLogNotification {
 
@@ -43,8 +36,8 @@ public class ResponseLogNotification {
 
     }
 
-    public static String successJson(HttpServletRequest request, Serializable data) {
-        Map<String, Serializable> result = new HashMap<>();
+    public static String successJson(HttpServletRequest request, Object data) {
+        Map<String, Object> result = new HashMap<>();
         result.put("message", "success");
         result.put("status", 0);
         result.put("data", data);
@@ -56,8 +49,8 @@ public class ResponseLogNotification {
         return failJson(request, message, null);
     }
 
-    public static String failJson(HttpServletRequest request, String message, Serializable data) {
-        Map<String, Serializable> result = new HashMap<>();
+    public static String failJson(HttpServletRequest request, String message, Object data) {
+        Map<String, Object> result = new HashMap<>();
         result.put("message", message);
         result.put("status", 1);
         result.put("data", data);
@@ -66,7 +59,7 @@ public class ResponseLogNotification {
     }
 
     public static String failJson(HttpServletRequest request, Exception e) {
-        Map<String, Serializable> result = new HashMap<>();
+        Map<String, Object> result = new HashMap<>();
         if (e instanceof CommonException) {
             result.put("status", ((CommonException) e).getCode());
             result.put("message", e.getMessage());

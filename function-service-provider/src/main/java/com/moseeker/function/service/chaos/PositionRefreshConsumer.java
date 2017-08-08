@@ -70,10 +70,12 @@ public class PositionRefreshConsumer extends RedisConsumer<PositionForSyncResult
         data.setPositionId(Integer.valueOf(pojo.getPosition_id()));
         data.setThirdPartyAccountId(pojo.getAccount_id());
         if (pojo.getStatus() == 0) {
-            data.setIsRefresh((byte) PositionRefreshType.refreshed.getValue());
+            data.setIsRefresh(PositionRefreshType.refreshed.getValue());
             data.setRefreshTime(pojo.getSync_time());
+        } else if (pojo.getStatus() == 2 || pojo.getStatus() == 9) {
+            data.setIsRefresh(PositionRefreshType.refreshError.getValue());
         } else {
-            data.setIsRefresh((byte) PositionRefreshType.failed.getValue());
+            data.setIsRefresh(PositionRefreshType.failed.getValue());
         }
         Query.QueryBuilder qu = new Query.QueryBuilder();
         qu.where("id", pojo.getPosition_id());
