@@ -1370,7 +1370,7 @@ public class UserHrAccountService {
      */
 
     public UserEmployeeDetailVO userEmployeeDetail(Integer userEmployeeId, Integer companyId) throws
-            Exception {
+            CommonException {
         UserEmployeeDetailVO userEmployeeDetailVO = new UserEmployeeDetailVO();
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         queryBuilder.where(UserEmployee.USER_EMPLOYEE.ID.getName(), userEmployeeId)
@@ -1439,7 +1439,7 @@ public class UserHrAccountService {
      * @throws Exception
      */
     public Response updateUserEmployee(String cname, String mobile, String email, String
-            customField, Integer userEmployeeId, Integer companyId) throws Exception {
+            customField, Integer userEmployeeId, Integer companyId) throws CommonException {
         Response response = new Response();
         if (userEmployeeId == 0) {
             throw UserAccountException.USEREMPLOYEES_DATE_EMPTY;
