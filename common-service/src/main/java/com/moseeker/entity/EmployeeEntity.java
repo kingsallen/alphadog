@@ -217,7 +217,7 @@ public class EmployeeEntity {
             ueprDo.setReason(reason);
             ueprDo.setAward(award);
             ueprDo.setApplicationId(applicationId);
-            ueprDo.setAwardConfigId(hrPointsConfDO.getId());
+            ueprDo.setAwardConfigId(templateId);
             ueprDo.setBerecomUserId(berecomUserId);
             ueprDo.setPositionId(positionId);
             ueprDo.setEmployeeId(employeeId);
