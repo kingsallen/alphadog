@@ -382,7 +382,7 @@ public class SearchengineService {
                 Map<String, Object> objectMap = new HashMap<>();
                 JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
                 objectMap.put("employeeId", jsonObject.remove("employee_id"));
-                if (jsonObject.getJSONObject("awards").containsKey(timespan)) {
+                if (jsonObject.containsKey("awards") && jsonObject.getJSONObject("awards").containsKey(timespan)) {
                     objectMap.put("award", jsonObject.getJSONObject("awards").getJSONObject(timespan).getIntValue("award"));
                 } else {
                     objectMap.put("award", 0);
@@ -398,7 +398,7 @@ public class SearchengineService {
     }
 
     public Response queryAwardRankingInWx(List<Integer> companyIds, String timespan, Integer employeeId) {
-        // 保证插入有序，使用linkedhashMap
+        // 保证插入有序，使用linkedhashMap˚
         Map<Integer, Object> data = new LinkedHashMap<>();
         try (TransportClient searchClient = searchUtil.getEsClient()) {
             // 查找所有员工的积分排行
@@ -406,7 +406,7 @@ public class SearchengineService {
             int index = 1;
             for (SearchHit searchHit : response.getHits().getHits()) {
                 JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
-                if (jsonObject.getJSONObject("awards").containsKey(timespan) && jsonObject.getJSONObject("awards").getJSONObject(timespan).getIntValue("award") > 0) {
+                if (jsonObject.containsKey("awards") && jsonObject.getJSONObject("awards").containsKey(timespan) && jsonObject.getJSONObject("awards").getJSONObject(timespan).getIntValue("award") > 0) {
                     JSONObject obj = JSON.parseObject("{}");
                     obj.put("employee_id", jsonObject.getIntValue("employee_id"));
                     obj.put("ranking", index++);
