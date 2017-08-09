@@ -382,8 +382,11 @@ public class SearchengineService {
                 Map<String, Object> objectMap = new HashMap<>();
                 JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
                 objectMap.put("employeeId", jsonObject.remove("employee_id"));
-                objectMap.put("award", jsonObject.getJSONObject("awards").getJSONObject(timespan).getInteger("award"));
-                logger.info("award:{}", jsonObject.getJSONObject("awards").getJSONObject(timespan).getInteger("award"));
+                if (jsonObject.getJSONObject("awards").getJSONObject(timespan) != null) {
+                    objectMap.put("award", jsonObject.getJSONObject("awards").getJSONObject(timespan).getIntValue("award"));
+                } else {
+                    objectMap.put("award", 0);
+                }
                 data.add(objectMap);
             }
             object.put("data", data);
