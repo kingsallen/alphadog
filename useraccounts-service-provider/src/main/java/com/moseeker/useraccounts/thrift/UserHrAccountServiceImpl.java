@@ -353,14 +353,7 @@ public class UserHrAccountServiceImpl implements Iface {
      */
     @Override
     public UserEmployeeDetailVO userEmployeeDetail(int userEmployeeId, int companyId) throws BIZException, TException {
-        try {
-            return service.userEmployeeDetail(userEmployeeId, companyId);
-        } catch (CommonException e) {
-            throw ExceptionConvertUtil.convertCommonException(e);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
-        }
+        return service.userEmployeeDetail(userEmployeeId, companyId);
     }
 
     /**
@@ -377,14 +370,7 @@ public class UserHrAccountServiceImpl implements Iface {
      */
     @Override
     public Response updateUserEmployee(String cname, String mobile, String email, String customField, int userEmployeeId, int companyId) throws BIZException, TException {
-        try {
-            return service.updateUserEmployee(cname, mobile, email, customField, userEmployeeId, companyId);
-        } catch (CommonException e) {
-            throw ExceptionConvertUtil.convertCommonException(e);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
-        }
+        return service.updateUserEmployee(cname, mobile, email, customField, userEmployeeId, companyId);
     }
 
     /**
@@ -412,6 +398,6 @@ public class UserHrAccountServiceImpl implements Iface {
      */
     @Override
     public ImportUserEmployeeStatistic checkBatchInsert(Map<Integer, UserEmployeeDO> userEmployeeDOMap, int companyId) throws BIZException, TException {
-            return service.checkBatchInsert(userEmployeeDOMap, companyId);
+        return service.checkBatchInsert(userEmployeeDOMap, companyId);
     }
 }
