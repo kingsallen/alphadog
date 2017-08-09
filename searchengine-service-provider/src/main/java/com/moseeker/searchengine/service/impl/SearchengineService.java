@@ -403,7 +403,7 @@ public class SearchengineService {
             int index = 1;
             for (SearchHit searchHit : response.getHits().getHits()) {
                 JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
-                if (jsonObject.getJSONObject("awards").getJSONObject(timespan).getIntValue("award") > 0) {
+                if (jsonObject.getJSONObject("awards").containsKey(timespan) && jsonObject.getJSONObject("awards").getJSONObject(timespan).getIntValue("award") > 0) {
                     JSONObject obj = JSON.parseObject("{}");
                     obj.put("employee_id", jsonObject.getIntValue("employee_id"));
                     obj.put("ranking", index++);
