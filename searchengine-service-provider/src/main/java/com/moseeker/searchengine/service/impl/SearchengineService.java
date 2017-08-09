@@ -349,6 +349,35 @@ public class SearchengineService {
         return searchRequestBuilder;
     }
 
+
+    private SearchRequestBuilder getSearchRequestBuilder(TransportClient searchClient, List<Integer> companyIds, Integer employeeId, String activation, int pageSize, int pageNum, String timespan, String keyword) {
+        QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
+        QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
+        searchUtil.handleTerms(Arrays.toString(companyIds.toArray()).replaceAll("\\[|\\]| ", ""), query, "company_id");
+        if (activation != null) {
+            searchUtil.handleTerms(activation, query, "activation");
+        }
+        if (employeeId != null) {
+            searchUtil.handleTerms(String.valueOf(employeeId), query, "employee_id");
+        }
+
+        if (keyword != null) {
+            searchUtil.handleTerms(keyword, query, "email");
+            searchUtil.handleTerms(keyword, query, "mobile");
+            searchUtil.handleTerms(keyword, query, "nickname");
+            searchUtil.handleTerms(keyword, query, "custom_field");
+        }
+        SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query)
+                .addSort(buildSortScript("awards." + timespan + ".award", SortOrder.DESC))
+                .addSort(buildSortScript("awards." + timespan + ".last_update_time", SortOrder.ASC))
+                .setFetchSource(new String[]{"employee_id", "awards." + timespan + ".award", "awards." + timespan + ".last_update_time"}, null);
+        if (pageNum > 0 && pageSize > 0) {
+            searchRequestBuilder.setSize(pageSize).setFrom((pageNum - 1) * pageSize);
+        }
+        logger.info(searchRequestBuilder.toString());
+        return searchRequestBuilder;
+    }
+
     private AbstractAggregationBuilder handleAggScale(String nodeName, int award, long lastUpdateTime) {
         StringBuffer sb = new StringBuffer();
         sb.append("int i = 0;");
@@ -371,10 +400,18 @@ public class SearchengineService {
         return build;
     }
 
-    public Response queryAwardRanking(List<Integer> companyIds, String timespan, int pageSize, int pageNum) {
+    public Response queryAwardRanking(List<Integer> companyIds, String timespan, int pageSize, int pageNum, String keyword, int filter) {
         Map<String, Object> object = new HashMap<>();
         try (TransportClient searchClient = searchUtil.getEsClient()) {
-            SearchRequestBuilder searchRequestBuilder = getSearchRequestBuilder(searchClient, companyIds, null, null, pageSize, pageNum, timespan);
+            StringBuffer activation = new StringBuffer();
+            if (filter == 0) {
+                activation.append("");
+            } else if (filter == 1) {
+                activation.append("0");
+            } else if (filter == 2) {
+                activation.append("1");
+            }
+            SearchRequestBuilder searchRequestBuilder = getSearchRequestBuilder(searchClient, companyIds, null, activation.toString(), pageSize, pageNum, timespan, keyword);
             SearchResponse response = searchRequestBuilder.execute().actionGet();
             List<Map<String, Object>> data = new ArrayList<>();
             object.put("total", response.getHits().getTotalHits());
