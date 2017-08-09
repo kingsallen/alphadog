@@ -329,7 +329,7 @@ public class SearchengineService {
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
         searchUtil.handleTerms(Arrays.toString(companyIds.toArray()).replaceAll("\\[|\\]| ", ""), query, "company_id");
-        searchUtil.handleTerms(timespan, query, "awards." + timespan + ".timespan");
+//        searchUtil.handleTerms(timespan, query, "awards." + timespan + ".timespan");
         if (activation != null) {
             searchUtil.handleTerms(activation, query, "activation");
         }
