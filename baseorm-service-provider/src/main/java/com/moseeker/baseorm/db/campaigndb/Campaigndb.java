@@ -10,6 +10,9 @@ import com.moseeker.baseorm.db.campaigndb.tables.CampaignEdmUserrecommendedPosit
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignEdmUsers;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignEmailAgentdelivery;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignHeadImage;
+import com.moseeker.baseorm.db.campaigndb.tables.CampaignPcBanner;
+import com.moseeker.baseorm.db.campaigndb.tables.CampaignPcRecommendCompany;
+import com.moseeker.baseorm.db.campaigndb.tables.CampaignPcRecommendPosition;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignRecommendCompany;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignRecommendPosition;
 
@@ -37,7 +40,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Campaigndb extends SchemaImpl {
 
-    private static final long serialVersionUID = -572757470;
+    private static final long serialVersionUID = 1436545873;
 
     /**
      * The reference instance of <code>campaigndb</code>
@@ -73,6 +76,21 @@ public class Campaigndb extends SchemaImpl {
      * 头部图片(职位列表页)
      */
     public final CampaignHeadImage CAMPAIGN_HEAD_IMAGE = com.moseeker.baseorm.db.campaigndb.tables.CampaignHeadImage.CAMPAIGN_HEAD_IMAGE;
+
+    /**
+     * The table <code>campaigndb.campaign_pc_banner</code>.
+     */
+    public final CampaignPcBanner CAMPAIGN_PC_BANNER = com.moseeker.baseorm.db.campaigndb.tables.CampaignPcBanner.CAMPAIGN_PC_BANNER;
+
+    /**
+     * 逛公司页面仟寻推荐公司
+     */
+    public final CampaignPcRecommendCompany CAMPAIGN_PC_RECOMMEND_COMPANY = com.moseeker.baseorm.db.campaigndb.tables.CampaignPcRecommendCompany.CAMPAIGN_PC_RECOMMEND_COMPANY;
+
+    /**
+     * 首页推荐职位
+     */
+    public final CampaignPcRecommendPosition CAMPAIGN_PC_RECOMMEND_POSITION = com.moseeker.baseorm.db.campaigndb.tables.CampaignPcRecommendPosition.CAMPAIGN_PC_RECOMMEND_POSITION;
 
     /**
      * 推荐公司
@@ -115,6 +133,9 @@ public class Campaigndb extends SchemaImpl {
             CampaignEdmUsers.CAMPAIGN_EDM_USERS,
             CampaignEmailAgentdelivery.CAMPAIGN_EMAIL_AGENTDELIVERY,
             CampaignHeadImage.CAMPAIGN_HEAD_IMAGE,
+            CampaignPcBanner.CAMPAIGN_PC_BANNER,
+            CampaignPcRecommendCompany.CAMPAIGN_PC_RECOMMEND_COMPANY,
+            CampaignPcRecommendPosition.CAMPAIGN_PC_RECOMMEND_POSITION,
             CampaignRecommendCompany.CAMPAIGN_RECOMMEND_COMPANY,
             CampaignRecommendPosition.CAMPAIGN_RECOMMEND_POSITION);
     }

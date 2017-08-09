@@ -87,12 +87,16 @@ public class ConstantlyMailConsumer {
 	 */
 	private void initConstantlyMail() throws IOException, MessagingException {
 		// 加载模版文件
-		templates.putAll(Stream.of(Constant.EVENT_TYPE_EMAIL_VERIFIED, Constant.EVENT_TYPE_EMPLOYEE_AUTH).collect(Collectors.toMap(k -> k, v -> {
+		templates.putAll(Stream.of(Constant.EVENT_TYPE_EMAIL_VERIFIED, Constant.EVENT_TYPE_EMPLOYEE_AUTH,Constant.EVENT_TYPE_RECOMMEND_VALID_EMAIL).collect(Collectors.toMap(k -> k, v -> {
 			String templateName = "";
 			if (v == 1) {
 				templateName = "email_verifier_template.html";
 			} else if (v == 2) {
 				templateName = "employee_auth_template.html";
+			}else if(v==3){
+				templateName = "position_subscribe_activation_template.html";
+			}else if(v==4){
+				templateName = "position_subscribe_weekly_template.html";
 			}
 			StringBuffer sb = new StringBuffer();
 			try (InputStreamReader is = new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(templateName), "UTF-8")) {

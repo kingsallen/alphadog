@@ -14,6 +14,7 @@ import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecordCompanyRel;
 import com.moseeker.baseorm.db.userdb.tables.UserFavPosition;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
+import com.moseeker.baseorm.db.userdb.tables.UserPositionEmail;
 import com.moseeker.baseorm.db.userdb.tables.UserSearchCondition;
 import com.moseeker.baseorm.db.userdb.tables.UserSettings;
 import com.moseeker.baseorm.db.userdb.tables.UserSysAuthGroup;
@@ -32,6 +33,7 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeePointsRecordRec
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserFavPositionRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserPositionEmailRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserSearchConditionRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserSettingsRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserSysAuthGroupRecord;
@@ -76,6 +78,7 @@ public class Keys {
     public static final Identity<UserEmployeePointsRecordCompanyRelRecord, Integer> IDENTITY_USER_EMPLOYEE_POINTS_RECORD_COMPANY_REL = Identities0.IDENTITY_USER_EMPLOYEE_POINTS_RECORD_COMPANY_REL;
     public static final Identity<UserFavPositionRecord, Integer> IDENTITY_USER_FAV_POSITION = Identities0.IDENTITY_USER_FAV_POSITION;
     public static final Identity<UserHrAccountRecord, Integer> IDENTITY_USER_HR_ACCOUNT = Identities0.IDENTITY_USER_HR_ACCOUNT;
+    public static final Identity<UserPositionEmailRecord, Integer> IDENTITY_USER_POSITION_EMAIL = Identities0.IDENTITY_USER_POSITION_EMAIL;
     public static final Identity<UserSearchConditionRecord, Integer> IDENTITY_USER_SEARCH_CONDITION = Identities0.IDENTITY_USER_SEARCH_CONDITION;
     public static final Identity<UserSettingsRecord, Integer> IDENTITY_USER_SETTINGS = Identities0.IDENTITY_USER_SETTINGS;
     public static final Identity<UserSysAuthGroupRecord, Integer> IDENTITY_USER_SYS_AUTH_GROUP = Identities0.IDENTITY_USER_SYS_AUTH_GROUP;
@@ -102,6 +105,7 @@ public class Keys {
     public static final UniqueKey<UserFavPositionRecord> KEY_USER_FAV_POSITION_PRIMARY = UniqueKeys0.KEY_USER_FAV_POSITION_PRIMARY;
     public static final UniqueKey<UserHrAccountRecord> KEY_USER_HR_ACCOUNT_PRIMARY = UniqueKeys0.KEY_USER_HR_ACCOUNT_PRIMARY;
     public static final UniqueKey<UserHrAccountRecord> KEY_USER_HR_ACCOUNT_WXUSER_ID = UniqueKeys0.KEY_USER_HR_ACCOUNT_WXUSER_ID;
+    public static final UniqueKey<UserPositionEmailRecord> KEY_USER_POSITION_EMAIL_PRIMARY = UniqueKeys0.KEY_USER_POSITION_EMAIL_PRIMARY;
     public static final UniqueKey<UserSearchConditionRecord> KEY_USER_SEARCH_CONDITION_PRIMARY = UniqueKeys0.KEY_USER_SEARCH_CONDITION_PRIMARY;
     public static final UniqueKey<UserSettingsRecord> KEY_USER_SETTINGS_PRIMARY = UniqueKeys0.KEY_USER_SETTINGS_PRIMARY;
     public static final UniqueKey<UserSettingsRecord> KEY_USER_SETTINGS_UID = UniqueKeys0.KEY_USER_SETTINGS_UID;
@@ -136,6 +140,7 @@ public class Keys {
         public static Identity<UserEmployeePointsRecordCompanyRelRecord, Integer> IDENTITY_USER_EMPLOYEE_POINTS_RECORD_COMPANY_REL = createIdentity(UserEmployeePointsRecordCompanyRel.USER_EMPLOYEE_POINTS_RECORD_COMPANY_REL, UserEmployeePointsRecordCompanyRel.USER_EMPLOYEE_POINTS_RECORD_COMPANY_REL.ID);
         public static Identity<UserFavPositionRecord, Integer> IDENTITY_USER_FAV_POSITION = createIdentity(UserFavPosition.USER_FAV_POSITION, UserFavPosition.USER_FAV_POSITION.ID);
         public static Identity<UserHrAccountRecord, Integer> IDENTITY_USER_HR_ACCOUNT = createIdentity(UserHrAccount.USER_HR_ACCOUNT, UserHrAccount.USER_HR_ACCOUNT.ID);
+        public static Identity<UserPositionEmailRecord, Integer> IDENTITY_USER_POSITION_EMAIL = createIdentity(UserPositionEmail.USER_POSITION_EMAIL, UserPositionEmail.USER_POSITION_EMAIL.ID);
         public static Identity<UserSearchConditionRecord, Integer> IDENTITY_USER_SEARCH_CONDITION = createIdentity(UserSearchCondition.USER_SEARCH_CONDITION, UserSearchCondition.USER_SEARCH_CONDITION.ID);
         public static Identity<UserSettingsRecord, Integer> IDENTITY_USER_SETTINGS = createIdentity(UserSettings.USER_SETTINGS, UserSettings.USER_SETTINGS.ID);
         public static Identity<UserSysAuthGroupRecord, Integer> IDENTITY_USER_SYS_AUTH_GROUP = createIdentity(UserSysAuthGroup.USER_SYS_AUTH_GROUP, UserSysAuthGroup.USER_SYS_AUTH_GROUP.ID);
@@ -160,6 +165,7 @@ public class Keys {
         public static final UniqueKey<UserFavPositionRecord> KEY_USER_FAV_POSITION_PRIMARY = createUniqueKey(UserFavPosition.USER_FAV_POSITION, "KEY_user_fav_position_PRIMARY", UserFavPosition.USER_FAV_POSITION.ID);
         public static final UniqueKey<UserHrAccountRecord> KEY_USER_HR_ACCOUNT_PRIMARY = createUniqueKey(UserHrAccount.USER_HR_ACCOUNT, "KEY_user_hr_account_PRIMARY", UserHrAccount.USER_HR_ACCOUNT.ID);
         public static final UniqueKey<UserHrAccountRecord> KEY_USER_HR_ACCOUNT_WXUSER_ID = createUniqueKey(UserHrAccount.USER_HR_ACCOUNT, "KEY_user_hr_account_wxuser_id", UserHrAccount.USER_HR_ACCOUNT.WXUSER_ID);
+        public static final UniqueKey<UserPositionEmailRecord> KEY_USER_POSITION_EMAIL_PRIMARY = createUniqueKey(UserPositionEmail.USER_POSITION_EMAIL, "KEY_user_position_email_PRIMARY", UserPositionEmail.USER_POSITION_EMAIL.ID);
         public static final UniqueKey<UserSearchConditionRecord> KEY_USER_SEARCH_CONDITION_PRIMARY = createUniqueKey(UserSearchCondition.USER_SEARCH_CONDITION, "KEY_user_search_condition_PRIMARY", UserSearchCondition.USER_SEARCH_CONDITION.ID);
         public static final UniqueKey<UserSettingsRecord> KEY_USER_SETTINGS_PRIMARY = createUniqueKey(UserSettings.USER_SETTINGS, "KEY_user_settings_PRIMARY", UserSettings.USER_SETTINGS.ID);
         public static final UniqueKey<UserSettingsRecord> KEY_USER_SETTINGS_UID = createUniqueKey(UserSettings.USER_SETTINGS, "KEY_user_settings_uid", UserSettings.USER_SETTINGS.USER_ID);

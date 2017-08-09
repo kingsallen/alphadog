@@ -67,6 +67,7 @@ public class PositionController {
 
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
+        	logger.info(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
@@ -78,6 +79,7 @@ public class PositionController {
             Response result = positonServices.getPositionById(id);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
+        	logger.info(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
@@ -552,4 +554,28 @@ public class PositionController {
     }
 
 
+
+    /*
+     *获取pc端推荐职位列表
+     */
+    @RequestMapping(value = "/positions/apolegamic", method = RequestMethod.GET)
+    @ResponseBody
+    public String getPcRecommendPosition(HttpServletRequest request, HttpServletResponse response){
+    	try{
+	    	Params<String, Object> params = ParamUtils.parseRequestParam(request);
+	        Integer page = params.getInt("page");
+	        Integer pageSize = params.getInt("pageSize");
+	        if(page==null){
+	        	page=0;
+	        }
+	        if(pageSize==null){
+	        	pageSize=15;
+	        }
+	    	Response result=positonServices.getPcRecommand(page,pageSize);
+	    	return ResponseLogNotification.success(request, result);
+    	}catch(Exception e){
+    		 logger.error(e.getMessage());
+    		 return ResponseLogNotification.fail(request, e.getMessage());
+    	}
+    }
 }

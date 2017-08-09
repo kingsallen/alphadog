@@ -20,7 +20,7 @@ public class PositionServices {
 
     public com.moseeker.thrift.gen.common.struct.Response getPositionById(int positionId) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response CustomField(java.lang.String param) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.common.struct.Response CustomField(String param) throws org.apache.thrift.TException;
 
     public java.util.List<com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization> changeToThirdPartyPosition(java.util.List<com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition> form, com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO position) throws org.apache.thrift.TException;
 
@@ -34,7 +34,7 @@ public class PositionServices {
 
     public com.moseeker.thrift.gen.common.struct.Response deleteJobposition(com.moseeker.thrift.gen.position.struct.DelePostion delePostion) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response getTeamIdByDepartmentName(int companyId, java.lang.String departmentName) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.common.struct.Response getTeamIdByDepartmentName(int companyId, String departmentName) throws org.apache.thrift.TException;
 
     public com.moseeker.thrift.gen.common.struct.Response getPositionForThirdParty(int positionId, int channel) throws org.apache.thrift.TException;
 
@@ -42,7 +42,7 @@ public class PositionServices {
 
     public java.util.List<com.moseeker.thrift.gen.position.struct.WechatPositionListData> getPositionList(com.moseeker.thrift.gen.position.struct.WechatPositionListQuery query) throws org.apache.thrift.TException;
 
-    public java.util.List<com.moseeker.thrift.gen.position.struct.RpExtInfo> getPositionListRpExt(java.util.List<java.lang.Integer> pids) throws org.apache.thrift.TException;
+    public java.util.List<com.moseeker.thrift.gen.position.struct.RpExtInfo> getPositionListRpExt(java.util.List<Integer> pids) throws org.apache.thrift.TException;
 
     public java.util.List<com.moseeker.thrift.gen.position.struct.WechatRpPositionListData> getRpPositionList(int hb_config_id) throws org.apache.thrift.TException;
 
@@ -59,6 +59,12 @@ public class PositionServices {
 
     public com.moseeker.thrift.gen.position.struct.PositionDetailsListVO similarityPositionDetailsList(int pid, int page, int per_age) throws org.apache.thrift.TException;
 
+    public com.moseeker.thrift.gen.common.struct.Response getPcRecommand(int page, int pageSize) throws org.apache.thrift.TException;
+
+    public com.moseeker.thrift.gen.common.struct.Response getPcRecommandCompany(int page, int pageSize) throws org.apache.thrift.TException;
+
+    public com.moseeker.thrift.gen.common.struct.Response getPcRecommandCompanyAll(int page, int pageSize) throws org.apache.thrift.TException;
+
   }
 
   public interface AsyncIface {
@@ -71,13 +77,13 @@ public class PositionServices {
 
     public void getPositionById(int positionId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
-    public void CustomField(java.lang.String param, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+    public void CustomField(String param, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
     public void changeToThirdPartyPosition(java.util.List<com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition> form, com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO position, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization>> resultHandler) throws org.apache.thrift.TException;
 
     public void createRefreshPosition(int positionId, int account_id, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount> resultHandler) throws org.apache.thrift.TException;
 
-    public void ifAllowRefresh(int positionId, int account_id, org.apache.thrift.async.AsyncMethodCallback<java.lang.Boolean> resultHandler) throws org.apache.thrift.TException;
+    public void ifAllowRefresh(int positionId, int account_id, org.apache.thrift.async.AsyncMethodCallback<Boolean> resultHandler) throws org.apache.thrift.TException;
 
     public void getThirdPartyPositions(com.moseeker.thrift.gen.common.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO>> resultHandler) throws org.apache.thrift.TException;
 
@@ -85,7 +91,7 @@ public class PositionServices {
 
     public void deleteJobposition(com.moseeker.thrift.gen.position.struct.DelePostion delePostion, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
-    public void getTeamIdByDepartmentName(int companyId, java.lang.String departmentName, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+    public void getTeamIdByDepartmentName(int companyId, String departmentName, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
     public void getPositionForThirdParty(int positionId, int channel, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
@@ -93,7 +99,7 @@ public class PositionServices {
 
     public void getPositionList(com.moseeker.thrift.gen.position.struct.WechatPositionListQuery query, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.position.struct.WechatPositionListData>> resultHandler) throws org.apache.thrift.TException;
 
-    public void getPositionListRpExt(java.util.List<java.lang.Integer> pids, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.position.struct.RpExtInfo>> resultHandler) throws org.apache.thrift.TException;
+    public void getPositionListRpExt(java.util.List<Integer> pids, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.position.struct.RpExtInfo>> resultHandler) throws org.apache.thrift.TException;
 
     public void getRpPositionList(int hb_config_id, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.position.struct.WechatRpPositionListData>> resultHandler) throws org.apache.thrift.TException;
 
@@ -106,6 +112,12 @@ public class PositionServices {
     public void companyHotPositionDetailsList(int companyId, int page, int per_age, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.position.struct.PositionDetailsListVO> resultHandler) throws org.apache.thrift.TException;
 
     public void similarityPositionDetailsList(int pid, int page, int per_age, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.position.struct.PositionDetailsListVO> resultHandler) throws org.apache.thrift.TException;
+
+    public void getPcRecommand(int page, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+
+    public void getPcRecommandCompany(int page, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+
+    public void getPcRecommandCompanyAll(int page, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
   }
 
@@ -221,13 +233,13 @@ public class PositionServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getPositionById failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response CustomField(java.lang.String param) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response CustomField(String param) throws org.apache.thrift.TException
     {
       send_CustomField(param);
       return recv_CustomField();
     }
 
-    public void send_CustomField(java.lang.String param) throws org.apache.thrift.TException
+    public void send_CustomField(String param) throws org.apache.thrift.TException
     {
       CustomField_args args = new CustomField_args();
       args.setParam(param);
@@ -385,13 +397,13 @@ public class PositionServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "deleteJobposition failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response getTeamIdByDepartmentName(int companyId, java.lang.String departmentName) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response getTeamIdByDepartmentName(int companyId, String departmentName) throws org.apache.thrift.TException
     {
       send_getTeamIdByDepartmentName(companyId, departmentName);
       return recv_getTeamIdByDepartmentName();
     }
 
-    public void send_getTeamIdByDepartmentName(int companyId, java.lang.String departmentName) throws org.apache.thrift.TException
+    public void send_getTeamIdByDepartmentName(int companyId, String departmentName) throws org.apache.thrift.TException
     {
       getTeamIdByDepartmentName_args args = new getTeamIdByDepartmentName_args();
       args.setCompanyId(companyId);
@@ -482,13 +494,13 @@ public class PositionServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getPositionList failed: unknown result");
     }
 
-    public java.util.List<com.moseeker.thrift.gen.position.struct.RpExtInfo> getPositionListRpExt(java.util.List<java.lang.Integer> pids) throws org.apache.thrift.TException
+    public java.util.List<com.moseeker.thrift.gen.position.struct.RpExtInfo> getPositionListRpExt(java.util.List<Integer> pids) throws org.apache.thrift.TException
     {
       send_getPositionListRpExt(pids);
       return recv_getPositionListRpExt();
     }
 
-    public void send_getPositionListRpExt(java.util.List<java.lang.Integer> pids) throws org.apache.thrift.TException
+    public void send_getPositionListRpExt(java.util.List<Integer> pids) throws org.apache.thrift.TException
     {
       getPositionListRpExt_args args = new getPositionListRpExt_args();
       args.setPids(pids);
@@ -646,6 +658,78 @@ public class PositionServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "similarityPositionDetailsList failed: unknown result");
     }
 
+    public com.moseeker.thrift.gen.common.struct.Response getPcRecommand(int page, int pageSize) throws org.apache.thrift.TException
+    {
+      send_getPcRecommand(page, pageSize);
+      return recv_getPcRecommand();
+    }
+
+    public void send_getPcRecommand(int page, int pageSize) throws org.apache.thrift.TException
+    {
+      getPcRecommand_args args = new getPcRecommand_args();
+      args.setPage(page);
+      args.setPageSize(pageSize);
+      sendBase("getPcRecommand", args);
+    }
+
+    public com.moseeker.thrift.gen.common.struct.Response recv_getPcRecommand() throws org.apache.thrift.TException
+    {
+      getPcRecommand_result result = new getPcRecommand_result();
+      receiveBase(result, "getPcRecommand");
+      if (result.isSetSuccess()) {
+        return result.success;
+      }
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getPcRecommand failed: unknown result");
+    }
+
+    public com.moseeker.thrift.gen.common.struct.Response getPcRecommandCompany(int page, int pageSize) throws org.apache.thrift.TException
+    {
+      send_getPcRecommandCompany(page, pageSize);
+      return recv_getPcRecommandCompany();
+    }
+
+    public void send_getPcRecommandCompany(int page, int pageSize) throws org.apache.thrift.TException
+    {
+      getPcRecommandCompany_args args = new getPcRecommandCompany_args();
+      args.setPage(page);
+      args.setPageSize(pageSize);
+      sendBase("getPcRecommandCompany", args);
+    }
+
+    public com.moseeker.thrift.gen.common.struct.Response recv_getPcRecommandCompany() throws org.apache.thrift.TException
+    {
+      getPcRecommandCompany_result result = new getPcRecommandCompany_result();
+      receiveBase(result, "getPcRecommandCompany");
+      if (result.isSetSuccess()) {
+        return result.success;
+      }
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getPcRecommandCompany failed: unknown result");
+    }
+
+    public com.moseeker.thrift.gen.common.struct.Response getPcRecommandCompanyAll(int page, int pageSize) throws org.apache.thrift.TException
+    {
+      send_getPcRecommandCompanyAll(page, pageSize);
+      return recv_getPcRecommandCompanyAll();
+    }
+
+    public void send_getPcRecommandCompanyAll(int page, int pageSize) throws org.apache.thrift.TException
+    {
+      getPcRecommandCompanyAll_args args = new getPcRecommandCompanyAll_args();
+      args.setPage(page);
+      args.setPageSize(pageSize);
+      sendBase("getPcRecommandCompanyAll", args);
+    }
+
+    public com.moseeker.thrift.gen.common.struct.Response recv_getPcRecommandCompanyAll() throws org.apache.thrift.TException
+    {
+      getPcRecommandCompanyAll_result result = new getPcRecommandCompanyAll_result();
+      receiveBase(result, "getPcRecommandCompanyAll");
+      if (result.isSetSuccess()) {
+        return result.success;
+      }
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getPcRecommandCompanyAll failed: unknown result");
+    }
+
   }
   public static class AsyncClient extends org.apache.thrift.async.TAsyncClient implements AsyncIface {
     public static class Factory implements org.apache.thrift.async.TAsyncClientFactory<AsyncClient> {
@@ -687,8 +771,8 @@ public class PositionServices {
       }
 
       public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
-          throw new java.lang.IllegalStateException("Method call not finished!");
+        if (getState() != State.RESPONSE_READ) {
+          throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -719,8 +803,8 @@ public class PositionServices {
       }
 
       public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
-          throw new java.lang.IllegalStateException("Method call not finished!");
+        if (getState() != State.RESPONSE_READ) {
+          throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -751,8 +835,8 @@ public class PositionServices {
       }
 
       public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
-          throw new java.lang.IllegalStateException("Method call not finished!");
+        if (getState() != State.RESPONSE_READ) {
+          throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -783,8 +867,8 @@ public class PositionServices {
       }
 
       public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
-          throw new java.lang.IllegalStateException("Method call not finished!");
+        if (getState() != State.RESPONSE_READ) {
+          throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -792,7 +876,7 @@ public class PositionServices {
       }
     }
 
-    public void CustomField(java.lang.String param, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+    public void CustomField(String param, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       CustomField_call method_call = new CustomField_call(param, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -800,8 +884,8 @@ public class PositionServices {
     }
 
     public static class CustomField_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
-      private java.lang.String param;
-      public CustomField_call(java.lang.String param, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private String param;
+      public CustomField_call(String param, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.param = param;
       }
@@ -815,8 +899,8 @@ public class PositionServices {
       }
 
       public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
-          throw new java.lang.IllegalStateException("Method call not finished!");
+        if (getState() != State.RESPONSE_READ) {
+          throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -850,8 +934,8 @@ public class PositionServices {
       }
 
       public java.util.List<com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization> getResult() throws org.apache.thrift.TException {
-        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
-          throw new java.lang.IllegalStateException("Method call not finished!");
+        if (getState() != State.RESPONSE_READ) {
+          throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -885,8 +969,8 @@ public class PositionServices {
       }
 
       public com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount getResult() throws org.apache.thrift.TException {
-        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
-          throw new java.lang.IllegalStateException("Method call not finished!");
+        if (getState() != State.RESPONSE_READ) {
+          throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -894,17 +978,17 @@ public class PositionServices {
       }
     }
 
-    public void ifAllowRefresh(int positionId, int account_id, org.apache.thrift.async.AsyncMethodCallback<java.lang.Boolean> resultHandler) throws org.apache.thrift.TException {
+    public void ifAllowRefresh(int positionId, int account_id, org.apache.thrift.async.AsyncMethodCallback<Boolean> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       ifAllowRefresh_call method_call = new ifAllowRefresh_call(positionId, account_id, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
-    public static class ifAllowRefresh_call extends org.apache.thrift.async.TAsyncMethodCall<java.lang.Boolean> {
+    public static class ifAllowRefresh_call extends org.apache.thrift.async.TAsyncMethodCall<Boolean> {
       private int positionId;
       private int account_id;
-      public ifAllowRefresh_call(int positionId, int account_id, org.apache.thrift.async.AsyncMethodCallback<java.lang.Boolean> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public ifAllowRefresh_call(int positionId, int account_id, org.apache.thrift.async.AsyncMethodCallback<Boolean> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.positionId = positionId;
         this.account_id = account_id;
@@ -919,9 +1003,9 @@ public class PositionServices {
         prot.writeMessageEnd();
       }
 
-      public java.lang.Boolean getResult() throws org.apache.thrift.TException {
-        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
-          throw new java.lang.IllegalStateException("Method call not finished!");
+      public Boolean getResult() throws org.apache.thrift.TException {
+        if (getState() != State.RESPONSE_READ) {
+          throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -952,8 +1036,8 @@ public class PositionServices {
       }
 
       public java.util.List<com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO> getResult() throws org.apache.thrift.TException {
-        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
-          throw new java.lang.IllegalStateException("Method call not finished!");
+        if (getState() != State.RESPONSE_READ) {
+          throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -984,8 +1068,8 @@ public class PositionServices {
       }
 
       public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
-          throw new java.lang.IllegalStateException("Method call not finished!");
+        if (getState() != State.RESPONSE_READ) {
+          throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -1016,8 +1100,8 @@ public class PositionServices {
       }
 
       public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
-          throw new java.lang.IllegalStateException("Method call not finished!");
+        if (getState() != State.RESPONSE_READ) {
+          throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -1025,7 +1109,7 @@ public class PositionServices {
       }
     }
 
-    public void getTeamIdByDepartmentName(int companyId, java.lang.String departmentName, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+    public void getTeamIdByDepartmentName(int companyId, String departmentName, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       getTeamIdByDepartmentName_call method_call = new getTeamIdByDepartmentName_call(companyId, departmentName, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -1034,8 +1118,8 @@ public class PositionServices {
 
     public static class getTeamIdByDepartmentName_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
       private int companyId;
-      private java.lang.String departmentName;
-      public getTeamIdByDepartmentName_call(int companyId, java.lang.String departmentName, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private String departmentName;
+      public getTeamIdByDepartmentName_call(int companyId, String departmentName, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.companyId = companyId;
         this.departmentName = departmentName;
@@ -1051,8 +1135,8 @@ public class PositionServices {
       }
 
       public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
-          throw new java.lang.IllegalStateException("Method call not finished!");
+        if (getState() != State.RESPONSE_READ) {
+          throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -1159,8 +1243,8 @@ public class PositionServices {
       }
 
       public java.util.List<com.moseeker.thrift.gen.position.struct.WechatPositionListData> getResult() throws org.apache.thrift.TException {
-        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
-          throw new java.lang.IllegalStateException("Method call not finished!");
+        if (getState() != State.RESPONSE_READ) {
+          throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -1168,7 +1252,7 @@ public class PositionServices {
       }
     }
 
-    public void getPositionListRpExt(java.util.List<java.lang.Integer> pids, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.position.struct.RpExtInfo>> resultHandler) throws org.apache.thrift.TException {
+    public void getPositionListRpExt(java.util.List<Integer> pids, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.position.struct.RpExtInfo>> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       getPositionListRpExt_call method_call = new getPositionListRpExt_call(pids, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -1176,8 +1260,8 @@ public class PositionServices {
     }
 
     public static class getPositionListRpExt_call extends org.apache.thrift.async.TAsyncMethodCall<java.util.List<com.moseeker.thrift.gen.position.struct.RpExtInfo>> {
-      private java.util.List<java.lang.Integer> pids;
-      public getPositionListRpExt_call(java.util.List<java.lang.Integer> pids, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.position.struct.RpExtInfo>> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private java.util.List<Integer> pids;
+      public getPositionListRpExt_call(java.util.List<Integer> pids, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.position.struct.RpExtInfo>> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.pids = pids;
       }
@@ -1191,8 +1275,8 @@ public class PositionServices {
       }
 
       public java.util.List<com.moseeker.thrift.gen.position.struct.RpExtInfo> getResult() throws org.apache.thrift.TException {
-        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
-          throw new java.lang.IllegalStateException("Method call not finished!");
+        if (getState() != State.RESPONSE_READ) {
+          throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -1223,8 +1307,8 @@ public class PositionServices {
       }
 
       public java.util.List<com.moseeker.thrift.gen.position.struct.WechatRpPositionListData> getResult() throws org.apache.thrift.TException {
-        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
-          throw new java.lang.IllegalStateException("Method call not finished!");
+        if (getState() != State.RESPONSE_READ) {
+          throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -1255,8 +1339,8 @@ public class PositionServices {
       }
 
       public com.moseeker.thrift.gen.position.struct.WechatShareData getResult() throws org.apache.thrift.TException {
-        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
-          throw new java.lang.IllegalStateException("Method call not finished!");
+        if (getState() != State.RESPONSE_READ) {
+          throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -1284,8 +1368,8 @@ public class PositionServices {
       }
 
       public com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO getResult() throws org.apache.thrift.TException {
-        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
-          throw new java.lang.IllegalStateException("Method call not finished!");
+        if (getState() != State.RESPONSE_READ) {
+          throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -1316,8 +1400,8 @@ public class PositionServices {
       }
 
       public com.moseeker.thrift.gen.position.struct.PositionDetailsVO getResult() throws org.apache.thrift.TException {
-        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
-          throw new java.lang.IllegalStateException("Method call not finished!");
+        if (getState() != State.RESPONSE_READ) {
+          throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -1354,8 +1438,8 @@ public class PositionServices {
       }
 
       public com.moseeker.thrift.gen.position.struct.PositionDetailsListVO getResult() throws org.apache.thrift.TException {
-        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
-          throw new java.lang.IllegalStateException("Method call not finished!");
+        if (getState() != State.RESPONSE_READ) {
+          throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -1392,12 +1476,117 @@ public class PositionServices {
       }
 
       public com.moseeker.thrift.gen.position.struct.PositionDetailsListVO getResult() throws org.apache.thrift.TException {
-        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
-          throw new java.lang.IllegalStateException("Method call not finished!");
+        if (getState() != State.RESPONSE_READ) {
+          throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
         return (new Client(prot)).recv_similarityPositionDetailsList();
+      }
+    }
+
+    public void getPcRecommand(int page, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+      checkReady();
+      getPcRecommand_call method_call = new getPcRecommand_call(page, pageSize, resultHandler, this, ___protocolFactory, ___transport);
+      this.___currentMethod = method_call;
+      ___manager.call(method_call);
+    }
+
+    public static class getPcRecommand_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
+      private int page;
+      private int pageSize;
+      public getPcRecommand_call(int page, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+        super(client, protocolFactory, transport, resultHandler, false);
+        this.page = page;
+        this.pageSize = pageSize;
+      }
+
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("getPcRecommand", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        getPcRecommand_args args = new getPcRecommand_args();
+        args.setPage(page);
+        args.setPageSize(pageSize);
+        args.write(prot);
+        prot.writeMessageEnd();
+      }
+
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
+        if (getState() != State.RESPONSE_READ) {
+          throw new IllegalStateException("Method call not finished!");
+        }
+        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
+        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
+        return (new Client(prot)).recv_getPcRecommand();
+      }
+    }
+
+    public void getPcRecommandCompany(int page, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+      checkReady();
+      getPcRecommandCompany_call method_call = new getPcRecommandCompany_call(page, pageSize, resultHandler, this, ___protocolFactory, ___transport);
+      this.___currentMethod = method_call;
+      ___manager.call(method_call);
+    }
+
+    public static class getPcRecommandCompany_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
+      private int page;
+      private int pageSize;
+      public getPcRecommandCompany_call(int page, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+        super(client, protocolFactory, transport, resultHandler, false);
+        this.page = page;
+        this.pageSize = pageSize;
+      }
+
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("getPcRecommandCompany", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        getPcRecommandCompany_args args = new getPcRecommandCompany_args();
+        args.setPage(page);
+        args.setPageSize(pageSize);
+        args.write(prot);
+        prot.writeMessageEnd();
+      }
+
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
+        if (getState() != State.RESPONSE_READ) {
+          throw new IllegalStateException("Method call not finished!");
+        }
+        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
+        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
+        return (new Client(prot)).recv_getPcRecommandCompany();
+      }
+    }
+
+    public void getPcRecommandCompanyAll(int page, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+      checkReady();
+      getPcRecommandCompanyAll_call method_call = new getPcRecommandCompanyAll_call(page, pageSize, resultHandler, this, ___protocolFactory, ___transport);
+      this.___currentMethod = method_call;
+      ___manager.call(method_call);
+    }
+
+    public static class getPcRecommandCompanyAll_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
+      private int page;
+      private int pageSize;
+      public getPcRecommandCompanyAll_call(int page, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+        super(client, protocolFactory, transport, resultHandler, false);
+        this.page = page;
+        this.pageSize = pageSize;
+      }
+
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("getPcRecommandCompanyAll", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        getPcRecommandCompanyAll_args args = new getPcRecommandCompanyAll_args();
+        args.setPage(page);
+        args.setPageSize(pageSize);
+        args.write(prot);
+        prot.writeMessageEnd();
+      }
+
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
+        if (getState() != State.RESPONSE_READ) {
+          throw new IllegalStateException("Method call not finished!");
+        }
+        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
+        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
+        return (new Client(prot)).recv_getPcRecommandCompanyAll();
       }
     }
 
@@ -1406,14 +1595,14 @@ public class PositionServices {
   public static class Processor<I extends Iface> extends org.apache.thrift.TBaseProcessor<I> implements org.apache.thrift.TProcessor {
     private static final org.slf4j.Logger _LOGGER = org.slf4j.LoggerFactory.getLogger(Processor.class.getName());
     public Processor(I iface) {
-      super(iface, getProcessMap(new java.util.HashMap<java.lang.String, org.apache.thrift.ProcessFunction<I, ? extends org.apache.thrift.TBase>>()));
+      super(iface, getProcessMap(new java.util.HashMap<String, org.apache.thrift.ProcessFunction<I, ? extends org.apache.thrift.TBase>>()));
     }
 
-    protected Processor(I iface, java.util.Map<java.lang.String, org.apache.thrift.ProcessFunction<I, ? extends org.apache.thrift.TBase>> processMap) {
+    protected Processor(I iface, java.util.Map<String, org.apache.thrift.ProcessFunction<I, ? extends org.apache.thrift.TBase>> processMap) {
       super(iface, getProcessMap(processMap));
     }
 
-    private static <I extends Iface> java.util.Map<java.lang.String,  org.apache.thrift.ProcessFunction<I, ? extends org.apache.thrift.TBase>> getProcessMap(java.util.Map<java.lang.String, org.apache.thrift.ProcessFunction<I, ? extends  org.apache.thrift.TBase>> processMap) {
+    private static <I extends Iface> java.util.Map<String,  org.apache.thrift.ProcessFunction<I, ? extends org.apache.thrift.TBase>> getProcessMap(java.util.Map<String, org.apache.thrift.ProcessFunction<I, ? extends  org.apache.thrift.TBase>> processMap) {
       processMap.put("getResources", new getResources());
       processMap.put("getRecommendedPositions", new getRecommendedPositions());
       processMap.put("verifyCustomize", new verifyCustomize());
@@ -1436,6 +1625,9 @@ public class PositionServices {
       processMap.put("positionDetails", new positionDetails());
       processMap.put("companyHotPositionDetailsList", new companyHotPositionDetailsList());
       processMap.put("similarityPositionDetailsList", new similarityPositionDetailsList());
+      processMap.put("getPcRecommand", new getPcRecommand());
+      processMap.put("getPcRecommandCompany", new getPcRecommandCompany());
+      processMap.put("getPcRecommandCompanyAll", new getPcRecommandCompanyAll());
       return processMap;
     }
 
@@ -1880,19 +2072,79 @@ public class PositionServices {
       }
     }
 
+    public static class getPcRecommand<I extends Iface> extends org.apache.thrift.ProcessFunction<I, getPcRecommand_args> {
+      public getPcRecommand() {
+        super("getPcRecommand");
+      }
+
+      public getPcRecommand_args getEmptyArgsInstance() {
+        return new getPcRecommand_args();
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public getPcRecommand_result getResult(I iface, getPcRecommand_args args) throws org.apache.thrift.TException {
+        getPcRecommand_result result = new getPcRecommand_result();
+        result.success = iface.getPcRecommand(args.page, args.pageSize);
+        return result;
+      }
+    }
+
+    public static class getPcRecommandCompany<I extends Iface> extends org.apache.thrift.ProcessFunction<I, getPcRecommandCompany_args> {
+      public getPcRecommandCompany() {
+        super("getPcRecommandCompany");
+      }
+
+      public getPcRecommandCompany_args getEmptyArgsInstance() {
+        return new getPcRecommandCompany_args();
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public getPcRecommandCompany_result getResult(I iface, getPcRecommandCompany_args args) throws org.apache.thrift.TException {
+        getPcRecommandCompany_result result = new getPcRecommandCompany_result();
+        result.success = iface.getPcRecommandCompany(args.page, args.pageSize);
+        return result;
+      }
+    }
+
+    public static class getPcRecommandCompanyAll<I extends Iface> extends org.apache.thrift.ProcessFunction<I, getPcRecommandCompanyAll_args> {
+      public getPcRecommandCompanyAll() {
+        super("getPcRecommandCompanyAll");
+      }
+
+      public getPcRecommandCompanyAll_args getEmptyArgsInstance() {
+        return new getPcRecommandCompanyAll_args();
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public getPcRecommandCompanyAll_result getResult(I iface, getPcRecommandCompanyAll_args args) throws org.apache.thrift.TException {
+        getPcRecommandCompanyAll_result result = new getPcRecommandCompanyAll_result();
+        result.success = iface.getPcRecommandCompanyAll(args.page, args.pageSize);
+        return result;
+      }
+    }
+
   }
 
   public static class AsyncProcessor<I extends AsyncIface> extends org.apache.thrift.TBaseAsyncProcessor<I> {
     private static final org.slf4j.Logger _LOGGER = org.slf4j.LoggerFactory.getLogger(AsyncProcessor.class.getName());
     public AsyncProcessor(I iface) {
-      super(iface, getProcessMap(new java.util.HashMap<java.lang.String, org.apache.thrift.AsyncProcessFunction<I, ? extends org.apache.thrift.TBase, ?>>()));
+      super(iface, getProcessMap(new java.util.HashMap<String, org.apache.thrift.AsyncProcessFunction<I, ? extends org.apache.thrift.TBase, ?>>()));
     }
 
-    protected AsyncProcessor(I iface, java.util.Map<java.lang.String,  org.apache.thrift.AsyncProcessFunction<I, ? extends  org.apache.thrift.TBase, ?>> processMap) {
+    protected AsyncProcessor(I iface, java.util.Map<String,  org.apache.thrift.AsyncProcessFunction<I, ? extends  org.apache.thrift.TBase, ?>> processMap) {
       super(iface, getProcessMap(processMap));
     }
 
-    private static <I extends AsyncIface> java.util.Map<java.lang.String,  org.apache.thrift.AsyncProcessFunction<I, ? extends  org.apache.thrift.TBase,?>> getProcessMap(java.util.Map<java.lang.String,  org.apache.thrift.AsyncProcessFunction<I, ? extends  org.apache.thrift.TBase, ?>> processMap) {
+    private static <I extends AsyncIface> java.util.Map<String,  org.apache.thrift.AsyncProcessFunction<I, ? extends  org.apache.thrift.TBase,?>> getProcessMap(java.util.Map<String,  org.apache.thrift.AsyncProcessFunction<I, ? extends  org.apache.thrift.TBase, ?>> processMap) {
       processMap.put("getResources", new getResources());
       processMap.put("getRecommendedPositions", new getRecommendedPositions());
       processMap.put("verifyCustomize", new verifyCustomize());
@@ -1915,6 +2167,9 @@ public class PositionServices {
       processMap.put("positionDetails", new positionDetails());
       processMap.put("companyHotPositionDetailsList", new companyHotPositionDetailsList());
       processMap.put("similarityPositionDetailsList", new similarityPositionDetailsList());
+      processMap.put("getPcRecommand", new getPcRecommand());
+      processMap.put("getPcRecommandCompany", new getPcRecommandCompany());
+      processMap.put("getPcRecommandCompanyAll", new getPcRecommandCompanyAll());
       return processMap;
     }
 
@@ -1929,7 +2184,7 @@ public class PositionServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             getResources_result result = new getResources_result();
             result.success = o;
@@ -1938,12 +2193,12 @@ public class PositionServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (java.lang.Exception e) {
+            } catch (Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(java.lang.Exception e) {
+          public void onError(Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             getResources_result result = new getResources_result();
@@ -1962,7 +2217,7 @@ public class PositionServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (java.lang.Exception ex) {
+            } catch (Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -1990,7 +2245,7 @@ public class PositionServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             getRecommendedPositions_result result = new getRecommendedPositions_result();
             result.success = o;
@@ -1999,12 +2254,12 @@ public class PositionServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (java.lang.Exception e) {
+            } catch (Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(java.lang.Exception e) {
+          public void onError(Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             getRecommendedPositions_result result = new getRecommendedPositions_result();
@@ -2023,7 +2278,7 @@ public class PositionServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (java.lang.Exception ex) {
+            } catch (Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -2051,7 +2306,7 @@ public class PositionServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             verifyCustomize_result result = new verifyCustomize_result();
             result.success = o;
@@ -2060,12 +2315,12 @@ public class PositionServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (java.lang.Exception e) {
+            } catch (Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(java.lang.Exception e) {
+          public void onError(Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             verifyCustomize_result result = new verifyCustomize_result();
@@ -2084,7 +2339,7 @@ public class PositionServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (java.lang.Exception ex) {
+            } catch (Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -2112,7 +2367,7 @@ public class PositionServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             getPositionById_result result = new getPositionById_result();
             result.success = o;
@@ -2121,12 +2376,12 @@ public class PositionServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (java.lang.Exception e) {
+            } catch (Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(java.lang.Exception e) {
+          public void onError(Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             getPositionById_result result = new getPositionById_result();
@@ -2145,7 +2400,7 @@ public class PositionServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (java.lang.Exception ex) {
+            } catch (Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -2173,7 +2428,7 @@ public class PositionServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             CustomField_result result = new CustomField_result();
             result.success = o;
@@ -2182,12 +2437,12 @@ public class PositionServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (java.lang.Exception e) {
+            } catch (Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(java.lang.Exception e) {
+          public void onError(Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             CustomField_result result = new CustomField_result();
@@ -2206,7 +2461,7 @@ public class PositionServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (java.lang.Exception ex) {
+            } catch (Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -2234,7 +2489,7 @@ public class PositionServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization>> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization>>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization>>() {
           public void onComplete(java.util.List<com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization> o) {
             changeToThirdPartyPosition_result result = new changeToThirdPartyPosition_result();
             result.success = o;
@@ -2243,12 +2498,12 @@ public class PositionServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (java.lang.Exception e) {
+            } catch (Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(java.lang.Exception e) {
+          public void onError(Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             changeToThirdPartyPosition_result result = new changeToThirdPartyPosition_result();
@@ -2267,7 +2522,7 @@ public class PositionServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (java.lang.Exception ex) {
+            } catch (Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -2295,7 +2550,7 @@ public class PositionServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount>() {
           public void onComplete(com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount o) {
             createRefreshPosition_result result = new createRefreshPosition_result();
             result.success = o;
@@ -2304,12 +2559,12 @@ public class PositionServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (java.lang.Exception e) {
+            } catch (Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(java.lang.Exception e) {
+          public void onError(Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             createRefreshPosition_result result = new createRefreshPosition_result();
@@ -2328,7 +2583,7 @@ public class PositionServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (java.lang.Exception ex) {
+            } catch (Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -2345,7 +2600,7 @@ public class PositionServices {
       }
     }
 
-    public static class ifAllowRefresh<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, ifAllowRefresh_args, java.lang.Boolean> {
+    public static class ifAllowRefresh<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, ifAllowRefresh_args, Boolean> {
       public ifAllowRefresh() {
         super("ifAllowRefresh");
       }
@@ -2354,10 +2609,10 @@ public class PositionServices {
         return new ifAllowRefresh_args();
       }
 
-      public org.apache.thrift.async.AsyncMethodCallback<java.lang.Boolean> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
+      public org.apache.thrift.async.AsyncMethodCallback<Boolean> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<java.lang.Boolean>() { 
-          public void onComplete(java.lang.Boolean o) {
+        return new org.apache.thrift.async.AsyncMethodCallback<Boolean>() {
+          public void onComplete(Boolean o) {
             ifAllowRefresh_result result = new ifAllowRefresh_result();
             result.success = o;
             result.setSuccessIsSet(true);
@@ -2366,12 +2621,12 @@ public class PositionServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (java.lang.Exception e) {
+            } catch (Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(java.lang.Exception e) {
+          public void onError(Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             ifAllowRefresh_result result = new ifAllowRefresh_result();
@@ -2390,7 +2645,7 @@ public class PositionServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (java.lang.Exception ex) {
+            } catch (Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -2402,7 +2657,7 @@ public class PositionServices {
         return false;
       }
 
-      public void start(I iface, ifAllowRefresh_args args, org.apache.thrift.async.AsyncMethodCallback<java.lang.Boolean> resultHandler) throws org.apache.thrift.TException {
+      public void start(I iface, ifAllowRefresh_args args, org.apache.thrift.async.AsyncMethodCallback<Boolean> resultHandler) throws org.apache.thrift.TException {
         iface.ifAllowRefresh(args.positionId, args.account_id,resultHandler);
       }
     }
@@ -2418,7 +2673,7 @@ public class PositionServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO>> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO>>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO>>() {
           public void onComplete(java.util.List<com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO> o) {
             getThirdPartyPositions_result result = new getThirdPartyPositions_result();
             result.success = o;
@@ -2427,12 +2682,12 @@ public class PositionServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (java.lang.Exception e) {
+            } catch (Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(java.lang.Exception e) {
+          public void onError(Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             getThirdPartyPositions_result result = new getThirdPartyPositions_result();
@@ -2451,7 +2706,7 @@ public class PositionServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (java.lang.Exception ex) {
+            } catch (Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -2479,7 +2734,7 @@ public class PositionServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             batchHandlerJobPostion_result result = new batchHandlerJobPostion_result();
             result.success = o;
@@ -2488,12 +2743,12 @@ public class PositionServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (java.lang.Exception e) {
+            } catch (Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(java.lang.Exception e) {
+          public void onError(Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             batchHandlerJobPostion_result result = new batchHandlerJobPostion_result();
@@ -2512,7 +2767,7 @@ public class PositionServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (java.lang.Exception ex) {
+            } catch (Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -2540,7 +2795,7 @@ public class PositionServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             deleteJobposition_result result = new deleteJobposition_result();
             result.success = o;
@@ -2549,12 +2804,12 @@ public class PositionServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (java.lang.Exception e) {
+            } catch (Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(java.lang.Exception e) {
+          public void onError(Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             deleteJobposition_result result = new deleteJobposition_result();
@@ -2573,7 +2828,7 @@ public class PositionServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (java.lang.Exception ex) {
+            } catch (Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -2601,7 +2856,7 @@ public class PositionServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             getTeamIdByDepartmentName_result result = new getTeamIdByDepartmentName_result();
             result.success = o;
@@ -2610,12 +2865,12 @@ public class PositionServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (java.lang.Exception e) {
+            } catch (Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(java.lang.Exception e) {
+          public void onError(Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             getTeamIdByDepartmentName_result result = new getTeamIdByDepartmentName_result();
@@ -2634,7 +2889,7 @@ public class PositionServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (java.lang.Exception ex) {
+            } catch (Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -2662,7 +2917,7 @@ public class PositionServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             getPositionForThirdParty_result result = new getPositionForThirdParty_result();
             result.success = o;
@@ -2723,7 +2978,7 @@ public class PositionServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<java.util.List<java.lang.Integer>> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<java.util.List<java.lang.Integer>>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<java.util.List<java.lang.Integer>>() {
           public void onComplete(java.util.List<java.lang.Integer> o) {
             getPositionListForThirdParty_result result = new getPositionListForThirdParty_result();
             result.success = o;
@@ -2784,7 +3039,7 @@ public class PositionServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.position.struct.WechatPositionListData>> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.position.struct.WechatPositionListData>>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.position.struct.WechatPositionListData>>() {
           public void onComplete(java.util.List<com.moseeker.thrift.gen.position.struct.WechatPositionListData> o) {
             getPositionList_result result = new getPositionList_result();
             result.success = o;
@@ -2793,12 +3048,12 @@ public class PositionServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (java.lang.Exception e) {
+            } catch (Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(java.lang.Exception e) {
+          public void onError(Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             getPositionList_result result = new getPositionList_result();
@@ -2817,7 +3072,7 @@ public class PositionServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (java.lang.Exception ex) {
+            } catch (Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -2845,7 +3100,7 @@ public class PositionServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.position.struct.RpExtInfo>> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.position.struct.RpExtInfo>>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.position.struct.RpExtInfo>>() {
           public void onComplete(java.util.List<com.moseeker.thrift.gen.position.struct.RpExtInfo> o) {
             getPositionListRpExt_result result = new getPositionListRpExt_result();
             result.success = o;
@@ -2854,12 +3109,12 @@ public class PositionServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (java.lang.Exception e) {
+            } catch (Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(java.lang.Exception e) {
+          public void onError(Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             getPositionListRpExt_result result = new getPositionListRpExt_result();
@@ -2878,7 +3133,7 @@ public class PositionServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (java.lang.Exception ex) {
+            } catch (Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -2906,7 +3161,7 @@ public class PositionServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.position.struct.WechatRpPositionListData>> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.position.struct.WechatRpPositionListData>>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.position.struct.WechatRpPositionListData>>() {
           public void onComplete(java.util.List<com.moseeker.thrift.gen.position.struct.WechatRpPositionListData> o) {
             getRpPositionList_result result = new getRpPositionList_result();
             result.success = o;
@@ -2915,12 +3170,12 @@ public class PositionServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (java.lang.Exception e) {
+            } catch (Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(java.lang.Exception e) {
+          public void onError(Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             getRpPositionList_result result = new getRpPositionList_result();
@@ -2939,7 +3194,7 @@ public class PositionServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (java.lang.Exception ex) {
+            } catch (Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -2967,7 +3222,7 @@ public class PositionServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.position.struct.WechatShareData> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.position.struct.WechatShareData>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.position.struct.WechatShareData>() {
           public void onComplete(com.moseeker.thrift.gen.position.struct.WechatShareData o) {
             getShareInfo_result result = new getShareInfo_result();
             result.success = o;
@@ -2976,12 +3231,12 @@ public class PositionServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (java.lang.Exception e) {
+            } catch (Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(java.lang.Exception e) {
+          public void onError(Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             getShareInfo_result result = new getShareInfo_result();
@@ -3000,7 +3255,7 @@ public class PositionServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (java.lang.Exception ex) {
+            } catch (Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -3028,7 +3283,7 @@ public class PositionServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO>() {
           public void onComplete(com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO o) {
             headImage_result result = new headImage_result();
             result.success = o;
@@ -3037,12 +3292,12 @@ public class PositionServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (java.lang.Exception e) {
+            } catch (Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(java.lang.Exception e) {
+          public void onError(Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             headImage_result result = new headImage_result();
@@ -3061,7 +3316,7 @@ public class PositionServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (java.lang.Exception ex) {
+            } catch (Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -3089,7 +3344,7 @@ public class PositionServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.position.struct.PositionDetailsVO> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.position.struct.PositionDetailsVO>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.position.struct.PositionDetailsVO>() {
           public void onComplete(com.moseeker.thrift.gen.position.struct.PositionDetailsVO o) {
             positionDetails_result result = new positionDetails_result();
             result.success = o;
@@ -3098,12 +3353,12 @@ public class PositionServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (java.lang.Exception e) {
+            } catch (Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(java.lang.Exception e) {
+          public void onError(Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             positionDetails_result result = new positionDetails_result();
@@ -3122,7 +3377,7 @@ public class PositionServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (java.lang.Exception ex) {
+            } catch (Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -3150,7 +3405,7 @@ public class PositionServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.position.struct.PositionDetailsListVO> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.position.struct.PositionDetailsListVO>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.position.struct.PositionDetailsListVO>() {
           public void onComplete(com.moseeker.thrift.gen.position.struct.PositionDetailsListVO o) {
             companyHotPositionDetailsList_result result = new companyHotPositionDetailsList_result();
             result.success = o;
@@ -3159,12 +3414,12 @@ public class PositionServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (java.lang.Exception e) {
+            } catch (Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(java.lang.Exception e) {
+          public void onError(Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             companyHotPositionDetailsList_result result = new companyHotPositionDetailsList_result();
@@ -3183,7 +3438,7 @@ public class PositionServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (java.lang.Exception ex) {
+            } catch (Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -3211,7 +3466,7 @@ public class PositionServices {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.position.struct.PositionDetailsListVO> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.position.struct.PositionDetailsListVO>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.position.struct.PositionDetailsListVO>() {
           public void onComplete(com.moseeker.thrift.gen.position.struct.PositionDetailsListVO o) {
             similarityPositionDetailsList_result result = new similarityPositionDetailsList_result();
             result.success = o;
@@ -3220,12 +3475,12 @@ public class PositionServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (java.lang.Exception e) {
+            } catch (Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(java.lang.Exception e) {
+          public void onError(Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             similarityPositionDetailsList_result result = new similarityPositionDetailsList_result();
@@ -3244,7 +3499,7 @@ public class PositionServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (java.lang.Exception ex) {
+            } catch (Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -3258,6 +3513,189 @@ public class PositionServices {
 
       public void start(I iface, similarityPositionDetailsList_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.position.struct.PositionDetailsListVO> resultHandler) throws org.apache.thrift.TException {
         iface.similarityPositionDetailsList(args.pid, args.page, args.per_age,resultHandler);
+      }
+    }
+
+    public static class getPcRecommand<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, getPcRecommand_args, com.moseeker.thrift.gen.common.struct.Response> {
+      public getPcRecommand() {
+        super("getPcRecommand");
+      }
+
+      public getPcRecommand_args getEmptyArgsInstance() {
+        return new getPcRecommand_args();
+      }
+
+      public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
+        final org.apache.thrift.AsyncProcessFunction fcall = this;
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
+          public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
+            getPcRecommand_result result = new getPcRecommand_result();
+            result.success = o;
+            try {
+              fcall.sendResponse(fb, result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
+            } catch (org.apache.thrift.transport.TTransportException e) {
+              _LOGGER.error("TTransportException writing to internal frame buffer", e);
+              fb.close();
+            } catch (Exception e) {
+              _LOGGER.error("Exception writing to internal frame buffer", e);
+              onError(e);
+            }
+          }
+          public void onError(Exception e) {
+            byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
+            org.apache.thrift.TSerializable msg;
+            getPcRecommand_result result = new getPcRecommand_result();
+            if (e instanceof org.apache.thrift.transport.TTransportException) {
+              _LOGGER.error("TTransportException inside handler", e);
+              fb.close();
+              return;
+            } else if (e instanceof org.apache.thrift.TApplicationException) {
+              _LOGGER.error("TApplicationException inside handler", e);
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = (org.apache.thrift.TApplicationException)e;
+            } else {
+              _LOGGER.error("Exception inside handler", e);
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
+            }
+            try {
+              fcall.sendResponse(fb,msg,msgType,seqid);
+            } catch (Exception ex) {
+              _LOGGER.error("Exception writing to internal frame buffer", ex);
+              fb.close();
+            }
+          }
+        };
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public void start(I iface, getPcRecommand_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+        iface.getPcRecommand(args.page, args.pageSize,resultHandler);
+      }
+    }
+
+    public static class getPcRecommandCompany<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, getPcRecommandCompany_args, com.moseeker.thrift.gen.common.struct.Response> {
+      public getPcRecommandCompany() {
+        super("getPcRecommandCompany");
+      }
+
+      public getPcRecommandCompany_args getEmptyArgsInstance() {
+        return new getPcRecommandCompany_args();
+      }
+
+      public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
+        final org.apache.thrift.AsyncProcessFunction fcall = this;
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
+          public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
+            getPcRecommandCompany_result result = new getPcRecommandCompany_result();
+            result.success = o;
+            try {
+              fcall.sendResponse(fb, result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
+            } catch (org.apache.thrift.transport.TTransportException e) {
+              _LOGGER.error("TTransportException writing to internal frame buffer", e);
+              fb.close();
+            } catch (Exception e) {
+              _LOGGER.error("Exception writing to internal frame buffer", e);
+              onError(e);
+            }
+          }
+          public void onError(Exception e) {
+            byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
+            org.apache.thrift.TSerializable msg;
+            getPcRecommandCompany_result result = new getPcRecommandCompany_result();
+            if (e instanceof org.apache.thrift.transport.TTransportException) {
+              _LOGGER.error("TTransportException inside handler", e);
+              fb.close();
+              return;
+            } else if (e instanceof org.apache.thrift.TApplicationException) {
+              _LOGGER.error("TApplicationException inside handler", e);
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = (org.apache.thrift.TApplicationException)e;
+            } else {
+              _LOGGER.error("Exception inside handler", e);
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
+            }
+            try {
+              fcall.sendResponse(fb,msg,msgType,seqid);
+            } catch (Exception ex) {
+              _LOGGER.error("Exception writing to internal frame buffer", ex);
+              fb.close();
+            }
+          }
+        };
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public void start(I iface, getPcRecommandCompany_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+        iface.getPcRecommandCompany(args.page, args.pageSize,resultHandler);
+      }
+    }
+
+    public static class getPcRecommandCompanyAll<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, getPcRecommandCompanyAll_args, com.moseeker.thrift.gen.common.struct.Response> {
+      public getPcRecommandCompanyAll() {
+        super("getPcRecommandCompanyAll");
+      }
+
+      public getPcRecommandCompanyAll_args getEmptyArgsInstance() {
+        return new getPcRecommandCompanyAll_args();
+      }
+
+      public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
+        final org.apache.thrift.AsyncProcessFunction fcall = this;
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
+          public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
+            getPcRecommandCompanyAll_result result = new getPcRecommandCompanyAll_result();
+            result.success = o;
+            try {
+              fcall.sendResponse(fb, result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
+            } catch (org.apache.thrift.transport.TTransportException e) {
+              _LOGGER.error("TTransportException writing to internal frame buffer", e);
+              fb.close();
+            } catch (Exception e) {
+              _LOGGER.error("Exception writing to internal frame buffer", e);
+              onError(e);
+            }
+          }
+          public void onError(Exception e) {
+            byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
+            org.apache.thrift.TSerializable msg;
+            getPcRecommandCompanyAll_result result = new getPcRecommandCompanyAll_result();
+            if (e instanceof org.apache.thrift.transport.TTransportException) {
+              _LOGGER.error("TTransportException inside handler", e);
+              fb.close();
+              return;
+            } else if (e instanceof org.apache.thrift.TApplicationException) {
+              _LOGGER.error("TApplicationException inside handler", e);
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = (org.apache.thrift.TApplicationException)e;
+            } else {
+              _LOGGER.error("Exception inside handler", e);
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
+            }
+            try {
+              fcall.sendResponse(fb,msg,msgType,seqid);
+            } catch (Exception ex) {
+              _LOGGER.error("Exception writing to internal frame buffer", ex);
+              fb.close();
+            }
+          }
+        };
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public void start(I iface, getPcRecommandCompanyAll_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+        iface.getPcRecommandCompanyAll(args.page, args.pageSize,resultHandler);
       }
     }
 
@@ -3277,7 +3715,7 @@ public class PositionServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       QUERY((short)1, "query");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -3303,21 +3741,21 @@ public class PositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -3326,7 +3764,7 @@ public class PositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -3335,7 +3773,7 @@ public class PositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.QUERY, new org.apache.thrift.meta_data.FieldMetaData("query", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.QUERY, new org.apache.thrift.meta_data.FieldMetaData("query", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.CommonQuery.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getResources_args.class, metaDataMap);
@@ -3393,7 +3831,7 @@ public class PositionServices {
       }
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case QUERY:
         if (value == null) {
@@ -3406,30 +3844,30 @@ public class PositionServices {
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       case QUERY:
         return getQuery();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
       case QUERY:
         return isSetQuery();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof getResources_args)
@@ -3474,7 +3912,7 @@ public class PositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetQuery()).compareTo(other.isSetQuery());
+      lastComparison = Boolean.valueOf(isSetQuery()).compareTo(other.isSetQuery());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -3500,8 +3938,8 @@ public class PositionServices {
     }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("getResources_args(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("getResources_args(");
       boolean first = true;
 
       sb.append("query:");
@@ -3531,7 +3969,7 @@ public class PositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -3553,7 +3991,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -3562,7 +4000,7 @@ public class PositionServices {
                 struct.query = new com.moseeker.thrift.gen.common.struct.CommonQuery();
                 struct.query.read(iprot);
                 struct.setQueryIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -3644,7 +4082,7 @@ public class PositionServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -3670,21 +4108,21 @@ public class PositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -3693,7 +4131,7 @@ public class PositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -3702,7 +4140,7 @@ public class PositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getResources_result.class, metaDataMap);
@@ -3760,7 +4198,7 @@ public class PositionServices {
       }
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -3773,30 +4211,30 @@ public class PositionServices {
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof getResources_result)
@@ -3841,7 +4279,7 @@ public class PositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -3867,8 +4305,8 @@ public class PositionServices {
       }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("getResources_result(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("getResources_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -3898,7 +4336,7 @@ public class PositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -3920,7 +4358,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -3929,7 +4367,7 @@ public class PositionServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -4011,7 +4449,7 @@ public class PositionServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       PID((short)1, "pid");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -4037,21 +4475,21 @@ public class PositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -4060,7 +4498,7 @@ public class PositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -4071,7 +4509,7 @@ public class PositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.PID, new org.apache.thrift.meta_data.FieldMetaData("pid", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.PID, new org.apache.thrift.meta_data.FieldMetaData("pid", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getRecommendedPositions_args.class, metaDataMap);
@@ -4129,43 +4567,43 @@ public class PositionServices {
       __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __PID_ISSET_ID, value);
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case PID:
         if (value == null) {
           unsetPid();
         } else {
-          setPid((java.lang.Integer)value);
+          setPid((Integer)value);
         }
         break;
 
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       case PID:
         return getPid();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
       case PID:
         return isSetPid();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof getRecommendedPositions_args)
@@ -4208,7 +4646,7 @@ public class PositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetPid()).compareTo(other.isSetPid());
+      lastComparison = Boolean.valueOf(isSetPid()).compareTo(other.isSetPid());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -4234,8 +4672,8 @@ public class PositionServices {
     }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("getRecommendedPositions_args(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("getRecommendedPositions_args(");
       boolean first = true;
 
       sb.append("pid:");
@@ -4258,7 +4696,7 @@ public class PositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
@@ -4282,7 +4720,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -4290,7 +4728,7 @@ public class PositionServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.pid = iprot.readI32();
                 struct.setPidIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -4369,7 +4807,7 @@ public class PositionServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -4395,21 +4833,21 @@ public class PositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -4418,7 +4856,7 @@ public class PositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -4427,7 +4865,7 @@ public class PositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getRecommendedPositions_result.class, metaDataMap);
@@ -4485,7 +4923,7 @@ public class PositionServices {
       }
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -4498,30 +4936,30 @@ public class PositionServices {
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof getRecommendedPositions_result)
@@ -4566,7 +5004,7 @@ public class PositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -4592,8 +5030,8 @@ public class PositionServices {
       }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("getRecommendedPositions_result(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("getRecommendedPositions_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -4623,7 +5061,7 @@ public class PositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -4645,7 +5083,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -4654,7 +5092,7 @@ public class PositionServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -4736,7 +5174,7 @@ public class PositionServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       POSITION_ID((short)1, "positionId");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -4762,21 +5200,21 @@ public class PositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -4785,7 +5223,7 @@ public class PositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -4796,7 +5234,7 @@ public class PositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.POSITION_ID, new org.apache.thrift.meta_data.FieldMetaData("positionId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.POSITION_ID, new org.apache.thrift.meta_data.FieldMetaData("positionId", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(verifyCustomize_args.class, metaDataMap);
@@ -4854,43 +5292,43 @@ public class PositionServices {
       __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __POSITIONID_ISSET_ID, value);
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case POSITION_ID:
         if (value == null) {
           unsetPositionId();
         } else {
-          setPositionId((java.lang.Integer)value);
+          setPositionId((Integer)value);
         }
         break;
 
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       case POSITION_ID:
         return getPositionId();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
       case POSITION_ID:
         return isSetPositionId();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof verifyCustomize_args)
@@ -4933,7 +5371,7 @@ public class PositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetPositionId()).compareTo(other.isSetPositionId());
+      lastComparison = Boolean.valueOf(isSetPositionId()).compareTo(other.isSetPositionId());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -4959,8 +5397,8 @@ public class PositionServices {
     }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("verifyCustomize_args(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("verifyCustomize_args(");
       boolean first = true;
 
       sb.append("positionId:");
@@ -4983,7 +5421,7 @@ public class PositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
@@ -5007,7 +5445,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -5015,7 +5453,7 @@ public class PositionServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.positionId = iprot.readI32();
                 struct.setPositionIdIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -5094,7 +5532,7 @@ public class PositionServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -5120,21 +5558,21 @@ public class PositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -5143,7 +5581,7 @@ public class PositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -5152,7 +5590,7 @@ public class PositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(verifyCustomize_result.class, metaDataMap);
@@ -5210,7 +5648,7 @@ public class PositionServices {
       }
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -5223,30 +5661,30 @@ public class PositionServices {
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof verifyCustomize_result)
@@ -5291,7 +5729,7 @@ public class PositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -5317,8 +5755,8 @@ public class PositionServices {
       }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("verifyCustomize_result(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("verifyCustomize_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -5348,7 +5786,7 @@ public class PositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -5370,7 +5808,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -5379,7 +5817,7 @@ public class PositionServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -5461,7 +5899,7 @@ public class PositionServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       POSITION_ID((short)1, "positionId");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -5487,21 +5925,21 @@ public class PositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -5510,7 +5948,7 @@ public class PositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -5521,7 +5959,7 @@ public class PositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.POSITION_ID, new org.apache.thrift.meta_data.FieldMetaData("positionId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.POSITION_ID, new org.apache.thrift.meta_data.FieldMetaData("positionId", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getPositionById_args.class, metaDataMap);
@@ -5579,43 +6017,43 @@ public class PositionServices {
       __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __POSITIONID_ISSET_ID, value);
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case POSITION_ID:
         if (value == null) {
           unsetPositionId();
         } else {
-          setPositionId((java.lang.Integer)value);
+          setPositionId((Integer)value);
         }
         break;
 
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       case POSITION_ID:
         return getPositionId();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
       case POSITION_ID:
         return isSetPositionId();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof getPositionById_args)
@@ -5658,7 +6096,7 @@ public class PositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetPositionId()).compareTo(other.isSetPositionId());
+      lastComparison = Boolean.valueOf(isSetPositionId()).compareTo(other.isSetPositionId());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -5684,8 +6122,8 @@ public class PositionServices {
     }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("getPositionById_args(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("getPositionById_args(");
       boolean first = true;
 
       sb.append("positionId:");
@@ -5708,7 +6146,7 @@ public class PositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
@@ -5732,7 +6170,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -5740,7 +6178,7 @@ public class PositionServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.positionId = iprot.readI32();
                 struct.setPositionIdIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -5819,7 +6257,7 @@ public class PositionServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -5845,21 +6283,21 @@ public class PositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -5868,7 +6306,7 @@ public class PositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -5877,7 +6315,7 @@ public class PositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getPositionById_result.class, metaDataMap);
@@ -5935,7 +6373,7 @@ public class PositionServices {
       }
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -5948,30 +6386,30 @@ public class PositionServices {
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof getPositionById_result)
@@ -6016,7 +6454,7 @@ public class PositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -6042,8 +6480,8 @@ public class PositionServices {
       }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("getPositionById_result(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("getPositionById_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -6073,7 +6511,7 @@ public class PositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -6095,7 +6533,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -6104,7 +6542,7 @@ public class PositionServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -6180,13 +6618,13 @@ public class PositionServices {
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new CustomField_argsStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new CustomField_argsTupleSchemeFactory();
 
-    public java.lang.String param; // required
+    public String param; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       PARAM((short)1, "param");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -6212,21 +6650,21 @@ public class PositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -6235,7 +6673,7 @@ public class PositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -6244,7 +6682,7 @@ public class PositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.PARAM, new org.apache.thrift.meta_data.FieldMetaData("param", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.PARAM, new org.apache.thrift.meta_data.FieldMetaData("param", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(CustomField_args.class, metaDataMap);
@@ -6254,7 +6692,7 @@ public class PositionServices {
     }
 
     public CustomField_args(
-      java.lang.String param)
+            String param)
     {
       this();
       this.param = param;
@@ -6278,11 +6716,11 @@ public class PositionServices {
       this.param = null;
     }
 
-    public java.lang.String getParam() {
+    public String getParam() {
       return this.param;
     }
 
-    public CustomField_args setParam(java.lang.String param) {
+    public CustomField_args setParam(String param) {
       this.param = param;
       return this;
     }
@@ -6302,43 +6740,43 @@ public class PositionServices {
       }
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case PARAM:
         if (value == null) {
           unsetParam();
         } else {
-          setParam((java.lang.String)value);
+          setParam((String)value);
         }
         break;
 
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       case PARAM:
         return getParam();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
       case PARAM:
         return isSetParam();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof CustomField_args)
@@ -6383,7 +6821,7 @@ public class PositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetParam()).compareTo(other.isSetParam());
+      lastComparison = Boolean.valueOf(isSetParam()).compareTo(other.isSetParam());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -6409,8 +6847,8 @@ public class PositionServices {
     }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("CustomField_args(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("CustomField_args(");
       boolean first = true;
 
       sb.append("param:");
@@ -6437,7 +6875,7 @@ public class PositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -6459,7 +6897,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -6467,7 +6905,7 @@ public class PositionServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
                 struct.param = iprot.readString();
                 struct.setParamIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -6548,7 +6986,7 @@ public class PositionServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -6574,21 +7012,21 @@ public class PositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -6597,7 +7035,7 @@ public class PositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -6606,7 +7044,7 @@ public class PositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(CustomField_result.class, metaDataMap);
@@ -6664,7 +7102,7 @@ public class PositionServices {
       }
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -6677,30 +7115,30 @@ public class PositionServices {
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof CustomField_result)
@@ -6745,7 +7183,7 @@ public class PositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -6771,8 +7209,8 @@ public class PositionServices {
       }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("CustomField_result(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("CustomField_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -6802,7 +7240,7 @@ public class PositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -6824,7 +7262,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -6833,7 +7271,7 @@ public class PositionServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -6918,7 +7356,7 @@ public class PositionServices {
       FORM((short)1, "form"),
       POSITION((short)2, "position");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -6946,21 +7384,21 @@ public class PositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -6969,7 +7407,7 @@ public class PositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -6978,10 +7416,10 @@ public class PositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.FORM, new org.apache.thrift.meta_data.FieldMetaData("form", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
+      tmpMap.put(_Fields.FORM, new org.apache.thrift.meta_data.FieldMetaData("form", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST,
               new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition.class))));
-      tmpMap.put(_Fields.POSITION, new org.apache.thrift.meta_data.FieldMetaData("position", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.POSITION, new org.apache.thrift.meta_data.FieldMetaData("position", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(changeToThirdPartyPosition_args.class, metaDataMap);
@@ -7088,7 +7526,7 @@ public class PositionServices {
       }
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case FORM:
         if (value == null) {
@@ -7109,7 +7547,7 @@ public class PositionServices {
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       case FORM:
         return getForm();
@@ -7118,13 +7556,13 @@ public class PositionServices {
         return getPosition();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
@@ -7133,11 +7571,11 @@ public class PositionServices {
       case POSITION:
         return isSetPosition();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof changeToThirdPartyPosition_args)
@@ -7195,7 +7633,7 @@ public class PositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetForm()).compareTo(other.isSetForm());
+      lastComparison = Boolean.valueOf(isSetForm()).compareTo(other.isSetForm());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -7205,7 +7643,7 @@ public class PositionServices {
           return lastComparison;
         }
       }
-      lastComparison = java.lang.Boolean.valueOf(isSetPosition()).compareTo(other.isSetPosition());
+      lastComparison = Boolean.valueOf(isSetPosition()).compareTo(other.isSetPosition());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -7231,8 +7669,8 @@ public class PositionServices {
     }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("changeToThirdPartyPosition_args(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("changeToThirdPartyPosition_args(");
       boolean first = true;
 
       sb.append("form:");
@@ -7270,7 +7708,7 @@ public class PositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -7292,7 +7730,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -7311,7 +7749,7 @@ public class PositionServices {
                   iprot.readListEnd();
                 }
                 struct.setFormIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -7320,7 +7758,7 @@ public class PositionServices {
                 struct.position = new com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO();
                 struct.position.read(iprot);
                 struct.setPositionIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -7440,7 +7878,7 @@ public class PositionServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -7466,21 +7904,21 @@ public class PositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -7489,7 +7927,7 @@ public class PositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -7498,8 +7936,8 @@ public class PositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST,
               new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization.class))));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(changeToThirdPartyPosition_result.class, metaDataMap);
@@ -7576,7 +8014,7 @@ public class PositionServices {
       }
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -7589,30 +8027,30 @@ public class PositionServices {
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof changeToThirdPartyPosition_result)
@@ -7657,7 +8095,7 @@ public class PositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -7683,8 +8121,8 @@ public class PositionServices {
       }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("changeToThirdPartyPosition_result(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("changeToThirdPartyPosition_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -7711,7 +8149,7 @@ public class PositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -7733,7 +8171,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -7752,7 +8190,7 @@ public class PositionServices {
                   iprot.readListEnd();
                 }
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -7859,7 +8297,7 @@ public class PositionServices {
       POSITION_ID((short)1, "positionId"),
       ACCOUNT_ID((short)2, "account_id");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -7887,21 +8325,21 @@ public class PositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -7910,7 +8348,7 @@ public class PositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -7922,9 +8360,9 @@ public class PositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.POSITION_ID, new org.apache.thrift.meta_data.FieldMetaData("positionId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.POSITION_ID, new org.apache.thrift.meta_data.FieldMetaData("positionId", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.ACCOUNT_ID, new org.apache.thrift.meta_data.FieldMetaData("account_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.ACCOUNT_ID, new org.apache.thrift.meta_data.FieldMetaData("account_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(createRefreshPosition_args.class, metaDataMap);
@@ -8011,13 +8449,13 @@ public class PositionServices {
       __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __ACCOUNT_ID_ISSET_ID, value);
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case POSITION_ID:
         if (value == null) {
           unsetPositionId();
         } else {
-          setPositionId((java.lang.Integer)value);
+          setPositionId((Integer)value);
         }
         break;
 
@@ -8025,14 +8463,14 @@ public class PositionServices {
         if (value == null) {
           unsetAccount_id();
         } else {
-          setAccount_id((java.lang.Integer)value);
+          setAccount_id((Integer)value);
         }
         break;
 
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       case POSITION_ID:
         return getPositionId();
@@ -8041,13 +8479,13 @@ public class PositionServices {
         return getAccount_id();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
@@ -8056,11 +8494,11 @@ public class PositionServices {
       case ACCOUNT_ID:
         return isSetAccount_id();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof createRefreshPosition_args)
@@ -8114,7 +8552,7 @@ public class PositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetPositionId()).compareTo(other.isSetPositionId());
+      lastComparison = Boolean.valueOf(isSetPositionId()).compareTo(other.isSetPositionId());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -8124,7 +8562,7 @@ public class PositionServices {
           return lastComparison;
         }
       }
-      lastComparison = java.lang.Boolean.valueOf(isSetAccount_id()).compareTo(other.isSetAccount_id());
+      lastComparison = Boolean.valueOf(isSetAccount_id()).compareTo(other.isSetAccount_id());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -8150,8 +8588,8 @@ public class PositionServices {
     }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("createRefreshPosition_args(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("createRefreshPosition_args(");
       boolean first = true;
 
       sb.append("positionId:");
@@ -8178,7 +8616,7 @@ public class PositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
@@ -8202,7 +8640,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -8210,7 +8648,7 @@ public class PositionServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.positionId = iprot.readI32();
                 struct.setPositionIdIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -8218,7 +8656,7 @@ public class PositionServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.account_id = iprot.readI32();
                 struct.setAccount_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -8310,7 +8748,7 @@ public class PositionServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -8336,21 +8774,21 @@ public class PositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -8359,7 +8797,7 @@ public class PositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -8368,7 +8806,7 @@ public class PositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(createRefreshPosition_result.class, metaDataMap);
@@ -8426,7 +8864,7 @@ public class PositionServices {
       }
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -8439,30 +8877,30 @@ public class PositionServices {
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof createRefreshPosition_result)
@@ -8507,7 +8945,7 @@ public class PositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -8533,8 +8971,8 @@ public class PositionServices {
       }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("createRefreshPosition_result(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("createRefreshPosition_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -8564,7 +9002,7 @@ public class PositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -8586,7 +9024,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -8595,7 +9033,7 @@ public class PositionServices {
                 struct.success = new com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -8680,7 +9118,7 @@ public class PositionServices {
       POSITION_ID((short)1, "positionId"),
       ACCOUNT_ID((short)2, "account_id");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -8708,21 +9146,21 @@ public class PositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -8731,7 +9169,7 @@ public class PositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -8743,9 +9181,9 @@ public class PositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.POSITION_ID, new org.apache.thrift.meta_data.FieldMetaData("positionId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.POSITION_ID, new org.apache.thrift.meta_data.FieldMetaData("positionId", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.ACCOUNT_ID, new org.apache.thrift.meta_data.FieldMetaData("account_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.ACCOUNT_ID, new org.apache.thrift.meta_data.FieldMetaData("account_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(ifAllowRefresh_args.class, metaDataMap);
@@ -8832,13 +9270,13 @@ public class PositionServices {
       __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __ACCOUNT_ID_ISSET_ID, value);
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case POSITION_ID:
         if (value == null) {
           unsetPositionId();
         } else {
-          setPositionId((java.lang.Integer)value);
+          setPositionId((Integer)value);
         }
         break;
 
@@ -8846,14 +9284,14 @@ public class PositionServices {
         if (value == null) {
           unsetAccount_id();
         } else {
-          setAccount_id((java.lang.Integer)value);
+          setAccount_id((Integer)value);
         }
         break;
 
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       case POSITION_ID:
         return getPositionId();
@@ -8862,13 +9300,13 @@ public class PositionServices {
         return getAccount_id();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
@@ -8877,11 +9315,11 @@ public class PositionServices {
       case ACCOUNT_ID:
         return isSetAccount_id();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof ifAllowRefresh_args)
@@ -8935,7 +9373,7 @@ public class PositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetPositionId()).compareTo(other.isSetPositionId());
+      lastComparison = Boolean.valueOf(isSetPositionId()).compareTo(other.isSetPositionId());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -8945,7 +9383,7 @@ public class PositionServices {
           return lastComparison;
         }
       }
-      lastComparison = java.lang.Boolean.valueOf(isSetAccount_id()).compareTo(other.isSetAccount_id());
+      lastComparison = Boolean.valueOf(isSetAccount_id()).compareTo(other.isSetAccount_id());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -8971,8 +9409,8 @@ public class PositionServices {
     }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("ifAllowRefresh_args(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("ifAllowRefresh_args(");
       boolean first = true;
 
       sb.append("positionId:");
@@ -8999,7 +9437,7 @@ public class PositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
@@ -9023,7 +9461,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -9031,7 +9469,7 @@ public class PositionServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.positionId = iprot.readI32();
                 struct.setPositionIdIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -9039,7 +9477,7 @@ public class PositionServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.account_id = iprot.readI32();
                 struct.setAccount_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -9131,7 +9569,7 @@ public class PositionServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -9157,21 +9595,21 @@ public class PositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -9180,7 +9618,7 @@ public class PositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -9191,7 +9629,7 @@ public class PositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BOOL)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(ifAllowRefresh_result.class, metaDataMap);
@@ -9249,43 +9687,43 @@ public class PositionServices {
       __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __SUCCESS_ISSET_ID, value);
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
           unsetSuccess();
         } else {
-          setSuccess((java.lang.Boolean)value);
+          setSuccess((Boolean)value);
         }
         break;
 
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return isSuccess();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof ifAllowRefresh_result)
@@ -9328,7 +9766,7 @@ public class PositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -9354,8 +9792,8 @@ public class PositionServices {
       }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("ifAllowRefresh_result(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("ifAllowRefresh_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -9378,7 +9816,7 @@ public class PositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
@@ -9402,7 +9840,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -9410,7 +9848,7 @@ public class PositionServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.BOOL) {
                 struct.success = iprot.readBool();
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -9491,7 +9929,7 @@ public class PositionServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       QUERY((short)1, "query");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -9517,21 +9955,21 @@ public class PositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -9540,7 +9978,7 @@ public class PositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -9549,7 +9987,7 @@ public class PositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.QUERY, new org.apache.thrift.meta_data.FieldMetaData("query", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.QUERY, new org.apache.thrift.meta_data.FieldMetaData("query", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.CommonQuery.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getThirdPartyPositions_args.class, metaDataMap);
@@ -9607,7 +10045,7 @@ public class PositionServices {
       }
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case QUERY:
         if (value == null) {
@@ -9620,30 +10058,30 @@ public class PositionServices {
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       case QUERY:
         return getQuery();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
       case QUERY:
         return isSetQuery();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof getThirdPartyPositions_args)
@@ -9688,7 +10126,7 @@ public class PositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetQuery()).compareTo(other.isSetQuery());
+      lastComparison = Boolean.valueOf(isSetQuery()).compareTo(other.isSetQuery());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -9714,8 +10152,8 @@ public class PositionServices {
     }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("getThirdPartyPositions_args(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("getThirdPartyPositions_args(");
       boolean first = true;
 
       sb.append("query:");
@@ -9745,7 +10183,7 @@ public class PositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -9767,7 +10205,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -9776,7 +10214,7 @@ public class PositionServices {
                 struct.query = new com.moseeker.thrift.gen.common.struct.CommonQuery();
                 struct.query.read(iprot);
                 struct.setQueryIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -9858,7 +10296,7 @@ public class PositionServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -9884,21 +10322,21 @@ public class PositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -9907,7 +10345,7 @@ public class PositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -9916,8 +10354,8 @@ public class PositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST,
               new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO.class))));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getThirdPartyPositions_result.class, metaDataMap);
@@ -9994,7 +10432,7 @@ public class PositionServices {
       }
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -10007,30 +10445,30 @@ public class PositionServices {
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof getThirdPartyPositions_result)
@@ -10075,7 +10513,7 @@ public class PositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -10101,8 +10539,8 @@ public class PositionServices {
       }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("getThirdPartyPositions_result(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("getThirdPartyPositions_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -10129,7 +10567,7 @@ public class PositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -10151,7 +10589,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -10170,7 +10608,7 @@ public class PositionServices {
                   iprot.readListEnd();
                 }
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -10274,7 +10712,7 @@ public class PositionServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       BATCH_HANDLER_JOB_POSTION((short)1, "batchHandlerJobPostion");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -10300,21 +10738,21 @@ public class PositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -10323,7 +10761,7 @@ public class PositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -10332,7 +10770,7 @@ public class PositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.BATCH_HANDLER_JOB_POSTION, new org.apache.thrift.meta_data.FieldMetaData("batchHandlerJobPostion", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.BATCH_HANDLER_JOB_POSTION, new org.apache.thrift.meta_data.FieldMetaData("batchHandlerJobPostion", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.position.struct.BatchHandlerJobPostion.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(batchHandlerJobPostion_args.class, metaDataMap);
@@ -10390,7 +10828,7 @@ public class PositionServices {
       }
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case BATCH_HANDLER_JOB_POSTION:
         if (value == null) {
@@ -10403,30 +10841,30 @@ public class PositionServices {
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       case BATCH_HANDLER_JOB_POSTION:
         return getBatchHandlerJobPostion();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
       case BATCH_HANDLER_JOB_POSTION:
         return isSetBatchHandlerJobPostion();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof batchHandlerJobPostion_args)
@@ -10471,7 +10909,7 @@ public class PositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetBatchHandlerJobPostion()).compareTo(other.isSetBatchHandlerJobPostion());
+      lastComparison = Boolean.valueOf(isSetBatchHandlerJobPostion()).compareTo(other.isSetBatchHandlerJobPostion());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -10497,8 +10935,8 @@ public class PositionServices {
     }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("batchHandlerJobPostion_args(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("batchHandlerJobPostion_args(");
       boolean first = true;
 
       sb.append("batchHandlerJobPostion:");
@@ -10528,7 +10966,7 @@ public class PositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -10550,7 +10988,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -10559,7 +10997,7 @@ public class PositionServices {
                 struct.batchHandlerJobPostion = new com.moseeker.thrift.gen.position.struct.BatchHandlerJobPostion();
                 struct.batchHandlerJobPostion.read(iprot);
                 struct.setBatchHandlerJobPostionIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -10641,7 +11079,7 @@ public class PositionServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -10667,21 +11105,21 @@ public class PositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -10690,7 +11128,7 @@ public class PositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -10699,7 +11137,7 @@ public class PositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(batchHandlerJobPostion_result.class, metaDataMap);
@@ -10757,7 +11195,7 @@ public class PositionServices {
       }
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -10770,30 +11208,30 @@ public class PositionServices {
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof batchHandlerJobPostion_result)
@@ -10838,7 +11276,7 @@ public class PositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -10864,8 +11302,8 @@ public class PositionServices {
       }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("batchHandlerJobPostion_result(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("batchHandlerJobPostion_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -10895,7 +11333,7 @@ public class PositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -10917,7 +11355,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -10926,7 +11364,7 @@ public class PositionServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -11008,7 +11446,7 @@ public class PositionServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       DELE_POSTION((short)1, "delePostion");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -11034,21 +11472,21 @@ public class PositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -11057,7 +11495,7 @@ public class PositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -11066,7 +11504,7 @@ public class PositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.DELE_POSTION, new org.apache.thrift.meta_data.FieldMetaData("delePostion", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.DELE_POSTION, new org.apache.thrift.meta_data.FieldMetaData("delePostion", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.position.struct.DelePostion.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(deleteJobposition_args.class, metaDataMap);
@@ -11124,7 +11562,7 @@ public class PositionServices {
       }
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case DELE_POSTION:
         if (value == null) {
@@ -11137,30 +11575,30 @@ public class PositionServices {
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       case DELE_POSTION:
         return getDelePostion();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
       case DELE_POSTION:
         return isSetDelePostion();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof deleteJobposition_args)
@@ -11205,7 +11643,7 @@ public class PositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetDelePostion()).compareTo(other.isSetDelePostion());
+      lastComparison = Boolean.valueOf(isSetDelePostion()).compareTo(other.isSetDelePostion());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -11231,8 +11669,8 @@ public class PositionServices {
     }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("deleteJobposition_args(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("deleteJobposition_args(");
       boolean first = true;
 
       sb.append("delePostion:");
@@ -11262,7 +11700,7 @@ public class PositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -11284,7 +11722,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -11293,7 +11731,7 @@ public class PositionServices {
                 struct.delePostion = new com.moseeker.thrift.gen.position.struct.DelePostion();
                 struct.delePostion.read(iprot);
                 struct.setDelePostionIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -11375,7 +11813,7 @@ public class PositionServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -11401,21 +11839,21 @@ public class PositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -11424,7 +11862,7 @@ public class PositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -11433,7 +11871,7 @@ public class PositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(deleteJobposition_result.class, metaDataMap);
@@ -11491,7 +11929,7 @@ public class PositionServices {
       }
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -11504,30 +11942,30 @@ public class PositionServices {
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof deleteJobposition_result)
@@ -11572,7 +12010,7 @@ public class PositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -11598,8 +12036,8 @@ public class PositionServices {
       }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("deleteJobposition_result(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("deleteJobposition_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -11629,7 +12067,7 @@ public class PositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -11651,7 +12089,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -11660,7 +12098,7 @@ public class PositionServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -11738,14 +12176,14 @@ public class PositionServices {
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getTeamIdByDepartmentName_argsTupleSchemeFactory();
 
     public int companyId; // required
-    public java.lang.String departmentName; // required
+    public String departmentName; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       COMPANY_ID((short)1, "companyId"),
       DEPARTMENT_NAME((short)2, "departmentName");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -11773,21 +12211,21 @@ public class PositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -11796,7 +12234,7 @@ public class PositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -11807,9 +12245,9 @@ public class PositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("companyId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("companyId", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.DEPARTMENT_NAME, new org.apache.thrift.meta_data.FieldMetaData("departmentName", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.DEPARTMENT_NAME, new org.apache.thrift.meta_data.FieldMetaData("departmentName", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getTeamIdByDepartmentName_args.class, metaDataMap);
@@ -11819,8 +12257,8 @@ public class PositionServices {
     }
 
     public getTeamIdByDepartmentName_args(
-      int companyId,
-      java.lang.String departmentName)
+            int companyId,
+            String departmentName)
     {
       this();
       this.companyId = companyId;
@@ -11873,11 +12311,11 @@ public class PositionServices {
       __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __COMPANYID_ISSET_ID, value);
     }
 
-    public java.lang.String getDepartmentName() {
+    public String getDepartmentName() {
       return this.departmentName;
     }
 
-    public getTeamIdByDepartmentName_args setDepartmentName(java.lang.String departmentName) {
+    public getTeamIdByDepartmentName_args setDepartmentName(String departmentName) {
       this.departmentName = departmentName;
       return this;
     }
@@ -11897,13 +12335,13 @@ public class PositionServices {
       }
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case COMPANY_ID:
         if (value == null) {
           unsetCompanyId();
         } else {
-          setCompanyId((java.lang.Integer)value);
+          setCompanyId((Integer)value);
         }
         break;
 
@@ -11911,14 +12349,14 @@ public class PositionServices {
         if (value == null) {
           unsetDepartmentName();
         } else {
-          setDepartmentName((java.lang.String)value);
+          setDepartmentName((String)value);
         }
         break;
 
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       case COMPANY_ID:
         return getCompanyId();
@@ -11927,13 +12365,13 @@ public class PositionServices {
         return getDepartmentName();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
@@ -11942,11 +12380,11 @@ public class PositionServices {
       case DEPARTMENT_NAME:
         return isSetDepartmentName();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof getTeamIdByDepartmentName_args)
@@ -12002,7 +12440,7 @@ public class PositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetCompanyId()).compareTo(other.isSetCompanyId());
+      lastComparison = Boolean.valueOf(isSetCompanyId()).compareTo(other.isSetCompanyId());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -12012,7 +12450,7 @@ public class PositionServices {
           return lastComparison;
         }
       }
-      lastComparison = java.lang.Boolean.valueOf(isSetDepartmentName()).compareTo(other.isSetDepartmentName());
+      lastComparison = Boolean.valueOf(isSetDepartmentName()).compareTo(other.isSetDepartmentName());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -12038,8 +12476,8 @@ public class PositionServices {
     }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("getTeamIdByDepartmentName_args(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("getTeamIdByDepartmentName_args(");
       boolean first = true;
 
       sb.append("companyId:");
@@ -12070,7 +12508,7 @@ public class PositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
@@ -12094,7 +12532,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -12102,7 +12540,7 @@ public class PositionServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.companyId = iprot.readI32();
                 struct.setCompanyIdIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -12110,7 +12548,7 @@ public class PositionServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
                 struct.departmentName = iprot.readString();
                 struct.setDepartmentNameIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -12204,7 +12642,7 @@ public class PositionServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -12230,21 +12668,21 @@ public class PositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -12253,7 +12691,7 @@ public class PositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -12262,7 +12700,7 @@ public class PositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getTeamIdByDepartmentName_result.class, metaDataMap);
@@ -12320,7 +12758,7 @@ public class PositionServices {
       }
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -12333,30 +12771,30 @@ public class PositionServices {
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof getTeamIdByDepartmentName_result)
@@ -12401,7 +12839,7 @@ public class PositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -12427,8 +12865,8 @@ public class PositionServices {
       }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("getTeamIdByDepartmentName_result(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("getTeamIdByDepartmentName_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -12458,7 +12896,7 @@ public class PositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -12480,7 +12918,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -12489,7 +12927,7 @@ public class PositionServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -12637,9 +13075,9 @@ public class PositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.POSITION_ID, new org.apache.thrift.meta_data.FieldMetaData("positionId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.POSITION_ID, new org.apache.thrift.meta_data.FieldMetaData("positionId", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.CHANNEL, new org.apache.thrift.meta_data.FieldMetaData("channel", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.CHANNEL, new org.apache.thrift.meta_data.FieldMetaData("channel", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getPositionForThirdParty_args.class, metaDataMap);
@@ -12917,7 +13355,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -12925,7 +13363,7 @@ public class PositionServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.positionId = iprot.readI32();
                 struct.setPositionIdIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -12933,7 +13371,7 @@ public class PositionServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.channel = iprot.readI32();
                 struct.setChannelIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -13083,7 +13521,7 @@ public class PositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getPositionForThirdParty_result.class, metaDataMap);
@@ -13301,7 +13739,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -13310,7 +13748,7 @@ public class PositionServices {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -13468,13 +13906,13 @@ public class PositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.CHANNEL, new org.apache.thrift.meta_data.FieldMetaData("channel", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.CHANNEL, new org.apache.thrift.meta_data.FieldMetaData("channel", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.TYPE, new org.apache.thrift.meta_data.FieldMetaData("type", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.TYPE, new org.apache.thrift.meta_data.FieldMetaData("type", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.START_TIME, new org.apache.thrift.meta_data.FieldMetaData("start_time", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.START_TIME, new org.apache.thrift.meta_data.FieldMetaData("start_time", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-      tmpMap.put(_Fields.END_TIME, new org.apache.thrift.meta_data.FieldMetaData("end_time", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.END_TIME, new org.apache.thrift.meta_data.FieldMetaData("end_time", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getPositionListForThirdParty_args.class, metaDataMap);
@@ -13900,7 +14338,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -13908,7 +14346,7 @@ public class PositionServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.channel = iprot.readI32();
                 struct.setChannelIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -13916,7 +14354,7 @@ public class PositionServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.type = iprot.readI32();
                 struct.setTypeIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -13924,7 +14362,7 @@ public class PositionServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
                 struct.start_time = iprot.readString();
                 struct.setStart_timeIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -13932,7 +14370,7 @@ public class PositionServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
                 struct.end_time = iprot.readString();
                 struct.setEnd_timeIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -14112,8 +14550,8 @@ public class PositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST,
               new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32))));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getPositionListForThirdParty_result.class, metaDataMap);
@@ -14344,7 +14782,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -14362,7 +14800,7 @@ public class PositionServices {
                   iprot.readListEnd();
                 }
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -14465,7 +14903,7 @@ public class PositionServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       QUERY((short)1, "query");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -14491,21 +14929,21 @@ public class PositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -14514,7 +14952,7 @@ public class PositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -14523,7 +14961,7 @@ public class PositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.QUERY, new org.apache.thrift.meta_data.FieldMetaData("query", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.QUERY, new org.apache.thrift.meta_data.FieldMetaData("query", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.position.struct.WechatPositionListQuery.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getPositionList_args.class, metaDataMap);
@@ -14581,7 +15019,7 @@ public class PositionServices {
       }
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case QUERY:
         if (value == null) {
@@ -14594,30 +15032,30 @@ public class PositionServices {
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       case QUERY:
         return getQuery();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
       case QUERY:
         return isSetQuery();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof getPositionList_args)
@@ -14662,7 +15100,7 @@ public class PositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetQuery()).compareTo(other.isSetQuery());
+      lastComparison = Boolean.valueOf(isSetQuery()).compareTo(other.isSetQuery());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -14688,8 +15126,8 @@ public class PositionServices {
     }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("getPositionList_args(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("getPositionList_args(");
       boolean first = true;
 
       sb.append("query:");
@@ -14719,7 +15157,7 @@ public class PositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -14741,7 +15179,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -14750,7 +15188,7 @@ public class PositionServices {
                 struct.query = new com.moseeker.thrift.gen.position.struct.WechatPositionListQuery();
                 struct.query.read(iprot);
                 struct.setQueryIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -14832,7 +15270,7 @@ public class PositionServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -14858,21 +15296,21 @@ public class PositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -14881,7 +15319,7 @@ public class PositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -14890,8 +15328,8 @@ public class PositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST,
               new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.position.struct.WechatPositionListData.class))));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getPositionList_result.class, metaDataMap);
@@ -14968,7 +15406,7 @@ public class PositionServices {
       }
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -14981,30 +15419,30 @@ public class PositionServices {
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof getPositionList_result)
@@ -15049,7 +15487,7 @@ public class PositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -15075,8 +15513,8 @@ public class PositionServices {
       }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("getPositionList_result(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("getPositionList_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -15103,7 +15541,7 @@ public class PositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -15125,7 +15563,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -15144,7 +15582,7 @@ public class PositionServices {
                   iprot.readListEnd();
                 }
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -15242,13 +15680,13 @@ public class PositionServices {
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getPositionListRpExt_argsStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getPositionListRpExt_argsTupleSchemeFactory();
 
-    public java.util.List<java.lang.Integer> pids; // required
+    public java.util.List<Integer> pids; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       PIDS((short)1, "pids");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -15274,21 +15712,21 @@ public class PositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -15297,7 +15735,7 @@ public class PositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -15306,8 +15744,8 @@ public class PositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.PIDS, new org.apache.thrift.meta_data.FieldMetaData("pids", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
+      tmpMap.put(_Fields.PIDS, new org.apache.thrift.meta_data.FieldMetaData("pids", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST,
               new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32))));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getPositionListRpExt_args.class, metaDataMap);
@@ -15317,7 +15755,7 @@ public class PositionServices {
     }
 
     public getPositionListRpExt_args(
-      java.util.List<java.lang.Integer> pids)
+      java.util.List<Integer> pids)
     {
       this();
       this.pids = pids;
@@ -15328,7 +15766,7 @@ public class PositionServices {
      */
     public getPositionListRpExt_args(getPositionListRpExt_args other) {
       if (other.isSetPids()) {
-        java.util.List<java.lang.Integer> __this__pids = new java.util.ArrayList<java.lang.Integer>(other.pids);
+        java.util.List<Integer> __this__pids = new java.util.ArrayList<Integer>(other.pids);
         this.pids = __this__pids;
       }
     }
@@ -15346,22 +15784,22 @@ public class PositionServices {
       return (this.pids == null) ? 0 : this.pids.size();
     }
 
-    public java.util.Iterator<java.lang.Integer> getPidsIterator() {
+    public java.util.Iterator<Integer> getPidsIterator() {
       return (this.pids == null) ? null : this.pids.iterator();
     }
 
     public void addToPids(int elem) {
       if (this.pids == null) {
-        this.pids = new java.util.ArrayList<java.lang.Integer>();
+        this.pids = new java.util.ArrayList<Integer>();
       }
       this.pids.add(elem);
     }
 
-    public java.util.List<java.lang.Integer> getPids() {
+    public java.util.List<Integer> getPids() {
       return this.pids;
     }
 
-    public getPositionListRpExt_args setPids(java.util.List<java.lang.Integer> pids) {
+    public getPositionListRpExt_args setPids(java.util.List<Integer> pids) {
       this.pids = pids;
       return this;
     }
@@ -15381,43 +15819,43 @@ public class PositionServices {
       }
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case PIDS:
         if (value == null) {
           unsetPids();
         } else {
-          setPids((java.util.List<java.lang.Integer>)value);
+          setPids((java.util.List<Integer>)value);
         }
         break;
 
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       case PIDS:
         return getPids();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
       case PIDS:
         return isSetPids();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof getPositionListRpExt_args)
@@ -15462,7 +15900,7 @@ public class PositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetPids()).compareTo(other.isSetPids());
+      lastComparison = Boolean.valueOf(isSetPids()).compareTo(other.isSetPids());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -15488,8 +15926,8 @@ public class PositionServices {
     }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("getPositionListRpExt_args(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("getPositionListRpExt_args(");
       boolean first = true;
 
       sb.append("pids:");
@@ -15516,7 +15954,7 @@ public class PositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -15538,7 +15976,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -15546,7 +15984,7 @@ public class PositionServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
                 {
                   org.apache.thrift.protocol.TList _list40 = iprot.readListBegin();
-                  struct.pids = new java.util.ArrayList<java.lang.Integer>(_list40.size);
+                  struct.pids = new java.util.ArrayList<Integer>(_list40.size);
                   int _elem41;
                   for (int _i42 = 0; _i42 < _list40.size; ++_i42)
                   {
@@ -15556,7 +15994,7 @@ public class PositionServices {
                   iprot.readListEnd();
                 }
                 struct.setPidsIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -15627,7 +16065,7 @@ public class PositionServices {
         if (incoming.get(0)) {
           {
             org.apache.thrift.protocol.TList _list45 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, iprot.readI32());
-            struct.pids = new java.util.ArrayList<java.lang.Integer>(_list45.size);
+            struct.pids = new java.util.ArrayList<Integer>(_list45.size);
             int _elem46;
             for (int _i47 = 0; _i47 < _list45.size; ++_i47)
             {
@@ -15659,7 +16097,7 @@ public class PositionServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -15685,21 +16123,21 @@ public class PositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -15708,7 +16146,7 @@ public class PositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -15717,8 +16155,8 @@ public class PositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST,
               new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.position.struct.RpExtInfo.class))));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getPositionListRpExt_result.class, metaDataMap);
@@ -15795,7 +16233,7 @@ public class PositionServices {
       }
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -15808,30 +16246,30 @@ public class PositionServices {
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof getPositionListRpExt_result)
@@ -15876,7 +16314,7 @@ public class PositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -15902,8 +16340,8 @@ public class PositionServices {
       }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("getPositionListRpExt_result(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("getPositionListRpExt_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -15930,7 +16368,7 @@ public class PositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -15952,7 +16390,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -15971,7 +16409,7 @@ public class PositionServices {
                   iprot.readListEnd();
                 }
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -16075,7 +16513,7 @@ public class PositionServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       HB_CONFIG_ID((short)1, "hb_config_id");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -16101,21 +16539,21 @@ public class PositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -16124,7 +16562,7 @@ public class PositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -16135,7 +16573,7 @@ public class PositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.HB_CONFIG_ID, new org.apache.thrift.meta_data.FieldMetaData("hb_config_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HB_CONFIG_ID, new org.apache.thrift.meta_data.FieldMetaData("hb_config_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getRpPositionList_args.class, metaDataMap);
@@ -16193,43 +16631,43 @@ public class PositionServices {
       __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __HB_CONFIG_ID_ISSET_ID, value);
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case HB_CONFIG_ID:
         if (value == null) {
           unsetHb_config_id();
         } else {
-          setHb_config_id((java.lang.Integer)value);
+          setHb_config_id((Integer)value);
         }
         break;
 
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       case HB_CONFIG_ID:
         return getHb_config_id();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
       case HB_CONFIG_ID:
         return isSetHb_config_id();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof getRpPositionList_args)
@@ -16272,7 +16710,7 @@ public class PositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetHb_config_id()).compareTo(other.isSetHb_config_id());
+      lastComparison = Boolean.valueOf(isSetHb_config_id()).compareTo(other.isSetHb_config_id());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -16298,8 +16736,8 @@ public class PositionServices {
     }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("getRpPositionList_args(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("getRpPositionList_args(");
       boolean first = true;
 
       sb.append("hb_config_id:");
@@ -16322,7 +16760,7 @@ public class PositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
@@ -16346,7 +16784,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -16354,7 +16792,7 @@ public class PositionServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hb_config_id = iprot.readI32();
                 struct.setHb_config_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -16433,7 +16871,7 @@ public class PositionServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -16459,21 +16897,21 @@ public class PositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -16482,7 +16920,7 @@ public class PositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -16491,8 +16929,8 @@ public class PositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST,
               new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.position.struct.WechatRpPositionListData.class))));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getRpPositionList_result.class, metaDataMap);
@@ -16569,7 +17007,7 @@ public class PositionServices {
       }
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -16582,30 +17020,30 @@ public class PositionServices {
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof getRpPositionList_result)
@@ -16650,7 +17088,7 @@ public class PositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -16676,8 +17114,8 @@ public class PositionServices {
       }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("getRpPositionList_result(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("getRpPositionList_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -16704,7 +17142,7 @@ public class PositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -16726,7 +17164,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -16745,7 +17183,7 @@ public class PositionServices {
                   iprot.readListEnd();
                 }
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -16849,7 +17287,7 @@ public class PositionServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       HB_CONFIG_ID((short)1, "hb_config_id");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -16875,21 +17313,21 @@ public class PositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -16898,7 +17336,7 @@ public class PositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -16909,7 +17347,7 @@ public class PositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.HB_CONFIG_ID, new org.apache.thrift.meta_data.FieldMetaData("hb_config_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.HB_CONFIG_ID, new org.apache.thrift.meta_data.FieldMetaData("hb_config_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getShareInfo_args.class, metaDataMap);
@@ -16967,43 +17405,43 @@ public class PositionServices {
       __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __HB_CONFIG_ID_ISSET_ID, value);
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case HB_CONFIG_ID:
         if (value == null) {
           unsetHb_config_id();
         } else {
-          setHb_config_id((java.lang.Integer)value);
+          setHb_config_id((Integer)value);
         }
         break;
 
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       case HB_CONFIG_ID:
         return getHb_config_id();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
       case HB_CONFIG_ID:
         return isSetHb_config_id();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof getShareInfo_args)
@@ -17046,7 +17484,7 @@ public class PositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetHb_config_id()).compareTo(other.isSetHb_config_id());
+      lastComparison = Boolean.valueOf(isSetHb_config_id()).compareTo(other.isSetHb_config_id());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -17072,8 +17510,8 @@ public class PositionServices {
     }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("getShareInfo_args(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("getShareInfo_args(");
       boolean first = true;
 
       sb.append("hb_config_id:");
@@ -17096,7 +17534,7 @@ public class PositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
@@ -17120,7 +17558,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -17128,7 +17566,7 @@ public class PositionServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.hb_config_id = iprot.readI32();
                 struct.setHb_config_idIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -17207,7 +17645,7 @@ public class PositionServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -17233,21 +17671,21 @@ public class PositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -17256,7 +17694,7 @@ public class PositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -17265,7 +17703,7 @@ public class PositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.position.struct.WechatShareData.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getShareInfo_result.class, metaDataMap);
@@ -17323,7 +17761,7 @@ public class PositionServices {
       }
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -17336,30 +17774,30 @@ public class PositionServices {
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof getShareInfo_result)
@@ -17404,7 +17842,7 @@ public class PositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -17430,8 +17868,8 @@ public class PositionServices {
       }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("getShareInfo_result(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("getShareInfo_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -17461,7 +17899,7 @@ public class PositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -17483,7 +17921,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -17492,7 +17930,7 @@ public class PositionServices {
                 struct.success = new com.moseeker.thrift.gen.position.struct.WechatShareData();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -17572,7 +18010,7 @@ public class PositionServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
 ;
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -17596,21 +18034,21 @@ public class PositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -17619,7 +18057,7 @@ public class PositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -17647,30 +18085,30 @@ public class PositionServices {
     public void clear() {
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof headImage_args)
@@ -17718,8 +18156,8 @@ public class PositionServices {
     }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("headImage_args(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("headImage_args(");
       boolean first = true;
 
       sb.append(")");
@@ -17739,7 +18177,7 @@ public class PositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -17761,7 +18199,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -17824,7 +18262,7 @@ public class PositionServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -17850,21 +18288,21 @@ public class PositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -17873,7 +18311,7 @@ public class PositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -17882,7 +18320,7 @@ public class PositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(headImage_result.class, metaDataMap);
@@ -17940,7 +18378,7 @@ public class PositionServices {
       }
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -17953,30 +18391,30 @@ public class PositionServices {
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof headImage_result)
@@ -18021,7 +18459,7 @@ public class PositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -18047,8 +18485,8 @@ public class PositionServices {
       }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("headImage_result(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("headImage_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -18078,7 +18516,7 @@ public class PositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -18100,7 +18538,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -18109,7 +18547,7 @@ public class PositionServices {
                 struct.success = new com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -18191,7 +18629,7 @@ public class PositionServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       POSITION_ID((short)1, "positionId");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -18217,21 +18655,21 @@ public class PositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -18240,7 +18678,7 @@ public class PositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -18251,7 +18689,7 @@ public class PositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.POSITION_ID, new org.apache.thrift.meta_data.FieldMetaData("positionId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.POSITION_ID, new org.apache.thrift.meta_data.FieldMetaData("positionId", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(positionDetails_args.class, metaDataMap);
@@ -18309,43 +18747,43 @@ public class PositionServices {
       __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __POSITIONID_ISSET_ID, value);
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case POSITION_ID:
         if (value == null) {
           unsetPositionId();
         } else {
-          setPositionId((java.lang.Integer)value);
+          setPositionId((Integer)value);
         }
         break;
 
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       case POSITION_ID:
         return getPositionId();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
       case POSITION_ID:
         return isSetPositionId();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof positionDetails_args)
@@ -18388,7 +18826,7 @@ public class PositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetPositionId()).compareTo(other.isSetPositionId());
+      lastComparison = Boolean.valueOf(isSetPositionId()).compareTo(other.isSetPositionId());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -18414,8 +18852,8 @@ public class PositionServices {
     }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("positionDetails_args(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("positionDetails_args(");
       boolean first = true;
 
       sb.append("positionId:");
@@ -18438,7 +18876,7 @@ public class PositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
@@ -18462,7 +18900,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -18470,7 +18908,7 @@ public class PositionServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.positionId = iprot.readI32();
                 struct.setPositionIdIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -18549,7 +18987,7 @@ public class PositionServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -18575,21 +19013,21 @@ public class PositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -18598,7 +19036,7 @@ public class PositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -18607,7 +19045,7 @@ public class PositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.position.struct.PositionDetailsVO.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(positionDetails_result.class, metaDataMap);
@@ -18665,7 +19103,7 @@ public class PositionServices {
       }
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -18678,30 +19116,30 @@ public class PositionServices {
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof positionDetails_result)
@@ -18746,7 +19184,7 @@ public class PositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -18772,8 +19210,8 @@ public class PositionServices {
       }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("positionDetails_result(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("positionDetails_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -18803,7 +19241,7 @@ public class PositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -18825,7 +19263,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -18834,7 +19272,7 @@ public class PositionServices {
                 struct.success = new com.moseeker.thrift.gen.position.struct.PositionDetailsVO();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -18922,7 +19360,7 @@ public class PositionServices {
       PAGE((short)2, "page"),
       PER_AGE((short)3, "per_age");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -18952,21 +19390,21 @@ public class PositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -18975,7 +19413,7 @@ public class PositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -18988,11 +19426,11 @@ public class PositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("companyId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("companyId", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.PAGE, new org.apache.thrift.meta_data.FieldMetaData("page", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.PAGE, new org.apache.thrift.meta_data.FieldMetaData("page", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.PER_AGE, new org.apache.thrift.meta_data.FieldMetaData("per_age", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.PER_AGE, new org.apache.thrift.meta_data.FieldMetaData("per_age", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(companyHotPositionDetailsList_args.class, metaDataMap);
@@ -19108,13 +19546,13 @@ public class PositionServices {
       __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __PER_AGE_ISSET_ID, value);
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case COMPANY_ID:
         if (value == null) {
           unsetCompanyId();
         } else {
-          setCompanyId((java.lang.Integer)value);
+          setCompanyId((Integer)value);
         }
         break;
 
@@ -19122,7 +19560,7 @@ public class PositionServices {
         if (value == null) {
           unsetPage();
         } else {
-          setPage((java.lang.Integer)value);
+          setPage((Integer)value);
         }
         break;
 
@@ -19130,14 +19568,14 @@ public class PositionServices {
         if (value == null) {
           unsetPer_age();
         } else {
-          setPer_age((java.lang.Integer)value);
+          setPer_age((Integer)value);
         }
         break;
 
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       case COMPANY_ID:
         return getCompanyId();
@@ -19149,13 +19587,13 @@ public class PositionServices {
         return getPer_age();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
@@ -19166,11 +19604,11 @@ public class PositionServices {
       case PER_AGE:
         return isSetPer_age();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof companyHotPositionDetailsList_args)
@@ -19235,7 +19673,7 @@ public class PositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetCompanyId()).compareTo(other.isSetCompanyId());
+      lastComparison = Boolean.valueOf(isSetCompanyId()).compareTo(other.isSetCompanyId());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -19245,7 +19683,7 @@ public class PositionServices {
           return lastComparison;
         }
       }
-      lastComparison = java.lang.Boolean.valueOf(isSetPage()).compareTo(other.isSetPage());
+      lastComparison = Boolean.valueOf(isSetPage()).compareTo(other.isSetPage());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -19255,7 +19693,7 @@ public class PositionServices {
           return lastComparison;
         }
       }
-      lastComparison = java.lang.Boolean.valueOf(isSetPer_age()).compareTo(other.isSetPer_age());
+      lastComparison = Boolean.valueOf(isSetPer_age()).compareTo(other.isSetPer_age());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -19281,8 +19719,8 @@ public class PositionServices {
     }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("companyHotPositionDetailsList_args(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("companyHotPositionDetailsList_args(");
       boolean first = true;
 
       sb.append("companyId:");
@@ -19313,7 +19751,7 @@ public class PositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
@@ -19337,7 +19775,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -19345,7 +19783,7 @@ public class PositionServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.companyId = iprot.readI32();
                 struct.setCompanyIdIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -19353,7 +19791,7 @@ public class PositionServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.page = iprot.readI32();
                 struct.setPageIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -19361,7 +19799,7 @@ public class PositionServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.per_age = iprot.readI32();
                 struct.setPer_ageIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -19466,7 +19904,7 @@ public class PositionServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -19492,21 +19930,21 @@ public class PositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -19515,7 +19953,7 @@ public class PositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -19524,7 +19962,7 @@ public class PositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.position.struct.PositionDetailsListVO.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(companyHotPositionDetailsList_result.class, metaDataMap);
@@ -19582,7 +20020,7 @@ public class PositionServices {
       }
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -19595,30 +20033,30 @@ public class PositionServices {
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof companyHotPositionDetailsList_result)
@@ -19663,7 +20101,7 @@ public class PositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -19689,8 +20127,8 @@ public class PositionServices {
       }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("companyHotPositionDetailsList_result(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("companyHotPositionDetailsList_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -19720,7 +20158,7 @@ public class PositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -19742,7 +20180,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -19751,7 +20189,7 @@ public class PositionServices {
                 struct.success = new com.moseeker.thrift.gen.position.struct.PositionDetailsListVO();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -19839,7 +20277,7 @@ public class PositionServices {
       PAGE((short)2, "page"),
       PER_AGE((short)3, "per_age");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -19869,21 +20307,21 @@ public class PositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -19892,7 +20330,7 @@ public class PositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -19905,11 +20343,11 @@ public class PositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.PID, new org.apache.thrift.meta_data.FieldMetaData("pid", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.PID, new org.apache.thrift.meta_data.FieldMetaData("pid", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.PAGE, new org.apache.thrift.meta_data.FieldMetaData("page", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.PAGE, new org.apache.thrift.meta_data.FieldMetaData("page", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.PER_AGE, new org.apache.thrift.meta_data.FieldMetaData("per_age", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.PER_AGE, new org.apache.thrift.meta_data.FieldMetaData("per_age", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(similarityPositionDetailsList_args.class, metaDataMap);
@@ -20025,13 +20463,13 @@ public class PositionServices {
       __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __PER_AGE_ISSET_ID, value);
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case PID:
         if (value == null) {
           unsetPid();
         } else {
-          setPid((java.lang.Integer)value);
+          setPid((Integer)value);
         }
         break;
 
@@ -20039,7 +20477,7 @@ public class PositionServices {
         if (value == null) {
           unsetPage();
         } else {
-          setPage((java.lang.Integer)value);
+          setPage((Integer)value);
         }
         break;
 
@@ -20047,14 +20485,14 @@ public class PositionServices {
         if (value == null) {
           unsetPer_age();
         } else {
-          setPer_age((java.lang.Integer)value);
+          setPer_age((Integer)value);
         }
         break;
 
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       case PID:
         return getPid();
@@ -20066,13 +20504,13 @@ public class PositionServices {
         return getPer_age();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
@@ -20083,11 +20521,11 @@ public class PositionServices {
       case PER_AGE:
         return isSetPer_age();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof similarityPositionDetailsList_args)
@@ -20152,7 +20590,7 @@ public class PositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetPid()).compareTo(other.isSetPid());
+      lastComparison = Boolean.valueOf(isSetPid()).compareTo(other.isSetPid());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -20162,7 +20600,7 @@ public class PositionServices {
           return lastComparison;
         }
       }
-      lastComparison = java.lang.Boolean.valueOf(isSetPage()).compareTo(other.isSetPage());
+      lastComparison = Boolean.valueOf(isSetPage()).compareTo(other.isSetPage());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -20172,7 +20610,7 @@ public class PositionServices {
           return lastComparison;
         }
       }
-      lastComparison = java.lang.Boolean.valueOf(isSetPer_age()).compareTo(other.isSetPer_age());
+      lastComparison = Boolean.valueOf(isSetPer_age()).compareTo(other.isSetPer_age());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -20198,8 +20636,8 @@ public class PositionServices {
     }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("similarityPositionDetailsList_args(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("similarityPositionDetailsList_args(");
       boolean first = true;
 
       sb.append("pid:");
@@ -20230,7 +20668,7 @@ public class PositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
@@ -20254,7 +20692,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -20262,7 +20700,7 @@ public class PositionServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.pid = iprot.readI32();
                 struct.setPidIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -20270,7 +20708,7 @@ public class PositionServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.page = iprot.readI32();
                 struct.setPageIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -20278,7 +20716,7 @@ public class PositionServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.per_age = iprot.readI32();
                 struct.setPer_ageIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -20383,7 +20821,7 @@ public class PositionServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -20409,21 +20847,21 @@ public class PositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -20432,7 +20870,7 @@ public class PositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -20441,7 +20879,7 @@ public class PositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.position.struct.PositionDetailsListVO.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(similarityPositionDetailsList_result.class, metaDataMap);
@@ -20499,7 +20937,7 @@ public class PositionServices {
       }
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -20512,30 +20950,30 @@ public class PositionServices {
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof similarityPositionDetailsList_result)
@@ -20580,7 +21018,7 @@ public class PositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -20606,8 +21044,8 @@ public class PositionServices {
       }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("similarityPositionDetailsList_result(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("similarityPositionDetailsList_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -20637,7 +21075,7 @@ public class PositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -20659,7 +21097,7 @@ public class PositionServices {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -20668,7 +21106,7 @@ public class PositionServices {
                 struct.success = new com.moseeker.thrift.gen.position.struct.PositionDetailsListVO();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -20725,6 +21163,2469 @@ public class PositionServices {
         java.util.BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
           struct.success = new com.moseeker.thrift.gen.position.struct.PositionDetailsListVO();
+          struct.success.read(iprot);
+          struct.setSuccessIsSet(true);
+        }
+      }
+    }
+
+    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+    }
+  }
+
+  public static class getPcRecommand_args implements org.apache.thrift.TBase<getPcRecommand_args, getPcRecommand_args._Fields>, java.io.Serializable, Cloneable, Comparable<getPcRecommand_args>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getPcRecommand_args");
+
+    private static final org.apache.thrift.protocol.TField PAGE_FIELD_DESC = new org.apache.thrift.protocol.TField("page", org.apache.thrift.protocol.TType.I32, (short)1);
+    private static final org.apache.thrift.protocol.TField PAGE_SIZE_FIELD_DESC = new org.apache.thrift.protocol.TField("pageSize", org.apache.thrift.protocol.TType.I32, (short)2);
+
+    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getPcRecommand_argsStandardSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getPcRecommand_argsTupleSchemeFactory();
+
+    public int page; // required
+    public int pageSize; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      PAGE((short)1, "page"),
+      PAGE_SIZE((short)2, "pageSize");
+
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+
+      static {
+        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 1: // PAGE
+            return PAGE;
+          case 2: // PAGE_SIZE
+            return PAGE_SIZE;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final String _fieldName;
+
+      _Fields(short thriftId, String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    private static final int __PAGE_ISSET_ID = 0;
+    private static final int __PAGESIZE_ISSET_ID = 1;
+    private byte __isset_bitfield = 0;
+    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.PAGE, new org.apache.thrift.meta_data.FieldMetaData("page", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.PAGE_SIZE, new org.apache.thrift.meta_data.FieldMetaData("pageSize", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getPcRecommand_args.class, metaDataMap);
+    }
+
+    public getPcRecommand_args() {
+    }
+
+    public getPcRecommand_args(
+      int page,
+      int pageSize)
+    {
+      this();
+      this.page = page;
+      setPageIsSet(true);
+      this.pageSize = pageSize;
+      setPageSizeIsSet(true);
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public getPcRecommand_args(getPcRecommand_args other) {
+      __isset_bitfield = other.__isset_bitfield;
+      this.page = other.page;
+      this.pageSize = other.pageSize;
+    }
+
+    public getPcRecommand_args deepCopy() {
+      return new getPcRecommand_args(this);
+    }
+
+    @Override
+    public void clear() {
+      setPageIsSet(false);
+      this.page = 0;
+      setPageSizeIsSet(false);
+      this.pageSize = 0;
+    }
+
+    public int getPage() {
+      return this.page;
+    }
+
+    public getPcRecommand_args setPage(int page) {
+      this.page = page;
+      setPageIsSet(true);
+      return this;
+    }
+
+    public void unsetPage() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __PAGE_ISSET_ID);
+    }
+
+    /** Returns true if field page is set (has been assigned a value) and false otherwise */
+    public boolean isSetPage() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __PAGE_ISSET_ID);
+    }
+
+    public void setPageIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __PAGE_ISSET_ID, value);
+    }
+
+    public int getPageSize() {
+      return this.pageSize;
+    }
+
+    public getPcRecommand_args setPageSize(int pageSize) {
+      this.pageSize = pageSize;
+      setPageSizeIsSet(true);
+      return this;
+    }
+
+    public void unsetPageSize() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __PAGESIZE_ISSET_ID);
+    }
+
+    /** Returns true if field pageSize is set (has been assigned a value) and false otherwise */
+    public boolean isSetPageSize() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __PAGESIZE_ISSET_ID);
+    }
+
+    public void setPageSizeIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __PAGESIZE_ISSET_ID, value);
+    }
+
+    public void setFieldValue(_Fields field, Object value) {
+      switch (field) {
+      case PAGE:
+        if (value == null) {
+          unsetPage();
+        } else {
+          setPage((Integer)value);
+        }
+        break;
+
+      case PAGE_SIZE:
+        if (value == null) {
+          unsetPageSize();
+        } else {
+          setPageSize((Integer)value);
+        }
+        break;
+
+      }
+    }
+
+    public Object getFieldValue(_Fields field) {
+      switch (field) {
+      case PAGE:
+        return getPage();
+
+      case PAGE_SIZE:
+        return getPageSize();
+
+      }
+      throw new IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new IllegalArgumentException();
+      }
+
+      switch (field) {
+      case PAGE:
+        return isSetPage();
+      case PAGE_SIZE:
+        return isSetPageSize();
+      }
+      throw new IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof getPcRecommand_args)
+        return this.equals((getPcRecommand_args)that);
+      return false;
+    }
+
+    public boolean equals(getPcRecommand_args that) {
+      if (that == null)
+        return false;
+      if (this == that)
+        return true;
+
+      boolean this_present_page = true;
+      boolean that_present_page = true;
+      if (this_present_page || that_present_page) {
+        if (!(this_present_page && that_present_page))
+          return false;
+        if (this.page != that.page)
+          return false;
+      }
+
+      boolean this_present_pageSize = true;
+      boolean that_present_pageSize = true;
+      if (this_present_pageSize || that_present_pageSize) {
+        if (!(this_present_pageSize && that_present_pageSize))
+          return false;
+        if (this.pageSize != that.pageSize)
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hashCode = 1;
+
+      hashCode = hashCode * 8191 + page;
+
+      hashCode = hashCode * 8191 + pageSize;
+
+      return hashCode;
+    }
+
+    @Override
+    public int compareTo(getPcRecommand_args other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = Boolean.valueOf(isSetPage()).compareTo(other.isSetPage());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetPage()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.page, other.page);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetPageSize()).compareTo(other.isSetPageSize());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetPageSize()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.pageSize, other.pageSize);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      scheme(iprot).read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      scheme(oprot).write(oprot, this);
+    }
+
+    @Override
+    public String toString() {
+      StringBuilder sb = new StringBuilder("getPcRecommand_args(");
+      boolean first = true;
+
+      sb.append("page:");
+      sb.append(this.page);
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("pageSize:");
+      sb.append(this.pageSize);
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+      try {
+        // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
+        __isset_bitfield = 0;
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class getPcRecommand_argsStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public getPcRecommand_argsStandardScheme getScheme() {
+        return new getPcRecommand_argsStandardScheme();
+      }
+    }
+
+    private static class getPcRecommand_argsStandardScheme extends org.apache.thrift.scheme.StandardScheme<getPcRecommand_args> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, getPcRecommand_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
+            break;
+          }
+          switch (schemeField.id) {
+            case 1: // PAGE
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.page = iprot.readI32();
+                struct.setPageIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 2: // PAGE_SIZE
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.pageSize = iprot.readI32();
+                struct.setPageSizeIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, getPcRecommand_args struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        oprot.writeFieldBegin(PAGE_FIELD_DESC);
+        oprot.writeI32(struct.page);
+        oprot.writeFieldEnd();
+        oprot.writeFieldBegin(PAGE_SIZE_FIELD_DESC);
+        oprot.writeI32(struct.pageSize);
+        oprot.writeFieldEnd();
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class getPcRecommand_argsTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public getPcRecommand_argsTupleScheme getScheme() {
+        return new getPcRecommand_argsTupleScheme();
+      }
+    }
+
+    private static class getPcRecommand_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<getPcRecommand_args> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, getPcRecommand_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetPage()) {
+          optionals.set(0);
+        }
+        if (struct.isSetPageSize()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
+        if (struct.isSetPage()) {
+          oprot.writeI32(struct.page);
+        }
+        if (struct.isSetPageSize()) {
+          oprot.writeI32(struct.pageSize);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, getPcRecommand_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(2);
+        if (incoming.get(0)) {
+          struct.page = iprot.readI32();
+          struct.setPageIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.pageSize = iprot.readI32();
+          struct.setPageSizeIsSet(true);
+        }
+      }
+    }
+
+    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+    }
+  }
+
+  public static class getPcRecommand_result implements org.apache.thrift.TBase<getPcRecommand_result, getPcRecommand_result._Fields>, java.io.Serializable, Cloneable, Comparable<getPcRecommand_result>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getPcRecommand_result");
+
+    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
+
+    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getPcRecommand_resultStandardSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getPcRecommand_resultTupleSchemeFactory();
+
+    public com.moseeker.thrift.gen.common.struct.Response success; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      SUCCESS((short)0, "success");
+
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+
+      static {
+        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 0: // SUCCESS
+            return SUCCESS;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final String _fieldName;
+
+      _Fields(short thriftId, String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
+      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getPcRecommand_result.class, metaDataMap);
+    }
+
+    public getPcRecommand_result() {
+    }
+
+    public getPcRecommand_result(
+      com.moseeker.thrift.gen.common.struct.Response success)
+    {
+      this();
+      this.success = success;
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public getPcRecommand_result(getPcRecommand_result other) {
+      if (other.isSetSuccess()) {
+        this.success = new com.moseeker.thrift.gen.common.struct.Response(other.success);
+      }
+    }
+
+    public getPcRecommand_result deepCopy() {
+      return new getPcRecommand_result(this);
+    }
+
+    @Override
+    public void clear() {
+      this.success = null;
+    }
+
+    public com.moseeker.thrift.gen.common.struct.Response getSuccess() {
+      return this.success;
+    }
+
+    public getPcRecommand_result setSuccess(com.moseeker.thrift.gen.common.struct.Response success) {
+      this.success = success;
+      return this;
+    }
+
+    public void unsetSuccess() {
+      this.success = null;
+    }
+
+    /** Returns true if field success is set (has been assigned a value) and false otherwise */
+    public boolean isSetSuccess() {
+      return this.success != null;
+    }
+
+    public void setSuccessIsSet(boolean value) {
+      if (!value) {
+        this.success = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, Object value) {
+      switch (field) {
+      case SUCCESS:
+        if (value == null) {
+          unsetSuccess();
+        } else {
+          setSuccess((com.moseeker.thrift.gen.common.struct.Response)value);
+        }
+        break;
+
+      }
+    }
+
+    public Object getFieldValue(_Fields field) {
+      switch (field) {
+      case SUCCESS:
+        return getSuccess();
+
+      }
+      throw new IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new IllegalArgumentException();
+      }
+
+      switch (field) {
+      case SUCCESS:
+        return isSetSuccess();
+      }
+      throw new IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof getPcRecommand_result)
+        return this.equals((getPcRecommand_result)that);
+      return false;
+    }
+
+    public boolean equals(getPcRecommand_result that) {
+      if (that == null)
+        return false;
+      if (this == that)
+        return true;
+
+      boolean this_present_success = true && this.isSetSuccess();
+      boolean that_present_success = true && that.isSetSuccess();
+      if (this_present_success || that_present_success) {
+        if (!(this_present_success && that_present_success))
+          return false;
+        if (!this.success.equals(that.success))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hashCode = 1;
+
+      hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
+      if (isSetSuccess())
+        hashCode = hashCode * 8191 + success.hashCode();
+
+      return hashCode;
+    }
+
+    @Override
+    public int compareTo(getPcRecommand_result other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSuccess()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      scheme(iprot).read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      scheme(oprot).write(oprot, this);
+      }
+
+    @Override
+    public String toString() {
+      StringBuilder sb = new StringBuilder("getPcRecommand_result(");
+      boolean first = true;
+
+      sb.append("success:");
+      if (this.success == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.success);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+      if (success != null) {
+        success.validate();
+      }
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class getPcRecommand_resultStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public getPcRecommand_resultStandardScheme getScheme() {
+        return new getPcRecommand_resultStandardScheme();
+      }
+    }
+
+    private static class getPcRecommand_resultStandardScheme extends org.apache.thrift.scheme.StandardScheme<getPcRecommand_result> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, getPcRecommand_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
+            break;
+          }
+          switch (schemeField.id) {
+            case 0: // SUCCESS
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.success = new com.moseeker.thrift.gen.common.struct.Response();
+                struct.success.read(iprot);
+                struct.setSuccessIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, getPcRecommand_result struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.success != null) {
+          oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
+          struct.success.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class getPcRecommand_resultTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public getPcRecommand_resultTupleScheme getScheme() {
+        return new getPcRecommand_resultTupleScheme();
+      }
+    }
+
+    private static class getPcRecommand_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<getPcRecommand_result> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, getPcRecommand_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetSuccess()) {
+          optionals.set(0);
+        }
+        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetSuccess()) {
+          struct.success.write(oprot);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, getPcRecommand_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(1);
+        if (incoming.get(0)) {
+          struct.success = new com.moseeker.thrift.gen.common.struct.Response();
+          struct.success.read(iprot);
+          struct.setSuccessIsSet(true);
+        }
+      }
+    }
+
+    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+    }
+  }
+
+  public static class getPcRecommandCompany_args implements org.apache.thrift.TBase<getPcRecommandCompany_args, getPcRecommandCompany_args._Fields>, java.io.Serializable, Cloneable, Comparable<getPcRecommandCompany_args>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getPcRecommandCompany_args");
+
+    private static final org.apache.thrift.protocol.TField PAGE_FIELD_DESC = new org.apache.thrift.protocol.TField("page", org.apache.thrift.protocol.TType.I32, (short)1);
+    private static final org.apache.thrift.protocol.TField PAGE_SIZE_FIELD_DESC = new org.apache.thrift.protocol.TField("pageSize", org.apache.thrift.protocol.TType.I32, (short)2);
+
+    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getPcRecommandCompany_argsStandardSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getPcRecommandCompany_argsTupleSchemeFactory();
+
+    public int page; // required
+    public int pageSize; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      PAGE((short)1, "page"),
+      PAGE_SIZE((short)2, "pageSize");
+
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+
+      static {
+        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 1: // PAGE
+            return PAGE;
+          case 2: // PAGE_SIZE
+            return PAGE_SIZE;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final String _fieldName;
+
+      _Fields(short thriftId, String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    private static final int __PAGE_ISSET_ID = 0;
+    private static final int __PAGESIZE_ISSET_ID = 1;
+    private byte __isset_bitfield = 0;
+    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.PAGE, new org.apache.thrift.meta_data.FieldMetaData("page", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.PAGE_SIZE, new org.apache.thrift.meta_data.FieldMetaData("pageSize", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getPcRecommandCompany_args.class, metaDataMap);
+    }
+
+    public getPcRecommandCompany_args() {
+    }
+
+    public getPcRecommandCompany_args(
+      int page,
+      int pageSize)
+    {
+      this();
+      this.page = page;
+      setPageIsSet(true);
+      this.pageSize = pageSize;
+      setPageSizeIsSet(true);
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public getPcRecommandCompany_args(getPcRecommandCompany_args other) {
+      __isset_bitfield = other.__isset_bitfield;
+      this.page = other.page;
+      this.pageSize = other.pageSize;
+    }
+
+    public getPcRecommandCompany_args deepCopy() {
+      return new getPcRecommandCompany_args(this);
+    }
+
+    @Override
+    public void clear() {
+      setPageIsSet(false);
+      this.page = 0;
+      setPageSizeIsSet(false);
+      this.pageSize = 0;
+    }
+
+    public int getPage() {
+      return this.page;
+    }
+
+    public getPcRecommandCompany_args setPage(int page) {
+      this.page = page;
+      setPageIsSet(true);
+      return this;
+    }
+
+    public void unsetPage() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __PAGE_ISSET_ID);
+    }
+
+    /** Returns true if field page is set (has been assigned a value) and false otherwise */
+    public boolean isSetPage() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __PAGE_ISSET_ID);
+    }
+
+    public void setPageIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __PAGE_ISSET_ID, value);
+    }
+
+    public int getPageSize() {
+      return this.pageSize;
+    }
+
+    public getPcRecommandCompany_args setPageSize(int pageSize) {
+      this.pageSize = pageSize;
+      setPageSizeIsSet(true);
+      return this;
+    }
+
+    public void unsetPageSize() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __PAGESIZE_ISSET_ID);
+    }
+
+    /** Returns true if field pageSize is set (has been assigned a value) and false otherwise */
+    public boolean isSetPageSize() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __PAGESIZE_ISSET_ID);
+    }
+
+    public void setPageSizeIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __PAGESIZE_ISSET_ID, value);
+    }
+
+    public void setFieldValue(_Fields field, Object value) {
+      switch (field) {
+      case PAGE:
+        if (value == null) {
+          unsetPage();
+        } else {
+          setPage((Integer)value);
+        }
+        break;
+
+      case PAGE_SIZE:
+        if (value == null) {
+          unsetPageSize();
+        } else {
+          setPageSize((Integer)value);
+        }
+        break;
+
+      }
+    }
+
+    public Object getFieldValue(_Fields field) {
+      switch (field) {
+      case PAGE:
+        return getPage();
+
+      case PAGE_SIZE:
+        return getPageSize();
+
+      }
+      throw new IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new IllegalArgumentException();
+      }
+
+      switch (field) {
+      case PAGE:
+        return isSetPage();
+      case PAGE_SIZE:
+        return isSetPageSize();
+      }
+      throw new IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof getPcRecommandCompany_args)
+        return this.equals((getPcRecommandCompany_args)that);
+      return false;
+    }
+
+    public boolean equals(getPcRecommandCompany_args that) {
+      if (that == null)
+        return false;
+      if (this == that)
+        return true;
+
+      boolean this_present_page = true;
+      boolean that_present_page = true;
+      if (this_present_page || that_present_page) {
+        if (!(this_present_page && that_present_page))
+          return false;
+        if (this.page != that.page)
+          return false;
+      }
+
+      boolean this_present_pageSize = true;
+      boolean that_present_pageSize = true;
+      if (this_present_pageSize || that_present_pageSize) {
+        if (!(this_present_pageSize && that_present_pageSize))
+          return false;
+        if (this.pageSize != that.pageSize)
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hashCode = 1;
+
+      hashCode = hashCode * 8191 + page;
+
+      hashCode = hashCode * 8191 + pageSize;
+
+      return hashCode;
+    }
+
+    @Override
+    public int compareTo(getPcRecommandCompany_args other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = Boolean.valueOf(isSetPage()).compareTo(other.isSetPage());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetPage()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.page, other.page);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetPageSize()).compareTo(other.isSetPageSize());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetPageSize()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.pageSize, other.pageSize);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      scheme(iprot).read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      scheme(oprot).write(oprot, this);
+    }
+
+    @Override
+    public String toString() {
+      StringBuilder sb = new StringBuilder("getPcRecommandCompany_args(");
+      boolean first = true;
+
+      sb.append("page:");
+      sb.append(this.page);
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("pageSize:");
+      sb.append(this.pageSize);
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+      try {
+        // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
+        __isset_bitfield = 0;
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class getPcRecommandCompany_argsStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public getPcRecommandCompany_argsStandardScheme getScheme() {
+        return new getPcRecommandCompany_argsStandardScheme();
+      }
+    }
+
+    private static class getPcRecommandCompany_argsStandardScheme extends org.apache.thrift.scheme.StandardScheme<getPcRecommandCompany_args> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, getPcRecommandCompany_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
+            break;
+          }
+          switch (schemeField.id) {
+            case 1: // PAGE
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.page = iprot.readI32();
+                struct.setPageIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 2: // PAGE_SIZE
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.pageSize = iprot.readI32();
+                struct.setPageSizeIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, getPcRecommandCompany_args struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        oprot.writeFieldBegin(PAGE_FIELD_DESC);
+        oprot.writeI32(struct.page);
+        oprot.writeFieldEnd();
+        oprot.writeFieldBegin(PAGE_SIZE_FIELD_DESC);
+        oprot.writeI32(struct.pageSize);
+        oprot.writeFieldEnd();
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class getPcRecommandCompany_argsTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public getPcRecommandCompany_argsTupleScheme getScheme() {
+        return new getPcRecommandCompany_argsTupleScheme();
+      }
+    }
+
+    private static class getPcRecommandCompany_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<getPcRecommandCompany_args> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, getPcRecommandCompany_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetPage()) {
+          optionals.set(0);
+        }
+        if (struct.isSetPageSize()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
+        if (struct.isSetPage()) {
+          oprot.writeI32(struct.page);
+        }
+        if (struct.isSetPageSize()) {
+          oprot.writeI32(struct.pageSize);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, getPcRecommandCompany_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(2);
+        if (incoming.get(0)) {
+          struct.page = iprot.readI32();
+          struct.setPageIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.pageSize = iprot.readI32();
+          struct.setPageSizeIsSet(true);
+        }
+      }
+    }
+
+    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+    }
+  }
+
+  public static class getPcRecommandCompany_result implements org.apache.thrift.TBase<getPcRecommandCompany_result, getPcRecommandCompany_result._Fields>, java.io.Serializable, Cloneable, Comparable<getPcRecommandCompany_result>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getPcRecommandCompany_result");
+
+    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
+
+    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getPcRecommandCompany_resultStandardSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getPcRecommandCompany_resultTupleSchemeFactory();
+
+    public com.moseeker.thrift.gen.common.struct.Response success; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      SUCCESS((short)0, "success");
+
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+
+      static {
+        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 0: // SUCCESS
+            return SUCCESS;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final String _fieldName;
+
+      _Fields(short thriftId, String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
+      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getPcRecommandCompany_result.class, metaDataMap);
+    }
+
+    public getPcRecommandCompany_result() {
+    }
+
+    public getPcRecommandCompany_result(
+      com.moseeker.thrift.gen.common.struct.Response success)
+    {
+      this();
+      this.success = success;
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public getPcRecommandCompany_result(getPcRecommandCompany_result other) {
+      if (other.isSetSuccess()) {
+        this.success = new com.moseeker.thrift.gen.common.struct.Response(other.success);
+      }
+    }
+
+    public getPcRecommandCompany_result deepCopy() {
+      return new getPcRecommandCompany_result(this);
+    }
+
+    @Override
+    public void clear() {
+      this.success = null;
+    }
+
+    public com.moseeker.thrift.gen.common.struct.Response getSuccess() {
+      return this.success;
+    }
+
+    public getPcRecommandCompany_result setSuccess(com.moseeker.thrift.gen.common.struct.Response success) {
+      this.success = success;
+      return this;
+    }
+
+    public void unsetSuccess() {
+      this.success = null;
+    }
+
+    /** Returns true if field success is set (has been assigned a value) and false otherwise */
+    public boolean isSetSuccess() {
+      return this.success != null;
+    }
+
+    public void setSuccessIsSet(boolean value) {
+      if (!value) {
+        this.success = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, Object value) {
+      switch (field) {
+      case SUCCESS:
+        if (value == null) {
+          unsetSuccess();
+        } else {
+          setSuccess((com.moseeker.thrift.gen.common.struct.Response)value);
+        }
+        break;
+
+      }
+    }
+
+    public Object getFieldValue(_Fields field) {
+      switch (field) {
+      case SUCCESS:
+        return getSuccess();
+
+      }
+      throw new IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new IllegalArgumentException();
+      }
+
+      switch (field) {
+      case SUCCESS:
+        return isSetSuccess();
+      }
+      throw new IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof getPcRecommandCompany_result)
+        return this.equals((getPcRecommandCompany_result)that);
+      return false;
+    }
+
+    public boolean equals(getPcRecommandCompany_result that) {
+      if (that == null)
+        return false;
+      if (this == that)
+        return true;
+
+      boolean this_present_success = true && this.isSetSuccess();
+      boolean that_present_success = true && that.isSetSuccess();
+      if (this_present_success || that_present_success) {
+        if (!(this_present_success && that_present_success))
+          return false;
+        if (!this.success.equals(that.success))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hashCode = 1;
+
+      hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
+      if (isSetSuccess())
+        hashCode = hashCode * 8191 + success.hashCode();
+
+      return hashCode;
+    }
+
+    @Override
+    public int compareTo(getPcRecommandCompany_result other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSuccess()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      scheme(iprot).read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      scheme(oprot).write(oprot, this);
+      }
+
+    @Override
+    public String toString() {
+      StringBuilder sb = new StringBuilder("getPcRecommandCompany_result(");
+      boolean first = true;
+
+      sb.append("success:");
+      if (this.success == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.success);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+      if (success != null) {
+        success.validate();
+      }
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class getPcRecommandCompany_resultStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public getPcRecommandCompany_resultStandardScheme getScheme() {
+        return new getPcRecommandCompany_resultStandardScheme();
+      }
+    }
+
+    private static class getPcRecommandCompany_resultStandardScheme extends org.apache.thrift.scheme.StandardScheme<getPcRecommandCompany_result> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, getPcRecommandCompany_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
+            break;
+          }
+          switch (schemeField.id) {
+            case 0: // SUCCESS
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.success = new com.moseeker.thrift.gen.common.struct.Response();
+                struct.success.read(iprot);
+                struct.setSuccessIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, getPcRecommandCompany_result struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.success != null) {
+          oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
+          struct.success.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class getPcRecommandCompany_resultTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public getPcRecommandCompany_resultTupleScheme getScheme() {
+        return new getPcRecommandCompany_resultTupleScheme();
+      }
+    }
+
+    private static class getPcRecommandCompany_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<getPcRecommandCompany_result> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, getPcRecommandCompany_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetSuccess()) {
+          optionals.set(0);
+        }
+        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetSuccess()) {
+          struct.success.write(oprot);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, getPcRecommandCompany_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(1);
+        if (incoming.get(0)) {
+          struct.success = new com.moseeker.thrift.gen.common.struct.Response();
+          struct.success.read(iprot);
+          struct.setSuccessIsSet(true);
+        }
+      }
+    }
+
+    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+    }
+  }
+
+  public static class getPcRecommandCompanyAll_args implements org.apache.thrift.TBase<getPcRecommandCompanyAll_args, getPcRecommandCompanyAll_args._Fields>, java.io.Serializable, Cloneable, Comparable<getPcRecommandCompanyAll_args>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getPcRecommandCompanyAll_args");
+
+    private static final org.apache.thrift.protocol.TField PAGE_FIELD_DESC = new org.apache.thrift.protocol.TField("page", org.apache.thrift.protocol.TType.I32, (short)1);
+    private static final org.apache.thrift.protocol.TField PAGE_SIZE_FIELD_DESC = new org.apache.thrift.protocol.TField("pageSize", org.apache.thrift.protocol.TType.I32, (short)2);
+
+    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getPcRecommandCompanyAll_argsStandardSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getPcRecommandCompanyAll_argsTupleSchemeFactory();
+
+    public int page; // required
+    public int pageSize; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      PAGE((short)1, "page"),
+      PAGE_SIZE((short)2, "pageSize");
+
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+
+      static {
+        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 1: // PAGE
+            return PAGE;
+          case 2: // PAGE_SIZE
+            return PAGE_SIZE;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final String _fieldName;
+
+      _Fields(short thriftId, String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    private static final int __PAGE_ISSET_ID = 0;
+    private static final int __PAGESIZE_ISSET_ID = 1;
+    private byte __isset_bitfield = 0;
+    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.PAGE, new org.apache.thrift.meta_data.FieldMetaData("page", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.PAGE_SIZE, new org.apache.thrift.meta_data.FieldMetaData("pageSize", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getPcRecommandCompanyAll_args.class, metaDataMap);
+    }
+
+    public getPcRecommandCompanyAll_args() {
+    }
+
+    public getPcRecommandCompanyAll_args(
+      int page,
+      int pageSize)
+    {
+      this();
+      this.page = page;
+      setPageIsSet(true);
+      this.pageSize = pageSize;
+      setPageSizeIsSet(true);
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public getPcRecommandCompanyAll_args(getPcRecommandCompanyAll_args other) {
+      __isset_bitfield = other.__isset_bitfield;
+      this.page = other.page;
+      this.pageSize = other.pageSize;
+    }
+
+    public getPcRecommandCompanyAll_args deepCopy() {
+      return new getPcRecommandCompanyAll_args(this);
+    }
+
+    @Override
+    public void clear() {
+      setPageIsSet(false);
+      this.page = 0;
+      setPageSizeIsSet(false);
+      this.pageSize = 0;
+    }
+
+    public int getPage() {
+      return this.page;
+    }
+
+    public getPcRecommandCompanyAll_args setPage(int page) {
+      this.page = page;
+      setPageIsSet(true);
+      return this;
+    }
+
+    public void unsetPage() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __PAGE_ISSET_ID);
+    }
+
+    /** Returns true if field page is set (has been assigned a value) and false otherwise */
+    public boolean isSetPage() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __PAGE_ISSET_ID);
+    }
+
+    public void setPageIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __PAGE_ISSET_ID, value);
+    }
+
+    public int getPageSize() {
+      return this.pageSize;
+    }
+
+    public getPcRecommandCompanyAll_args setPageSize(int pageSize) {
+      this.pageSize = pageSize;
+      setPageSizeIsSet(true);
+      return this;
+    }
+
+    public void unsetPageSize() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __PAGESIZE_ISSET_ID);
+    }
+
+    /** Returns true if field pageSize is set (has been assigned a value) and false otherwise */
+    public boolean isSetPageSize() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __PAGESIZE_ISSET_ID);
+    }
+
+    public void setPageSizeIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __PAGESIZE_ISSET_ID, value);
+    }
+
+    public void setFieldValue(_Fields field, Object value) {
+      switch (field) {
+      case PAGE:
+        if (value == null) {
+          unsetPage();
+        } else {
+          setPage((Integer)value);
+        }
+        break;
+
+      case PAGE_SIZE:
+        if (value == null) {
+          unsetPageSize();
+        } else {
+          setPageSize((Integer)value);
+        }
+        break;
+
+      }
+    }
+
+    public Object getFieldValue(_Fields field) {
+      switch (field) {
+      case PAGE:
+        return getPage();
+
+      case PAGE_SIZE:
+        return getPageSize();
+
+      }
+      throw new IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new IllegalArgumentException();
+      }
+
+      switch (field) {
+      case PAGE:
+        return isSetPage();
+      case PAGE_SIZE:
+        return isSetPageSize();
+      }
+      throw new IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof getPcRecommandCompanyAll_args)
+        return this.equals((getPcRecommandCompanyAll_args)that);
+      return false;
+    }
+
+    public boolean equals(getPcRecommandCompanyAll_args that) {
+      if (that == null)
+        return false;
+      if (this == that)
+        return true;
+
+      boolean this_present_page = true;
+      boolean that_present_page = true;
+      if (this_present_page || that_present_page) {
+        if (!(this_present_page && that_present_page))
+          return false;
+        if (this.page != that.page)
+          return false;
+      }
+
+      boolean this_present_pageSize = true;
+      boolean that_present_pageSize = true;
+      if (this_present_pageSize || that_present_pageSize) {
+        if (!(this_present_pageSize && that_present_pageSize))
+          return false;
+        if (this.pageSize != that.pageSize)
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hashCode = 1;
+
+      hashCode = hashCode * 8191 + page;
+
+      hashCode = hashCode * 8191 + pageSize;
+
+      return hashCode;
+    }
+
+    @Override
+    public int compareTo(getPcRecommandCompanyAll_args other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = Boolean.valueOf(isSetPage()).compareTo(other.isSetPage());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetPage()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.page, other.page);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetPageSize()).compareTo(other.isSetPageSize());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetPageSize()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.pageSize, other.pageSize);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      scheme(iprot).read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      scheme(oprot).write(oprot, this);
+    }
+
+    @Override
+    public String toString() {
+      StringBuilder sb = new StringBuilder("getPcRecommandCompanyAll_args(");
+      boolean first = true;
+
+      sb.append("page:");
+      sb.append(this.page);
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("pageSize:");
+      sb.append(this.pageSize);
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+      try {
+        // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
+        __isset_bitfield = 0;
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class getPcRecommandCompanyAll_argsStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public getPcRecommandCompanyAll_argsStandardScheme getScheme() {
+        return new getPcRecommandCompanyAll_argsStandardScheme();
+      }
+    }
+
+    private static class getPcRecommandCompanyAll_argsStandardScheme extends org.apache.thrift.scheme.StandardScheme<getPcRecommandCompanyAll_args> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, getPcRecommandCompanyAll_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
+            break;
+          }
+          switch (schemeField.id) {
+            case 1: // PAGE
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.page = iprot.readI32();
+                struct.setPageIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 2: // PAGE_SIZE
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.pageSize = iprot.readI32();
+                struct.setPageSizeIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, getPcRecommandCompanyAll_args struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        oprot.writeFieldBegin(PAGE_FIELD_DESC);
+        oprot.writeI32(struct.page);
+        oprot.writeFieldEnd();
+        oprot.writeFieldBegin(PAGE_SIZE_FIELD_DESC);
+        oprot.writeI32(struct.pageSize);
+        oprot.writeFieldEnd();
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class getPcRecommandCompanyAll_argsTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public getPcRecommandCompanyAll_argsTupleScheme getScheme() {
+        return new getPcRecommandCompanyAll_argsTupleScheme();
+      }
+    }
+
+    private static class getPcRecommandCompanyAll_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<getPcRecommandCompanyAll_args> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, getPcRecommandCompanyAll_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetPage()) {
+          optionals.set(0);
+        }
+        if (struct.isSetPageSize()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
+        if (struct.isSetPage()) {
+          oprot.writeI32(struct.page);
+        }
+        if (struct.isSetPageSize()) {
+          oprot.writeI32(struct.pageSize);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, getPcRecommandCompanyAll_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(2);
+        if (incoming.get(0)) {
+          struct.page = iprot.readI32();
+          struct.setPageIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.pageSize = iprot.readI32();
+          struct.setPageSizeIsSet(true);
+        }
+      }
+    }
+
+    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+    }
+  }
+
+  public static class getPcRecommandCompanyAll_result implements org.apache.thrift.TBase<getPcRecommandCompanyAll_result, getPcRecommandCompanyAll_result._Fields>, java.io.Serializable, Cloneable, Comparable<getPcRecommandCompanyAll_result>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getPcRecommandCompanyAll_result");
+
+    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
+
+    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getPcRecommandCompanyAll_resultStandardSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getPcRecommandCompanyAll_resultTupleSchemeFactory();
+
+    public com.moseeker.thrift.gen.common.struct.Response success; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      SUCCESS((short)0, "success");
+
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+
+      static {
+        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 0: // SUCCESS
+            return SUCCESS;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final String _fieldName;
+
+      _Fields(short thriftId, String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
+      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getPcRecommandCompanyAll_result.class, metaDataMap);
+    }
+
+    public getPcRecommandCompanyAll_result() {
+    }
+
+    public getPcRecommandCompanyAll_result(
+      com.moseeker.thrift.gen.common.struct.Response success)
+    {
+      this();
+      this.success = success;
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public getPcRecommandCompanyAll_result(getPcRecommandCompanyAll_result other) {
+      if (other.isSetSuccess()) {
+        this.success = new com.moseeker.thrift.gen.common.struct.Response(other.success);
+      }
+    }
+
+    public getPcRecommandCompanyAll_result deepCopy() {
+      return new getPcRecommandCompanyAll_result(this);
+    }
+
+    @Override
+    public void clear() {
+      this.success = null;
+    }
+
+    public com.moseeker.thrift.gen.common.struct.Response getSuccess() {
+      return this.success;
+    }
+
+    public getPcRecommandCompanyAll_result setSuccess(com.moseeker.thrift.gen.common.struct.Response success) {
+      this.success = success;
+      return this;
+    }
+
+    public void unsetSuccess() {
+      this.success = null;
+    }
+
+    /** Returns true if field success is set (has been assigned a value) and false otherwise */
+    public boolean isSetSuccess() {
+      return this.success != null;
+    }
+
+    public void setSuccessIsSet(boolean value) {
+      if (!value) {
+        this.success = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, Object value) {
+      switch (field) {
+      case SUCCESS:
+        if (value == null) {
+          unsetSuccess();
+        } else {
+          setSuccess((com.moseeker.thrift.gen.common.struct.Response)value);
+        }
+        break;
+
+      }
+    }
+
+    public Object getFieldValue(_Fields field) {
+      switch (field) {
+      case SUCCESS:
+        return getSuccess();
+
+      }
+      throw new IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new IllegalArgumentException();
+      }
+
+      switch (field) {
+      case SUCCESS:
+        return isSetSuccess();
+      }
+      throw new IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof getPcRecommandCompanyAll_result)
+        return this.equals((getPcRecommandCompanyAll_result)that);
+      return false;
+    }
+
+    public boolean equals(getPcRecommandCompanyAll_result that) {
+      if (that == null)
+        return false;
+      if (this == that)
+        return true;
+
+      boolean this_present_success = true && this.isSetSuccess();
+      boolean that_present_success = true && that.isSetSuccess();
+      if (this_present_success || that_present_success) {
+        if (!(this_present_success && that_present_success))
+          return false;
+        if (!this.success.equals(that.success))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hashCode = 1;
+
+      hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
+      if (isSetSuccess())
+        hashCode = hashCode * 8191 + success.hashCode();
+
+      return hashCode;
+    }
+
+    @Override
+    public int compareTo(getPcRecommandCompanyAll_result other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSuccess()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      scheme(iprot).read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      scheme(oprot).write(oprot, this);
+      }
+
+    @Override
+    public String toString() {
+      StringBuilder sb = new StringBuilder("getPcRecommandCompanyAll_result(");
+      boolean first = true;
+
+      sb.append("success:");
+      if (this.success == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.success);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+      if (success != null) {
+        success.validate();
+      }
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class getPcRecommandCompanyAll_resultStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public getPcRecommandCompanyAll_resultStandardScheme getScheme() {
+        return new getPcRecommandCompanyAll_resultStandardScheme();
+      }
+    }
+
+    private static class getPcRecommandCompanyAll_resultStandardScheme extends org.apache.thrift.scheme.StandardScheme<getPcRecommandCompanyAll_result> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, getPcRecommandCompanyAll_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
+            break;
+          }
+          switch (schemeField.id) {
+            case 0: // SUCCESS
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.success = new com.moseeker.thrift.gen.common.struct.Response();
+                struct.success.read(iprot);
+                struct.setSuccessIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, getPcRecommandCompanyAll_result struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.success != null) {
+          oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
+          struct.success.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class getPcRecommandCompanyAll_resultTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public getPcRecommandCompanyAll_resultTupleScheme getScheme() {
+        return new getPcRecommandCompanyAll_resultTupleScheme();
+      }
+    }
+
+    private static class getPcRecommandCompanyAll_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<getPcRecommandCompanyAll_result> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, getPcRecommandCompanyAll_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetSuccess()) {
+          optionals.set(0);
+        }
+        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetSuccess()) {
+          struct.success.write(oprot);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, getPcRecommandCompanyAll_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(1);
+        if (incoming.get(0)) {
+          struct.success = new com.moseeker.thrift.gen.common.struct.Response();
           struct.success.read(iprot);
           struct.setSuccessIsSet(true);
         }

@@ -3,8 +3,6 @@ package com.moseeker.position.surrender;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.moseeker.baseorm.dao.dictdb.DictCityMapDao;
-import com.moseeker.common.constants.ChannelType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +31,7 @@ public class PositionServiceTest {
 	}
 	@Test
 	public void getPositionByIdTest() throws Exception{
-		Response res=service.getPositionById(106002);
+		Response res=service.getPositionById(80571);
 		System.out.println(res);
 	}
 	//@Test
@@ -52,17 +50,13 @@ public class PositionServiceTest {
 		System.out.println(bool+"==================");
 	}
 
-	@Autowired
-	DictCityMapDao cityMapDao;
-
     @Test
     public void test() throws Exception {
-        List<Integer> positionCityCodes = new ArrayList<>();
-
-        positionCityCodes.add(350100);
-
-        List<List<String>> otherCityCodes = cityMapDao.getOtherCityFunllLevel(ChannelType.ZHILIAN, positionCityCodes);
-
-        otherCityCodes.toString();
+    	List<Integer> list=new ArrayList<Integer>();
+    	list.add(124340);
+    	list.add(124341);
+    	list.add(124342);
+        List<RpExtInfo> res= service.getPositionListRpExt(list);
+        System.out.println(res);
     }
 }

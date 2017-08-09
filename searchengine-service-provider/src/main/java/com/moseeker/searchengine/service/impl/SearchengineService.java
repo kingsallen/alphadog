@@ -10,6 +10,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
 import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
@@ -83,10 +84,8 @@ public class SearchengineService {
                     String keyword = keyword_list[i];
                     BoolQueryBuilder keyor = QueryBuilders.boolQuery();
                     QueryBuilder fullf = QueryBuilders.queryStringQuery(keyword)
-//                            .field("_all", 1.0f)
                             .field("title", 20.0f)
                             .field("city", 10.0f)
-//                            .field("company_name", 5.0f)
                             .field("team_name",5.0f)
                     		.field("custom",4.0f)
                     		.field("occupation",3.0f);
@@ -212,32 +211,39 @@ public class SearchengineService {
 
             QueryBuilder status_filter = QueryBuilders.matchPhraseQuery("status", "0");
             ((BoolQueryBuilder) query).must(status_filter);
+            logger.info(query.toString()+"===================");
 
             if (order_by_priority) {
 
                 if (haskey) {
-                	
-                    response = client.prepareSearch("index").setTypes("fulltext")
+                	SearchRequestBuilder responseBuilder=client.prepareSearch("index").setTypes("fulltext")
                             .setQuery(query)
                             .addSort("priority", SortOrder.ASC)
                             .addSort("_score", SortOrder.DESC)
                             .setFrom(page_from)
-                            .setSize(page_size).execute().actionGet();
+                            .setSize(page_size);
+                	logger.info(responseBuilder.toString());
+                    response = responseBuilder.execute().actionGet();
+         
                 } else {
-                    response = client.prepareSearch("index").setTypes("fulltext")
+                	SearchRequestBuilder responseBuilder=client.prepareSearch("index").setTypes("fulltext")
                             .setQuery(query)
                             .addSort("priority", SortOrder.ASC)
                             .addSort("update_time", SortOrder.DESC)
                             .setFrom(page_from)
-                            .setSize(page_size).execute().actionGet();
+                            .setSize(page_size);
+                	logger.info(responseBuilder.toString());
+                    response = responseBuilder.execute().actionGet();
                 }
 
             } else {
-                response = client.prepareSearch("index").setTypes("fulltext")
+            	SearchRequestBuilder responseBuilder=client.prepareSearch("index").setTypes("fulltext")
                         .setQuery(query)
                         .addSort("_score", SortOrder.DESC)
                         .setFrom(page_from)
-                        .setSize(page_size).execute().actionGet();
+                        .setSize(page_size);
+            	logger.info(responseBuilder.toString());
+                response = responseBuilder.execute().actionGet();
             }
 
             for (SearchHit hit : response.getHits()) {
