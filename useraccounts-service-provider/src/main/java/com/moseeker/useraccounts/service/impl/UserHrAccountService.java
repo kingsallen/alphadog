@@ -1104,6 +1104,8 @@ public class UserHrAccountService {
                 logger.info("ES Data is empty!!!!");
                 userEmployeeVOPageVO.setData(employeeList(queryBuilder, 1, companyIds, null));
             }
+        } else {
+            throw UserAccountException.SEARCH_ES_ERROR;
         }
         return userEmployeeVOPageVO;
     }
