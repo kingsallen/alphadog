@@ -6,16 +6,14 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.*;
+import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.RabbitListenerContainerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 import org.springframework.retry.backoff.ExponentialBackOffPolicy;
 import org.springframework.retry.support.RetryTemplate;
@@ -24,7 +22,9 @@ import org.springframework.retry.support.RetryTemplate;
  * Created by lucky8987 on 17/5/11.
  */
 @Configuration
-@ComponentScan({"com.moseeker.mq", "com.moseeker.common.aop.iface"})
+@EnableRabbit
+@ComponentScan({"com.moseeker.mq", "com.moseeker.common.aop.iface", "com.moseeker.entity"})
+@PropertySource("classpath:common.properties")
 @Import(com.moseeker.baseorm.config.AppConfig.class)
 public class AppConfig {
 
@@ -103,7 +103,7 @@ public class AppConfig {
 
     @Bean
     public TopicExchange topicExchange() {
-        TopicExchange topicExchange = new TopicExchange("topic-exchange", false, true);
+        TopicExchange topicExchange = new TopicExchange("employee_exchange", false, true);
         topicExchange.setDelayed(true);
         return topicExchange;
     }

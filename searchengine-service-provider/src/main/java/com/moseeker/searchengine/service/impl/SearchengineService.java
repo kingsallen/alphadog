@@ -430,7 +430,7 @@ public class SearchengineService {
                                 .addAggregation(handleAggScale("awards." + timespan, employeeAward, lastUpdateTime));
                         logger.info(builder.toString());
                         SearchResponse hitEmployeeRanking = builder.execute().actionGet();
-                        if (hitEmployeeRanking != null && hitEmployeeRanking.getHits().getHits().length > 0) {
+                        if (hitEmployeeRanking != null) {
                             int ranking = (int)hitEmployeeRanking.getAggregations().asMap().get("ranking").getProperty("value");
                             SearchHits hits = getSearchRequestBuilder(searchClient, companyIds, null,"0", 0, 0, timespan).setFrom(ranking).setSize(3).execute().actionGet().getHits();
                             for (SearchHit searchHit : hits.getHits()) {

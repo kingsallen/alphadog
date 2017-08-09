@@ -2,6 +2,8 @@ package com.moseeker.useraccounts.thrift;
 
 import com.moseeker.thrift.gen.employee.struct.*;
 import com.moseeker.useraccounts.service.impl.EmployeeBindByEmail;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.apache.thrift.TException;
@@ -116,8 +118,14 @@ public class EmployeeServiceImpl implements Iface {
 
     @Override
     public List<EmployeeAward> awardRanking(int employeeId, int companyId, Timespan timespan) throws TException {
-	    // TODO 完成微信积分排行榜
-        return null;
+        String timeStr;
+        if (timespan == Timespan.year) {
+            timeStr = String.valueOf(LocalDate.now().getYear());
+        } else if(timespan == Timespan.quarter) {
+            timeStr = String.valueOf(LocalDate.now().getYear()).concat(String.valueOf((LocalDate.now().getMonthValue()+2)/3));
+        } else {
+            timeStr = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
+        }
+        return service.awardRanking(employeeId, companyId, timeStr);
     }
-
 }
