@@ -1103,7 +1103,7 @@ public class UserHrAccountService {
         // 员工列表，从ES中获取积分月，季，年榜单数据
         Response response = null;
         try {
-            response = searchengineServices.queryAwardRanking(companyIds, timespan, pageSize, pageNumber);
+            response = searchengineServices.queryAwardRanking(companyIds, timespan, pageSize, pageNumber, keyword, filter);
         } catch (Exception e) {
             throw UserAccountException.SEARCH_ES_ERROR;
         }
