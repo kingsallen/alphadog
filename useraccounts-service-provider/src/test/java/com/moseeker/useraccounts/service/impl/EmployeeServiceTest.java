@@ -104,9 +104,9 @@ public class EmployeeServiceTest {
         //System.out.println(result);
     }
 
-    @Test
+//    @Test
     public void awardRankingTest() {
-        List<EmployeeAward> response = service.awardRanking(29154, 39978, "2017");
+        List<EmployeeAward> response = service.awardRanking(142104, 32, "2017");
         System.out.println(response);
     }
 }

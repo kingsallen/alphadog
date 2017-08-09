@@ -336,7 +336,7 @@ public class EmployeeService {
             Response result = searchService.queryAwardRankingInWx(companyIds, timespan, employeeId);
             if (result.getStatus() == 0){
                // 解析数据
-               Map<Integer, String> map = JSON.parseObject(result.getData(), Map.class);
+               Map<Integer, JSONObject> map = JSON.parseObject(result.getData(), Map.class);
                query.clear();
                query.where(new Condition("id", map.keySet(), ValueOp.IN));
                Map<Integer, UserEmployeeDO> employeeDOMap = employeeDao.getDatas(query.buildQuery()).stream().collect(Collectors.toMap(k -> k.getId(), v -> v));
@@ -345,17 +345,18 @@ public class EmployeeService {
                query.where(new Condition("company_id", employeeEntity.getCompanyIds(companyId), ValueOp.IN));
                List<Integer> wechatIds = wxWechatDao.getDatas(query.buildQuery()).stream().map(m -> m.getId()).collect(Collectors.toList());
                query.clear();
-               query.where(new Condition("user_id", userIds, ValueOp.IN));
+               query.where(new Condition("sysuser_id", userIds, ValueOp.IN));
                query.where(new Condition("wechat_id", wechatIds, ValueOp.IN));
                Map<Integer, String> userWxUserMap = wxUserDao.getDatas(query.buildQuery()).stream().collect(Collectors.toMap(k -> k.getSysuserId(), v -> v.getHeadimgurl()));
                map.entrySet().stream().forEach(e -> {
                    EmployeeAward employeeAward = new EmployeeAward();
-                   JSONObject value = JSONObject.parseObject(e.getValue());
+                   JSONObject value = e.getValue();
                    employeeAward.setEmployeeId(e.getKey());
                    employeeAward.setAwardTotal(value.getInteger("award"));
                    employeeAward.setName(employeeDOMap.get(e.getKey()).getCname());
-                   employeeAward.setHeadimgurl(userWxUserMap.get(employeeDOMap.get(e.getKey()).getSysuserId()));
+                   employeeAward.setHeadimgurl(userWxUserMap.getOrDefault(employeeDOMap.get(e.getKey()).getSysuserId(), ""));
                    employeeAward.setRanking(value.getIntValue("ranking"));
+                   response.add(employeeAward);
                });
             } else {
                 log.error("query awardRanking data error");
