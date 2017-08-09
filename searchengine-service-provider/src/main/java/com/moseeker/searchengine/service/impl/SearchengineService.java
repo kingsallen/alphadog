@@ -382,7 +382,7 @@ public class SearchengineService {
                 Map<String, Object> objectMap = new HashMap<>();
                 JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
                 objectMap.put("employeeId", jsonObject.remove("employee_id"));
-                if (jsonObject.getJSONObject("awards").getJSONObject(timespan) != null) {
+                if (jsonObject.getJSONObject("awards").containsKey(timespan)) {
                     objectMap.put("award", jsonObject.getJSONObject("awards").getJSONObject(timespan).getIntValue("award"));
                 } else {
                     objectMap.put("award", 0);
