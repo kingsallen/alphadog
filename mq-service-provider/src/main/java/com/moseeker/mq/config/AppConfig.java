@@ -103,14 +103,14 @@ public class AppConfig {
 
     @Bean
     public TopicExchange topicExchange() {
-        TopicExchange topicExchange = new TopicExchange("employee_exchange", true, false);
+        TopicExchange topicExchange = new TopicExchange("employee_awards_exchange", true, false);
         return topicExchange;
     }
 
     @Bean
     public List<Binding> binding() {
         return new ArrayList<Binding>(){{
-            add(BindingBuilder.bind(addAwardQue()).to(topicExchange()).with("reward.add"));
+            add(BindingBuilder.bind(addAwardQue()).to(topicExchange()).with("award.#"));
         }};
     }
 }

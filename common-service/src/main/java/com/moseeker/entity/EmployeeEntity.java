@@ -132,6 +132,20 @@ public class EmployeeEntity {
         return employeeDao.getData(query.buildQuery());
     }
 
+    // 转发点击操作 前置
+    public void addAwardBefor(int employeeId, int companyId, int positionId, int templateId, int berecomUserId) throws Exception {
+        Query.QueryBuilder query = new Query.QueryBuilder();
+        query.where("employee_id", employeeId).and("position_id", positionId).and("award_config_id", templateId).and("berecom_user_id", berecomUserId);
+        UserEmployeePointsRecordDO userEmployeePointsRecordDO = employeePointsRecordDao.getData(query.buildQuery());
+        if (userEmployeePointsRecordDO != null && userEmployeePointsRecordDO.getId() > 0) {
+            logger.error("重复的加积分操作, employeeId:{}, positionId:{}, templateId:{}, berecomUserId:{}", employeeId, positionId, templateId, berecomUserId);
+            throw new Exception("重复的加积分操作");
+        } else {
+            // 进行加积分操作
+            addReward(employeeId, companyId, "", 0, positionId, templateId, berecomUserId);
+        }
+    }
+
     /**
      * 增加员工积点
      *
