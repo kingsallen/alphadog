@@ -1080,6 +1080,8 @@ public class UserHrAccountService {
         } catch (Exception e) {
             throw UserAccountException.SEARCH_ES_ERROR;
         }
+        logger.info("ES date:{}", response.getData());
+        logger.info("ES date:{}", response.getStatus());
         // ES取到数据
         if (response != null && response.getStatus() == 0) {
             logger.info("ES date:{}", response.getData());
