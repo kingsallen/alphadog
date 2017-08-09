@@ -434,6 +434,7 @@ public class ProfileProcessBS {
                      userEmployeePointsRecordDO.setAward(bean.getAward());
                      userEmployeePointsRecordDO.setApplicationId(bean.getApplication_id());
                      userEmployeePointsRecordDO.setReason(bean.getReason());
+                     userEmployeePointsRecordDO.setEmployeeId(bean.getEmployee_id());
             	     employeeEntity.addReward(bean.getEmployee_id(), bean.getCompany_id(), userEmployeePointsRecordDO);
             		 logger.info("ProfileProcessBS processProfile UserEmployeePointStruct:{}", record);
 //            		 list.add(record);
