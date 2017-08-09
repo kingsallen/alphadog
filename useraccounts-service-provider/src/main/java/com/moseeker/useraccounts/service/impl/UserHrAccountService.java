@@ -958,11 +958,7 @@ public class UserHrAccountService {
                     userEmployeeVO.setUsername(userEmployeeDO.getCname());
                     // 判断是否需要设置积分
                     if (flag.intValue() == 0) {
-                        if (reward) {
-                            userEmployeeVO.setAward(employeeMap.get(userEmployeeDO.getId()));
-                        } else {
-                            userEmployeeVO.setAward(userEmployeeDO.getAward());
-                        }
+                        userEmployeeVO.setAward(userEmployeeDO.getAward());
                     } else if (flag.intValue() == 1) {
                         userEmployeeVO.setAward(0);
                     }
