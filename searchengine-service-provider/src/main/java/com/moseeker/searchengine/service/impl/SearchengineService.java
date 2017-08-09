@@ -439,7 +439,7 @@ public class SearchengineService {
         Map<Integer, Object> data = new LinkedHashMap<>();
         try (TransportClient searchClient = searchUtil.getEsClient()) {
             // 查找所有员工的积分排行
-            SearchResponse response = getSearchRequestBuilder(searchClient, companyIds, null, "0", 22, 1, timespan).execute().actionGet();
+            SearchResponse response = getSearchRequestBuilder(searchClient, companyIds, null, "0", 20, 1, timespan).execute().actionGet();
             int index = 1;
             for (SearchHit searchHit : response.getHits().getHits()) {
                 JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
@@ -452,11 +452,11 @@ public class SearchengineService {
                     data.put(jsonObject.getIntValue("employee_id"), obj);
                 }
             }
-            // 当前用户在 >= 22 名，显示返回前22条，小于22条返回前20+用户前一名+用户排名+用户后一名，未上榜返回前20条
+            // 当前用户在 >= 20 名，显示返回前20条，小于22条返回前20+用户前一名+用户排名+用户后一名，未上榜返回前20条
             List<Object> allRankingList = new ArrayList<>(data.values());
             List<Object> resultList = new ArrayList<>(23);
             if ((!data.isEmpty() && data.containsKey(employeeId)) || (employeeId == null || employeeId == 0)) {
-                resultList = allRankingList.subList(0, allRankingList.size() >= 22 ? 22 : allRankingList.size());
+                resultList = allRankingList.subList(0, allRankingList.size() >= 20 ? 20 : allRankingList.size());
             } else {
                 // 默认查询前20条
                 resultList = allRankingList.subList(0, allRankingList.size() >= 20 ? 20 : allRankingList.size());
