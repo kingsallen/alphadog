@@ -915,42 +915,73 @@ public class UserHrAccountService {
             List<HrCompanyDO> companyList = hrCompanyDao.getDatas(queryBuilder.buildQuery());
             // 查询公司信息
             Map<Integer, HrCompanyDO> companyMap = companyList.stream().collect(Collectors.toMap(HrCompanyDO::getId, Function.identity()));
-            for (UserEmployeeDO userEmployeeDO : userEmployeeDOS) {
-                UserEmployeeVO userEmployeeVO = new UserEmployeeVO();
-                userEmployeeVO.setId(userEmployeeDO.getId());
-                userEmployeeVO.setUsername(userEmployeeDO.getCname());
-                userEmployeeVO.setMobile(userEmployeeDO.getMobile());
-                userEmployeeVO.setCompanyId(userEmployeeDO.getCompanyId());
-                userEmployeeVO.setEmail(userEmployeeDO.getEmail());
-                userEmployeeVO.setCustomField(userEmployeeDO.getCustomField());
-                userEmployeeVO.setBindingTime(userEmployeeDO.getBindingTime());
-                // 微信昵称
-                if (userMap.size() > 0 && userMap.get(userEmployeeDO.getSysuserId()) != null) {
-                    userEmployeeVO.setNickName(userMap.get(userEmployeeDO.getSysuserId()).getNickname());
-                } else {
-                    userEmployeeVO.setNickName("未知");
-                }
-                // 公司名称
-                if (companyMap.size() > 0 && companyMap.get(userEmployeeDO.getCompanyId()) != null) {
-                    HrCompanyDO hrCompanyDOTemp = companyMap.get(userEmployeeDO.getCompanyId());
-                    userEmployeeVO.setCompanyName(hrCompanyDOTemp.getName() != null ? hrCompanyDOTemp.getName() : "");
-                    userEmployeeVO.setCompanyAbbreviation(hrCompanyDOTemp.getAbbreviation() != null ? hrCompanyDOTemp.getAbbreviation() : "");
-                }
-                userEmployeeVO.setActivation((new Double(userEmployeeDO.getActivation())).intValue());
-                // 判断是否需要设置积分
-                if (flag.intValue() == 0) {
-                    if (reward) {
-                        userEmployeeVO.setAward(employeeMap.get(userEmployeeDO.getId()));
-                    } else {
-                        userEmployeeVO.setAward(userEmployeeDO.getAward());
+            if (reward) { // 需要排序
+                for (Map.Entry<Integer, Integer> entry : employeeMap.entrySet()) {
+                    for (UserEmployeeDO userEmployeeDO : userEmployeeDOS) {
+                        if (entry.getKey().intValue() == userEmployeeDO.getId()) {
+                            UserEmployeeVO userEmployeeVO = new UserEmployeeVO();
+                            org.springframework.beans.BeanUtils.copyProperties(userEmployeeDO, userEmployeeVO);
+                            userEmployeeVO.setUsername(userEmployeeDO.getCname());
+                            // 微信昵称
+                            if (userMap.size() > 0 && userMap.get(userEmployeeDO.getSysuserId()) != null) {
+                                userEmployeeVO.setNickName(userMap.get(userEmployeeDO.getSysuserId()).getNickname());
+                            } else {
+                                userEmployeeVO.setNickName("未知");
+                            }
+                            // 公司名称
+                            if (companyMap.size() > 0 && companyMap.get(userEmployeeDO.getCompanyId()) != null) {
+                                HrCompanyDO hrCompanyDOTemp = companyMap.get(userEmployeeDO.getCompanyId());
+                                userEmployeeVO.setCompanyName(hrCompanyDOTemp.getName() != null ? hrCompanyDOTemp.getName() : "");
+                                userEmployeeVO.setCompanyAbbreviation(hrCompanyDOTemp.getAbbreviation() != null ? hrCompanyDOTemp.getAbbreviation() : "");
+                            }
+                            userEmployeeVO.setActivation((new Double(userEmployeeDO.getActivation())).intValue());
+                            // 判断是否需要设置积分
+                            if (flag.intValue() == 0) {
+                                if (reward) {
+                                    userEmployeeVO.setAward(employeeMap.get(userEmployeeDO.getId()));
+                                } else {
+                                    userEmployeeVO.setAward(userEmployeeDO.getAward());
+                                }
+                            } else if (flag.intValue() == 1) {
+                                userEmployeeVO.setAward(0);
+                            }
+                            userEmployeeVOS.add(userEmployeeVO);
+                        } else {
+                            continue;
+                        }
                     }
-                } else if (flag.intValue() == 1) {
-                    userEmployeeVO.setAward(0);
                 }
-                userEmployeeVO.setBindingTime(userEmployeeDO.getBindingTime());
-                userEmployeeVOS.add(userEmployeeVO);
+            } else {
+                for (UserEmployeeDO userEmployeeDO : userEmployeeDOS) {
+                    UserEmployeeVO userEmployeeVO = new UserEmployeeVO();
+                    org.springframework.beans.BeanUtils.copyProperties(userEmployeeDO, userEmployeeVO);
+                    userEmployeeVO.setUsername(userEmployeeDO.getCname());
+                    // 判断是否需要设置积分
+                    if (flag.intValue() == 0) {
+                        if (reward) {
+                            userEmployeeVO.setAward(employeeMap.get(userEmployeeDO.getId()));
+                        } else {
+                            userEmployeeVO.setAward(userEmployeeDO.getAward());
+                        }
+                    } else if (flag.intValue() == 1) {
+                        userEmployeeVO.setAward(0);
+                    }
+                    // 微信昵称
+                    if (userMap.size() > 0 && userMap.get(userEmployeeDO.getSysuserId()) != null) {
+                        userEmployeeVO.setNickName(userMap.get(userEmployeeDO.getSysuserId()).getNickname());
+                    } else {
+                        userEmployeeVO.setNickName("未知");
+                    }
+                    // 公司名称
+                    if (companyMap.size() > 0 && companyMap.get(userEmployeeDO.getCompanyId()) != null) {
+                        HrCompanyDO hrCompanyDOTemp = companyMap.get(userEmployeeDO.getCompanyId());
+                        userEmployeeVO.setCompanyName(hrCompanyDOTemp.getName() != null ? hrCompanyDOTemp.getName() : "");
+                        userEmployeeVO.setCompanyAbbreviation(hrCompanyDOTemp.getAbbreviation() != null ? hrCompanyDOTemp.getAbbreviation() : "");
+                    }
+                    userEmployeeVO.setActivation((new Double(userEmployeeDO.getActivation())).intValue());
+                    userEmployeeVOS.add(userEmployeeVO);
+                }
             }
-
         } else {
             throw UserAccountException.USEREMPLOYEES_EMPTY;
         }
