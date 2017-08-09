@@ -97,14 +97,13 @@ public class AppConfig {
 
     @Bean
     public Queue addAwardQue() {
-        Queue queue = new Queue("add_award_que", false, false, true);
+        Queue queue = new Queue("add_award_que", true, false, false);
         return queue;
     }
 
     @Bean
     public TopicExchange topicExchange() {
-        TopicExchange topicExchange = new TopicExchange("employee_exchange", false, true);
-        topicExchange.setDelayed(true);
+        TopicExchange topicExchange = new TopicExchange("employee_exchange", true, false);
         return topicExchange;
     }
 

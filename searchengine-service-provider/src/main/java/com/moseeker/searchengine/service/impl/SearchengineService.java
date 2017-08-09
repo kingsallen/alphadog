@@ -404,11 +404,10 @@ public class SearchengineService {
                 if(jsonObject.getJSONObject("awards").getJSONObject(timespan).getIntValue("award") > 0) {
                     JSONObject obj = JSON.parseObject("{}");
                     obj.put("employee_id", jsonObject.getIntValue("employee_id"));
-                    obj.put("ranking", index);
+                    obj.put("ranking", index++);
                     obj.put("last_update_time", jsonObject.getJSONObject("awards").getJSONObject(timespan).getString("last_update_time"));
                     obj.put("award", jsonObject.getJSONObject("awards").getJSONObject(timespan).getString("award"));
                     data.put(jsonObject.getIntValue("employee_id"), obj);
-                    index++;
                 }
             }
             // 当前用户在 >= 22 名，显示返回前22条，小于22条返回前20+用户前一名+用户排名+用户后一名，未上榜返回前20条
@@ -437,11 +436,10 @@ public class SearchengineService {
                                 JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
                                 JSONObject obj = JSON.parseObject("{}");
                                 obj.put("employee_id", jsonObject.getIntValue("employee_id"));
-                                obj.put("ranking", ranking);
+                                obj.put("ranking", ++ranking);
                                 obj.put("last_update_time", jsonObject.getJSONObject("awards").getJSONObject(timespan).getString("last_update_time"));
                                 obj.put("award", jsonObject.getJSONObject("awards").getJSONObject(timespan).getString("award"));
                                 resultList.add(obj);
-                                ranking++;
                             }
                         }
                     }
