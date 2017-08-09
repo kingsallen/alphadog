@@ -27,21 +27,31 @@ public class PositionSearchEngine {
 	private SearchUtil searchUtil;
 	//按条件查询，如果prefix的方式无法差的数据，那么转换为query_string的方式查询
 	public Map<String,Object> search(String keyWord,String industry,String salaryCode,int page,int pageSize,String cityCode,String startTime,String endTime){
-		TransportClient client= searchUtil.getEsClient();
-		SearchResponse hits =this.quertPrefix(keyWord, industry, salaryCode, page, pageSize, cityCode,startTime,endTime,client);
-		if(hits!=null){
-			long hitNum=hits.getHits().getTotalHits();
-			if(hitNum==0&&StringUtils.isNotEmpty(keyWord)){
-				SearchResponse hitsData=this.quertString(keyWord, industry, salaryCode, page, pageSize, cityCode,startTime,endTime,client);
-				Map<String,Object> map=searchUtil.handleData(hitsData,"positions");
-				logger.info(map.toString());
-				return map;
-			}else{
-				Map<String,Object> map=searchUtil.handleData(hits,"positions");
-				logger.info(map.toString());
-				return map;
+		Map<String,Object> map=new HashMap<String,Object>();
+		TransportClient client=null;
+		try{
+			client=searchUtil.getEsClient();
+			SearchResponse hits =this.quertPrefix(keyWord, industry, salaryCode, page, pageSize, cityCode,startTime,endTime,client);
+			if(hits!=null){
+				long hitNum=hits.getHits().getTotalHits();
+				if(hitNum==0&&StringUtils.isNotEmpty(keyWord)){
+					SearchResponse hitsData=this.quertString(keyWord, industry, salaryCode, page, pageSize, cityCode,startTime,endTime,client);
+					map=searchUtil.handleData(hitsData,"positions");
+					logger.info(map.toString());
+					return map;
+				}else{
+					map=searchUtil.handleData(hits,"positions");
+					logger.info(map.toString());
+					return map;
+				}
+			}
+		}finally{
+			if(client!=null){
+				client.close();
+				client=null;
 			}
 		}
+
 		return new HashMap<String,Object>();
 	}
 	//按照query_string的方式查询数据
@@ -109,19 +119,15 @@ public class PositionSearchEngine {
 	//处理时间范围查询，从xxx来时
 	private void handleDateGT(String startTime, QueryBuilder query){
 		if(StringUtils.isNotEmpty(startTime)){
-    		QueryBuilder keyand = QueryBuilders.boolQuery();
-    		RangeQueryBuilder fullf = QueryBuilders.rangeQuery("position.publish_date").format(startTime);
-    		((BoolQueryBuilder) keyand).must(fullf);
-            ((BoolQueryBuilder) query).must(keyand);
+    		RangeQueryBuilder fullf = QueryBuilders.rangeQuery("position.publish_date").from(startTime);
+            ((BoolQueryBuilder) query).must(fullf);
     	}
 	}
 	// 小于xxxx时间
 	private void handleDateLT(String endTime, QueryBuilder query){
 		if(StringUtils.isNotEmpty(endTime)){
-    		QueryBuilder keyand = QueryBuilders.boolQuery();
     		RangeQueryBuilder fullf = QueryBuilders.rangeQuery("position.publish_date").to(endTime);
-    		((BoolQueryBuilder) keyand).must(fullf);
-            ((BoolQueryBuilder) query).must(keyand);
+            ((BoolQueryBuilder) query).must(fullf);
     	}
 	}
 	//处理排序

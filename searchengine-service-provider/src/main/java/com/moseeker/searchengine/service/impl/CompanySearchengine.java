@@ -43,19 +43,29 @@ public class CompanySearchengine {
 	private SearchUtil searchUtil;
 	//搜索信息
 	public Map<String,Object>  query(String keywords,String citys,String industry,String scale,Integer page,Integer pageSize) throws TException{
-		TransportClient client=searchUtil.getEsClient();
-		SearchResponse hits=queryPrefix(keywords,citys,industry,scale,page,pageSize,client);
-		long hitNum=hits.getHits().getTotalHits();
-		if(hitNum==0&&StringUtils.isNotEmpty(keywords)){
-			SearchResponse hitsData=queryString(keywords,citys,industry,scale,page,pageSize,client);
-			Map<String,Object> map=searchUtil.handleData(hitsData,"companies");
-			logger.info(map.toString());
-			return map;
-		}else{
-			Map<String,Object> map=searchUtil.handleData(hits,"companies");
-			logger.info(map.toString());
-			return map;
+		TransportClient client=null;
+		Map<String,Object> map=new HashMap<String,Object>();
+		try{
+			client=searchUtil.getEsClient();
+			SearchResponse hits=queryPrefix(keywords,citys,industry,scale,page,pageSize,client);
+			long hitNum=hits.getHits().getTotalHits();
+			if(hitNum==0&&StringUtils.isNotEmpty(keywords)){
+				SearchResponse hitsData=queryString(keywords,citys,industry,scale,page,pageSize,client);
+				map=searchUtil.handleData(hitsData,"companies");
+				logger.info(map.toString());
+
+			}else{
+				map=searchUtil.handleData(hits,"companies");
+				logger.info(map.toString());
+			}
+		}finally{
+			if(client!=null){
+				client.close();
+				client=null;
+			}
 		}
+		return map;
+
 	}
 
 	//通过queryString查询es
