@@ -411,7 +411,7 @@ public class SearchengineService {
                     obj.put("employee_id", jsonObject.getIntValue("employee_id"));
                     obj.put("ranking", index++);
                     obj.put("last_update_time", jsonObject.getJSONObject("awards").getJSONObject(timespan).getString("last_update_time"));
-                    obj.put("award", jsonObject.getJSONObject("awards").getJSONObject(timespan).getString("award"));
+                    obj.put("award", jsonObject.getJSONObject("awards").getJSONObject(timespan).getIntValue("award"));
                     data.put(jsonObject.getIntValue("employee_id"), obj);
                 }
             }
@@ -443,7 +443,7 @@ public class SearchengineService {
                                 obj.put("employee_id", jsonObject.getIntValue("employee_id"));
                                 obj.put("ranking", ++ranking);
                                 obj.put("last_update_time", jsonObject.getJSONObject("awards").getJSONObject(timespan).getString("last_update_time"));
-                                obj.put("award", jsonObject.getJSONObject("awards").getJSONObject(timespan).getString("award"));
+                                obj.put("award", jsonObject.getJSONObject("awards").getJSONObject(timespan).getIntValue("award"));
                                 resultList.add(obj);
                             }
                         }
