@@ -339,7 +339,6 @@ public class SearchengineService {
 
         SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query)
                 .addSort(buildSortScript(timespan, "award", SortOrder.DESC))
-                .addSort(buildSortScript(activation, "activation", SortOrder.ASC))
                 .addSort(buildSortScript(timespan, "last_update_time", SortOrder.ASC))
                 .setFetchSource(new String[]{"id", "awards." + timespan + ".award", "awards." + timespan + ".last_update_time"}, null);
         if (pageNum > 0 && pageSize > 0) {
@@ -371,6 +370,7 @@ public class SearchengineService {
         }
         SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query)
                 .addSort(buildSortScript(timespan, "award", SortOrder.DESC))
+                .addSort(buildSortScript(activation, "activation", SortOrder.ASC))
                 .addSort(buildSortScript(timespan, "last_update_time", SortOrder.ASC))
                 .setFetchSource(new String[]{"id", "awards." + timespan + ".award", "awards." + timespan + ".last_update_time"}, null);
         if (pageNum > 0 && pageSize > 0) {
