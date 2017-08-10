@@ -110,8 +110,8 @@ public class PositionSearchEngine {
 	}
 	//公共查询的条件部分
 	private void CommonQuerySentence(String industry,String salaryCode,String cityCode,String startTime,String endTime,QueryBuilder query){
-		searchUtil.handleTerms(industry, query, "company.industry.industry_code");
-		searchUtil.handleTerms(cityCode, query, "position.city_code.code");
+		searchUtil.handleTerms(industry, query, "company.industry_data.industry_code");
+		searchUtil.handleTerms(cityCode, query, "position.city_data.code");
 		handleDateGT(startTime, query);
 		handleDateLT(endTime, query);
 		handleSalary(salaryCode, query);
