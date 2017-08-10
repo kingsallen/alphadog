@@ -71,6 +71,7 @@ public class PositionController {
 
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
+        	logger.info(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
@@ -82,6 +83,7 @@ public class PositionController {
             Response result = positonServices.getPositionById(id);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
+        	logger.info(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
@@ -518,6 +520,7 @@ public class PositionController {
         return null;
     }
 
+<<<<<<< HEAD
 
     /**
      * 第三方职位列表详情
@@ -560,4 +563,74 @@ public class PositionController {
         }
     }
 
+=======
+    /**
+     * 职位同步到第三方接口
+     */
+    @RequestMapping(value = "/position/thirdpartyposition", method = RequestMethod.GET)
+    @ResponseBody
+    public String getPositionForThirdParty(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer pid = params.getInt("positionId");
+            Integer channel = params.getInt("channel");
+            Response res =  positonServices.getPositionForThirdParty(pid, channel);
+            return ResponseLogNotification.success(request, res);
+
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request,e.getMessage());
+        }
+    }
+
+
+
+    /**
+     * 职位列表id同步到第三方接口
+     */
+    @RequestMapping(value = "/positions/thirdpartypositions", method = RequestMethod.GET)
+    @ResponseBody
+    public String getPositionListForThirdParty(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer channel = params.getInt("channel");
+            Integer type = params.getInt("type");
+            String start_time = params.getString("start_time");
+            String end_time = params.getString("end_time");
+            List<Integer> positions =  positonServices.getPositionListForThirdParty(channel,type,start_time,end_time);
+            Response res = ResponseUtils.success(positions);
+            return ResponseLogNotification.success(request, res);
+
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request,e.getMessage());
+        }
+    }
+
+
+
+    /*
+     *获取pc端推荐职位列表
+     */
+    @RequestMapping(value = "/positions/apolegamic", method = RequestMethod.GET)
+    @ResponseBody
+    public String getPcRecommendPosition(HttpServletRequest request, HttpServletResponse response){
+    	try{
+	    	Params<String, Object> params = ParamUtils.parseRequestParam(request);
+	        Integer page = params.getInt("page");
+	        Integer pageSize = params.getInt("pageSize");
+	        if(page==null){
+	        	page=0;
+	        }
+	        if(pageSize==null){
+	        	pageSize=15;
+	        }
+	    	Response result=positonServices.getPcRecommand(page,pageSize);
+	    	return ResponseLogNotification.success(request, result);
+    	}catch(Exception e){
+    		 logger.error(e.getMessage());
+    		 return ResponseLogNotification.fail(request, e.getMessage());
+    	}
+    }
+>>>>>>> feature/alipay_campusrecruit
 }

@@ -1,5 +1,26 @@
 package com.moseeker.position.thrift;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import com.moseeker.position.service.fundationbs.PositionPcService;
+import com.moseeker.position.service.fundationbs.PositionQxService;
+import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
+import com.moseeker.thrift.gen.position.struct.Position;
+import com.moseeker.thrift.gen.position.struct.RpExtInfo;
+import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
+import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
+import com.moseeker.thrift.gen.position.struct.WechatPositionListData;
+import com.moseeker.thrift.gen.position.struct.WechatPositionListQuery;
+import com.moseeker.thrift.gen.position.struct.WechatRpPositionListData;
+import com.moseeker.thrift.gen.position.struct.WechatShareData;
+import com.moseeker.thrift.gen.position.struct.*;
+import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.tool.QueryConvert;
@@ -20,15 +41,6 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.position.service.PositionServices.Iface;
-import com.moseeker.thrift.gen.position.struct.*;
-import org.apache.thrift.TException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class PositionServicesImpl implements Iface {
@@ -44,6 +56,8 @@ public class PositionServicesImpl implements Iface {
     private PositionQxService positionQxService;
     @Autowired
     private ThirdPositionService thirdPositionService;
+    @Autowired
+    private PositionPcService positionPcService;
 
     /**
      * 获取推荐职位
@@ -250,6 +264,61 @@ public class PositionServicesImpl implements Iface {
             return thirdPositionService.getThirdPartyPositionInfo(infoForm);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+	public Response getPcRecommand(int page, int pageSize)  {
+		// TODO Auto-generated method stub
+		try{
+			return positionPcService.getRecommendPositionPC(page, pageSize);
+		}catch(Exception e){
+			logger.error(e.getMessage(), e);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+		}
+	}
+
+	@Override
+	public Response getPcRecommandCompany(int page,int pageSize) throws TException {
+		// TODO Auto-generated method stub
+		try{
+			return positionPcService.getQXRecommendCompanyList(page,pageSize);
+		}catch(Exception e){
+			logger.info(e.getMessage(),e);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+		}
+	}
+
+	@Override
+	public Response getPcRecommandCompanyAll(int page, int pageSize) throws TException {
+		// TODO Auto-generated method stub
+		try{
+			List<Map<String,Object>> list= positionPcService.getAllCompanyRecommend(page,pageSize);
+			Response res= ResponseUtils.success(list);
+			return res;
+		}catch(Exception e){
+			logger.info(e.getMessage(),e);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+		}
+	}
+
+    @Override
+    public Response getPositionForThirdParty(int positionId, int channel) throws TException {
+        try {
+            return service.getPositionForThirdParty(positionId, channel);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, " " + e.getMessage());
+        }
+    }
+
+    @Override
+    public List<Integer> getPositionListForThirdParty(int channel, int type, String start_time, String end_time) throws TException {
+        try {
+            return service.getPositionListForThirdParty(channel, type, start_time, end_time);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new TException(e);
         }
     }
 

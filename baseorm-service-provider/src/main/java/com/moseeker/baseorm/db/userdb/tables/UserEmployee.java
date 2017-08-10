@@ -37,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserEmployee extends TableImpl<UserEmployeeRecord> {
 
-    private static final long serialVersionUID = -1301989474;
+    private static final long serialVersionUID = -1910844448;
 
     /**
      * The reference instance of <code>userdb.user_employee</code>
@@ -199,8 +199,9 @@ public class UserEmployee extends TableImpl<UserEmployeeRecord> {
 
     /**
      * The column <code>userdb.user_employee.activation</code>. 员工认证激活状态，0：认证成功，1：认证后取消认证 2：认证失败 3：未认证 4：认证后又认证了其他公司导致本条数据变成未认证
+     * The column <code>userdb.user_employee.activation</code>. 员工认证激活状态，0：认证成功，1：认证后取消认证 2：认证失败 3：未认证
      */
-    public final TableField<UserEmployeeRecord, Byte> ACTIVATION = createField("activation", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("3", org.jooq.impl.SQLDataType.TINYINT)), this, "员工认证激活状态，0：认证成功，1：认证后取消认证 2：认证失败 3：未认证 4：认证后又认证了其他公司导致本条数据变成未认证");
+    public final TableField<UserEmployeeRecord, Byte> ACTIVATION = createField("activation", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("3", org.jooq.impl.SQLDataType.TINYINT)), this, "员工认证激活状态，0：认证成功，1：认证后取消认证 2：认证失败 3：未认证");
 
     /**
      * The column <code>userdb.user_employee.activation_code</code>. 激活码

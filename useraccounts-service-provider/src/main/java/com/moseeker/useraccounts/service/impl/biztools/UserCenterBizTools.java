@@ -26,7 +26,6 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserFavPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
-
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,8 +36,8 @@ import java.util.*;
 
 /**
  * 个人中心片段业务处理类
- *
  * @author jack
+ *
  */
 @Component
 public class UserCenterBizTools {
@@ -60,6 +59,7 @@ public class UserCenterBizTools {
     @Autowired
     private CandidatePositionDao candidatePositionDao;
 
+
     @Autowired
     private CandidateRecomRecordDao candidateRecomRecordDao;
 
@@ -72,10 +72,8 @@ public class UserCenterBizTools {
     @Autowired
     private UserCollectPositionDao collectPositionDao;
 
-
     /**
      * 查找用户的申请记录
-     *
      * @param userId 用户编号
      * @return 申请记录集合
      * @throws TException thrift异常
@@ -93,7 +91,6 @@ public class UserCenterBizTools {
 
     /**
      * 查找职位信息
-     *
      * @param ids 职位编号数组
      * @return 职位数据集合
      * @throws TException thrift异常信息
@@ -106,7 +103,6 @@ public class UserCenterBizTools {
 
     /**
      * 查找公司信息
-     *
      * @param ids 公司信息编号
      * @return 公司信息集合
      * @throws TException thrift异常信息
@@ -120,7 +116,6 @@ public class UserCenterBizTools {
     /**
      * 查找招聘进度积分配置模板
      * (todo 可以走缓存)
-     *
      * @return 聘进度积分配置模板集合
      * @throws TException
      */
@@ -130,7 +125,6 @@ public class UserCenterBizTools {
 
     /**
      * 查找职位搜藏
-     *
      * @param userId 用户编号
      * @return 感兴趣职位集合
      * @throws TException thrift异常信息
@@ -146,18 +140,17 @@ public class UserCenterBizTools {
 
     /**
      * 查找转发浏览记录。如果存在post_user_id == repost_user_id的情况，则将repost_user_id置为0
-     *
-     * @param userId         用户编号
-     * @param type           类型 1：表示所有相关的浏览记录，2：表示被推荐的浏览用户，3：表示提交申请的浏览记录
+     * @param userId 用户编号
+     * @param type 类型 1：表示所有相关的浏览记录，2：表示被推荐的浏览用户，3：表示提交申请的浏览记录
      * @param positionIdList 职位编号
-     * @param pageNo         页码
-     * @param pageSize       每页显示的数量   @return 转发浏览记录集合
+     *@param pageNo 页码
+     * @param pageSize 每页显示的数量   @return 转发浏览记录集合
      * @throws TException
      */
     public List<CandidateRecomRecordDO> listCandidateRecomRecords(int userId, int type, List<Integer> positionIdList, int pageNo, int pageSize) throws TException {
         List<CandidateRecomRecordDO> recomRecordDOList = new ArrayList<>();
         switch (type) {
-            case 1:            //查找所有相关的职位转发记录
+            case 1:			//查找所有相关的职位转发记录
                 Query.QueryBuilder qu = new Query.QueryBuilder();
                 qu.select("id").select("app_id").select("repost_user_id")
                         .select("click_time").select("recom_time").select("is_recom")
@@ -169,10 +162,10 @@ public class UserCenterBizTools {
                 qu.setPageSize(pageSize);
                 recomRecordDOList = candidateRecomRecordDao.getDatas(qu.buildQuery(), CandidateRecomRecordDO.class);
                 break;
-            case 2:            //查找被推荐的职位转发记录
+            case 2:			//查找被推荐的职位转发记录
                 recomRecordDOList = candidateRecomRecordDao.listInterestedCandidateRecomRecordByUserPositions(userId, positionIdList, pageNo, pageSize);
                 break;
-            case 3:            //查找申请的职位转发记录
+            case 3:			//查找申请的职位转发记录
                 recomRecordDOList = candidateRecomRecordDao.listCandidateRecomRecordsForAppliedByUserPositions(userId, positionIdList, pageNo, pageSize);
                 break;
             default:
@@ -190,8 +183,7 @@ public class UserCenterBizTools {
 
     /**
      * 根据转发者查找转发记录
-     *
-     * @param userId         用户编号
+     * @param userId 用户编号
      * @param positionIdList 公司下的职位编号
      * @return
      */
@@ -207,7 +199,6 @@ public class UserCenterBizTools {
 
     /**
      * 根据转发者查找已经被推荐的转发记录
-     *
      * @param userId
      * @return
      */
@@ -225,8 +216,7 @@ public class UserCenterBizTools {
 
     /**
      * 根据转发者查找已经被感兴趣的转发记录
-     *
-     * @param userId         用户编号
+     * @param userId 用户编号
      * @param positionIdList 职位编号
      * @return
      */
@@ -242,8 +232,7 @@ public class UserCenterBizTools {
 
     /**
      * 根据转发者查找已经申请的转发记录
-     *
-     * @param userId         用户编号
+     * @param userId 用户编号
      * @param positionIdList 职位编号
      * @return
      */
@@ -261,31 +250,29 @@ public class UserCenterBizTools {
 
     /**
      * 数组转成逗号隔开，开始和结束用中括号括起来的字符创。如[1,2,3]
-     *
      * @param array 整型数组
      * @return 字符串
      */
-    private String arrayToString(int... array) {
+    private String arrayToString(int ...array) {
         StringBuffer sb = new StringBuffer(array.length * 2 + 2);
         sb.append("[");
-        for (int i : array) {
+        for(int i : array) {
             sb.append(i);
             sb.append(",");
         }
-        sb.deleteCharAt(sb.length() - 1);
+        sb.deleteCharAt(sb.length()-1);
         sb.append("]");
         return sb.toString();
     }
 
     /**
      * 查找职位编号和职位标题。
-     *
      * @param positionIDSet 职位编号集合
      * @return 浏览者信息集合
      */
     public List<JobPositionDO> listJobPositions(Set<Integer> positionIDSet) {
         List<JobPositionDO> positionList = new ArrayList<>();
-        if (positionIDSet != null && positionIDSet.size() > 0) {
+        if(positionIDSet != null && positionIDSet.size() > 0) {
             Query.QueryBuilder queryUtil = new Query.QueryBuilder();
             queryUtil.select("id").select("title");
             queryUtil.where(new Condition("id", positionIDSet, ValueOp.IN));
@@ -301,14 +288,13 @@ public class UserCenterBizTools {
 
     /**
      * 查找浏览者信息
-     *
      * @param presenteeIDSet 浏览者编号
      * @return 浏览者信息集合
      */
     public List<UserUserDO> listPresentees(Set<Integer> presenteeIDSet) {
         List<UserUserDO> users = new ArrayList<>();
 
-        if (presenteeIDSet != null && presenteeIDSet.size() > 0) {
+        if(presenteeIDSet != null && presenteeIDSet.size() > 0) {
             Query.QueryBuilder queryUtil = new Query.QueryBuilder();
             queryUtil.select("id").select("name").select("nickname").select("headimg");
             queryUtil.where(new Condition("id", presenteeIDSet, ValueOp.IN));
@@ -324,13 +310,12 @@ public class UserCenterBizTools {
 
     /**
      * 查询转发用户信息
-     *
      * @param repostIDSet 转发用户编号集合
      * @return 转发用户信息集合
      */
     public List<UserUserDO> listReposts(Set<Integer> repostIDSet) {
         List<UserUserDO> users = new ArrayList<>();
-        if (repostIDSet != null && repostIDSet.size() > 0) {
+        if(repostIDSet != null && repostIDSet.size() > 0) {
             Query.QueryBuilder queryUtil = new Query.QueryBuilder();
             queryUtil.select("id").select("name").select("nickname");
             queryUtil.where(new Condition("id", repostIDSet, ValueOp.IN));
@@ -346,14 +331,13 @@ public class UserCenterBizTools {
 
     /**
      * 查询申请信息集合
-     *
      * @param appIDSet 申请编号集合
      * @return 申请信息集合
      */
     public List<JobApplicationDO> listApps(Set<Integer> appIDSet) {
         List<JobApplicationDO> apps = new ArrayList<>();
 
-        if (appIDSet != null && appIDSet.size() > 0) {
+        if(appIDSet != null && appIDSet.size() > 0) {
             Query.QueryBuilder queryUtil = new Query.QueryBuilder();
             queryUtil.where(new Condition("id", appIDSet, ValueOp.IN));
             queryUtil.select("id").select("applier_name").select("submit_time").select("app_tpl_id");
@@ -369,7 +353,6 @@ public class UserCenterBizTools {
 
     /**
      * 查找候选人查看职位的记录
-     *
      * @param cps 候选人的职位编号和用户编号的集合
      * @return 候选人浏览职位的集合
      */
@@ -385,14 +368,13 @@ public class UserCenterBizTools {
 
     /**
      * 根据申请编号，查找排除不合适记录的最后一条操作记录
-     *
      * @param rejectAppIdSet 申请编号
      * @return 最后一条操作记录
      */
     public List<HrOperationRecordDO> listLastHrOperationRecordPassedReject(Set<Integer> rejectAppIdSet) {
         List<HrOperationRecordDO> hrOperationRecordDOList = new ArrayList<>();
 
-        if (rejectAppIdSet != null && rejectAppIdSet.size() > 0) {
+        if(rejectAppIdSet != null && rejectAppIdSet.size() > 0) {
             try {
                 hrOperationRecordDOList = hrOperationRecordDao.listLatestOperationRecordByAppIdSet(rejectAppIdSet);
             } catch (Exception e) {
@@ -406,7 +388,6 @@ public class UserCenterBizTools {
 
     /**
      * 查找申请记录集合信息
-     *
      * @param appId 申请记录编号
      * @return 申请记录集合
      * @throws TException thrift异常
@@ -423,7 +404,6 @@ public class UserCenterBizTools {
 
     /**
      * 查找职位名称
-     *
      * @param positionId 职位编号
      * @return 职位信息
      */
@@ -441,7 +421,6 @@ public class UserCenterBizTools {
 
     /**
      * 查询公司名称
-     *
      * @param companyId
      * @return
      */
@@ -459,7 +438,6 @@ public class UserCenterBizTools {
 
     /**
      * 根据申请编号查找该申请记录的HR操作记录
-     *
      * @param appId 申请记录
      * @return 操作记录
      */
@@ -478,16 +456,14 @@ public class UserCenterBizTools {
         }
     }
 
-
     /**
      * 查找查找推荐记录相关的职位编号
-     *
-     * @param companyIds 公司列表
+     * @param userId 用户编号
      * @return
      */
-    public List<Integer> listPositionIdByUserId(List<Integer> companyIds) {
+    public List<Integer> listPositionIdByUserId(int userId) {
         try {
-            return positionDao.listPositionIdByUserId(companyIds);
+            return positionDao.listPositionIdByUserId(userId);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return null;

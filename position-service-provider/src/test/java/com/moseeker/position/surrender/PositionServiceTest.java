@@ -22,6 +22,7 @@ import com.moseeker.thrift.gen.position.struct.RpExtInfo;
 @ContextConfiguration(classes = AppConfig.class)
 @Transactional
 public class PositionServiceTest {
+
     @Autowired
     private PositionService service;
 

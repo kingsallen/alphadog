@@ -1,9 +1,9 @@
 package com.moseeker.common.constants;
 
+import com.moseeker.common.util.StringUtils;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import com.moseeker.common.util.StringUtils;
 
 /**
  * 
@@ -79,6 +79,25 @@ public enum ChannelType {
 			
 			return null;
 		}
+	}, ALIPAY(5, "alipay","支付宝") {
+		@Override
+		public String getOrigin(String origin) {
+			String result;
+			if(StringUtils.isNullOrEmpty(origin)) {
+				result = String.valueOf(1000000000000000000l);
+			} else {
+				if(origin.length() >= 19) {
+					if(origin.charAt(origin.length()-19) == '0') {
+						result = String.valueOf(Long.valueOf(origin)+1000000000000000000l);
+					} else {
+						result = origin;
+					}
+				} else {
+					result = String.valueOf(Long.valueOf(origin)+1000000000000000000l);
+				}
+			}
+			return result;
+		}
 	};
 	
 	private ChannelType(int value, String name,String alias) {
@@ -142,5 +161,13 @@ public enum ChannelType {
 
 	public String getAlias() {
 		return alias;
+	}
+
+	/**
+	 * 简历回收 中  profile_profile.source（简历来源）的值
+	 * @return
+	 */
+	public int getRetrievalSource() {
+		return 210+value;
 	}
 }

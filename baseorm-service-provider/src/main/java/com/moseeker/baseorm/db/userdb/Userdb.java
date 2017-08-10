@@ -5,6 +5,7 @@ package com.moseeker.baseorm.db.userdb;
 
 
 import com.moseeker.baseorm.db.userdb.tables.CandidateVJobPositionRecom;
+import com.moseeker.baseorm.db.userdb.tables.UserAliUser;
 import com.moseeker.baseorm.db.userdb.tables.UserBdUser;
 import com.moseeker.baseorm.db.userdb.tables.UserCollectPosition;
 import com.moseeker.baseorm.db.userdb.tables.UserCompanyFollow;
@@ -15,6 +16,7 @@ import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecordCompanyRel;
 import com.moseeker.baseorm.db.userdb.tables.UserFavPosition;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.UserIntention;
+import com.moseeker.baseorm.db.userdb.tables.UserPositionEmail;
 import com.moseeker.baseorm.db.userdb.tables.UserSearchCondition;
 import com.moseeker.baseorm.db.userdb.tables.UserSettings;
 import com.moseeker.baseorm.db.userdb.tables.UserSysAuthGroup;
@@ -48,6 +50,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Userdb extends SchemaImpl {
 
+
     private static final long serialVersionUID = -1992433819;
 
     /**
@@ -59,6 +62,11 @@ public class Userdb extends SchemaImpl {
      * VIEW
      */
     public final CandidateVJobPositionRecom CANDIDATE_V_JOB_POSITION_RECOM = com.moseeker.baseorm.db.userdb.tables.CandidateVJobPositionRecom.CANDIDATE_V_JOB_POSITION_RECOM;
+
+    /**
+     * 阿里用户信息表
+     */
+    public final UserAliUser USER_ALI_USER = com.moseeker.baseorm.db.userdb.tables.UserAliUser.USER_ALI_USER;
 
     /**
      * 百度用户信息表
@@ -176,6 +184,7 @@ public class Userdb extends SchemaImpl {
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
             CandidateVJobPositionRecom.CANDIDATE_V_JOB_POSITION_RECOM,
+            UserAliUser.USER_ALI_USER,
             UserBdUser.USER_BD_USER,
             UserCollectPosition.USER_COLLECT_POSITION,
             UserCompanyFollow.USER_COMPANY_FOLLOW,
@@ -186,6 +195,7 @@ public class Userdb extends SchemaImpl {
             UserFavPosition.USER_FAV_POSITION,
             UserHrAccount.USER_HR_ACCOUNT,
             UserIntention.USER_INTENTION,
+            UserPositionEmail.USER_POSITION_EMAIL,
             UserSearchCondition.USER_SEARCH_CONDITION,
             UserSettings.USER_SETTINGS,
             UserSysAuthGroup.USER_SYS_AUTH_GROUP,

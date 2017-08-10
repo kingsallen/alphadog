@@ -10,6 +10,9 @@ import com.moseeker.baseorm.db.campaigndb.tables.CampaignEdmUserrecommendedPosit
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignEdmUsers;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignEmailAgentdelivery;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignHeadImage;
+import com.moseeker.baseorm.db.campaigndb.tables.CampaignPcBanner;
+import com.moseeker.baseorm.db.campaigndb.tables.CampaignPcRecommendCompany;
+import com.moseeker.baseorm.db.campaigndb.tables.CampaignPcRecommendPosition;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignRecommendCompany;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignRecommendPosition;
 
@@ -58,6 +61,21 @@ public class Tables {
      * 头部图片(职位列表页)
      */
     public static final CampaignHeadImage CAMPAIGN_HEAD_IMAGE = com.moseeker.baseorm.db.campaigndb.tables.CampaignHeadImage.CAMPAIGN_HEAD_IMAGE;
+
+    /**
+     * The table <code>campaigndb.campaign_pc_banner</code>.
+     */
+    public static final CampaignPcBanner CAMPAIGN_PC_BANNER = com.moseeker.baseorm.db.campaigndb.tables.CampaignPcBanner.CAMPAIGN_PC_BANNER;
+
+    /**
+     * 逛公司页面仟寻推荐公司
+     */
+    public static final CampaignPcRecommendCompany CAMPAIGN_PC_RECOMMEND_COMPANY = com.moseeker.baseorm.db.campaigndb.tables.CampaignPcRecommendCompany.CAMPAIGN_PC_RECOMMEND_COMPANY;
+
+    /**
+     * 首页推荐职位
+     */
+    public static final CampaignPcRecommendPosition CAMPAIGN_PC_RECOMMEND_POSITION = com.moseeker.baseorm.db.campaigndb.tables.CampaignPcRecommendPosition.CAMPAIGN_PC_RECOMMEND_POSITION;
 
     /**
      * 推荐公司
