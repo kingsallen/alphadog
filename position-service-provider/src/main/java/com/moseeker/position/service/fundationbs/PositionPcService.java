@@ -610,9 +610,20 @@ public class PositionPcService {
 		 List<HrTeamDO> teamList=hrTeamDao.getTeamList(teamIds);
 		 Map<Integer,List<String>> positionCitys=this.handlePositionCity(positionIds);
 		 list=this.handleCompanyAndPositionData(positionList,companyList,teamList,publisherAndCompanyId,positionCitys);
-		 List<Map<String,Object>> jdpictureList=this.handlePositionJdPic(teamList,compantIds,type);
+		 List<Map<String,Object>> jdpictureList=this.handlePositionJdPic(teamList,this.getPositionCompanyId(positionList),type);
 		 this.handleJDAndPosition(list, jdpictureList);
 	 	 return list;
+	 }
+
+	 private List<Integer> getPositionCompanyId(List<JobPositionDO> positionList){
+	 	if(StringUtils.isEmptyList(positionList)){
+	 		return null;
+		}
+		List<Integer> list=new ArrayList<Integer>();
+		for(JobPositionDO DO:positionList){
+	 		list.add(DO.getCompanyId());
+		}
+		return list;
 	 }
 	 //处理jd页和position的信息
 	 private void handleJDAndPosition( List<Map<String,Object>> list, List<Map<String,Object>> jdpictureList){
