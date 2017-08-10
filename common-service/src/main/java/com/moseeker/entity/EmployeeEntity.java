@@ -133,7 +133,7 @@ public class EmployeeEntity {
     }
 
     // 转发点击操作 前置
-    public void addAwardBefor(int employeeId, int companyId, int positionId, int templateId, int berecomUserId) throws Exception {
+    public void addAwardBefore(int employeeId, int companyId, int positionId, int templateId, int berecomUserId) throws Exception {
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.where("employee_id", employeeId).and("position_id", positionId).and("award_config_id", templateId).and("berecom_user_id", berecomUserId);
         UserEmployeePointsRecordDO userEmployeePointsRecordDO = employeePointsRecordDao.getData(query.buildQuery());
