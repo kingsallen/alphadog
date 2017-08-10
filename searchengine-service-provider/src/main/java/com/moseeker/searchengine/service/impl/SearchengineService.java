@@ -19,6 +19,8 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -36,6 +38,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.LocalDateTime;
@@ -313,6 +316,60 @@ public class SearchengineService {
             client.close();
         }
 
+        return ResponseUtils.success("");
+    }
+
+
+    /**
+     * 更新员工积分
+     *
+     * @param employeeIds
+     * @return
+     * @throws TException
+     */
+    public Response updateEmployeeAwards(List<Integer> employeeIds) throws TException {
+        ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
+        try {
+            propertiesReader.loadResource("es.properties");
+        } catch (Exception e1) {
+            logger.error(e1.getMessage());
+        }
+        String cluster_name = propertiesReader.get("es.cluster.name", String.class);
+        logger.info(cluster_name);
+        String es_connection = propertiesReader.get("es.connection", String.class);
+        Integer es_port = propertiesReader.get("es.port", Integer.class);
+        Settings settings = Settings.settingsBuilder().put("cluster.name", cluster_name)
+                .build();
+
+        String idx = "";
+        TransportClient client = null;
+        try {
+
+            client = TransportClient.builder().settings(settings).build()
+                    .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port));
+
+            XContentBuilder jsonBuilder = XContentFactory.jsonBuilder()
+                    .startObject()
+                    .field("user", "yuchen")
+                    .field("interest", "reading book")
+                    .field("insert_time", "")
+                    .endObject();
+
+            client.prepareUpdate().setDoc();
+            // 更新ES
+            client.prepareIndex("awards", "fulltext", idx)
+                    .setSource(jsonBuilder)
+                    .get();
+        } catch (UnknownHostException e) {
+            logger.error("error in update", e);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+        } catch (Error error) {
+            logger.error(error.getMessage());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            client.close();
+        }
         return ResponseUtils.success("");
     }
 
