@@ -6,6 +6,7 @@ import com.moseeker.common.util.AopTargetUtils;
 import com.moseeker.thrift.gen.employee.struct.*;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.useraccounts.config.AppConfig;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,8 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * Created by lucky8987 on 17/5/17.
  */
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(classes = AppConfig.class)
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = AppConfig.class)
 public class EmployeeServiceTest {
 
     @Autowired
@@ -103,4 +104,9 @@ public class EmployeeServiceTest {
         //System.out.println(result);
     }
 
+//    @Test
+    public void awardRankingTest() {
+        List<EmployeeAward> response = service.awardRanking(142104, 32, "2017");
+        System.out.println(response);
+    }
 }

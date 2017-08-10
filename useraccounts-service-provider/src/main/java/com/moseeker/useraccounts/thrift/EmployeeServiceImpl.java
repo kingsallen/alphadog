@@ -1,6 +1,9 @@
 package com.moseeker.useraccounts.thrift;
 
+import com.moseeker.thrift.gen.employee.struct.*;
 import com.moseeker.useraccounts.service.impl.EmployeeBindByEmail;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.apache.thrift.TException;
@@ -8,13 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.moseeker.thrift.gen.employee.service.EmployeeService.Iface;
-import com.moseeker.thrift.gen.employee.struct.BindingParams;
-import com.moseeker.thrift.gen.employee.struct.EmployeeCustomFieldsConf;
-import com.moseeker.thrift.gen.employee.struct.EmployeeResponse;
-import com.moseeker.thrift.gen.employee.struct.EmployeeVerificationConfResponse;
-import com.moseeker.thrift.gen.employee.struct.RecomInfo;
-import com.moseeker.thrift.gen.employee.struct.Result;
-import com.moseeker.thrift.gen.employee.struct.RewardsResponse;
 import com.moseeker.useraccounts.service.impl.EmployeeService;
 
 /**
@@ -119,5 +115,17 @@ public class EmployeeServiceImpl implements Iface {
 	public Result emailActivation(String activationCode) throws TException {
 		return employeeBindByEmail.emailActivation(activationCode);
 	}
-	
+
+    @Override
+    public List<EmployeeAward> awardRanking(int employeeId, int companyId, Timespan timespan) throws TException {
+        String timeStr;
+        if (timespan == Timespan.year) {
+            timeStr = String.valueOf(LocalDate.now().getYear());
+        } else if(timespan == Timespan.quarter) {
+            timeStr = String.valueOf(LocalDate.now().getYear()).concat(String.valueOf((LocalDate.now().getMonthValue()+2)/3));
+        } else {
+            timeStr = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
+        }
+        return service.awardRanking(employeeId, companyId, timeStr);
+    }
 }

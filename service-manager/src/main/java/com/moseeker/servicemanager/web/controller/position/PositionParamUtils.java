@@ -56,7 +56,7 @@ public class PositionParamUtils extends ParamUtils {
         HashMap<String, Object> data = parseRequestParam(request);
         batchHandlerDate.setFields_nohash((String) data.get("fields_nohash"));
         batchHandlerDate.setFields_nooverwrite((String) data.get("fields_nooverwrite"));
-        if (StringUtils.isEmptyObject(data.get("nodelete"))) {
+        if (data.get("nodelete") == null) {
             batchHandlerDate.setNodelete(false);
         } else {
             batchHandlerDate.setNodelete((Boolean) data.get("nodelete"));
@@ -123,6 +123,7 @@ public class PositionParamUtils extends ParamUtils {
         }
         return paramList;
     }
+
     @SuppressWarnings("unchecked")
     public static List<Integer> parseRefreshParamQX(Params<String, Object> params) {
 

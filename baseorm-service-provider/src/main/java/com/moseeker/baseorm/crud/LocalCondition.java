@@ -1,17 +1,20 @@
 package com.moseeker.baseorm.crud;
 
+import com.moseeker.baseorm.exception.CoditionException;
 import com.moseeker.baseorm.util.BeanUtils;
-import com.moseeker.common.util.query.*;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.query.Condition;
+import com.moseeker.common.util.query.ConditionJoin;
+import com.moseeker.common.util.query.ConditionOp;
+import com.moseeker.common.util.query.ValueOp;
 
-import java.util.stream.Collectors;
-
-import org.jooq.*;
-import org.jooq.impl.DSL;
+import org.jooq.Field;
+import org.jooq.Record;
 import org.jooq.impl.TableImpl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by moseeker on 2017/3/23.
@@ -72,16 +75,14 @@ public class LocalCondition<R extends Record> {
     }
 
     private org.jooq.Condition convertCondition(Condition condition) {
-
         if (condition != null) {
             Field<?> field = table.field(condition.getField());
-            if (field != null) {
-                org.jooq.Condition jooqCondition = connectValueCondition(field, condition.getValue(),
-                        condition.getValueOp());
-
-                return jooqCondition;
-
+            if (field == null) {
+                throw CoditionException.CONDITION_FIELD_NOEXIST.setMess("查询的" + table.getName() + "表" + condition.getField() + "字段不存在");
             }
+            org.jooq.Condition jooqCondition = connectValueCondition(field, condition.getValue(),
+                    condition.getValueOp());
+            return jooqCondition;
         }
         return null;
 
@@ -94,8 +95,6 @@ public class LocalCondition<R extends Record> {
      * @return
      */
     private org.jooq.Condition parseCondition(Condition condition) {
-
-
         org.jooq.Condition jooqCondition = null;
         if (condition != null) {
             jooqCondition = convertCondition(condition);
@@ -117,7 +116,6 @@ public class LocalCondition<R extends Record> {
      * @return 查询条件
      */
     private org.jooq.Condition packageCondition(org.jooq.Condition jooqCondition, List<ConditionCollection> conditionCollectionList) {
-
         if (conditionCollectionList != null && conditionCollectionList.size() > 0) {
             for (ConditionCollection conditionCollection : conditionCollectionList) {
                 jooqCondition = packageConditionOp(jooqCondition, conditionCollection.getCondition(), conditionCollection.getOp());
@@ -137,12 +135,10 @@ public class LocalCondition<R extends Record> {
         while (temConditionJoin != null && temConditionJoin.getCondition() != null) {
             org.jooq.Condition tempJooqCondition = convertCondition(temConditionJoin.getCondition());
             if (tempJooqCondition != null) {
-
                 ConditionCollection conditionCollection = new ConditionCollection();
                 conditionCollection.setCondition(tempJooqCondition);
                 conditionCollection.setOp(temConditionJoin.getOp());
                 conditionCollectionList.add(conditionCollection);
-
                 parseInnerCondition(temConditionJoin.getCondition(), conditionCollectionList);
             }
             if (temConditionJoin.getCondition() != null && temConditionJoin.getCondition().getConditionJoin() != null) {
@@ -179,7 +175,6 @@ public class LocalCondition<R extends Record> {
     }
 
     public class ConditionCollection {
-
         private org.jooq.Condition condition;
         private ConditionOp op;
 

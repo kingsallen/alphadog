@@ -58,13 +58,14 @@ public class SearchUtil {
      */
     public void handleTerms(String conditions,QueryBuilder query,String conditionField){
     	if (StringUtils.isNotEmpty(conditions)) {
-    		List<Integer> codes=new ArrayList<Integer>();
+    		List<Object> codes=new ArrayList<Object>();
             String[] conditions_list = conditions.split(",");
             for(String code:conditions_list){
-            	codes.add(Integer.parseInt(code));
+            	codes.add(code);
             }
             QueryBuilder cityfilter = QueryBuilders.termsQuery(conditionField, codes);
             ((BoolQueryBuilder) query).must(cityfilter);
+            logger.info("组合的条件是=================="+query.toString()+"===========");
         }
     }
     
@@ -193,5 +194,18 @@ public class SearchUtil {
                 .combineScript(new Script(combinScript));
         return build;
     }
-    
+
+    public void shouldQuery(Map<String,Object> map,QueryBuilder query){
+    	if(map!=null&&!map.isEmpty()){
+			QueryBuilder keyand = QueryBuilders.boolQuery();
+			for(String key:map.keySet()){
+				QueryBuilder fullf = QueryBuilders.termsQuery(key,map.get(key));
+				((BoolQueryBuilder) keyand).should(fullf);
+			}
+			((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+			((BoolQueryBuilder) query).must(keyand);
+		}
+
+	}
+
 }

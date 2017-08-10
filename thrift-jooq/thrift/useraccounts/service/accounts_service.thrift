@@ -140,13 +140,13 @@ service UserHrAccountService {
     // 删除员工
     bool delEmployee(1: list<i32> ids) throws (1: common_struct.BIZException e);
     // 获取员工积分列表
-    list<employee_struct.Reward> getEmployeeRewards(1: i32 employeeId) throws (1: common_struct.BIZException e);
+    employee_struct.RewardVOPageVO getEmployeeRewards(1: i32 employeeId,2:i32 pageNumber, 3:i32 pageSize) throws (1: common_struct.BIZException e);
     // 员工添加积分
-    i32 addEmployeeReward(1: i32 employeeId, 2: i32 points, 3: string reason) throws (1: common_struct.BIZException e);
+    i32 addEmployeeReward(1: i32 employeeId, 2: i32 companyId, 3: i32 points, 4: string reason) throws (1: common_struct.BIZException e);
     // 通过公司ID和关键字,查询认证员工和未认证员工数量
     useraccounts_struct.UserEmployeeNumStatistic getListNum(1:string keyWord, 2:i32 companyId) throws (1: common_struct.BIZException e);
     // 员工列表
-    useraccounts_struct.UserEmployeeVOPageVO employeeList(1:string keword, 2:i32 companyId, 3:i32 filter, 4:string order, 5:string asc, 6:i32 pageNumber, 7:i32 pageSize) throws (1: common_struct.BIZException e);
+    useraccounts_struct.UserEmployeeVOPageVO employeeList(1:string keword, 2:i32 companyId, 3:i32 filter, 4:string order, 5:string asc, 6:i32 pageNumber, 7:i32 pageSize,8:string timespan) throws (1: common_struct.BIZException e);
     // 员工信息导出
     list<useraccounts_struct.UserEmployeeVO> employeeExport(1:list<i32> userEmployees,2:i32 companyId,3:i32 type) throws (1: common_struct.BIZException e);
     // 员工信息

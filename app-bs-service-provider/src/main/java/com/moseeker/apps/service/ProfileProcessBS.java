@@ -27,6 +27,7 @@ import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.application.struct.ApplicationAts;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
@@ -38,6 +39,7 @@ import com.moseeker.thrift.gen.config.HrAwardConfigTemplate;
 import com.moseeker.thrift.gen.dao.struct.HistoryOperate;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
 import com.moseeker.thrift.gen.mq.struct.MessageTplDataCol;
@@ -60,26 +62,40 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class ProfileProcessBS {
+
     private Logger log = LoggerFactory.getLogger(getClass());
+
     Logger logger = LoggerFactory.getLogger(this.getClass());
+
     private MqService.Iface mqService = ServiceManager.SERVICEMANAGER
             .getService(MqService.Iface.class);
+
     CompanyServices.Iface companyService = ServiceManager.SERVICEMANAGER
             .getService(CompanyServices.Iface.class);
+
     @Autowired
     private JobApplicationDao jobApplicationDao;
+
     @Autowired
     private UserHrAccountDao userHraccountDao;
+
     @Autowired
     private ConfigSysPointsConfTplDao configSysPointsConfTplDao;
+
     @Autowired
     private UserEmployeeDao userEmployeeDao;
+
     @Autowired
     protected HrCompanyDao hrCompanyDao;
+
     @Autowired
     private HrOperationRecordDao hrOperationRecordDao;
+
     @Autowired
     private UserEmployeePointsRecordDao userEmployeePointsRecordDao;
+
+    @Autowired
+    private EmployeeEntity employeeEntity;
 
     public MqService.Iface getMqService() {
 		return mqService;
@@ -410,56 +426,53 @@ public class ProfileProcessBS {
                               List<RewardsToBeAddBean> rewardsToBeAdd,
                               List<UserEmployeeStruct> employeesToBeUpdates) throws Exception {
         if (result.getReward() != 0) {
-            List<UserEmployeePointsRecordRecord> list = new ArrayList<UserEmployeePointsRecordRecord>();
+//            List<UserEmployeePointsRecordRecord> list = new ArrayList<UserEmployeePointsRecordRecord>();
             UserEmployeePointsRecordRecord record=null;
             for(RewardsToBeAddBean bean : rewardsToBeAdd){
             	 if (bean.getEmployee_id() != 0) {
-            		 record=new UserEmployeePointsRecordRecord();
-            		 record.setEmployeeId((long)bean.getEmployee_id());
-            		 record.setAward(bean.getAward());
-            		 record.setApplicationId((long)bean.getApplication_id());
-            		 record.setReason(bean.getReason());
+                     UserEmployeePointsRecordDO userEmployeePointsRecordDO = new UserEmployeePointsRecordDO();
+                     userEmployeePointsRecordDO.setAward(bean.getAward());
+                     userEmployeePointsRecordDO.setApplicationId(bean.getApplication_id());
+                     userEmployeePointsRecordDO.setReason(bean.getReason());
+                     userEmployeePointsRecordDO.setEmployeeId(bean.getEmployee_id());
+            	     employeeEntity.addReward(bean.getEmployee_id(), bean.getCompany_id(), userEmployeePointsRecordDO);
             		 logger.info("ProfileProcessBS processProfile UserEmployeePointStruct:{}", record);
-            		 list.add(record);
+//            		 list.add(record);
             	 }
             }
-            // 插入积分操作日志
-            logger.info("ProfileProcessBS processProfile lists:{}", list);
-            userEmployeePointsRecordDao.addAllRecord(list);
             logger.info("ProfileProcessBS processProfile employeesToBeUpdates:{}", employeesToBeUpdates);
-            this.updateEmployee(employeesToBeUpdates);
-
+//            this.updateEmployee(employeesToBeUpdates);
         }
     }
 
     // 更新雇员信息
-    public void updateEmployee(List<UserEmployeeStruct> employeesToBeUpdates)
-            throws Exception {
-        List<Long> records = new ArrayList<Long>();
-        for (UserEmployeeStruct data : employeesToBeUpdates) {
-            records.add(Long.parseLong(data.getId() + ""));
-        }
-        if(records!=null&&records.size()>0){
-	        List<UserEmployeePointSum> list=userEmployeePointsRecordDao.getSumRecord(records);
-	        List<UserEmployeeRecord> UserEmployeeList = new ArrayList<UserEmployeeRecord>();
-	        if (list!=null&&list.size()>0) {
-	            for (UserEmployeeStruct employee : employeesToBeUpdates) {
-	            	UserEmployeeRecord userEmployeeRecord=BeanUtils.structToDB(employee, UserEmployeeRecord.class);
-	                for (UserEmployeePointSum point : list) {
-	                    if (Long.parseLong(employee.getId() + "") == point
-	                            .getEmployee_id()) {
-	                        employee.setAward(point.getAward());
-	                        userEmployeeRecord.setAward((int)point.getAward());
-	                        break;
-	                    }
-	
-	                }
-	                UserEmployeeList.add(userEmployeeRecord);
-	            }
-	            userEmployeeDao.updateRecords(UserEmployeeList);
-	        }
-       }
-    }
+//    public void updateEmployee(List<UserEmployeeStruct> employeesToBeUpdates)
+//            throws Exception {
+//        List<Long> records = new ArrayList<Long>();
+//        for (UserEmployeeStruct data : employeesToBeUpdates) {
+//            records.add(Long.parseLong(data.getId() + ""));
+//        }
+//        if(records!=null&&records.size()>0){
+//	        List<UserEmployeePointSum> list=userEmployeePointsRecordDao.getSumRecord(records);
+//	        List<UserEmployeeRecord> UserEmployeeList = new ArrayList<UserEmployeeRecord>();
+//	        if (list!=null&&list.size()>0) {
+//	            for (UserEmployeeStruct employee : employeesToBeUpdates) {
+//	            	UserEmployeeRecord userEmployeeRecord=BeanUtils.structToDB(employee, UserEmployeeRecord.class);
+//	                for (UserEmployeePointSum point : list) {
+//	                    if (Long.parseLong(employee.getId() + "") == point
+//	                            .getEmployee_id()) {
+//	                        employee.setAward(point.getAward());
+//	                        userEmployeeRecord.setAward((int)point.getAward());
+//	                        break;
+//	                    }
+//
+//	                }
+//	                UserEmployeeList.add(userEmployeeRecord);
+//	            }
+//	            userEmployeeDao.updateRecords(UserEmployeeList);
+//	        }
+//       }
+//    }
 
     // 当 progress_status！=13&&progress_status！=99时的操作
     public List<RewardsToBeAddBean> OperationOther(
