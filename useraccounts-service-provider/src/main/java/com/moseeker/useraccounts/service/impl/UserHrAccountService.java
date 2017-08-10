@@ -1,11 +1,9 @@
 package com.moseeker.useraccounts.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
-import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrSearchConditionRecord;
@@ -16,12 +14,10 @@ import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.annotation.notify.UpdateEs;
-import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.exception.RedisException;
-import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
@@ -29,16 +25,17 @@ import com.moseeker.common.util.query.*;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.struct.hrdb.*;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrImporterMonitorDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrTalentpoolDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.constant.ResultMessage;
 import com.moseeker.useraccounts.exception.ExceptionCategory;
 import com.moseeker.useraccounts.exception.ExceptionFactory;
 import com.moseeker.useraccounts.service.thirdpartyaccount.ThirdPartyAccountSynctor;
-
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +45,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -313,213 +309,6 @@ public class UserHrAccountService {
         return response;
     }
 
-    /**
-     * 第三方账号绑定
-     *
-     * @param hrId
-     * @param account
-     * @return
-     */
-    public HrThirdPartyAccountDO bindThirdAccount(int hrId, HrThirdPartyAccountDO account, boolean sync) throws Exception {
-        logger.info("-------bindThirdAccount--------{}:{}", hrId, JSON.toJSONString(account));
-        // 判断Channel是否合法
-        ChannelType channelType = ChannelType.instaceFromInteger(account.getChannel());
-
-        if (channelType == null) {
-            throw new CommonException(-1, "不支持的渠道类型：" + account.getChannel());
-        }
-
-        // 判断是否需要进行帐号绑定
-        Query qu = new Query.QueryBuilder().where("id", String.valueOf(hrId)).buildQuery();
-
-        UserHrAccountDO userHrAccount = userHrAccountDao.getData(qu);
-
-        if (userHrAccount == null || userHrAccount.getActivation() != Byte.valueOf("1") || userHrAccount.getDisable() != 1) {
-            //没有找到该hr账号
-            throw new CommonException(-1, "无效的HR帐号");
-        }
-
-        account.setCompanyId(userHrAccount.getCompanyId());
-
-        //获取子公司简称和ID
-        HrCompanyDO hrCompanyDO = hrCompanyAccountDao.getHrCompany(hrId);
-
-        if (hrCompanyDO == null) {
-            hrCompanyDO = hrCompanyDao.getCompanyById(userHrAccount.getCompanyId());
-
-            if (hrCompanyDO == null) {
-                throw new CommonException(-1, "无效的HR账号");
-            }
-        }
-
-        int allowStatus = allowBind(userHrAccount, account);
-
-        logger.info("bindThirdAccount allowStatus:{}", allowStatus);
-
-        if (allowStatus > 0) {
-            account.setId(allowStatus);
-        }
-
-        Map<String, String> extras = new HashMap<>();
-
-        //智联的帐号同步带上子公司简称
-        if (account.getChannel() == ChannelType.ZHILIAN.getValue()) {
-            extras.put("company", hrCompanyDO.getAbbreviation());
-        }
-
-        //allowStatus==0,绑定之后将hrId和帐号关联起来，allowStatus==1,只绑定不关联
-        HrThirdPartyAccountDO result = thirdPartyAccountSynctor.bindThirdPartyAccount(allowStatus == 0 ? hrId : 0, account, extras, sync);
-
-
-        return result;
-    }
-
-    public int checkRebinding(HrThirdPartyAccountDO bindingAccount) throws Exception {
-        if (bindingAccount.getBinding() == 1 || bindingAccount.getBinding() == 3 || bindingAccount.getBinding() == 7) {
-            throw new CommonException(-1, "已经绑定该帐号了");
-        } else if (bindingAccount.getBinding() == 2 || bindingAccount.getBinding() == 6) {
-            throw new CommonException(-1, "该帐号已经在绑定中了");
-        } else {
-            //重新绑定
-            logger.info("重新绑定:{}", bindingAccount.getId());
-            return bindingAccount.getId();
-        }
-    }
-
-    /**
-     * 是否允许执行绑定
-     * <0,主张号已绑定，
-     * 0,正常绑定，
-     * >0,复用帐号
-     */
-    @CounterIface
-    public int allowBind(UserHrAccountDO hrAccount, HrThirdPartyAccountDO thirdPartyAccount) throws Exception {
-
-        HrThirdPartyAccountDO bindingAccount = hrThirdPartyAccountDao.getThirdPartyAccountByUserId(hrAccount.getId(), thirdPartyAccount.getChannel());
-
-        //如果当前hr已经绑定了该帐号
-        if (bindingAccount != null && bindingAccount.getUsername().equals(thirdPartyAccount.getUsername())) {
-            return checkRebinding(bindingAccount);
-        }
-
-        //主账号或者没有绑定第三方账号，检查公司下该渠道已经绑定过相同的第三方账号
-        Query.QueryBuilder qu = new Query.QueryBuilder();
-        qu.where("company_id", hrAccount.getCompanyId());
-        qu.and("channel", thirdPartyAccount.getChannel());
-        qu.and("username", thirdPartyAccount.getUsername());
-        qu.and(new Condition("binding", 0, ValueOp.NEQ));//有效的状态
-        List<HrThirdPartyAccountDO> datas = hrThirdPartyAccountDao.getDatas(qu.buildQuery());
-
-        logger.info("allowBind:相同名字的帐号:{}", JSON.toJSONString(datas));
-
-        HrThirdPartyAccountDO data = null;
-
-        for (HrThirdPartyAccountDO d : datas) {
-            ///数据库中username是不区分大小写的，如果大小写不同，那么认为不是一个账号
-            if (d.getUsername().equals(thirdPartyAccount.getUsername())) {
-                data = d;
-                break;
-            }
-        }
-
-        if (data == null || data.getId() == 0) {
-            //检查该用户是否绑定了其它相同渠道的账号
-            logger.info("该用户绑定渠道{}的帐号:{}", thirdPartyAccount.getChannel(), JSON.toJSONString(bindingAccount));
-            if (bindingAccount != null && bindingAccount.getId() > 0 && bindingAccount.getBinding() != 0) {
-                if (hrAccount.getAccountType() == 0) {
-                    logger.info("主张号已经绑定该渠道第三方帐号");
-                    //如果主账号已经绑定该渠道第三方账号，那么绑定人为空,并允许绑定
-                    return -1;
-                } else {
-                    logger.info("已经绑定过该渠道第三方帐号");
-                    //已经绑定该渠道第三方账号，并且不是主账号，那么不允许绑定
-                    throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.HRACCOUNT_BINDING_LIMIT);
-                }
-            } else {
-                return 0;
-            }
-        } else {
-            //主张号发现已经有子帐号已经绑定了这个帐号
-            if (hrAccount.getAccountType() == 0) {
-                return checkRebinding(data);
-            }
-
-            logger.info("这个帐号已经被其它人绑定了");
-            //公司下已经有人绑定了这个第三方账号，则这个公司谁都不能再绑定这个账号了
-            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.HRACCOUNT_ALREADY_BOUND);
-        }
-    }
-
-
-    /**
-     * 同步第三方账号信息
-     *
-     * @param id
-     * @return
-     */
-
-    public HrThirdPartyAccountDO synchronizeThirdpartyAccount(int hrId, int id, boolean sync) throws Exception {
-        //查找第三方帐号
-        Query qu = new Query.QueryBuilder().where("id", id).buildQuery();
-
-        HrThirdPartyAccountDO hrThirdPartyAccount = hrThirdPartyAccountDao.getData(qu);
-
-        UserHrAccountDO hrAccountDO = userHrAccountDao.getValidAccount(hrId);
-
-        if (hrAccountDO == null) {
-            throw new CommonException(-1, "无效的HR帐号");
-        }
-
-        if (hrThirdPartyAccount == null || hrThirdPartyAccount.getBinding() == 0) {
-            throw new CommonException(-1, "无效的第三方帐号");
-        }
-
-        Map<String, String> extras = new HashMap<>();
-        //智联的帐号
-        if (hrThirdPartyAccount.getChannel() == ChannelType.ZHILIAN.getValue()) {
-            buildZhilianCompany(hrAccountDO, hrThirdPartyAccount, extras);
-        }
-
-        //如果是绑定状态，则进行
-        hrThirdPartyAccount = thirdPartyAccountSynctor.syncThirdPartyAccount(hrThirdPartyAccount, extras, sync);
-
-        //刷新成功
-        return hrThirdPartyAccount;
-    }
-
-    private void buildZhilianCompany(UserHrAccountDO hrAccountDO, HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras) throws CommonException {
-        List<HrThirdPartyAccountHrDO> binders = thirdPartyAccountHrDao.getBinders(hrThirdPartyAccount.getId());
-
-        int finalHrId = hrAccountDO.getId();//如果该帐号没有分配给任何人，谁刷新的使用谁的所属公司的简称
-
-        if (binders != null && binders.size() > 0) {
-            finalHrId = binders.get(0).getHrAccountId();//默认选择第一个关联的hr帐号
-
-            for (HrThirdPartyAccountHrDO binder : binders) {
-                if (binder.getHrAccountId() == hrAccountDO.getId()) {
-                    finalHrId = binder.getHrAccountId();//如果该帐号关联了自己，那么选择自己的公司简称
-                    logger.info("buildZhilianCompany,使用自己的所在公司的简称");
-                    break;
-                }
-            }
-        }
-
-        HrCompanyDO companyDO = hrCompanyAccountDao.getHrCompany(finalHrId);
-
-        if (hrAccountDO.getId() != finalHrId) {
-            hrAccountDO = userHrAccountDao.getValidAccount(finalHrId);
-        }
-
-        if (companyDO == null) {
-            companyDO = hrCompanyDao.getCompanyById(hrAccountDO.getCompanyId());
-        }
-
-        if (companyDO == null) {
-            throw new CommonException(-1, "无效的HR帐号");
-        }
-
-        extras.put("company", companyDO.getAbbreviation());
-    }
 
     /**
      * HR账号验证码校验
@@ -1105,7 +894,7 @@ public class UserHrAccountService {
             }
             userEmployeeVO.setActivation((new Double(userEmployeeDO.getActivation())).intValue());
             userEmployeeVO.setAward(userEmployeeDO.getAward());
-            userEmployeeVO.setBindingTime(userEmployeeDO.getCreateTime());
+            userEmployeeVO.setBindingTime(userEmployeeDO.getBindingTime());
             userEmployeeVOS.add(userEmployeeVO);
         }
         return userEmployeeVOS;
