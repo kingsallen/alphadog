@@ -361,10 +361,12 @@ public class SearchengineService {
         }
 
         if (keyword != null) {
-            searchUtil.handleTerms(keyword, query, "email");
-            searchUtil.handleTerms(keyword, query, "mobile");
-            searchUtil.handleTerms(keyword, query, "nickname");
-            searchUtil.handleTerms(keyword, query, "custom_field");
+            Map map = new HashMap();
+            map.put("email", keyword);
+            map.put("mobile", keyword);
+            map.put("nickname", keyword);
+            map.put("custom_field", keyword);
+            searchUtil.shouldQuery(map, query);
         }
         SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query)
                 .addSort(buildSortScript("awards." + timespan + ".award", SortOrder.DESC))
