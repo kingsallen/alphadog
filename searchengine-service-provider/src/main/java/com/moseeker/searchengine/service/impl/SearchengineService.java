@@ -318,7 +318,7 @@ public class SearchengineService {
 
     private SortBuilder buildSortScript(String timspanc, String field, SortOrder sortOrder) {
         StringBuffer sb = new StringBuffer();
-        sb.append("double score=0; awards=_source.awards;times=awards['"+timspanc+"'];if(times){award=doc['awards."+timspanc+"."+field+"'].value;if(award){score=award}}; return score");
+        sb.append("double score=0; awards=_source.awards;times=awards['" + timspanc + "'];if(times){award=doc['awards." + timspanc + "." + field + "'].value;if(award){score=award}}; return score");
         String scripts = sb.toString();
         Script script = new Script(scripts);
         ScriptSortBuilder builder = new ScriptSortBuilder(script, "number").order(sortOrder);
@@ -338,8 +338,9 @@ public class SearchengineService {
         }
 
         SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query)
-                .addSort(buildSortScript( timespan, "award", SortOrder.DESC))
-                .addSort(buildSortScript(timespan,"last_update_time", SortOrder.ASC))
+                .addSort(buildSortScript(timespan, "award", SortOrder.DESC))
+                .addSort(buildSortScript(activation, "activation", SortOrder.ASC))
+                .addSort(buildSortScript(timespan, "last_update_time", SortOrder.ASC))
                 .setFetchSource(new String[]{"id", "awards." + timespan + ".award", "awards." + timespan + ".last_update_time"}, null);
         if (pageNum > 0 && pageSize > 0) {
             searchRequestBuilder.setSize(pageSize).setFrom((pageNum - 1) * pageSize);
@@ -370,7 +371,7 @@ public class SearchengineService {
         }
         SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query)
                 .addSort(buildSortScript(timespan, "award", SortOrder.DESC))
-                .addSort(buildSortScript( timespan, "last_update_time", SortOrder.ASC))
+                .addSort(buildSortScript(timespan, "last_update_time", SortOrder.ASC))
                 .setFetchSource(new String[]{"id", "awards." + timespan + ".award", "awards." + timespan + ".last_update_time"}, null);
         if (pageNum > 0 && pageSize > 0) {
             searchRequestBuilder.setSize(pageSize).setFrom((pageNum - 1) * pageSize);
