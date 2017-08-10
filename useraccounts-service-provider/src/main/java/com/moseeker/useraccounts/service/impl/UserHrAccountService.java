@@ -1399,7 +1399,6 @@ public class UserHrAccountService {
      * @param userEmployeeId 员工ID
      * @param companyId      公司id
      */
-
     public UserEmployeeDetailVO userEmployeeDetail(Integer userEmployeeId, Integer companyId) throws
             CommonException {
         UserEmployeeDetailVO userEmployeeDetailVO = new UserEmployeeDetailVO();
