@@ -446,7 +446,7 @@ public class SearchengineService {
                 JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
                 if (jsonObject.containsKey("awards") && jsonObject.getJSONObject("awards").containsKey(timespan) && jsonObject.getJSONObject("awards").getJSONObject(timespan).getIntValue("award") > 0) {
                     JSONObject obj = JSON.parseObject("{}");
-                    obj.put("employee_id", jsonObject.getIntValue("employee_id"));
+                    obj.put("employee_id", jsonObject.getIntValue("id"));
                     obj.put("ranking", index++);
                     obj.put("last_update_time", jsonObject.getJSONObject("awards").getJSONObject(timespan).getString("last_update_time"));
                     obj.put("award", jsonObject.getJSONObject("awards").getJSONObject(timespan).getIntValue("award"));
