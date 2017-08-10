@@ -334,13 +334,13 @@ public class SearchengineService {
             searchUtil.handleTerms(activation, query, "activation");
         }
         if (employeeId != null) {
-            searchUtil.handleTerms(String.valueOf(employeeId), query, "employee_id");
+            searchUtil.handleTerms(String.valueOf(employeeId), query, "id");
         }
 
         SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query)
                 .addSort(buildSortScript("awards." + timespan + ".award", SortOrder.DESC))
                 .addSort(buildSortScript("awards." + timespan + ".last_update_time", SortOrder.ASC))
-                .setFetchSource(new String[]{"employee_id", "awards." + timespan + ".award", "awards." + timespan + ".last_update_time"}, null);
+                .setFetchSource(new String[]{"id", "awards." + timespan + ".award", "awards." + timespan + ".last_update_time"}, null);
         if (pageNum > 0 && pageSize > 0) {
             searchRequestBuilder.setSize(pageSize).setFrom((pageNum - 1) * pageSize);
         }
@@ -360,7 +360,7 @@ public class SearchengineService {
             searchUtil.handleTerms(String.valueOf(employeeId), query, "id");
         }
 
-        if (keyword != null) {
+        if (StringUtils.isNotEmpty(keyword)) {
             Map map = new HashMap();
             map.put("email", keyword);
             map.put("mobile", keyword);
@@ -371,7 +371,7 @@ public class SearchengineService {
         SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query)
                 .addSort(buildSortScript("awards." + timespan + ".award", SortOrder.DESC))
                 .addSort(buildSortScript("awards." + timespan + ".last_update_time", SortOrder.ASC))
-                .setFetchSource(new String[]{"employee_id", "awards." + timespan + ".award", "awards." + timespan + ".last_update_time"}, null);
+                .setFetchSource(new String[]{"id", "awards." + timespan + ".award", "awards." + timespan + ".last_update_time"}, null);
         if (pageNum > 0 && pageSize > 0) {
             searchRequestBuilder.setSize(pageSize).setFrom((pageNum - 1) * pageSize);
         }
