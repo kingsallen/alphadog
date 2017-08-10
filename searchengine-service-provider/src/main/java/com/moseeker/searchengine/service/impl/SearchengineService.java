@@ -357,7 +357,7 @@ public class SearchengineService {
             searchUtil.handleTerms(activation, query, "activation");
         }
         if (employeeId != null) {
-            searchUtil.handleTerms(String.valueOf(employeeId), query, "employee_id");
+            searchUtil.handleTerms(String.valueOf(employeeId), query, "id");
         }
 
         if (keyword != null) {
@@ -419,7 +419,7 @@ public class SearchengineService {
             for (SearchHit searchHit : response.getHits().getHits()) {
                 Map<String, Object> objectMap = new HashMap<>();
                 JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
-                objectMap.put("employeeId", jsonObject.remove("employee_id"));
+                objectMap.put("employeeId", jsonObject.remove("id"));
                 if (jsonObject.containsKey("awards") && jsonObject.getJSONObject("awards").containsKey(timespan)) {
                     objectMap.put("award", jsonObject.getJSONObject("awards").getJSONObject(timespan).getIntValue("award"));
                 } else {
