@@ -5,19 +5,26 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.ValueFilter;
 import com.moseeker.baseorm.dao.dictdb.*;
+import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.dao.dictdb.DictCityDao;
+import com.moseeker.baseorm.dao.dictdb.DictCityPostcodeDao;
+import com.moseeker.baseorm.dao.dictdb.DictConstantDao;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.*;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictAlipaycampusCityRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictAlipaycampusJobcategoryRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityPostcodeRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
+import com.moseeker.baseorm.db.hrdb.tables.HrHbConfig;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrTeamRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyPositionRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.*;
 import com.moseeker.baseorm.pojo.JobPositionPojo;
 import com.moseeker.baseorm.pojo.RecommendedPositonPojo;
 import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.*;
@@ -34,6 +41,7 @@ import com.moseeker.position.pojo.JobPostionResponse;
 import com.moseeker.position.pojo.PositionForSynchronizationPojo;
 import com.moseeker.position.service.position.DegreeChangeUtil;
 import com.moseeker.position.service.position.PositionChangeUtil;
+import com.moseeker.position.utils.CommonPositionUtils;
 import com.moseeker.position.service.position.PositionForAlipaycampusPojo;
 import com.moseeker.position.service.position.WorkTypeChangeUtil;
 import com.moseeker.position.service.position.qianxun.Degree;
@@ -44,6 +52,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionCityDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobOccupationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.position.struct.*;
@@ -110,6 +119,9 @@ public class PositionService {
     private HrHbItemsDao hrHbItemsDao;
     @Autowired
     private PositionChangeUtil positionChangeUtil;
+
+    @Autowired
+    private CommonPositionUtils commonPositionUtils;
 
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
@@ -254,9 +266,17 @@ public class PositionService {
             sb.deleteCharAt(sb.length() - 1);
             jobPositionPojo.province = sb.toString();
         }
-
+        String citynames=commonPositionUtils.handlerCity(positionId);
+        logger.info("job_position_city的city信息是＝＝＝＝＝＝＝＝＝＝＝＝＝"+citynames);
+        if(StringUtils.isNotNullOrEmpty(citynames)){
+          jobPositionPojo.city=citynames;
+        }
+        if("全国".equals(jobPositionPojo.city)){
+            jobPositionPojo.city_flag=1;
+        }
         return ResponseUtils.success(jobPositionPojo);
     }
+
 
     /*
      * 获取城市
@@ -467,8 +487,8 @@ public class PositionService {
                 hashMapHrTeam.put(replaceBlank(hrTeamRecord.getName()), hrTeamRecord);
             }
         }
-        Query commonQuery=new Query.QueryBuilder()
-                .where("company_id",companyId)
+        Query commonQuery = new Query.QueryBuilder()
+                .where("company_id", companyId)
                 .and("source", 9)
                 .buildQuery();
         // 数据库中该公司的职位列表
@@ -894,7 +914,7 @@ public class PositionService {
             // 判断JobPosion字段
             for (Field field : jobPositionRecord.fields()) {
                 String str = (String) hashMap.get(field.getName());
-                if (!com.moseeker.common.util.StringUtils.isEmptyObject(str)) {
+                if (com.moseeker.common.util.StringUtils.isEmptyObject(str)) {
                     stringBuffer.append(jobPositionRecord.get(field.getName()));
                 }
             }
@@ -1231,39 +1251,52 @@ public class PositionService {
                 Condition con = new Condition("id", jdIdList.toArray(), ValueOp.IN);
                 Query q = new Query.QueryBuilder().where(con).buildQuery();
                 List<JobPositionRecord> jobRecords = jobPositionDao.getRecords(q);
-                for (int i = 0; i < jdIdList.size(); i++) {
-                    int positionId = jdIdList.get(i);
-                    for (JobPositionRecord jr : jobRecords) {
-                        if (positionId == jr.getId()) {
-                            logger.info("pid: " + String.valueOf(jr.getId()));
-                            WechatPositionListData e = new WechatPositionListData();
-                            e.setTitle(jr.getTitle());
-                            e.setId(jr.getId());
-                            // 数据库的 salary_top 和 salary_bottom 默认是 NULL 不是 0
-                            // 所以这里需要对这两个字段做 null pointer 检查
-                            if (jr.getSalaryTop() == null) {
-                                e.setSalary_top(0);
-                            } else {
-                                e.setSalary_top(jr.getSalaryTop());
-                            }
-
-                            if (jr.getSalaryBottom() == null) {
-                                e.setSalary_bottom(0);
-                            } else {
-                                e.setSalary_bottom(jr.getSalaryBottom());
-                            }
-                            e.setPublish_date(new SimpleDateFormat("YYYY-MM-dd HH:mm:ss").format(jr.getUpdateTime()));
-                            e.setDepartment(jr.getDepartment());
-                            e.setVisitnum(jr.getVisitnum());
-                            e.setIn_hb(jr.getHbStatus() > 0);
-                            e.setCount(jr.getCount());
-                            e.setCity(jr.getCity());
-                            e.setPriority(jr.getPriority());
-                            e.setPublisher(jr.getPublisher()); // will be used for fetching sub company info
-                            dataList.add(e);
-                            break;
-                        }
-                    }
+                Map<Integer,Set<String>> cityMap=commonPositionUtils.handlePositionCity(jdIdList);
+                for(int i=0;i<jdIdList.size();i++){
+                	int positionId=jdIdList.get(i);
+                	 for (JobPositionRecord jr : jobRecords) {
+                		if(positionId==jr.getId()){
+	 	                    logger.info("pid: " + String.valueOf(jr.getId()));
+	 	                    WechatPositionListData e = new WechatPositionListData();
+	 	                    e.setTitle(jr.getTitle());
+	 	                    e.setId(jr.getId());
+	 	                    // 数据库的 salary_top 和 salary_bottom 默认是 NULL 不是 0
+	 	                    // 所以这里需要对这两个字段做 null pointer 检查
+	 	                    if (jr.getSalaryTop() == null) {
+	 	                        e.setSalary_top(0);
+	 	                    } else {
+	 	                        e.setSalary_top(jr.getSalaryTop());
+	 	                    }
+	 	                    if (jr.getSalaryBottom() == null) {
+	 	                        e.setSalary_bottom(0);
+	 	                    } else {
+	 	                        e.setSalary_bottom(jr.getSalaryBottom());
+	 	                    }
+	 	                    e.setPublish_date(new SimpleDateFormat("YYYY-MM-dd HH:mm:ss").format(jr.getUpdateTime()));
+	 	                    e.setDepartment(jr.getDepartment());
+	 	                    e.setVisitnum(jr.getVisitnum());
+	 	                    e.setIn_hb(jr.getHbStatus() > 0);
+	 	                    e.setCount(jr.getCount());
+	 	                    e.setCity(jr.getCity());
+	 	                    if(cityMap!=null&&!cityMap.isEmpty()){
+	 	                    	Set<String> positionCity=cityMap.get(jr.getId());
+	 	                    	if(positionCity!=null&&positionCity.size()>0){
+	 	                    		String  cityName="";
+	 	                    		for(String city:positionCity){
+	 	                    			cityName=city+",";
+	 	                    		}
+	 	                    		if(StringUtils.isNotNullOrEmpty(cityName)){
+	 	                    			cityName=cityName.substring(0, cityName.lastIndexOf(","));
+	 	                    		}
+	 	                    		e.setCity(cityName);
+	 	                    	}
+	 	                    }
+	 	                    e.setPriority(jr.getPriority());
+	 	                    e.setPublisher(jr.getPublisher()); // will be used for fetching sub company info
+	 	                    dataList.add(e);
+	 	                    break;
+                		}
+ 	                }
                 }
                 logger.info(dataList.toString());
                 // 获取公司信息，拼装 company abbr, logo 等信息
@@ -1852,6 +1885,7 @@ public class PositionService {
                     }
                     String company_id = BeanUtils.converToString(position_map.get("company_id"));
                     Query query = new Query.QueryBuilder().where("id", company_id).buildQuery();
+
                     List<Hrcompany> company_maps = hrCompanyDao.getDatas(query, Hrcompany.class);
                     if (company_maps != null && company_maps.size() > 0) {
 

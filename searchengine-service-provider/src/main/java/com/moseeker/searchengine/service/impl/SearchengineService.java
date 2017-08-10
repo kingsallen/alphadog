@@ -18,7 +18,9 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.script.Script;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.sort.ScriptSortBuilder;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
@@ -50,7 +52,6 @@ public class SearchengineService {
         if (page_size == 0) {
             page_size = 20;
         }
-        SearchResponse response = null;
         ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
         try {
             propertiesReader.loadResource("es.properties");
@@ -96,6 +97,9 @@ public class SearchengineService {
 
 
             if (!StringUtils.isEmpty(cities)) {
+                if(!"全国".equals(cities)&&!cities.contains("全国")){
+                    cities=cities+",全国";
+                }
                 String[] city_list = cities.split(",");
                 QueryBuilder cityor = QueryBuilders.boolQuery();
                 for (int i = 0; i < city_list.length; i++) {
@@ -211,41 +215,48 @@ public class SearchengineService {
 
             QueryBuilder status_filter = QueryBuilders.matchPhraseQuery("status", "0");
             ((BoolQueryBuilder) query).must(status_filter);
-            logger.info(query.toString()+"===================");
+
+
+            SearchRequestBuilder responseBuilder=client.prepareSearch("index").setTypes("fulltext")
+                    .setQuery(query);
 
             if (order_by_priority) {
 
                 if (haskey) {
-                	SearchRequestBuilder responseBuilder=client.prepareSearch("index").setTypes("fulltext")
-                            .setQuery(query)
-                            .addSort("priority", SortOrder.ASC)
-                            .addSort("_score", SortOrder.DESC)
-                            .setFrom(page_from)
-                            .setSize(page_size);
-                	logger.info(responseBuilder.toString());
-                    response = responseBuilder.execute().actionGet();
-         
+                    responseBuilder.addSort("priority", SortOrder.ASC);
+                    if(!StringUtils.isEmpty(cities)&&!"全国".equals(cities)){
+                        SortBuilder builder=new ScriptSortBuilder(this.buildScriptSort(cities,0),"number");
+                        builder.order(SortOrder.DESC);
+                        responseBuilder.addSort(builder);
+                    }else{
+                        responseBuilder.addSort("_score", SortOrder.DESC);
+                    }
+
                 } else {
-                	SearchRequestBuilder responseBuilder=client.prepareSearch("index").setTypes("fulltext")
-                            .setQuery(query)
-                            .addSort("priority", SortOrder.ASC)
-                            .addSort("update_time", SortOrder.DESC)
-                            .setFrom(page_from)
-                            .setSize(page_size);
-                	logger.info(responseBuilder.toString());
-                    response = responseBuilder.execute().actionGet();
+                    responseBuilder.addSort("priority", SortOrder.ASC);
+                    if(!StringUtils.isEmpty(cities)&&!"全国".equals(cities)){
+                        SortBuilder builder=new ScriptSortBuilder(this.buildScriptSort(cities,1),"number");
+                        builder.order(SortOrder.DESC);
+                        responseBuilder.addSort(builder);
+                    }else{
+                        responseBuilder.addSort("update_time", SortOrder.DESC);
+                    }
+
                 }
 
             } else {
-            	SearchRequestBuilder responseBuilder=client.prepareSearch("index").setTypes("fulltext")
-                        .setQuery(query)
-                        .addSort("_score", SortOrder.DESC)
-                        .setFrom(page_from)
-                        .setSize(page_size);
-            	logger.info(responseBuilder.toString());
-                response = responseBuilder.execute().actionGet();
+                if(!StringUtils.isEmpty(cities)&&!"全国".equals(cities)){
+                    SortBuilder builder=new ScriptSortBuilder(this.buildScriptSort(cities,0),"number");
+                    builder.order(SortOrder.DESC);
+                    responseBuilder.addSort(builder);
+                }else{
+                    responseBuilder .addSort("_score", SortOrder.DESC);
+                }
             }
-
+            responseBuilder .setFrom(page_from).setSize(page_size);
+            responseBuilder.setTrackScores(true);
+            logger.info(responseBuilder.toString());
+            SearchResponse response = responseBuilder.execute().actionGet();
             for (SearchHit hit : response.getHits()) {
                 //Handle the hit...
                 String id = ConverTools.converToString(hit.getSource().get("id"));
@@ -265,6 +276,34 @@ public class SearchengineService {
         return ResponseUtils.success(res);
 
     }
+    /*
+      按照被命中的城市是否是全国。来重新处理顺序问题，只有全国的，或者是全国命中的沉底
+     */
+    private Script buildScriptSort(String fieldValue, int flag ){
+        StringBuffer sb=new StringBuffer();
+        sb.append("double score=0 ;");
+        if(flag==1) {
+            sb.append("value=doc['update_time'].value;if(value){score=value};");
+        }else{
+            sb.append("value=_score;if(value){score=value};");
+        }
+        sb.append("city=_source['city'];flag=doc['city_flag'].value;if(flag==1){score=score/100;}else{ if(city&&");
+        String []values=fieldValue.split(",");
+        for(int i=0;i<values.length;i++){
+            if("全国".equals(values[i])){
+                continue;
+            }
+
+            sb.append("!city.contains('"+values[i]+"')&&");
+        }
+        sb.deleteCharAt(sb.lastIndexOf("&"));
+        sb.deleteCharAt(sb.lastIndexOf("&"));
+        sb.append("){score=score/100;}};return score");
+        String scripts=sb.toString();
+        Script script=new Script(scripts);
+        return script;
+    }
+
 
 
     public Response updateposition(String position, int id) throws TException {

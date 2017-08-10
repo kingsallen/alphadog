@@ -22,7 +22,7 @@ import java.util.Map;
 public class PositionIndexTest {
     @Autowired
     private PositionSearchEngine positionSearchEngine;
-    @Test
+
     public void searchTest(){
         //String keyWord,String industry,String salaryCode,int page,int pageSize,String cityCode,String startTime,String endTime
         List<Map<String,Integer>> list=new ArrayList<Map<String,Integer>>();
