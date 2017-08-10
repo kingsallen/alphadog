@@ -3,13 +3,19 @@ package com.moseeker.searchengine.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.util.TypeUtils;
+import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
+import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.ConverTools;
+import com.moseeker.common.util.query.Condition;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.searchengine.util.SearchUtil;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
@@ -59,6 +65,9 @@ public class SearchengineService {
 
     @Autowired
     private SearchUtil searchUtil;
+
+    @Autowired
+    private UserEmployeeDao userEmployeeDao;
 
     public Response query(String keywords, String cities, String industries, String occupations, String scale,
                           String employment_type, String candidate_source, String experience, String degree, String salary,
@@ -342,31 +351,46 @@ public class SearchengineService {
                 .build();
 
         String idx = "";
+        List<Map<String, String>> mapList = new ArrayList<>();
+        if (employeeIds != null && employeeIds.size() > 0) {
+            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+            queryBuilder.where(new Condition(UserEmployee.USER_EMPLOYEE.ID.getName(), employeeIds, ValueOp.IN));
+            // 查询员工信息
+            List<UserEmployeeDO> userEmployeeDOList = userEmployeeDao.getDatas(queryBuilder.buildQuery());
+            // 查询员工公司信息
+            // Map数据
+            userEmployeeDOList.forEach(userEmployeeDO -> {
+                        Map map = new LinkedHashMap();
+                        map.put("id", userEmployeeDO.getId());
+                        map.put("company_id", userEmployeeDO.getCompanyId());
+                        map.put("binding_time", userEmployeeDO.getBindingTime());
+                        map.put("custom_field", userEmployeeDO.getCustomField());
+                        map.put("custom_field_values", userEmployeeDO.getCustomFieldValues());
+                        map.put("sex", String.valueOf(userEmployeeDO.getSex()));
+                        map.put("create_time", userEmployeeDO.getCreateTime());
+                        map.put("ename", userEmployeeDO.getEname());
+                        map.put("cfname", userEmployeeDO.getCfname());
+                        map.put("efname", userEmployeeDO.getEfname());
+                        map.put("update_time", userEmployeeDO.getUpdateTime());
+                        map.put("employeeid", userEmployeeDO.getEmployeeid());
+                        mapList.add(map);
+                    }
+            );
+        }
         TransportClient client = null;
         try {
-
+            // 连接ES
             client = TransportClient.builder().settings(settings).build()
                     .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port));
-
-            XContentBuilder jsonBuilder = XContentFactory.jsonBuilder()
-                    .startObject()
-                    .field("user", "yuchen")
-                    .field("interest", "reading book")
-                    .field("insert_time", "")
-                    .endObject();
-
-            client.prepareUpdate().setDoc();
             // 更新ES
             client.prepareIndex("awards", "fulltext", idx)
-                    .setSource(jsonBuilder)
+                    .setSource(JSONObject.toJSON(mapList))
                     .get();
         } catch (UnknownHostException e) {
             logger.error("error in update", e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         } catch (Error error) {
             logger.error(error.getMessage());
-        } catch (IOException e) {
-            e.printStackTrace();
         } finally {
             client.close();
         }
