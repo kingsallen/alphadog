@@ -191,5 +191,18 @@ public class SearchUtil {
                 .combineScript(new Script(combinScript));
         return build;
     }
+
+    public void shouldQuery(Map<String,Object> map,QueryBuilder query){
+    	if(map!=null&&!map.isEmpty()){
+			QueryBuilder keyand = QueryBuilders.boolQuery();
+			for(String key:map.keySet()){
+				QueryBuilder fullf = QueryBuilders.termsQuery(key,map.get(key));
+				((BoolQueryBuilder) keyand).should(fullf);
+			}
+			((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+			((BoolQueryBuilder) query).must(keyand);
+		}
+
+	}
     
 }
