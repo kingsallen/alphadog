@@ -18,15 +18,10 @@ public class EsTest {
        service = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
     }
 
-    @Test
-    public void serachTest() throws TException {
-        Response response = service.queryAwardRanking(Arrays.asList(32), "2017",0, 0);
-        System.out.println(response);
-    }
 
     @Test
     public void searchInWxTest() throws TException {
-        Response response = service.queryAwardRankingInWx(Arrays.asList(32, 8, 4), "2017", 69826);
+        Response response = service.queryAwardRankingInWx(Arrays.asList(32, 8, 4), "2019", 69826);
         System.out.println(response);
     }
 }

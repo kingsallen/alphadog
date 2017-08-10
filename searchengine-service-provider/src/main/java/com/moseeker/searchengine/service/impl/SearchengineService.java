@@ -316,9 +316,9 @@ public class SearchengineService {
         return ResponseUtils.success("");
     }
 
-    private SortBuilder buildSortScript(String field, SortOrder sortOrder) {
+    private SortBuilder buildSortScript(String timspanc, String field, SortOrder sortOrder) {
         StringBuffer sb = new StringBuffer();
-        sb.append("double score=0; award=doc['" + field + "'].value;if(award){score=award}; return score");
+        sb.append("double score=0; awards=_source.awards;times=awards['"+timspanc+"'];if(times){award=times['"+field+"'];if(award){score=award}}; return score");
         String scripts = sb.toString();
         Script script = new Script(scripts);
         ScriptSortBuilder builder = new ScriptSortBuilder(script, "number").order(sortOrder);
@@ -329,7 +329,7 @@ public class SearchengineService {
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
         searchUtil.handleTerms(Arrays.toString(companyIds.toArray()).replaceAll("\\[|\\]| ", ""), query, "company_id");
-//        searchUtil.handleTerms(timespan, query, "awards." + timespan + ".timespan");
+        searchUtil.handleTerms(timespan, query, "awards." + timespan + ".timespan");
         if (activation != null) {
             searchUtil.handleTerms(activation, query, "activation");
         }
@@ -338,8 +338,8 @@ public class SearchengineService {
         }
 
         SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query)
-                .addSort(buildSortScript("awards." + timespan + ".award", SortOrder.DESC))
-                .addSort(buildSortScript("awards." + timespan + ".last_update_time", SortOrder.ASC))
+                .addSort(buildSortScript( timespan, ".award", SortOrder.DESC))
+                .addSort(buildSortScript(timespan,".last_update_time", SortOrder.ASC))
                 .setFetchSource(new String[]{"employee_id", "awards." + timespan + ".award", "awards." + timespan + ".last_update_time"}, null);
         if (pageNum > 0 && pageSize > 0) {
             searchRequestBuilder.setSize(pageSize).setFrom((pageNum - 1) * pageSize);
@@ -367,8 +367,8 @@ public class SearchengineService {
             searchUtil.handleTerms(keyword, query, "custom_field");
         }
         SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query)
-                .addSort(buildSortScript("awards." + timespan + ".award", SortOrder.DESC))
-                .addSort(buildSortScript("awards." + timespan + ".last_update_time", SortOrder.ASC))
+                .addSort(buildSortScript(timespan, ".award", SortOrder.DESC))
+                .addSort(buildSortScript( timespan, ".last_update_time", SortOrder.ASC))
                 .setFetchSource(new String[]{"employee_id", "awards." + timespan + ".award", "awards." + timespan + ".last_update_time"}, null);
         if (pageNum > 0 && pageSize > 0) {
             searchRequestBuilder.setSize(pageSize).setFrom((pageNum - 1) * pageSize);
