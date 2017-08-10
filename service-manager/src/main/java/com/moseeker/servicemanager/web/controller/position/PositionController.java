@@ -520,8 +520,6 @@ public class PositionController {
         return null;
     }
 
-<<<<<<< HEAD
-
     /**
      * 第三方职位列表详情
      */
@@ -563,7 +561,6 @@ public class PositionController {
         }
     }
 
-=======
     /**
      * 职位同步到第三方接口
      */
@@ -632,5 +629,4 @@ public class PositionController {
     		 return ResponseLogNotification.fail(request, e.getMessage());
     	}
     }
->>>>>>> feature/alipay_campusrecruit
 }
