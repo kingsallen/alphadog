@@ -271,11 +271,13 @@ public class ProfileUtils {
 					} else if (education.get("startDate") != null) {
 						record.setStart(BeanUtils.convertToSQLDate(education.get("startDate")));
 					}
+
 					if (education.get("end_date") != null) {
 						record.setEnd(BeanUtils.convertToSQLDate(education.get("end_date")));
 					} else if (education.get("endDate") != null) {
 						record.setEnd(BeanUtils.convertToSQLDate(education.get("endDate")));
 					}
+
 					ValidationMessage<ProfileEducationRecord> vm = ProfileValidation.verifyEducation(record);
 					if(vm.isPass()) {
 						educationRecords.add(record);
