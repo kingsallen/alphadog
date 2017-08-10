@@ -340,6 +340,7 @@ public class SearchengineService {
         SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query)
                 .addSort(buildSortScript("awards." + timespan + ".award", SortOrder.DESC))
                 .addSort(buildSortScript("awards." + timespan + ".last_update_time", SortOrder.ASC))
+                .addSort(buildSortScript("activation", SortOrder.ASC))
                 .setFetchSource(new String[]{"id", "awards." + timespan + ".award", "awards." + timespan + ".last_update_time"}, null);
         if (pageNum > 0 && pageSize > 0) {
             searchRequestBuilder.setSize(pageSize).setFrom((pageNum - 1) * pageSize);
