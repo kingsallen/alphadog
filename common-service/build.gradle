@@ -13,6 +13,7 @@ dependencies {
     compile deps["spring-core"]
     compile fileTree(dir:'../libs',include:'libthrift-0.10.0.jar')
     compile  fileTree(dir:'../libs',include:'jooq*.jar')
+    compile group: 'org.elasticsearch', name: 'elasticsearch', version: '2.2.1'
     testCompile 'junit:junit:4.12'
 }
 
