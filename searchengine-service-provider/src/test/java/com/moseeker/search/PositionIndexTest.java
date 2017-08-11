@@ -35,7 +35,8 @@ public class PositionIndexTest {
         map1.put("salaryBottom",4);
         list.add(map1);
         String ss=JSON.toJSONString(list);
-        Map<String,Object> result=positionSearchEngine.search("上海","",ss,1,10,"20,30","2017-07-18T14:37:28","2017-07-18T14:37:28");
+//        Map<String,Object> result=positionSearchEngine.search("上海","",ss,1,10,"20,30","2017-07-18T14:37:28","2017-07-18T14:37:28");
+        Map<String,Object> result=positionSearchEngine.search(null,"",null,1,10,null,"2017-07-18T14:37:28",null);
         System.out.println(result);
     }
 

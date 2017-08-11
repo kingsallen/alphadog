@@ -34,7 +34,7 @@ public class UserEmailPositionTest {
 	
 	@Test
 	public void postEmailPosition(){
-		int userId=1;
+		int userId=3314;
 		Map<String,Object> map=new HashMap<String,Object>();
 		map.put("keyWord","上海" );
 		String conditions=JSON.toJSONString(map);
@@ -44,7 +44,7 @@ public class UserEmailPositionTest {
 	
 	@Test
 	public void sendPositionEmail() throws Exception{
-		int userId=1;
+		int userId=3314;
 		int result=service.sendEmailPosition(userId);
 		System.out.println("result========="+result);
 	}

@@ -108,7 +108,10 @@ public class UserPositionEmailService {
 	
 	//处理发送职位推荐邮件
 	public int handleEmailRecommendPosition(String email,String conditions) throws Exception{
-		Map<String,Object> condition=(Map<String,Object>) JSON.parse(conditions);
+		Map<String,Object> condition=new HashMap<String,Object>();
+		if(StringUtils.isEmpty(conditions)){
+			condition=(Map<String,Object>) JSON.parse(conditions);
+		}
 		Map<String,Object> emailData=getRecommendPosition(condition);
 		if(emailData!=null&&!emailData.isEmpty()){
 			sendPositionEmail(email,emailData, conditions);
@@ -181,8 +184,8 @@ public class UserPositionEmailService {
 				String companyName=(String) company.get("abbreviation");
 				String citys=(String) position.get("city");
 				String salary="面议";
-				Integer salaryTop=(Integer) position.get("salary_top");
-				Integer salaryBottom=(Integer) position.get("salary_bottom");
+				double salaryTop=position.get("salary_top")==null?0:(double)position.get("salary_top");
+				double salaryBottom=position.get("salary_bottom")==null?0:(double)position.get("salary_bottom");
 				if(salaryTop!=0||salaryBottom!=0){
 					salary=salaryBottom+"k--"+salaryTop+"k";
 				}
