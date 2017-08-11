@@ -28,6 +28,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.CompanyCertConf;
 import com.moseeker.thrift.gen.company.struct.CompanyForVerifyEmployee;
 import com.moseeker.thrift.gen.company.struct.CompanyOptions;
+import com.moseeker.thrift.gen.company.struct.HrImporterMonitorVO;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
@@ -510,8 +511,11 @@ public class CompanyService {
         if (StringUtils.isEmptyList(hrEmployeeCertConfDO)) {
             hrEmployeeCertConfDO = new ArrayList<>();
         }
+        HrImporterMonitorVO hrImporterMonitorVO = new HrImporterMonitorVO();
         HrImporterMonitorDO hrImporterMonitorDO = getImporterMonitor(companyId, hraccountId, type);
-        companyCertConf.setHrImporterMonitor(hrImporterMonitorDO);
+        org.springframework.beans.BeanUtils.copyProperties(hrImporterMonitorDO, hrImporterMonitorVO);
+        hrImporterMonitorVO.setFileName(hrImporterMonitorDO.getName());
+        companyCertConf.setHrImporterMonitor(hrImporterMonitorVO);
         companyCertConf.setHrEmployeeCertConf(hrEmployeeCertConfDO);
 
         return companyCertConf;
