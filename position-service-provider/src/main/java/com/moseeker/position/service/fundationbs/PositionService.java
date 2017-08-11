@@ -1252,7 +1252,6 @@ public class PositionService {
                 Query q = new Query.QueryBuilder().where(con).buildQuery();
                 List<JobPositionRecord> jobRecords = jobPositionDao.getRecords(q);
                 Map<Integer,Set<String>> cityMap=commonPositionUtils.handlePositionCity(jdIdList);
-                logger.info("citymap============{}"+cityMap);
                 for(int i=0;i<jdIdList.size();i++){
                 	int positionId=jdIdList.get(i);
                 	 for (JobPositionRecord jr : jobRecords) {
@@ -1281,16 +1280,14 @@ public class PositionService {
 	 	                    e.setCity(jr.getCity());
 	 	                    if(cityMap!=null&&!cityMap.isEmpty()){
 	 	                    	Set<String> positionCity=cityMap.get(jr.getId());
-	 	                    	logger.info("positioncity===="+positionCity);
 	 	                    	if(positionCity!=null&&positionCity.size()>0){
 	 	                    		String  cityName="";
 	 	                    		for(String city:positionCity){
-	 	                    			cityName=city+",";
+	 	                    			cityName+=city+",";
 	 	                    		}
 	 	                    		if(StringUtils.isNotNullOrEmpty(cityName)){
 	 	                    			cityName=cityName.substring(0, cityName.lastIndexOf(","));
 	 	                    		}
-	 	                    		logger.info("cityName======"+cityName);
 	 	                    		e.setCity(cityName);
 	 	                    	}
 	 	                    }
