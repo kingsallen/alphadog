@@ -602,7 +602,7 @@ public class SearchengineService {
             map.put("nickname", keyword);
             map.put("custom_field", keyword);
             map.put("cname", keyword);
-            searchUtil.shouldQuery(map, query);
+            searchUtil.matchPhrasePrefixQuery(map, query);
         }
         SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query)
                 .addSort("activation", SortOrder.ASC)
