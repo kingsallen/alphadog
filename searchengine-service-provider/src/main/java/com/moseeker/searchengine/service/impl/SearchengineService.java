@@ -605,12 +605,9 @@ public class SearchengineService {
             map.put("custom_field", keyword);
             searchUtil.shouldQuery(map, query);
         }
-
-
-
         SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query)
-                .addSort(buildSortScript(timespan, "award", SortOrder.DESC))
                 .addSort("activation", SortOrder.ASC)
+                .addSort(buildSortScript(timespan, "award", SortOrder.DESC))
                 .addSort(buildSortScript(timespan, "last_update_time", SortOrder.ASC))
                 .setFetchSource(new String[]{"id", "awards." + timespan + ".award", "awards." + timespan + ".last_update_time"}, null);
         if (pageNum > 0 && pageSize > 0) {
