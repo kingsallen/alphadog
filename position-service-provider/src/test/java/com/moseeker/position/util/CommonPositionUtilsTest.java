@@ -25,10 +25,22 @@ public class CommonPositionUtilsTest {
 		String cityName=commonPositionUtils.handlerCity(127364);
 		System.out.println(cityName);
 	}
+	/*
+	1009831, 1009833, 1009834, 1009837, 1009822, 1009821, 1009746, 1009503, 1009502, 1009501
+	 */
 	@Test
 	public void handlePositionCityTest(){
 		List<Integer> positionIds=new ArrayList<Integer>();
-		positionIds.add(1009822);
+		positionIds.add(1009831);
+        positionIds.add(1009833);
+        positionIds.add(1009834);
+        positionIds.add(1009837);
+        positionIds.add(1009822);
+        positionIds.add(1009821);
+        positionIds.add(1009746);
+        positionIds.add(1009503);
+        positionIds.add(1009502);
+        positionIds.add(1009501);
 		Map<Integer,Set<String>> list=commonPositionUtils.handlePositionCity(positionIds);
 		System.out.println(list);
 	}
