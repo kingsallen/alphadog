@@ -109,7 +109,7 @@ public class UserPositionEmailService {
 	//处理发送职位推荐邮件
 	public int handleEmailRecommendPosition(String email,String conditions) throws Exception{
 		Map<String,Object> condition=new HashMap<String,Object>();
-		if(StringUtils.isEmpty(conditions)){
+		if(!StringUtils.isEmpty(conditions)){
 			condition=(Map<String,Object>) JSON.parse(conditions);
 		}
 		Map<String,Object> emailData=getRecommendPosition(condition);
