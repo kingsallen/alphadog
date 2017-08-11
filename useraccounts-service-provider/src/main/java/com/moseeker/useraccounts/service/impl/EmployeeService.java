@@ -207,8 +207,7 @@ public class EmployeeService {
         return response;
     }
 
-    public Result unbind(int employeeId, int companyId, int userId)
-            throws TException {
+    public Result unbind(int employeeId, int companyId, int userId) {
         log.info("unbind param: employeeId={}, companyId={}, userId={}", employeeId, companyId, userId);
         Result response = new Result();
         Query.QueryBuilder query = new Query.QueryBuilder();
