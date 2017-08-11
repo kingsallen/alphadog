@@ -1252,6 +1252,7 @@ public class PositionService {
                 Query q = new Query.QueryBuilder().where(con).buildQuery();
                 List<JobPositionRecord> jobRecords = jobPositionDao.getRecords(q);
                 Map<Integer,Set<String>> cityMap=commonPositionUtils.handlePositionCity(jdIdList);
+                logger.info("citymap============",cityMap.toString());
                 for(int i=0;i<jdIdList.size();i++){
                 	int positionId=jdIdList.get(i);
                 	 for (JobPositionRecord jr : jobRecords) {
