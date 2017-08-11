@@ -13,6 +13,8 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.script.Script;
+import org.elasticsearch.search.sort.ScriptSortBuilder;
+import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,6 +84,13 @@ public class PositionSearchEngine {
 					.addAggregation(searchUtil.handle("_source.position.salary_data","salary"))
 					.setFrom((page-1)*pageSize)
 					.setSize(pageSize);
+			if(StringUtils.isNotEmpty(keyWord)){
+				Script script=this.buildScriptSort(keyWord);
+				ScriptSortBuilder builder=new ScriptSortBuilder(script,"number");
+				builder.order( SortOrder.DESC);
+				responseBuilder.addSort(builder);
+				responseBuilder.setTrackScores(true);
+			}
 			logger.info(responseBuilder.toString());
 			SearchResponse response = responseBuilder.execute().actionGet();
 			return response;
@@ -165,6 +174,16 @@ public class PositionSearchEngine {
 			QueryBuilder keyand = QueryBuilders.scriptQuery(script);
 			((BoolQueryBuilder) query).filter(keyand);
 		}
+	}
+	//组装sort的script
+	private Script buildScriptSort(String keywords){
+		StringBuffer sb=new StringBuffer();
+		sb.append("double score = _score;title=_source.position.title;");
+		sb.append("if(title&&title.startsWith('"+keywords+"'))");
+		sb.append("{score=score*100};return score;");
+		String scripts=sb.toString();
+		Script script=new Script(scripts);
+		return script;
 	}
 	private List<Map> convertToListMap(String data){
 		if(StringUtils.isNotEmpty(data)){

@@ -114,7 +114,6 @@ public class CompanySearchengine {
 					Script script=this.buildScriptSort(keywords);
 					ScriptSortBuilder builder=new ScriptSortBuilder(script,"number");
 					builder.order( SortOrder.DESC);
-					builder.sortMode("max");
 					responseBuilder.addSort(builder);
 				}
 				logger.info(responseBuilder.toString());
