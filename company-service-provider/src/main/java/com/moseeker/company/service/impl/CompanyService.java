@@ -262,7 +262,7 @@ public class CompanyService {
         queryBuilder.where(HrCompany.HR_COMPANY.ID.getName(), companyId);
         // 判断公司信息是否正确
         HrCompanyDO hrCompanyDO = companyDao.getData(queryBuilder.buildQuery());
-        if (hrCompanyDO != null) {
+        if (hrCompanyDO == null) {
             throw ExceptionFactory.buildException(Category.COMPANY_DATA_EMPTY);
         }
         // 更新数据
