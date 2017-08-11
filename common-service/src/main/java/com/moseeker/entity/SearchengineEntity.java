@@ -11,6 +11,7 @@ import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.pojo.EmployeePointsRecordPojo;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.DateUtils;
@@ -76,7 +77,7 @@ public class SearchengineEntity {
      * @return
      * @throws TException
      */
-    public Response updateEmployeeAwards(List<Integer> employeeIds) throws TException {
+    public Response updateEmployeeAwards(List<Integer> employeeIds) throws CommonException {
         ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
         try {
             propertiesReader.loadResource("es.properties");
@@ -221,7 +222,7 @@ public class SearchengineEntity {
      * @return
      * @throws TException
      */
-    public Response deleteEmployeeDO(List<Integer> employeeIds) throws TException {
+    public Response deleteEmployeeDO(List<Integer> employeeIds) throws CommonException {
         ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
         try {
             propertiesReader.loadResource("es.properties");
