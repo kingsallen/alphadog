@@ -31,7 +31,7 @@ public class SearchengineServiceTest {
     @Test
     public void updateEmployeeAwards() throws Exception {
         List<Integer> employeeIds = new ArrayList<>();
-        employeeIds.add(7388);
+        employeeIds.add(48);
         searchengineService.updateEmployeeAwards(employeeIds);
     }
 
@@ -39,7 +39,8 @@ public class SearchengineServiceTest {
     @Test
     public void deleteEmployeeDO() throws Exception {
         List<Integer> employeeIds = new ArrayList<>();
-        employeeIds.add(60384);
+        employeeIds.add(2);
+        employeeIds.add(1);
         searchengineService.deleteEmployeeDO(employeeIds);
     }
 }

@@ -405,7 +405,7 @@ public class SearchengineService {
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("id", userEmployeeDO.getId());
                     jsonObject.put("company_id", userEmployeeDO.getCompanyId());
-                    jsonObject.put("binding_time", userEmployeeDO.getBindingTime());
+                    jsonObject.put("binding_time", userEmployeeDO.getBindingTime() != null ? DateUtils.shortTimeToDate(userEmployeeDO.getBindingTime()) : userEmployeeDO.getBindingTime());
                     jsonObject.put("custom_field", userEmployeeDO.getCustomField());
                     jsonObject.put("custom_field_values", userEmployeeDO.getCustomFieldValues());
                     jsonObject.put("sex", String.valueOf(new Double(userEmployeeDO.getSex()).intValue()));
@@ -463,6 +463,8 @@ public class SearchengineService {
                     jsonObject.put("cfname", userEmployeeDO.getCfname());
                     jsonObject.put("efname", userEmployeeDO.getEfname());
                     jsonObject.put("award", userEmployeeDO.getAward());
+                    jsonObject.put("cname", userEmployeeDO.getCname());
+
 
                     jsonObject.put("update_time", DateUtils.shortTimeToDate(userEmployeeDO.getUpdateTime()));
                     jsonObject.put("create_time", DateUtils.shortTimeToDate(userEmployeeDO.getCreateTime()));
@@ -570,7 +572,6 @@ public class SearchengineService {
         if (employeeId != null) {
             searchUtil.handleTerms(String.valueOf(employeeId), query, "id");
         }
-
         SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query)
                 .addSort(buildSortScript(timespan, "award", SortOrder.DESC))
                 .addSort(buildSortScript(timespan, "last_update_time", SortOrder.ASC))
@@ -600,11 +601,12 @@ public class SearchengineService {
             map.put("mobile", keyword);
             map.put("nickname", keyword);
             map.put("custom_field", keyword);
-            searchUtil.shouldQuery(map, query);
+            map.put("cname", keyword);
+            searchUtil.matchPhrasePrefixQuery(map, query);
         }
         SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query)
+                .addSort("activation", SortOrder.ASC)
                 .addSort(buildSortScript(timespan, "award", SortOrder.DESC))
-                .addSort(buildSortScript(activation, "activation", SortOrder.ASC))
                 .addSort(buildSortScript(timespan, "last_update_time", SortOrder.ASC))
                 .setFetchSource(new String[]{"id", "awards." + timespan + ".award", "awards." + timespan + ".last_update_time"}, null);
         if (pageNum > 0 && pageSize > 0) {

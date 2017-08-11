@@ -78,6 +78,7 @@ public class SearchengineEntity {
      * @throws TException
      */
     public Response updateEmployeeAwards(List<Integer> employeeIds) throws CommonException {
+        logger.info("----开始更新员工积分信息-------");
         ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
         try {
             propertiesReader.loadResource("es.properties");
@@ -127,7 +128,7 @@ public class SearchengineEntity {
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("id", userEmployeeDO.getId());
                     jsonObject.put("company_id", userEmployeeDO.getCompanyId());
-                    jsonObject.put("binding_time", userEmployeeDO.getBindingTime());
+                    jsonObject.put("binding_time", userEmployeeDO.getBindingTime() != null ? DateUtils.shortTimeToDate(userEmployeeDO.getBindingTime()) : userEmployeeDO.getBindingTime());
                     jsonObject.put("custom_field", userEmployeeDO.getCustomField());
                     jsonObject.put("custom_field_values", userEmployeeDO.getCustomFieldValues());
                     jsonObject.put("sex", String.valueOf(new Double(userEmployeeDO.getSex()).intValue()));
@@ -184,6 +185,7 @@ public class SearchengineEntity {
                     jsonObject.put("ename", userEmployeeDO.getEname());
                     jsonObject.put("cfname", userEmployeeDO.getCfname());
                     jsonObject.put("efname", userEmployeeDO.getEfname());
+                    jsonObject.put("cname", userEmployeeDO.getCname());
                     jsonObject.put("award", userEmployeeDO.getAward());
 
                     jsonObject.put("update_time", DateUtils.shortTimeToDate(userEmployeeDO.getUpdateTime()));
@@ -196,8 +198,9 @@ public class SearchengineEntity {
                     );
                 }
                 BulkResponse bulkResponse = bulkRequest.execute().actionGet();
-                logger.info(bulkResponse.buildFailureMessage());
-                logger.info(bulkResponse.toString());
+                logger.info("------更新员工积分信息结束-------");
+                logger.info("bulkResponse.buildFailureMessage():{}", bulkResponse.buildFailureMessage());
+                logger.info("bulkResponse.toString():" + bulkResponse.toString());
                 if (bulkResponse.buildFailureMessage() != null) {
                     return ResponseUtils.fail(9999, bulkResponse.buildFailureMessage());
                 }
