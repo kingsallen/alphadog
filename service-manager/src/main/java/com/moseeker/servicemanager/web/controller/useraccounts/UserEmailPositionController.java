@@ -69,7 +69,10 @@ public class UserEmailPositionController {
 	   	 try{
 	   		 reqParams = ParamUtils.parseRequestParam(request);
 			 int userId=Integer.parseInt(reqParams.get("userId")+"");
-	   		 String conditions=JSON.toJSONString(reqParams.get("conditions"));
+			 String conditions="";
+			 if(reqParams.get("conditions")!=null){
+				 conditions=JSON.toJSONString(reqParams.get("conditions"));
+			 }
 	   		 logger.info("将user_id为{0}的用户查询条件为{1}保存或者更新到数据库",userId,conditions);
 	   		 Response res=userQxService.postUserEmailPosition(userId, conditions);
 	   		 return ResponseLogNotification.success(request,res);
