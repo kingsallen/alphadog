@@ -1,59 +1,52 @@
 package com.moseeker.useraccounts.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.moseeker.baseorm.dao.configdb.ConfigSysPointsConfTplDao;
-import com.moseeker.baseorm.dao.hrdb.*;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
+import com.moseeker.baseorm.dao.hrdb.HrEmployeeCertConfDao;
+import com.moseeker.baseorm.dao.hrdb.HrEmployeeCustomFieldsDao;
+import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
-import com.moseeker.baseorm.dao.userdb.UserEmployeePointsRecordDao;
-import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
-import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.redis.RedisClient;
-import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
-import com.moseeker.common.util.ConfigPropertiesUtil;
-import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.CompanyConfigEntity;
 import com.moseeker.entity.EmployeeEntity;
-import com.moseeker.entity.UserAccountEntity;
 import com.moseeker.entity.UserWxEntity;
 import com.moseeker.rpccenter.client.ServiceManager;
-import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysPointsConfTplDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.*;
-import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
-import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCustomFieldsDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import com.moseeker.thrift.gen.employee.struct.*;
 import com.moseeker.thrift.gen.mq.service.MqService;
+import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.moseeker.useraccounts.exception.ExceptionCategory;
 import com.moseeker.useraccounts.exception.ExceptionFactory;
 import com.moseeker.useraccounts.service.EmployeeBinder;
-import java.text.BreakIterator;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
-import java.util.*;
-import java.util.stream.Collectors;
-
 /**
- * @author ltf
- * 员工服务业务实现
- * 2017年3月3日
+ * @author ltf 员工服务业务实现 2017年3月3日
  */
 @Service
 @CounterIface
@@ -65,7 +58,7 @@ public class EmployeeService {
     private RedisClient client;
 
     MqService.Iface mqService = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
-
+    SearchengineServices.Iface searchService = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
 
     @Autowired
     private JobApplicationDao applicationDao;
@@ -96,6 +89,12 @@ public class EmployeeService {
 
     @Autowired
     private CompanyConfigEntity companyConfigEntity;
+
+    @Autowired
+    private UserWxUserDao wxUserDao;
+
+    @Autowired
+    private HrWxWechatDao wxWechatDao;
 
     public EmployeeResponse getEmployee(int userId, int companyId) throws TException {
         log.info("getEmployee param: userId={} , companyId={}", userId, companyId);
@@ -161,7 +160,7 @@ public class EmployeeService {
         return response;
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public EmployeeVerificationConfResponse getEmployeeVerificationConf(int companyId)
             throws TException {
         log.info("getEmployeeVerificationConf param: companyId={}", companyId);
@@ -175,7 +174,7 @@ public class EmployeeService {
                 EmployeeVerificationConf evc = new EmployeeVerificationConf();
                 evc.setCompanyId(employeeCertConf.getCompanyId());
                 evc.setEmailSuffix(JSONObject.parseArray(employeeCertConf.getEmailSuffix()).stream().map(m -> String.valueOf(m)).collect(Collectors.toList()));
-                evc.setAuthMode((short)employeeCertConf.getAuthMode());
+                evc.setAuthMode((short) employeeCertConf.getAuthMode());
                 evc.setAuthCode(employeeCertConf.getAuthCode());
                 evc.setCustom(employeeCertConf.getCustom());
                 // 为解决gradle build时无法完成类推导的问题，顾list不指定类型
@@ -183,7 +182,7 @@ public class EmployeeService {
                 evc.setQuestions(questions);
                 evc.setCustomHint(employeeCertConf.getCustomHint());
                 HrCompanyConfDO hrCompanyConfig = hrCompanyConfDao.getData(query.buildQuery());
-                evc.setBindSuccessMessage(hrCompanyConfig == null ? "":hrCompanyConfig.getEmployeeBinding());
+                evc.setBindSuccessMessage(hrCompanyConfig == null ? "" : hrCompanyConfig.getEmployeeBinding());
                 response.setEmployeeVerificationConf(evc);
                 log.info("EmployeeVerificationConfResponse: {}", response.getEmployeeVerificationConf());
                 response.setExists(true);
@@ -199,7 +198,7 @@ public class EmployeeService {
     public Result bind(BindingParams bindingParams) throws TException {
         Result response = new Result();
         String authMethod = "auth_method_".concat(bindingParams.getType().toString().toLowerCase());
-        if(!employeeBinder.containsKey(authMethod)) {
+        if (!employeeBinder.containsKey(authMethod)) {
             response.setSuccess(false);
             response.setMessage("暂不支持该认证方式");
         } else {
@@ -225,7 +224,7 @@ public class EmployeeService {
         }
 
         // 如果是email激活发送了激活邮件，但用户未激活(状态为PENDING)，此时用户进行取消绑定操作，删除员工认证的redis信息
-        for(UserEmployeeDO employee : employees) {
+        for (UserEmployeeDO employee : employees) {
             if (StringUtils.isNotNullOrEmpty(client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, employee.getActivationCode()))) {
                 client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, employee.getActivationCode());
                 response.setSuccess(true);
@@ -256,7 +255,7 @@ public class EmployeeService {
         try {
             customFields = hrEmployeeCustomFieldsDao.getDatas(query.buildQuery());
             log.info("select EmployeeCustomField by: {}, result = {}", query, customFields);
-            if(!StringUtils.isEmptyList(customFields)) {
+            if (!StringUtils.isEmptyList(customFields)) {
                 customFields.forEach(m -> {
                     EmployeeCustomFieldsConf efc = new EmployeeCustomFieldsConf();
                     efc.setId(m.getId());
@@ -288,10 +287,10 @@ public class EmployeeService {
 			 * 开始查询积分规则：
 			 */
             response.setRewardConfigs(companyConfigEntity.getRerawConfig(companyId, true));
-            // 查询申请职位list
 
+            // 查询申请职位list
             response.setTotal(userEmployeeDO.getAward());
-            response.setRewards(employeeEntity.getEmployeePointsRecords(employeeId));
+            // response.setRewards(employeeEntity.getEmployeePointsRecords(employeeId));
         } else {
             throw ExceptionFactory.buildException(ExceptionCategory.USEREMPLOYEES_EMPTY);
         }
@@ -307,7 +306,7 @@ public class EmployeeService {
         query.where("employeeid", String.valueOf(employeeId));
         List<UserEmployeeDO> userEmployeesDO = employeeDao.getDatas(query.buildQuery());
         log.info("select userEmployee by: {}, result = {}", query, Arrays.toString(userEmployeesDO.toArray()));
-        if(StringUtils.isEmptyList(userEmployeesDO)) {
+        if (StringUtils.isEmptyList(userEmployeesDO)) {
             response.setSuccess(false);
             response.setMessage("员工信息不存在");
         } else {
@@ -322,6 +321,52 @@ public class EmployeeService {
             }
         }
         log.info("setEmployeeCustomInfo response: {}", response);
+        return response;
+    }
+
+    public List<EmployeeAward> awardRanking(int employeeId, int companyId, String timespan) {
+        List<EmployeeAward> response = new ArrayList<>();
+        Query.QueryBuilder query = new Query.QueryBuilder();
+        query.where("id", employeeId);
+        UserEmployeeDO employeeDO = employeeDao.getData(query.buildQuery());
+        // 判断员工是否已认证
+        if (employeeDO == null || employeeDO.getId() == 0 || employeeDO.getActivation() != 0) {
+            log.info("员工信息不存在或未认证，employeeInfo = {}", employeeDO);
+            return response;
+        }
+        List<Integer> companyIds = employeeEntity.getCompanyIds(companyId);
+        try {
+            Response result = searchService.queryAwardRankingInWx(companyIds, timespan, employeeId);
+            if (result.getStatus() == 0){
+               // 解析数据
+               Map<Integer, JSONObject> map = JSON.parseObject(result.getData(), Map.class);
+               query.clear();
+               query.where(new Condition("id", map.keySet(), ValueOp.IN));
+               Map<Integer, UserEmployeeDO> employeeDOMap = employeeDao.getDatas(query.buildQuery()).stream().collect(Collectors.toMap(k -> k.getId(), v -> v));
+               List<Integer> userIds = employeeDOMap.values().stream().map(m -> m.getSysuserId()).collect(Collectors.toList());
+               query.clear();
+               query.where(new Condition("company_id", employeeEntity.getCompanyIds(companyId), ValueOp.IN));
+               List<Integer> wechatIds = wxWechatDao.getDatas(query.buildQuery()).stream().map(m -> m.getId()).collect(Collectors.toList());
+               query.clear();
+               query.where(new Condition("sysuser_id", userIds, ValueOp.IN));
+               query.where(new Condition("wechat_id", wechatIds, ValueOp.IN));
+               Map<Integer, String> userWxUserMap = wxUserDao.getDatas(query.buildQuery()).stream().collect(Collectors.toMap(k -> k.getSysuserId(), v -> v.getHeadimgurl()));
+               map.entrySet().stream().forEach(e -> {
+                   EmployeeAward employeeAward = new EmployeeAward();
+                   JSONObject value = e.getValue();
+                   employeeAward.setEmployeeId(e.getKey());
+                   employeeAward.setAwardTotal(value.getInteger("award"));
+                   employeeAward.setName(employeeDOMap.get(e.getKey()).getCname());
+                   employeeAward.setHeadimgurl(userWxUserMap.getOrDefault(employeeDOMap.get(e.getKey()).getSysuserId(), ""));
+                   employeeAward.setRanking(value.getIntValue("ranking"));
+                   response.add(employeeAward);
+               });
+            } else {
+                log.error("query awardRanking data error");
+            }
+        } catch (TException e) {
+            e.printStackTrace();
+        }
         return response;
     }
 }

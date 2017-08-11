@@ -16,9 +16,15 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
-import com.moseeker.thrift.gen.employee.struct.Reward;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
+import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,13 +32,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * HR账号服务
@@ -591,27 +590,24 @@ public class UserHrAccountController {
      */
     @RequestMapping(value = "/hraccount/employee/rewards", method = RequestMethod.GET)
     @ResponseBody
-    public String getEmployeeRawards(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            int employeeId = params.getInt("employeeId", 0);
-            int companyId = params.getInt("companyId", 0);
-            if (employeeId == 0) {
-                return ResponseLogNotification.fail(request, "员工Id不能为空");
-            } else {
-                // 权限判断
-                Boolean permission = userHrAccountService.permissionJudgeWithUserEmployeeIdAndCompanyId(employeeId, companyId);
-                if (!permission) {
-                    return ResponseLogNotification.failResponse(request, ConstantErrorCodeMessage.PERMISSION_DENIED);
-                }
-                List<Reward> result = userHrAccountService.getEmployeeRewards(employeeId);
-                return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(result)));
+    public String getEmployeeRawards(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        Params<String, Object> params = ParamUtils.parseRequestParam(request);
+        int employeeId = params.getInt("employeeId", 0);
+        int companyId = params.getInt("companyId", 0);
+        int pageNumber = params.getInt("pageNumber", 0);
+        int pageSize = params.getInt("pageSize", 0);
+        if (employeeId == 0) {
+            return ResponseLogNotification.fail(request, "员工Id不能为空");
+        } else {
+            // 权限判断
+            Boolean permission = userHrAccountService.permissionJudgeWithUserEmployeeIdAndCompanyId(employeeId, companyId);
+            if (!permission) {
+                return ResponseLogNotification.failResponse(request, ConstantErrorCodeMessage.PERMISSION_DENIED);
             }
-        } catch (BIZException e) {
-            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
-        } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            RewardVOPageVO result = userHrAccountService.getEmployeeRewards(employeeId, pageNumber, pageSize);
+            return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(result)));
         }
+
     }
 
 
@@ -639,7 +635,7 @@ public class UserHrAccountController {
                 if (!permission) {
                     return ResponseLogNotification.failResponse(request, ConstantErrorCodeMessage.PERMISSION_DENIED);
                 }
-                int result = userHrAccountService.addEmployeeReward(employeeId, points, reason);
+                int result = userHrAccountService.addEmployeeReward(employeeId, companyId, points, reason);
                 return ResponseLogNotification.success(request, ResponseUtils.success(new HashMap<String, Integer>() {{
                     put("totalPoint", result);
                 }}));
@@ -659,7 +655,7 @@ public class UserHrAccountController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/hraccount/employe/number", method = RequestMethod.GET)
+    @RequestMapping(value = "/hraccount/employee/number", method = RequestMethod.GET)
     @ResponseBody
     public String getListNum(HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -684,7 +680,7 @@ public class UserHrAccountController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/hraccount/employe/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/hraccount/employees", method = RequestMethod.GET)
     @ResponseBody
     public String employeeList(HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -694,9 +690,10 @@ public class UserHrAccountController {
             int filter = params.getInt("filter", 0);
             String order = params.getString("order", "");
             String asc = params.getString("asc", "");
+            String timeSpan = params.getString("timeSpan", "");
             int pageNumber = params.getInt("pageNumber", 0);
             int pageSize = params.getInt("pageSize", 0);
-            UserEmployeeVOPageVO userEmployeeVOPageVO = userHrAccountService.employeeList(keyWord, companyId, filter, order, asc, pageNumber, pageSize);
+            UserEmployeeVOPageVO userEmployeeVOPageVO = userHrAccountService.employeeList(keyWord, companyId, filter, order, asc, pageNumber, pageSize, timeSpan);
             return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(userEmployeeVOPageVO)));
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
@@ -714,7 +711,7 @@ public class UserHrAccountController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/hraccount/employe/export", method = RequestMethod.POST)
+    @RequestMapping(value = "/hraccount/employee/export", method = RequestMethod.POST)
     @ResponseBody
     public String employeeExport(HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -741,7 +738,7 @@ public class UserHrAccountController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/hraccount/employe/details", method = RequestMethod.GET)
+    @RequestMapping(value = "/hraccount/employee/details", method = RequestMethod.GET)
     @ResponseBody
     public String employeeDetails(HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -766,7 +763,7 @@ public class UserHrAccountController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/hraccount/employe/update", method = RequestMethod.PUT)
+    @RequestMapping(value = "/hraccount/employee/update", method = RequestMethod.PUT)
     @ResponseBody
     public String updateUserEmployee(HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -815,7 +812,7 @@ public class UserHrAccountController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "/hraccount/employe/import", method = RequestMethod.POST)
+    @RequestMapping(value = "/hraccount/employee/import", method = RequestMethod.POST)
     @ResponseBody
     public String employeeImport(HttpServletRequest request) {
         try {

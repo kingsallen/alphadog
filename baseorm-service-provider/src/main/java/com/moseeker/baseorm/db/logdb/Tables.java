@@ -5,6 +5,7 @@ package com.moseeker.baseorm.db.logdb;
 
 
 import com.moseeker.baseorm.db.logdb.tables.LogCronjob;
+import com.moseeker.baseorm.db.logdb.tables.LogDeadLetter;
 import com.moseeker.baseorm.db.logdb.tables.LogEmailSendrecord;
 import com.moseeker.baseorm.db.logdb.tables.LogHrOperationRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogSmsSendrecord;
@@ -32,6 +33,11 @@ public class Tables {
      * The table <code>logdb.log_cronjob</code>.
      */
     public static final LogCronjob LOG_CRONJOB = com.moseeker.baseorm.db.logdb.tables.LogCronjob.LOG_CRONJOB;
+
+    /**
+     * 死信队列日志记录表
+     */
+    public static final LogDeadLetter LOG_DEAD_LETTER = com.moseeker.baseorm.db.logdb.tables.LogDeadLetter.LOG_DEAD_LETTER;
 
     /**
      * 短信发送记录表
