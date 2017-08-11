@@ -191,7 +191,7 @@ public class SearchUtil {
                 .combineScript(new Script(combinScript));
         return build;
     }
-
+	//term查询，查询的值包含单个值
     public void shouldQuery(Map<String,Object> map,QueryBuilder query){
     	if(map!=null&&!map.isEmpty()){
 			QueryBuilder keyand = QueryBuilders.boolQuery();
@@ -204,5 +204,34 @@ public class SearchUtil {
 		}
 
 	}
+	//terms查询，查询的值包含多个值
+	public void shouldTermsQuery(Map<String,Object> map,QueryBuilder query){
+		if(map!=null&&!map.isEmpty()){
+			QueryBuilder keyand = QueryBuilders.boolQuery();
+			for(String key:map.keySet()){
+				List<String> list=this.stringConvertList(map.get(key)+"");
+				if(list==null||list.size()==0){
+					continue;
+				}
+				QueryBuilder fullf = QueryBuilders.termsQuery(key,list);
+				((BoolQueryBuilder) keyand).should(fullf);
+			}
+			((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+			((BoolQueryBuilder) query).must(keyand);
+		}
+
+	}
+	//将xx,xx,xx格式的字符串转化为list
+	 private List<String> stringConvertList(String keyWords){
+    	if(StringUtils.isNotEmpty(keyWords)){
+    		String[] array=keyWords.split(",");
+    		List<String> list=new ArrayList<String>();
+    		for(String ss:array){
+    			list.add(ss);
+			}
+			return list;
+		}
+		return null;
+	 }
     
 }
