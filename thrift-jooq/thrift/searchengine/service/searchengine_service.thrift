@@ -10,4 +10,6 @@ service SearchengineServices {
     common_struct.Response updateposition(1: string position,2:i32 id);
     common_struct.Response queryAwardRanking(1: list<i32> companyIds, 2: string timespan, 3: i32 pageSize, 4: i32 pageNum,5:string keyword,6:i32 filter);
     common_struct.Response queryAwardRankingInWx(1: list<i32> companyIds, 2: string timespan, 3: i32 employeeId);
+    common_struct.Response updateEmployeeAwards(1: list<i32> employeeId);
+    common_struct.Response deleteEmployeeDO(1: list<i32> employeeId);
 }

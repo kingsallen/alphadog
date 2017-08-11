@@ -11,6 +11,8 @@ import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
+import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
+import com.moseeker.baseorm.pojo.EmployeePointsRecordPojo;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -31,6 +33,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
+import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
@@ -56,6 +59,7 @@ import org.springframework.stereotype.Service;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -363,21 +367,12 @@ public class SearchengineService {
         } catch (Exception e1) {
             logger.error(e1.getMessage());
         }
-//        String cluster_name = propertiesReader.get("es.cluster.name", String.class);
-//        logger.info(cluster_name);
-//        String es_connection = propertiesReader.get("es.connection", String.class);
-//        Integer es_port = propertiesReader.get("es.port", Integer.class);
-//        Settings settings = Settings.settingsBuilder().put("cluster.name", cluster_name)
-//                .build();
-
-        String cluster_name = "my-application";
+        String cluster_name = propertiesReader.get("es.cluster.name", String.class);
         logger.info(cluster_name);
-        String es_connection = "127.0.0.1";
-        Integer es_port = 9300;
+        String es_connection = propertiesReader.get("es.connection", String.class);
+        Integer es_port = propertiesReader.get("es.port", Integer.class);
         Settings settings = Settings.settingsBuilder().put("cluster.name", cluster_name)
                 .build();
-        String idx = "2";
-
         TransportClient client = null;
         BulkRequestBuilder bulkRequest = null;
         if (employeeIds != null && employeeIds.size() > 0) {
@@ -397,7 +392,6 @@ public class SearchengineService {
             queryBuilder.clear();
             queryBuilder.where(new Condition(HrCompany.HR_COMPANY.ID.getName(), companyId, ValueOp.IN));
             List<HrCompanyDO> hrCompanyDOS = hrCompanyDao.getDatas(queryBuilder.buildQuery());
-            userEmployeeDao.getAwardByMonth(employeeIds);
             Map companyMap = new HashMap<Integer, HrCompanyDO>();
             companyMap.putAll(hrCompanyDOS.stream().collect(Collectors.toMap(HrCompanyDO::getId, Function.identity())));
 
@@ -421,14 +415,45 @@ public class SearchengineService {
                     jsonObject.put("custom_field_values", userEmployeeDO.getCustomFieldValues());
                     jsonObject.put("sex", String.valueOf(new Double(userEmployeeDO.getSex()).intValue()));
                     jsonObject.put("mobile", String.valueOf(userEmployeeDO.getMobile()));
-                    // 积分信息
+                    jsonObject.put("email_isvalid", String.valueOf(userEmployeeDO.getEmailIsvalid()));
+                    jsonObject.put("idcard", userEmployeeDO.getIdcard());
+                    jsonObject.put("download_token", userEmployeeDO.getDownloadToken());
+                    jsonObject.put("groupname", userEmployeeDO.getGroupname());
+                    jsonObject.put("sysuser_id", userEmployeeDO.getSysuserId());
+                    jsonObject.put("education", userEmployeeDO.getEducation());
+                    jsonObject.put("auth_level", userEmployeeDO.getAuthLevel());
+                    jsonObject.put("companybody", userEmployeeDO.getCompanybody());
+                    jsonObject.put("role_id", userEmployeeDO.getRoleId());
+                    jsonObject.put("source", userEmployeeDO.getSource());
+                    jsonObject.put("hr_wxuser_id", userEmployeeDO.getWxuserId());
+                    jsonObject.put("managername", userEmployeeDO.getManagername());
+                    jsonObject.put("status", userEmployeeDO.getStatus());
+                    jsonObject.put("is_rp_sent", userEmployeeDO.getIsRpSent());
+                    jsonObject.put("activation", userEmployeeDO.getActivation());
+                    jsonObject.put("retiredate", userEmployeeDO.getRetiredate());
+                    jsonObject.put("login_count", userEmployeeDO.getLoginCount());
+                    jsonObject.put("section_id", userEmployeeDO.getSectionId());
+                    jsonObject.put("birthday", userEmployeeDO.getBirthday());
+                    jsonObject.put("is_admin", userEmployeeDO.getIsAdmin());
+                    jsonObject.put("address", userEmployeeDO.getAddress());
+                    jsonObject.put("register_ip", userEmployeeDO.getRegisterIp());
+                    jsonObject.put("auth_method", userEmployeeDO.getAuthMethod());
+                    jsonObject.put("employdate", userEmployeeDO.getEmploydate());
+                    jsonObject.put("last_login_ip", userEmployeeDO.getLastLoginIp());
+                    jsonObject.put("position", userEmployeeDO.getPosition());
+                    jsonObject.put("position_id", userEmployeeDO.getPositionId());
+                    // 取年积分
+                    List<EmployeePointsRecordPojo> listYear = userEmployeePointsDao.getAwardByYear(userEmployeeDO.getId());
+                    // 取季度积分
+                    List<EmployeePointsRecordPojo> listQuarter = userEmployeePointsDao.getAwardByQuarter(userEmployeeDO.getId());
+                    // 取月积分
+                    List<EmployeePointsRecordPojo> listMonth = userEmployeePointsDao.getAwardByMonth(userEmployeeDO.getId());
                     JSONObject awards = new JSONObject();
-                    JSONObject a = new JSONObject();
-                    a.put("last_update_time", new Date());
-                    a.put("award", 1021);
-                    awards.put("2017-08", a);
-
+                    getAwards(awards, listYear);
+                    getAwards(awards, listQuarter);
+                    getAwards(awards, listMonth);
                     jsonObject.put("awards", awards);
+                    // 积分信息
                     if (companyMap.containsKey(userEmployeeDO.getCompanyId())) {
                         HrCompanyDO hrCompanyDO = (HrCompanyDO) companyMap.get(userEmployeeDO.getCompanyId());
                         jsonObject.put("company_name", hrCompanyDO.getName());
@@ -444,31 +469,92 @@ public class SearchengineService {
                     jsonObject.put("efname", userEmployeeDO.getEfname());
                     jsonObject.put("award", userEmployeeDO.getAward());
 
-
-//                    jsonObject.put("update_time", userEmployeeDO.getUpdateTime());
-//                    jsonObject.put("create_time", userEmployeeDO.getCreateTime());
+                    jsonObject.put("update_time", DateUtils.shortTimeToDate(userEmployeeDO.getUpdateTime()));
+                    jsonObject.put("create_time", DateUtils.shortTimeToDate(userEmployeeDO.getCreateTime()));
 
                     logger.info(JSONObject.toJSONString(jsonObject));
                     bulkRequest.add(
                             client.prepareIndex("awards", "award", userEmployeeDO.getId() + "")
-                                    .setSource(JSONObject.toJSONString(jsonObject))
+                                    .setSource(jsonObject)
                     );
                 }
                 BulkResponse bulkResponse = bulkRequest.execute().actionGet();
                 logger.info(bulkResponse.buildFailureMessage());
-                if (bulkResponse.hasFailures()) {
-                    // process failures by iterating through each bulk response item
+                logger.info(bulkResponse.toString());
+                if (bulkResponse.buildFailureMessage() != null) {
+                    return ResponseUtils.fail(9999, bulkResponse.buildFailureMessage());
                 }
             } catch (UnknownHostException e) {
                 logger.error("error in update", e);
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
             } catch (Error error) {
                 logger.error(error.getMessage());
+            } catch (ParseException e) {
+                e.printStackTrace();
             } finally {
                 client.close();
             }
         }
         return ResponseUtils.success("");
+    }
+
+    /**
+     * 删除员工积分索引
+     *
+     * @param employeeIds
+     * @return
+     * @throws TException
+     */
+    public Response deleteEmployeeDO(List<Integer> employeeIds) throws TException {
+        ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
+        try {
+            propertiesReader.loadResource("es.properties");
+        } catch (Exception e1) {
+            logger.error(e1.getMessage());
+        }
+        String cluster_name = propertiesReader.get("es.cluster.name", String.class);
+        logger.info(cluster_name);
+        String es_connection = propertiesReader.get("es.connection", String.class);
+        Integer es_port = propertiesReader.get("es.port", Integer.class);
+        Settings settings = Settings.settingsBuilder().put("cluster.name", cluster_name)
+                .build();
+        TransportClient client = null;
+        BulkRequestBuilder bulkRequest = null;
+        BulkResponse bulkResponse = null;
+        try {
+            // 连接ES
+            client = TransportClient.builder().settings(settings).build()
+                    .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port));
+            bulkRequest = client.prepareBulk();
+            if (employeeIds != null && employeeIds.size() > 0) {
+                for (Integer id : employeeIds) {
+                    bulkRequest.add(
+                            client.prepareDelete("awards", "award", id + "")
+                    );
+                }
+            }
+            bulkResponse = bulkRequest.execute().actionGet();
+            if (bulkResponse.buildFailureMessage() != null) {
+                return ResponseUtils.fail(9999, bulkResponse.buildFailureMessage());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            client.close();
+        }
+
+        return ResponseUtils.success("");
+    }
+
+    public void getAwards(JSONObject jsonObject, List<EmployeePointsRecordPojo> list) {
+        if (list != null && list.size() > 0) {
+            for (EmployeePointsRecordPojo employeePointsRecordPojo : list) {
+                JSONObject a = new JSONObject();
+                a.put("last_update_time", employeePointsRecordPojo.getLast_update_time());
+                a.put("award", employeePointsRecordPojo.getAward());
+                jsonObject.put(employeePointsRecordPojo.getTimespan(), a);
+            }
+        }
     }
 
     private SortBuilder buildSortScript(String timspanc, String field, SortOrder sortOrder) {

@@ -96,21 +96,6 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
     /**
      * @param employeeIds
      */
-    public void getAwardByMonth(List<Integer> employeeIds) {
-        String sql = "select date_format(up.`_create_time`,'%%Y-%%m') as timespan, up.`employee_id`, sum(up.`award`) as award,\n" +
-                "    max(up.`_create_time`) as last_update_time from userdb.`user_employee_points_record` up where up.employee_id in(" + 48
-                + ") group by  up.employee_id,timespan order by timespan";
-
-        create.batch(sql);
-
-//        Result<Record3<Timestamp, BigDecimal, Timestamp>> records =
-//                create.select(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD._CREATE_TIME.as("timespan"),
-//                        UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.AWARD.sum().as("award"),
-//                        UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD._CREATE_TIME.max().as("last_update_time"))
-//                        .from(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD)
-//                        .fetch();
-//        System.out.println(records);
-    }
 
 
 }
