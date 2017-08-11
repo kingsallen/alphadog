@@ -185,6 +185,7 @@ public class SearchengineEntity {
                     jsonObject.put("ename", userEmployeeDO.getEname());
                     jsonObject.put("cfname", userEmployeeDO.getCfname());
                     jsonObject.put("efname", userEmployeeDO.getEfname());
+                    jsonObject.put("cname", userEmployeeDO.getCname());
                     jsonObject.put("award", userEmployeeDO.getAward());
 
                     jsonObject.put("update_time", DateUtils.shortTimeToDate(userEmployeeDO.getUpdateTime()));

@@ -36,8 +36,6 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
-import org.elasticsearch.common.xcontent.ToXContent;
-import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -55,7 +53,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.ParseException;
@@ -466,6 +463,8 @@ public class SearchengineService {
                     jsonObject.put("cfname", userEmployeeDO.getCfname());
                     jsonObject.put("efname", userEmployeeDO.getEfname());
                     jsonObject.put("award", userEmployeeDO.getAward());
+                    jsonObject.put("cname", userEmployeeDO.getCname());
+
 
                     jsonObject.put("update_time", DateUtils.shortTimeToDate(userEmployeeDO.getUpdateTime()));
                     jsonObject.put("create_time", DateUtils.shortTimeToDate(userEmployeeDO.getCreateTime()));
@@ -602,6 +601,7 @@ public class SearchengineService {
             map.put("mobile", keyword);
             map.put("nickname", keyword);
             map.put("custom_field", keyword);
+            map.put("cname", keyword);
             searchUtil.shouldQuery(map, query);
         }
         SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query)
