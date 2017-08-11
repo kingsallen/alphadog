@@ -622,7 +622,7 @@ public class UserHrAccountController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/hraccount/employe/number", method = RequestMethod.GET)
+    @RequestMapping(value = "/hraccount/employee/number", method = RequestMethod.GET)
     @ResponseBody
     public String getListNum(HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -647,7 +647,7 @@ public class UserHrAccountController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/hraccount/employe/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/hraccount/employees", method = RequestMethod.GET)
     @ResponseBody
     public String employeeList(HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -678,7 +678,7 @@ public class UserHrAccountController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/hraccount/employe/export", method = RequestMethod.POST)
+    @RequestMapping(value = "/hraccount/employee/export", method = RequestMethod.POST)
     @ResponseBody
     public String employeeExport(HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -705,7 +705,7 @@ public class UserHrAccountController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/hraccount/employe/details", method = RequestMethod.GET)
+    @RequestMapping(value = "/hraccount/employee/details", method = RequestMethod.GET)
     @ResponseBody
     public String employeeDetails(HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -730,7 +730,7 @@ public class UserHrAccountController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/hraccount/employe/update", method = RequestMethod.PUT)
+    @RequestMapping(value = "/hraccount/employee/update", method = RequestMethod.PUT)
     @ResponseBody
     public String updateUserEmployee(HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -779,7 +779,7 @@ public class UserHrAccountController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "/hraccount/employe/import", method = RequestMethod.POST)
+    @RequestMapping(value = "/hraccount/employee/import", method = RequestMethod.POST)
     @ResponseBody
     public String employeeImport(HttpServletRequest request) {
         try {

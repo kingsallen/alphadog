@@ -34,7 +34,7 @@ public class ReceiverHandler {
         try {
             msgBody = new String(message.getBody(), "UTF-8");
             JSONObject jsonObject = JSONObject.parseObject(msgBody);
-            employeeEntity.addAwardBefor(jsonObject.getIntValue("employeeId"), jsonObject.getIntValue("companyId"),
+            employeeEntity.addAwardBefore(jsonObject.getIntValue("employeeId"), jsonObject.getIntValue("companyId"),
                     jsonObject.getIntValue("positionId"), jsonObject.getIntValue("templateId"), jsonObject.getIntValue("berecomUserId"));
         } catch (Exception e) {
             // 错误日志记录到数据库 的 log_dead_letter 表中
