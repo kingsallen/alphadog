@@ -128,7 +128,7 @@ public class SearchengineEntity {
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("id", userEmployeeDO.getId());
                     jsonObject.put("company_id", userEmployeeDO.getCompanyId());
-                    jsonObject.put("binding_time", userEmployeeDO.getBindingTime());
+                    jsonObject.put("binding_time", userEmployeeDO.getBindingTime() != null ? DateUtils.shortTimeToDate(userEmployeeDO.getBindingTime()) : userEmployeeDO.getBindingTime());
                     jsonObject.put("custom_field", userEmployeeDO.getCustomField());
                     jsonObject.put("custom_field_values", userEmployeeDO.getCustomFieldValues());
                     jsonObject.put("sex", String.valueOf(new Double(userEmployeeDO.getSex()).intValue()));
