@@ -78,6 +78,7 @@ public class SearchengineEntity {
      * @throws TException
      */
     public Response updateEmployeeAwards(List<Integer> employeeIds) throws CommonException {
+        logger.info("----开始更新员工积分信息-------");
         ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
         try {
             propertiesReader.loadResource("es.properties");
@@ -196,8 +197,9 @@ public class SearchengineEntity {
                     );
                 }
                 BulkResponse bulkResponse = bulkRequest.execute().actionGet();
-                logger.info(bulkResponse.buildFailureMessage());
-                logger.info(bulkResponse.toString());
+                logger.info("------更新员工积分信息结束-------");
+                logger.info("bulkResponse.buildFailureMessage():{}", bulkResponse.buildFailureMessage());
+                logger.info("bulkResponse.toString():" + bulkResponse.toString());
                 if (bulkResponse.buildFailureMessage() != null) {
                     return ResponseUtils.fail(9999, bulkResponse.buildFailureMessage());
                 }
