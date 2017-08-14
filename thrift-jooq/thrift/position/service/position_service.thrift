@@ -5,6 +5,8 @@ include "../../dao/struct/dao_struct.thrift"
 include "../../dao/struct/hrdb/hr_third_party_position_struct.thrift"
 include "../../dao/struct/campaignrvo_struct.thrift"
 include "../../dao/struct/jobdb/job_position_struct.thrift"
+include "../struct/third_position_struct.thrift"
+include "../../dao/struct/hrdb/hr_third_party_account_struct.thrift"
 
 namespace java com.moseeker.thrift.gen.position.service
 /*
@@ -61,6 +63,10 @@ service PositionServices {
     position_struct.PositionDetailsListVO companyHotPositionDetailsList(1:i32 companyId, 2:i32 page, 3:i32 per_age);
     // 职位相关职位接口
     position_struct.PositionDetailsListVO similarityPositionDetailsList(1:i32 pid, 2:i32 page, 3:i32 per_age);
+
+    third_position_struct.ThirdPartyPositionResult getThirdPartyPositionInfo(1:third_position_struct.ThirdPartyPositionInfoForm infoForm ) throws (1: common_struct.BIZException e);
+    i32 updateThirdPartyPosition(1:hr_third_party_position_struct.HrThirdPartyPositionDO thirdPartyPosition) throws (1: common_struct.BIZException e);
+    i32 updateThirdPartyPositionWithAccount(1:hr_third_party_position_struct.HrThirdPartyPositionDO thirdPartyPosition,2:hr_third_party_account_struct.HrThirdPartyAccountDO thirdPartyAccount) throws (1: common_struct.BIZException e);
 }
 /*
 	查询第三方自定义职能

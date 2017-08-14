@@ -82,18 +82,20 @@ public class ChaosServiceImpl {
         if (status == 0) {
             thirdPartyAccountDO.setRemainNum(jsonObject.getJSONObject("data").getIntValue("remain_number"));
             thirdPartyAccountDO.setRemainProfileNum(jsonObject.getJSONObject("data").getIntValue("resume_number"));
-        } else if (status == 1) {
-            throw new BIZException(1, "账号或者密码错误！");
-        } else if (status == 2) {
-            throw new BIZException(2, opName + "超时了，请重试！");
-        } else if (status == 3) {
-            throw new BIZException(3, opName + "失败了，请重试！");
-        } else if (status == 4) {
-            throw new BIZException(4, opName + "失败了，请稍后重试！");
-        } else if (status == 31) {
-            throw new BIZException(31, opName + "失败了," + jsonObject.getString("message"));
         } else {
-            throw new BIZException(5, opName + "发生异常，请稍后重试！");
+//            String message = jsonObject.getString("message");
+
+            if (status == 1) {
+                throw new BIZException(1, "账号或者密码错误！");
+            } else if (status == 2) {
+                throw new BIZException(2, opName + "超时了，请重试！");
+            } else if (status == 3) {
+                throw new BIZException(3, opName + "失败了，请重试！");
+            } else if (status == 4) {
+                throw new BIZException(4, opName + "失败了，请稍后重试！");
+            } else {
+                throw new BIZException(5, opName + "异常，请稍后重试！");
+            }
         }
     }
 
@@ -166,9 +168,9 @@ public class ChaosServiceImpl {
 
             if (position.getChannel() == ChannelType.LIEPIN.getValue()) {
                 positionJson = JSON.toJSONString(PositionLiepinWithAccount.copyFromSyncPosition(position));
-            } else if(position.getChannel() == ChannelType.ZHILIAN.getValue()){
+            } else if (position.getChannel() == ChannelType.ZHILIAN.getValue()) {
                 positionJson = JSON.toJSONString(PositionZhilianWithAccount.copyFromSyncPosition(position));
-            }else if (position.getChannel() == ChannelType.JOB51.getValue()) {
+            } else if (position.getChannel() == ChannelType.JOB51.getValue()) {
                 positionJson = JSON.toJSONString(Position51WithAccount.copyFromSyncPosition(position));
             }
 

@@ -43,6 +43,11 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
         super(table, hrThirdPartyAccountDOClass);
     }
 
+    public HrThirdPartyAccountDO getAccountById(int accountId) {
+        Query query = new Query.QueryBuilder().where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID.getName(), accountId).buildQuery();
+        return getData(query);
+    }
+
     public int upsertResource(HrThirdPartyAccountRecord record) {
         logger.info("HRThirdPartyAccountDao upsertResource");
         logger.info("HRThirdPartyAccountDao upsertResource channel:{}, company_id:{}", record.getChannel(), record.getCompanyId());

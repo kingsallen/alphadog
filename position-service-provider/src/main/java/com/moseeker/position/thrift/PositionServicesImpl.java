@@ -5,14 +5,18 @@ import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.position.service.JobOccupationService;
 import com.moseeker.position.service.fundationbs.PositionQxService;
 import com.moseeker.position.service.fundationbs.PositionService;
+import com.moseeker.position.service.third.ThirdPositionService;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.position.service.PositionServices.Iface;
@@ -38,6 +42,8 @@ public class PositionServicesImpl implements Iface {
     private JobPositionDao jobPositionDao;
     @Autowired
     private PositionQxService positionQxService;
+    @Autowired
+    private ThirdPositionService thirdPositionService;
 
     /**
      * 获取推荐职位
@@ -239,6 +245,14 @@ public class PositionServicesImpl implements Iface {
     }
 
     @Override
+    public ThirdPartyPositionResult getThirdPartyPositionInfo(ThirdPartyPositionInfoForm infoForm) throws BIZException, TException {
+        try {
+            return thirdPositionService.getThirdPartyPositionInfo(infoForm);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+    @Override
     public Response getPositionForThirdParty(int positionId, int channel) throws TException {
         try {
             return service.getPositionForThirdParty(positionId, channel);
@@ -259,4 +273,21 @@ public class PositionServicesImpl implements Iface {
     }
 
 
+    @Override
+    public int updateThirdPartyPosition(HrThirdPartyPositionDO thirdPartyPosition) throws BIZException, TException {
+        try {
+            return thirdPositionService.updateThirdPartyPosition(thirdPartyPosition);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public int updateThirdPartyPositionWithAccount(HrThirdPartyPositionDO thirdPartyPosition, HrThirdPartyAccountDO thirdPartyAccount) throws BIZException, TException {
+        try {
+            return thirdPositionService.updateThirdPartyPositionWithAccount(thirdPartyPosition, thirdPartyAccount);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
 }
