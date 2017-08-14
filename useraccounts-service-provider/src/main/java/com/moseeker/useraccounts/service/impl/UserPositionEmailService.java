@@ -176,9 +176,9 @@ public class UserPositionEmailService {
 				if(jdPic!=null&&!jdPic.isEmpty()){
 					Map<String,Object> positionPic=(Map<String, Object>) jdPic.get("position_pic");
 					if(positionPic!=null&&!positionPic.isEmpty()){
-						String firstPic=(String) positionPic.get("first_pic");
-						if(StringUtils.isNotEmpty(firstPic)){
-							pic=firstPic;
+						Map<String,Object>firstPic=(Map<String,Object>) positionPic.get("first_pic");
+						if(firstPic!=null&&!firstPic.isEmpty()){
+							pic=(String)firstPic.get("res_url");
 						}
 					}
 				}
