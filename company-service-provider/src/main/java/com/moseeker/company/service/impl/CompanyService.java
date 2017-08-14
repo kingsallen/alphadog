@@ -30,6 +30,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.CompanyCertConf;
 import com.moseeker.thrift.gen.company.struct.CompanyForVerifyEmployee;
 import com.moseeker.thrift.gen.company.struct.CompanyOptions;
+import com.moseeker.thrift.gen.company.struct.HrImporterMonitorVO;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignPcBannerDO;
 import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
@@ -272,7 +273,7 @@ public class CompanyService {
         queryBuilder.where(HrCompany.HR_COMPANY.ID.getName(), companyId);
         // 判断公司信息是否正确
         HrCompanyDO hrCompanyDO = companyDao.getData(queryBuilder.buildQuery());
-        if (hrCompanyDO != null) {
+        if (hrCompanyDO == null) {
             throw ExceptionFactory.buildException(Category.COMPANY_DATA_EMPTY);
         }
         // 更新数据
@@ -520,8 +521,11 @@ public class CompanyService {
         if (StringUtils.isEmptyList(hrEmployeeCertConfDO)) {
             hrEmployeeCertConfDO = new ArrayList<>();
         }
+        HrImporterMonitorVO hrImporterMonitorVO = new HrImporterMonitorVO();
         HrImporterMonitorDO hrImporterMonitorDO = getImporterMonitor(companyId, hraccountId, type);
-        companyCertConf.setHrImporterMonitor(hrImporterMonitorDO);
+        org.springframework.beans.BeanUtils.copyProperties(hrImporterMonitorDO, hrImporterMonitorVO);
+        hrImporterMonitorVO.setFileName(hrImporterMonitorDO.getName());
+        companyCertConf.setHrImporterMonitor(hrImporterMonitorVO);
         companyCertConf.setHrEmployeeCertConf(hrEmployeeCertConfDO);
 
         return companyCertConf;

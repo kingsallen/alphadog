@@ -84,4 +84,14 @@ public class SearchengineServiceImpl implements Iface {
 		}
 	}
 
+    @Override
+    public Response updateEmployeeAwards(List<Integer> employeeIds) throws TException {
+        return service.updateEmployeeAwards(employeeIds);
+    }
+
+    @Override
+    public Response deleteEmployeeDO(List<Integer> employeeIds) throws TException {
+        return service.deleteEmployeeDO(employeeIds);
+    }
+
 }

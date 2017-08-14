@@ -13,6 +13,7 @@ import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
@@ -32,10 +33,7 @@ import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.moseeker.useraccounts.exception.ExceptionCategory;
 import com.moseeker.useraccounts.exception.ExceptionFactory;
 import com.moseeker.useraccounts.service.EmployeeBinder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import org.apache.thrift.TException;
@@ -207,8 +205,7 @@ public class EmployeeService {
         return response;
     }
 
-    public Result unbind(int employeeId, int companyId, int userId)
-            throws TException {
+    public Result unbind(int employeeId, int companyId, int userId) {
         log.info("unbind param: employeeId={}, companyId={}, userId={}", employeeId, companyId, userId);
         Result response = new Result();
         Query.QueryBuilder query = new Query.QueryBuilder();
@@ -275,8 +272,7 @@ public class EmployeeService {
     }
 
 
-    public RewardsResponse getEmployeeRewards(int employeeId, int companyId)
-            throws TException {
+    public RewardsResponse getEmployeeRewards(int employeeId, int companyId) throws CommonException {
         log.info("getEmployeeRewards param: employeeId={}, companyId={}", employeeId, companyId);
         RewardsResponse response = new RewardsResponse();
         Query.QueryBuilder query = new Query.QueryBuilder();
@@ -290,7 +286,7 @@ public class EmployeeService {
 
             // 查询申请职位list
             response.setTotal(userEmployeeDO.getAward());
-            // response.setRewards(employeeEntity.getEmployeePointsRecords(employeeId));
+            response.setRewards(employeeEntity.getEmployeePointsRecords(employeeId));
         } else {
             throw ExceptionFactory.buildException(ExceptionCategory.USEREMPLOYEES_EMPTY);
         }
@@ -342,21 +338,20 @@ public class EmployeeService {
                Map<Integer, JSONObject> map = JSON.parseObject(result.getData(), Map.class);
                query.clear();
                query.where(new Condition("id", map.keySet(), ValueOp.IN));
-               Map<Integer, UserEmployeeDO> employeeDOMap = employeeDao.getDatas(query.buildQuery()).stream().collect(Collectors.toMap(k -> k.getId(), v -> v));
+               Map<Integer, UserEmployeeDO> employeeDOMap = employeeDao.getDatas(query.buildQuery()).stream().filter(m -> m != null && m.getId() > 0).collect(Collectors.toMap(k -> k.getId(), v -> v));
                List<Integer> userIds = employeeDOMap.values().stream().map(m -> m.getSysuserId()).collect(Collectors.toList());
                query.clear();
                query.where(new Condition("company_id", employeeEntity.getCompanyIds(companyId), ValueOp.IN));
-               List<Integer> wechatIds = wxWechatDao.getDatas(query.buildQuery()).stream().map(m -> m.getId()).collect(Collectors.toList());
+               List<Integer> wechatIds = wxWechatDao.getDatas(query.buildQuery()).stream().filter(m -> m != null && m.getId() > 0).map(m -> m.getId()).collect(Collectors.toList());
                query.clear();
-               query.where(new Condition("sysuser_id", userIds, ValueOp.IN));
-               query.where(new Condition("wechat_id", wechatIds, ValueOp.IN));
-               Map<Integer, String> userWxUserMap = wxUserDao.getDatas(query.buildQuery()).stream().collect(Collectors.toMap(k -> k.getSysuserId(), v -> v.getHeadimgurl()));
+               query.where(new Condition("sysuser_id", userIds, ValueOp.IN)).and(new Condition("wechat_id", wechatIds, ValueOp.IN));
+               Map<Integer, String> userWxUserMap = wxUserDao.getDatas(query.buildQuery()).stream().filter(m -> m != null && m.getSysuserId() > 0 && m.getHeadimgurl() != null).collect(Collectors.toMap(k -> k.getSysuserId(), v -> v.getHeadimgurl(), (newKey, oldKey) -> newKey));
                map.entrySet().stream().forEach(e -> {
                    EmployeeAward employeeAward = new EmployeeAward();
                    JSONObject value = e.getValue();
                    employeeAward.setEmployeeId(e.getKey());
                    employeeAward.setAwardTotal(value.getInteger("award"));
-                   employeeAward.setName(employeeDOMap.get(e.getKey()).getCname());
+                   employeeAward.setName(employeeDOMap.get(e.getKey()) != null ? employeeDOMap.get(e.getKey()).getCname() : "");
                    employeeAward.setHeadimgurl(userWxUserMap.getOrDefault(employeeDOMap.get(e.getKey()).getSysuserId(), ""));
                    employeeAward.setRanking(value.getIntValue("ranking"));
                    response.add(employeeAward);

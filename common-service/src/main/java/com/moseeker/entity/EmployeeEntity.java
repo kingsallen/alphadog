@@ -1,6 +1,5 @@
 package com.moseeker.entity;
 
-import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.configdb.ConfigSysPointsConfTplDao;
 import com.moseeker.baseorm.dao.historydb.HistoryUserEmployeeDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
@@ -17,11 +16,9 @@ import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
-import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.AbleFlag;
-import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
@@ -39,18 +36,18 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrPointsConfDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.*;
+import com.moseeker.thrift.gen.employee.struct.Reward;
 import com.moseeker.thrift.gen.employee.struct.RewardVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
-import org.apache.thrift.TException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -101,8 +98,8 @@ public class EmployeeEntity {
     @Autowired
     private HrPointsConfDao hrPointsConfDao;
 
-    @Resource(name = "cacheClient")
-    protected RedisClient client;
+    @Autowired
+    private SearchengineEntity searchengineEntity;
 
 
     private static final Logger logger = LoggerFactory.getLogger(EmployeeEntity.class);
@@ -176,9 +173,7 @@ public class EmployeeEntity {
                     ueprcrDo.setEmployeePointsRecordId(ueprDo.getId());
                     ueprcrDao.addData(ueprcrDo);
                     // 更新ES中的user_employee数据，以便积分排行实时更新
-                    JSONObject jobj = new JSONObject();
-                    jobj.put("employee_id", Arrays.asList(employeeId));
-                    client.lpush(Constant.APPID_ALPHADOG, "ES_REALTIME_UPDATE_INDEX_AWARD_RANKING", jobj.toJSONString());
+                    searchengineEntity.updateEmployeeAwards(Arrays.asList(employeeId));
                     return userEmployeeDO.getAward();
                 } else {
                     logger.error("增加用户积分失败：为用户{},添加积分{}点, reason:{}", employeeId, ueprDo.getAward(), ueprDo.getReason());
@@ -232,13 +227,56 @@ public class EmployeeEntity {
      * @param employeeId
      * @return
      */
+    public List<Reward> getEmployeePointsRecords(int employeeId) {
+        // 用户积分记录：
+        List<Reward> rewards = new ArrayList<>();
+        List<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO> points = employeePointsRecordDao.getDatas(new Query.QueryBuilder()
+                .where("employee_id", employeeId).orderBy("update_time", Order.DESC).buildQuery());
+        if (!StringUtils.isEmptyList(points)) {
+            List<Double> aids = points.stream().map(m -> m.getApplicationId()).collect(Collectors.toList());
+            Query.QueryBuilder query = new Query.QueryBuilder();
+            query.where(new Condition("id", aids, ValueOp.IN));
+            List<JobApplicationDO> applications = applicationDao.getDatas(query.buildQuery());
+            final Map<Integer, Integer> appMap = new HashMap<>();
+            final Map<Integer, String> positionMap = new HashMap<>();
+            // 转成map -> k: applicationId, v: positionId
+            if (!StringUtils.isEmptyList(applications)) {
+                appMap.putAll(applications.stream().collect(Collectors.toMap(JobApplicationDO::getId, JobApplicationDO::getPositionId)));
+                query.clear();
+                query.where(new Condition("id", appMap.values().toArray(), ValueOp.IN));
+                List<JobPositionDO> positions = positionDao.getPositions(query.buildQuery());
+                // 转成map -> k: positionId, v: positionTitle
+                if (!StringUtils.isEmptyList(points)) {
+                    positionMap.putAll(positions.stream().collect(Collectors.toMap(JobPositionDO::getId, JobPositionDO::getTitle)));
+                }
+            }
+            points.stream().filter(p -> p.getAward() != 0).forEach(point -> {
+                Reward reward = new Reward();
+                reward.setReason(point.getReason());
+                reward.setPoints(point.getAward());
+                reward.setUpdateTime(point.getUpdateTime());
+                reward.setTitle(positionMap.getOrDefault(appMap.get(point.getApplicationId()), ""));
+                rewards.add(reward);
+            });
+        }
+        return rewards;
+    }
+
+    /**
+     * 积分列表
+     *
+     * @param employeeId
+     * @return
+     */
     public RewardVOPageVO getEmployeePointsRecords(int employeeId, Integer pageNumber, Integer pageSize) throws CommonException {
         RewardVOPageVO rewardVOPageVO = new RewardVOPageVO();
         List<RewardVO> rewardVOList = new ArrayList<>();
         Query.QueryBuilder query = new Query.QueryBuilder();
         // 默认取100条数据
-        query.setPageSize(pageSize.intValue() == 0 ? 100 : pageSize);
-        query.setPageNum(pageNumber.intValue() == 0 ? 1 : pageNumber);
+        if (pageNumber != null && pageNumber.intValue() > 0 && pageSize != null && pageSize > 0) {
+            query.setPageSize(pageSize.intValue());
+            query.setPageNum(pageNumber.intValue());
+        }
         query.where(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.EMPLOYEE_ID.getName(), employeeId)
                 .and(new Condition(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.AWARD.getName(), 0, ValueOp.NEQ))
                 .orderBy(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.UPDATE_TIME.getName(), Order.DESC);
@@ -412,7 +450,7 @@ public class EmployeeEntity {
      * @param employees
      * @return
      */
-    public boolean unbind(List<UserEmployeeDO> employees) throws TException {
+    public boolean unbind(List<UserEmployeeDO> employees) throws CommonException {
         if (employees != null && employees.size() > 0) {
             employees.stream().filter(f -> f.getActivation() == 0).forEach(e -> {
                 e.setActivation((byte) 1);
@@ -421,9 +459,7 @@ public class EmployeeEntity {
             int[] rows = employeeDao.updateDatas(employees);
             if (Arrays.stream(rows).sum() > 0) {
                 // 更新ES中useremployee信息
-                JSONObject jobj = new JSONObject();
-                jobj.put("employee_id", employees.stream().map(m -> m.getId()).collect(Collectors.toList()));
-                client.lpush(Constant.APPID_ALPHADOG, "ES_REALTIME_UPDATE_INDEX_AWARD_RANKING", jobj.toJSONString());
+                searchengineEntity.updateEmployeeAwards(employees.stream().map(m -> m.getId()).collect(Collectors.toList()));
                 return true;
             } else {
                 throw ExceptionFactory.buildException(ExceptionCategory.EMPLOYEE_IS_UNBIND);
@@ -439,7 +475,7 @@ public class EmployeeEntity {
      * 2.user_employee中做物理删除
      */
     @Transactional
-    public boolean removeEmployee(List<Integer> employeeIds) throws Exception {
+    public boolean removeEmployee(List<Integer> employeeIds) throws CommonException {
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.where(new Condition("id", employeeIds, ValueOp.IN));
         List<UserEmployeeDO> userEmployeeDOList = employeeDao.getDatas(query.buildQuery());
@@ -449,9 +485,7 @@ public class EmployeeEntity {
             if (Arrays.stream(rows).sum() > 0) {
                 historyUserEmployeeDao.addAllData(userEmployeeDOList);
                 // 更新ES中useremployee信息
-                JSONObject jobj = new JSONObject();
-                jobj.put("employee_id", employeeIds);
-                client.lpush(Constant.APPID_ALPHADOG, "ES_REALTIME_UPDATE_INDEX_AWARD_RANKING", jobj.toJSONString());
+                searchengineEntity.deleteEmployeeDO(employeeIds);
                 return true;
             } else {
                 throw ExceptionFactory.buildException(ExceptionCategory.EMPLOYEE_HASBEENDELETEOR);
@@ -635,11 +669,8 @@ public class EmployeeEntity {
     public List<UserEmployeeDO> addEmployeeList(List<UserEmployeeDO> userEmployeeList) throws CommonException {
         if (userEmployeeList != null && userEmployeeList.size() > 0) {
             List<UserEmployeeDO> employeeDOS = employeeDao.addAllData(userEmployeeList);
-
-            JSONObject jobj = new JSONObject();
-            jobj.put("employee_id", employeeDOS.stream().map(m -> m.getId()).collect(Collectors.toList()));
-            client.lpush(Constant.APPID_ALPHADOG, "ES_REALTIME_UPDATE_INDEX_AWARD_RANKING", jobj.toJSONString());
-
+            // ES 索引更新
+            searchengineEntity.updateEmployeeAwards(employeeDOS.stream().map(m -> m.getId()).collect(Collectors.toList()));
             return employeeDOS;
         } else {
             return null;
@@ -658,9 +689,7 @@ public class EmployeeEntity {
         if (userEmployeeList != null && userEmployeeList.size() > 0) {
             List<UserEmployeeRecord> employeeDOS = employeeDao.addAllRecord(userEmployeeList);
 
-            JSONObject jobj = new JSONObject();
-            jobj.put("employee_id", employeeDOS.stream().map(m -> m.getId()).collect(Collectors.toList()));
-            client.lpush(Constant.APPID_ALPHADOG, "ES_REALTIME_UPDATE_INDEX_AWARD_RANKING", jobj.toJSONString());
+            searchengineEntity.updateEmployeeAwards(employeeDOS.stream().map(m -> m.getId()).collect(Collectors.toList()));
 
             return employeeDOS;
         } else {
@@ -669,26 +698,27 @@ public class EmployeeEntity {
     }
 
     /**
-     * 添加员工记录或者员工数据
-     * 会向员工记录中添加数据的同时，往ES员工索引维护队列中增加维护员工记录的任务。
+     *
+     * 删除员工记录或者员工数据
+     * 会向员工记录中删除数据的同时，往ES员工索引维护队列中增加维护员工记录的任务。
      *
      * @param userEmployeeDOList
      * @throws CommonException
      */
-    public void deleteEmployeeList(List<UserEmployeeDO> userEmployeeDOList) throws CommonException {
-        if (userEmployeeDOList == null || userEmployeeDOList.size() == 0) {
-            return;
-        }
-        JSONObject jobj = new JSONObject();
-        jobj.put("employee_id", userEmployeeDOList.stream().map(m -> m.getId()).collect(Collectors.toList()));
-        employeeDao.deleteDatas(userEmployeeDOList);
-
-        client.lpush(Constant.APPID_ALPHADOG, "ES_REALTIME_UPDATE_INDEX_AWARD_RANKING", jobj.toJSONString());
-    }
+//    public void deleteEmployeeList(List<UserEmployeeDO> userEmployeeDOList) throws CommonException {
+//        if (userEmployeeDOList == null || userEmployeeDOList.size() == 0) {
+//            return;
+//        }
+//        JSONObject jobj = new JSONObject();
+//        jobj.put("employee_id", userEmployeeDOList.stream().map(m -> m.getId()).collect(Collectors.toList()));
+//        employeeDao.deleteDatas(userEmployeeDOList);
+//
+//        searchengineEntity.deleteEmployeeDO(userEmployeeDOList.stream().map(m -> m.getId()).collect(Collectors.toList()));
+//    }
 
     /**
-     * 删除员工记录或者员工数据
-     * 会向员工记录中删除数据的同时，往ES员工索引维护队列中增加维护员工记录的任务。
+     * 添加员工记录或者员工数据
+     * 会向员工记录中添加数据的同时，往ES员工索引维护队列中增加维护员工记录的任务。
      *
      * @param userEmployee
      * @return
@@ -700,15 +730,14 @@ public class EmployeeEntity {
         }
         UserEmployeeDO employeeDO = employeeDao.addData(userEmployee);
 
-        JSONObject jobj = new JSONObject();
-        jobj.put("employee_id", Arrays.asList(employeeDO.getId()));
-        client.lpush(Constant.APPID_ALPHADOG, "ES_REALTIME_UPDATE_INDEX_AWARD_RANKING", jobj.toJSONString());
+        searchengineEntity.updateEmployeeAwards(Arrays.asList(employeeDO.getId()));
 
         return employeeDO;
     }
 
     /**
      * ATS对接 批量修改员工信息
+     *
      * @param batchForm
      */
     public int[] postPutUserEmployeeBatch(UserEmployeeBatchForm batchForm) throws CommonException {
@@ -854,13 +883,14 @@ public class EmployeeEntity {
             logger.info("postPutUserEmployeeBatch {},批量更新数据{}条,剩余{}条", batchForm.getCompany_id(), updateDatas.size() - start, 0);
         }
 
-        logger.info("postPutUserEmployeeBatch {},result:{},", batchForm.getCompany_id(), dataStatus.length < 500?Arrays.toString(dataStatus):("成功处理"+dataStatus.length+"条"));
+        logger.info("postPutUserEmployeeBatch {},result:{},", batchForm.getCompany_id(), dataStatus.length < 500 ? Arrays.toString(dataStatus) : ("成功处理" + dataStatus.length + "条"));
 
         return dataStatus;
     }
 
     /**
      * 根据条件删除员工数据
+     *
      * @param condition 条件
      */
     private void delete(Condition condition) throws CommonException {
@@ -868,8 +898,7 @@ public class EmployeeEntity {
             Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
             queryBuilder.select("id").where(condition);
             List<UserEmployeeDO> employeeRecordList = employeeDao.getDatas(queryBuilder.buildQuery());
-            deleteEmployeeList(employeeRecordList);
-
+            removeEmployee(employeeRecordList.stream().map(m -> m.getId()).collect(Collectors.toList()));
         } else {
             //do nothing
         }
