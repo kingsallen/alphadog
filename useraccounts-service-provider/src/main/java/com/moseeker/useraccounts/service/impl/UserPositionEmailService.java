@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.service.impl;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -147,22 +148,23 @@ public class UserPositionEmailService {
 		if(totalNum>0){
 			String conditionWords=this.convertConditionForEmail(conditions);
 			String positiondata=this.handlePositionData(data);
+			if(conditionWords==null){
+				conditionWords="";
+			}
+			int positioNum=((List<Map<String,Object>>)data.get("positions")).size();
 			map.put("#search_conditions#", conditionWords);
 			map.put("#search_position#", positiondata);
-			map.put("#search_num#", totalNum+"");
-			
+			map.put("#search_num#", positioNum+"");
 			ConfigPropertiesUtil propertiesUtil = ConfigPropertiesUtil.getInstance();
 	        String senderName = propertiesUtil.get("email.verify.sendName", String.class);
 	        String subject = "每周职位推荐";
-	        String senderDisplay = org.apache.commons.lang.StringUtils.defaultIfEmpty("", "");
-	        EmailStruct emailStruct =new EmailStruct();
+	        String senderDisplay = org.apache.commons.lang.StringUtils.defaultIfEmpty(propertiesUtil.get("email.verify.sendDisplay", String.class), "仟寻招聘");
 	        mqService.sendAuthEMail(map, Constant.EVENT_TYPE_RECOMMEND_POSITION_EMAIL, email, subject, senderName, senderDisplay);
 		}
 		
 	}
 	private String handlePositionData(Map<String,Object> data){
 		 int totalNum=(int) data.get("totalNum");
-		 
 		 if(totalNum>0){
 			 String showData="";
 			 List<Map<String,Object>> list=(List<Map<String, Object>>) data.get("positions");
@@ -180,18 +182,40 @@ public class UserPositionEmailService {
 						 }
 					 }
 				 }
+				 if(StringUtils.isEmpty(pic)){
+					pic="http://cdn.moseeker.com/profile/email_verifier_qx_email_logo.png";
+				 }else{
+				 	pic="https://cdn.moseeker.com/"+pic;
+				 }
 				String title=(String) position.get("title");
 				String companyName=(String) company.get("abbreviation");
 				String citys=(String) position.get("city");
-				String salary="面议";
-				double salaryTop=position.get("salary_top")==null?0:(double)position.get("salary_top");
-				double salaryBottom=position.get("salary_bottom")==null?0:(double)position.get("salary_bottom");
+				String salary="  面议  ";
+				double salaryTop=0;
+				if(position.get("salary_top")!=null){
+					salaryTop=Double.parseDouble(position.get("salary_top").toString());
+				}
+				 double salaryBottom=0;
+				if(position.get("salary_bottom")!=null){
+					salaryBottom=Double.parseDouble(position.get("salary_bottom").toString());
+				}
 				if(salaryTop!=0||salaryBottom!=0){
-					salary=salaryBottom+"k--"+salaryTop+"k";
+					salary="  "+salaryBottom+"k--"+salaryTop+"k"+"  ";
 				}
 				String experience=(String) position.get("experience");
 				if(StringUtils.isEmpty(experience)){
-					experience="暂无";
+					experience="  暂无  ";
+				}else{
+					if(!experience.contains("年")) {
+						experience=" "+experience+"年";
+					}
+					int experienceAbove=(int) position.get("experience_above");
+					if(experienceAbove>0){
+						experience=experience+"及以上经验 ";
+					}else{
+						experience=experience+"经验 ";
+					}
+
 				}
 				String singleData=this.getPositionHtmlData(pic, title, citys, companyName, salary, experience);
 				showData+=singleData;
@@ -206,7 +230,7 @@ public class UserPositionEmailService {
 		StringBuffer sb=new StringBuffer();
 		sb.append("<tr><td align='center'><table width='500' height='90' cellpadding='0' cellspacing='0' border='0' class='wrapper'> <tbody><tr>");
 		sb.append("<td height='20' style='-ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; font-size: 10px; line-height: 10px; mso-table-lspace: 0pt;");
-		sb.append("mso-table-rspace: 0pt;'></td></tr><tr valign='middle'><td width='80' height='50'><img src='#position_bg#' width='80' height='50'");
+		sb.append("mso-table-rspace: 0pt;'></td></tr><tr valign='middle'><td width='80' height='50'><img src='"+pic+"' width='80' height='50'");
 		sb.append("style='margin:0; padding:0; display:block;-ms-interpolation-mode: bicubic; border: 0; line-height: 100%; outline: none; text-decoration:");
 		sb.append(" none;' border='0' alt=''></td><td height='10' width='10' style='font-size:70px; line-height:10px;' class='mobileOn'>&nbsp;</td>");
 		sb.append("<td width='410' height='50'><table width='400' height='50' cellpadding='0' cellspacing='0' border='0' class='wrapper'><tbody><tr>");

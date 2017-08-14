@@ -23,7 +23,7 @@ public class UserEmailPositionTest {
 	
 	@Test
 	public void sendValidateEmail() throws TException{
-		int userId=1;
+		int userId=3314;
 		String email="zhangzeteng@moseeker.com";
 		Map<String,Object> map=new HashMap<String,Object>();
 		map.put("keyWord","上海" );

@@ -87,7 +87,7 @@ public class ConstantlyMailConsumer {
 	 */
 	private void initConstantlyMail() throws IOException, MessagingException {
 		// 加载模版文件
-		templates.putAll(Stream.of(Constant.EVENT_TYPE_EMAIL_VERIFIED, Constant.EVENT_TYPE_EMPLOYEE_AUTH,Constant.EVENT_TYPE_RECOMMEND_VALID_EMAIL).collect(Collectors.toMap(k -> k, v -> {
+		templates.putAll(Stream.of(Constant.EVENT_TYPE_EMAIL_VERIFIED, Constant.EVENT_TYPE_EMPLOYEE_AUTH,Constant.EVENT_TYPE_RECOMMEND_VALID_EMAIL,Constant.EVENT_TYPE_RECOMMEND_POSITION_EMAIL).collect(Collectors.toMap(k -> k, v -> {
 			String templateName = "";
 			if (v == 1) {
 				templateName = "email_verifier_template.html";
