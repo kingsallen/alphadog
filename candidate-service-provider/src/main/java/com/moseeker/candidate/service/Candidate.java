@@ -1,5 +1,6 @@
 package com.moseeker.candidate.service;
 
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.thrift.gen.candidate.struct.*;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -31,9 +32,9 @@ public interface Candidate {
      *
      * @param param 查询参数
      * @return 被动求职者列表
-     * @throws BIZException 业务异常
+     * @throws CommonException 业务异常
      */
-    List<CandidateList> candidateList(CandidateListParam param) throws BIZException;
+    List<CandidateList> candidateList(CandidateListParam param) throws CommonException;
 
     /**
      * 修改职位转发浏览记录的推荐标志
@@ -43,7 +44,7 @@ public interface Candidate {
      * @return 操作结果
      * @throws BIZException 业务异常
      */
-    RecommendResult getRecommendations(int companyId, List<Integer> idList) throws BIZException;
+    RecommendResult getRecommendations(int companyId, List<Integer> idList) throws CommonException;
 
     /**
      * 推荐浏览者
@@ -52,7 +53,7 @@ public interface Candidate {
      * @return 推荐结果
      * @throws BIZException 业务异常
      */
-    RecommendResult recommend(RecommmendParam param) throws BIZException;
+    RecommendResult recommend(RecommmendParam param) throws CommonException;
 
     /**
      * 查找职位转发浏览记录
@@ -62,7 +63,7 @@ public interface Candidate {
      * @return 职位浏览记录信息
      * @throws BIZException 业务异常
      */
-    RecomRecordResult getRecommendation(int id, int postUserId) throws BIZException;
+    RecomRecordResult getRecommendation(int id, int postUserId) throws CommonException;
 
     /**
      * 查询员工在公司的推荐排名
@@ -72,7 +73,7 @@ public interface Candidate {
      * @return 员工在公司的推荐排名
      * @throws BIZException 业务异常
      */
-    SortResult getRecommendatorySorting(int postUserId, int companyId) throws BIZException;
+    SortResult getRecommendatorySorting(int postUserId, int companyId) throws CommonException;
 
     /**
      * 忽略推荐操作中的员工
@@ -84,5 +85,5 @@ public interface Candidate {
      * @return 操作结果
      * @throws BIZException 业务异常
      */
-    RecommendResult ignore(int id, int companyId, int postUserId, String clickTime) throws BIZException;
+    RecommendResult ignore(int id, int companyId, int postUserId, String clickTime) throws CommonException;
 }

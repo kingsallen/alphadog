@@ -12,13 +12,13 @@ import com.moseeker.common.biztools.RecruitmentScheduleEnum;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.Category;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.thrift.gen.candidate.struct.*;
-import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.CandidateRecomRecordSortingDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.*;
@@ -191,7 +191,7 @@ public class CandidateEntity implements Candidate {
      */
     @Override
     @CounterIface
-    public List<CandidateList> candidateList(CandidateListParam param) throws BIZException {
+    public List<CandidateList> candidateList(CandidateListParam param) throws CommonException {
         logger.info("CandidateEntiry candidateList param:{}", param);
 
         List<CandidateList> result = new ArrayList<>();
@@ -262,7 +262,7 @@ public class CandidateEntity implements Candidate {
     @Override
     @CounterIface
     public RecommendResult getRecommendations(int companyId, List<Integer> idList) throws
-            BIZException {
+            CommonException {
 
         /** 参数校验 */
         ValidateUtil vu = ParamCheckTool.checkRecommends(companyId, idList);
@@ -314,7 +314,7 @@ public class CandidateEntity implements Candidate {
 
     @Override
     @CounterIface
-    public RecommendResult recommend(RecommmendParam param) throws BIZException {
+    public RecommendResult recommend(RecommmendParam param) throws CommonException {
 
         logger.info("CandidateEntiry recommend param:{}", param);
         /** 参数校验 */
@@ -368,12 +368,12 @@ public class CandidateEntity implements Candidate {
      * @param id         记录编号
      * @param postUserId 转发者编号
      * @return 查询结果
-     * @throws BIZException 业务异常
+     * @throws CommonException 业务异常
      */
     @Override
     @CounterIface
     public RecomRecordResult getRecommendation(int id, int postUserId) throws
-            BIZException {
+            CommonException {
         ValidateUtil vu = ParamCheckTool.checkGetRecommendation(id, postUserId);
         String message = vu.validate();
         if (!StringUtils.isNullOrEmpty(message)) {
@@ -401,7 +401,7 @@ public class CandidateEntity implements Candidate {
     @Override
     @CounterIface
     public SortResult getRecommendatorySorting(int postUserId, int companyId) throws
-            BIZException {
+            CommonException {
         logger.info("CandidateEntity getRecommendatorySorting postUserId:{}, companyId:{}", postUserId, companyId);
         /** 参数校验 */
         ValidateUtil vu = ParamCheckTool.checkRecommendatorySorting(postUserId, companyId);
@@ -443,7 +443,7 @@ public class CandidateEntity implements Candidate {
     @Override
     @CounterIface
     public RecommendResult ignore(int id, int companyId, int postUserId, String
-            clickTime) throws BIZException {
+            clickTime) throws CommonException {
         logger.info("CandidateEntity ignore id:{}, companyId:{}, postUserId:{}, clickTime:{}", id, companyId, postUserId, clickTime);
         /** 参数校验 */
         ValidateUtil vu = ParamCheckTool.checkignore(id, companyId, postUserId, clickTime);
@@ -520,7 +520,7 @@ public class CandidateEntity implements Candidate {
      * @return 操作结果
      */
     private RecommendResult assembleRecommendResult(int id, int postUserId, String
-            clickTime, int companyId) throws BIZException {
+            clickTime, int companyId) throws CommonException {
         RecommendResult recommendResult = new RecommendResult();
 
         List<Integer> exceptNotRecommend = new ArrayList<Integer>() {{
