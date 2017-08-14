@@ -99,6 +99,32 @@ public class PositionPcService {
 		}
 		return res;
 	}
+	//======================================================
+	//获取仟寻推荐公司和相关职位信息接口
+	@CounterIface
+	public Response getQXRecommendCompanyList(int page,int pageSize) throws TException{
+		List<CampaignPcRecommendCompanyDO>  CampaignPcRecommendCompanyList=campaignPcRecommendCompanyDao.getCampaignPcRecommendCompanyList(page,pageSize);
+		if(StringUtils.isEmptyList(CampaignPcRecommendCompanyList)){
+			return  null;
+		}
+		List<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
+		for(CampaignPcRecommendCompanyDO dO:CampaignPcRecommendCompanyList){
+			Map<String,Object> map=new HashMap<String,Object>();
+			String companyIds=dO.getCompanyIds();
+			map.put("moduleName", dO.getModuleName());
+			map.put("moduleDescription", dO.getModuleDescription());
+			List<Integer> companyIdList=new ArrayList<Integer>();
+			String [] ids=companyIds.split(",");
+			for(int i=0;i<ids.length;i++){
+				companyIdList.add(Integer.parseInt(ids[i]));
+			}
+			List<Map<String,Object>> result=handleRecommendPcCompanyData(companyIdList);
+			map.put("data", result);
+			list.add(map);
+		}
+		Response res= ResponseUtils.success(list);
+		return res;
+	}
 	/*
 	 * 根据推荐职位列表获取职位id
 	 */
@@ -646,31 +672,7 @@ public class PositionPcService {
 		 }
 	 }
 	 
-	//====================================================== 
-	 //获取仟寻推荐公司和相关职位信息接口
-	 public Response getQXRecommendCompanyList(int page,int pageSize) throws TException{
-		 List<CampaignPcRecommendCompanyDO>  CampaignPcRecommendCompanyList=campaignPcRecommendCompanyDao.getCampaignPcRecommendCompanyList(page,pageSize);
-		 if(StringUtils.isEmptyList(CampaignPcRecommendCompanyList)){
-			 return  null;
-		 }
-		 List<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
-		 for(CampaignPcRecommendCompanyDO dO:CampaignPcRecommendCompanyList){
-			 Map<String,Object> map=new HashMap<String,Object>();
-			 String companyIds=dO.getCompanyIds();
-			 map.put("moduleName", dO.getModuleName());
-			 map.put("moduleDescription", dO.getModuleDescription());
-			 List<Integer> companyIdList=new ArrayList<Integer>();
-			 String [] ids=companyIds.split(",");
-			 for(int i=0;i<ids.length;i++){
-				 companyIdList.add(Integer.parseInt(ids[i]));
-			 }
-			 List<Map<String,Object>> result=handleRecommendPcCompanyData(companyIdList);
-			 map.put("data", result);
-			 list.add(map);
-		 }
-		 Response res= ResponseUtils.success(list);
-		 return res;
-	 }
+
 	 //获取全部公司
 	 public List<Map<String,Object>> getAllCompanyRecommend(int page,int pageSize) throws TException{
 		 List<CampaignPcRecommendCompanyDO>  CampaignPcRecommendCompanyList=campaignPcRecommendCompanyDao.getCampaignPcRecommendCompanyList(page,pageSize);
