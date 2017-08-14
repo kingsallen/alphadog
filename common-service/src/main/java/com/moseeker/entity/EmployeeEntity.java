@@ -41,11 +41,13 @@ import com.moseeker.thrift.gen.employee.struct.RewardVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -271,8 +273,10 @@ public class EmployeeEntity {
         List<RewardVO> rewardVOList = new ArrayList<>();
         Query.QueryBuilder query = new Query.QueryBuilder();
         // 默认取100条数据
-        query.setPageSize(pageSize.intValue() == 0 ? 100 : pageSize);
-        query.setPageNum(pageNumber.intValue() == 0 ? 1 : pageNumber);
+        if (pageNumber != null && pageNumber.intValue() > 0 && pageSize != null && pageSize > 0) {
+            query.setPageSize(pageSize.intValue());
+            query.setPageNum(pageNumber.intValue());
+        }
         query.where(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.EMPLOYEE_ID.getName(), employeeId)
                 .and(new Condition(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.AWARD.getName(), 0, ValueOp.NEQ))
                 .orderBy(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.UPDATE_TIME.getName(), Order.DESC);
@@ -713,8 +717,9 @@ public class EmployeeEntity {
 //    }
 
     /**
-     *  添加员工记录或者员工数据
-     *  会向员工记录中添加数据的同时，往ES员工索引维护队列中增加维护员工记录的任务。
+     * 添加员工记录或者员工数据
+     * 会向员工记录中添加数据的同时，往ES员工索引维护队列中增加维护员工记录的任务。
+     *
      * @param userEmployee
      * @return
      * @throws CommonException
@@ -732,6 +737,7 @@ public class EmployeeEntity {
 
     /**
      * ATS对接 批量修改员工信息
+     *
      * @param batchForm
      */
     public int[] postPutUserEmployeeBatch(UserEmployeeBatchForm batchForm) throws CommonException {
@@ -877,13 +883,14 @@ public class EmployeeEntity {
             logger.info("postPutUserEmployeeBatch {},批量更新数据{}条,剩余{}条", batchForm.getCompany_id(), updateDatas.size() - start, 0);
         }
 
-        logger.info("postPutUserEmployeeBatch {},result:{},", batchForm.getCompany_id(), dataStatus.length < 500?Arrays.toString(dataStatus):("成功处理"+dataStatus.length+"条"));
+        logger.info("postPutUserEmployeeBatch {},result:{},", batchForm.getCompany_id(), dataStatus.length < 500 ? Arrays.toString(dataStatus) : ("成功处理" + dataStatus.length + "条"));
 
         return dataStatus;
     }
 
     /**
      * 根据条件删除员工数据
+     *
      * @param condition 条件
      */
     private void delete(Condition condition) throws CommonException {
