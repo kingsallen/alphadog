@@ -32,10 +32,7 @@ import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.moseeker.useraccounts.exception.ExceptionCategory;
 import com.moseeker.useraccounts.exception.ExceptionFactory;
 import com.moseeker.useraccounts.service.EmployeeBinder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import org.apache.thrift.TException;
@@ -207,8 +204,7 @@ public class EmployeeService {
         return response;
     }
 
-    public Result unbind(int employeeId, int companyId, int userId)
-            throws TException {
+    public Result unbind(int employeeId, int companyId, int userId) {
         log.info("unbind param: employeeId={}, companyId={}, userId={}", employeeId, companyId, userId);
         Result response = new Result();
         Query.QueryBuilder query = new Query.QueryBuilder();

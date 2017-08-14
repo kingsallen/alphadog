@@ -1,15 +1,10 @@
 package com.moseeker.useraccounts.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.parser.Feature;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
-import com.moseeker.thrift.gen.employee.struct.Employee;
-import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVO;
 import com.moseeker.useraccounts.config.AppConfig;
-import com.moseeker.useraccounts.pojo.EmployeeRank;
-import com.moseeker.useraccounts.pojo.EmployeeRankObj;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,7 +13,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;

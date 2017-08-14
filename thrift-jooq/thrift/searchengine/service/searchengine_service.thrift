@@ -12,4 +12,6 @@ service SearchengineServices {
     common_struct.Response positionQuery(1: string keyWords,2:string citys,3:string industry,4:string salaryCode,5:i32 page,6:i32 pageSize,7:string startTime,8:string endTime);
     common_struct.Response queryAwardRanking(1: list<i32> companyIds, 2: string timespan, 3: i32 pageSize, 4: i32 pageNum,5:string keyword,6:i32 filter);
     common_struct.Response queryAwardRankingInWx(1: list<i32> companyIds, 2: string timespan, 3: i32 employeeId);
+    common_struct.Response updateEmployeeAwards(1: list<i32> employeeId);
+    common_struct.Response deleteEmployeeDO(1: list<i32> employeeId);
 }
