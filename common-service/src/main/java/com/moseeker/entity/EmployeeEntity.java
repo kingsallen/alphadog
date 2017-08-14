@@ -36,6 +36,7 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrPointsConfDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.*;
+import com.moseeker.thrift.gen.employee.struct.Reward;
 import com.moseeker.thrift.gen.employee.struct.RewardVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
@@ -218,6 +219,47 @@ public class EmployeeEntity {
             addReward(employeeId, companyId, ueprDo);
         }
         return true;
+    }
+
+    /**
+     * 积分列表
+     *
+     * @param employeeId
+     * @return
+     */
+    public List<Reward> getEmployeePointsRecords(int employeeId) {
+        // 用户积分记录：
+        List<Reward> rewards = new ArrayList<>();
+        List<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO> points = employeePointsRecordDao.getDatas(new Query.QueryBuilder()
+                .where("employee_id", employeeId).orderBy("update_time", Order.DESC).buildQuery());
+        if (!StringUtils.isEmptyList(points)) {
+            List<Double> aids = points.stream().map(m -> m.getApplicationId()).collect(Collectors.toList());
+            Query.QueryBuilder query = new Query.QueryBuilder();
+            query.where(new Condition("id", aids, ValueOp.IN));
+            List<JobApplicationDO> applications = applicationDao.getDatas(query.buildQuery());
+            final Map<Integer, Integer> appMap = new HashMap<>();
+            final Map<Integer, String> positionMap = new HashMap<>();
+            // 转成map -> k: applicationId, v: positionId
+            if (!StringUtils.isEmptyList(applications)) {
+                appMap.putAll(applications.stream().collect(Collectors.toMap(JobApplicationDO::getId, JobApplicationDO::getPositionId)));
+                query.clear();
+                query.where(new Condition("id", appMap.values().toArray(), ValueOp.IN));
+                List<JobPositionDO> positions = positionDao.getPositions(query.buildQuery());
+                // 转成map -> k: positionId, v: positionTitle
+                if (!StringUtils.isEmptyList(points)) {
+                    positionMap.putAll(positions.stream().collect(Collectors.toMap(JobPositionDO::getId, JobPositionDO::getTitle)));
+                }
+            }
+            points.stream().filter(p -> p.getAward() != 0).forEach(point -> {
+                Reward reward = new Reward();
+                reward.setReason(point.getReason());
+                reward.setPoints(point.getAward());
+                reward.setUpdateTime(point.getUpdateTime());
+                reward.setTitle(positionMap.getOrDefault(appMap.get(point.getApplicationId()), ""));
+                rewards.add(reward);
+            });
+        }
+        return rewards;
     }
 
     /**
