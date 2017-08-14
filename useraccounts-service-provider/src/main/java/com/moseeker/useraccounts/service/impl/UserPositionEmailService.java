@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.service.impl;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -74,9 +75,9 @@ public class UserPositionEmailService {
 		data.put("#auth_url#", urls);
 		data.put("#search_condition#", conditionWords);
 		ConfigPropertiesUtil propertiesUtil = ConfigPropertiesUtil.getInstance();
-        String senderName = propertiesUtil.get("email.verify.sendName", String.class);
-        String subject = "请验证邮箱完成推荐职位订阅";
-        String senderDisplay = org.apache.commons.lang.StringUtils.defaultIfEmpty("", "");
+		String senderName = propertiesUtil.get("email.verify.sendName", String.class);
+		String subject = "请验证邮箱完成推荐职位订阅";
+		String senderDisplay = org.apache.commons.lang.StringUtils.defaultIfEmpty("", "");
 		mqService.sendAuthEMail(data, Constant.EVENT_TYPE_RECOMMEND_VALID_EMAIL, email, subject, senderName, senderDisplay);
 		return 1;
 	}
@@ -105,10 +106,13 @@ public class UserPositionEmailService {
 		UserPositionEmailDO DO=userPositionEmailDao.getData(query);
 		return DO;
 	}
-	
+
 	//处理发送职位推荐邮件
 	public int handleEmailRecommendPosition(String email,String conditions) throws Exception{
-		Map<String,Object> condition=(Map<String,Object>) JSON.parse(conditions);
+		Map<String,Object> condition=new HashMap<String,Object>();
+		if(!StringUtils.isEmpty(conditions)){
+			condition=(Map<String,Object>) JSON.parse(conditions);
+		}
 		Map<String,Object> emailData=getRecommendPosition(condition);
 		if(emailData!=null&&!emailData.isEmpty()){
 			sendPositionEmail(email,emailData, conditions);
@@ -116,25 +120,25 @@ public class UserPositionEmailService {
 		}
 		return 0;
 	}
-	
+
 	//根据条件获取职位
 	public Map<String,Object> getRecommendPosition(Map<String,Object> map) throws Exception{
-		 String keyWord=(String) map.get("keyWord");
-		 String citys=(String) map.get("citys");
-		 String industry=(String) map.get("industry");
-		 int page=1;
-		 int pageSize=10;
-		 String salaryCode=(String) map.get("salaryCode");
-		 Calendar lastDate = Calendar.getInstance();
-		 SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss" );
-	     lastDate.roll(Calendar.DATE, -7);//日期回滚7天
-	     String startTime=format.format(lastDate.getTime());
-	     Response res=searchengineServices.positionQuery(keyWord, citys, industry, salaryCode, page, pageSize, startTime, null);
-	     if(res.getStatus()==0&&!Strings.isNullOrEmpty(res.getData())){
-	    	 String data=res.getData();
-	    	 Map<String,Object> result=JSON.parseObject(data);
-	    	 return result;
-	     }
+		String keyWord=(String) map.get("keyWord");
+		String citys=(String) map.get("citys");
+		String industry=(String) map.get("industry");
+		int page=1;
+		int pageSize=10;
+		String salaryCode=(String) map.get("salaryCode");
+		Calendar lastDate = Calendar.getInstance();
+		SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss" );
+		lastDate.roll(Calendar.DATE, -7);//日期回滚7天
+		String startTime=format.format(lastDate.getTime());
+		Response res=searchengineServices.positionQuery(keyWord, citys, industry, salaryCode, page, pageSize, startTime, null);
+		if(res.getStatus()==0&&!Strings.isNullOrEmpty(res.getData())){
+			String data=res.getData();
+			Map<String,Object> result=JSON.parseObject(data);
+			return result;
+		}
 		return null;
 	}
 	//发送职位推荐邮件
@@ -144,66 +148,89 @@ public class UserPositionEmailService {
 		if(totalNum>0){
 			String conditionWords=this.convertConditionForEmail(conditions);
 			String positiondata=this.handlePositionData(data);
+			if(conditionWords==null){
+				conditionWords="";
+			}
+			int positioNum=((List<Map<String,Object>>)data.get("positions")).size();
 			map.put("#search_conditions#", conditionWords);
 			map.put("#search_position#", positiondata);
-			map.put("#search_num#", totalNum+"");
-			
+			map.put("#search_num#", positioNum+"");
 			ConfigPropertiesUtil propertiesUtil = ConfigPropertiesUtil.getInstance();
-	        String senderName = propertiesUtil.get("email.verify.sendName", String.class);
-	        String subject = "每周职位推荐";
-	        String senderDisplay = org.apache.commons.lang.StringUtils.defaultIfEmpty("", "");
-	        EmailStruct emailStruct =new EmailStruct();
-	        mqService.sendAuthEMail(map, Constant.EVENT_TYPE_RECOMMEND_POSITION_EMAIL, email, subject, senderName, senderDisplay);
+			String senderName = propertiesUtil.get("email.verify.sendName", String.class);
+			String subject = "每周职位推荐";
+			String senderDisplay = org.apache.commons.lang.StringUtils.defaultIfEmpty(propertiesUtil.get("email.verify.sendDisplay", String.class), "仟寻招聘");
+			mqService.sendAuthEMail(map, Constant.EVENT_TYPE_RECOMMEND_POSITION_EMAIL, email, subject, senderName, senderDisplay);
 		}
-		
+
 	}
 	private String handlePositionData(Map<String,Object> data){
-		 int totalNum=(int) data.get("totalNum");
-		 
-		 if(totalNum>0){
-			 String showData="";
-			 List<Map<String,Object>> list=(List<Map<String, Object>>) data.get("positions");
-			 for(Map<String,Object> map:list){
-				 Map<String,Object> jdPic=(Map<String, Object>) map.get("jd_pic");
-				 Map<String,Object> company=(Map<String, Object>) map.get("company");
-				 Map<String,Object> position=(Map<String, Object>) map.get("position");
-				 String pic=(String) position.get("banner");
-				 if(jdPic!=null&&!jdPic.isEmpty()){
-					 Map<String,Object> positionPic=(Map<String, Object>) jdPic.get("position_pic");
-					 if(positionPic!=null&&!positionPic.isEmpty()){
-						 String firstPic=(String) positionPic.get("first_pic");
-						 if(StringUtils.isNotEmpty(firstPic)){
-							 pic=firstPic;
-						 }
-					 }
-				 }
+		int totalNum=(int) data.get("totalNum");
+		if(totalNum>0){
+			String showData="";
+			List<Map<String,Object>> list=(List<Map<String, Object>>) data.get("positions");
+			for(Map<String,Object> map:list){
+				Map<String,Object> jdPic=(Map<String, Object>) map.get("jd_pic");
+				Map<String,Object> company=(Map<String, Object>) map.get("company");
+				Map<String,Object> position=(Map<String, Object>) map.get("position");
+				String pic=(String) position.get("banner");
+				if(jdPic!=null&&!jdPic.isEmpty()){
+					Map<String,Object> positionPic=(Map<String, Object>) jdPic.get("position_pic");
+					if(positionPic!=null&&!positionPic.isEmpty()){
+						String firstPic=(String) positionPic.get("first_pic");
+						if(StringUtils.isNotEmpty(firstPic)){
+							pic=firstPic;
+						}
+					}
+				}
+				if(StringUtils.isEmpty(pic)){
+					pic="http://cdn.moseeker.com/profile/email_verifier_qx_email_logo.png";
+				}else{
+					pic="https://cdn.moseeker.com/"+pic;
+				}
 				String title=(String) position.get("title");
 				String companyName=(String) company.get("abbreviation");
 				String citys=(String) position.get("city");
-				String salary="面议";
-				Integer salaryTop=(Integer) position.get("salary_top");
-				Integer salaryBottom=(Integer) position.get("salary_bottom");
+				String salary="  面议  ";
+				double salaryTop=0;
+				if(position.get("salary_top")!=null){
+					salaryTop=Double.parseDouble(position.get("salary_top").toString());
+				}
+				double salaryBottom=0;
+				if(position.get("salary_bottom")!=null){
+					salaryBottom=Double.parseDouble(position.get("salary_bottom").toString());
+				}
 				if(salaryTop!=0||salaryBottom!=0){
-					salary=salaryBottom+"k--"+salaryTop+"k";
+					salary="  "+salaryBottom+"k--"+salaryTop+"k"+"  ";
 				}
 				String experience=(String) position.get("experience");
 				if(StringUtils.isEmpty(experience)){
-					experience="暂无";
+					experience="  暂无  ";
+				}else{
+					if(!experience.contains("年")) {
+						experience=" "+experience+"年";
+					}
+					int experienceAbove=(int) position.get("experience_above");
+					if(experienceAbove>0){
+						experience=experience+"及以上经验 ";
+					}else{
+						experience=experience+"经验 ";
+					}
+
 				}
 				String singleData=this.getPositionHtmlData(pic, title, citys, companyName, salary, experience);
 				showData+=singleData;
-			 }
-			 return showData;
-		 }
-		
+			}
+			return showData;
+		}
+
 		return null;
 	}
-	
+
 	private String getPositionHtmlData(String pic,String title,String citys,String companyName,String salary,String experience){
 		StringBuffer sb=new StringBuffer();
 		sb.append("<tr><td align='center'><table width='500' height='90' cellpadding='0' cellspacing='0' border='0' class='wrapper'> <tbody><tr>");
 		sb.append("<td height='20' style='-ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; font-size: 10px; line-height: 10px; mso-table-lspace: 0pt;");
-		sb.append("mso-table-rspace: 0pt;'></td></tr><tr valign='middle'><td width='80' height='50'><img src='#position_bg#' width='80' height='50'");
+		sb.append("mso-table-rspace: 0pt;'></td></tr><tr valign='middle'><td width='80' height='50'><img src='"+pic+"' width='80' height='50'");
 		sb.append("style='margin:0; padding:0; display:block;-ms-interpolation-mode: bicubic; border: 0; line-height: 100%; outline: none; text-decoration:");
 		sb.append(" none;' border='0' alt=''></td><td height='10' width='10' style='font-size:70px; line-height:10px;' class='mobileOn'>&nbsp;</td>");
 		sb.append("<td width='410' height='50'><table width='400' height='50' cellpadding='0' cellspacing='0' border='0' class='wrapper'><tbody><tr>");
@@ -230,7 +257,7 @@ public class UserPositionEmailService {
 		sb.append("mso-table-lspace: 0pt; mso-table-rspace: 0pt;'></td></tr></tbody></table></td></tr>");
 		return sb.toString();
 	}
-	
+
 	//获取搜索条件的字符串，用于发送email的元素
 	private String convertConditionForEmail(String condition){
 		if(StringUtils.isEmpty(condition)){
@@ -244,7 +271,7 @@ public class UserPositionEmailService {
 		String conditionWords=this.getSearchCodetion(cityCode, industry, salaryCode, keyWord);
 		return conditionWords;
 	}
-	
+
 	private String getSearchCodetion(String cityCode,String industry,Map<String,Integer> salaryCode,String keyWord){
 		String conditions="";
 		if(StringUtils.isNotEmpty(cityCode)){
@@ -266,7 +293,7 @@ public class UserPositionEmailService {
 		if(StringUtils.isNotEmpty(keyWord)){
 			conditions+="关键字："+keyWord;
 		}
-		
+
 		return conditions;
 	}
 	//获取薪资范围字符串
@@ -331,7 +358,7 @@ public class UserPositionEmailService {
 		}
 		return list;
 	}
-	
+
 	//获取城市信息
 	public List<DictCityDO> getSearchCity(List<Integer> data){
 		if(data==null||data.size()==0){
