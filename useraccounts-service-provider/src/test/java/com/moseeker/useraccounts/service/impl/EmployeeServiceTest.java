@@ -106,7 +106,7 @@ public class EmployeeServiceTest {
 
 //    @Test
     public void awardRankingTest() {
-        List<EmployeeAward> response = service.awardRanking(142104, 32, "2017");
+        List<EmployeeAward> response = service.awardRanking(45082, 39978, "2017-08");
         System.out.println(response);
     }
 }
