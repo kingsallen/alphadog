@@ -34,6 +34,7 @@ import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.joda.Joda;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -45,9 +46,14 @@ import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.metrics.MetricsAggregationBuilder;
+import org.elasticsearch.search.aggregations.support.format.ValueFormat;
 import org.elasticsearch.search.sort.ScriptSortBuilder;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,10 +62,13 @@ import org.springframework.stereotype.Service;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -405,7 +414,7 @@ public class SearchengineService {
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("id", userEmployeeDO.getId());
                     jsonObject.put("company_id", userEmployeeDO.getCompanyId());
-                    jsonObject.put("binding_time", userEmployeeDO.getBindingTime() != null ? DateUtils.shortTimeToDate(userEmployeeDO.getBindingTime()) : userEmployeeDO.getBindingTime());
+                    jsonObject.put("binding_time", userEmployeeDO.getBindingTime() != null ? LocalDateTime.parse(userEmployeeDO.getBindingTime(), java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) : userEmployeeDO.getBindingTime());
                     jsonObject.put("custom_field", userEmployeeDO.getCustomField());
                     jsonObject.put("custom_field_values", userEmployeeDO.getCustomFieldValues());
                     jsonObject.put("sex", String.valueOf(new Double(userEmployeeDO.getSex()).intValue()));
@@ -466,8 +475,8 @@ public class SearchengineService {
                     jsonObject.put("cname", userEmployeeDO.getCname());
 
 
-                    jsonObject.put("update_time", DateUtils.shortTimeToDate(userEmployeeDO.getUpdateTime()));
-                    jsonObject.put("create_time", DateUtils.shortTimeToDate(userEmployeeDO.getCreateTime()));
+                    jsonObject.put("update_time", LocalDateTime.parse(userEmployeeDO.getUpdateTime(), java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+                    jsonObject.put("create_time", LocalDateTime.parse(userEmployeeDO.getCreateTime(), java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
                     logger.info(JSONObject.toJSONString(jsonObject));
                     bulkRequest.add(
@@ -486,8 +495,6 @@ public class SearchengineService {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
             } catch (Error error) {
                 logger.error(error.getMessage());
-            } catch (ParseException e) {
-                e.printStackTrace();
             } finally {
                 client.close();
             }
@@ -552,6 +559,7 @@ public class SearchengineService {
             }
         }
     }
+
 
     private SortBuilder buildSortScript(String timspanc, String field, SortOrder sortOrder) {
         StringBuffer sb = new StringBuffer();
