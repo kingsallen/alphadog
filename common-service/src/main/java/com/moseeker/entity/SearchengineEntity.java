@@ -270,6 +270,7 @@ public class SearchengineEntity {
                 JSONObject a = new JSONObject();
                 a.put("last_update_time", employeePointsRecordPojo.getLast_update_time());
                 a.put("award", employeePointsRecordPojo.getAward());
+                a.put("timespan", employeePointsRecordPojo.getTimespan());
                 jsonObject.put(employeePointsRecordPojo.getTimespan(), a);
             }
         }
