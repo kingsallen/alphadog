@@ -13,6 +13,7 @@ import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
@@ -271,8 +272,7 @@ public class EmployeeService {
     }
 
 
-    public RewardsResponse getEmployeeRewards(int employeeId, int companyId)
-            throws TException {
+    public RewardsResponse getEmployeeRewards(int employeeId, int companyId) throws CommonException {
         log.info("getEmployeeRewards param: employeeId={}, companyId={}", employeeId, companyId);
         RewardsResponse response = new RewardsResponse();
         Query.QueryBuilder query = new Query.QueryBuilder();
@@ -283,7 +283,7 @@ public class EmployeeService {
             response.setRewardConfigs(companyConfigEntity.getRerawConfig(companyId));
             // 查询申请职位list
             response.setTotal(userEmployeeDO.getAward());
-            // response.setRewards(employeeEntity.getEmployeePointsRecords(employeeId));
+            response.setRewards(employeeEntity.getEmployeePointsRecords(employeeId));
         } else {
             throw ExceptionFactory.buildException(ExceptionCategory.USEREMPLOYEES_EMPTY);
         }
