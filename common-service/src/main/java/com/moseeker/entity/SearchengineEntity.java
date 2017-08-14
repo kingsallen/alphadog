@@ -37,6 +37,7 @@ import org.springframework.stereotype.Service;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -128,7 +129,7 @@ public class SearchengineEntity {
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("id", userEmployeeDO.getId());
                     jsonObject.put("company_id", userEmployeeDO.getCompanyId());
-                    jsonObject.put("binding_time", userEmployeeDO.getBindingTime() != null ? DateUtils.shortTimeToDate(userEmployeeDO.getBindingTime()) : userEmployeeDO.getBindingTime());
+                    jsonObject.put("binding_time", userEmployeeDO.getBindingTime() != null ? LocalDateTime.parse(userEmployeeDO.getBindingTime(), java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) : userEmployeeDO.getBindingTime());
                     jsonObject.put("custom_field", userEmployeeDO.getCustomField());
                     jsonObject.put("custom_field_values", userEmployeeDO.getCustomFieldValues());
                     jsonObject.put("sex", String.valueOf(new Double(userEmployeeDO.getSex()).intValue()));
@@ -185,11 +186,12 @@ public class SearchengineEntity {
                     jsonObject.put("ename", userEmployeeDO.getEname());
                     jsonObject.put("cfname", userEmployeeDO.getCfname());
                     jsonObject.put("efname", userEmployeeDO.getEfname());
-                    jsonObject.put("cname", userEmployeeDO.getCname());
                     jsonObject.put("award", userEmployeeDO.getAward());
+                    jsonObject.put("cname", userEmployeeDO.getCname());
 
-                    jsonObject.put("update_time", DateUtils.shortTimeToDate(userEmployeeDO.getUpdateTime()));
-                    jsonObject.put("create_time", DateUtils.shortTimeToDate(userEmployeeDO.getCreateTime()));
+
+                    jsonObject.put("update_time", LocalDateTime.parse(userEmployeeDO.getUpdateTime(), java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+                    jsonObject.put("create_time", LocalDateTime.parse(userEmployeeDO.getCreateTime(), java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
                     logger.info(JSONObject.toJSONString(jsonObject));
                     bulkRequest.add(
@@ -209,8 +211,6 @@ public class SearchengineEntity {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
             } catch (Error error) {
                 logger.error(error.getMessage());
-            } catch (ParseException e) {
-                e.printStackTrace();
             } finally {
                 client.close();
             }
@@ -265,10 +265,11 @@ public class SearchengineEntity {
     }
 
     public void getAwards(JSONObject jsonObject, List<EmployeePointsRecordPojo> list) {
+
         if (list != null && list.size() > 0) {
             for (EmployeePointsRecordPojo employeePointsRecordPojo : list) {
                 JSONObject a = new JSONObject();
-                a.put("last_update_time", employeePointsRecordPojo.getLast_update_time());
+//                a.put("last_update_time", DateUtils.dateToNormalDate(employeePointsRecordPojo.getLast_update_time()));
                 a.put("award", employeePointsRecordPojo.getAward());
                 a.put("timespan", employeePointsRecordPojo.getTimespan());
                 jsonObject.put(employeePointsRecordPojo.getTimespan(), a);

@@ -1,7 +1,7 @@
 package com.moseeker.baseorm.pojo;
 
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * Created by YYF
@@ -14,11 +14,8 @@ public class EmployeePointsRecordPojo {
 
     private String timespan;
     private Integer award;
-    private Date last_update_time;
+    private LocalDateTime last_update_time;
 
-    public String getTimespan() {
-        return timespan;
-    }
 
     public void setTimespan(String timespan) {
         this.timespan = timespan;
@@ -32,11 +29,15 @@ public class EmployeePointsRecordPojo {
         this.award = award;
     }
 
-    public Date getLast_update_time() {
+    public String getTimespan() {
+        return timespan;
+    }
+
+    public LocalDateTime getLast_update_time() {
         return last_update_time;
     }
 
-    public void setLast_update_time(Date last_update_time) {
+    public void setLast_update_time(LocalDateTime last_update_time) {
         this.last_update_time = last_update_time;
     }
 }
