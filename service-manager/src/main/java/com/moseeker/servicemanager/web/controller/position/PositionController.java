@@ -521,47 +521,6 @@ public class PositionController {
     }
 
     /**
-     * 第三方职位列表详情
-     */
-    @RequestMapping(value = "/thirdparty/position/info", method = RequestMethod.GET)
-    @ResponseBody
-    public String getThirdPartyPositionInfo(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            ThirdPartyPositionInfoForm infoForm = ParamUtils.initModelForm(request, ThirdPartyPositionInfoForm.class);
-            ThirdPartyPositionResult result = positonServices.getThirdPartyPositionInfo(infoForm);
-            return ResponseLogNotification.successJson(request, result);
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            return ResponseLogNotification.failJson(request, e);
-        }
-    }
-
-    /**
-     * 第三方职位列表详情
-     */
-    @RequestMapping(value = "/thirdparty/position", method = RequestMethod.PUT)
-    @ResponseBody
-    public String updateThirdPartyPosition(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            HrThirdPartyAccountDO thirdPartyAccount = ParamUtils.initModelForm(params, HrThirdPartyAccountDO.class);
-            HrThirdPartyPositionDO thirdPartyPosition = ParamUtils.initModelForm(params, HrThirdPartyPositionDO.class);
-
-            if (thirdPartyAccount == null || thirdPartyPosition == null) {
-                throw new CommonException(2201, "参数错误");
-            }
-
-            thirdPartyAccount.setId(0);
-            thirdPartyAccount.unsetId();
-            positonServices.updateThirdPartyPositionWithAccount(thirdPartyPosition, thirdPartyAccount);
-            return ResponseLogNotification.successJson(request, 1);
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            return ResponseLogNotification.failJson(request, e);
-        }
-    }
-
-    /**
      * 职位同步到第三方接口
      */
     @RequestMapping(value = "/position/thirdpartyposition", method = RequestMethod.GET)
@@ -604,6 +563,49 @@ public class PositionController {
         }
     }
 
+
+
+
+    /**
+     * 第三方职位列表详情
+     */
+    @RequestMapping(value = "/thirdparty/position/info", method = RequestMethod.GET)
+    @ResponseBody
+    public String getThirdPartyPositionInfo(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            ThirdPartyPositionInfoForm infoForm = ParamUtils.initModelForm(request, ThirdPartyPositionInfoForm.class);
+            ThirdPartyPositionResult result = positonServices.getThirdPartyPositionInfo(infoForm);
+            return ResponseLogNotification.successJson(request, result);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseLogNotification.failJson(request, e);
+        }
+    }
+
+    /**
+     * 第三方职位列表详情
+     */
+    @RequestMapping(value = "/thirdparty/position", method = RequestMethod.PUT)
+    @ResponseBody
+    public String updateThirdPartyPosition(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            HrThirdPartyAccountDO thirdPartyAccount = ParamUtils.initModelForm(params, HrThirdPartyAccountDO.class);
+            HrThirdPartyPositionDO thirdPartyPosition = ParamUtils.initModelForm(params, HrThirdPartyPositionDO.class);
+
+            if (thirdPartyAccount == null || thirdPartyPosition == null) {
+                throw new CommonException(2201, "参数错误");
+            }
+
+            thirdPartyAccount.setId(0);
+            thirdPartyAccount.unsetId();
+            positonServices.updateThirdPartyPositionWithAccount(thirdPartyPosition, thirdPartyAccount);
+            return ResponseLogNotification.successJson(request, 1);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseLogNotification.failJson(request, e);
+        }
+    }
 
 
     /*

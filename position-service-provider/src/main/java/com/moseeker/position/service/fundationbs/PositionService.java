@@ -46,6 +46,7 @@ import com.moseeker.position.service.position.PositionForAlipaycampusPojo;
 import com.moseeker.position.service.position.WorkTypeChangeUtil;
 import com.moseeker.position.service.position.qianxun.Degree;
 import com.moseeker.position.service.position.qianxun.WorkType;
+import com.moseeker.position.utils.CommonPositionUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -57,6 +58,7 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobOccupationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.position.struct.*;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
+
 import org.apache.thrift.TException;
 import org.jooq.Field;
 import org.slf4j.Logger;
@@ -66,6 +68,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -1221,7 +1224,11 @@ public class PositionService {
             logger.info("query.getDepartment(): " + query.getDepartment());
             logger.info("query.getCustom(): " + query.getCustom());
             logger.info("<><><><><><><><><><><>");
-
+            String cities=query.getCities();
+            if(StringUtils.isNotNullOrEmpty(cities)&&commonPositionUtils.appendCity(cities)&&!cities.contains("全国'")){
+                cities=cities+",全国";
+                query.setCities(cities);
+            }
             //获取 pid list
             Response ret = searchengineServices.query(
                     query.getKeywords(),
