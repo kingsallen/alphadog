@@ -1,5 +1,5 @@
 
-namespace java com.moseeker.thrift.gen.dao.struct
+namespace java com.moseeker.thrift.gen.config
 
 struct ConfigSysPointsConfTpl{
  1: optional i32 id,
@@ -17,5 +17,6 @@ struct HrAwardConfigTemplate{
  5: optional i32 priority,
  6: optional i32 type_id,
  7: optional i32 recruit_order,
- 8: optional i64 reward
+ 8: optional i64 reward,
+ 9: optional i32 points_conf_id
 }
