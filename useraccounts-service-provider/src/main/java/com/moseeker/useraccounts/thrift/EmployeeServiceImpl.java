@@ -84,10 +84,10 @@ public class EmployeeServiceImpl implements Iface {
 	 * 获取员工积分
 	 */
 	@Override
-	public RewardsResponse getEmployeeRewards(int employeeId, int companyId)
+	public RewardsResponse getEmployeeRewards(int employeeId, int companyId, int pageNumber, int pageSize)
 			throws TException {
 		
-		return service.getEmployeeRewards(employeeId, companyId);
+		return service.getEmployeeRewards(employeeId, companyId, pageNumber, pageSize);
 	}
 
 	/* 
