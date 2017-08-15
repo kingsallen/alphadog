@@ -92,6 +92,26 @@ public class UserHrAccountServiceImpl implements Iface {
     }
 
     @Override
+    public HrThirdPartyAccountDO bindConfirm(int hrId, int id, boolean confirm) throws BIZException, TException {
+        try {
+            return thirdPartyAccountService.bindConfirm(hrId,id,confirm);
+        } catch (Exception e) {
+            logger.info(e.getMessage(), e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public HrThirdPartyAccountDO bindMessage(int hrId, int id, String code) throws BIZException, TException {
+        try {
+            return thirdPartyAccountService.bindMessage(hrId, id, code);
+        } catch (Exception e) {
+            logger.info(e.getMessage(), e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
     public HrThirdPartyAccountDO syncThirdPartyAccount(int hrId, int id, boolean sync) throws BIZException, TException {
         try {
             return thirdPartyAccountService.synchronizeThirdpartyAccount(hrId, id, sync);
@@ -362,7 +382,6 @@ public class UserHrAccountServiceImpl implements Iface {
      * @param companyId  公司ID
      * @param filter     过滤条件，0：全部，1：已认证，2：未认证,默认：0
      * @param order      排序条件
-     * @param by         正序，倒序 0: 正序,1:倒序 默认
      * @param pageNumber 第几页
      * @param pageSize   每页的条数
      */

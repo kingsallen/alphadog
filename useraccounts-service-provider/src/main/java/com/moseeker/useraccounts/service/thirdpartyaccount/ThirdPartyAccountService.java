@@ -9,10 +9,13 @@ import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccountHr;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
+import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.query.Condition;
@@ -31,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -60,6 +64,42 @@ public class ThirdPartyAccountService {
     @Autowired
     private HrCompanyDao hrCompanyDao;
 
+    @Resource(name = "cacheClient")
+    private RedisClient redisClient;
+
+
+    private String getCacheKey(HrThirdPartyAccountDO account) {
+        Objects.requireNonNull(account);
+        //以一个公司下的一个渠道只能绑定一个相同帐号的原则构建key
+        return account.getCompanyId() + "_" + account.getChannel() + "_" + account.getUsername();
+    }
+
+    /**
+     * 获取绑定帐号需要的额外参数
+     *
+     * @param userHrAccount
+     * @param account
+     * @return
+     * @throws Exception
+     */
+    private Map<String, String> getBindExtra(UserHrAccountDO userHrAccount, HrThirdPartyAccountDO account) throws Exception {
+        //获取子公司简称和ID
+        HrCompanyDO hrCompanyDO = hrCompanyAccountDao.getHrCompany(userHrAccount.getId());
+
+        if (hrCompanyDO == null) {
+            hrCompanyDO = hrCompanyDao.getCompanyById(userHrAccount.getCompanyId());
+
+            if (hrCompanyDO == null) {
+                throw new BIZException(-1, "无效的HR账号");
+            }
+        }
+        Map<String, String> extras = new HashMap<>();
+        //智联的帐号同步带上子公司简称
+        if (account.getChannel() == ChannelType.ZHILIAN.getValue()) {
+            extras.put("company", hrCompanyDO.getAbbreviation());
+        }
+        return extras;
+    }
 
     /**
      * 第三方账号绑定
@@ -90,37 +130,149 @@ public class ThirdPartyAccountService {
 
         account.setCompanyId(userHrAccount.getCompanyId());
 
-        //获取子公司简称和ID
-        HrCompanyDO hrCompanyDO = hrCompanyAccountDao.getHrCompany(hrId);
+        Map<String, String> extras = getBindExtra(userHrAccount, account);
 
-        if (hrCompanyDO == null) {
-            hrCompanyDO = hrCompanyDao.getCompanyById(userHrAccount.getCompanyId());
-
-            if (hrCompanyDO == null) {
-                throw new BIZException(-1, "无效的HR账号");
-            }
-        }
-
+        //allowStatus==0,绑定之后将hrId和帐号关联起来，allowStatus>0,使用之前的绑定记录
         int allowStatus = allowBind(userHrAccount, account);
 
         logger.info("bindThirdAccount allowStatus:{}", allowStatus);
 
+        //使用之前的绑定记录
         if (allowStatus > 0) {
             account.setId(allowStatus);
+        } else {
+            //将这次绑定记录到数据库
+            account = thirdPartyAccountDao.addData(account);
+        }
+        try {
+
+            setCache(account);
+
+            HrThirdPartyAccountDO result = thirdPartyAccountSynctor.bindThirdPartyAccount(allowStatus == 0 ? hrId : 0, account, extras, sync);
+
+            if (result.getBinding() != 100) {
+                removeCache(account);
+            }
+
+            return result;
+        } catch (Exception e) {
+            removeCache(account);
+            throw e;
+        }
+    }
+
+
+    /**
+     * 防止两个人同时绑定一个帐号
+     *
+     * @param bindingAccount
+     * @throws BIZException
+     */
+    private void setCache(HrThirdPartyAccountDO bindingAccount) throws BIZException {
+        String cacheKey = getCacheKey(bindingAccount);
+
+        //查看redis中该帐号是否在绑定中
+        String cache = redisClient.get(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_ACCOUNT_BINDING.toString(), cacheKey);
+        if (cache != null) {
+            //绑定中
+            throw new BIZException(-1, "该帐号已经在绑定中了");
+        } else {
+            //默认10分钟的超时时间
+            redisClient.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_ACCOUNT_BINDING.toString(), cacheKey, JSON.toJSONString(bindingAccount));
+        }
+    }
+
+    /**
+     * 获取缓存
+     *
+     * @param bindingAccount
+     * @throws BIZException
+     */
+    private String getCache(HrThirdPartyAccountDO bindingAccount) throws BIZException {
+        String cacheKey = getCacheKey(bindingAccount);
+        return redisClient.get(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_ACCOUNT_BINDING.toString(), cacheKey);
+    }
+
+    /**
+     * 绑定完成或失败清除缓存
+     *
+     * @param bindingAccount
+     */
+    private void removeCache(HrThirdPartyAccountDO bindingAccount) {
+        String cacheKey = getCacheKey(bindingAccount);
+        String cache = redisClient.get(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_ACCOUNT_BINDING.toString(), cacheKey);
+        if (cache != null) {
+            redisClient.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_ACCOUNT_BINDING.toString(), cacheKey);
+        }
+    }
+
+    /**
+     * 猎聘确认发送短信验证码
+     *
+     * @param accountId
+     * @param hrId
+     * @param confirm
+     * @return
+     */
+    public HrThirdPartyAccountDO bindConfirm(int hrId, int accountId, boolean confirm) throws Exception {
+        HrThirdPartyAccountDO thirdPartyAccount = thirdPartyAccountDao.getAccountById(accountId);
+
+        if (thirdPartyAccount == null) {
+            throw new BIZException(-1, "无效的第三方帐号");
         }
 
-        Map<String, String> extras = new HashMap<>();
-
-        //智联的帐号同步带上子公司简称
-        if (account.getChannel() == ChannelType.ZHILIAN.getValue()) {
-            extras.put("company", hrCompanyDO.getAbbreviation());
+        if (getCache(thirdPartyAccount) == null) {
+            throw new BIZException(-1, "验证码超时了，请重新绑定");
         }
 
-        //allowStatus==0,绑定之后将hrId和帐号关联起来，allowStatus==1,只绑定不关联
-        HrThirdPartyAccountDO result = thirdPartyAccountSynctor.bindThirdPartyAccount(allowStatus == 0 ? hrId : 0, account, extras, sync);
+        UserHrAccountDO userHrAccount = hrAccountDao.getValidAccount(hrId);
 
+        if (userHrAccount == null) {
+            //没有找到该hr账号
+            throw new BIZException(-1, "无效的HR帐号");
+        }
+        Map<String, String> extras = getBindExtra(userHrAccount, thirdPartyAccount);
+        extras.put("confirm", String.valueOf(confirm));
+        try {
+            return thirdPartyAccountSynctor.bindConfirm(thirdPartyAccount, extras, confirm);
+        } catch (Exception e) {
+            removeCache(thirdPartyAccount);
+            throw e;
+        }
+    }
 
-        return result;
+    /**
+     * 猎聘绑定确认发送验证码
+     *
+     * @param accountId
+     * @param hrId
+     * @param code
+     * @return
+     */
+    public HrThirdPartyAccountDO bindMessage(int hrId, int accountId, String code) throws Exception {
+        HrThirdPartyAccountDO thirdPartyAccount = thirdPartyAccountDao.getAccountById(accountId);
+
+        if (thirdPartyAccount == null) {
+            throw new BIZException(-1, "无效的第三方帐号");
+        }
+
+        if (getCache(thirdPartyAccount) == null) {
+            throw new BIZException(-1, "验证码超时了，请重新绑定");
+        }
+
+        UserHrAccountDO userHrAccount = hrAccountDao.getValidAccount(hrId);
+
+        if (userHrAccount == null) {
+            //没有找到该hr账号
+            throw new BIZException(-1, "无效的HR帐号");
+        }
+        Map<String, String> extras = getBindExtra(userHrAccount, thirdPartyAccount);
+        extras.put("code", String.valueOf(code));
+        try {
+            return thirdPartyAccountSynctor.bindMessage(thirdPartyAccount, extras, code);
+        } finally {
+            removeCache(thirdPartyAccount);
+        }
     }
 
     public int checkRebinding(HrThirdPartyAccountDO bindingAccount) throws BIZException {
@@ -143,15 +295,9 @@ public class ThirdPartyAccountService {
      */
     @CounterIface
     public int allowBind(UserHrAccountDO hrAccount, HrThirdPartyAccountDO thirdPartyAccount) throws Exception {
-
         HrThirdPartyAccountDO bindingAccount = thirdPartyAccountDao.getThirdPartyAccountByUserId(hrAccount.getId(), thirdPartyAccount.getChannel());
 
-        //如果当前hr已经绑定了该帐号
-        if (bindingAccount != null && bindingAccount.getUsername().equals(thirdPartyAccount.getUsername())) {
-            return checkRebinding(bindingAccount);
-        }
 
-        //主账号或者没有绑定第三方账号，检查公司下该渠道已经绑定过相同的第三方账号
         Query.QueryBuilder qu = new Query.QueryBuilder();
         qu.where("company_id", hrAccount.getCompanyId());
         qu.and("channel", thirdPartyAccount.getChannel());

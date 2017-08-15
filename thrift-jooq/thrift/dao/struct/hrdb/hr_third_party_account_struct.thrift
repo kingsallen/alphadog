@@ -15,6 +15,7 @@ struct HrThirdPartyAccountDO {
 	9: optional string syncTime,	//同步时间
 	10: optional string updateTime,	//数据更新时间
 	11: optional string createTime,	//创建时间
-	12: optional i32 remainProfileNum	//第三方账号剩余简历数
+	12: optional i32 remainProfileNum,	//第三方账号剩余简历数
+	13: optional string errorMessage    //同步刷新失败的理由
 
 }
