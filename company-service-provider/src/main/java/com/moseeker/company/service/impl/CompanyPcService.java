@@ -4,13 +4,17 @@ import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrTeamDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.*;
+import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrTeamDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionCityDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,16 +39,23 @@ public class CompanyPcService {
     private JobPositionDao jobPositionDao;
     @Autowired
     private HrTeamDao hrTeamDao;
+    @Autowired
+    private JobPositionCityDao jobPositionCityDao;
 
     public Map<String,Object> getCompanyInfo(int companyId){
-
+        HrCompanyDO company=this.getHrCompany(companyId);
+        if(company==null){
+            return null;
+        }
 
         return null;
     }
+
+
     /*
        获取公司信息
      */
-    public HrCompanyDO getHrCompany(int companyId){
+    private HrCompanyDO getHrCompany(int companyId){
         Query query=new Query.QueryBuilder().where("id",companyId).buildQuery();
         HrCompanyDO DO= hrCompanyDao.getData(query);
         return DO;
@@ -123,13 +134,7 @@ public class CompanyPcService {
 
         return null;
     }
-    /*
-       获取子公司的发布职位position，id
-     */
-    public List<Integer> getCompanyPositions(List<Integer> publisherList){
 
-        return null;
-    }
 
 
 }
