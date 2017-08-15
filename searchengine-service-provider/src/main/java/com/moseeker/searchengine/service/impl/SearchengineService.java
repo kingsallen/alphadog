@@ -750,7 +750,7 @@ public class SearchengineService {
                 SearchResponse hitEmployee = getSearchRequestBuilder(searchClient, companyIds, employeeId, "0", 0, 0, timespan).execute().actionGet();
                 if (hitEmployee != null && hitEmployee.getHits().getHits().length > 0) {
                     JSONObject employeeJson = JSONObject.parseObject(hitEmployee.getHits().getHits()[0].getSourceAsString()).getJSONObject("awards");
-                    if (employeeJson.containsKey(timespan) && employeeJson.getJSONObject(timespan).getIntValue("award") != 0 && employeeJson.getJSONObject(timespan).getString("last_update_time") != null) {
+                    if (employeeJson.containsKey(timespan) && employeeJson.getJSONObject(timespan).getIntValue("award") > 0 && employeeJson.getJSONObject(timespan).getString("last_update_time") != null) {
                         // 获取用户名次
                         int employeeAward = employeeJson.getJSONObject(timespan).getIntValue("award");
                         long lastUpdateTime = LocalDateTime.parse(employeeJson.getJSONObject(timespan).getString("last_update_time")).toInstant(ZoneOffset.UTC).toEpochMilli();
