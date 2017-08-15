@@ -28,6 +28,7 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.*;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.EmployeeEntity;
+import com.moseeker.entity.SearchengineEntity;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
@@ -111,6 +112,8 @@ public class UserHrAccountService {
     @Autowired
     private HrImporterMonitorDao hrImporterMonitorDao;
 
+    @Autowired
+    private SearchengineEntity searchengineEntity;
 
     @Autowired
     private HrCompanyAccountDao hrCompanyAccountDao;
@@ -1051,6 +1054,7 @@ public class UserHrAccountService {
             if (!StringUtils.isEmptyList(updateUserEmployee)) {
                 // 更新数据
                 userEmployeeDao.updateDatas(updateUserEmployee);
+                searchengineEntity.updateEmployeeAwards(updateUserEmployee.stream().filter(f -> f.getId() > 0).map(m -> m.getId()).collect(Collectors.toList()));
                 // 去掉需要更新的数据
                 userEmployeeList.removeAll(updateUserEmployee);
             }
