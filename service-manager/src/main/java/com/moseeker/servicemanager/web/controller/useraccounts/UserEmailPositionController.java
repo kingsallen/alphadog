@@ -1,5 +1,6 @@
 package com.moseeker.servicemanager.web.controller.useraccounts;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -51,7 +52,31 @@ public class UserEmailPositionController {
 	   		 logger.info(reqParams+"+++++++++++++++++++/user/email/validate");
 			 int userId=Integer.parseInt(reqParams.get("userId")+"");
 	   		 String email= (String) reqParams.get("email");
-	   		 String conditions= (String) reqParams.get("conditions");
+			 Map<String,String> condition=new HashMap<String,String>();
+			 String keyWord=(String) reqParams.get("keyWord");
+			 String citys=(String) reqParams.get("citys");
+			 String industry=(String) reqParams.get("industry");
+			 String salaryCode=(String) reqParams.get("salaryCode");
+			 if(StringUtils.isNotNullOrEmpty(keyWord)){
+				 condition.put("keyWord",keyWord);
+			 }
+			 if(StringUtils.isNotNullOrEmpty(citys)){
+				 condition.put("citys",citys);
+			 }
+			 if(StringUtils.isNotNullOrEmpty(industry)){
+				 condition.put("industry",industry);
+			 }
+
+			 if(StringUtils.isNotNullOrEmpty(salaryCode)){
+				 condition.put("salaryCode",salaryCode);
+			 }
+
+			 String conditions="";
+			 if(condition!=null&&!condition.isEmpty()){
+				 logger.info("conditions1======={}",reqParams.get("conditions"));
+				 conditions=JSON.toJSONString(condition);
+				 logger.info("conditions2======={}",conditions);
+			 }
 			 String urls=(String) reqParams.get("url");
 	   		 logger.info("向user_id为{}的用户发送邮箱验证邮件",userId);
 	   		 Response res=userQxService.sendValiddateEmail(email, userId, conditions,urls);
@@ -70,10 +95,29 @@ public class UserEmailPositionController {
 	   		 reqParams = ParamUtils.parseRequestParam(request);
 	   		 logger.info("参数reqParams===={}",reqParams);
 			 int userId=Integer.parseInt(reqParams.get("userId")+"");
+			 Map<String,String> condition=new HashMap<String,String>();
+			 String keyWord=(String) reqParams.get("keyWord");
+			 String citys=(String) reqParams.get("citys");
+			 String industry=(String) reqParams.get("industry");
+			 String salaryCode=(String) reqParams.get("salaryCode");
+			 if(StringUtils.isNotNullOrEmpty(keyWord)){
+				 condition.put("keyWord",keyWord);
+			 }
+			 if(StringUtils.isNotNullOrEmpty(citys)){
+				 condition.put("citys",citys);
+			 }
+			 if(StringUtils.isNotNullOrEmpty(industry)){
+				 condition.put("industry",industry);
+			 }
+
+			 if(StringUtils.isNotNullOrEmpty(salaryCode)){
+				 condition.put("salaryCode",salaryCode);
+			 }
+
 			 String conditions="";
-			 if(reqParams.get("conditions")!=null){
+			 if(condition!=null&&!condition.isEmpty()){
 			 	 logger.info("conditions1======={}",reqParams.get("conditions"));
-				 conditions=JSON.toJSONString(reqParams.get("conditions"));
+				 conditions=JSON.toJSONString(condition);
 				 logger.info("conditions2======={}",conditions);
 			 }
 	   		 logger.info("将user_id为{}的用户查询条件为{"+conditions+"}保存或者更新到数据库",userId);
