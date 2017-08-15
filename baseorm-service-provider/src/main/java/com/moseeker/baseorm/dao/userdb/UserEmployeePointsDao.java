@@ -37,7 +37,7 @@ public class UserEmployeePointsDao extends JooqCrudImpl<UserEmployeePointsRecord
      */
     public List<EmployeePointsRecordPojo> getAwardByMonth(Integer employeeIds) {
         String sql = "select date_format(up.`_create_time`,'%Y-%m') as timespan, up.`employee_id`, sum(up.`award`) as award,\n" +
-                "   date_format(max(up.`_create_time`),'%Y-%m-%s %H:%i:%s') as last_update_time from userdb.`user_employee_points_record` up where up.employee_id in (" + employeeIds
+                "   date_format(max(up.`_create_time`),'%Y-%m-%d %H:%i:%s') as last_update_time from userdb.`user_employee_points_record` up where up.employee_id in (" + employeeIds
                 + ") group by  up.employee_id,timespan order by timespan";
         List<ResultOrRows> records = create.fetchMany(sql).resultsOrRows();
         List<EmployeePointsRecordPojo> recordPojos = new ArrayList<>();
@@ -69,7 +69,7 @@ public class UserEmployeePointsDao extends JooqCrudImpl<UserEmployeePointsRecord
      */
     public List<EmployeePointsRecordPojo> getAwardByQuarter(Integer employeeIds) {
         String sql = "select concat(date_format(up.`_create_time`, '%Y'),FLOOR((date_format(up.`_create_time`, '%m')+2)/3)) as timespan, up.`employee_id`, sum(up.`award`) as award," +
-                "        date_format(max(up.`_create_time`),'%Y-%m-%s %H:%i:%s') as last_update_time\n" +
+                "        date_format(max(up.`_create_time`),'%Y-%m-%d %H:%i:%s') as last_update_time\n" +
                 "        from userdb.`user_employee_points_record` up where  up.employee_id in (" + employeeIds +
                 ") group by up.employee_id, timespan order by timespan";
 
@@ -103,7 +103,7 @@ public class UserEmployeePointsDao extends JooqCrudImpl<UserEmployeePointsRecord
      */
     public List<EmployeePointsRecordPojo> getAwardByYear(Integer employeeIds) {
         String sql = "select date_format(up._create_time,'%Y') as timespan, sum(up.`award`) as award, up.`employee_id`," +
-                "        date_format(max(up.`_create_time`),'%Y-%m-%s %H:%i:%s') as last_update_time from userdb.`user_employee_points_record` up  where up.employee_id in (" + employeeIds +
+                "        date_format(max(up.`_create_time`),'%Y-%m-%d %H:%i:%s') as last_update_time from userdb.`user_employee_points_record` up  where up.employee_id in (" + employeeIds +
                 " ) group by  up.employee_id,timespan order by timespan";
         List<ResultOrRows> records = create.fetchMany(sql).resultsOrRows();
         List<EmployeePointsRecordPojo> recordPojos = new ArrayList<>();
