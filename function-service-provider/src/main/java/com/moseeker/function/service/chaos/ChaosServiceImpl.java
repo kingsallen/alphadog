@@ -77,6 +77,7 @@ public class ChaosServiceImpl {
         String opName = opType == 0 ? "绑定" : "刷新";
 
         if (status == 0) {
+            thirdPartyAccountDO.setBinding(Integer.valueOf(1).shortValue());
             thirdPartyAccountDO.setRemainNum(jsonObject.getJSONObject("data").getIntValue("remain_number"));
             thirdPartyAccountDO.setRemainProfileNum(jsonObject.getJSONObject("data").getIntValue("resume_number"));
         } else {
@@ -127,8 +128,8 @@ public class ChaosServiceImpl {
      */
     public HrThirdPartyAccountDO bind(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras) throws Exception {
         logger.info("ChaosServiceImpl bind");
-        //String data = "{\"status\":0,\"message\":\"success\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
-        String data = postBind(hrThirdPartyAccount.getChannel(), ChaosTool.getParams(hrThirdPartyAccount, extras));
+        String data = "{\"status\":2,\"message\":\"182****3365\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
+//        String data = postBind(hrThirdPartyAccount.getChannel(), ChaosTool.getParams(hrThirdPartyAccount, extras));
         fillHrThirdPartyAccount(0, data, hrThirdPartyAccount);
 
         return hrThirdPartyAccount;
@@ -142,7 +143,7 @@ public class ChaosServiceImpl {
      */
     public HrThirdPartyAccountDO bindConfirm(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras, boolean confirm) throws Exception {
         logger.info("ChaosServiceImpl bindConfirm");
-        //String data = "{\"status\":0,\"message\":\"success\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
+//        String data = "{\"status\":0,\"message\":\"success\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
         Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.putAll(extras);
         paramsMap.put("confirm", confirm);
@@ -168,7 +169,7 @@ public class ChaosServiceImpl {
      */
     public HrThirdPartyAccountDO bindMessage(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras, String code) throws Exception {
         logger.info("ChaosServiceImpl bindMessage");
-        //String data = "{\"status\":0,\"message\":\"success\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
+//        String data = "{\"status\":0,\"message\":\"success\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
         Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.putAll(extras);
         paramsMap.put("code", code);
@@ -177,14 +178,15 @@ public class ChaosServiceImpl {
         int status = jsonObject.getIntValue("status");
         String message = jsonObject.getString("message");
         if (status == 0) {
+            hrThirdPartyAccount.setBinding(Integer.valueOf(1).shortValue());
             hrThirdPartyAccount.setRemainNum(jsonObject.getJSONObject("data").getIntValue("remain_number"));
             hrThirdPartyAccount.setRemainProfileNum(jsonObject.getJSONObject("data").getIntValue("resume_number"));
         } else if (status == 100) {
             hrThirdPartyAccount.setBinding(Integer.valueOf(100).shortValue());
         } else if (status == 112) {//验证码错误
-            throw new BIZException(1, message);
+            throw new BIZException(112, message);
         } else if (status == 111) {//验证码超时
-            throw new BIZException(1, message);
+            throw new BIZException(111, message);
         } else if (status == 1) {
             hrThirdPartyAccount.setBinding(Integer.valueOf(4).shortValue());
             if (StringUtils.isNullOrEmpty(message)) {
@@ -194,7 +196,7 @@ public class ChaosServiceImpl {
             //发送绑定失败的邮件
             hrThirdPartyAccount.setBinding(Integer.valueOf(6).shortValue());
         } else {
-            hrThirdPartyAccount.setBinding(Integer.valueOf(5).shortValue());
+            hrThirdPartyAccount.setBinding(Integer.valueOf(0).shortValue());
         }
         hrThirdPartyAccount.setErrorMessage(message);
         return hrThirdPartyAccount;

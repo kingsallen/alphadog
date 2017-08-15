@@ -103,7 +103,12 @@ public class ThirdPartyAccountSynctor {
      * @return
      */
     public HrThirdPartyAccountDO bindMessage(HrThirdPartyAccountDO thirdPartyAccount, Map<String, String> extras, String code) throws Exception {
-        return bindTask.bindMessage(thirdPartyAccount, extras, code);
+        thirdPartyAccount = bindTask.bindMessage(thirdPartyAccount, extras, code);
+        if(thirdPartyAccount.getBinding() == 6 || thirdPartyAccount.getBinding() == 1){
+            hrThirdPartyAccountDao.updateData(thirdPartyAccount);
+        }
+
+        return thirdPartyAccount;
     }
 
     /**
@@ -189,7 +194,7 @@ public class ThirdPartyAccountSynctor {
             thirdPartyAccount = hrThirdPartyAccountDao.addThirdPartyAccount(hrId, thirdPartyAccount);
         }
         //开启线程后台取处理第三方账号同步
-        new Thread(new AsyncRunnable(syncTask, thirdPartyAccount, extras)).start();
+        new Thread(new AsyncRunnable(bindTask, thirdPartyAccount, extras)).start();
         return thirdPartyAccount;
     }
 }

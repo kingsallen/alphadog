@@ -137,6 +137,11 @@ public class ThirdPartyAccountService {
 
         logger.info("bindThirdAccount allowStatus:{}", allowStatus);
 
+        if (getCache(account) != null) {
+            //绑定中
+            throw new BIZException(-1, "该帐号已经在绑定中了");
+        }
+
         //使用之前的绑定记录
         if (allowStatus > 0) {
             account.setId(allowStatus);
@@ -144,21 +149,16 @@ public class ThirdPartyAccountService {
             //将这次绑定记录到数据库
             account = thirdPartyAccountDao.addData(account);
         }
-        try {
 
-            setCache(account);
+        setCache(account);
 
-            HrThirdPartyAccountDO result = thirdPartyAccountSynctor.bindThirdPartyAccount(allowStatus == 0 ? hrId : 0, account, extras, sync);
+        HrThirdPartyAccountDO result = thirdPartyAccountSynctor.bindThirdPartyAccount(allowStatus == 0 ? hrId : 0, account, extras, sync);
 
-            if (result.getBinding() != 100) {
-                removeCache(account);
-            }
-
-            return result;
-        } catch (Exception e) {
+        if (result.getBinding() != 100) {
             removeCache(account);
-            throw e;
         }
+
+        return result;
     }
 
 
@@ -222,7 +222,7 @@ public class ThirdPartyAccountService {
         }
 
         if (getCache(thirdPartyAccount) == null) {
-            throw new BIZException(-1, "验证码超时了，请重新绑定");
+            throw new BIZException(111, "验证码超时了，请重新绑定");
         }
 
         UserHrAccountDO userHrAccount = hrAccountDao.getValidAccount(hrId);
@@ -235,9 +235,17 @@ public class ThirdPartyAccountService {
         extras.put("confirm", String.valueOf(confirm));
         try {
             return thirdPartyAccountSynctor.bindConfirm(thirdPartyAccount, extras, confirm);
-        } catch (Exception e) {
-            removeCache(thirdPartyAccount);
+        } catch (BIZException e) {
+            //验证码超时
+            if (e.getCode() == 111) {
+                removeCache(thirdPartyAccount);
+                thirdPartyAccountDao.deleteData(thirdPartyAccount);
+            }
             throw e;
+        } finally {
+            if (!confirm) {
+                removeCache(thirdPartyAccount);
+            }
         }
     }
 
@@ -257,7 +265,7 @@ public class ThirdPartyAccountService {
         }
 
         if (getCache(thirdPartyAccount) == null) {
-            throw new BIZException(-1, "验证码超时了，请重新绑定");
+            throw new BIZException(111, "验证码超时了，请重新绑定");
         }
 
         UserHrAccountDO userHrAccount = hrAccountDao.getValidAccount(hrId);
@@ -269,9 +277,14 @@ public class ThirdPartyAccountService {
         Map<String, String> extras = getBindExtra(userHrAccount, thirdPartyAccount);
         extras.put("code", String.valueOf(code));
         try {
-            return thirdPartyAccountSynctor.bindMessage(thirdPartyAccount, extras, code);
-        } finally {
+            thirdPartyAccount = thirdPartyAccountSynctor.bindMessage(thirdPartyAccount, extras, code);
             removeCache(thirdPartyAccount);
+            return thirdPartyAccount;
+        } catch (BIZException e) {
+            if (e.getCode() == 111) {
+                removeCache(thirdPartyAccount);
+            }
+            throw e;
         }
     }
 

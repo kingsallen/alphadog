@@ -132,7 +132,7 @@ public class UserHrAccountController {
                 struct.setMembername(params.get("member_name").toString());
             }
             logger.info("bind thirdParyAccount in controller params===========================" + JSON.toJSONString(struct));
-            struct = userHrAccountService.bindThirdPartyAccount(params.getInt("user_id", 0), struct, params.getBoolean("sync", false));
+            struct = userHrAccountService.bindThirdPartyAccount(params.getInt("user_id", 0), struct, params.getBoolean("sync", true));
             if (struct.getBinding() == 100) {
                 struct.setBinding(Integer.valueOf(0).shortValue());
                 Map<String, Object> result = thirdpartyAccountToMap(struct);

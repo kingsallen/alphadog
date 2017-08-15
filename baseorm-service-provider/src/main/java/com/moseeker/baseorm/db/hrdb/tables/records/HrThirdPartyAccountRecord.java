@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyAccountRecord extends UpdatableRecordImpl<HrThirdPartyAccountRecord> implements Record13<Integer, Short, String, String, String, Short, Integer, Integer, Timestamp, Timestamp, Timestamp, Integer, String> {
 
-    private static final long serialVersionUID = 1686984140;
+    private static final long serialVersionUID = 1106915995;
 
     /**
      * Setter for <code>hrdb.hr_third_party_account.id</code>. 编号
@@ -201,16 +201,16 @@ public class HrThirdPartyAccountRecord extends UpdatableRecordImpl<HrThirdPartyA
     }
 
     /**
-     * Setter for <code>hrdb.hr_third_party_account.error_messge</code>. 同步刷新失败的理由
+     * Setter for <code>hrdb.hr_third_party_account.error_message</code>. 同步刷新失败的理由
      */
-    public void setErrorMessge(String value) {
+    public void setErrorMessage(String value) {
         set(12, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_third_party_account.error_messge</code>. 同步刷新失败的理由
+     * Getter for <code>hrdb.hr_third_party_account.error_message</code>. 同步刷新失败的理由
      */
-    public String getErrorMessge() {
+    public String getErrorMessage() {
         return (String) get(12);
     }
 
@@ -347,7 +347,7 @@ public class HrThirdPartyAccountRecord extends UpdatableRecordImpl<HrThirdPartyA
      */
     @Override
     public Field<String> field13() {
-        return HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ERROR_MESSGE;
+        return HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ERROR_MESSAGE;
     }
 
     /**
@@ -451,7 +451,7 @@ public class HrThirdPartyAccountRecord extends UpdatableRecordImpl<HrThirdPartyA
      */
     @Override
     public String value13() {
-        return getErrorMessge();
+        return getErrorMessage();
     }
 
     /**
@@ -567,7 +567,7 @@ public class HrThirdPartyAccountRecord extends UpdatableRecordImpl<HrThirdPartyA
      */
     @Override
     public HrThirdPartyAccountRecord value13(String value) {
-        setErrorMessge(value);
+        setErrorMessage(value);
         return this;
     }
 
@@ -606,7 +606,7 @@ public class HrThirdPartyAccountRecord extends UpdatableRecordImpl<HrThirdPartyA
     /**
      * Create a detached, initialised HrThirdPartyAccountRecord
      */
-    public HrThirdPartyAccountRecord(Integer id, Short channel, String username, String password, String membername, Short binding, Integer companyId, Integer remainNum, Timestamp syncTime, Timestamp updateTime, Timestamp createTime, Integer remainProfileNum, String errorMessge) {
+    public HrThirdPartyAccountRecord(Integer id, Short channel, String username, String password, String membername, Short binding, Integer companyId, Integer remainNum, Timestamp syncTime, Timestamp updateTime, Timestamp createTime, Integer remainProfileNum, String errorMessage) {
         super(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT);
 
         set(0, id);
@@ -621,6 +621,6 @@ public class HrThirdPartyAccountRecord extends UpdatableRecordImpl<HrThirdPartyA
         set(9, updateTime);
         set(10, createTime);
         set(11, remainProfileNum);
-        set(12, errorMessge);
+        set(12, errorMessage);
     }
 }
