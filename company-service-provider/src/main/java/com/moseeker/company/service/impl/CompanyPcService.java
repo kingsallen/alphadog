@@ -8,6 +8,7 @@ import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.*;
+import com.moseeker.entity.JobPositionCityEntity;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
@@ -15,6 +16,7 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrTeamDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionCityDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,17 +43,70 @@ public class CompanyPcService {
     private HrTeamDao hrTeamDao;
     @Autowired
     private JobPositionCityDao jobPositionCityDao;
+    @Autowired
+    private JobPositionCityEntity jobPositionCityEntity;
 
     public Map<String,Object> getCompanyInfo(int companyId){
+        Map<String,Object>map=new HashMap<String,Object>();
         HrCompanyDO company=this.getHrCompany(companyId);
         if(company==null){
             return null;
         }
+        map.put("company",company);
+        int parentId=company.getParentId();
+        int confCompanyId=company.getId();
+        if(parentId!=0){
+            confCompanyId=parentId;
+        }
 
         return null;
     }
+    /*
+     获取jd信息
+     */
+    private void handleJdData(int confCompanyId,Map<String,Object> map,int companyId) throws Exception {
+        map.put("newjd",0);
+        HrCompanyConfDO hrCompanyConfDO=getHrCompanyConf(confCompanyId);
+        if(hrCompanyConfDO!=null){
+            int newJdStatus=hrCompanyConfDO.getNewjdStatus();
+            if(newJdStatus==2){
+                List<Integer> jdID=new ArrayList<Integer>();
+                jdID.add(companyId);
+                List<Map<String,Object>>jdList=jobPositionCityEntity.HandleCmsResource(jdID,1);
+                if(!StringUtils.isEmptyList(jdList)){
+                    Map<String,Object> jdMap=jdList.get(0);
+                    if(jdMap!=null&&!jdMap.isEmpty()){
+                        map.put("newjd",1);
+                        map.put("jd",jdMap);
+                    }
+                }
+            }
+        }
+    }
+    /*
+      获取团队信息
+     */
+    private void handleTeamInfo(int companyId,boolean isMother,Map<String,Object> map){
+        if(isMother){
 
 
+        }else{
+
+        }
+
+    }
+    //处理母公司的团队信息
+    private Map<String,Object> handleMotherCompanyTeam(int companyId){
+        List<HrTeamDO> teamList=this.getCompanyTeam(companyId);
+        return null;
+    }
+    //处理子公司团队的信息
+    private Map<String,Object> handleSubCompanyTeam(int companyId){
+        List<Integer> teamIdList=getCompanyPublisher(companyId);
+        List<HrTeamDO> teamList= hrTeamDao.getTeamList(teamIdList);
+
+        return null;
+    }
     /*
        获取公司信息
      */
@@ -102,7 +157,7 @@ public class CompanyPcService {
     /*
           获取母公司下team的id
      */
-    public List<HrTeamDO> getCompanyTeamId(int companyId){
+    public List<HrTeamDO> getCompanyTeam(int companyId){
         Query query=new Query.QueryBuilder().where("company_id",companyId).and("is_show",1).and("disable",0).orderBy("show_order").buildQuery();
         List<HrTeamDO> list=hrTeamDao.getDatas(query);
         return list;

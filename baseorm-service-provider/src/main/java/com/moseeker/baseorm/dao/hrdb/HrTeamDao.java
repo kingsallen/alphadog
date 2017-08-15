@@ -76,7 +76,7 @@ public class HrTeamDao extends JooqCrudImpl<HrTeamDO, HrTeamRecord> {
 			return null;
 		}
 		Condition condition=new Condition("id",list.toArray(),ValueOp.IN);
-		Query query=new Query.QueryBuilder().where(condition).and("disable",0).and("is_show",1).buildQuery();
+		Query query=new Query.QueryBuilder().where(condition).and("disable",0).and("is_show",1).orderBy("show_order").buildQuery();
 		List<HrTeamDO> result=this.getDatas(query);
 		return result;
 	}
