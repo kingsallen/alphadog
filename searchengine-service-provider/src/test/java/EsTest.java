@@ -24,4 +24,9 @@ public class EsTest {
         Response response = service.queryAwardRankingInWx(Arrays.asList(32), "2017", 340565);
         System.out.println(response);
     }
+
+    @Test
+    public void updateAwardsTest() throws TException {
+        service.updateEmployeeAwards(Arrays.asList(69826));
+    }
 }
