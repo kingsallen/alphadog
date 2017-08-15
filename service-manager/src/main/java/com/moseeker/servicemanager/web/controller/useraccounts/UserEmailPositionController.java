@@ -68,6 +68,7 @@ public class UserEmailPositionController {
 		Map<String, Object> reqParams = null;
 	   	 try{
 	   		 reqParams = ParamUtils.parseRequestParam(request);
+	   		 logger.info("参数reqParams===={}",reqParams);
 			 int userId=Integer.parseInt(reqParams.get("userId")+"");
 			 String conditions="";
 			 if(reqParams.get("conditions")!=null){
