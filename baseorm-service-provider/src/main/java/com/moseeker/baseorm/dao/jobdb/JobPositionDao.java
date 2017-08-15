@@ -431,7 +431,7 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
 
 
     public JobPositionRecord getPositionById(int positionId) {
-        JobPositionRecord record = new JobPositionRecord();
+        JobPositionRecord record = null;
         if (positionId > 0) {
             Result<JobPositionRecord> result = create.selectFrom(JobPosition.JOB_POSITION)
                     .where(JobPosition.JOB_POSITION.ID.equal(positionId))

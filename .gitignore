@@ -79,7 +79,7 @@ atlassian-ide-plugin.xml
 # debug properties
 common/src/main/resources/*.properties
 rpc-center/src/main/resources/*.properties
-#service-manager/src/main/resources/*.properties
+service-manager/src/main/resources/*.properties
 
 /tmp/
 gen-java/
