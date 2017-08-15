@@ -52,6 +52,7 @@ public class UserPositionEmailService {
 	//处理职位推荐邮件的的插入或者更新
 	@CounterIface
 	public int postUserPositionEmail(int userId,String conditions){
+		logger.info("conditions service======={}",conditions);
 		return userPositionEmailDao.insertOrUpdateData(userId, conditions);
 	}
 	//发送邮箱验证邮件
