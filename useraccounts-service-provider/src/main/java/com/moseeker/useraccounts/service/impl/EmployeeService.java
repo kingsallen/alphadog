@@ -40,7 +40,6 @@ import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 /**
@@ -272,7 +271,7 @@ public class EmployeeService {
     }
 
 
-    public RewardsResponse getEmployeeRewards(int employeeId, int companyId) throws CommonException {
+    public RewardsResponse getEmployeeRewards(int employeeId, int companyId, int pageNumber, int pageSize) throws CommonException {
         log.info("getEmployeeRewards param: employeeId={}, companyId={}", employeeId, companyId);
         RewardsResponse response = new RewardsResponse();
         Query.QueryBuilder query = new Query.QueryBuilder();
@@ -283,7 +282,7 @@ public class EmployeeService {
             response.setRewardConfigs(companyConfigEntity.getRerawConfig(companyId));
             // 查询申请职位list
             response.setTotal(userEmployeeDO.getAward());
-            response.setRewards(employeeEntity.getEmployeePointsRecords(employeeId));
+            response.setRewards(employeeEntity.getEmployeePointsRecords(employeeId, pageNumber, pageSize).getData());
         } else {
             throw ExceptionFactory.buildException(ExceptionCategory.USEREMPLOYEES_EMPTY);
         }
