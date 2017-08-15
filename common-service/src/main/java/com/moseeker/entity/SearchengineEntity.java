@@ -265,11 +265,10 @@ public class SearchengineEntity {
     }
 
     public void getAwards(JSONObject jsonObject, List<EmployeePointsRecordPojo> list) {
-
         if (list != null && list.size() > 0) {
             for (EmployeePointsRecordPojo employeePointsRecordPojo : list) {
                 JSONObject a = new JSONObject();
-//                a.put("last_update_time", DateUtils.dateToNormalDate(employeePointsRecordPojo.getLast_update_time()));
+                a.put("last_update_time", employeePointsRecordPojo.getLast_update_time());
                 a.put("award", employeePointsRecordPojo.getAward());
                 a.put("timespan", employeePointsRecordPojo.getTimespan());
                 jsonObject.put(employeePointsRecordPojo.getTimespan(), a);

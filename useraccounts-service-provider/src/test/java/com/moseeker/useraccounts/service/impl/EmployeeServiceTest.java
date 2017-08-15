@@ -78,7 +78,7 @@ public class EmployeeServiceTest {
         System.out.println(result);
     }
 
-    //@Test
+    //@Testls
     public void getEmployeeCustomFieldsConf() throws Exception {
         EmployeeVerificationConfResponse response = service.getEmployeeVerificationConf(650);
         System.out.println(response);
@@ -86,7 +86,7 @@ public class EmployeeServiceTest {
 
     //@Test
     public void getEmployeeRewards() throws Exception {
-        RewardsResponse response = service.getEmployeeRewards(14, 39978);
+        RewardsResponse response = service.getEmployeeRewards(14, 39978,0,0);
         System.out.println(response);
     }
 

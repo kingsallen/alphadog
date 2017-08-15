@@ -68,12 +68,15 @@ public class UserEmailPositionController {
 		Map<String, Object> reqParams = null;
 	   	 try{
 	   		 reqParams = ParamUtils.parseRequestParam(request);
+	   		 logger.info("参数reqParams===={}",reqParams);
 			 int userId=Integer.parseInt(reqParams.get("userId")+"");
 			 String conditions="";
 			 if(reqParams.get("conditions")!=null){
+			 	 logger.info("conditions1======={}",reqParams.get("conditions"));
 				 conditions=JSON.toJSONString(reqParams.get("conditions"));
+				 logger.info("conditions2======={}",conditions);
 			 }
-	   		 logger.info("将user_id为{0}的用户查询条件为{1}保存或者更新到数据库",userId,conditions);
+	   		 logger.info("将user_id为{}的用户查询条件为{"+conditions+"}保存或者更新到数据库",userId);
 	   		 Response res=userQxService.postUserEmailPosition(userId, conditions);
 	   		 return ResponseLogNotification.success(request,res);
 	   	 }catch(Exception e){
