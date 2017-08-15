@@ -140,4 +140,13 @@ public class CommonPositionUtils {
       List<DictCityDO> list=dictCityDao.getDatas(query);
       return list;
     }
+
+    public boolean appendCity(String cities){
+    	if(StringUtils.isNotNullOrEmpty(cities)){
+			if(cities.contains(",")){
+
+			}
+		}
+		return false;
+	}
 }

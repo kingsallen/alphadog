@@ -99,9 +99,6 @@ public class SearchengineService {
 
 
             if (!StringUtils.isEmpty(cities)) {
-                if(!"全国".equals(cities)&&!cities.contains("全国")){
-                    cities=cities+",全国";
-                }
                 String[] city_list = cities.split(",");
                 QueryBuilder cityor = QueryBuilders.boolQuery();
                 for (int i = 0; i < city_list.length; i++) {

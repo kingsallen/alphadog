@@ -1202,7 +1202,10 @@ public class PositionService {
             logger.info("query.getDepartment(): " + query.getDepartment());
             logger.info("query.getCustom(): " + query.getCustom());
             logger.info("<><><><><><><><><><><>");
+            String cities=query.getCities();
+            if(cities.contains(",")){
 
+            }
             //获取 pid list
             Response ret = searchengineServices.query(
                     query.getKeywords(),
