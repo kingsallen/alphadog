@@ -1203,8 +1203,9 @@ public class PositionService {
             logger.info("query.getCustom(): " + query.getCustom());
             logger.info("<><><><><><><><><><><>");
             String cities=query.getCities();
-            if(cities.contains(",")){
-
+            if(StringUtils.isNotNullOrEmpty(cities)&&commonPositionUtils.appendCity(cities)&&!cities.contains("全国'")){
+                cities=cities+",全国";
+                query.setCities(cities);
             }
             //获取 pid list
             Response ret = searchengineServices.query(

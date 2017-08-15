@@ -143,8 +143,17 @@ public class CommonPositionUtils {
 
     public boolean appendCity(String cities){
     	if(StringUtils.isNotNullOrEmpty(cities)){
-			if(cities.contains(",")){
-
+			String [] array=cities.split(",");
+			List<String> nameList=new ArrayList<String>();
+			for(String key:array){
+				if(!"海外".equals(key)){
+					nameList.add(key);
+				}
+			}
+			Query query=new Query.QueryBuilder().where(new Condition("name",nameList.toArray(),ValueOp.IN)).buildQuery();
+			List<DictCityDO> list=dictCityDao.getDatas(query);
+			if(!StringUtils.isEmptyList(list)){
+				return true;
 			}
 		}
 		return false;
