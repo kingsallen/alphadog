@@ -468,4 +468,19 @@ public class CompanyController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
+    //details
+    @RequestMapping(value = "/company/details", method = RequestMethod.GET)
+    @ResponseBody
+    public String companyDetails(HttpServletRequest request, HttpServletResponse response) {
+        try{
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer companyId = params.getInt("companyId");
+            return null;
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
 }
