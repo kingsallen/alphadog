@@ -9,7 +9,27 @@ public class RewardsToBeAddBean {
 	private int company_id;
 	private int operate_tpl_id;
 	private long recommender_id;
-	public int getAccount_id() {
+	private int points_conf_id;
+    private int position_id;
+    private int applierID;
+
+    public int getPosition_id() {
+        return position_id;
+    }
+
+    public void setPosition_id(int position_id) {
+        this.position_id = position_id;
+    }
+
+    public int getPoints_conf_id() {
+        return points_conf_id;
+    }
+
+    public void setPoints_conf_id(int points_conf_id) {
+        this.points_conf_id = points_conf_id;
+    }
+
+    public int getAccount_id() {
 		return account_id;
 	}
 	public void setAccount_id(int account_id) {
@@ -57,5 +77,12 @@ public class RewardsToBeAddBean {
 	public void setRecommender_id(long recommender_id) {
 		this.recommender_id = recommender_id;
 	}
-	
+
+	public int getApplierID() {
+		return applierID;
+	}
+
+	public void setApplierID(int applierID) {
+		this.applierID = applierID;
+	}
 }

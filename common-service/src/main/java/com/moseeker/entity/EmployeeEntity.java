@@ -137,15 +137,18 @@ public class EmployeeEntity {
     // 转发点击操作 前置
     public void addAwardBefore(int employeeId, int companyId, int positionId, int templateId, int berecomUserId) throws Exception {
         Query.QueryBuilder query = new Query.QueryBuilder();
-        query.where("employee_id", employeeId).and("position_id", positionId).and("award_config_id", templateId).and("berecom_user_id", berecomUserId);
-        UserEmployeePointsRecordDO userEmployeePointsRecordDO = employeePointsRecordDao.getData(query.buildQuery());
-        if (userEmployeePointsRecordDO != null && userEmployeePointsRecordDO.getId() > 0) {
-            logger.error("重复的加积分操作, employeeId:{}, positionId:{}, templateId:{}, berecomUserId:{}", employeeId, positionId, templateId, berecomUserId);
-            throw new Exception("重复的加积分操作");
-        } else {
-            // 进行加积分操作
-            addReward(employeeId, companyId, "", 0, positionId, templateId, berecomUserId);
+        query.where("company_id", companyId).and("template_id", templateId);
+        HrPointsConfDO hrPointsConfDO = hrPointsConfDao.getData(query.buildQuery());
+        if (hrPointsConfDO != null && hrPointsConfDO.getId() > 0) {
+            query.where("employee_id", employeeId).and("position_id", positionId).and("award_config_id", hrPointsConfDO).and("berecom_user_id", berecomUserId);
+            UserEmployeePointsRecordDO userEmployeePointsRecordDO = employeePointsRecordDao.getData(query.buildQuery());
+            if (userEmployeePointsRecordDO != null && userEmployeePointsRecordDO.getId() > 0) {
+                logger.error("重复的加积分操作, employeeId:{}, positionId:{}, templateId:{}, berecomUserId:{}", employeeId, positionId, templateId, berecomUserId);
+                throw new Exception("重复的加积分操作");
+            }
         }
+        // 进行加积分操作
+        addReward(employeeId, companyId, "", 0, positionId, templateId, berecomUserId);
     }
 
     /**
@@ -197,11 +200,13 @@ public class EmployeeEntity {
             throw new Exception("参数不完整");
         } else {
             int award;
+            int awardConfigId = 0;
             Query.QueryBuilder query = new Query.QueryBuilder().where("company_id", companyId).and("template_id", templateId);
             HrPointsConfDO hrPointsConfDO = hrPointsConfDao.getData(query.buildQuery());
             if (hrPointsConfDO != null && hrPointsConfDO.getReward() != 0) {
                 award = (int) hrPointsConfDO.getReward();
                 reason = org.apache.commons.lang.StringUtils.defaultIfBlank(reason, hrPointsConfDO.getStatusName());
+                awardConfigId = hrPointsConfDO.getId();
             } else {
                 query.clear();
                 query.where("id", templateId);
@@ -217,7 +222,7 @@ public class EmployeeEntity {
             ueprDo.setReason(reason);
             ueprDo.setAward(award);
             ueprDo.setApplicationId(applicationId);
-            ueprDo.setAwardConfigId(templateId);
+            ueprDo.setAwardConfigId(awardConfigId);
             ueprDo.setBerecomUserId(berecomUserId);
             ueprDo.setPositionId(positionId);
             ueprDo.setEmployeeId(employeeId);

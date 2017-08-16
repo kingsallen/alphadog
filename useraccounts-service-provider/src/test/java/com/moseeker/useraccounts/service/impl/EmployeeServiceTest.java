@@ -84,9 +84,9 @@ public class EmployeeServiceTest {
         System.out.println(response);
     }
 
-    //@Test
+//    @Test
     public void getEmployeeRewards() throws Exception {
-        RewardsResponse response = service.getEmployeeRewards(14, 39978,0,0);
+        RewardsResponse response = service.getEmployeeRewards(69826, 39978,0,0);
         System.out.println(response);
     }
 
