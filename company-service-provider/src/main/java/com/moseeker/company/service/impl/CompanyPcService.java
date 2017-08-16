@@ -309,7 +309,7 @@ public class CompanyPcService {
         Map<Integer,Integer> teamPosition=new HashMap<>();
         for(Map<String,Object> map:result){
             int teamId= (int) map.get("team_id");
-            int num= (int) map.get("id_field");
+            int num= (int) map.get("id_count");
             if(teamPosition.get(teamId)==null){
                 teamPosition.put(teamId,num);
             }
