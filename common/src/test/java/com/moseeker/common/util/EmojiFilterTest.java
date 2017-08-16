@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
 public class EmojiFilterTest {
     @Test
     public void filterEmoji() throws Exception {
-        String str = EmojiFilter.refineHexString("\\xF0\\x9F\\x98\\x8A\\xF0\\x9F...");
+        String str = EmojiFilter.refineHexString("\\xF0\\x9F\\x99\\x88\\xF0\\x9F...");
         System.out.println(str);
         System.out.println(EmojiFilter.refineHexString(content));
         //System.out.println(content.replaceAll("[\\ud800\\udc00-\\udbff\\udfff\\ud800-\\udfff]", ""));

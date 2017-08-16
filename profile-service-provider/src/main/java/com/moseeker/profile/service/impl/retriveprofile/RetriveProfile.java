@@ -7,6 +7,8 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.EmojiFilter;
 import com.moseeker.profile.exception.Category;
 import com.moseeker.profile.exception.ExceptionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,8 @@ import java.util.Map;
 @Service
 public class RetriveProfile {
 
+    Logger logger = LoggerFactory.getLogger(RetriveProfile.class);
+
     @Autowired
     protected Map<String, RetrievalFlow> flowMap;
 
@@ -31,6 +35,10 @@ public class RetriveProfile {
      */
     @CounterIface
     public boolean retrieve(String parameter) throws CommonException {
+        System.out.println("parameter:1"+parameter);
+        System.out.println("parameter:2"+EmojiFilter.refineHexString(parameter));
+        logger.info("parameter1:{}", parameter);
+        logger.info("parameter2:{}", EmojiFilter.refineHexString(parameter));
         Map<String, Object> paramMap = JSON.parseObject(EmojiFilter.refineHexString(parameter));
         if (paramMap.get("channel") != null) {
             int channel = (Integer)paramMap.get("channel");
