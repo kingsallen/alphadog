@@ -52,6 +52,7 @@ public class UserPositionEmailService {
 	//处理职位推荐邮件的的插入或者更新
 	@CounterIface
 	public int postUserPositionEmail(int userId,String conditions){
+		logger.info("UserPositionEmailService postUserPositionEmail conditions======{}",conditions);
 		return userPositionEmailDao.insertOrUpdateData(userId, conditions);
 	}
 	//发送邮箱验证邮件
@@ -86,11 +87,13 @@ public class UserPositionEmailService {
 	public int sendEmailPosition(int userId) throws Exception{
 		UserUserDO userDO=getUserInfobyId(userId);
 		UserPositionEmailDO emailDO=getUserPositionByUserId(userId);
+		logger.info("UserPositionEmailService email======={}",emailDO);
 		if(userDO==null||emailDO==null){
 			return 0;
 		}
 		String email=userDO.getEmail();
 		String conditions=emailDO.getConditions();
+		logger.info("UserPositionEmailService conditions======={}",conditions);
 		int result=handleEmailRecommendPosition(email,conditions);
 		return result;
 	}

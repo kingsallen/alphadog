@@ -299,7 +299,7 @@ public class JobPositionCityEntity {
         if(resIds==null||resIds.size()==0){
             return null;
         }
-        List<HrResourceDO> list4=hrResourceDao.getHrCmsResourceByIdList(resIds);
+        List<HrResourceDO> list4=hrResourceDao.getHrResourceByIdList(resIds);
         if(list4==null||list4.size()==0){
             return null;
         }

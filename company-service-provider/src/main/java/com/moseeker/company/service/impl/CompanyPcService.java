@@ -52,10 +52,10 @@ public class CompanyPcService {
         map.put("company",company);
         int parentId=company.getParentId();
         int confCompanyId=company.getId();
-        boolean isMother=false;
+        boolean isMother=true;
         if(parentId!=0){
             confCompanyId=parentId;
-            isMother=true;
+            isMother=false;
         }
         this.handleJdData(confCompanyId,map,companyId);
         this.handleTeamInfo(companyId,isMother,map);
