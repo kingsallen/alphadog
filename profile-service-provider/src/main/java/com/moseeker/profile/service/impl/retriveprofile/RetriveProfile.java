@@ -36,10 +36,10 @@ public class RetriveProfile {
     @CounterIface
     public boolean retrieve(String parameter) throws CommonException {
         System.out.println("parameter:1"+parameter);
-        System.out.println("parameter:2"+EmojiFilter.refineHexString(parameter));
+        System.out.println("parameter:2"+EmojiFilter.filterEmoji1(parameter));
         logger.info("parameter1:{}", parameter);
-        logger.info("parameter2:{}", EmojiFilter.refineHexString(parameter));
-        Map<String, Object> paramMap = JSON.parseObject(EmojiFilter.refineHexString(parameter));
+        logger.info("parameter2:{}", EmojiFilter.filterEmoji1(parameter));
+        Map<String, Object> paramMap = JSON.parseObject(EmojiFilter.filterEmoji1(parameter));
         if (paramMap.get("channel") != null) {
             int channel = (Integer)paramMap.get("channel");
             ChannelType channelType = ChannelType.instaceFromInteger(channel);
