@@ -22,20 +22,20 @@ import java.util.Map;
 public class PositionIndexTest {
     @Autowired
     private PositionSearchEngine positionSearchEngine;
-
+    @Test
     public void searchTest(){
         //String keyWord,String industry,String salaryCode,int page,int pageSize,String cityCode,String startTime,String endTime
-        List<Map<String,Integer>> list=new ArrayList<Map<String,Integer>>();
-        Map<String,Integer> map=new HashMap<String,Integer>();
-        map.put("salaryTop",3);
-        map.put("salaryBottom",1);
-        list.add(map);
-        Map<String,Integer> map1=new HashMap<String,Integer>();
-        map1.put("salaryTop",6);
-        map1.put("salaryBottom",4);
-        list.add(map1);
-        String ss=JSON.toJSONString(list);
-        Map<String,Object> result=positionSearchEngine.search("上海哪里","",ss,1,10,"","","",1);
+//        List<Map<String,Integer>> list=new ArrayList<Map<String,Integer>>();
+//        Map<String,Integer> map=new HashMap<String,Integer>();
+//        map.put("salaryTop",3);
+//        map.put("salaryBottom",1);
+//        list.add(map);
+//        Map<String,Integer> map1=new HashMap<String,Integer>();
+//        map1.put("salaryTop",6);
+//        map1.put("salaryBottom",4);
+//        list.add(map1);
+//        String ss=JSON.toJSONString(list);
+        Map<String,Object> result=positionSearchEngine.search("上海哪里","",null,1,10,"","","",1);
         System.out.println(result);
     }
 

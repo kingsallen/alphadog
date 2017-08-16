@@ -26,7 +26,7 @@ public class CompanyIndexTest {
 		System.out.println(res);
 	}
 	public void queryStringTest() throws Exception{
-		SearchResponse res=companySearchengine.queryString("上海那里", "1000,10001", "100,200", "1,4", 1, 10,searchUtil.getEsClient());
+		SearchResponse res=companySearchengine.queryString("上海那里", "", "", "", 1, 10,searchUtil.getEsClient());
 		System.out.println(res);
 	}
 }
