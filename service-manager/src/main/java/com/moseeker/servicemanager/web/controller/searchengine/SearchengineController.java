@@ -251,6 +251,10 @@ public class SearchengineController {
     		 String salaryCode=(String) reqParams.get("salaryCode");
     		 String startTime=(String) reqParams.get("startTime");
     		 String endTime=(String) reqParams.get("endTime");
+    		 Integer order= (Integer) reqParams.get("order");
+    		 if(order!=null){
+                 order=1;
+             }
     		 if(StringUtils.isNullOrEmpty(page)){
     			 page="1";
     		 }
@@ -259,7 +263,7 @@ public class SearchengineController {
     		 }
     		  logger.info(keyWord, citys, industry, scale, page,
     				  pageSize,"=============");
-    		 Response res=searchengineServices.positionQuery(keyWord, citys, industry, salaryCode, Integer.parseInt(page), Integer.parseInt(pageSize), startTime, endTime);
+    		 Response res=searchengineServices.positionQuery(keyWord, citys, industry, salaryCode, Integer.parseInt(page), Integer.parseInt(pageSize), startTime, endTime,order);
     		 return ResponseLogNotification.success(request,res);
     	 }catch(Exception e){
     		 logger.info(e.getMessage(),e);

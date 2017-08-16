@@ -28,7 +28,7 @@ public class UserPositionEmailServiceTest {
 	public void sendvalidateEmailTest(){
 		int userId=1;
 		Map<String,Object> map=new HashMap<String,Object>();
-		map.put("keyWord","上海");
+		map.put("citys","500000");
 		String conditions= JSON.toJSONString(map);
 		try {
 			int result=userPositionEmailService.sendEmailvalidation("zhangzeteng@moseeker.com",userId,conditions,"www.baidu.com");

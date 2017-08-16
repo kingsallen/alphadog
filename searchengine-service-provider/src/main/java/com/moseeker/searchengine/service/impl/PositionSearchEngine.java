@@ -28,16 +28,16 @@ public class PositionSearchEngine {
 	@Autowired
 	private SearchUtil searchUtil;
 	//按条件查询，如果prefix的方式无法差的数据，那么转换为query_string的方式查询
-	public Map<String,Object> search(String keyWord,String industry,String salaryCode,int page,int pageSize,String cityCode,String startTime,String endTime){
+	public Map<String,Object> search(String keyWord,String industry,String salaryCode,int page,int pageSize,String cityCode,String startTime,String endTime,int order){
 		Map<String,Object> map=new HashMap<String,Object>();
 		TransportClient client=null;
 		try{
 			client=searchUtil.getEsClient();
-			SearchResponse hits =this.quertPrefix(keyWord, industry, salaryCode, page, pageSize, cityCode,startTime,endTime,client);
+			SearchResponse hits =this.quertPrefix(keyWord, industry, salaryCode, page, pageSize, cityCode,startTime,endTime,order,client);
 			if(hits!=null){
 				long hitNum=hits.getHits().getTotalHits();
 				if(hitNum==0&&StringUtils.isNotEmpty(keyWord)){
-					SearchResponse hitsData=this.quertString(keyWord, industry, salaryCode, page, pageSize, cityCode,startTime,endTime,client);
+					SearchResponse hitsData=this.quertString(keyWord, industry, salaryCode, page, pageSize, cityCode,startTime,endTime,order,client);
 					map=searchUtil.handleData(hitsData,"positions");
 					logger.info(map.toString());
 					return map;
@@ -57,7 +57,7 @@ public class PositionSearchEngine {
 		return new HashMap<String,Object>();
 	}
 	//按照query_string的方式查询数据
-	public SearchResponse quertString(String keyWord,String industry,String salaryCode,int page,int pageSize,String cityCode,String startTime,String endTime,TransportClient client){
+	public SearchResponse quertString(String keyWord,String industry,String salaryCode,int page,int pageSize,String cityCode,String startTime,String endTime,int order,TransportClient client){
 		if(client!=null){
 			QueryBuilder sentence=this.handleStringSearchSentence(keyWord, industry, salaryCode, page, pageSize, cityCode,startTime,endTime);
 			SearchRequestBuilder responseBuilder=client.prepareSearch("positions").setTypes("position")
@@ -67,6 +67,9 @@ public class PositionSearchEngine {
 					.addAggregation(searchUtil.handle("_source.position.salary_data","salary"))
 					.setFrom((page-1)*pageSize)
 					.setSize(pageSize);
+			if(order==1){
+				responseBuilder.addSort("position.update_time",SortOrder.DESC);
+			}
 			logger.info(responseBuilder.toString());
 			SearchResponse response = responseBuilder.execute().actionGet();
 			return response;
@@ -74,7 +77,7 @@ public class PositionSearchEngine {
 		return null;
 	}
 	//按照prefix的方式查询数据
-	public SearchResponse quertPrefix(String keyWord,String industry,String salaryCode,int page,int pageSize,String cityCode,String startTime,String endTime,TransportClient client){
+	public SearchResponse quertPrefix(String keyWord,String industry,String salaryCode,int page,int pageSize,String cityCode,String startTime,String endTime,int order,TransportClient client){
 		if(client!=null){
 			QueryBuilder sentence=this.handlePrefixSearchSentence(keyWord, industry, salaryCode, page, pageSize, cityCode,startTime,endTime);
 			SearchRequestBuilder responseBuilder=client.prepareSearch("positions").setTypes("position")
@@ -84,12 +87,16 @@ public class PositionSearchEngine {
 					.addAggregation(searchUtil.handle("_source.position.salary_data","salary"))
 					.setFrom((page-1)*pageSize)
 					.setSize(pageSize);
+
 			if(StringUtils.isNotEmpty(keyWord)){
 				Script script=this.buildScriptSort(keyWord);
 				ScriptSortBuilder builder=new ScriptSortBuilder(script,"number");
 				builder.order( SortOrder.DESC);
 				responseBuilder.addSort(builder);
 				responseBuilder.setTrackScores(true);
+			}
+			if(order==1){
+				responseBuilder.addSort("position.update_time",SortOrder.DESC);
 			}
 			logger.info(responseBuilder.toString());
 			SearchResponse response = responseBuilder.execute().actionGet();

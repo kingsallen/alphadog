@@ -70,10 +70,10 @@ public class SearchengineServiceImpl implements Iface {
 
 	@Override
 	public Response positionQuery(String keyWords, String citys, String industry, String salaryCode, int page,
-			int pageSize, String startTime, String endTime) throws TException {
+			int pageSize, String startTime, String endTime,int order) throws TException {
 		// TODO Auto-generated method stub
 		try{
-			Map<String,Object> res=positionSearchEngine.search(keyWords, industry, salaryCode, page, pageSize, citys, startTime, endTime);
+			Map<String,Object> res=positionSearchEngine.search(keyWords, industry, salaryCode, page, pageSize, citys, startTime, endTime,order);
 			if(res==null){
 				return ResponseUtils.success("");
 			}
