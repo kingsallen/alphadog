@@ -11,6 +11,7 @@ public class RewardsToBeAddBean {
 	private long recommender_id;
 	private int points_conf_id;
     private int position_id;
+    private int applierID;
 
     public int getPosition_id() {
         return position_id;
@@ -76,5 +77,12 @@ public class RewardsToBeAddBean {
 	public void setRecommender_id(long recommender_id) {
 		this.recommender_id = recommender_id;
 	}
-	
+
+	public int getApplierID() {
+		return applierID;
+	}
+
+	public void setApplierID(int applierID) {
+		this.applierID = applierID;
+	}
 }
