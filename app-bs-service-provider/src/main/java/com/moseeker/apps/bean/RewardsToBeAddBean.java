@@ -85,5 +85,5 @@ public class RewardsToBeAddBean {
 	public void setRecommender_id(long recommender_id) {
 		this.recommender_id = recommender_id;
 	}
-	
+
 }
