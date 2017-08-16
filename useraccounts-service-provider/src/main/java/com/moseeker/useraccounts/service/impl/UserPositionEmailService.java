@@ -353,11 +353,9 @@ public class UserPositionEmailService {
 			return null;
 		}
 		List<Integer> list=new ArrayList<Integer>();
-		if(data.contains(",")){
-			String[] array=data.split(",");
-			for(String arr:array){
-				list.add(Integer.parseInt(arr));
-			}
+		String[] array=data.split(",");
+		for(String arr:array){
+			list.add(Integer.parseInt(arr));
 		}
 		return list;
 	}
