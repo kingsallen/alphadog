@@ -93,6 +93,9 @@ public class SearchUtil {
         SearchHits hit = response.getHits();
         long totalNum = hit.getTotalHits();
         data.put("totalNum", totalNum);
+        Aggregations aggs=response.getAggregations();
+        Map<String, Object> aggsMap=handleAggs(aggs);
+        data.put("aggs", aggsMap);
         SearchHit[] searchData = hit.getHits();
         if (totalNum > 0) {
             List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
