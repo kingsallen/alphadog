@@ -119,6 +119,21 @@ public class ChaosServiceImpl {
         return data;
     }
 
+    private String mokeBindData(HrThirdPartyAccountDO accountDO) {
+        String data;
+        if (accountDO.getUsername().contains("绑定验证码")) {
+            data = "{\"status\":100,\"message\":\"182****3365\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
+        } else if (accountDO.getUsername().contains("绑定成功")) {
+            data = "{\"status\":0,\"message\":\"182****3365\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
+        } else if (accountDO.getUsername().contains("绑定失败")) {
+            data = "{\"status\":1,\"message\":\"182****3365\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
+        } else if (accountDO.getUsername().contains("绑定邮件")) {
+            data = "{\"status\":2,\"message\":\"182****3365\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
+        } else {
+            data = "{\"status\":3,\"message\":\"绑定失败\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
+        }
+        return data;
+    }
 
     /**
      * 绑定第三方账号
@@ -128,11 +143,26 @@ public class ChaosServiceImpl {
      */
     public HrThirdPartyAccountDO bind(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras) throws Exception {
         logger.info("ChaosServiceImpl bind");
-        String data = "{\"status\":2,\"message\":\"182****3365\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
-//        String data = postBind(hrThirdPartyAccount.getChannel(), ChaosTool.getParams(hrThirdPartyAccount, extras));
+//        String data = "{\"status\":100,\"message\":\"182****3365\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
+        String data = mokeBindData(hrThirdPartyAccount);//postBind(hrThirdPartyAccount.getChannel(), ChaosTool.getParams(hrThirdPartyAccount, extras));
         fillHrThirdPartyAccount(0, data, hrThirdPartyAccount);
 
         return hrThirdPartyAccount;
+    }
+
+
+    private String mokeConfirm(HrThirdPartyAccountDO hrThirdPartyAccount, boolean confirm) {
+        String data;
+        if (!confirm) {
+            data = "{\"status\":0,\"message\":\"取消成功\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
+        } else if (hrThirdPartyAccount.getUsername().contains("发送超时")) {
+            data = "{\"status\":111,\"message\":\"取消成功\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
+        } else if (hrThirdPartyAccount.getUsername().contains("发送成功")) {
+            data = "{\"status\":110,\"message\":\"取消成功\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
+        } else {
+            data = "{\"status\":1,\"message\":\"发送失败\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
+        }
+        return data;
     }
 
     /**
@@ -147,7 +177,7 @@ public class ChaosServiceImpl {
         Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.putAll(extras);
         paramsMap.put("confirm", confirm);
-        String data = postBind(hrThirdPartyAccount.getChannel(), ChaosTool.getParams(hrThirdPartyAccount, paramsMap));
+        String data = mokeConfirm(hrThirdPartyAccount, confirm);//postBind(hrThirdPartyAccount.getChannel(), ChaosTool.getParams(hrThirdPartyAccount, paramsMap));
 
         JSONObject jsonObject = JSONObject.parseObject(data);
 
@@ -161,6 +191,20 @@ public class ChaosServiceImpl {
         }
     }
 
+    private String mokeBindMessage(HrThirdPartyAccountDO accountDO) {
+        String data;
+        if (accountDO.getUsername().contains("短信成功")) {
+            data = "{\"status\":0,\"message\":\"182****3365\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
+        } else if (accountDO.getUsername().contains("短信超时")) {
+            data = "{\"status\":111,\"message\":\"取消成功\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
+        } else if (accountDO.getUsername().contains("短信邮件")) {
+            data = "{\"status\":2,\"message\":\"182****3365\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
+        } else {
+            data = "{\"status\":3,\"message\":\"绑定失败\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
+        }
+        return data;
+    }
+
     /**
      * 发送短信验证码
      *
@@ -168,12 +212,12 @@ public class ChaosServiceImpl {
      * @return
      */
     public HrThirdPartyAccountDO bindMessage(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras, String code) throws Exception {
-        logger.info("ChaosServiceImpl bindMessage");
+//        logger.info("ChaosServiceImpl bindMessage");
 //        String data = "{\"status\":0,\"message\":\"success\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
         Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.putAll(extras);
         paramsMap.put("code", code);
-        String data = postBind(hrThirdPartyAccount.getChannel(), ChaosTool.getParams(hrThirdPartyAccount, paramsMap));
+        String data = mokeBindMessage(hrThirdPartyAccount);// postBind(hrThirdPartyAccount.getChannel(), ChaosTool.getParams(hrThirdPartyAccount, paramsMap));
         JSONObject jsonObject = JSONObject.parseObject(data);
         int status = jsonObject.getIntValue("status");
         String message = jsonObject.getString("message");
