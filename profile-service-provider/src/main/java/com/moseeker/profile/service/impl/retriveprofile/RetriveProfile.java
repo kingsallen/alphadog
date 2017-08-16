@@ -31,7 +31,7 @@ public class RetriveProfile {
      */
     @CounterIface
     public boolean retrieve(String parameter) throws CommonException {
-        Map<String, Object> paramMap = JSON.parseObject(EmojiFilter.filterEmoji(parameter));
+        Map<String, Object> paramMap = JSON.parseObject(EmojiFilter.refineHexString(parameter));
         if (paramMap.get("channel") != null) {
             int channel = (Integer)paramMap.get("channel");
             ChannelType channelType = ChannelType.instaceFromInteger(channel);
