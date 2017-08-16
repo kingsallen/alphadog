@@ -6,7 +6,9 @@ import com.moseeker.common.exception.Category;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.company.exception.ExceptionFactory;
+import com.moseeker.company.service.impl.CompanyPcService;
 import com.moseeker.entity.CompanyConfigEntity;
+import com.moseeker.entity.JobPositionCityEntity;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.company.struct.CompanyCertConf;
 import com.moseeker.thrift.gen.company.struct.CompanyForVerifyEmployee;
@@ -28,6 +30,7 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrImporterMonitorDO;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class CompanyServicesImpl implements Iface {
@@ -39,6 +42,8 @@ public class CompanyServicesImpl implements Iface {
 
     @Autowired
     private CompanyConfigEntity companyConfigEntity;
+    @Autowired
+    private CompanyPcService companyPcService;
 
     public Response getAllCompanies(CommonQuery query) {
        return service.getAllCompanies(query);
@@ -272,6 +277,19 @@ public class CompanyServicesImpl implements Iface {
             throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+    /*
+        获取company的details
+     */
+    @Override
+    public Response companyDetails(int companyId){
+        try{
+            Map<String,Object> map=companyPcService.getCompanyInfo(companyId);
+            return ResponseUtils.success(map);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
             throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
         }
     }

@@ -3,6 +3,7 @@ package com.moseeker.baseorm.dao.hrdb;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.hrdb.tables.HrResource;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrResourceRecord;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
@@ -31,7 +32,10 @@ public class HrResourceDao extends JooqCrudImpl<HrResourceDO, HrResourceRecord> 
 	 /*
 	  * 通过res.id列表获取资源列表
 	  */
-	 public List<HrResourceDO> getHrCmsResourceByIdList(List<Integer> ids){
+	 public List<HrResourceDO> getHrResourceByIdList(List<Integer> ids){
+            if(StringUtils.isEmptyList(ids)){
+                 return null;
+             }
 			Query query=new Query.QueryBuilder().where(new Condition("id",ids.toArray(),ValueOp.IN)).and("disable",0).buildQuery();
 		    List<HrResourceDO> list=this.getDatas(query);
 			return list;
