@@ -746,7 +746,8 @@ public class SearchengineService {
                         SearchResponse hitEmployeeRanking = builder.execute().actionGet();
                         if (hitEmployeeRanking != null) {
                             int ranking = (int) hitEmployeeRanking.getAggregations().asMap().get("ranking").getProperty("value");
-                            SearchHits hits = getSearchRequestBuilder(searchClient, companyIds, null, "0", 0, 0, timespan).setFrom(ranking).setSize(3).execute().actionGet().getHits();
+                            logger.info("员工:{} ，timespan:{} 排名:{}", employeeId, timespan, ranking + 1);
+                            SearchHits hits = getSearchRequestBuilder(searchClient, companyIds, null, "0", 0, 0, timespan).setFrom(ranking-1).setSize(3).execute().actionGet().getHits();
                             for (SearchHit searchHit : hits.getHits()) {
                                 JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
                                 JSONObject obj = JSON.parseObject("{}");
