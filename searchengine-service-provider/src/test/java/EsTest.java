@@ -21,7 +21,7 @@ public class EsTest {
 
     @Test
     public void searchInWxTest() throws TException {
-        Response response = service.queryAwardRankingInWx(Arrays.asList(32), "2017", 340565);
+        Response response = service.queryAwardRankingInWx(Arrays.asList(39978, 39979, 39980, 39981, 39982, 2996), "2017", 44612);
         System.out.println(response);
     }
 

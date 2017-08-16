@@ -225,7 +225,7 @@ public class ProfileProcessBS {
                             reward.setRecommender_id(record.getRecommender_user_id());
                             reward.setPoints_conf_id(result1.getPointsConfId());
                             reward.setPosition_id(record.getPosition_id());
-                            reward.setApplierID(record.getApplier_id());
+                            reward.setApplier_id(record.getApplier_id());
                             if (progressStatus == 13 && record.getTemplate_id() == ProcessUtils.RECRUIT_STATUS_APPLY_ID) {
                                 turnToCVChecked = new HrOperationRecordDO();
                                 turnToCVChecked.setAdminId(accountId);
@@ -440,7 +440,7 @@ public class ProfileProcessBS {
                      userEmployeePointsRecordDO.setAwardConfigId(bean.getPoints_conf_id());
                      userEmployeePointsRecordDO.setRecomUserId((int)bean.getRecommender_id());
                      userEmployeePointsRecordDO.setPositionId(bean.getPosition_id());
-                     userEmployeePointsRecordDO.setBerecomUserId(bean.getApplierID());
+                     userEmployeePointsRecordDO.setBerecomUserId(bean.getApplier_id());
             	     employeeEntity.addReward(bean.getEmployee_id(), bean.getCompany_id(), userEmployeePointsRecordDO);
             		 logger.info("ProfileProcessBS processProfile UserEmployeePointStruct:{}", record);
 //            		 list.add(record);
