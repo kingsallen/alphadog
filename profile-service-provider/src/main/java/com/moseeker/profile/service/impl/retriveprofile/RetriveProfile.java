@@ -35,9 +35,7 @@ public class RetriveProfile {
      */
     @CounterIface
     public boolean retrieve(String parameter) throws CommonException {
-        logger.info("parameter1:{}", parameter);
-        logger.info("parameter2:{}", EmojiFilter.filterEmoji1(parameter));
-        Map<String, Object> paramMap = JSON.parseObject(EmojiFilter.filterEmoji1(parameter));
+        Map<String, Object> paramMap = JSON.parseObject(EmojiFilter.filterEmoji1(EmojiFilter.unicodeToUtf8(parameter)));
         if (paramMap.get("channel") != null) {
             int channel = (Integer)paramMap.get("channel");
             ChannelType channelType = ChannelType.instaceFromInteger(channel);

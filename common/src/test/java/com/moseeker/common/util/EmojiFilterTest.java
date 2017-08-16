@@ -17,7 +17,10 @@ public class EmojiFilterTest {
         System.out.println(content1);
         String str  = EmojiFilter.filterEmoji1(content1);
         System.out.println(str);
-        System.out.println(EmojiFilter.filterEmoji1(content2.replace("\\\\","\\")));
+        System.out.println(EmojiFilter.revert(content1));
+        System.out.println(EmojiFilter.unicodeToUtf8(content1));
+
+        //System.out.println(EmojiFilter.filterEmoji1(content2.replace("\\\\","\\")));
         //System.out.println(EmojiFilter.refineHexString(content));
         //System.out.println(content.replaceAll("[\ud800\udc00-\udbff\udfff\ud800-\udfff]", ""));
         //assertEquals(true, EmojiFilter.containsWord(str));
