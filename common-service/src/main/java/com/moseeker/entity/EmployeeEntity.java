@@ -443,7 +443,7 @@ public class EmployeeEntity {
                     }
                     if (reward.getBerecomName() == null) {
                         query.clear();
-                        query.where(UserWxUser.USER_WX_USER.SYSUSER_ID.getName(), userEmployeeDO.getSysuserId());
+                        query.where(UserWxUser.USER_WX_USER.SYSUSER_ID.getName(), point.getBerecomUserId());
                         UserWxUserDO userWxUserDO = userWxUserDao.getData(query.buildQuery());
                         if (userWxUserDO != null) {
                             reward.setBerecomName(userWxUserDO.getNickname());
