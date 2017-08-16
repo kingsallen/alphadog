@@ -18,27 +18,27 @@ import com.moseeker.thrift.gen.searchengine.service.SearchengineServices.Iface;
 
 @Service
 public class SearchengineServiceImpl implements Iface {
-	
-    Logger logger = LoggerFactory.getLogger(this.getClass());
-    
-    @Autowired
-    private SearchengineService service;
-    @Autowired
-    private CompanySearchengine companySearchengine;
-    @Autowired
-    private PositionSearchEngine positionSearchEngine;
-    
-    @Override
-    public Response query(String keywords, String cities, String industries, String occupations, String scale,
-            String employment_type, String candidate_source, String experience, String degree, String salary,
-            String company_name, int page_from, int page_size,String child_company_name,String department,boolean order_by_priority,String custom) throws TException {
-        return service.query(keywords, cities, industries, occupations, scale, employment_type, candidate_source, experience, degree, salary, company_name, page_from, page_size, child_company_name, department, order_by_priority, custom);
-    }
-    
-    @Override
-    public Response updateposition(String position,int  id) throws TException {
-       return service.updateposition(position, id);
-    }
+
+	Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	@Autowired
+	private SearchengineService service;
+	@Autowired
+	private CompanySearchengine companySearchengine;
+	@Autowired
+	private PositionSearchEngine positionSearchEngine;
+
+	@Override
+	public Response query(String keywords, String cities, String industries, String occupations, String scale,
+						  String employment_type, String candidate_source, String experience, String degree, String salary,
+						  String company_name, int page_from, int page_size,String child_company_name,String department,boolean order_by_priority,String custom) throws TException {
+		return service.query(keywords, cities, industries, occupations, scale, employment_type, candidate_source, experience, degree, salary, company_name, page_from, page_size, child_company_name, department, order_by_priority, custom);
+	}
+
+	@Override
+	public Response updateposition(String position,int  id) throws TException {
+		return service.updateposition(position, id);
+	}
 
 	@Override
 	public Response companyQuery(String keyWords, String citys, String industry, String scale, int page, int pageSize){
@@ -53,15 +53,15 @@ public class SearchengineServiceImpl implements Iface {
 			logger.info(e.getMessage(),e);
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
 		}
-		
+
 	}
 
 	@Override
 	public Response positionQuery(String keyWords, String citys, String industry, String salaryCode, int page,
-			int pageSize, String startTime, String endTime) throws TException {
+								  int pageSize, String startTime, String endTime,int order) throws TException {
 		// TODO Auto-generated method stub
 		try{
-			Map<String,Object> res=positionSearchEngine.search(keyWords, industry, salaryCode, page, pageSize, citys, startTime, endTime);
+			Map<String,Object> res=positionSearchEngine.search(keyWords, industry, salaryCode, page, pageSize, citys, startTime, endTime,order);
 			if(res==null){
 				return ResponseUtils.success("");
 			}

@@ -38,4 +38,9 @@ public class UserPositionEmailServiceTest {
 		}
 
 	}
+	@Test
+	public void sendPositionEmail() throws Exception {
+		int userid=3314;
+		int result=userPositionEmailService.sendEmailPosition(userid);
+	}
 }

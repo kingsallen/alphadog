@@ -136,7 +136,7 @@ public class UserPositionEmailService {
 		SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss" );
 		lastDate.roll(Calendar.DATE, -7);//日期回滚7天
 		String startTime=format.format(lastDate.getTime());
-		Response res=searchengineServices.positionQuery(keyWord, citys, industry, salaryCode, page, pageSize, startTime, null);
+		Response res=searchengineServices.positionQuery(keyWord, citys, industry, salaryCode, page, pageSize, null, null,1);
 		if(res.getStatus()==0&&!Strings.isNullOrEmpty(res.getData())){
 			String data=res.getData();
 			Map<String,Object> result=JSON.parseObject(data);
@@ -194,6 +194,7 @@ public class UserPositionEmailService {
 				String companyName=(String) company.get("abbreviation");
 				String citys=(String) position.get("city");
 				String salary="  面议  ";
+				int positionId=(int)position.get("id");
 				double salaryTop=0;
 				if(position.get("salary_top")!=null){
 					salaryTop=Double.parseDouble(position.get("salary_top").toString());
@@ -220,7 +221,7 @@ public class UserPositionEmailService {
 					}
 
 				}
-				String singleData=this.getPositionHtmlData(pic, title, citys, companyName, salary, experience);
+				String singleData=this.getPositionHtmlData(pic, title, citys, companyName, salary, experience,positionId);
 				showData+=singleData;
 			}
 			return showData;
@@ -229,7 +230,7 @@ public class UserPositionEmailService {
 		return null;
 	}
 
-	private String getPositionHtmlData(String pic,String title,String citys,String companyName,String salary,String experience){
+	private String getPositionHtmlData(String pic,String title,String citys,String companyName,String salary,String experience,int positionId){
 		StringBuffer sb=new StringBuffer();
 		sb.append("<tr><td align='center'><table width='500' height='90' cellpadding='0' cellspacing='0' border='0' class='wrapper'> <tbody><tr>");
 		sb.append("<td height='20' style='-ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; font-size: 10px; line-height: 10px; mso-table-lspace: 0pt;");
@@ -241,7 +242,7 @@ public class UserPositionEmailService {
 		sb.append("<table cellpadding='0' cellspacing='0' border='0'><tbody><tr><td valign='middle' align='left' style='-moz-hyphens: auto; -webkit-hyphens: ");
 		sb.append("auto; hyphens: auto; border: none; border-collapse: collapse !important; color: #66A4F9; font-family: Helvetica, Arial, sans-serif; font-size:");
 		sb.append("14px; font-weight: normal; line-height: 1; margin: 0; padding: 0; word-wrap: break-word;'><a href='https://www.moseeker.com/");
-		sb.append("job/:jobId?fr=edm' target='_blank' alias='' style='font-size:14px;font-family: Helvetica, Arial, sans-serif; color:#66A4F9; display:");
+		sb.append("job/:"+positionId+"?fr=edm' target='_blank' alias='' style='font-size:14px;font-family: Helvetica, Arial, sans-serif; color:#66A4F9; display:");
 		sb.append("inline-block; text-decoration: none; margin: 0; padding: 0; font-weight:normal;width: 400px;'>"+title+"</a></td></tr>");
 		sb.append("</tbody></table></td></tr><tr><td class='mobile' style='-ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; color: #4B525C; ");
 		sb.append("font-family: arial, sans-serif; font-size: 14px; line-height: 1; mso-table-lspace: 0pt; mso-table-rspace: 0pt;'>");
@@ -353,12 +354,11 @@ public class UserPositionEmailService {
 			return null;
 		}
 		List<Integer> list=new ArrayList<Integer>();
-		if(data.contains(",")){
-			String[] array=data.split(",");
-			for(String arr:array){
-				list.add(Integer.parseInt(arr));
-			}
+		String[] array=data.split(",");
+		for(String arr:array){
+			list.add(Integer.parseInt(arr));
 		}
+
 		return list;
 	}
 
