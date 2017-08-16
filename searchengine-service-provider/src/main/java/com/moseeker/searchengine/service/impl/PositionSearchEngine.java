@@ -87,7 +87,6 @@ public class PositionSearchEngine {
 					.addAggregation(searchUtil.handle("_source.position.salary_data","salary"))
 					.setFrom((page-1)*pageSize)
 					.setSize(pageSize);
-
 			if(StringUtils.isNotEmpty(keyWord)){
 				Script script=this.buildScriptSort(keyWord);
 				ScriptSortBuilder builder=new ScriptSortBuilder(script,"number");
