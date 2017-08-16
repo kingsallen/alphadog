@@ -152,13 +152,17 @@ public class ThirdPartyAccountService {
 
         setCache(account);
 
-        HrThirdPartyAccountDO result = thirdPartyAccountSynctor.bindThirdPartyAccount(allowStatus == 0 ? hrId : 0, account, extras, sync);
+        try {
+            HrThirdPartyAccountDO result = thirdPartyAccountSynctor.bindThirdPartyAccount(allowStatus == 0 ? hrId : 0, account, extras, sync);
 
-        if (result.getBinding() != 100) {
+            if (result.getBinding() != 100) {
+                removeCache(account);
+            }
+            return result;
+        } catch (Exception e) {
             removeCache(account);
+            throw e;
         }
-
-        return result;
     }
 
 
