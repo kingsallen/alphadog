@@ -45,17 +45,17 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 
 	public List<ProcessValidationStruct> getAuth(List<Integer> appIds,Integer companyId,Integer progressStatus) throws Exception{
 		List<ProcessValidationStruct> list=new ArrayList<ProcessValidationStruct>();
-		SelectJoinStep<Record9<Integer, Integer, Integer, Integer, Integer, String, Integer, Integer, String>> table=create.select(
+		SelectJoinStep<Record10<Integer, Integer, Integer, Integer, Integer, String, Integer, Integer, String, Integer>> table=create.select(
 				JobApplication.JOB_APPLICATION.ID,
 				JobApplication.JOB_APPLICATION.COMPANY_ID,
 				JobApplication.JOB_APPLICATION.RECOMMENDER_ID,
 				JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID,
 				JobApplication.JOB_APPLICATION.APPLIER_ID,
 				UserUser.USER_USER.NAME,
-//					UserWxUser.USER_WX_USER.SYSUSER_ID,
 				ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL.ID ,
 				ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL.RECRUIT_ORDER,
-				JobPosition.JOB_POSITION.TITLE
+				JobPosition.JOB_POSITION.TITLE,
+                JobApplication.JOB_APPLICATION.POSITION_ID
 				).from(JobApplication.JOB_APPLICATION);
 		table.leftJoin(ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL)
 		.on("jobdb.job_application.app_tpl_id=configdb.config_sys_points_conf_tpl.id");
@@ -69,10 +69,10 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 		}else if(progressStatus==99){
 			table.where().and(JobApplication.JOB_APPLICATION.APP_TPL_ID.equal((int)(4)));
 		}
-		Result<Record9<Integer, Integer, Integer, Integer, Integer, String, Integer, Integer, String>> result=table.fetch();
+		Result<Record10<Integer, Integer, Integer, Integer, Integer, String, Integer, Integer, String, Integer>> result=table.fetch();
 		if(result!=null&&result.size()>0){
 			ProcessValidationStruct data= null;
-			for(Record9<Integer, Integer, Integer, Integer, Integer, String, Integer, Integer, String> record:result){
+			for(Record10<Integer, Integer, Integer, Integer, Integer, String, Integer, Integer, String, Integer> record:result){
 				data=new ProcessValidationStruct();
 				data.setCompany_id(record.getValue(JobApplication.JOB_APPLICATION.COMPANY_ID).intValue());
 				data.setId(record.getValue(JobApplication.JOB_APPLICATION.ID).intValue());
@@ -83,6 +83,7 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 				data.setApplier_id(record.getValue(JobApplication.JOB_APPLICATION.APPLIER_ID).intValue());
 				data.setApplier_name(record.getValue(UserUser.USER_USER.NAME));
 				data.setPosition_name(record.getValue(JobPosition.JOB_POSITION.TITLE));
+				data.setPosition_id(record.getValue(JobApplication.JOB_APPLICATION.POSITION_ID));
 				list.add(data);
 			}
 		}

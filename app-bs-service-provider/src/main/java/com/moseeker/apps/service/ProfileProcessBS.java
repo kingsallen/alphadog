@@ -15,7 +15,6 @@ import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeePointsRecordDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
-import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeePointsRecordRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
@@ -224,6 +223,8 @@ public class ProfileProcessBS {
                             reward.setCompany_id(record.getCompany_id());
                             reward.setOperate_tpl_id(record.getTemplate_id());
                             reward.setRecommender_id(record.getRecommender_user_id());
+                            reward.setPoints_conf_id(result1.getPointsConfId());
+                            reward.setPosition_id(record.getPosition_id());
                             if (progressStatus == 13 && record.getTemplate_id() == ProcessUtils.RECRUIT_STATUS_APPLY_ID) {
                                 turnToCVChecked = new HrOperationRecordDO();
                                 turnToCVChecked.setAdminId(accountId);
@@ -435,6 +436,9 @@ public class ProfileProcessBS {
                      userEmployeePointsRecordDO.setApplicationId(bean.getApplication_id());
                      userEmployeePointsRecordDO.setReason(bean.getReason());
                      userEmployeePointsRecordDO.setEmployeeId(bean.getEmployee_id());
+                     userEmployeePointsRecordDO.setAwardConfigId(bean.getPoints_conf_id());
+                     userEmployeePointsRecordDO.setRecomUserId((int)bean.getRecommender_id());
+                     userEmployeePointsRecordDO.setPositionId(bean.getPosition_id());
             	     employeeEntity.addReward(bean.getEmployee_id(), bean.getCompany_id(), userEmployeePointsRecordDO);
             		 logger.info("ProfileProcessBS processProfile UserEmployeePointStruct:{}", record);
 //            		 list.add(record);
