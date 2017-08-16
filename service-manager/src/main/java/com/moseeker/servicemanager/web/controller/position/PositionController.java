@@ -5,6 +5,7 @@ import com.moseeker.baseorm.dao.jobdb.JobOccupationDao;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
@@ -20,9 +21,11 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.position.struct.*;
+import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import org.jooq.tools.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +38,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -221,6 +225,7 @@ public class PositionController {
             logger.info("/position/refresh");
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             List<HashMap<Integer, Integer>> paramList = PositionParamUtils.parseRefreshParam(params);
+            List< Integer> paramQXList = PositionParamUtils.parseRefreshParamQX(params);
             logger.info("/position/refresh paramList.size:" + paramList.size());
             List<Object> refreshResult = new ArrayList<>();
             if (paramList.size() > 0) {
@@ -229,11 +234,11 @@ public class PositionController {
                         try {
                             //同步到智联的第三方职位不刷新
                             if (ChannelType.ZHILIAN.getValue() == channel) {
-                                logger.info("synchronize position:{}:zhilian skip", positionId);
-                                List<Integer> positionIds = new ArrayList<Integer>();
+                                logger.info("synchronize position:{}:zhilian skip",positionId);
+                                List<Integer> positionIds =new ArrayList<Integer>();
                                 positionIds.add(positionId);
                                 positionBS.refreshPositionQXPlatform(positionIds);
-                            } else {
+                            }else {
                                 logger.info("positionId:" + positionId + "    channel:" + channel);
                                 Response refreshPositionResponse = positionBS.refreshPositionToThirdPartyPlatform(positionId, channel);
                                 logger.info("data:" + refreshPositionResponse.getData());
@@ -253,9 +258,14 @@ public class PositionController {
                         }
                     });
                 });
-            } else {
-                List<Integer> paramQXList = PositionParamUtils.parseRefreshParamQX(params);
-                positionBS.refreshPositionQXPlatform(paramQXList);
+                if(!StringUtils.isEmptyList(paramQXList)){
+                	 positionBS.refreshPositionQXPlatform(paramQXList);
+                }
+
+            }else{
+            	  if(!StringUtils.isEmptyList(paramQXList)){
+                 	 positionBS.refreshPositionQXPlatform(paramQXList);
+                 }
             }
             Response res = ResponseUtils.success(refreshResult);
             return ResponseLogNotification.success(request, res);
@@ -510,7 +520,7 @@ public class PositionController {
         }
         return null;
     }
-    
+
     /*
      *获取pc端推荐职位列表
      */
@@ -534,4 +544,92 @@ public class PositionController {
     		 return ResponseLogNotification.fail(request, e.getMessage());
     	}
     }
+
+    /**
+     * 职位同步到第三方接口
+     */
+    @RequestMapping(value = "/position/thirdpartyposition", method = RequestMethod.GET)
+    @ResponseBody
+    public String getPositionForThirdParty(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer pid = params.getInt("positionId");
+            Integer channel = params.getInt("channel");
+            Response res =  positonServices.getPositionForThirdParty(pid, channel);
+            return ResponseLogNotification.success(request, res);
+
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request,e.getMessage());
+        }
+    }
+
+
+
+    /**
+     * 职位列表id同步到第三方接口
+     */
+    @RequestMapping(value = "/positions/thirdpartypositions", method = RequestMethod.GET)
+    @ResponseBody
+    public String getPositionListForThirdParty(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer channel = params.getInt("channel");
+            Integer type = params.getInt("type");
+            String start_time = params.getString("start_time");
+            String end_time = params.getString("end_time");
+            List<Integer> positions =  positonServices.getPositionListForThirdParty(channel,type,start_time,end_time);
+            Response res = ResponseUtils.success(positions);
+            return ResponseLogNotification.success(request, res);
+
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request,e.getMessage());
+        }
+    }
+
+
+
+
+    /**
+     * 第三方职位列表详情
+     */
+    @RequestMapping(value = "/thirdparty/position/info", method = RequestMethod.GET)
+    @ResponseBody
+    public String getThirdPartyPositionInfo(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            ThirdPartyPositionInfoForm infoForm = ParamUtils.initModelForm(request, ThirdPartyPositionInfoForm.class);
+            ThirdPartyPositionResult result = positonServices.getThirdPartyPositionInfo(infoForm);
+            return ResponseLogNotification.successJson(request, result);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseLogNotification.failJson(request, e);
+        }
+    }
+
+    /**
+     * 第三方职位列表详情
+     */
+    @RequestMapping(value = "/thirdparty/position", method = RequestMethod.PUT)
+    @ResponseBody
+    public String updateThirdPartyPosition(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            HrThirdPartyAccountDO thirdPartyAccount = ParamUtils.initModelForm(params, HrThirdPartyAccountDO.class);
+            HrThirdPartyPositionDO thirdPartyPosition = ParamUtils.initModelForm(params, HrThirdPartyPositionDO.class);
+
+            if (thirdPartyAccount == null || thirdPartyPosition == null) {
+                throw new CommonException(2201, "参数错误");
+            }
+
+            thirdPartyAccount.setId(0);
+            thirdPartyAccount.unsetId();
+            positonServices.updateThirdPartyPositionWithAccount(thirdPartyPosition, thirdPartyAccount);
+            return ResponseLogNotification.successJson(request, 1);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseLogNotification.failJson(request, e);
+        }
+    }
+
 }

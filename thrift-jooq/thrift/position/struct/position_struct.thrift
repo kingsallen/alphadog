@@ -351,3 +351,43 @@ struct PositionDetailsListVO{
     4:i32 per_age, // 每页多少条 默认10条
     6:i32 page // 当前第几页
 }
+
+
+/* 支付宝校园招聘职位转换 */
+// 职位详情
+struct PositionDetailsForAlipayCampus{
+      1:           string source_id,           // jobposition.id
+      2:           string job_name,            // 职位标题
+      3:           string job_desc,              //职位描述
+      4:           string job_tier_one_code,     // 职位一级分类code opj_XXX
+      5:  optional string job_tier_two_code,     //职位二级分类code opj_XXX
+      6:  optional string job_tier_three_code,   //职位三级分类code opj_XXX
+      7:           string job_tier_one_name,     //职位一级分类name IT互联网
+      8:  optional string job_tier_two_name,     //职位二级分类name 软件
+      9:  optional string job_tier_threee_name,  //职位三级分类name java
+      10: optional string job_perk,           // 职业亮点、关键字
+      11: optional i32 job_hire_number,      // 招聘人数
+      12: optional i8 job_type,              // 招聘类型 1实习 2 兼职 3全职
+      13: optional i8 job_rq_education,      // 学历要求 1 大专以下 2 大专 3 本科 4 硕士 5 博士 6 其他 7 不限
+      14: optional i8 job_resume_lg,           // 要求简历语言 1中文 2 英文
+      15: optional i32 payment_min,           // 最小薪资
+      16: optional i32 payment_max,                // 最大薪资
+      17: optional i8 payment_unit,              // 薪资单位 1天 2月 3周
+      18:          string company_source,          // company.id
+      19:          string company_name,             // 公司名称
+      20:          string company_lawname,      // 公司法律名称
+      21: optional string company_logo,      // 公司logo
+      22: optional i32 area_province_code,         // 省份编码（直辖市）， 110100
+      23:          string area_city_code,          // 城市编码   110100
+      24: optional string area_district_code,      // 区编码  110105
+      25:          string area_city_name,          // 城市名称 北京市
+      26:          string area_province_name,      // 省份名称（直辖市） 北京市
+      27: optional string area_district_name,      // 区名称  朝阳区
+      28: optional string area_street_name,        // 街道名称
+      29: optional string area_job_address,        // 工作详细地址
+      30: optional i32 tra_job_freq,              // 每周到岗天数
+      31: optional i32 tra_job_period,           // 实习时间长度（单位月）
+      32: optional i8 tra_job_promot,       // 是否可以转正
+      33: optional Timestamp gmt_expired,  // 过期时间（毫秒数）  1494926993617
+      34: optional Timestamp gmt_refresh,    // 刷新时间 （毫秒数）  1494926993617
+}

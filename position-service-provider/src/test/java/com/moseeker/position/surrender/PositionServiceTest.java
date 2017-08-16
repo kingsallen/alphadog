@@ -3,6 +3,10 @@ package com.moseeker.position.surrender;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.fastjson.JSON;
+import com.moseeker.position.service.third.ThirdPositionService;
+import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionInfoForm;
+import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionResult;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +17,7 @@ import com.moseeker.position.config.AppConfig;
 import com.moseeker.position.service.fundationbs.PositionService;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.position.struct.RpExtInfo;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes =AppConfig.class)
 @Transactional
@@ -58,5 +63,16 @@ public class PositionServiceTest {
     	list.add(124342);
         List<RpExtInfo> res= service.getPositionListRpExt(list);
         System.out.println(res);
+    }
+
+    @Autowired
+    ThirdPositionService thirdPositionService;
+
+    @Test
+    public void testThirdPartyPosition() {
+        ThirdPartyPositionInfoForm infoForm = new ThirdPartyPositionInfoForm();
+        ThirdPartyPositionResult result = thirdPositionService.getThirdPartyPositionInfo(infoForm);
+
+        System.out.println(JSON.toJSONString(result));
     }
 }

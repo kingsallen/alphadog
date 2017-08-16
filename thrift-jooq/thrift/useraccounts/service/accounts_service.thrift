@@ -28,6 +28,7 @@ service UseraccountsServices {
     common_struct.Response postuserlogin(1: useraccounts_struct.Userloginreq userloginreq);
     common_struct.Response postuserlogout(1: i32 userid);
     common_struct.Response postsendsignupcode(1: string mobile);
+    common_struct.Response postsendsignupcodeVoice(1: string mobile);
     // 用户注册
     //common_struct.Response postusermobilesignup(1: string mobile, 2: string code, 3: string password);
     common_struct.Response postusermobilesignup(1: useraccounts_struct.User user, 2: string code);
@@ -91,12 +92,20 @@ service UserHrAccountService {
     common_struct.Response sendMobileVerifiyCode(1: string mobile, 2: string code,  3: i32 source);
     common_struct.Response postResource(1: useraccounts_struct.DownloadReport downloadReport);
     common_struct.Response putResource(1: useraccounts_struct.UserHrAccount userHrAccount);
-    //绑定第三方帐号 
-    hr_third_party_account_struct.HrThirdPartyAccountDO bindThirdpartyAccount(1:i32 hrId,2:hr_third_party_account_struct.HrThirdPartyAccountDO account,3:bool sync) throws (1: common_struct.BIZException e);
+    //绑定第三方帐号
+    hr_third_party_account_struct.HrThirdPartyAccountDO bindThirdPartyAccount(1:i32 hrId,2:hr_third_party_account_struct.HrThirdPartyAccountDO account,3:bool sync) throws (1: common_struct.BIZException e);
     //同步第三方帐号
-    hr_third_party_account_struct.HrThirdPartyAccountDO syncThirdpartyAccount(1:i32 hrId,2:i32 id,3:bool sync) throws (1: common_struct.BIZException e);
+    hr_third_party_account_struct.HrThirdPartyAccountDO syncThirdPartyAccount(1:i32 hrId,2:i32 id,3:bool sync) throws (1: common_struct.BIZException e);
+    //解绑第三方nag帐号
+    void unbindThirdPartyAccount(1:i32 accountId,2:i32 userId) throws (1: common_struct.BIZException e);
+    //分配第三方帐号
+    useraccounts_struct.ThirdPartyAccountInfo dispatchThirdPartyAccount(1:i32 accountId,2:list<i32> hrIds) throws (1: common_struct.BIZException e);
+    //获取第三方帐号信息
+    useraccounts_struct.ThirdPartyAccountInfo getThirdPartyAccount(1:i32 accountId) throws (1: common_struct.BIZException e);
+
+
     // 获取常用筛选项
-    common_struct.Response getSearchCondition(1: i32 hrAccountId, 2: i32 type); 
+    common_struct.Response getSearchCondition(1: i32 hrAccountId, 2: i32 type);
     // 保存常用筛选项
     common_struct.Response postSearchCondition(1: useraccounts_struct.SearchCondition searchCondition)
     // 删除常用筛选项

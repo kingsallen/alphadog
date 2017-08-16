@@ -2,5 +2,5 @@ package com.moseeker.position.service.position;
 
 public enum PositionType {
 
-	QIANXUN, JOB51, ZHILIAN;
+	QIANXUN, JOB51, ZHILIAN,ALIPAYCAMPUS;
 }

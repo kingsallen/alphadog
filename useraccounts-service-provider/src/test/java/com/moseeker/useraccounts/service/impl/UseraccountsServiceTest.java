@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.service.impl;
 
+import com.moseeker.baseorm.util.SmsSender;
 import com.moseeker.common.util.AopTargetUtils;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
@@ -88,6 +89,18 @@ public class UseraccountsServiceTest {
     //@Test
     public void postUserFavoritePosition() throws Exception {
 
+    }
+
+//    @Test
+    public void postsendsignupcodeTest() throws TException {
+        Response response = service.postsendsignupcode("13020287221");
+        System.out.println(response);
+    }
+
+//    @Test
+    public void postsendsignupcodeVoiceTest() throws TException {
+        Response response = service.postsendsignupcodeVoice("13020287221");
+        System.out.println(response);
     }
 
 

@@ -11,30 +11,14 @@ import com.moseeker.common.validation.rules.DateType;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
-import com.moseeker.servicemanager.web.controller.position.PositionParamUtils;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.company.service.CompanyServices;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrImporterMonitorDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.employee.struct.Reward;
-import com.moseeker.thrift.gen.employee.struct.RewardConfig;
-import com.moseeker.thrift.gen.position.struct.City;
-import com.moseeker.thrift.gen.position.struct.JobPostrionObj;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +26,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * HR账号服务
@@ -58,8 +49,6 @@ public class UserHrAccountController {
 
     UserHrAccountService.Iface userHrAccountService = ServiceManager.SERVICEMANAGER
             .getService(UserHrAccountService.Iface.class);
-
-    CompanyServices.Iface companyService = ServiceManager.SERVICEMANAGER.getService(CompanyServices.Iface.class);
 
     /**
      * 注册HR发送验证码
@@ -132,7 +121,7 @@ public class UserHrAccountController {
         return resultMap;
     }
 
-    @RequestMapping(value = "/hraccount/binding", method = RequestMethod.POST)
+    @RequestMapping(value = "/thirdpartyaccount/bind", method = RequestMethod.POST)
     @ResponseBody
     public String bindThirdPartyAccount(HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -142,7 +131,7 @@ public class UserHrAccountController {
                 struct.setMembername(params.get("member_name").toString());
             }
             logger.info("bind thirdParyAccount in controller params===========================" + JSON.toJSONString(struct));
-            struct = userHrAccountService.bindThirdpartyAccount(params.getInt("user_id", 0), struct, params.getBoolean("sync", false));
+            struct = userHrAccountService.bindThirdPartyAccount(params.getInt("user_id", 0), struct, params.getBoolean("sync", false));
             //同步情况下走下面的代码
 
             return ResponseLogNotification.success(request, ResponseUtils.success(thirdpartyAccountToMap(struct)));
@@ -172,7 +161,7 @@ public class UserHrAccountController {
                 return ResponseLogNotification.fail(request, "user_id不能为空");
             }
 
-            HrThirdPartyAccountDO hrThirdPartyAccountDO = userHrAccountService.syncThirdpartyAccount(userId, id, params.getBoolean("sync", false));
+            HrThirdPartyAccountDO hrThirdPartyAccountDO = userHrAccountService.syncThirdPartyAccount(userId, id, params.getBoolean("sync", false));
 
             return ResponseLogNotification.success(request, ResponseUtils.success(thirdpartyAccountToMap(hrThirdPartyAccountDO)));
         } catch (Exception e) {
@@ -182,6 +171,54 @@ public class UserHrAccountController {
             logger.info("/thirdpartyaccount/refresh start : {}", new DateTime().toString("YYYY-MM-dd HH:mm:ss SSS"));
             long allUseTime = System.currentTimeMillis() - startTime;
             logger.info("refresh thirdParyAccount in controller Use time===========================" + allUseTime);
+        }
+    }
+
+    @RequestMapping(value = "/thirdpartyaccount/unbind", method = RequestMethod.POST)
+    @ResponseBody
+    public String unBindThirdPartyAccount(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer accountId = params.getInt("account_id");
+            if (accountId == null) {
+                return ResponseLogNotification.fail(request, "account_id不能为空");
+            }
+
+            Integer userId = params.getInt("user_id", 0);
+
+            if (userId == null) {
+                return ResponseLogNotification.fail(request, "user_id不能为空");
+            }
+
+            userHrAccountService.unbindThirdPartyAccount(accountId, userId);
+
+            return ResponseLogNotification.successJson(request, 1);
+        } catch (Exception e) {
+            return ResponseLogNotification.failJson(request, e);
+        }
+    }
+
+    @RequestMapping(value = "/thirdpartyaccount/dispatch", method = RequestMethod.POST)
+    @ResponseBody
+    public String dispatchThirdPartyAccount(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer accountId = params.getInt("account_id");
+            if (accountId == null) {
+                return ResponseLogNotification.fail(request, "account_id不能为空");
+            }
+
+            List<Integer> hrIds = (List<Integer>) params.get("hr_ids");
+
+            if (hrIds == null) {
+                return ResponseLogNotification.fail(request, "hr_ids不能为空");
+            }
+
+            ThirdPartyAccountInfo accountInfo = userHrAccountService.dispatchThirdPartyAccount(accountId, hrIds);
+
+            return ResponseLogNotification.successJson(request, accountInfo);
+        } catch (Exception e) {
+            return ResponseLogNotification.failJson(request, e);
         }
     }
 

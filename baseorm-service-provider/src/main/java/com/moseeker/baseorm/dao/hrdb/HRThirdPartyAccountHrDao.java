@@ -42,6 +42,7 @@ public class HRThirdPartyAccountHrDao extends JooqCrudImpl<HrThirdPartyAccountHr
                 .where(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.THIRD_PARTY_ACCOUNT_ID.getName(), accountId)
                 .and(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.STATUS.getName(), 1)
                 .orderBy(new OrderBy(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.CREATE_TIME.getName(), Order.DESC))
+                .orderBy(new OrderBy(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.ID.getName(), Order.DESC))
                 .buildQuery();
 
         return getDatas(query);

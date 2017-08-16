@@ -107,12 +107,8 @@ public class PositionChangeUtil {
         position.setSalary_month(form.getSalary_month());
 
         //职位详情
-        String description = "";
-        if (channelType == ChannelType.JOB51 || channelType == ChannelType.LIEPIN) {
-            description = convertDescriptionFor51(positionDB.getAccountabilities(), positionDB.getRequirement());
-        } else {
-            description = convertDescription(positionDB.getAccountabilities(), positionDB.getRequirement());
-        }
+        String description = setDescription(positionDB.getAccountabilities(), positionDB.getRequirement());
+
         position.setDescription(description);
 
         //设置工作地点
@@ -212,10 +208,10 @@ public class PositionChangeUtil {
         ChannelType channelType = ChannelType.instaceFromInteger(channel);
         switch (channelType) {
             case JOB51:
-                position.setType_code(String.valueOf(WordTypeChangeUtil.getJob51EmployeeType(workType).getValue()));
+                position.setType_code(String.valueOf(WorkTypeChangeUtil.getJob51EmployeeType(workType).getValue()));
                 break;
             case ZHILIAN:
-                position.setType_code(String.valueOf(WordTypeChangeUtil.getZhilianEmployeeType(workType).getValue()));
+                position.setType_code(String.valueOf(WorkTypeChangeUtil.getZhilianEmployeeType(workType).getValue()));
                 break;
             default:
                 position.setType_code("");
@@ -298,7 +294,7 @@ public class PositionChangeUtil {
         return cityCodeStr;
     }
 
-    private static String convertDescription(String accounTabilities, String requirement) {
+    public static String convertDescription(String accounTabilities, String requirement) {
         StringBuffer descript = new StringBuffer();
         if (StringUtils.isNotNullOrEmpty(accounTabilities)) {
             StringBuffer tablities = new StringBuffer();
@@ -336,7 +332,7 @@ public class PositionChangeUtil {
         return descript.toString();
     }
 
-    private static String convertDescriptionFor51(String accounTabilities, String requirement) {
+    private static String setDescription(String accounTabilities, String requirement) {
         StringBuffer descript = new StringBuffer();
         if (StringUtils.isNotNullOrEmpty(accounTabilities)) {
             descript.append(accounTabilities);
@@ -372,7 +368,7 @@ public class PositionChangeUtil {
         logger.info("setCities:{}", positionCityCodes);
         //转城市
         if (channelType == ChannelType.LIEPIN || channelType == ChannelType.ZHILIAN) {
-            List<List<String>> otherCityCodes = cityMapDao.getOtherCityFunllLevel(ChannelType.LIEPIN, positionCityCodes);
+            List<List<String>> otherCityCodes = cityMapDao.getOtherCityByLastCodes(channelType, new ArrayList<>(positionCityCodes));
             syncPosition.setCities(otherCityCodes);
             logger.info("setCities:otherCityCodes:{}", otherCityCodes);
         } else {

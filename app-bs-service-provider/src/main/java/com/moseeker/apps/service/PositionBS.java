@@ -6,6 +6,7 @@ import com.moseeker.apps.service.position.PositionSyncResultPojo;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.PositionRefreshType;
 import com.moseeker.common.constants.PositionSync;
 import com.moseeker.common.util.StringUtils;
@@ -186,23 +187,34 @@ public class PositionBS {
         logger.info("write back to thirdpartyposition:" + JSON.toJSONString(pds));
         hRThirdPartyPositionDao.upsertThirdPartyPositions(pds);
 
-        ThirdPartyPositionForSynchronization p = positions.get(positions.size() - 1);
-        boolean needWriteBackToPositin = false;
-        if (p.getSalary_top() != moseekerPosition.getSalaryTop() * 1000) {
-            moseekerPosition.setSalaryTop(p.getSalary_top() / 1000);
-            needWriteBackToPositin = true;
+
+        //假如是同步到猎聘并且是面议那么不回写到数据库
+        ThirdPartyPositionForSynchronization p = null;
+        for(ThirdPartyPositionForSynchronization thirdPartyPositionForSynchronization : positions){
+            if(thirdPartyPositionForSynchronization.isSalary_discuss() && thirdPartyPositionForSynchronization.getChannel() == ChannelType.LIEPIN.getValue()){
+                continue;
+            }
+            p = thirdPartyPositionForSynchronization;
+            break;
         }
-        if (p.getSalary_bottom() != moseekerPosition.getSalaryBottom() * 1000) {
-            moseekerPosition.setSalaryBottom(p.getSalary_bottom() / 1000);
-            needWriteBackToPositin = true;
-        }
-        if (p.getQuantity() != moseekerPosition.getCount()) {
-            moseekerPosition.setCount(Integer.valueOf(p.getQuantity()));
-            needWriteBackToPositin = true;
-        }
-        if (needWriteBackToPositin) {
-            logger.info("needWriteBackToPositin :" + JSON.toJSONString(moseekerPosition));
-            jobPositionDao.updateData(moseekerPosition);
+        if(p != null) {
+            boolean needWriteBackToPositin = false;
+            if (p.getSalary_top() != moseekerPosition.getSalaryTop() * 1000) {
+                moseekerPosition.setSalaryTop(p.getSalary_top() / 1000);
+                needWriteBackToPositin = true;
+            }
+            if (p.getSalary_bottom() != moseekerPosition.getSalaryBottom() * 1000) {
+                moseekerPosition.setSalaryBottom(p.getSalary_bottom() / 1000);
+                needWriteBackToPositin = true;
+            }
+            if (p.getQuantity() != moseekerPosition.getCount()) {
+                moseekerPosition.setCount(Integer.valueOf(p.getQuantity()));
+                needWriteBackToPositin = true;
+            }
+            if (needWriteBackToPositin) {
+                logger.info("needWriteBackToPositin :" + JSON.toJSONString(moseekerPosition));
+                jobPositionDao.updateData(moseekerPosition);
+            }
         }
 
         return ResultMessage.SUCCESS.toResponse(results);
