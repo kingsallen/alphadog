@@ -56,7 +56,7 @@ public class PositionParamUtils extends ParamUtils {
         HashMap<String, Object> data = parseRequestParam(request);
         batchHandlerDate.setFields_nohash((String) data.get("fields_nohash"));
         batchHandlerDate.setFields_nooverwrite((String) data.get("fields_nooverwrite"));
-        if (data.get("nodelete") == null) {
+        if (StringUtils.isEmptyObject(data.get("nodelete"))) {
             batchHandlerDate.setNodelete(false);
         } else {
             batchHandlerDate.setNodelete((Boolean) data.get("nodelete"));

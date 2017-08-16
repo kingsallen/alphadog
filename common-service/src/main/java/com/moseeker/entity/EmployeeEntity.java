@@ -359,8 +359,10 @@ public class EmployeeEntity {
             if (!StringUtils.isEmptyList(hrPointsConfDOList)) {
                 hrPointsConfMap.putAll(hrPointsConfDOList.stream().collect(Collectors.toMap(HrPointsConfDO::getId, Function.identity())));
             }
-            // 拼装数据
-            points.stream().forEach(point -> {
+
+            for (UserEmployeePointsRecordDO point : points) {
+
+                // 拼装数据
                 RewardVO reward = new RewardVO();
                 // 加积分说明
                 reward.setReason(point.getReason());
@@ -449,7 +451,7 @@ public class EmployeeEntity {
                     }
                 }
                 rewardVOList.add(reward);
-            });
+            }
             rewardVOPageVO.setData(rewardVOList);
         }
         return rewardVOPageVO;

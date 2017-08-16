@@ -1,8 +1,10 @@
 package com.moseeker.searchengine.thrift;
 
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
+
 import org.apache.thrift.TException;
+import org.elasticsearch.search.SearchHits;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +30,7 @@ public class SearchengineServiceImpl implements Iface {
 
     @Autowired
     private PositionSearchEngine positionSearchEngine;
-    
+
 
     @Override
     public Response query(String keywords, String cities, String industries, String occupations, String scale,
@@ -65,7 +67,7 @@ public class SearchengineServiceImpl implements Iface {
 			logger.info(e.getMessage(),e);
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
 		}
-		
+
 	}
 
 	@Override
