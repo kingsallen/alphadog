@@ -83,6 +83,10 @@ public class CompanyService {
     @Autowired
     private HRThirdPartyAccountDao hrThirdPartyAccountDao;
 
+
+    @Autowired
+    private HrEmployeeCustomFieldsDao hrEmployeeCustomFieldsDao;
+
     public Response getResource(CommonQuery query) throws TException {
         try {
             Hrcompany data = companyDao.getData(QueryConvert.commonQueryConvertToQuery(query), Hrcompany.class);
@@ -609,4 +613,21 @@ public class CompanyService {
         return 1;
     }
 
+    /**
+     * 获取公司员工认证后补填字段配置信息列表
+     *
+     * @param companyId
+     * @return
+     */
+    public List<HrEmployeeCustomFieldsDO> getHrEmployeeCustomFields(Integer companyId) {
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.DISABLE.getName(), 0)
+                .and(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.COMPANY_ID.getName(), companyId);
+        try {
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

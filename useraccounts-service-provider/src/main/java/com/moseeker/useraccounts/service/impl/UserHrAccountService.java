@@ -121,6 +121,7 @@ public class UserHrAccountService {
     @Autowired
     private HrCompanyDao hrCompanyDao;
 
+
     /**
      * HR在下载行业报告是注册
      *
@@ -1426,15 +1427,19 @@ public class UserHrAccountService {
         if (!employeeEntity.permissionJudge(userEmployeeId, companyId)) {
             throw UserAccountException.PERMISSION_DENIED;
         }
-        userEmployeeDetailVO.setId(userEmployeeDO.getId());
-        userEmployeeDetailVO.setUsername(userEmployeeDO.getCname());
-        userEmployeeDetailVO.setCompanyId(userEmployeeDO.getCompanyId());
-        userEmployeeDetailVO.setMobile(userEmployeeDO.getMobile());
-        userEmployeeDetailVO.setCustomField(userEmployeeDO.getCustomField());
-        userEmployeeDetailVO.setEmail(userEmployeeDO.getEmail());
-        userEmployeeDetailVO.setAward(userEmployeeDO.getAward());
-        userEmployeeDetailVO.setBindingTime(userEmployeeDO.getBindingTime());
+        org.springframework.beans.BeanUtils.copyProperties(userEmployeeDO, userEmployeeDetailVO);
         userEmployeeDetailVO.setActivation((new Double(userEmployeeDO.getActivation())).intValue());
+        List customFieldValues = JSONObject.parseObject(userEmployeeDO.getCustomFieldValues(), List.class);
+        userEmployeeDetailVO.setCustomFieldValues(customFieldValues);
+//        userEmployeeDetailVO.setId(userEmployeeDO.getId());
+//        userEmployeeDetailVO.setUsername(userEmployeeDO.getCname());
+//        userEmployeeDetailVO.setCompanyId(userEmployeeDO.getCompanyId());
+//        userEmployeeDetailVO.setMobile(userEmployeeDO.getMobile());
+//        userEmployeeDetailVO.setCustomField(userEmployeeDO.getCustomField());
+//        userEmployeeDetailVO.setEmail(userEmployeeDO.getEmail());
+//        userEmployeeDetailVO.setAward(userEmployeeDO.getAward());
+//        userEmployeeDetailVO.setBindingTime(userEmployeeDO.getBindingTime());
+//        userEmployeeDetailVO.setActivation((new Double(userEmployeeDO.getActivation())).intValue());
         // 查询微信信息
         if (userEmployeeDO.getSysuserId() > 0) {
             queryBuilder.clear();

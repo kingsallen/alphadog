@@ -420,6 +420,7 @@ struct UserEmployeeDetailVO{
     11: optional string companyAbbreviation, // 公司简称
     12: optional string bindingTime // 绑定时间
     13: optional i32 award, // 积分
+    14: optional list<map<string,list<string>>> customFieldValues // 公司员工认证后补填字段配置信息
 }
 // 员工导入统计数据
 struct ImportErrorUserEmployee{
