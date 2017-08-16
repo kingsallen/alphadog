@@ -219,14 +219,25 @@ public class SearchengineController {
     		 String scale=(String) reqParams.get("scale");
     		 String page=(String) reqParams.get("page");
     		 String pageSize=(String) reqParams.get("pageSize");
+             if(keyWord==null){
+                 keyWord="";
+             }
+             if(citys==null){
+                 citys="";
+             }
+             if(industry==null){
+                 industry="";
+             }
+             if(scale==null){
+                 scale="";
+             }
     		 if(StringUtils.isNullOrEmpty(page)){
     			 page="1";
     		 }
     		 if(StringUtils.isNullOrEmpty(pageSize)){
     			 pageSize="10";
     		 }
-    		  logger.info(keyWord, citys, industry, scale, page,
-    				  pageSize,"=============");
+             logger.info("======keyWord={},citys={},industry={},scale={},page={},pageSize={},pageSize={},order={}============",keyWord, citys, industry, scale, page,pageSize);
     		 Response res=searchengineServices.companyQuery(keyWord,citys,industry,scale,Integer.parseInt(page), Integer.parseInt(pageSize));
     		 return ResponseLogNotification.success(request,res);
     	 }catch(Exception e){
@@ -252,7 +263,25 @@ public class SearchengineController {
     		 String startTime=(String) reqParams.get("startTime");
     		 String endTime=(String) reqParams.get("endTime");
     		 Integer order= (Integer) reqParams.get("order");
-    		 if(order!=null){
+    		 if(keyWord==null){
+                 keyWord="";
+             }
+             if(citys==null){
+                 citys="";
+             }
+             if(industry==null){
+                 industry="";
+             }
+             if(salaryCode==null){
+                 salaryCode="";
+             }
+             if(startTime==null){
+                 startTime="";
+             }
+             if(endTime==null){
+                 endTime="";
+             }
+    		 if(order==null){
                  order=1;
              }
     		 if(StringUtils.isNullOrEmpty(page)){
@@ -261,8 +290,7 @@ public class SearchengineController {
     		 if(StringUtils.isNullOrEmpty(pageSize)){
     			 pageSize="10";
     		 }
-    		  logger.info(keyWord, citys, industry, scale, page,
-    				  pageSize,"=============");
+             logger.info("======keyWord={},citys={},industry={},salaryCode={},page={},pageSize={},pageSize={},order={}============",keyWord, citys, industry, salaryCode, page,pageSize,order);
     		 Response res=searchengineServices.positionQuery(keyWord, citys, industry, salaryCode, Integer.parseInt(page), Integer.parseInt(pageSize), startTime, endTime,order);
     		 return ResponseLogNotification.success(request,res);
     	 }catch(Exception e){
