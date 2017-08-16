@@ -15,6 +15,7 @@ import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
+import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
@@ -100,6 +101,10 @@ public class EmployeeEntity {
 
     @Autowired
     private SearchengineEntity searchengineEntity;
+
+
+    @Autowired
+    private UserWxUserDao userWxUserDao;
 
 
     private static final Logger logger = LoggerFactory.getLogger(EmployeeEntity.class);
@@ -420,7 +425,23 @@ public class EmployeeEntity {
                 } else {
                     // 被推荐人ID
                     reward.setBerecomId(point.getBerecomUserId());
-                    reward.setBerecomName(userUserDOSMap.get(point.getBerecomUserId()) != null ? userUserDOSMap.get(point.getBerecomUserId()).getNickname() : "");
+                    // userdb.useruser.name > userdb.useruser.nickname > userdb.userwxuser.nickname
+                    if (userUserDOSMap.containsKey(point.getBerecomUserId())) {
+                        UserUserDO userUserDO = userUserDOSMap.get(point.getBerecomUserId());
+                        if (userUserDO.getName() != null) {
+                            reward.setBerecomName(userUserDO.getName());
+                        } else if (userUserDO.getName() == null && userUserDO.getNickname() != null) {
+                            reward.setBerecomName(userUserDO.getNickname());
+                        }
+                    }
+                    if (reward.getBerecomName() == null) {
+                        query.clear();
+                        query.where(UserWxUser.USER_WX_USER.SYSUSER_ID.getName(), userEmployeeDO.getSysuserId());
+                        UserWxUserDO userWxUserDO = userWxUserDao.getData(query.buildQuery());
+                        if (userWxUserDO != null) {
+                            reward.setBerecomName(userWxUserDO.getNickname());
+                        }
+                    }
                 }
                 rewardVOList.add(reward);
             });
