@@ -50,7 +50,6 @@ struct CompanyCertConf{
 
 
 struct HrImporterMonitorVO{
-
 	1: optional i32 id,	//null
 	2: optional i32 companyId,	//公司ID，hr_company.id
 	3: optional i32 hraccountId,	//hr_account.id 账号编号
@@ -63,4 +62,11 @@ struct HrImporterMonitorVO{
 	10: optional string fileName,	//导入的文件名
 	11: optional double sys	//1:mp, 2:hr
 
+}
+
+
+struct HrEmployeeCustomFieldsVO{
+    1: optional i32 id,	//null
+    2: optional string fname,
+    3: optional list<string> fvalues
 }

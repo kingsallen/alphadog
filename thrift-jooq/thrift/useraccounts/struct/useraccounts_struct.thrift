@@ -397,6 +397,7 @@ struct UserEmployeeVO{
     10: optional string companyName, // 公司名称
     11: optional string companyAbbreviation, // 公司简称
     12: optional string bindingTime, // 认证时间
+    13: optional list<map<string,list<string>>> customFieldValues // 公司员工认证后补填字段配置信息
 }
 // 员工列表分页实体
 struct UserEmployeeVOPageVO{

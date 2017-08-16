@@ -1,6 +1,7 @@
 package com.moseeker.servicemanager.web.controller.useraccounts;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
@@ -740,8 +741,13 @@ public class UserHrAccountController {
             String mobile = params.getString("mobile", "");
             String email = params.getString("email", "");
             String customField = params.getString("customField", "");
+            String customFieldValues = null;
+            if (params.get("customFieldValues") != null) {
+                List t = (List) params.get("customFieldValues");
+                customFieldValues = JSONObject.toJSONString(t);
+            }
             int companyId = params.getInt("companyId", 0);
-            Response res = userHrAccountService.updateUserEmployee(cname, mobile, email, customField, userEmployeeId, companyId);
+            Response res = userHrAccountService.updateUserEmployee(cname, mobile, email, customField, userEmployeeId, companyId, customFieldValues);
             return ResponseLogNotification.success(request, res);
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));

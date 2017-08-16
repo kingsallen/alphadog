@@ -9,6 +9,7 @@ import com.moseeker.entity.CompanyConfigEntity;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.company.struct.CompanyCertConf;
 import com.moseeker.thrift.gen.company.struct.CompanyForVerifyEmployee;
+import com.moseeker.thrift.gen.company.struct.HrEmployeeCustomFieldsVO;
 import com.moseeker.thrift.gen.employee.struct.RewardConfig;
 
 import java.util.ArrayList;
@@ -263,6 +264,19 @@ public class CompanyServicesImpl implements Iface {
             logger.error(e.getMessage(), e);
             throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
         }
+    }
+
+    /**
+     * 获取公司员工认证后补填字段配置信息列表
+     *
+     * @param companyId
+     * @return
+     * @throws BIZException
+     * @throws TException
+     */
+    @Override
+    public List<HrEmployeeCustomFieldsVO> getHrEmployeeCustomFields(int companyId) throws BIZException, TException {
+        return service.getHrEmployeeCustomFields(companyId);
     }
 }
 
