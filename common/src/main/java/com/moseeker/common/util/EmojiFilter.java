@@ -27,4 +27,23 @@ public class EmojiFilter {
         return str;
 
     }
+
+    /**
+     * 过滤emoji 或者 其他非文字类型的字符
+     * @param str
+     * @return
+     */
+    public static String filterEmoji(String str) {
+
+        if(str.trim().isEmpty()){
+            return str;
+        }
+        String pattern = "[\\ud83c\\udc00-\\ud83c\\udfff]|[\\ud83d\\udc00-\\ud83d\\udfff]|[\\u2600-\\u27ff]|[\\ud83d\\ude1c]|[\\ud83d\\ude49]|[\\ud83d\\udea8]|[\\ud83d\\ude9c]]";
+        String reStr="";
+        Pattern emoji=Pattern.compile(pattern);
+        Matcher emojiMatcher=emoji.matcher(str);
+        str=emojiMatcher.replaceAll(reStr);
+        return str;
+
+    }
 }
