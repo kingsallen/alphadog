@@ -219,6 +219,18 @@ public class SearchengineController {
     		 String scale=(String) reqParams.get("scale");
     		 String page=(String) reqParams.get("page");
     		 String pageSize=(String) reqParams.get("pageSize");
+             if(keyWord==null){
+                 keyWord="";
+             }
+             if(citys==null){
+                 citys="";
+             }
+             if(industry==null){
+                 industry="";
+             }
+             if(scale==null){
+                 scale="";
+             }
     		 if(StringUtils.isNullOrEmpty(page)){
     			 page="1";
     		 }
@@ -270,7 +282,7 @@ public class SearchengineController {
              if(endTime==null){
                  endTime="";
              }
-    		 if(order!=null){
+    		 if(order==null){
                  order=1;
              }
     		 if(StringUtils.isNullOrEmpty(page)){
