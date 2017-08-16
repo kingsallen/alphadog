@@ -1,9 +1,6 @@
 package com.moseeker.company.service.impl;
 
-import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
-import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
-import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
-import com.moseeker.baseorm.dao.hrdb.HrTeamDao;
+import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
@@ -11,10 +8,7 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.*;
 import com.moseeker.entity.JobPositionCityEntity;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyAccountDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrTeamDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionCityDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
@@ -46,6 +40,8 @@ public class CompanyPcService {
     private JobPositionCityEntity jobPositionCityEntity;
     @Autowired
     private UserHrAccountDao userHrAccountDao;
+    @Autowired
+    private HrResourceDao hrResourceDao;
 
     public Map<String,Object> getCompanyInfo(int companyId) throws Exception {
         Map<String,Object>map=new HashMap<String,Object>();
@@ -99,7 +95,7 @@ public class CompanyPcService {
             list=this.handleSubCompanyTeam(companyId);
         }
         if(!StringUtils.isEmptyList(list)){
-            map.put("teamlist",list);
+            map.put("teamList",list);
         }
 
     }
@@ -165,10 +161,29 @@ public class CompanyPcService {
         if(StringUtils.isEmptyList(teamList)){
             return null;
         }
+        List<Integer>resIdList=this.getResdListId(teamList);
+        boolean hasPic=true;//团队是否有图片
+        if(StringUtils.isEmptyList(resIdList)){
+            hasPic=false;
+        }
+        List<HrResourceDO> resourceList=hrResourceDao.getHrResourceByIdList(resIdList);
+        if(StringUtils.isEmptyList(resourceList)){
+            hasPic=false;
+        }
         for(HrTeamDO DO:teamList){
             int teamId= DO.getId();
             Map<String,Object> map=new HashMap<String,Object>();
             map.put("team",DO);
+            if(hasPic){
+                int resId=DO.getResId();
+                for(HrResourceDO hrResourceDO:resourceList){
+                    int id=hrResourceDO.getId();
+                    if(id==resId){
+                        map.put("teamPic",hrResourceDO);
+                        break;
+                    }
+                }
+            }
             for(Integer key:teamPosition.keySet()){
                if(key==teamId){
                    map.put("positionNum",teamPosition.get(key));
@@ -178,6 +193,22 @@ public class CompanyPcService {
                 map.put("positionNum",0);
             }
             list.add(map);
+        }
+        return list;
+    }
+    /*
+    获取res.id
+     */
+    public List<Integer> getResdListId(List<HrTeamDO> teamDOList){
+        if(StringUtils.isEmptyList(teamDOList)){
+            return null;
+        }
+        List<Integer> list=new ArrayList<Integer>();
+        for(HrTeamDO DO:teamDOList){
+            int resId=DO.getResId();
+            if(resId!=0){
+                list.add(resId);
+            }
         }
         return list;
     }
