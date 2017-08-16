@@ -1,16 +1,20 @@
 package com.moseeker.application.service.impl;
 
 import com.moseeker.baseorm.redis.RedisClient;
+
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.annotation.Resource;
+
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.historydb.HistoryJobApplicationDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
@@ -71,11 +75,12 @@ public class JobApplicataionService {
     @Autowired
     private UserUserDao userUserDao;
     @Autowired
-	private UserEmployeeDao userEmployeedao;
-	@Autowired
-	private HrOperationRecordDao hrOperationRecordDao;
-	@Autowired
-	private HistoryJobApplicationDao historyJobApplicationDao;
+    private UserEmployeeDao userEmployeedao;
+    @Autowired
+    private HrOperationRecordDao hrOperationRecordDao;
+    @Autowired
+    private HistoryJobApplicationDao historyJobApplicationDao;
+
     /**
      * 创建申请
      *
@@ -88,9 +93,9 @@ public class JobApplicataionService {
         logger.info("JobApplicataionService postApplication jobApplication:{}", jobApplication);
         try {
             // 获取该申请的职位
-        	Query query=new QueryBuilder().where("id", jobApplication.getPosition_id()).buildQuery();
-    	    JobPositionRecord jobPositionRecord =jobPositionDao.getRecord(query);
-        	//JobPositionRecord jobPositionRecord = jobPositionDao.getPositionById((int) jobApplication.position_id);
+            Query query = new QueryBuilder().where("id", jobApplication.getPosition_id()).buildQuery();
+            JobPositionRecord jobPositionRecord = jobPositionDao.getRecord(query);
+            //JobPositionRecord jobPositionRecord = jobPositionDao.getPositionById((int) jobApplication.position_id);
             // 职位有效性验证
             Response responseJob = validateJobPosition(jobPositionRecord);
             if (responseJob.status > 0) {
@@ -106,12 +111,12 @@ public class JobApplicataionService {
             if (jobApplicationRecord.getWechatId() == null) {
                 jobApplicationRecord.setWechatId(0);
             }
-            int jobApplicationId =this.saveJobApplication(jobApplicationRecord, jobPositionRecord);
+            int jobApplicationId = this.saveJobApplication(jobApplicationRecord, jobPositionRecord);
             if (jobApplicationId > 0) {
                 // proxy 0: 正常投递, 1: 代理投递, null:默认为0
                 // 代理投递不能增加用户的申请限制次数
                 if (jobApplicationRecord.getProxy() == null || jobApplicationRecord.getProxy() == 0) {
-                // 添加该人该公司的申请次数
+                    // 添加该人该公司的申请次数
                     addApplicationCountAtCompany(jobApplication);
                 }
                 // 返回 jobApplicationId
@@ -133,11 +138,11 @@ public class JobApplicataionService {
 
     @SuppressWarnings("serial")
     @CounterIface
-    public Response postApplicationIfNotApply(JobApplication jobApplication)throws TException {
+    public Response postApplicationIfNotApply(JobApplication jobApplication) throws TException {
         try {
             // 获取该申请的职位
-        	Query query=new QueryBuilder().where("id", jobApplication.position_id).buildQuery();
-        	JobPositionRecord jobPositionRecord =jobPositionDao.getRecord(query);
+            Query query = new QueryBuilder().where("id", jobApplication.position_id).buildQuery();
+            JobPositionRecord jobPositionRecord = jobPositionDao.getRecord(query);
             // 职位有效性验证
             Response responseJob = validateJobPosition(jobPositionRecord);
             if (responseJob.status > 0) {
@@ -146,9 +151,9 @@ public class JobApplicataionService {
             // 初始化参数
             initJobApplication(jobApplication, jobPositionRecord);
             // 添加申请
-            JobApplicationRecord jobApplicationRecord = (JobApplicationRecord) BeanUtils.structToDB(jobApplication,JobApplicationRecord.class);
+            JobApplicationRecord jobApplicationRecord = (JobApplicationRecord) BeanUtils.structToDB(jobApplication, JobApplicationRecord.class);
             if (jobApplicationRecord.getWechatId() == null) {
-                jobApplicationRecord.setWechatId((int)(0));
+                jobApplicationRecord.setWechatId((int) (0));
             }
             int jobApplicationId = this.saveApplicationIfNotExist(jobApplicationRecord, jobPositionRecord);
             if (jobApplicationId > 0) {
@@ -164,7 +169,7 @@ public class JobApplicataionService {
                                                      put("jobApplicationId", jobApplicationId);
                                                  }
                                              }
-                ); 
+                );
             }
         } catch (Exception e) {
             logger.error("postResources JobApplication error: ", e);
@@ -193,10 +198,10 @@ public class JobApplicataionService {
                     JobApplicationRecord.class);
             Timestamp updateTime = new Timestamp(System.currentTimeMillis());
             jobApplicationRecord.setUpdateTime(updateTime);
-            int updateStatus =jobApplicationDao.updateRecord(jobApplicationRecord);
+            int updateStatus = jobApplicationDao.updateRecord(jobApplicationRecord);
             //int updateStatus = jobApplicationDao.putResource(jobApplicationRecord);
             if (updateStatus > 0) {
-            	 // 返回 userFavoritePositionId
+                // 返回 userFavoritePositionId
                 return ResponseUtils.success(new HashMap<String, Object>() {
                     {
                         put("updateStatus", updateStatus);
@@ -224,14 +229,14 @@ public class JobApplicataionService {
             if (applicationId == 0) {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_VALIDATE_REQUIRED.replace("{0}", "id"));
             }
-            Query query=new QueryBuilder().where("id", applicationId).buildQuery();
-            JobApplicationRecord jobApplicationRecord =jobApplicationDao.getRecord(query);
+            Query query = new QueryBuilder().where("id", applicationId).buildQuery();
+            JobApplicationRecord jobApplicationRecord = jobApplicationDao.getRecord(query);
             if (jobApplicationRecord == null) {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
             }
 
             // 删除的数据归档
-            int status=this.archiveApplicationRecord(jobApplicationRecord);
+            int status = this.archiveApplicationRecord(jobApplicationRecord);
             // 归档成功后, 用户在该公司下的申请限制次数 -1
             if (status > 0) {
                 // 用户在该公司下的申请限制次数 -1 TODO: throw RedisException, 提示相关信息
@@ -318,22 +323,22 @@ public class JobApplicataionService {
     @CounterIface
     public Response postJobResumeOther(JobResumeOther jobResumeOther) throws TException {
 //        try {
-            // 必填项验证
-            Response response = validateJobResumeOther(jobResumeOther);
-            if (response.status > 0) {
-                return response;
-            }
-            // 自定义简历 - 申请副本 添加
-            JobResumeOtherRecord jobResumeOtherRecord = (JobResumeOtherRecord) BeanUtils.structToDB(jobResumeOther,
-                    JobResumeOtherRecord.class);
-            jobResumeOtherDao.addRecord(jobResumeOtherRecord);
-            int jobResumeOtherStatus =jobResumeOtherRecord.getAppId();
-            //int jobResumeOtherStatus = jobResumeOtherDao.postResource(jobResumeOtherRecord);
-            if (jobResumeOtherStatus > 0) {
-                Map<String, Object> hashmap = new HashMap<>();
-                hashmap.put("jobResumeOtherStatus", jobResumeOtherStatus);
-                return ResponseUtils.success(hashmap); // 返回 jobResumeOtherStatus
-            }
+        // 必填项验证
+        Response response = validateJobResumeOther(jobResumeOther);
+        if (response.status > 0) {
+            return response;
+        }
+        // 自定义简历 - 申请副本 添加
+        JobResumeOtherRecord jobResumeOtherRecord = (JobResumeOtherRecord) BeanUtils.structToDB(jobResumeOther,
+                JobResumeOtherRecord.class);
+        jobResumeOtherDao.addRecord(jobResumeOtherRecord);
+        int jobResumeOtherStatus = jobResumeOtherRecord.getAppId();
+        //int jobResumeOtherStatus = jobResumeOtherDao.postResource(jobResumeOtherRecord);
+        if (jobResumeOtherStatus > 0) {
+            Map<String, Object> hashmap = new HashMap<>();
+            hashmap.put("jobResumeOtherStatus", jobResumeOtherStatus);
+            return ResponseUtils.success(hashmap); // 返回 jobResumeOtherStatus
+        }
 //        } catch (Exception e) {
 //            // TODO Auto-generated catch block
 //            logger.error("postJobResumeOther JobResumeOther error: ", e);
@@ -498,8 +503,8 @@ public class JobApplicataionService {
      * @param positionId 职位id
      */
     private boolean isAppliedPosition(long userId, long positionId) throws Exception {
-    	Query query=new QueryBuilder().where("applier_id", userId).and("position_id",positionId).buildQuery();
-    	Integer count =jobApplicationDao.getCount(query);
+        Query query = new QueryBuilder().where("applier_id", userId).and("position_id", positionId).buildQuery();
+        Integer count = jobApplicationDao.getCount(query);
         return count > 0 ? true : false;
     }
 
@@ -559,8 +564,8 @@ public class JobApplicataionService {
      */
     private int getApplicationCountLimit(int companyId) {
         int applicaitonCountLimit = APPLICATION_COUNT_LIMIT;
-        Query query=new QueryBuilder().where("company_id", companyId).buildQuery();
-        HrCompanyConfRecord hrCompanyConfRecord =hrCompanyConfDao.getRecord(query);
+        Query query = new QueryBuilder().where("company_id", companyId).buildQuery();
+        HrCompanyConfRecord hrCompanyConfRecord = hrCompanyConfDao.getRecord(query);
         if (hrCompanyConfRecord != null && hrCompanyConfRecord.getApplicationCountLimit().shortValue() > 0) {
             applicaitonCountLimit = hrCompanyConfRecord.getApplicationCountLimit().shortValue();
         }
@@ -597,8 +602,8 @@ public class JobApplicataionService {
     private Response validateUserApplicationInfo(long userId) throws Exception {
 
         Response response = new Response(0, "ok");
-        Query query=new QueryBuilder().where("id", userId).buildQuery();
-        UserUserRecord userUserRecord=userUserDao.getRecord(query);
+        Query query = new QueryBuilder().where("id", userId).buildQuery();
+        UserUserRecord userUserRecord = userUserDao.getRecord(query);
         // 申请人是否存在
         if (userUserRecord == null) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_USER_INVALID);
@@ -626,11 +631,11 @@ public class JobApplicataionService {
     public ApplicationResponse getAccountIdAndCompanyId(long applicationId) {
         ApplicationResponse applicationResponse = new ApplicationResponse();
         try {
-        	Query query=new QueryBuilder().where("id", applicationId).buildQuery();
-        	JobApplicationRecord jobApplicationRecord =jobApplicationDao.getRecord(query);
+            Query query = new QueryBuilder().where("id", applicationId).buildQuery();
+            JobApplicationRecord jobApplicationRecord = jobApplicationDao.getRecord(query);
             if (jobApplicationRecord != null) {
-            	Query query1=new QueryBuilder().where("id", jobApplicationRecord.getPositionId().intValue()).buildQuery();
-            	JobPositionRecord jobPositionRecord = jobPositionDao.getRecord(query1);
+                Query query1 = new QueryBuilder().where("id", jobApplicationRecord.getPositionId().intValue()).buildQuery();
+                JobPositionRecord jobPositionRecord = jobPositionDao.getRecord(query1);
                 applicationResponse.setAccount_id(jobPositionRecord.getPublisher());
                 applicationResponse.setCompany_id(jobApplicationRecord.getCompanyId().intValue());
             }
@@ -639,31 +644,33 @@ public class JobApplicataionService {
         }
         return applicationResponse;
     }
+
     private int archiveApplicationRecord(JobApplicationRecord jobApplicationRecord) throws TException {
-		// TODO Auto-generated method stub
-		int status = 0;
-		try{
-			HistoryJobApplicationRecord historyJobApplicationRecord = setHistoryJobApplicationRecord(jobApplicationRecord);
-	        if (historyJobApplicationRecord != null){
-	        	historyJobApplicationDao.addRecord(historyJobApplicationRecord);
-	        	status=historyJobApplicationRecord.getId();
-	        }
-	        if (status > 0){
-	            status =jobApplicationDao.deleteRecord(jobApplicationRecord);
-	        }
-		}catch(Exception e){
-			logger.error(e.getMessage(),e);
-			throw new TException(e);
-		}
-		return status;
-	}
-	 /**
+        // TODO Auto-generated method stub
+        int status = 0;
+        try {
+            HistoryJobApplicationRecord historyJobApplicationRecord = setHistoryJobApplicationRecord(jobApplicationRecord);
+            if (historyJobApplicationRecord != null) {
+                historyJobApplicationDao.addRecord(historyJobApplicationRecord);
+                status = historyJobApplicationRecord.getId();
+            }
+            if (status > 0) {
+                status = jobApplicationDao.deleteRecord(jobApplicationRecord);
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new TException(e);
+        }
+        return status;
+    }
+
+    /**
      * 转换归档申请记录
      *
      * @param jobApplicationRecord
      * @return
      */
-    private HistoryJobApplicationRecord setHistoryJobApplicationRecord(JobApplicationRecord jobApplicationRecord){
+    private HistoryJobApplicationRecord setHistoryJobApplicationRecord(JobApplicationRecord jobApplicationRecord) {
 
         HistoryJobApplicationRecord historyJobApplicationRecord = null;
 
@@ -676,89 +683,91 @@ public class JobApplicataionService {
             historyJobApplicationRecord.setLApplicationId(jobApplicationRecord.getLApplicationId());
             historyJobApplicationRecord.setUserId(jobApplicationRecord.getApplierId());
             historyJobApplicationRecord.setAtsStatus((jobApplicationRecord.getAtsStatus()));
-            historyJobApplicationRecord.setDisable((int)(jobApplicationRecord.getDisable()));
-            historyJobApplicationRecord.setRoutine((int)(jobApplicationRecord.getRoutine()));
-            historyJobApplicationRecord.setIsViewed((byte)(jobApplicationRecord.getIsViewed()));
-            historyJobApplicationRecord.setViewCount((int)(jobApplicationRecord.getViewCount()));
-            historyJobApplicationRecord.setNotSuitable((byte)(jobApplicationRecord.getNotSuitable()));
+            historyJobApplicationRecord.setDisable((int) (jobApplicationRecord.getDisable()));
+            historyJobApplicationRecord.setRoutine((int) (jobApplicationRecord.getRoutine()));
+            historyJobApplicationRecord.setIsViewed((byte) (jobApplicationRecord.getIsViewed()));
+            historyJobApplicationRecord.setViewCount((int) (jobApplicationRecord.getViewCount()));
+            historyJobApplicationRecord.setNotSuitable((byte) (jobApplicationRecord.getNotSuitable()));
             historyJobApplicationRecord.setCompanyId(jobApplicationRecord.getCompanyId());
             historyJobApplicationRecord.setAppTplId(jobApplicationRecord.getAppTplId());
-            historyJobApplicationRecord.setProxy((byte)(jobApplicationRecord.getProxy()));
-            historyJobApplicationRecord.setApplyType((int)(jobApplicationRecord.getApplyType()));
-            historyJobApplicationRecord.setEmailStatus((int)(jobApplicationRecord.getEmailStatus()));
+            historyJobApplicationRecord.setProxy((byte) (jobApplicationRecord.getProxy()));
+            historyJobApplicationRecord.setApplyType((int) (jobApplicationRecord.getApplyType()));
+            historyJobApplicationRecord.setEmailStatus((int) (jobApplicationRecord.getEmailStatus()));
             historyJobApplicationRecord.setSubmitTime(jobApplicationRecord.getSubmitTime());
             historyJobApplicationRecord.setCreateTime(jobApplicationRecord.get_CreateTime());
             historyJobApplicationRecord.setUpdateTime(jobApplicationRecord.getUpdateTime());
         }
         return historyJobApplicationRecord;
     }
-	private int saveJobApplication(JobApplicationRecord jobApplicationRecord,JobPositionRecord jobPositionRecord) throws TException {
-		// TODO Auto-generated method stub
-		int appId=0;
-		try{
-			if(jobApplicationRecord.getRecommenderUserId() != null && jobApplicationRecord.getRecommenderUserId().intValue() > 0) {
-                Query query=new QueryBuilder().where("id", jobApplicationRecord.getRecommenderUserId()).buildQuery();
-                UserUserRecord userUserRecord=userUserDao.getRecord(query);
-                boolean existUserEmployee = false;
-                Query query1=new QueryBuilder().where("sysuser_id",userUserRecord.getId().intValue())
-						.and("disable", 0).and("activation",0).buildQuery();
-				UserEmployeeRecord userEmployeeRecord=userEmployeedao.getRecord(query1);
-                logger.info("JobApplicataionService saveJobApplication userEmployeeRecord:{}", userEmployeeRecord);
-				if(userEmployeeRecord != null){
-					existUserEmployee = true;
-				}
-                logger.info("JobApplicataionService saveJobApplication existUserEmployee:{}", existUserEmployee);
-				if(!existUserEmployee) {
-                    logger.info("JobApplicataionService saveJobApplication not employee");
-	                jobApplicationRecord.setRecommenderUserId(0);
-	            }
-				if(jobApplicationRecord.getApplierId() != null && jobApplicationRecord.getApplierId().intValue() == jobApplicationRecord.getRecommenderUserId().intValue()) {
-                    logger.info("JobApplicataionService saveJobApplication applier_id equals recommender_user_id");
-				    jobApplicationRecord.setRecommenderUserId(0);
-	            }
-				
-			}
-            logger.info("JobApplicataionService saveJobApplication jobApplicationRecord:{}",jobApplicationRecord);
-			jobApplicationDao.addRecord(jobApplicationRecord);
-			appId=jobApplicationRecord.getId();
-			if(appId > 0){
-				HrOperationRecordRecord  hrOperationRecord = getHrOperationRecordRecord(appId, jobApplicationRecord, jobPositionRecord);
-				hrOperationRecordDao.addRecord(hrOperationRecord);
-	        }
-		}catch(Exception e){
-			logger.error(e.getMessage(),e);
-			throw new TException(e);
-		}
-		return appId;
-	}
-	//构建hr操作记录record
-	private HrOperationRecordRecord getHrOperationRecordRecord(long appId,
-            JobApplicationRecord jobApplicationRecord,
-            JobPositionRecord JobPositonrecord){
-		HrOperationRecordRecord hrOperationRecordRecord = new HrOperationRecordRecord();
-		hrOperationRecordRecord.setAdminId(JobPositonrecord.getPublisher().longValue());
-		hrOperationRecordRecord.setCompanyId(jobApplicationRecord.getCompanyId().longValue());
-		hrOperationRecordRecord.setAppId(appId);
-		hrOperationRecordRecord.setOperateTplId(jobApplicationRecord.getAppTplId().intValue());
-		return hrOperationRecordRecord;
-}
 
-	private int saveApplicationIfNotExist(JobApplicationRecord jobApplicationRecord, JobPositionRecord jobPositionRecord)throws TException{
-		// TODO Auto-generated method stub
-		 int appId = 0;
-		 try{
-			 HrOperationRecordRecord hrOperationRecord = null;
-			 jobApplicationDao.addRecord(jobApplicationRecord);		 
-			 appId = jobApplicationRecord.getId().intValue();
-			 if(appId > 0){
-	             hrOperationRecord = getHrOperationRecordRecord(appId, jobApplicationRecord, jobPositionRecord);
-	             hrOperationRecordDao.addRecord(hrOperationRecord);
-	         }
-		 }catch(Exception e){
-			 logger.error(e.getMessage(),e);
-			 throw new TException(e);
-		 }
-		 return appId;
-	}
+    private int saveJobApplication(JobApplicationRecord jobApplicationRecord, JobPositionRecord jobPositionRecord) throws TException {
+        // TODO Auto-generated method stub
+        int appId = 0;
+        try {
+            if (jobApplicationRecord.getRecommenderUserId() != null && jobApplicationRecord.getRecommenderUserId().intValue() > 0) {
+                Query query = new QueryBuilder().where("id", jobApplicationRecord.getRecommenderUserId()).buildQuery();
+                UserUserRecord userUserRecord = userUserDao.getRecord(query);
+                boolean existUserEmployee = false;
+                Query query1 = new QueryBuilder().where("sysuser_id", userUserRecord.getId().intValue())
+                        .and("disable", 0).and("activation", 0).buildQuery();
+                UserEmployeeRecord userEmployeeRecord = userEmployeedao.getRecord(query1);
+                logger.info("JobApplicataionService saveJobApplication userEmployeeRecord:{}", userEmployeeRecord);
+                if (userEmployeeRecord != null) {
+                    existUserEmployee = true;
+                }
+                logger.info("JobApplicataionService saveJobApplication existUserEmployee:{}", existUserEmployee);
+                if (!existUserEmployee) {
+                    logger.info("JobApplicataionService saveJobApplication not employee");
+                    jobApplicationRecord.setRecommenderUserId(0);
+                }
+                if (jobApplicationRecord.getApplierId() != null && jobApplicationRecord.getApplierId().intValue() == jobApplicationRecord.getRecommenderUserId().intValue()) {
+                    logger.info("JobApplicataionService saveJobApplication applier_id equals recommender_user_id");
+                    jobApplicationRecord.setRecommenderUserId(0);
+                }
+
+            }
+            logger.info("JobApplicataionService saveJobApplication jobApplicationRecord:{}", jobApplicationRecord);
+            jobApplicationDao.addRecord(jobApplicationRecord);
+            appId = jobApplicationRecord.getId();
+            if (appId > 0) {
+                HrOperationRecordRecord hrOperationRecord = getHrOperationRecordRecord(appId, jobApplicationRecord, jobPositionRecord);
+                hrOperationRecordDao.addRecord(hrOperationRecord);
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new TException(e);
+        }
+        return appId;
+    }
+
+    //构建hr操作记录record
+    private HrOperationRecordRecord getHrOperationRecordRecord(long appId,
+                                                               JobApplicationRecord jobApplicationRecord,
+                                                               JobPositionRecord JobPositonrecord) {
+        HrOperationRecordRecord hrOperationRecordRecord = new HrOperationRecordRecord();
+        hrOperationRecordRecord.setAdminId(JobPositonrecord.getPublisher().longValue());
+        hrOperationRecordRecord.setCompanyId(jobApplicationRecord.getCompanyId().longValue());
+        hrOperationRecordRecord.setAppId(appId);
+        hrOperationRecordRecord.setOperateTplId(jobApplicationRecord.getAppTplId().intValue());
+        return hrOperationRecordRecord;
+    }
+
+    private int saveApplicationIfNotExist(JobApplicationRecord jobApplicationRecord, JobPositionRecord jobPositionRecord) throws TException {
+        // TODO Auto-generated method stub
+        int appId = 0;
+        try {
+            HrOperationRecordRecord hrOperationRecord = null;
+            jobApplicationDao.addRecord(jobApplicationRecord);
+            appId = jobApplicationRecord.getId().intValue();
+            if (appId > 0) {
+                hrOperationRecord = getHrOperationRecordRecord(appId, jobApplicationRecord, jobPositionRecord);
+                hrOperationRecordDao.addRecord(hrOperationRecord);
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new TException(e);
+        }
+        return appId;
+    }
 
 }

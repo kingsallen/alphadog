@@ -5,9 +5,11 @@ import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeePointsDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
+import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
 import com.moseeker.baseorm.pojo.EmployeePointsRecordPojo;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
@@ -22,6 +24,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 
 import org.apache.thrift.TException;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
@@ -70,6 +73,9 @@ public class SearchengineEntity {
 
     @Autowired
     private UserEmployeePointsDao userEmployeePointsDao;
+
+    @Autowired
+    private UserWxUserDao userWxUserDao;
 
     /**
      * 更新员工积分
@@ -177,12 +183,23 @@ public class SearchengineEntity {
                         HrCompanyDO hrCompanyDO = (HrCompanyDO) companyMap.get(userEmployeeDO.getCompanyId());
                         jsonObject.put("company_name", hrCompanyDO.getName());
                     }
-
+                    // userdb.useruser.name > userdb.useruser.nickname > userdb.userwxuser.nickname
                     if (userUerMap.containsKey(userEmployeeDO.getSysuserId())) {
                         UserUserDO userUserDO = (UserUserDO) userUerMap.get(userEmployeeDO.getSysuserId());
-                        jsonObject.put("nickname", userUserDO.getUsername());
+                        if (userUserDO.getName() != null) {
+                            jsonObject.put("nickname", userUserDO.getName());
+                        } else if (userUserDO.getName() == null && userUserDO.getNickname() != null) {
+                            jsonObject.put("nickname", userUserDO.getNickname());
+                        }
                     }
-
+                    if (jsonObject.get("nickname") == null) {
+                        queryBuilder.clear();
+                        queryBuilder.where(UserWxUser.USER_WX_USER.SYSUSER_ID.getName(), userEmployeeDO.getSysuserId());
+                        UserWxUserDO userWxUserDO = userWxUserDao.getData(queryBuilder.buildQuery());
+                        if (userWxUserDO != null) {
+                            jsonObject.put("nickname", userWxUserDO.getNickname());
+                        }
+                    }
                     jsonObject.put("ename", userEmployeeDO.getEname());
                     jsonObject.put("cfname", userEmployeeDO.getCfname());
                     jsonObject.put("efname", userEmployeeDO.getEfname());
