@@ -156,7 +156,7 @@ public class ChaosServiceImpl {
         if (!confirm) {
             data = "{\"status\":0,\"message\":\"取消成功\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
         } else if (hrThirdPartyAccount.getUsername().contains("发送超时")) {
-            data = "{\"status\":111,\"message\":\"取消成功\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
+            data = "{\"status\":111,\"message\":\"验证码超时\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
         } else if (hrThirdPartyAccount.getUsername().contains("发送成功")) {
             data = "{\"status\":110,\"message\":\"取消成功\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
         } else {
@@ -195,7 +195,7 @@ public class ChaosServiceImpl {
         String data;
         if (accountDO.getUsername().contains("短信成功")) {
             data = "{\"status\":0,\"message\":\"182****3365\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
-        } else if (accountDO.getUsername().contains("短信超时")) {
+        } else if (accountDO.getUsername().contains("验证码超时")) {
             data = "{\"status\":111,\"message\":\"取消成功\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
         } else if (accountDO.getUsername().contains("短信邮件")) {
             data = "{\"status\":2,\"message\":\"182****3365\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
