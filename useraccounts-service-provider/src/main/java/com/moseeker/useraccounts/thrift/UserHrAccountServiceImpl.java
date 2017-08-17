@@ -300,8 +300,8 @@ public class UserHrAccountServiceImpl implements Iface {
      * @throws TException
      */
     @Override
-    public RewardVOPageVO getEmployeeRewards(int employeeId, int pageNumber, int pageSize) throws BIZException {
-        return employeeEntity.getEmployeePointsRecords(employeeId, pageNumber, pageSize);
+    public RewardVOPageVO getEmployeeRewards(int employeeId, int companyId, int pageNumber, int pageSize) throws BIZException {
+        return service.getEmployeeRewards(employeeId, companyId, pageNumber, pageSize);
     }
 
     /**

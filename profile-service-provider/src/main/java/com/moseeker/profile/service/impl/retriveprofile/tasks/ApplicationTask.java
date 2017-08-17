@@ -107,7 +107,7 @@ public class ApplicationTask implements Task<ApplicationTaskParam, Integer> {
             logger.info("checkoutApplyLimit applicationCountCheck:{}", applicationCountCheck);
             // 超出申请次数限制, 每月每家公司一个人只能申请3次
             if (applicationCountCheck == null
-                    || Integer.valueOf(applicationCountCheck) >= getApplicationCountLimit(companyId)) {
+                    || Integer.valueOf(applicationCountCheck) < getApplicationCountLimit(companyId)) {
                 return true;
             }
         } catch (RedisException e) {

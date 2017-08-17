@@ -604,7 +604,7 @@ public class UserHrAccountController {
             if (!permission) {
                 return ResponseLogNotification.failResponse(request, ConstantErrorCodeMessage.PERMISSION_DENIED);
             }
-            RewardVOPageVO result = userHrAccountService.getEmployeeRewards(employeeId, pageNumber, pageSize);
+            RewardVOPageVO result = userHrAccountService.getEmployeeRewards(employeeId, companyId, pageNumber, pageSize);
             return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(result)));
         }
 
