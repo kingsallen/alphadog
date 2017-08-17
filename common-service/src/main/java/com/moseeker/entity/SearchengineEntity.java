@@ -104,10 +104,6 @@ public class SearchengineEntity {
             queryBuilder.where(new Condition(UserEmployee.USER_EMPLOYEE.ID.getName(), employeeIds, ValueOp.IN));
             // 查询员工信息
             List<UserEmployeeDO> userEmployeeDOList = userEmployeeDao.getDatas(queryBuilder.buildQuery());
-            if (userEmployeeDOList == null || userEmployeeDOList.isEmpty()) {
-                logger.info("查询{}为空",Arrays.toString(employeeIds.toArray()));
-                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
-            }
 
             if (userEmployeeDOList == null || userEmployeeDOList.isEmpty()) {
                 logger.error("未查到员工数据, employeeIds:{}", employeeIds);
