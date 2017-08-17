@@ -279,15 +279,12 @@ public class ThirdPartyAccountService {
             throw new BIZException(-1, "无效的HR帐号");
         }
         Map<String, String> extras = getBindExtra(userHrAccount, thirdPartyAccount);
-        extras.put("code", String.valueOf(code));
         try {
             thirdPartyAccount = thirdPartyAccountSynctor.bindMessage(thirdPartyAccount, extras, code);
             removeCache(thirdPartyAccount);
             return thirdPartyAccount;
-        } catch (BIZException e) {
-            if (e.getCode() == 111) {
-                removeCache(thirdPartyAccount);
-            }
+        } catch (Exception e) {
+            removeCache(thirdPartyAccount);
             throw e;
         }
     }

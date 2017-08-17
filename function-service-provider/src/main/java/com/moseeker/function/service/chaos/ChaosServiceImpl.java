@@ -144,7 +144,7 @@ public class ChaosServiceImpl {
     public HrThirdPartyAccountDO bind(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras) throws Exception {
         logger.info("ChaosServiceImpl bind");
 //        String data = "{\"status\":100,\"message\":\"182****3365\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
-        String data = postBind(hrThirdPartyAccount.getChannel(), ChaosTool.getParams(hrThirdPartyAccount, extras));
+        String data = mokeBindData(hrThirdPartyAccount);//postBind(hrThirdPartyAccount.getChannel(), ChaosTool.getParams(hrThirdPartyAccount, extras));
         fillHrThirdPartyAccount(0, data, hrThirdPartyAccount);
 
         return hrThirdPartyAccount;
@@ -177,7 +177,7 @@ public class ChaosServiceImpl {
         Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.putAll(extras);
         paramsMap.put("confirm", confirm);
-        String data = postBind(hrThirdPartyAccount.getChannel(), ChaosTool.getParams(hrThirdPartyAccount, paramsMap));
+        String data = mokeConfirm(hrThirdPartyAccount,confirm);//postBind(hrThirdPartyAccount.getChannel(), ChaosTool.getParams(hrThirdPartyAccount, paramsMap));
 
         JSONObject jsonObject = JSONObject.parseObject(data);
 
@@ -217,7 +217,7 @@ public class ChaosServiceImpl {
         Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.putAll(extras);
         paramsMap.put("code", code);
-        String data = postBind(hrThirdPartyAccount.getChannel(), ChaosTool.getParams(hrThirdPartyAccount, paramsMap));
+        String data = mokeBindMessage(hrThirdPartyAccount);//postBind(hrThirdPartyAccount.getChannel(), ChaosTool.getParams(hrThirdPartyAccount, paramsMap));
         JSONObject jsonObject = JSONObject.parseObject(data);
         int status = jsonObject.getIntValue("status");
         String message = jsonObject.getString("message");
@@ -236,10 +236,10 @@ public class ChaosServiceImpl {
             }
             throw new BIZException(111, message);
         } else if (status == 1) {
-            hrThirdPartyAccount.setBinding(Integer.valueOf(4).shortValue());
             if (StringUtils.isNullOrEmpty(message)) {
                 message = "用户名或密码错误";
             }
+            throw new BIZException(1, message);
         } else if (status == 9) {
             //发送绑定失败的邮件
             hrThirdPartyAccount.setBinding(Integer.valueOf(6).shortValue());

@@ -104,7 +104,7 @@ public class ThirdPartyAccountSynctor {
      */
     public HrThirdPartyAccountDO bindMessage(HrThirdPartyAccountDO thirdPartyAccount, Map<String, String> extras, String code) throws Exception {
         thirdPartyAccount = bindTask.bindMessage(thirdPartyAccount, extras, code);
-        if(thirdPartyAccount.getBinding() == 6 || thirdPartyAccount.getBinding() == 1){
+        if (thirdPartyAccount.getBinding() == 6 || thirdPartyAccount.getBinding() == 1) {
             hrThirdPartyAccountDao.updateData(thirdPartyAccount);
         }
 
