@@ -4,8 +4,11 @@ import com.alibaba.fastjson.JSON;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.util.EmojiFilter;
 import com.moseeker.profile.exception.Category;
 import com.moseeker.profile.exception.ExceptionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +22,8 @@ import java.util.Map;
 @Service
 public class RetriveProfile {
 
+    Logger logger = LoggerFactory.getLogger(RetriveProfile.class);
+
     @Autowired
     protected Map<String, RetrievalFlow> flowMap;
 
@@ -30,7 +35,7 @@ public class RetriveProfile {
      */
     @CounterIface
     public boolean retrieve(String parameter) throws CommonException {
-        Map<String, Object> paramMap = JSON.parseObject(parameter);
+        Map<String, Object> paramMap = JSON.parseObject(EmojiFilter.filterEmoji1(EmojiFilter.unicodeToUtf8(parameter)));
         if (paramMap.get("channel") != null) {
             int channel = (Integer)paramMap.get("channel");
             ChannelType channelType = ChannelType.instaceFromInteger(channel);
