@@ -932,4 +932,17 @@ public class EmployeeEntity {
             //do nothing
         }
     }
+
+    /**
+     * 根据员工编号查询员工数据
+     * @param employeeId 员工编号
+     * @return 员工数据
+     */
+    public UserEmployeeDO getEmployeeByID(int employeeId) {
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where(UserEmployee.USER_EMPLOYEE.ID.getName(), employeeId)
+                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), 0)
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), AbleFlag.OLDENABLE);
+        return employeeDao.getData(queryBuilder.buildQuery());
+    }
 }
