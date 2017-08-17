@@ -908,6 +908,7 @@ public class EmployeeEntity {
                 logger.info("postPutUserEmployeeBatch {},批量更新数据{}条,剩余{}条", batchForm.getCompany_id(), batchSize, updateDatas.size() - start);
             }
             employeeDao.updateRecords(BeanUtils.structToDB(updateDatas.subList(start, updateDatas.size()), UserEmployeeRecord.class));
+            searchengineEntity.updateEmployeeAwards(updateDatas.subList(start, updateDatas.size()).stream().map(m -> m.getId()).collect(Collectors.toList()));
             logger.info("postPutUserEmployeeBatch {},批量更新数据{}条,剩余{}条", batchForm.getCompany_id(), updateDatas.size() - start, 0);
         }
 
@@ -930,5 +931,18 @@ public class EmployeeEntity {
         } else {
             //do nothing
         }
+    }
+
+    /**
+     * 根据员工编号查询员工数据
+     * @param employeeId 员工编号
+     * @return 员工数据
+     */
+    public UserEmployeeDO getEmployeeByID(int employeeId) {
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where(UserEmployee.USER_EMPLOYEE.ID.getName(), employeeId)
+                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), 0)
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), AbleFlag.OLDENABLE);
+        return employeeDao.getData(queryBuilder.buildQuery());
     }
 }
