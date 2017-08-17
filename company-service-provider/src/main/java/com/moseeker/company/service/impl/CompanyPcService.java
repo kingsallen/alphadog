@@ -66,7 +66,7 @@ public class CompanyPcService {
      获取jd信息
      */
     private void handleJdData(int confCompanyId,Map<String,Object> map,int companyId) throws Exception {
-        map.put("newjd",0);
+        map.put("newJd",0);
         HrCompanyConfDO hrCompanyConfDO=getHrCompanyConf(confCompanyId);
         if(hrCompanyConfDO!=null){
             int newJdStatus=hrCompanyConfDO.getNewjdStatus();
@@ -77,7 +77,7 @@ public class CompanyPcService {
                 if(!StringUtils.isEmptyList(jdList)){
                     Map<String,Object> jdMap=jdList.get(0);
                     if(jdMap!=null&&!jdMap.isEmpty()){
-                        map.put("newjd",1);
+                        map.put("newJd",1);
                         map.put("jd",jdMap);
                     }
                 }
@@ -111,7 +111,7 @@ public class CompanyPcService {
         if(result!=null&&!result.isEmpty()){
             Set<String> cityList=result.get(companyId);
             if(cityList!=null&&cityList.size()>0){
-                map.put("positioncity",cityList);
+                map.put("positionCity",cityList);
             }
         }
     }
