@@ -1,5 +1,6 @@
 package com.moseeker.company.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
@@ -13,6 +14,8 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionCityDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import org.apache.thrift.TException;
+import org.apache.thrift.TSerializer;
+import org.apache.thrift.protocol.TSimpleJSONProtocol;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,6 +45,8 @@ public class CompanyPcService {
     private UserHrAccountDao userHrAccountDao;
     @Autowired
     private HrResourceDao hrResourceDao;
+    @Autowired
+    private HrWxWechatDao hrWxWechatDao;
 
     public Map<String,Object> getCompanyInfo(int companyId) throws Exception {
         Map<String,Object>map=new HashMap<String,Object>();
@@ -49,7 +54,9 @@ public class CompanyPcService {
         if(company==null){
             return null;
         }
-        map.put("company",company);
+        String companyDOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(company);
+        Map<String,Object> companyData= JSON.parseObject(companyDOs, Map.class);
+        map.put("company",companyData);
         int parentId=company.getParentId();
         int confCompanyId=company.getId();
         boolean isMother=true;
@@ -66,7 +73,7 @@ public class CompanyPcService {
      获取jd信息
      */
     private void handleJdData(int confCompanyId,Map<String,Object> map,int companyId) throws Exception {
-        map.put("newjd",0);
+        map.put("newJd",0);
         HrCompanyConfDO hrCompanyConfDO=getHrCompanyConf(confCompanyId);
         if(hrCompanyConfDO!=null){
             int newJdStatus=hrCompanyConfDO.getNewjdStatus();
@@ -77,17 +84,32 @@ public class CompanyPcService {
                 if(!StringUtils.isEmptyList(jdList)){
                     Map<String,Object> jdMap=jdList.get(0);
                     if(jdMap!=null&&!jdMap.isEmpty()){
-                        map.put("newjd",1);
+                        map.put("newJd",1);
                         map.put("jd",jdMap);
+                        HrWxWechatDO hrWxWechatDO=this.getHrWxWechatDO(confCompanyId);
+                        if(hrWxWechatDO!=null){
+                            String hrWxWechatDOStr=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(hrWxWechatDO);
+                            Map<String,Object> hrWxWechatData= JSON.parseObject(hrWxWechatDOStr, Map.class);
+                            map.put("weChat",hrWxWechatData);
+                        }
+
                     }
                 }
             }
         }
     }
     /*
+    获取企业微信号配置
+ */
+    private HrWxWechatDO  getHrWxWechatDO(int companyId){
+        Query query=new Query.QueryBuilder().where("company_id",companyId).buildQuery();
+        HrWxWechatDO DO=hrWxWechatDao.getData(query);
+        return DO;
+    }
+    /*
       获取团队信息
      */
-    private void handleTeamInfo(int companyId,boolean isMother,Map<String,Object> map){
+    private void handleTeamInfo(int companyId,boolean isMother,Map<String,Object> map) throws Exception {
         List<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
         if(isMother){
             list=this.handleMotherCompanyTeam(companyId);
@@ -111,7 +133,7 @@ public class CompanyPcService {
         if(result!=null&&!result.isEmpty()){
             Set<String> cityList=result.get(companyId);
             if(cityList!=null&&cityList.size()>0){
-                map.put("positioncity",cityList);
+                map.put("positionCity",cityList);
             }
         }
     }
@@ -138,7 +160,7 @@ public class CompanyPcService {
         return null;
     }
     //处理母公司的团队信息
-    private List<Map<String,Object>> handleMotherCompanyTeam(int companyId){
+    private List<Map<String,Object>> handleMotherCompanyTeam(int companyId) throws Exception {
         List<HrTeamDO> teamList=this.getCompanyTeam(companyId);
         List<Integer>teamIdList=getTeamIdList(teamList);
         Map<Integer,Integer> teamPosition=getTeamPositionNum(teamIdList);
@@ -146,7 +168,7 @@ public class CompanyPcService {
         return list;
     }
     //处理子公司团队的信息
-    private List<Map<String,Object>> handleSubCompanyTeam(int companyId){
+    private List<Map<String,Object>> handleSubCompanyTeam(int companyId) throws Exception {
         List<Integer> teamIdList=getCompanyPublisher(companyId);
         List<HrTeamDO> teamList= hrTeamDao.getTeamList(teamIdList);
         Map<Integer,Integer> teamPosition=getTeamPositionNum(teamIdList);
@@ -156,7 +178,7 @@ public class CompanyPcService {
     /*
        处理团队和团队的职位数量之间的关系
      */
-    private List<Map<String,Object>> handleTeamPosition(List<HrTeamDO> teamList, Map<Integer,Integer> teamPosition){
+    private List<Map<String,Object>> handleTeamPosition(List<HrTeamDO> teamList, Map<Integer,Integer> teamPosition) throws Exception {
         List<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
         if(StringUtils.isEmptyList(teamList)){
             return null;
@@ -173,21 +195,25 @@ public class CompanyPcService {
         for(HrTeamDO DO:teamList){
             int teamId= DO.getId();
             Map<String,Object> map=new HashMap<String,Object>();
-            map.put("team",DO);
+            String hrTeamDOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
+            Map<String,Object> teamData= JSON.parseObject(hrTeamDOs, Map.class);
+            map.put("team",teamData);
             if(hasPic){
                 int resId=DO.getResId();
                 for(HrResourceDO hrResourceDO:resourceList){
                     int id=hrResourceDO.getId();
                     if(id==resId){
-                        map.put("teamPic",hrResourceDO);
+                        String hrResourceDOStr=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(hrResourceDO);
+                        Map<String,Object> hrResourceData= JSON.parseObject(hrResourceDOStr, Map.class);
+                        map.put("teamPic",hrResourceData);
                         break;
                     }
                 }
             }
             for(Integer key:teamPosition.keySet()){
-               if(key==teamId){
-                   map.put("positionNum",teamPosition.get(key));
-               }
+                if(key==teamId){
+                    map.put("positionNum",teamPosition.get(key));
+                }
             }
             if(map.get("positionNum")==null){
                 map.put("positionNum",0);
