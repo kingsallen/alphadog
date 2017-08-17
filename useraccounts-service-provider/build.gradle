@@ -16,6 +16,7 @@ dependencies {
 
     testCompile deps["junit"]
     testCompile deps["mockito"]
+    compile group: 'org.elasticsearch', name: 'elasticsearch', version: '2.2.1'
 
 }
 

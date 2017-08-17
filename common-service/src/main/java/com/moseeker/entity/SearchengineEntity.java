@@ -1,5 +1,6 @@
 package com.moseeker.entity;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
@@ -17,6 +18,7 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.DateUtils;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
@@ -41,10 +43,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.ParseException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -105,6 +104,10 @@ public class SearchengineEntity {
             queryBuilder.where(new Condition(UserEmployee.USER_EMPLOYEE.ID.getName(), employeeIds, ValueOp.IN));
             // 查询员工信息
             List<UserEmployeeDO> userEmployeeDOList = userEmployeeDao.getDatas(queryBuilder.buildQuery());
+            if (userEmployeeDOList == null || userEmployeeDOList.isEmpty()) {
+                logger.info("查询{}为空",Arrays.toString(employeeIds.toArray()));
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+            }
 
             if (userEmployeeDOList == null || userEmployeeDOList.isEmpty()) {
                 logger.error("未查到员工数据, employeeIds:{}", employeeIds);
@@ -233,6 +236,8 @@ public class SearchengineEntity {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
             } catch (Error error) {
                 logger.error(error.getMessage());
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
             } finally {
                 client.close();
             }
