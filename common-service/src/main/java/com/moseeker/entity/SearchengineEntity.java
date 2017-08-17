@@ -106,6 +106,11 @@ public class SearchengineEntity {
             // 查询员工信息
             List<UserEmployeeDO> userEmployeeDOList = userEmployeeDao.getDatas(queryBuilder.buildQuery());
 
+            if (userEmployeeDOList == null || userEmployeeDOList.isEmpty()) {
+                logger.error("未查到员工数据, employeeIds:{}", employeeIds);
+                return ResponseUtils.success("");
+            }
+
             // 查询员工公司信息
             List<Integer> companyId = new ArrayList<>();
             // 员工基本信息
