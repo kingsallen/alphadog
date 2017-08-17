@@ -1,5 +1,4 @@
 package com.moseeker.company.service.impl;
-
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
@@ -8,17 +7,12 @@ import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.*;
 import com.moseeker.entity.JobPositionCityEntity;
-import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
-import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionCityDO;
-import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
-import org.apache.thrift.TException;
 import org.apache.thrift.TSerializer;
 import org.apache.thrift.protocol.TSimpleJSONProtocol;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.*;
 
 /**
@@ -45,6 +39,8 @@ public class CompanyPcService {
     private UserHrAccountDao userHrAccountDao;
     @Autowired
     private HrResourceDao hrResourceDao;
+    @Autowired
+    private HrWxWechatDao hrWxWechatDao;
 
     public Map<String,Object> getCompanyInfo(int companyId) throws Exception {
         Map<String,Object>map=new HashMap<String,Object>();
@@ -84,10 +80,25 @@ public class CompanyPcService {
                     if(jdMap!=null&&!jdMap.isEmpty()){
                         map.put("newJd",1);
                         map.put("jd",jdMap);
+                        HrWxWechatDO hrWxWechatDO=this.getHrWxWechatDO(confCompanyId);
+                        if(hrWxWechatDO!=null){
+                            String hrWxWechatDOStr=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(hrWxWechatDO);
+                            Map<String,Object> hrWxWechatData= JSON.parseObject(hrWxWechatDOStr, Map.class);
+                            map.put("weChat",hrWxWechatData);
+                        }
+
                     }
                 }
             }
         }
+    }
+    /*
+    获取企业微信号配置
+ */
+    private HrWxWechatDO  getHrWxWechatDO(int companyId){
+        Query query=new Query.QueryBuilder().where("company_id",companyId).buildQuery();
+        HrWxWechatDO DO=hrWxWechatDao.getData(query);
+        return DO;
     }
     /*
       获取团队信息
@@ -194,9 +205,9 @@ public class CompanyPcService {
                 }
             }
             for(Integer key:teamPosition.keySet()){
-               if(key==teamId){
-                   map.put("positionNum",teamPosition.get(key));
-               }
+                if(key==teamId){
+                    map.put("positionNum",teamPosition.get(key));
+                }
             }
             if(map.get("positionNum")==null){
                 map.put("positionNum",0);
