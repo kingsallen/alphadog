@@ -908,6 +908,7 @@ public class EmployeeEntity {
                 logger.info("postPutUserEmployeeBatch {},批量更新数据{}条,剩余{}条", batchForm.getCompany_id(), batchSize, updateDatas.size() - start);
             }
             employeeDao.updateRecords(BeanUtils.structToDB(updateDatas.subList(start, updateDatas.size()), UserEmployeeRecord.class));
+            searchengineEntity.updateEmployeeAwards(updateDatas.subList(start, updateDatas.size()).stream().map(m -> m.getId()).collect(Collectors.toList()));
             logger.info("postPutUserEmployeeBatch {},批量更新数据{}条,剩余{}条", batchForm.getCompany_id(), updateDatas.size() - start, 0);
         }
 
