@@ -2,6 +2,7 @@ package com.moseeker.useraccounts.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
@@ -27,14 +28,18 @@ import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.*;
 import com.moseeker.common.validation.ValidateUtil;
+import com.moseeker.entity.CandidateEntity;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.SearchengineEntity;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
+import com.moseeker.thrift.gen.employee.struct.RewardVO;
+import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.constant.ResultMessage;
@@ -108,7 +113,6 @@ public class UserHrAccountService {
     @Autowired
     private EmployeeEntity employeeEntity;
 
-
     @Autowired
     private HrImporterMonitorDao hrImporterMonitorDao;
 
@@ -120,6 +124,9 @@ public class UserHrAccountService {
 
     @Autowired
     private HrCompanyDao hrCompanyDao;
+
+    @Autowired
+    CandidateEntity candidateEntity;
 
     /**
      * HR在下载行业报告是注册
@@ -1539,5 +1546,42 @@ public class UserHrAccountService {
             throw CommonException.PROGRAM_EXCEPTION;
         }
         return response;
+    }
+
+    /**
+     * 查找员工积分列表
+     *
+     * @param employeeId 员工编号
+     * @param companyId 公司编号
+     * @param pageNumber 分页信息之页码
+     * @param pageSize 分页信息之每页信息数量
+     * @return 员工分页信息
+     * @throws CommonException
+     */
+    public RewardVOPageVO getEmployeeRewards(int employeeId, int companyId, int pageNumber, int pageSize) throws CommonException {
+        RewardVOPageVO rewardVOPageVO = employeeEntity.getEmployeePointsRecords(employeeId, pageNumber, pageSize);
+
+        /**
+         * 查询公司下候选人信息，如果候选人不存在则将berecomID 置为0，用以通知前端不需要拼接潜在候选人的url链接。
+         */
+        if (rewardVOPageVO.getData() != null && rewardVOPageVO.getData().size() > 0) {
+            List<Integer> beRecomIDList = rewardVOPageVO.getData().stream().filter(m -> m.getBerecomId() != 0)
+                    .map(m -> m.getBerecomId()).collect(Collectors.toList());
+            if (beRecomIDList != null && beRecomIDList.size() > 0) {
+                List<CandidateCompanyDO> candidateCompanyDOList = candidateEntity.getCandidateCompanyByCompanyID(companyId);
+                if (candidateCompanyDOList != null && candidateCompanyDOList.size() > 0) {
+                    Map<Integer, CandidateCompanyDO> userUserDOSMap =
+                            candidateCompanyDOList.stream().collect(Collectors.toMap(CandidateCompanyDO::getId,
+                                    Function.identity()));
+                    for (RewardVO rewardVO : rewardVOPageVO.getData()) {
+                        if (userUserDOSMap.get(rewardVO.getBerecomId()) == null) {
+                            rewardVO.setBerecomId(0);
+                        }
+                    }
+                }
+            }
+        }
+
+        return rewardVOPageVO;
     }
 }
