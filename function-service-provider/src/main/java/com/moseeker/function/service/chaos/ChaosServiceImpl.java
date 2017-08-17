@@ -225,22 +225,29 @@ public class ChaosServiceImpl {
             hrThirdPartyAccount.setBinding(Integer.valueOf(1).shortValue());
             hrThirdPartyAccount.setRemainNum(jsonObject.getJSONObject("data").getIntValue("remain_number"));
             hrThirdPartyAccount.setRemainProfileNum(jsonObject.getJSONObject("data").getIntValue("resume_number"));
-        } else if (status == 100) {
-            hrThirdPartyAccount.setBinding(Integer.valueOf(100).shortValue());
         } else if (status == 112) {//验证码错误
+            if (StringUtils.isNullOrEmpty(message)) {
+                message = "验证码错误";
+            }
             throw new BIZException(112, message);
         } else if (status == 111) {//验证码超时
+            if (StringUtils.isNullOrEmpty(message)) {
+                message = "验证码超时";
+            }
             throw new BIZException(111, message);
         } else if (status == 1) {
             hrThirdPartyAccount.setBinding(Integer.valueOf(4).shortValue());
             if (StringUtils.isNullOrEmpty(message)) {
                 message = "用户名或密码错误";
             }
-        } else if (status == 2 || status == 9) {
+        } else if (status == 9) {
             //发送绑定失败的邮件
             hrThirdPartyAccount.setBinding(Integer.valueOf(6).shortValue());
         } else {
-            hrThirdPartyAccount.setBinding(Integer.valueOf(0).shortValue());
+            if (StringUtils.isNullOrEmpty(message)) {
+                message = "绑定失败，请重试";
+            }
+            throw new BIZException(1, message);
         }
         hrThirdPartyAccount.setErrorMessage(message);
         return hrThirdPartyAccount;
