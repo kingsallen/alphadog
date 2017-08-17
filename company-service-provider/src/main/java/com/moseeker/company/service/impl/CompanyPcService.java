@@ -204,9 +204,11 @@ public class CompanyPcService {
                     }
                 }
             }
-            for(Integer key:teamPosition.keySet()){
-                if(key==teamId){
-                    map.put("positionNum",teamPosition.get(key));
+            if(teamPosition!=null&&teamPosition.isEmpty()){
+                for(Integer key:teamPosition.keySet()){
+                    if(key==teamId){
+                        map.put("positionNum",teamPosition.get(key));
+                    }
                 }
             }
             if(map.get("positionNum")==null){
