@@ -17,6 +17,7 @@ import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.baseorm.util.SmsSender;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.annotation.notify.UpdateEs;
+import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
@@ -959,7 +960,8 @@ public class UserHrAccountService {
 
         if (type.intValue() == 1) {  // 导出所有，取该公司下所有的员工ID
             List<Integer> companyIds = employeeEntity.getCompanyIds(companyId);
-            queryBuilder.where(new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyIds, ValueOp.IN));
+            queryBuilder.where(new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyIds, ValueOp.IN))
+                    .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), AbleFlag.OLDENABLE.getValue());
         } else {
             queryBuilder.where(new Condition(UserEmployee.USER_EMPLOYEE.ID.getName(), userEmployees, ValueOp.IN))
                     .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), 0);

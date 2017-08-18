@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyAccount extends TableImpl<HrThirdPartyAccountRecord> {
 
-    private static final long serialVersionUID = -845442411;
+    private static final long serialVersionUID = -1867018002;
 
     /**
      * The reference instance of <code>hrdb.hr_third_party_account</code>
@@ -110,6 +110,11 @@ public class HrThirdPartyAccount extends TableImpl<HrThirdPartyAccountRecord> {
      * The column <code>hrdb.hr_third_party_account.remain_profile_num</code>. 第三方账号剩余简历数
      */
     public final TableField<HrThirdPartyAccountRecord, Integer> REMAIN_PROFILE_NUM = createField("remain_profile_num", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "第三方账号剩余简历数");
+
+    /**
+     * The column <code>hrdb.hr_third_party_account.error_message</code>. 同步刷新失败的理由
+     */
+    public final TableField<HrThirdPartyAccountRecord, String> ERROR_MESSAGE = createField("error_message", org.jooq.impl.SQLDataType.VARCHAR.length(100).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "同步刷新失败的理由");
 
     /**
      * Create a <code>hrdb.hr_third_party_account</code> table reference

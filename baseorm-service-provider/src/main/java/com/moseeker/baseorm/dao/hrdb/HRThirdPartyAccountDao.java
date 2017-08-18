@@ -119,15 +119,23 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
         HrThirdPartyAccountDO thirdPartyAccount = addData(hrThirdPartyAccount);
         //HR关联到第三方账号
         if (userId > 0) {
-            logger.info("HR关联到第三方账号：" + userId + ":" + thirdPartyAccount.getMembername());
-            HrThirdPartyAccountHrRecord hrThirdPartyAccountHrRecord = new HrThirdPartyAccountHrRecord();
-            hrThirdPartyAccountHrRecord.setChannel(thirdPartyAccount.getChannel());
-            hrThirdPartyAccountHrRecord.setHrAccountId(userId);
-            hrThirdPartyAccountHrRecord.setThirdPartyAccountId(thirdPartyAccount.getId());
-            create.attach(hrThirdPartyAccountHrRecord);
-            hrThirdPartyAccountHrRecord.insert();
+            dispatchAccountToHr(hrThirdPartyAccount, userId);
         }
         return thirdPartyAccount;
+    }
+
+
+    public int dispatchAccountToHr(HrThirdPartyAccountDO hrThirdPartyAccount, int hrId) {
+        logger.info("HR关联到第三方账号：" + hrId + ":" + hrThirdPartyAccount.getId());
+        if (hrId == 0 || hrThirdPartyAccount.getId() == 0) {
+            return 0;
+        }
+        HrThirdPartyAccountHrRecord hrThirdPartyAccountHrRecord = new HrThirdPartyAccountHrRecord();
+        hrThirdPartyAccountHrRecord.setChannel(hrThirdPartyAccount.getChannel());
+        hrThirdPartyAccountHrRecord.setHrAccountId(hrId);
+        hrThirdPartyAccountHrRecord.setThirdPartyAccountId(hrThirdPartyAccount.getId());
+        create.attach(hrThirdPartyAccountHrRecord);
+        return hrThirdPartyAccountHrRecord.insert();
     }
 
     public HrThirdPartyAccountDO getThirdPartyAccountByUserId(int user_id, int channel) throws TException {
