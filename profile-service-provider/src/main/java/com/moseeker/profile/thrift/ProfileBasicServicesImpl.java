@@ -4,6 +4,7 @@ import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.Pagination;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.profile.service.impl.ProfileBasicService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -103,7 +104,14 @@ public class ProfileBasicServicesImpl implements Iface {
     @Override
     public Response postResource(Basic struct) throws TException {
         try {
+
             logger.info("basic postResource ");
+            String name=struct.getName();
+            if(StringUtils.isNotNullOrEmpty(name)&&name.length()>50){
+                 String message=ConstantErrorCodeMessage.PROFILE_VALIDATE_OVER_LENGTH;
+                 message.replace("{0}","profile_basic的name字段");
+                 return ResponseUtils.fail(message);
+            }
             Basic result = service.postResource(struct);
             if (result != null) {
                 return ResponseUtils.success(String.valueOf(result.getProfile_id()));
@@ -123,6 +131,12 @@ public class ProfileBasicServicesImpl implements Iface {
     @Override
     public Response putResource(Basic struct) throws TException {
         try {
+            String name=struct.getName();
+            if(StringUtils.isNotNullOrEmpty(name)&&name.length()>50){
+                String message=ConstantErrorCodeMessage.PROFILE_VALIDATE_OVER_LENGTH;
+                message.replace("{0}","profile_basic的name字段");
+                return ResponseUtils.fail(message);
+            }
             int result = service.putResource(struct);
             if (result > 0) {
                 return ResponseUtils.success("1");

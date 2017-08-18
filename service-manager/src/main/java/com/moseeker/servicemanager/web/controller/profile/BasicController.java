@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -50,8 +51,11 @@ public class BasicController {
 		//PrintWriter writer = null;
 		try {
 			Basic basic = ParamUtils.initModelForm(request, Basic.class);
+			String name=basic.getName();
+			if(StringUtils.isNotNullOrEmpty(name)&&name.length()>50){
+				return ResponseLogNotification.fail(request, "简历中名字不能超过50个字符");
+			}
 			Response result = basicService.postResource(basic);
-			
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	
 			e.printStackTrace();
@@ -64,8 +68,11 @@ public class BasicController {
 	public String put(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			Basic basic = ParamUtils.initModelForm(request, Basic.class);
+			String name=basic.getName();
+			if(StringUtils.isNotNullOrEmpty(name)&&name.length()>50){
+				return ResponseLogNotification.fail(request, "简历中名字不能超过50个字符");
+			}
 			Response result = basicService.putResource(basic);
-			
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	
 			return ResponseLogNotification.fail(request, e.getMessage());
