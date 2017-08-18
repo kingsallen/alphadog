@@ -18,8 +18,23 @@ public class CompanyPcServiceTest {
     @Autowired
     private CompanyPcService companyPcService;
     @Test
-    public void test()throws Exception{
+    public void getJdCompanyInfoTest()throws Exception{
+        Map<String,Object> result=companyPcService.getCompanyInfo(39978);
+        System.out.println(result+"======");
+    }
+    @Test
+    public void getNoJdCompanyInfoTest() throws Exception {
         Map<String,Object> result=companyPcService.getCompanyInfo(2878);
+        System.out.println(result+"======");
+    }
+    @Test
+    public void getJdSubCompanyInfoTest() throws Exception {
+        Map<String,Object> result=companyPcService.getCompanyInfo(41305);
+        System.out.println(result+"======");
+    }
+    @Test
+    public void getNoJdSubCompanyInfoTest() throws Exception {
+        Map<String,Object> result=companyPcService.getCompanyInfo(39785);
         System.out.println(result+"======");
     }
 }

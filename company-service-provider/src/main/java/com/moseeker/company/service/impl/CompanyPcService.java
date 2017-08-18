@@ -163,7 +163,8 @@ public class CompanyPcService {
     }
     //处理子公司团队的信息
     private List<Map<String,Object>> handleSubCompanyTeam(int companyId) throws Exception {
-        List<Integer> teamIdList=getCompanyPublisher(companyId);
+        List<Integer> publisherList=getCompanyPublisher(companyId);
+        List<Integer> teamIdList=this.getSubCompanyTeam(publisherList);
         List<HrTeamDO> teamList= hrTeamDao.getTeamList(teamIdList);
         Map<Integer,Integer> teamPosition=getTeamPositionNum(teamIdList);
         List<Map<String,Object>> list=this.handleTeamPosition(teamList,teamPosition);
@@ -221,7 +222,7 @@ public class CompanyPcService {
     /*
     获取res.id
      */
-    public List<Integer> getResdListId(List<HrTeamDO> teamDOList){
+    private List<Integer> getResdListId(List<HrTeamDO> teamDOList){
         if(StringUtils.isEmptyList(teamDOList)){
             return null;
         }
@@ -296,6 +297,9 @@ public class CompanyPcService {
         获取子公司下的team_id
      */
     public List<Integer> getSubCompanyTeam(List<Integer> list){
+        if(StringUtils.isEmptyList(list)){
+            return new ArrayList<Integer>();
+        }
         Query query=new Query.QueryBuilder().select(new Select("team_id", SelectOp.DISTINCT)).where(new Condition("publisher",list.toArray(), ValueOp.IN)).and("status",0).buildQuery();
         List<Map<String,Object>> result=jobPositionDao.getMaps(query);
         List<Integer> teamList=new ArrayList<Integer>();

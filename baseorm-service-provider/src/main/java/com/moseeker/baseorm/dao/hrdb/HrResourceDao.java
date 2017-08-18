@@ -36,7 +36,7 @@ public class HrResourceDao extends JooqCrudImpl<HrResourceDO, HrResourceRecord> 
             if(StringUtils.isEmptyList(ids)){
                  return null;
              }
-			Query query=new Query.QueryBuilder().where(new Condition("id",ids.toArray(),ValueOp.IN)).and("disable",0).buildQuery();
+			Query query=new Query.QueryBuilder().where(new Condition("id",ids.toArray(),ValueOp.IN)).buildQuery();
 		    List<HrResourceDO> list=this.getDatas(query);
 			return list;
 	 }
