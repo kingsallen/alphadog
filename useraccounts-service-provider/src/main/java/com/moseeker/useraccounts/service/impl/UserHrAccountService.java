@@ -2,7 +2,6 @@ package com.moseeker.useraccounts.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
@@ -28,7 +27,7 @@ import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.*;
 import com.moseeker.common.validation.ValidateUtil;
-import com.moseeker.entity.CandidateEntity;
+import com.moseeker.entity.CandidateCommonEntity;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.SearchengineEntity;
 import com.moseeker.rpccenter.client.ServiceManager;
@@ -126,7 +125,7 @@ public class UserHrAccountService {
     private HrCompanyDao hrCompanyDao;
 
     @Autowired
-    CandidateEntity candidateEntity;
+    CandidateCommonEntity candidateCommonEntity;
 
     /**
      * HR在下载行业报告是注册
@@ -1568,7 +1567,7 @@ public class UserHrAccountService {
             List<Integer> beRecomIDList = rewardVOPageVO.getData().stream().filter(m -> m.getBerecomId() != 0)
                     .map(m -> m.getBerecomId()).collect(Collectors.toList());
             if (beRecomIDList != null && beRecomIDList.size() > 0) {
-                List<CandidateCompanyDO> candidateCompanyDOList = candidateEntity.getCandidateCompanyByCompanyID(companyId);
+                List<CandidateCompanyDO> candidateCompanyDOList = candidateCommonEntity.getCandidateCompanyByCompanyID(companyId);
                 if (candidateCompanyDOList != null && candidateCompanyDOList.size() > 0) {
                     Map<Integer, CandidateCompanyDO> userUserDOSMap =
                             candidateCompanyDOList.stream().collect(Collectors.toMap(CandidateCompanyDO::getId,

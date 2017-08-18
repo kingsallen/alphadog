@@ -19,7 +19,7 @@ import java.util.List;
  */
 @Service
 @CounterIface
-public class CandidateEntity {
+public class CandidateCommonEntity {
 
     @Autowired
     CandidateCompanyDao candidateCompanyDao;
