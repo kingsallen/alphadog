@@ -52,7 +52,7 @@ public class BasicController {
 		try {
 			Basic basic = ParamUtils.initModelForm(request, Basic.class);
 			String name=basic.getName();
-			if(StringUtils.isNotNullOrEmpty(name)&&name.length()>50){
+			if(StringUtils.isNotNullOrEmpty(name)&&name.length()>100){
 				return ResponseLogNotification.fail(request, "简历中名字不能超过50个字符");
 			}
 			Response result = basicService.postResource(basic);
@@ -69,7 +69,7 @@ public class BasicController {
 		try {
 			Basic basic = ParamUtils.initModelForm(request, Basic.class);
 			String name=basic.getName();
-			if(StringUtils.isNotNullOrEmpty(name)&&name.length()>50){
+			if(StringUtils.isNotNullOrEmpty(name)&&name.length()>100){
 				return ResponseLogNotification.fail(request, "简历中名字不能超过50个字符");
 			}
 			Response result = basicService.putResource(basic);

@@ -107,7 +107,7 @@ public class ProfileBasicServicesImpl implements Iface {
 
             logger.info("basic postResource ");
             String name=struct.getName();
-            if(StringUtils.isNotNullOrEmpty(name)&&name.length()>50){
+            if(StringUtils.isNotNullOrEmpty(name)&&name.length()>100){
                  String message=ConstantErrorCodeMessage.PROFILE_VALIDATE_OVER_LENGTH;
                  message.replace("{0}","profile_basic的name字段");
                  return ResponseUtils.fail(message);
@@ -132,7 +132,7 @@ public class ProfileBasicServicesImpl implements Iface {
     public Response putResource(Basic struct) throws TException {
         try {
             String name=struct.getName();
-            if(StringUtils.isNotNullOrEmpty(name)&&name.length()>50){
+            if(StringUtils.isNotNullOrEmpty(name)&&name.length()>100){
                 String message=ConstantErrorCodeMessage.PROFILE_VALIDATE_OVER_LENGTH;
                 message.replace("{0}","profile_basic的name字段");
                 return ResponseUtils.fail(message);
