@@ -58,6 +58,15 @@ public class ResponseLogNotification {
         return BeanUtils.convertStructToJSON(result);
     }
 
+    public static String failJson(HttpServletRequest request, int status, String message, Object data) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("message", message);
+        result.put("status", status);
+        result.put("data", data);
+        //转换json的时候去掉thrift结构体中的set方法
+        return BeanUtils.convertStructToJSON(result);
+    }
+
     public static String failJson(HttpServletRequest request, Exception e) {
         Map<String, Object> result = new HashMap<>();
         if (e instanceof CommonException) {
