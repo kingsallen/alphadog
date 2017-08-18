@@ -4,6 +4,7 @@
 package com.moseeker.baseorm.db.userdb;
 
 
+import com.moseeker.baseorm.db.userdb.tables.UserAliUser;
 import com.moseeker.baseorm.db.userdb.tables.UserBdUser;
 import com.moseeker.baseorm.db.userdb.tables.UserCollectPosition;
 import com.moseeker.baseorm.db.userdb.tables.UserCompanyFollow;
@@ -21,6 +22,7 @@ import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.UserViewedPosition;
 import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
 import com.moseeker.baseorm.db.userdb.tables.UserWxViewer;
+import com.moseeker.baseorm.db.userdb.tables.records.UserAliUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserBdUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserCollectPositionRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserCompanyFollowRecord;
@@ -64,6 +66,7 @@ public class Keys {
     // IDENTITY definitions
     // -------------------------------------------------------------------------
 
+    public static final Identity<UserAliUserRecord, Integer> IDENTITY_USER_ALI_USER = Identities0.IDENTITY_USER_ALI_USER;
     public static final Identity<UserBdUserRecord, Long> IDENTITY_USER_BD_USER = Identities0.IDENTITY_USER_BD_USER;
     public static final Identity<UserCollectPositionRecord, Integer> IDENTITY_USER_COLLECT_POSITION = Identities0.IDENTITY_USER_COLLECT_POSITION;
     public static final Identity<UserCompanyFollowRecord, Integer> IDENTITY_USER_COMPANY_FOLLOW = Identities0.IDENTITY_USER_COMPANY_FOLLOW;
@@ -86,6 +89,8 @@ public class Keys {
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
+    public static final UniqueKey<UserAliUserRecord> KEY_USER_ALI_USER_PRIMARY = UniqueKeys0.KEY_USER_ALI_USER_PRIMARY;
+    public static final UniqueKey<UserAliUserRecord> KEY_USER_ALI_USER_USER_ID = UniqueKeys0.KEY_USER_ALI_USER_USER_ID;
     public static final UniqueKey<UserBdUserRecord> KEY_USER_BD_USER_PRIMARY = UniqueKeys0.KEY_USER_BD_USER_PRIMARY;
     public static final UniqueKey<UserBdUserRecord> KEY_USER_BD_USER_UID = UniqueKeys0.KEY_USER_BD_USER_UID;
     public static final UniqueKey<UserCollectPositionRecord> KEY_USER_COLLECT_POSITION_PRIMARY = UniqueKeys0.KEY_USER_COLLECT_POSITION_PRIMARY;
@@ -121,6 +126,7 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class Identities0 extends AbstractKeys {
+        public static Identity<UserAliUserRecord, Integer> IDENTITY_USER_ALI_USER = createIdentity(UserAliUser.USER_ALI_USER, UserAliUser.USER_ALI_USER.ID);
         public static Identity<UserBdUserRecord, Long> IDENTITY_USER_BD_USER = createIdentity(UserBdUser.USER_BD_USER, UserBdUser.USER_BD_USER.ID);
         public static Identity<UserCollectPositionRecord, Integer> IDENTITY_USER_COLLECT_POSITION = createIdentity(UserCollectPosition.USER_COLLECT_POSITION, UserCollectPosition.USER_COLLECT_POSITION.ID);
         public static Identity<UserCompanyFollowRecord, Integer> IDENTITY_USER_COMPANY_FOLLOW = createIdentity(UserCompanyFollow.USER_COMPANY_FOLLOW, UserCompanyFollow.USER_COMPANY_FOLLOW.ID);
@@ -141,6 +147,8 @@ public class Keys {
     }
 
     private static class UniqueKeys0 extends AbstractKeys {
+        public static final UniqueKey<UserAliUserRecord> KEY_USER_ALI_USER_PRIMARY = createUniqueKey(UserAliUser.USER_ALI_USER, "KEY_user_ali_user_PRIMARY", UserAliUser.USER_ALI_USER.ID);
+        public static final UniqueKey<UserAliUserRecord> KEY_USER_ALI_USER_USER_ID = createUniqueKey(UserAliUser.USER_ALI_USER, "KEY_user_ali_user_user_id", UserAliUser.USER_ALI_USER.USER_ID);
         public static final UniqueKey<UserBdUserRecord> KEY_USER_BD_USER_PRIMARY = createUniqueKey(UserBdUser.USER_BD_USER, "KEY_user_bd_user_PRIMARY", UserBdUser.USER_BD_USER.ID);
         public static final UniqueKey<UserBdUserRecord> KEY_USER_BD_USER_UID = createUniqueKey(UserBdUser.USER_BD_USER, "KEY_user_bd_user_uid", UserBdUser.USER_BD_USER.UID);
         public static final UniqueKey<UserCollectPositionRecord> KEY_USER_COLLECT_POSITION_PRIMARY = createUniqueKey(UserCollectPosition.USER_COLLECT_POSITION, "KEY_user_collect_position_PRIMARY", UserCollectPosition.USER_COLLECT_POSITION.ID);

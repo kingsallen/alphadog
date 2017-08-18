@@ -252,6 +252,26 @@ public class PositionServicesImpl implements Iface {
             throw ExceptionUtils.convertException(e);
         }
     }
+    @Override
+    public Response getPositionForThirdParty(int positionId, int channel) throws TException {
+        try {
+            return service.getPositionForThirdParty(positionId, channel);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, " " + e.getMessage());
+        }
+    }
+
+    @Override
+    public List<Integer> getPositionListForThirdParty(int channel, int type, String start_time, String end_time) throws TException {
+        try {
+            return service.getPositionListForThirdParty(channel, type, start_time, end_time);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new TException(e);
+        }
+    }
+
 
     @Override
     public int updateThirdPartyPosition(HrThirdPartyPositionDO thirdPartyPosition) throws BIZException, TException {

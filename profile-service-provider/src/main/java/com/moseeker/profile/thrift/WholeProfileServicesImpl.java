@@ -1,9 +1,12 @@
 package com.moseeker.profile.thrift;
 
+import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.profile.service.impl.WholeProfileService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices.Iface;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -94,6 +97,18 @@ public class WholeProfileServicesImpl implements Iface {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
+    }
+
+    @Override
+    public boolean retrieveProfile(String parameter) throws BIZException, TException {
+        try {
+            return service.retrieveProfile(parameter);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
         }
     }
 }

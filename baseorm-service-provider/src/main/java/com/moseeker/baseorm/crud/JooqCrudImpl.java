@@ -1,10 +1,9 @@
 package com.moseeker.baseorm.crud;
 
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.Update;
-import com.moseeker.common.util.query.Condition;
-
 import org.jooq.Field;
 import org.jooq.UpdatableRecord;
 import org.jooq.UpdateSetFirstStep;
@@ -12,9 +11,6 @@ import org.jooq.UpdateSetMoreStep;
 import org.jooq.impl.DefaultDSLContext;
 import org.jooq.impl.TableImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
