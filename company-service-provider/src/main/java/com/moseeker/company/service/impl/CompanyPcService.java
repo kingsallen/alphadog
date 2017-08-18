@@ -1,5 +1,4 @@
 package com.moseeker.company.service.impl;
-
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
@@ -8,17 +7,12 @@ import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.*;
 import com.moseeker.entity.JobPositionCityEntity;
-import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
-import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionCityDO;
-import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
-import org.apache.thrift.TException;
 import org.apache.thrift.TSerializer;
 import org.apache.thrift.protocol.TSimpleJSONProtocol;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.*;
 
 /**
@@ -210,9 +204,11 @@ public class CompanyPcService {
                     }
                 }
             }
-            for(Integer key:teamPosition.keySet()){
-                if(key==teamId){
-                    map.put("positionNum",teamPosition.get(key));
+            if(teamPosition!=null&&teamPosition.isEmpty()){
+                for(Integer key:teamPosition.keySet()){
+                    if(key==teamId){
+                        map.put("positionNum",teamPosition.get(key));
+                    }
                 }
             }
             if(map.get("positionNum")==null){
