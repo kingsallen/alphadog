@@ -2,11 +2,11 @@ package com.moseeker.function.service.chaos;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
 import com.moseeker.baseorm.redis.RedisClient;
-import com.moseeker.common.constants.*;
-import com.moseeker.common.exception.CacheConfigNotExistException;
-import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.constants.AppId;
+import com.moseeker.common.constants.ChannelType;
+import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.UrlUtil;
@@ -14,14 +14,11 @@ import com.moseeker.function.service.chaos.position.Position51WithAccount;
 import com.moseeker.function.service.chaos.position.PositionLiepinWithAccount;
 import com.moseeker.function.service.chaos.position.PositionZhilianWithAccount;
 import com.moseeker.thrift.gen.common.struct.BIZException;
-import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -119,22 +116,6 @@ public class ChaosServiceImpl {
         return data;
     }
 
-    private String mokeBindData(HrThirdPartyAccountDO accountDO) {
-        String data;
-        if (accountDO.getUsername().contains("绑定验证码")) {
-            data = "{\"status\":100,\"message\":\"182****3365\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
-        } else if (accountDO.getUsername().contains("绑定成功")) {
-            data = "{\"status\":0,\"message\":\"182****3365\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
-        } else if (accountDO.getUsername().contains("绑定失败")) {
-            data = "{\"status\":1,\"message\":\"182****3365\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
-        } else if (accountDO.getUsername().contains("绑定邮件")) {
-            data = "{\"status\":2,\"message\":\"182****3365\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
-        } else {
-            data = "{\"status\":3,\"message\":\"绑定失败\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
-        }
-        return data;
-    }
-
     /**
      * 绑定第三方账号
      *
@@ -144,26 +125,12 @@ public class ChaosServiceImpl {
     public HrThirdPartyAccountDO bind(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras) throws Exception {
         logger.info("ChaosServiceImpl bind");
 //        String data = "{\"status\":100,\"message\":\"182****3365\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
-        String data = mokeBindData(hrThirdPartyAccount);//postBind(hrThirdPartyAccount.getChannel(), ChaosTool.getParams(hrThirdPartyAccount, extras));
+        String data = postBind(hrThirdPartyAccount.getChannel(), ChaosTool.getParams(hrThirdPartyAccount, extras));
         fillHrThirdPartyAccount(0, data, hrThirdPartyAccount);
 
         return hrThirdPartyAccount;
     }
 
-
-    private String mokeConfirm(HrThirdPartyAccountDO hrThirdPartyAccount, boolean confirm) {
-        String data;
-        if (!confirm) {
-            data = "{\"status\":0,\"message\":\"取消成功\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
-        } else if (hrThirdPartyAccount.getUsername().contains("发送超时")) {
-            data = "{\"status\":111,\"message\":\"验证码超时\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
-        } else if (hrThirdPartyAccount.getUsername().contains("发送成功")) {
-            data = "{\"status\":110,\"message\":\"取消成功\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
-        } else {
-            data = "{\"status\":1,\"message\":\"发送失败\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
-        }
-        return data;
-    }
 
     /**
      * 确认发送短信验证码
@@ -177,7 +144,7 @@ public class ChaosServiceImpl {
         Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.putAll(extras);
         paramsMap.put("confirm", confirm);
-        String data = mokeConfirm(hrThirdPartyAccount,confirm);//postBind(hrThirdPartyAccount.getChannel(), ChaosTool.getParams(hrThirdPartyAccount, paramsMap));
+        String data = postBind(hrThirdPartyAccount.getChannel(), ChaosTool.getParams(hrThirdPartyAccount, paramsMap));
 
         JSONObject jsonObject = JSONObject.parseObject(data);
 
@@ -189,20 +156,6 @@ public class ChaosServiceImpl {
         } else {
             throw new BIZException(status, message);
         }
-    }
-
-    private String mokeBindMessage(HrThirdPartyAccountDO accountDO) {
-        String data;
-        if (accountDO.getUsername().contains("短信成功")) {
-            data = "{\"status\":0,\"message\":\"182****3365\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
-        } else if (accountDO.getUsername().contains("验证码超时")) {
-            data = "{\"status\":111,\"message\":\"取消成功\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
-        } else if (accountDO.getUsername().contains("短信邮件")) {
-            data = "{\"status\":2,\"message\":\"182****3365\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
-        } else {
-            data = "{\"status\":3,\"message\":\"绑定失败\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
-        }
-        return data;
     }
 
     /**
@@ -217,7 +170,7 @@ public class ChaosServiceImpl {
         Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.putAll(extras);
         paramsMap.put("code", code);
-        String data = mokeBindMessage(hrThirdPartyAccount);//postBind(hrThirdPartyAccount.getChannel(), ChaosTool.getParams(hrThirdPartyAccount, paramsMap));
+        String data = postBind(hrThirdPartyAccount.getChannel(), ChaosTool.getParams(hrThirdPartyAccount, paramsMap));
         JSONObject jsonObject = JSONObject.parseObject(data);
         int status = jsonObject.getIntValue("status");
         String message = jsonObject.getString("message");
