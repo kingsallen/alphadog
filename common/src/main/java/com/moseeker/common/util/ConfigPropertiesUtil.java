@@ -69,7 +69,7 @@ public class ConfigPropertiesUtil {
                 properties.load(inputStreamReader);
             } catch (Exception e) {
                 //todo 错误信息需要记录到日志中
-                throw new Exception("can not find properties");
+                throw new Exception("can not find properties:"+fileName);
             } finally {
                 if (inputStreamReader != null) {
                     try {
