@@ -8,6 +8,9 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.moseeker.common.util.query.Update;
+import com.moseeker.entity.Constant.ApplicationSource;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,10 +95,15 @@ public class JobApplicataionService {
     public Response postApplication(JobApplication jobApplication) throws TException {
         logger.info("JobApplicataionService postApplication jobApplication:{}", jobApplication);
         try {
+            appIDToSource(jobApplication);
             // 获取该申请的职位
             Query query = new QueryBuilder().where("id", jobApplication.getPosition_id()).buildQuery();
             JobPositionRecord jobPositionRecord = jobPositionDao.getRecord(query);
             //JobPositionRecord jobPositionRecord = jobPositionDao.getPositionById((int) jobApplication.position_id);
+            //校验申请来源的有效性
+            if (jobApplication.getOrigin() == 0) {
+                return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_SOURCE_NOTEXIST);
+            }
             // 职位有效性验证
             Response responseJob = validateJobPosition(jobPositionRecord);
             if (responseJob.status > 0) {
@@ -136,13 +144,31 @@ public class JobApplicataionService {
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
     }
 
+    private void appIDToSource(JobApplication jobApplication) {
+        if (jobApplication.getOrigin() == 0) {
+            switch (jobApplication.getAppid()) {
+                case 1: jobApplication.setOrigin(1); break;
+                case 5:
+                case 2: jobApplication.setOrigin(4); break;
+                case 6:
+                case 3: jobApplication.setOrigin(2); break;
+                default:
+            }
+        }
+    }
+
     @SuppressWarnings("serial")
     @CounterIface
     public Response postApplicationIfNotApply(JobApplication jobApplication) throws TException {
         try {
+            appIDToSource(jobApplication);
             // 获取该申请的职位
             Query query = new QueryBuilder().where("id", jobApplication.position_id).buildQuery();
             JobPositionRecord jobPositionRecord = jobPositionDao.getRecord(query);
+            //校验申请来源的有效性
+            if (jobApplication.getOrigin() == 0) {
+                return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_SOURCE_NOTEXIST);
+            }
             // 职位有效性验证
             Response responseJob = validateJobPosition(jobPositionRecord);
             if (responseJob.status > 0) {
@@ -194,11 +220,7 @@ public class JobApplicataionService {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_VALIDATE_REQUIRED.replace("{0}", "id"));
             }
             // 更新申请
-            JobApplicationRecord jobApplicationRecord = (JobApplicationRecord) BeanUtils.structToDB(jobApplication,
-                    JobApplicationRecord.class);
-            Timestamp updateTime = new Timestamp(System.currentTimeMillis());
-            jobApplicationRecord.setUpdateTime(updateTime);
-            int updateStatus = jobApplicationDao.updateRecord(jobApplicationRecord);
+            int updateStatus = updateApplication(jobApplication);
             //int updateStatus = jobApplicationDao.putResource(jobApplicationRecord);
             if (updateStatus > 0) {
                 // 返回 userFavoritePositionId
@@ -215,6 +237,29 @@ public class JobApplicataionService {
             //do nothing
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
+    }
+
+    private int updateApplication(JobApplication jobApplication) {
+        int updateStatus = 0;
+        QueryBuilder queryBuilder = new QueryBuilder();
+        JobApplicationDO jobApplicationDO = jobApplicationDao.getData(
+                queryBuilder.where(
+                        com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.ID.getName(), jobApplication.getId())
+                        .buildQuery());
+        if (jobApplicationDO != null) {
+            ApplicationSource applicationSource = ApplicationSource.instaceFromInteger(jobApplication.getOrigin());
+            if (applicationSource == null) {
+                jobApplication.setOrigin(jobApplicationDO.getOrigin());
+            } else {
+                jobApplication.setOrigin(applicationSource.andSource(jobApplicationDO.getOrigin()));
+            }
+            // 更新申请
+            JobApplicationRecord jobApplicationRecord = BeanUtils.structToDB(jobApplication, JobApplicationRecord.class);
+            Timestamp updateTime = new Timestamp(System.currentTimeMillis());
+            jobApplicationRecord.setUpdateTime(updateTime);
+            updateStatus = jobApplicationDao.updateRecord(jobApplicationRecord);
+        }
+        return updateStatus;
     }
 
     /**

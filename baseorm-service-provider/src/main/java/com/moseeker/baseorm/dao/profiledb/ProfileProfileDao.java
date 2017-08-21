@@ -955,7 +955,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
     };
 
     private Condition buildProfileCondition(Map<String, String> conditionsMap) {
-        Condition condition = JobApplication.EMAIL_STATUS.eq(0);
+        Condition condition = JobApplication.JOB_APPLICATION.EMAIL_STATUS.eq(0);
 
         if (conditionsMap == null || conditionsMap.size() == 0) {
             return condition;
@@ -1026,10 +1026,10 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
         JobPosition jobposition = JobPosition.JOB_POSITION;
         JobApplication jobApplication = JobApplication.JOB_APPLICATION;
         List<AbstractMap.SimpleEntry<Map<String, Object>, Map<String, Object>>> positionApplications = create.select()
-                .from(jobposition.join(jobApplication).on(JobPosition.ID.eq(JobApplication.POSITION_ID)))
-                .where(JobPosition.COMPANY_ID.eq(profileApplicationForm.getCompany_id()))
-                .and(JobPosition.SOURCE_ID.eq(profileApplicationForm.getSource_id()))
-                .and(JobApplication.ATS_STATUS.eq(profileApplicationForm.getAts_status()))
+                .from(jobposition.join(jobApplication).on(JobPosition.JOB_POSITION.ID.eq(JobApplication.JOB_APPLICATION.POSITION_ID)))
+                .where(JobPosition.JOB_POSITION.COMPANY_ID.eq(profileApplicationForm.getCompany_id()))
+                .and(JobPosition.JOB_POSITION.SOURCE_ID.eq(profileApplicationForm.getSource_id()))
+                .and(JobApplication.JOB_APPLICATION.ATS_STATUS.eq(profileApplicationForm.getAts_status()))
                 .and(buildProfileCondition(profileApplicationForm.getConditions()))
                 .orderBy(JobApplication.JOB_APPLICATION._CREATE_TIME.desc())
                 .limit(pageSize)

@@ -27,7 +27,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserProfileJobapplyRecord extends TableRecordImpl<UserProfileJobapplyRecord> implements Record9<Integer, Integer, Integer, String, Integer, Integer, Byte, Integer, String> {
 
-    private static final long serialVersionUID = 893261155;
+    private static final long serialVersionUID = 496153468;
 
     /**
      * Setter for <code>jobdb.user_profile_jobapply.用户ID</code>. 主key
@@ -180,7 +180,7 @@ public class UserProfileJobapplyRecord extends TableRecordImpl<UserProfileJobapp
      */
     @Override
     public Field<Integer> field1() {
-        return UserProfileJobapply.用户ID;
+        return UserProfileJobapply.USER_PROFILE_JOBAPPLY.用户ID;
     }
 
     /**
@@ -188,7 +188,7 @@ public class UserProfileJobapplyRecord extends TableRecordImpl<UserProfileJobapp
      */
     @Override
     public Field<Integer> field2() {
-        return UserProfileJobapply.同上1;
+        return UserProfileJobapply.USER_PROFILE_JOBAPPLY.同上1;
     }
 
     /**
@@ -196,7 +196,7 @@ public class UserProfileJobapplyRecord extends TableRecordImpl<UserProfileJobapp
      */
     @Override
     public Field<Integer> field3() {
-        return UserProfileJobapply.同上2;
+        return UserProfileJobapply.USER_PROFILE_JOBAPPLY.同上2;
     }
 
     /**
@@ -204,7 +204,7 @@ public class UserProfileJobapplyRecord extends TableRecordImpl<UserProfileJobapp
      */
     @Override
     public Field<String> field4() {
-        return UserProfileJobapply.投递职位JOBNUMER;
+        return UserProfileJobapply.USER_PROFILE_JOBAPPLY.投递职位JOBNUMER;
     }
 
     /**
@@ -212,7 +212,7 @@ public class UserProfileJobapplyRecord extends TableRecordImpl<UserProfileJobapp
      */
     @Override
     public Field<Integer> field5() {
-        return UserProfileJobapply.同上3;
+        return UserProfileJobapply.USER_PROFILE_JOBAPPLY.同上3;
     }
 
     /**
@@ -220,7 +220,7 @@ public class UserProfileJobapplyRecord extends TableRecordImpl<UserProfileJobapp
      */
     @Override
     public Field<Integer> field6() {
-        return UserProfileJobapply.投递状态;
+        return UserProfileJobapply.USER_PROFILE_JOBAPPLY.投递状态;
     }
 
     /**
@@ -228,7 +228,7 @@ public class UserProfileJobapplyRecord extends TableRecordImpl<UserProfileJobapp
      */
     @Override
     public Field<Byte> field7() {
-        return UserProfileJobapply.来源;
+        return UserProfileJobapply.USER_PROFILE_JOBAPPLY.来源;
     }
 
     /**
@@ -236,7 +236,7 @@ public class UserProfileJobapplyRecord extends TableRecordImpl<UserProfileJobapp
      */
     @Override
     public Field<Integer> field8() {
-        return UserProfileJobapply.ATS来源是9;
+        return UserProfileJobapply.USER_PROFILE_JOBAPPLY.ATS来源是9;
     }
 
     /**
@@ -244,7 +244,7 @@ public class UserProfileJobapplyRecord extends TableRecordImpl<UserProfileJobapp
      */
     @Override
     public Field<String> field9() {
-        return UserProfileJobapply.姓名;
+        return UserProfileJobapply.USER_PROFILE_JOBAPPLY.姓名;
     }
 
     /**

@@ -81,6 +81,7 @@ public final class ConstantErrorCodeMessage {
     public static final String APPLICATION_POSITION_NOT_EXIST = "{'status':41004,'message':'申请的职位不存在!'}";
     public static final String APPLICATION_POSITION_STATUS_STOP = "{'status':41005,'message':'申请的职位已下线!'}";
     public static final String APPLICATION_USER_INVALID = "{'status':41006,'message':'申请人是无法校验的用户!'}";
+    public static final String APPLICATION_SOURCE_NOTEXIST = "{'status':41007,'message':'申请来源不存在!'}";
 
     //HR帐号
     public static final String HRACCOUNT_ALREADY_BOUND = "{'status':42001,'message':'该帐号已被其他人绑定！'}";

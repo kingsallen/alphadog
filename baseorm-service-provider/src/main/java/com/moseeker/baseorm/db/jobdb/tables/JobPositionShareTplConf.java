@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionShareTplConf extends TableImpl<JobPositionShareTplConfRecord> {
 
-    private static final long serialVersionUID = 160663519;
+    private static final long serialVersionUID = 472711552;
 
     /**
      * The reference instance of <code>jobdb.job_position_share_tpl_conf</code>
@@ -53,48 +53,55 @@ public class JobPositionShareTplConf extends TableImpl<JobPositionShareTplConfRe
     /**
      * The column <code>jobdb.job_position_share_tpl_conf.id</code>. PK
      */
-    public static final TableField<JobPositionShareTplConfRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), JOB_POSITION_SHARE_TPL_CONF, "PK");
+    public final TableField<JobPositionShareTplConfRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "PK");
 
     /**
      * The column <code>jobdb.job_position_share_tpl_conf.type</code>. 模板分类 1:雇主分享模板 2:员工分享模板(已弃用) 3:转发模板 4:默认转发模板
      */
-    public static final TableField<JobPositionShareTplConfRecord, Short> TYPE = createField("type", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("1", org.jooq.impl.SQLDataType.SMALLINT)), JOB_POSITION_SHARE_TPL_CONF, "模板分类 1:雇主分享模板 2:员工分享模板(已弃用) 3:转发模板 4:默认转发模板");
+    public final TableField<JobPositionShareTplConfRecord, Short> TYPE = createField("type", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("1", org.jooq.impl.SQLDataType.SMALLINT)), this, "模板分类 1:雇主分享模板 2:员工分享模板(已弃用) 3:转发模板 4:默认转发模板");
 
     /**
      * The column <code>jobdb.job_position_share_tpl_conf.name</code>. 模板名称
      */
-    public static final TableField<JobPositionShareTplConfRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaultValue(org.jooq.impl.DSL.field("1", org.jooq.impl.SQLDataType.VARCHAR)), JOB_POSITION_SHARE_TPL_CONF, "模板名称");
+    public final TableField<JobPositionShareTplConfRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaultValue(org.jooq.impl.DSL.field("1", org.jooq.impl.SQLDataType.VARCHAR)), this, "模板名称");
 
     /**
      * The column <code>jobdb.job_position_share_tpl_conf.title</code>. 分享标题
      */
-    public static final TableField<JobPositionShareTplConfRecord, String> TITLE = createField("title", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), JOB_POSITION_SHARE_TPL_CONF, "分享标题");
+    public final TableField<JobPositionShareTplConfRecord, String> TITLE = createField("title", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "分享标题");
 
     /**
      * The column <code>jobdb.job_position_share_tpl_conf.description</code>. 分享简介
      */
-    public static final TableField<JobPositionShareTplConfRecord, String> DESCRIPTION = createField("description", org.jooq.impl.SQLDataType.VARCHAR.length(512).nullable(false).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), JOB_POSITION_SHARE_TPL_CONF, "分享简介");
+    public final TableField<JobPositionShareTplConfRecord, String> DESCRIPTION = createField("description", org.jooq.impl.SQLDataType.VARCHAR.length(512).nullable(false).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "分享简介");
 
     /**
      * The column <code>jobdb.job_position_share_tpl_conf.disable</code>. 是否禁用0：可用， 1：禁用
      */
-    public static final TableField<JobPositionShareTplConfRecord, Byte> DISABLE = createField("disable", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.TINYINT)), JOB_POSITION_SHARE_TPL_CONF, "是否禁用0：可用， 1：禁用");
+    public final TableField<JobPositionShareTplConfRecord, Byte> DISABLE = createField("disable", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否禁用0：可用， 1：禁用");
 
     /**
      * The column <code>jobdb.job_position_share_tpl_conf.remark</code>. 备注
      */
-    public static final TableField<JobPositionShareTplConfRecord, String> REMARK = createField("remark", org.jooq.impl.SQLDataType.VARCHAR.length(128).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), JOB_POSITION_SHARE_TPL_CONF, "备注");
+    public final TableField<JobPositionShareTplConfRecord, String> REMARK = createField("remark", org.jooq.impl.SQLDataType.VARCHAR.length(128).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "备注");
 
     /**
      * The column <code>jobdb.job_position_share_tpl_conf.priority</code>. 优先级
      */
-    public static final TableField<JobPositionShareTplConfRecord, Byte> PRIORITY = createField("priority", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("10", org.jooq.impl.SQLDataType.TINYINT)), JOB_POSITION_SHARE_TPL_CONF, "优先级");
+    public final TableField<JobPositionShareTplConfRecord, Byte> PRIORITY = createField("priority", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("10", org.jooq.impl.SQLDataType.TINYINT)), this, "优先级");
 
     /**
-     * No further instances allowed
+     * Create a <code>jobdb.job_position_share_tpl_conf</code> table reference
      */
-    private JobPositionShareTplConf() {
+    public JobPositionShareTplConf() {
         this("job_position_share_tpl_conf", null);
+    }
+
+    /**
+     * Create an aliased <code>jobdb.job_position_share_tpl_conf</code> table reference
+     */
+    public JobPositionShareTplConf(String alias) {
+        this(alias, JOB_POSITION_SHARE_TPL_CONF);
     }
 
     private JobPositionShareTplConf(String alias, Table<JobPositionShareTplConfRecord> aliased) {
@@ -135,5 +142,20 @@ public class JobPositionShareTplConf extends TableImpl<JobPositionShareTplConfRe
     @Override
     public List<UniqueKey<JobPositionShareTplConfRecord>> getKeys() {
         return Arrays.<UniqueKey<JobPositionShareTplConfRecord>>asList(Keys.KEY_JOB_POSITION_SHARE_TPL_CONF_PRIMARY);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public JobPositionShareTplConf as(String alias) {
+        return new JobPositionShareTplConf(alias, this);
+    }
+
+    /**
+     * Rename this table
+     */
+    public JobPositionShareTplConf rename(String name) {
+        return new JobPositionShareTplConf(name, null);
     }
 }

@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionRecord extends UpdatableRecordImpl<JobPositionRecord> {
 
-    private static final long serialVersionUID = -2130199435;
+    private static final long serialVersionUID = -2119098895;
 
     /**
      * Setter for <code>jobdb.job_position.id</code>.
@@ -562,17 +562,17 @@ public class JobPositionRecord extends UpdatableRecordImpl<JobPositionRecord> {
     }
 
     /**
-     * Setter for <code>jobdb.job_position.share_tpl_id</code>. 分享分类0:无1:高大上2：小清新3：逗比
+     * Setter for <code>jobdb.job_position.share_tpl_id</code>.
      */
-    public void setShareTplId(Short value) {
+    public void setShareTplId(Integer value) {
         set(38, value);
     }
 
     /**
-     * Getter for <code>jobdb.job_position.share_tpl_id</code>. 分享分类0:无1:高大上2：小清新3：逗比
+     * Getter for <code>jobdb.job_position.share_tpl_id</code>.
      */
-    public Short getShareTplId() {
-        return (Short) get(38);
+    public Integer getShareTplId() {
+        return (Integer) get(38);
     }
 
     /**
