@@ -1570,7 +1570,7 @@ public class UserHrAccountService {
                 List<CandidateCompanyDO> candidateCompanyDOList = candidateCommonEntity.getCandidateCompanyByCompanyID(companyId);
                 if (candidateCompanyDOList != null && candidateCompanyDOList.size() > 0) {
                     Map<Integer, CandidateCompanyDO> userUserDOSMap =
-                            candidateCompanyDOList.stream().collect(Collectors.toMap(CandidateCompanyDO::getId,
+                            candidateCompanyDOList.stream().collect(Collectors.toMap(CandidateCompanyDO::getSysUserId,
                                     Function.identity()));
                     for (RewardVO rewardVO : rewardVOPageVO.getData()) {
                         if (userUserDOSMap.get(rewardVO.getBerecomId()) == null) {
