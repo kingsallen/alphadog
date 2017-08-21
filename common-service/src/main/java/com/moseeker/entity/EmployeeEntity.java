@@ -430,27 +430,26 @@ public class EmployeeEntity {
                 if (userEmployeeDO != null) {
                     reward.setEmployeId(userEmployeeDO.getId());
                     reward.setEmployeName(userEmployeeDO.getCname());
-                } else {
-                    // 被推荐人ID
-                    reward.setBerecomId(point.getBerecomUserId());
-                    // userdb.useruser.name > userdb.useruser.nickname > userdb.userwxuser.nickname
-                    if (userUserDOSMap.containsKey(point.getBerecomUserId())) {
-                        UserUserDO userUserDO = userUserDOSMap.get(point.getBerecomUserId());
-                        if (userUserDO.getName() != null && !userUserDO.getName().equals("")) {
-                            reward.setBerecomName(userUserDO.getName());
-                        } else if (userUserDO.getName() == null || userUserDO.getName().equals("")) {
-                            if (userUserDO.getNickname() != null && !userUserDO.getNickname().equals("")) {
-                                reward.setBerecomName(userUserDO.getNickname());
-                            }
+                }
+                // 被推荐人ID
+                reward.setBerecomId(point.getBerecomUserId());
+                // userdb.useruser.name > userdb.useruser.nickname > userdb.userwxuser.nickname
+                if (userUserDOSMap.containsKey(point.getBerecomUserId())) {
+                    UserUserDO userUserDO = userUserDOSMap.get(point.getBerecomUserId());
+                    if (userUserDO.getName() != null && !userUserDO.getName().equals("")) {
+                        reward.setBerecomName(userUserDO.getName());
+                    } else if (userUserDO.getName() == null || userUserDO.getName().equals("")) {
+                        if (userUserDO.getNickname() != null && !userUserDO.getNickname().equals("")) {
+                            reward.setBerecomName(userUserDO.getNickname());
                         }
                     }
-                    if (reward.getBerecomName() == null) {
-                        query.clear();
-                        query.where(UserWxUser.USER_WX_USER.SYSUSER_ID.getName(), point.getBerecomUserId());
-                        UserWxUserDO userWxUserDO = userWxUserDao.getData(query.buildQuery());
-                        if (userWxUserDO.getNickname() != null && !userWxUserDO.getNickname().equals("")) {
-                            reward.setBerecomName(userWxUserDO.getNickname());
-                        }
+                }
+                if (reward.getBerecomName() == null) {
+                    query.clear();
+                    query.where(UserWxUser.USER_WX_USER.SYSUSER_ID.getName(), point.getBerecomUserId());
+                    UserWxUserDO userWxUserDO = userWxUserDao.getData(query.buildQuery());
+                    if (userWxUserDO.getNickname() != null && !userWxUserDO.getNickname().equals("")) {
+                        reward.setBerecomName(userWxUserDO.getNickname());
                     }
                 }
                 rewardVOList.add(reward);
