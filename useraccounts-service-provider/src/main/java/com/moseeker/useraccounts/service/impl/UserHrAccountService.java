@@ -1551,15 +1551,14 @@ public class UserHrAccountService {
      * 查找员工积分列表
      *
      * @param employeeId 员工编号
-     * @param companyId 公司编号
+     * @param companyId  公司编号
      * @param pageNumber 分页信息之页码
-     * @param pageSize 分页信息之每页信息数量
+     * @param pageSize   分页信息之每页信息数量
      * @return 员工分页信息
      * @throws CommonException
      */
     public RewardVOPageVO getEmployeeRewards(int employeeId, int companyId, int pageNumber, int pageSize) throws CommonException {
         RewardVOPageVO rewardVOPageVO = employeeEntity.getEmployeePointsRecords(employeeId, pageNumber, pageSize);
-
         /**
          * 查询公司下候选人信息，如果候选人不存在则将berecomID 置为0，用以通知前端不需要拼接潜在候选人的url链接。
          */
@@ -1567,15 +1566,33 @@ public class UserHrAccountService {
             List<Integer> beRecomIDList = rewardVOPageVO.getData().stream().filter(m -> m.getBerecomId() != 0)
                     .map(m -> m.getBerecomId()).collect(Collectors.toList());
             if (beRecomIDList != null && beRecomIDList.size() > 0) {
+                Map<Integer, CandidateCompanyDO> userUserDOSMap = new HashMap<>();
+                Map<Integer, UserEmployeeDO> userEmployeeDOMap = new HashMap<>();
+                // 首先判断候选人是不是已经入职成为员工
+                Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+                queryBuilder.where(new Condition(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.getName(), beRecomIDList, ValueOp.IN));
+                List<UserEmployeeDO> userEmployeeDOList = userEmployeeDao.getDatas(queryBuilder.buildQuery());
+                if (userEmployeeDOList != null && userEmployeeDOList.size() > 0) {
+                    userEmployeeDOMap = userEmployeeDOList.stream().collect(Collectors.toMap(UserEmployeeDO::getId,
+                            Function.identity()));
+                }
+                // 判断候选人信息
                 List<CandidateCompanyDO> candidateCompanyDOList = candidateCommonEntity.getCandidateCompanyByCompanyID(companyId);
                 if (candidateCompanyDOList != null && candidateCompanyDOList.size() > 0) {
-                    Map<Integer, CandidateCompanyDO> userUserDOSMap =
-                            candidateCompanyDOList.stream().collect(Collectors.toMap(CandidateCompanyDO::getId,
-                                    Function.identity()));
-                    for (RewardVO rewardVO : rewardVOPageVO.getData()) {
-                        if (userUserDOSMap.get(rewardVO.getBerecomId()) == null) {
-                            rewardVO.setBerecomId(0);
-                        }
+                    userUserDOSMap = candidateCompanyDOList.stream().collect(Collectors.toMap(CandidateCompanyDO::getId,
+                            Function.identity()));
+                }
+                // 数据处理
+                for (RewardVO rewardVO : rewardVOPageVO.getData()) {
+                    // 首先判断员工信息
+                    if (userEmployeeDOMap.containsKey(rewardVO.getBerecomId())) {
+                        UserEmployeeDO userEmployeeDO = userEmployeeDOMap.get(rewardVO.getBerecomId());
+                        rewardVO.setEmployeId(userEmployeeDO.getId());
+                        continue;
+                    }
+                    // 候选人信息
+                    if (userUserDOSMap.get(rewardVO.getBerecomId()) == null) {
+                        rewardVO.setBerecomId(0);
                     }
                 }
             }
