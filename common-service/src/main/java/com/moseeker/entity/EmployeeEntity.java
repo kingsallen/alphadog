@@ -428,8 +428,8 @@ public class EmployeeEntity {
                 }
                 UserEmployeeDO userEmployeeDO = userEmployeeDOMap.get(point.getBerecomUserId());
                 if (userEmployeeDO != null) {
-                    reward.setEmployeId(userEmployeeDO.getId());
-                    reward.setEmployeName(userEmployeeDO.getCname());
+                    reward.setEmployeeId(userEmployeeDO.getId());
+                    reward.setEmployeeName(userEmployeeDO.getCname());
                 }
                 // 被推荐人ID
                 reward.setBerecomId(point.getBerecomUserId());
