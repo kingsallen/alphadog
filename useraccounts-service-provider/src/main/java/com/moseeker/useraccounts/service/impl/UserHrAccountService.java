@@ -3,11 +3,16 @@ package com.moseeker.useraccounts.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
-import com.moseeker.baseorm.dao.hrdb.*;
+import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
+import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountHrDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
+import com.moseeker.baseorm.dao.hrdb.HrImporterMonitorDao;
+import com.moseeker.baseorm.dao.hrdb.HrSearchConditionDao;
+import com.moseeker.baseorm.dao.hrdb.HrTalentpoolDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
-import com.moseeker.baseorm.db.candidatedb.tables.CandidateCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrSearchConditionRecord;
@@ -27,22 +32,41 @@ import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.common.util.query.*;
+import com.moseeker.common.util.query.Condition;
+import com.moseeker.common.util.query.Order;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.Select;
+import com.moseeker.common.util.query.SelectOp;
+import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.common.validation.ValidateUtil;
-import com.moseeker.entity.CandidateCommonEntity;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.SearchengineEntity;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateCompanyDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.*;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrImporterMonitorDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrTalentpoolDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountHrDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.employee.struct.RewardVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
-import com.moseeker.thrift.gen.useraccounts.struct.*;
+import com.moseeker.thrift.gen.useraccounts.struct.DownloadReport;
+import com.moseeker.thrift.gen.useraccounts.struct.HrNpsResult;
+import com.moseeker.thrift.gen.useraccounts.struct.HrNpsStatistic;
+import com.moseeker.thrift.gen.useraccounts.struct.HrNpsUpdate;
+import com.moseeker.thrift.gen.useraccounts.struct.ImportErrorUserEmployee;
+import com.moseeker.thrift.gen.useraccounts.struct.ImportUserEmployeeStatistic;
+import com.moseeker.thrift.gen.useraccounts.struct.SearchCondition;
+import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeDetailVO;
+import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeNumStatistic;
+import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVO;
+import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO;
+import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
 import com.moseeker.useraccounts.constant.ResultMessage;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.pojo.EmployeeRank;
@@ -57,11 +81,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
 
 /**
  * HR账号服务
@@ -126,8 +155,6 @@ public class UserHrAccountService {
     @Autowired
     private HrCompanyDao hrCompanyDao;
 
-    @Autowired
-    CandidateCommonEntity candidateCommonEntity;
 
     @Autowired
     CandidateCompanyDao candidateCompanyDao;
@@ -1571,7 +1598,6 @@ public class UserHrAccountService {
             List<Integer> beRecomIDList = rewardVOPageVO.getData().stream().filter(m -> m.getBerecomId() != 0)
                     .map(m -> m.getBerecomId()).collect(Collectors.toList());
             if (beRecomIDList != null && beRecomIDList.size() > 0) {
-                List<CandidateCompanyDO> candidateCompanyDOList = candidateCompanyDao.getCandidateCompanyByCompanyIDAndUserID(companyId, beRecomIDList);
                 Map<Integer, CandidateCompanyDO> userUserDOSMap = new HashMap<>();
                 Map<Integer, UserEmployeeDO> userEmployeeDOMap = new HashMap<>();
                 // 首先判断候选人是不是已经入职成为员工
@@ -1583,20 +1609,9 @@ public class UserHrAccountService {
                             Function.identity()));
                 }
                 // 判断候选人信息
-                List<CandidateCompanyDO> candidateCompanyDOList = candidateCommonEntity.getCandidateCompanyByCompanyID(companyId);
+                List<CandidateCompanyDO> candidateCompanyDOList = candidateCompanyDao.getCandidateCompanyByCompanyIDAndUserID(companyId, beRecomIDList);
                 if (candidateCompanyDOList != null && candidateCompanyDOList.size() > 0) {
-                    Map<Integer, CandidateCompanyDO> userUserDOSMap =
-                            candidateCompanyDOList.stream().collect(Collectors.toMap(CandidateCompanyDO::getSysUserId,
-                                    Function.identity()));
-                    for (RewardVO rewardVO : rewardVOPageVO.getData()) {
-                        if (userUserDOSMap.get(rewardVO.getBerecomId()) == null) {
-                            rewardVO.setBerecomId(0);
-                        }
-                    }
-                } else {
-                    for (RewardVO rewardVO : rewardVOPageVO.getData()) {
-                        rewardVO.setBerecomId(0);
-                    userUserDOSMap = candidateCompanyDOList.stream().collect(Collectors.toMap(CandidateCompanyDO::getId,
+                    userUserDOSMap = candidateCompanyDOList.stream().collect(Collectors.toMap(CandidateCompanyDO::getSysUserId,
                             Function.identity()));
                 }
                 // 数据处理
@@ -1608,13 +1623,12 @@ public class UserHrAccountService {
                         continue;
                     }
                     // 候选人信息
-                    if (userUserDOSMap.get(rewardVO.getBerecomId()) == null) {
+                    if (!userUserDOSMap.containsKey(rewardVO.getBerecomId())) {
                         rewardVO.setBerecomId(0);
                     }
                 }
             }
         }
-
         return rewardVOPageVO;
     }
 }
