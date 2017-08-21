@@ -3,11 +3,16 @@ package com.moseeker.baseorm.dao.wordpressdb;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.wordpressdb.tables.WordpressUserPost;
 import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressUserPostRecord;
+import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.Update;
 import com.moseeker.thrift.gen.dao.struct.wordpressdb.WordpressUserPostDO;
 import org.apache.thrift.TException;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Repository
 public class WordpressUserPostDao
@@ -28,11 +33,12 @@ public class WordpressUserPostDao
 		count = create.execute(INSERT_SQL, userId, postId, userId);
 		logger.info("count1======{}",count);
 		if(count == 0) {
-			WordpressUserPostRecord userPost = new WordpressUserPostRecord();
-			userPost.setUserId(userId);
-			userPost.setObjectId((long)(postId));
-			logger.info("userPost======{}",userPost);
-			count=updateRecord(userPost);
+//			WordpressUserPostRecord userPost = new WordpressUserPostRecord();
+//			userPost.setUserId(userId);
+//			userPost.setObjectId(postId);
+			Update update=new Update.UpdateBuilder().set("object_id",postId).where("user_id",userId).buildUpdate();
+			logger.info("update======user_id=={},==object_id==={}==",userId,postId);
+			count=update(update);
 			logger.info("count2======{}",count);
 		}
 		return count;
