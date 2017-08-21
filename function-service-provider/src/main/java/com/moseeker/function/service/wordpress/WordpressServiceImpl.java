@@ -53,8 +53,10 @@ public class WordpressServiceImpl {
 					.getLastRelationships(Constant.WORDPRESS_NEWSLETTER_VALUE);*/
             WordpressPostsRecord postsRecord = wordpressPostsDao.getReleaseVersionPost();
             WordpressPosts post = postsRecord == null ? null : BeanUtils.DBToStruct(WordpressPosts.class, postsRecord);
+			logger.info("WordpressPosts的记录是===================={}",post);
 			if (post != null && post.getId() > 0) {
 				long readedPostId = wordpressUserPostDao.getReadedPostId(newsletter.getAccount_id());
+				logger.info("readedPostId========{}",readedPostId);
 				//如果用户之前读的文章的编号小于最新文章编号，则表示用户未读过新版本
 				if(readedPostId < post.getId()) {
 					data.setShow_new_version((byte) 1);
@@ -79,6 +81,7 @@ public class WordpressServiceImpl {
 				if (postExt != null && postExt.getObjectId() > 0) {
 					data.setVersion(postExt.getVersion());
 				}
+				logger.info("NewsletterData======{}",data);
 				return data;
 			}
 		} catch (Exception e) {
