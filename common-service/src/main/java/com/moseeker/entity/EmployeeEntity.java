@@ -140,6 +140,7 @@ public class EmployeeEntity {
         query.where("company_id", companyId).and("template_id", templateId);
         HrPointsConfDO hrPointsConfDO = hrPointsConfDao.getData(query.buildQuery());
         if (hrPointsConfDO != null && hrPointsConfDO.getId() > 0) {
+            query.clear();
             query.where("employee_id", employeeId).and("position_id", positionId).and("award_config_id", hrPointsConfDO).and("berecom_user_id", berecomUserId);
             UserEmployeePointsRecordDO userEmployeePointsRecordDO = employeePointsRecordDao.getData(query.buildQuery());
             if (userEmployeePointsRecordDO != null && userEmployeePointsRecordDO.getId() > 0) {
