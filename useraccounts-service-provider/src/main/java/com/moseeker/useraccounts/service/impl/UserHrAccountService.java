@@ -1367,7 +1367,7 @@ public class UserHrAccountService {
                 logger.info("getEmployeeRewards candidateCompanyDOList:{}", candidateCompanyDOList);
                 if (candidateCompanyDOList != null && candidateCompanyDOList.size() > 0) {
                     Map<Integer, CandidateCompanyDO> userUserDOSMap =
-                            candidateCompanyDOList.stream().collect(Collectors.toMap(CandidateCompanyDO::getId,
+                            candidateCompanyDOList.stream().collect(Collectors.toMap(CandidateCompanyDO::getSysUserId,
                                     Function.identity()));
                     for (RewardVO rewardVO : rewardVOPageVO.getData()) {
                         if (userUserDOSMap.get(rewardVO.getBerecomId()) == null) {
