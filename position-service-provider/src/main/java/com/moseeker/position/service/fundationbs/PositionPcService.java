@@ -747,11 +747,4 @@ public class PositionPcService {
 		 }
 		 return newList;
 	 }
-
-
-	 
-
-
-
-
 }
