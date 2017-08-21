@@ -436,17 +436,19 @@ public class EmployeeEntity {
                     // userdb.useruser.name > userdb.useruser.nickname > userdb.userwxuser.nickname
                     if (userUserDOSMap.containsKey(point.getBerecomUserId())) {
                         UserUserDO userUserDO = userUserDOSMap.get(point.getBerecomUserId());
-                        if (userUserDO.getName() != null) {
+                        if (userUserDO.getName() != null && !userUserDO.getName().equals("")) {
                             reward.setBerecomName(userUserDO.getName());
-                        } else if (userUserDO.getName() == null && userUserDO.getNickname() != null) {
-                            reward.setBerecomName(userUserDO.getNickname());
+                        } else if (userUserDO.getName() == null || userUserDO.getName().equals("")) {
+                            if (userUserDO.getNickname() != null && !userUserDO.getNickname().equals("")) {
+                                reward.setBerecomName(userUserDO.getNickname());
+                            }
                         }
                     }
                     if (reward.getBerecomName() == null) {
                         query.clear();
                         query.where(UserWxUser.USER_WX_USER.SYSUSER_ID.getName(), point.getBerecomUserId());
                         UserWxUserDO userWxUserDO = userWxUserDao.getData(query.buildQuery());
-                        if (userWxUserDO != null) {
+                        if (userWxUserDO.getNickname() != null && !userWxUserDO.getNickname().equals("")) {
                             reward.setBerecomName(userWxUserDO.getNickname());
                         }
                     }
@@ -936,6 +938,7 @@ public class EmployeeEntity {
 
     /**
      * 根据员工编号查询员工数据
+     *
      * @param employeeId 员工编号
      * @return 员工数据
      */
