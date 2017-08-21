@@ -130,7 +130,6 @@ public class UserHrAccountController {
             if (params.get("member_name") != null) {
                 struct.setMembername(params.get("member_name").toString());
             }
-            logger.info("bind thirdParyAccount in controller params===========================" + JSON.toJSONString(struct));
             struct = userHrAccountService.bindThirdPartyAccount(params.getInt("user_id", 0), struct, params.getBoolean("sync", false));
             //同步情况下走下面的代码
 
@@ -146,8 +145,6 @@ public class UserHrAccountController {
     @RequestMapping(value = "/thirdpartyaccount/refresh", method = RequestMethod.GET)
     @ResponseBody
     public String synchronizeThirdpartyAccount(HttpServletRequest request, HttpServletResponse response) {
-        logger.info("/thirdpartyaccount/refresh start : {}", new DateTime().toString("YYYY-MM-dd HH:mm:ss SSS"));
-        long startTime = System.currentTimeMillis();
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             Integer id = params.getInt("id");
@@ -167,10 +164,6 @@ public class UserHrAccountController {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseLogNotification.fail(request, e.getMessage());
-        } finally {
-            logger.info("/thirdpartyaccount/refresh start : {}", new DateTime().toString("YYYY-MM-dd HH:mm:ss SSS"));
-            long allUseTime = System.currentTimeMillis() - startTime;
-            logger.info("refresh thirdParyAccount in controller Use time===========================" + allUseTime);
         }
     }
 
