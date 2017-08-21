@@ -26,12 +26,15 @@ public class WordpressUserPostDao
 	public int upsertUserPost(int userId, long postId) {
 		int count = 0;
 		count = create.execute(INSERT_SQL, userId, postId, userId);
+		logger.info("count1======{}",count);
 		if(count == 0) {
 			WordpressUserPostRecord userPost = new WordpressUserPostRecord();
 			userPost.setUserId(userId);
 			userPost.setObjectId((long)(postId));
+			logger.info("userPost======{}",userPost);
 			create.attach(userPost);
 			count = userPost.update();
+			logger.info("count2======{}",count);
 		}
 		return count;
 	}
