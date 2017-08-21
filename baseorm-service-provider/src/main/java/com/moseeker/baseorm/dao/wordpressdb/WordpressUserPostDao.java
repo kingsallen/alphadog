@@ -31,13 +31,12 @@ public class WordpressUserPostDao
 			WordpressUserPostRecord userPost = new WordpressUserPostRecord();
 			userPost.setUserId(userId);
 			userPost.setObjectId((long)(postId));
-			logger.info("userPost======{}",userPost);
-			create.attach(userPost);
-			count = userPost.update();
+			updateRecord(userPost);
 			logger.info("count2======{}",count);
 		}
 		return count;
 	}
+
 
     public long getReadedPostId(int userId) throws TException {
         long postId = 0;
