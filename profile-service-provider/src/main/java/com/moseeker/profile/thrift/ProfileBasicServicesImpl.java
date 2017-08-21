@@ -108,8 +108,8 @@ public class ProfileBasicServicesImpl implements Iface {
 
             String name=struct.getName();
             if(StringUtils.isNotNullOrEmpty(name)&&name.length()>100){
-                String message=ConstantErrorCodeMessage.PROFILE_VALIDATE_OVER_LENGTH;
-                message.replace("{0}","profile_basic的name字段");
+                String message=ConstantErrorCodeMessage.VALIDATE_FAILED;
+                message.replace("{MESSAGE}","不能超过100个英文字母或者50个汉字");
                 return ResponseUtils.fail(message);
             }
             Basic result = service.postResource(struct);
@@ -133,8 +133,8 @@ public class ProfileBasicServicesImpl implements Iface {
         try {
             String name=struct.getName();
             if(StringUtils.isNotNullOrEmpty(name)&&name.length()>100){
-                String message=ConstantErrorCodeMessage.PROFILE_VALIDATE_OVER_LENGTH;
-                message.replace("{0}","profile_basic的name字段");
+                String message=ConstantErrorCodeMessage.VALIDATE_FAILED;
+                message.replace("{MESSAGE}","不能超过100个英文字母或者50个汉字");
                 return ResponseUtils.fail(message);
             }
             int result = service.putResource(struct);
