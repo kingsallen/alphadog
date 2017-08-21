@@ -1433,6 +1433,7 @@ public class UserHrAccountService {
             throw UserAccountException.PERMISSION_DENIED;
         }
         org.springframework.beans.BeanUtils.copyProperties(userEmployeeDO, userEmployeeDetailVO);
+        userEmployeeDetailVO.setUsername(userEmployeeDO.getCname());
         userEmployeeDetailVO.setActivation((new Double(userEmployeeDO.getActivation())).intValue());
         if (userEmployeeDO.getCustomFieldValues() != null) {
             List customFieldValues = JSONObject.parseObject(userEmployeeDO.getCustomFieldValues(), List.class);
