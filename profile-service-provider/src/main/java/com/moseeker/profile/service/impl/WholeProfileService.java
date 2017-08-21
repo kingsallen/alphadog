@@ -509,12 +509,9 @@ public class WholeProfileService {
                 List<ProfileCredentialsRecord> destCredentials = credentialsDao.getRecords(queryUtil);
                 List<ProfileEducationRecord> destEducations = educationDao.getRecords(queryUtil);
                 List<IntentionRecord> destIntentions = new ArrayList<IntentionRecord>();
-                QueryUtil query = new QueryUtil();
-                Map<String, String> param = new HashMap<>();
-                query.setEqualFilter(param);
                 intentionDao.getRecords(queryUtil).forEach(intention -> {
                     IntentionRecord irecodr = new IntentionRecord(intention);
-                    param.put("profile_intention_id", String.valueOf(intention.getId().intValue()));
+                    Query query = new Query.QueryBuilder().where("profile_intention_id",intention.getId()).buildQuery();
                     try {
                         irecodr.setCities(intentionCityDao.getRecords(query));
                         irecodr.setPositions(intentionPositionDao.getRecords(query));
