@@ -31,17 +31,18 @@ public class WordpressUserPostDao
 			WordpressUserPostRecord userPost = new WordpressUserPostRecord();
 			userPost.setUserId(userId);
 			userPost.setObjectId((long)(postId));
-			updateRecord(userPost);
+			logger.info("userPost======{}",userPost);
+			count=updateRecord(userPost);
 			logger.info("count2======{}",count);
 		}
 		return count;
 	}
 
 
-    public long getReadedPostId(int userId) throws TException {
+    public long getReadedPostId(int userId,long id ) throws TException {
         long postId = 0;
         Query.QueryBuilder qu = new Query.QueryBuilder();
-        qu.where("user_id", String.valueOf(userId));
+        qu.where("user_id", String.valueOf(userId)).and("object_id",id);
         try {
             WordpressUserPostRecord record = getRecord(qu.buildQuery());
             if(record != null) {
