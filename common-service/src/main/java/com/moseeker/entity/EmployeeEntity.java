@@ -338,7 +338,10 @@ public class EmployeeEntity {
                 List<UserHrAccountDO> userHrAccountDOS = userHrAccountDao.getDatas(query.buildQuery());
                 userHrAccountDOMap.putAll(userHrAccountDOS.stream().collect(Collectors.toMap(UserHrAccountDO::getId, Function.identity())));
             }
-            List<Integer> companyIds = getCompanyIdsByUserId(points.get(0).getBerecomUserId());
+            query.clear();
+            query.where("id", employeeId);
+            UserEmployeeDO userEmployeeDOTemp = employeeDao.getEmployee(query.buildQuery());
+            List<Integer> companyIds = getCompanyIdsByUserId(userEmployeeDOTemp.getSysuserId());
             query.clear();
             query.where(new Condition(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.getName(), berecomIds, ValueOp.IN))
                     .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), 0)
