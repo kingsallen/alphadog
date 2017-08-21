@@ -2,10 +2,12 @@ package com.moseeker.useraccounts.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.db.candidatedb.tables.CandidateCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrSearchConditionRecord;
@@ -126,6 +128,9 @@ public class UserHrAccountService {
 
     @Autowired
     CandidateCommonEntity candidateCommonEntity;
+
+    @Autowired
+    CandidateCompanyDao candidateCompanyDao;
 
     /**
      * HR在下载行业报告是注册
@@ -1566,6 +1571,7 @@ public class UserHrAccountService {
             List<Integer> beRecomIDList = rewardVOPageVO.getData().stream().filter(m -> m.getBerecomId() != 0)
                     .map(m -> m.getBerecomId()).collect(Collectors.toList());
             if (beRecomIDList != null && beRecomIDList.size() > 0) {
+                List<CandidateCompanyDO> candidateCompanyDOList = candidateCompanyDao.getCandidateCompanyByCompanyIDAndUserID(companyId, beRecomIDList);
                 Map<Integer, CandidateCompanyDO> userUserDOSMap = new HashMap<>();
                 Map<Integer, UserEmployeeDO> userEmployeeDOMap = new HashMap<>();
                 // 首先判断候选人是不是已经入职成为员工
@@ -1579,6 +1585,17 @@ public class UserHrAccountService {
                 // 判断候选人信息
                 List<CandidateCompanyDO> candidateCompanyDOList = candidateCommonEntity.getCandidateCompanyByCompanyID(companyId);
                 if (candidateCompanyDOList != null && candidateCompanyDOList.size() > 0) {
+                    Map<Integer, CandidateCompanyDO> userUserDOSMap =
+                            candidateCompanyDOList.stream().collect(Collectors.toMap(CandidateCompanyDO::getSysUserId,
+                                    Function.identity()));
+                    for (RewardVO rewardVO : rewardVOPageVO.getData()) {
+                        if (userUserDOSMap.get(rewardVO.getBerecomId()) == null) {
+                            rewardVO.setBerecomId(0);
+                        }
+                    }
+                } else {
+                    for (RewardVO rewardVO : rewardVOPageVO.getData()) {
+                        rewardVO.setBerecomId(0);
                     userUserDOSMap = candidateCompanyDOList.stream().collect(Collectors.toMap(CandidateCompanyDO::getId,
                             Function.identity()));
                 }
