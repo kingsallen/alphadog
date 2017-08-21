@@ -3,6 +3,7 @@ package com.moseeker.baseorm.dao.candidatedb;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateCompany;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateCompanyRecord;
+import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.common.struct.CURDException;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateCompanyDO;
@@ -10,6 +11,7 @@ import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateCompanyDO;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -51,5 +53,26 @@ public class CandidateCompanyDao extends JooqCrudImpl<CandidateCompanyDO, Candid
         record.setId(id);
         create.attach(record);
         record.delete();
+    }
+
+    /**
+     * 根据公司编号和用户编号查找潜在候选人
+     * @param companyId 公司编号
+     * @param userIDList 用户编号
+     * @return 潜在候选人
+     */
+    public List<CandidateCompanyDO> getCandidateCompanyByCompanyIDAndUserID(int companyId, List<Integer> userIDList) {
+        List<CandidateCompanyDO> candidateCompanyDOList = new ArrayList<>();
+        List<CandidateCompanyRecord> candidateCompanyRecords =
+                create.selectFrom(CandidateCompany.CANDIDATE_COMPANY)
+                        .where(CandidateCompany.CANDIDATE_COMPANY.COMPANY_ID.eq(companyId))
+                        .and(CandidateCompany.CANDIDATE_COMPANY.STATUS.eq(AbleFlag.ENABLE.getValue()))
+                        .and(CandidateCompany.CANDIDATE_COMPANY.SYS_USER_ID.in(userIDList)).fetch();
+        if (candidateCompanyRecords != null && candidateCompanyRecords.size() > 0) {
+            for (CandidateCompanyRecord record : candidateCompanyRecords) {
+                candidateCompanyDOList.add(recordToData(record));
+            }
+        }
+        return candidateCompanyDOList;
     }
 }

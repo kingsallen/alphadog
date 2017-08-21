@@ -2,6 +2,7 @@ package com.moseeker.useraccounts.service.impl;
 
 
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
@@ -27,16 +28,15 @@ import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.*;
 import com.moseeker.common.validation.ValidateUtil;
-import com.moseeker.entity.CandidateCommonEntity;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.SearchengineEntity;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrImporterMonitorDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrTalentpoolDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
-import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.employee.struct.RewardVO;
@@ -125,7 +125,7 @@ public class UserHrAccountService {
     private HrCompanyDao hrCompanyDao;
 
     @Autowired
-    CandidateCommonEntity candidateCommonEntity;
+    CandidateCompanyDao candidateCompanyDao;
 
     /**
      * HR在下载行业报告是注册
@@ -1363,16 +1363,20 @@ public class UserHrAccountService {
                     .map(m -> m.getBerecomId()).collect(Collectors.toList());
             logger.info("getEmployeeRewards beRecomIDList:{}", beRecomIDList);
             if (beRecomIDList != null && beRecomIDList.size() > 0) {
-                List<CandidateCompanyDO> candidateCompanyDOList = candidateCommonEntity.getCandidateCompanyByCompanyID(companyId);
+                List<CandidateCompanyDO> candidateCompanyDOList = candidateCompanyDao.getCandidateCompanyByCompanyIDAndUserID(companyId, beRecomIDList);
                 logger.info("getEmployeeRewards candidateCompanyDOList:{}", candidateCompanyDOList);
                 if (candidateCompanyDOList != null && candidateCompanyDOList.size() > 0) {
                     Map<Integer, CandidateCompanyDO> userUserDOSMap =
-                            candidateCompanyDOList.stream().collect(Collectors.toMap(CandidateCompanyDO::getId,
+                            candidateCompanyDOList.stream().collect(Collectors.toMap(CandidateCompanyDO::getSysUserId,
                                     Function.identity()));
                     for (RewardVO rewardVO : rewardVOPageVO.getData()) {
                         if (userUserDOSMap.get(rewardVO.getBerecomId()) == null) {
                             rewardVO.setBerecomId(0);
                         }
+                    }
+                } else {
+                    for (RewardVO rewardVO : rewardVOPageVO.getData()) {
+                        rewardVO.setBerecomId(0);
                     }
                 }
             }
