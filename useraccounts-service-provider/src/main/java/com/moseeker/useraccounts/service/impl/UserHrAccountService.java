@@ -1374,6 +1374,10 @@ public class UserHrAccountService {
                             rewardVO.setBerecomId(0);
                         }
                     }
+                } else {
+                    for (RewardVO rewardVO : rewardVOPageVO.getData()) {
+                        rewardVO.setBerecomId(0);
+                    }
                 }
             }
         }
