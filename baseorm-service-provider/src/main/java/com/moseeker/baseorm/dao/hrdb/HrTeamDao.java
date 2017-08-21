@@ -89,7 +89,7 @@ public class HrTeamDao extends JooqCrudImpl<HrTeamDO, HrTeamRecord> {
 		}
 		Query query=new Query.QueryBuilder().select(new Select("id", SelectOp.COUNT)).select("company_id")
 				.where(new Condition("company_id",list.toArray(),ValueOp.IN))
-				.and("disale",0).and("is_show",1)
+				.and("disable",0).and("is_show",1)
 				.groupBy("company_id").buildQuery();
 		List<Map<String,Object>> result=this.getMaps(query);
 		return result;
