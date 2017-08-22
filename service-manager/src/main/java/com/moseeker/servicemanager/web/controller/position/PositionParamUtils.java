@@ -1,6 +1,5 @@
 package com.moseeker.servicemanager.web.controller.position;
 
-import com.moseeker.common.util.StringUtils;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
@@ -8,15 +7,13 @@ import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
 import com.moseeker.thrift.gen.position.struct.BatchHandlerJobPostion;
 import com.moseeker.thrift.gen.position.struct.City;
 import com.moseeker.thrift.gen.position.struct.JobPostrionObj;
-
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 
 public class PositionParamUtils extends ParamUtils {
 
@@ -133,8 +130,11 @@ public class PositionParamUtils extends ParamUtils {
             if (positions != null && positions.size() > 0) {
                 positions.forEach(position -> {
                     int positionId = (Integer) position.get("position_id");
-                    if (positionId != 0) {
-                        paramList.add(positionId);
+                    List<Integer> channels = (List<Integer>) position.get("channels");
+                    if (channels == null||channels.size() ==0) {
+	                    if(positionId!=0){
+	                    	paramList.add(positionId);
+	                    }
                     }
                 });
             }

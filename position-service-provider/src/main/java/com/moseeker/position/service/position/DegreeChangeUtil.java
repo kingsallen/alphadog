@@ -1,9 +1,12 @@
 package com.moseeker.position.service.position;
 
+import com.moseeker.position.service.position.alipaycampus.AlipaycampusDegree;
 import com.moseeker.position.service.position.job51.Job51Degree;
 import com.moseeker.position.service.position.liepin.LiepinDegree;
 import com.moseeker.position.service.position.qianxun.Degree;
 import com.moseeker.position.service.position.zhilian.ZhilianDegree;
+import com.moseeker.position.service.position.alipaycampus.AlipaycampusDegree;
+
 
 /**
  * 学位转换
@@ -122,5 +125,22 @@ public class DegreeChangeUtil {
         }
 
         return liepinDegree;
+    }
+
+    public static AlipaycampusDegree getAlipaycampusDegree(Degree degree) {
+
+        AlipaycampusDegree alipaycampausDegree = AlipaycampusDegree.NotRequired;
+        switch(degree) {
+            case None: alipaycampausDegree = AlipaycampusDegree.NotRequired; break;
+            case SpecicalSecondarySchool : alipaycampausDegree = AlipaycampusDegree.BelowJuniorCollege; break;
+            case HighSchool: alipaycampausDegree = AlipaycampusDegree.BelowJuniorCollege; break;
+            case JuniorCollege: alipaycampausDegree = AlipaycampusDegree.JuniorCollege; break;
+            case College: alipaycampausDegree = AlipaycampusDegree.College; break;
+            case MBA:
+            case Master: alipaycampausDegree = AlipaycampusDegree.Master; break;
+            case Doctor: alipaycampausDegree = AlipaycampusDegree.Doctor; break;
+            default: alipaycampausDegree = AlipaycampusDegree.NotRequired;break;
+        }
+        return alipaycampausDegree;
     }
 }

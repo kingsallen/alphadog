@@ -150,7 +150,7 @@ public class CompanyServicesImpl implements Iface {
     public List<RewardConfig> getCompanyRewardConf(int companyId) throws BIZException, TException {
         List<RewardConfig> result = new ArrayList<>();
         try {
-            result = companyConfigEntity.getRerawConfig(companyId);
+            result = companyConfigEntity.getRerawConfig(companyId, false);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw ExceptionFactory.buildException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS);
