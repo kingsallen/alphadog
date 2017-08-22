@@ -54,7 +54,7 @@ public class Query {
 
         public QueryBuilder select(String field, SelectOp selectOp) {
             if (StringUtils.isNotNullOrEmpty(field)) {
-                Select select = new Select(field, SelectOp.FIELD);
+                Select select = new Select(field, selectOp);
                 attributes.add(select);
             }
             return this;
@@ -254,7 +254,6 @@ public class Query {
             this.groups = new ArrayList<>(); // optional
             this.pageSize = 0; // optional
             this.pageNum = 0; // optional
-            this.index = null;
             this.extras = new HashMap<>(); // optional
             this.index = null;
         }
@@ -299,7 +298,6 @@ public class Query {
 
     @Override
     public String toString() {
-
         return JSON.toJSONString(this);
     }
 }

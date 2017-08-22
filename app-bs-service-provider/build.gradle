@@ -6,13 +6,13 @@ dependencies {
     compile project(":common")
     compile project(":rpc-center")
     compile project(":baseorm-service-provider")
+    compile project(":common-service")
 
     testCompile deps["junit"]
     testCompile deps["mockito"]
     compile deps["spring-core"]
     compile deps["spring-context"]
     testCompile deps["spring-test"]
-    //compile deps["jetty-support"]
 }
 
 //compileJava.dependsOn(":thrift-jooq:copyGeneratedFile")

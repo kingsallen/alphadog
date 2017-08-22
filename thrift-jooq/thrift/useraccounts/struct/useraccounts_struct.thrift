@@ -419,6 +419,7 @@ struct UserEmployeeDetailVO{
     10: optional i32 companyId, //
     11: optional string companyAbbreviation, // 公司简称
     12: optional string bindingTime // 绑定时间
+    13: optional i32 award, // 积分
 }
 // 员工导入统计数据
 struct ImportErrorUserEmployee{

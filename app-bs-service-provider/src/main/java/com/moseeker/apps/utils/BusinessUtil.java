@@ -14,6 +14,9 @@ public class BusinessUtil {
 		int recruitOrderOfferedReward = 0;
 		int recruitOrderHiredReward = 0;
 		for(HrAwardConfigTemplate recruitProcess : recruitProcesses) {
+            if (recruitProcess.getRecruit_order() == recruitOrder) {
+                result.setPointsConfId(recruitProcess.getPoints_conf_id());
+            }
 			if((Integer)recruitProcess.getRecruit_order() == 3 && recruitProcess.getReward()!=0l) {
 				recruitOrderCVApply = (int) recruitProcess.getReward();
 			}
