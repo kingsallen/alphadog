@@ -464,7 +464,7 @@ public class EmployeeEntity {
      * @param employeeIds
      * @return
      */
-    public boolean unbind(Collection<Integer> employeeIds) throws Exception {
+    public boolean unbind(Collection<Integer> employeeIds) throws CommonException {
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.and(new Condition("id", employeeIds, ValueOp.IN))
                 .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), 0);
@@ -620,6 +620,22 @@ public class EmployeeEntity {
                 list.add(hrGroupCompanyRelDOTemp.getCompanyId())
         );
         return list;
+    }
+
+    /**
+     * 通过companyId 查询group id
+     *
+     * @return
+     */
+    public int getGroupIdByCompanyId(int companyId) {
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where(HrGroupCompanyRel.HR_GROUP_COMPANY_REL.COMPANY_ID.getName(), companyId);
+        HrGroupCompanyRelDO hrGroupCompanyRelDO = hrGroupCompanyRelDao.getData(queryBuilder.buildQuery());
+        // 没有集团信息，返回0
+        if (hrGroupCompanyRelDO == null) {
+            return 0;
+        }
+        return hrGroupCompanyRelDO.getId();
     }
 
     /**

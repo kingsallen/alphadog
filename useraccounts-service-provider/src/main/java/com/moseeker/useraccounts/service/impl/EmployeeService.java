@@ -102,8 +102,9 @@ public class EmployeeService {
             // 查询集团公司companyID列表
             List<Integer> companyIds = employeeEntity.getCompanyIds(companyId);
             query.where("sysuser_id", String.valueOf(userId)).and(new Condition("company_id", companyIds, ValueOp.IN))
-                    .and("disable", String.valueOf(0));
+                    .and("disable", String.valueOf(0)).and("activation", "0");
             employees = employeeDao.getDatas(query.buildQuery(), UserEmployeeDO.class);
+            String pendingEmployee = client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE,userId+"-"+companyId+"-"+employeeEntity.getGroupIdByCompanyId(companyId));
             Employee emp = new Employee();
             if (employees != null && !employees.isEmpty()) {
                 employees.stream().filter(f -> f.getId() > 0).forEach(employee -> {
@@ -124,28 +125,23 @@ public class EmployeeService {
                         emp.setAuthMethod(employee.getAuthMethod());
                         response.setEmployee(emp);
                         return;
-                    } else {
-                        if (StringUtils.isNotNullOrEmpty(client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, employee.getActivationCode()))) {
-                            response.setBindStatus(BindStatus.PENDING);
-                            emp.setId(employee.getId());
-                            emp.setEmployeeId(employee.getEmployeeid());
-                            emp.setCompanyId(employee.getCompanyId());
-                            emp.setSysuerId(employee.getSysuserId());
-                            emp.setMobile(employee.getMobile());
-                            emp.setCname(org.apache.commons.lang.StringUtils.defaultIfBlank(employee.getCname(), ""));
-                            emp.setAward(employee.getAward());
-                            emp.setIsRpSent(employee.getIsRpSent() == 0 ? false : true);
-                            emp.setCustomFieldValues(employee.getCustomFieldValues());
-                            emp.setWxuserId(wxEntity.getWxuserId(userId, companyId));
-                            emp.setEmail(employee.getEmail());
-                            emp.setCustomField(employee.getCustomField());
-                            emp.setAuthMethod(employee.getAuthMethod());
-                            response.setEmployee(emp);
-                            return;
-                        }
-                        response.setBindStatus(BindStatus.UNBIND);
                     }
                 });
+            } else if(StringUtils.isNotNullOrEmpty(pendingEmployee)) {
+                JSONObject jsonObject = JSONObject.parseObject(pendingEmployee);
+                emp.setEmployeeId(jsonObject.getString("employeeId"));
+                emp.setCompanyId(jsonObject.getIntValue("companyId"));
+                emp.setSysuerId(jsonObject.getIntValue("sysuserId"));
+                emp.setMobile(jsonObject.getString("mobile"));
+                emp.setCname(jsonObject.getString("cname"));
+                emp.setAward(jsonObject.getIntValue("award"));
+                emp.setIsRpSent(jsonObject.getBoolean("isRpSent"));
+                emp.setCustomField(jsonObject.getString("customField"));
+                emp.setWxuserId(wxEntity.getWxuserId(userId, companyId));
+                emp.setEmail(jsonObject.getString("email"));
+                emp.setAuthMethod(jsonObject.getIntValue("authMethod"));
+                response.setEmployee(emp);
+                response.setBindStatus(BindStatus.PENDING);
             } else {
                 response.setBindStatus(BindStatus.UNBIND);
             }
@@ -207,33 +203,21 @@ public class EmployeeService {
     public Result unbind(int employeeId, int companyId, int userId) {
         log.info("unbind param: employeeId={}, companyId={}, userId={}", employeeId, companyId, userId);
         Result response = new Result();
+        response.setSuccess(true);
+        response.setMessage("解绑成功");
         Query.QueryBuilder query = new Query.QueryBuilder();
         // 查询集团公司companyID列表
         List<Integer> companyIds = employeeEntity.getCompanyIds(companyId);
-        query.where("sysuser_id", String.valueOf(userId)).and(new Condition("company_id", companyIds, ValueOp.IN));
-        List<UserEmployeeDO> employees = employeeDao.getDatas(query.buildQuery());
-        log.info("select employee by: {} , result: {}", query, Arrays.toString(employees.toArray()));
-        if (employees == null || employees.isEmpty()) {
-            response.setSuccess(false);
-            response.setMessage("员工信息不存在");
-            return response;
-        }
 
         // 如果是email激活发送了激活邮件，但用户未激活(状态为PENDING)，此时用户进行取消绑定操作，删除员工认证的redis信息
-        for (UserEmployeeDO employee : employees) {
-            if (StringUtils.isNotNullOrEmpty(client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, employee.getActivationCode()))) {
-                client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, employee.getActivationCode());
-                response.setSuccess(true);
-                response.setMessage("解绑成功");
-                return response;
-            }
+        String employeeJson = client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, userId+"-"+companyId+"-"+employeeEntity.getGroupIdByCompanyId(companyId));
+        if (StringUtils.isNotNullOrEmpty(employeeJson)) {
+            client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, JSONObject.parseObject(employeeJson).getString("activation"));
+            client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, userId+"-"+companyId+"-"+employeeEntity.getGroupIdByCompanyId(companyId));
         }
 
         // 解绑
-        if (employeeEntity.unbind(employees.stream().filter(f -> f.getActivation() == 0).collect(Collectors.toList()))) {
-            response.setSuccess(true);
-            response.setMessage("success");
-        } else {
+        if (!employeeEntity.unbind(Arrays.asList(employeeId))) {
             response.setSuccess(false);
             response.setMessage("fail");
         }
