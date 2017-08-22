@@ -1,57 +1,40 @@
 package com.moseeker.profile.service.impl.serviceutils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.baseorm.dao.dictdb.DictIndustryDao;
 import com.moseeker.baseorm.dao.dictdb.DictPositionDao;
 import com.moseeker.baseorm.dao.profiledb.*;
 import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
-import com.moseeker.baseorm.tool.QueryConvert;
-import com.moseeker.common.providerutils.QueryUtil;
-import com.moseeker.common.log.ELKLog;
-import com.moseeker.common.log.LogVO;
-import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.Pagination;
-import com.moseeker.common.util.query.Query;
-import com.moseeker.profile.constants.StatisticsForChannelmportVO;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.alibaba.fastjson.JSON;
-import com.moseeker.common.constants.Constant;
-import com.moseeker.baseorm.util.BeanUtils;
-import com.moseeker.common.util.DateUtils;
-import com.moseeker.common.util.StringUtils;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictConstantRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictIndustryRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictPositionRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
-import com.moseeker.baseorm.db.profiledb.tables.records.ProfileAttachmentRecord;
-import com.moseeker.baseorm.db.profiledb.tables.records.ProfileAwardsRecord;
-import com.moseeker.baseorm.db.profiledb.tables.records.ProfileBasicRecord;
-import com.moseeker.baseorm.db.profiledb.tables.records.ProfileCredentialsRecord;
-import com.moseeker.baseorm.db.profiledb.tables.records.ProfileEducationRecord;
-import com.moseeker.baseorm.db.profiledb.tables.records.ProfileImportRecord;
-import com.moseeker.baseorm.db.profiledb.tables.records.ProfileIntentionCityRecord;
-import com.moseeker.baseorm.db.profiledb.tables.records.ProfileIntentionIndustryRecord;
-import com.moseeker.baseorm.db.profiledb.tables.records.ProfileIntentionPositionRecord;
-import com.moseeker.baseorm.db.profiledb.tables.records.ProfileIntentionRecord;
-import com.moseeker.baseorm.db.profiledb.tables.records.ProfileLanguageRecord;
-import com.moseeker.baseorm.db.profiledb.tables.records.ProfileOtherRecord;
-import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
-import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProjectexpRecord;
-import com.moseeker.baseorm.db.profiledb.tables.records.ProfileSkillRecord;
-import com.moseeker.baseorm.db.profiledb.tables.records.ProfileWorksRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
+import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.constants.Constant;
+import com.moseeker.common.log.ELKLog;
+import com.moseeker.common.log.LogVO;
+import com.moseeker.common.providerutils.QueryUtil;
+import com.moseeker.common.util.DateUtils;
+import com.moseeker.common.util.Pagination;
+import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.profile.constants.StatisticsForChannelmportVO;
 import com.moseeker.profile.constants.ValidationMessage;
 import com.moseeker.profile.utils.ProfileValidation;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@Component
 public class ProfileUtils {
 
 	Logger logger = LoggerFactory.getLogger(ProfileUtils.class);
@@ -285,10 +268,16 @@ public class ProfileUtils {
 					}
 					if (education.get("start_date") != null) {
 						record.setStart(BeanUtils.convertToSQLDate(education.get("start_date")));
+					} else if (education.get("startDate") != null) {
+						record.setStart(BeanUtils.convertToSQLDate(education.get("startDate")));
 					}
+
 					if (education.get("end_date") != null) {
 						record.setEnd(BeanUtils.convertToSQLDate(education.get("end_date")));
+					} else if (education.get("endDate") != null) {
+						record.setEnd(BeanUtils.convertToSQLDate(education.get("endDate")));
 					}
+
 					ValidationMessage<ProfileEducationRecord> vm = ProfileValidation.verifyEducation(record);
 					if(vm.isPass()) {
 						educationRecords.add(record);
@@ -359,7 +348,7 @@ public class ProfileUtils {
 
 	public ProfileProfileRecord mapToProfileRecord(Map<String, Object> profile) {
 		ProfileProfileRecord record = null;
-		if (profile != null && profile.get("user_id") != null) {
+		if (profile != null && (profile.get("user_id") != null || profile.get("userId") != null) ) {
 			record = new ProfileProfileRecord();
 			record.setUuid((String) profile.get("uuid"));
 			if (profile.get("lang") != null) {
@@ -373,7 +362,11 @@ public class ProfileUtils {
 				byte completeness = ((Integer)profile.get("completeness")).byteValue();
 				record.setCompleteness(completeness);
 			}
-			record.setUserId((Integer) profile.get("user_id"));
+			if (profile.get("userId") != null) {
+				record.setUserId((Integer) profile.get("userId"));
+			} else {
+				record.setUserId((Integer) profile.get("user_id"));
+			}
 			if (profile.get("disable") != null) {
 				record.setDisable((byte)(profile.get("disable")));
 			} else {

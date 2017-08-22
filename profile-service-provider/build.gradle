@@ -6,6 +6,7 @@ dependencies {
     compile project(":common")
     compile project(":baseorm-service-provider")
     testCompile deps["junit"]
+    testCompile deps["mockito"]
     compile deps["spring-core"]
     compile deps["spring-context"]
     compile deps["spring-tx"]

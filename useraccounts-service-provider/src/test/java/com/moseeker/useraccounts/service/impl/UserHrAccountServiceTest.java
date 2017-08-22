@@ -1,7 +1,6 @@
 package com.moseeker.useraccounts.service.impl;
 
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.parser.Feature;
+import com.moseeker.entity.SearchengineEntity;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.useraccounts.config.AppConfig;
@@ -13,7 +12,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +22,9 @@ public class UserHrAccountServiceTest {
 
     @Autowired
     private UserHrAccountService userHrAccountService;
+
+    @Autowired
+    private SearchengineEntity searchengineEntity;
 
 
     //@Test
@@ -126,21 +128,13 @@ public class UserHrAccountServiceTest {
     }
 
 
-    /**
-     * 主入口
-     *
-     * @param args
-     */
-    public static void main(String args[]) {
-        String str = "";
-        Map dataMap = (Map) JSONObject.parseObject(str,LinkedHashMap.class, Feature.OrderedField);
-        List<LinkedHashMap<String,Integer>> data = (List<LinkedHashMap<String,Integer>>) dataMap.get("data");
-//        for (Map map : data) {
-//            System.out.println(map.get("award"));
-//            System.out.println(map.get("employeeId"));
-//        }
-        System.out.println(dataMap);
-    }
+    @Test
+    public void updateEmployeeAwards() {
 
+        Map map = new HashMap();
+        map.put("69826", 10);
+        searchengineEntity.updateEmployeeAwards(map);
+
+    }
 
 }

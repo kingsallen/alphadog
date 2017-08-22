@@ -4,6 +4,7 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
+import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.application.struct.JobResumeOther;
@@ -174,6 +175,26 @@ public class JobApplicationController {
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
 			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
+
+	/**
+	 * 招聘进度同步到第三方
+	 */
+	@RequestMapping(value = "/application/thirdpartyapplication", method = RequestMethod.GET)
+	@ResponseBody
+	public String getPositionForThirdParty(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			Params<String, Object> params = ParamUtils.parseRequestParam(request);
+			Integer channel = params.getInt("channel");
+			String start_time = params.getString("start_time");
+			String end_time = params.getString("end_time");
+			Response res =  applicationService.getApplicationListForThirdParty(channel, start_time, end_time);
+			return ResponseLogNotification.success(request, res);
+
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			return ResponseLogNotification.fail(request,e.getMessage());
 		}
 	}
 }

@@ -21,23 +21,23 @@ import com.moseeker.rpccenter.listener.ZKPath;
 import com.moseeker.rpccenter.loadbalance.NodeLoadBalance;
 
 /**
- * 
+ *
  * 代理类的具体执行类
- * <p>Company: MoSeeker</P>  
- * <p>date: Jul 27, 2016</p>  
+ * <p>Company: MoSeeker</P>
+ * <p>date: Jul 27, 2016</p>
  * <p>Email: wjf2255@gmail.com</p>
  * @author wjf
  * @version
  * @param <T>
  */
 public class NodeInvoker<T> implements Invoker {
-	
+
 	private final Logger LOGGER = LoggerFactory.getLogger(getClass());
-	
+
 	private int retry = 1;								//重试次数
 	private GenericKeyedObjectPool<ZKPath, T> pool;		//节点对象池
 	private String parentName;							//二级节点名称(/services(一级节点名称)/com.moseeker.thrift.gen.profile.service.WholeProfileServices(二级节点名称)/servers
-	
+
 	/**
 	 * 初始化执行类
 	 * @param pool zookeeper可用节点的对象池
@@ -56,7 +56,7 @@ public class NodeInvoker<T> implements Invoker {
 	 * 并根据二级节点路径和利用负载均衡器查找二级节点下的三级节点
 	 * 根据查找到的三级节点，从rpc客户端中获取一个rpc客户端
 	 * 执行具体的调用方法
-	 * 
+	 *
 	 */
 	@Override
 	public Object invoke(Method method, Object[] args) throws CURDException, BIZException, RpcException {
@@ -69,7 +69,7 @@ public class NodeInvoker<T> implements Invoker {
 			LOGGER.error(e1.getMessage(), e1);
 			throw new RpcException("服务超时，请稍候再试!", e1);
 		} finally {
-			
+
 		}
         Throwable exception = null;
         ZKPath node = null;
@@ -82,14 +82,12 @@ public class NodeInvoker<T> implements Invoker {
                 	//warning
                     continue;
                 }
-                LOGGER.info(node.toString());
                 client = pool.borrowObject(node);
-                System.out.println("after borrowObject getNumActive:"+pool.getNumActive());
+                LOGGER.debug("node:{}, getNumActive:{}",node,pool.getNumActive());
                 Object result = method.invoke(client, args);
-                
+
                 return result;
             } catch (CURDException | BIZException ce) {
-                System.out.println("CURDException | BIZException ce");
                 ce.printStackTrace();
                 throw ce;
             } catch (ConnectException ce) {
@@ -122,13 +120,13 @@ public class NodeInvoker<T> implements Invoker {
                                 pool.clear(node);
                                 LOGGER.error(node+"  socket已经失效, error:"+ite.getMessage(), ite);
                                 LOGGER.error("parentName:{}  node:{}", parentName, node);
-                                LOGGER.debug("after clear getNumActive:"+pool.getNumActive());
+                                LOGGER.debug("after clear getNumActive:{}",pool.getNumActive());
                             } else {
                                 // XXX:其他异常的情况，需要将当前链接置为无效
                             	//warning
                                 //Notification.sendThriftConnectionError(serverNode+"  链接置为无效, error:"+ite.getMessage());
                                 LOGGER.error(node+"  链接置为无效, error:"+ite.getMessage(), ite);
-                                LOGGER.debug("after invalidateObject getNumActive:"+pool.getNumActive());
+                                LOGGER.debug("after invalidateObject getNumActive:{}",pool.getNumActive());
                                 pool.invalidateObject(node, client);
                             }
                             client = null;
@@ -144,14 +142,14 @@ public class NodeInvoker<T> implements Invoker {
                 }
                 LOGGER.error(ite.getMessage(), ite);
             } catch (Throwable e) {
-            	LOGGER.debug("after returnObject getNumActive:"+pool.getNumActive());
+            	LOGGER.debug("after returnObject getNumActive:{}",pool.getNumActive());
             	LOGGER.error(e.getMessage(), e);
                 exception = e;
             } finally {
                 if (client != null) {
                     try {
                         pool.returnObject(node, client);
-                        LOGGER.debug("after returnObject getNumActive:"+pool.getNumActive());
+                        LOGGER.debug("after returnObject getNumActive:{}",pool.getNumActive());
                     } catch (Exception e) {
                         LOGGER.error(e.getMessage(), e);
                     }
@@ -161,5 +159,5 @@ public class NodeInvoker<T> implements Invoker {
         throw new RpcException(exception.getMessage(), exception);
 	}
 
-	
+
 }
