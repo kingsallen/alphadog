@@ -733,6 +733,7 @@ public class PositionPcService {
 		 if(StringUtils.isEmptyList(list)){
 			 return null;
 		 }
+
 		 List<HrCompanyDO> newList=new ArrayList<HrCompanyDO>();
 		 for(HrCompanyDO companyDO:list){
 			 int parentId=companyDO.getParentId();
