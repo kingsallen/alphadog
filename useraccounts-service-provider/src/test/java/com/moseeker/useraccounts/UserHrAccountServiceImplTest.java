@@ -11,7 +11,6 @@ import com.moseeker.rpccenter.config.ClientConfig;
 import com.moseeker.rpccenter.config.RegistryConfig;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
-import com.moseeker.thrift.gen.employee.struct.Reward;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
@@ -21,16 +20,6 @@ import com.moseeker.useraccounts.service.thirdpartyaccount.ThirdPartyAccountServ
 import com.moseeker.useraccounts.thrift.UserHrAccountServiceImpl;
 import org.apache.thrift.TException;
 import org.junit.Assert;
-import com.moseeker.useraccounts.thrift.UserHrAccountServiceImpl;
-
-import java.util.Arrays;
-import java.util.List;
-import com.moseeker.useraccounts.service.impl.UserEmployeeServiceImpl;
-
-import org.apache.thrift.TException;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -39,6 +28,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 /**
  * HR账号服务
@@ -160,7 +150,6 @@ public class UserHrAccountServiceImplTest {
 //    @Test
     public void testRefresh() throws Exception {
         userHrAccountService.synchronizeThirdpartyAccount(82752, 66, true);
-
         HrThirdPartyAccountDO hrThirdPartyAccountDO = new HrThirdPartyAccountDO();
         hrThirdPartyAccountDO.setUsername("xxxxx");
         hrThirdPartyAccountDO.setPassword("xxxxx");
@@ -226,7 +215,7 @@ public class UserHrAccountServiceImplTest {
     //    @Test
     public void getEmployeeRewardsTest() {
         try {
-            RewardVOPageVO rewardVOPageVO = userHrAccountServiceImpl.getEmployeeRewards(658112, 10, 1);
+            RewardVOPageVO rewardVOPageVO = userHrAccountServiceImpl.getEmployeeRewards(658112, 39978, 10, 1);
             System.out.println(BeanUtils.convertStructToJSON(rewardVOPageVO));
         } catch (TException e) {
             e.printStackTrace();

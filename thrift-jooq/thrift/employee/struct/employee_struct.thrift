@@ -142,8 +142,8 @@ struct RewardVO{
     6: optional string positionName, // 职位名称
     7: optional i32 publisherId, // 发布者ID
     8: optional string publisherName, // 发布者名称
-    9: optional i32 employeId, // 员工ID
-    10:optional string employeName, // 员工名称
+    9: optional i32 employeeId, // 员工ID
+    10:optional string employeeName, // 员工名称
     11:optional i32 recommendId, // 推荐人Id
     12:optional string recommendName, // 推荐人名称
     13:optional i32 berecomId,// 被推荐人Id

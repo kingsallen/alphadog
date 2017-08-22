@@ -1,6 +1,5 @@
 package com.moseeker.useraccounts.service.impl;
 
-
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.*;
@@ -1345,9 +1344,9 @@ public class UserHrAccountService {
      * 查找员工积分列表
      *
      * @param employeeId 员工编号
-     * @param companyId 公司编号
+     * @param companyId  公司编号
      * @param pageNumber 分页信息之页码
-     * @param pageSize 分页信息之每页信息数量
+     * @param pageSize   分页信息之每页信息数量
      * @return 员工分页信息
      * @throws CommonException
      */
@@ -1381,7 +1380,6 @@ public class UserHrAccountService {
                 }
             }
         }
-
         return rewardVOPageVO;
     }
 }
