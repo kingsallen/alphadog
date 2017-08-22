@@ -44,6 +44,7 @@ import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -258,12 +259,13 @@ public class EmployeeEntity {
         rewardVOPageVO.setPageSize(pageSize);
         if (totalRow > 0) {
             List<UserEmployeePointsRecordRecord> userEmployeePointsRecordList = employeePointsRecordDao.getRecords(query.buildQuery());
+            logger.info("getEmployeePointsRecords:userEmployeePointsRecordList {}", userEmployeePointsRecordList);
             List<UserEmployeePointsRecordDO> points = new ArrayList<>();
             if (userEmployeePointsRecordList != null && userEmployeePointsRecordList.size() > 0) {
                 for (UserEmployeePointsRecordRecord userEmployeePointsRecordRecord: userEmployeePointsRecordList) {
                     UserEmployeePointsRecordDO userEmployeePointsRecordDO =
-                            BeanUtils.DBToStruct(UserEmployeePointsRecordDO.class, userEmployeePointsRecordRecord,
-                                    new HashMap<String, String>(){{put("_create_time", "createTime");}});
+                            BeanUtils.DBToStruct(UserEmployeePointsRecordDO.class, userEmployeePointsRecordRecord);
+                    userEmployeePointsRecordDO.setCreateTime(new DateTime(userEmployeePointsRecordRecord.get_CreateTime()).toString("yyyy-MM-dd HH:mm:ss"));
                     points.add(userEmployeePointsRecordDO);
                 }
 
