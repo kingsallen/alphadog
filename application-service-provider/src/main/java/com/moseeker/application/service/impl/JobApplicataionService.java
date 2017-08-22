@@ -1,17 +1,5 @@
 package com.moseeker.application.service.impl;
 
-
-import com.moseeker.baseorm.redis.RedisClient;
-import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.Map;
-import javax.annotation.Resource;
-import org.apache.thrift.TException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.application.service.application.StatusChangeUtil;
 import com.moseeker.application.service.application.alipay_campus.AlipaycampusStatus;
@@ -103,7 +91,6 @@ public class JobApplicataionService {
 	private HrOperationRecordDao hrOperationRecordDao;
 	@Autowired
 	private HistoryJobApplicationDao historyJobApplicationDao;
-
     /**
      * 创建申请
      *
@@ -668,6 +655,26 @@ public class JobApplicataionService {
         return applicationResponse;
     }
 
+    private int archiveApplicationRecord(JobApplicationRecord jobApplicationRecord) throws TException {
+        // TODO Auto-generated method stub
+        int status = 0;
+        try {
+            HistoryJobApplicationRecord historyJobApplicationRecord = setHistoryJobApplicationRecord(jobApplicationRecord);
+            if (historyJobApplicationRecord != null) {
+                historyJobApplicationDao.addRecord(historyJobApplicationRecord);
+                status = historyJobApplicationRecord.getId();
+            }
+            if (status > 0) {
+                status = jobApplicationDao.deleteRecord(jobApplicationRecord);
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new TException(e);
+        }
+        return status;
+    }
+
+    /**
     /**
      * 根据指定渠道 channel=5（支付宝），指定时间段（"2017-05-10 14:57:14"）， 返回给第三方渠道同步的申请状态。
      * @param channel
@@ -727,49 +734,7 @@ public class JobApplicataionService {
         return ResponseUtils.success(syncApplications);
     }
 
-
-        private int archiveApplicationRecord(JobApplicationRecord jobApplicationRecord) throws TException {
-		// TODO Auto-generated method stub
-		int status = 0;
-		try{
-			HistoryJobApplicationRecord historyJobApplicationRecord = setHistoryJobApplicationRecord(jobApplicationRecord);
-	        if (historyJobApplicationRecord != null){
-	        	historyJobApplicationDao.addRecord(historyJobApplicationRecord);
-	        	status=historyJobApplicationRecord.getId();
-	        }
-	        if (status > 0){
-	            status =jobApplicationDao.deleteRecord(jobApplicationRecord);
-	        }
-		}catch(Exception e){
-			logger.error(e.getMessage(),e);
-			throw new TException(e);
-		}
-		return status;
-	}
-
 	 /**
-
-
-    private int archiveApplicationRecord(JobApplicationRecord jobApplicationRecord) throws TException {
-        // TODO Auto-generated method stub
-        int status = 0;
-        try {
-            HistoryJobApplicationRecord historyJobApplicationRecord = setHistoryJobApplicationRecord(jobApplicationRecord);
-            if (historyJobApplicationRecord != null) {
-                historyJobApplicationDao.addRecord(historyJobApplicationRecord);
-                status = historyJobApplicationRecord.getId();
-            }
-            if (status > 0) {
-                status = jobApplicationDao.deleteRecord(jobApplicationRecord);
-            }
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw new TException(e);
-        }
-        return status;
-    }
-
-    /**
      * 转换归档申请记录
      *
      * @param jobApplicationRecord

@@ -16,22 +16,22 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
-import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * HR账号服务
@@ -198,8 +198,6 @@ public class UserHrAccountController {
     @RequestMapping(value = "/thirdpartyaccount/refresh", method = RequestMethod.GET)
     @ResponseBody
     public String synchronizeThirdpartyAccount(HttpServletRequest request, HttpServletResponse response) {
-        logger.info("/thirdpartyaccount/refresh start : {}", new DateTime().toString("YYYY-MM-dd HH:mm:ss SSS"));
-        long startTime = System.currentTimeMillis();
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             Integer id = params.getInt("id");
@@ -219,10 +217,6 @@ public class UserHrAccountController {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseLogNotification.fail(request, e.getMessage());
-        } finally {
-            logger.info("/thirdpartyaccount/refresh start : {}", new DateTime().toString("YYYY-MM-dd HH:mm:ss SSS"));
-            long allUseTime = System.currentTimeMillis() - startTime;
-            logger.info("refresh thirdParyAccount in controller Use time===========================" + allUseTime);
         }
     }
 
