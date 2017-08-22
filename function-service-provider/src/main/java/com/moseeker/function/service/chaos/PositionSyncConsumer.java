@@ -73,17 +73,16 @@ public class PositionSyncConsumer extends RedisConsumer<PositionForSyncResultPoj
         if (pojo.getStatus() == 0) {
             data.setIsSynchronization((byte) PositionSync.bound.getValue());
             data.setSyncTime(pojo.getSync_time());
+        } else if (pojo.getStatus() == 2 || pojo.getStatus() == 9) {
+            //只会出现在猎聘的情况，这种情况下面会发送邮件
+            data.setIsSynchronization((byte) PositionSync.bindingError.getValue());
+            data.setSyncFailReason(pojo.getMessage());
         } else {
             data.setIsSynchronization((byte) PositionSync.failed.getValue());
-            if (pojo.getStatus() == 2 || pojo.getStatus() == 9) {
-                //只会出现在猎聘的情况，这种情况下面会发送邮件
-                data.setIsSynchronization((byte) PositionSync.binding.getValue());
+            if (StringUtils.isNotNullOrEmpty(pojo.getPub_place_name())) {
+                data.setSyncFailReason(pojo.getMessage().replace("{}", pojo.getPub_place_name()));
             } else {
-                if (StringUtils.isNotNullOrEmpty(pojo.getPub_place_name())) {
-                    data.setSyncFailReason(pojo.getMessage().replace("{}", pojo.getPub_place_name()));
-                } else {
-                    data.setSyncFailReason(pojo.getMessage());
-                }
+                data.setSyncFailReason(pojo.getMessage());
             }
         }
 
@@ -105,6 +104,7 @@ public class PositionSyncConsumer extends RedisConsumer<PositionForSyncResultPoj
         }
 
         if (pojo.getStatus() == 2 || pojo.getStatus() == 9) {
+            logger.info("发送同步失败的邮件:{}",pojo.getStatus());
             try {
                 //发送邮件，表示这个职位无法判断是否成功同步到对应的平台，需要确认一下。
                 syncFailedNotification.sendUnKnowResultMail(positionDO, thirdPartyPositionDO, pojo);

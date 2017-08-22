@@ -120,6 +120,19 @@ public class JobApplicataionServicesImpl implements Iface {
     }
 
     /**
+     * 根据指定渠道 channel=5（支付宝），指定时间段（"2017-05-10 14:57:14"）， 返回给第三方渠道同步的申请状态。
+     * @param channel
+     * @param start_time
+     * @param end_time
+     * @return
+     * @throws TException
+     */
+    @Override
+    public Response getApplicationListForThirdParty(int channel, String start_time, String end_time) throws TException {
+        return service.getApplicationListForThirdParty(channel, start_time, end_time);
+    }
+
+    /**
      * 清除一个公司一个人申请次数限制的redis key 给sysplat用
      *
      * @param userId    用户id

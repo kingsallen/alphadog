@@ -165,12 +165,12 @@ public class UserHrAccountServiceImplTest {
 
     @Test
     public void testRefresh() throws Exception {
-        userHrAccountService.synchronizeThirdpartyAccount(82752, 66, true);
+        userHrAccountService.synchronizeThirdpartyAccount(82752,66,true);
         HrThirdPartyAccountDO hrThirdPartyAccountDO = new HrThirdPartyAccountDO();
         hrThirdPartyAccountDO.setUsername("xxxxx");
         hrThirdPartyAccountDO.setPassword("xxxxx");
         hrThirdPartyAccountDO.setChannel((short) 2);
-        userHrAccountService.bindThirdAccount(82847, hrThirdPartyAccountDO, true);
+        userHrAccountService.bindThirdAccount(82847, hrThirdPartyAccountDO,true);
     }
 
 
@@ -257,4 +257,33 @@ public class UserHrAccountServiceImplTest {
             e.printStackTrace();
         }
     }
+
+//    @Test
+    public void testSendEmail() throws Exception {
+        System.out.println("start");
+        List<String> recipients = new ArrayList<>();
+        recipients.add("edhlily@163.com");
+        recipients.add("zhangdi@moseeker.com");
+        String subject = "测试邮件";
+        String content = "ffdafdsafdsfasfdsaf</br><b style=\"color:red\">【简历邮箱】：ffffffff@test.mail</b>";
+        Email.EmailBuilder emailBuilder = new Email.EmailBuilder(recipients.subList(0, 1));
+        emailBuilder.addCCList(recipients.subList(1, recipients.size()));
+        emailBuilder.setSubject(subject);
+        emailBuilder.setContent(content);
+        Email email = emailBuilder.build();
+        email.send(3, new Email.EmailListener() {
+            @Override
+            public void success() {
+                System.out.println("email send messageDelivered");
+            }
+
+            @Override
+            public void failed(Exception e) {
+                System.out.println("发送职位同步刷新错误的邮件失败了:EmailTO:" + recipients + ":Title:" + subject.toString() + ":Message:" + content.toString());
+            }
+        });
+
+        Thread.sleep(100000);
+    }
+
 }

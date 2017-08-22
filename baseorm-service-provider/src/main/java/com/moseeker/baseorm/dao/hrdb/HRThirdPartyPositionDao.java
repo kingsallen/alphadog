@@ -43,6 +43,11 @@ public class HRThirdPartyPositionDao extends JooqCrudImpl<HrThirdPartyPositionDO
         super(table, hrThirdPartyPositionDOClass);
     }
 
+    public HrThirdPartyPositionDO getThirdPositionById(int id) {
+        Query query = new Query.QueryBuilder().where(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.ID.getName(), id).buildQuery();
+        return getData(query);
+    }
+
     /**
      * 获取第三方职位数据
      *

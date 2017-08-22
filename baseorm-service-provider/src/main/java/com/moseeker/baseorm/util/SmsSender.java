@@ -1,4 +1,4 @@
-package com.moseeker.useraccounts.service.impl;
+package com.moseeker.baseorm.util;
 
 
 import com.alibaba.fastjson.JSON;
@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -69,7 +70,7 @@ public class SmsSender {
      * @param params 需要的变量map
      *
      * */
-    public boolean sendSMS(String mobile, String templateCode, HashMap<String, String> params){
+    public boolean sendSMS(String mobile, String templateCode, Map<String, String> params){
         initTaobaoClientInstance();
         
         if (StringUtils.isNullOrEmpty(mobile)){
@@ -249,7 +250,7 @@ public class SmsSender {
      * 生成数字随机验证码
      *
      * */
-    private static String getRandomStr(){
+    public String getRandomStr(){
         return String.valueOf((int) (Math.random()*9000+1000));
     }
 

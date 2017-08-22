@@ -33,7 +33,7 @@ import com.moseeker.servicemanager.web.controller.util.Params;
  */
 public class ParamUtils {
 
-    Logger logger = LoggerFactory.getLogger(ParamUtils.class);
+    static Logger logger = LoggerFactory.getLogger(ParamUtils.class);
 
     /**
      * 通用的参数解析方法。将request参数信息解析出来，如果属性名字和参数名称一致，则设法将参数的值赋值给类对象的值。
@@ -81,6 +81,10 @@ public class ParamUtils {
             throw new Exception("请设置 appid!");
         }
         return data;
+    }
+
+    public static String parseJsonParam(HttpServletRequest request) {
+        return getParamFromBody(request);
     }
 
     /**
@@ -167,7 +171,7 @@ public class ParamUtils {
                             try {
                                 method.invoke(t, cval);
                             } catch (Exception e) {
-                                LoggerFactory.getLogger(ParamUtils.class).error("method-name: " + method.getName() + " field-type:" + fields[i].getType() + " value:" + entry.getValue().toString(), e);
+                                logger.error("method-name: " + method.getName() + " field-type:" + fields[i].getType() + " value:" + entry.getValue().toString(), e);
                                 e.printStackTrace();
                             }
                         }
@@ -204,16 +208,7 @@ public class ParamUtils {
                 }
             }
         }
-        if (param.size() > 0)
-
-        {
-            param.forEach((key, value) -> {
-                LoggerFactory.getLogger(ParamUtils.class).info("----initParamFromRequestParameter key:{}    value:{}", key, value);
-            });
-        }
-        LoggerFactory.getLogger(ParamUtils.class).
-
-                info("----initParamFromRequestBody:", param.toString());
+        logger.info(">>>>>>:{}:{}:Parameter:{}", request.getMethod(), request.getRequestURI(), param);
         return param;
     }
 
@@ -225,7 +220,17 @@ public class ParamUtils {
      */
     private static Map<String, Object> initParamFromRequestBody(
             HttpServletRequest request) {
+        Map<String, Object> map = JsonToMap.parseJSON2Map(getParamFromBody(request));
+        return map;
+    }
 
+    /**
+     * 从request的body中读取参数
+     *
+     * @param request 请求
+     * @return 参数
+     */
+    private static String getParamFromBody(HttpServletRequest request) {
         StringBuffer jb = new StringBuffer();
         String line = null;
         try {
@@ -234,11 +239,13 @@ public class ParamUtils {
                 jb.append(line);
             }
         } catch (IOException | IllegalStateException e) {
-            LoggerFactory.getLogger(ParamUtils.class).error(e.getMessage(), e);
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
-        LoggerFactory.getLogger(ParamUtils.class).info("----initParamFromRequestBody:{}", jb.toString());
-        Map<String, Object> map = JsonToMap.parseJSON2Map(jb.toString());
-        return map;
+        if (jb.length() > 0) {
+            logger.info(">>>>>>:{}:{}:Body:{}", request.getMethod(), request.getRequestURI(), jb.toString());
+        }
+        return jb.toString();
     }
 
     public static String getLocalHostIp() {

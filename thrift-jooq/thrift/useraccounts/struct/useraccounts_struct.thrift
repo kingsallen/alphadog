@@ -438,3 +438,22 @@ struct ImportUserEmployeeStatistic{
     5: optional i32 totalCounts, //总条数
     6: optional bool insertAccept // 是否允许插入
 }
+
+struct ThirdPartyAccountHrInfo{
+    1: optional i32 id,
+    2: optional string username,
+    3: optional string mobile
+}
+
+struct ThirdPartyAccountInfo{
+    1: optional i32 id,
+    2: optional i32 bound,
+    3: optional i32 channel,
+    4: optional string username,
+    5: optional string membername,
+    6: optional i32 remain_profile_num,
+    7: optional i32 remain_num,
+    8: optional string sync_time,
+    9: optional i32 company_id,
+    10: optional list<ThirdPartyAccountHrInfo> hrs
+}
