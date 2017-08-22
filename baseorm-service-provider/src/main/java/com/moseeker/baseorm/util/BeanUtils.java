@@ -54,7 +54,6 @@ public class BeanUtils {
         put("start", "startTime");
         put("end", "endTime");
         put("map", "mapping");
-        put("_create_time", "createTime");
     }};
 
     @SuppressWarnings("rawtypes")
