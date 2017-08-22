@@ -254,7 +254,8 @@ public class SearchengineEntity {
     /**
      * 增量更新员工积分信息
      *
-     * @param map （key 员工ID，value 员工所加积分）
+     * @param userEmployeeId   员工ID
+     * @param employeeRecordId 员工加积分记录表ID
      * @return
      */
     public Response updateEmployeeAwards(Integer userEmployeeId, Integer employeeRecordId) {
