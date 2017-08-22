@@ -2,12 +2,14 @@ package com.moseeker.useraccounts.service.thirdpartyaccount;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.email.Email;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
 import org.joda.time.DateTime;
@@ -32,6 +34,9 @@ public class ThirdPartyAccountSynctor {
     static Logger logger = LoggerFactory.getLogger(ThirdPartyAccountSynctor.class);
 
     ChaosServices.Iface chaosService = ServiceManager.SERVICEMANAGER.getService(ChaosServices.Iface.class);
+
+    @Autowired
+    HrCompanyDao companyDao;
 
 
     static ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil.getInstance();
@@ -120,19 +125,26 @@ public class ThirdPartyAccountSynctor {
 
         try {
 
-            Email.EmailBuilder emailBuilder = new Email.EmailBuilder(mails);
+            Email.EmailBuilder emailBuilder = new Email.EmailBuilder(mails.subList(0, 1));
 
             ChannelType channelType = ChannelType.instaceFromInteger(thirdPartyAccount.getChannel());
 
             StringBuilder titleBuilder = new StringBuilder();
             titleBuilder.append("【第三方帐号").append(syncType == 0 ? "绑定" : "刷新").append("失败】");
+
+            HrCompanyDO company = companyDao.getCompanyById(thirdPartyAccount.getCompanyId());
+            if (company != null) {
+                titleBuilder.append(":【").append(company.getName()).append("】");
+            }
             titleBuilder.append(":【").append(channelType.getAlias()).append("】");
             titleBuilder.append(":【").append(thirdPartyAccount.getId()).append("】");
 
             String br = "<br/>";
 
             StringBuilder messageBuilder = new StringBuilder();
-
+            if (company != null) {
+                messageBuilder.append("【所属公司】：").append(company.getName()).append(br);
+            }
             messageBuilder.append("【第三方帐号ID】：").append(thirdPartyAccount.getId()).append(br);
             messageBuilder.append("【帐号名】：").append(thirdPartyAccount.getUsername()).append(br);
             if (StringUtils.isNotNullOrEmpty(thirdPartyAccount.getMembername())) {
@@ -140,7 +152,7 @@ public class ThirdPartyAccountSynctor {
             }
 
             if (extras != null && StringUtils.isNotNullOrEmpty(extras.get("company"))) {
-                messageBuilder.append("【公司名称】:").append(extras.get("company")).append(br);
+                messageBuilder.append("【子公司简称】:").append(extras.get("company")).append(br);
             }
 
             if (StringUtils.isNotNullOrEmpty(message)) {
@@ -150,35 +162,19 @@ public class ThirdPartyAccountSynctor {
 
             emailBuilder.setSubject(titleBuilder.toString());
             emailBuilder.setContent(messageBuilder.toString());
+            if (mails.size() > 1) {
+                emailBuilder.addCCList(mails.subList(1, mails.size()));
+            }
             Email email = emailBuilder.build();
-            email.send(new TransportListener() {
-                int i = 3;//重试三次邮件
-
+            email.send(3, new Email.EmailListener() {
                 @Override
-                public void messageDelivered(TransportEvent e) {
+                public void success() {
                     logger.info("email send messageDelivered");
                 }
 
                 @Override
-                public void messageNotDelivered(TransportEvent e) {
-                    if (i > 0) {
-                        logger.info("email send messageNotDelivered retry {}", i);
-                        email.send(this);
-                        i--;
-                    } else {
-                        logger.error("发送绑定失败的邮件发生错误：{}", e.getMessage());
-                    }
-                }
-
-                @Override
-                public void messagePartiallyDelivered(TransportEvent e) {
-                    if (i > 0) {
-                        logger.info("email send messagePartiallyDelivered retry {}", i);
-                        email.send(this);
-                        i--;
-                    } else {
-                        logger.error("发送绑定失败的邮件发生错误：{}", e.getMessage());
-                    }
+                public void failed(Exception e) {
+                    logger.error("发送绑定失败的邮件发生错误：{}", e.getMessage());
                 }
             });
         } catch (Exception e) {

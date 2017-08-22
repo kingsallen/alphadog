@@ -5,6 +5,7 @@ package com.moseeker.baseorm.db.userdb;
 
 
 import com.moseeker.baseorm.db.userdb.tables.CandidateVJobPositionRecom;
+import com.moseeker.baseorm.db.userdb.tables.UserAliUser;
 import com.moseeker.baseorm.db.userdb.tables.UserBdUser;
 import com.moseeker.baseorm.db.userdb.tables.UserCollectPosition;
 import com.moseeker.baseorm.db.userdb.tables.UserCompanyFollow;
@@ -44,6 +45,11 @@ public class Tables {
      * VIEW
      */
     public static final CandidateVJobPositionRecom CANDIDATE_V_JOB_POSITION_RECOM = com.moseeker.baseorm.db.userdb.tables.CandidateVJobPositionRecom.CANDIDATE_V_JOB_POSITION_RECOM;
+
+    /**
+     * 阿里用户信息表
+     */
+    public static final UserAliUser USER_ALI_USER = com.moseeker.baseorm.db.userdb.tables.UserAliUser.USER_ALI_USER;
 
     /**
      * 百度用户信息表

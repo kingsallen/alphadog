@@ -1,6 +1,7 @@
 package com.moseeker.mq.service.sms;
 
 import com.moseeker.baseorm.dao.logdb.SmsSendrecordDao;
+import com.moseeker.baseorm.util.SmsSender;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -22,12 +23,15 @@ public class SmsService {
 	@Autowired
     private SmsSendrecordDao smsDao;
 
+	@Autowired
+	SmsSender smsSender;
+
 	@CounterIface
 	public Response sendSMS(SmsType type, String mobile, Map<String, String> data, String sys, String ip) {
 		Response response;
 		try {
 			SmsTemplate smsTemplate = SmsTemplate.valueOf(type.name());
-			if (SmsSender.sendSMS(mobile, smsTemplate.getSmsCode(), data)) {
+			if (smsSender.sendSMS(mobile, smsTemplate.getSmsCode(), data)) {
 				response = ResponseUtils.success("{}");
 				// 记录发送的短信信息
                 LogSmsSendrecordDO smsDo = new LogSmsSendrecordDO();

@@ -33,14 +33,18 @@ import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.moseeker.useraccounts.exception.ExceptionCategory;
 import com.moseeker.useraccounts.exception.ExceptionFactory;
 import com.moseeker.useraccounts.service.EmployeeBinder;
-import java.util.*;
-import java.util.stream.Collectors;
-import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author ltf 员工服务业务实现 2017年3月3日
@@ -278,8 +282,10 @@ public class EmployeeService {
         query.where("id", employeeId);
         UserEmployeeDO userEmployeeDO = employeeDao.getData(query.buildQuery());
         if (userEmployeeDO != null && userEmployeeDO.getId() > 0) {
-            //开始查询积分规则：
-            response.setRewardConfigs(companyConfigEntity.getRerawConfig(companyId));
+            /*
+			 * 开始查询积分规则：
+			 */
+            response.setRewardConfigs(companyConfigEntity.getRerawConfig(companyId, true));
             // 查询申请职位list
             response.setTotal(userEmployeeDO.getAward());
             response.setRewards(employeeEntity.getEmployeePointsRecords(employeeId, pageNumber, pageSize).getData());

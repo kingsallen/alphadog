@@ -10,15 +10,16 @@ import com.moseeker.common.exception.ParamIllegalException;
 import com.moseeker.common.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class CompletenessCalculator {
 	
-	Logger logger = LoggerFactory.getLogger(CompletenessCalculator.class);
+	static Logger logger = LoggerFactory.getLogger(CompletenessCalculator.class);
 
-	public int calculateUserUser(UserUserRecord userRecord, UserSettingsRecord settingsRecord, UserWxUserRecord wxuser)
+	public static int calculateUserUser(UserUserRecord userRecord, UserSettingsRecord settingsRecord, UserWxUserRecord wxuser)
 			throws ParamIllegalException {
 		int completeness = 0;
 		if (userRecord == null) {
@@ -52,7 +53,7 @@ public class CompletenessCalculator {
 		return completeness;
 	}
 
-	public int calculateProfileBasic(ProfileBasicRecord basicRecord, long mobile) throws ParamIllegalException {
+	public static int calculateProfileBasic(ProfileBasicRecord basicRecord, Long mobile) throws ParamIllegalException {
 		int completeness = 0;
 
 		if (basicRecord == null) {
@@ -83,7 +84,7 @@ public class CompletenessCalculator {
 			completeness += 3;
 		}
 		//这里需要添加对手机好的判断，只要手机号和微信号两个中有一个就可以＋5
-		if (StringUtils.isNotNullOrEmpty(basicRecord.getWeixin())||mobile!=0) {
+		if (StringUtils.isNotNullOrEmpty(basicRecord.getWeixin()) || (mobile != null && mobile != 0)) {
 //			completeness += 3;
 			completeness += 5;
 		}
@@ -103,7 +104,7 @@ public class CompletenessCalculator {
 		return completeness;
 	}
 	
-	public int calculateProfileWorkexps(List<? extends ProfileWorkexpRecord> workexpRecords, List<ProfileEducationRecord> education, Date birth) {
+	public static int calculateProfileWorkexps(List<? extends ProfileWorkexpRecord> workexpRecords, List<ProfileEducationRecord> education, Date birth) {
 		int completeness = 0;
 		if(workexpRecords!=null&&workexpRecords.size()>0){
 			if(education!=null&&education.size()>0){
@@ -155,7 +156,7 @@ public class CompletenessCalculator {
 	 * 
 	 */
 	@SuppressWarnings("deprecation")
-	private int getWorkCompletenessHasEducation(List<? extends ProfileWorkexpRecord> workexpRecords,List<ProfileEducationRecord> education,Date birth){
+	private static int getWorkCompletenessHasEducation(List<? extends ProfileWorkexpRecord> workexpRecords,List<ProfileEducationRecord> education,Date birth){
 		int completeness=0;
 		Date endTime=null;
 		SimpleDateFormat format=new SimpleDateFormat("yyyy-mm-dd");
@@ -196,7 +197,7 @@ public class CompletenessCalculator {
 	/*
 	 * 没有教育经历有年龄的，从22岁开始到目前的前一年，按照每年占的百分比来计算总分。年龄小于22岁且有工作经历的，直接给满分；
 	 */
-	private int getWorkCompletenessNoEducation(List<? extends ProfileWorkexpRecord> workexpRecords,Date birth){
+	private static int getWorkCompletenessNoEducation(List<? extends ProfileWorkexpRecord> workexpRecords,Date birth){
 		int completeness=0;
 		SimpleDateFormat format= new SimpleDateFormat("yyyy-mm-dd");
 		int startTime=Integer.parseInt(format.format(birth).split("-")[0])+22;
@@ -222,7 +223,8 @@ public class CompletenessCalculator {
 		}
 		return completeness;
 	}
-	private List<Map<String,Integer>> convertList(List<? extends ProfileWorkexpRecord> workexpRecords){
+
+	private static List<Map<String,Integer>> convertList(List<? extends ProfileWorkexpRecord> workexpRecords){
 		List<Map<String,Integer>> list=new ArrayList<Map<String,Integer>>();
 		SimpleDateFormat format=new SimpleDateFormat("yyyy-mm-dd");
 		for(ProfileWorkexpRecord record:workexpRecords){
@@ -264,7 +266,7 @@ public class CompletenessCalculator {
 		return list;
 	}
 	//获取工作时长，用于计算建立完整度
-	private int getWorkTime(List<? extends ProfileWorkexpRecord> workexpRecords){
+	private static int getWorkTime(List<? extends ProfileWorkexpRecord> workexpRecords){
 		int time=0;
 		if(workexpRecords!=null&&workexpRecords.size()>0){
 			//将内部的工作经历按时间排序
@@ -307,7 +309,7 @@ public class CompletenessCalculator {
 		}
 		return time;
 	}
-	public int calculateProfileWorkexp(ProfileWorkexpRecord workexpRecord, HrCompanyRecord company, int completeness)
+	public static int calculateProfileWorkexp(ProfileWorkexpRecord workexpRecord, HrCompanyRecord company, int completeness)
 			throws ParamIllegalException {
 		if (workexpRecord == null) {
 			throw new ParamIllegalException(Constant.EXCEPTION_PROFILEWORKEXP_LOST);
@@ -342,7 +344,7 @@ public class CompletenessCalculator {
 		return completeness;
 	}
 	
-	public int calculateProfileEducations(List<ProfileEducationRecord> records) throws ParamIllegalException {
+	public static int calculateProfileEducations(List<ProfileEducationRecord> records) throws ParamIllegalException {
 		int completeness = 0;
 		if(records != null && records.size() > 0) {
 			for(ProfileEducationRecord record : records) {
@@ -357,7 +359,7 @@ public class CompletenessCalculator {
 		return completeness;
 	}
 
-	public int calculateProfileEducation(ProfileEducationRecord record, int completeness) throws ParamIllegalException {
+	public static int calculateProfileEducation(ProfileEducationRecord record, int completeness) throws ParamIllegalException {
 		if (record == null) {
 			throw new ParamIllegalException(Constant.EXCEPTION_PROFILEEDUCATION_LOST);
 		}else{
@@ -397,7 +399,7 @@ public class CompletenessCalculator {
 		return completeness;
 	}
 	
-	public int calculateProjectexps(List<ProfileProjectexpRecord> records, List<? extends ProfileWorkexpRecord> workexpRecords) {
+	public static int calculateProjectexps(List<ProfileProjectexpRecord> records, List<? extends ProfileWorkexpRecord> workexpRecords) {
 		int completeness = 0;
 		//超过八年的，直接算10
 		if(workexpRecords!=null&&workexpRecords.size()>0){
@@ -425,7 +427,7 @@ public class CompletenessCalculator {
 		return completeness;
 	}
 
-	public int calculateProjectexp(ProfileProjectexpRecord record,int completeness) throws ParamIllegalException {
+	public static int calculateProjectexp(ProfileProjectexpRecord record,int completeness) throws ParamIllegalException {
 		if (record == null) {
 			throw new ParamIllegalException(Constant.EXCEPTION_PROFILEPROJECTEXP_LOST);
 		}
@@ -459,7 +461,7 @@ public class CompletenessCalculator {
 		return completeness;
 	}
 	
-	public int calculateLanguages(List<ProfileLanguageRecord> records) {
+	public static int calculateLanguages(List<ProfileLanguageRecord> records) {
 		int completeness = 0;
 		if(records != null && records.size() > 0) {
 			for(ProfileLanguageRecord record : records) {
@@ -477,7 +479,7 @@ public class CompletenessCalculator {
 		return completeness;
 	}
 
-	public int calculateLanguage(ProfileLanguageRecord record, int completeness) {
+	public static int calculateLanguage(ProfileLanguageRecord record, int completeness) {
 		if (record == null) {
 			throw new ParamIllegalException(Constant.EXCEPTION_PROFILELANGUAGE_LOST);
 		}
@@ -495,7 +497,7 @@ public class CompletenessCalculator {
 		return completeness;
 	}
 	
-	public int calculateSkills(List<ProfileSkillRecord> records) {
+	public static int calculateSkills(List<ProfileSkillRecord> records) {
 		int completeness = 0;
 		if(records != null && records.size() > 0) {
 			for(ProfileSkillRecord record : records) {
@@ -513,7 +515,7 @@ public class CompletenessCalculator {
 		return completeness;
 	}
 
-	public int calculateSkill(ProfileSkillRecord record, int completeness) {
+	public static int calculateSkill(ProfileSkillRecord record, int completeness) {
 		if (record == null) {
 			throw new ParamIllegalException(Constant.EXCEPTION_PROFILESKILL_LOST);
 		}
@@ -526,7 +528,7 @@ public class CompletenessCalculator {
 		return completeness;
 	}
 	
-	public int calculateCredentials(List<ProfileCredentialsRecord> records) {
+	public static int calculateCredentials(List<ProfileCredentialsRecord> records) {
 		int completeness = 0;
 		if(records != null && records.size() > 0) {
 			for(ProfileCredentialsRecord record : records) {
@@ -544,7 +546,7 @@ public class CompletenessCalculator {
 		return completeness;
 	}
 
-	public int calculateCredential(ProfileCredentialsRecord record, int completeness) {
+	public static int calculateCredential(ProfileCredentialsRecord record, int completeness) {
 		if (record == null) {
 			throw new ParamIllegalException(Constant.EXCEPTION_PROFILECREDENTIALS_LOST);
 		}
@@ -559,7 +561,7 @@ public class CompletenessCalculator {
 		return completeness;
 	}
 	
-	public int calculateAwards(List<ProfileAwardsRecord> records) {
+	public static int calculateAwards(List<ProfileAwardsRecord> records) {
 		int completeness = 0;
 		if(records != null && records.size() > 0) {
 			for(ProfileAwardsRecord record : records) {
@@ -577,7 +579,7 @@ public class CompletenessCalculator {
 		return completeness;
 	}
 
-	public int calculateAward(ProfileAwardsRecord record, int completeness) {
+	public static int calculateAward(ProfileAwardsRecord record, int completeness) {
 		if (record == null) {
 			throw new ParamIllegalException(Constant.EXCEPTION_PROFILEAWARDS_LOST);
 		}
@@ -595,7 +597,7 @@ public class CompletenessCalculator {
 		return completeness;
 	}
 	
-	public int calculateWorks(List<ProfileWorksRecord> records) {
+	public static int calculateWorks(List<ProfileWorksRecord> records) {
 		int completeness = 0;
 		
 		if(records != null && records.size() > 0) {
@@ -614,7 +616,7 @@ public class CompletenessCalculator {
 		return completeness;
 	}
 	
-	public int calculateWork(ProfileWorksRecord record, int completeness) {
+	public static int calculateWork(ProfileWorksRecord record, int completeness) {
 		if (record == null) {
 			throw new ParamIllegalException(Constant.EXCEPTION_PROFILEWORKS_LOST);
 		}
@@ -634,7 +636,7 @@ public class CompletenessCalculator {
 		return completeness;
 	}
 	
-	public int calculateIntentions(List<? extends ProfileIntentionRecord> records, List<ProfileIntentionCityRecord> cityRecords, List<ProfileIntentionPositionRecord> positionRecords) {
+	public static int calculateIntentions(List<? extends ProfileIntentionRecord> records, List<ProfileIntentionCityRecord> cityRecords, List<ProfileIntentionPositionRecord> positionRecords) {
 		int completeness = 0;
 		if(records != null && records.size() > 0) {
 			for(ProfileIntentionRecord record : records) {
@@ -666,7 +668,7 @@ public class CompletenessCalculator {
 		return completeness;
 	}
 
-	public int calculateIntention(ProfileIntentionRecord record, ProfileIntentionCityRecord cityRecord,
+	public static int calculateIntention(ProfileIntentionRecord record, ProfileIntentionCityRecord cityRecord,
 			ProfileIntentionPositionRecord positionRecord, int completeness) {
 		if (record == null) {
 			throw new ParamIllegalException(Constant.EXCEPTION_PROFILINTENTION_LOST);

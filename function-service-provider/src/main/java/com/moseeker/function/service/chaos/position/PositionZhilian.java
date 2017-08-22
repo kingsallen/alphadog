@@ -21,6 +21,7 @@ public class PositionZhilian implements Serializable {
     private String description;
     private String email;
     private String job_id;
+    private String count;
 
     public String getTitle() {
         return title;
@@ -118,6 +119,14 @@ public class PositionZhilian implements Serializable {
         this.job_id = job_id;
     }
 
+    public String getCount() {
+        return count;
+    }
+
+    public void setCount(String count) {
+        this.count = count;
+    }
+
     public static PositionZhilian copyFromSyncPosition(ThirdPartyPositionForSynchronization positionInfo) {
 
         PositionZhilian positionLiepin = new PositionZhilian();
@@ -127,11 +136,12 @@ public class PositionZhilian implements Serializable {
         positionLiepin.setOccupation(positionInfo.getOccupation());
         positionLiepin.setSalary_low(String.valueOf(positionInfo.getSalary_bottom()));
         positionLiepin.setSalary_high(String.valueOf(positionInfo.getSalary_top()));
-        positionLiepin.setWorkyears(positionInfo.getExperience());
+        positionLiepin.setWorkyears(positionInfo.getExperience_code());
         positionLiepin.setDegree(positionInfo.getDegree_code());
         positionLiepin.setDescription(positionInfo.getDescription());
         positionLiepin.setEmail(positionInfo.getEmail());
         positionLiepin.setJob_id(positionInfo.getJob_id());
+        positionLiepin.setCount(String.valueOf(positionInfo.getQuantity()));
         return positionLiepin;
     }
 }

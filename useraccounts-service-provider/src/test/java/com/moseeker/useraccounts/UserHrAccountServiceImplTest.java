@@ -2,8 +2,8 @@ package com.moseeker.useraccounts;
 
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.email.Email;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.rpccenter.client.ServiceManager;
@@ -11,28 +11,24 @@ import com.moseeker.rpccenter.config.ClientConfig;
 import com.moseeker.rpccenter.config.RegistryConfig;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
-import com.moseeker.thrift.gen.employee.struct.Reward;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.config.AppConfig;
-import com.moseeker.useraccounts.thrift.UserHrAccountServiceImpl;
-
-import java.util.Arrays;
-import java.util.List;
-
 import com.moseeker.useraccounts.service.impl.UserEmployeeServiceImpl;
-
+import com.moseeker.useraccounts.service.thirdpartyaccount.ThirdPartyAccountService;
+import com.moseeker.useraccounts.thrift.UserHrAccountServiceImpl;
 import org.apache.thrift.TException;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 /**
  * HR账号服务
@@ -92,7 +88,7 @@ public class UserHrAccountServiceImplTest {
 
     public UserHrAccountService.Iface service;
 
-    @Before
+//    @Before
     public void init() {
         service = ServiceManager.SERVICEMANAGER.getService(UserHrAccountService.Iface.class);
     }
@@ -124,35 +120,23 @@ public class UserHrAccountServiceImplTest {
     }
 
 
-    @Autowired
+//    @Autowired
     UserHrAccountDao userHrAccountDao;
 
-    @Test
+//    @Test
     public void testNpsList() throws Exception {
         HrNpsStatistic result = userHrAccountDao.npsList(null, null, 1, 500);
         System.out.println(BeanUtils.convertStructToJSON(result));
     }
 
 
-    @Test
-    public void testStructToDB() {
-        HrThirdPartyAccountDO hrThirdPartyAccountDO = new HrThirdPartyAccountDO();
-        hrThirdPartyAccountDO.setChannel(Short.valueOf("2"));
-        hrThirdPartyAccountDO.setUsername("fdfdsaf");
-        hrThirdPartyAccountDO.setPassword("fdfdsfdpwd");
-        hrThirdPartyAccountDO.setBinding(Short.valueOf("1"));
-        HrThirdPartyAccountRecord record = BeanUtils.structToDB(hrThirdPartyAccountDO, HrThirdPartyAccountRecord.class);
-
-        record.toString();
-    }
-
     @Autowired
-    com.moseeker.useraccounts.service.impl.UserHrAccountService userHrAccountService;
+    ThirdPartyAccountService userHrAccountService;
 
     @Autowired
     UserHrAccountServiceImpl userHrAccountServiceImpl;
 
-    @Test
+//    @Test
     public void testBinding() throws Exception {
         HrThirdPartyAccountDO hrThirdPartyAccountDO = new HrThirdPartyAccountDO();
         hrThirdPartyAccountDO.setUsername("fiqb60145062");
@@ -163,7 +147,7 @@ public class UserHrAccountServiceImplTest {
         Thread.sleep(1000000);
     }
 
-    @Test
+//    @Test
     public void testRefresh() throws Exception {
         userHrAccountService.synchronizeThirdpartyAccount(82752, 66, true);
         HrThirdPartyAccountDO hrThirdPartyAccountDO = new HrThirdPartyAccountDO();
@@ -174,13 +158,13 @@ public class UserHrAccountServiceImplTest {
     }
 
 
-    @Autowired
+//    @Autowired
     UserEmployeeDao userEmployeeDao;
 
-    @Autowired
+//    @Autowired
     UserEmployeeServiceImpl userEmployeeService;
 
-    @Test
+//    @Test
     public void testUserEmployeeBatch() throws Exception {
 
         System.out.println(DateUtils.dateToLongTime(new Date()));
@@ -231,7 +215,7 @@ public class UserHrAccountServiceImplTest {
     //    @Test
     public void getEmployeeRewardsTest() {
         try {
-            RewardVOPageVO rewardVOPageVO = userHrAccountServiceImpl.getEmployeeRewards(658112, 10, 1);
+            RewardVOPageVO rewardVOPageVO = userHrAccountServiceImpl.getEmployeeRewards(658112, 39978, 10, 1);
             System.out.println(BeanUtils.convertStructToJSON(rewardVOPageVO));
         } catch (TException e) {
             e.printStackTrace();
@@ -257,4 +241,33 @@ public class UserHrAccountServiceImplTest {
             e.printStackTrace();
         }
     }
+
+//    @Test
+    public void testSendEmail() throws Exception {
+        System.out.println("start");
+        List<String> recipients = new ArrayList<>();
+        recipients.add("edhlily@163.com");
+        recipients.add("zhangdi@moseeker.com");
+        String subject = "测试邮件";
+        String content = "ffdafdsafdsfasfdsaf</br><b style=\"color:red\">【简历邮箱】：ffffffff@test.mail</b>";
+        Email.EmailBuilder emailBuilder = new Email.EmailBuilder(recipients.subList(0, 1));
+        emailBuilder.addCCList(recipients.subList(1, recipients.size()));
+        emailBuilder.setSubject(subject);
+        emailBuilder.setContent(content);
+        Email email = emailBuilder.build();
+        email.send(3, new Email.EmailListener() {
+            @Override
+            public void success() {
+                System.out.println("email send messageDelivered");
+            }
+
+            @Override
+            public void failed(Exception e) {
+                System.out.println("发送职位同步刷新错误的邮件失败了:EmailTO:" + recipients + ":Title:" + subject.toString() + ":Message:" + content.toString());
+            }
+        });
+
+        Thread.sleep(100000);
+    }
+
 }

@@ -8,10 +8,10 @@ import org.slf4j.LoggerFactory;
 import com.moseeker.rpccenter.listener.ZKPath;
 
 /**
- * 
- * 节点负载均衡管理工具，目前只有循环策略 
- * <p>Company: MoSeeker</P>  
- * <p>date: Jul 27, 2016</p>  
+ *
+ * 节点负载均衡管理工具，目前只有循环策略
+ * <p>Company: MoSeeker</P>
+ * <p>date: Jul 27, 2016</p>
  * <p>Email: wjf2255@gmail.com</p>
  * @author wjf
  * @version
@@ -38,8 +38,7 @@ public enum NodeLoadBalance {
 						index.put(name, 0);
 					}
 					node = parentPath.getChirldren().get(position);
-					logger.info("loadbalance position:"+position);
-					logger.info(node.toString());
+					logger.debug("loadbalance position:{},node:{}",position,node);
 					if(position+1 >= parentPath.getChirldren().size()) {
 						index.put(name, 0);
 					} else {
@@ -54,14 +53,9 @@ public enum NodeLoadBalance {
 			//warning
 		}
 		if (node == null){
-			logger.info("getNextNode null,root:" + root + ",name:" + name);
-			logger.info("root.getChirldren():" + root.getChirldren());
+			logger.info("getNextNode name:{},root:{},children:{}",name,root,root.getChirldren());
 			for (ZKPath parentPath : root.getChirldren()) {
-				logger.info("parentPath:" + parentPath);
-				logger.info("parentPath.getName().equals(name):" + parentPath.getName().equals(name));
-				logger.info("parentPath.getChirldren():" + parentPath.getChirldren());
-
-				
+				logger.debug("parentPath:{},children:{}",parentPath,parentPath.getChirldren());
 				if (parentPath.getName().equals(name) && parentPath.getChirldren() != null
 						&& parentPath.getChirldren().size() > 0) {
 					if(!index.containsKey(name)) {
@@ -72,11 +66,8 @@ public enum NodeLoadBalance {
 						position = 0;
 						//index.put(name, 0);
 					}
-					logger.info("position:" + position);
 					node = parentPath.getChirldren().get(position);
-					logger.info("node, parentPath.getChirldren().get(position):" + parentPath.getChirldren().get(position));
-					logger.info("loadbalance position:"+position);
-					logger.info(node.toString());
+					logger.debug("position:{},node:{}",position,node);
 					if(position+1 >= parentPath.getChirldren().size()) {
 						//index.put(name, 0);
 					} else {
@@ -84,10 +75,10 @@ public enum NodeLoadBalance {
 					}
 					break;
 				}
-			}			
-			
+			}
+
 		}
-		
+
 		return node;
 	}
 }

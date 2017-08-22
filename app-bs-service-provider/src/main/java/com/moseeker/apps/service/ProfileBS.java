@@ -6,6 +6,7 @@ import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.UserSource;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.StringUtils;
@@ -43,8 +44,10 @@ public class ProfileBS {
 	
 	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
+
 	@Autowired
 	private JobPositionDao jobPositionDao;
+
 	@Autowired
 	private UserUserDao userUserDao;
 
@@ -170,6 +173,8 @@ public class ProfileBS {
 //		}
 		return ResponseUtils.success(null);
 	}
+
+
 	
 	private JobApplication initApplication(int applierId, int positionId, int companyId) {
 		JobApplication application = new JobApplication();
