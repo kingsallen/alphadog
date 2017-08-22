@@ -138,7 +138,7 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
         return hrThirdPartyAccountHrRecord.insert();
     }
 
-    public HrThirdPartyAccountDO getThirdPartyAccountByUserId(int user_id, int channel) throws TException {
+    public HrThirdPartyAccountDO getThirdPartyAccountByUserId(int user_id, int channel) {
         logger.info("getThirdPartyAccountByUserId:user_id{},channel:{}", user_id, channel);
         Query query = new Query.QueryBuilder().where("hr_account_id", user_id).and("status", 1).and("channel", channel).buildQuery();
         HrThirdPartyAccountHrDO hrThirdPartyAccountHr = thirdPartyAccountHrDao.getData(query);

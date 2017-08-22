@@ -153,8 +153,10 @@ public class ThirdPartyAccountService {
         setCache(account);
 
         try {
-            HrThirdPartyAccountDO result = thirdPartyAccountSynctor.bindThirdPartyAccount(allowStatus == 0 ? hrId : 0, account, extras, sync);
-
+            HrThirdPartyAccountDO result = thirdPartyAccountSynctor.bindThirdPartyAccount(account, extras, sync);
+            if (allowStatus == 0 && (result.binding == 1 || result.binding == 6)) {
+                checkDispatch(result, hrId);
+            }
             if (result.getBinding() != 100) {
                 removeCache(account);
             }
@@ -281,11 +283,21 @@ public class ThirdPartyAccountService {
         Map<String, String> extras = getBindExtra(userHrAccount, thirdPartyAccount);
         try {
             thirdPartyAccount = thirdPartyAccountSynctor.bindMessage(thirdPartyAccount, extras, code);
+            if (thirdPartyAccount.getBinding() == 1 || thirdPartyAccount.getBinding() == 6) {
+                checkDispatch(thirdPartyAccount, hrId);
+            }
             removeCache(thirdPartyAccount);
             return thirdPartyAccount;
         } catch (Exception e) {
             removeCache(thirdPartyAccount);
             throw e;
+        }
+    }
+
+    private void checkDispatch(HrThirdPartyAccountDO thirdPartyAccount, int hrId) {
+        HrThirdPartyAccountDO bindingAccount = thirdPartyAccountDao.getThirdPartyAccountByUserId(hrId, thirdPartyAccount.getChannel());
+        if (bindingAccount == null) {
+            thirdPartyAccountDao.dispatchAccountToHr(thirdPartyAccount, hrId);
         }
     }
 

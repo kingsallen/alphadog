@@ -69,14 +69,13 @@ public class ThirdPartyAccountSynctor {
     /**
      * 绑定第三方帐号
      *
-     * @param hrId
      * @param thirdPartyAccount
      * @param sync
      * @return
      * @throws Exception
      */
-    public HrThirdPartyAccountDO bindThirdPartyAccount(int hrId, HrThirdPartyAccountDO thirdPartyAccount, Map<String, String> extras, boolean sync) throws Exception {
-        return sync ? syncWithBindThirdPartyAccount(hrId, thirdPartyAccount, extras) : asyncWithBindThirdPartyAccount(hrId, thirdPartyAccount, extras);
+    public HrThirdPartyAccountDO bindThirdPartyAccount(HrThirdPartyAccountDO thirdPartyAccount, Map<String, String> extras, boolean sync) throws Exception {
+        return sync ? syncWithBindThirdPartyAccount(thirdPartyAccount, extras) : asyncWithBindThirdPartyAccount(thirdPartyAccount, extras);
     }
 
     /**
@@ -107,28 +106,22 @@ public class ThirdPartyAccountSynctor {
         if (thirdPartyAccount.getBinding() == 6 || thirdPartyAccount.getBinding() == 1) {
             hrThirdPartyAccountDao.updateData(thirdPartyAccount);
         }
-
         return thirdPartyAccount;
     }
 
     /**
      * 使用同步的方式同步第三方账号
      *
-     * @param hrId
      * @param thirdPartyAccount
      * @return
      */
-    private HrThirdPartyAccountDO syncWithBindThirdPartyAccount(int hrId, HrThirdPartyAccountDO thirdPartyAccount, Map<String, String> extras) throws Exception {
+    private HrThirdPartyAccountDO syncWithBindThirdPartyAccount(HrThirdPartyAccountDO thirdPartyAccount, Map<String, String> extras) throws Exception {
 
         if (thirdPartyAccount.getId() == 0) {
             thirdPartyAccount = hrThirdPartyAccountDao.addData(thirdPartyAccount);
         }
 
         thirdPartyAccount = bindTask.execute(thirdPartyAccount, extras);
-
-        if (hrId > 0) {
-            hrThirdPartyAccountDao.dispatchAccountToHr(thirdPartyAccount, hrId);
-        }
 
         if (thirdPartyAccount.getBinding() < 100) {
             bindTask.updateThirdPartyAccount(thirdPartyAccount, extras);
@@ -178,11 +171,10 @@ public class ThirdPartyAccountSynctor {
     /**
      * 使用异步的方式去同步第三方账号
      *
-     * @param hrId
      * @param thirdPartyAccount
      * @return
      */
-    private HrThirdPartyAccountDO asyncWithBindThirdPartyAccount(int hrId, HrThirdPartyAccountDO thirdPartyAccount, Map<String, String> extras) throws Exception {
+    private HrThirdPartyAccountDO asyncWithBindThirdPartyAccount(HrThirdPartyAccountDO thirdPartyAccount, Map<String, String> extras) throws Exception {
         //先保存信息到数据库,状态为2绑定中
         thirdPartyAccount.setBinding(Short.valueOf("2"));
         if (thirdPartyAccount.getId() > 0) {
@@ -191,7 +183,7 @@ public class ThirdPartyAccountSynctor {
                 throw new BIZException(-1, "无法保存数据，请重试");
             }
         } else {
-            thirdPartyAccount = hrThirdPartyAccountDao.addThirdPartyAccount(hrId, thirdPartyAccount);
+            thirdPartyAccount = hrThirdPartyAccountDao.addData(thirdPartyAccount);
         }
         //开启线程后台取处理第三方账号同步
         new Thread(new AsyncRunnable(bindTask, thirdPartyAccount, extras)).start();
