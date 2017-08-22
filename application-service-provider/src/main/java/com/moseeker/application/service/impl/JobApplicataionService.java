@@ -86,6 +86,7 @@ public class JobApplicataionService {
     private HrCompanyConfDao hrCompanyConfDao;
     @Autowired
     private UserUserDao userUserDao;
+    @Autowired
     private UserAliUserDao userAliUserDao;
     @Autowired
     private UserEmployeeDao userEmployeedao;
@@ -255,6 +256,12 @@ public class JobApplicataionService {
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
     }
 
+    /**
+     * 更新申请
+     *
+     * @param jobApplication
+     * @return
+     */
     private int updateApplication(JobApplication jobApplication) {
         int updateStatus = 0;
         QueryBuilder queryBuilder = new QueryBuilder();

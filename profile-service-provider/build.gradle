@@ -4,6 +4,7 @@ apply plugin: 'eclipse'
 dependencies {
     compile project(":rpc-center")
     compile project(":common")
+    compile project(":common-service")
     compile project(":baseorm-service-provider")
     testCompile deps["junit"]
     testCompile deps["mockito"]
