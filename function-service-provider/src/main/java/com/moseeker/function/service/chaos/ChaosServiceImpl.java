@@ -109,10 +109,7 @@ public class ChaosServiceImpl {
 
         ChannelType chnnelType = ChannelType.instaceFromInteger(channel);
         String bindURI = chnnelType.getBindURI(domain);
-        logger.info("ChaosServiceImpl bind bindURI:" + bindURI);
-        logger.info("ChaosServiceImpl bind params:" + params);
         String data = UrlUtil.sendPost(bindURI, params, Constant.CONNECTION_TIME_OUT, Constant.READ_TIME_OUT);
-        logger.info("ChaosServiceImpl bind data:" + data);
         return data;
     }
 
@@ -165,7 +162,7 @@ public class ChaosServiceImpl {
      * @return
      */
     public HrThirdPartyAccountDO bindMessage(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras, String code) throws Exception {
-//        logger.info("ChaosServiceImpl bindMessage");
+        logger.info("ChaosServiceImpl bindMessage");
 //        String data = "{\"status\":0,\"message\":\"success\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
         Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.putAll(extras);
@@ -219,9 +216,7 @@ public class ChaosServiceImpl {
         ChannelType chnnelType = ChannelType.instaceFromInteger(hrThirdPartyAccount.getChannel());
         String synchronizationURI = chnnelType.getRemainURI(domain);
         String params = ChaosTool.getParams(hrThirdPartyAccount, extras);
-        logger.info("ChaosServiceImpl refresh refreshURI:" + synchronizationURI);
         String data = UrlUtil.sendPost(synchronizationURI, params, Constant.CONNECTION_TIME_OUT, Constant.READ_TIME_OUT);
-        logger.info("ChaosServiceImpl refresh params:" + params);
         //String data = "{\"status\":0,\"message\":\"success\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
         fillHrThirdPartyAccount(1, data, hrThirdPartyAccount);
         return hrThirdPartyAccount;
