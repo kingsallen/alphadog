@@ -262,8 +262,6 @@ public class EmployeeService {
         query.where("id", employeeId);
         UserEmployeeDO userEmployeeDO = employeeDao.getData(query.buildQuery());
         if (userEmployeeDO != null && userEmployeeDO.getId() > 0) {
-            //开始查询积分规则：
-            response.setRewardConfigs(companyConfigEntity.getRerawConfig(companyId));
             /*
 			 * 开始查询积分规则：
 			 */
