@@ -338,14 +338,17 @@ public class EmployeeEntity {
                 List<UserHrAccountDO> userHrAccountDOS = userHrAccountDao.getDatas(query.buildQuery());
                 userHrAccountDOMap.putAll(userHrAccountDOS.stream().collect(Collectors.toMap(UserHrAccountDO::getId, Function.identity())));
             }
-            List<Integer> companyIds = getCompanyIdsByUserId(employeeId);
+            query.clear();
+            query.where("id", employeeId);
+            UserEmployeeDO userEmployeeDOTemp = employeeDao.getEmployee(query.buildQuery());
+            List<Integer> companyIds = getCompanyIdsByUserId(userEmployeeDOTemp.getSysuserId());
             query.clear();
             query.where(new Condition(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.getName(), berecomIds, ValueOp.IN))
                     .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), 0)
                     .and(new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyIds, ValueOp.IN));
             List<UserEmployeeDO> userEmployeeDOList = employeeDao.getDatas(query.buildQuery());
             if (!StringUtils.isEmptyList(userEmployeeDOList)) {
-                userEmployeeDOMap.putAll(userEmployeeDOList.stream().collect(Collectors.toMap(UserEmployeeDO::getId, Function.identity())));
+                userEmployeeDOMap.putAll(userEmployeeDOList.stream().collect(Collectors.toMap(UserEmployeeDO::getSysuserId, Function.identity())));
             }
 
             query.clear();
@@ -428,27 +431,28 @@ public class EmployeeEntity {
                 }
                 UserEmployeeDO userEmployeeDO = userEmployeeDOMap.get(point.getBerecomUserId());
                 if (userEmployeeDO != null) {
-                    reward.setEmployeId(userEmployeeDO.getId());
-                    reward.setEmployeName(userEmployeeDO.getCname());
-                } else {
-                    // 被推荐人ID
-                    reward.setBerecomId(point.getBerecomUserId());
-                    // userdb.useruser.name > userdb.useruser.nickname > userdb.userwxuser.nickname
-                    if (userUserDOSMap.containsKey(point.getBerecomUserId())) {
-                        UserUserDO userUserDO = userUserDOSMap.get(point.getBerecomUserId());
-                        if (userUserDO.getName() != null) {
-                            reward.setBerecomName(userUserDO.getName());
-                        } else if (userUserDO.getName() == null && userUserDO.getNickname() != null) {
+                    reward.setEmployeeId(userEmployeeDO.getId());
+                    reward.setEmployeeName(userEmployeeDO.getCname());
+                }
+                // 被推荐人ID
+                reward.setBerecomId(point.getBerecomUserId());
+                // userdb.useruser.name > userdb.useruser.nickname > userdb.userwxuser.nickname
+                if (userUserDOSMap.containsKey(point.getBerecomUserId())) {
+                    UserUserDO userUserDO = userUserDOSMap.get(point.getBerecomUserId());
+                    if (userUserDO.getName() != null && !userUserDO.getName().equals("")) {
+                        reward.setBerecomName(userUserDO.getName());
+                    } else if (userUserDO.getName() == null || userUserDO.getName().equals("")) {
+                        if (userUserDO.getNickname() != null && !userUserDO.getNickname().equals("")) {
                             reward.setBerecomName(userUserDO.getNickname());
                         }
                     }
-                    if (reward.getBerecomName() == null) {
-                        query.clear();
-                        query.where(UserWxUser.USER_WX_USER.SYSUSER_ID.getName(), point.getBerecomUserId());
-                        UserWxUserDO userWxUserDO = userWxUserDao.getData(query.buildQuery());
-                        if (userWxUserDO != null) {
-                            reward.setBerecomName(userWxUserDO.getNickname());
-                        }
+                }
+                if (reward.getBerecomName() == null) {
+                    query.clear();
+                    query.where(UserWxUser.USER_WX_USER.SYSUSER_ID.getName(), point.getBerecomUserId());
+                    UserWxUserDO userWxUserDO = userWxUserDao.getData(query.buildQuery());
+                    if (userWxUserDO.getNickname() != null && !userWxUserDO.getNickname().equals("")) {
+                        reward.setBerecomName(userWxUserDO.getNickname());
                     }
                 }
                 rewardVOList.add(reward);
@@ -936,6 +940,7 @@ public class EmployeeEntity {
 
     /**
      * 根据员工编号查询员工数据
+     *
      * @param employeeId 员工编号
      * @return 员工数据
      */

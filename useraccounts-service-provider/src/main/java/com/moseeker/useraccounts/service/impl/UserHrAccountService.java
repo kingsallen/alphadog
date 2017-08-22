@@ -3,7 +3,13 @@ package com.moseeker.useraccounts.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
-import com.moseeker.baseorm.dao.hrdb.*;
+import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
+import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountHrDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
+import com.moseeker.baseorm.dao.hrdb.HrImporterMonitorDao;
+import com.moseeker.baseorm.dao.hrdb.HrSearchConditionDao;
+import com.moseeker.baseorm.dao.hrdb.HrTalentpoolDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
@@ -26,7 +32,12 @@ import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.common.util.query.*;
+import com.moseeker.common.util.query.Condition;
+import com.moseeker.common.util.query.Order;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.Select;
+import com.moseeker.common.util.query.SelectOp;
+import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.SearchengineEntity;
@@ -42,12 +53,24 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.employee.struct.RewardVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
-import com.moseeker.thrift.gen.useraccounts.struct.*;
+import com.moseeker.thrift.gen.useraccounts.struct.DownloadReport;
+import com.moseeker.thrift.gen.useraccounts.struct.HrNpsResult;
+import com.moseeker.thrift.gen.useraccounts.struct.HrNpsStatistic;
+import com.moseeker.thrift.gen.useraccounts.struct.HrNpsUpdate;
+import com.moseeker.thrift.gen.useraccounts.struct.ImportErrorUserEmployee;
+import com.moseeker.thrift.gen.useraccounts.struct.ImportUserEmployeeStatistic;
+import com.moseeker.thrift.gen.useraccounts.struct.SearchCondition;
+import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeDetailVO;
+import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeNumStatistic;
+import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVO;
+import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO;
+import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
 import com.moseeker.useraccounts.constant.ResultMessage;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.pojo.EmployeeRank;
 import com.moseeker.useraccounts.pojo.EmployeeRankObj;
 import com.moseeker.useraccounts.service.thirdpartyaccount.ThirdPartyAccountSynctor;
+
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,9 +80,18 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+
 import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
 
 /**
  * HR账号服务
@@ -123,6 +155,7 @@ public class UserHrAccountService {
 
     @Autowired
     private HrCompanyDao hrCompanyDao;
+
 
     @Autowired
     CandidateCompanyDao candidateCompanyDao;
@@ -1345,9 +1378,9 @@ public class UserHrAccountService {
      * 查找员工积分列表
      *
      * @param employeeId 员工编号
-     * @param companyId 公司编号
+     * @param companyId  公司编号
      * @param pageNumber 分页信息之页码
-     * @param pageSize 分页信息之每页信息数量
+     * @param pageSize   分页信息之每页信息数量
      * @return 员工分页信息
      * @throws CommonException
      */
@@ -1381,7 +1414,6 @@ public class UserHrAccountService {
                 }
             }
         }
-
         return rewardVOPageVO;
     }
 }
