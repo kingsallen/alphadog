@@ -33,9 +33,12 @@ import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.moseeker.useraccounts.exception.ExceptionCategory;
 import com.moseeker.useraccounts.exception.ExceptionFactory;
 import com.moseeker.useraccounts.service.EmployeeBinder;
+
 import java.util.*;
 import java.util.stream.Collectors;
+
 import javax.annotation.Resource;
+
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -278,10 +281,8 @@ public class EmployeeService {
         query.where("id", employeeId);
         UserEmployeeDO userEmployeeDO = employeeDao.getData(query.buildQuery());
         if (userEmployeeDO != null && userEmployeeDO.getId() > 0) {
-            //开始查询积分规则：
-            response.setRewardConfigs(companyConfigEntity.getRerawConfig(companyId));
             /*
-			 * 开始查询积分规则：
+             * 开始查询积分规则：
 			 */
             response.setRewardConfigs(companyConfigEntity.getRerawConfig(companyId, true));
             // 查询申请职位list
@@ -333,29 +334,29 @@ public class EmployeeService {
         List<Integer> companyIds = employeeEntity.getCompanyIds(companyId);
         try {
             Response result = searchService.queryAwardRankingInWx(companyIds, timespan, employeeId);
-            if (result.getStatus() == 0){
-               // 解析数据
-               Map<Integer, JSONObject> map = JSON.parseObject(result.getData(), Map.class);
-               query.clear();
-               query.where(new Condition("id", map.keySet(), ValueOp.IN));
-               Map<Integer, UserEmployeeDO> employeeDOMap = employeeDao.getDatas(query.buildQuery()).stream().filter(m -> m != null && m.getId() > 0).collect(Collectors.toMap(k -> k.getId(), v -> v));
-               List<Integer> userIds = employeeDOMap.values().stream().map(m -> m.getSysuserId()).collect(Collectors.toList());
-               query.clear();
-               query.where(new Condition("company_id", employeeEntity.getCompanyIds(companyId), ValueOp.IN));
-               List<Integer> wechatIds = wxWechatDao.getDatas(query.buildQuery()).stream().filter(m -> m != null && m.getId() > 0).map(m -> m.getId()).collect(Collectors.toList());
-               query.clear();
-               query.where(new Condition("sysuser_id", userIds, ValueOp.IN)).and(new Condition("wechat_id", wechatIds, ValueOp.IN));
-               Map<Integer, String> userWxUserMap = wxUserDao.getDatas(query.buildQuery()).stream().filter(m -> m != null && m.getSysuserId() > 0 && m.getHeadimgurl() != null).collect(Collectors.toMap(k -> k.getSysuserId(), v -> v.getHeadimgurl(), (newKey, oldKey) -> newKey));
-               map.entrySet().stream().forEach(e -> {
-                   EmployeeAward employeeAward = new EmployeeAward();
-                   JSONObject value = e.getValue();
-                   employeeAward.setEmployeeId(e.getKey());
-                   employeeAward.setAwardTotal(value.getInteger("award"));
-                   employeeAward.setName(employeeDOMap.get(e.getKey()) != null ? employeeDOMap.get(e.getKey()).getCname() : "");
-                   employeeAward.setHeadimgurl(userWxUserMap.getOrDefault(employeeDOMap.get(e.getKey()).getSysuserId(), ""));
-                   employeeAward.setRanking(value.getIntValue("ranking"));
-                   response.add(employeeAward);
-               });
+            if (result.getStatus() == 0) {
+                // 解析数据
+                Map<Integer, JSONObject> map = JSON.parseObject(result.getData(), Map.class);
+                query.clear();
+                query.where(new Condition("id", map.keySet(), ValueOp.IN));
+                Map<Integer, UserEmployeeDO> employeeDOMap = employeeDao.getDatas(query.buildQuery()).stream().filter(m -> m != null && m.getId() > 0).collect(Collectors.toMap(k -> k.getId(), v -> v));
+                List<Integer> userIds = employeeDOMap.values().stream().map(m -> m.getSysuserId()).collect(Collectors.toList());
+                query.clear();
+                query.where(new Condition("company_id", employeeEntity.getCompanyIds(companyId), ValueOp.IN));
+                List<Integer> wechatIds = wxWechatDao.getDatas(query.buildQuery()).stream().filter(m -> m != null && m.getId() > 0).map(m -> m.getId()).collect(Collectors.toList());
+                query.clear();
+                query.where(new Condition("sysuser_id", userIds, ValueOp.IN)).and(new Condition("wechat_id", wechatIds, ValueOp.IN));
+                Map<Integer, String> userWxUserMap = wxUserDao.getDatas(query.buildQuery()).stream().filter(m -> m != null && m.getSysuserId() > 0 && m.getHeadimgurl() != null).collect(Collectors.toMap(k -> k.getSysuserId(), v -> v.getHeadimgurl(), (newKey, oldKey) -> newKey));
+                map.entrySet().stream().forEach(e -> {
+                    EmployeeAward employeeAward = new EmployeeAward();
+                    JSONObject value = e.getValue();
+                    employeeAward.setEmployeeId(e.getKey());
+                    employeeAward.setAwardTotal(value.getInteger("award"));
+                    employeeAward.setName(employeeDOMap.get(e.getKey()) != null ? employeeDOMap.get(e.getKey()).getCname() : "");
+                    employeeAward.setHeadimgurl(userWxUserMap.getOrDefault(employeeDOMap.get(e.getKey()).getSysuserId(), ""));
+                    employeeAward.setRanking(value.getIntValue("ranking"));
+                    response.add(employeeAward);
+                });
             } else {
                 log.error("query awardRanking data error");
             }

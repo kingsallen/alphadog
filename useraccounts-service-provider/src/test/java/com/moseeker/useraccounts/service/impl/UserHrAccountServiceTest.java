@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.service.impl;
 
+import com.moseeker.common.util.DateUtils;
 import com.moseeker.entity.SearchengineEntity;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
@@ -12,6 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -130,11 +132,14 @@ public class UserHrAccountServiceTest {
 
     @Test
     public void updateEmployeeAwards() {
-
-        Map map = new HashMap();
-        map.put("69826", 10);
-        searchengineEntity.updateEmployeeAwards(map);
-
+//        System.out.println(DateUtils.getSeason(new Date()));
+//        System.out.println(DateUtils.formatDate(), "yyyy年MM月"));
+        searchengineEntity.updateEmployeeAwards(69826, 2);
+//
+//        List<Integer> list = new ArrayList<>();
+//        list.add(69826);
+//
+//        searchengineEntity.updateEmployeeAwards(list);
     }
 
 }
