@@ -75,12 +75,9 @@ public class ResponseLogNotification {
         } else if (e instanceof BIZException) {
             result.put("status", ((BIZException) e).getCode());
             result.put("message", e.getMessage());
-        } else if (e == null || e.getMessage() == null) {
-            result.put("status", 1);
-            result.put("message", "发生异常，请稍候再试!");
         } else {
             result.put("status", 1);
-            result.put("message", e.getMessage());
+            result.put("message", "发生异常，请稍候再试!");
         }
         //转换json的时候去掉thrift结构体中的set方法
         return BeanUtils.convertStructToJSON(result);
