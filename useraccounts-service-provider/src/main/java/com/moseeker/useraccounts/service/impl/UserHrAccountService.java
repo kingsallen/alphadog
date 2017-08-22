@@ -122,7 +122,7 @@ public class UserHrAccountService {
 
     @Autowired
     private HrCompanyDao hrCompanyDao;
-
+    
     @Autowired
     CandidateCompanyDao candidateCompanyDao;
 
