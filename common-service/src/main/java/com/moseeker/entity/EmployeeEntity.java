@@ -251,7 +251,7 @@ public class EmployeeEntity {
         }
         query.where(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.EMPLOYEE_ID.getName(), employeeId)
                 .and(new Condition(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.AWARD.getName(), 0, ValueOp.NEQ))
-                .orderBy(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.UPDATE_TIME.getName(), Order.DESC);
+                .orderBy(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD._CREATE_TIME.getName(), Order.DESC);
         int totalRow = employeePointsRecordDao.getCount(query.buildQuery());
         // 总条数
         rewardVOPageVO.setTotalRow(totalRow);
