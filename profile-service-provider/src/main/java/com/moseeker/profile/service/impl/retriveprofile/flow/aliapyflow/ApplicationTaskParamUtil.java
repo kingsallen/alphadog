@@ -4,6 +4,7 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.profile.service.impl.retriveprofile.ExecutorParam;
 import com.moseeker.profile.service.impl.retriveprofile.executor.CouplerParamUtil;
 import com.moseeker.profile.service.impl.retriveprofile.parameters.ApplicationTaskParam;
+
 import org.springframework.stereotype.Component;
 
 /**
@@ -14,12 +15,13 @@ import org.springframework.stereotype.Component;
 public class ApplicationTaskParamUtil implements CouplerParamUtil<ApplicationTaskParam, Integer, Integer> {
     @Override
     public ApplicationTaskParam parseExecutorParam(Integer tmpParam, ExecutorParam globalParam) throws CommonException {
-        AliPayRetrievalParam aliPayRetrievalParam = (AliPayRetrievalParam)globalParam;
+        AliPayRetrievalParam aliPayRetrievalParam = (AliPayRetrievalParam) globalParam;
         ApplicationTaskParam applicationTaskParam = new ApplicationTaskParam();
         applicationTaskParam.setPositionId(aliPayRetrievalParam.getPositionId());
+        applicationTaskParam.setOrigin(aliPayRetrievalParam.getOrigin());
         int id = 0;
         if (aliPayRetrievalParam.getUser().get("id") != null) {
-            id = (Integer)aliPayRetrievalParam.getUser().get("id");
+            id = (Integer) aliPayRetrievalParam.getUser().get("id");
         }
         applicationTaskParam.setUserId(id);
         return applicationTaskParam;

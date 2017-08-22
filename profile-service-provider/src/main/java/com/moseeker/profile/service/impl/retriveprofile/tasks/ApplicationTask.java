@@ -15,6 +15,7 @@ import com.moseeker.profile.exception.Category;
 import com.moseeker.profile.exception.ExceptionFactory;
 import com.moseeker.profile.service.impl.retriveprofile.Task;
 import com.moseeker.profile.service.impl.retriveprofile.parameters.ApplicationTaskParam;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +66,7 @@ public class ApplicationTask implements Task<ApplicationTaskParam, Integer> {
         JobApplicationRecord applicationRecord = jobApplicationDao.getRecord(queryBuilder.buildQuery());
         if (applicationRecord == null) {
             applicationRecord = initApplication(param.getUserId(), positionRecord.getId(),
-                    positionRecord.getCompanyId());
+                    positionRecord.getCompanyId(), param.getOrigin());
             applicationRecord = jobApplicationDao.addRecord(applicationRecord);
             redisClient.incr(Constant.APPID_ALPHADOG, REDIS_KEY_APPLICATION_COUNT_CHECK,
                     String.valueOf(applicationRecord.getApplierId()), String.valueOf(applicationRecord.getCompanyId()));
@@ -79,22 +80,25 @@ public class ApplicationTask implements Task<ApplicationTaskParam, Integer> {
 
     /**
      * 初始化一个申请记录
-     * @param applierId 申请编号
+     *
+     * @param applierId  申请编号
      * @param positionId 职位编号
-     * @param companyId 公司编号
+     * @param companyId  公司编号
      * @return
      */
-    private JobApplicationRecord initApplication(int applierId, int positionId, int companyId) {
+    private JobApplicationRecord initApplication(int applierId, int positionId, int companyId, int origin) {
         JobApplicationRecord jobApplicationRecord = new JobApplicationRecord();
         jobApplicationRecord.setApplierId(applierId);
         jobApplicationRecord.setPositionId(positionId);
         jobApplicationRecord.setCompanyId(companyId);
+        jobApplicationRecord.setOrigin(origin);
         jobApplicationRecord.setAppTplId(Constant.RECRUIT_STATUS_APPLY);
         return jobApplicationRecord;
     }
 
     /**
      * 检查是否达到投递上线
+     *
      * @param userId
      * @param companyId
      * @return
@@ -125,8 +129,8 @@ public class ApplicationTask implements Task<ApplicationTaskParam, Integer> {
      */
     private int getApplicationCountLimit(int companyId) {
         int applicaitonCountLimit = APPLICATION_COUNT_LIMIT;
-        Query query=new Query.QueryBuilder().where("company_id", companyId).buildQuery();
-        HrCompanyConfRecord hrCompanyConfRecord =hrCompanyConfDao.getRecord(query);
+        Query query = new Query.QueryBuilder().where("company_id", companyId).buildQuery();
+        HrCompanyConfRecord hrCompanyConfRecord = hrCompanyConfDao.getRecord(query);
         if (hrCompanyConfRecord != null && hrCompanyConfRecord.getApplicationCountLimit().shortValue() > 0) {
             applicaitonCountLimit = hrCompanyConfRecord.getApplicationCountLimit().shortValue();
         }
