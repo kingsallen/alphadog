@@ -612,6 +612,7 @@ public class SearchengineService {
         if (employeeId != null) {
             searchUtil.handleTerms(String.valueOf(employeeId), query, "id");
         }
+        searchUtil.hanleRange(0, query, "awards." + timespan + ".award");
         SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query)
                 .addSort(buildSortScript(timespan, "award", SortOrder.DESC))
                 .addSort(buildSortScript(timespan, "last_update_time", SortOrder.ASC))

@@ -73,6 +73,12 @@ public class SearchUtil {
         }
     }
 
+    public void hanleRange(int conditions, QueryBuilder query, String conditionField) {
+        QueryBuilder cityfilter = QueryBuilders.rangeQuery(conditionField).gt(conditions);
+        ((BoolQueryBuilder) query).must(cityfilter);
+        logger.info("组合的条件是==================" + query.toString() + "===========");
+    }
+
     //处理聚合的结果
     public Map<String, Object> handleAggs(Aggregations aggs) {
         List<Aggregation> list = aggs.asList();
