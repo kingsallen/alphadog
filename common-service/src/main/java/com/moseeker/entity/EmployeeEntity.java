@@ -313,7 +313,7 @@ public class EmployeeEntity {
                     .and(new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyIds, ValueOp.IN));
             List<UserEmployeeDO> userEmployeeDOList = employeeDao.getDatas(query.buildQuery());
             if (!StringUtils.isEmptyList(userEmployeeDOList)) {
-                userEmployeeDOMap.putAll(userEmployeeDOList.stream().collect(Collectors.toMap(UserEmployeeDO::getSysuserId, Function.identity())));
+                userEmployeeDOMap.putAll(userEmployeeDOList.stream().filter(userEmployeeDO -> userEmployeeDO.getSysuserId() != 0).collect(Collectors.toMap(UserEmployeeDO::getSysuserId, Function.identity())));
             }
 
             query.clear();
