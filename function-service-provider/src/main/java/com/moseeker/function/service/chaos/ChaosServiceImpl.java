@@ -58,51 +58,6 @@ public class ChaosServiceImpl {
         return getConfigString("chaos.domain");
     }
 
-    /**
-     * 将返回来的Json成功的信息装载到HrThirdPartyAccountDO
-     * 出现错误直接抛出BizException
-     *
-     * @param opType              0 绑定 1 刷新账号信息
-     * @param json
-     * @param thirdPartyAccountDO
-     * @throws Exception
-     */
-    private void fillHrThirdPartyAccount(int opType, String json, HrThirdPartyAccountDO thirdPartyAccountDO) throws Exception {
-        JSONObject jsonObject = JSONObject.parseObject(json);
-        int status = jsonObject.getIntValue("status");
-
-        String opName = opType == 0 ? "绑定" : "刷新";
-
-        if (status == 0) {
-            thirdPartyAccountDO.setBinding(Integer.valueOf(1).shortValue());
-            thirdPartyAccountDO.setRemainNum(jsonObject.getJSONObject("data").getIntValue("remain_number"));
-            thirdPartyAccountDO.setRemainProfileNum(jsonObject.getJSONObject("data").getIntValue("resume_number"));
-        } else {
-            String message = jsonObject.getString("message");
-
-            if (status == 1) {
-                thirdPartyAccountDO.setBinding(Integer.valueOf(4).shortValue());
-                if (StringUtils.isNullOrEmpty(message)) {
-                    message = "用户名或密码错误";
-                }
-            } else if (status == 100) {
-                thirdPartyAccountDO.setBinding(Integer.valueOf(100).shortValue());
-            } else if (status == 2 || status == 9) {
-                thirdPartyAccountDO.setBinding(Integer.valueOf(opType == 0 ? 6 : 7).shortValue());
-                if (StringUtils.isNullOrEmpty(message)) {
-                    message = opName + "异常，请重试";
-                }
-            } else {
-                thirdPartyAccountDO.setBinding(Integer.valueOf(5).shortValue());
-                if (StringUtils.isNullOrEmpty(message)) {
-                    message = "绑定错误，请重新绑定";
-                }
-            }
-
-            thirdPartyAccountDO.setErrorMessage(message);
-        }
-    }
-
 
     private String postBind(int channel, String params) throws Exception {
         String domain = getDomain();
@@ -123,7 +78,37 @@ public class ChaosServiceImpl {
         logger.info("ChaosServiceImpl bind");
 //        String data = "{\"status\":100,\"message\":\"182****3365\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
         String data = postBind(hrThirdPartyAccount.getChannel(), ChaosTool.getParams(hrThirdPartyAccount, extras));
-        fillHrThirdPartyAccount(0, data, hrThirdPartyAccount);
+        JSONObject jsonObject = JSONObject.parseObject(data);
+        int status = jsonObject.getIntValue("status");
+
+        if (status == 0) {
+            hrThirdPartyAccount.setBinding(Integer.valueOf(1).shortValue());
+            hrThirdPartyAccount.setRemainNum(jsonObject.getJSONObject("data").getIntValue("remain_number"));
+            hrThirdPartyAccount.setRemainProfileNum(jsonObject.getJSONObject("data").getIntValue("resume_number"));
+        } else {
+            String message = jsonObject.getString("message");
+
+            if (status == 1) {
+                if (StringUtils.isNullOrEmpty(message)) {
+                    message = "用户名或密码错误";
+                }
+                throw new BIZException(1, message);
+            } else if (status == 100) {
+                hrThirdPartyAccount.setBinding(Integer.valueOf(100).shortValue());
+            } else if (status == 2 || status == 9) {
+                hrThirdPartyAccount.setBinding(Integer.valueOf(6).shortValue());
+                if (StringUtils.isNullOrEmpty(message)) {
+                    message = "绑定异常，请重新绑定";
+                }
+            } else {
+                if (StringUtils.isNullOrEmpty(message)) {
+                    message = "绑定错误，请重新绑定";
+                }
+                throw new BIZException(1, message);
+            }
+
+            hrThirdPartyAccount.setErrorMessage(message);
+        }
 
         return hrThirdPartyAccount;
     }
@@ -218,7 +203,37 @@ public class ChaosServiceImpl {
         String params = ChaosTool.getParams(hrThirdPartyAccount, extras);
         String data = UrlUtil.sendPost(synchronizationURI, params, Constant.CONNECTION_TIME_OUT, Constant.READ_TIME_OUT);
         //String data = "{\"status\":0,\"message\":\"success\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
-        fillHrThirdPartyAccount(1, data, hrThirdPartyAccount);
+        JSONObject jsonObject = JSONObject.parseObject(data);
+        int status = jsonObject.getIntValue("status");
+        if (status == 0) {
+            hrThirdPartyAccount.setBinding(Integer.valueOf(1).shortValue());
+            hrThirdPartyAccount.setRemainNum(jsonObject.getJSONObject("data").getIntValue("remain_number"));
+            hrThirdPartyAccount.setRemainProfileNum(jsonObject.getJSONObject("data").getIntValue("resume_number"));
+        } else {
+            String message = jsonObject.getString("message");
+
+            if (status == 1) {
+                if (StringUtils.isNullOrEmpty(message)) {
+                    message = "用户名或密码错误";
+                }
+                hrThirdPartyAccount.setBinding(Integer.valueOf(4).shortValue());
+
+            } else if (status == 100) {
+                hrThirdPartyAccount.setBinding(Integer.valueOf(100).shortValue());
+            } else if (status == 2 || status == 9) {
+                hrThirdPartyAccount.setBinding(Integer.valueOf(7).shortValue());
+                if (StringUtils.isNullOrEmpty(message)) {
+                    message = "刷新异常，请重试";
+                }
+            } else {
+                hrThirdPartyAccount.setBinding(Integer.valueOf(5).shortValue());
+                if (StringUtils.isNullOrEmpty(message)) {
+                    message = "绑定错误，请重新绑定";
+                }
+            }
+
+            hrThirdPartyAccount.setErrorMessage(message);
+        }
         return hrThirdPartyAccount;
     }
 
