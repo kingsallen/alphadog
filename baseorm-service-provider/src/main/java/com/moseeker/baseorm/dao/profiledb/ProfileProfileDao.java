@@ -1570,6 +1570,9 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                             break;
                         }
                     }
+                    if(!recommenderMap.containsKey("employeeid")) {
+                        recommenderMap.clear();
+                    }
                     buildMap(filter, map, "recommender", recommenderMap);
                 }
             }
