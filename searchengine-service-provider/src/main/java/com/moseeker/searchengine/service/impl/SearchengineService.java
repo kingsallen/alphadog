@@ -40,6 +40,7 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.script.Script;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.sort.ScriptSortBuilder;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
@@ -98,7 +99,6 @@ public class SearchengineService {
         if (page_size == 0) {
             page_size = 20;
         }
-        SearchResponse response = null;
         ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
         try {
             propertiesReader.loadResource("es.properties");
@@ -136,9 +136,9 @@ public class SearchengineService {
                             .field("title", 20.0f)
                             .field("city", 10.0f)
 //                            .field("company_name", 5.0f)
-                            .field("team_name", 5.0f)
-                            .field("custom", 4.0f)
-                            .field("occupation", 3.0f);
+                            .field("team_name",5.0f)
+                    		.field("custom",4.0f)
+                    		.field("occupation",3.0f);
                     ((BoolQueryBuilder) keyand).must(fullf);
                 }
                 ((BoolQueryBuilder) query).must(keyand);
@@ -262,33 +262,47 @@ public class SearchengineService {
             QueryBuilder status_filter = QueryBuilders.matchPhraseQuery("status", "0");
             ((BoolQueryBuilder) query).must(status_filter);
 
+
+            SearchRequestBuilder responseBuilder=client.prepareSearch("index").setTypes("fulltext")
+                    .setQuery(query);
+
             if (order_by_priority) {
 
                 if (haskey) {
+                    responseBuilder.addSort("priority", SortOrder.ASC);
+                    if(!StringUtils.isEmpty(cities)&&!"全国".equals(cities)){
+                        SortBuilder builder=new ScriptSortBuilder(this.buildScriptSort(cities,0),"number");
+                        builder.order(SortOrder.DESC);
+                        responseBuilder.addSort(builder);
+                    }else{
+                        responseBuilder.addSort("_score", SortOrder.DESC);
+                    }
 
-                    response = client.prepareSearch("index").setTypes("fulltext")
-                            .setQuery(query)
-                            .addSort("priority", SortOrder.ASC)
-                            .addSort("_score", SortOrder.DESC)
-                            .setFrom(page_from)
-                            .setSize(page_size).execute().actionGet();
                 } else {
-                    response = client.prepareSearch("index").setTypes("fulltext")
-                            .setQuery(query)
-                            .addSort("priority", SortOrder.ASC)
-                            .addSort("update_time", SortOrder.DESC)
-                            .setFrom(page_from)
-                            .setSize(page_size).execute().actionGet();
+                    responseBuilder.addSort("priority", SortOrder.ASC);
+                    if(!StringUtils.isEmpty(cities)&&!"全国".equals(cities)){
+                        SortBuilder builder=new ScriptSortBuilder(this.buildScriptSort(cities,1),"number");
+                        builder.order(SortOrder.DESC);
+                        responseBuilder.addSort(builder);
+                    }else{
+                        responseBuilder.addSort("update_time", SortOrder.DESC);
+                    }
+
                 }
 
             } else {
-                response = client.prepareSearch("index").setTypes("fulltext")
-                        .setQuery(query)
-                        .addSort("_score", SortOrder.DESC)
-                        .setFrom(page_from)
-                        .setSize(page_size).execute().actionGet();
+                if(!StringUtils.isEmpty(cities)&&!"全国".equals(cities)){
+                    SortBuilder builder=new ScriptSortBuilder(this.buildScriptSort(cities,0),"number");
+                    builder.order(SortOrder.DESC);
+                    responseBuilder.addSort(builder);
+                }else{
+                    responseBuilder .addSort("_score", SortOrder.DESC);
+                }
             }
-
+            responseBuilder .setFrom(page_from).setSize(page_size);
+            responseBuilder.setTrackScores(true);
+            logger.info(responseBuilder.toString());
+            SearchResponse response = responseBuilder.execute().actionGet();
             for (SearchHit hit : response.getHits()) {
                 //Handle the hit...
                 String id = ConverTools.converToString(hit.getSource().get("id"));
@@ -308,6 +322,34 @@ public class SearchengineService {
         return ResponseUtils.success(res);
 
     }
+    /*
+      按照被命中的城市是否是全国。来重新处理顺序问题，只有全国的，或者是全国命中的沉底
+     */
+    private Script buildScriptSort(String fieldValue, int flag ){
+        StringBuffer sb=new StringBuffer();
+        sb.append("double score=0 ;");
+        if(flag==1) {
+            sb.append("value=doc['update_time'].value;if(value){score=value};");
+        }else{
+            sb.append("value=_score;if(value){score=value};");
+        }
+        sb.append("city=_source['city'];flag=doc['city_flag'].value;if(flag==1){score=score/100;}else{ if(city&&");
+        String []values=fieldValue.split(",");
+        for(int i=0;i<values.length;i++){
+            if("全国".equals(values[i])){
+                continue;
+            }
+
+            sb.append("!city.contains('"+values[i]+"')&&");
+        }
+        sb.deleteCharAt(sb.lastIndexOf("&"));
+        sb.deleteCharAt(sb.lastIndexOf("&"));
+        sb.append("){score=score/100;}};return score");
+        String scripts=sb.toString();
+        Script script=new Script(scripts);
+        return script;
+    }
+
 
 
     public Response updateposition(String position, int id) throws TException {
@@ -570,6 +612,7 @@ public class SearchengineService {
         if (employeeId != null) {
             searchUtil.handleTerms(String.valueOf(employeeId), query, "id");
         }
+        searchUtil.hanleRange(0, query, "awards." + timespan + ".award");
         SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query)
                 .addSort(buildSortScript(timespan, "award", SortOrder.DESC))
                 .addSort(buildSortScript(timespan, "last_update_time", SortOrder.ASC))
