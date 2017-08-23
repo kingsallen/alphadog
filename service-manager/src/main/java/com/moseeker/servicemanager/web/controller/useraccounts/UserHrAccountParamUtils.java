@@ -24,7 +24,7 @@ public class UserHrAccountParamUtils extends ParamUtils {
         Map<Integer, UserEmployeeDO> map = new LinkedHashMap();
         if (datas != null) {
             for (HashMap<String, Object> data : datas) {
-                if (StringUtils.isEmptyObject(data.get("rowNum"))) {
+                if (data.get("rowNum") == null) {
                     throw new Exception("请设置行号!");
                 }
                 try {

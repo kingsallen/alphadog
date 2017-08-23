@@ -6,7 +6,17 @@ public class RecruitmentResult {
 	private String reason;
 	private int reward;
 	private int status;
-	public int getStatus() {
+	private int pointsConfId;
+
+    public int getPointsConfId() {
+        return pointsConfId;
+    }
+
+    public void setPointsConfId(int pointsConfId) {
+        this.pointsConfId = pointsConfId;
+    }
+
+    public int getStatus() {
 		return status;
 	}
 	public void setStatus(int status) {

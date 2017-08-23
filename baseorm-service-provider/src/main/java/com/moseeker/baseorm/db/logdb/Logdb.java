@@ -5,6 +5,7 @@ package com.moseeker.baseorm.db.logdb;
 
 
 import com.moseeker.baseorm.db.logdb.tables.LogCronjob;
+import com.moseeker.baseorm.db.logdb.tables.LogDeadLetter;
 import com.moseeker.baseorm.db.logdb.tables.LogEmailSendrecord;
 import com.moseeker.baseorm.db.logdb.tables.LogHrOperationRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogSmsSendrecord;
@@ -36,7 +37,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Logdb extends SchemaImpl {
 
-    private static final long serialVersionUID = -389261020;
+    private static final long serialVersionUID = 1125099976;
 
     /**
      * The reference instance of <code>logdb</code>
@@ -47,6 +48,11 @@ public class Logdb extends SchemaImpl {
      * The table <code>logdb.log_cronjob</code>.
      */
     public final LogCronjob LOG_CRONJOB = com.moseeker.baseorm.db.logdb.tables.LogCronjob.LOG_CRONJOB;
+
+    /**
+     * 死信队列日志记录表
+     */
+    public final LogDeadLetter LOG_DEAD_LETTER = com.moseeker.baseorm.db.logdb.tables.LogDeadLetter.LOG_DEAD_LETTER;
 
     /**
      * 短信发送记录表
@@ -104,6 +110,7 @@ public class Logdb extends SchemaImpl {
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
             LogCronjob.LOG_CRONJOB,
+            LogDeadLetter.LOG_DEAD_LETTER,
             LogEmailSendrecord.LOG_EMAIL_SENDRECORD,
             LogHrOperationRecord.LOG_HR_OPERATION_RECORD,
             LogSmsSendrecord.LOG_SMS_SENDRECORD,
