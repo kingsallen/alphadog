@@ -120,6 +120,14 @@ public class PositionChangeUtil {
         //反馈时间
         position.setFeedback_period(form.getFeedback_period());
 
+        //实习薪资
+        position.setPractice_salary(form.getPractice_salary());
+
+        //每周实习天数
+        position.setPractice_per_week(form.getPractice_per_week());
+
+        //区分校招还是社招
+        position.setRecruit_type(String.valueOf(Double.valueOf(positionDB.getCandidateSource()).intValue()));
 
         setDepartment(form, positionDB, position);
 
@@ -154,16 +162,12 @@ public class PositionChangeUtil {
                                         ThirdPartyPositionForSynchronization position) {
         if (salaryBottom > 0) {
             position.setSalary_bottom(salaryBottom * 1000);
-        } else {
-            position.setSalary_bottom(salaryBottomDB * 1000);
         }
     }
 
     private static void setSalaryTop(int salary_top, int salaryTopDB, ThirdPartyPositionForSynchronization position) {
         if (salary_top > 0) {
             position.setSalary_top(salary_top * 1000);
-        } else {
-            position.setSalary_bottom(salaryTopDB * 1000);
         }
     }
 
@@ -208,13 +212,13 @@ public class PositionChangeUtil {
         ChannelType channelType = ChannelType.instaceFromInteger(channel);
         switch (channelType) {
             case JOB51:
-                position.setType_code(String.valueOf(WorkTypeChangeUtil.getJob51EmployeeType(workType).getValue()));
+                position.setWork_type(String.valueOf(WorkTypeChangeUtil.getJob51EmployeeType(workType).getValue()));
                 break;
             case ZHILIAN:
-                position.setType_code(String.valueOf(WorkTypeChangeUtil.getZhilianEmployeeType(workType).getValue()));
+                position.setWork_type(String.valueOf(WorkTypeChangeUtil.getZhilianEmployeeType(workType).getValue()));
                 break;
             default:
-                position.setType_code("");
+                position.setWork_type(String.valueOf(WorkTypeChangeUtil.getLiepinWorkType(workType).getValue()));
         }
     }
 

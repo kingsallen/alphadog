@@ -24,6 +24,8 @@ public class PositionLiepin implements Serializable {
     private String feedback_period;
     private String email;
     private String job_id;
+    private String recruit_type;
+    private String work_type;
 
     public String getTitle() {
         return title;
@@ -145,6 +147,22 @@ public class PositionLiepin implements Serializable {
         this.job_id = job_id;
     }
 
+    public String getRecruit_type() {
+        return recruit_type;
+    }
+
+    public void setRecruit_type(String recruit_type) {
+        this.recruit_type = recruit_type;
+    }
+
+    public String getWork_type() {
+        return work_type;
+    }
+
+    public void setWork_type(String work_type) {
+        this.work_type = work_type;
+    }
+
     public static PositionLiepin copyFromSyncPosition(ThirdPartyPositionForSynchronization positionInfo) {
 
         PositionLiepin positionLiepin = new PositionLiepin();
@@ -163,6 +181,8 @@ public class PositionLiepin implements Serializable {
         positionLiepin.setFeedback_period(String.valueOf(positionInfo.getFeedback_period()));
         positionLiepin.setEmail(positionInfo.getEmail());
         positionLiepin.setJob_id(positionInfo.getJob_id());
+        positionLiepin.setRecruit_type(positionInfo.getRecruit_type());
+        positionLiepin.setWork_type(positionInfo.getWork_type());
         return positionLiepin;
     }
 }
