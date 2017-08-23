@@ -16,6 +16,7 @@ import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
+import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeePointsRecordRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
@@ -238,47 +239,6 @@ public class EmployeeEntity {
      * @param employeeId
      * @return
      */
-    public List<Reward> getEmployeePointsRecords(int employeeId) {
-        // 用户积分记录：
-        List<Reward> rewards = new ArrayList<>();
-        List<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO> points = employeePointsRecordDao.getDatas(new Query.QueryBuilder()
-                .where("employee_id", employeeId).orderBy("update_time", Order.DESC).buildQuery());
-        if (!StringUtils.isEmptyList(points)) {
-            List<Double> aids = points.stream().map(m -> m.getApplicationId()).collect(Collectors.toList());
-            Query.QueryBuilder query = new Query.QueryBuilder();
-            query.where(new Condition("id", aids, ValueOp.IN));
-            List<JobApplicationDO> applications = applicationDao.getDatas(query.buildQuery());
-            final Map<Integer, Integer> appMap = new HashMap<>();
-            final Map<Integer, String> positionMap = new HashMap<>();
-            // 转成map -> k: applicationId, v: positionId
-            if (!StringUtils.isEmptyList(applications)) {
-                appMap.putAll(applications.stream().collect(Collectors.toMap(JobApplicationDO::getId, JobApplicationDO::getPositionId)));
-                query.clear();
-                query.where(new Condition("id", appMap.values().toArray(), ValueOp.IN));
-                List<JobPositionDO> positions = positionDao.getPositions(query.buildQuery());
-                // 转成map -> k: positionId, v: positionTitle
-                if (!StringUtils.isEmptyList(points)) {
-                    positionMap.putAll(positions.stream().collect(Collectors.toMap(JobPositionDO::getId, JobPositionDO::getTitle)));
-                }
-            }
-            points.stream().filter(p -> p.getAward() != 0).forEach(point -> {
-                Reward reward = new Reward();
-                reward.setReason(point.getReason());
-                reward.setPoints(point.getAward());
-                reward.setUpdateTime(point.getUpdateTime());
-                reward.setTitle(positionMap.getOrDefault(appMap.get(point.getApplicationId()), ""));
-                rewards.add(reward);
-            });
-        }
-        return rewards;
-    }
-
-    /**
-     * 积分列表
-     *
-     * @param employeeId
-     * @return
-     */
     public RewardVOPageVO getEmployeePointsRecords(int employeeId, Integer pageNumber, Integer pageSize) throws CommonException {
         RewardVOPageVO rewardVOPageVO = new RewardVOPageVO();
         List<RewardVO> rewardVOList = new ArrayList<>();
@@ -297,7 +257,17 @@ public class EmployeeEntity {
         rewardVOPageVO.setPageNumber(pageNumber);
         rewardVOPageVO.setPageSize(pageSize);
         if (totalRow > 0) {
-            List<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO> points = employeePointsRecordDao.getDatas(query.buildQuery());
+            List<UserEmployeePointsRecordRecord> userEmployeePointsRecordList = employeePointsRecordDao.getRecords(query.buildQuery());
+            List<UserEmployeePointsRecordDO> points = new ArrayList<>();
+            if (userEmployeePointsRecordList != null && userEmployeePointsRecordList.size() > 0) {
+                for (UserEmployeePointsRecordRecord userEmployeePointsRecordRecord: userEmployeePointsRecordList) {
+                    UserEmployeePointsRecordDO userEmployeePointsRecordDO =
+                            BeanUtils.DBToStruct(UserEmployeePointsRecordDO.class, userEmployeePointsRecordRecord,
+                                    new HashMap<String, String>(){{put("_create_time", "createTime");}});
+                    points.add(userEmployeePointsRecordDO);
+                }
+
+            }
             // 申请记录信息
             Map<Integer, JobApplicationDO> appMap = new HashMap<>();
             // 申请的职位信息
@@ -373,7 +343,7 @@ public class EmployeeEntity {
                 // 积分
                 reward.setPoints(point.getAward());
                 // 加积分时间
-                reward.setUpdateTime(point.getUpdateTime());
+                reward.setUpdateTime(point.getCreateTime());
                 // 职位ID
                 reward.setPositionId(new Double(point.getPositionId()).intValue());
                 HrPointsConfDO hrPointsConfDO = hrPointsConfMap.get(point.getAwardConfigId());
@@ -503,9 +473,7 @@ public class EmployeeEntity {
 
 
     /**
-     * 员工删除(支持批量)
-     * 1.将数据移入到history_user_employee中
-     * 2.user_employee中做物理删除
+     * 员工删除(支持批量) 1.将数据移入到history_user_employee中 2.user_employee中做物理删除
      */
     @Transactional
     public boolean removeEmployee(List<Integer> employeeIds) throws CommonException {
@@ -692,8 +660,7 @@ public class EmployeeEntity {
     }
 
     /**
-     * 添加员工记录集合。
-     * 会向员工记录中添加数据的同时，往ES员工索引维护队列中增加维护员工记录的任务。
+     * 添加员工记录集合。 会向员工记录中添加数据的同时，往ES员工索引维护队列中增加维护员工记录的任务。
      *
      * @param userEmployeeList 员工记录集合
      * @return 添加好的员工记录。如果参数是空，那么返回值是null
@@ -711,8 +678,7 @@ public class EmployeeEntity {
     }
 
     /**
-     * 添加员工记录集合。
-     * 会向员工记录中添加数据的同时，往ES员工索引维护队列中增加维护员工记录的任务。
+     * 添加员工记录集合。 会向员工记录中添加数据的同时，往ES员工索引维护队列中增加维护员工记录的任务。
      *
      * @param userEmployeeList 员工记录集合
      * @return 添加好的员工记录。如果参数是空，那么返回值是null
@@ -750,8 +716,7 @@ public class EmployeeEntity {
 //    }
 
     /**
-     * 添加员工记录或者员工数据
-     * 会向员工记录中添加数据的同时，往ES员工索引维护队列中增加维护员工记录的任务。
+     * 添加员工记录或者员工数据 会向员工记录中添加数据的同时，往ES员工索引维护队列中增加维护员工记录的任务。
      *
      * @param userEmployee
      * @return
