@@ -1,6 +1,8 @@
 package com.moseeker.candidate.service.entities;
 
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
+import com.moseeker.candidate.constant.EmployeeType;
 import com.moseeker.candidate.constant.RecomType;
 import com.moseeker.candidate.service.Candidate;
 import com.moseeker.candidate.service.checkout.ParamCheckTool;
@@ -17,6 +19,8 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Condition;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.thrift.gen.candidate.struct.*;
@@ -64,6 +68,9 @@ public class CandidateEntity implements Candidate {
 
     @Autowired
     private JobPositionDao positionDao;
+
+    @Autowired
+    private UserEmployeeDao employeeDao;
 
     /**
      * C端用户查看职位，判断是否生成候选人数据
@@ -355,8 +362,9 @@ public class CandidateEntity implements Candidate {
         /** 添加员工积分 */
         if (candidateRecomRecordDO.getPostUserId() > 0) {
             try {
-                UserEmployeeDO employeeDO =
-                        candidateDBDao.getEmployee(candidateRecomRecordDO.getPostUserId(), param.getCompanyId());
+                Query query = new Query.QueryBuilder().where("sysuser_id", candidateRecomRecordDO.getPostUserId()).and(new Condition("company_id",  param.getCompanyId()))
+                        .and("disable", Constant.ENABLE_OLD).and("activation", EmployeeType.AUTH_SUCCESS.getValue()).buildQuery();
+                UserEmployeeDO employeeDO = employeeDao.getData(query);
                 if (employeeDO != null) {
                     employeeEntity.addReward(employeeDO.getId(), param.getCompanyId(), "", candidateRecomRecordDO.getAppId(), candidateRecomRecordDO.getPositionId(), IMPROVE_CANDIDATE.getId(), candidateRecomRecordDO.getPresenteeUserId());
                 }
