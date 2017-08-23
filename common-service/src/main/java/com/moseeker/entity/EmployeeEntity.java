@@ -260,10 +260,12 @@ public class EmployeeEntity {
             List<UserEmployeePointsRecordRecord> userEmployeePointsRecordList = employeePointsRecordDao.getRecords(query.buildQuery());
             List<UserEmployeePointsRecordDO> points = new ArrayList<>();
             if (userEmployeePointsRecordList != null && userEmployeePointsRecordList.size() > 0) {
-                for (UserEmployeePointsRecordRecord userEmployeePointsRecordRecord: userEmployeePointsRecordList) {
+                for (UserEmployeePointsRecordRecord userEmployeePointsRecordRecord : userEmployeePointsRecordList) {
                     UserEmployeePointsRecordDO userEmployeePointsRecordDO =
                             BeanUtils.DBToStruct(UserEmployeePointsRecordDO.class, userEmployeePointsRecordRecord,
-                                    new HashMap<String, String>(){{put("_create_time", "createTime");}});
+                                    new HashMap<String, String>() {{
+                                        put("_create_time", "createTime");
+                                    }});
                     points.add(userEmployeePointsRecordDO);
                 }
 
@@ -285,7 +287,7 @@ public class EmployeeEntity {
             // 职位信息Id
             List<Integer> positionIds = points.stream().filter(m -> m.getPositionId() != 0).map(m -> new Double(m.getPositionId()).intValue()).collect(Collectors.toList());
             // 获取被推荐人信息
-            List<Integer> berecomIds = points.stream().filter(m -> m.getBerecomUserId() != 0).map(m -> new Double(m.getBerecomUserId()).intValue()).collect(Collectors.toList());
+            Set<Integer> berecomIds = points.stream().filter(m -> m.getBerecomUserId() != 0).map(m -> new Double(m.getBerecomUserId()).intValue()).collect(Collectors.toSet());
             // 加积分类型
             List<Integer> types = points.stream().filter(m -> m.getAwardConfigId() != 0).map(m -> new Double(m.getBerecomUserId()).intValue()).collect(Collectors.toList());
 
