@@ -8,6 +8,7 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
 
 import org.jooq.ResultOrRows;
 import org.jooq.impl.TableImpl;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigInteger;
@@ -15,12 +16,16 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Created by jack on 11/04/2017.
  */
 @Repository
 public class UserEmployeePointsDao extends JooqCrudImpl<UserEmployeePointsRecordDO, UserEmployeePointsRecordRecord> {
+
+
+    org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public UserEmployeePointsDao() {
         super(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD, UserEmployeePointsRecordDO.class);
@@ -58,6 +63,7 @@ public class UserEmployeePointsDao extends JooqCrudImpl<UserEmployeePointsRecord
             employeePointsRecordPojo.setLast_update_time(localDateTime);
             recordPojos.add(employeePointsRecordPojo);
         }
+        logger.info(recordPojos.size() + "");
         return recordPojos;
     }
 
@@ -92,6 +98,7 @@ public class UserEmployeePointsDao extends JooqCrudImpl<UserEmployeePointsRecord
             employeePointsRecordPojo.setLast_update_time(localDateTime);
             recordPojos.add(employeePointsRecordPojo);
         }
+        logger.info(recordPojos.size() + "");
         return recordPojos;
     }
 
@@ -124,6 +131,7 @@ public class UserEmployeePointsDao extends JooqCrudImpl<UserEmployeePointsRecord
             employeePointsRecordPojo.setLast_update_time(localDateTime);
             recordPojos.add(employeePointsRecordPojo);
         }
+        logger.info(recordPojos.size() + "");
         return recordPojos;
     }
 
