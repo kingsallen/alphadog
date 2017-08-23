@@ -54,7 +54,7 @@ public class WordpressServiceImpl {
             WordpressPostsRecord postsRecord = wordpressPostsDao.getReleaseVersionPost();
             WordpressPosts post = postsRecord == null ? null : BeanUtils.DBToStruct(WordpressPosts.class, postsRecord);
 			if (post != null && post.getId() > 0) {
-				long readedPostId = wordpressUserPostDao.getReadedPostId(newsletter.getAccount_id());
+				long readedPostId = wordpressUserPostDao.getReadedPostId(newsletter.getAccount_id(),post.getId());
 				//如果用户之前读的文章的编号小于最新文章编号，则表示用户未读过新版本
 				if(readedPostId < post.getId()) {
 					data.setShow_new_version((byte) 1);

@@ -152,10 +152,10 @@ public class WholeProfileServicesImplTest {
     }
 
 
-    //    //@Test
+    @Test
     public void testmoveProfile()
             throws TException {
-        response = service.moveProfile(7, 2);
+        response = service.moveProfile(2343, 2325);
     }
 
     @Test

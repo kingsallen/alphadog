@@ -8,6 +8,7 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.EmployeeEntity;
+import com.moseeker.entity.SearchengineEntity;
 import com.moseeker.entity.UserAccountEntity;
 import com.moseeker.entity.UserWxEntity;
 import com.moseeker.rpccenter.client.ServiceManager;
@@ -20,6 +21,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -57,6 +59,9 @@ public abstract class EmployeeBinder {
 
     @Autowired
     protected HrEmployeeCertConfDao hrEmployeeCertConfDao;
+
+    @Autowired
+    protected SearchengineEntity searchengineEntity;
 
     protected ThreadLocal<UserEmployeeDO> userEmployeeDOThreadLocal = new ThreadLocal<>();
 
@@ -99,7 +104,7 @@ public abstract class EmployeeBinder {
             userEmployee.setAuthMethod((byte)bindingParams.getType().getValue());
             userEmployee.setActivation((byte)3);
             userEmployee.setCreateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-            int primaryKey = employeeDao.addData(userEmployee).getId();
+            int primaryKey = employeeEntity.addEmployee(userEmployee).getId();
             if( primaryKey == 0) {
                 log.info("员工邮箱认证，保存员工信息失败 employee={}", userEmployee);
                 throw new RuntimeException("认证失败，请检查员工信息");
@@ -161,6 +166,8 @@ public abstract class EmployeeBinder {
         if (Arrays.stream(updateResult).allMatch(m -> m == 1)){
             response.setSuccess(true);
             response.setMessage("success");
+            // 更新ES中useremployee信息
+            searchengineEntity.updateEmployeeAwards(employees.stream().map(m -> m.getId()).collect(Collectors.toList()));
         } else {
             response.setSuccess(false);
             response.setMessage("fail");

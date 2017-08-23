@@ -11,7 +11,7 @@ import com.moseeker.rpccenter.config.ClientConfig;
 import com.moseeker.rpccenter.config.RegistryConfig;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
-import com.moseeker.thrift.gen.employee.struct.Reward;
+import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.config.AppConfig;
@@ -150,6 +150,11 @@ public class UserHrAccountServiceImplTest {
 //    @Test
     public void testRefresh() throws Exception {
         userHrAccountService.synchronizeThirdpartyAccount(82752, 66, true);
+        HrThirdPartyAccountDO hrThirdPartyAccountDO = new HrThirdPartyAccountDO();
+        hrThirdPartyAccountDO.setUsername("xxxxx");
+        hrThirdPartyAccountDO.setPassword("xxxxx");
+        hrThirdPartyAccountDO.setChannel((short) 2);
+        userHrAccountService.bindThirdAccount(82847, hrThirdPartyAccountDO, true);
     }
 
 
@@ -188,36 +193,36 @@ public class UserHrAccountServiceImplTest {
         batchForm.setData(employeeStructs);
         batchForm.setDel_not_include(true);
 
-        int[] result = userEmployeeDao.postPutUserEmployeeBatch(batchForm);
+//        int[] result = userEmployeeDao.postPutUserEmployeeBatch(batchForm);
 
         System.out.println(DateUtils.dateToLongTime(new Date()));
 
 //        Thread.sleep(1000*600);
 
-        System.out.println(result);
+//        System.out.println(result);
     }
 
-//    @Test
+    //    @Test
 //    @Transactional
     public void addReawrdTest() {
         try {
-            userHrAccountServiceImpl.addEmployeeReward(658112, 100, "加积分");
+            userHrAccountServiceImpl.addEmployeeReward(658112, 100, 100, "加积分");
         } catch (TException e) {
             e.printStackTrace();
         }
     }
 
-//    @Test
+    //    @Test
     public void getEmployeeRewardsTest() {
         try {
-            List<Reward> list  = userHrAccountServiceImpl.getEmployeeRewards(658112);
-            System.out.println(BeanUtils.convertStructToJSON(list));
+            RewardVOPageVO rewardVOPageVO = userHrAccountServiceImpl.getEmployeeRewards(658112, 39978, 10, 1);
+            System.out.println(BeanUtils.convertStructToJSON(rewardVOPageVO));
         } catch (TException e) {
             e.printStackTrace();
         }
     }
 
-//    @Test
+    //    @Test
 //    @Transactional
     public void removeEmployeeTest() {
         try {
@@ -227,7 +232,7 @@ public class UserHrAccountServiceImplTest {
         }
     }
 
-//    @Test
+    //    @Test
 //    @Transactional
     public void unbindTest() {
         try {

@@ -52,7 +52,7 @@ public class EmployeeServiceTest {
     ////@Test
 	public void getEmployeeRewardsTest() {
 		try {
-			RewardsResponse rewards = service.getEmployeeRewards(14, 39978);
+			RewardsResponse rewards = service.getEmployeeRewards(14, 39978, 0, 0);
 			System.out.println(rewards);
 		} catch (TException e) {
 			// TODO Auto-generated catch block
