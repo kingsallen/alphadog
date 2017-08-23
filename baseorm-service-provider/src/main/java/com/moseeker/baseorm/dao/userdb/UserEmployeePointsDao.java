@@ -6,6 +6,8 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeePointsRecordRec
 import com.moseeker.baseorm.pojo.EmployeePointsRecordPojo;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
 
+import org.jooq.Record;
+import org.jooq.Result;
 import org.jooq.ResultOrRows;
 import org.jooq.impl.TableImpl;
 import org.slf4j.LoggerFactory;
@@ -46,24 +48,28 @@ public class UserEmployeePointsDao extends JooqCrudImpl<UserEmployeePointsRecord
                 + ") group by  up.employee_id,timespan order by timespan";
         List<ResultOrRows> records = create.fetchMany(sql).resultsOrRows();
         List<EmployeePointsRecordPojo> recordPojos = new ArrayList<>();
-        for (ResultOrRows resultOrRows : records) {
-            if (resultOrRows.result().getValues("timespan") == null || resultOrRows.result().getValues("timespan").size() == 0) {
-                continue;
+        if (records != null && records.size() > 0) {
+            Result<Record> records1 = records.get(0).result();
+            for (Record record : records1) {
+                if (record.get("timespan") == null) {
+                    continue;
+                }
+                if (record.get("award") == null) {
+                    continue;
+                }
+                if (record.get("last_update_time") == null) {
+
+                    continue;
+                }
+                EmployeePointsRecordPojo employeePointsRecordPojo = new EmployeePointsRecordPojo();
+                employeePointsRecordPojo.setTimespan((String) record.get("timespan"));
+                employeePointsRecordPojo.setAward(((BigInteger) record.get("award")).intValue());
+                LocalDateTime localDateTime = LocalDateTime.parse(String.valueOf(record.get("last_update_time")), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                employeePointsRecordPojo.setLast_update_time(localDateTime);
+                recordPojos.add(employeePointsRecordPojo);
             }
-            if (resultOrRows.result().getValues("award") == null || resultOrRows.result().getValues("award").size() == 0) {
-                continue;
-            }
-            if (resultOrRows.result().getValues("last_update_time") == null || resultOrRows.result().getValues("last_update_time").size() == 0) {
-                continue;
-            }
-            EmployeePointsRecordPojo employeePointsRecordPojo = new EmployeePointsRecordPojo();
-            employeePointsRecordPojo.setTimespan((String) resultOrRows.result().getValues("timespan").get(0));
-            employeePointsRecordPojo.setAward(((BigInteger) resultOrRows.result().getValues("award").get(0)).intValue());
-            LocalDateTime localDateTime = LocalDateTime.parse(String.valueOf(resultOrRows.result().getValues("last_update_time").get(0)), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-            employeePointsRecordPojo.setLast_update_time(localDateTime);
-            recordPojos.add(employeePointsRecordPojo);
+            logger.info(recordPojos.size() + "");
         }
-        logger.info(recordPojos.size() + "");
         return recordPojos;
     }
 
@@ -78,27 +84,31 @@ public class UserEmployeePointsDao extends JooqCrudImpl<UserEmployeePointsRecord
                 "        date_format(max(up.`_create_time`),'%Y-%m-%d %H:%i:%s') as last_update_time\n" +
                 "        from userdb.`user_employee_points_record` up where  up.employee_id in (" + employeeIds +
                 ") group by up.employee_id, timespan order by timespan";
-
         List<ResultOrRows> records = create.fetchMany(sql).resultsOrRows();
         List<EmployeePointsRecordPojo> recordPojos = new ArrayList<>();
-        for (ResultOrRows resultOrRows : records) {
-            if (resultOrRows.result().getValues("timespan") == null || resultOrRows.result().getValues("timespan").size() == 0) {
-                continue;
+        if (records != null && records.size() > 0) {
+            Result<Record> records1 = records.get(0).result();
+            for (Record record : records1) {
+                if (record.get("timespan") == null) {
+                    continue;
+                }
+                if (record.get("award") == null) {
+                    continue;
+                }
+                if (record.get("last_update_time") == null) {
+
+                    continue;
+                }
+                EmployeePointsRecordPojo employeePointsRecordPojo = new EmployeePointsRecordPojo();
+                employeePointsRecordPojo.setTimespan((String) record.get("timespan"));
+                employeePointsRecordPojo.setAward(((BigInteger) record.get("award")).intValue());
+                LocalDateTime localDateTime = LocalDateTime.parse(String.valueOf(record.get("last_update_time")), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                employeePointsRecordPojo.setLast_update_time(localDateTime);
+                recordPojos.add(employeePointsRecordPojo);
             }
-            if (resultOrRows.result().getValues("award") == null || resultOrRows.result().getValues("award").size() == 0) {
-                continue;
-            }
-            if (resultOrRows.result().getValues("last_update_time") == null || resultOrRows.result().getValues("last_update_time").size() == 0) {
-                continue;
-            }
-            EmployeePointsRecordPojo employeePointsRecordPojo = new EmployeePointsRecordPojo();
-            employeePointsRecordPojo.setTimespan((String) resultOrRows.result().getValues("timespan").get(0));
-            employeePointsRecordPojo.setAward(((BigInteger) resultOrRows.result().getValues("award").get(0)).intValue());
-            LocalDateTime localDateTime = LocalDateTime.parse(String.valueOf(resultOrRows.result().getValues("last_update_time").get(0)), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-            employeePointsRecordPojo.setLast_update_time(localDateTime);
-            recordPojos.add(employeePointsRecordPojo);
+            logger.info(recordPojos.size() + "");
         }
-        logger.info(recordPojos.size() + "");
+
         return recordPojos;
     }
 
@@ -114,20 +124,22 @@ public class UserEmployeePointsDao extends JooqCrudImpl<UserEmployeePointsRecord
                 " ) group by  up.employee_id,timespan order by timespan";
         List<ResultOrRows> records = create.fetchMany(sql).resultsOrRows();
         List<EmployeePointsRecordPojo> recordPojos = new ArrayList<>();
-        for (ResultOrRows resultOrRows : records) {
-            if (resultOrRows.result().getValues("timespan") == null || resultOrRows.result().getValues("timespan").size() == 0) {
+        Result<Record> records1 = records.get(0).result();
+        for (Record record : records1) {
+            if (record.get("timespan") == null) {
                 continue;
             }
-            if (resultOrRows.result().getValues("award") == null || resultOrRows.result().getValues("award").size() == 0) {
+            if (record.get("award") == null) {
                 continue;
             }
-            if (resultOrRows.result().getValues("last_update_time") == null || resultOrRows.result().getValues("last_update_time").size() == 0) {
+            if (record.get("last_update_time") == null) {
+
                 continue;
             }
             EmployeePointsRecordPojo employeePointsRecordPojo = new EmployeePointsRecordPojo();
-            employeePointsRecordPojo.setTimespan((String) resultOrRows.result().getValues("timespan").get(0));
-            employeePointsRecordPojo.setAward(((BigInteger) resultOrRows.result().getValues("award").get(0)).intValue());
-            LocalDateTime localDateTime = LocalDateTime.parse(String.valueOf(resultOrRows.result().getValues("last_update_time").get(0)), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            employeePointsRecordPojo.setTimespan((String) record.get("timespan"));
+            employeePointsRecordPojo.setAward(((BigInteger) record.get("award")).intValue());
+            LocalDateTime localDateTime = LocalDateTime.parse(String.valueOf(record.get("last_update_time")), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
             employeePointsRecordPojo.setLast_update_time(localDateTime);
             recordPojos.add(employeePointsRecordPojo);
         }
