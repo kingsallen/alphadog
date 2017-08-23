@@ -28,16 +28,16 @@ public class PositionSearchEngine {
 	@Autowired
 	private SearchUtil searchUtil;
 	//按条件查询，如果prefix的方式无法差的数据，那么转换为query_string的方式查询
-	public Map<String,Object> search(String keyWord,String industry,String salaryCode,int page,int pageSize,String cityCode,String startTime,String endTime,int order){
+	public Map<String,Object> search(String keyWord,String industry,String salaryCode,int page,int pageSize,String cityCode,String startTime,String endTime,int companyId,int teamId,int motherCompanyId,int order){
 		Map<String,Object> map=new HashMap<String,Object>();
 		TransportClient client=null;
 		try{
 			client=searchUtil.getEsClient();
-			SearchResponse hits =this.quertPrefix(keyWord, industry, salaryCode, page, pageSize, cityCode,startTime,endTime,order,client);
+			SearchResponse hits =this.quertPrefix(keyWord, industry, salaryCode, page, pageSize, cityCode,startTime,endTime, companyId,teamId,motherCompanyId,order,client);
 			if(hits!=null){
 				long hitNum=hits.getHits().getTotalHits();
 				if(hitNum==0&&StringUtils.isNotEmpty(keyWord)){
-					SearchResponse hitsData=this.quertString(keyWord, industry, salaryCode, page, pageSize, cityCode,startTime,endTime,order,client);
+					SearchResponse hitsData=this.quertString(keyWord, industry, salaryCode, page, pageSize, cityCode,startTime,endTime, companyId,teamId,motherCompanyId,order,client);
 					map=searchUtil.handleData(hitsData,"positions");
 					logger.info(map.toString());
 					return map;
@@ -53,13 +53,12 @@ public class PositionSearchEngine {
 				client=null;
 			}
 		}
-
 		return new HashMap<String,Object>();
 	}
 	//按照query_string的方式查询数据
-	public SearchResponse quertString(String keyWord,String industry,String salaryCode,int page,int pageSize,String cityCode,String startTime,String endTime,int order,TransportClient client){
+	public SearchResponse quertString(String keyWord,String industry,String salaryCode,int page,int pageSize,String cityCode,String startTime,String endTime,int companyId,int teamId,int motherCompanyId,int order,TransportClient client){
 		if(client!=null){
-			QueryBuilder sentence=this.handleStringSearchSentence(keyWord, industry, salaryCode, page, pageSize, cityCode,startTime,endTime);
+			QueryBuilder sentence=this.handleStringSearchSentence(keyWord, industry, salaryCode, page, pageSize, cityCode,startTime,endTime,companyId,teamId,motherCompanyId);
 			SearchRequestBuilder responseBuilder=client.prepareSearch("positions").setTypes("position")
 					.setQuery(sentence)
 					.addAggregation(searchUtil.handle("_source.company.industry_data","industry"))
@@ -77,9 +76,9 @@ public class PositionSearchEngine {
 		return null;
 	}
 	//按照prefix的方式查询数据
-	public SearchResponse quertPrefix(String keyWord,String industry,String salaryCode,int page,int pageSize,String cityCode,String startTime,String endTime,int order,TransportClient client){
+	public SearchResponse quertPrefix(String keyWord,String industry,String salaryCode,int page,int pageSize,String cityCode,String startTime,String endTime,int companyId,int teamId,int motherCompanyId,int order,TransportClient client){
 		if(client!=null){
-			QueryBuilder sentence=this.handlePrefixSearchSentence(keyWord, industry, salaryCode, page, pageSize, cityCode,startTime,endTime);
+			QueryBuilder sentence=this.handlePrefixSearchSentence(keyWord, industry, salaryCode, page, pageSize, cityCode,startTime,endTime,companyId,teamId,motherCompanyId);
 			SearchRequestBuilder responseBuilder=client.prepareSearch("positions").setTypes("position")
 					.setQuery(sentence)
 					.addAggregation(searchUtil.handle("_source.company.industry_data","industry"))
@@ -104,29 +103,38 @@ public class PositionSearchEngine {
 		return null;
 	}
 	//根据query_string关键字组织查询
-	private QueryBuilder handleStringSearchSentence(String keyWord,String industry,String salaryCode,int page,int pageSize,String cityCode,String startTime,String endTime){
+	private QueryBuilder handleStringSearchSentence(String keyWord,String industry,String salaryCode,int page,int pageSize,String cityCode,String startTime,String endTime,int companyId,int teamId,int motherCompanyId){
 		QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
 		QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
 		List<String> list=new ArrayList<String>();
 		list.add("position.title");
 		searchUtil.handleKeyWordforQueryString(keyWord, false, query, list);
-		CommonQuerySentence(industry, salaryCode,cityCode, startTime, endTime, query);
+		CommonQuerySentence(industry, salaryCode,cityCode, startTime, endTime,companyId,teamId,motherCompanyId, query);
 		return query;
 	}
 	//通过match_prhase_prefix查询
-	private QueryBuilder handlePrefixSearchSentence(String keyWord,String industry,String salaryCode,int page,int pageSize,String cityCode,String startTime,String endTime){
+	private QueryBuilder handlePrefixSearchSentence(String keyWord,String industry,String salaryCode,int page,int pageSize,String cityCode,String startTime,String endTime,int companyId,int teamId,int motherCompanyId){
 		QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
 		QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
 		List<String> list=new ArrayList<String>();
 		list.add("position.title");
 		searchUtil.handleKeyWordForPrefix(keyWord, false, query, list);
-		CommonQuerySentence(industry, salaryCode,cityCode, startTime, endTime, query);
+		CommonQuerySentence(industry, salaryCode,cityCode, startTime, endTime, companyId,teamId,motherCompanyId,query);
 		return query;
 	}
 	//公共查询的条件部分
-	private void CommonQuerySentence(String industry,String salaryCode,String cityCode,String startTime,String endTime,QueryBuilder query){
+	private void CommonQuerySentence(String industry,String salaryCode,String cityCode,String startTime,String endTime,int companyId,int teamId,int motherCompanyId,QueryBuilder query){
 		searchUtil.handleTerms(industry, query, "company.industry_data.industry_code");
 		searchUtil.handleTerms(cityCode, query, "position.city_data.code");
+		if(companyId>0){
+			searchUtil.handleMatch(companyId,query,"company.id");
+		}
+		if(teamId>0){
+			searchUtil.handleMatch(teamId,query,"team.id");
+		}
+		if(motherCompanyId>0){
+			searchUtil.handleMatch(motherCompanyId,query,"position.company_id");
+		}
 		handleDateGT(startTime, query);
 		handleDateLT(endTime, query);
 		handleSalary(salaryCode, query);

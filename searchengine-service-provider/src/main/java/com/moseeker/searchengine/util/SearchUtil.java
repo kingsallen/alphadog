@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
@@ -25,14 +26,15 @@ import org.elasticsearch.search.aggregations.metrics.MetricsAggregationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
 import com.moseeker.common.util.ConfigPropertiesUtil;
 
 @Service
 public class SearchUtil {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
     //启动es客户端
-    public TransportClient getEsClient(){
-    	ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
+    public TransportClient getEsClient() {
+        ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
         try {
             propertiesReader.loadResource("es.properties");
         } catch (Exception e1) {
@@ -45,11 +47,11 @@ public class SearchUtil {
         try{
        	 Settings settings = Settings.settingsBuilder().put("cluster.name", cluster_name)
                     .build();
-         client = TransportClient.builder().settings(settings).build()
+            client = TransportClient.builder().settings(settings).build()
                     .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port));
-        }catch(Exception e){
-        	logger.info(e.getMessage(),e);
-        	client=null;
+        } catch (Exception e) {
+            logger.info(e.getMessage(), e);
+            client = null;
         }
         return client;
     }
@@ -66,6 +68,18 @@ public class SearchUtil {
             QueryBuilder cityfilter = QueryBuilders.termsQuery(conditionField, codes);
             ((BoolQueryBuilder) query).must(cityfilter);
         }
+    }
+    /*
+        处理match的查询
+     */
+    public void handleMatch(int conditions,QueryBuilder query,String conditionField ){
+        QueryBuilder cityfilter = QueryBuilders.matchQuery(conditionField, conditions);
+        ((BoolQueryBuilder) query).must(cityfilter);
+    }
+    public void hanleRange(int conditions, QueryBuilder query, String conditionField) {
+        QueryBuilder cityfilter = QueryBuilders.rangeQuery(conditionField).gt(conditions);
+        ((BoolQueryBuilder) query).must(cityfilter);
+        logger.info("组合的条件是==================" + query.toString() + "===========");
     }
     
     //处理聚合的结果
@@ -84,8 +98,10 @@ public class SearchUtil {
     public Map<String,Object> handleData(SearchResponse response,String dataName){
     	Map<String,Object> data=new HashMap<String,Object>();
     	Aggregations aggs=response.getAggregations();
-    	Map<String, Object> aggsMap=handleAggs(aggs);
-    	data.put("aggs", aggsMap);
+    	if(aggs!=null){
+            Map<String, Object> aggsMap=handleAggs(aggs);
+            data.put("aggs", aggsMap);
+        }
     	SearchHits hit=response.getHits();
     	long totalNum=hit.getTotalHits();
     	data.put("totalNum", totalNum);
@@ -164,34 +180,103 @@ public class SearchUtil {
                 .combineScript(new Script(combinScript));
         return build;
     }
-    
-    public AbstractAggregationBuilder handleArray(String fieldName,String name){
-    	StringBuffer sb=new StringBuffer();
-    	sb.append("city="+fieldName);
-    	sb.append(";for(ss in city){");
-    	sb.append("if(ss  in _agg['transactions'] || !ss ){}");
-    	sb.append("else{_agg['transactions'].add(ss)};}");
-    	String mapScript=sb.toString();
-    	StringBuffer sb1=new StringBuffer();
-    	sb1.append("jsay=[];");
-    	sb1.append("for(a in _aggs){");
-    	sb1.append("for(ss in a){");
-    	sb1.append("if(ss in jsay||!ss){}");
-    	sb1.append("else{jsay.add(ss);}}};");
-    	sb1.append("return jsay");
-    	String reduceScript=sb1.toString();
-    	StringBuffer sb2=new StringBuffer();
-    	sb2.append("jsay=[];");
-    	sb2.append("for(ss in _agg['transactions']){");
-    	sb2.append("for(a in ss){jsay.add(ss)}};");
-    	sb2.append("return jsay");
-    	String combinScript=sb2.toString();
-    	MetricsAggregationBuilder build=AggregationBuilders.scriptedMetric(name)
+
+    public AbstractAggregationBuilder handleArray(String fieldName, String name) {
+        StringBuffer sb = new StringBuffer();
+        sb.append("city=" + fieldName);
+        sb.append(";for(ss in city){");
+        sb.append("if(ss  in _agg['transactions'] || !ss ){}");
+        sb.append("else{_agg['transactions'].add(ss)};}");
+        String mapScript = sb.toString();
+        StringBuffer sb1 = new StringBuffer();
+        sb1.append("jsay=[];");
+        sb1.append("for(a in _aggs){");
+        sb1.append("for(ss in a){");
+        sb1.append("if(ss in jsay||!ss){}");
+        sb1.append("else{jsay.add(ss);}}};");
+        sb1.append("return jsay");
+        String reduceScript = sb1.toString();
+        StringBuffer sb2 = new StringBuffer();
+        sb2.append("jsay=[];");
+        sb2.append("for(ss in _agg['transactions']){");
+        sb2.append("for(a in ss){jsay.add(ss)}};");
+        sb2.append("return jsay");
+        String combinScript = sb2.toString();
+        MetricsAggregationBuilder build = AggregationBuilders.scriptedMetric(name)
                 .initScript(new Script("_agg['transactions'] = []"))
                 .mapScript(new Script(mapScript))
                 .reduceScript(new Script(reduceScript))
                 .combineScript(new Script(combinScript));
         return build;
     }
-    
+
+
+    /**
+     * term查询，查询的值包含单个值
+     *
+     * @param map
+     * @param query
+     */
+    public void matchPhrasePrefixQuery(Map<String, Object> map, QueryBuilder query) {
+        if (map != null && !map.isEmpty()) {
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            for (String key : map.keySet()) {
+                QueryBuilder fullf = QueryBuilders.matchPhrasePrefixQuery(key, map.get(key));
+                ((BoolQueryBuilder) keyand).should(fullf);
+            }
+            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+            ((BoolQueryBuilder) query).must(keyand);
+        }
+
+    }
+
+    /**
+     * term查询，查询的值包含单个值
+     *
+     * @param map
+     * @param query
+     */
+    public void shouldTermQuery(Map<String, Object> map, QueryBuilder query) {
+        if (map != null && !map.isEmpty()) {
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            for (String key : map.keySet()) {
+                QueryBuilder fullf = QueryBuilders.termsQuery(key, map.get(key));
+                ((BoolQueryBuilder) keyand).should(fullf);
+            }
+            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+            ((BoolQueryBuilder) query).must(keyand);
+        }
+    }
+
+    //terms查询，查询的值包含多个值
+    public void shouldTermsQuery(Map<String, Object> map, QueryBuilder query) {
+        if (map != null && !map.isEmpty()) {
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            for (String key : map.keySet()) {
+                List<String> list = this.stringConvertList(map.get(key) + "");
+                if (list == null || list.size() == 0) {
+                    continue;
+                }
+                QueryBuilder fullf = QueryBuilders.termsQuery(key, list);
+                ((BoolQueryBuilder) keyand).should(fullf);
+            }
+            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+            ((BoolQueryBuilder) query).must(keyand);
+        }
+
+    }
+
+    //将xx,xx,xx格式的字符串转化为list
+    private List<String> stringConvertList(String keyWords) {
+        if (StringUtils.isNotEmpty(keyWords)) {
+            String[] array = keyWords.split(",");
+            List<String> list = new ArrayList<String>();
+            for (String ss : array) {
+                list.add(ss);
+            }
+            return list;
+        }
+        return null;
+    }
+
 }

@@ -1,7 +1,17 @@
 package com.moseeker.baseorm.crud;
 
+import com.moseeker.baseorm.exception.CoditionException;
+import com.moseeker.baseorm.exception.ExceptionCategory;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
-import org.jooq.*;
+
+import org.jooq.DSLContext;
+import org.jooq.Field;
+import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.SelectField;
+import org.jooq.SelectJoinStep;
+import org.jooq.SortField;
 import org.jooq.impl.TableImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,8 +72,8 @@ class LocalQuery<R extends Record> {
                     .map(select -> {
                         Field<?> field = table.field(select.getField());
                         if (field == null) {
-                            logger.warn("field '" + select.getField() + "' not found in table " + table.getName());
-                            return null;
+                            logger.warn("field {},not found in table {}", select.getField(), table.getName());
+                            throw CoditionException.SELECT_FIELD_NOEXIST.setMess("查询的" + table.getName() + "表中" + select.getField() + "字段不存在");
                         } else {
                             switch (select.getSelectOp()) {
                                 case AVG:
@@ -109,8 +119,8 @@ class LocalQuery<R extends Record> {
                     .map(groupField -> {
                         Field<?> field = table.field(groupField);
                         if (field == null) {
-                            logger.warn("field '" + groupField + "' not found in table " + table.getName());
-                            return null;
+                            logger.warn("field {},not found in table {}", groupField, table.getName());
+                            throw CoditionException.GROUPBY_FIELD_NOEXIST.setMess("查询的" + table.getName() + "表按" + groupField + "分组的字段不存在");
                         } else {
                             return field;
                         }
@@ -139,8 +149,8 @@ class LocalQuery<R extends Record> {
                     .map(orderBy -> {
                         Field<?> field = table.field(orderBy.getField());
                         if (field == null) {
-                            logger.warn("field '" + orderBy.getField() + "' not found in table " + table.getName());
-                            return null;
+                            logger.warn("field {},not found in table {}", orderBy.getField(), table.getName());
+                            throw CoditionException.ORDER_FIELD_NOEXIST.setMess("查询的" + table.getName() + "表按" + orderBy.getField() + "排序字段不存在");
                         } else {
                             switch (orderBy.getOrder()) {
                                 case DESC:
@@ -177,6 +187,7 @@ class LocalQuery<R extends Record> {
 
     /**
      * 组装除limit之外的所有查询字段和查询条件
+     *
      * @return
      */
     public SelectJoinStep<Record> convertToResult() {
@@ -211,12 +222,13 @@ class LocalQuery<R extends Record> {
         if (query.getPageSize() > 0) {
             select.limit((getPage() - 1) * getPageSize(), getPageSize());
         }
-        logger.info(select.getSQL());
+        logger.debug(select.getSQL());
         return select;
     }
 
     /**
      * 组装只获取一条数据的select
+     *
      * @return
      */
     public SelectJoinStep<Record> convertToOneResult() {

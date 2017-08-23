@@ -371,14 +371,11 @@ public class PositionPcService {
 					 			map1.put("jdPic",picture);
 							}
 				 		}
-				 		
 					 }
 			 }
 		 
 		 }
 	 }
-	 
-
 	 //获取全部公司
 	 public List<Map<String,Object>> getAllCompanyRecommend(int page,int pageSize) throws TException{
 		 List<CampaignPcRecommendCompanyDO>  CampaignPcRecommendCompanyList=campaignPcRecommendCompanyDao.getCampaignPcRecommendCompanyList(page,pageSize);
@@ -398,53 +395,8 @@ public class PositionPcService {
 		 return result;
 	 }
 
-	 /*
-	  * 获取所推荐公司的publisher列表
-	  */
-	 public List<HrCompanyAccountDO> getCompanyAccountListByCompanyIds(List<Integer> companyIds){
-		 if(StringUtils.isEmptyList(companyIds)){
-			 return  null;
-		 }
-		 Query query=new Query.QueryBuilder().where(new Condition("company_id",companyIds.toArray(),ValueOp.IN)).buildQuery();
-		 List<HrCompanyAccountDO> list=hrCompanyAccountDao.getDatas(query);
-		 return list;
-	 }
-	 // 获取所有公司包括子公司
-	 public List<HrCompanyDO> getAllCommpany(List<Integer> companyIds){
-		 Query query=new Query.QueryBuilder()
-				 .where(new Condition("id",companyIds.toArray(),ValueOp.IN))
-				 .or(new Condition("parent_id",companyIds.toArray(),ValueOp.IN))
-				 .buildQuery();
-		 List<HrCompanyDO> list=hrCompanyDao.getDatas(query);
-		 return list;
-	 }
-	 //获取所有的公司信息以及自己的子公司
-	 public Map<Integer,Set<Integer>> getCompanySubAndSelf(List<HrCompanyDO> list,List<Integer> companyIds){
-		 if(StringUtils.isEmptyList(list)||StringUtils.isEmptyList(companyIds)){
-			 return null;
-		 }
-		 Map<Integer,Set<Integer>> data=new HashMap<Integer,Set<Integer>>();
-		 for(Integer companyId:companyIds){
-			 for(HrCompanyDO DO:list){
-				 int parentId=DO.getParentId();
-				 int id=DO.getId();
-				 int disable=DO.getDisable();
-				 if(disable==0&&parentId!=0){
-					 continue;
-				 }
-				 if(companyId==id||parentId==companyId){
-					 if(data.get(companyId)!=null){
-						 data.get(companyId).add(id);
-					 }else{
-						 Set<Integer> companySet=new HashSet<Integer>();
-						 companySet.add(id);
-						 data.put(companyId, companySet);
-					 }
-				 }
-			 }
-		 }
-		 return data;
-	 }
+
+
 	 //获取所有公司
 	 public List<Integer> getAllCompanyIds(Map<Integer,Set<Integer>> data){
 		 if(data==null||data.isEmpty()){
@@ -456,48 +408,8 @@ public class PositionPcService {
 		 }
 		 return companyIdList;
 	 }
-	 //获取企业id和publisher的集合
-	 public Map<Integer,List<Integer>> handleCompanyPublisher(List<Integer> companyIdsList){
-		 if(StringUtils.isEmptyList(companyIdsList)){
-			 return null;
-		 }
-		 List<HrCompanyDO> companyList=getAllCommpany(companyIdsList);
-		 if(companyList==null||companyList.isEmpty()){
-			 return null;
-		 }
-		 Map<Integer,Set<Integer>> companySubData=getCompanySubAndSelf(companyList,companyIdsList);
-		 if(companySubData==null||companySubData.isEmpty()){
-			 return null;
-		 }
-		 List<HrCompanyAccountDO> accountList=getCompanyAccountListByCompanyIds(companyIdsList);
-		 if(StringUtils.isEmptyList(accountList)){
-			 return null;
-		 }
-		 Map<Integer,List<Integer>> map=new HashMap<Integer,List<Integer>>();
-		 HandleCompanyPublisher(companySubData,accountList,map);
-		 return map;
-	 }
-	 //将数据处理成Map<companyId,List<pulisher>>的形式
-	 public void HandleCompanyPublisher(Map<Integer,Set<Integer>> companySubData,List<HrCompanyAccountDO> accountList, Map<Integer,List<Integer>> map){
-		 for(HrCompanyAccountDO DO:accountList){
-			 int id=DO.getCompanyId();
-			 int accountId=DO.getAccountId();
-			 for(Integer companyId:companySubData.keySet()){
-				 Set<Integer> data=companySubData.get(companyId);
-				 if(data!=null||!data.isEmpty()){
-					 if(data.contains(id)){
-						 if(map.get(companyId)==null){
-							 List<Integer> accountIdList=new ArrayList<Integer>();
-							 accountIdList.add(accountId);
-							 map.put(companyId, accountIdList);
-						 }else{
-							 map.get(companyId).add(accountId);
-						 }
-					 }
-				 }
-			 }
-		 }
-	 }
+
+
 	 
 	 /*
 	  * 获取该公司id列表下的职位数量
@@ -541,7 +453,7 @@ public class PositionPcService {
 		 if(StringUtils.isEmptyList(companyList)){
 			 return  null;
 		 }
-		 Map<Integer,List<Integer>> companyPulisher=handleCompanyPublisher(companyIds);
+		 Map<Integer,List<Integer>> companyPulisher=jobPositionCityEntity.handleCompanyPublisher(companyIds);
 		 Map<Integer,Integer> mapTeamNum=this.getTeamNum(companyList, companyPulisher);
 		 List<Integer> companyids=this.getCompanyIds(companyList);
 		 List<Map<String,Object>> jdlist=jobPositionCityEntity.HandleCmsResource(companyids,1);

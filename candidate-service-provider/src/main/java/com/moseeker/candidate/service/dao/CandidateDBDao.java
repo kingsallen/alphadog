@@ -5,7 +5,6 @@ import com.moseeker.baseorm.dao.hrdb.HrPointsConfDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
-import com.moseeker.baseorm.dao.userdb.UserEmployeePointsDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.candidate.constant.EmployeeType;
@@ -22,7 +21,6 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrPointsConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import org.apache.thrift.TException;
@@ -78,8 +76,6 @@ public class CandidateDBDao {
     @Autowired
     HrPointsConfDao hrPointsConfDao;
 
-    @Autowired
-    UserEmployeePointsDao userEmployeePointsDao;
 
     /**
      * @param userID
@@ -365,28 +361,6 @@ public class CandidateDBDao {
 
         Query query = new Query.QueryBuilder().where("company_id", companyId).and("template_id", recruitmentScheduleEnum.IMPROVE_CANDIDATE.getId()).buildQuery();
         return hrPointsConfDao.getData(query);
-    }
-
-    /**
-     * 添加完善浏览者信息添加员工积分
-     *
-     * @param userEmployeePointsRecordDO 职位转发浏览记录
-     * @throws TException 异常
-     */
-    public void saveEmployeePointsRecord(UserEmployeePointsRecordDO
-                                                 userEmployeePointsRecordDO) throws TException {
-        userEmployeePointsDao.addData(userEmployeePointsRecordDO);
-    }
-
-    /**
-     * 修改员工积分
-     *
-     * @param id 员工编号
-     * @return 员工积分
-     * @throws TException 异常
-     */
-    public int updateEmployeePoint(int id) throws TException {
-        return userEmployeeDao.updateUserEmployeePoint(id);
     }
 
     /**

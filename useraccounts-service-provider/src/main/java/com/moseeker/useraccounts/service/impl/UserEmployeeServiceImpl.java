@@ -7,6 +7,7 @@ import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
@@ -30,6 +31,9 @@ public class UserEmployeeServiceImpl {
     @Autowired
     private UserEmployeeDao userEmployeeDao;
 
+    @Autowired
+    EmployeeEntity employeeEntity;
+
     public Response getUserEmployee(CommonQuery query) throws TException {
         return getResource(query);
     }
@@ -47,7 +51,7 @@ public class UserEmployeeServiceImpl {
             if (batchForm.as_task) {
                 new Thread(() -> {
                     try {
-                        userEmployeeDao.postPutUserEmployeeBatch(batchForm);
+                        employeeEntity.postPutUserEmployeeBatch(batchForm);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -58,7 +62,7 @@ public class UserEmployeeServiceImpl {
                 response.setData(JSON.toJSONString(new int[0]));
                 return response;
             } else {
-                return ResponseUtils.success(userEmployeeDao.postPutUserEmployeeBatch(batchForm));
+                return ResponseUtils.success(employeeEntity.postPutUserEmployeeBatch(batchForm));
             }
         } catch (Exception e) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);

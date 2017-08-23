@@ -1,9 +1,9 @@
 package com.moseeker.useraccounts.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.parser.Feature;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
-import com.moseeker.thrift.gen.employee.struct.Employee;
-import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVO;
 import com.moseeker.useraccounts.config.AppConfig;
 
 import org.junit.Test;
@@ -13,7 +13,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = AppConfig.class)
@@ -38,6 +40,16 @@ public class UserHrAccountServiceTest {
     public void getListNum() {
         try {
             System.out.println(userHrAccountService.getListNum("张", 3));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @Test
+    public void employeeList() {
+        try {
+            System.out.println(userHrAccountService.employeeList("", 39978, 0, "", "", 1, 10, "2017"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -84,18 +96,18 @@ public class UserHrAccountServiceTest {
     }
 
 
-    /**
-     * 员工数据导入
-     */
-    @Test
-    public void employeeList() {
-        try {
-//            userHrAccountService.employeeList("", 3, 1, "create_time", 1, 0, 0);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-//            List<UserEmployeeVO> list = userHrAccountService.employeeList("", 3, 1, "create_time", 1, 0, 0);
+//    /**
+//     * 员工数据导入
+//     */
+//    @Test
+//    public void employeeList() {
+//        try {
+////            userHrAccountService.employeeList("", 3, 1, "create_time", 1, 0, 0);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+////            List<UserEmployeeVO> list = userHrAccountService.employeeList("", 3, 1, "create_time", 1, 0, 0);
 
 
     /**
@@ -111,6 +123,23 @@ public class UserHrAccountServiceTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    /**
+     * 主入口
+     *
+     * @param args
+     */
+    public static void main(String args[]) {
+        String str = "";
+        Map dataMap = (Map) JSONObject.parseObject(str,LinkedHashMap.class, Feature.OrderedField);
+        List<LinkedHashMap<String,Integer>> data = (List<LinkedHashMap<String,Integer>>) dataMap.get("data");
+//        for (Map map : data) {
+//            System.out.println(map.get("award"));
+//            System.out.println(map.get("employeeId"));
+//        }
+        System.out.println(dataMap);
     }
 
 
