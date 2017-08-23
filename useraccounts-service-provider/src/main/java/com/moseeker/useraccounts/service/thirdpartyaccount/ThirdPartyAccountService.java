@@ -139,7 +139,7 @@ public class ThirdPartyAccountService {
 
         if (getCache(account) != null) {
             //绑定中
-            throw new BIZException(-1, "该帐号已经在绑定中了");
+            throw new BIZException(-1, "正在尝试绑定该账号，请10分钟后再次尝试");
         }
 
         //使用之前的绑定记录
@@ -181,7 +181,7 @@ public class ThirdPartyAccountService {
         String cache = redisClient.get(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_ACCOUNT_BINDING.toString(), cacheKey);
         if (cache != null) {
             //绑定中
-            throw new BIZException(-1, "该帐号已经在绑定中了");
+            throw new BIZException(-1, "正在尝试绑定该账号，请10分钟后再次尝试");
         } else {
             //默认10分钟的超时时间
             redisClient.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_ACCOUNT_BINDING.toString(), cacheKey, JSON.toJSONString(bindingAccount));
