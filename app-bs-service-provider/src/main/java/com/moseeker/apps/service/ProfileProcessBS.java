@@ -25,7 +25,9 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.application.struct.ApplicationAts;
@@ -205,7 +207,7 @@ public class ProfileProcessBS {
                     RecruitmentResult result = BusinessUtil.excuteRecruitRewardOperation(recruitOrder, progressStatus, recruitProcesses);
                     logger.info("ProfileProcessBS processProfile result:{}", result);
                     if (result.getStatus() == 0) {
-                        List<Integer> weChatIds = new ArrayList<Integer>();
+                        List<Integer> recommenderIds = new ArrayList<Integer>();
                         List<RewardsToBeAddBean> rewardsToBeAdd = new ArrayList<RewardsToBeAddBean>();
                         // 简历还未被浏览就被拒绝，则视为已被浏览，需要在添加角色操作的历史记录之前插入建立被查看的历史记录
                         List<HrOperationRecordDO> turnToCVCheckeds = new ArrayList<HrOperationRecordDO>();
@@ -235,25 +237,18 @@ public class ProfileProcessBS {
                                 turnToCVCheckeds.add(turnToCVChecked);
                             }
                             rewardsToBeAdd.add(reward);
-                            weChatIds.add(record.getRecommender_user_id());
+                            recommenderIds.add(record.getRecommender_user_id());
                         }
                         logger.info("ProfileProcessBS processProfile rewardsToBeAdd:{}", rewardsToBeAdd);
                         //注意在获取employyee时，weChatIds已经不用，此处没有修改thrift的代码，所以还在
-                        List<UserEmployeeStruct> employeesToBeUpdates = new ArrayList<UserEmployeeStruct>();
-                        List<UserEmployeeRecord> UserEmployeeRecords =userEmployeeDao.getEmployeeByWeChat(companyId, weChatIds);
-                        employeesToBeUpdates=convertStruct(UserEmployeeRecords);
-                        if (employeesToBeUpdates != null
-                                && employeesToBeUpdates.size() > 0) {
-                            for (RewardsToBeAddBean bean : rewardsToBeAdd) {
-                                for (UserEmployeeStruct user : employeesToBeUpdates) {
-                                    if (bean.getRecommender_id() == user.getSysuser_id()) {
-                                        bean.setEmployee_id(user.getId());
-                                        break;
-                                    }
-                                }
-                            }
-                            logger.info("ProfileProcessBS processProfile rewardsToBeAdd:{}", rewardsToBeAdd);
-                        }
+                        Query.QueryBuilder query = new Query.QueryBuilder();
+                        query.where(new Condition("sysuser_id", recommenderIds, ValueOp.IN)).and(new Condition("company_id", employeeEntity.getCompanyIds(companyId), ValueOp.IN));
+                        List<UserEmployeeStruct> employeesToBeUpdates = userEmployeeDao.getDatas(query.buildQuery(), UserEmployeeStruct.class);
+                        Map<Integer, Integer> userIdToEmployeeId = (employeesToBeUpdates == null || employeesToBeUpdates.isEmpty()) ?
+                                new HashMap<>() : employeesToBeUpdates.stream().collect(Collectors.toMap(k -> k.getSysuser_id(), v -> v.getId(), (newKey, oldKey) -> newKey));
+                        rewardsToBeAdd.stream().forEach(e -> {
+                            e.setEmployee_id(userIdToEmployeeId.containsKey((int)e.getRecommender_id()) ? userIdToEmployeeId.get((int)e.getRecommender_id()) : 0);
+                        });
                         // 修改招聘进度
                         for (ProcessValidationStruct process : list) {
                             process.setRecruit_order(progressStatus);
