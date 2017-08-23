@@ -129,6 +129,8 @@ public class PositionChangeUtil {
         //区分校招还是社招
         position.setRecruit_type(String.valueOf(Double.valueOf(positionDB.getCandidateSource()).intValue()));
 
+        position.setPractice_salary_unit(form.getPractice_salary_unit());
+
         setDepartment(form, positionDB, position);
 
         //有效时间

@@ -25,5 +25,6 @@ struct HrThirdPartyPositionDO {
     19: optional i32 salaryBottom,	//薪资底线
     20: optional i32 salaryTop,	//薪资封顶
     21: optional i32 practiceSalary, //实习薪资
-    22: optional i32 practicePerWeek //每周实习天数
+    22: optional i8 practicePerWeek, //每周实习天数
+    23: optional i8 practiceSalaryUnit //实习薪资单位，0：元/月；1：元/天
 }

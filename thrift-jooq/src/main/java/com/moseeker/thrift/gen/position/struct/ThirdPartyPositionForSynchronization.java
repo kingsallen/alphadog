@@ -38,7 +38,8 @@ public class ThirdPartyPositionForSynchronization implements org.apache.thrift.T
   private static final org.apache.thrift.protocol.TField FEEDBACK_PERIOD_FIELD_DESC = new org.apache.thrift.protocol.TField("feedback_period", org.apache.thrift.protocol.TType.I32, (short)25);
   private static final org.apache.thrift.protocol.TField RECRUIT_TYPE_FIELD_DESC = new org.apache.thrift.protocol.TField("recruit_type", org.apache.thrift.protocol.TType.STRING, (short)26);
   private static final org.apache.thrift.protocol.TField PRACTICE_SALARY_FIELD_DESC = new org.apache.thrift.protocol.TField("practice_salary", org.apache.thrift.protocol.TType.I32, (short)27);
-  private static final org.apache.thrift.protocol.TField PRACTICE_PER_WEEK_FIELD_DESC = new org.apache.thrift.protocol.TField("practice_per_week", org.apache.thrift.protocol.TType.I32, (short)28);
+  private static final org.apache.thrift.protocol.TField PRACTICE_PER_WEEK_FIELD_DESC = new org.apache.thrift.protocol.TField("practice_per_week", org.apache.thrift.protocol.TType.BYTE, (short)28);
+  private static final org.apache.thrift.protocol.TField PRACTICE_SALARY_UNIT_FIELD_DESC = new org.apache.thrift.protocol.TField("practice_salary_unit", org.apache.thrift.protocol.TType.BYTE, (short)29);
 
   private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new ThirdPartyPositionForSynchronizationStandardSchemeFactory();
   private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new ThirdPartyPositionForSynchronizationTupleSchemeFactory();
@@ -70,7 +71,8 @@ public class ThirdPartyPositionForSynchronization implements org.apache.thrift.T
   public int feedback_period; // required
   public java.lang.String recruit_type; // required
   public int practice_salary; // required
-  public int practice_per_week; // required
+  public byte practice_per_week; // required
+  public byte practice_salary_unit; // required
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -101,7 +103,8 @@ public class ThirdPartyPositionForSynchronization implements org.apache.thrift.T
     FEEDBACK_PERIOD((short)25, "feedback_period"),
     RECRUIT_TYPE((short)26, "recruit_type"),
     PRACTICE_SALARY((short)27, "practice_salary"),
-    PRACTICE_PER_WEEK((short)28, "practice_per_week");
+    PRACTICE_PER_WEEK((short)28, "practice_per_week"),
+    PRACTICE_SALARY_UNIT((short)29, "practice_salary_unit");
 
     private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
@@ -172,6 +175,8 @@ public class ThirdPartyPositionForSynchronization implements org.apache.thrift.T
           return PRACTICE_SALARY;
         case 28: // PRACTICE_PER_WEEK
           return PRACTICE_PER_WEEK;
+        case 29: // PRACTICE_SALARY_UNIT
+          return PRACTICE_SALARY_UNIT;
         default:
           return null;
       }
@@ -223,6 +228,7 @@ public class ThirdPartyPositionForSynchronization implements org.apache.thrift.T
   private static final int __FEEDBACK_PERIOD_ISSET_ID = 8;
   private static final int __PRACTICE_SALARY_ISSET_ID = 9;
   private static final int __PRACTICE_PER_WEEK_ISSET_ID = 10;
+  private static final int __PRACTICE_SALARY_UNIT_ISSET_ID = 11;
   private short __isset_bitfield = 0;
   public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
@@ -285,7 +291,9 @@ public class ThirdPartyPositionForSynchronization implements org.apache.thrift.T
     tmpMap.put(_Fields.PRACTICE_SALARY, new org.apache.thrift.meta_data.FieldMetaData("practice_salary", org.apache.thrift.TFieldRequirementType.DEFAULT,
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.PRACTICE_PER_WEEK, new org.apache.thrift.meta_data.FieldMetaData("practice_per_week", org.apache.thrift.TFieldRequirementType.DEFAULT,
-            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BYTE)));
+    tmpMap.put(_Fields.PRACTICE_SALARY_UNIT, new org.apache.thrift.meta_data.FieldMetaData("practice_salary_unit", org.apache.thrift.TFieldRequirementType.DEFAULT,
+            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BYTE)));
     metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(ThirdPartyPositionForSynchronization.class, metaDataMap);
   }
@@ -349,7 +357,8 @@ public class ThirdPartyPositionForSynchronization implements org.apache.thrift.T
           int feedback_period,
           java.lang.String recruit_type,
           int practice_salary,
-          int practice_per_week)
+          byte practice_per_week,
+          byte practice_salary_unit)
   {
     this();
     this.title = title;
@@ -391,6 +400,8 @@ public class ThirdPartyPositionForSynchronization implements org.apache.thrift.T
     setPractice_salaryIsSet(true);
     this.practice_per_week = practice_per_week;
     setPractice_per_weekIsSet(true);
+    this.practice_salary_unit = practice_salary_unit;
+    setPractice_salary_unitIsSet(true);
   }
 
   /**
@@ -466,6 +477,7 @@ public class ThirdPartyPositionForSynchronization implements org.apache.thrift.T
     }
     this.practice_salary = other.practice_salary;
     this.practice_per_week = other.practice_per_week;
+    this.practice_salary_unit = other.practice_salary_unit;
   }
 
   public ThirdPartyPositionForSynchronization deepCopy() {
@@ -527,6 +539,8 @@ public class ThirdPartyPositionForSynchronization implements org.apache.thrift.T
     this.practice_salary = 0;
     setPractice_per_weekIsSet(false);
     this.practice_per_week = 0;
+    setPractice_salary_unitIsSet(false);
+    this.practice_salary_unit = 0;
   }
 
   public java.lang.String getTitle() {
@@ -1197,11 +1211,11 @@ public class ThirdPartyPositionForSynchronization implements org.apache.thrift.T
     __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __PRACTICE_SALARY_ISSET_ID, value);
   }
 
-  public int getPractice_per_week() {
+  public byte getPractice_per_week() {
     return this.practice_per_week;
   }
 
-  public ThirdPartyPositionForSynchronization setPractice_per_week(int practice_per_week) {
+  public ThirdPartyPositionForSynchronization setPractice_per_week(byte practice_per_week) {
     this.practice_per_week = practice_per_week;
     setPractice_per_weekIsSet(true);
     return this;
@@ -1218,6 +1232,29 @@ public class ThirdPartyPositionForSynchronization implements org.apache.thrift.T
 
   public void setPractice_per_weekIsSet(boolean value) {
     __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __PRACTICE_PER_WEEK_ISSET_ID, value);
+  }
+
+  public byte getPractice_salary_unit() {
+    return this.practice_salary_unit;
+  }
+
+  public ThirdPartyPositionForSynchronization setPractice_salary_unit(byte practice_salary_unit) {
+    this.practice_salary_unit = practice_salary_unit;
+    setPractice_salary_unitIsSet(true);
+    return this;
+  }
+
+  public void unsetPractice_salary_unit() {
+    __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __PRACTICE_SALARY_UNIT_ISSET_ID);
+  }
+
+  /** Returns true if field practice_salary_unit is set (has been assigned a value) and false otherwise */
+  public boolean isSetPractice_salary_unit() {
+    return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __PRACTICE_SALARY_UNIT_ISSET_ID);
+  }
+
+  public void setPractice_salary_unitIsSet(boolean value) {
+    __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __PRACTICE_SALARY_UNIT_ISSET_ID, value);
   }
 
   public void setFieldValue(_Fields field, java.lang.Object value) {
@@ -1442,7 +1479,15 @@ public class ThirdPartyPositionForSynchronization implements org.apache.thrift.T
         if (value == null) {
           unsetPractice_per_week();
         } else {
-          setPractice_per_week((java.lang.Integer)value);
+          setPractice_per_week((java.lang.Byte)value);
+        }
+        break;
+
+      case PRACTICE_SALARY_UNIT:
+        if (value == null) {
+          unsetPractice_salary_unit();
+        } else {
+          setPractice_salary_unit((java.lang.Byte)value);
         }
         break;
 
@@ -1535,6 +1580,9 @@ public class ThirdPartyPositionForSynchronization implements org.apache.thrift.T
       case PRACTICE_PER_WEEK:
         return getPractice_per_week();
 
+      case PRACTICE_SALARY_UNIT:
+        return getPractice_salary_unit();
+
     }
     throw new java.lang.IllegalStateException();
   }
@@ -1602,6 +1650,8 @@ public class ThirdPartyPositionForSynchronization implements org.apache.thrift.T
         return isSetPractice_salary();
       case PRACTICE_PER_WEEK:
         return isSetPractice_per_week();
+      case PRACTICE_SALARY_UNIT:
+        return isSetPractice_salary_unit();
     }
     throw new java.lang.IllegalStateException();
   }
@@ -1873,6 +1923,15 @@ public class ThirdPartyPositionForSynchronization implements org.apache.thrift.T
         return false;
     }
 
+    boolean this_present_practice_salary_unit = true;
+    boolean that_present_practice_salary_unit = true;
+    if (this_present_practice_salary_unit || that_present_practice_salary_unit) {
+      if (!(this_present_practice_salary_unit && that_present_practice_salary_unit))
+        return false;
+      if (this.practice_salary_unit != that.practice_salary_unit)
+        return false;
+    }
+
     return true;
   }
 
@@ -1968,7 +2027,9 @@ public class ThirdPartyPositionForSynchronization implements org.apache.thrift.T
 
     hashCode = hashCode * 8191 + practice_salary;
 
-    hashCode = hashCode * 8191 + practice_per_week;
+    hashCode = hashCode * 8191 + (int) (practice_per_week);
+
+    hashCode = hashCode * 8191 + (int) (practice_salary_unit);
 
     return hashCode;
   }
@@ -2261,6 +2322,16 @@ public class ThirdPartyPositionForSynchronization implements org.apache.thrift.T
         return lastComparison;
       }
     }
+    lastComparison = java.lang.Boolean.valueOf(isSetPractice_salary_unit()).compareTo(other.isSetPractice_salary_unit());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetPractice_salary_unit()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.practice_salary_unit, other.practice_salary_unit);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
     return 0;
   }
 
@@ -2459,6 +2530,10 @@ public class ThirdPartyPositionForSynchronization implements org.apache.thrift.T
     if (!first) sb.append(", ");
     sb.append("practice_per_week:");
     sb.append(this.practice_per_week);
+    first = false;
+    if (!first) sb.append(", ");
+    sb.append("practice_salary_unit:");
+    sb.append(this.practice_salary_unit);
     first = false;
     sb.append(")");
     return sb.toString();
@@ -2752,9 +2827,17 @@ public class ThirdPartyPositionForSynchronization implements org.apache.thrift.T
             }
             break;
           case 28: // PRACTICE_PER_WEEK
-            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-              struct.practice_per_week = iprot.readI32();
+            if (schemeField.type == org.apache.thrift.protocol.TType.BYTE) {
+              struct.practice_per_week = iprot.readByte();
               struct.setPractice_per_weekIsSet(true);
+            } else {
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
+          case 29: // PRACTICE_SALARY_UNIT
+            if (schemeField.type == org.apache.thrift.protocol.TType.BYTE) {
+              struct.practice_salary_unit = iprot.readByte();
+              struct.setPractice_salary_unitIsSet(true);
             } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
@@ -2911,7 +2994,10 @@ public class ThirdPartyPositionForSynchronization implements org.apache.thrift.T
       oprot.writeI32(struct.practice_salary);
       oprot.writeFieldEnd();
       oprot.writeFieldBegin(PRACTICE_PER_WEEK_FIELD_DESC);
-      oprot.writeI32(struct.practice_per_week);
+      oprot.writeByte(struct.practice_per_week);
+      oprot.writeFieldEnd();
+      oprot.writeFieldBegin(PRACTICE_SALARY_UNIT_FIELD_DESC);
+      oprot.writeByte(struct.practice_salary_unit);
       oprot.writeFieldEnd();
       oprot.writeFieldStop();
       oprot.writeStructEnd();
@@ -3015,7 +3101,10 @@ public class ThirdPartyPositionForSynchronization implements org.apache.thrift.T
       if (struct.isSetPractice_per_week()) {
         optionals.set(27);
       }
-      oprot.writeBitSet(optionals, 28);
+      if (struct.isSetPractice_salary_unit()) {
+        optionals.set(28);
+      }
+      oprot.writeBitSet(optionals, 29);
       if (struct.isSetTitle()) {
         oprot.writeString(struct.title);
       }
@@ -3116,14 +3205,17 @@ public class ThirdPartyPositionForSynchronization implements org.apache.thrift.T
         oprot.writeI32(struct.practice_salary);
       }
       if (struct.isSetPractice_per_week()) {
-        oprot.writeI32(struct.practice_per_week);
+        oprot.writeByte(struct.practice_per_week);
+      }
+      if (struct.isSetPractice_salary_unit()) {
+        oprot.writeByte(struct.practice_salary_unit);
       }
     }
 
     @Override
     public void read(org.apache.thrift.protocol.TProtocol prot, ThirdPartyPositionForSynchronization struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-      java.util.BitSet incoming = iprot.readBitSet(28);
+      java.util.BitSet incoming = iprot.readBitSet(29);
       if (incoming.get(0)) {
         struct.title = iprot.readString();
         struct.setTitleIsSet(true);
@@ -3260,8 +3352,12 @@ public class ThirdPartyPositionForSynchronization implements org.apache.thrift.T
         struct.setPractice_salaryIsSet(true);
       }
       if (incoming.get(27)) {
-        struct.practice_per_week = iprot.readI32();
+        struct.practice_per_week = iprot.readByte();
         struct.setPractice_per_weekIsSet(true);
+      }
+      if (incoming.get(28)) {
+        struct.practice_salary_unit = iprot.readByte();
+        struct.setPractice_salary_unitIsSet(true);
       }
     }
   }

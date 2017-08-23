@@ -183,6 +183,7 @@ public class PositionBS {
             data.setSalaryMonth(p.getSalary_month());
             data.setPracticeSalary(p.getPractice_salary());
             data.setPracticePerWeek(p.getPractice_per_week());
+            data.setPracticeSalaryUnit(p.getPractice_salary_unit());
             pds.add(data);
         });
         // 回写数据到第三方职位表表

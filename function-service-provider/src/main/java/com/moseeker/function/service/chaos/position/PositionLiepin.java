@@ -26,6 +26,9 @@ public class PositionLiepin implements Serializable {
     private String job_id;
     private String recruit_type;
     private String work_type;
+    private String practice_salary;
+    private String practice_salary_unit;
+    private String practice_per_week;
 
     public String getTitle() {
         return title;
@@ -163,6 +166,30 @@ public class PositionLiepin implements Serializable {
         this.work_type = work_type;
     }
 
+    public String getPractice_salary() {
+        return practice_salary;
+    }
+
+    public void setPractice_salary(String practice_salary) {
+        this.practice_salary = practice_salary;
+    }
+
+    public String getPractice_salary_unit() {
+        return practice_salary_unit;
+    }
+
+    public void setPractice_salary_unit(String practice_salary_unit) {
+        this.practice_salary_unit = practice_salary_unit;
+    }
+
+    public String getPractice_per_week() {
+        return practice_per_week;
+    }
+
+    public void setPractice_per_week(String practice_per_week) {
+        this.practice_per_week = practice_per_week;
+    }
+
     public static PositionLiepin copyFromSyncPosition(ThirdPartyPositionForSynchronization positionInfo) {
 
         PositionLiepin positionLiepin = new PositionLiepin();
@@ -183,6 +210,9 @@ public class PositionLiepin implements Serializable {
         positionLiepin.setJob_id(positionInfo.getJob_id());
         positionLiepin.setRecruit_type(positionInfo.getRecruit_type());
         positionLiepin.setWork_type(positionInfo.getWork_type());
+        positionLiepin.setPractice_salary(String.valueOf(positionInfo.getPractice_salary()));
+        positionLiepin.setPractice_salary_unit(String.valueOf(positionInfo.getPractice_salary_unit()));
+        positionLiepin.setPractice_per_week(String.valueOf(positionInfo.getPractice_per_week()));
         return positionLiepin;
     }
 }

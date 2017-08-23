@@ -173,7 +173,8 @@ struct ThirdPartyPositionForSynchronization {
     25: i32 feedback_period,
     26: string recruit_type,
     27: i32 practice_salary,
-    28: i32 practice_per_week
+    28: i8 practice_per_week,
+    29: i8 practice_salary_unit
 }
 
 struct ThirdPartyPositionForSynchronizationWithAccount {

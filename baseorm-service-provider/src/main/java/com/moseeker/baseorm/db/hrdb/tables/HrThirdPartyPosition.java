@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyPosition extends TableImpl<HrThirdPartyPositionRecord> {
 
-    private static final long serialVersionUID = -291841281;
+    private static final long serialVersionUID = -867032484;
 
     /**
      * The reference instance of <code>hrdb.hr_third_party_position</code>
@@ -159,7 +159,12 @@ public class HrThirdPartyPosition extends TableImpl<HrThirdPartyPositionRecord> 
     /**
      * The column <code>hrdb.hr_third_party_position.practice_per_week</code>. 每周实习天数
      */
-    public final TableField<HrThirdPartyPositionRecord, Integer> PRACTICE_PER_WEEK = createField("practice_per_week", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "每周实习天数");
+    public final TableField<HrThirdPartyPositionRecord, Byte> PRACTICE_PER_WEEK = createField("practice_per_week", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.TINYINT)), this, "每周实习天数");
+
+    /**
+     * The column <code>hrdb.hr_third_party_position.practice_salary_unit</code>. 实习薪资单位，0：元/月，1：元/天
+     */
+    public final TableField<HrThirdPartyPositionRecord, Byte> PRACTICE_SALARY_UNIT = createField("practice_salary_unit", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.TINYINT)), this, "实习薪资单位，0：元/月，1：元/天");
 
     /**
      * Create a <code>hrdb.hr_third_party_position</code> table reference

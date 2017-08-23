@@ -32,7 +32,8 @@ public class HrThirdPartyPositionDO implements org.apache.thrift.TBase<HrThirdPa
   private static final org.apache.thrift.protocol.TField SALARY_BOTTOM_FIELD_DESC = new org.apache.thrift.protocol.TField("salaryBottom", org.apache.thrift.protocol.TType.I32, (short)19);
   private static final org.apache.thrift.protocol.TField SALARY_TOP_FIELD_DESC = new org.apache.thrift.protocol.TField("salaryTop", org.apache.thrift.protocol.TType.I32, (short)20);
   private static final org.apache.thrift.protocol.TField PRACTICE_SALARY_FIELD_DESC = new org.apache.thrift.protocol.TField("practiceSalary", org.apache.thrift.protocol.TType.I32, (short)21);
-  private static final org.apache.thrift.protocol.TField PRACTICE_PER_WEEK_FIELD_DESC = new org.apache.thrift.protocol.TField("practicePerWeek", org.apache.thrift.protocol.TType.I32, (short)22);
+  private static final org.apache.thrift.protocol.TField PRACTICE_PER_WEEK_FIELD_DESC = new org.apache.thrift.protocol.TField("practicePerWeek", org.apache.thrift.protocol.TType.BYTE, (short)22);
+  private static final org.apache.thrift.protocol.TField PRACTICE_SALARY_UNIT_FIELD_DESC = new org.apache.thrift.protocol.TField("practiceSalaryUnit", org.apache.thrift.protocol.TType.BYTE, (short)23);
 
   private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new HrThirdPartyPositionDOStandardSchemeFactory();
   private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new HrThirdPartyPositionDOTupleSchemeFactory();
@@ -58,7 +59,8 @@ public class HrThirdPartyPositionDO implements org.apache.thrift.TBase<HrThirdPa
   public int salaryBottom; // optional
   public int salaryTop; // optional
   public int practiceSalary; // optional
-  public int practicePerWeek; // optional
+  public byte practicePerWeek; // optional
+  public byte practiceSalaryUnit; // optional
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -83,7 +85,8 @@ public class HrThirdPartyPositionDO implements org.apache.thrift.TBase<HrThirdPa
     SALARY_BOTTOM((short)19, "salaryBottom"),
     SALARY_TOP((short)20, "salaryTop"),
     PRACTICE_SALARY((short)21, "practiceSalary"),
-    PRACTICE_PER_WEEK((short)22, "practicePerWeek");
+    PRACTICE_PER_WEEK((short)22, "practicePerWeek"),
+    PRACTICE_SALARY_UNIT((short)23, "practiceSalaryUnit");
 
     private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
@@ -142,6 +145,8 @@ public class HrThirdPartyPositionDO implements org.apache.thrift.TBase<HrThirdPa
           return PRACTICE_SALARY;
         case 22: // PRACTICE_PER_WEEK
           return PRACTICE_PER_WEEK;
+        case 23: // PRACTICE_SALARY_UNIT
+          return PRACTICE_SALARY_UNIT;
         default:
           return null;
       }
@@ -196,8 +201,9 @@ public class HrThirdPartyPositionDO implements org.apache.thrift.TBase<HrThirdPa
   private static final int __SALARYTOP_ISSET_ID = 11;
   private static final int __PRACTICESALARY_ISSET_ID = 12;
   private static final int __PRACTICEPERWEEK_ISSET_ID = 13;
+  private static final int __PRACTICESALARYUNIT_ISSET_ID = 14;
   private short __isset_bitfield = 0;
-  private static final _Fields optionals[] = {_Fields.ID,_Fields.POSITION_ID,_Fields.THIRD_PART_POSITION_ID,_Fields.IS_SYNCHRONIZATION,_Fields.IS_REFRESH,_Fields.SYNC_TIME,_Fields.REFRESH_TIME,_Fields.UPDATE_TIME,_Fields.ADDRESS,_Fields.OCCUPATION,_Fields.SYNC_FAIL_REASON,_Fields.USE_COMPANY_ADDRESS,_Fields.THIRD_PARTY_ACCOUNT_ID,_Fields.CHANNEL,_Fields.DEPARTMENT,_Fields.SALARY_MONTH,_Fields.FEEDBACK_PERIOD,_Fields.SALARY_DISCUSS,_Fields.SALARY_BOTTOM,_Fields.SALARY_TOP,_Fields.PRACTICE_SALARY,_Fields.PRACTICE_PER_WEEK};
+  private static final _Fields optionals[] = {_Fields.ID,_Fields.POSITION_ID,_Fields.THIRD_PART_POSITION_ID,_Fields.IS_SYNCHRONIZATION,_Fields.IS_REFRESH,_Fields.SYNC_TIME,_Fields.REFRESH_TIME,_Fields.UPDATE_TIME,_Fields.ADDRESS,_Fields.OCCUPATION,_Fields.SYNC_FAIL_REASON,_Fields.USE_COMPANY_ADDRESS,_Fields.THIRD_PARTY_ACCOUNT_ID,_Fields.CHANNEL,_Fields.DEPARTMENT,_Fields.SALARY_MONTH,_Fields.FEEDBACK_PERIOD,_Fields.SALARY_DISCUSS,_Fields.SALARY_BOTTOM,_Fields.SALARY_TOP,_Fields.PRACTICE_SALARY,_Fields.PRACTICE_PER_WEEK,_Fields.PRACTICE_SALARY_UNIT};
   public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
@@ -244,7 +250,9 @@ public class HrThirdPartyPositionDO implements org.apache.thrift.TBase<HrThirdPa
     tmpMap.put(_Fields.PRACTICE_SALARY, new org.apache.thrift.meta_data.FieldMetaData("practiceSalary", org.apache.thrift.TFieldRequirementType.OPTIONAL,
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.PRACTICE_PER_WEEK, new org.apache.thrift.meta_data.FieldMetaData("practicePerWeek", org.apache.thrift.TFieldRequirementType.OPTIONAL,
-            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BYTE)));
+    tmpMap.put(_Fields.PRACTICE_SALARY_UNIT, new org.apache.thrift.meta_data.FieldMetaData("practiceSalaryUnit", org.apache.thrift.TFieldRequirementType.OPTIONAL,
+            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BYTE)));
     metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(HrThirdPartyPositionDO.class, metaDataMap);
   }
@@ -295,6 +303,7 @@ public class HrThirdPartyPositionDO implements org.apache.thrift.TBase<HrThirdPa
     this.salaryTop = other.salaryTop;
     this.practiceSalary = other.practiceSalary;
     this.practicePerWeek = other.practicePerWeek;
+    this.practiceSalaryUnit = other.practiceSalaryUnit;
   }
 
   public HrThirdPartyPositionDO deepCopy() {
@@ -339,6 +348,8 @@ public class HrThirdPartyPositionDO implements org.apache.thrift.TBase<HrThirdPa
     this.practiceSalary = 0;
     setPracticePerWeekIsSet(false);
     this.practicePerWeek = 0;
+    setPracticeSalaryUnitIsSet(false);
+    this.practiceSalaryUnit = 0;
   }
 
   public int getId() {
@@ -832,11 +843,11 @@ public class HrThirdPartyPositionDO implements org.apache.thrift.TBase<HrThirdPa
     __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __PRACTICESALARY_ISSET_ID, value);
   }
 
-  public int getPracticePerWeek() {
+  public byte getPracticePerWeek() {
     return this.practicePerWeek;
   }
 
-  public HrThirdPartyPositionDO setPracticePerWeek(int practicePerWeek) {
+  public HrThirdPartyPositionDO setPracticePerWeek(byte practicePerWeek) {
     this.practicePerWeek = practicePerWeek;
     setPracticePerWeekIsSet(true);
     return this;
@@ -853,6 +864,29 @@ public class HrThirdPartyPositionDO implements org.apache.thrift.TBase<HrThirdPa
 
   public void setPracticePerWeekIsSet(boolean value) {
     __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __PRACTICEPERWEEK_ISSET_ID, value);
+  }
+
+  public byte getPracticeSalaryUnit() {
+    return this.practiceSalaryUnit;
+  }
+
+  public HrThirdPartyPositionDO setPracticeSalaryUnit(byte practiceSalaryUnit) {
+    this.practiceSalaryUnit = practiceSalaryUnit;
+    setPracticeSalaryUnitIsSet(true);
+    return this;
+  }
+
+  public void unsetPracticeSalaryUnit() {
+    __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __PRACTICESALARYUNIT_ISSET_ID);
+  }
+
+  /** Returns true if field practiceSalaryUnit is set (has been assigned a value) and false otherwise */
+  public boolean isSetPracticeSalaryUnit() {
+    return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __PRACTICESALARYUNIT_ISSET_ID);
+  }
+
+  public void setPracticeSalaryUnitIsSet(boolean value) {
+    __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __PRACTICESALARYUNIT_ISSET_ID, value);
   }
 
   public void setFieldValue(_Fields field, java.lang.Object value) {
@@ -1029,7 +1063,15 @@ public class HrThirdPartyPositionDO implements org.apache.thrift.TBase<HrThirdPa
         if (value == null) {
           unsetPracticePerWeek();
         } else {
-          setPracticePerWeek((java.lang.Integer)value);
+          setPracticePerWeek((java.lang.Byte)value);
+        }
+        break;
+
+      case PRACTICE_SALARY_UNIT:
+        if (value == null) {
+          unsetPracticeSalaryUnit();
+        } else {
+          setPracticeSalaryUnit((java.lang.Byte)value);
         }
         break;
 
@@ -1104,6 +1146,9 @@ public class HrThirdPartyPositionDO implements org.apache.thrift.TBase<HrThirdPa
       case PRACTICE_PER_WEEK:
         return getPracticePerWeek();
 
+      case PRACTICE_SALARY_UNIT:
+        return getPracticeSalaryUnit();
+
     }
     throw new java.lang.IllegalStateException();
   }
@@ -1159,6 +1204,8 @@ public class HrThirdPartyPositionDO implements org.apache.thrift.TBase<HrThirdPa
         return isSetPracticeSalary();
       case PRACTICE_PER_WEEK:
         return isSetPracticePerWeek();
+      case PRACTICE_SALARY_UNIT:
+        return isSetPracticeSalaryUnit();
     }
     throw new java.lang.IllegalStateException();
   }
@@ -1376,6 +1423,15 @@ public class HrThirdPartyPositionDO implements org.apache.thrift.TBase<HrThirdPa
         return false;
     }
 
+    boolean this_present_practiceSalaryUnit = true && this.isSetPracticeSalaryUnit();
+    boolean that_present_practiceSalaryUnit = true && that.isSetPracticeSalaryUnit();
+    if (this_present_practiceSalaryUnit || that_present_practiceSalaryUnit) {
+      if (!(this_present_practiceSalaryUnit && that_present_practiceSalaryUnit))
+        return false;
+      if (this.practiceSalaryUnit != that.practiceSalaryUnit)
+        return false;
+    }
+
     return true;
   }
 
@@ -1469,7 +1525,11 @@ public class HrThirdPartyPositionDO implements org.apache.thrift.TBase<HrThirdPa
 
     hashCode = hashCode * 8191 + ((isSetPracticePerWeek()) ? 131071 : 524287);
     if (isSetPracticePerWeek())
-      hashCode = hashCode * 8191 + practicePerWeek;
+      hashCode = hashCode * 8191 + (int) (practicePerWeek);
+
+    hashCode = hashCode * 8191 + ((isSetPracticeSalaryUnit()) ? 131071 : 524287);
+    if (isSetPracticeSalaryUnit())
+      hashCode = hashCode * 8191 + (int) (practiceSalaryUnit);
 
     return hashCode;
   }
@@ -1702,6 +1762,16 @@ public class HrThirdPartyPositionDO implements org.apache.thrift.TBase<HrThirdPa
         return lastComparison;
       }
     }
+    lastComparison = java.lang.Boolean.valueOf(isSetPracticeSalaryUnit()).compareTo(other.isSetPracticeSalaryUnit());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetPracticeSalaryUnit()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.practiceSalaryUnit, other.practiceSalaryUnit);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
     return 0;
   }
 
@@ -1883,6 +1953,12 @@ public class HrThirdPartyPositionDO implements org.apache.thrift.TBase<HrThirdPa
       if (!first) sb.append(", ");
       sb.append("practicePerWeek:");
       sb.append(this.practicePerWeek);
+      first = false;
+    }
+    if (isSetPracticeSalaryUnit()) {
+      if (!first) sb.append(", ");
+      sb.append("practiceSalaryUnit:");
+      sb.append(this.practiceSalaryUnit);
       first = false;
     }
     sb.append(")");
@@ -2099,9 +2175,17 @@ public class HrThirdPartyPositionDO implements org.apache.thrift.TBase<HrThirdPa
             }
             break;
           case 22: // PRACTICE_PER_WEEK
-            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-              struct.practicePerWeek = iprot.readI32();
+            if (schemeField.type == org.apache.thrift.protocol.TType.BYTE) {
+              struct.practicePerWeek = iprot.readByte();
               struct.setPracticePerWeekIsSet(true);
+            } else {
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
+          case 23: // PRACTICE_SALARY_UNIT
+            if (schemeField.type == org.apache.thrift.protocol.TType.BYTE) {
+              struct.practiceSalaryUnit = iprot.readByte();
+              struct.setPracticeSalaryUnitIsSet(true);
             } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
@@ -2244,7 +2328,12 @@ public class HrThirdPartyPositionDO implements org.apache.thrift.TBase<HrThirdPa
       }
       if (struct.isSetPracticePerWeek()) {
         oprot.writeFieldBegin(PRACTICE_PER_WEEK_FIELD_DESC);
-        oprot.writeI32(struct.practicePerWeek);
+        oprot.writeByte(struct.practicePerWeek);
+        oprot.writeFieldEnd();
+      }
+      if (struct.isSetPracticeSalaryUnit()) {
+        oprot.writeFieldBegin(PRACTICE_SALARY_UNIT_FIELD_DESC);
+        oprot.writeByte(struct.practiceSalaryUnit);
         oprot.writeFieldEnd();
       }
       oprot.writeFieldStop();
@@ -2331,7 +2420,10 @@ public class HrThirdPartyPositionDO implements org.apache.thrift.TBase<HrThirdPa
       if (struct.isSetPracticePerWeek()) {
         optionals.set(21);
       }
-      oprot.writeBitSet(optionals, 22);
+      if (struct.isSetPracticeSalaryUnit()) {
+        optionals.set(22);
+      }
+      oprot.writeBitSet(optionals, 23);
       if (struct.isSetId()) {
         oprot.writeI32(struct.id);
       }
@@ -2396,14 +2488,17 @@ public class HrThirdPartyPositionDO implements org.apache.thrift.TBase<HrThirdPa
         oprot.writeI32(struct.practiceSalary);
       }
       if (struct.isSetPracticePerWeek()) {
-        oprot.writeI32(struct.practicePerWeek);
+        oprot.writeByte(struct.practicePerWeek);
+      }
+      if (struct.isSetPracticeSalaryUnit()) {
+        oprot.writeByte(struct.practiceSalaryUnit);
       }
     }
 
     @Override
     public void read(org.apache.thrift.protocol.TProtocol prot, HrThirdPartyPositionDO struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-      java.util.BitSet incoming = iprot.readBitSet(22);
+      java.util.BitSet incoming = iprot.readBitSet(23);
       if (incoming.get(0)) {
         struct.id = iprot.readI32();
         struct.setIdIsSet(true);
@@ -2489,8 +2584,12 @@ public class HrThirdPartyPositionDO implements org.apache.thrift.TBase<HrThirdPa
         struct.setPracticeSalaryIsSet(true);
       }
       if (incoming.get(21)) {
-        struct.practicePerWeek = iprot.readI32();
+        struct.practicePerWeek = iprot.readByte();
         struct.setPracticePerWeekIsSet(true);
+      }
+      if (incoming.get(22)) {
+        struct.practiceSalaryUnit = iprot.readByte();
+        struct.setPracticeSalaryUnitIsSet(true);
       }
     }
   }
