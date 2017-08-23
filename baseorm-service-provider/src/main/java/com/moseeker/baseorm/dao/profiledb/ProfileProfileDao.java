@@ -1054,8 +1054,6 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                                                                     boolean dl_url_required,
                                                                     Map<String, List<String>> filter) {
 
-        logger.info("getResourceByApplication:=============={}:position:{}:application{}", "开始", 0, 0);
-
         long startTime = System.currentTimeMillis();
 
         Set<Integer> positionIds = new HashSet<>();
@@ -1099,7 +1097,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     .fetchMaps();
         }
 
-        logger.info("getResourceByApplication:=============={}:{}", "positionExt耗时", System.currentTimeMillis() - startTime);
+        logger.debug("getResourceByApplication:=============={}:{}", "positionExt耗时", System.currentTimeMillis() - startTime);
         startTime = System.currentTimeMillis();
 
         //所有的job_resume_other
@@ -1112,7 +1110,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     .fetchMaps();
         }
 
-        logger.info("getResourceByApplication:=============={}:{}", "allResumeOther耗时", System.currentTimeMillis() - startTime);
+        logger.debug("getResourceByApplication:=============={}:{}", "allResumeOther耗时", System.currentTimeMillis() - startTime);
         startTime = System.currentTimeMillis();
 
         //所有的user_user
@@ -1125,7 +1123,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     .fetchMaps();
         }
 
-        logger.info("getResourceByApplication:=============={}:{}", "allUser耗时", System.currentTimeMillis() - startTime);
+        logger.debug("getResourceByApplication:=============={}:{}", "allUser耗时", System.currentTimeMillis() - startTime);
         startTime = System.currentTimeMillis();
 
         //所有的user_thirdparty_user
@@ -1138,7 +1136,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     .fetchMaps();
         }
 
-        logger.info("getResourceByApplication:=============={}:{}", "allThirdPartyUser耗时", System.currentTimeMillis() - startTime);
+        logger.debug("getResourceByApplication:=============={}:{}", "allThirdPartyUser耗时", System.currentTimeMillis() - startTime);
         startTime = System.currentTimeMillis();
 
         List<Integer> profileIds = new ArrayList<>();
@@ -1161,7 +1159,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
         profileIds.remove(Integer.valueOf(0));
         logger.info("getResourceByApplication:==============:profileIds:{}", profileIds);
 
-        logger.info("getResourceByApplication:=============={}:{}", "allProfile耗时", System.currentTimeMillis() - startTime);
+        logger.debug("getResourceByApplication:=============={}:{}", "allProfile耗时", System.currentTimeMillis() - startTime);
         startTime = System.currentTimeMillis();
 
         //所有的profile_attachment
@@ -1174,7 +1172,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     .fetchMaps();
         }
 
-        logger.info("getResourceByApplication:=============={}:{}", "allProfile_attachment耗时", System.currentTimeMillis() - startTime);
+        logger.debug("getResourceByApplication:=============={}:{}", "allProfile_attachment耗时", System.currentTimeMillis() - startTime);
         startTime = System.currentTimeMillis();
 
         //所有的profile_basic
@@ -1204,7 +1202,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     .fetchMaps();
         }
 
-        logger.info("getResourceByApplication:=============={}:{}", "allProfile_basic耗时", System.currentTimeMillis() - startTime);
+        logger.debug("getResourceByApplication:=============={}:{}", "allProfile_basic耗时", System.currentTimeMillis() - startTime);
         startTime = System.currentTimeMillis();
 
         //所有的profile_awards
@@ -1216,7 +1214,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     .where(ProfileAwards.PROFILE_AWARDS.PROFILE_ID.in(profileIds))
                     .fetchMaps();
         }
-        logger.info("getResourceByApplication:=============={}:{}", "allProfile_award耗时", System.currentTimeMillis() - startTime);
+        logger.debug("getResourceByApplication:=============={}:{}", "allProfile_award耗时", System.currentTimeMillis() - startTime);
         startTime = System.currentTimeMillis();
 
         //所有的profile_credentials
@@ -1230,7 +1228,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     .fetchMaps();
         }
 
-        logger.info("getResourceByApplication:=============={}:{}", "allProfile_credentials耗时", System.currentTimeMillis() - startTime);
+        logger.debug("getResourceByApplication:=============={}:{}", "allProfile_credentials耗时", System.currentTimeMillis() - startTime);
         startTime = System.currentTimeMillis();
 
         //所有的profile_educations
@@ -1244,7 +1242,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     .fetchMaps();
         }
 
-        logger.info("getResourceByApplication:=============={}:{}", "allProfile_educations耗时", System.currentTimeMillis() - startTime);
+        logger.debug("getResourceByApplication:=============={}:{}", "allProfile_educations耗时", System.currentTimeMillis() - startTime);
         startTime = System.currentTimeMillis();
 
         //所有的profile_import
@@ -1257,7 +1255,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     .fetchMaps();
         }
 
-        logger.info("getResourceByApplication:=============={}:{}", "allProfile_import耗时", System.currentTimeMillis() - startTime);
+        logger.debug("getResourceByApplication:=============={}:{}", "allProfile_import耗时", System.currentTimeMillis() - startTime);
         startTime = System.currentTimeMillis();
 
         List<Integer> intentionIds = new ArrayList<>();
@@ -1278,7 +1276,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     .collect(Collectors.toList());
         }
 
-        logger.info("getResourceByApplication:=============={}:{}", "allProfile_intention耗时", System.currentTimeMillis() - startTime);
+        logger.debug("getResourceByApplication:=============={}:{}", "allProfile_intention耗时", System.currentTimeMillis() - startTime);
         startTime = System.currentTimeMillis();
 
         //所有的profile_intention_city
@@ -1290,7 +1288,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     .where(ProfileIntentionCity.PROFILE_INTENTION_CITY.PROFILE_INTENTION_ID.in(intentionIds))
                     .fetchMaps();
         }
-        logger.info("getResourceByApplication:=============={}:{}", "allProfile_intention_city耗时", System.currentTimeMillis() - startTime);
+        logger.debug("getResourceByApplication:=============={}:{}", "allProfile_intention_city耗时", System.currentTimeMillis() - startTime);
         startTime = System.currentTimeMillis();
 
         //所有的profile_intention_industry
@@ -1303,7 +1301,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     .fetchMaps();
         }
 
-        logger.info("getResourceByApplication:=============={}:{}", "allProfile_intention_industry耗时", System.currentTimeMillis() - startTime);
+        logger.debug("getResourceByApplication:=============={}:{}", "allProfile_intention_industry耗时", System.currentTimeMillis() - startTime);
         startTime = System.currentTimeMillis();
 
         //所有的profile_intention_position
@@ -1316,7 +1314,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     .fetchMaps();
         }
 
-        logger.info("getResourceByApplication:=============={}:{}", "allProfile_intention_position耗时", System.currentTimeMillis() - startTime);
+        logger.debug("getResourceByApplication:=============={}:{}", "allProfile_intention_position耗时", System.currentTimeMillis() - startTime);
         startTime = System.currentTimeMillis();
 
         //所有的profile_languages
@@ -1329,7 +1327,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     .fetchMaps();
         }
 
-        logger.info("getResourceByApplication:=============={}:{}", "allProfile_language耗时", System.currentTimeMillis() - startTime);
+        logger.debug("getResourceByApplication:=============={}:{}", "allProfile_language耗时", System.currentTimeMillis() - startTime);
         startTime = System.currentTimeMillis();
 
         //所有的profile_other
@@ -1342,7 +1340,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     .fetchMaps();
         }
 
-        logger.info("getResourceByApplication:=============={}:{}", "allProfile_other耗时", System.currentTimeMillis() - startTime);
+        logger.debug("getResourceByApplication:=============={}:{}", "allProfile_other耗时", System.currentTimeMillis() - startTime);
         startTime = System.currentTimeMillis();
 
         //所有的profile_projectexp
@@ -1355,7 +1353,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     .fetchMaps();
         }
 
-        logger.info("getResourceByApplication:=============={}:{}", "allProfile_projectexp耗时", System.currentTimeMillis() - startTime);
+        logger.debug("getResourceByApplication:=============={}:{}", "allProfile_projectexp耗时", System.currentTimeMillis() - startTime);
         startTime = System.currentTimeMillis();
 
         //profile_skill
@@ -1368,7 +1366,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     .fetchMaps();
         }
 
-        logger.info("getResourceByApplication:=============={}:{}", "allProfile_skills耗时", System.currentTimeMillis() - startTime);
+        logger.debug("getResourceByApplication:=============={}:{}", "allProfile_skills耗时", System.currentTimeMillis() - startTime);
         startTime = System.currentTimeMillis();
 
         //profile_workexp
@@ -1408,7 +1406,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     .fetchMaps();
         }
 
-        logger.info("getResourceByApplication:=============={}:{}", "allProfile_workexp耗时", System.currentTimeMillis() - startTime);
+        logger.debug("getResourceByApplication:=============={}:{}", "allProfile_workexp耗时", System.currentTimeMillis() - startTime);
         startTime = System.currentTimeMillis();
 
         //recommender employee
@@ -1424,7 +1422,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     .fetchMaps();
         }
 
-        logger.info("getResourceByApplication:=============={}:{}", "allEmployee耗时", System.currentTimeMillis() - startTime);
+        logger.debug("getResourceByApplication:=============={}:{}", "allEmployee耗时", System.currentTimeMillis() - startTime);
         startTime = System.currentTimeMillis();
 
         //recommender user
@@ -1437,7 +1435,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     .fetchMaps();
         }
 
-        logger.info("getResourceByApplication:=============={}:{}", "profile_other耗时", System.currentTimeMillis() - startTime);
+        logger.debug("getResourceByApplication:=============={}:{}", "profile_other耗时", System.currentTimeMillis() - startTime);
         startTime = System.currentTimeMillis();
 
         List<Map<String, Object>> result = new ArrayList<>();

@@ -44,6 +44,7 @@ struct JobResumeOther {
     3:  optional Timestamp create_time,       // 表记录创建时间
     4:  optional Timestamp update_time        // 最新更新时间
 }
+
 struct ProcessValidationStruct{
 	1: optional i32 id,
 	2: optional i32 company_id,
@@ -54,8 +55,10 @@ struct ProcessValidationStruct{
 	7: optional i32 applier_id,
 	8: optional string applier_name,
 	9: optional string position_name,
-	10: optional i32 recommender_user_id
+	10: optional i32 recommender_user_id,
+	11: optional i32 position_id
 }
+
 struct ApplicationAts{
 	1:optional i32 company_id,
 	2:optional i32 account_id,

@@ -5,19 +5,26 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.ValueFilter;
 import com.moseeker.baseorm.dao.dictdb.*;
+import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.dao.dictdb.DictCityDao;
+import com.moseeker.baseorm.dao.dictdb.DictCityPostcodeDao;
+import com.moseeker.baseorm.dao.dictdb.DictConstantDao;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.*;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictAlipaycampusCityRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictAlipaycampusJobcategoryRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityPostcodeRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
+import com.moseeker.baseorm.db.hrdb.tables.HrHbConfig;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrTeamRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyPositionRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.*;
 import com.moseeker.baseorm.pojo.JobPositionPojo;
 import com.moseeker.baseorm.pojo.RecommendedPositonPojo;
 import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.*;
@@ -38,16 +45,19 @@ import com.moseeker.position.service.position.PositionForAlipaycampusPojo;
 import com.moseeker.position.service.position.WorkTypeChangeUtil;
 import com.moseeker.position.service.position.qianxun.Degree;
 import com.moseeker.position.service.position.qianxun.WorkType;
+import com.moseeker.position.utils.CommonPositionUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionCityDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobOccupationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.position.struct.*;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
+
 import org.apache.thrift.TException;
 import org.jooq.Field;
 import org.slf4j.Logger;
@@ -57,6 +67,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -111,6 +122,9 @@ public class PositionService {
     @Autowired
     private PositionChangeUtil positionChangeUtil;
 
+    @Autowired
+    private CommonPositionUtils commonPositionUtils;
+
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
 
@@ -120,6 +134,7 @@ public class PositionService {
     SearchengineServices.Iface searchengineServices = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
 
     private static List dictAlipaycampusJobcategorylist;
+
     /**
      * 获取推荐职位
      * <p>
@@ -234,10 +249,7 @@ public class PositionService {
                     jobPositionPojo.occupation = jobOccupationRecord.getName();
                 }
             }
-
-
         }
-
         // 修改更新时间
         jobPositionPojo.publish_date_view = DateUtils.dateToPattern(jobPositionPojo.publish_date,
                 DateUtils.SHOT_TIME);
@@ -254,9 +266,17 @@ public class PositionService {
             sb.deleteCharAt(sb.length() - 1);
             jobPositionPojo.province = sb.toString();
         }
-
+        String citynames=commonPositionUtils.handlerCity(positionId);
+        logger.info("job_position_city的city信息是＝＝＝＝＝＝＝＝＝＝＝＝＝"+citynames);
+        if(StringUtils.isNotNullOrEmpty(citynames)){
+          jobPositionPojo.city=citynames;
+        }
+        if("全国".equals(jobPositionPojo.city)){
+            jobPositionPojo.city_flag=1;
+        }
         return ResponseUtils.success(jobPositionPojo);
     }
+
 
     /*
      * 获取城市
@@ -356,7 +376,6 @@ public class PositionService {
         logger.info("cache allow");
         return true;
     }
-
     /**
      * 创建刷新职位数据
      *
@@ -894,12 +913,12 @@ public class PositionService {
             // 判断JobPosion字段
             for (Field field : jobPositionRecord.fields()) {
                 String str = (String) hashMap.get(field.getName());
-                if (com.moseeker.common.util.StringUtils.isEmptyObject(str)) {
+                if (!com.moseeker.common.util.StringUtils.isNullOrEmpty(str)) {
                     stringBuffer.append(jobPositionRecord.get(field.getName()));
                 }
             }
             String str = (String) hashMap.get("extra");
-            if (!com.moseeker.common.util.StringUtils.isEmptyObject(str)) {
+            if (!com.moseeker.common.util.StringUtils.isNullOrEmpty(str)) {
                 stringBuffer.append(extra);
             }
             md5 = MD5Util.md5(stringBuffer.toString());
@@ -1077,7 +1096,7 @@ public class PositionService {
                             cityCodeQuery.where("postcode", city.getValue());
                             cityPostcodeRecord = dictCityPostcodeDao.getRecord(cityCodeQuery.buildQuery());
                             if (cityPostcodeRecord != null && cityPostcodeRecord.getCity() != null) {
-                                if (com.moseeker.common.util.StringUtils.isEmptyObject(cityPostcodeRecord.getCity())) {
+                                if (com.moseeker.common.util.StringUtils.isNullOrEmpty(cityPostcodeRecord.getCity())) {
                                     stringBuffer.append(cityPostcodeRecord.getProvince());
                                 } else {
                                     stringBuffer.append(cityPostcodeRecord.getCity());
@@ -1158,10 +1177,7 @@ public class PositionService {
             String childCompanyId = "";
             String companyId = "";
 
-            logger.info("----- in getPositionList ");
-            logger.info("query.getDid() :" + String.valueOf(query.getDid()));
-            logger.info("query.getCompany_id() :" + String.valueOf(query.getCompany_id()));
-
+            logger.info("getPositionList did:{},company_id:{},query:{}", query.getDid(), query.getCompany_id(), BeanUtils.convertStructToJSON(query));
 
             if (query.isSetDid() && query.getDid() != 0) {
                 // 如果有did, 赋值 childCompanyId
@@ -1201,7 +1217,11 @@ public class PositionService {
             logger.info("query.getDepartment(): " + query.getDepartment());
             logger.info("query.getCustom(): " + query.getCustom());
             logger.info("<><><><><><><><><><><>");
-
+            String cities=query.getCities();
+            if(StringUtils.isNotNullOrEmpty(cities)&&commonPositionUtils.appendCity(cities)&&!cities.contains("全国'")){
+                cities=cities+",全国";
+                query.setCities(cities);
+            }
             //获取 pid list
             Response ret = searchengineServices.query(
                     query.getKeywords(),
@@ -1231,39 +1251,52 @@ public class PositionService {
                 Condition con = new Condition("id", jdIdList.toArray(), ValueOp.IN);
                 Query q = new Query.QueryBuilder().where(con).buildQuery();
                 List<JobPositionRecord> jobRecords = jobPositionDao.getRecords(q);
-                for (int i = 0; i < jdIdList.size(); i++) {
-                    int positionId = jdIdList.get(i);
-                    for (JobPositionRecord jr : jobRecords) {
-                        if (positionId == jr.getId()) {
-                            logger.info("pid: " + String.valueOf(jr.getId()));
-                            WechatPositionListData e = new WechatPositionListData();
-                            e.setTitle(jr.getTitle());
-                            e.setId(jr.getId());
-                            // 数据库的 salary_top 和 salary_bottom 默认是 NULL 不是 0
-                            // 所以这里需要对这两个字段做 null pointer 检查
-                            if (jr.getSalaryTop() == null) {
-                                e.setSalary_top(0);
-                            } else {
-                                e.setSalary_top(jr.getSalaryTop());
-                            }
-
-                            if (jr.getSalaryBottom() == null) {
-                                e.setSalary_bottom(0);
-                            } else {
-                                e.setSalary_bottom(jr.getSalaryBottom());
-                            }
-                            e.setPublish_date(new SimpleDateFormat("YYYY-MM-dd HH:mm:ss").format(jr.getUpdateTime()));
-                            e.setDepartment(jr.getDepartment());
-                            e.setVisitnum(jr.getVisitnum());
-                            e.setIn_hb(jr.getHbStatus() > 0);
-                            e.setCount(jr.getCount());
-                            e.setCity(jr.getCity());
-                            e.setPriority(jr.getPriority());
-                            e.setPublisher(jr.getPublisher()); // will be used for fetching sub company info
-                            dataList.add(e);
-                            break;
-                        }
-                    }
+                Map<Integer,Set<String>> cityMap=commonPositionUtils.handlePositionCity(jdIdList);
+                for(int i=0;i<jdIdList.size();i++){
+                	int positionId=jdIdList.get(i);
+                	 for (JobPositionRecord jr : jobRecords) {
+                		if(positionId==jr.getId()){
+	 	                    logger.info("pid: " + String.valueOf(jr.getId()));
+	 	                    WechatPositionListData e = new WechatPositionListData();
+	 	                    e.setTitle(jr.getTitle());
+	 	                    e.setId(jr.getId());
+	 	                    // 数据库的 salary_top 和 salary_bottom 默认是 NULL 不是 0
+	 	                    // 所以这里需要对这两个字段做 null pointer 检查
+	 	                    if (jr.getSalaryTop() == null) {
+	 	                        e.setSalary_top(0);
+	 	                    } else {
+	 	                        e.setSalary_top(jr.getSalaryTop());
+	 	                    }
+	 	                    if (jr.getSalaryBottom() == null) {
+	 	                        e.setSalary_bottom(0);
+	 	                    } else {
+	 	                        e.setSalary_bottom(jr.getSalaryBottom());
+	 	                    }
+	 	                    e.setPublish_date(new SimpleDateFormat("YYYY-MM-dd HH:mm:ss").format(jr.getUpdateTime()));
+	 	                    e.setDepartment(jr.getDepartment());
+	 	                    e.setVisitnum(jr.getVisitnum());
+	 	                    e.setIn_hb(jr.getHbStatus() > 0);
+	 	                    e.setCount(jr.getCount());
+	 	                    e.setCity(jr.getCity());
+	 	                    if(cityMap!=null&&!cityMap.isEmpty()){
+	 	                    	Set<String> positionCity=cityMap.get(jr.getId());
+	 	                    	if(positionCity!=null&&positionCity.size()>0){
+	 	                    		String  cityName="";
+	 	                    		for(String city:positionCity){
+	 	                    			cityName+=city+",";
+	 	                    		}
+	 	                    		if(StringUtils.isNotNullOrEmpty(cityName)){
+	 	                    			cityName=cityName.substring(0, cityName.lastIndexOf(","));
+	 	                    		}
+	 	                    		e.setCity(cityName);
+	 	                    	}
+	 	                    }
+	 	                    e.setPriority(jr.getPriority());
+	 	                    e.setPublisher(jr.getPublisher()); // will be used for fetching sub company info
+	 	                    dataList.add(e);
+	 	                    break;
+                		}
+ 	                }
                 }
                 logger.info(dataList.toString());
                 // 获取公司信息，拼装 company abbr, logo 等信息
@@ -1560,12 +1593,12 @@ public class PositionService {
         return result;
     }
 
-    private List<DictAlipaycampusJobcategoryRecord> getAllDictAlipaycampusJobcategory(){
+    private List<DictAlipaycampusJobcategoryRecord> getAllDictAlipaycampusJobcategory() {
 
-        if (alipaycampusJobcategory == null){
+        if (alipaycampusJobcategory == null) {
 
-            synchronized(PositionService.class){
-                if (alipaycampusJobcategory == null){
+            synchronized (PositionService.class) {
+                if (alipaycampusJobcategory == null) {
                     alipaycampusJobcategory = dictAlipaycampusJobcategoryDao.getRecords(null);
                 }
             }
@@ -1577,21 +1610,21 @@ public class PositionService {
 
 
     /**
-     * @param  positionId      职位id
-     * @param  channel        部门名称
+     * @param positionId 职位id
+     * @param channel    部门名称
      */
     @CounterIface
     public Response getPositionForThirdParty(int positionId, int channel) {
-        Query query=new Query.QueryBuilder().where("id",positionId).buildQuery();
+        Query query = new Query.QueryBuilder().where("id", positionId).buildQuery();
         JobPositionRecord positionRecord = jobPositionDao.getRecord(query);
         int company_id;
         if (positionRecord == null) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_POSITION_NOTEXIST);
-        }else{
+        } else {
             company_id = positionRecord.getCompanyId();
             int publisher = positionRecord.getPublisher();
             // 获取子账号公司信息
-            query=new Query.QueryBuilder().where("account_id",publisher).buildQuery();
+            query = new Query.QueryBuilder().where("account_id", publisher).buildQuery();
             HrCompanyAccountRecord record = hrCompanyAccountDao.getRecord(query);
             if (record != null && record.getCompanyId() != null) {
                 if (company_id != record.getCompanyId()) {
@@ -1610,29 +1643,29 @@ public class PositionService {
 
         // 职业分类
         List<DictAlipaycampusJobcategoryRecord> allDictAlipaycampusJobcategory = this.getAllDictAlipaycampusJobcategory();
-        for( int i = 0 ; i < allDictAlipaycampusJobcategory.size() ; i++) {
+        for (int i = 0; i < allDictAlipaycampusJobcategory.size(); i++) {
             DictAlipaycampusJobcategoryRecord dictAlipaycampusJobcategoryRecord = allDictAlipaycampusJobcategory.get(i);
             String keyword = dictAlipaycampusJobcategoryRecord.getName();
-            if (positionRecord.getTitle().indexOf(keyword)>=0){
+            if (positionRecord.getTitle().indexOf(keyword) >= 0) {
                 int level = dictAlipaycampusJobcategoryRecord.getLevel();
-                if (level == 3){
-                    query=new Query.QueryBuilder().where("code",dictAlipaycampusJobcategoryRecord.getParentCode()).buildQuery();
+                if (level == 3) {
+                    query = new Query.QueryBuilder().where("code", dictAlipaycampusJobcategoryRecord.getParentCode()).buildQuery();
                     dictAlipaycampusJobcategoryRecord = dictAlipaycampusJobcategoryDao.getRecord(query);
                     // level should equals 2 here.
                     level = dictAlipaycampusJobcategoryRecord.getLevel();
                 }
 
-                if ( level == 2){
+                if (level == 2) {
                     positionForAlipaycampusPojo.setJob_tier_two_code(dictAlipaycampusJobcategoryRecord.getCode());
                     positionForAlipaycampusPojo.setJob_tier_two_name(dictAlipaycampusJobcategoryRecord.getName());
-                    query=new Query.QueryBuilder().where("code",dictAlipaycampusJobcategoryRecord.getParentCode()).buildQuery();
+                    query = new Query.QueryBuilder().where("code", dictAlipaycampusJobcategoryRecord.getParentCode()).buildQuery();
                     dictAlipaycampusJobcategoryRecord = dictAlipaycampusJobcategoryDao.getRecord(query);
                     // level should equals 1 here.
                     level = dictAlipaycampusJobcategoryRecord.getLevel();
 
                 }
 
-                if ( level == 1){
+                if (level == 1) {
                     positionForAlipaycampusPojo.setJob_tier_one_code(dictAlipaycampusJobcategoryRecord.getCode());
                     positionForAlipaycampusPojo.setJob_tier_one_name(dictAlipaycampusJobcategoryRecord.getName());
 
@@ -1643,7 +1676,7 @@ public class PositionService {
 
         }
 
-        if (positionForAlipaycampusPojo.getJob_tier_one_code() == null){
+        if (positionForAlipaycampusPojo.getJob_tier_one_code() == null) {
             positionForAlipaycampusPojo.setJob_tier_one_code("opj_e4tvvgcavs2j");
             positionForAlipaycampusPojo.setJob_tier_one_name("其他类型");
         }
@@ -1661,12 +1694,12 @@ public class PositionService {
 
 
         //positionForAlipaycampusPojo.setJob_resume_lg();
-        if (positionRecord.getSalaryBottom() != null){
+        if (positionRecord.getSalaryBottom() != null) {
             positionForAlipaycampusPojo.setPayment_min(1000 * positionRecord.getSalaryBottom());
-        }else{
+        } else {
             positionForAlipaycampusPojo.setPayment_min(0);
         }
-        if (positionRecord.getSalaryTop() != null && positionRecord.getSalaryTop() != 999){
+        if (positionRecord.getSalaryTop() != null && positionRecord.getSalaryTop() != 999) {
             positionForAlipaycampusPojo.setPayment_max(1000 * positionRecord.getSalaryTop());
         }
 
@@ -1679,10 +1712,10 @@ public class PositionService {
         positionForAlipaycampusPojo.setCompany_logo("https://cdn.moseeker.com/" + hrCompanyRecord.getLogo());
 
         // 省市
-        query=new Query.QueryBuilder().where("pid",positionRecord.getId()).buildQuery();
+        query = new Query.QueryBuilder().where("pid", positionRecord.getId()).buildQuery();
         JobPositionCityRecord jobPositionCityRecord = jobPositionCityDao.getRecord(query);
 
-        if (jobPositionCityRecord == null){
+        if (jobPositionCityRecord == null) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.POSITION_DATA_NOCITYCODE_ERROR);
         }
         Integer citycode = jobPositionCityRecord.getCode();
@@ -1700,37 +1733,37 @@ public class PositionService {
         }
 
 
-        query=new Query.QueryBuilder().where("id",citycode).buildQuery();
+        query = new Query.QueryBuilder().where("id", citycode).buildQuery();
 
         DictAlipaycampusCityRecord dictAlipaycampusCityRecord = dictAlipaycampusCityDao.getRecord(query);
 
-        if (dictAlipaycampusCityRecord != null && dictAlipaycampusCityRecord.getLevel() == 3){
+        if (dictAlipaycampusCityRecord != null && dictAlipaycampusCityRecord.getLevel() == 3) {
             citycode = dictAlipaycampusCityRecord.getPid();
-            query=new Query.QueryBuilder().where("id",citycode).buildQuery();
+            query = new Query.QueryBuilder().where("id", citycode).buildQuery();
             dictAlipaycampusCityRecord = dictAlipaycampusCityDao.getRecord(query);
         }
 
-        if (dictAlipaycampusCityRecord != null  && dictAlipaycampusCityRecord.getLevel() == 2){
+        if (dictAlipaycampusCityRecord != null && dictAlipaycampusCityRecord.getLevel() == 2) {
             positionForAlipaycampusPojo.setArea_city_code(dictAlipaycampusCityRecord.getId().toString());
             positionForAlipaycampusPojo.setArea_city_name(dictAlipaycampusCityRecord.getName());
             citycode = dictAlipaycampusCityRecord.getPid();
-            query=new Query.QueryBuilder().where("id",citycode).buildQuery();
+            query = new Query.QueryBuilder().where("id", citycode).buildQuery();
             dictAlipaycampusCityRecord = dictAlipaycampusCityDao.getRecord(query);
         }
 
-        if (dictAlipaycampusCityRecord != null  && dictAlipaycampusCityRecord.getLevel() == 1){
+        if (dictAlipaycampusCityRecord != null && dictAlipaycampusCityRecord.getLevel() == 1) {
             positionForAlipaycampusPojo.setArea_province_code(dictAlipaycampusCityRecord.getId());
             positionForAlipaycampusPojo.setArea_province_name(dictAlipaycampusCityRecord.getName());
 
         }
 
         // 直辖市特殊处理
-        if (dictAlipaycampusCityRecord == null || positionForAlipaycampusPojo.getArea_city_code()==null
-                || positionForAlipaycampusPojo.getArea_province_code()==0 ){
+        if (dictAlipaycampusCityRecord == null || positionForAlipaycampusPojo.getArea_city_code() == null
+                || positionForAlipaycampusPojo.getArea_province_code() == 0) {
             Integer specialcitycode = jobPositionCityRecord.getCode();
-            specialcitycode = specialcitycode/10000 * 10000; // 取 code的前面2位数 + 4个0， 获取省份code
+            specialcitycode = specialcitycode / 10000 * 10000; // 取 code的前面2位数 + 4个0， 获取省份code
 
-            switch (specialcitycode){
+            switch (specialcitycode) {
                 case 310000:
                     positionForAlipaycampusPojo.setArea_province_code(310100);
                     positionForAlipaycampusPojo.setArea_province_name("上海市");
@@ -1763,47 +1796,47 @@ public class PositionService {
 
 
         // 时间 ,3个月过期，1天前刷新。
-        positionForAlipaycampusPojo.setGmt_expired(String.valueOf(positionRecord.getUpdateTime().getTime()+7776000000L));
-        positionForAlipaycampusPojo.setGmt_refresh(String.valueOf(System.currentTimeMillis()-864000000L));
+        positionForAlipaycampusPojo.setGmt_expired(String.valueOf(positionRecord.getUpdateTime().getTime() + 7776000000L));
+        positionForAlipaycampusPojo.setGmt_refresh(String.valueOf(System.currentTimeMillis() - 864000000L));
 
         return ResponseUtils.successWithoutStringify(positionForAlipaycampusPojo.toString());
     }
 
     /**
-     * @param  channel      5，支付宝
-     * @param  type        0：创建、更新， 1 刷新， 2 下架
-     * @param  start_time   "2017-04-05 11:34:43"
-     * @param  end_time
+     * @param channel    5，支付宝
+     * @param type       0：创建、更新， 1 刷新， 2 下架
+     * @param start_time "2017-04-05 11:34:43"
+     * @param end_time
      */
     @CounterIface
-    public List<Integer> getPositionListForThirdParty(int channel, int type, String start_time, String end_time){
+    public List<Integer> getPositionListForThirdParty(int channel, int type, String start_time, String end_time) {
         Query query;
-        switch (type){
+        switch (type) {
             case 0: //创建or更新
-                query=new Query.QueryBuilder().select("id").where("status",0)
-                        .and(new Condition("update_time",start_time,ValueOp.GE))
-                        .and(new Condition("update_time",end_time,ValueOp.LT)).buildQuery();
+                query = new Query.QueryBuilder().select("id").where("status", 0)
+                        .and(new Condition("update_time", start_time, ValueOp.GE))
+                        .and(new Condition("update_time", end_time, ValueOp.LT)).buildQuery();
                 break;
             case 1: //刷新
-                query=new Query.QueryBuilder().select("id").where("status",0)
-                        .and(new Condition("update_time",start_time,ValueOp.GE))
-                        .and(new Condition("update_time",end_time,ValueOp.LT)).buildQuery();
+                query = new Query.QueryBuilder().select("id").where("status", 0)
+                        .and(new Condition("update_time", start_time, ValueOp.GE))
+                        .and(new Condition("update_time", end_time, ValueOp.LT)).buildQuery();
                 break;
             case 2:
-                query=new Query.QueryBuilder().select("id").where(new Condition("status",0,ValueOp.NEQ))
-                        .and(new Condition("update_time",start_time,ValueOp.GE))
-                        .and(new Condition("update_time",end_time,ValueOp.LT)).buildQuery();
+                query = new Query.QueryBuilder().select("id").where(new Condition("status", 0, ValueOp.NEQ))
+                        .and(new Condition("update_time", start_time, ValueOp.GE))
+                        .and(new Condition("update_time", end_time, ValueOp.LT)).buildQuery();
                 break;
             default:
                 return null;
         }
 
 
-        List<JobPositionDO>  jobPositionList = jobPositionDao.getPositions(query);
+        List<JobPositionDO> jobPositionList = jobPositionDao.getPositions(query);
         List<Integer> positionlist = null;
-        if (jobPositionList != null){
+        if (jobPositionList != null) {
             positionlist = new ArrayList<>(jobPositionList.size());
-            for (JobPositionDO position : jobPositionList){
+            for (JobPositionDO position : jobPositionList) {
                 positionlist.add(position.getId());
 
             }
@@ -1811,7 +1844,6 @@ public class PositionService {
 
         return positionlist;
     }
-
 
 
     private String replaceBlank(String str) {
@@ -1852,6 +1884,7 @@ public class PositionService {
                     }
                     String company_id = BeanUtils.converToString(position_map.get("company_id"));
                     Query query = new Query.QueryBuilder().where("id", company_id).buildQuery();
+
                     List<Hrcompany> company_maps = hrCompanyDao.getDatas(query, Hrcompany.class);
                     if (company_maps != null && company_maps.size() > 0) {
 

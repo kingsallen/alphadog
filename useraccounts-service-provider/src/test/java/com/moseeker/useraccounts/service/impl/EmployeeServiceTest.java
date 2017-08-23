@@ -6,6 +6,7 @@ import com.moseeker.common.util.AopTargetUtils;
 import com.moseeker.thrift.gen.employee.struct.*;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.useraccounts.config.AppConfig;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,8 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * Created by lucky8987 on 17/5/17.
  */
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(classes = AppConfig.class)
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = AppConfig.class)
 public class EmployeeServiceTest {
 
     @Autowired
@@ -77,15 +78,15 @@ public class EmployeeServiceTest {
         System.out.println(result);
     }
 
-    //@Test
+    //@Testls
     public void getEmployeeCustomFieldsConf() throws Exception {
         EmployeeVerificationConfResponse response = service.getEmployeeVerificationConf(650);
         System.out.println(response);
     }
 
-    //@Test
+//    @Test
     public void getEmployeeRewards() throws Exception {
-        RewardsResponse response = service.getEmployeeRewards(14, 39978);
+        RewardsResponse response = service.getEmployeeRewards(69826, 39978,0,0);
         System.out.println(response);
     }
 
@@ -103,4 +104,9 @@ public class EmployeeServiceTest {
         //System.out.println(result);
     }
 
+//    @Test
+    public void awardRankingTest() {
+        List<EmployeeAward> response = service.awardRanking(45082, 39978, "2017-08");
+        System.out.println(response);
+    }
 }

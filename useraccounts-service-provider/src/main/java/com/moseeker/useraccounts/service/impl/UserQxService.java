@@ -17,6 +17,7 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserSearchConditionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserViewedPositionDO;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
+
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -54,6 +55,7 @@ public class UserQxService {
 
     /**
      * 用户获取筛选条件列表
+     *
      * @param userId
      * @return
      * @throws TException
@@ -81,6 +83,7 @@ public class UserQxService {
 
     /**
      * 用户添加常用筛选条件
+     *
      * @param userSearchCondition
      * @return
      * @throws TException
@@ -114,6 +117,7 @@ public class UserQxService {
 
     /**
      * 用户删除常用筛选条件
+     *
      * @param userId
      * @param id
      * @return
@@ -133,7 +137,7 @@ public class UserQxService {
                 query.where("user_id", String.valueOf(userId));
                 query.and("id", String.valueOf(id));
                 UserSearchConditionDO condition = searchConditionDao.getData(query.buildQuery());
-                if(condition != null && condition.getId() > 0) {
+                if (condition != null && condition.getId() > 0) {
                     if (condition.getDisable() == 0) {
                         searchConditionDao.updateData(condition.setDisable((byte) 1));
                     }
@@ -155,6 +159,7 @@ public class UserQxService {
 
     /**
      * 用户查询收藏的职位
+     *
      * @param userId
      * @param positionId
      * @return
@@ -210,8 +215,8 @@ public class UserQxService {
                     form.setDepartment(positionDO.getDepartment());
                     form.setTime(r.getUpdateTime());
                     form.setCity(positionDO.getCity());
-                    form.setSalary_top(NumberUtils.toInt(positionDO.getSalaryTop()+"", 0));
-                    form.setSalary_bottom(NumberUtils.toInt(positionDO.getSalaryBottom()+"", 0));
+                    form.setSalary_top(NumberUtils.toInt(positionDO.getSalaryTop() + "", 0));
+                    form.setSalary_bottom(NumberUtils.toInt(positionDO.getSalaryBottom() + "", 0));
                     form.setUpdate_time(positionDO.getUpdateTime());
                     form.setStatus((byte) positionDO.getStatus());
                     positionFormList.add(form);
@@ -232,6 +237,7 @@ public class UserQxService {
 
     /**
      * 用户收藏职位
+     *
      * @param userId
      * @param positionId
      * @param status
@@ -287,6 +293,7 @@ public class UserQxService {
     /**
      * 批量获取用户与职位的状态<br/>
      * 状态 {0: 未阅，1：已阅，2：已收藏，3：已投递}
+     *
      * @param userId
      * @param positionIds
      * @return
@@ -300,7 +307,7 @@ public class UserQxService {
         Map<Integer, Integer> positionStatus = new HashMap<>();
         result.setPositionStatus(positionStatus);
         try {
-            if (userId == 0 || StringUtils.isEmptyObject(positionIds)) {
+            if (userId == 0 || StringUtils.isEmptyList(positionIds)) {
                 logger.error("getUserPositionStatus 请求参数为空，请检查相关参数, userId={}, positionIds={}", userId, Arrays.toString(positionIds.toArray()));
                 jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
             } else {
@@ -347,6 +354,7 @@ public class UserQxService {
 
     /**
      * 记录用户已阅读的职位
+     *
      * @param userId
      * @param positionId
      * @return
@@ -357,12 +365,12 @@ public class UserQxService {
         UserViewedPositionVO result = new UserViewedPositionVO();
         JSONObject jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.SUCCESS);
         try {
-            if (userId > 0 && positionId > 0 ){
+            if (userId > 0 && positionId > 0) {
                 Query.QueryBuilder query = new Query.QueryBuilder();
                 query.where("user_id", String.valueOf(userId));
                 query.and("position_id", String.valueOf(positionId));
                 UserViewedPositionDO userViewedPosition = userViewedPositionDao.getData(query.buildQuery());
-                if (userViewedPosition == null || userViewedPosition.getId() == 0 ) {
+                if (userViewedPosition == null || userViewedPosition.getId() == 0) {
                     UserViewedPositionDO entity = new UserViewedPositionDO();
                     entity.setUserId(userId);
                     entity.setPositionId(positionId);

@@ -1,5 +1,9 @@
 apply plugin: 'idea'
 apply plugin: 'eclipse'
+
+repositories {
+    maven { url 'https://mvnrepository.com/artifact/' }
+}
   
 dependencies {
 
@@ -7,11 +11,11 @@ dependencies {
     compile project(":baseorm-service-provider")
     compile project(":common-service")
 
-    testCompile deps["junit"]
-    testCompile deps["mockito"]
-
     compile deps["spring-core"]
     compile deps["spring-context"]
+
+    testCompile deps["junit"]
+    testCompile deps["mockito"]
 
 }
 

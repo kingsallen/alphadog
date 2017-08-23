@@ -59,6 +59,7 @@ Thumbs.db
 # IntelliJ specific files/directories
 out
 .idea
+.ideaDataSources
 *.ipr
 *.iws
 *.iml
