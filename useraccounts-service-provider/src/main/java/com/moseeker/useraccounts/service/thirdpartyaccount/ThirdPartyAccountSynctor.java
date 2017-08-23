@@ -53,7 +53,7 @@ public class ThirdPartyAccountSynctor {
                     hrThirdPartyAccount.setBinding((short) executeTask.getErrorCode(null));
                 }
                 //保存到数据库
-                bindTask.updateThirdPartyAccount(hrThirdPartyAccount, extras);
+                executeTask.updateThirdPartyAccount(hrThirdPartyAccount, extras);
             } catch (Exception e) {
                 e.printStackTrace();
                 logger.error(e.getMessage(), e);
