@@ -1353,18 +1353,14 @@ public class UserHrAccountService {
      */
     public RewardVOPageVO getEmployeeRewards(int employeeId, int companyId, int pageNumber, int pageSize) throws CommonException {
         RewardVOPageVO rewardVOPageVO = employeeEntity.getEmployeePointsRecords(employeeId, pageNumber, pageSize);
-
-        logger.info("getEmployeeRewards rewardVOPageVO:{}", rewardVOPageVO);
         /**
          * 查询公司下候选人信息，如果候选人不存在则将berecomID 置为0，用以通知前端不需要拼接潜在候选人的url链接。
          */
         if (rewardVOPageVO.getData() != null && rewardVOPageVO.getData().size() > 0) {
             List<Integer> beRecomIDList = rewardVOPageVO.getData().stream().filter(m -> m.getBerecomId() != 0)
                     .map(m -> m.getBerecomId()).collect(Collectors.toList());
-            logger.info("getEmployeeRewards beRecomIDList:{}", beRecomIDList);
             if (beRecomIDList != null && beRecomIDList.size() > 0) {
                 List<CandidateCompanyDO> candidateCompanyDOList = candidateCompanyDao.getCandidateCompanyByCompanyIDAndUserID(companyId, beRecomIDList);
-                logger.info("getEmployeeRewards candidateCompanyDOList:{}", candidateCompanyDOList);
                 if (candidateCompanyDOList != null && candidateCompanyDOList.size() > 0) {
                     Map<Integer, CandidateCompanyDO> userUserDOSMap =
                             candidateCompanyDOList.stream().collect(Collectors.toMap(CandidateCompanyDO::getSysUserId,

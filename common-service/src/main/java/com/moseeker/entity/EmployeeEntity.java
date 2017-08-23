@@ -11,11 +11,7 @@ import com.moseeker.baseorm.dao.userdb.*;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompanyRel;
 import com.moseeker.baseorm.db.hrdb.tables.HrPointsConf;
-import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
-import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
-import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
-import com.moseeker.baseorm.db.userdb.tables.UserUser;
-import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
+import com.moseeker.baseorm.db.userdb.tables.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeePointsRecordRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.util.BeanUtils;
@@ -38,12 +34,12 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrPointsConfDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.*;
-import com.moseeker.thrift.gen.employee.struct.Reward;
 import com.moseeker.thrift.gen.employee.struct.RewardVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -250,7 +246,7 @@ public class EmployeeEntity {
         }
         query.where(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.EMPLOYEE_ID.getName(), employeeId)
                 .and(new Condition(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.AWARD.getName(), 0, ValueOp.NEQ))
-                .orderBy(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.UPDATE_TIME.getName(), Order.DESC);
+                .orderBy(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD._CREATE_TIME.getName(), Order.DESC);
         int totalRow = employeePointsRecordDao.getCount(query.buildQuery());
         // 总条数
         rewardVOPageVO.setTotalRow(totalRow);
@@ -262,13 +258,10 @@ public class EmployeeEntity {
             if (userEmployeePointsRecordList != null && userEmployeePointsRecordList.size() > 0) {
                 for (UserEmployeePointsRecordRecord userEmployeePointsRecordRecord : userEmployeePointsRecordList) {
                     UserEmployeePointsRecordDO userEmployeePointsRecordDO =
-                            BeanUtils.DBToStruct(UserEmployeePointsRecordDO.class, userEmployeePointsRecordRecord,
-                                    new HashMap<String, String>() {{
-                                        put("_create_time", "createTime");
-                                    }});
+                            BeanUtils.DBToStruct(UserEmployeePointsRecordDO.class, userEmployeePointsRecordRecord);
+                    userEmployeePointsRecordDO.setCreateTime(new DateTime(userEmployeePointsRecordRecord.get_CreateTime()).toString("yyyy-MM-dd HH:mm:ss"));
                     points.add(userEmployeePointsRecordDO);
                 }
-
             }
             // 申请记录信息
             Map<Integer, JobApplicationDO> appMap = new HashMap<>();
