@@ -38,6 +38,7 @@ import com.moseeker.thrift.gen.employee.struct.RewardVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
+
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -255,13 +256,12 @@ public class EmployeeEntity {
             List<UserEmployeePointsRecordRecord> userEmployeePointsRecordList = employeePointsRecordDao.getRecords(query.buildQuery());
             List<UserEmployeePointsRecordDO> points = new ArrayList<>();
             if (userEmployeePointsRecordList != null && userEmployeePointsRecordList.size() > 0) {
-                for (UserEmployeePointsRecordRecord userEmployeePointsRecordRecord: userEmployeePointsRecordList) {
+                for (UserEmployeePointsRecordRecord userEmployeePointsRecordRecord : userEmployeePointsRecordList) {
                     UserEmployeePointsRecordDO userEmployeePointsRecordDO =
                             BeanUtils.DBToStruct(UserEmployeePointsRecordDO.class, userEmployeePointsRecordRecord);
                     userEmployeePointsRecordDO.setCreateTime(new DateTime(userEmployeePointsRecordRecord.get_CreateTime()).toString("yyyy-MM-dd HH:mm:ss"));
                     points.add(userEmployeePointsRecordDO);
                 }
-
             }
             // 申请记录信息
             Map<Integer, JobApplicationDO> appMap = new HashMap<>();
@@ -280,7 +280,7 @@ public class EmployeeEntity {
             // 职位信息Id
             List<Integer> positionIds = points.stream().filter(m -> m.getPositionId() != 0).map(m -> new Double(m.getPositionId()).intValue()).collect(Collectors.toList());
             // 获取被推荐人信息
-            List<Integer> berecomIds = points.stream().filter(m -> m.getBerecomUserId() != 0).map(m -> new Double(m.getBerecomUserId()).intValue()).collect(Collectors.toList());
+            Set<Integer> berecomIds = points.stream().filter(m -> m.getBerecomUserId() != 0).map(m -> new Double(m.getBerecomUserId()).intValue()).collect(Collectors.toSet());
             // 加积分类型
             List<Integer> types = points.stream().filter(m -> m.getAwardConfigId() != 0).map(m -> new Double(m.getBerecomUserId()).intValue()).collect(Collectors.toList());
 
