@@ -21,6 +21,7 @@ import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.thrift.gen.candidate.struct.*;
@@ -362,7 +363,8 @@ public class CandidateEntity implements Candidate {
         /** 添加员工积分 */
         if (candidateRecomRecordDO.getPostUserId() > 0) {
             try {
-                Query query = new Query.QueryBuilder().where("sysuser_id", candidateRecomRecordDO.getPostUserId()).and(new Condition("company_id",  param.getCompanyId()))
+                Query query = new Query.QueryBuilder().where("sysuser_id", candidateRecomRecordDO.getPostUserId())
+                        .and(new Condition("company_id", employeeEntity.getCompanyIds(param.getCompanyId()), ValueOp.IN))
                         .and("disable", Constant.ENABLE_OLD).and("activation", EmployeeType.AUTH_SUCCESS.getValue()).buildQuery();
                 UserEmployeeDO employeeDO = employeeDao.getData(query);
                 if (employeeDO != null) {
