@@ -254,10 +254,10 @@ public class SearchengineEntity {
      * 增量更新员工积分信息
      *
      * @param userEmployeeId   员工ID
-     * @param userEmployeePointsRecordDO 员工加积分记录信息
+     * @param employeeRecordId 员工加积分记录表ID
      * @return
      */
-    public Response updateEmployeeAwards(Integer userEmployeeId, UserEmployeePointsRecordDO userEmployeePointsRecordDO) {
+    public Response updateEmployeeAwards(Integer userEmployeeId, Integer employeeRecordId) {
         logger.info("----开始增量更新员工积分信息-------");
         // 连接ES
         TransportClient client = getTransportClient();
@@ -265,6 +265,9 @@ public class SearchengineEntity {
             return ResponseUtils.fail(9999, "ES连接失败！");
         }
         try {
+            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+            queryBuilder.where(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.ID.getName(), employeeRecordId);
+            UserEmployeePointsRecordDO userEmployeePointsRecordDO = userEmployeePointsDao.getData(queryBuilder.buildQuery());
             if (userEmployeePointsRecordDO.getEmployeeId() != userEmployeeId) {
                 return ResponseUtils.fail(9999, "积分信息有误！");
             }
