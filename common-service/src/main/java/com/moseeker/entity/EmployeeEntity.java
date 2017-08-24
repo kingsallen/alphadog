@@ -179,7 +179,7 @@ public class EmployeeEntity {
                     ueprcrDo.setEmployeePointsRecordId(ueprDo.getId());
                     ueprcrDao.addData(ueprcrDo);
                     // 更新ES中的user_employee数据，以便积分排行实时更新
-                    searchengineEntity.updateEmployeeAwards(employeeId, ueprDo);
+                    searchengineEntity.updateEmployeeAwards(employeeId, ueprDo.getId());
                     return totalAward;
                 } else {
                     logger.error("增加用户积分失败：为用户{},添加积分{}点, reason:{}", employeeId, ueprDo.getAward(), ueprDo.getReason());
@@ -500,9 +500,7 @@ public class EmployeeEntity {
 
 
     /**
-     * 员工删除(支持批量)
-     * 1.将数据移入到history_user_employee中
-     * 2.user_employee中做物理删除
+     * 员工删除(支持批量) 1.将数据移入到history_user_employee中 2.user_employee中做物理删除
      */
     @Transactional
     public boolean removeEmployee(List<Integer> employeeIds) throws CommonException {
@@ -705,8 +703,7 @@ public class EmployeeEntity {
     }
 
     /**
-     * 添加员工记录集合。
-     * 会向员工记录中添加数据的同时，往ES员工索引维护队列中增加维护员工记录的任务。
+     * 添加员工记录集合。 会向员工记录中添加数据的同时，往ES员工索引维护队列中增加维护员工记录的任务。
      *
      * @param userEmployeeList 员工记录集合
      * @return 添加好的员工记录。如果参数是空，那么返回值是null
@@ -724,8 +721,7 @@ public class EmployeeEntity {
     }
 
     /**
-     * 添加员工记录集合。
-     * 会向员工记录中添加数据的同时，往ES员工索引维护队列中增加维护员工记录的任务。
+     * 添加员工记录集合。 会向员工记录中添加数据的同时，往ES员工索引维护队列中增加维护员工记录的任务。
      *
      * @param userEmployeeList 员工记录集合
      * @return 添加好的员工记录。如果参数是空，那么返回值是null
@@ -763,8 +759,7 @@ public class EmployeeEntity {
 //    }
 
     /**
-     * 添加员工记录或者员工数据
-     * 会向员工记录中添加数据的同时，往ES员工索引维护队列中增加维护员工记录的任务。
+     * 添加员工记录或者员工数据 会向员工记录中添加数据的同时，往ES员工索引维护队列中增加维护员工记录的任务。
      *
      * @param userEmployee
      * @return
