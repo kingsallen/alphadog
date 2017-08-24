@@ -181,7 +181,7 @@ public class EmployeeEntity {
                     ueprcrDo.setEmployeePointsRecordId(ueprDo.getId());
                     ueprcrDao.addData(ueprcrDo);
                     // 更新ES中的user_employee数据，以便积分排行实时更新
-                    searchengineEntity.updateEmployeeAwards(Arrays.asList(employeeId));
+                    searchengineEntity.updateEmployeeAwards(employeeId, ueprcrDo.getId());
                     return userEmployeeDO.getAward();
                 } else {
                     logger.error("增加用户积分失败：为用户{},添加积分{}点, reason:{}", employeeId, ueprDo.getAward(), ueprDo.getReason());

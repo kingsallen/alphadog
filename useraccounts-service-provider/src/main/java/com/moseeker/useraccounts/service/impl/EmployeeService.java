@@ -107,7 +107,7 @@ public class EmployeeService {
             query.where("sysuser_id", String.valueOf(userId)).and(new Condition("company_id", companyIds, ValueOp.IN))
                     .and("disable", String.valueOf(0)).and("activation", "0");
             employees = employeeDao.getDatas(query.buildQuery(), UserEmployeeDO.class);
-            String pendingEmployee = client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE,userId+"-"+companyId+"-"+employeeEntity.getGroupIdByCompanyId(companyId));
+            String pendingEmployee = client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO,userId+"-"+companyId+"-"+employeeEntity.getGroupIdByCompanyId(companyId));
             Employee emp = new Employee();
             if (employees != null && !employees.isEmpty()) {
                 employees.stream().filter(f -> f.getId() > 0).forEach(employee -> {
@@ -138,7 +138,7 @@ public class EmployeeService {
                 emp.setMobile(jsonObject.getString("mobile"));
                 emp.setCname(jsonObject.getString("cname"));
                 emp.setAward(jsonObject.getIntValue("award"));
-                emp.setIsRpSent(jsonObject.getBoolean("isRpSent"));
+                emp.setIsRpSent(jsonObject.getBooleanValue("isRpSent"));
                 emp.setCustomField(jsonObject.getString("customField"));
                 emp.setWxuserId(wxEntity.getWxuserId(userId, companyId));
                 emp.setEmail(jsonObject.getString("email"));
