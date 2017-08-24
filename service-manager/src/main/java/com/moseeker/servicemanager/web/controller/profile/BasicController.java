@@ -52,6 +52,9 @@ public class BasicController {
 		try {
 			Basic basic = ParamUtils.initModelForm(request, Basic.class);
 			String name=basic.getName();
+			/*
+			校验简历里面的姓名的长度不能超过100个字符，在服务方法里也作了限制，为的是避免将来service-manager不用了，而没有注意成为bug
+			 */
 			if(StringUtils.isNotNullOrEmpty(name)&&name.length()>100){
 				return ResponseLogNotification.fail(request, "不能超过100个英文字母或者50个汉字");
 			}
@@ -69,6 +72,9 @@ public class BasicController {
 		try {
 			Basic basic = ParamUtils.initModelForm(request, Basic.class);
 			String name=basic.getName();
+			/*
+			校验简历里面的姓名的长度不能超过100个字符，在服务方法里也作了限制，为的是避免将来service-manager不用了，而没有注意成为bug
+			 */
 			if(StringUtils.isNotNullOrEmpty(name)&&name.length()>100){
 				return ResponseLogNotification.fail(request, "不能超过100个英文字母或者50个汉字");
 			}
