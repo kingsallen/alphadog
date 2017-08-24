@@ -4,6 +4,7 @@ import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.*;
 import com.moseeker.entity.JobPositionCityEntity;
@@ -46,6 +47,7 @@ public class CompanyPcService {
     /*
       获取企业详情
      */
+    @CounterIface
     public Map<String,Object> getCompanyInfo(int companyId) throws Exception {
         Map<String,Object>map=new HashMap<String,Object>();
         Map<String,Object> companyData=this.handleCompany(companyId);
@@ -68,6 +70,7 @@ public class CompanyPcService {
     /*
      获取团队列表
      */
+    @CounterIface
     public Map<String,Object> getTeamListinfo(int companyId,int page,int pageSize) throws Exception {
         Map<String,Object>map=new HashMap<String,Object>();
         Map<String,Object> companyData=this.handleCompany(companyId);
@@ -82,7 +85,7 @@ public class CompanyPcService {
             confCompanyId=parentId;
             isMother=false;
         }
-        this.judgeJDOrCS(confCompanyId,map,companyId);
+        this.judgeJDOrCS(confCompanyId,map);
         this.handleTeamInfo(companyId,isMother,1,20,map);
         this.handleCompanyPositionCity(companyId,isMother,map);
         return map;
@@ -90,6 +93,7 @@ public class CompanyPcService {
     /*
        获取团队详情
      */
+    @CounterIface
     public Map<String,Object> getTeamDetails(int teamId,int companyId) throws Exception {
         Map<String,Object>map=new HashMap<String,Object>();
         Map<String,Object> companyData=this.handleCompany(companyId);
@@ -150,7 +154,8 @@ public class CompanyPcService {
             List<Map<String,Object>> list= (List<Map<String, Object>>) result.get("teamList");
             if(!StringUtils.isEmptyList(list)){
                 for(Map<String,Object> item:list){
-                    int id= (int) item.get("id");
+                    Map<String,Object> team= (Map<String, Object>) item.get("team");
+                    int id= (int) team.get("id");
                     if(teamId!=id){
                         newList.add(item);
                     }
@@ -176,7 +181,7 @@ public class CompanyPcService {
     /*
     判断是否有jd页，或者cs
      */
-    private void judgeJDOrCS(int confCompanyId,Map<String,Object> map,int companyId){
+    private void judgeJDOrCS(int confCompanyId,Map<String,Object> map){
         map.put("newJd",0);
         HrCompanyConfDO hrCompanyConfDO=getHrCompanyConf(confCompanyId);
         if(hrCompanyConfDO!=null){

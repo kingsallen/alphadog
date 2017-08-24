@@ -27,4 +27,9 @@ public class CompanyPcServiceTest {
         Map<String,Object> result=companyPcService.getTeamListinfo(39978,1,20);
         System.out.println(result+"======");
     }
+    @Test
+    public void teamDetailsTest() throws Exception {
+        Map<String,Object> result=companyPcService.getTeamDetails(188350558,39978);
+        System.out.println(result+"======");
+    }
 }
