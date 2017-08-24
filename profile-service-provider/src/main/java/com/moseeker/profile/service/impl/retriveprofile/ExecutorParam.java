@@ -42,7 +42,7 @@ public class ExecutorParam {
         setOriginParam(paramMap);
 
         if (channelType.name().equals("JOB51")) {
-            setOrigin(512);
+            setOrigin(8);
         } else if (channelType.name().equals("LIEPIN")) {
             setOrigin(32);
         } else if (channelType.name().equals("ZHILIAN")) {
