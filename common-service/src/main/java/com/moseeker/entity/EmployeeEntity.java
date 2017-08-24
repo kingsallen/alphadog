@@ -132,7 +132,7 @@ public class EmployeeEntity {
     }
 
     // 转发点击操作 前置
-    public void addAwardBefore(int employeeId, int companyId, int positionId, int templateId, int berecomUserId) throws Exception {
+    public void addAwardBefore(int employeeId, int companyId, int positionId, int templateId, int berecomUserId, int applicationId) throws Exception {
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.where("company_id", companyId).and("template_id", templateId);
         HrPointsConfDO hrPointsConfDO = hrPointsConfDao.getData(query.buildQuery());
@@ -146,7 +146,7 @@ public class EmployeeEntity {
             }
         }
         // 进行加积分操作
-        addReward(employeeId, companyId, "", 0, positionId, templateId, berecomUserId);
+        addReward(employeeId, companyId, "", applicationId, positionId, templateId, berecomUserId);
     }
 
     /**
@@ -313,7 +313,7 @@ public class EmployeeEntity {
                     .and(new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyIds, ValueOp.IN));
             List<UserEmployeeDO> userEmployeeDOList = employeeDao.getDatas(query.buildQuery());
             if (!StringUtils.isEmptyList(userEmployeeDOList)) {
-                userEmployeeDOMap.putAll(userEmployeeDOList.stream().filter(userEmployeeDO -> userEmployeeDO.getSysuserId() != 0).collect(Collectors.toMap(UserEmployeeDO::getSysuserId, Function.identity())));
+                userEmployeeDOMap.putAll(userEmployeeDOList.stream().collect(Collectors.toMap(UserEmployeeDO::getSysuserId, Function.identity())));
             }
 
             query.clear();

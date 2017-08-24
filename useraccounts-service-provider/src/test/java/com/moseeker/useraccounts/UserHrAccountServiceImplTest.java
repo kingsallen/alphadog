@@ -20,6 +20,7 @@ import com.moseeker.useraccounts.service.thirdpartyaccount.ThirdPartyAccountServ
 import com.moseeker.useraccounts.thrift.UserHrAccountServiceImpl;
 import org.apache.thrift.TException;
 import org.junit.Assert;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -35,8 +36,8 @@ import java.util.List;
  * <p>
  * Created by zzh on 16/6/1.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = AppConfig.class)
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(classes = AppConfig.class)
 public class UserHrAccountServiceImplTest {
 
     public static void main(String[] args) {
@@ -242,18 +243,20 @@ public class UserHrAccountServiceImplTest {
         }
     }
 
-//    @Test
+    @Test
     public void testSendEmail() throws Exception {
         System.out.println("start");
         List<String> recipients = new ArrayList<>();
         recipients.add("edhlily@163.com");
         recipients.add("zhangdi@moseeker.com");
         String subject = "测试邮件";
-        String content = "ffdafdsafdsfasfdsaf</br><b style=\"color:red\">【简历邮箱】：ffffffff@test.mail</b>";
+        StringBuilder content = new StringBuilder();
+        content.append("<b style=\"color:blue;text-decoration:underline\">【简历邮箱】：").append("cv_").append(1234567).append("@test.com").append("</b>");
+        content.append("<b style=\"color:red\">（手动发布该职位时，请一定将该邮箱填写在简历回收邮箱中）</b>").append("<br/>");
         Email.EmailBuilder emailBuilder = new Email.EmailBuilder(recipients.subList(0, 1));
         emailBuilder.addCCList(recipients.subList(1, recipients.size()));
         emailBuilder.setSubject(subject);
-        emailBuilder.setContent(content);
+        emailBuilder.setContent(content.toString());
         Email email = emailBuilder.build();
         email.send(3, new Email.EmailListener() {
             @Override

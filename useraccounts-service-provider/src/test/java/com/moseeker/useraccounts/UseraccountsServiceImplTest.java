@@ -1,10 +1,10 @@
 package com.moseeker.useraccounts;
 
+import com.moseeker.baseorm.util.SmsSender;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices.Client;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices.Client.Factory;
 import com.moseeker.useraccounts.config.AppConfig;
-import com.moseeker.useraccounts.service.impl.SmsSender;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TCompactProtocol;
 import org.apache.thrift.protocol.TMultiplexedProtocol;

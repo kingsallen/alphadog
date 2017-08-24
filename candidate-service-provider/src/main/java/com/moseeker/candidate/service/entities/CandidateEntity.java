@@ -1,11 +1,7 @@
 package com.moseeker.candidate.service.entities;
 
-import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
-import com.moseeker.baseorm.dao.candidatedb.CandidateRemarkDao;
-import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
-import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
-import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateCompany;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidatePosition;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateRemark;
@@ -24,6 +20,7 @@ import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
+import com.moseeker.candidate.constant.EmployeeType;
 import com.moseeker.candidate.constant.RecomType;
 import com.moseeker.candidate.service.Candidate;
 import com.moseeker.candidate.service.checkout.ParamCheckTool;
@@ -32,9 +29,6 @@ import com.moseeker.candidate.service.exception.CandidateCategory;
 import com.moseeker.candidate.service.exception.CandidateException;
 import com.moseeker.candidate.service.exception.CandidateExceptionFactory;
 import com.moseeker.common.annotation.iface.CounterIface;
-
-import static com.moseeker.common.biztools.RecruitmentScheduleEnum.*;
-
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.Category;
@@ -42,7 +36,9 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.thrift.gen.candidate.struct.*;
@@ -51,13 +47,10 @@ import com.moseeker.thrift.gen.dao.struct.CandidateRecomRecordSortingDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.*;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
-import com.moseeker.thrift.gen.useraccounts.struct.User;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
-import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Result;
 import org.jooq.impl.DefaultDSLContext;
@@ -73,6 +66,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static com.moseeker.common.biztools.RecruitmentScheduleEnum.IMPROVE_CANDIDATE;
 
 /**
  * 候选人实体，提供候选人相关业务
@@ -96,6 +91,9 @@ public class CandidateEntity implements Candidate {
 
     @Autowired
     private JobPositionDao positionDao;
+
+    @Autowired
+    private UserEmployeeDao employeeDao;
 
     /**
      * C端用户查看职位，判断是否生成候选人数据
@@ -387,8 +385,10 @@ public class CandidateEntity implements Candidate {
         /** 添加员工积分 */
         if (candidateRecomRecordDO.getPostUserId() > 0) {
             try {
-                UserEmployeeDO employeeDO =
-                        candidateDBDao.getEmployee(candidateRecomRecordDO.getPostUserId(), param.getCompanyId());
+                Query query = new Query.QueryBuilder().where("sysuser_id", candidateRecomRecordDO.getPostUserId())
+                        .and(new Condition("company_id", employeeEntity.getCompanyIds(param.getCompanyId()), ValueOp.IN))
+                        .and("disable", Constant.ENABLE_OLD).and("activation", EmployeeType.AUTH_SUCCESS.getValue()).buildQuery();
+                UserEmployeeDO employeeDO = employeeDao.getData(query);
                 if (employeeDO != null) {
                     employeeEntity.addReward(employeeDO.getId(), param.getCompanyId(), "", candidateRecomRecordDO.getAppId(), candidateRecomRecordDO.getPositionId(), IMPROVE_CANDIDATE.getId(), candidateRecomRecordDO.getPresenteeUserId());
                 }
