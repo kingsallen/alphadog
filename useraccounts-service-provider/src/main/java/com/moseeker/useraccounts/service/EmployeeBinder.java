@@ -167,7 +167,7 @@ public abstract class EmployeeBinder {
             response.setSuccess(true);
             response.setMessage("success");
             // 更新ES中useremployee信息
-            searchengineEntity.updateEmployeeAwards(employees.stream().map(m -> m.getId()).collect(Collectors.toList()));
+            searchengineEntity.updateEmployeeDOAwards(employees);
         } else {
             response.setSuccess(false);
             response.setMessage("fail");

@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyPosition extends TableImpl<HrThirdPartyPositionRecord> {
 
-    private static final long serialVersionUID = -867032484;
+    private static final long serialVersionUID = 2139021719;
 
     /**
      * The reference instance of <code>hrdb.hr_third_party_position</code>
