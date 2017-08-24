@@ -19,7 +19,7 @@ public class CompanyPcServiceTest {
     private CompanyPcService companyPcService;
     @Test
     public void companyDetailsTest()throws Exception{
-        Map<String,Object> result=companyPcService.getCompanyInfo(139994);
+        Map<String,Object> result=companyPcService.getCompanyInfo(39978);
         System.out.println(result+"======");
     }
     @Test

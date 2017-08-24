@@ -368,7 +368,7 @@ public class CompanyPcService {
                     }
                 }
             }
-            if(teamPosition!=null&&teamPosition.isEmpty()){
+            if(teamPosition!=null&&!teamPosition.isEmpty()){
                 for(Integer key:teamPosition.keySet()){
                     if(key==teamId){
                         map.put("positionNum",teamPosition.get(key));
