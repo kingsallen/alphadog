@@ -20,8 +20,7 @@ import java.util.UUID;
 import static com.moseeker.common.exception.Category.VALIDATE_FAILED;
 
 /**
- * 执行者参数
- * Created by jack on 19/07/2017.
+ * 执行者参数 Created by jack on 19/07/2017.
  */
 public class ExecutorParam {
 
@@ -48,7 +47,7 @@ public class ExecutorParam {
         } else if (channelType.name().equals("ZHILIAN")) {
             setOrigin(16);
         } else if (channelType.name().equals("LINKEDIN")) {
-            setOrigin(1024);
+            setOrigin(512);
         } else if (channelType.name().equals("ALIPAY")) {
             setOrigin(64);
         }

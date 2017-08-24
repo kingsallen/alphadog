@@ -13,6 +13,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserTaskAliPaySource extends UserTask {
 
+
+
+
     /**
      * 标记用户来源，标记为阿里简历回收
      * @param param 参数信息
