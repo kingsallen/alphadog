@@ -332,6 +332,8 @@ public class SearchengineEntity {
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage());
+        } finally {
+            client.close();
         }
         logger.info("------增量更新员工积分信息结束-------");
         return ResponseUtils.success("");
