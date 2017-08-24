@@ -47,6 +47,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
@@ -151,6 +152,7 @@ public class EmployeeEntity {
         addReward(employeeId, companyId, "", 0, positionId, templateId, berecomUserId);
     }
 
+
     /**
      * 增加员工积点
      *
@@ -164,12 +166,8 @@ public class EmployeeEntity {
         UserEmployeeDO userEmployeeDO = employeeDao.getData(query.buildQuery());
         if (userEmployeeDO != null && userEmployeeDO.getId() > 0 && ueprDo != null) {
             // 修改用户总积分, 产品说 积分不能扣成负数 所以为负数 填为 0
-            if ((userEmployeeDO.getAward() + ueprDo.getAward()) >= 0) {
-                userEmployeeDO.setAward(userEmployeeDO.getAward() + ueprDo.getAward());
-            } else {
-                userEmployeeDO.setAward(0);
-            }
-            int row = employeeDao.updateData(userEmployeeDO);
+            int totalAward = userEmployeeDO.getAward() + ueprDo.getAward();
+            int row = employeeDao.addAward(userEmployeeDO.getId(), totalAward < 0 ? 0 : totalAward, userEmployeeDO.getAward());
             // 积分记录
             if (row > 0) {
                 ueprDo = ueprDao.addData(ueprDo);
@@ -181,12 +179,15 @@ public class EmployeeEntity {
                     ueprcrDo.setEmployeePointsRecordId(ueprDo.getId());
                     ueprcrDao.addData(ueprcrDo);
                     // 更新ES中的user_employee数据，以便积分排行实时更新
-                    searchengineEntity.updateEmployeeAwards(employeeId, ueprcrDo.getId());
-                    return userEmployeeDO.getAward();
+                    searchengineEntity.updateEmployeeAwards(employeeId, ueprDo);
+                    return totalAward;
                 } else {
                     logger.error("增加用户积分失败：为用户{},添加积分{}点, reason:{}", employeeId, ueprDo.getAward(), ueprDo.getReason());
                     throw new RuntimeException("增加积分失败");
                 }
+            } else {
+                logger.error("增加用户积分失败：为用户{},添加积分{}点, reason:{}", employeeId, ueprDo.getAward(), ueprDo.getReason());
+                addReward(employeeId, companyId, ueprDo);
             }
         }
         return 0;
