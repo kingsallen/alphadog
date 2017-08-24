@@ -291,18 +291,18 @@ public class SearchengineEntity {
                 // 季度
                 String season = year + DateUtils.getSeason(tempDate);
                 // 月
-                String day = year + "-" + DateUtils.getMonth(tempDate);
+                String month = year + "-" + DateUtils.getMonth(tempDate);
                 Map<String, Integer> hashMap = new LinkedHashMap<>();
                 hashMap.put(year, point);
                 hashMap.put(season, point);
-                hashMap.put(day, point);
+                hashMap.put(month, point);
                 // 更新ES信息
                 if (awardsMap != null && awardsMap.size() > 0) {
                     for (Map.Entry<String, Object> entry : awardsMap.entrySet()) {
                         JSONObject object = new JSONObject();
                         Map awardMap = (Map) entry.getValue();
                         // 判断是否追加积分信息
-                        if (entry.getKey().equals(year) || entry.getKey().equals(season) || entry.getKey().equals(day)) {
+                        if (entry.getKey().equals(year) || entry.getKey().equals(season) || entry.getKey().equals(month)) {
                             Integer award = (Integer) awardMap.get("award");
                             award = award + point;
                             object.put("last_update_time", LocalDateTime.parse(userEmployeePointsRecordDO.getUpdateTime(), java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
@@ -311,15 +311,15 @@ public class SearchengineEntity {
                             hashMap.remove(entry.getKey());
                         }
                     }
-                    // 新积分信息
-                    if (hashMap != null && hashMap.size() > 0) {
-                        for (Map.Entry<String, Integer> entry : hashMap.entrySet()) {
-                            JSONObject object = new JSONObject();
-                            object.put("last_update_time", LocalDateTime.parse(userEmployeePointsRecordDO.getUpdateTime(), java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-                            object.put("award", point);
-                            object.put("timespan", entry.getKey());
-                            awards.put(entry.getKey(), object);
-                        }
+                }
+                // 新追加的积分信息
+                if (hashMap != null && hashMap.size() > 0) {
+                    for (Map.Entry<String, Integer> entry : hashMap.entrySet()) {
+                        JSONObject object = new JSONObject();
+                        object.put("last_update_time", LocalDateTime.parse(userEmployeePointsRecordDO.getUpdateTime(), java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+                        object.put("award", point);
+                        object.put("timespan", entry.getKey());
+                        awards.put(entry.getKey(), object);
                     }
                 }
             }
@@ -375,8 +375,7 @@ public class SearchengineEntity {
     }
 
     /**
-     * 拼接积分信息
-     * （月，季，年）
+     * 拼接积分信息 （月，季，年）
      *
      * @param jsonObject
      * @param list

@@ -11,6 +11,7 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.entity.Constant.ApplicationSource;
 import com.moseeker.profile.exception.Category;
 import com.moseeker.profile.exception.ExceptionFactory;
 import com.moseeker.profile.service.impl.retriveprofile.Task;
@@ -24,8 +25,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 
 /**
- * 处理申请业务
- * Created by jack on 10/07/2017.
+ * 处理申请业务 Created by jack on 10/07/2017.
  */
 @Component
 public class ApplicationTask implements Task<ApplicationTaskParam, Integer> {
@@ -73,7 +73,11 @@ public class ApplicationTask implements Task<ApplicationTaskParam, Integer> {
             logger.info("ApplicationTask 简历回收 生成申请信息。 id:{}", applicationRecord.getId());
             //是否需要用户申请次数。这回关系到用户投递这家公司的次数限制
         } else {
-            //do nothing
+            // 更新来源信息
+            ApplicationSource applicationSource = ApplicationSource.instaceFromInteger(applicationRecord.getOrigin());
+            applicationRecord.setOrigin(applicationSource.getValue());
+            jobApplicationDao.updateRecord(applicationRecord);
+
         }
         return applicationRecord.getId();
     }
@@ -121,9 +125,7 @@ public class ApplicationTask implements Task<ApplicationTaskParam, Integer> {
     }
 
     /**
-     * 获取申请限制次数
-     * 默认3次
-     * 企业有自己的配置,使用企业的配置
+     * 获取申请限制次数 默认3次 企业有自己的配置,使用企业的配置
      *
      * @param companyId 公司ID
      */
