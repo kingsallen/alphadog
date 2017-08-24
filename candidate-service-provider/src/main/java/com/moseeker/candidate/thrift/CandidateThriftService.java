@@ -4,6 +4,8 @@ import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.candidate.service.Candidate;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.providerutils.ExceptionUtils;
+import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.thrift.gen.candidate.service.CandidateService;
 import com.moseeker.thrift.gen.candidate.struct.*;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -33,7 +35,7 @@ public class CandidateThriftService implements CandidateService.Iface {
     public void glancePosition(int userId, int positionId, int shareChainId) throws TException {
         try {
             candidate.glancePosition(userId, positionId, shareChainId);
-        }  catch (Exception e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new CURDException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
@@ -122,4 +124,8 @@ public class CandidateThriftService implements CandidateService.Iface {
         }
     }
 
+    @Override
+    public Response getCandidateInfo(int hrId, int userId, int positionId) throws TException {
+        return ResponseUtils.success(candidate.getCandidateInfo(hrId, userId, positionId));
+    }
 }
