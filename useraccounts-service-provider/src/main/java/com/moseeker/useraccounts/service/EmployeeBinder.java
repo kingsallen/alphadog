@@ -165,6 +165,7 @@ public abstract class EmployeeBinder {
                 } else if (e.getActivation() == 0) {
                     e.setEmailIsvalid((byte)0);
                     e.setActivation((byte)1);
+                    e.setCustomFieldValues("[]");
                 }
             });
         }

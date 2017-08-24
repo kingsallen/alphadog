@@ -208,9 +208,6 @@ public class EmployeeService {
         Result response = new Result();
         response.setSuccess(true);
         response.setMessage("解绑成功");
-        Query.QueryBuilder query = new Query.QueryBuilder();
-        // 查询集团公司companyID列表
-        List<Integer> companyIds = employeeEntity.getCompanyIds(companyId);
 
         // 如果是email激活发送了激活邮件，但用户未激活(状态为PENDING)，此时用户进行取消绑定操作，删除员工认证的redis信息
         String employeeJson = client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, userId+"-"+companyId+"-"+employeeEntity.getGroupIdByCompanyId(companyId));

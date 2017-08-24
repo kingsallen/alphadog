@@ -483,6 +483,7 @@ public class EmployeeEntity {
             employees.stream().filter(f -> f.getActivation() == 0).forEach(e -> {
                 e.setActivation((byte) 1);
                 e.setEmailIsvalid((byte) 0);
+                e.setCustomFieldValues("[]");
             });
             int[] rows = employeeDao.updateDatas(employees);
             if (Arrays.stream(rows).sum() > 0) {
