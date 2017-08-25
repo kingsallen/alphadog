@@ -7,16 +7,16 @@ import java.util.Map;
 
 /**
  *
- * 渠道 
- * <p>Company: MoSeeker</P>  
- * <p>date: Nov 7, 2016</p>  
+ * 渠道
+ * <p>Company: MoSeeker</P>
+ * <p>date: Nov 7, 2016</p>
  * <p>Email: wjf2255@gmail.com</p>
  * @author wjf
  * @version
  */
 public enum ChannelType {
 
-	JOB51(1, "51job","51job") {
+	JOB51(1, "51job","51job","common_retrieval_flow") {
 		@Override
 		public String getOrigin(String origin) {
 			String result;
@@ -35,7 +35,7 @@ public enum ChannelType {
 			}
 			return result;
 		}
-	}, LIEPIN(2, "liepin","猎聘") {
+	}, LIEPIN(2, "liepin","猎聘","common_retrieval_flow") {
 		@Override
 		public String getOrigin(String origin) {
 			String result;
@@ -54,7 +54,7 @@ public enum ChannelType {
 			}
 			return result;
 		}
-	}, ZHILIAN(3, "zhaopin","智联") {
+	}, ZHILIAN(3, "zhaopin","智联","common_retrieval_flow") {
 		@Override
 		public String getOrigin(String origin) {
 			String result;
@@ -73,13 +73,13 @@ public enum ChannelType {
 			}
 			return result;
 		}
-	}, LINKEDIN(4, "linkedin","领英") {
+	}, LINKEDIN(4, "linkedin","领英","common_retrieval_flow") {
 		@Override
 		public String getOrigin(String origin) {
 
 			return null;
 		}
-	}, ALIPAY(5, "alipay","支付宝") {
+	}, ALIPAY(5, "alipay","支付宝","alipay_retrieval_flow") {
 		@Override
 		public String getOrigin(String origin) {
 			String result;
@@ -100,15 +100,17 @@ public enum ChannelType {
 		}
 	};
 
-	private ChannelType(int value, String name,String alias) {
+	private ChannelType(int value, String name,String alias,String retriveName) {
 		this.value = value;
 		this.name = name;
 		this.alias = alias;
+		this.retriveName = retriveName;
 	}
 
 	private int value = 0;				//渠道值
 	private String name = null;			//渠道名称
 	private String alias = null;        //渠道别名
+	private String retriveName;
 
 	public abstract String getOrigin(String origin);
 
@@ -163,7 +165,11 @@ public enum ChannelType {
 		return alias;
 	}
 
-	/**
+    public String getRetriveName() {
+        return retriveName;
+    }
+
+    /**
 	 * 简历回收 中  profile_profile.source（简历来源）的值
 	 * @return
 	 */
