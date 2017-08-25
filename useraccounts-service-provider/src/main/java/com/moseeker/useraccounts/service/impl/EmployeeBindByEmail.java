@@ -121,9 +121,9 @@ public class EmployeeBindByEmail extends EmployeeBinder{
             Response mailResponse = mqService.sendAuthEMail(mesBody, Constant.EVENT_TYPE_EMPLOYEE_AUTH, bindingParams.getEmail(), subject, senderName, senderDisplay);
             // 邮件发送成功
             if (mailResponse.getStatus() == 0) {
+                userEmployeeDOThreadLocal.get().setActivationCode(activationCode);
                 // 修改用户邮箱
                 if(userEmployeeDOThreadLocal.get().getId() > 0) {
-                    userEmployeeDOThreadLocal.get().setActivationCode(activationCode);
                     employeeDao.updateData(userEmployeeDOThreadLocal.get());
                 }
                 userEmployeeDOThreadLocal.get().setEmail(bindingParams.getEmail());
