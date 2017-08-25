@@ -40,17 +40,7 @@ public class ExecutorParam {
 
         setOriginParam(paramMap);
 
-        if (channelType.name().equals("JOB51")) {
-            setOrigin(8);
-        } else if (channelType.name().equals("LIEPIN")) {
-            setOrigin(32);
-        } else if (channelType.name().equals("ZHILIAN")) {
-            setOrigin(16);
-        } else if (channelType.name().equals("LINKEDIN")) {
-            setOrigin(512);
-        } else if (channelType.name().equals("ALIPAY")) {
-            setOrigin(64);
-        }
+        setOrigin(ApplicationSource.channelToOrigin(channelType.getValue()));
 
         setChannelType(channelType);
         ValidateUtil validateUtil = new ValidateUtil();

@@ -4,8 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 简历类型
- * Created by jack on 18/08/2017.
+ * 简历类型 Created by jack on 18/08/2017.
  */
 public enum ApplicationSource {
 
@@ -17,7 +16,7 @@ public enum ApplicationSource {
     private static final Map<Integer, ApplicationSource> intToEnum = new HashMap();
 
 
-    private ApplicationSource(int value, int flag) {
+    ApplicationSource(int value, int flag) {
         this.value = value;
         this.flag = flag;
     }
@@ -29,6 +28,7 @@ public enum ApplicationSource {
 
     /**
      * 根据值生成申请来源类型
+     *
      * @param value 申请来源对应的值
      * @return 申请来源
      */
@@ -38,6 +38,7 @@ public enum ApplicationSource {
 
     /**
      * 查找给定的简历来源数据中是否存在当前的简历来源类型
+     *
      * @param sources 简历来源数据
      * @return true 存在；false 不存在
      */
@@ -45,13 +46,15 @@ public enum ApplicationSource {
         int temp = sources & flag;
         if (temp != 0) {
             return true;
-        } {
+        }
+        {
             return false;
         }
     }
 
     /**
      * 对给定的简历来源数值添加当前来源
+     *
      * @param sources 简历来源数值
      * @return 加上当前简历来源之后的简历来源数值
      */
@@ -61,6 +64,7 @@ public enum ApplicationSource {
 
     /**
      * 对给定的简历来源数值添加当前来源
+     *
      * @param applicationSource 简历来源类型
      * @return 加上当前简历来源之后的简历来源数值
      */
@@ -70,9 +74,40 @@ public enum ApplicationSource {
 
     /**
      * 获取当前的简历来源类型数值
+     *
      * @return 简历来源类型数值
      */
     public int getValue() {
         return value;
+    }
+
+
+    /**
+     * channleType 转成origin
+     *
+     * @param channel
+     * @return
+     */
+    public static int channelToOrigin(int channel) {
+        int origin = 0;
+        switch (channel) {
+            case 1:
+                origin = 8;
+                break;
+            case 2:
+                origin = 32;
+                break;
+            case 3:
+                origin = 16;
+                break;
+            case 4:
+                origin = 512;
+                break;
+            case 5:
+                origin = 64;
+                break;
+            default:
+        }
+        return origin;
     }
 }
