@@ -211,6 +211,7 @@ public class EmployeeService {
         if (StringUtils.isNotNullOrEmpty(employeeJson)) {
             client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, JSONObject.parseObject(employeeJson).getString("activation"));
             client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, userId+"-"+companyId+"-"+employeeEntity.getGroupIdByCompanyId(companyId));
+            return response;
         }
 
         // 解绑
