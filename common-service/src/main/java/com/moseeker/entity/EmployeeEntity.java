@@ -185,9 +185,6 @@ public class EmployeeEntity {
                     logger.error("增加用户积分失败：为用户{},添加积分{}点, reason:{}", employeeId, ueprDo.getAward(), ueprDo.getReason());
                     throw new RuntimeException("增加积分失败");
                 }
-            } else {
-                logger.error("增加用户积分失败：为用户{},添加积分{}点, reason:{}", employeeId, ueprDo.getAward(), ueprDo.getReason());
-                addReward(employeeId, companyId, ueprDo);
             }
         }
         return 0;
