@@ -34,9 +34,8 @@ public abstract class UserTask implements Task<UserTaskParam, Integer> {
             if (!StringUtils.isNullOrEmpty(validateUtil.validate())) {
                 throw ExceptionFactory.buildException(Category.VALIDATION_USERNAME_REQUIRED);
             }
-            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-            queryBuilder.where("username", param.getMobile());
-            UserUserRecord userUserRecord1 = userUserDao.getRecord(queryBuilder.buildQuery());
+            Query query = initQuery(param);
+            UserUserRecord userUserRecord1 = userUserDao.getRecord(query);
             if (userUserRecord1 == null) {
                 userUserRecord1 = initUser(param);
                 try {
