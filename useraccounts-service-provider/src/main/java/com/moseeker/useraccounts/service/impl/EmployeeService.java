@@ -209,7 +209,7 @@ public class EmployeeService {
         // 如果是email激活发送了激活邮件，但用户未激活(状态为PENDING)，此时用户进行取消绑定操作，删除员工认证的redis信息
         String employeeJson = client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, userId+"-"+companyId+"-"+employeeEntity.getGroupIdByCompanyId(companyId));
         if (StringUtils.isNotNullOrEmpty(employeeJson)) {
-            client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, JSONObject.parseObject(employeeJson).getString("activation"));
+            client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, JSONObject.parseObject(employeeJson).getString("activationCode"));
             client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, userId+"-"+companyId+"-"+employeeEntity.getGroupIdByCompanyId(companyId));
             return response;
         }
