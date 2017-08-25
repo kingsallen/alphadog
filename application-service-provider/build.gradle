@@ -5,6 +5,8 @@ dependencies {
 
     // compile project(":thrift-gen-java")
     compile project(":rpc-center")
+    compile project(":baseorm-service-provider")
+    compile project(":common")
     compile project(":common-service")
     
     testCompile deps["junit"]
