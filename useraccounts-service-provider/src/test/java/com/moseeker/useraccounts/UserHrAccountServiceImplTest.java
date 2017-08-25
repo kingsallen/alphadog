@@ -255,8 +255,7 @@ public class UserHrAccountServiceImplTest {
     public void testSendEmail() throws Exception {
         System.out.println("start");
         List<String> recipients = new ArrayList<>();
-        recipients.add("edhlily@163.com");
-        recipients.add("zhangdi@moseeker.com");
+        recipients.add("wengjianfei@moseeker.com");
         String subject = "测试邮件";
         StringBuilder content = new StringBuilder();
         content.append("<b style=\"color:blue;text-decoration:underline\">【简历邮箱】：").append("cv_").append(1234567).append("@test.com").append("</b>");
