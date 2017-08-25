@@ -17,7 +17,7 @@ import java.util.Map;
 @Repository
 public class WordpressUserPostDao
 		extends JooqCrudImpl<WordpressUserPostDO, WordpressUserPostRecord> {
-	
+
 	private static final String INSERT_SQL = "insert into wordpressdb.wordpress_user_post(user_id, object_id) select ?, ? from DUAL where not exists(select user_id from wordpressdb.wordpress_user_post where user_id = ?)";
 
 	public WordpressUserPostDao() {

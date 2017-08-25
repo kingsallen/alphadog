@@ -33,6 +33,7 @@ import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.moseeker.useraccounts.exception.ExceptionCategory;
 import com.moseeker.useraccounts.exception.ExceptionFactory;
 import com.moseeker.useraccounts.service.EmployeeBinder;
+import java.util.*;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,10 +41,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -340,7 +337,8 @@ public class EmployeeService {
                Map<Integer, JSONObject> map = JSON.parseObject(result.getData(), Map.class);
                query.clear();
                query.where(new Condition("id", map.keySet(), ValueOp.IN));
-               Map<Integer, UserEmployeeDO> employeeDOMap = employeeDao.getDatas(query.buildQuery()).stream().filter(m -> m != null && m.getId() > 0).collect(Collectors.toMap(k -> k.getId(), v -> v));
+               Map<Integer, UserEmployeeDO> employeeDOMap = new HashMap<>();
+               employeeDOMap.putAll(employeeDao.getDatas(query.buildQuery()).stream().filter(m -> m != null && m.getId() > 0).collect(Collectors.toMap(k -> k.getId(), v -> v)));
                List<Integer> userIds = employeeDOMap.values().stream().map(m -> m.getSysuserId()).collect(Collectors.toList());
                query.clear();
                query.where(new Condition("company_id", employeeEntity.getCompanyIds(companyId), ValueOp.IN));
@@ -354,7 +352,7 @@ public class EmployeeService {
                    employeeAward.setEmployeeId(e.getKey());
                    employeeAward.setAwardTotal(value.getInteger("award"));
                    employeeAward.setName(employeeDOMap.get(e.getKey()) != null ? employeeDOMap.get(e.getKey()).getCname() : "");
-                   employeeAward.setHeadimgurl(userWxUserMap.getOrDefault(employeeDOMap.get(e.getKey()).getSysuserId(), ""));
+                   employeeAward.setHeadimgurl(userWxUserMap.getOrDefault(employeeDOMap.containsKey(e.getKey()) ? employeeDOMap.get(e.getKey()).getSysuserId() : 0, ""));
                    employeeAward.setRanking(value.getIntValue("ranking"));
                    response.add(employeeAward);
                });
