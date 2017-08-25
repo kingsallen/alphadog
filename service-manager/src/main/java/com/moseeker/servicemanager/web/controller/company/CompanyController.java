@@ -470,7 +470,6 @@ public class CompanyController {
         }
     }
 
-<<<<<<< HEAD
     //details
     @RequestMapping(value = "/company/details", method = RequestMethod.GET)
     @ResponseBody
@@ -485,8 +484,6 @@ public class CompanyController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
-
-=======
 
     /**
      * 公司员工认证后补填字段配置信息列表
@@ -503,5 +500,4 @@ public class CompanyController {
                 ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(result)));
 
     }
->>>>>>> feature/hr3_5_4-3
 }

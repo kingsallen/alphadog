@@ -79,10 +79,10 @@ public class PositionPcServiceTest {
 	  List<Integer> list=new ArrayList<Integer>();
 	  list.add(1404);
 	  list.add(1414);
-	  List<Map<String,Object>> map=(List<Map<String, Object>>) service.HandleCmsResource(list,2);
-	  for(Map<String,Object> map1:map){
-		  System.out.println(JSON.toJSONString(map1));
-	  }
+////	  List<Map<String,Object>> map=(List<Map<String, Object>>) service.HandleCmsResource(list,2);
+//	  for(Map<String,Object> map1:map){
+//		  System.out.println(JSON.toJSONString(map1));
+//	  }
   }
   
   @Test
