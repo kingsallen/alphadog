@@ -137,14 +137,13 @@ public class EmployeeEntity {
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.where("company_id", companyId).and("template_id", templateId);
         HrPointsConfDO hrPointsConfDO = hrPointsConfDao.getData(query.buildQuery());
-        if (hrPointsConfDO != null && hrPointsConfDO.getId() > 0) {
-            query.clear();
-            query.where("employee_id", employeeId).and("position_id", positionId).and("award_config_id", hrPointsConfDO.getId()).and("berecom_user_id", berecomUserId);
-            UserEmployeePointsRecordDO userEmployeePointsRecordDO = employeePointsRecordDao.getData(query.buildQuery());
-            if (userEmployeePointsRecordDO != null && userEmployeePointsRecordDO.getId() > 0) {
-                logger.error("重复的加积分操作, employeeId:{}, positionId:{}, templateId:{}, berecomUserId:{}", employeeId, positionId, templateId, berecomUserId);
-                throw new Exception("重复的加积分操作");
-            }
+        int awardConfigId = hrPointsConfDO == null ? 0 : hrPointsConfDO.getId();
+        query.clear();
+        query.where("employee_id", employeeId).and("position_id", positionId).and("award_config_id", awardConfigId).and("berecom_user_id", berecomUserId);
+        UserEmployeePointsRecordDO userEmployeePointsRecordDO = employeePointsRecordDao.getData(query.buildQuery());
+        if (userEmployeePointsRecordDO != null && userEmployeePointsRecordDO.getId() > 0) {
+            logger.error("重复的加积分操作, employeeId:{}, positionId:{}, templateId:{}, berecomUserId:{}", employeeId, positionId, templateId, berecomUserId);
+            throw new Exception("重复的加积分操作");
         }
         // 进行加积分操作
         addReward(employeeId, companyId, "", applicationId, positionId, templateId, berecomUserId);
