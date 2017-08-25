@@ -1,5 +1,7 @@
 package com.moseeker.candidate.thrift;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.candidate.service.Candidate;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
@@ -126,6 +128,6 @@ public class CandidateThriftService implements CandidateService.Iface {
 
     @Override
     public Response getCandidateInfo(int hrId, int userId, int positionId) throws TException {
-        return ResponseUtils.success(candidate.getCandidateInfo(hrId, userId, positionId));
+        return ResponseUtils.successWithoutStringify(JSON.toJSONString(candidate.getCandidateInfo(hrId, userId, positionId), SerializerFeature.WriteDateUseDateFormat));
     }
 }

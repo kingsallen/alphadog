@@ -1,7 +1,9 @@
 package com.moseeker.candidate.service.entities;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.moseeker.candidate.config.AppConfig;
+import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.thrift.gen.candidate.struct.SortResult;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 
@@ -41,10 +43,6 @@ public class CandidateEntityTest {
     @Test
     public void testGetCandidateInfo(){
         Map<String,Object> data = candidateEntity.getCandidateInfo(82690,676242,134129);
-        Map<String,Object> result = new HashMap<>();
-        result.put("data",data);
-        result.put("status",0);
-        result.put("message","成功");
-        System.out.println(JSON.toJSONString(result));
+        System.out.println(JSON.toJSONString(data, SerializerFeature.WriteDateUseDateFormat));
     }
 }
