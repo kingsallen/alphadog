@@ -46,7 +46,6 @@ import com.moseeker.useraccounts.constant.ResultMessage;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.pojo.EmployeeRank;
 import com.moseeker.useraccounts.pojo.EmployeeRankObj;
-import com.moseeker.useraccounts.service.thirdpartyaccount.ThirdPartyAccountSynctor;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,12 +96,6 @@ public class UserHrAccountService {
     private HRThirdPartyAccountDao hrThirdPartyAccountDao;
 
     @Autowired
-    private HRThirdPartyAccountHrDao thirdPartyAccountHrDao;
-
-    @Autowired
-    private ThirdPartyAccountSynctor thirdPartyAccountSynctor;
-
-    @Autowired
     private UserEmployeeDao userEmployeeDao;
 
     @Autowired
@@ -118,11 +111,7 @@ public class UserHrAccountService {
     private SearchengineEntity searchengineEntity;
 
     @Autowired
-    private HrCompanyAccountDao hrCompanyAccountDao;
-
-    @Autowired
     private HrCompanyDao hrCompanyDao;
-
 
     @Autowired
     CandidateCompanyDao candidateCompanyDao;
