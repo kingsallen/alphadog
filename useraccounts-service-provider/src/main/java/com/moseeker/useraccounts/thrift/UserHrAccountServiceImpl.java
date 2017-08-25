@@ -91,6 +91,26 @@ public class UserHrAccountServiceImpl implements Iface {
     }
 
     @Override
+    public HrThirdPartyAccountDO bindConfirm(int hrId, int id, boolean confirm) throws BIZException, TException {
+        try {
+            return thirdPartyAccountService.bindConfirm(hrId,id,confirm);
+        } catch (Exception e) {
+            logger.info(e.getMessage(), e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public HrThirdPartyAccountDO bindMessage(int hrId, int id, String code) throws BIZException, TException {
+        try {
+            return thirdPartyAccountService.bindMessage(hrId, id, code);
+        } catch (Exception e) {
+            logger.info(e.getMessage(), e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
     public HrThirdPartyAccountDO syncThirdPartyAccount(int hrId, int id, boolean sync) throws BIZException, TException {
         try {
             return thirdPartyAccountService.synchronizeThirdpartyAccount(hrId, id, sync);
@@ -300,8 +320,8 @@ public class UserHrAccountServiceImpl implements Iface {
      * @throws TException
      */
     @Override
-    public RewardVOPageVO getEmployeeRewards(int employeeId, int pageNumber, int pageSize) throws BIZException {
-        return employeeEntity.getEmployeePointsRecords(employeeId, pageNumber, pageSize);
+    public RewardVOPageVO getEmployeeRewards(int employeeId, int companyId, int pageNumber, int pageSize) throws BIZException {
+        return service.getEmployeeRewards(employeeId, companyId, pageNumber, pageSize);
     }
 
     /**

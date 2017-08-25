@@ -208,7 +208,9 @@ public class Email {
                 ccList.add(new InternetAddress(cc));
             }
             this.message.setRecipients(RecipientType.TO, recipients.toArray(new InternetAddress[this.recipients.size()]));
-            this.message.setRecipients(RecipientType.CC,ccList.toArray(new InternetAddress[this.recipients.size()]));
+            if(ccList.size() > 0) {
+                this.message.setRecipients(RecipientType.CC, ccList.toArray(new InternetAddress[this.ccList.size()]));
+            }
             return this;
         }
 

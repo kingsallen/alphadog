@@ -26,7 +26,6 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
-
 import org.apache.thrift.TException;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -38,7 +37,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.net.InetAddress;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -77,7 +75,6 @@ public class SearchengineEntity {
 
     @Autowired
     private UserWxUserDao userWxUserDao;
-
 
     /**
      * 获取ES连接
@@ -127,6 +124,12 @@ public class SearchengineEntity {
             queryBuilder.where(new Condition(UserEmployee.USER_EMPLOYEE.ID.getName(), employeeIds, ValueOp.IN));
             // 查询员工信息
             List<UserEmployeeDO> userEmployeeDOList = userEmployeeDao.getDatas(queryBuilder.buildQuery());
+
+            if (userEmployeeDOList == null || userEmployeeDOList.isEmpty()) {
+                logger.error("未查到员工数据, employeeIds:{}", employeeIds);
+                return ResponseUtils.success("");
+            }
+
             // 查询员工公司信息
             List<Integer> companyId = new ArrayList<>();
             // 员工基本信息
@@ -160,8 +163,8 @@ public class SearchengineEntity {
                     jsonObject.put("mobile", String.valueOf(userEmployeeDO.getMobile()));
                     jsonObject.put("email_isvalid", String.valueOf(userEmployeeDO.getEmailIsvalid()));
                     jsonObject.put("idcard", userEmployeeDO.getIdcard());
-                    jsonObject.put("download_token", userEmployeeDO.getDownloadToken());
                     jsonObject.put("groupname", userEmployeeDO.getGroupname());
+                    jsonObject.put("download_token", userEmployeeDO.getDownloadToken());
                     jsonObject.put("sysuser_id", userEmployeeDO.getSysuserId());
                     jsonObject.put("education", userEmployeeDO.getEducation());
                     jsonObject.put("auth_level", userEmployeeDO.getAuthLevel());
@@ -172,7 +175,7 @@ public class SearchengineEntity {
                     jsonObject.put("managername", userEmployeeDO.getManagername());
                     jsonObject.put("status", userEmployeeDO.getStatus());
                     jsonObject.put("is_rp_sent", userEmployeeDO.getIsRpSent());
-                    jsonObject.put("activation", userEmployeeDO.getActivation());
+                    jsonObject.put("activation", new Double(userEmployeeDO.getActivation()).intValue());
                     jsonObject.put("retiredate", userEmployeeDO.getRetiredate());
                     jsonObject.put("login_count", userEmployeeDO.getLoginCount());
                     jsonObject.put("section_id", userEmployeeDO.getSectionId());
@@ -383,8 +386,12 @@ public class SearchengineEntity {
      * @param list
      */
     public void getAwards(JSONObject jsonObject, List<EmployeePointsRecordPojo> list) {
+        logger.info(list.size() + "");
         if (list != null && list.size() > 0) {
             for (EmployeePointsRecordPojo employeePointsRecordPojo : list) {
+                logger.info("last_update_time:{}", employeePointsRecordPojo.getLast_update_time());
+                logger.info("award:{}", employeePointsRecordPojo.getAward());
+                logger.info("timespan:{}", employeePointsRecordPojo.getTimespan());
                 JSONObject a = new JSONObject();
                 a.put("last_update_time", employeePointsRecordPojo.getLast_update_time());
                 a.put("award", employeePointsRecordPojo.getAward());

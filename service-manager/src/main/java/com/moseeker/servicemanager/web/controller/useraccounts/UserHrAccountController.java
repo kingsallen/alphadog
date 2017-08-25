@@ -17,38 +17,21 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
-import com.moseeker.thrift.gen.employee.struct.Reward;
-import com.moseeker.thrift.gen.employee.struct.RewardConfig;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
-import com.moseeker.thrift.gen.position.struct.City;
-import com.moseeker.thrift.gen.position.struct.JobPostrionObj;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.thrift.TException;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * HR账号服务
@@ -134,6 +117,7 @@ public class UserHrAccountController {
         resultMap.put("password", struct.getPassword());
         resultMap.put("remain_num", struct.getRemainNum());
         resultMap.put("remain_profile_num", struct.getRemainProfileNum());
+        resultMap.put("error_message", struct.getErrorMessage());
         return resultMap;
     }
 
@@ -146,17 +130,70 @@ public class UserHrAccountController {
             if (params.get("member_name") != null) {
                 struct.setMembername(params.get("member_name").toString());
             }
-            struct = userHrAccountService.bindThirdPartyAccount(params.getInt("user_id", 0), struct, params.getBoolean("sync", false));
-            //同步情况下走下面的代码
-
-            return ResponseLogNotification.success(request, ResponseUtils.success(thirdpartyAccountToMap(struct)));
-        } catch (BIZException e) {
-            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+            logger.info("bind thirdParyAccount in controller params===========================" + JSON.toJSONString(struct));
+            struct = userHrAccountService.bindThirdPartyAccount(params.getInt("user_id", 0), struct, params.getBoolean("sync", true));
+            if (struct.getBinding() == 100) {
+                struct.setBinding(Integer.valueOf(0).shortValue());
+                Map<String, Object> result = thirdpartyAccountToMap(struct);
+                result.put("mobile", struct.getErrorMessage());
+                return ResponseLogNotification.failJson(request, 100, "需要验证手机号", result);
+            } else {
+                return ResponseLogNotification.successJson(request, thirdpartyAccountToMap(struct));
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.failJson(request, e);
         }
     }
+
+    /**
+     * 帐号同步短信验证码确认发送
+     *
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/thirdpartyaccount/bind/confirm", method = RequestMethod.POST)
+    @ResponseBody
+    public String bindConfirm(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            ValidateUtil vu = new ValidateUtil();
+            vu.addIntTypeValidate("account_id", params.get("account_id"), null, null, 1, Integer.MAX_VALUE);
+            vu.addIntTypeValidate("user_id", params.get("user_id"), null, null, 1, Integer.MAX_VALUE);
+            vu.addRequiredValidate("confirm", params.get("confirm"));
+            logger.info("确认发送短信验证码:{}", JSON.toJSONString(params));
+            HrThirdPartyAccountDO struct = userHrAccountService.bindConfirm(params.getInt("user_id"), params.getInt("account_id"), params.getBoolean("confirm"));
+            return ResponseLogNotification.successJson(request, thirdpartyAccountToMap(struct));
+        } catch (Exception e) {
+            return ResponseLogNotification.failJson(request, e);
+        }
+    }
+
+    /**
+     * 帐号同步发送短信验证码
+     *
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/thirdpartyaccount/bind/message", method = RequestMethod.POST)
+    @ResponseBody
+    public String bindMessage(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            ValidateUtil vu = new ValidateUtil();
+            vu.addIntTypeValidate("account_id", params.get("account_id"), null, null, 1, Integer.MAX_VALUE);
+            vu.addIntTypeValidate("user_id", params.get("user_id"), null, null, 1, Integer.MAX_VALUE);
+            vu.addRequiredValidate("code", params.get("code"));
+            logger.info("发送短信验证码:{}", JSON.toJSONString(params));
+            HrThirdPartyAccountDO struct = userHrAccountService.bindMessage(params.getInt("user_id"), params.getInt("account_id"), params.getString("code"));
+            return ResponseLogNotification.successJson(request, thirdpartyAccountToMap(struct));
+        } catch (Exception e) {
+            return ResponseLogNotification.failJson(request, e);
+        }
+    }
+
 
     @RequestMapping(value = "/thirdpartyaccount/refresh", method = RequestMethod.GET)
     @ResponseBody
@@ -185,7 +222,7 @@ public class UserHrAccountController {
 
     @RequestMapping(value = "/thirdpartyaccount/unbind", method = RequestMethod.POST)
     @ResponseBody
-    public String unBindThirdPartyAccount(HttpServletRequest request, HttpServletResponse response) {
+    public String unbindThirdPartyAccount(HttpServletRequest request, HttpServletResponse response) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             Integer accountId = params.getInt("account_id");
@@ -614,7 +651,7 @@ public class UserHrAccountController {
             if (!permission) {
                 return ResponseLogNotification.failResponse(request, ConstantErrorCodeMessage.PERMISSION_DENIED);
             }
-            RewardVOPageVO result = userHrAccountService.getEmployeeRewards(employeeId, pageNumber, pageSize);
+            RewardVOPageVO result = userHrAccountService.getEmployeeRewards(employeeId, companyId, pageNumber, pageSize);
             return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(result)));
         }
 

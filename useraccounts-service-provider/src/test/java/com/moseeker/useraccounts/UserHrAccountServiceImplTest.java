@@ -15,24 +15,16 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
-import com.moseeker.useraccounts.config.AppConfig;
 import com.moseeker.useraccounts.thrift.UserHrAccountServiceImpl;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import com.moseeker.useraccounts.service.impl.UserEmployeeServiceImpl;
-
 import org.apache.thrift.TException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 import java.util.Date;
 
 /**
@@ -40,8 +32,8 @@ import java.util.Date;
  * <p>
  * Created by zzh on 16/6/1.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = AppConfig.class)
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(classes = AppConfig.class)
 public class UserHrAccountServiceImplTest {
 
     public static void main(String[] args) {
@@ -159,19 +151,19 @@ public class UserHrAccountServiceImplTest {
         hrThirdPartyAccountDO.setUsername("fiqb60145062");
         hrThirdPartyAccountDO.setPassword("2892c63f12e0e8849f2a7dd981375331");
         hrThirdPartyAccountDO.setChannel((short) 3);
-        userHrAccountService.bindThirdAccount(82752, hrThirdPartyAccountDO, false);
+//        userHrAccountService.bindThirdAccount(82752, hrThirdPartyAccountDO, false);
 
         Thread.sleep(1000000);
     }
 
     @Test
     public void testRefresh() throws Exception {
-        userHrAccountService.synchronizeThirdpartyAccount(82752,66,true);
+//        userHrAccountService.synchronizeThirdpartyAccount(82752, 66, true);
         HrThirdPartyAccountDO hrThirdPartyAccountDO = new HrThirdPartyAccountDO();
         hrThirdPartyAccountDO.setUsername("xxxxx");
         hrThirdPartyAccountDO.setPassword("xxxxx");
         hrThirdPartyAccountDO.setChannel((short) 2);
-        userHrAccountService.bindThirdAccount(82847, hrThirdPartyAccountDO,true);
+//        userHrAccountService.bindThirdAccount(82847, hrThirdPartyAccountDO, true);
     }
 
 
@@ -232,7 +224,7 @@ public class UserHrAccountServiceImplTest {
     //    @Test
     public void getEmployeeRewardsTest() {
         try {
-            RewardVOPageVO rewardVOPageVO = userHrAccountServiceImpl.getEmployeeRewards(658112, 10, 1);
+            RewardVOPageVO rewardVOPageVO = userHrAccountServiceImpl.getEmployeeRewards(658112, 39978, 10, 1);
             System.out.println(BeanUtils.convertStructToJSON(rewardVOPageVO));
         } catch (TException e) {
             e.printStackTrace();
@@ -259,18 +251,20 @@ public class UserHrAccountServiceImplTest {
         }
     }
 
-//    @Test
+    @Test
     public void testSendEmail() throws Exception {
         System.out.println("start");
         List<String> recipients = new ArrayList<>();
         recipients.add("edhlily@163.com");
         recipients.add("zhangdi@moseeker.com");
         String subject = "测试邮件";
-        String content = "ffdafdsafdsfasfdsaf</br><b style=\"color:red\">【简历邮箱】：ffffffff@test.mail</b>";
+        StringBuilder content = new StringBuilder();
+        content.append("<b style=\"color:blue;text-decoration:underline\">【简历邮箱】：").append("cv_").append(1234567).append("@test.com").append("</b>");
+        content.append("<b style=\"color:red\">（手动发布该职位时，请一定将该邮箱填写在简历回收邮箱中）</b>").append("<br/>");
         Email.EmailBuilder emailBuilder = new Email.EmailBuilder(recipients.subList(0, 1));
         emailBuilder.addCCList(recipients.subList(1, recipients.size()));
         emailBuilder.setSubject(subject);
-        emailBuilder.setContent(content);
+        emailBuilder.setContent(content.toString());
         Email email = emailBuilder.build();
         email.send(3, new Email.EmailListener() {
             @Override

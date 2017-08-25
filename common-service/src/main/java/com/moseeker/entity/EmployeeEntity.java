@@ -11,11 +11,8 @@ import com.moseeker.baseorm.dao.userdb.*;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompanyRel;
 import com.moseeker.baseorm.db.hrdb.tables.HrPointsConf;
-import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
-import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
-import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
-import com.moseeker.baseorm.db.userdb.tables.UserUser;
-import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
+import com.moseeker.baseorm.db.userdb.tables.*;
+import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeePointsRecordRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
@@ -37,12 +34,12 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrPointsConfDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.*;
-import com.moseeker.thrift.gen.employee.struct.Reward;
 import com.moseeker.thrift.gen.employee.struct.RewardVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -136,12 +133,13 @@ public class EmployeeEntity {
     }
 
     // 转发点击操作 前置
-    public void addAwardBefore(int employeeId, int companyId, int positionId, int templateId, int berecomUserId) throws Exception {
+    public void addAwardBefore(int employeeId, int companyId, int positionId, int templateId, int berecomUserId, int applicationId) throws Exception {
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.where("company_id", companyId).and("template_id", templateId);
         HrPointsConfDO hrPointsConfDO = hrPointsConfDao.getData(query.buildQuery());
         if (hrPointsConfDO != null && hrPointsConfDO.getId() > 0) {
-            query.where("employee_id", employeeId).and("position_id", positionId).and("award_config_id", hrPointsConfDO).and("berecom_user_id", berecomUserId);
+            query.clear();
+            query.where("employee_id", employeeId).and("position_id", positionId).and("award_config_id", hrPointsConfDO.getId()).and("berecom_user_id", berecomUserId);
             UserEmployeePointsRecordDO userEmployeePointsRecordDO = employeePointsRecordDao.getData(query.buildQuery());
             if (userEmployeePointsRecordDO != null && userEmployeePointsRecordDO.getId() > 0) {
                 logger.error("重复的加积分操作, employeeId:{}, positionId:{}, templateId:{}, berecomUserId:{}", employeeId, positionId, templateId, berecomUserId);
@@ -149,7 +147,7 @@ public class EmployeeEntity {
             }
         }
         // 进行加积分操作
-        addReward(employeeId, companyId, "", 0, positionId, templateId, berecomUserId);
+        addReward(employeeId, companyId, "", applicationId, positionId, templateId, berecomUserId);
     }
 
 
@@ -235,47 +233,6 @@ public class EmployeeEntity {
      * @param employeeId
      * @return
      */
-    public List<Reward> getEmployeePointsRecords(int employeeId) {
-        // 用户积分记录：
-        List<Reward> rewards = new ArrayList<>();
-        List<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO> points = employeePointsRecordDao.getDatas(new Query.QueryBuilder()
-                .where("employee_id", employeeId).orderBy("update_time", Order.DESC).buildQuery());
-        if (!StringUtils.isEmptyList(points)) {
-            List<Double> aids = points.stream().map(m -> m.getApplicationId()).collect(Collectors.toList());
-            Query.QueryBuilder query = new Query.QueryBuilder();
-            query.where(new Condition("id", aids, ValueOp.IN));
-            List<JobApplicationDO> applications = applicationDao.getDatas(query.buildQuery());
-            final Map<Integer, Integer> appMap = new HashMap<>();
-            final Map<Integer, String> positionMap = new HashMap<>();
-            // 转成map -> k: applicationId, v: positionId
-            if (!StringUtils.isEmptyList(applications)) {
-                appMap.putAll(applications.stream().collect(Collectors.toMap(JobApplicationDO::getId, JobApplicationDO::getPositionId)));
-                query.clear();
-                query.where(new Condition("id", appMap.values().toArray(), ValueOp.IN));
-                List<JobPositionDO> positions = positionDao.getPositions(query.buildQuery());
-                // 转成map -> k: positionId, v: positionTitle
-                if (!StringUtils.isEmptyList(points)) {
-                    positionMap.putAll(positions.stream().collect(Collectors.toMap(JobPositionDO::getId, JobPositionDO::getTitle)));
-                }
-            }
-            points.stream().filter(p -> p.getAward() != 0).forEach(point -> {
-                Reward reward = new Reward();
-                reward.setReason(point.getReason());
-                reward.setPoints(point.getAward());
-                reward.setUpdateTime(point.getUpdateTime());
-                reward.setTitle(positionMap.getOrDefault(appMap.get(point.getApplicationId()), ""));
-                rewards.add(reward);
-            });
-        }
-        return rewards;
-    }
-
-    /**
-     * 积分列表
-     *
-     * @param employeeId
-     * @return
-     */
     public RewardVOPageVO getEmployeePointsRecords(int employeeId, Integer pageNumber, Integer pageSize) throws CommonException {
         RewardVOPageVO rewardVOPageVO = new RewardVOPageVO();
         List<RewardVO> rewardVOList = new ArrayList<>();
@@ -287,14 +244,23 @@ public class EmployeeEntity {
         }
         query.where(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.EMPLOYEE_ID.getName(), employeeId)
                 .and(new Condition(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.AWARD.getName(), 0, ValueOp.NEQ))
-                .orderBy(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.UPDATE_TIME.getName(), Order.DESC);
+                .orderBy(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD._CREATE_TIME.getName(), Order.DESC);
         int totalRow = employeePointsRecordDao.getCount(query.buildQuery());
         // 总条数
         rewardVOPageVO.setTotalRow(totalRow);
         rewardVOPageVO.setPageNumber(pageNumber);
         rewardVOPageVO.setPageSize(pageSize);
         if (totalRow > 0) {
-            List<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO> points = employeePointsRecordDao.getDatas(query.buildQuery());
+            List<UserEmployeePointsRecordRecord> userEmployeePointsRecordList = employeePointsRecordDao.getRecords(query.buildQuery());
+            List<UserEmployeePointsRecordDO> points = new ArrayList<>();
+            if (userEmployeePointsRecordList != null && userEmployeePointsRecordList.size() > 0) {
+                for (UserEmployeePointsRecordRecord userEmployeePointsRecordRecord : userEmployeePointsRecordList) {
+                    UserEmployeePointsRecordDO userEmployeePointsRecordDO =
+                            BeanUtils.DBToStruct(UserEmployeePointsRecordDO.class, userEmployeePointsRecordRecord);
+                    userEmployeePointsRecordDO.setCreateTime(new DateTime(userEmployeePointsRecordRecord.get_CreateTime()).toString("yyyy-MM-dd HH:mm:ss"));
+                    points.add(userEmployeePointsRecordDO);
+                }
+            }
             // 申请记录信息
             Map<Integer, JobApplicationDO> appMap = new HashMap<>();
             // 申请的职位信息
@@ -312,7 +278,7 @@ public class EmployeeEntity {
             // 职位信息Id
             List<Integer> positionIds = points.stream().filter(m -> m.getPositionId() != 0).map(m -> new Double(m.getPositionId()).intValue()).collect(Collectors.toList());
             // 获取被推荐人信息
-            List<Integer> berecomIds = points.stream().filter(m -> m.getBerecomUserId() != 0).map(m -> new Double(m.getBerecomUserId()).intValue()).collect(Collectors.toList());
+            Set<Integer> berecomIds = points.stream().filter(m -> m.getBerecomUserId() != 0).map(m -> new Double(m.getBerecomUserId()).intValue()).collect(Collectors.toSet());
             // 加积分类型
             List<Integer> types = points.stream().filter(m -> m.getAwardConfigId() != 0).map(m -> new Double(m.getBerecomUserId()).intValue()).collect(Collectors.toList());
 
@@ -335,14 +301,17 @@ public class EmployeeEntity {
                 List<UserHrAccountDO> userHrAccountDOS = userHrAccountDao.getDatas(query.buildQuery());
                 userHrAccountDOMap.putAll(userHrAccountDOS.stream().collect(Collectors.toMap(UserHrAccountDO::getId, Function.identity())));
             }
-            List<Integer> companyIds = getCompanyIdsByUserId(employeeId);
+            query.clear();
+            query.where("id", employeeId);
+            UserEmployeeDO userEmployeeDOTemp = employeeDao.getEmployee(query.buildQuery());
+            List<Integer> companyIds = getCompanyIdsByUserId(userEmployeeDOTemp.getSysuserId());
             query.clear();
             query.where(new Condition(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.getName(), berecomIds, ValueOp.IN))
                     .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), 0)
                     .and(new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyIds, ValueOp.IN));
             List<UserEmployeeDO> userEmployeeDOList = employeeDao.getDatas(query.buildQuery());
             if (!StringUtils.isEmptyList(userEmployeeDOList)) {
-                userEmployeeDOMap.putAll(userEmployeeDOList.stream().collect(Collectors.toMap(UserEmployeeDO::getId, Function.identity())));
+                userEmployeeDOMap.putAll(userEmployeeDOList.stream().collect(Collectors.toMap(UserEmployeeDO::getSysuserId, Function.identity())));
             }
 
             query.clear();
@@ -367,7 +336,7 @@ public class EmployeeEntity {
                 // 积分
                 reward.setPoints(point.getAward());
                 // 加积分时间
-                reward.setUpdateTime(point.getUpdateTime());
+                reward.setUpdateTime(point.getCreateTime());
                 // 职位ID
                 reward.setPositionId(new Double(point.getPositionId()).intValue());
                 HrPointsConfDO hrPointsConfDO = hrPointsConfMap.get(point.getAwardConfigId());
@@ -425,27 +394,28 @@ public class EmployeeEntity {
                 }
                 UserEmployeeDO userEmployeeDO = userEmployeeDOMap.get(point.getBerecomUserId());
                 if (userEmployeeDO != null) {
-                    reward.setEmployeId(userEmployeeDO.getId());
-                    reward.setEmployeName(userEmployeeDO.getCname());
-                } else {
-                    // 被推荐人ID
-                    reward.setBerecomId(point.getBerecomUserId());
-                    // userdb.useruser.name > userdb.useruser.nickname > userdb.userwxuser.nickname
-                    if (userUserDOSMap.containsKey(point.getBerecomUserId())) {
-                        UserUserDO userUserDO = userUserDOSMap.get(point.getBerecomUserId());
-                        if (userUserDO.getName() != null) {
-                            reward.setBerecomName(userUserDO.getName());
-                        } else if (userUserDO.getName() == null && userUserDO.getNickname() != null) {
+                    reward.setEmployeeId(userEmployeeDO.getId());
+                    reward.setEmployeeName(userEmployeeDO.getCname());
+                }
+                // 被推荐人ID
+                reward.setBerecomId(point.getBerecomUserId());
+                // userdb.useruser.name > userdb.useruser.nickname > userdb.userwxuser.nickname
+                if (userUserDOSMap.containsKey(point.getBerecomUserId())) {
+                    UserUserDO userUserDO = userUserDOSMap.get(point.getBerecomUserId());
+                    if (userUserDO.getName() != null && !userUserDO.getName().equals("")) {
+                        reward.setBerecomName(userUserDO.getName());
+                    } else if (userUserDO.getName() == null || userUserDO.getName().equals("")) {
+                        if (userUserDO.getNickname() != null && !userUserDO.getNickname().equals("")) {
                             reward.setBerecomName(userUserDO.getNickname());
                         }
                     }
-                    if (reward.getBerecomName() == null) {
-                        query.clear();
-                        query.where(UserWxUser.USER_WX_USER.SYSUSER_ID.getName(), point.getBerecomUserId());
-                        UserWxUserDO userWxUserDO = userWxUserDao.getData(query.buildQuery());
-                        if (userWxUserDO != null) {
-                            reward.setBerecomName(userWxUserDO.getNickname());
-                        }
+                }
+                if (reward.getBerecomName() == null) {
+                    query.clear();
+                    query.where(UserWxUser.USER_WX_USER.SYSUSER_ID.getName(), point.getBerecomUserId());
+                    UserWxUserDO userWxUserDO = userWxUserDao.getData(query.buildQuery());
+                    if (userWxUserDO.getNickname() != null && !userWxUserDO.getNickname().equals("")) {
+                        reward.setBerecomName(userWxUserDO.getNickname());
                     }
                 }
                 rewardVOList.add(reward);
@@ -708,10 +678,10 @@ public class EmployeeEntity {
      */
     public List<UserEmployeeDO> addEmployeeList(List<UserEmployeeDO> userEmployeeList) throws CommonException {
         if (userEmployeeList != null && userEmployeeList.size() > 0) {
-            List<UserEmployeeDO> employeeDOS = employeeDao.addAllData(userEmployeeList);
+            List<UserEmployeeRecord> employeeDOS = employeeDao.addAllRecord(BeanUtils.structToDB(userEmployeeList, UserEmployeeRecord.class));
             // ES 索引更新
             searchengineEntity.updateEmployeeAwards(employeeDOS.stream().map(m -> m.getId()).collect(Collectors.toList()));
-            return employeeDOS;
+            return BeanUtils.DBToStruct(UserEmployeeDO.class, employeeDOS);
         } else {
             return null;
         }
@@ -918,6 +888,7 @@ public class EmployeeEntity {
                 logger.info("postPutUserEmployeeBatch {},批量更新数据{}条,剩余{}条", batchForm.getCompany_id(), batchSize, updateDatas.size() - start);
             }
             employeeDao.updateRecords(BeanUtils.structToDB(updateDatas.subList(start, updateDatas.size()), UserEmployeeRecord.class));
+            searchengineEntity.updateEmployeeAwards(updateDatas.subList(start, updateDatas.size()).stream().map(m -> m.getId()).collect(Collectors.toList()));
             logger.info("postPutUserEmployeeBatch {},批量更新数据{}条,剩余{}条", batchForm.getCompany_id(), updateDatas.size() - start, 0);
         }
 
@@ -940,5 +911,19 @@ public class EmployeeEntity {
         } else {
             //do nothing
         }
+    }
+
+    /**
+     * 根据员工编号查询员工数据
+     *
+     * @param employeeId 员工编号
+     * @return 员工数据
+     */
+    public UserEmployeeDO getEmployeeByID(int employeeId) {
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where(UserEmployee.USER_EMPLOYEE.ID.getName(), employeeId)
+                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), 0)
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), AbleFlag.OLDENABLE);
+        return employeeDao.getData(queryBuilder.buildQuery());
     }
 }

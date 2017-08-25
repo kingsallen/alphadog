@@ -96,6 +96,11 @@ service UserHrAccountService {
     hr_third_party_account_struct.HrThirdPartyAccountDO bindThirdPartyAccount(1:i32 hrId,2:hr_third_party_account_struct.HrThirdPartyAccountDO account,3:bool sync) throws (1: common_struct.BIZException e);
     //同步第三方帐号
     hr_third_party_account_struct.HrThirdPartyAccountDO syncThirdPartyAccount(1:i32 hrId,2:i32 id,3:bool sync) throws (1: common_struct.BIZException e);
+    //猎聘确认发送验证码
+    hr_third_party_account_struct.HrThirdPartyAccountDO bindConfirm(1:i32 hrId,2:i32 id,3:bool confirm) throws (1: common_struct.BIZException e);
+    //猎聘发送验证码
+    hr_third_party_account_struct.HrThirdPartyAccountDO bindMessage(1:i32 hrId,2:i32 id,3:string code) throws (1: common_struct.BIZException e);
+
     //解绑第三方nag帐号
     void unbindThirdPartyAccount(1:i32 accountId,2:i32 userId) throws (1: common_struct.BIZException e);
     //分配第三方帐号
@@ -140,7 +145,7 @@ service UserHrAccountService {
     // 删除员工
     bool delEmployee(1: list<i32> ids) throws (1: common_struct.BIZException e);
     // 获取员工积分列表
-    employee_struct.RewardVOPageVO getEmployeeRewards(1: i32 employeeId,2:i32 pageNumber, 3:i32 pageSize) throws (1: common_struct.BIZException e);
+    employee_struct.RewardVOPageVO getEmployeeRewards(1: i32 employeeId, 2:i32 companyId, 3:i32 pageNumber, 4:i32 pageSize) throws (1: common_struct.BIZException e);
     // 员工添加积分
     i32 addEmployeeReward(1: i32 employeeId, 2: i32 companyId, 3: i32 points, 4: string reason) throws (1: common_struct.BIZException e);
     // 通过公司ID和关键字,查询认证员工和未认证员工数量

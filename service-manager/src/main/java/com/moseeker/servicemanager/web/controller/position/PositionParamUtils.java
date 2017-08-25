@@ -1,6 +1,5 @@
 package com.moseeker.servicemanager.web.controller.position;
 
-import com.moseeker.common.util.StringUtils;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
@@ -8,15 +7,13 @@ import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
 import com.moseeker.thrift.gen.position.struct.BatchHandlerJobPostion;
 import com.moseeker.thrift.gen.position.struct.City;
 import com.moseeker.thrift.gen.position.struct.JobPostrionObj;
-
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 
 public class PositionParamUtils extends ParamUtils {
 
