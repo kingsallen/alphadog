@@ -1,4 +1,4 @@
-package com.moseeker.profile.service.impl.retriveprofile.flow.job51;
+package com.moseeker.profile.service.impl.retriveprofile.flow.common;
 
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.profile.service.impl.retriveprofile.ExecutorParam;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  * Created by jack on 20/07/2017.
  */
 @Component
-public class Job51ApplicationTaskParamUtil implements CouplerParamUtil<ApplicationTaskParam, Integer, Integer> {
+public class CommonApplicationTaskParamUtil implements CouplerParamUtil<ApplicationTaskParam, Integer, Integer> {
     @Override
     public ApplicationTaskParam parseExecutorParam(Integer tmpParam, ExecutorParam globalParam) throws CommonException {
         ApplicationTaskParam applicationTaskParam = new ApplicationTaskParam();

@@ -4,9 +4,9 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.profile.service.impl.retriveprofile.ExecutorParam;
 import com.moseeker.profile.service.impl.retriveprofile.RetrievalFlow;
 import com.moseeker.profile.service.impl.retriveprofile.executor.Coupler;
-import com.moseeker.profile.service.impl.retriveprofile.flow.job51.Job51ApplicationTaskParamUtil;
-import com.moseeker.profile.service.impl.retriveprofile.flow.job51.Job51ProfileTaskParamUtil;
-import com.moseeker.profile.service.impl.retriveprofile.flow.job51.Job51UserTaskParamUtil;
+import com.moseeker.profile.service.impl.retriveprofile.flow.common.CommonApplicationTaskParamUtil;
+import com.moseeker.profile.service.impl.retriveprofile.flow.common.CommonProfileTaskParamUtil;
+import com.moseeker.profile.service.impl.retriveprofile.flow.common.CommonUserTaskParamUtil;
 import com.moseeker.profile.service.impl.retriveprofile.tasks.ApplicationTask;
 import com.moseeker.profile.service.impl.retriveprofile.tasks.ProfileTask;
 import com.moseeker.profile.service.impl.retriveprofile.tasks.UserTask;
@@ -17,8 +17,8 @@ import org.springframework.stereotype.Component;
  * 支付宝简历回收流程
  * Created by jack on 10/07/2017.
  */
-@Component("job51_retrieval_flow")
-public class Job51RetrievalFlow extends RetrievalFlow {
+@Component("common_retrieval_flow")
+public class CommonRetrievalFlow extends RetrievalFlow {
 
     @Autowired
     NomalUserTask userTask;
@@ -30,13 +30,13 @@ public class Job51RetrievalFlow extends RetrievalFlow {
     ApplicationTask applicationTask;
 
     @Autowired
-    Job51UserTaskParamUtil userTaskParamUtil;
+    CommonUserTaskParamUtil userTaskParamUtil;
 
     @Autowired
-    Job51ProfileTaskParamUtil profileTaskParamUtil;
+    CommonProfileTaskParamUtil profileTaskParamUtil;
 
     @Autowired
-    Job51ApplicationTaskParamUtil applicationTaskParamUtil;
+    CommonApplicationTaskParamUtil applicationTaskParamUtil;
 
     @Override
     protected ExecutorParam initParam() {
