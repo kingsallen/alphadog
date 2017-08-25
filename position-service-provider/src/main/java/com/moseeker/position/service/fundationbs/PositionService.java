@@ -531,6 +531,7 @@ public class PositionService {
         // 需要更新ES的jobpostionID
         List<Integer> jobPositionIds = new ArrayList<>();
         Integer deleteCounts = 0;
+        Integer sourceId = jobPositionHandlerDates.get(0).getSource_id();
         // 删除操作,删除除了data以外的数据库中的数据
         if (!noDelete) {
             if (!com.moseeker.common.util.StringUtils.isEmptyList(dbOnlineList)) {
@@ -555,9 +556,13 @@ public class PositionService {
                             break;
                         }
                     }
+                    // 需要删除的数据
                     if (!existed) {
-                        jobPositionRecord.setStatus((byte) 1);
-                        jobPositionIds.add(jobPositionRecord.getId());
+                        // 需要删除的职位必须sourceId 必须相同
+                        if (jobPositionRecord.getSourceId() == sourceId) {
+                            jobPositionRecord.setStatus((byte) 1);
+                            jobPositionIds.add(jobPositionRecord.getId());
+                        }
                     }
                 }
                 // 需要删除的列表不为空，否则全部删除
@@ -684,6 +689,7 @@ public class PositionService {
             // 城市信息太长时候，需要过滤数据
             if (city.length() > 100) {
                 handlerFailMess(ConstantErrorCodeMessage.CITY_TOO_LONG, jobPositionFailMessPojos, jobPositionHandlerDate);
+                continue;
             }
             // 更新或者新增数据
             if (jobPositionHandlerDate.getId() != 0 || !com.moseeker.common.util.StringUtils.isEmptyObject(jobPositionRecord)) {  // 数据更新
@@ -814,7 +820,7 @@ public class PositionService {
             // 新增jobPositionCity数据
             if (jobPositionCityRecordsAddlist.size() > 0) {
                 logger.info("-------------新增jobPositionCity数据开始------------------");
-                jobPositionCityDao.addAllRecord(jobPositionCityRecordsAddlist);
+                jobPositionCityDao.addAllRecord(jobPositionCityRecordsAddlist.stream().distinct().collect(Collectors.toList()));
                 logger.info("-------------新增jobPositionCity数据结束------------------");
             }
             // 更新jobPositionCity数据
@@ -826,7 +832,7 @@ public class PositionService {
                     logger.info("-------------删除jobPositionCity的数据结束------------------");
                 }
                 logger.info("-------------新增jobPositionCity的数据开始------------------");
-                jobPositionCityDao.addAllRecord(jobPositionCityRecordsUpdatelist);
+                jobPositionCityDao.addAllRecord(jobPositionCityRecordsUpdatelist.stream().distinct().collect(Collectors.toList()));
                 logger.info("-------------新增jobPositionCity的数据结束------------------");
             }
         } catch (Exception e) {
