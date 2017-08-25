@@ -1288,10 +1288,10 @@ public class PositionService {
 	 	                    	if(positionCity!=null&&positionCity.size()>0){
 	 	                    		String  cityName="";
 	 	                    		for(String city:positionCity){
-	 	                    			cityName+=city+",";
+	 	                    			cityName+=city+"，";
 	 	                    		}
 	 	                    		if(StringUtils.isNotNullOrEmpty(cityName)){
-	 	                    			cityName=cityName.substring(0, cityName.lastIndexOf(","));
+	 	                    			cityName=cityName.substring(0, cityName.lastIndexOf("，"));
 	 	                    		}
 	 	                    		e.setCity(cityName);
 	 	                    	}
