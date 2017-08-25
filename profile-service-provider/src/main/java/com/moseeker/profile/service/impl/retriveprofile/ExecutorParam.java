@@ -1,13 +1,16 @@
 package com.moseeker.profile.service.impl.retriveprofile;
 
 import com.alibaba.fastjson.JSON;
+
 import com.google.common.base.CaseFormat;
+
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
+import com.moseeker.entity.Constant.ApplicationSource;
 import com.moseeker.profile.exception.ExceptionFactory;
 
 import java.util.HashMap;
@@ -17,13 +20,13 @@ import java.util.UUID;
 import static com.moseeker.common.exception.Category.VALIDATE_FAILED;
 
 /**
- * 执行者参数
- * Created by jack on 19/07/2017.
+ * 执行者参数 Created by jack on 19/07/2017.
  */
 public class ExecutorParam {
 
     private Map<String, Object> originParam;    //初始参数
     private int positionId;                     //职位编号
+    private int origin;
     private Map<String, Object> profile;        //profile信息
     private Map<String, Object> user;           //用户信息
     private ChannelType channelType;            //渠道
@@ -36,6 +39,18 @@ public class ExecutorParam {
         paramMap = StringUtils.convertUnderKeyToCamel(paramMap);
 
         setOriginParam(paramMap);
+
+        if (channelType.name().equals("JOB51")) {
+            setOrigin(8);
+        } else if (channelType.name().equals("LIEPIN")) {
+            setOrigin(32);
+        } else if (channelType.name().equals("ZHILIAN")) {
+            setOrigin(16);
+        } else if (channelType.name().equals("LINKEDIN")) {
+            setOrigin(512);
+        } else if (channelType.name().equals("ALIPAY")) {
+            setOrigin(64);
+        }
 
         setChannelType(channelType);
         ValidateUtil validateUtil = new ValidateUtil();
@@ -117,5 +132,13 @@ public class ExecutorParam {
 
     public void setChannelType(ChannelType channelType) {
         this.channelType = channelType;
+    }
+
+    public int getOrigin() {
+        return origin;
+    }
+
+    public void setOrigin(int origin) {
+        this.origin = origin;
     }
 }

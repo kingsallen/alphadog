@@ -33,12 +33,15 @@ import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.Query.QueryBuilder;
 import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.entity.Constant.ApplicationSource;
+import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.thrift.gen.application.struct.ApplicationResponse;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.application.struct.JobResumeOther;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserAliUserDO;
+
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +49,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -54,6 +56,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
 
 /**
  * @author ltf 申请服务 2016年11月3日
@@ -85,12 +89,18 @@ public class JobApplicataionService {
     private UserUserDao userUserDao;
     @Autowired
     private UserAliUserDao userAliUserDao;
+
     @Autowired
-	private UserEmployeeDao userEmployeedao;
+    private UserEmployeeDao userEmployeedao;
+
+    @Autowired
+    private HrOperationRecordDao hrOperationRecordDao;
+
+    @Autowired
+    private HistoryJobApplicationDao historyJobApplicationDao;
+
 	@Autowired
-	private HrOperationRecordDao hrOperationRecordDao;
-	@Autowired
-	private HistoryJobApplicationDao historyJobApplicationDao;
+    EmployeeEntity employeeEntity;
     /**
      * 创建申请
      *
@@ -102,10 +112,15 @@ public class JobApplicataionService {
     public Response postApplication(JobApplication jobApplication) throws TException {
         logger.info("JobApplicataionService postApplication jobApplication:{}", jobApplication);
         try {
+            appIDToSource(jobApplication);
             // 获取该申请的职位
             Query query = new QueryBuilder().where("id", jobApplication.getPosition_id()).buildQuery();
             JobPositionRecord jobPositionRecord = jobPositionDao.getRecord(query);
             //JobPositionRecord jobPositionRecord = jobPositionDao.getPositionById((int) jobApplication.position_id);
+            //校验申请来源的有效性
+            if (jobApplication.getOrigin() == 0) {
+                return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_SOURCE_NOTEXIST);
+            }
             // 职位有效性验证
             Response responseJob = validateJobPosition(jobPositionRecord);
             if (responseJob.status > 0) {
@@ -146,13 +161,37 @@ public class JobApplicataionService {
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
     }
 
+    private void appIDToSource(JobApplication jobApplication) {
+        if (jobApplication.getOrigin() == 0) {
+            switch (jobApplication.getAppid()) {
+                case 1:
+                    jobApplication.setOrigin(1);
+                    break;
+                case 5:
+                case 2:
+                    jobApplication.setOrigin(4);
+                    break;
+                case 6:
+                case 3:
+                    jobApplication.setOrigin(2);
+                    break;
+                default:
+            }
+        }
+    }
+
     @SuppressWarnings("serial")
     @CounterIface
     public Response postApplicationIfNotApply(JobApplication jobApplication) throws TException {
         try {
+            appIDToSource(jobApplication);
             // 获取该申请的职位
             Query query = new QueryBuilder().where("id", jobApplication.position_id).buildQuery();
             JobPositionRecord jobPositionRecord = jobPositionDao.getRecord(query);
+            //校验申请来源的有效性
+            if (jobApplication.getOrigin() == 0) {
+                return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_SOURCE_NOTEXIST);
+            }
             // 职位有效性验证
             Response responseJob = validateJobPosition(jobPositionRecord);
             if (responseJob.status > 0) {
@@ -204,11 +243,7 @@ public class JobApplicataionService {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_VALIDATE_REQUIRED.replace("{0}", "id"));
             }
             // 更新申请
-            JobApplicationRecord jobApplicationRecord = (JobApplicationRecord) BeanUtils.structToDB(jobApplication,
-                    JobApplicationRecord.class);
-            Timestamp updateTime = new Timestamp(System.currentTimeMillis());
-            jobApplicationRecord.setUpdateTime(updateTime);
-            int updateStatus = jobApplicationDao.updateRecord(jobApplicationRecord);
+            int updateStatus = updateApplication(jobApplication);
             //int updateStatus = jobApplicationDao.putResource(jobApplicationRecord);
             if (updateStatus > 0) {
                 // 返回 userFavoritePositionId
@@ -225,6 +260,35 @@ public class JobApplicataionService {
             //do nothing
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
+    }
+
+    /**
+     * 更新申请
+     *
+     * @param jobApplication
+     * @return
+     */
+    private int updateApplication(JobApplication jobApplication) {
+        int updateStatus = 0;
+        QueryBuilder queryBuilder = new QueryBuilder();
+        JobApplicationDO jobApplicationDO = jobApplicationDao.getData(
+                queryBuilder.where(
+                        com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.ID.getName(), jobApplication.getId())
+                        .buildQuery());
+        if (jobApplicationDO != null) {
+            ApplicationSource applicationSource = ApplicationSource.instaceFromInteger(jobApplication.getOrigin());
+            if (applicationSource == null) {
+                jobApplication.setOrigin(jobApplicationDO.getOrigin());
+            } else {
+                jobApplication.setOrigin(applicationSource.andSource(jobApplicationDO.getOrigin()));
+            }
+            // 更新申请
+            JobApplicationRecord jobApplicationRecord = BeanUtils.structToDB(jobApplication, JobApplicationRecord.class);
+            Timestamp updateTime = new Timestamp(System.currentTimeMillis());
+            jobApplicationRecord.setUpdateTime(updateTime);
+            updateStatus = jobApplicationDao.updateRecord(jobApplicationRecord);
+        }
+        return updateStatus;
     }
 
     /**
@@ -674,9 +738,10 @@ public class JobApplicataionService {
         return status;
     }
 
-    /**
+
     /**
      * 根据指定渠道 channel=5（支付宝），指定时间段（"2017-05-10 14:57:14"）， 返回给第三方渠道同步的申请状态。
+     *
      * @param channel
      * @param start_time
      * @param end_time
@@ -684,46 +749,46 @@ public class JobApplicataionService {
      */
 
     public Response getApplicationListForThirdParty(int channel, String start_time, String end_time) {
-        Query query=new Query.QueryBuilder().select("id").select("position_id").select("applier_id").select("update_time").select("not_suitable").select("app_tpl_id")
-                .where(new Condition("update_time",start_time, ValueOp.GE))
-                .and(new Condition("update_time",end_time,ValueOp.LT)).buildQuery();
+        Query query = new Query.QueryBuilder().select("id").select("position_id").select("applier_id").select("update_time").select("not_suitable").select("app_tpl_id")
+                .where(new Condition("update_time", start_time, ValueOp.GE))
+                .and(new Condition("update_time", end_time, ValueOp.LT)).buildQuery();
 
         List<JobApplicationDO> jobApplicationlist = jobApplicationDao.getApplications(query);
-        if (jobApplicationlist == null ){
+        if (jobApplicationlist == null) {
             return ResponseUtils.success(new ArrayList<>());
         }
 
         List<Integer> applier_ids = jobApplicationlist.stream().map(JobApplicationDO::getApplierId).collect(Collectors.toList());
-        query=new Query.QueryBuilder().where(new Condition("user_id", applier_ids.toArray(), ValueOp.IN)).buildQuery();
+        query = new Query.QueryBuilder().where(new Condition("user_id", applier_ids.toArray(), ValueOp.IN)).buildQuery();
         List<UserAliUserDO> aliUserList = userAliUserDao.getDatas(query);
-        if (aliUserList == null){
+        if (aliUserList == null) {
             return ResponseUtils.success(new ArrayList<>());
         }
-        HashMap<Integer,String> userToAlidMap = new HashMap<Integer,String>(aliUserList.size());
-        for (UserAliUserDO aliUser :  aliUserList){
-            userToAlidMap.put(aliUser.getUserId(),aliUser.getUid());
+        HashMap<Integer, String> userToAlidMap = new HashMap<Integer, String>(aliUserList.size());
+        for (UserAliUserDO aliUser : aliUserList) {
+            userToAlidMap.put(aliUser.getUserId(), aliUser.getUid());
         }
 
         List<HashMap> syncApplications = new ArrayList<HashMap>();
-        for ( JobApplicationDO applicationDO: jobApplicationlist){
+        for (JobApplicationDO applicationDO : jobApplicationlist) {
             String thirdparty_uid = userToAlidMap.get(applicationDO.getApplierId());
-            if (thirdparty_uid != null ){
+            if (thirdparty_uid != null) {
                 HashMap thirdPartyApplication = new HashMap();
                 thirdPartyApplication.put("source_id", String.valueOf(applicationDO.getPositionId()));
-                thirdPartyApplication.put("alipay_user_id", thirdparty_uid );
+                thirdPartyApplication.put("alipay_user_id", thirdparty_uid);
 
                 Status status = Status.instanceFromCode(String.valueOf(applicationDO.getAppTplId()));
                 AlipaycampusStatus alipaycampus = StatusChangeUtil.getAlipaycampusStatus(status);
-                if ( alipaycampus == null){
+                if (alipaycampus == null) {
                     continue; // 忽略不需要要同步的
                 }
-                thirdPartyApplication.put("status",alipaycampus.getValue());
+                thirdPartyApplication.put("status", alipaycampus.getValue());
 
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 try {
-                    java.util.Date  update_time = sdf.parse(applicationDO.getUpdateTime());
-                    thirdPartyApplication.put("update_time",String.valueOf(update_time.getTime()));
-                }catch (Exception e){
+                    java.util.Date update_time = sdf.parse(applicationDO.getUpdateTime());
+                    thirdPartyApplication.put("update_time", String.valueOf(update_time.getTime()));
+                } catch (Exception e) {
                     continue;
                 }
 
@@ -733,6 +798,7 @@ public class JobApplicataionService {
 
         return ResponseUtils.success(syncApplications);
     }
+
 
 	 /**
      * 转换归档申请记录
@@ -839,7 +905,6 @@ public class JobApplicataionService {
         }
         return appId;
     }
-
 
 
 }

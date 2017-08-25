@@ -4,6 +4,7 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.profile.service.impl.retriveprofile.ExecutorParam;
 import com.moseeker.profile.service.impl.retriveprofile.executor.CouplerParamUtil;
 import com.moseeker.profile.service.impl.retriveprofile.parameters.ApplicationTaskParam;
+
 import org.springframework.stereotype.Component;
 
 /**
@@ -16,6 +17,7 @@ public class Job51ApplicationTaskParamUtil implements CouplerParamUtil<Applicati
     public ApplicationTaskParam parseExecutorParam(Integer tmpParam, ExecutorParam globalParam) throws CommonException {
         ApplicationTaskParam applicationTaskParam = new ApplicationTaskParam();
         applicationTaskParam.setPositionId(globalParam.getPositionId());
+        applicationTaskParam.setOrigin(globalParam.getOrigin());
         int id = 0;
         if (globalParam.getUser().get("id") != null) {
             id = (Integer) globalParam.getUser().get("id");

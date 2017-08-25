@@ -3,6 +3,8 @@ package com.moseeker.useraccounts.service.impl;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.AopTargetUtils;
+import com.moseeker.entity.EmployeeEntity;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
 import com.moseeker.thrift.gen.employee.struct.*;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.useraccounts.config.AppConfig;
@@ -28,6 +30,9 @@ public class EmployeeServiceTest {
 
     @Autowired
     EmployeeService service;
+
+    @Autowired
+    EmployeeEntity employeeEntity;
 
     @Mock
     MqService.Iface mqService;
@@ -108,5 +113,15 @@ public class EmployeeServiceTest {
     public void awardRankingTest() {
         List<EmployeeAward> response = service.awardRanking(45082, 39978, "2017-08");
         System.out.println(response);
+    }
+
+    @Test
+    public void addAwardTest() throws Exception{
+        UserEmployeePointsRecordDO ueprDo = new UserEmployeePointsRecordDO();
+        ueprDo.setAward(10);
+        ueprDo.setEmployeeId(677720);
+        ueprDo.setReason("加积分");
+        int total = employeeEntity.addReward(677720, 2878, ueprDo);
+        System.out.println("用户："+ueprDo.getEmployeeId()+", 积分："+total);
     }
 }

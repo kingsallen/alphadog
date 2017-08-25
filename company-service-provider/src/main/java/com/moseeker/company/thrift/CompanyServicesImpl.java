@@ -8,26 +8,23 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.company.exception.ExceptionFactory;
 import com.moseeker.company.service.impl.CompanyPcService;
 import com.moseeker.entity.CompanyConfigEntity;
-import com.moseeker.entity.JobPositionCityEntity;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.company.struct.CompanyCertConf;
 import com.moseeker.thrift.gen.company.struct.CompanyForVerifyEmployee;
+import com.moseeker.thrift.gen.company.struct.HrEmployeeCustomFieldsVO;
 import com.moseeker.thrift.gen.employee.struct.RewardConfig;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.moseeker.company.service.impl.CompanyService;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices.Iface;
 import com.moseeker.thrift.gen.company.struct.CompanyOptions;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrImporterMonitorDO;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -280,18 +277,32 @@ public class CompanyServicesImpl implements Iface {
             throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
         }
     }
+
     /*
         获取company的details
      */
     @Override
-    public Response companyDetails(int companyId){
-        try{
-            Map<String,Object> map=companyPcService.getCompanyInfo(companyId);
+    public Response companyDetails(int companyId) {
+        try {
+            Map<String, Object> map = companyPcService.getCompanyInfo(companyId);
             return ResponseUtils.success(map);
-        }catch(Exception e){
-            logger.info(e.getMessage(),e);
+        } catch (Exception e) {
+            logger.info(e.getMessage(), e);
             throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
         }
+    }
+
+    /**
+     * 获取公司员工认证后补填字段配置信息列表
+     *
+     * @param companyId
+     * @return
+     * @throws BIZException
+     * @throws TException
+     */
+    @Override
+    public List<HrEmployeeCustomFieldsVO> getHrEmployeeCustomFields(int companyId) throws BIZException, TException {
+        return service.getHrEmployeeCustomFields(companyId);
     }
 }
 

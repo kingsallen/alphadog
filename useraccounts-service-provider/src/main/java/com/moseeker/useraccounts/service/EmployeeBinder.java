@@ -91,6 +91,11 @@ public abstract class EmployeeBinder {
         return response;
     }
 
+    /**
+     * 创建员工记录
+     * @param bindingParams
+     * @return
+     */
     protected int createEmployee(BindingParams bindingParams) {
         if (userEmployeeDOThreadLocal.get() == null || userEmployeeDOThreadLocal.get().getId() == 0) {
             UserEmployeeDO userEmployee = new UserEmployeeDO();
@@ -102,8 +107,9 @@ public abstract class EmployeeBinder {
             userEmployee.setEmail(bindingParams.getEmail());
             userEmployee.setWxuserId(wxEntity.getWxuserId(bindingParams.getUserId(), bindingParams.getCompanyId()));
             userEmployee.setAuthMethod((byte)bindingParams.getType().getValue());
-            userEmployee.setActivation((byte)3);
+            userEmployee.setActivation((byte)0);
             userEmployee.setCreateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+            userEmployee.setBindingTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
             int primaryKey = employeeEntity.addEmployee(userEmployee).getId();
             if( primaryKey == 0) {
                 log.info("员工邮箱认证，保存员工信息失败 employee={}", userEmployee);
@@ -133,7 +139,7 @@ public abstract class EmployeeBinder {
      * @throws TException
      */
     protected Result doneBind(BindingParams bindingParams, int employeeId) throws TException {
-        log.info("updateEmployee param: BindingParams={}", bindingParams);
+        log.info("doneBind param: BindingParams={}", bindingParams);
         Result response = new Result();
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.where("sysuser_id", String.valueOf(bindingParams.getUserId())).and("disable", "0");
@@ -154,10 +160,12 @@ public abstract class EmployeeBinder {
                     e.setCustomField(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getCustomField(), e.getCustomField()));
                     if (StringUtils.isNotNullOrEmpty(e.getActivationCode())) {
                         client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, e.getActivationCode());
+                        client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, bindingParams.getUserId()+"-"+bindingParams.getCompanyId()+"-"+employeeEntity.getGroupIdByCompanyId(bindingParams.getCompanyId()));
                     }
                 } else if (e.getActivation() == 0) {
                     e.setEmailIsvalid((byte)0);
                     e.setActivation((byte)1);
+                    e.setCustomFieldValues("[]");
                 }
             });
         }

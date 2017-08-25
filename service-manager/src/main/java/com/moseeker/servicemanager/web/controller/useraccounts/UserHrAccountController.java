@@ -1,6 +1,7 @@
 package com.moseeker.servicemanager.web.controller.useraccounts;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
@@ -19,19 +20,18 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * HR账号服务
@@ -820,8 +820,13 @@ public class UserHrAccountController {
             String mobile = params.getString("mobile", "");
             String email = params.getString("email", "");
             String customField = params.getString("customField", "");
+            String customFieldValues = null;
+            if (params.get("customFieldValues") != null) {
+                List t = (List) params.get("customFieldValues");
+                customFieldValues = JSONObject.toJSONString(t);
+            }
             int companyId = params.getInt("companyId", 0);
-            Response res = userHrAccountService.updateUserEmployee(cname, mobile, email, customField, userEmployeeId, companyId);
+            Response res = userHrAccountService.updateUserEmployee(cname, mobile, email, customField, userEmployeeId, companyId, customFieldValues);
             return ResponseLogNotification.success(request, res);
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));

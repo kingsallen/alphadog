@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.*;
@@ -18,10 +19,12 @@ import com.moseeker.baseorm.util.SmsSender;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.annotation.notify.UpdateEs;
 import com.moseeker.common.constants.AbleFlag;
+import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.exception.RedisException;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
@@ -36,7 +39,9 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrImporterMonitorDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrTalentpoolDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountHrDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.employee.struct.RewardVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
@@ -122,7 +127,7 @@ public class UserHrAccountService {
 
     @Autowired
     private HrCompanyDao hrCompanyDao;
-    
+
     @Autowired
     CandidateCompanyDao candidateCompanyDao;
 
@@ -997,6 +1002,11 @@ public class UserHrAccountService {
             userEmployeeVO.setCustomField(userEmployeeDO.getCustomField());
             userEmployeeVO.setEmail(userEmployeeDO.getEmail());
             userEmployeeVO.setCompanyId(userEmployeeDO.getCompanyId());
+
+            if (userEmployeeDO.getCustomFieldValues() != null) {
+                List customFieldValues = JSONObject.parseObject(userEmployeeDO.getCustomFieldValues(), List.class);
+                userEmployeeVO.setCustomFieldValues(customFieldValues);
+            }
             if (userMap != null && userMap.size() > 0 && userMap.get(userEmployeeDO.getSysuserId()) != null) {
                 userEmployeeVO.setNickName(userMap.get(userEmployeeDO.getSysuserId()).getNickname());
             } else {
@@ -1225,15 +1235,13 @@ public class UserHrAccountService {
         if (!employeeEntity.permissionJudge(userEmployeeId, companyId)) {
             throw UserAccountException.PERMISSION_DENIED;
         }
-        userEmployeeDetailVO.setId(userEmployeeDO.getId());
+        org.springframework.beans.BeanUtils.copyProperties(userEmployeeDO, userEmployeeDetailVO);
         userEmployeeDetailVO.setUsername(userEmployeeDO.getCname());
-        userEmployeeDetailVO.setCompanyId(userEmployeeDO.getCompanyId());
-        userEmployeeDetailVO.setMobile(userEmployeeDO.getMobile());
-        userEmployeeDetailVO.setCustomField(userEmployeeDO.getCustomField());
-        userEmployeeDetailVO.setEmail(userEmployeeDO.getEmail());
-        userEmployeeDetailVO.setAward(userEmployeeDO.getAward());
-        userEmployeeDetailVO.setBindingTime(userEmployeeDO.getBindingTime());
         userEmployeeDetailVO.setActivation((new Double(userEmployeeDO.getActivation())).intValue());
+        if (userEmployeeDO.getCustomFieldValues() != null) {
+            List customFieldValues = JSONObject.parseObject(userEmployeeDO.getCustomFieldValues(), List.class);
+            userEmployeeDetailVO.setCustomFieldValues(customFieldValues);
+        }
         // 查询微信信息
         if (userEmployeeDO.getSysuserId() > 0) {
             queryBuilder.clear();
@@ -1272,7 +1280,7 @@ public class UserHrAccountService {
      * @throws Exception
      */
     public Response updateUserEmployee(String cname, String mobile, String email, String
-            customField, Integer userEmployeeId, Integer companyId) throws CommonException {
+            customField, Integer userEmployeeId, Integer companyId, String customFieldValues) throws CommonException {
         Response response = new Response();
         if (userEmployeeId == 0) {
             throw UserAccountException.USEREMPLOYEES_DATE_EMPTY;
@@ -1314,17 +1322,20 @@ public class UserHrAccountService {
 
         try {
             UserEmployeeDO userEmployeeDO = new UserEmployeeDO();
-            if (!StringUtils.isNullOrEmpty(cname)) {
+            if (cname != null) {
                 userEmployeeDO.setCname(cname);
             }
-            if (!StringUtils.isNullOrEmpty(mobile)) {
+            if (mobile != null) {
                 userEmployeeDO.setMobile(mobile);
             }
-            if (!StringUtils.isNullOrEmpty(customField)) {
+            if (customField != null) {
                 userEmployeeDO.setCustomField(customField);
             }
-            if (!StringUtils.isNullOrEmpty(email)) {
+            if (email != null) {
                 userEmployeeDO.setEmail(email);
+            }
+            if (customFieldValues != null) {
+                userEmployeeDO.setCustomFieldValues(customFieldValues);
             }
             userEmployeeDO.setId(userEmployeeId);
             int i = userEmployeeDao.updateData(userEmployeeDO);

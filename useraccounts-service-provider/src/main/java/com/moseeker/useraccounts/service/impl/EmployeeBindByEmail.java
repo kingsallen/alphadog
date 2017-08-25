@@ -3,7 +3,7 @@ package com.moseeker.useraccounts.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
-import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.MD5Util;
@@ -22,11 +22,9 @@ import com.moseeker.useraccounts.service.EmployeeBinder;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,12 +55,11 @@ public class EmployeeBindByEmail extends EmployeeBinder{
 
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.where(new Condition("company_id", employeeEntity.getCompanyIds(bindingParams.getCompanyId()), ValueOp.IN)).and("email", bindingParams.getEmail())
-                .and("disable", "0");
+                .and("disable", "0").and("activation", "0");
 
-        // 判断该邮箱现在已被占用 或 正在被人认证
+        // 判断该邮箱现在已被占用
         List<UserEmployeeDO> userEmployees = employeeDao.getDatas(query.buildQuery());
-        userEmployees = userEmployees.stream().filter(e -> e.getSysuserId() != bindingParams.getUserId() && e.getId() > 0).collect(Collectors.toList());
-        if (userEmployees.stream().anyMatch(e -> e.getActivation() == 0 || StringUtils.isNotNullOrEmpty(client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, e.getActivationCode())))) {
+        if (userEmployees != null && userEmployees.size() > 0) {
             log.info("邮箱:{} 已被占用", bindingParams.getEmail());
             throw new RuntimeException("该邮箱已被认证\n请使用其他邮箱");
         }
@@ -72,6 +69,25 @@ public class EmployeeBindByEmail extends EmployeeBinder{
                 throw new RuntimeException("已发送过邮件到指定邮箱，24h内请勿重复该操作");
             }
         }
+    }
+
+    protected int createEmployee(BindingParams bindingParams) {
+        if (userEmployeeDOThreadLocal.get() == null || userEmployeeDOThreadLocal.get().getId() == 0) {
+            UserEmployeeDO userEmployee = new UserEmployeeDO();
+            userEmployee.setCompanyId(bindingParams.getCompanyId());
+            userEmployee.setEmployeeid(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getMobile(), ""));
+            userEmployee.setSysuserId(bindingParams.getUserId());
+            userEmployee.setCname(bindingParams.getName());
+            userEmployee.setMobile(bindingParams.getMobile());
+            userEmployee.setEmail(bindingParams.getEmail());
+            userEmployee.setWxuserId(wxEntity.getWxuserId(bindingParams.getUserId(), bindingParams.getCompanyId()));
+            userEmployee.setAuthMethod((byte)bindingParams.getType().getValue());
+            userEmployee.setActivation((byte)0);
+            userEmployee.setCreateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+            userEmployee.setBindingTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+            userEmployeeDOThreadLocal.set(userEmployee);
+        }
+        return userEmployeeDOThreadLocal.get().getId();
     }
 
     @Override
@@ -85,8 +101,9 @@ public class EmployeeBindByEmail extends EmployeeBinder{
         query.where("company_id", String.valueOf(bindingParams.getCompanyId()));
         HrWxWechatDO hrwechatResult = hrWxWechatDao.getData(query.buildQuery());
         if (companyDO != null && companyDO.getId() != 0 && hrwechatResult != null && hrwechatResult.getId() != 0) {
-            // 激活码(MD5)： employee-email-timestamp
-            String activationCode = MD5Util.encryptSHA(userEmployeeDOThreadLocal.get().getId()+"-"+bindingParams.getEmail()+"-"+System.currentTimeMillis());
+            // 激活码(MD5)： userId_companyId_groupId
+            String activationCode = MD5Util.encryptSHA(employeeId+"-"+bindingParams.getEmail()+"-"+System.currentTimeMillis());
+            //MD5Util.encryptSHA(bindingParams.getUserId()+"_"+bindingParams.getCompanyId()+"_"+employeeEntity.getGroupIdByCompanyId(bindingParams.getCompanyId()));
             Map<String, String> mesBody = new HashMap<>();
             mesBody.put("#company_logo#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(companyDO.getLogo(), ""));
             mesBody.put("#employee_name#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(userEmployeeDOThreadLocal.get().getCname(), userAccountEntity.genUsername(userEmployeeDOThreadLocal.get().getSysuserId())));
@@ -104,13 +121,17 @@ public class EmployeeBindByEmail extends EmployeeBinder{
             Response mailResponse = mqService.sendAuthEMail(mesBody, Constant.EVENT_TYPE_EMPLOYEE_AUTH, bindingParams.getEmail(), subject, senderName, senderDisplay);
             // 邮件发送成功
             if (mailResponse.getStatus() == 0) {
-                String redStr = client.set(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, activationCode, JSONObject.toJSONString(bindingParams));
-                log.info("set redis result: ", redStr);
                 // 修改用户邮箱
+                if(userEmployeeDOThreadLocal.get().getId() > 0) {
+                    userEmployeeDOThreadLocal.get().setActivationCode(activationCode);
+                    employeeDao.updateData(userEmployeeDOThreadLocal.get());
+                }
                 userEmployeeDOThreadLocal.get().setEmail(bindingParams.getEmail());
                 userEmployeeDOThreadLocal.get().setUpdateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-                userEmployeeDOThreadLocal.get().setActivationCode(activationCode);
-                employeeDao.updateData(userEmployeeDOThreadLocal.get());
+                String resultACode = client.set(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, activationCode, JSONObject.toJSONString(bindingParams));
+                String resultAINFO = client.set(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, bindingParams.getUserId()+"-"+bindingParams.getCompanyId()+"-"+employeeEntity.getGroupIdByCompanyId(bindingParams.getCompanyId()), BeanUtils.convertStructToJSON(userEmployeeDOThreadLocal.get()));
+                log.info("set redisKey:EMPLOYEE_AUTH_CODE result: ", resultACode);
+                log.info("set redisKey:EMPLOYEE_AUTH_INFO result: ", resultAINFO);
                 response.setSuccess(true);
                 response.setMessage("发送激活邮件成功");
             } else {
@@ -127,24 +148,32 @@ public class EmployeeBindByEmail extends EmployeeBinder{
         response.setSuccess(false);
         response.setMessage("激活信息不正确");
         Query.QueryBuilder query = new Query.QueryBuilder();
-        query.where("activation_code", activationCode);
-        UserEmployeeDO userEmployeeDO = employeeDao.getData(query.buildQuery());
-        if (userEmployeeDO != null && userEmployeeDO.getId() > 0) {
-            String value = client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, activationCode);
-            if (StringUtils.isNotNullOrEmpty(value)) {
-                BindingParams bindingParams = JSONObject.parseObject(value, BindingParams.class);
-                // 判断当前公司是否还支持邮箱认证
-                query.clear();
-                query.where("company_id", String.valueOf(bindingParams.getCompanyId())).and("disable", String.valueOf(0));
-                HrEmployeeCertConfDO certConf = hrEmployeeCertConfDao.getData(query.buildQuery());
-                if(certConf == null || certConf.getCompanyId() == 0 || certConf.getAuthMode() == 2 || certConf.getAuthMode() == 3 || certConf.getAuthMode() == 5) {
-                    log.warn("公司 company_id = {}, 暂不支持邮箱认证，员工认证邮箱激活失败", bindingParams.getCompanyId());
-                    client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, activationCode);
-                } else {
-                    response = super.doneBind(bindingParams, userEmployeeDO.getId());
-                    response.setEmployeeId(userEmployeeDO.getId());
-                }
+        String value = client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, activationCode);
+        if (StringUtils.isNotNullOrEmpty(value)) {
+            BindingParams bindingParams = JSONObject.parseObject(value, BindingParams.class);
+            // 判断当前公司是否还支持邮箱认证
+            query.clear();
+            query.where("company_id", String.valueOf(bindingParams.getCompanyId())).and("disable", String.valueOf(0));
+            HrEmployeeCertConfDO certConf = hrEmployeeCertConfDao.getData(query.buildQuery());
+            // 判断该邮箱现在已被占用
+            query.clear();
+            query.where(new Condition("company_id", employeeEntity.getCompanyIds(bindingParams.getCompanyId()), ValueOp.IN)).and("email", bindingParams.getEmail())
+                    .and("disable", "0").and("activation", "0");
+            List<UserEmployeeDO> userEmployees = employeeDao.getDatas(query.buildQuery());
+            if(certConf == null || certConf.getCompanyId() == 0 || certConf.getAuthMode() == 2 || certConf.getAuthMode() == 3 || certConf.getAuthMode() == 5) {
+                log.warn("公司 company_id = {}, 暂不支持邮箱认证，员工认证邮箱激活失败", bindingParams.getCompanyId());
+                response.setMessage("员工认证邮箱激活失败, 暂不支持邮箱认证");
+            } else if(userEmployees != null && userEmployees.size() > 0){
+                log.error("员工认证邮箱激活失败, 邮箱:{} 已被占用", bindingParams.getEmail());
+                response.setMessage("员工认证邮箱激活失败, 该邮箱被占用");
+            } else {
+                userEmployeeDOThreadLocal.set(JSONObject.parseObject(client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, bindingParams.getUserId()+"-"+bindingParams.getCompanyId()+"-"+employeeEntity.getGroupIdByCompanyId(bindingParams.getCompanyId())), UserEmployeeDO.class));
+                int userEmployeeId = super.createEmployee(bindingParams);
+                response = super.doneBind(bindingParams, userEmployeeId);
+                response.setEmployeeId(userEmployeeId);
             }
+            client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, activationCode);
+            client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, bindingParams.getUserId()+"-"+bindingParams.getCompanyId()+"-"+employeeEntity.getGroupIdByCompanyId(bindingParams.getCompanyId()));
         }
         log.info("emailActivation response: {}", response);
         return response;

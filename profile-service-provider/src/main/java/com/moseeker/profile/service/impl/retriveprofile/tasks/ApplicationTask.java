@@ -11,10 +11,12 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.entity.Constant.ApplicationSource;
 import com.moseeker.profile.exception.Category;
 import com.moseeker.profile.exception.ExceptionFactory;
 import com.moseeker.profile.service.impl.retriveprofile.Task;
 import com.moseeker.profile.service.impl.retriveprofile.parameters.ApplicationTaskParam;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +25,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 
 /**
- * 处理申请业务
- * Created by jack on 10/07/2017.
+ * 处理申请业务 Created by jack on 10/07/2017.
  */
 @Component
 public class ApplicationTask implements Task<ApplicationTaskParam, Integer> {
@@ -65,36 +66,43 @@ public class ApplicationTask implements Task<ApplicationTaskParam, Integer> {
         JobApplicationRecord applicationRecord = jobApplicationDao.getRecord(queryBuilder.buildQuery());
         if (applicationRecord == null) {
             applicationRecord = initApplication(param.getUserId(), positionRecord.getId(),
-                    positionRecord.getCompanyId());
+                    positionRecord.getCompanyId(), param.getOrigin());
             applicationRecord = jobApplicationDao.addRecord(applicationRecord);
             redisClient.incr(Constant.APPID_ALPHADOG, REDIS_KEY_APPLICATION_COUNT_CHECK,
                     String.valueOf(applicationRecord.getApplierId()), String.valueOf(applicationRecord.getCompanyId()));
             logger.info("ApplicationTask 简历回收 生成申请信息。 id:{}", applicationRecord.getId());
             //是否需要用户申请次数。这回关系到用户投递这家公司的次数限制
         } else {
-            //do nothing
+            // 更新来源信息
+            ApplicationSource applicationSource = ApplicationSource.instaceFromInteger(applicationRecord.getOrigin());
+            applicationRecord.setOrigin(applicationSource.andSource(param.getOrigin()));
+            jobApplicationDao.updateRecord(applicationRecord);
+
         }
         return applicationRecord.getId();
     }
 
     /**
      * 初始化一个申请记录
-     * @param applierId 申请编号
+     *
+     * @param applierId  申请编号
      * @param positionId 职位编号
-     * @param companyId 公司编号
+     * @param companyId  公司编号
      * @return
      */
-    private JobApplicationRecord initApplication(int applierId, int positionId, int companyId) {
+    private JobApplicationRecord initApplication(int applierId, int positionId, int companyId, int origin) {
         JobApplicationRecord jobApplicationRecord = new JobApplicationRecord();
         jobApplicationRecord.setApplierId(applierId);
         jobApplicationRecord.setPositionId(positionId);
         jobApplicationRecord.setCompanyId(companyId);
+        jobApplicationRecord.setOrigin(origin);
         jobApplicationRecord.setAppTplId(Constant.RECRUIT_STATUS_APPLY);
         return jobApplicationRecord;
     }
 
     /**
      * 检查是否达到投递上线
+     *
      * @param userId
      * @param companyId
      * @return
@@ -117,16 +125,14 @@ public class ApplicationTask implements Task<ApplicationTaskParam, Integer> {
     }
 
     /**
-     * 获取申请限制次数
-     * 默认3次
-     * 企业有自己的配置,使用企业的配置
+     * 获取申请限制次数 默认3次 企业有自己的配置,使用企业的配置
      *
      * @param companyId 公司ID
      */
     private int getApplicationCountLimit(int companyId) {
         int applicaitonCountLimit = APPLICATION_COUNT_LIMIT;
-        Query query=new Query.QueryBuilder().where("company_id", companyId).buildQuery();
-        HrCompanyConfRecord hrCompanyConfRecord =hrCompanyConfDao.getRecord(query);
+        Query query = new Query.QueryBuilder().where("company_id", companyId).buildQuery();
+        HrCompanyConfRecord hrCompanyConfRecord = hrCompanyConfDao.getRecord(query);
         if (hrCompanyConfRecord != null && hrCompanyConfRecord.getApplicationCountLimit().shortValue() > 0) {
             applicaitonCountLimit = hrCompanyConfRecord.getApplicationCountLimit().shortValue();
         }

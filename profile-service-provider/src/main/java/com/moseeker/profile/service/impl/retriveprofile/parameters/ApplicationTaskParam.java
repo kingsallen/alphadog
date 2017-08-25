@@ -8,6 +8,15 @@ public class ApplicationTaskParam {
 
     private int userId;
     private int positionId;
+    private int origin;
+
+    public int getOrigin() {
+        return origin;
+    }
+
+    public void setOrigin(int origin) {
+        this.origin = origin;
+    }
 
     public int getUserId() {
         return userId;

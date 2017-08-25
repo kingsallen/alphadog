@@ -17,6 +17,7 @@ import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.company.struct.CompanyCertConf;
 import com.moseeker.thrift.gen.company.struct.CompanyForVerifyEmployee;
 import com.moseeker.thrift.gen.company.struct.CompanyOptions;
+import com.moseeker.thrift.gen.company.struct.HrEmployeeCustomFieldsVO;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrImporterMonitorDO;
 import com.moseeker.thrift.gen.employee.struct.RewardConfig;
@@ -469,6 +470,7 @@ public class CompanyController {
         }
     }
 
+<<<<<<< HEAD
     //details
     @RequestMapping(value = "/company/details", method = RequestMethod.GET)
     @ResponseBody
@@ -484,4 +486,22 @@ public class CompanyController {
         }
     }
 
+=======
+
+    /**
+     * 公司员工认证后补填字段配置信息列表
+     *
+     * @param request
+     */
+    @RequestMapping(value = "/company/customfields", method = RequestMethod.GET)
+    @ResponseBody
+    public String getCustomfields(HttpServletRequest request) throws Exception {
+        Params<String, Object> params = ParamUtils.parseRequestParam(request);
+        int companyId = params.getInt("companyId", 0);
+        List<HrEmployeeCustomFieldsVO> result = companyServices.getHrEmployeeCustomFields(companyId);
+        return ResponseLogNotification.success(request,
+                ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(result)));
+
+    }
+>>>>>>> feature/hr3_5_4-3
 }
