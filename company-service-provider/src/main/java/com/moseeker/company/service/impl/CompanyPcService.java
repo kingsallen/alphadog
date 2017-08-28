@@ -86,7 +86,7 @@ public class CompanyPcService {
             isMother=false;
         }
         this.judgeJDOrCS(confCompanyId,map);
-        this.handleTeamInfo(companyId,isMother,1,20,map);
+        this.handleTeamInfo(companyId,isMother,page,pageSize,map);
         this.handleCompanyPositionCity(companyId,isMother,map);
         return map;
     }
