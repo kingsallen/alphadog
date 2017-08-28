@@ -43,6 +43,8 @@ public class CompanyPcService {
     private HrResourceDao hrResourceDao;
     @Autowired
     private HrWxWechatDao hrWxWechatDao;
+    @Autowired
+    private HrTeamMemberDao hrTeamMemberDao;
 
     /*
       获取企业详情
@@ -338,7 +340,8 @@ public class CompanyPcService {
         int num=this.getCompanyTeamNum(companyId);
         List<Integer>teamIdList=getTeamIdList(teamList);
         Map<Integer,Integer> teamPosition=getTeamPositionNum(teamIdList);
-        Map<String,Object> map=this.handleTeamPosition(teamList,teamPosition,num);
+        Map<Integer,List<Map<String,Object>>> teamMember=this.handlerTeamMember(teamIdList);
+        Map<String,Object> map=this.handleTeamPosition(teamList,teamPosition,teamMember,num);
         return map;
     }
     //处理子公司团队的信息
@@ -348,14 +351,73 @@ public class CompanyPcService {
         int num=this.getSubCompanyTeam(publisherList);
         List<HrTeamDO> teamList= hrTeamDao.getTeamList(teamIdList);
         Map<Integer,Integer> teamPosition=getTeamPositionNum(teamIdList);
-        Map<String,Object> map=this.handleTeamPosition(teamList,teamPosition,num);
+        Map<Integer,List<Map<String,Object>>> teamMember=this.handlerTeamMember(teamIdList);
+        Map<String,Object> map=this.handleTeamPosition(teamList,teamPosition,teamMember,num);
         return map;
     }
 
+
+    //获取团队成员的接口
+    public List<HrTeamMemberDO> getTeamMemeberList(List<Integer> teamId){
+        if(StringUtils.isEmptyList(teamId)){
+            return new ArrayList<HrTeamMemberDO>();
+        }
+        Query query=new Query.QueryBuilder().where(new Condition("team_id",teamId.toArray(),ValueOp.IN)).where("disable",0).buildQuery();
+        List<HrTeamMemberDO> list=hrTeamMemberDao.getDatas(query);
+        return list;
+    }
+    //获取成员头像id列表
+    public List<Integer> getResIdByTeamMemeberList(List<HrTeamMemberDO> list){
+        if(StringUtils.isEmptyList(list)){
+            return new ArrayList<Integer>();
+        }
+        List<Integer> result=new ArrayList<Integer>();
+        for(HrTeamMemberDO DO:list){
+            result.add(DO.getResId());
+        }
+        return result;
+    }
+   //处理团队成员信息和头像
+    public Map<Integer,List<Map<String,Object>>> handlerTeamMember(List<Integer> teamIdList ) throws TException {
+        Map<Integer,List<Map<String,Object>>> map=new HashMap<Integer,List<Map<String,Object>>>();
+        List<HrTeamMemberDO> teamMemeberList=getTeamMemeberList(teamIdList);
+        List<Integer> resIdList=getResIdByTeamMemeberList(teamMemeberList);
+        List<HrResourceDO> resList=hrResourceDao.getHrResourceByIdList(resIdList);
+        if(!StringUtils.isEmptyList(teamMemeberList)){
+            for(HrTeamMemberDO DO:teamMemeberList){
+                int teamId=DO.getTeamId();
+                List<Map<String, Object>> list=null;
+                if(map.get(teamId)==null){
+                    list=new ArrayList<>();
+                }else{
+                    list=map.get(teamId);
+                }
+                Map<String,Object> iteam=new HashMap<String,Object>();
+                int resId=DO.getResId();
+                String hrTeamMemberDOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
+                Map<String,Object> teamMemberData= JSON.parseObject(hrTeamMemberDOs, Map.class);
+                iteam.put("memberInfo",teamMemberData);
+                if(!StringUtils.isEmptyList(resList)&&resId!=0){
+                    for(HrResourceDO resDO:resList){
+                        int id=resDO.getId();
+                        if(id==resId){
+                            String hrTeamMemberResDOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
+                            Map<String,Object> resData= JSON.parseObject(hrTeamMemberResDOs, Map.class);
+                            iteam.put("memberPic",resData);
+                            break;
+                        }
+                    }
+                }
+                list.add(iteam);
+                map.put(teamId,list);
+            }
+        }
+        return map;
+    }
     /*
        处理团队和团队的职位数量之间的关系
      */
-    private Map<String,Object> handleTeamPosition(List<HrTeamDO> teamList, Map<Integer,Integer> teamPosition,int num) throws Exception {
+    private Map<String,Object> handleTeamPosition(List<HrTeamDO> teamList, Map<Integer,Integer> teamPosition,Map<Integer,List<Map<String,Object>>> teamMember,int num) throws Exception {
         Map<String,Object> result=new HashMap<String,Object>();
         List<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
         result.put("teamNum",num);
@@ -403,6 +465,14 @@ public class CompanyPcService {
             }
             if(map.get("positionNum")==null){
                 map.put("positionNum",0);
+            }
+            if(teamMember!=null&&!teamMember.isEmpty()){
+                for(Integer key:teamMember.keySet()){
+                    if(teamId==key){
+                        map.put("teamMember",teamMember.get(key));
+                        break;
+                    }
+                }
             }
             list.add(map);
         }
