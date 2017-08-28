@@ -401,7 +401,7 @@ public class CompanyPcService {
                     for(HrResourceDO resDO:resList){
                         int id=resDO.getId();
                         if(id==resId){
-                            String hrTeamMemberResDOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
+                            String hrTeamMemberResDOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(resDO);
                             Map<String,Object> resData= JSON.parseObject(hrTeamMemberResDOs, Map.class);
                             iteam.put("memberPic",resData);
                             break;
