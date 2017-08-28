@@ -24,6 +24,10 @@ public class UserHrAccountServiceTest {
     @Autowired
     private UserHrAccountService userHrAccountService;
 
+    @Test
+    public void testUpdateMobile() {
+        userHrAccountService.updateMobile("15502117047", 1);
+    }
 
     //@Test
     public void testUserHrAccount() {

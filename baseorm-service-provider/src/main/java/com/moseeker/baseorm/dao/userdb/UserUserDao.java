@@ -52,7 +52,7 @@ public class UserUserDao extends JooqCrudImpl<UserUserDO, UserUserRecord> {
         UserUserRecord record = null;
         try {
             Result<UserUserRecord> result = create.selectFrom(UserUser.USER_USER)
-                    .where(UserUser.USER_USER.ID.equal((int) (id)))
+                    .where(UserUser.USER_USER.ID.equal(id))
                     .and(UserUser.USER_USER.IS_DISABLE.equal((byte) 0)).fetch();
             if (result != null && result.size() > 0) {
                 record = result.get(0);

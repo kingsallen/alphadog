@@ -23,11 +23,13 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.*;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.EmployeeEntity;
+import com.moseeker.entity.HREntity;
 import com.moseeker.entity.SearchengineEntity;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -58,6 +60,8 @@ import javax.annotation.Resource;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static com.moseeker.useraccounts.exception.UserAccountException.*;
 
 /**
  * HR账号服务
@@ -115,6 +119,27 @@ public class UserHrAccountService {
 
     @Autowired
     CandidateCompanyDao candidateCompanyDao;
+
+    @Autowired
+    HREntity hrEntity;
+
+
+    /**
+     * 修改手机号码
+     * @param mobile 手机号码
+     * @param hrID HR编号
+     * @throws CommonException
+     */
+    public void updateMobile(String mobile, int hrID) throws CommonException {
+        if (!FormCheck.isMobile(mobile)) {
+            throw ILLEGAL_MOBILE;
+        }
+
+        boolean result = hrEntity.updateMobile(mobile, hrID);
+        if (!result) {
+            throw HR_UPDATEMOBILE_FAILED;
+        }
+    }
 
     /**
      * HR在下载行业报告是注册

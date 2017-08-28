@@ -13,6 +13,7 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrPointsConfRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.query.Query;
@@ -437,5 +438,26 @@ public class UserHrAccountDao extends JooqCrudImpl<UserHrAccountDO, UserHrAccoun
 
         HrNpsResult hrNpsResult = npsStatus(npsUpdate.getUser_id(), npsUpdate.getStart_date(), npsUpdate.getEnd_date());
         return hrNpsResult;
+    }
+
+    /**
+     * 采用乐观锁方式修改手机号码
+     * 如果不存在任何可用的HR的手机号码和新手机号码相同，那么根据HR编号和老手机号码修改HR的手机号码。
+     * @param hr HR账号信息
+     * @param mobile 手机号码
+     * @return 执行的条数
+     */
+    public int updateMobile(UserHrAccountDO hr, String mobile) {
+        int result = create.update(UserHrAccount.USER_HR_ACCOUNT)
+                .set(UserHrAccount.USER_HR_ACCOUNT.MOBILE, mobile)
+                .where(UserHrAccount.USER_HR_ACCOUNT.ID.eq(hr.getId()))
+                .and(UserHrAccount.USER_HR_ACCOUNT.MOBILE.eq(hr.getMobile()))
+                .andNotExists(
+                        create.selectFrom(UserHrAccount.USER_HR_ACCOUNT)
+                                .where(UserHrAccount.USER_HR_ACCOUNT.MOBILE.eq(mobile))
+                                .and(UserHrAccount.USER_HR_ACCOUNT.ACTIVATION.getName(), 1)
+                                .and(UserHrAccount.USER_HR_ACCOUNT.DISABLE.eq(AbleFlag.ENABLE.getValue()))
+                ).execute();
+        return result;
     }
 }
