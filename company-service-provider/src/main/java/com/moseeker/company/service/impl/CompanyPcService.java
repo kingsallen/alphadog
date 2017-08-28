@@ -281,9 +281,12 @@ public class CompanyPcService {
         }
         if(result!=null&&!result.isEmpty()){
             list=(List<Map<String,Object>>)result.get("teamPosition");
-            int hasPic= (int) result.get("hasPic");
-            int teamNum=(int) result.get("teamNum");
-            map.put("hasPic",hasPic);
+            Integer hasPic= (Integer) result.get("hasPic");
+            if(hasPic!=null){
+                map.put("hasPic",hasPic);
+            }
+            Integer teamNum=(Integer) result.get("teamNum");
+
             map.put("teamNum",teamNum);
         }
         if(!StringUtils.isEmptyList(list)){
