@@ -19,17 +19,22 @@ public class CompanyPcServiceTest {
     private CompanyPcService companyPcService;
     @Test
     public void companyDetailsTest()throws Exception{
-        Map<String,Object> result=companyPcService.getCompanyInfo(39978);
+        Map<String,Object> result=companyPcService.getCompanyDetail(39978);
         System.out.println(result+"======");
     }
     @Test
     public void teamListTest() throws Exception {
-        Map<String,Object> result=companyPcService.getTeamListinfo(39978,1,20);
+        Map<String,Object> result=companyPcService.getTeamListinfo(39978,1,10);
         System.out.println(result+"======");
     }
     @Test
     public void teamDetailsTest() throws Exception {
         Map<String,Object> result=companyPcService.getTeamDetails(188350558,39978);
+        System.out.println(result+"======");
+    }
+    @Test
+    public void companyInfo() throws Exception {
+        Map<String,Object> result=companyPcService.getCompanyMessage(39978);
         System.out.println(result+"======");
     }
 }

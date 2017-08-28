@@ -469,7 +469,7 @@ public class CompanyController {
         }
     }
 
-    //details
+    //获取公司信息，包括团队信息
     @RequestMapping(value = "/company/details", method = RequestMethod.GET)
     @ResponseBody
     public String companyDetails(HttpServletRequest request, HttpServletResponse response) {
@@ -483,5 +483,20 @@ public class CompanyController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
-
+    /*
+     * 获取pc单个公司信息，不带团队信息
+     */
+    @RequestMapping(value = "/company/info", method = RequestMethod.GET)
+    @ResponseBody
+    public String getPcCompanyInfo(HttpServletRequest request, HttpServletResponse response) {
+        try{
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer companyId = params.getInt("companyId");
+            Response res=companyServices.companyMessage(companyId);
+            return ResponseLogNotification.success(request, res);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 }

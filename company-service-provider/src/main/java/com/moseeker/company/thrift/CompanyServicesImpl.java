@@ -281,17 +281,31 @@ public class CompanyServicesImpl implements Iface {
         }
     }
     /*
-        获取company的details
+        获取company的details,包含team
      */
     @Override
     public Response companyDetails(int companyId){
         try{
-            Map<String,Object> map=companyPcService.getCompanyInfo(companyId);
+            Map<String,Object> map=companyPcService.getCompanyDetail(companyId);
             return ResponseUtils.success(map);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
             throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
         }
     }
+    /*
+    获取公司信息，不带团队信息的
+     */
+    @Override
+    public Response companyMessage(int companyId) throws BIZException, TException {
+        try{
+            Map<String,Object> map=companyPcService.getCompanyMessage(companyId);
+            return ResponseUtils.success(map);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
 }
 

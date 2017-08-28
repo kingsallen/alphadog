@@ -48,7 +48,7 @@ public class CompanyPcService {
       获取企业详情
      */
     @CounterIface
-    public Map<String,Object> getCompanyInfo(int companyId) throws Exception {
+    public Map<String,Object> getCompanyDetail(int companyId) throws Exception {
         Map<String,Object>map=new HashMap<String,Object>();
         Map<String,Object> companyData=this.handleCompany(companyId);
         if(companyData==null||companyData.isEmpty()){
@@ -77,6 +77,25 @@ public class CompanyPcService {
         if(companyData==null||companyData.isEmpty()){
             return null;
         }
+        int parentId= (int) companyData.get("parentId");
+        int confCompanyId= (int) companyData.get("id");
+        boolean isMother=true;
+        if(parentId!=0){
+            confCompanyId=parentId;
+            isMother=false;
+        }
+        this.handleTeamInfo(companyId,isMother,page,pageSize,map);
+        return map;
+    }
+    /*
+     获取企业头部信息
+     */
+    public Map<String,Object> getCompanyMessage(int companyId) throws Exception {
+        Map<String,Object>map=new HashMap<String,Object>();
+        Map<String,Object> companyData=this.handleCompany(companyId);
+        if(companyData==null||companyData.isEmpty()){
+            return null;
+        }
         map.put("company",companyData);
         int parentId= (int) companyData.get("parentId");
         int confCompanyId= (int) companyData.get("id");
@@ -86,7 +105,6 @@ public class CompanyPcService {
             isMother=false;
         }
         this.judgeJDOrCS(confCompanyId,map);
-        this.handleTeamInfo(companyId,isMother,page,pageSize,map);
         this.handleCompanyPositionCity(companyId,isMother,map);
         return map;
     }
@@ -264,7 +282,9 @@ public class CompanyPcService {
         if(result!=null&&!result.isEmpty()){
             list=(List<Map<String,Object>>)result.get("teamPosition");
             int hasPic= (int) result.get("hasPic");
+            int teamNum=(int) result.get("teamNum");
             map.put("hasPic",hasPic);
+            map.put("teamNum",teamNum);
         }
         if(!StringUtils.isEmptyList(list)){
             map.put("teamList",list);
@@ -312,37 +332,35 @@ public class CompanyPcService {
     //处理母公司的团队信息
     private Map<String,Object> handleMotherCompanyTeam(int companyId,int page,int pageSize) throws Exception {
         List<HrTeamDO> teamList=this.getCompanyTeam(companyId,page,pageSize);
+        int num=this.getCompanyTeamNum(companyId);
         List<Integer>teamIdList=getTeamIdList(teamList);
         Map<Integer,Integer> teamPosition=getTeamPositionNum(teamIdList);
-        Map<String,Object> map=this.handleTeamPosition(teamList,teamPosition);
+        Map<String,Object> map=this.handleTeamPosition(teamList,teamPosition,num);
         return map;
     }
     //处理子公司团队的信息
     private Map<String,Object> handleSubCompanyTeam(int companyId,int page,int pageSize) throws Exception {
         List<Integer> publisherList=getCompanyPublisher(companyId);
         List<Integer> teamIdList=this.getSubCompanyTeam(publisherList,page,pageSize);
+        int num=this.getSubCompanyTeam(publisherList);
         List<HrTeamDO> teamList= hrTeamDao.getTeamList(teamIdList);
         Map<Integer,Integer> teamPosition=getTeamPositionNum(teamIdList);
-        Map<String,Object> map=this.handleTeamPosition(teamList,teamPosition);
+        Map<String,Object> map=this.handleTeamPosition(teamList,teamPosition,num);
         return map;
     }
-    /*
-     判断是否有图片
-     */
-     private void judgeJDOrCS(){
-
-     }
 
     /*
        处理团队和团队的职位数量之间的关系
      */
-    private Map<String,Object> handleTeamPosition(List<HrTeamDO> teamList, Map<Integer,Integer> teamPosition) throws Exception {
+    private Map<String,Object> handleTeamPosition(List<HrTeamDO> teamList, Map<Integer,Integer> teamPosition,int num) throws Exception {
         Map<String,Object> result=new HashMap<String,Object>();
         List<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
+        result.put("teamNum",num);
         if(StringUtils.isEmptyList(teamList)){
-            return null;
+            return result;
         }
         List<Integer>resIdList=this.getResdListId(teamList);
+
         boolean hasPic=true;//团队是否有图片
         result.put("hasPic",1);
         if(StringUtils.isEmptyList(resIdList)){
@@ -482,12 +500,31 @@ public class CompanyPcService {
         return teamList;
     }
     /*
+    获取子公司下团队的数量
+     */
+    public int getSubCompanyTeam(List<Integer> list){
+        if(StringUtils.isEmptyList(list)){
+            return 0;
+        }
+        Query query=new Query.QueryBuilder().select(new Select("team_id", SelectOp.DISTINCT)).where(new Condition("publisher",list.toArray(), ValueOp.IN)).and("status",0).buildQuery();
+        int num=jobPositionDao.getCount(query);
+        return num;
+    }
+    /*
           获取母公司下team的id
      */
     public List<HrTeamDO> getCompanyTeam(int companyId,int page,int pageSize){
         Query query=new Query.QueryBuilder().where("company_id",companyId).and("is_show",1).and("disable",0).orderBy("show_order").setPageNum(page).setPageSize(pageSize).buildQuery();
         List<HrTeamDO> list=hrTeamDao.getDatas(query);
         return list;
+    }
+    /*
+      获取母公司下团队的数量
+     */
+    public int getCompanyTeamNum(int companyId){
+        Query query=new Query.QueryBuilder().where("company_id",companyId).and("is_show",1).and("disable",0).orderBy("show_order").buildQuery();
+        int num=hrTeamDao.getCount(query);
+        return num;
     }
     /*
         获取公司下团队职位数量
