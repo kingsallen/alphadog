@@ -129,6 +129,26 @@ public class PositionPcService {
 		return res;
 	}
 	/*
+	  获取职位详情
+	 */
+	@CounterIface
+	public Map<String,Object> getPositionDetails(int positionId) throws TException{
+		Query query=new Query.QueryBuilder().where("id",positionId).and("status",0).buildQuery();
+		JobPositionDO  DO=jobPositionDao.getData(query);
+		if(DO==null){
+			return null;
+		}
+		int teamId=DO.getTeamId();
+		int publisher=DO.getPublisher();
+		return null;
+	}
+
+	/*
+	  获取发布职位的公司信息
+	 */
+
+
+	/*
 	 * 根据推荐职位列表获取职位id
 	 */
 	private List<Integer> getPCRecommendPositionIds(List<CampaignPcRecommendPositionDO> list){
@@ -195,7 +215,6 @@ public class PositionPcService {
 		}
 		return result;
 	}
-
 	
 	/*
 		获取所有有jd的公司
@@ -268,10 +287,8 @@ public class PositionPcService {
 						 map.put("cityList", positionCitys.get(positionId));
 					 }
 				 }
-				 
 			 }
-			
-			 // 本出如此做是为了过滤掉已经删除的子公司的信息
+			 // 本处如此做是为了过滤掉已经删除的子公司的信息
 			 if(!map.isEmpty()){
 				 for(HrTeamDO teamDo:teamList){
 				 	int id=teamDo.getId();
@@ -309,6 +326,7 @@ public class PositionPcService {
 		 }
 		 return result;
 	 }
+
 	 /*
 	 	处理position 或者 Team jd页数据，获取首张图片
 	  */
@@ -319,9 +337,6 @@ public class PositionPcService {
 		 List<Map<String,Object>> list=jobPositionCityEntity.HandleCmsResource(jdTeamids,type);
 	 	return list;
 	 }
-
-
-
 
 	/*
 	 总体上处理数据

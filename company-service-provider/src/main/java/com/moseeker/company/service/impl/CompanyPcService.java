@@ -92,6 +92,7 @@ public class CompanyPcService {
     /*
      获取企业头部信息
      */
+    @CounterIface
     public Map<String,Object> getCompanyMessage(int companyId) throws Exception {
         Map<String,Object>map=new HashMap<String,Object>();
         Map<String,Object> companyData=this.handleCompany(companyId);
@@ -160,6 +161,13 @@ public class CompanyPcService {
                     team.put("teamPic",resourceData);
                 }
             }
+            List<Integer> teamIdList=new ArrayList<Integer>();
+            teamIdList.add(DO.getId());
+            Map<Integer,List<Map<String,Object>>> teamMember=this.handlerTeamMember(teamIdList);
+            if(teamMember!=null&&!teamMember.isEmpty()){
+                team.put("teamMember" ,teamMember.get(DO.getId()));
+            }
+
         }
         return team;
     }
@@ -621,8 +629,5 @@ public class CompanyPcService {
         }
         return teamPosition;
     }
-
-
-
 
 }
