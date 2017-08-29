@@ -146,9 +146,9 @@ public class PositionSyncFailedNotification {
         if (subCompany != null) {
             emailMessgeBuilder.append("【子公司简称】：").append(subCompany.getAbbreviation()).append(divider);
         }
+        emailMessgeBuilder.append("【同步记录ID】：").append(thirdPartyPositionDO.getId()).append(divider);
         emailMessgeBuilder.append("【职位ID】：").append(pojo.getPosition_id()).append(divider);
         emailMessgeBuilder.append("【第三方帐号ID】：").append(pojo.getAccount_id()).append(divider);
-        emailMessgeBuilder.append("【第三方职位ID】：").append(thirdPartyPositionDO.getId()).append(divider);
         emailMessgeBuilder.append("【").append(channelName).append("职位编号】：").append(thirdPartyPositionDO.getThirdPartPositionId()).append(divider);
         emailMessgeBuilder.append("【职位标题】：").append(moseekerPosition.getTitle()).append(divider);
         emailMessgeBuilder.append(divider).append("<hr>").append(divider);
