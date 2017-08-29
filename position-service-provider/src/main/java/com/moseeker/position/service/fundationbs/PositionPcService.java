@@ -2,7 +2,6 @@ package com.moseeker.position.service.fundationbs;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -11,7 +10,8 @@ import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.query.SelectOp;
 
-import com.moseeker.entity.JobPositionCityEntity;
+import com.moseeker.entity.PcRevisionEntity;
+import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import org.apache.thrift.TException;
 import org.apache.thrift.TSerializer;
 import org.apache.thrift.protocol.TSimpleJSONProtocol;
@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.campaigndb.CampaignPcRecommendCompanyDao;
 import com.moseeker.baseorm.dao.campaigndb.CampaignPcRecommendPositionDao;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
@@ -35,16 +34,6 @@ import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignPcRecommendCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignPcRecommendPositionDO;
-import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrCmsMediaDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrCmsModuleDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrCmsPagesDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyAccountDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrResourceDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrTeamDO;
-import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionCityDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 
 /*
@@ -82,7 +71,7 @@ public class PositionPcService {
 	@Autowired
 	private DictCityDao dictCityDao;
 	@Autowired
-	private JobPositionCityEntity jobPositionCityEntity;
+	private PcRevisionEntity pcRevisionEntity;
 	/*
 	 * 获取pc首页职位推荐
 	 */
@@ -132,22 +121,122 @@ public class PositionPcService {
 	  获取职位详情
 	 */
 	@CounterIface
-	public Map<String,Object> getPositionDetails(int positionId) throws TException{
+	public Map<String,Object> getPositionDetails(int positionId) throws Exception {
+		Map<String,Object> map=new HashMap<String,Object>();
 		Query query=new Query.QueryBuilder().where("id",positionId).and("status",0).buildQuery();
 		JobPositionDO  DO=jobPositionDao.getData(query);
 		if(DO==null){
 			return null;
 		}
+		String DOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
+		Map<String,Object> positionData= JSON.parseObject(DOs, Map.class);
+		map.put("position",positionData);
 		int teamId=DO.getTeamId();
 		int publisher=DO.getPublisher();
-		return null;
+		HrCompanyDO companyDO= handleCompanyData(publisher);
+		String companyDOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(companyDO);
+		Map<String,Object> companyData= JSON.parseObject(companyDOs, Map.class);
+		map.put("company",companyData);
+		Map<String,Object> team=this.handleTeamData(teamId);
+		map.put("team",team);
+		int parentId= (int) companyData.get("parentId");
+		int confCompanyId= (int) companyData.get("id");
+		if(parentId!=0){
+			confCompanyId=parentId;
+		}
+		this.handlePositionJdData(confCompanyId,map,teamId);
+		return map;
 	}
-
 	/*
-	  获取发布职位的公司信息
+        获取职位的jd页
+     */
+	private void handlePositionJdData(int confCompanyId,Map<String,Object> map,int teamId) throws Exception {
+		map.put("newJd",0);
+		HrCompanyConfDO hrCompanyConfDO=getHrCompanyConf(confCompanyId);
+		if(hrCompanyConfDO!=null){
+			int newJdStatus=hrCompanyConfDO.getNewjdStatus();
+			if(newJdStatus==2) {
+				List<Integer> jdID = new ArrayList<Integer>();
+				jdID.add(teamId);
+				List<Map<String,Object>>jdList=pcRevisionEntity.HandleCmsResource(jdID,3);
+				if(!StringUtils.isEmptyList(jdList)){
+					Map<String,Object> jdMap=jdList.get(0);
+					if(jdMap!=null&&!jdMap.isEmpty()){
+						map.put("newJd",1);
+						map.put("jd",jdMap);
+					}
+				}
+			}
+		}
+	}
+	/*
+      获取公司配置
+    */
+	public HrCompanyConfDO getHrCompanyConf(int companyId){
+		Query query=new Query.QueryBuilder().where("company_id",companyId).buildQuery();
+		HrCompanyConfDO DO= hrCompanyConfDao.getData(query);
+		return DO;
+	}
+	/*
+	    获取发布职位的公司信息
 	 */
-
-
+     public HrCompanyAccountDO getSingleCompanyId(int publisher){
+     	Query query=new Query.QueryBuilder().where("account_id",publisher).buildQuery();
+     	HrCompanyAccountDO DO=hrCompanyAccountDao.getData(query);
+     	return DO;
+	 }
+     /*
+		获取单个企业的信息
+      */
+     public HrCompanyDO getSingleCompany(int companyId){
+		 HrCompanyDO DO=hrCompanyDao.getCompanyById(companyId);
+		 return DO;
+	 }
+	 /*
+	   处理职位的公司数据
+	  */
+	 private HrCompanyDO handleCompanyData(int publisher){
+		 HrCompanyAccountDO accountDO=this.getSingleCompanyId(publisher);
+		 HrCompanyDO companyDO=this.getSingleCompany(accountDO.getCompanyId());
+	 	 return companyDO;
+	 }
+	/*
+	    获取团队信息
+	 */
+	public HrTeamDO getSingleTeamInfo(int teamId){
+		HrTeamDO DO=hrTeamDao.getHrTeam(teamId);
+		return DO;
+	}
+	/*
+	   处理团队数据
+	 */
+	private  Map<String,Object> handleTeamData(int teamId) throws TException{
+		Map<String,Object> map=new HashMap<String,Object>();
+		HrTeamDO teamDO=getSingleTeamInfo(teamId);
+		String teamDOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(teamDO);
+		Map<String,Object> teamData= JSON.parseObject(teamDOs, Map.class);
+		map.put("teamInfo",teamData);
+		int resId=teamDO.getResId();
+		if(resId>0){
+			List<Integer> resIdList=new ArrayList<Integer>();
+			resIdList.add(resId);
+			List<HrResourceDO> resourceDOList=hrResourceDao.getHrResourceByIdList(resIdList);
+			if(!StringUtils.isEmptyList(resourceDOList)){
+				HrResourceDO resourceDO=resourceDOList.get(0);
+				String resourceDOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(resourceDO);
+				Map<String,Object> resourceData= JSON.parseObject(resourceDOs, Map.class);
+				map.put("teamPic",resourceData);
+			}
+		}
+		List<Integer> teamIdList=new ArrayList<>();
+		teamIdList.add(teamId);
+		Map<Integer,List<Map<String,Object>>> teamMember=pcRevisionEntity.handlerTeamMember(teamIdList);
+		if(teamMember!=null&&!teamMember.isEmpty()){
+			List<Map<String,Object>> list=teamMember.get(teamId);
+			map.put("teamMember",list);
+		}
+		return map;
+	}
 	/*
 	 * 根据推荐职位列表获取职位id
 	 */
@@ -334,7 +423,7 @@ public class PositionPcService {
 		 List<HrCompanyConfDO> AccountList=hrCompanyConfDao.getHrCompanyConfByCompanyIds(companyIds);
 		 List<Integer> jdCompanyids=this.getJdCompanyIds(AccountList);
 		 List<Integer> jdTeamids=this.getJdTeamIdList(jdCompanyids,teamList);
-		 List<Map<String,Object>> list=jobPositionCityEntity.HandleCmsResource(jdTeamids,type);
+		 List<Map<String,Object>> list=pcRevisionEntity.HandleCmsResource(jdTeamids,type);
 	 	return list;
 	 }
 
@@ -355,7 +444,7 @@ public class PositionPcService {
 		 List<Map<String,Integer>> publisherAndCompanyId=getPublisherCompanyId(companyAccountList);
 		 List<Integer> teamIds=this.getTeamIdList(positionList);
 		 List<HrTeamDO> teamList=hrTeamDao.getTeamList(teamIds);
-		 Map<Integer,List<String>> positionCitys=jobPositionCityEntity.handlePositionCity(positionIds);
+		 Map<Integer,List<String>> positionCitys=pcRevisionEntity.handlePositionCity(positionIds);
 		 list=this.handleCompanyAndPositionData(positionList,companyList,teamList,publisherAndCompanyId,positionCitys);
 		 List<Map<String,Object>> jdpictureList=this.handlePositionJdPic(teamList,this.getPositionCompanyId(positionList),type);
 		 this.handleJDAndPosition(list, jdpictureList);
@@ -468,11 +557,11 @@ public class PositionPcService {
 		 if(StringUtils.isEmptyList(companyList)){
 			 return  null;
 		 }
-		 Map<Integer,List<Integer>> companyPulisher=jobPositionCityEntity.handleCompanyPublisher(companyIds);
+		 Map<Integer,List<Integer>> companyPulisher=pcRevisionEntity.handleCompanyPublisher(companyIds);
 		 Map<Integer,Integer> mapTeamNum=this.getTeamNum(companyList, companyPulisher);
 		 List<Integer> companyids=this.getCompanyIds(companyList);
-		 List<Map<String,Object>> jdlist=jobPositionCityEntity.HandleCmsResource(companyids,1);
-		 Map<Integer,Set<String>> companyPositionCityData=jobPositionCityEntity.handlerCompanyPositionCity(companyPulisher);
+		 List<Map<String,Object>> jdlist=pcRevisionEntity.HandleCmsResource(companyids,1);
+		 Map<Integer,Set<String>> companyPositionCityData=pcRevisionEntity.handlerCompanyPositionCity(companyPulisher);
 		 List<Map<String,Object>> list=handleDataForCompanyRecommend(companyList,companyPulisher,mapTeamNum,jdlist,companyPositionCityData);
 		 return list;
 	 }
@@ -518,7 +607,7 @@ public class PositionPcService {
 	 public Map<Integer,Integer> getChildTeamNum(List<HrCompanyDO> companyList, Map<Integer,List<Integer>> companyPulisher){
 		Map<Integer,List<Integer>> childCompanyPublisherMap=this.getChildCompanyIdPulisherMap(companyList, companyPulisher);
 		if(childCompanyPublisherMap!=null||!childCompanyPublisherMap.isEmpty()){
-			List<Integer> publisherList=jobPositionCityEntity.getAllPulisherByCompanyPublisher(childCompanyPublisherMap);
+			List<Integer> publisherList=pcRevisionEntity.getAllPulisherByCompanyPublisher(childCompanyPublisherMap);
 			List<Map<String,Object>> mapList=getChildTeamNumBypublisherList(publisherList);
 			Map<Integer,Integer> result=this.handleChildTeamNum(mapList,companyPulisher);
 			return result;

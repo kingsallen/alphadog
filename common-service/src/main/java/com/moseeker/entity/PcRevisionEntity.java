@@ -25,7 +25,7 @@ import java.util.*;
  * Created by zztaiwll on 17/8/15.
  */
 @Service
-public class JobPositionCityEntity {
+public class PcRevisionEntity {
     @Autowired
     private JobPositionDao jobPositionDao;
     @Autowired
@@ -44,6 +44,8 @@ public class JobPositionCityEntity {
     private HrCompanyAccountDao hrCompanyAccountDao;
     @Autowired
     private HrCompanyDao hrCompanyDao;
+    @Autowired
+    private HrTeamMemberDao hrTeamMemberDao;
     //获取企业id和publisher的集合
     public Map<Integer,List<Integer>> handleCompanyPublisher(List<Integer> companyIdsList){
         if(StringUtils.isEmptyList(companyIdsList)){
@@ -561,5 +563,63 @@ public class JobPositionCityEntity {
                 }
             }
         }
+    }
+
+    //获取团队成员的接口
+    public List<HrTeamMemberDO> getTeamMemeberList(List<Integer> teamId){
+        if(StringUtils.isEmptyList(teamId)){
+            return new ArrayList<HrTeamMemberDO>();
+        }
+        Query query=new Query.QueryBuilder().where(new Condition("team_id",teamId.toArray(),ValueOp.IN)).where("disable",0).buildQuery();
+        List<HrTeamMemberDO> list=hrTeamMemberDao.getDatas(query);
+        return list;
+    }
+    //获取成员头像id列表
+    public List<Integer> getResIdByTeamMemeberList(List<HrTeamMemberDO> list){
+        if(StringUtils.isEmptyList(list)){
+            return new ArrayList<Integer>();
+        }
+        List<Integer> result=new ArrayList<Integer>();
+        for(HrTeamMemberDO DO:list){
+            result.add(DO.getResId());
+        }
+        return result;
+    }
+    //处理团队成员信息和头像
+    public Map<Integer,List<Map<String,Object>>> handlerTeamMember(List<Integer> teamIdList ) throws TException {
+        Map<Integer,List<Map<String,Object>>> map=new HashMap<Integer,List<Map<String,Object>>>();
+        List<HrTeamMemberDO> teamMemeberList=getTeamMemeberList(teamIdList);
+        List<Integer> resIdList=getResIdByTeamMemeberList(teamMemeberList);
+        List<HrResourceDO> resList=hrResourceDao.getHrResourceByIdList(resIdList);
+        if(!StringUtils.isEmptyList(teamMemeberList)){
+            for(HrTeamMemberDO DO:teamMemeberList){
+                int teamId=DO.getTeamId();
+                List<Map<String, Object>> list=null;
+                if(map.get(teamId)==null){
+                    list=new ArrayList<>();
+                }else{
+                    list=map.get(teamId);
+                }
+                Map<String,Object> iteam=new HashMap<String,Object>();
+                int resId=DO.getResId();
+                String hrTeamMemberDOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
+                Map<String,Object> teamMemberData= JSON.parseObject(hrTeamMemberDOs, Map.class);
+                iteam.put("memberInfo",teamMemberData);
+                if(!StringUtils.isEmptyList(resList)&&resId!=0){
+                    for(HrResourceDO resDO:resList){
+                        int id=resDO.getId();
+                        if(id==resId){
+                            String hrTeamMemberResDOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(resDO);
+                            Map<String,Object> resData= JSON.parseObject(hrTeamMemberResDOs, Map.class);
+                            iteam.put("memberPic",resData);
+                            break;
+                        }
+                    }
+                }
+                list.add(iteam);
+                map.put(teamId,list);
+            }
+        }
+        return map;
     }
 }
