@@ -64,10 +64,25 @@ public class CompanyPcService {
             confCompanyId=parentId;
             isMother=false;
         }
-        this.handleCompanyJdData(confCompanyId,map,companyId);
-        this.handleTeamInfo(companyId,isMother,1,20,map);
-        this.handleCompanyPositionCity(companyId,isMother,map);
+        int newJd=this.judgeJDOrCS(confCompanyId);
+        map.put("newJd",newJd);
+        Map<String,Object> jdMap=this.handleCompanyJdData(confCompanyId,companyId);
+        this.putMapInNewMap(jdMap,map);
+        Map<String,Object>teamMap=this.handleTeamInfo(companyId,isMother,1,20);
+        this.putMapInNewMap(teamMap,map);
+        Map<String,Object>positionMap=this.handleCompanyPositionCity(companyId,isMother);
+        this.putMapInNewMap(positionMap,map);
         return map;
+    }
+    /*
+      将旧的map放入新的map
+     */
+    private void putMapInNewMap(Map<String,Object> originMap, Map<String,Object> newMap){
+        if(originMap!=null&&!originMap.isEmpty()){
+            for(String key:originMap.keySet()){
+                newMap.put(key,originMap.get(key));
+            }
+        }
     }
     /*
      获取团队列表
@@ -80,13 +95,12 @@ public class CompanyPcService {
             return null;
         }
         int parentId= (int) companyData.get("parentId");
-        int confCompanyId= (int) companyData.get("id");
         boolean isMother=true;
         if(parentId!=0){
-            confCompanyId=parentId;
             isMother=false;
         }
-        this.handleTeamInfo(companyId,isMother,page,pageSize,map);
+        Map<String,Object> teamMap=this.handleTeamInfo(companyId,isMother,page,pageSize);
+        this.putMapInNewMap(teamMap,map);
         return map;
     }
     /*
@@ -107,8 +121,10 @@ public class CompanyPcService {
             confCompanyId=parentId;
             isMother=false;
         }
-        this.judgeJDOrCS(confCompanyId,map);
-        this.handleCompanyPositionCity(companyId,isMother,map);
+        int newJd=this.judgeJDOrCS(confCompanyId);
+        map.put("newJd",newJd);
+        Map<String,Object> positionMap=this.handleCompanyPositionCity(companyId,isMother);
+        this.putMapInNewMap(positionMap,map);
         return map;
     }
     /*
@@ -129,9 +145,14 @@ public class CompanyPcService {
             confCompanyId=parentId;
             isMother=false;
         }
-        this.handleCompanyPositionCity(companyId,isMother,map);
-        this.handleTeamJdData(confCompanyId,map,teamId);
-        this.getOtherTeamList(companyId,teamId,isMother,1,20,map);
+        Map<String,Object> positionMap=this.handleCompanyPositionCity(companyId,isMother);
+        this.putMapInNewMap(positionMap,map);
+        Map<String,Object> jdMap=this.handleTeamJdData(confCompanyId,teamId);
+        this.putMapInNewMap(jdMap,map);
+        int newJd=this.judgeJDOrCS(confCompanyId);
+        map.put("newJd",newJd);
+        Map<String,Object> otherMap=this.getOtherTeamList(companyId,teamId,isMother,newJd);
+        this.putMapInNewMap(otherMap,map);
         Map<String,Object> team=this.getSingleTeamInfo(teamId);
         if(team!=null&&!team.isEmpty()){
             map.put("teamInfo",team);
@@ -174,9 +195,14 @@ public class CompanyPcService {
     /*
      获取其他团队列表
      */
-    private void getOtherTeamList(int companyId,int teamId,boolean isMother,int page,int pageSize,Map<String,Object> map) throws Exception {
-        Map<String,Object> result=new HashMap<>();
-        this.handleTeamInfo(companyId,isMother,page,pageSize,result);
+    private Map<String,Object> getOtherTeamList(int companyId,int teamId,boolean isMother,int newJd) throws Exception {
+        Map<String,Object> map=new HashMap<String,Object>();
+        Map<String,Object> result=new HashMap<String,Object>();
+        if(newJd>0){
+            this.handleTeamInfo(companyId,isMother,1,Integer.MAX_VALUE);
+        }else{
+            this.handleTeamInfo(companyId,isMother,1,15);
+        }
         List<Map<String,Object>> newList=new ArrayList<Map<String,Object>>();
         if(result!=null&&!result.isEmpty()){
             List<Map<String,Object>> list= (List<Map<String, Object>>) result.get("teamList");
@@ -193,6 +219,7 @@ public class CompanyPcService {
         if(!StringUtils.isEmptyList(newList)){
             map.put("teamList",newList);
         }
+        return map;
     }
     /*
       处理企业信息
@@ -209,21 +236,23 @@ public class CompanyPcService {
     /*
     判断是否有jd页，或者cs
      */
-    private void judgeJDOrCS(int confCompanyId,Map<String,Object> map){
-        map.put("newJd",0);
+    private int  judgeJDOrCS(int confCompanyId){
+        Map<String,Object> map=new HashMap<String,Object>();
+
         HrCompanyConfDO hrCompanyConfDO=getHrCompanyConf(confCompanyId);
         if(hrCompanyConfDO!=null){
             int newJdStatus=hrCompanyConfDO.getNewjdStatus();
             if(newJdStatus==2){
-                map.put("newJd",1);
+                return 1;
             }
         }
+        return 0;
     }
     /*
      获取company jd信息
      */
-    private void handleCompanyJdData(int confCompanyId,Map<String,Object> map,int companyId) throws Exception {
-        map.put("newJd",0);
+    private Map<String,Object>  handleCompanyJdData(int confCompanyId,int companyId) throws Exception {
+        Map<String,Object> map=new HashMap<String,Object>();
         HrCompanyConfDO hrCompanyConfDO=getHrCompanyConf(confCompanyId);
         if(hrCompanyConfDO!=null){
             int newJdStatus=hrCompanyConfDO.getNewjdStatus();
@@ -234,7 +263,6 @@ public class CompanyPcService {
                 if(!StringUtils.isEmptyList(jdList)){
                     Map<String,Object> jdMap=jdList.get(0);
                     if(jdMap!=null&&!jdMap.isEmpty()){
-                        map.put("newJd",1);
                         map.put("jd",jdMap);
                         HrWxWechatDO hrWxWechatDO=this.getHrWxWechatDO(confCompanyId);
                         if(hrWxWechatDO!=null){
@@ -242,17 +270,17 @@ public class CompanyPcService {
                             Map<String,Object> hrWxWechatData= JSON.parseObject(hrWxWechatDOStr, Map.class);
                             map.put("weChat",hrWxWechatData);
                         }
-
                     }
                 }
             }
         }
+        return map;
     }
     /*
         获取团队的jd页
      */
-    private void handleTeamJdData(int confCompanyId,Map<String,Object> map,int teamId) throws Exception {
-        map.put("newJd",0);
+    private Map<String,Object>  handleTeamJdData(int confCompanyId,int teamId) throws Exception {
+        Map<String,Object> map=new HashMap<String,Object>();
         HrCompanyConfDO hrCompanyConfDO=getHrCompanyConf(confCompanyId);
         if(hrCompanyConfDO!=null){
             int newJdStatus=hrCompanyConfDO.getNewjdStatus();
@@ -263,12 +291,12 @@ public class CompanyPcService {
                 if(!StringUtils.isEmptyList(jdList)){
                     Map<String,Object> jdMap=jdList.get(0);
                     if(jdMap!=null&&!jdMap.isEmpty()){
-                        map.put("newJd",1);
                         map.put("jd",jdMap);
                     }
                 }
             }
         }
+        return map;
     }
     /*
     获取企业微信号配置
@@ -281,7 +309,8 @@ public class CompanyPcService {
     /*
       获取团队信息
      */
-    private void handleTeamInfo(int companyId,boolean isMother,int page,int pageSize,Map<String,Object> map) throws Exception {
+    private Map<String,Object>  handleTeamInfo(int companyId,boolean isMother,int page,int pageSize) throws Exception {
+        Map<String,Object> map=new HashMap<String,Object>();
         List<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
         Map<String,Object> result=new HashMap<>();
         if(isMother){
@@ -302,10 +331,12 @@ public class CompanyPcService {
         if(!StringUtils.isEmptyList(list)){
             map.put("teamList",list);
         }
+        return map;
 
     }
     //处理公司下的职位
-    private void handleCompanyPositionCity(int companyId,boolean isMother,Map<String,Object> map){
+    private Map<String,Object> handleCompanyPositionCity(int companyId,boolean isMother){
+        Map<String,Object> map=new HashMap<String,Object>();
         Map<Integer,Set<String>> result=new HashMap<>();
         if(isMother){
             result=handleMotherCompanyPositionCity(companyId);
@@ -319,6 +350,7 @@ public class CompanyPcService {
                 map.put("positionCity",cityList);
             }
         }
+        return map;
     }
     //处理母公司下职位的城市
     private Map<Integer,Set<String>> handleMotherCompanyPositionCity(int companyId){
