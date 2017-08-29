@@ -57,7 +57,16 @@ public class PositionSyncFailedNotification {
     @Autowired
     HrCompanyAccountDao companyAccountDao;
 
-    private String getConfigString(String key) {
+    static List<String> devMails = new ArrayList<>();
+
+    static List<String> csMails = new ArrayList<>();
+
+    static {
+        csMails = getEmails("position_sync.email");//发给cs处理的邮件地址
+        devMails = getEmails("position_sync.email.dev");//发给dev知晓的邮件地址
+    }
+
+    private static String getConfigString(String key) {
         try {
             ConfigPropertiesUtil configUtils = ConfigPropertiesUtil.getInstance();
             configUtils.loadResource("chaos.properties");
@@ -68,8 +77,8 @@ public class PositionSyncFailedNotification {
         return null;
     }
 
-    private List<String> getEmails() {
-        String emailConfig = getConfigString("position_sync.email");
+    private static List<String> getEmails(String configKey) {
+        String emailConfig = getConfigString(configKey);
         if (emailConfig == null) {
             return new ArrayList<>();
         }
@@ -99,7 +108,13 @@ public class PositionSyncFailedNotification {
             return;
         }
 
-        List<String> emails = getEmails();
+        List<String> emails;
+
+        if(pojo.getStatus() == 2 || pojo.getStatus() == 9){
+            emails = csMails;
+        }else{
+            emails = devMails;
+        }
 
         if (emails == null || emails.size() == 0) {
             logger.error("职位刷新到第三方失败，且不能发送邮件:邮件地址为空：返回信息:{}", JSON.toJSONString(pojo));
@@ -154,7 +169,13 @@ public class PositionSyncFailedNotification {
             return;
         }
 
-        List<String> emails = getEmails();
+        List<String> emails;
+
+        if(pojo.getStatus() == 2 || pojo.getStatus() == 9){
+            emails = csMails;
+        }else{
+            emails = devMails;
+        }
 
         if (emails == null || emails.size() == 0) {
             logger.error("职位同步到第三方的时候无法确认状态，且不能发送邮件:邮件地址为空：返回信息:{}", JSON.toJSONString(pojo));

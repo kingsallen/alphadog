@@ -103,8 +103,8 @@ public class PositionSyncConsumer extends RedisConsumer<PositionForSyncResultPoj
             logger.error("读取职位同步队列后无法更新到数据库:{}", JSON.toJSONString(data));
         }
 
-        if (pojo.getStatus() == 2 || pojo.getStatus() == 9) {
-            logger.info("发送同步失败的邮件:{}",pojo.getStatus());
+        if (pojo.getStatus() != 0) {
+            logger.info("发送同步失败的邮件:{}", pojo.getStatus());
             try {
                 //发送邮件，表示这个职位无法判断是否成功同步到对应的平台，需要确认一下。
                 syncFailedNotification.sendUnKnowResultMail(positionDO, thirdPartyPositionDO, pojo);
