@@ -441,7 +441,7 @@ public class UserHrAccountDao extends JooqCrudImpl<UserHrAccountDO, UserHrAccoun
     }
 
     /**
-     * 采用乐观锁方式修改手机号码
+     * 采用乐观锁方式修改手机号码(TODO)
      * 如果不存在任何可用的HR的手机号码和新手机号码相同，那么根据HR编号和老手机号码修改HR的手机号码。
      * @param hr HR账号信息
      * @param mobile 手机号码
@@ -452,12 +452,8 @@ public class UserHrAccountDao extends JooqCrudImpl<UserHrAccountDO, UserHrAccoun
                 .set(UserHrAccount.USER_HR_ACCOUNT.MOBILE, mobile)
                 .where(UserHrAccount.USER_HR_ACCOUNT.ID.eq(hr.getId()))
                 .and(UserHrAccount.USER_HR_ACCOUNT.MOBILE.eq(hr.getMobile()))
-                .andNotExists(
-                        create.selectFrom(UserHrAccount.USER_HR_ACCOUNT)
-                                .where(UserHrAccount.USER_HR_ACCOUNT.MOBILE.eq(mobile))
-                                .and(UserHrAccount.USER_HR_ACCOUNT.ACTIVATION.getName(), 1)
-                                .and(UserHrAccount.USER_HR_ACCOUNT.DISABLE.eq(AbleFlag.ENABLE.getValue()))
-                ).execute();
+                .execute();
+
         return result;
     }
 }

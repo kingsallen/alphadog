@@ -26,12 +26,13 @@ public class HREntity {
 
     /**
      * 修改HR手机号码
+     *
      * @param mobile 手机号码
-     * @param hrID HR账号编号
+     * @param hrID   HR账号编号
      * @return true 修改成功 false 修改失败
      * @throws CommonException 异常信息
      */
-    public boolean updateMobile(String mobile, int hrID) throws CommonException {
+    public boolean updateMobile(int hrID, String mobile) throws CommonException {
         UserHrAccountDO hr = hrAccountDao.getValidAccount(hrID);
         if (hr == null) {
             throw USER_NOT_EXISTS;
@@ -51,7 +52,7 @@ public class HREntity {
         while (retryCount < 3) {
             int result = hrAccountDao.updateMobile(hr, mobile);
             if (result == 0) {
-                retryCount ++;
+                retryCount++;
             } else {
                 return true;
             }

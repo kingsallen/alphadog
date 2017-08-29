@@ -9,6 +9,8 @@ public class HRException extends CommonException {
 
     public static final HRException USER_NOT_EXISTS = new HRException(42018, "HR不存在!");
     public static final HRException USER_UPDATEMOBILE_SAMEMOBILE = new HRException(42019, "新旧手机号码一致，无需修改!");
+    public static final HRException MOBILE_EXIST = new HRException(42020, "手机号码已存在!");
+    public static final HRException USER_EXIST = new HRException(42021, "用户已存在!");
 
     private final int code;
 

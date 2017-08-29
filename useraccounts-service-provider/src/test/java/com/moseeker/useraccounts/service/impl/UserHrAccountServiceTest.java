@@ -2,10 +2,13 @@ package com.moseeker.useraccounts.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.parser.Feature;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.useraccounts.config.AppConfig;
 
+import org.apache.thrift.TException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +29,32 @@ public class UserHrAccountServiceTest {
 
     @Test
     public void testUpdateMobile() {
-        userHrAccountService.updateMobile("15502117047", 1);
+        userHrAccountService.updateMobile(1,"15502117047");
+    }
+
+    @Test
+    public void testAllowAddMobile(){
+        System.out.println(userHrAccountService.ifAddSubAccountAllowed(82752));
+    }
+
+    @Test
+    public void addSubAccount() throws TException {
+        UserHrAccountDO userHrAccountDO = new UserHrAccountDO();
+
+        userHrAccountDO.setUsername("testSubAccount");
+        userHrAccountDO.setPassword("XXXXX");
+        userHrAccountDO.setWxuserId(100);
+        userHrAccountDO.setMobile("18221883365");
+        userHrAccountDO.setSource(1);
+        userHrAccountDO.setAccountType(1);
+        userHrAccountDO.setDisable(1);
+        userHrAccountDO.setActivation(Integer.valueOf(1).byteValue());
+        userHrAccountDO.setCompanyId(39978);
+
+        userHrAccountDO = userHrAccountService.addAccount(userHrAccountDO);
+
+        System.out.println(BeanUtils.convertStructToJSON(userHrAccountDO));
+
     }
 
     //@Test

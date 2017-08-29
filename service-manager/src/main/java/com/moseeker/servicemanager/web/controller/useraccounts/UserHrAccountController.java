@@ -5,6 +5,7 @@ import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.common.validation.rules.DateType;
@@ -16,6 +17,7 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
@@ -48,6 +50,89 @@ public class UserHrAccountController {
 
     UserHrAccountService.Iface userHrAccountService = ServiceManager.SERVICEMANAGER
             .getService(UserHrAccountService.Iface.class);
+
+    /**
+     * 更新手机号
+     */
+    @RequestMapping(value = "/hraccount/mobile", method = RequestMethod.PUT)
+    @ResponseBody
+    public String updateMobile(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params params = ParamUtils.parseRequestParam(request);
+            Integer hrId = params.getInt("hrId");
+            String mobile = params.getString("mobile");
+
+            ValidateUtil vu = new ValidateUtil();
+            vu.addRequiredValidate("hr帐号", hrId, null, null);
+            vu.addRequiredStringValidate("手机号", mobile, null, null);
+            String message = vu.validate();
+            if (StringUtils.isNullOrEmpty(message)) {
+                userHrAccountService.updateMobile(hrId, mobile);
+                return ResponseLogNotification.successJson(request, true);
+            } else {
+                return ResponseLogNotification.failJson(request, message);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseLogNotification.failJson(request, e);
+        }
+    }
+
+    /**
+     * 添加子账号记录
+     */
+    @RequestMapping(value = "/hraccount/add", method = RequestMethod.POST)
+    @ResponseBody
+    public String addAccount(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            ValidateUtil vu = new ValidateUtil();
+            vu.addSensitiveValidate("用户名称", params.getString("username"), null, null);
+            vu.addStringLengthValidate("用户名称", params.getString("username"), null, null, 0, 60);
+            vu.addRequiredValidate("手机号码", params.getString("mobile"), null, null);
+            vu.addStringLengthValidate("手机号码", params.getString("mobile"), null, null, 0, 30);
+            vu.addStringLengthValidate("邮箱", params.getString("email"), null, null, 0, 50);
+            vu.addStringLengthValidate("密码", params.getString("password"), null, null, 0, 64);
+            vu.addIntTypeValidate("来源", params.get("source"), null, null, 0, 99);
+            vu.addIntTypeValidate("登录次数", params.get("loginCount"), null, null, 0, Integer.MAX_VALUE);
+            vu.addIntTypeValidate("账号类型", params.get("accountType"), null, null, 0, 9);
+            vu.addStringLengthValidate("注册IP", params.get("registerIp"), null, null, 0, 50);
+            vu.addStringLengthValidate("最后登录IP", params.get("lastLoginIp"), null, null, 0, 50);
+            vu.addRequiredValidate("公司", params.get("companyId"), null, null);
+            vu.addIntTypeValidate("公司", params.get("companyId"), null, null, 0, Integer.MAX_VALUE);
+            String message = vu.validate();
+            if (StringUtils.isNullOrEmpty(message)) {
+                UserHrAccountDO accountForm = ParamUtils.initModelForm(params, UserHrAccountDO.class);
+                return ResponseLogNotification.successJson(request, userHrAccountService.addAccount(accountForm));
+            } else {
+                return ResponseLogNotification.failJson(request, message);
+            }
+        } catch (Exception e) {
+            return ResponseLogNotification.failJson(request, e);
+        }
+    }
+
+    /**
+     * 检查是否允许添加子账号
+     */
+    @RequestMapping(value = "/hraccount/allowadd", method = RequestMethod.GET)
+    @ResponseBody
+    public String ifAddSubAccountAllowed(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params params = ParamUtils.parseRequestParam(request);
+            Integer hrId = params.getInt("hrId");
+            ValidateUtil vu = new ValidateUtil();
+            vu.addRequiredValidate("hr帐号", hrId, null, null);
+            String message = vu.validate();
+            if (StringUtils.isNullOrEmpty(message)) {
+                return ResponseLogNotification.successJson(request, userHrAccountService.ifAddSubAccountAllowed(hrId));
+            } else {
+                return ResponseLogNotification.failJson(request, message);
+            }
+        } catch (Exception e) {
+            return ResponseLogNotification.failJson(request, e);
+        }
+    }
 
     /**
      * 注册HR发送验证码

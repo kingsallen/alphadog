@@ -19,15 +19,13 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @CounterIface
-public class ThirdPartyUserService implements Iface {
+public class ThirdPartyUserService {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     ThirdPartyUserDao thirdPartyUserDao;
 
-
-    @Override
     public Response updateUser(ThirdPartyUser user) throws TException {
         return thirdPartyUserDao.putThirdPartyUser(user);
     }
