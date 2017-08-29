@@ -199,9 +199,9 @@ public class CompanyPcService {
         Map<String,Object> map=new HashMap<String,Object>();
         Map<String,Object> result=new HashMap<String,Object>();
         if(newJd>0){
-            this.handleTeamInfo(companyId,isMother,1,Integer.MAX_VALUE);
+            result=this.handleTeamInfo(companyId,isMother,1,Integer.MAX_VALUE);
         }else{
-            this.handleTeamInfo(companyId,isMother,1,15);
+            result=this.handleTeamInfo(companyId,isMother,1,15);
         }
         List<Map<String,Object>> newList=new ArrayList<Map<String,Object>>();
         if(result!=null&&!result.isEmpty()){

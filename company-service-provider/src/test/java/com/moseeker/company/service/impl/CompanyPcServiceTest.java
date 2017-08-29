@@ -29,7 +29,7 @@ public class CompanyPcServiceTest {
     }
     @Test
     public void teamDetailsTest() throws Exception {
-        Map<String,Object> result=companyPcService.getTeamDetails(188350558,39978);
+        Map<String,Object> result=companyPcService.getTeamDetails(10,2);
         System.out.println(result+"======");
     }
     @Test
