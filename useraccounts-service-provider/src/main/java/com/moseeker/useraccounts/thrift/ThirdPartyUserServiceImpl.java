@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.thrift;
 
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.useraccounts.service.ThirdPartyUserService.Iface;
 import com.moseeker.thrift.gen.useraccounts.struct.ThirdPartyUser;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
  * Created by eddie on 2017/3/7.
  */
 @Service
+@CounterIface
 public class ThirdPartyUserServiceImpl implements Iface {
 
     @Autowired

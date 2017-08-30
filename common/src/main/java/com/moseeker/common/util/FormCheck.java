@@ -158,7 +158,7 @@ public class FormCheck {
 		if (str == null || str.trim().equals("")) {
 			throw new ParamNullException();
 		}
-		String regEx = "^[1][3,4,5,8][0-9]{9}$";
+		String regEx = "^[1][3,4,5,7,8][0-9]{9}$";
 		Pattern p = Pattern.compile(regEx);
 		Matcher m = p.matcher(str);
 		return m.find();
