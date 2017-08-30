@@ -28,7 +28,7 @@ public class ExceptionUtils {
         } else if (e instanceof TException) {
             return (TException) e;
         } else {
-            return new BIZException(1, "绑定超时!");
+            return new BIZException(1, "发生异常，请稍候再试!");
         }
     }
 }
