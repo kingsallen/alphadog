@@ -2,7 +2,7 @@
 package com.moseeker.profile.pojo.resume;
 
 
-public class JobExpObjs {
+public class JobExpObj {
     //    开始时间
     private String start_date;
     //    结束时间

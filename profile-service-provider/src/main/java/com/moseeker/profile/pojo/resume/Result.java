@@ -30,7 +30,7 @@ public class Result {
     private String name;
     private String cont_expect_job;
     private String cont_basic_info;
-    private List<JobExpObjs> job_exp_objs;
+    private List<JobExpObj> job_exp_objs;
     private String gender;
     private String age;
     private String living_address;
@@ -237,11 +237,11 @@ public class Result {
         return cont_basic_info;
     }
 
-    public void setJob_exp_objs(List<JobExpObjs> job_exp_objs) {
+    public void setJob_exp_objs(List<JobExpObj> job_exp_objs) {
         this.job_exp_objs = job_exp_objs;
     }
 
-    public List<JobExpObjs> getJob_exp_objs() {
+    public List<JobExpObj> getJob_exp_objs() {
         return job_exp_objs;
     }
 

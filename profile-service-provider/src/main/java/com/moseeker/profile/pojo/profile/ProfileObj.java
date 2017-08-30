@@ -10,11 +10,11 @@ public class ProfileObj {
     private List<Education> educations;
     private List<Skill> skills;
     private List<Workexps> workexps;
-    private List<Languages> languages;
+    private List<Language> languages;
     private List<Intentions> intentions;
     private User user;
     private Basic basic;
-    private List<Credentials> credentials;
+    private List<Credential> credentials;
 
     public void setProjectexps(List<Projectexps> projectexps) {
         this.projectexps = projectexps;
@@ -48,11 +48,11 @@ public class ProfileObj {
         return workexps;
     }
 
-    public void setLanguages(List<Languages> languages) {
+    public void setLanguages(List<Language> languages) {
         this.languages = languages;
     }
 
-    public List<Languages> getLanguages() {
+    public List<Language> getLanguages() {
         return languages;
     }
 
@@ -80,11 +80,11 @@ public class ProfileObj {
         return basic;
     }
 
-    public void setCredentials(List<Credentials> credentials) {
+    public void setCredentials(List<Credential> credentials) {
         this.credentials = credentials;
     }
 
-    public List<Credentials> getCredentials() {
+    public List<Credential> getCredentials() {
         return credentials;
     }
 

@@ -2,7 +2,7 @@
 package com.moseeker.profile.pojo.profile;
 
 
-public class Credentials {
+public class Credential {
 
     private String name;
     private String organization;

@@ -15,13 +15,23 @@ import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
+import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.profile.entity.ProfileEntity;
+import com.moseeker.profile.pojo.profile.Basic;
+import com.moseeker.profile.pojo.profile.Company;
+import com.moseeker.profile.pojo.profile.Credential;
 import com.moseeker.profile.pojo.profile.Education;
+import com.moseeker.profile.pojo.profile.Language;
 import com.moseeker.profile.pojo.profile.ProfileObj;
 import com.moseeker.profile.pojo.profile.Projectexps;
 import com.moseeker.profile.pojo.profile.Skill;
+import com.moseeker.profile.pojo.profile.User;
+import com.moseeker.profile.pojo.profile.Workexps;
+import com.moseeker.profile.pojo.resume.CertObj;
 import com.moseeker.profile.pojo.resume.EducationObj;
+import com.moseeker.profile.pojo.resume.JobExpObj;
+import com.moseeker.profile.pojo.resume.LangObj;
 import com.moseeker.profile.pojo.resume.ProjectexpObj;
 import com.moseeker.profile.pojo.resume.ResumeObj;
 import com.moseeker.profile.pojo.resume.SkillsObjs;
@@ -224,7 +234,7 @@ public class ProfileService {
                 if (resumeObj.getResult().getProj_exp_objs() != null && resumeObj.getResult().getProj_exp_objs().size() > 0) {
                     for (ProjectexpObj projectexpObj : resumeObj.getResult().getProj_exp_objs()) {
                         Projectexps project = new Projectexps();
-                        if (projectexpObj.getEnd_date().equals("至今")) {
+                        if (projectexpObj.getEnd_date() != null && projectexpObj.getEnd_date().equals("至今")) {
                             project.setEndUntilNow(1);
                         } else {
                             project.setEndDate(projectexpObj.getEnd_date());
@@ -269,9 +279,66 @@ public class ProfileService {
                 }
                 profileObj.setSkills(skills);
 
+                // 工作经验
+                List<Workexps> workexpsList = new ArrayList<>();
+                if (resumeObj.getResult().getJob_exp_objs() != null && resumeObj.getResult().getJob_exp_objs().size() > 0) {
+                    for (JobExpObj jobExpObj : resumeObj.getResult().getJob_exp_objs()) {
+                        Workexps workexps = new Workexps();
+                        Company company = new Company();
+                        company.setCompanyIndustry(jobExpObj.getJob_industry());
+                        company.setCompanyName(jobExpObj.getJob_cpy());
+                        company.setCompanyScale(Integer.valueOf(jobExpObj.getJob_cpy_size()));
+                        workexps.setCompany(company);
+                        workexps.setDescription(jobExpObj.getJob_nature());
+                        workexps.setStartDate(DateUtils.nomalDateToDate(jobExpObj.getStart_date()));
+                        workexps.setEndDate(jobExpObj.getEnd_date());
+                        workexps.setJob(jobExpObj.getJob_position());
+                        workexpsList.add(workexps);
+                    }
+                }
+                profileObj.setWorkexps(workexpsList);
+                // 语言
+                List<Language> languageList = new ArrayList<>();
+                if (resumeObj.getResult().getLang_objs() != null && resumeObj.getResult().getLang_objs().size() > 0) {
+                    for (LangObj langObj : resumeObj.getResult().getLang_objs()) {
+                        Language language = new Language();
+                        language.setName(langObj.getLanguage_name());
+                        languageList.add(language);
+                    }
+                }
+                profileObj.setLanguages(languageList);
+
+                // 查询
+                UserUserRecord userUser = userDao.getUserById(uid);
+                if (userUser != null) {
+                    User user = new User();
+                    user.setEmail(userUser.getEmail());
+                    user.setMobile(String.valueOf(userUser.getMobile()));
+                    user.setUid(String.valueOf(uid));
+                    user.setName(userUser.getName());
+                    profileObj.setUser(user);
+                }
+
+
+                // 证书
+                List<Credential> credentialList = new ArrayList<>();
+                if (resumeObj.getResult().getCert_objs() != null && resumeObj.getResult().getCert_objs().size() > 0) {
+                    for (CertObj certObj : resumeObj.getResult().getCert_objs()) {
+                        Credential credential = new Credential();
+                        credential.setName(certObj.getLangcert_name());
+                        credentialList.add(credential);
+                    }
+                }
+                profileObj.setCredentials(credentialList);
 
                 // basic信息
-
+                Basic basic = new Basic();
+                basic.setCityName(resumeObj.getResult().getCity());
+                basic.setGender(resumeObj.getResult().getGender());
+                basic.setName(resumeObj.getResult().getName());
+                basic.setSelfIntroduction(resumeObj.getResult().getCont_my_desc());
+                basic.setBirth(DateUtils.nomalDateToDate(resumeObj.getResult().getBirthday()));
+                profileObj.setBasic(basic);
 
             }
         } catch (Exception e) {

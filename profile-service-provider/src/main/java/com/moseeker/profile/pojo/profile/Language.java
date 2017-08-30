@@ -2,7 +2,7 @@
 package com.moseeker.profile.pojo.profile;
 
 
-public class Languages {
+public class Language {
 
     private String name;
     private int level;
