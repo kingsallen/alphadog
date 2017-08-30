@@ -683,7 +683,7 @@ public class UserHrAccountService {
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw new SysBIZException();
+            throw CommonException.PROGRAM_EXCEPTION;
         }
         return userEmployeeNumStatistic;
     }
@@ -1094,7 +1094,7 @@ public class UserHrAccountService {
             hrImporterMonitorDao.addData(hrImporterMonitorDO);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw new SysBIZException();
+            throw CommonException.PROGRAM_EXCEPTION;
         }
         response = ResultMessage.SUCCESS.toResponse();
         logger.info("导入员工信息结束");
@@ -1336,7 +1336,7 @@ public class UserHrAccountService {
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw new SysBIZException();
+            throw CommonException.PROGRAM_EXCEPTION;
         }
         return response;
     }

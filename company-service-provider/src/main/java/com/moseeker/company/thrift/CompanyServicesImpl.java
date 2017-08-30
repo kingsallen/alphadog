@@ -7,6 +7,7 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.company.exception.ExceptionFactory;
 import com.moseeker.entity.CompanyConfigEntity;
 import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.company.struct.CompanyCertConf;
 import com.moseeker.thrift.gen.company.struct.CompanyForVerifyEmployee;
 import com.moseeker.thrift.gen.employee.struct.RewardConfig;
