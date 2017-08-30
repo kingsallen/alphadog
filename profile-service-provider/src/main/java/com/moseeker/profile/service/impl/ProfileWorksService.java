@@ -52,9 +52,9 @@ public class ProfileWorksService {
     }
 
     public Response getResources(Query query) throws TException {
-        Works data = dao.getData(query, Works.class);
-        if (data != null) {
-            return ResponseUtils.success(data);
+        List<Works> dataList = dao.getDatas(query, Works.class);
+        if (dataList != null) {
+            return ResponseUtils.success(dataList);
         } else {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }

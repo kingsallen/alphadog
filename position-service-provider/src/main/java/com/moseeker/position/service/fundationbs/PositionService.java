@@ -20,6 +20,7 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrTeamRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyPositionRecord;
+import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.records.*;
 import com.moseeker.baseorm.pojo.JobPositionPojo;
 import com.moseeker.baseorm.pojo.RecommendedPositonPojo;
@@ -46,6 +47,7 @@ import com.moseeker.position.service.position.WorkTypeChangeUtil;
 import com.moseeker.position.service.position.qianxun.Degree;
 import com.moseeker.position.service.position.qianxun.WorkType;
 import com.moseeker.position.utils.CommonPositionUtils;
+import com.moseeker.position.utils.SpecialCtiy;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -136,9 +138,7 @@ public class PositionService {
     private static List dictAlipaycampusJobcategorylist;
 
     /**
-     * 获取推荐职位
-     * <p>
-     * </p>
+     * 获取推荐职位 <p> </p>
      *
      * @param pid 当前职位 id
      * @return 推荐职位列表
@@ -266,13 +266,13 @@ public class PositionService {
             sb.deleteCharAt(sb.length() - 1);
             jobPositionPojo.province = sb.toString();
         }
-        String citynames=commonPositionUtils.handlerCity(positionId);
-        logger.info("job_position_city的city信息是＝＝＝＝＝＝＝＝＝＝＝＝＝"+citynames);
-        if(StringUtils.isNotNullOrEmpty(citynames)){
-            jobPositionPojo.city=citynames;
+        String citynames = commonPositionUtils.handlerCity(positionId);
+        logger.info("job_position_city的city信息是＝＝＝＝＝＝＝＝＝＝＝＝＝" + citynames);
+        if (StringUtils.isNotNullOrEmpty(citynames)) {
+            jobPositionPojo.city = citynames;
         }
-        if("全国".equals(jobPositionPojo.city)){
-            jobPositionPojo.city_flag=1;
+        if ("全国".equals(jobPositionPojo.city)) {
+            jobPositionPojo.city_flag = 1;
         }
         return ResponseUtils.success(jobPositionPojo);
     }
@@ -376,6 +376,7 @@ public class PositionService {
         logger.info("cache allow");
         return true;
     }
+
     /**
      * 创建刷新职位数据
      *
@@ -438,8 +439,12 @@ public class PositionService {
         return syncAccount;
     }
 
+
     /**
      * 批量处理修改职位
+     *
+     * @param batchHandlerJobPosition
+     * @return
      */
     @CounterIface
     public Response batchHandlerJobPostion(BatchHandlerJobPostion batchHandlerJobPosition) {
@@ -486,11 +491,11 @@ public class PositionService {
                 hashMapHrTeam.put(replaceBlank(hrTeamRecord.getName()), hrTeamRecord);
             }
         }
+        // 数据库中该公司的职位列表
         Query commonQuery = new Query.QueryBuilder()
                 .where("company_id", companyId)
                 .and("source", 9)
                 .buildQuery();
-        // 数据库中该公司的职位列表
         List<JobPositionRecord> dbList = jobPositionDao.getRecords(commonQuery);
         HashMap dbListMap = new HashMap();
         List<JobPositionRecord> dbOnlineList = new ArrayList<>();
@@ -510,7 +515,6 @@ public class PositionService {
         for (JobOccupationDO jobOccupationDO : jobOccupationList) {
             jobOccupationMap.put(jobOccupationDO.getName().trim(), jobOccupationDO);
         }
-
         // 公司下职位自定义字段
         HashMap jobCustomMap = new LinkedHashMap();
         jobOccupationQuery = new Query.QueryBuilder()
@@ -524,11 +528,10 @@ public class PositionService {
         }
         // 需要删除的城市的数据ID列表
         List<Integer> deleteCitylist = new ArrayList<>();
-        // 需要删除jobOccupationRel数据列表
-        List<Integer> jobOccupationRelIdList = new ArrayList<>();
         // 需要更新ES的jobpostionID
         List<Integer> jobPositionIds = new ArrayList<>();
         Integer deleteCounts = 0;
+        Integer sourceId = jobPositionHandlerDates.get(0).getSource_id();
         // 删除操作,删除除了data以外的数据库中的数据
         if (!noDelete) {
             if (!com.moseeker.common.util.StringUtils.isEmptyList(dbOnlineList)) {
@@ -553,9 +556,13 @@ public class PositionService {
                             break;
                         }
                     }
+                    // 需要删除的数据
                     if (!existed) {
-                        jobPositionRecord.setStatus((byte) 1);
-                        jobPositionIds.add(jobPositionRecord.getId());
+                        // 需要删除的职位必须sourceId 必须相同
+                        if (jobPositionRecord.getSourceId() == sourceId) {
+                            jobPositionRecord.setStatus((byte) 1);
+                            jobPositionIds.add(jobPositionRecord.getId());
+                        }
                     }
                 }
                 // 需要删除的列表不为空，否则全部删除
@@ -616,16 +623,7 @@ public class PositionService {
                     logger.info("--company_id--:" + record.getCompanyId());
                     logger.info("--JobPositionRecord数据--:" + record.toString());
                     logger.info("--提交的数据--:" + jobPositionHandlerDate.toString());
-                    JobPositionFailMess jobPositionFailMessPojo = new JobPositionFailMess();
-                    jobPositionFailMessPojo.setCompanyId(jobPositionHandlerDate.getCompany_id());
-                    jobPositionFailMessPojo.setJobNumber(jobPositionHandlerDate.getJobnumber());
-                    jobPositionFailMessPojo.setSourceId(jobPositionHandlerDate.getSource_id());
-                    jobPositionFailMessPojo.setJobPostionId(jobPositionHandlerDate.getId());
-                    jobPositionFailMessPojo.setDepartment(jobPositionHandlerDate.getDepartment());
-                    JSONObject jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.POSITION_DATA_DEPARTMENT_ERROR);
-                    jobPositionFailMessPojo.setMessage(jsonObject.getString("message"));
-                    jobPositionFailMessPojo.setStatus(jsonObject.getInteger("status"));
-                    jobPositionFailMessPojos.add(jobPositionFailMessPojo);
+                    handlerFailMess(ConstantErrorCodeMessage.POSITION_DATA_DEPARTMENT_ERROR, jobPositionFailMessPojos, jobPositionHandlerDate);
                     continue;
                 }
             } else {
@@ -647,16 +645,6 @@ public class PositionService {
                     JobOccupationDO jobOccupationDOTemp = jobOccupationDao.addData(jobOccupation);
                     jobOccupationId = jobOccupationDOTemp.getId();
                     jobOccupationMap.put(jobOccupationDOTemp.getName().trim(), jobOccupationDOTemp);
-
-
-//                    JobPositionFailMess jobPositionFailMessPojo = new JobPositionFailMess();
-//                    jobPositionFailMessPojo.setCompanyId(jobPositionHandlerDate.getCompany_id());
-//                    jobPositionFailMessPojo.setJobNumber(jobPositionHandlerDate.getJobnumber());
-//                    jobPositionFailMessPojo.setSourceId(jobPositionHandlerDate.getSource_id());
-//                    jobPositionFailMessPojo.setJobPostionId(jobPositionHandlerDate.getId());
-//                    jobPositionFailMessPojo.setMessage(ConstantErrorCodeMessage.POSITION_DATA_OCCUPATION_ERROR.replace("{MESSAGE}", jobPositionHandlerDate.getOccupation()));
-//                    jobPositionFailMessPojos.add(jobPositionFailMessPojo);
-//                    continue;
                 }
             }
             // 验证职位自定义字段
@@ -688,12 +676,21 @@ public class PositionService {
             }
             // 按company_id + .source_id + .jobnumber + source=9取得数据
             Query queryUtil = new Query.QueryBuilder()
-                    .where("company_id", jobPositionHandlerDate.getCompany_id())
-                    .and("source", 9)
-                    .and("source_id", jobPositionHandlerDate.getSource_id())
-                    .and("jobnumber", jobPositionHandlerDate.getJobnumber())
+                    .where(JobPosition.COMPANY_ID.getName(), jobPositionHandlerDate.getCompany_id())
+                    .and(JobPosition.SOURCE.getName(), 9)
+                    .and(JobPosition.SOURCE_ID.getName(), jobPositionHandlerDate.getSource_id())
+                    .and(JobPosition.JOBNUMBER.getName(), jobPositionHandlerDate.getJobnumber())
                     .buildQuery();
             JobPositionRecord jobPositionRecord = jobPositionDao.getRecord(queryUtil);
+
+            // 城市信息
+            String city = citys(jobPositionHandlerDate.getCity());
+            logger.info("城市信息：{}", city);
+            // 城市信息太长时候，需要过滤数据
+            if (city.length() > 100) {
+                handlerFailMess(ConstantErrorCodeMessage.CITY_TOO_LONG, jobPositionFailMessPojos, jobPositionHandlerDate);
+                continue;
+            }
             // 更新或者新增数据
             if (jobPositionHandlerDate.getId() != 0 || !com.moseeker.common.util.StringUtils.isEmptyObject(jobPositionRecord)) {  // 数据更新
                 // 按company_id + .source_id + .jobnumber + source=9取得数据为空时，按Id进行更新
@@ -717,8 +714,7 @@ public class PositionService {
                             record.setJobnumber(jobPositionRecordTemp.getJobnumber());
                         }
                         // 当城市无法转换时，入库为提交的数据
-                        String city = citys(jobPositionHandlerDate.getCity());
-                        if (com.moseeker.common.util.StringUtils.isNotNullOrEmpty(city)) {
+                        if (city != null) {
                             record.setCity(city);
                         }
                         record.setTeamId(team_id);
@@ -768,9 +764,8 @@ public class PositionService {
                 }
             } else { // 数据的新增
                 record.setTeamId(team_id);
-                String city = citys(jobPositionHandlerDate.getCity());
                 // 当城市无法转换时，入库为提交的数据
-                if (com.moseeker.common.util.StringUtils.isNotNullOrEmpty(city)) {
+                if (city != null) {
                     record.setCity(city);
                 }
                 logger.info("-- 新增jobPostion数据开始，新增的jobPostion数据为：" + record.toString() + "--");
@@ -825,7 +820,7 @@ public class PositionService {
             // 新增jobPositionCity数据
             if (jobPositionCityRecordsAddlist.size() > 0) {
                 logger.info("-------------新增jobPositionCity数据开始------------------");
-                jobPositionCityDao.addAllRecord(jobPositionCityRecordsAddlist);
+                jobPositionCityDao.addAllRecord(jobPositionCityRecordsAddlist.stream().distinct().collect(Collectors.toList()));
                 logger.info("-------------新增jobPositionCity数据结束------------------");
             }
             // 更新jobPositionCity数据
@@ -837,7 +832,7 @@ public class PositionService {
                     logger.info("-------------删除jobPositionCity的数据结束------------------");
                 }
                 logger.info("-------------新增jobPositionCity的数据开始------------------");
-                jobPositionCityDao.addAllRecord(jobPositionCityRecordsUpdatelist);
+                jobPositionCityDao.addAllRecord(jobPositionCityRecordsUpdatelist.stream().distinct().collect(Collectors.toList()));
                 logger.info("-------------新增jobPositionCity的数据结束------------------");
             }
         } catch (Exception e) {
@@ -931,31 +926,33 @@ public class PositionService {
     // 特殊城市拼音转CityCode
     public final static Map specialCityMap = new LinkedHashMap();
 
-    static {
-        specialCityMap.put("Amur River", "黑龙江省");
-        specialCityMap.put("Anhwei", "安徽省");
-        specialCityMap.put("Canton", "广东省");
-        specialCityMap.put("Kwangtung", "广东省");
-        specialCityMap.put("Fukian", "福建省");
-        specialCityMap.put("Harbin", "哈尔滨");
-        specialCityMap.put("Hong Kong", "香港");
-        specialCityMap.put("Nankin", "南京");
-        specialCityMap.put("Nanking", "南京");
-        specialCityMap.put("Inner Mongolia", "内蒙古");
-        specialCityMap.put("Pekin", "北京");
-        specialCityMap.put("Peking", "北京");
-        specialCityMap.put("Shanxi", "山西省");
-        specialCityMap.put("Shaanxi", "陕西省");
-        specialCityMap.put("Szechwan", "四川");
-        specialCityMap.put("Taipei", "台北");
-        specialCityMap.put("Tibet", "西藏");
-        specialCityMap.put("Urumchi", "乌鲁木齐");
-        specialCityMap.put("Urumqi", "乌鲁木齐");
-        specialCityMap.put("Ürümqi", "乌鲁木齐");
+    /**
+     * 错误信息处理
+     *
+     * @param message
+     * @param jobPositionFailMessPojos
+     * @param jobPostrionObj
+     */
+    public void handlerFailMess(String message, List<JobPositionFailMess> jobPositionFailMessPojos, JobPostrionObj jobPostrionObj) {
+        JobPositionFailMess jobPositionFailMessPojo = new JobPositionFailMess();
+        jobPositionFailMessPojo.setCompanyId(jobPostrionObj.getCompany_id());
+        jobPositionFailMessPojo.setJobNumber(jobPostrionObj.getJobnumber());
+        jobPositionFailMessPojo.setSourceId(jobPostrionObj.getSource_id());
+        jobPositionFailMessPojo.setJobPostionId(jobPostrionObj.getId());
+        jobPositionFailMessPojo.setDepartment(jobPostrionObj.getDepartment());
+        JSONObject jsonObject = JSONObject.parseObject(message);
+        jobPositionFailMessPojo.setMessage(jsonObject.getString("message"));
+        jobPositionFailMessPojo.setStatus(jsonObject.getInteger("status"));
+        jobPositionFailMessPojos.add(jobPositionFailMessPojo);
     }
+
 
     /**
      * 将地区或者邮编转换成行政编码
+     *
+     * @param citys
+     * @param pid
+     * @return
      */
     private List<JobPositionCityRecord> cityCode(List<City> citys, Integer pid) {
         List<JobPositionCityRecord> jobPositionCityRecordList = new ArrayList<>();
@@ -975,11 +972,10 @@ public class PositionService {
                     jobPositionCityRecord.setPid(pid);
                     logger.info("城市类型：" + city.getType().toLowerCase());
                     logger.info("VAlUE：" + city.getValue());
-
                     // 城市名字，转换成cityCode，传入的是城市的时候查询dict_city
                     if (city.getType().toLowerCase().equals("text")) {
                         // 判断是不是特殊城市中的
-                        String specicalCity = (String) specialCityMap.get(city.getValue());
+                        String specicalCity = SpecialCtiy.specialCtiyMap.get(city.getValue().toLowerCase());
                         if (specicalCity != null) {
                             city.setValue(specicalCity);
                         }
@@ -1059,7 +1055,7 @@ public class PositionService {
                 Query.QueryBuilder cityCodeQuery = new Query.QueryBuilder();
                 if (city.getType().toLowerCase().equals("text")) { // 城市名字，转换成cityCode
                     // 判断是不是特殊城市中的
-                    String specicalCity = (String) specialCityMap.get(city.getValue());
+                    String specicalCity = SpecialCtiy.specialCtiyMap.get(city.getValue().toLowerCase());
                     if (specicalCity != null) {
                         stringBuffer.append(specicalCity);
                     } else {
@@ -1116,7 +1112,6 @@ public class PositionService {
                             cityCodeQuery.clear();
                             cityCodeQuery.where("code", city.getValue());
                             dictCityDO = dictCityDao.getData(cityCodeQuery.buildQuery());
-//                            cityPostcodeRecord = dictCityPostCodeDao.getResource(cityCodeQuery);
                             if (dictCityDO != null && dictCityDO.getName() != null) {
                                 stringBuffer.append(dictCityDO.getName());
                                 cityPostCodeMap.put(city.getValue(), dictCityDO);
@@ -1148,10 +1143,10 @@ public class PositionService {
                 }
                 i = i + 1;
                 if (i != list.size() && com.moseeker.common.util.StringUtils.isNotNullOrEmpty(stringBuffer.toString()) && !stringBuffer.toString().endsWith(",")) {
-                    stringBuffer.append(",");
+                    stringBuffer.append("，");
                 }
             }
-            if (stringBuffer.toString().endsWith(",")) {
+            if (stringBuffer.toString().endsWith("，")) {
                 stringBuffer.deleteCharAt(stringBuffer.length() - 1);
             }
         }
@@ -1217,9 +1212,9 @@ public class PositionService {
             logger.info("query.getDepartment(): " + query.getDepartment());
             logger.info("query.getCustom(): " + query.getCustom());
             logger.info("<><><><><><><><><><><>");
-            String cities=query.getCities();
-            if(StringUtils.isNotNullOrEmpty(cities)&&commonPositionUtils.appendCity(cities)&&!cities.contains("全国'")){
-                cities=cities+",全国";
+            String cities = query.getCities();
+            if (StringUtils.isNotNullOrEmpty(cities) && commonPositionUtils.appendCity(cities) && !cities.contains("全国'")) {
+                cities = cities + ",全国";
                 query.setCities(cities);
             }
             //获取 pid list
@@ -1251,11 +1246,11 @@ public class PositionService {
                 Condition con = new Condition("id", jdIdList.toArray(), ValueOp.IN);
                 Query q = new Query.QueryBuilder().where(con).buildQuery();
                 List<JobPositionRecord> jobRecords = jobPositionDao.getRecords(q);
-                Map<Integer,Set<String>> cityMap=commonPositionUtils.handlePositionCity(jdIdList);
-                for(int i=0;i<jdIdList.size();i++){
-                    int positionId=jdIdList.get(i);
+                Map<Integer, Set<String>> cityMap = commonPositionUtils.handlePositionCity(jdIdList);
+                for (int i = 0; i < jdIdList.size(); i++) {
+                    int positionId = jdIdList.get(i);
                     for (JobPositionRecord jr : jobRecords) {
-                        if(positionId==jr.getId()){
+                        if (positionId == jr.getId()) {
                             logger.info("pid: " + String.valueOf(jr.getId()));
                             WechatPositionListData e = new WechatPositionListData();
                             e.setTitle(jr.getTitle());
@@ -1278,15 +1273,15 @@ public class PositionService {
                             e.setIn_hb(jr.getHbStatus() > 0);
                             e.setCount(jr.getCount());
                             e.setCity(jr.getCity());
-                            if(cityMap!=null&&!cityMap.isEmpty()){
-                                Set<String> positionCity=cityMap.get(jr.getId());
-                                if(positionCity!=null&&positionCity.size()>0){
-                                    String  cityName="";
-                                    for(String city:positionCity){
-                                        cityName+=city+",";
+                            if (cityMap != null && !cityMap.isEmpty()) {
+                                Set<String> positionCity = cityMap.get(jr.getId());
+                                if (positionCity != null && positionCity.size() > 0) {
+                                    String cityName = "";
+                                    for (String city : positionCity) {
+                                        cityName += city + "，";
                                     }
-                                    if(StringUtils.isNotNullOrEmpty(cityName)){
-                                        cityName=cityName.substring(0, cityName.lastIndexOf(","));
+                                    if (StringUtils.isNotNullOrEmpty(cityName)) {
+                                        cityName = cityName.substring(0, cityName.lastIndexOf("，"));
                                     }
                                     e.setCity(cityName);
                                 }

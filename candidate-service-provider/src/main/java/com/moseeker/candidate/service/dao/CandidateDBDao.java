@@ -7,6 +7,7 @@ import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.candidate.constant.EmployeeType;
 import com.moseeker.common.biztools.RecruitmentScheduleEnum;
 import com.moseeker.common.constants.Constant;
@@ -284,9 +285,12 @@ public class CandidateDBDao {
      * @return 用户信息集合
      */
     public List<UserUserDO> getUserByIDList(List<Integer> userIdList) {
-        Query query = new Query.QueryBuilder().select("id").select("name").select("nickname").select("headimg").
-                where(new Condition("id", userIdList, ValueOp.IN)).and("status", 0)
-                .orderBy("id", Order.ASC).buildQuery();
+        Query query = new Query.QueryBuilder().select(UserUser.USER_USER.ID.getName())
+                .select(UserUser.USER_USER.NAME.getName())
+                .select(UserUser.USER_USER.NICKNAME.getName())
+                .select(UserUser.USER_USER.HEADIMG.getName()).
+                where(new Condition(UserUser.USER_USER.ID.getName(), userIdList, ValueOp.IN))
+                .orderBy(UserUser.USER_USER.ID.getName(), Order.ASC).buildQuery();
         return userDao.getDatas(query);
     }
 

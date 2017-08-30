@@ -33,6 +33,7 @@ import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.Query.QueryBuilder;
 import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.thrift.gen.application.struct.ApplicationResponse;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.application.struct.JobResumeOther;
@@ -85,12 +86,12 @@ public class JobApplicataionService {
     private UserUserDao userUserDao;
     @Autowired
     private UserAliUserDao userAliUserDao;
-    @Autowired
-	private UserEmployeeDao userEmployeedao;
 	@Autowired
 	private HrOperationRecordDao hrOperationRecordDao;
 	@Autowired
 	private HistoryJobApplicationDao historyJobApplicationDao;
+	@Autowired
+    EmployeeEntity employeeEntity;
     /**
      * 创建申请
      *
@@ -775,16 +776,7 @@ public class JobApplicataionService {
         int appId = 0;
         try {
             if (jobApplicationRecord.getRecommenderUserId() != null && jobApplicationRecord.getRecommenderUserId().intValue() > 0) {
-                Query query = new QueryBuilder().where("id", jobApplicationRecord.getRecommenderUserId()).buildQuery();
-                UserUserRecord userUserRecord = userUserDao.getRecord(query);
-                boolean existUserEmployee = false;
-                Query query1 = new QueryBuilder().where("sysuser_id", userUserRecord.getId().intValue())
-                        .and("disable", 0).and("activation", 0).buildQuery();
-                UserEmployeeRecord userEmployeeRecord = userEmployeedao.getRecord(query1);
-                logger.info("JobApplicataionService saveJobApplication userEmployeeRecord:{}", userEmployeeRecord);
-                if (userEmployeeRecord != null) {
-                    existUserEmployee = true;
-                }
+                boolean existUserEmployee = employeeEntity.isEmployee(jobApplicationRecord.getRecommenderUserId(), jobApplicationRecord.getCompanyId());
                 logger.info("JobApplicataionService saveJobApplication existUserEmployee:{}", existUserEmployee);
                 if (!existUserEmployee) {
                     logger.info("JobApplicataionService saveJobApplication not employee");

@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Import;
  * Created by lucky8987 on 17/5/10.
  */
 @Configuration
-@ComponentScan({"com.moseeker.application", "com.moseeker.common.aop.iface"})
+@ComponentScan({"com.moseeker.application", "com.moseeker.entity", "com.moseeker.common.aop.iface"})
 @Import(com.moseeker.baseorm.config.AppConfig.class)
 public class AppConfig {
 }

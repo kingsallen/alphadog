@@ -14,6 +14,8 @@ namespace java com.moseeker.thrift.gen.foundation.chaos.service
 service ChaosServices {
     //绑定第三方帐号
     hr_third_party_account_struct.HrThirdPartyAccountDO binding(1:hr_third_party_account_struct.HrThirdPartyAccountDO thirdPartyAccount,2:map<string,string> extras) throws (1: common_struct.BIZException e);
+    hr_third_party_account_struct.HrThirdPartyAccountDO bindConfirm(1:hr_third_party_account_struct.HrThirdPartyAccountDO thirdPartyAccount,2:map<string,string> extras,3:bool confirm) throws (1: common_struct.BIZException e);
+    hr_third_party_account_struct.HrThirdPartyAccountDO bindMessage(1:hr_third_party_account_struct.HrThirdPartyAccountDO thirdPartyAccount,2:map<string,string> extras,3:string code) throws (1: common_struct.BIZException e);
     //同步可发布职位数
     hr_third_party_account_struct.HrThirdPartyAccountDO synchronization(1:hr_third_party_account_struct.HrThirdPartyAccountDO thirdPartyAccount,2:map<string,string> extras) throws (1: common_struct.BIZException e);
     //同步职位

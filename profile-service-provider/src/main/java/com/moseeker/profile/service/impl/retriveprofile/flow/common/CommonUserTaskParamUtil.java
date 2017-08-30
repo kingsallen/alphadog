@@ -1,4 +1,4 @@
-package com.moseeker.profile.service.impl.retriveprofile.flow.job51;
+package com.moseeker.profile.service.impl.retriveprofile.flow.common;
 
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.profile.exception.ExceptionFactory;
@@ -14,7 +14,7 @@ import java.util.Map;
  * Created by jack on 20/07/2017.
  */
 @Component
-public class Job51UserTaskParamUtil implements CouplerParamUtil<UserTaskParam, Integer, Object> {
+public class CommonUserTaskParamUtil implements CouplerParamUtil<UserTaskParam, Integer, Object> {
 
     @Override
     public UserTaskParam parseExecutorParam(Object tmpParam, ExecutorParam globalParam) throws CommonException {

@@ -42,7 +42,7 @@ public class RetriveProfile {
             if (channelType == null) {
                 throw ExceptionFactory.buildException(Category.VALIDATION_RETRIEVAL_CHANNEL_NOT_CUSTOMED);
             }
-            RetrievalFlow retrievalFlow = flowMap.get(channelType.toString().toLowerCase()+"_retrieval_flow");
+            RetrievalFlow retrievalFlow = flowMap.get(channelType.getRetriveName());
             return retrievalFlow.retrieveProfile(paramMap, channelType);
         } else {
             throw ExceptionFactory.buildException(Category.VALIDATION_RETRIEVAL_CHANNEL_NOT_CUSTOMED);

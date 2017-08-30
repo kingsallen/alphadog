@@ -183,12 +183,12 @@ public class PositionSyncFailedNotification {
         String divider = "<br/>";
 
         if (companyDO != null) {
-            emailMessgeBuilder.append("【所属公司】：").append(companyDO.getName()).append(divider);
+            emailMessgeBuilder.append("【母公司名】：").append(companyDO.getName()).append(divider);
         }
 
         HrCompanyDO subCompany = companyAccountDao.getHrCompany(moseekerPosition.getPublisher());
         if (subCompany != null) {
-            emailMessgeBuilder.append("【子公司简称】：").append(subCompany.getAbbreviation()).append(divider);
+            emailMessgeBuilder.append("【帐号所属公司】：").append(subCompany.getAbbreviation()).append(divider);
         }
 
         emailMessgeBuilder.append("【同步记录ID】：").append(thirdPartyPositionDO.getId()).append(divider);
@@ -206,7 +206,8 @@ public class PositionSyncFailedNotification {
         emailMessgeBuilder.append("【工作年限】：").append(getExperience(moseekerPosition.getExperience())).append(divider);
         emailMessgeBuilder.append("【学历要求】：").append(getDegree(moseekerPosition.getDegree())).append(divider);
         emailMessgeBuilder.append("【反馈时长】：").append(thirdPartyPositionDO.getFeedbackPeriod()).append(divider);
-        emailMessgeBuilder.append("<b style=\"color:red\">【简历邮箱】：").append("cv_").append(moseekerPosition.getId()).append(positionEmail).append("</b>").append(divider);
+        emailMessgeBuilder.append("<b style=\"color:blue;text-decoration:underline\">【简历邮箱】：").append("cv_").append(moseekerPosition.getId()).append(positionEmail).append("</b>");
+        emailMessgeBuilder.append("<b style=\"color:red\">（手动发布该职位时，请一定将该邮箱填写在简历回收邮箱中）</b>").append(divider);
         emailMessgeBuilder.append("【职位描述】：").append(divider);
         StringBuffer descript = new StringBuffer();
         if (StringUtils.isNotNullOrEmpty(moseekerPosition.getAccountabilities())) {

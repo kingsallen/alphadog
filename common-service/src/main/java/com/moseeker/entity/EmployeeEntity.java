@@ -38,6 +38,7 @@ import com.moseeker.thrift.gen.employee.struct.RewardVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
+
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -131,21 +132,20 @@ public class EmployeeEntity {
     }
 
     // 转发点击操作 前置
-    public void addAwardBefore(int employeeId, int companyId, int positionId, int templateId, int berecomUserId) throws Exception {
+    public void addAwardBefore(int employeeId, int companyId, int positionId, int templateId, int berecomUserId, int applicationId) throws Exception {
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.where("company_id", companyId).and("template_id", templateId);
         HrPointsConfDO hrPointsConfDO = hrPointsConfDao.getData(query.buildQuery());
-        if (hrPointsConfDO != null && hrPointsConfDO.getId() > 0) {
-            query.clear();
-            query.where("employee_id", employeeId).and("position_id", positionId).and("award_config_id", hrPointsConfDO).and("berecom_user_id", berecomUserId);
-            UserEmployeePointsRecordDO userEmployeePointsRecordDO = employeePointsRecordDao.getData(query.buildQuery());
-            if (userEmployeePointsRecordDO != null && userEmployeePointsRecordDO.getId() > 0) {
-                logger.error("重复的加积分操作, employeeId:{}, positionId:{}, templateId:{}, berecomUserId:{}", employeeId, positionId, templateId, berecomUserId);
-                throw new Exception("重复的加积分操作");
-            }
+        int awardConfigId = hrPointsConfDO == null ? 0 : hrPointsConfDO.getId();
+        query.clear();
+        query.where("employee_id", employeeId).and("position_id", positionId).and("award_config_id", awardConfigId).and("berecom_user_id", berecomUserId);
+        UserEmployeePointsRecordDO userEmployeePointsRecordDO = employeePointsRecordDao.getData(query.buildQuery());
+        if (userEmployeePointsRecordDO != null && userEmployeePointsRecordDO.getId() > 0) {
+            logger.error("重复的加积分操作, employeeId:{}, positionId:{}, templateId:{}, berecomUserId:{}", employeeId, positionId, templateId, berecomUserId);
+            throw new Exception("重复的加积分操作");
         }
         // 进行加积分操作
-        addReward(employeeId, companyId, "", 0, positionId, templateId, berecomUserId);
+        addReward(employeeId, companyId, "", applicationId, positionId, templateId, berecomUserId);
     }
 
     /**
@@ -200,10 +200,14 @@ public class EmployeeEntity {
             int awardConfigId = 0;
             Query.QueryBuilder query = new Query.QueryBuilder().where("company_id", companyId).and("template_id", templateId);
             HrPointsConfDO hrPointsConfDO = hrPointsConfDao.getData(query.buildQuery());
-            if (hrPointsConfDO != null && hrPointsConfDO.getReward() != 0) {
-                award = (int) hrPointsConfDO.getReward();
-                reason = org.apache.commons.lang.StringUtils.defaultIfBlank(reason, hrPointsConfDO.getStatusName());
-                awardConfigId = hrPointsConfDO.getId();
+            if (hrPointsConfDO != null) {
+                if (hrPointsConfDO.getReward() == 0) {
+                    throw new Exception("添加积分点数不能为0");
+                } else {
+                    award = (int) hrPointsConfDO.getReward();
+                    reason = org.apache.commons.lang.StringUtils.defaultIfBlank(reason, hrPointsConfDO.getStatusName());
+                    awardConfigId = hrPointsConfDO.getId();
+                }
             } else {
                 query.clear();
                 query.where("id", templateId);
@@ -255,13 +259,12 @@ public class EmployeeEntity {
             List<UserEmployeePointsRecordRecord> userEmployeePointsRecordList = employeePointsRecordDao.getRecords(query.buildQuery());
             List<UserEmployeePointsRecordDO> points = new ArrayList<>();
             if (userEmployeePointsRecordList != null && userEmployeePointsRecordList.size() > 0) {
-                for (UserEmployeePointsRecordRecord userEmployeePointsRecordRecord: userEmployeePointsRecordList) {
+                for (UserEmployeePointsRecordRecord userEmployeePointsRecordRecord : userEmployeePointsRecordList) {
                     UserEmployeePointsRecordDO userEmployeePointsRecordDO =
                             BeanUtils.DBToStruct(UserEmployeePointsRecordDO.class, userEmployeePointsRecordRecord);
                     userEmployeePointsRecordDO.setCreateTime(new DateTime(userEmployeePointsRecordRecord.get_CreateTime()).toString("yyyy-MM-dd HH:mm:ss"));
                     points.add(userEmployeePointsRecordDO);
                 }
-
             }
             // 申请记录信息
             Map<Integer, JobApplicationDO> appMap = new HashMap<>();
@@ -280,7 +283,7 @@ public class EmployeeEntity {
             // 职位信息Id
             List<Integer> positionIds = points.stream().filter(m -> m.getPositionId() != 0).map(m -> new Double(m.getPositionId()).intValue()).collect(Collectors.toList());
             // 获取被推荐人信息
-            List<Integer> berecomIds = points.stream().filter(m -> m.getBerecomUserId() != 0).map(m -> new Double(m.getBerecomUserId()).intValue()).collect(Collectors.toList());
+            Set<Integer> berecomIds = points.stream().filter(m -> m.getBerecomUserId() != 0).map(m -> new Double(m.getBerecomUserId()).intValue()).collect(Collectors.toSet());
             // 加积分类型
             List<Integer> types = points.stream().filter(m -> m.getAwardConfigId() != 0).map(m -> new Double(m.getBerecomUserId()).intValue()).collect(Collectors.toList());
 
