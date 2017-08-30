@@ -131,6 +131,6 @@ public class EmployeeServiceImpl implements Iface {
 
     @Override
     public Result setCacheEmployeeCustomInfo(int userId, int companyId, String customValues) throws TException {
-        return null;
+        return service.setCacheEmployeeCustomInfo(userId, companyId, customValues);
     }
 }
