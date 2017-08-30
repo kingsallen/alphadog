@@ -234,10 +234,19 @@ public class ProfilePojo {
 		//解析用户信息
 		UserUserRecord crawlerUser = null;
 		try {
-			crawlerUser = profileUtils.mapToUserUserRecord((Map<String, Object>) resume.get("user"));
+			Map<String, Object> userMap = (Map<String, Object>) resume.get("user");
+			if (userMap != null) {
+				String mobile = String.valueOf(userMap.get("mobile"));
+				if (!org.apache.commons.lang.StringUtils.isNumeric(mobile)) {
+					userMap.remove("mobile");
+				}
+				crawlerUser = profileUtils.mapToUserUserRecord(userMap);
+				pojo.setUserRecord(crawlerUser);
+			}
 		} catch (Exception e1) {
 			LoggerFactory.getLogger(ProfilePojo.class).error(e1.getMessage(), e1);
 		}
+
 		//解析基本信息
 		ProfileBasicRecord basicRecord = null;
 		try {
