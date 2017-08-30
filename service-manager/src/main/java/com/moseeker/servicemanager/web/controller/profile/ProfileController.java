@@ -1,5 +1,8 @@
 package com.moseeker.servicemanager.web.controller.profile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +11,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices;
 import com.moseeker.thrift.gen.application.struct.ApplicationResponse;
@@ -15,12 +19,25 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
 
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
+
+import org.apache.commons.codec.binary.Base64;
+import org.apache.http.Consts;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
+import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
@@ -318,8 +335,7 @@ public class ProfileController {
     }
 
     /**
-     * 回收简历
-     * 用于替换retrieveProfile
+     * 回收简历 用于替换retrieveProfile
      */
     @RequestMapping(value = "/retrieval/profile", method = RequestMethod.POST)
     @ResponseBody
@@ -342,5 +358,56 @@ public class ProfileController {
         } finally {
             // do nothing
         }
+    }
+
+
+    /**
+     * 回收简历 用于替换retrieveProfile
+     */
+    @RequestMapping(value = "/profile/parser", method = RequestMethod.POST)
+    @ResponseBody
+    public String profileParser(@RequestParam(value = "file", required = false) MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws IOException, TException {
+        try {
+            System.out.println("aaa");
+            ByteBuffer buf = ByteBuffer.wrap(file.getBytes());
+
+
+
+            service.resumeProfile(1, file.getOriginalFilename(), buf);
+
+//            String data = new String(Base64.encodeBase64(file.getBytes()), Consts.UTF_8);
+//
+//            HttpPost httpPost = new HttpPost("http://www.resumesdk.com/api/parse");
+//            httpPost.setEntity(new StringEntity(data, Consts.UTF_8));
+//
+//            // 设置头字段
+//            String authStr = "admin:2015";
+//            String authEncoded = Base64.encodeBase64String(authStr.getBytes());
+//            httpPost.setHeader("Authorization", "Basic " + authEncoded);
+//            httpPost.addHeader("content-type", "application/json");
+//
+//            // 设置内容信息
+//            JSONObject json = new JSONObject();
+//            json.put("fname", file.getOriginalFilename());    // 文件名
+//            json.put("base_cont", data); // 经base64编码过的文件内容
+//            json.put("uid", 1707240);        // 用户id
+//            json.put("pwd", "462583");        // 用户密码
+//            StringEntity params = new StringEntity(json.toString());
+//            httpPost.setEntity(params);
+//
+//            // 发送请求
+//            HttpClient httpclient = HttpClientBuilder.create().build();
+//            HttpResponse execute = httpclient.execute(httpPost);
+//
+//            // 处理返回结果
+//            String resCont = EntityUtils.toString(execute.getEntity(), Consts.UTF_8);
+//            JSONObject res = JSON.parseObject(resCont);
+//            System.out.println(res);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

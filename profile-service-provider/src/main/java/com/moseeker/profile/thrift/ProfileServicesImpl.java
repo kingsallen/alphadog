@@ -8,10 +8,13 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.ProfileServices.Iface;
 import com.moseeker.thrift.gen.profile.struct.Profile;
+
+import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
 
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
+
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,13 +86,18 @@ public class ProfileServicesImpl implements Iface {
     }
 
     @Override
-	public Response getProfileByApplication(ProfileApplicationForm profileApplicationForm) throws TException {
+    public Response getProfileByApplication(ProfileApplicationForm profileApplicationForm) throws TException {
         try {
             return service.getProfileByApplication(profileApplicationForm);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
+    }
+
+    @Override
+    public Response resumeProfile(int uid, String fileName, ByteBuffer file) throws BIZException, TException {
+        return service.profileParser(uid, fileName, file);
     }
 
     @Override

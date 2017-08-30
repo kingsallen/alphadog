@@ -1,6 +1,7 @@
 package com.moseeker.profile.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.profiledb.ProfileCompletenessDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.userdb.UserSettingsDao;
@@ -16,16 +17,30 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.profile.entity.ProfileEntity;
 import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.struct.Profile;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
+
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.http.Consts;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +68,9 @@ public class ProfileService {
 
     @Autowired
     private ProfileCompletenessImpl completenessImpl;
+
+    @Autowired
+    private ProfileEntity profileEntity;
 
     public Response getResource(Query query) throws TException {
         ProfileProfileRecord record = null;
@@ -187,4 +205,16 @@ public class ProfileService {
         logger.info("profilesByApplication:{}", JSON.toJSONString(profileApplicationForm));
         return dao.getResourceByApplication(downloadUrl, password, profileApplicationForm);
     }
+
+
+    public Response profileParser(int uid, String fileName, ByteBuffer file) throws TException {
+        try {
+            profileEntity.profileParser(uid, fileName, file);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
 }

@@ -1,5 +1,7 @@
 package com.moseeker.profile.entity;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.profiledb.*;
 import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
@@ -8,12 +10,25 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.profile.service.impl.ProfileCompletenessImpl;
+import com.moseeker.thrift.gen.common.struct.Response;
+
+import org.apache.commons.codec.binary.Base64;
+import org.apache.http.Consts;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
+import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -312,5 +327,49 @@ public class ProfileEntity {
                 }
             }
         }
+    }
+
+
+    /**
+     * 解析简历
+     *
+     * @param uid
+     * @param fileName
+     * @param file
+     * @return
+     * @throws TException
+     */
+    public JSONObject profileParser(int uid, String fileName, ByteBuffer file) throws TException, IOException {
+
+        byte[] bytes = file.array();
+        String data = new String(Base64.encodeBase64(bytes), Consts.UTF_8);
+
+        HttpPost httpPost = new HttpPost("http://www.resumesdk.com/api/parse");
+        httpPost.setEntity(new StringEntity(data, Consts.UTF_8));
+
+        // 设置头字段
+        String authStr = "admin:2015";
+        String authEncoded = Base64.encodeBase64String(authStr.getBytes());
+        httpPost.setHeader("Authorization", "Basic " + authEncoded);
+        httpPost.addHeader("content-type", "application/json");
+
+        // 设置内容信息
+        JSONObject json = new JSONObject();
+        json.put("fname", fileName);    // 文件名
+        json.put("base_cont", data); // 经base64编码过的文件内容
+        json.put("uid", 1707240);        // 用户id
+        json.put("pwd", "462583");        // 用户密码
+        StringEntity params = new StringEntity(json.toString());
+        httpPost.setEntity(params);
+
+        // 发送请求
+        HttpClient httpclient = HttpClientBuilder.create().build();
+        HttpResponse response = httpclient.execute(httpPost);
+
+        // 处理返回结果
+        String resCont = EntityUtils.toString(response.getEntity(), Consts.UTF_8);
+        JSONObject res = JSON.parseObject(resCont);
+        System.out.println(res);
+        return null;
     }
 }
