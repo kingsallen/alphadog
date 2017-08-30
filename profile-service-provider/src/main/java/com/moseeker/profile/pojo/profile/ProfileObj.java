@@ -8,7 +8,7 @@ public class ProfileObj {
 
     private List<Projectexps> projectexps;
     private List<Education> educations;
-    private List<Skills> skills;
+    private List<Skill> skills;
     private List<Workexps> workexps;
     private List<Languages> languages;
     private List<Intentions> intentions;
@@ -32,11 +32,11 @@ public class ProfileObj {
         return educations;
     }
 
-    public void setSkills(List<Skills> skills) {
+    public void setSkills(List<Skill> skills) {
         this.skills = skills;
     }
 
-    public List<Skills> getSkills() {
+    public List<Skill> getSkills() {
         return skills;
     }
 

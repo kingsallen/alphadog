@@ -2,7 +2,7 @@
 package com.moseeker.profile.pojo.profile;
 
 
-public class Skills {
+public class Skill {
 
     private String name;
     private int level;

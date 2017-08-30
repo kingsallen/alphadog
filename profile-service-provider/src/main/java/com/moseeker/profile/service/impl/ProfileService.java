@@ -20,10 +20,13 @@ import com.moseeker.profile.entity.ProfileEntity;
 import com.moseeker.profile.pojo.profile.Education;
 import com.moseeker.profile.pojo.profile.ProfileObj;
 import com.moseeker.profile.pojo.profile.Projectexps;
+import com.moseeker.profile.pojo.profile.Skill;
 import com.moseeker.profile.pojo.resume.EducationObj;
 import com.moseeker.profile.pojo.resume.ProjectexpObj;
 import com.moseeker.profile.pojo.resume.ResumeObj;
+import com.moseeker.profile.pojo.resume.SkillsObjs;
 import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
+import com.moseeker.profile.utils.DegreeSource;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.struct.Profile;
 
@@ -233,15 +236,42 @@ public class ProfileService {
                         projectexps.add(project);
                     }
                 }
+                profileObj.setProjectexps(projectexps);
 
                 // 教育经历
                 List<Education> educationList = new ArrayList<>();
                 if (resumeObj.getResult().getEducation_objs() != null && resumeObj.getResult().getEducation_objs().size() > 0) {
                     for (EducationObj educationObj : resumeObj.getResult().getEducation_objs()) {
                         Education education = new Education();
-                        education.setDegree(educationObj.getEdu_degree());
+                        if (educationObj.getEdu_degree() != null) {
+                            if (DegreeSource.intToEnum.get(educationObj.getEdu_degree()) != null) {
+                                education.setDegree(DegreeSource.intToEnum.get(educationObj.getEdu_degree()));
+                            } else {
+                                education.setDegree(0);
+                            }
+                        }
+                        // 学校名称
+                        education.setCollegeName(educationObj.getEdu_college());
+                        // 专业名称
+                        education.setMajorName(educationObj.getEdu_major());
+                        educationList.add(education);
                     }
                 }
+                profileObj.setEducations(educationList);
+                // 技能
+                List<Skill> skills = new ArrayList<>();
+                if (resumeObj.getResult().getSkills_objs() != null && resumeObj.getResult().getSkills_objs().size() > 0) {
+                    for (SkillsObjs skillsObjs : resumeObj.getResult().getSkills_objs()) {
+                        Skill skill = new Skill();
+                        skill.setName(skillsObjs.getSkills_name());
+                        skills.add(skill);
+                    }
+                }
+                profileObj.setSkills(skills);
+
+
+                // basic信息
+
 
             }
         } catch (Exception e) {
@@ -249,6 +279,5 @@ public class ProfileService {
         }
         return ResponseUtils.success(profileObj);
     }
-
 
 }
