@@ -340,6 +340,8 @@ public class ProfileService {
                 basic.setBirth(DateUtils.nomalDateToDate(resumeObj.getResult().getBirthday()));
                 profileObj.setBasic(basic);
 
+
+                profileObj.setResumeObj(resumeObj);
             }
         } catch (Exception e) {
             e.printStackTrace();

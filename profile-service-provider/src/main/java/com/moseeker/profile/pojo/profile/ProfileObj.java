@@ -1,6 +1,8 @@
 
 package com.moseeker.profile.pojo.profile;
 
+import com.moseeker.profile.pojo.resume.ResumeObj;
+
 import java.util.List;
 
 
@@ -15,6 +17,16 @@ public class ProfileObj {
     private User user;
     private Basic basic;
     private List<Credential> credentials;
+
+    private ResumeObj resumeObj;
+
+    public ResumeObj getResumeObj() {
+        return resumeObj;
+    }
+
+    public void setResumeObj(ResumeObj resumeObj) {
+        this.resumeObj = resumeObj;
+    }
 
     public void setProjectexps(List<Projectexps> projectexps) {
         this.projectexps = projectexps;
