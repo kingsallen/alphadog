@@ -210,8 +210,8 @@ public class UserHrAccountService {
         companyAccount.setAccountId(userHrAccountDO.getId());
         companyAccount.setCompanyId(userHrAccountDO.getCompanyId());
         companyAccountDao.addData(companyAccount);
-
-        return userHrAccountDO;
+        query = new Query.QueryBuilder().where(com.moseeker.baseorm.db.userdb.tables.UserHrAccount.USER_HR_ACCOUNT.ID.getName(),userHrAccountDO.getId()).buildQuery();
+        return userHrAccountDao.getData(query);
     }
 
     /**
