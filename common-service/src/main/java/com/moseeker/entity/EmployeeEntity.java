@@ -890,7 +890,7 @@ public class EmployeeEntity {
      *
      * @param condition 条件
      */
-    private void delete(Condition condition) throws CommonException {
+    public void delete(Condition condition) throws CommonException {
         if (condition != null) {
             Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
             queryBuilder.select("id").where(condition);
