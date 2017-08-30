@@ -2,6 +2,7 @@ package com.moseeker.useraccounts.thrift;
 
 import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.baseorm.tool.QueryConvert;
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.Category;
 import com.moseeker.common.exception.CommonException;
@@ -13,6 +14,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService.Iface;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
@@ -49,6 +51,21 @@ public class UserHrAccountServiceImpl implements Iface {
 
     @Autowired
     private EmployeeEntity employeeEntity;
+
+    @Override
+    public void updateMobile(int hrId, String mobile) throws TException {
+        service.updateMobile(hrId, mobile);
+    }
+
+    @Override
+    public UserHrAccountDO addAccount(UserHrAccountDO hrAccount) throws TException {
+        return service.addAccount(hrAccount);
+    }
+
+    @Override
+    public boolean ifAddSubAccountAllowed(int hrId) throws TException {
+        return service.ifAddSubAccountAllowed(hrId);
+    }
 
     /**
      * HR在下载行业报告是注册
@@ -93,7 +110,7 @@ public class UserHrAccountServiceImpl implements Iface {
     @Override
     public HrThirdPartyAccountDO bindConfirm(int hrId, int id, boolean confirm) throws BIZException, TException {
         try {
-            return thirdPartyAccountService.bindConfirm(hrId,id,confirm);
+            return thirdPartyAccountService.bindConfirm(hrId, id, confirm);
         } catch (Exception e) {
             logger.info(e.getMessage(), e);
             throw ExceptionUtils.convertException(e);
