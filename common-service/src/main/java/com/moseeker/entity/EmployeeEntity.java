@@ -38,13 +38,11 @@ import com.moseeker.thrift.gen.employee.struct.RewardVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
-
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
@@ -928,5 +926,11 @@ public class EmployeeEntity {
                 .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), 0)
                 .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), AbleFlag.OLDENABLE);
         return employeeDao.getData(queryBuilder.buildQuery());
+    }
+
+    public int updateData(UserEmployeeDO userEmployeeDO) {
+        int result = employeeDao.updateData(userEmployeeDO);
+        searchengineEntity.updateEmployeeAwards(Arrays.asList(userEmployeeDO.getId()));
+        return result;
     }
 }
