@@ -10,6 +10,7 @@ import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
@@ -345,4 +346,24 @@ public class EmployeeService {
         }
         return response;
     }
+
+    public Result setCacheEmployeeCustomInfo(int userId, int companyId, String customValues)
+            throws TException {
+        log.info("setCacheEmployeeCustomInfo param: userId={}, companyId={}", userId, companyId, customValues);
+        Result response = new Result();
+        String pendingEmployee = client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO,userId+"-"+companyId+"-"+employeeEntity.getGroupIdByCompanyId(companyId));
+        if(StringUtils.isNotNullOrEmpty(pendingEmployee)) {
+            UserEmployeeDO employeeDO = JSONObject.parseObject(pendingEmployee, UserEmployeeDO.class);
+            employeeDO.setCustomFieldValues(customValues);
+            client.set(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO,userId+"-"+companyId+"-"+employeeEntity.getGroupIdByCompanyId(companyId), JSONObject.toJSONString(employeeDO));
+            response.setSuccess(true);
+            response.setMessage("success");
+        } else {
+            response.setSuccess(false);
+            response.setMessage("员工信息不存在");
+        }
+        log.info("setCacheEmployeeCustomInfo response: {}", response);
+        return response;
+    }
+
 }
