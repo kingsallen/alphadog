@@ -1,7 +1,6 @@
 package com.moseeker.profile.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.profiledb.ProfileCompletenessDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.userdb.UserSettingsDao;
@@ -18,29 +17,23 @@ import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.profile.entity.ProfileEntity;
+import com.moseeker.profile.pojo.profile.Education;
+import com.moseeker.profile.pojo.profile.ProfileObj;
+import com.moseeker.profile.pojo.profile.Projectexps;
+import com.moseeker.profile.pojo.resume.EducationObj;
+import com.moseeker.profile.pojo.resume.ProjectexpObj;
+import com.moseeker.profile.pojo.resume.ResumeObj;
 import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.struct.Profile;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.http.Consts;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -207,13 +200,54 @@ public class ProfileService {
     }
 
 
-    public Response profileParser(int uid, String fileName, ByteBuffer file) throws TException {
+    /**
+     * 解析简历
+     *
+     * @param uid
+     * @param fileName
+     * @param file
+     * @return
+     * @throws TException
+     */
+    public Response profileParser(int uid, String fileName, String file) throws TException {
+        ProfileObj profileObj = new ProfileObj();
         try {
-            profileEntity.profileParser(uid, fileName, file);
+            // 调用SDK得到结果
+            ResumeObj resumeObj = profileEntity.profileParser(fileName, file);
+            // 调用成功,开始转换对象
+            if (resumeObj.getStatus().getCode() == 200) {
+                // 项目经验
+                List<Projectexps> projectexps = new ArrayList<>();
+                if (resumeObj.getResult().getProj_exp_objs() != null && resumeObj.getResult().getProj_exp_objs().size() > 0) {
+                    for (ProjectexpObj projectexpObj : resumeObj.getResult().getProj_exp_objs()) {
+                        Projectexps project = new Projectexps();
+                        if (projectexpObj.getEnd_date().equals("至今")) {
+                            project.setEndUntilNow(1);
+                        } else {
+                            project.setEndDate(projectexpObj.getEnd_date());
+                        }
+                        project.setStartDate(projectexpObj.getStart_date());
+                        // 职责
+                        project.setResponsibility(projectexpObj.getProj_resp());
+                        project.setDescription(projectexpObj.getProj_content());
+                        projectexps.add(project);
+                    }
+                }
+
+                // 教育经历
+                List<Education> educationList = new ArrayList<>();
+                if (resumeObj.getResult().getEducation_objs() != null && resumeObj.getResult().getEducation_objs().size() > 0) {
+                    for (EducationObj educationObj : resumeObj.getResult().getEducation_objs()) {
+                        Education education = new Education();
+                        education.setDegree(educationObj.getEdu_degree());
+                    }
+                }
+
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return ResponseUtils.success(profileObj);
     }
 
 

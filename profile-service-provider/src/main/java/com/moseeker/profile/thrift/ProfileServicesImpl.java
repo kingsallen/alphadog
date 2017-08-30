@@ -96,7 +96,7 @@ public class ProfileServicesImpl implements Iface {
     }
 
     @Override
-    public Response resumeProfile(int uid, String fileName, ByteBuffer file) throws BIZException, TException {
+    public Response resumeProfile(int uid, String fileName, String file) throws BIZException, TException {
         return service.profileParser(uid, fileName, file);
     }
 

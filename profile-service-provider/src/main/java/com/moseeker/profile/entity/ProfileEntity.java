@@ -8,7 +8,9 @@ import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.profiledb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.common.providerutils.QueryUtil;
+import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.profile.pojo.resume.ResumeObj;
 import com.moseeker.profile.service.impl.ProfileCompletenessImpl;
 import com.moseeker.thrift.gen.common.struct.Response;
 
@@ -333,19 +335,24 @@ public class ProfileEntity {
     /**
      * 解析简历
      *
-     * @param uid
-     * @param fileName
-     * @param file
+     * @param fileName 文件名字
+     * @param file     文件
      * @return
      * @throws TException
      */
-    public JSONObject profileParser(int uid, String fileName, ByteBuffer file) throws TException, IOException {
+    public ResumeObj profileParser(String fileName, String file) throws TException, IOException {
+        ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
+        try {
+            propertiesReader.loadResource("common.properties");
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+        Integer resumeUid = propertiesReader.get("resume.uid", Integer.class);
+        String pwd = propertiesReader.get("resume.pwd", String.class);
+        String resumeUrl = propertiesReader.get("resume.url", String.class);
 
-        byte[] bytes = file.array();
-        String data = new String(Base64.encodeBase64(bytes), Consts.UTF_8);
-
-        HttpPost httpPost = new HttpPost("http://www.resumesdk.com/api/parse");
-        httpPost.setEntity(new StringEntity(data, Consts.UTF_8));
+        HttpPost httpPost = new HttpPost(resumeUrl);
+        httpPost.setEntity(new StringEntity(file, Consts.UTF_8));
 
         // 设置头字段
         String authStr = "admin:2015";
@@ -356,20 +363,19 @@ public class ProfileEntity {
         // 设置内容信息
         JSONObject json = new JSONObject();
         json.put("fname", fileName);    // 文件名
-        json.put("base_cont", data); // 经base64编码过的文件内容
-        json.put("uid", 1707240);        // 用户id
-        json.put("pwd", "462583");        // 用户密码
+        json.put("base_cont", file); // 经base64编码过的文件内容
+        json.put("uid", resumeUid);        // 用户id
+        json.put("pwd", pwd);        // 用户密码
         StringEntity params = new StringEntity(json.toString());
         httpPost.setEntity(params);
 
         // 发送请求
         HttpClient httpclient = HttpClientBuilder.create().build();
         HttpResponse response = httpclient.execute(httpPost);
-
         // 处理返回结果
         String resCont = EntityUtils.toString(response.getEntity(), Consts.UTF_8);
-        JSONObject res = JSON.parseObject(resCont);
-        System.out.println(res);
-        return null;
+        logger.info(resCont);
+        ResumeObj res = JSONObject.parseObject(resCont, ResumeObj.class);
+        return res;
     }
 }

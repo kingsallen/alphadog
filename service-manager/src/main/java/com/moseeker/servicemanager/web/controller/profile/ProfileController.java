@@ -366,48 +366,21 @@ public class ProfileController {
      */
     @RequestMapping(value = "/profile/parser", method = RequestMethod.POST)
     @ResponseBody
-    public String profileParser(@RequestParam(value = "file", required = false) MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws IOException, TException {
+    public String profileParser(@RequestParam(value = "file", required = false) MultipartFile file, HttpServletRequest request, HttpServletResponse response) {
         try {
-            System.out.println("aaa");
-            ByteBuffer buf = ByteBuffer.wrap(file.getBytes());
-
-
-
-            service.resumeProfile(1, file.getOriginalFilename(), buf);
-
-//            String data = new String(Base64.encodeBase64(file.getBytes()), Consts.UTF_8);
-//
-//            HttpPost httpPost = new HttpPost("http://www.resumesdk.com/api/parse");
-//            httpPost.setEntity(new StringEntity(data, Consts.UTF_8));
-//
-//            // 设置头字段
-//            String authStr = "admin:2015";
-//            String authEncoded = Base64.encodeBase64String(authStr.getBytes());
-//            httpPost.setHeader("Authorization", "Basic " + authEncoded);
-//            httpPost.addHeader("content-type", "application/json");
-//
-//            // 设置内容信息
-//            JSONObject json = new JSONObject();
-//            json.put("fname", file.getOriginalFilename());    // 文件名
-//            json.put("base_cont", data); // 经base64编码过的文件内容
-//            json.put("uid", 1707240);        // 用户id
-//            json.put("pwd", "462583");        // 用户密码
-//            StringEntity params = new StringEntity(json.toString());
-//            httpPost.setEntity(params);
-//
-//            // 发送请求
-//            HttpClient httpclient = HttpClientBuilder.create().build();
-//            HttpResponse execute = httpclient.execute(httpPost);
-//
-//            // 处理返回结果
-//            String resCont = EntityUtils.toString(execute.getEntity(), Consts.UTF_8);
-//            JSONObject res = JSON.parseObject(resCont);
-//            System.out.println(res);
-
-
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer uid = params.getInt("uid");
+            if (file != null) {
+                String data = new String(Base64.encodeBase64(file.getBytes()), Consts.UTF_8);
+                Response res = service.resumeProfile(uid, file.getOriginalFilename(), data);
+                return ResponseLogNotification.success(request, res);
+            } else {
+                return null;
+            }
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
-            e.printStackTrace();
+            return ResponseLogNotification.fail(request, e.getMessage());
         }
-        return null;
     }
 }
