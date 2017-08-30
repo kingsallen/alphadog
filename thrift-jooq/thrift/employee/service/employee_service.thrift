@@ -30,10 +30,13 @@ service EmployeeService {
 
     // 推荐记录
     list<employee_struct.RecomInfo> getEmployeeRecoms(1: i32 recomId);
-    
+
     // 员工绑定(邮箱激活)
     employee_struct.Result emailActivation(1: string activationCodee);
 
     // 积分排行榜
-    list<employee_struct.EmployeeAward> awardRanking(1: i32 employeeId, 2: i32 companyId, 3: employee_struct.Timespan timespan)
+    list<employee_struct.EmployeeAward> awardRanking(1: i32 employeeId, 2: i32 companyId, 3: employee_struct.Timespan timespan);
+
+    // 员工填写认证自定义字段（更新redis中员工记录）
+    employee_struct.Result setCacheEmployeeCustomInfo(1: i32 userId, 2: i32 companyId, 3: string customValues);
 }

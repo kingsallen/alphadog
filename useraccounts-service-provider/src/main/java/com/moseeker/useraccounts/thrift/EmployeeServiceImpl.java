@@ -128,4 +128,9 @@ public class EmployeeServiceImpl implements Iface {
         }
         return service.awardRanking(employeeId, companyId, timeStr);
     }
+
+    @Override
+    public Result setCacheEmployeeCustomInfo(int userId, int companyId, String customValues) throws TException {
+        return null;
+    }
 }

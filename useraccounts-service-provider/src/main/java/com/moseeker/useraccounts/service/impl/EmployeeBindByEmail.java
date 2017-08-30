@@ -168,7 +168,13 @@ public class EmployeeBindByEmail extends EmployeeBinder{
                 response.setMessage("员工认证邮箱激活失败, 该邮箱被占用");
             } else {
                 userEmployeeDOThreadLocal.set(JSONObject.parseObject(client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, bindingParams.getUserId()+"-"+bindingParams.getCompanyId()+"-"+employeeEntity.getGroupIdByCompanyId(bindingParams.getCompanyId())), UserEmployeeDO.class));
-                int userEmployeeId = super.createEmployee(bindingParams);
+                int userEmployeeId;
+                if (userEmployeeDOThreadLocal.get().getId() > 0) {
+                    userEmployeeId = employeeDao.addData(userEmployeeDOThreadLocal.get()).getId();
+                } else {
+                    employeeDao.updateData(userEmployeeDOThreadLocal.get());
+                    userEmployeeId = userEmployeeDOThreadLocal.get().getId();
+                }
                 response = super.doneBind(bindingParams, userEmployeeId);
                 response.setEmployeeId(userEmployeeId);
             }
