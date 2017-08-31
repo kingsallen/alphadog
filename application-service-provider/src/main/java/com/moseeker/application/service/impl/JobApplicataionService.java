@@ -112,6 +112,9 @@ public class JobApplicataionService {
             if (responseJob.status > 0) {
                 return responseJob;
             }
+            if (checkApplicationCountAtCompany(jobApplication.getApplier_id(), jobPositionRecord.getCompanyId())) {
+                return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_VALIDATE_COUNT_CHECK);
+            }
             // 初始化参数
             initJobApplication(jobApplication, jobPositionRecord);
             // 添加申请
