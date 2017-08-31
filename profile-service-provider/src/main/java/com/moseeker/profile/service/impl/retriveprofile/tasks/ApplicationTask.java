@@ -75,7 +75,12 @@ public class ApplicationTask implements Task<ApplicationTaskParam, Integer> {
         } else {
             // 更新来源信息
             ApplicationSource applicationSource = ApplicationSource.instaceFromInteger(applicationRecord.getOrigin());
-            applicationRecord.setOrigin(applicationSource.andSource(param.getOrigin()));
+            // 如果已经合并过，这个获取不到source
+            if (applicationSource != null) {
+                applicationRecord.setOrigin(applicationSource.andSource(param.getOrigin()));
+            } else {
+                applicationRecord.setOrigin(applicationRecord.getOrigin() | param.getOrigin());
+            }
             jobApplicationDao.updateRecord(applicationRecord);
 
         }

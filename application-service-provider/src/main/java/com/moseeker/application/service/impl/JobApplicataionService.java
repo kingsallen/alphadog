@@ -99,8 +99,9 @@ public class JobApplicataionService {
     @Autowired
     private HistoryJobApplicationDao historyJobApplicationDao;
 
-	@Autowired
+    @Autowired
     EmployeeEntity employeeEntity;
+
     /**
      * 创建申请
      *
@@ -281,7 +282,7 @@ public class JobApplicataionService {
         if (jobApplicationDO != null) {
             ApplicationSource applicationSource = ApplicationSource.instaceFromInteger(jobApplication.getOrigin());
             if (applicationSource == null) {
-                jobApplication.setOrigin(jobApplicationDO.getOrigin());
+                jobApplication.setOrigin(jobApplication.getOrigin() | jobApplication.getOrigin());
             } else {
                 jobApplication.setOrigin(applicationSource.andSource(jobApplicationDO.getOrigin()));
             }
@@ -452,9 +453,7 @@ public class JobApplicataionService {
     }
 
     /**
-     * 一个用户在一家公司的每月的申请次数校验
-     * 超出申请次数限制, 每月每家公司一个人只能申请10次
-     * <p>
+     * 一个用户在一家公司的每月的申请次数校验 超出申请次数限制, 每月每家公司一个人只能申请10次 <p>
      *
      * @param userId    用户id
      * @param companyId 公司id
@@ -473,8 +472,7 @@ public class JobApplicataionService {
     }
 
     /**
-     * 必填项校验 - 判断当前用户是否申请了该职位
-     * <p>
+     * 必填项校验 - 判断当前用户是否申请了该职位 <p>
      *
      * @param userId     用户ID
      * @param positionId 职位ID
@@ -546,8 +544,7 @@ public class JobApplicataionService {
     }
 
     /**
-     * 创建申请时初始化申请变量
-     * <p>
+     * 创建申请时初始化申请变量 <p>
      *
      * @param jobApplication    申请参数
      * @param jobPositionRecord 职位记录
@@ -573,8 +570,7 @@ public class JobApplicataionService {
     }
 
     /**
-     * 是否申请过该职位
-     * <p>
+     * 是否申请过该职位 <p>
      *
      * @param userId     用户id
      * @param positionId 职位id
@@ -586,9 +582,7 @@ public class JobApplicataionService {
     }
 
     /**
-     * 一个用户在一家公司的每月的申请次数校验
-     * 超出申请次数限制, 每月每家公司一个人只能申请10次
-     * <p>
+     * 一个用户在一家公司的每月的申请次数校验 超出申请次数限制, 每月每家公司一个人只能申请10次 <p>
      *
      * @param userId    用户id
      * @param companyId 公司id
@@ -633,9 +627,7 @@ public class JobApplicataionService {
     }
 
     /**
-     * 获取申请限制次数
-     * 默认3次
-     * 企业有自己的配置,使用企业的配置
+     * 获取申请限制次数 默认3次 企业有自己的配置,使用企业的配置
      *
      * @param companyId 公司ID
      */
@@ -803,7 +795,7 @@ public class JobApplicataionService {
     }
 
 
-	 /**
+    /**
      * 转换归档申请记录
      *
      * @param jobApplicationRecord
