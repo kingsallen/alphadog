@@ -124,6 +124,9 @@ public class PositionSearchEngine {
 	}
 	//公共查询的条件部分
 	private void CommonQuerySentence(String industry,String salaryCode,String cityCode,String startTime,String endTime,int companyId,int teamId,int motherCompanyId,QueryBuilder query){
+		if(!StringUtils.isEmpty(cityCode)&&!cityCode.contains("233333")){
+			cityCode=cityCode+",111111";
+		}
 		searchUtil.handleTerms(industry, query, "company.industry_data.industry_code");
 		searchUtil.handleTerms(cityCode, query, "position.city_data.code");
 		if(companyId>0){
@@ -211,6 +214,22 @@ public class PositionSearchEngine {
 			return (Map) JSON.parse(data);
 		}
 		return null;
+	}
+	/*
+          按照被命中的城市是否是全国。来重新处理顺序问题，只有全国的，或者是全国命中的沉底
+         */
+	private Script buildScriptSort(String fieldValue, int flag ){
+		StringBuffer sb=new StringBuffer();
+		sb.append("double score=0 ;");
+		if(flag==1) {
+			sb.append("value=doc['position.update_time'].value;if(value){score=value};");
+		}else{
+			sb.append("value=_score;if(value){score=value};");
+		}
+		sb.append("flag=doc['position.city_flag'].value;if(flag==1){score=score/100;};return score;");
+		String scripts=sb.toString();
+		Script script=new Script(scripts);
+		return script;
 	}
 
 }
