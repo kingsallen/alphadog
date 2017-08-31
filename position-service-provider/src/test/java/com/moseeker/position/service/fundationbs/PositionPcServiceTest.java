@@ -1,5 +1,6 @@
 package com.moseeker.position.service.fundationbs;
 
+import com.moseeker.entity.PcRevisionEntity;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignPcRecommendPositionDO;
 
@@ -26,6 +27,8 @@ import java.util.Map;
 public class PositionPcServiceTest {
     @Autowired
     private PositionPcService service;
+    @Autowired
+	private PcRevisionEntity  pcRevisionEntity;
     //测试总接口
     @Test
     public void recommendPcPosition() throws TException{
@@ -79,15 +82,20 @@ public class PositionPcServiceTest {
 	  List<Integer> list=new ArrayList<Integer>();
 	  list.add(1404);
 	  list.add(1414);
-////	  List<Map<String,Object>> map=(List<Map<String, Object>>) service.HandleCmsResource(list,2);
-//	  for(Map<String,Object> map1:map){
-//		  System.out.println(JSON.toJSONString(map1));
-//	  }
+	  List<Map<String,Object>> map=(List<Map<String, Object>>) pcRevisionEntity.HandleCmsResource(list,2);
+	  for(Map<String,Object> map1:map){
+		  System.out.println(JSON.toJSONString(map1));
+	  }
   }
-  
   @Test
   public void getAllCompanyRecommendTest() throws Exception{
 	  List<Map<String,Object>> list=service.getAllCompanyRecommend(1,10);
 	  System.out.println(list);
   }
+  @Test
+  public void getPositionDetailsTest() throws Exception {
+  	  Map<String,Object> result=service.getPositionDetails(1001030);
+	  System.out.println(result);
+  }
+
 }

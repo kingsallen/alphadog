@@ -927,6 +927,8 @@ public class PositionService {
         return md5;
     }
 
+    // 特殊城市拼音转CityCode
+    public final static Map specialCityMap = new LinkedHashMap();
 
     /**
      * 错误信息处理
@@ -961,6 +963,7 @@ public class PositionService {
         try {
             // 将已经查询的到的cityCode放到map中，避免多次查询
             HashMap cityPostCodeMap = new LinkedHashMap();
+
             // 将从DictCity查询
             HashMap cityMap = new LinkedHashMap();
             if (citys != null && citys.size() > 0 && pid != null) {
@@ -1853,7 +1856,8 @@ public class PositionService {
     }
 
     /**
-     * 内部线程类 用于更改ES索引
+     * 内部线程类
+     * 用于更改ES索引
      */
     private class UpdateES extends Thread {
         private List<Integer> list;

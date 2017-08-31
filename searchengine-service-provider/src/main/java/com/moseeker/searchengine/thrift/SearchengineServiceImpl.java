@@ -20,7 +20,7 @@ import com.moseeker.thrift.gen.searchengine.service.SearchengineServices.Iface;
 @Service
 public class SearchengineServiceImpl implements Iface {
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+	Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private SearchengineService service;
@@ -44,15 +44,6 @@ public class SearchengineServiceImpl implements Iface {
         return service.updateposition(position, id);
     }
 
-    @Override
-    public Response queryAwardRanking(List<Integer> employeeIds, String timespan, int pageSize, int pageNum, String keyword, int filter) throws TException {
-        return service.queryAwardRanking(employeeIds, timespan, pageSize, pageNum, keyword, filter);
-    }
-
-    @Override
-    public Response queryAwardRankingInWx(List<Integer> companyIds, String timespan, int employeeId) throws TException {
-        return service.queryAwardRankingInWx(companyIds, timespan, employeeId);
-    }
 
 	@Override
 	public Response companyQuery(String keyWords, String citys, String industry, String scale, int page, int pageSize){
@@ -70,21 +61,33 @@ public class SearchengineServiceImpl implements Iface {
 
 	}
 
-	@Override
-	public Response positionQuery(String keyWords, String citys, String industry, String salaryCode, int page,
-			int pageSize, String startTime, String endTime,int order) throws TException {
-		// TODO Auto-generated method stub
-		try{
-			Map<String,Object> res=positionSearchEngine.search(keyWords, industry, salaryCode, page, pageSize, citys, startTime, endTime,order);
-			if(res==null){
-				return ResponseUtils.success("");
-			}
-			return ResponseUtils.success(res);
-		}catch(Exception e){
-			logger.info(e.getMessage(),e);
-			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
-		}
-	}
+
+    @Override
+    public Response positionQuery(String keyWords, String citys, String industry, String salaryCode, int page,
+                                  int pageSize, String startTime, String endTime,int companyId,int teamId,int motherCompanyId,int order) throws TException {
+        // TODO Auto-generated method stub
+        try{
+            Map<String,Object> res=positionSearchEngine.search(keyWords, industry, salaryCode, page, pageSize, citys, startTime, endTime,companyId,teamId,motherCompanyId,order);
+            if(res==null){
+                return ResponseUtils.success("");
+            }
+            return ResponseUtils.success(res);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
+    }
+
+
+    @Override
+    public Response queryAwardRanking(List<Integer> employeeIds, String timespan, int pageSize, int pageNum, String keyword, int filter) throws TException {
+        return service.queryAwardRanking(employeeIds, timespan, pageSize, pageNum, keyword, filter);
+    }
+
+    @Override
+    public Response queryAwardRankingInWx(List<Integer> companyIds, String timespan, int employeeId) throws TException {
+        return service.queryAwardRankingInWx(companyIds, timespan, employeeId);
+    }
 
     @Override
     public Response updateEmployeeAwards(List<Integer> employeeIds) throws TException {

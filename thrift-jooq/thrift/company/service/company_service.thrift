@@ -37,8 +37,13 @@ service CompanyServices {
     common_struct.Response companyDetails(1:i32 companyId) throws (1: common_struct.BIZException e)
     //  公司员工认证后补填字段配置信息列表
     list<company_struct.HrEmployeeCustomFieldsVO> getHrEmployeeCustomFields(1:i32 companyId) throws (1: common_struct.BIZException e)
+    //获取pc端团队列表的企业信息
+    common_struct.Response companyMessage(1:i32 companyId) throws (1: common_struct.BIZException e)
+
 }
 
 service HrTeamServices {
     list<hrdb_struct.HrTeamDO> getHrTeams(1:common_struct.CommonQuery query);
+    common_struct.Response teamListInfo(1:i32 companyId,2:i32 page,3:i32 pageSize) throws (1: common_struct.BIZException e)
+    common_struct.Response teamDeatils(1:i32 companyId,2:i32 teamId) throws (1: common_struct.BIZException e)
 }

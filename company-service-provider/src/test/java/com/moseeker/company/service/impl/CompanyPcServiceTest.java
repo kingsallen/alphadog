@@ -18,23 +18,38 @@ public class CompanyPcServiceTest {
     @Autowired
     private CompanyPcService companyPcService;
     @Test
-    public void getJdCompanyInfoTest()throws Exception{
-        Map<String,Object> result=companyPcService.getCompanyInfo(39978);
+    public void companyDetailsTest()throws Exception{
+        Map<String,Object> result=companyPcService.getCompanyDetail(2);
+        System.out.println(result+"======");
+    }
+    @Test
+    public void teamListTest() throws Exception {
+        Map<String,Object> result=companyPcService.getTeamListinfo(2,1,10);
+        System.out.println(result+"======");
+    }
+    @Test
+    public void teamDetailsTest() throws Exception {
+        Map<String,Object> result=companyPcService.getTeamDetails(103,1);
+        System.out.println(result+"======");
+    }
+    @Test
+    public void companyInfo() throws Exception {
+        Map<String,Object> result=companyPcService.getCompanyMessage(2);
         System.out.println(result+"======");
     }
     @Test
     public void getNoJdCompanyInfoTest() throws Exception {
-        Map<String,Object> result=companyPcService.getCompanyInfo(2878);
+        Map<String,Object> result=companyPcService.getCompanyDetail(2878);
         System.out.println(result+"======");
     }
     @Test
     public void getJdSubCompanyInfoTest() throws Exception {
-        Map<String,Object> result=companyPcService.getCompanyInfo(41305);
+        Map<String,Object> result=companyPcService.getCompanyDetail(41305);
         System.out.println(result+"======");
     }
     @Test
     public void getNoJdSubCompanyInfoTest() throws Exception {
-        Map<String,Object> result=companyPcService.getCompanyInfo(39785);
+        Map<String,Object> result=companyPcService.getCompanyDetail(39785);
         System.out.println(result+"======");
     }
 }

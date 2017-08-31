@@ -119,6 +119,7 @@ struct RecomInfo {
 	16: required string headimgurl = "";        // 微信头像
 }
 
+
 // 时间跨度（月、季、年）
 enum Timespan {
     month, quarter, year
