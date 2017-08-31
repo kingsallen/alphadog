@@ -152,6 +152,21 @@ public class HrThirdPartyPosition extends TableImpl<HrThirdPartyPositionRecord> 
     public final TableField<HrThirdPartyPositionRecord, Integer> SALARY_TOP = createField("salary_top", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "薪资封顶");
 
     /**
+     * The column <code>hrdb.hr_third_party_position.practice_salary</code>. 实习薪资，完整薪资
+     */
+    public final TableField<HrThirdPartyPositionRecord, Integer> PRACTICE_SALARY = createField("practice_salary", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "实习薪资，完整薪资");
+
+    /**
+     * The column <code>hrdb.hr_third_party_position.practice_per_week</code>. 每周实习天数
+     */
+    public final TableField<HrThirdPartyPositionRecord, Byte> PRACTICE_PER_WEEK = createField("practice_per_week", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.TINYINT)), this, "每周实习天数");
+
+    /**
+     * The column <code>hrdb.hr_third_party_position.practice_salary_unit</code>. 实习薪资单位，0：元/月，1：元/天
+     */
+    public final TableField<HrThirdPartyPositionRecord, Byte> PRACTICE_SALARY_UNIT = createField("practice_salary_unit", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.TINYINT)), this, "实习薪资单位，0：元/月，1：元/天");
+
+    /**
      * Create a <code>hrdb.hr_third_party_position</code> table reference
      */
     public HrThirdPartyPosition() {
