@@ -5,11 +5,14 @@ import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
 import com.moseeker.baseorm.db.userdb.tables.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.util.query.*;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.useraccounts.struct.User;
 import java.util.ArrayList;
 import java.util.List;
 import org.jooq.*;
+import org.jooq.Condition;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
@@ -320,5 +323,11 @@ public class UserUserDao extends JooqCrudImpl<UserUserDO, UserUserRecord> {
     public User getUserById(long userId) throws Exception{
         Condition condition = UserUser.USER_USER.ID.equal((int) (userId));
         return create.selectFrom(UserUser.USER_USER).where(condition).limit(1).fetchOne().into(User.class);
+    }
+
+
+    public UserUserDO getUser(int userId){
+        com.moseeker.common.util.query.Query query = new Query.QueryBuilder().where(UserUser.USER_USER.ID.getName(),userId).buildQuery();
+        return getData(query);
     }
 }
