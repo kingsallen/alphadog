@@ -11,6 +11,7 @@ import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
@@ -76,7 +77,14 @@ public class UserHrAccountServiceImpl implements Iface {
      */
     @Override
     public Response sendMobileVerifiyCode(String mobile, String code, int source) throws TException {
-        return service.sendMobileVerifiyCode(mobile, code, source);
+        try {
+            return service.sendMobileVerifiyCode(mobile, code, source);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
     }
 
     /**
@@ -84,7 +92,14 @@ public class UserHrAccountServiceImpl implements Iface {
      */
     @Override
     public Response postResource(DownloadReport downloadReport) throws TException {
-        return service.postResource(downloadReport);
+        try {
+            return service.postResource(downloadReport);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
     }
 
     /**
@@ -94,13 +109,22 @@ public class UserHrAccountServiceImpl implements Iface {
      */
     @Override
     public Response putResource(UserHrAccount userHrAccount) throws TException {
-        return service.putResource(userHrAccount);
+        try {
+            return service.putResource(userHrAccount);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
     }
 
     @Override
     public HrThirdPartyAccountDO bindThirdPartyAccount(int hrId, HrThirdPartyAccountDO account, boolean sync) throws BIZException, TException {
         try {
             return thirdPartyAccountService.bindThirdAccount(hrId, account, sync);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
             logger.info(e.getMessage(), e);
             throw ExceptionUtils.convertException(e);
@@ -110,7 +134,9 @@ public class UserHrAccountServiceImpl implements Iface {
     @Override
     public HrThirdPartyAccountDO bindConfirm(int hrId, int id, boolean confirm) throws BIZException, TException {
         try {
-            return thirdPartyAccountService.bindConfirm(hrId, id, confirm);
+            return thirdPartyAccountService.bindConfirm(hrId,id,confirm);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
             logger.info(e.getMessage(), e);
             throw ExceptionUtils.convertException(e);
@@ -170,20 +196,40 @@ public class UserHrAccountServiceImpl implements Iface {
     @Override
     public Response getSearchCondition(int hrAccountId, int type)
             throws TException {
-        logger.info("UserHrAccountServiceImpl - getSearchCondition ");
-        return service.getSearchCondition(hrAccountId, type);
+        try {
+            return service.getSearchCondition(hrAccountId, type);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
     }
 
     @Override
     public Response postSearchCondition(SearchCondition searchCondition)
             throws TException {
-        return service.postSearchCondition(searchCondition);
+        try {
+            return service.postSearchCondition(searchCondition);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
     }
 
     @Override
     public Response delSearchCondition(int hrAccountId, int id)
             throws TException {
-        return service.delSearchCondition(hrAccountId, id);
+        try {
+            return service.delSearchCondition(hrAccountId, id);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
     }
 
     @Override
@@ -200,12 +246,26 @@ public class UserHrAccountServiceImpl implements Iface {
     @Override
     public Response shiftOutTalentpool(int hrAccountId, List<Integer> applierIds)
             throws TException {
-        return service.shiftOutTalentpool(hrAccountId, applierIds);
+        try {
+            return service.shiftOutTalentpool(hrAccountId, applierIds);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
     }
 
     @Override
     public Response userHrAccount(int company_id, int disable, int page, int per_age) throws TException {
-        return service.userHrAccount(company_id, disable, page, per_age);
+        try {
+            return service.userHrAccount(company_id, disable, page, per_age);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
     }
 
     @Override
@@ -273,18 +333,39 @@ public class UserHrAccountServiceImpl implements Iface {
 
     @Override
     public boolean permissionJudgeWithUserEmployeeIdsAndCompanyIds(List<Integer> userEmployeeIds, List<Integer> companyIds) throws BIZException, TException {
-        return employeeEntity.permissionJudge(userEmployeeIds, companyIds);
+        try {
+            return employeeEntity.permissionJudge(userEmployeeIds, companyIds);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
     }
 
     @Override
     public boolean permissionJudgeWithUserEmployeeIdsAndCompanyId(List<Integer> userEmployeeIds, int companyId) throws BIZException, TException {
-        return employeeEntity.permissionJudge(userEmployeeIds, companyId);
+        try {
+            return employeeEntity.permissionJudge(userEmployeeIds, companyId);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
     }
 
 
     @Override
     public boolean permissionJudgeWithUserEmployeeIdAndCompanyId(int userEmployeeId, int companyId) throws BIZException, TException {
-        return employeeEntity.permissionJudge(userEmployeeId, companyId);
+        try {
+            return employeeEntity.permissionJudge(userEmployeeId, companyId);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
     }
 
 
@@ -304,7 +385,7 @@ public class UserHrAccountServiceImpl implements Iface {
             throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw new SysBIZException();
         }
     }
 
@@ -338,7 +419,14 @@ public class UserHrAccountServiceImpl implements Iface {
      */
     @Override
     public RewardVOPageVO getEmployeeRewards(int employeeId, int companyId, int pageNumber, int pageSize) throws BIZException {
-        return service.getEmployeeRewards(employeeId, companyId, pageNumber, pageSize);
+        try {
+            return service.getEmployeeRewards(employeeId, companyId, pageNumber, pageSize);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
     }
 
     /**
@@ -377,7 +465,14 @@ public class UserHrAccountServiceImpl implements Iface {
      */
     @Override
     public UserEmployeeNumStatistic getListNum(String keyWord, int companyId) throws BIZException {
-        return service.getListNum(keyWord, companyId);
+        try {
+            return service.getListNum(keyWord, companyId);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
     }
 
 
@@ -395,7 +490,14 @@ public class UserHrAccountServiceImpl implements Iface {
      */
     @Override
     public UserEmployeeVOPageVO employeeList(String keyword, int companyId, int filter, String order, String asc, int pageNumber, int pageSize, String timeSpan) throws BIZException, TException {
-        return service.employeeList(keyword, companyId, filter, order, asc, pageNumber, pageSize, timeSpan);
+        try {
+            return service.employeeList(keyword, companyId, filter, order, asc, pageNumber, pageSize, timeSpan);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
 
     }
 
@@ -408,8 +510,14 @@ public class UserHrAccountServiceImpl implements Iface {
      */
     @Override
     public List<UserEmployeeVO> employeeExport(List<Integer> userEmployees, int companyId, int type) throws BIZException, TException {
-        return service.employeeExport(userEmployees, companyId, type);
-
+        try {
+            return service.employeeExport(userEmployees, companyId, type);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
     }
 
     /**
@@ -420,7 +528,14 @@ public class UserHrAccountServiceImpl implements Iface {
      */
     @Override
     public UserEmployeeDetailVO userEmployeeDetail(int userEmployeeId, int companyId) throws BIZException, TException {
-        return service.userEmployeeDetail(userEmployeeId, companyId);
+        try {
+            return service.userEmployeeDetail(userEmployeeId, companyId);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
     }
 
     /**
@@ -437,7 +552,14 @@ public class UserHrAccountServiceImpl implements Iface {
      */
     @Override
     public Response updateUserEmployee(String cname, String mobile, String email, String customField, int userEmployeeId, int companyId) throws BIZException, TException {
-        return service.updateUserEmployee(cname, mobile, email, customField, userEmployeeId, companyId);
+        try {
+            return service.updateUserEmployee(cname, mobile, email, customField, userEmployeeId, companyId);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
     }
 
     /**
@@ -451,7 +573,14 @@ public class UserHrAccountServiceImpl implements Iface {
      */
     @Override
     public Response employeeImport(Map<Integer, UserEmployeeDO> userEmployeeDOMap, int companyId, String filePath, String fileName, int type, int hraccountId) throws BIZException, TException {
-        return service.employeeImport(companyId, userEmployeeDOMap, filePath, fileName, type, hraccountId);
+        try {
+            return service.employeeImport(companyId, userEmployeeDOMap, filePath, fileName, type, hraccountId);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
     }
 
     /**
@@ -465,6 +594,13 @@ public class UserHrAccountServiceImpl implements Iface {
      */
     @Override
     public ImportUserEmployeeStatistic checkBatchInsert(Map<Integer, UserEmployeeDO> userEmployeeDOMap, int companyId) throws BIZException, TException {
-        return service.checkBatchInsert(userEmployeeDOMap, companyId);
+        try {
+            return service.checkBatchInsert(userEmployeeDOMap, companyId);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
     }
 }

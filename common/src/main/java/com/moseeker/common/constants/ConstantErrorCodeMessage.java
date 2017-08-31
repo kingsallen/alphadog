@@ -65,9 +65,9 @@ public final class ConstantErrorCodeMessage {
 
     public static final String CRAWLER_USER_NOPERMITION = "{'status':32001,'message':'账号密码错误!'}";
     public static final String CRAWLER_IMPORT_FAILED = "{'status':32002,'message':'导入失败!'}";
-    public static final String CRAWLER_LOGIN_FAILED = "{'status':32003,'message':'登录失败!'}";
+    public static final String CRAWLER_LOGIN_FAILED = "{'status':32003,'message':'简历导入失败，请重新尝试!'}";
     public static final String CRAWLER_PARAM_ILLEGAL = "{'status':32004,'message':'参数不正确!'}";
-    public static final String CRAWLER_LOGIN2_FAILED = "{'status':32005,'message':'登录失败!'}";
+    public static final String CRAWLER_LOGIN2_FAILED = "{'status':32005,'message':'简历导入失败，请重新尝试!'}";
     public static final String CRAWLER_SERVICE_TIMEOUT = "{'status':32006,'message':'服务超时!'}";
     public static final String CRAWLER_SERVICE_PARAM_ERROR = "{'status':32007,'message':'服务超时!'}";
     public static final String CRAWLER_SERVICE_IMPORT_UPPER_LIMIT = "{'status':32008,'message':'导入次数过多!'}";
