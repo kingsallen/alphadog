@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.net.SocketTimeoutException;
+import java.net.ConnectException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -111,7 +111,7 @@ public class ChaosServiceImpl {
 
                 hrThirdPartyAccount.setErrorMessage(message);
             }
-        } catch (SocketTimeoutException e) {
+        } catch (ConnectException e) {
             //绑定超时发送邮件
             hrThirdPartyAccount.setBinding(Integer.valueOf(6).shortValue());
             hrThirdPartyAccount.setErrorMessage("绑定超时，请稍后重试");
