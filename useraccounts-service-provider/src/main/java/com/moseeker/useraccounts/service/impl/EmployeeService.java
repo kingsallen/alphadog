@@ -6,8 +6,6 @@ import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
 import com.moseeker.baseorm.dao.hrdb.HrEmployeeCertConfDao;
 import com.moseeker.baseorm.dao.hrdb.HrEmployeeCustomFieldsDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
-import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
-import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.redis.RedisClient;
@@ -28,7 +26,6 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCustomFieldsDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.employee.struct.*;
-import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.moseeker.useraccounts.exception.ExceptionCategory;
 import com.moseeker.useraccounts.exception.ExceptionFactory;
@@ -54,14 +51,7 @@ public class EmployeeService {
     @Resource(name = "cacheClient")
     private RedisClient client;
 
-    MqService.Iface mqService = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
     SearchengineServices.Iface searchService = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
-
-    @Autowired
-    private JobApplicationDao applicationDao;
-
-    @Autowired
-    private JobPositionDao positionDao;
 
     @Autowired
     private EmployeeEntity employeeEntity;
@@ -140,6 +130,7 @@ public class EmployeeService {
                 emp.setWxuserId(wxEntity.getWxuserId(userId, companyId));
                 emp.setEmail(jsonObject.getString("email"));
                 emp.setAuthMethod(jsonObject.getIntValue("authMethod"));
+                emp.setCustomFieldValues(jsonObject.getString("customFieldValues"));
                 response.setEmployee(emp);
                 response.setBindStatus(BindStatus.PENDING);
             } else {
@@ -287,10 +278,11 @@ public class EmployeeService {
             response.setMessage("员工信息不存在");
         } else {
             userEmployeesDO.get(0).setCustomFieldValues(customValues);
-            int result = employeeDao.updateData(userEmployeesDO.get(0));
+            int result = employeeEntity.updateData(userEmployeesDO.get(0));
             if (result > 0) {
                 response.setSuccess(true);
                 response.setMessage("success");
+
             } else {
                 response.setSuccess(false);
                 response.setMessage("fail");
@@ -345,4 +337,25 @@ public class EmployeeService {
         }
         return response;
     }
+
+    // 邮箱认证的员工记录保存在redis中所以要更新缓存数据
+    public Result setCacheEmployeeCustomInfo(int userId, int companyId, String customValues)
+            throws TException {
+        log.info("setCacheEmployeeCustomInfo param: userId={}, companyId={}", userId, companyId, customValues);
+        Result response = new Result();
+        String pendingEmployee = client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO,userId+"-"+companyId+"-"+employeeEntity.getGroupIdByCompanyId(companyId));
+        if(StringUtils.isNotNullOrEmpty(pendingEmployee)) {
+            UserEmployeeDO employeeDO = JSONObject.parseObject(pendingEmployee, UserEmployeeDO.class);
+            employeeDO.setCustomFieldValues(customValues);
+            client.set(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO,userId+"-"+companyId+"-"+employeeEntity.getGroupIdByCompanyId(companyId), JSONObject.toJSONString(employeeDO));
+            response.setSuccess(true);
+            response.setMessage("success");
+        } else {
+            response.setSuccess(false);
+            response.setMessage("员工信息不存在");
+        }
+        log.info("setCacheEmployeeCustomInfo response: {}", response);
+        return response;
+    }
+
 }
