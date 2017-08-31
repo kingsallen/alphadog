@@ -1,5 +1,6 @@
 package com.moseeker.position.service.position;
 
+import com.alibaba.fastjson.JSONArray;
 import com.moseeker.baseorm.dao.dictdb.DictCityMapDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HrTeamDao;
@@ -81,6 +82,9 @@ public class PositionChangeUtil {
 
         //学历要求
         setDegree((int) positionDB.getDegree(), channelType, position);
+
+        //福利特色
+        setFeature(positionDB.getFeature(), position);
 
         //工作经验要求
         Integer experience = null;
@@ -239,6 +243,26 @@ public class PositionChangeUtil {
             case LIEPIN:
                 position.setDegree_code(DegreeChangeUtil.getLiepinDegree(degree).getValue());
                 position.setDegree(DegreeChangeUtil.getLiepinDegree(degree).getName());
+        }
+    }
+
+    /**
+     * 设置职位福利特色
+     * @param feature 福利特色
+     * @param position 职位信息
+     */
+    public static void setFeature(String feature, ThirdPartyPositionForSynchronization position) {
+        if (StringUtils.isNotNullOrEmpty(feature)) {
+            String[] featureArray = feature.trim().split(",");
+            List<String> featureList = new ArrayList<>();
+            for (String featureElement : featureArray) {
+                if (!featureElement.trim().equals("")) {
+                    featureList.add(featureElement);
+                }
+            }
+            if (featureList.size() > 0) {
+                position.setWelfare(featureList);
+            }
         }
     }
 

@@ -170,7 +170,8 @@ struct ThirdPartyPositionForSynchronization {
     22: string pub_place_name="",
     23: string department="",
     24: i32 account_id,
-    25:  i32 feedback_period
+    25:  i32 feedback_period,
+    26: list<string> welfare 
 }
 
 struct ThirdPartyPositionForSynchronizationWithAccount {
