@@ -1,14 +1,8 @@
 package com.moseeker.common.aop.iface;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
-import javax.annotation.PostConstruct;
-
+import com.alibaba.fastjson.JSONObject;
+import com.moseeker.common.annotation.iface.CounterInfo;
+import com.moseeker.common.util.ConfigPropertiesUtil;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
@@ -19,15 +13,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
-
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
-import com.alibaba.fastjson.JSONObject;
-import com.moseeker.common.annotation.iface.CounterInfo;
-import com.moseeker.common.exception.CommonException;
-import com.moseeker.common.util.ConfigPropertiesUtil;
-import com.moseeker.thrift.gen.common.struct.BIZException;
+import javax.annotation.PostConstruct;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author ltf 接口统计 Aop 2016年10月31日
@@ -84,13 +79,12 @@ public class CounterIfaceAop implements Ordered {
     /**
      * throws exception
      */
-    @AfterThrowing(value = POINCUT, throwing = "e")
-    public void afterThrowing(CommonException e) throws BIZException {
+    @AfterThrowing(value = POINCUT)
+    public void afterThrowing() {
         counterLocal.get().setStatus("fail");
         counterLocal.get().setEndTime(new Date().getTime());
         counterLocal.get().setTime(counterLocal.get().getEndTime() - counterLocal.get().getStartTime());
         save(JSONObject.toJSONString(counterLocal.get()));
-        throw new BIZException(e.getCode(), e.getMessage());
     }
 
 
