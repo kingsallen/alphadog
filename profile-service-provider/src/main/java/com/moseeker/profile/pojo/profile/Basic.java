@@ -1,15 +1,12 @@
 
 package com.moseeker.profile.pojo.profile;
 
-import java.util.Date;
-
-
 public class Basic {
 
     private String cityName;
     private String gender;
     private String name;
-    private Date birth;
+    private String birth;
     private String selfIntroduction;
 
     public void setCityName(String cityName) {
@@ -36,12 +33,12 @@ public class Basic {
         return name;
     }
 
-    public void setBirth(Date birth) {
-        this.birth = birth;
+    public String getBirth() {
+        return birth;
     }
 
-    public Date getBirth() {
-        return birth;
+    public void setBirth(String birth) {
+        this.birth = birth;
     }
 
     public void setSelfIntroduction(String selfIntroduction) {

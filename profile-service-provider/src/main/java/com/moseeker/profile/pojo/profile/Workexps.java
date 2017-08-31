@@ -1,9 +1,6 @@
 
 package com.moseeker.profile.pojo.profile;
 
-import java.util.Date;
-
-
 public class Workexps {
 
     private int endUntilNow;
@@ -12,7 +9,7 @@ public class Workexps {
     private Company company;
     private String departmentName;
     private String job;
-    private Date startDate;
+    private String startDate;
 
     public void setEndUntilNow(int endUntilNow) {
         this.endUntilNow = endUntilNow;
@@ -62,12 +59,11 @@ public class Workexps {
         return job;
     }
 
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
-
-    public Date getStartDate() {
+    public String getStartDate() {
         return startDate;
     }
 
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
 }

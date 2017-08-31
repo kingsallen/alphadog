@@ -368,7 +368,7 @@ public class ProfileController {
     @ResponseBody
     public String profileParser(@RequestParam(value = "file", required = false) MultipartFile file, HttpServletRequest request, HttpServletResponse response) {
         try {
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Params<String, Object> params = ParamUtils.parseequestParameter(request);
             Integer uid = params.getInt("uid");
             if (file != null) {
                 String data = new String(Base64.encodeBase64(file.getBytes()), Consts.UTF_8);
