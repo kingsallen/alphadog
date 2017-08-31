@@ -1,5 +1,8 @@
 package com.moseeker.useraccounts.thrift;
 
+import com.moseeker.baseorm.exception.ExceptionConvertUtil;
+import com.moseeker.common.exception.CommonException;
+import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.employee.struct.*;
 import com.moseeker.useraccounts.service.impl.EmployeeBindByEmail;
 import java.time.LocalDate;
@@ -7,6 +10,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,12 +32,21 @@ public class EmployeeServiceImpl implements Iface {
 	@Autowired
     private EmployeeBindByEmail employeeBindByEmail;
 
+	Logger logger = LoggerFactory.getLogger(EmployeeServiceImpl.class);
+
 	/* 
 	 * 获取用户员工信息
 	 */
 	@Override
 	public EmployeeResponse getEmployee(int userId, int companyId) throws TException {
-		return service.getEmployee(userId, companyId);
+		try {
+			return service.getEmployee(userId, companyId);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 
 	/* 
@@ -42,8 +56,14 @@ public class EmployeeServiceImpl implements Iface {
 	@Override
 	public EmployeeVerificationConfResponse getEmployeeVerificationConf(int companyId)
 			throws TException {
-
-		return service.getEmployeeVerificationConf(companyId);
+		try {
+			return service.getEmployeeVerificationConf(companyId);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 
 	/* 
@@ -52,8 +72,14 @@ public class EmployeeServiceImpl implements Iface {
 	 */
 	@Override
 	public Result bind(BindingParams bindingParams) throws TException {
-
-		return service.bind(bindingParams);
+		try {
+			return service.bind(bindingParams);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 
 	/* 
@@ -63,8 +89,14 @@ public class EmployeeServiceImpl implements Iface {
 	@Override
 	public Result unbind(int employeeId, int companyId, int userId)
 			throws TException {
-
-		return service.unbind(employeeId, companyId, userId);
+		try {
+			return service.unbind(employeeId, companyId, userId);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 
 	/* 
@@ -74,8 +106,14 @@ public class EmployeeServiceImpl implements Iface {
 	@Override
 	public List<EmployeeCustomFieldsConf> getEmployeeCustomFieldsConf(int companyId)
 			throws TException {
-
-		return service.getEmployeeCustomFieldsConf(companyId);
+		try {
+			return service.getEmployeeCustomFieldsConf(companyId);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 
 
@@ -86,8 +124,14 @@ public class EmployeeServiceImpl implements Iface {
 	@Override
 	public RewardsResponse getEmployeeRewards(int employeeId, int companyId, int pageNumber, int pageSize)
 			throws TException {
-		
-		return service.getEmployeeRewards(employeeId, companyId, pageNumber, pageSize);
+		try {
+			return service.getEmployeeRewards(employeeId, companyId, pageNumber, pageSize);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 
 	/* 
@@ -107,13 +151,26 @@ public class EmployeeServiceImpl implements Iface {
 	@Override
 	public Result setEmployeeCustomInfo(int employeeId, String customValues)
 			throws TException {
-		
-		return service.setEmployeeCustomInfo(employeeId, customValues);
+		try {
+			return service.setEmployeeCustomInfo(employeeId, customValues);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 
 	@Override
 	public Result emailActivation(String activationCode) throws TException {
-		return employeeBindByEmail.emailActivation(activationCode);
+		try {
+			return employeeBindByEmail.emailActivation(activationCode);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 
     @Override
@@ -126,7 +183,14 @@ public class EmployeeServiceImpl implements Iface {
         } else {
             timeStr = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
         }
-        return service.awardRanking(employeeId, companyId, timeStr);
+		try {
+			return service.awardRanking(employeeId, companyId, timeStr);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
     }
 
     @Override

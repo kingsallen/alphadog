@@ -13,8 +13,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 /**
  * Created by lucky8987 on 17/5/17.
  */
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(classes = AppConfig.class)
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = AppConfig.class)
 public class UserEmployeeServiceImplTest {
 
     @Autowired
@@ -34,9 +34,13 @@ public class UserEmployeeServiceImplTest {
 
     }
 
-    //@Test
+    @Test
     public void delUserEmployee() throws Exception {
-
+        CommonQuery commonQuery = new CommonQuery();
+        commonQuery.setEqualFilter(new HashMap<>());
+        commonQuery.getEqualFilter().put("company_id","3");
+        commonQuery.getEqualFilter().put("custom_field","[1]");
+        service.delUserEmployee(commonQuery);
     }
 
     //@Test
