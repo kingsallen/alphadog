@@ -34,26 +34,26 @@ public class EmployeeBindByCustomfield extends EmployeeBinder {
     }
 
     @Override
-    protected int createEmployee(BindingParams bindingParams) {
+    protected UserEmployeeDO createEmployee(BindingParams bindingParams) {
         if (employeeThreadLocal.get().getSysuserId() == 0) { // sysuserId =  0 说明员工信息是批量上传的未设置user_id
             if (userEmployeeDOThreadLocal.get() != null && userEmployeeDOThreadLocal.get().getId() != 0) {
-                return userEmployeeDOThreadLocal.get().getId();
+                return userEmployeeDOThreadLocal.get();
             } else {
                 employeeThreadLocal.get().setSysuserId(bindingParams.getUserId());
                 int rownum = employeeDao.updateData(employeeThreadLocal.get());
                 if (rownum > 0){
-                    return employeeThreadLocal.get().getId();
+                    return employeeThreadLocal.get();
                 } else {
                     throw new RuntimeException("fail");
                 }
             }
         } else if (employeeThreadLocal.get().getSysuserId() == bindingParams.getUserId()) {
             if (userEmployeeDOThreadLocal.get() != null && userEmployeeDOThreadLocal.get().getId() != 0) {
-                return userEmployeeDOThreadLocal.get().getId();
+                return userEmployeeDOThreadLocal.get();
             }
         } else {  // 说明 employee.user_id != bindingParams.user_id 用户提供的信息与员工信息不匹配
             throw new RuntimeException("员工认证信息不匹配");
         }
-        return userEmployeeDOThreadLocal.get().getId();
+        return userEmployeeDOThreadLocal.get();
     }
 }
