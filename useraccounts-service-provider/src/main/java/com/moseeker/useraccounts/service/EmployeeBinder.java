@@ -160,7 +160,7 @@ public abstract class EmployeeBinder {
             response.setMessage("success");
             if (StringUtils.isNotNullOrEmpty(useremployee.getActivationCode())) {
                 client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, useremployee.getActivationCode());
-                client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, useremployee.getSysuserId()+"-"+useremployee.getCompanyId()+"-"+employeeEntity.getGroupIdByCompanyId(useremployee.getCompanyId()));
+                client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, employeeEntity.getAuthInfoKey(useremployee.getSysuserId(), useremployee.getCompanyId()));
             }
             // 更新ES中useremployee信息
             searchengineEntity.updateEmployeeDOAwards(employees);
