@@ -14,6 +14,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.script.Script;
 import org.elasticsearch.search.sort.ScriptSortBuilder;
+import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +34,9 @@ public class PositionSearchEngine {
 		TransportClient client=null;
 		try{
 			client=searchUtil.getEsClient();
+			if(!StringUtils.isEmpty(cityCode)&&!cityCode.equals("233333")&&!cityCode.equals("111111")){
+				cityCode=cityCode+",111111";
+			}
 			SearchResponse hits =this.quertPrefix(keyWord, industry, salaryCode, page, pageSize, cityCode,startTime,endTime, companyId,teamId,motherCompanyId,order,client);
 			if(hits!=null){
 				long hitNum=hits.getHits().getTotalHits();
@@ -67,7 +71,19 @@ public class PositionSearchEngine {
 					.setFrom((page-1)*pageSize)
 					.setSize(pageSize);
 			if(order==1){
-				responseBuilder.addSort("position.update_time",SortOrder.DESC);
+				if(StringUtils.isNotEmpty(cityCode)&&!cityCode.contains("233333")&&!cityCode.equals("111111")){
+					SortBuilder builder=new ScriptSortBuilder(this.buildScriptCitySort(cityCode,1),"number");
+					builder.order(SortOrder.DESC);
+					responseBuilder.addSort(builder);
+				}else{
+					responseBuilder.addSort("position.update_time",SortOrder.DESC);
+				}
+			}else{
+				if(StringUtils.isNotEmpty(cityCode)&&!cityCode.equals("233333")&&!cityCode.equals("111111")){
+					SortBuilder builder=new ScriptSortBuilder(this.buildScriptCitySort(cityCode,2),"number");
+					builder.order(SortOrder.DESC);
+					responseBuilder.addSort(builder);
+				}
 			}
 			logger.info(responseBuilder.toString());
 			SearchResponse response = responseBuilder.execute().actionGet();
@@ -94,7 +110,19 @@ public class PositionSearchEngine {
 				responseBuilder.setTrackScores(true);
 			}
 			if(order==1){
-				responseBuilder.addSort("position.update_time",SortOrder.DESC);
+				if(StringUtils.isNotEmpty(cityCode)&&!cityCode.contains("233333")&&!cityCode.equals("111111")){
+					SortBuilder builder=new ScriptSortBuilder(this.buildScriptCitySort(cityCode,1),"number");
+					builder.order(SortOrder.DESC);
+					responseBuilder.addSort(builder);
+				}else{
+					responseBuilder.addSort("position.update_time",SortOrder.DESC);
+				}
+			}else{
+				if(StringUtils.isNotEmpty(cityCode)&&!cityCode.equals("233333")&&!cityCode.equals("111111")){
+					SortBuilder builder=new ScriptSortBuilder(this.buildScriptCitySort(cityCode,2),"number");
+					builder.order(SortOrder.DESC);
+					responseBuilder.addSort(builder);
+				}
 			}
 			logger.info(responseBuilder.toString());
 			SearchResponse response = responseBuilder.execute().actionGet();
@@ -124,9 +152,6 @@ public class PositionSearchEngine {
 	}
 	//公共查询的条件部分
 	private void CommonQuerySentence(String industry,String salaryCode,String cityCode,String startTime,String endTime,int companyId,int teamId,int motherCompanyId,QueryBuilder query){
-		if(!StringUtils.isEmpty(cityCode)&&!cityCode.contains("233333")){
-			cityCode=cityCode+",111111";
-		}
 		searchUtil.handleTerms(industry, query, "company.industry_data.industry_code");
 		searchUtil.handleTerms(cityCode, query, "position.city_data.code");
 		if(companyId>0){
@@ -218,7 +243,7 @@ public class PositionSearchEngine {
 	/*
           按照被命中的城市是否是全国。来重新处理顺序问题，只有全国的，或者是全国命中的沉底
          */
-	private Script buildScriptSort(String fieldValue, int flag ){
+	private Script buildScriptCitySort(String fieldValue, int flag ){
 		StringBuffer sb=new StringBuffer();
 		sb.append("double score=0 ;");
 		if(flag==1) {
@@ -226,7 +251,17 @@ public class PositionSearchEngine {
 		}else{
 			sb.append("value=_score;if(value){score=value};");
 		}
-		sb.append("flag=doc['position.city_flag'].value;if(flag==1){score=score/100;};return score;");
+		sb.append("city_flag=doc['position.city_flag'].value;if(city_flag==1){score=score/100;return score;};");
+		sb.append("city_data=_source.position.city_data;flag=0; if(city_data){ for(city in city_data){code=city['code'];");
+		String[] array=fieldValue.split(",");
+		for(String param:array){
+			int code=Integer.parseInt(param);
+			if(code!=111111){
+				sb.append("if(code=="+code+"){flag=1;};");
+			}
+		}
+		sb.append("};};");
+		sb.append("if(flag!=1){score=score/100;};return score;");
 		String scripts=sb.toString();
 		Script script=new Script(scripts);
 		return script;
