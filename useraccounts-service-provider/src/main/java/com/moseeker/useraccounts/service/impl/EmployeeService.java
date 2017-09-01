@@ -94,7 +94,7 @@ public class EmployeeService {
             query.where("sysuser_id", String.valueOf(userId)).and(new Condition("company_id", companyIds, ValueOp.IN))
                     .and("disable", String.valueOf(0)).and("activation", "0");
             employees = employeeDao.getDatas(query.buildQuery(), UserEmployeeDO.class);
-            String pendingEmployee = client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO,userId+"-"+companyId+"-"+employeeEntity.getGroupIdByCompanyId(companyId));
+            String pendingEmployee = client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO,employeeEntity.getAuthInfoKey(userId, companyId));
             Employee emp = new Employee();
             if (employees != null && !employees.isEmpty()) {
                 employees.stream().filter(f -> f.getId() > 0).forEach(employee -> {
@@ -198,10 +198,10 @@ public class EmployeeService {
         response.setMessage("解绑成功");
 
         // 如果是email激活发送了激活邮件，但用户未激活(状态为PENDING)，此时用户进行取消绑定操作，删除员工认证的redis信息
-        String employeeJson = client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, userId+"-"+companyId+"-"+employeeEntity.getGroupIdByCompanyId(companyId));
+        String employeeJson = client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, employeeEntity.getAuthInfoKey(userId, companyId));
         if (StringUtils.isNotNullOrEmpty(employeeJson)) {
             client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, JSONObject.parseObject(employeeJson).getString("activationCode"));
-            client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, userId+"-"+companyId+"-"+employeeEntity.getGroupIdByCompanyId(companyId));
+            client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, employeeEntity.getAuthInfoKey(userId, companyId));
             return response;
         }
 
@@ -343,11 +343,11 @@ public class EmployeeService {
             throws TException {
         log.info("setCacheEmployeeCustomInfo param: userId={}, companyId={}", userId, companyId, customValues);
         Result response = new Result();
-        String pendingEmployee = client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO,userId+"-"+companyId+"-"+employeeEntity.getGroupIdByCompanyId(companyId));
+        String pendingEmployee = client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, employeeEntity.getAuthInfoKey(userId, companyId));
         if(StringUtils.isNotNullOrEmpty(pendingEmployee)) {
             UserEmployeeDO employeeDO = JSONObject.parseObject(pendingEmployee, UserEmployeeDO.class);
             employeeDO.setCustomFieldValues(customValues);
-            client.set(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO,userId+"-"+companyId+"-"+employeeEntity.getGroupIdByCompanyId(companyId), JSONObject.toJSONString(employeeDO));
+            client.set(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, employeeEntity.getAuthInfoKey(userId, companyId), JSONObject.toJSONString(employeeDO));
             response.setSuccess(true);
             response.setMessage("success");
         } else {

@@ -933,4 +933,13 @@ public class EmployeeEntity {
         searchengineEntity.updateEmployeeAwards(Arrays.asList(userEmployeeDO.getId()));
         return result;
     }
+
+    /**
+     *  获取员工认证信息的redisKey <br/>
+     *  集团公司： key=userId_groupId, 非集团公司：key=userId-companyId
+     */
+    public final String getAuthInfoKey(int userId, int companyId) {
+        int groupId = getGroupIdByCompanyId(companyId);
+        return userId + groupId == 0 ? "-" + companyId : "_" + groupId;
+    }
 }

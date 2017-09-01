@@ -101,8 +101,10 @@ public class EmployeeBindByEmail extends EmployeeBinder{
             // 邮件发送成功
             if (mailResponse.getStatus() == 0) {
                 userEmployee.setActivationCode(activationCode);
-                String resultAINFO = client.set(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, userEmployee.getSysuserId()+"-"+userEmployee.getCompanyId()+"-"+employeeEntity.getGroupIdByCompanyId(userEmployee.getCompanyId()), BeanUtils.convertStructToJSON(userEmployee));
-                String resultACode = client.set(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, activationCode, userEmployee.getSysuserId()+"-"+userEmployee.getCompanyId()+"-"+employeeEntity.getGroupIdByCompanyId(userEmployee.getCompanyId()));
+                // 集团公司： key=userId_groupId, 非集团公司：key=userId-companyId
+                String authInfoKey = employeeEntity.getAuthInfoKey(userEmployee.getSysuserId(), userEmployee.getCompanyId());
+                String resultAINFO = client.set(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, authInfoKey, BeanUtils.convertStructToJSON(userEmployee));
+                String resultACode = client.set(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, activationCode, authInfoKey);
                 log.info("set redisKey:EMPLOYEE_AUTH_CODE result: ", resultACode);
                 log.info("set redisKey:EMPLOYEE_AUTH_INFO result: ", resultAINFO);
                 response.setSuccess(true);

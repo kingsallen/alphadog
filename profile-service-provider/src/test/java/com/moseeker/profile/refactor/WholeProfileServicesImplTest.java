@@ -41,9 +41,10 @@ public class WholeProfileServicesImplTest {
     }
 
 
-    //    //@Test
+    @Test
     public void testgetResource() throws TException {
-        response = service.getResource(7, 0, "");
+        response = service.getResource(677697, 64028, "");
+        System.out.println(response);
     }
 
 
