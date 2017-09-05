@@ -20,8 +20,7 @@ import org.springframework.stereotype.Component;
  * 用户任务。根据username 查询，如果不存在，则添加用户
  * Created by jack on 09/07/2017.
  */
-@Component
-public class UserTask implements Task<UserTaskParam, Integer> {
+public abstract class UserTask implements Task<UserTaskParam, Integer> {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -35,9 +34,8 @@ public class UserTask implements Task<UserTaskParam, Integer> {
             if (!StringUtils.isNullOrEmpty(validateUtil.validate())) {
                 throw ExceptionFactory.buildException(Category.VALIDATION_USERNAME_REQUIRED);
             }
-            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-            queryBuilder.where("username", param.getMobile());
-            UserUserRecord userUserRecord1 = userUserDao.getRecord(queryBuilder.buildQuery());
+            Query query = initQuery(param);
+            UserUserRecord userUserRecord1 = userUserDao.getRecord(query);
             if (userUserRecord1 == null) {
                 userUserRecord1 = initUser(param);
                 try {
@@ -54,6 +52,13 @@ public class UserTask implements Task<UserTaskParam, Integer> {
             throw ExceptionFactory.buildException(Category.VALIDATION_USER_ILLEGAL_PARAM);
         }
     }
+
+    /**
+     * 初始化查询条件
+     * @param param 参数
+     * @return 查询条件
+     */
+    protected abstract Query initQuery(UserTaskParam param);
 
     /**
      * 初始化用户信息 支付宝简历回收生成的用户，用户来源和其他简历回收的用来不一样，这个需要重写

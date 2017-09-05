@@ -6,8 +6,6 @@ import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
 import com.moseeker.baseorm.dao.hrdb.HrEmployeeCertConfDao;
 import com.moseeker.baseorm.dao.hrdb.HrEmployeeCustomFieldsDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
-import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
-import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.redis.RedisClient;
@@ -28,20 +26,18 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCustomFieldsDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.employee.struct.*;
-import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.moseeker.useraccounts.exception.ExceptionCategory;
 import com.moseeker.useraccounts.exception.ExceptionFactory;
 import com.moseeker.useraccounts.service.EmployeeBinder;
 import java.util.*;
+import java.util.stream.Collectors;
+import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.util.stream.Collectors;
 
 /**
  * @author ltf 员工服务业务实现 2017年3月3日
@@ -55,14 +51,7 @@ public class EmployeeService {
     @Resource(name = "cacheClient")
     private RedisClient client;
 
-    MqService.Iface mqService = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
     SearchengineServices.Iface searchService = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
-
-    @Autowired
-    private JobApplicationDao applicationDao;
-
-    @Autowired
-    private JobPositionDao positionDao;
 
     @Autowired
     private EmployeeEntity employeeEntity;
@@ -103,8 +92,9 @@ public class EmployeeService {
             // 查询集团公司companyID列表
             List<Integer> companyIds = employeeEntity.getCompanyIds(companyId);
             query.where("sysuser_id", String.valueOf(userId)).and(new Condition("company_id", companyIds, ValueOp.IN))
-                    .and("disable", String.valueOf(0));
+                    .and("disable", String.valueOf(0)).and("activation", "0");
             employees = employeeDao.getDatas(query.buildQuery(), UserEmployeeDO.class);
+            String pendingEmployee = client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO,employeeEntity.getAuthInfoKey(userId, companyId));
             Employee emp = new Employee();
             if (employees != null && !employees.isEmpty()) {
                 employees.stream().filter(f -> f.getId() > 0).forEach(employee -> {
@@ -125,28 +115,24 @@ public class EmployeeService {
                         emp.setAuthMethod(employee.getAuthMethod());
                         response.setEmployee(emp);
                         return;
-                    } else {
-                        if (StringUtils.isNotNullOrEmpty(client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, employee.getActivationCode()))) {
-                            response.setBindStatus(BindStatus.PENDING);
-                            emp.setId(employee.getId());
-                            emp.setEmployeeId(employee.getEmployeeid());
-                            emp.setCompanyId(employee.getCompanyId());
-                            emp.setSysuerId(employee.getSysuserId());
-                            emp.setMobile(employee.getMobile());
-                            emp.setCname(org.apache.commons.lang.StringUtils.defaultIfBlank(employee.getCname(), ""));
-                            emp.setAward(employee.getAward());
-                            emp.setIsRpSent(employee.getIsRpSent() == 0 ? false : true);
-                            emp.setCustomFieldValues(employee.getCustomFieldValues());
-                            emp.setWxuserId(wxEntity.getWxuserId(userId, companyId));
-                            emp.setEmail(employee.getEmail());
-                            emp.setCustomField(employee.getCustomField());
-                            emp.setAuthMethod(employee.getAuthMethod());
-                            response.setEmployee(emp);
-                            return;
-                        }
-                        response.setBindStatus(BindStatus.UNBIND);
                     }
                 });
+            } else if(StringUtils.isNotNullOrEmpty(pendingEmployee)) {
+                JSONObject jsonObject = JSONObject.parseObject(pendingEmployee);
+                emp.setEmployeeId(jsonObject.getString("employeeId"));
+                emp.setCompanyId(jsonObject.getIntValue("companyId"));
+                emp.setSysuerId(jsonObject.getIntValue("sysuserId"));
+                emp.setMobile(jsonObject.getString("mobile"));
+                emp.setCname(jsonObject.getString("cname"));
+                emp.setAward(jsonObject.getIntValue("award"));
+                emp.setIsRpSent(jsonObject.getBooleanValue("isRpSent"));
+                emp.setCustomField(jsonObject.getString("customField"));
+                emp.setWxuserId(wxEntity.getWxuserId(userId, companyId));
+                emp.setEmail(jsonObject.getString("email"));
+                emp.setAuthMethod(jsonObject.getIntValue("authMethod"));
+                emp.setCustomFieldValues(jsonObject.getString("customFieldValues"));
+                response.setEmployee(emp);
+                response.setBindStatus(BindStatus.PENDING);
             } else {
                 response.setBindStatus(BindStatus.UNBIND);
             }
@@ -208,33 +194,19 @@ public class EmployeeService {
     public Result unbind(int employeeId, int companyId, int userId) {
         log.info("unbind param: employeeId={}, companyId={}, userId={}", employeeId, companyId, userId);
         Result response = new Result();
-        Query.QueryBuilder query = new Query.QueryBuilder();
-        // 查询集团公司companyID列表
-        List<Integer> companyIds = employeeEntity.getCompanyIds(companyId);
-        query.where("sysuser_id", String.valueOf(userId)).and(new Condition("company_id", companyIds, ValueOp.IN));
-        List<UserEmployeeDO> employees = employeeDao.getDatas(query.buildQuery());
-        log.info("select employee by: {} , result: {}", query, Arrays.toString(employees.toArray()));
-        if (employees == null || employees.isEmpty()) {
-            response.setSuccess(false);
-            response.setMessage("员工信息不存在");
+        response.setSuccess(true);
+        response.setMessage("解绑成功");
+
+        // 如果是email激活发送了激活邮件，但用户未激活(状态为PENDING)，此时用户进行取消绑定操作，删除员工认证的redis信息
+        String employeeJson = client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, employeeEntity.getAuthInfoKey(userId, companyId));
+        if (StringUtils.isNotNullOrEmpty(employeeJson)) {
+            client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, JSONObject.parseObject(employeeJson).getString("activationCode"));
+            client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, employeeEntity.getAuthInfoKey(userId, companyId));
             return response;
         }
 
-        // 如果是email激活发送了激活邮件，但用户未激活(状态为PENDING)，此时用户进行取消绑定操作，删除员工认证的redis信息
-        for (UserEmployeeDO employee : employees) {
-            if (StringUtils.isNotNullOrEmpty(client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, employee.getActivationCode()))) {
-                client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, employee.getActivationCode());
-                response.setSuccess(true);
-                response.setMessage("解绑成功");
-                return response;
-            }
-        }
-
         // 解绑
-        if (employeeEntity.unbind(employees.stream().filter(f -> f.getActivation() == 0).collect(Collectors.toList()))) {
-            response.setSuccess(true);
-            response.setMessage("success");
-        } else {
+        if (!employeeEntity.unbind(Arrays.asList(employeeId))) {
             response.setSuccess(false);
             response.setMessage("fail");
         }
@@ -280,7 +252,7 @@ public class EmployeeService {
         UserEmployeeDO userEmployeeDO = employeeDao.getData(query.buildQuery());
         if (userEmployeeDO != null && userEmployeeDO.getId() > 0) {
             /*
-			 * 开始查询积分规则：
+             * 开始查询积分规则：
 			 */
             response.setRewardConfigs(companyConfigEntity.getRerawConfig(companyId, true));
             // 查询申请职位list
@@ -306,10 +278,11 @@ public class EmployeeService {
             response.setMessage("员工信息不存在");
         } else {
             userEmployeesDO.get(0).setCustomFieldValues(customValues);
-            int result = employeeDao.updateData(userEmployeesDO.get(0));
+            int result = employeeEntity.updateData(userEmployeesDO.get(0));
             if (result > 0) {
                 response.setSuccess(true);
                 response.setMessage("success");
+
             } else {
                 response.setSuccess(false);
                 response.setMessage("fail");
@@ -364,4 +337,25 @@ public class EmployeeService {
         }
         return response;
     }
+
+    // 邮箱认证的员工记录保存在redis中所以要更新缓存数据
+    public Result setCacheEmployeeCustomInfo(int userId, int companyId, String customValues)
+            throws TException {
+        log.info("setCacheEmployeeCustomInfo param: userId={}, companyId={}", userId, companyId, customValues);
+        Result response = new Result();
+        String pendingEmployee = client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, employeeEntity.getAuthInfoKey(userId, companyId));
+        if(StringUtils.isNotNullOrEmpty(pendingEmployee)) {
+            UserEmployeeDO employeeDO = JSONObject.parseObject(pendingEmployee, UserEmployeeDO.class);
+            employeeDO.setCustomFieldValues(customValues);
+            client.set(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, employeeEntity.getAuthInfoKey(userId, companyId), JSONObject.toJSONString(employeeDO));
+            response.setSuccess(true);
+            response.setMessage("success");
+        } else {
+            response.setSuccess(false);
+            response.setMessage("员工信息不存在");
+        }
+        log.info("setCacheEmployeeCustomInfo response: {}", response);
+        return response;
+    }
+
 }

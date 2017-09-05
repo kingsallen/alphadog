@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobOccupationRecord extends UpdatableRecordImpl<JobOccupationRecord> implements Record6<Integer, Integer, Byte, String, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = -1274725981;
+    private static final long serialVersionUID = -2919311;
 
     /**
      * Setter for <code>jobdb.job_occupation.id</code>.
@@ -153,7 +153,7 @@ public class JobOccupationRecord extends UpdatableRecordImpl<JobOccupationRecord
      */
     @Override
     public Field<Integer> field1() {
-        return JobOccupation.ID;
+        return JobOccupation.JOB_OCCUPATION.ID;
     }
 
     /**
@@ -161,7 +161,7 @@ public class JobOccupationRecord extends UpdatableRecordImpl<JobOccupationRecord
      */
     @Override
     public Field<Integer> field2() {
-        return JobOccupation.COMPANY_ID;
+        return JobOccupation.JOB_OCCUPATION.COMPANY_ID;
     }
 
     /**
@@ -169,7 +169,7 @@ public class JobOccupationRecord extends UpdatableRecordImpl<JobOccupationRecord
      */
     @Override
     public Field<Byte> field3() {
-        return JobOccupation.STATUS;
+        return JobOccupation.JOB_OCCUPATION.STATUS;
     }
 
     /**
@@ -177,7 +177,7 @@ public class JobOccupationRecord extends UpdatableRecordImpl<JobOccupationRecord
      */
     @Override
     public Field<String> field4() {
-        return JobOccupation.NAME;
+        return JobOccupation.JOB_OCCUPATION.NAME;
     }
 
     /**
@@ -185,7 +185,7 @@ public class JobOccupationRecord extends UpdatableRecordImpl<JobOccupationRecord
      */
     @Override
     public Field<Timestamp> field5() {
-        return JobOccupation.UPDATE_TIME;
+        return JobOccupation.JOB_OCCUPATION.UPDATE_TIME;
     }
 
     /**
@@ -193,7 +193,7 @@ public class JobOccupationRecord extends UpdatableRecordImpl<JobOccupationRecord
      */
     @Override
     public Field<Timestamp> field6() {
-        return JobOccupation.CREATE_TIME;
+        return JobOccupation.JOB_OCCUPATION.CREATE_TIME;
     }
 
     /**

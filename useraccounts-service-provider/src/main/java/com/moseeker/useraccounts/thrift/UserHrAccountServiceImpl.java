@@ -563,20 +563,20 @@ public class UserHrAccountServiceImpl implements Iface {
     /**
      * 编辑公司员工信息
      *
-     * @param cname          姓名
-     * @param mobile         手机号
-     * @param email          邮箱
-     * @param customField    自定义字段
-     * @param userEmployeeId user_employee.id
-     * @param companyId      公司ID
+     * @param cname             姓名
+     * @param mobile            手机号
+     * @param email             邮箱
+     * @param customField       自定义字段
+     * @param userEmployeeId    user_employee.id
+     * @param companyId         公司ID
+     * @param customFieldValues 公司员工认证后补填字段配置信息
      * @return
      * @throws BIZException
      */
     @Override
-    public Response updateUserEmployee(String cname, String mobile, String email, String customField, int userEmployeeId, int companyId) throws BIZException, TException {
+    public Response updateUserEmployee(String cname, String mobile, String email, String customField, int userEmployeeId, int companyId, String customFieldValues) throws BIZException, TException {
         try {
-            return service.updateUserEmployee(cname, mobile, email, customField, userEmployeeId, companyId);
-        } catch (CommonException e) {
+            return service.updateUserEmployee(cname, mobile, email, customField, userEmployeeId, companyId, customFieldValues);        } catch (CommonException e) {
             throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

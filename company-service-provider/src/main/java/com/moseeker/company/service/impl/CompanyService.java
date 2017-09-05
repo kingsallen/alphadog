@@ -1,5 +1,6 @@
 package com.moseeker.company.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.db.hrdb.tables.*;
@@ -28,6 +29,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.CompanyCertConf;
 import com.moseeker.thrift.gen.company.struct.CompanyForVerifyEmployee;
 import com.moseeker.thrift.gen.company.struct.CompanyOptions;
+import com.moseeker.thrift.gen.company.struct.HrEmployeeCustomFieldsVO;
 import com.moseeker.thrift.gen.company.struct.HrImporterMonitorVO;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
@@ -82,6 +84,10 @@ public class CompanyService {
 
     @Autowired
     private HRThirdPartyAccountDao hrThirdPartyAccountDao;
+
+
+    @Autowired
+    private HrEmployeeCustomFieldsDao hrEmployeeCustomFieldsDao;
 
     public Response getResource(CommonQuery query) throws TException {
         try {
@@ -611,4 +617,32 @@ public class CompanyService {
         return 1;
     }
 
+    /**
+     * 获取公司员工认证后补填字段配置信息列表
+     *
+     * @param companyId
+     * @return
+     */
+    public List<HrEmployeeCustomFieldsVO> getHrEmployeeCustomFields(Integer companyId) {
+        if (companyId == 0) {
+            throw ExceptionFactory.buildException(ExceptionCategory.COMPANY_ID_EMPTY);
+        }
+        List<HrEmployeeCustomFieldsVO> hrEmployeeCustomFieldsVOS = new ArrayList<>();
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.DISABLE.getName(), 0)
+                .and(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.COMPANY_ID.getName(), companyId);
+        List<HrEmployeeCustomFieldsDO> list = hrEmployeeCustomFieldsDao.getDatas(queryBuilder.buildQuery());
+        for (HrEmployeeCustomFieldsDO hrEmployeeCustomFieldsDO : list) {
+            HrEmployeeCustomFieldsVO hrEmployeeCustomFieldsVO = new HrEmployeeCustomFieldsVO();
+            hrEmployeeCustomFieldsVO.setFname(hrEmployeeCustomFieldsDO.getFname());
+            hrEmployeeCustomFieldsVO.setId(hrEmployeeCustomFieldsDO.getId());
+            String fvaluesTemp = hrEmployeeCustomFieldsDO.getFvalues();
+            if (fvaluesTemp != null) {
+                List fvalues = JSONObject.parseArray(fvaluesTemp);
+                hrEmployeeCustomFieldsVO.setFvalues(fvalues);
+            }
+            hrEmployeeCustomFieldsVOS.add(hrEmployeeCustomFieldsVO);
+        }
+        return hrEmployeeCustomFieldsVOS;
+    }
 }

@@ -52,7 +52,6 @@ import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -1085,6 +1084,11 @@ public class UserHrAccountService {
             userEmployeeVO.setCustomField(userEmployeeDO.getCustomField());
             userEmployeeVO.setEmail(userEmployeeDO.getEmail());
             userEmployeeVO.setCompanyId(userEmployeeDO.getCompanyId());
+
+            if (userEmployeeDO.getCustomFieldValues() != null) {
+                List customFieldValues = JSONObject.parseObject(userEmployeeDO.getCustomFieldValues(), List.class);
+                userEmployeeVO.setCustomFieldValues(customFieldValues);
+            }
             if (userMap != null && userMap.size() > 0 && userMap.get(userEmployeeDO.getSysuserId()) != null) {
                 userEmployeeVO.setNickName(userMap.get(userEmployeeDO.getSysuserId()).getNickname());
             } else {
@@ -1313,15 +1317,13 @@ public class UserHrAccountService {
         if (!employeeEntity.permissionJudge(userEmployeeId, companyId)) {
             throw UserAccountException.PERMISSION_DENIED;
         }
-        userEmployeeDetailVO.setId(userEmployeeDO.getId());
+        org.springframework.beans.BeanUtils.copyProperties(userEmployeeDO, userEmployeeDetailVO);
         userEmployeeDetailVO.setUsername(userEmployeeDO.getCname());
-        userEmployeeDetailVO.setCompanyId(userEmployeeDO.getCompanyId());
-        userEmployeeDetailVO.setMobile(userEmployeeDO.getMobile());
-        userEmployeeDetailVO.setCustomField(userEmployeeDO.getCustomField());
-        userEmployeeDetailVO.setEmail(userEmployeeDO.getEmail());
-        userEmployeeDetailVO.setAward(userEmployeeDO.getAward());
-        userEmployeeDetailVO.setBindingTime(userEmployeeDO.getBindingTime());
         userEmployeeDetailVO.setActivation((new Double(userEmployeeDO.getActivation())).intValue());
+        if (userEmployeeDO.getCustomFieldValues() != null) {
+            List customFieldValues = JSONObject.parseObject(userEmployeeDO.getCustomFieldValues(), List.class);
+            userEmployeeDetailVO.setCustomFieldValues(customFieldValues);
+        }
         // 查询微信信息
         if (userEmployeeDO.getSysuserId() > 0) {
             queryBuilder.clear();
@@ -1360,7 +1362,7 @@ public class UserHrAccountService {
      * @throws Exception
      */
     public Response updateUserEmployee(String cname, String mobile, String email, String
-            customField, Integer userEmployeeId, Integer companyId) throws CommonException {
+            customField, Integer userEmployeeId, Integer companyId, String customFieldValues) throws CommonException {
         Response response = new Response();
         if (userEmployeeId == 0) {
             throw UserAccountException.USEREMPLOYEES_DATE_EMPTY;
@@ -1402,17 +1404,20 @@ public class UserHrAccountService {
 
         try {
             UserEmployeeDO userEmployeeDO = new UserEmployeeDO();
-            if (!StringUtils.isNullOrEmpty(cname)) {
+            if (cname != null) {
                 userEmployeeDO.setCname(cname);
             }
-            if (!StringUtils.isNullOrEmpty(mobile)) {
+            if (mobile != null) {
                 userEmployeeDO.setMobile(mobile);
             }
-            if (!StringUtils.isNullOrEmpty(customField)) {
+            if (customField != null) {
                 userEmployeeDO.setCustomField(customField);
             }
-            if (!StringUtils.isNullOrEmpty(email)) {
+            if (email != null) {
                 userEmployeeDO.setEmail(email);
+            }
+            if (customFieldValues != null) {
+                userEmployeeDO.setCustomFieldValues(customFieldValues);
             }
             userEmployeeDO.setId(userEmployeeId);
             int i = userEmployeeDao.updateData(userEmployeeDO);

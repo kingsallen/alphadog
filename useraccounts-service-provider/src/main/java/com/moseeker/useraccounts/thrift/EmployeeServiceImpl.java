@@ -192,4 +192,9 @@ public class EmployeeServiceImpl implements Iface {
 			throw new SysBIZException();
 		}
     }
+
+    @Override
+    public Result setCacheEmployeeCustomInfo(int userId, int companyId, String customValues) throws TException {
+        return service.setCacheEmployeeCustomInfo(userId, companyId, customValues);
+    }
 }
