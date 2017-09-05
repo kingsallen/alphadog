@@ -20,7 +20,7 @@ public class ExceptionUtils {
         return new BIZException(jsonObject.getIntValue("status"), jsonObject.getString("message"));
     }
 
-    public static TException convertException(Throwable e) throws TException {
+    public static TException convertException(Throwable e) {
         if (e instanceof BIZException) {
             return (BIZException) e;
         } else if (e instanceof CommonException) {

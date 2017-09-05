@@ -1,9 +1,12 @@
 package com.moseeker.useraccounts.thrift;
 
+import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.useraccounts.service.UsersettingServices.Iface;
 import com.moseeker.thrift.gen.useraccounts.struct.Usersetting;
 import com.moseeker.useraccounts.service.impl.UsersettingsService;
@@ -78,6 +81,13 @@ public class UsersettingsServicesImpl implements Iface {
 
 	@Override
 	public Response getResource(CommonQuery query) throws TException {
-		return service.getResource(query);
+        try {
+            return service.getResource(query);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
 	}
 }

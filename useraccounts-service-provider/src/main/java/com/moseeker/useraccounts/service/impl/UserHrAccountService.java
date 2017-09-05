@@ -7,10 +7,10 @@ import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
+import com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrSearchConditionRecord;
-import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
-import com.moseeker.baseorm.db.userdb.tables.UserUser;
+import com.moseeker.baseorm.db.userdb.tables.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.util.BeanUtils;
@@ -23,30 +23,31 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.*;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.EmployeeEntity;
+import com.moseeker.entity.HREntity;
 import com.moseeker.entity.SearchengineEntity;
+import com.moseeker.entity.exception.HRException;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateCompanyDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrImporterMonitorDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrTalentpoolDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.employee.struct.RewardVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
+import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
 import com.moseeker.useraccounts.constant.ResultMessage;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.pojo.EmployeeRank;
 import com.moseeker.useraccounts.pojo.EmployeeRankObj;
-import com.moseeker.useraccounts.service.thirdpartyaccount.ThirdPartyAccountSynctor;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +60,8 @@ import javax.annotation.Resource;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static com.moseeker.useraccounts.exception.UserAccountException.*;
 
 /**
  * HR账号服务
@@ -97,12 +100,6 @@ public class UserHrAccountService {
     private HRThirdPartyAccountDao hrThirdPartyAccountDao;
 
     @Autowired
-    private HRThirdPartyAccountHrDao thirdPartyAccountHrDao;
-
-    @Autowired
-    private ThirdPartyAccountSynctor thirdPartyAccountSynctor;
-
-    @Autowired
     private UserEmployeeDao userEmployeeDao;
 
     @Autowired
@@ -118,13 +115,103 @@ public class UserHrAccountService {
     private SearchengineEntity searchengineEntity;
 
     @Autowired
-    private HrCompanyAccountDao hrCompanyAccountDao;
-
-    @Autowired
     private HrCompanyDao hrCompanyDao;
 
     @Autowired
     CandidateCompanyDao candidateCompanyDao;
+
+    @Autowired
+    HREntity hrEntity;
+
+    @Autowired
+    HrSuperaccountApplyDao accountLimitDao;
+
+    @Autowired
+    HrCompanyAccountDao companyAccountDao;
+
+
+    /**
+     * 修改手机号码
+     *
+     * @param mobile 手机号码
+     * @param hrID   HR编号
+     * @throws CommonException
+     */
+    public void updateMobile(int hrID, String mobile) throws CommonException {
+        if (!FormCheck.isMobile(mobile)) {
+            throw ILLEGAL_MOBILE;
+        }
+
+        boolean result = hrEntity.updateMobile(hrID, mobile);
+        if (!result) {
+            throw HR_UPDATEMOBILE_FAILED;
+        }
+    }
+
+    /**
+     * 是否可以添加子帐号
+     */
+    public boolean ifAddSubAccountAllowed(int hrId) throws CommonException {
+
+        UserHrAccountDO hrAccountDO = userHrAccountDao.getValidAccount(hrId);
+        if (hrAccountDO == null) {
+            throw HRException.USER_NOT_EXISTS;
+        }
+
+        Query query = new Query.QueryBuilder()
+                .where(HrSuperaccountApply.HR_SUPERACCOUNT_APPLY.COMPANY_ID.getName(), hrAccountDO.getCompanyId())
+                .buildQuery();
+        HrSuperaccountApplyDO superaccountApplyDO = accountLimitDao.getData(query);
+        if (superaccountApplyDO == null) {
+            return false;
+        }
+        com.moseeker.baseorm.db.userdb.tables.UserHrAccount hrTable = com.moseeker.baseorm.db.userdb.tables.UserHrAccount.USER_HR_ACCOUNT;
+        query = new Query.QueryBuilder()
+                .where(hrTable.COMPANY_ID.getName(), hrAccountDO.getCompanyId())
+                .and(hrTable.ACCOUNT_TYPE.getName(), 1)
+                .and(hrTable.DISABLE.getName(), 1)
+                .and(hrTable.ACTIVATION.getName(), 1)
+                .buildQuery();
+        return superaccountApplyDO.getAccountLimit() > userHrAccountDao.getCount(query);
+
+    }
+
+    /**
+     * 添加子帐号
+     */
+    @Transactional
+    public UserHrAccountDO addAccount(UserHrAccountDO userHrAccountDO) throws CommonException {
+
+        if (userHrAccountDO == null || StringUtils.isNullOrEmpty(userHrAccountDO.getMobile()) || userHrAccountDO.getCompanyId() < 1) {
+            throw CommonException.PROGRAM_PARAM_NOTEXIST;
+        }
+
+        com.moseeker.baseorm.db.userdb.tables.UserHrAccount accoutTable = com.moseeker.baseorm.db.userdb.tables.UserHrAccount.USER_HR_ACCOUNT;
+        Query query = new Query.QueryBuilder()
+                .where(accoutTable.MOBILE.getName(), userHrAccountDO.getMobile())
+                .and(accoutTable.DISABLE.getName(), AbleFlag.ENABLE.getValue())
+                .buildQuery();
+        UserHrAccountDO existAccount = userHrAccountDao.getData(query);
+
+        if (existAccount != null) {
+            throw HRException.MOBILE_EXIST;
+        }
+
+        try {
+            userHrAccountDO = userHrAccountDao.addData(userHrAccountDO);
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+            e.printStackTrace();
+            throw HRException.USER_EXIST;
+        }
+
+        HrCompanyAccountDO companyAccount = new HrCompanyAccountDO();
+        companyAccount.setAccountId(userHrAccountDO.getId());
+        companyAccount.setCompanyId(userHrAccountDO.getCompanyId());
+        companyAccountDao.addData(companyAccount);
+        query = new Query.QueryBuilder().where(com.moseeker.baseorm.db.userdb.tables.UserHrAccount.USER_HR_ACCOUNT.ID.getName(),userHrAccountDO.getId()).buildQuery();
+        return userHrAccountDao.getData(query);
+    }
 
     /**
      * HR在下载行业报告是注册

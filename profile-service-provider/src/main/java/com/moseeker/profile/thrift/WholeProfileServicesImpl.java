@@ -111,4 +111,5 @@ public class WholeProfileServicesImpl implements Iface {
             throw new SysBIZException();
         }
     }
+
 }

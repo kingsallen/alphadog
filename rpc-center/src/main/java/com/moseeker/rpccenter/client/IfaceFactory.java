@@ -42,7 +42,7 @@ public class IfaceFactory<T> {
         this.config = config;
         this.serverName = serverName;
         customtimeOutService.put(ChaosServices.Iface.class,300*1000);
-        customtimeOutService.put(UserHrAccountService.Iface.class,120*1000);
+        customtimeOutService.put(UserHrAccountService.Iface.class,130*1000);
         customtimeOutService.put(PositionBS.Iface.class,120*1000);
         customtimeOutService.put(ProfileServices.Iface.class,300*1000);
         customtimeOutService.put(UserEmployeeService.Iface.class,300*1000);

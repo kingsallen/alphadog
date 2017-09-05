@@ -7,6 +7,7 @@ import com.moseeker.baseorm.db.profiledb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.util.FormCheck;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,6 +66,12 @@ public class ProfilePojo {
                 if (!org.apache.commons.lang.StringUtils.isNumeric(mobile)) {
                     userMap.remove("mobile");
                 }
+				if (userMap.get("email") != null) {
+					String email = String.valueOf(userMap.get("email"));
+					if (!FormCheck.isEmail(email)) {
+						userMap.remove("email");
+					}
+				}
                 crawlerUser = profileUtils.mapToUserUserRecord(userMap);
                 pojo.setUserRecord(crawlerUser);
             }
@@ -234,10 +241,27 @@ public class ProfilePojo {
 		//解析用户信息
 		UserUserRecord crawlerUser = null;
 		try {
-			crawlerUser = profileUtils.mapToUserUserRecord((Map<String, Object>) resume.get("user"));
+			Map<String, Object> userMap = (Map<String, Object>) resume.get("user");
+			if (userMap != null) {
+				if (userMap.get("mobile") != null) {
+					String mobile = String.valueOf(userMap.get("mobile"));
+					if (!org.apache.commons.lang.StringUtils.isNumeric(mobile)) {
+						userMap.remove("mobile");
+					}
+				}
+				if (userMap.get("email") != null) {
+					String email = String.valueOf(userMap.get("email"));
+					if (!FormCheck.isEmail(email)) {
+						userMap.remove("email");
+					}
+				}
+				crawlerUser = profileUtils.mapToUserUserRecord(userMap);
+				pojo.setUserRecord(crawlerUser);
+			}
 		} catch (Exception e1) {
 			LoggerFactory.getLogger(ProfilePojo.class).error(e1.getMessage(), e1);
 		}
+
 		//解析基本信息
 		ProfileBasicRecord basicRecord = null;
 		try {
