@@ -519,30 +519,6 @@ public class PositionController {
         return null;
     }
 
-    /*
-     *获取pc端推荐职位列表
-     */
-    @RequestMapping(value = "/positions/apolegamic", method = RequestMethod.GET)
-    @ResponseBody
-    public String getPcRecommendPosition(HttpServletRequest request, HttpServletResponse response){
-    	try{
-	    	Params<String, Object> params = ParamUtils.parseRequestParam(request);
-	        Integer page = params.getInt("page");
-	        Integer pageSize = params.getInt("pageSize");
-	        if(page==null){
-	        	page=0;
-	        }
-	        if(pageSize==null){
-	        	pageSize=15;
-	        }
-	    	Response result=positonServices.getPcRecommand(page,pageSize);
-	    	return ResponseLogNotification.success(request, result);
-    	}catch(Exception e){
-    		 logger.error(e.getMessage());
-    		 return ResponseLogNotification.fail(request, e.getMessage());
-    	}
-    }
-
     /**
      * 职位同步到第三方接口
      */
@@ -579,16 +555,11 @@ public class PositionController {
             List<Integer> positions =  positonServices.getPositionListForThirdParty(channel,type,start_time,end_time);
             Response res = ResponseUtils.success(positions);
             return ResponseLogNotification.success(request, res);
-
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseLogNotification.fail(request,e.getMessage());
         }
     }
-
-
-
-
     /**
      * 第三方职位列表详情
      */
@@ -629,5 +600,44 @@ public class PositionController {
             return ResponseLogNotification.failJson(request, e);
         }
     }
+    /*
+        *获取pc端推荐职位列表
+        */
+    @RequestMapping(value = "/positions/apolegamic", method = RequestMethod.GET)
+    @ResponseBody
+    public String getPcRecommendPosition(HttpServletRequest request, HttpServletResponse response){
+        try{
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer page = params.getInt("page");
+            Integer pageSize = params.getInt("pageSize");
+            if(page==null){
+                page=1;
+            }
+            if(pageSize==null){
+                pageSize=15;
+            }
+            Response result=positonServices.getPcRecommand(page,pageSize);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 
+    /*
+    *获取pc端职位的详情
+    */
+    @RequestMapping(value = "/position/pc/details", method = RequestMethod.GET)
+    @ResponseBody
+    public String getPcPositionDetail(HttpServletRequest request, HttpServletResponse response){
+        try{
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int positionId = params.getInt("positionId");
+            Response result=positonServices.getPcPositionDetail(positionId);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 }

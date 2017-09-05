@@ -37,6 +37,7 @@ public class PositionPcServiceTest {
         Response res=service.getRecommendPositionPC(page,pageSize);
         System.out.println(res);
     }
+  //获取公司下的职位数量
   @Test
   public void getPositionNumTest(){
 	  List<Integer> list=new ArrayList<Integer>();
@@ -71,12 +72,13 @@ public class PositionPcServiceTest {
 	  int num=service.getPositionNum(list);
 	  System.out.println("职位的数量是＝＝＝＝＝＝＝"+num);
   }
-  
+  //获取千寻推荐的企业
   @Test
   public void getQXRecommendCompanyListTest() throws TException{
 	  Response res=service.getQXRecommendCompanyList(1,10);
 	  System.out.println(res);
   }
+  //获取jd
   @Test
   public void getJDMaps() throws TException{
 	  List<Integer> list=new ArrayList<Integer>();
@@ -87,15 +89,23 @@ public class PositionPcServiceTest {
 		  System.out.println(JSON.toJSONString(map1));
 	  }
   }
+  //获取所有的推荐公司
   @Test
   public void getAllCompanyRecommendTest() throws Exception{
 	  List<Map<String,Object>> list=service.getAllCompanyRecommend(1,10);
 	  System.out.println(list);
   }
+  //获取职位详情
   @Test
   public void getPositionDetailsTest() throws Exception {
   	  Map<String,Object> result=service.getPositionDetails(1001030);
 	  System.out.println(result);
+  }
+  //获取推荐职位
+  @Test
+  public void getRecommendTest() throws TException {
+  	 List<Map<String,Object>> list=service.getRecommendPosition(124597,1,10);
+	  System.out.println(list);
   }
 
 }

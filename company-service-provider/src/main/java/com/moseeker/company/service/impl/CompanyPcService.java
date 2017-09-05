@@ -74,16 +74,7 @@ public class CompanyPcService {
         this.putMapInNewMap(positionMap,map);
         return map;
     }
-    /*
-      将旧的map放入新的map
-     */
-    private void putMapInNewMap(Map<String,Object> originMap, Map<String,Object> newMap){
-        if(originMap!=null&&!originMap.isEmpty()){
-            for(String key:originMap.keySet()){
-                newMap.put(key,originMap.get(key));
-            }
-        }
-    }
+
     /*
      获取团队列表
      */
@@ -158,6 +149,16 @@ public class CompanyPcService {
             map.put("teamInfo",team);
         }
         return map;
+    }
+    /*
+      将旧的map放入新的map
+     */
+    private void putMapInNewMap(Map<String,Object> originMap, Map<String,Object> newMap){
+        if(originMap!=null&&!originMap.isEmpty()){
+            for(String key:originMap.keySet()){
+                newMap.put(key,originMap.get(key));
+            }
+        }
     }
     /*
      获取单个团队的具体信息
@@ -300,7 +301,7 @@ public class CompanyPcService {
     }
     /*
     获取企业微信号配置
- */
+     */
     private HrWxWechatDO  getHrWxWechatDO(int companyId){
         Query query=new Query.QueryBuilder().where("company_id",companyId).buildQuery();
         HrWxWechatDO DO=hrWxWechatDao.getData(query);
@@ -325,14 +326,12 @@ public class CompanyPcService {
                 map.put("hasPic",hasPic);
             }
             Integer teamNum=(Integer) result.get("teamNum");
-
             map.put("teamNum",teamNum);
         }
         if(!StringUtils.isEmptyList(list)){
             map.put("teamList",list);
         }
         return map;
-
     }
     //处理公司下的职位
     private Map<String,Object> handleCompanyPositionCity(int companyId,boolean isMother){
@@ -556,7 +555,7 @@ public class CompanyPcService {
         return teamList;
     }
     /*
-    获取子公司下团队的数量
+        获取子公司下团队的数量
      */
     public int getSubCompanyTeam(List<Integer> list){
         if(StringUtils.isEmptyList(list)){

@@ -6,12 +6,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.moseeker.baseorm.dao.analyticsd.StJobSimilarityDao;
 import com.moseeker.baseorm.dao.hrdb.*;
+import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
+import com.moseeker.baseorm.pojo.RecommendedPositonPojo;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.query.SelectOp;
 
 import com.moseeker.entity.PcRevisionEntity;
+import com.moseeker.thrift.gen.dao.struct.analytics.StJobSimilarityDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import org.apache.thrift.TException;
 import org.apache.thrift.TSerializer;
 import org.apache.thrift.protocol.TSimpleJSONProtocol;
@@ -72,6 +78,10 @@ public class PositionPcService {
 	private DictCityDao dictCityDao;
 	@Autowired
 	private PcRevisionEntity pcRevisionEntity;
+	@Autowired
+	private UserHrAccountDao userHrAccountDao;
+	@Autowired
+	private StJobSimilarityDao stJobSimilarityDao;
 	/*
 	 * 获取pc首页职位推荐
 	 */
@@ -147,6 +157,140 @@ public class PositionPcService {
 		this.handlePositionJdData(confCompanyId,map,teamId);
 		return map;
 	}
+	/*
+	   获取推荐职位的信息
+	 */
+	public List<Map<String,Object>> getRecommendPosition(int positionId,int page,int pageSize) throws TException {
+		List<Integer> positionIdList=getRecommendPositionidList(positionId, page, pageSize);
+		List<Map<String,Object>> result=handleDataJDAndPosition(positionIdList,3);
+		return result;
+	}
+	/*
+	   获取单个职位
+	 */
+	public JobPositionDO getSinglePosition(int positionId){
+		Query query=new Query.QueryBuilder().where("id",positionId).and("status",0).buildQuery();
+		JobPositionDO DO=jobPositionDao.getData(query);
+		return DO;
+	}
+	/*
+	 根据publisher获取hr_company_account
+	 */
+	public HrCompanyAccountDO  getSingleCompanyAccount(int publisher){
+		Query query=new Query.QueryBuilder().where("account_id",publisher).buildQuery();
+		HrCompanyAccountDO DO=hrCompanyAccountDao.getData(query);
+		return DO;
+	}
+	/*
+	  获取相关职位的推荐职位
+	 */
+	public List<Integer> getRecommendPositionidList(int positionId,int page,int pageSize){
+		JobPositionDO positionDO=getSinglePosition(positionId);
+		if(positionDO==null){
+			return null;
+		}
+		int publisher=positionDO.getPublisher();
+		HrCompanyAccountDO companyAccountDO=this.getSingleCompanyAccount(publisher);
+		if(companyAccountDO==null){
+			return null;
+		}
+		int companyId=companyAccountDO.getCompanyId();
+		HrCompanyDO companyDO=getSingleCompany(companyId);
+		int parentId=companyDO.getParentId();
+		List<Integer> positionIdList=new ArrayList<Integer>();
+		if(parentId!=0){
+			positionIdList=getChildRecommendPosition(companyId,positionId,page,pageSize);
+		}else{
+			positionIdList=getMotherRecommendPosition(companyId,positionId,page,pageSize);
+		}
+		return positionIdList;
+	}
+	/*
+	 获取母公司的推荐职位
+	 */
+	public List<Integer> getMotherRecommendPosition(int companyId,int positionId,int page,int pageSize){
+		List<UserHrAccountDO>  userHrAccountList=getUserHrAccountDOS(companyId);
+		List<Integer> publisher=getPublisherByUserHrAccount(userHrAccountList);
+		List<HrCompanyAccountDO> companyAccountDOList=getCompanyAccountList(publisher);
+		List<Integer> companyIdList=getHrCompanyIdList(companyAccountDOList);
+		if(StringUtils.isEmptyList(companyIdList)){
+			return null;
+		}
+		List<StJobSimilarityDO> StJobSimilarityDOList=getStJobSimilarityDOList(companyIdList,positionId,page,pageSize);
+		List<Integer> positionIdList=getPositionListByStJobSimilarityDOList(StJobSimilarityDOList);
+		return positionIdList;
+	}
+	/*
+	  获取所有的推荐职位
+	 */
+	public List<StJobSimilarityDO> getStJobSimilarityDOList(List<Integer> companyIdList,int positionId,int page,int pageSize){
+		if(StringUtils.isEmptyList(companyIdList)){
+			return null;
+		}
+		Query query=new Query.QueryBuilder()
+				.where(new Condition("department_id",companyIdList.toArray(),ValueOp.IN))
+				.and("pos_id",positionId)
+				.setPageNum(page)
+				.setPageSize(pageSize)
+				.buildQuery();
+		List<StJobSimilarityDO> list=stJobSimilarityDao.getDatas(query);
+		return list;
+	}
+	/*
+	 获取job_position.id的list
+	 */
+	public List<Integer> getPositionListByStJobSimilarityDOList(List<StJobSimilarityDO> list){
+		if(StringUtils.isEmptyList(list)){
+			return null;
+		}
+		List<Integer> result=new ArrayList<Integer>();
+		for(StJobSimilarityDO DO:list){
+			result.add(DO.getRecomId());
+		}
+		return result;
+	}
+	/*
+	 获取userhraccount的信息
+	 */
+	public List<UserHrAccountDO> getUserHrAccountDOS(int companyId){
+		Query query=new Query.QueryBuilder().where("company_id",companyId).buildQuery();
+		List<UserHrAccountDO> list=userHrAccountDao.getDatas(query);
+		return list;
+	}
+	/*
+	  通过userhraccount获取publisher列表
+	 */
+	public List<Integer> getPublisherByUserHrAccount(List<UserHrAccountDO> userHrAccountList){
+		List<Integer> list=new ArrayList<Integer>();
+		if(StringUtils.isEmptyList(userHrAccountList)){
+			return null;
+		}
+		for(UserHrAccountDO DO:userHrAccountList){
+			list.add(DO.getId());
+		}
+		return list;
+	}
+
+	/*
+	 获取子公司的推荐职位
+	 */
+	public List<Integer> getChildRecommendPosition(int companyId,int positionId,int page,int pageSize){
+        List<Integer> companyIdList=new ArrayList<Integer>();
+        companyIdList.add(companyId);
+		List<StJobSimilarityDO> list=getStJobSimilarityDOList(companyIdList,positionId,page,pageSize);
+		if(StringUtils.isEmptyList(list)){
+			return null;
+		}
+		List<Integer> result=new ArrayList<Integer>();
+		for(StJobSimilarityDO DO:list){
+			result.add(DO.getRecomId());
+
+		}
+		return result;
+	}
+	/*
+	获取推荐职位的id
+	 */
 	/*
         获取职位的jd页
      */
@@ -287,6 +431,9 @@ public class PositionPcService {
 	}
 	//获取hrcompanyAccount列表
 	public List<HrCompanyAccountDO> getCompanyAccountList(List<Integer> list){
+		if(StringUtils.isEmptyList(list)){
+			return null;
+		}
 		Query query=new Query.QueryBuilder().where(new Condition("account_id",list.toArray(),ValueOp.IN)).buildQuery();
 		List<HrCompanyAccountDO> records=hrCompanyAccountDao.getDatas(query);
 		return records;
@@ -295,7 +442,7 @@ public class PositionPcService {
 	 * 通过publisher的id列表获取公司的id列表
 	 */
 	public List<Integer> getHrCompanyIdList(List<HrCompanyAccountDO> list){
-		if(list==null||list.size()==0){
+		if(StringUtils.isEmptyList(list)){
 			return null;
 		}
 		List<Integer> result=new ArrayList<Integer>();
@@ -763,11 +910,5 @@ public class PositionPcService {
 		 }
 		 return newList;
 	 }
-
-
-	 
-
-
-
 
 }

@@ -20,7 +20,7 @@ import com.moseeker.useraccounts.config.AppConfig;
 public class UserEmailPositionTest {
 	@Autowired
 	private UserPositionEmailService service;
-	
+	//发送验证邮件
 	@Test
 	public void sendValidateEmail() throws TException{
 		int userId=1;
@@ -31,7 +31,7 @@ public class UserEmailPositionTest {
 		int result=service.sendEmailvalidation(email, userId, conditions,"www.baidu.com");
 		System.out.println("result========="+result);
 	}
-	
+	//订阅记录
 	@Test
 	public void postEmailPosition(){
 		int userId=1;
@@ -41,7 +41,7 @@ public class UserEmailPositionTest {
 		int result=service.postUserPositionEmail(userId, conditions);
 		System.out.println("result========="+result);
 	}
-	
+	//发送每周订阅邮件
 	@Test
 	public void sendPositionEmail() throws Exception{
 		int userId=1;
