@@ -474,7 +474,9 @@ public class ChatService {
         if(is_gamma) {
             content = String.format(WELCOMES_CONTER, resultOfSaveRoomVO.getUser().getUserName());
         } else {
-            if(resultOfSaveRoomVO.getHr() != null && resultOfSaveRoomVO.getPosition() != null) {
+            if(resultOfSaveRoomVO.getHr() != null
+                    && StringUtils.isNotNullOrEmpty(resultOfSaveRoomVO.getHr().getHrName())
+                    && resultOfSaveRoomVO.getPosition() != null) {
                 content = AUTO_CONTENT_WITH_HR_EXIST.replace("{hrName}", resultOfSaveRoomVO.getHr()
                         .getHrName()).replace("{companyName}", resultOfSaveRoomVO.getPosition().getCompanyName());
             } else {
