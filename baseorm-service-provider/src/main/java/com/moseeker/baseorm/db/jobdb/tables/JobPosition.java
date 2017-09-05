@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPosition extends TableImpl<JobPositionRecord> {
 
-    private static final long serialVersionUID = 182854989;
+    private static final long serialVersionUID = -1365760042;
 
     /**
      * The reference instance of <code>jobdb.job_position</code>
@@ -79,7 +79,7 @@ public class JobPosition extends TableImpl<JobPositionRecord> {
     /**
      * The column <code>jobdb.job_position.city</code>. 所在城市，多城市使用中文逗号分割
      */
-    public static final TableField<JobPositionRecord, String> CITY = createField("city",org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)) , JOB_POSITION, "所在城市，多城市使用中文逗号分割");
+    public final TableField<JobPositionRecord, String> CITY = createField("city", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "所在城市，多城市使用中文逗号分割");
 
     /**
      * The column <code>jobdb.job_position.department</code>. 所在部门
