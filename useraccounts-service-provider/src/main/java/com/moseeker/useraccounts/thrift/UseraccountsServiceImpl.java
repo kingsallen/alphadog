@@ -1,5 +1,8 @@
 package com.moseeker.useraccounts.thrift;
 
+import com.moseeker.baseorm.exception.ExceptionConvertUtil;
+import com.moseeker.common.exception.CommonException;
+import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -35,7 +38,14 @@ public class UseraccountsServiceImpl implements Iface {
 	 */
 	@Override
 	public Response postuserlogin(Userloginreq userloginreq) throws TException {
-		return service.postuserlogin(userloginreq);
+		try {
+			return service.postuserlogin(userloginreq);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 
 	/**
@@ -47,7 +57,14 @@ public class UseraccountsServiceImpl implements Iface {
 	 */
 	@Override
 	public Response postuserlogout(int userid) throws TException {
-		return service.postuserlogout(userid);
+		try {
+			return service.postuserlogout(userid);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 
 	/**
@@ -55,12 +72,26 @@ public class UseraccountsServiceImpl implements Iface {
 	 */
 	@Override
 	public Response postsendsignupcode(String mobile) throws TException {
-		return service.postsendsignupcode(mobile);
+		try {
+			return service.postsendsignupcode(mobile);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 
     @Override
     public Response postsendsignupcodeVoice(String mobile) throws TException {
-        return service.postsendsignupcodeVoice(mobile);
+		try {
+			return service.postsendsignupcodeVoice(mobile);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
     }
 
     /**
@@ -78,7 +109,14 @@ public class UseraccountsServiceImpl implements Iface {
 	 */
 	@Override
 	public Response postusermobilesignup(User user, String code) throws TException {
-		return service.postusermobilesignup(user, code);
+		try {
+			return service.postusermobilesignup(user, code);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 
 	/**
@@ -88,7 +126,14 @@ public class UseraccountsServiceImpl implements Iface {
 	 */
 	@Override
 	public Response postuserwxbindmobile(int appid, String unionid, String code, String mobile) throws TException {
-		return service.postuserwxbindmobile(appid, unionid, code, mobile);
+		try {
+			return service.postuserwxbindmobile(appid, unionid, code, mobile);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 
 	/**
@@ -102,7 +147,14 @@ public class UseraccountsServiceImpl implements Iface {
 	 */
 	@Override
 	public Response postuserchangepassword(int user_id, String old_password, String password) throws TException {
-		return service.postuserchangepassword(user_id, old_password, password);
+		try {
+			return service.postuserchangepassword(user_id, old_password, password);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 
 	/**
@@ -111,7 +163,14 @@ public class UseraccountsServiceImpl implements Iface {
 	@Override
 	public Response postusersendpasswordforgotcode(String mobile) throws TException {
 		// TODO 只有已经存在的用户才能发验证码。
-		return service.postusersendpasswordforgotcode(mobile);
+		try {
+			return service.postusersendpasswordforgotcode(mobile);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 
 	/**
@@ -122,12 +181,26 @@ public class UseraccountsServiceImpl implements Iface {
 	 */
 	@Override
 	public Response postuserresetpassword(String mobile, String password, String code) throws TException {
-		return service.postuserresetpassword(mobile, password, code);
+		try {
+			return service.postuserresetpassword(mobile, password, code);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 
 	@Override
 	public Response postusermergebymobile(int appid, String mobile) throws TException {
-		return service.postusermergebymobile(appid, mobile);
+		try {
+			return service.postusermergebymobile(appid, mobile);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 
 	/**
@@ -139,12 +212,26 @@ public class UseraccountsServiceImpl implements Iface {
 	 */
 	@Override
 	public Response getUserById(long userId) throws TException {
-		return service.getUserById(userId);
+		try {
+			return service.getUserById(userId);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 
 	@Override
 	public Response getUsers(CommonQuery query) throws TException {
-		return service.getUsers(query);
+		try {
+			return service.getUsers(query);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 
 	/**
@@ -156,7 +243,14 @@ public class UseraccountsServiceImpl implements Iface {
 	 */
 	@Override
 	public Response updateUser(User user) throws TException {
-		return service.updateUser(user);
+		try {
+			return service.updateUser(user);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 
 	/**
@@ -168,7 +262,14 @@ public class UseraccountsServiceImpl implements Iface {
 	 */
 	@Override
 	public Response getismobileregisted(String mobile) throws TException {
-		return service.getismobileregisted(mobile);
+		try {
+			return service.getismobileregisted(mobile);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 
 	/**
@@ -178,7 +279,14 @@ public class UseraccountsServiceImpl implements Iface {
 	@Override
 	public Response postsendchangemobilecode(String oldmobile) throws TException {
 		// TODO 只有已经存在的用户才能发验证码。
-		return service.postsendchangemobilecode(oldmobile);
+		try {
+			return service.postsendchangemobilecode(oldmobile);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 
 	/**
@@ -187,7 +295,14 @@ public class UseraccountsServiceImpl implements Iface {
 	 */
 	@Override
 	public Response postvalidatechangemobilecode(String oldmobile, String code) throws TException {
-		return service.postvalidatechangemobilecode(oldmobile, code);
+		try {
+			return service.postvalidatechangemobilecode(oldmobile, code);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 
 	/**
@@ -196,7 +311,14 @@ public class UseraccountsServiceImpl implements Iface {
 	 */
 	@Override
 	public Response postsendresetmobilecode(String newmobile) throws TException {
-		return service.postsendresetmobilecode(newmobile);
+		try {
+			return service.postsendresetmobilecode(newmobile);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 
 	/**
@@ -210,7 +332,14 @@ public class UseraccountsServiceImpl implements Iface {
 	 */
 	@Override
 	public Response postresetmobile(int user_id, String newmobile, String code) throws TException {
-		return service.postresetmobile(user_id, newmobile, code);
+		try {
+			return service.postresetmobile(user_id, newmobile, code);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 
 	/**
@@ -228,7 +357,14 @@ public class UseraccountsServiceImpl implements Iface {
 	 */
 	@Override
 	public Response getUserFavPositionCountByUserIdAndPositionId(int userId, int positionId) throws TException {
-		return service.getUserFavPositionCountByUserIdAndPositionId(userId, positionId);
+		try {
+			return service.getUserFavPositionCountByUserIdAndPositionId(userId, positionId);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 
 	/**
@@ -242,7 +378,14 @@ public class UseraccountsServiceImpl implements Iface {
 	 */
 	@Override
 	public Response postUserFavoritePosition(UserFavoritePosition userFavoritePosition) throws TException {
-		return service.postUserFavoritePosition(userFavoritePosition);
+		try {
+			return service.postUserFavoritePosition(userFavoritePosition);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 
 	/**
@@ -250,66 +393,157 @@ public class UseraccountsServiceImpl implements Iface {
 	 */
 	@Override
 	public Response postvalidatepasswordforgotcode(String mobile, String code) throws TException {
-		return service.postvalidatepasswordforgotcode(mobile, code);
+		try {
+			return service.postvalidatepasswordforgotcode(mobile, code);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 
 	@Override
 	public Response validateVerifyCode(String mobile, String code, int type) throws TException {
-		return service.validateVerifyCode(mobile, code, type);
+		try {
+			return service.validateVerifyCode(mobile, code, type);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 
 	@Override
 	public Response sendVerifyCode(String mobile, int type) throws TException {
-		return service.sendVerifyCode(mobile, type);
+		try {
+			return service.sendVerifyCode(mobile, type);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 
 	@Override
 	public Response checkEmail(String email) throws TException {
-		return service.checkEmail(email);
+		try {
+			return service.checkEmail(email);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 
 	@Override
 	public Response cerateQrcode(int wechatId, long sceneId, int expireSeconds, int action_name) throws TException {
-		return service.cerateQrcode(wechatId, sceneId, expireSeconds, action_name);
+		try {
+			return service.cerateQrcode(wechatId, sceneId, expireSeconds, action_name);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 
 	@Override
 	public Response getQrcode(String ticket) throws TException {
-		return service.getQrcode(ticket);
+		try {
+			return service.getQrcode(ticket);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 
 	@Override
 	public Response getScanResult(int wechatId, long sceneId) throws TException {
-		return service.getScanResult(wechatId, sceneId);
+		try {
+			return service.getScanResult(wechatId, sceneId);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 
 	public Response setScanResult(int wechatId, long sceneId, String value) throws TException {
-		return service.setScanResult(wechatId, sceneId, value);
+		try {
+			return service.setScanResult(wechatId, sceneId, value);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 
 	@Override
 	public UserUserDO ifExistUser(String mobile) throws TException {
-		return service.ifExistUser(mobile);
+		try {
+			return service.ifExistUser(mobile);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 
 	@Override
 	public int createRetrieveProfileUser(UserUserDO user) throws TException {
-		return service.createRetrieveProfileUser(user);
+		try {
+			return service.createRetrieveProfileUser(user);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 
 	@Override
 	public boolean ifExistProfile(String mobile) throws TException {
-		return service.ifExistProfile(mobile);
+		try {
+			return service.ifExistProfile(mobile);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 
 	@Override
 	public Response userChangeBind(String unionid, String mobile) throws TException {
-		return service.userChangeBind(unionid,mobile);
+		try {
+			return service.userChangeBind(unionid,mobile);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 
 	@Override
 	public Response postuserbindmobile(int appid, String unionid, String code,
 			String mobile, BindType bindType) throws TException {
-		return service.postuserbindmobile(appid, unionid, code, mobile, bindType);
+		try {
+			return service.postuserbindmobile(appid, unionid, code, mobile, bindType);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 }

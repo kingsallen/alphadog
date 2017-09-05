@@ -2,9 +2,14 @@ package com.moseeker.useraccounts.thrift;
 
 import java.util.List;
 
+import com.moseeker.baseorm.exception.ExceptionConvertUtil;
+import com.moseeker.common.exception.CommonException;
+import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.useraccounts.struct.ApplicationDetailVO;
 import com.moseeker.thrift.gen.useraccounts.struct.RecommendationVO;
 import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,27 +20,57 @@ import com.moseeker.useraccounts.service.impl.UserCenterService;
 
 @Service
 public class UserCenterThriftService implements Iface {
+
+	Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	@Autowired
 	private UserCenterService userCenterService;
 
 	@Override
 	public List<ApplicationRecordsForm> getApplications(int userId) throws TException {
-		return userCenterService.getApplication(userId);
+		try {
+			return userCenterService.getApplication(userId);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 
 	@Override
 	public ApplicationDetailVO getApplicationDetail(int userId, int appId) throws TException {
-		return userCenterService.getApplicationDetail(userId, appId);
+		try {
+			return userCenterService.getApplicationDetail(userId, appId);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 
 	@Override
 	public List<FavPositionForm> getFavPositions(int userId) throws TException {
-		return userCenterService.getFavPositions(userId);
+		try {
+			return userCenterService.getFavPositions(userId);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 
 	@Override
 	public RecommendationVO getRecommendation(int userId, byte type, int pageNo, int pageSize) throws TException {
-		return userCenterService.getRecommendations(userId, type, pageNo, pageSize);
+		try {
+			return userCenterService.getRecommendations(userId, type, pageNo, pageSize);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
 	}
 }

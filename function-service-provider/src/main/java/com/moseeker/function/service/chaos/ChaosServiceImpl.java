@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.net.ConnectException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,39 +77,46 @@ public class ChaosServiceImpl {
      */
     public HrThirdPartyAccountDO bind(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras) throws Exception {
         logger.info("ChaosServiceImpl bind");
+        try {
 //        String data = "{\"status\":100,\"message\":\"182****3365\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
-        String data = postBind(hrThirdPartyAccount.getChannel(), ChaosTool.getParams(hrThirdPartyAccount, extras));
-        JSONObject jsonObject = JSONObject.parseObject(data);
-        int status = jsonObject.getIntValue("status");
+            String data = postBind(hrThirdPartyAccount.getChannel(), ChaosTool.getParams(hrThirdPartyAccount, extras));
+            JSONObject jsonObject = JSONObject.parseObject(data);
+            int status = jsonObject.getIntValue("status");
 
-        if (status == 0) {
-            hrThirdPartyAccount.setBinding(Integer.valueOf(1).shortValue());
-            hrThirdPartyAccount.setRemainNum(jsonObject.getJSONObject("data").getIntValue("remain_number"));
-            hrThirdPartyAccount.setRemainProfileNum(jsonObject.getJSONObject("data").getIntValue("resume_number"));
-        } else {
-            String message = jsonObject.getString("message");
-
-            if (status == 1) {
-                if (StringUtils.isNullOrEmpty(message)) {
-                    message = "用户名或密码错误";
-                }
-                throw new BIZException(1, message);
-            } else if (status == 100) {
-                hrThirdPartyAccount.setBinding(Integer.valueOf(100).shortValue());
-            } else if (status == 2 || status == 9) {
-                hrThirdPartyAccount.setBinding(Integer.valueOf(6).shortValue());
-                if (StringUtils.isNullOrEmpty(message)) {
-                    message = "绑定异常，请重新绑定";
-                }
+            if (status == 0) {
+                hrThirdPartyAccount.setBinding(Integer.valueOf(1).shortValue());
+                hrThirdPartyAccount.setRemainNum(jsonObject.getJSONObject("data").getIntValue("remain_number"));
+                hrThirdPartyAccount.setRemainProfileNum(jsonObject.getJSONObject("data").getIntValue("resume_number"));
             } else {
-                if (StringUtils.isNullOrEmpty(message)) {
-                    message = "绑定错误，请重新绑定";
-                }
-                throw new BIZException(1, message);
-            }
+                String message = jsonObject.getString("message");
 
-            hrThirdPartyAccount.setErrorMessage(message);
+                if (status == 1) {
+                    if (StringUtils.isNullOrEmpty(message)) {
+                        message = "用户名或密码错误";
+                    }
+                    throw new BIZException(1, message);
+                } else if (status == 100) {
+                    hrThirdPartyAccount.setBinding(Integer.valueOf(100).shortValue());
+                } else if (status == 2 || status == 9) {
+                    hrThirdPartyAccount.setBinding(Integer.valueOf(6).shortValue());
+                    if (StringUtils.isNullOrEmpty(message)) {
+                        message = "绑定异常，请重新绑定";
+                    }
+                } else {
+                    if (StringUtils.isNullOrEmpty(message)) {
+                        message = "绑定错误，请重新绑定";
+                    }
+                    throw new BIZException(1, message);
+                }
+
+                hrThirdPartyAccount.setErrorMessage(message);
+            }
+        } catch (ConnectException e) {
+            //绑定超时发送邮件
+            hrThirdPartyAccount.setBinding(Integer.valueOf(6).shortValue());
+            hrThirdPartyAccount.setErrorMessage("绑定超时，请稍后重试");
         }
+
 
         return hrThirdPartyAccount;
     }

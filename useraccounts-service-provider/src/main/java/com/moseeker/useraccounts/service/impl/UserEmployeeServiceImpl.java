@@ -7,9 +7,11 @@ import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 import org.apache.thrift.TException;
@@ -18,7 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by eddie on 2017/3/9.
@@ -165,12 +169,20 @@ public class UserEmployeeServiceImpl {
 
     public Response delResource(CommonQuery query) throws TException {
         try {
-            int result = userEmployeeDao.delResource(QueryConvert.commonQueryConvertToQuery(query));
-            if (result > 0) {
-                return ResponseUtils.success(result);
-            } else {
+            Query newQuery = QueryConvert.commonQueryConvertToQuery(query);
+            if (newQuery.getConditions() == null) {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DEL_FAILED);
             }
+
+            List<UserEmployeeDO> employeeDOS = userEmployeeDao.getDatas(newQuery);
+
+            if(employeeDOS.size() == 0){
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DEL_FAILED);
+            }
+
+            employeeEntity.removeEmployee(employeeDOS.stream().map(item->item.getId()).collect(Collectors.toList()));
+
+            return ResponseUtils.success(true);
         } catch (Exception e) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }

@@ -9,6 +9,7 @@ import com.moseeker.company.exception.ExceptionFactory;
 import com.moseeker.company.service.impl.CompanyPcService;
 import com.moseeker.entity.CompanyConfigEntity;
 import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.company.struct.CompanyCertConf;
 import com.moseeker.thrift.gen.company.struct.CompanyForVerifyEmployee;
 import com.moseeker.thrift.gen.employee.struct.RewardConfig;
@@ -88,7 +89,7 @@ public class CompanyServicesImpl implements Iface {
             throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw new SysBIZException();
         }
     }
 
@@ -100,7 +101,7 @@ public class CompanyServicesImpl implements Iface {
             throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw new SysBIZException();
         }
     }
 
@@ -129,7 +130,7 @@ public class CompanyServicesImpl implements Iface {
             throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw new SysBIZException();
         }
     }
 
@@ -148,7 +149,7 @@ public class CompanyServicesImpl implements Iface {
             throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw new SysBIZException();
         }
     }
 
@@ -189,7 +190,7 @@ public class CompanyServicesImpl implements Iface {
             throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw new SysBIZException();
         }
     }
 
@@ -210,7 +211,7 @@ public class CompanyServicesImpl implements Iface {
             throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw new SysBIZException();
         }
     }
 
@@ -234,7 +235,7 @@ public class CompanyServicesImpl implements Iface {
             throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw new SysBIZException();
         }
 
     }
@@ -256,7 +257,7 @@ public class CompanyServicesImpl implements Iface {
             throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw new SysBIZException();
         }
     }
 
@@ -275,7 +276,7 @@ public class CompanyServicesImpl implements Iface {
             throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+            throw new SysBIZException();
         }
     }
     /*

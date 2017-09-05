@@ -2,7 +2,6 @@ package com.moseeker.useraccounts;
 
 import com.moseeker.rpccenter.main.MoServer;
 import com.moseeker.useraccounts.config.AppConfig;
-import com.moseeker.useraccounts.service.impl.UserEmployeeServiceImpl;
 import com.moseeker.useraccounts.thrift.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
