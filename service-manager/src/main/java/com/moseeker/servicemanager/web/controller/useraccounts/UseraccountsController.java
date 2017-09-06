@@ -463,7 +463,7 @@ public class UseraccountsController {
 			}
 			String countryCode= (String) reqParams.get("countryCode");
 			if(countryCode==null){
-				return ResponseLogNotification.fail(request, "请填写国家编号");
+				countryCode="86";
 			}
 			//
 			Response result = useraccountsServices.sendVerifyCode(mobile, type,countryCode);
