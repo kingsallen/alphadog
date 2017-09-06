@@ -10,7 +10,8 @@ struct Userloginreq {
     1: optional string unionid,
     2: optional string mobile,
     3: optional string password,
-    4: optional string code
+    4: optional string code,
+    5: optional string countryCode="86"
 }
 
 struct Usersetting { 
@@ -49,8 +50,10 @@ struct User {
     23: optional string     position        ,    // 点击我感兴趣时填写的职位
     24: optional i64        parentid             // 合并到了新用户的id
     25: optional i32        email_verified  ,    // 邮箱是否认证
-    26: optional string     nickname       	 // 用户昵称
+    26: optional string     nickname,       	 // 用户昵称
+    27: optional string     countryCode="86"
 }
+
 
 /*
   我感兴趣/职位收藏关系表
@@ -99,7 +102,8 @@ struct DownloadReport {
    4: string name,							//联系人
    5: optional i32 source,							//来源
    6: optional string register_ip,					//注册IP
-   7: optional string last_login_ip					//最后登录IP
+   7: optional string last_login_ip,					//最后登录IP
+   8: optional string countryCode="86"
 }
 
 /*

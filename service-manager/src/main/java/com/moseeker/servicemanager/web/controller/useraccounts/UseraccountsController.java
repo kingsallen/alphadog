@@ -1,8 +1,8 @@
 package com.moseeker.servicemanager.web.controller.useraccounts;
 
-import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
@@ -16,12 +16,6 @@ import com.moseeker.thrift.gen.useraccounts.service.UserQxService;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
 import com.moseeker.thrift.gen.useraccounts.service.UsersettingServices;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.apache.thrift.TSerializer;
 import org.apache.thrift.protocol.TSimpleJSONProtocol;
 import org.slf4j.Logger;
@@ -30,6 +24,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 //@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
 @Controller
@@ -216,8 +217,13 @@ public class UseraccountsController {
 			String code = BeanUtils.converToString(reqParams.get("code"));
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
 			Integer appid = BeanUtils.converToInteger(reqParams.get("appid"));
+			String country_code = BeanUtils.converToString(reqParams.get("country_code"));
+			if (country_code == null){
+				country_code = "86";
+			}
 
-			Response result = userBS.bindOnAccount(appid, unionid, code, mobile, BindType.WECHAT);
+
+			Response result = userBS.bindOnAccount(appid, unionid, code, country_code, mobile, BindType.WECHAT);
 			if (result.getStatus() == 0) {
 				return ResponseLogNotification.success(request, result);
 			} else {
