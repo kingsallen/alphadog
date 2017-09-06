@@ -966,7 +966,7 @@ public class UseraccountsService {
         if("86".equals(countryCode)){
             result = smsSender.sendSMS(mobile, type);
         }else{
-            smsSender.sendNationSMS(mobile,type,countryCode);
+            result=smsSender.sendNationSMS(mobile,type,countryCode);
         }
         if (result) {
             return ResponseUtils.success("success");

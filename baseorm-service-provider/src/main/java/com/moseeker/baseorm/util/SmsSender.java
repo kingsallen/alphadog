@@ -337,12 +337,10 @@ public class SmsSender {
     public boolean sendNationalSMS(String mobile,String content){
         StringBuffer buffer = new StringBuffer();
         String encode = "GBK"; //页面编码和短信内容编码为GBK。重要说明：如提交短信后收到乱码，请将GBK改为UTF-8测试。如本程序页面为编码格式为：ASCII/GB2312/GBK则该处为GBK。如本页面编码为UTF-8或需要支持繁体，阿拉伯文等Unicode，请将此处写为：UTF-8
-//        String encode = "UTF-8";
         ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil.getInstance();
         String password_md5 = propertiesUtils.get("sms.nation.password_md5",String.class);
         String apikey = propertiesUtils.get("sms.nation.apikey",String.class);
         String username = propertiesUtils.get("sms.nation.username",String.class);  //用户名
-
         try {
             String contentUrlEncode = URLEncoder.encode(content,encode);  //对短信内容做Urlencode编码操作。注意：如            //把发送链接存入buffer中，如连接超时，可能是您服务器不支持域名解析，请将下面连接中的：【m.5c.com.cn】修改为IP：【115.28.23.78】
             buffer.append("http://m.5c.com.cn/api/send/index.php");
@@ -368,6 +366,9 @@ public class SmsSender {
         }
         return false;
     }
+    /*
+      插入短信发送记录
+     */
     public  boolean addNationRecord(String mobile,String content,String countryCode ){
         LogSmsSendrecordRecord record = new LogSmsSendrecordRecord();
         record.setMobile(Long.valueOf(mobile));
@@ -375,8 +376,8 @@ public class SmsSender {
         JSONObject json = new JSONObject();
         json.put("content", content);
         record.setMsg(json.toJSONString());
+        record.setCountryCode(countryCode);
         smsRecordDao.addRecord(record);
-        logger.info(json.toJSONString());
         return true;
     }
 
