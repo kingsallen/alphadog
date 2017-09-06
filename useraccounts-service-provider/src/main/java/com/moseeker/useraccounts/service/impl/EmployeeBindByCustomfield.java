@@ -37,30 +37,31 @@ public class EmployeeBindByCustomfield extends EmployeeBinder {
 
     @Override
     protected UserEmployeeDO createEmployee(BindingParams bindingParams) {
+        UserEmployeeDO userEmployeeDO = new UserEmployeeDO();
         if (employeeThreadLocal.get().getSysuserId() == 0) { // sysuserId =  0 说明员工信息是批量上传的未设置user_id
             if (userEmployeeDOThreadLocal.get() != null && userEmployeeDOThreadLocal.get().getId() != 0) {
-                return userEmployeeDOThreadLocal.get();
+                userEmployeeDO = userEmployeeDOThreadLocal.get();
             } else {
-                employeeThreadLocal.get().setCompanyId(bindingParams.getCompanyId());
-                employeeThreadLocal.get().setEmployeeid(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getMobile(), ""));
-                employeeThreadLocal.get().setSysuserId(bindingParams.getUserId());
-                employeeThreadLocal.get().setCname(bindingParams.getName());
-                employeeThreadLocal.get().setMobile(bindingParams.getMobile());
-                employeeThreadLocal.get().setEmail(bindingParams.getEmail());
-                employeeThreadLocal.get().setWxuserId(wxEntity.getWxuserId(bindingParams.getUserId(), bindingParams.getCompanyId()));
-                employeeThreadLocal.get().setAuthMethod((byte)bindingParams.getType().getValue());
-                employeeThreadLocal.get().setActivation((byte)0);
-                employeeThreadLocal.get().setCreateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-                employeeThreadLocal.get().setBindingTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-                return employeeThreadLocal.get();
+                userEmployeeDO = employeeThreadLocal.get();
             }
         } else if (employeeThreadLocal.get().getSysuserId() == bindingParams.getUserId()) {
             if (userEmployeeDOThreadLocal.get() != null && userEmployeeDOThreadLocal.get().getId() != 0) {
-                return userEmployeeDOThreadLocal.get();
+                userEmployeeDO = userEmployeeDOThreadLocal.get();
             }
         } else {  // 说明 employee.user_id != bindingParams.user_id 用户提供的信息与员工信息不匹配
             throw new RuntimeException("员工认证信息不匹配");
         }
-        return userEmployeeDOThreadLocal.get();
+        userEmployeeDO.setCompanyId(bindingParams.getCompanyId());
+        userEmployeeDO.setEmployeeid(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getMobile(), ""));
+        userEmployeeDO.setSysuserId(bindingParams.getUserId());
+        userEmployeeDO.setCname(bindingParams.getName());
+        userEmployeeDO.setMobile(bindingParams.getMobile());
+        userEmployeeDO.setEmail(bindingParams.getEmail());
+        userEmployeeDO.setWxuserId(wxEntity.getWxuserId(bindingParams.getUserId(), bindingParams.getCompanyId()));
+        userEmployeeDO.setAuthMethod((byte)bindingParams.getType().getValue());
+        userEmployeeDO.setActivation((byte)0);
+        userEmployeeDO.setCreateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        userEmployeeDO.setBindingTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        return userEmployeeDO;
     }
 }
