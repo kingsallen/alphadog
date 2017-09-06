@@ -20,7 +20,7 @@ public class ImportErrorUserEmployee implements org.apache.thrift.TBase<ImportEr
 
   public int rowNum; // optional
   public java.lang.String message; // optional
-  public com.moseeker.thrift.gen.dao.struct.UserEmployeeDO userEmployeeDO; // optional
+  public com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO userEmployeeDO; // optional
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -93,12 +93,12 @@ public class ImportErrorUserEmployee implements org.apache.thrift.TBase<ImportEr
   public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-    tmpMap.put(_Fields.ROW_NUM, new org.apache.thrift.meta_data.FieldMetaData("rowNum", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-    tmpMap.put(_Fields.MESSAGE, new org.apache.thrift.meta_data.FieldMetaData("message", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.USER_EMPLOYEE_DO, new org.apache.thrift.meta_data.FieldMetaData("userEmployeeDO", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
-        new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.dao.struct.UserEmployeeDO.class)));
+    tmpMap.put(_Fields.ROW_NUM, new org.apache.thrift.meta_data.FieldMetaData("rowNum", org.apache.thrift.TFieldRequirementType.OPTIONAL,
+            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+    tmpMap.put(_Fields.MESSAGE, new org.apache.thrift.meta_data.FieldMetaData("message", org.apache.thrift.TFieldRequirementType.OPTIONAL,
+            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+    tmpMap.put(_Fields.USER_EMPLOYEE_DO, new org.apache.thrift.meta_data.FieldMetaData("userEmployeeDO", org.apache.thrift.TFieldRequirementType.OPTIONAL,
+            new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO.class)));
     metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(ImportErrorUserEmployee.class, metaDataMap);
   }
@@ -116,7 +116,7 @@ public class ImportErrorUserEmployee implements org.apache.thrift.TBase<ImportEr
       this.message = other.message;
     }
     if (other.isSetUserEmployeeDO()) {
-      this.userEmployeeDO = new com.moseeker.thrift.gen.dao.struct.UserEmployeeDO(other.userEmployeeDO);
+      this.userEmployeeDO = new com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO(other.userEmployeeDO);
     }
   }
 
@@ -179,11 +179,11 @@ public class ImportErrorUserEmployee implements org.apache.thrift.TBase<ImportEr
     }
   }
 
-  public com.moseeker.thrift.gen.dao.struct.UserEmployeeDO getUserEmployeeDO() {
+  public com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO getUserEmployeeDO() {
     return this.userEmployeeDO;
   }
 
-  public ImportErrorUserEmployee setUserEmployeeDO(com.moseeker.thrift.gen.dao.struct.UserEmployeeDO userEmployeeDO) {
+  public ImportErrorUserEmployee setUserEmployeeDO(com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO userEmployeeDO) {
     this.userEmployeeDO = userEmployeeDO;
     return this;
   }
@@ -205,43 +205,43 @@ public class ImportErrorUserEmployee implements org.apache.thrift.TBase<ImportEr
 
   public void setFieldValue(_Fields field, java.lang.Object value) {
     switch (field) {
-    case ROW_NUM:
-      if (value == null) {
-        unsetRowNum();
-      } else {
-        setRowNum((java.lang.Integer)value);
-      }
-      break;
+      case ROW_NUM:
+        if (value == null) {
+          unsetRowNum();
+        } else {
+          setRowNum((java.lang.Integer)value);
+        }
+        break;
 
-    case MESSAGE:
-      if (value == null) {
-        unsetMessage();
-      } else {
-        setMessage((java.lang.String)value);
-      }
-      break;
+      case MESSAGE:
+        if (value == null) {
+          unsetMessage();
+        } else {
+          setMessage((java.lang.String)value);
+        }
+        break;
 
-    case USER_EMPLOYEE_DO:
-      if (value == null) {
-        unsetUserEmployeeDO();
-      } else {
-        setUserEmployeeDO((com.moseeker.thrift.gen.dao.struct.UserEmployeeDO)value);
-      }
-      break;
+      case USER_EMPLOYEE_DO:
+        if (value == null) {
+          unsetUserEmployeeDO();
+        } else {
+          setUserEmployeeDO((com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO)value);
+        }
+        break;
 
     }
   }
 
   public java.lang.Object getFieldValue(_Fields field) {
     switch (field) {
-    case ROW_NUM:
-      return getRowNum();
+      case ROW_NUM:
+        return getRowNum();
 
-    case MESSAGE:
-      return getMessage();
+      case MESSAGE:
+        return getMessage();
 
-    case USER_EMPLOYEE_DO:
-      return getUserEmployeeDO();
+      case USER_EMPLOYEE_DO:
+        return getUserEmployeeDO();
 
     }
     throw new java.lang.IllegalStateException();
@@ -254,12 +254,12 @@ public class ImportErrorUserEmployee implements org.apache.thrift.TBase<ImportEr
     }
 
     switch (field) {
-    case ROW_NUM:
-      return isSetRowNum();
-    case MESSAGE:
-      return isSetMessage();
-    case USER_EMPLOYEE_DO:
-      return isSetUserEmployeeDO();
+      case ROW_NUM:
+        return isSetRowNum();
+      case MESSAGE:
+        return isSetMessage();
+      case USER_EMPLOYEE_DO:
+        return isSetUserEmployeeDO();
     }
     throw new java.lang.IllegalStateException();
   }
@@ -455,7 +455,7 @@ public class ImportErrorUserEmployee implements org.apache.thrift.TBase<ImportEr
       while (true)
       {
         schemeField = iprot.readFieldBegin();
-        if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+        if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
           break;
         }
         switch (schemeField.id) {
@@ -463,7 +463,7 @@ public class ImportErrorUserEmployee implements org.apache.thrift.TBase<ImportEr
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
               struct.rowNum = iprot.readI32();
               struct.setRowNumIsSet(true);
-            } else { 
+            } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
@@ -471,16 +471,16 @@ public class ImportErrorUserEmployee implements org.apache.thrift.TBase<ImportEr
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
               struct.message = iprot.readString();
               struct.setMessageIsSet(true);
-            } else { 
+            } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
           case 3: // USER_EMPLOYEE_DO
             if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-              struct.userEmployeeDO = new com.moseeker.thrift.gen.dao.struct.UserEmployeeDO();
+              struct.userEmployeeDO = new com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO();
               struct.userEmployeeDO.read(iprot);
               struct.setUserEmployeeDOIsSet(true);
-            } else { 
+            } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
@@ -570,7 +570,7 @@ public class ImportErrorUserEmployee implements org.apache.thrift.TBase<ImportEr
         struct.setMessageIsSet(true);
       }
       if (incoming.get(2)) {
-        struct.userEmployeeDO = new com.moseeker.thrift.gen.dao.struct.UserEmployeeDO();
+        struct.userEmployeeDO = new com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO();
         struct.userEmployeeDO.read(iprot);
         struct.setUserEmployeeDOIsSet(true);
       }

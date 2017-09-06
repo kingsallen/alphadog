@@ -1,7 +1,7 @@
 # file: useraccounts.struct
 
 namespace java com.moseeker.thrift.gen.useraccounts.struct
-include "../../dao/struct/userdb_struct.thrift"
+include "../../dao/struct/userdb/user_employee_struct.thrift"
 
 typedef string Timestamp
 
@@ -431,7 +431,7 @@ struct UserEmployeeDetailVO{
 struct ImportErrorUserEmployee{
     1: optional i32 rowNum, // 第几条数据
     2: optional string message, // 错误原因
-    3: optional userdb_struct.UserEmployeeDO userEmployeeDO // 员工实体
+    3: optional user_employee_struct.UserEmployeeDO userEmployeeDO // 员工实体
 }
 
 struct ImportUserEmployeeStatistic{
