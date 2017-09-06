@@ -731,10 +731,11 @@ public class PositionService {
                         // 将需要更新JobPosition的数据放入更新的列表
                         jobPositionUpdateRecordList.add(record);
                         // 需要更新JobPositionCity数据
-                        if (cityCode(jobPositionHandlerDate.getCity(), record.getId()) != null && cityCode(jobPositionHandlerDate.getCity(), record.getId()).size() > 0) {
+                        List<JobPositionCityRecord> jobPositionCityRecordList = cityCode(jobPositionHandlerDate.getCity(), record.getId());
+                        if (jobPositionCityRecordList != null && jobPositionCityRecordList.size() > 0) {
                             // 更新时候需要把之前的jobPositionCity数据删除
                             deleteCitylist.add(record.getId());
-                            jobPositionCityRecordsUpdatelist.addAll(cityCode(jobPositionHandlerDate.getCity(), record.getId()));
+                            jobPositionCityRecordsUpdatelist.addAll(jobPositionCityRecordList);
                         }
                         // 需要更新的JobPositionExra数据
                         if (jobPositionHandlerDate.getExtra() != null || jobOccupationId != 0 || customId != 0) {
@@ -773,9 +774,10 @@ public class PositionService {
                 logger.info("-- 新增jobPostion数据结束,新增职位ID为：" + pid);
                 if (pid != null) {
                     jobPositionIds.add(pid);
-                    if (cityCode(jobPositionHandlerDate.getCity(), record.getId()) != null && cityCode(jobPositionHandlerDate.getCity(), record.getId()).size() > 0) {
+                    List<JobPositionCityRecord> jobPositionCityRecordList = cityCode(jobPositionHandlerDate.getCity(), record.getId());
+                    if (jobPositionCityRecordList != null && jobPositionCityRecordList.size() > 0) {
                         // 新增城市code时，需要先删除jobpostionCity数据
-                        jobPositionCityRecordsAddlist.addAll(cityCode(jobPositionHandlerDate.getCity(), record.getId()));
+                        jobPositionCityRecordsAddlist.addAll(jobPositionCityRecordList);
                     }
                 }
                 // 需要新增的JobPosition数据
