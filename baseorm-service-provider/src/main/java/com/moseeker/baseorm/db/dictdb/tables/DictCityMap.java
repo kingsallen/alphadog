@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictCityMap extends TableImpl<DictCityMapRecord> {
 
-    private static final long serialVersionUID = -90829378;
+    private static final long serialVersionUID = -898817283;
 
     /**
      * The reference instance of <code>dictdb.dict_city_map</code>
@@ -64,7 +64,7 @@ public class DictCityMap extends TableImpl<DictCityMapRecord> {
     /**
      * The column <code>dictdb.dict_city_map.code_other</code>.
      */
-    public final TableField<DictCityMapRecord, String> CODE_OTHER = createField("code_other", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false), this, "");
+    public final TableField<DictCityMapRecord, String> CODE_OTHER = createField("code_other", org.jooq.impl.SQLDataType.VARCHAR.length(10).nullable(false), this, "");
 
     /**
      * The column <code>dictdb.dict_city_map.channel</code>. 渠道 1 51job 2 猎聘 3 智联 4 linkedin

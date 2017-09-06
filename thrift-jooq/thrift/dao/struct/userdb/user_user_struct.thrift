@@ -5,7 +5,7 @@ namespace py thrift_gen.gen.dao.struct.userdb
 struct UserUserDO {
 
 	1: optional i32 id,	//主key
-	2: optional string username,	//用户名，比如手机号、邮箱等
+	2: optional string username,	//用户名，目前存放已验证手机号或者unionid
 	3: optional string password,	//密码
 	4: optional i8 isDisable,	//是否禁用，0：可用，1：禁用
 	5: optional i32 rank,	//用户等级
@@ -14,7 +14,7 @@ struct UserUserDO {
 	8: optional string lastLoginTime,	//最近登录时间
 	9: optional string lastLoginIp,	//最近登录IP
 	10: optional i32 loginCount,	//登录次数
-	11: optional i64 mobile,	//user pass mobile registe
+	11: optional i64 mobile,	//手机号(未验证)
 	12: optional string email,	//user pass email registe
 	13: optional i8 activation,	//is not activation 0:no 1:yes
 	14: optional string activationCode,	//activation code
@@ -30,6 +30,7 @@ struct UserUserDO {
 	24: optional i32 parentid,	//合并到了新用户的id
 	25: optional string nickname,	//用户昵称
 	26: optional i8 emailVerified,	//邮箱是认证 2:老数据 1:已认证 0:未认证
-	27: optional string updateTime	//null
+	27: optional string updateTime,	//null
+	28: optional i32 countryCode	//国家代码，用于支持国际短信
 
 }
