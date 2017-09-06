@@ -73,7 +73,7 @@ public class UseraccountsServiceImpl implements Iface {
 	@Override
 	public Response postsendsignupcode(String countryCode,String mobile) throws TException {
 		try {
-			return service.postsendsignupcode(mobile);
+			return service.postsendsignupcode(countryCode, mobile);
 		} catch (CommonException e) {
 			throw ExceptionConvertUtil.convertCommonException(e);
 		} catch (Exception e) {
@@ -164,7 +164,7 @@ public class UseraccountsServiceImpl implements Iface {
 	public Response postusersendpasswordforgotcode(String countryCode,String mobile) throws TException {
 		// TODO 只有已经存在的用户才能发验证码。
 		try {
-			return service.postusersendpasswordforgotcode(mobile);
+			return service.postusersendpasswordforgotcode(countryCode, mobile);
 		} catch (CommonException e) {
 			throw ExceptionConvertUtil.convertCommonException(e);
 		} catch (Exception e) {
@@ -280,7 +280,7 @@ public class UseraccountsServiceImpl implements Iface {
 	public Response postsendchangemobilecode(String countryCode,String oldmobile) throws TException {
 		// TODO 只有已经存在的用户才能发验证码。
 		try {
-			return service.postsendchangemobilecode(oldmobile);
+			return service.postsendchangemobilecode(countryCode, oldmobile);
 		} catch (CommonException e) {
 			throw ExceptionConvertUtil.convertCommonException(e);
 		} catch (Exception e) {
@@ -296,7 +296,7 @@ public class UseraccountsServiceImpl implements Iface {
 	@Override
 	public Response postvalidatechangemobilecode(String countryCode,String oldmobile, String code) throws TException {
 		try {
-			return service.postvalidatechangemobilecode(oldmobile, code);
+			return service.postvalidatechangemobilecode(countryCode,oldmobile, code);
 		} catch (CommonException e) {
 			throw ExceptionConvertUtil.convertCommonException(e);
 		} catch (Exception e) {
@@ -312,7 +312,7 @@ public class UseraccountsServiceImpl implements Iface {
 	@Override
 	public Response postsendresetmobilecode(String countryCode,String newmobile) throws TException {
 		try {
-			return service.postsendresetmobilecode(newmobile);
+			return service.postsendresetmobilecode(countryCode,newmobile);
 		} catch (CommonException e) {
 			throw ExceptionConvertUtil.convertCommonException(e);
 		} catch (Exception e) {

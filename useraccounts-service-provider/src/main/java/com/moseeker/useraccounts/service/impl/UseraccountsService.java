@@ -15,12 +15,12 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserFavPositionRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.tool.QueryConvert;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.baseorm.util.SmsSender;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.*;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
@@ -42,21 +42,19 @@ import com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition;
 import com.moseeker.thrift.gen.useraccounts.struct.Userloginreq;
 import com.moseeker.useraccounts.pojo.MessageTemplate;
 import com.moseeker.useraccounts.service.BindOnAccountService;
-
-import java.sql.Timestamp;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 用户登陆， 注册，合并等api的实现
@@ -165,15 +163,18 @@ public class UseraccountsService {
         if (code != null) {
             // 存在验证码,就是手机号+验证码登陆.
             String mobile = userloginreq.getMobile();
+            if(!"86".equals(userloginreq.getCountryCode())){
+                mobile=userloginreq.getCountryCode()+mobile;
+            }
             if (validateCode(mobile, code, 1)) {
-                query.where("username", mobile);
+                query.where("username", mobile).and("country_code",userloginreq.getCountryCode());
             } else {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);
             }
         } else if (userloginreq.getUnionid() != null) {
             query.where("unionid", userloginreq.getUnionid());
         } else {
-            query.where("username", userloginreq.getMobile()).and("password", MD5Util.encryptSHA(userloginreq.getPassword()));
+            query.where("username", userloginreq.getMobile()).and("country_code",userloginreq.getCountryCode()).and("password", MD5Util.encryptSHA(userloginreq.getPassword()));
         }
 
         try {
@@ -196,6 +197,7 @@ public class UseraccountsService {
 
                     if (user.getUsername().length() < 12) {
                         resp.put("mobile", user.getUsername());
+                        resp.put("countryCode", user.getCountryCode());
                     } else {
                         resp.put("mobile", "");
                     }
@@ -243,7 +245,7 @@ public class UseraccountsService {
     /**
      * 发送手机注册的验证码
      */
-    public Response postsendsignupcode(String mobile) throws TException {
+    public Response postsendsignupcode(String countryCode, String mobile) throws TException {
         // TODO 未注册用户才能发送。
         /*
          * Query query = new Query(); Map<String, String> filters =
@@ -263,15 +265,23 @@ public class UseraccountsService {
 		 * } }
 		 */
 
-        if (mobile.length() < 10) {
+        boolean result=false;
+        if (mobile.length() < 7) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
-
-        if (smsSender.sendSMS_signup(mobile)) {
-            return ResponseUtils.success(null);
-        } else {
+        try {
+            result = smsSender.sendSMS(mobile, 1,countryCode);
+            if (result) {
+                return ResponseUtils.success("success");
+            } else {
+                return ResponseUtils.fail(ConstantErrorCodeMessage.USER_SMS_LIMITED);
+            }
+        } catch (Exception e) {
+            logger.info(e.toString());
             return ResponseUtils.fail(ConstantErrorCodeMessage.USER_SMS_LIMITED);
+
         }
+
     }
 
     /**
@@ -469,12 +479,12 @@ public class UseraccountsService {
     /**
      * 发送忘记密码的验证码
      */
-    public Response postusersendpasswordforgotcode(String mobile) throws TException {
+    public Response postusersendpasswordforgotcode(String countryCode, String mobile) throws TException {
         // TODO 只有已经存在的用户才能发验证码。
         Query.QueryBuilder query = new Query.QueryBuilder();
 
         if (mobile.length() > 0) {
-            query.where("username", mobile);
+            query.where("username", mobile).and("country_code",countryCode);
             try {
                 UserUserRecord user = userdao.getRecord(query.buildQuery());
                 if (user == null) {
@@ -488,10 +498,22 @@ public class UseraccountsService {
             }
         }
 
-        if (smsSender.sendSMS_passwordforgot(mobile)) {
-            return ResponseUtils.success(null);
-        } else {
+
+        boolean result=false;
+        if (mobile.length() < 7) {
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+        }
+        try {
+            result = smsSender.sendSMS(mobile, 2,countryCode);
+            if (result) {
+                return ResponseUtils.success("success");
+            } else {
+                return ResponseUtils.fail(ConstantErrorCodeMessage.USER_SMS_LIMITED);
+            }
+        } catch (Exception e) {
+            logger.info(e.toString());
             return ResponseUtils.fail(ConstantErrorCodeMessage.USER_SMS_LIMITED);
+
         }
     }
 
@@ -646,12 +668,12 @@ public class UseraccountsService {
     /**
      * 修改手机号时， 先要向当前手机号发送验证码。
      */
-    public Response postsendchangemobilecode(String oldmobile) throws TException {
+    public Response postsendchangemobilecode(String countryCode,String oldmobile) throws TException {
         // TODO 只有已经存在的用户才能发验证码。
         Query.QueryBuilder query = new Query.QueryBuilder();
 
         if (oldmobile.length() > 0) {
-            query.where("username", oldmobile);
+            query.where("username", oldmobile).and("country_code",countryCode);
             try {
                 UserUserRecord user = userdao.getRecord(query.buildQuery());
                 if (user == null) {
@@ -665,17 +687,32 @@ public class UseraccountsService {
             }
         }
 
-        if (smsSender.sendSMS_changemobilecode(oldmobile)) {
-            return ResponseUtils.success(null);
-        } else {
+        boolean result=false;
+        if (oldmobile.length() < 7) {
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+        }
+        try {
+            result = smsSender.sendSMS(oldmobile, 3,countryCode);
+            if (result) {
+                return ResponseUtils.success("success");
+            } else {
+                return ResponseUtils.fail(ConstantErrorCodeMessage.USER_SMS_LIMITED);
+            }
+        } catch (Exception e) {
+            logger.info(e.toString());
             return ResponseUtils.fail(ConstantErrorCodeMessage.USER_SMS_LIMITED);
+
         }
     }
 
     /**
      * 修改手机号时， 验证现有手机号的验证码。
      */
-    public Response postvalidatechangemobilecode(String oldmobile, String code) throws TException {
+    public Response postvalidatechangemobilecode(String countryCode, String oldmobile, String code) throws TException {
+
+        if(!"86".equals(countryCode)){
+            oldmobile=countryCode+oldmobile;
+        }
         if (!validateCode(oldmobile, code, 3)) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);
         } else {
@@ -686,11 +723,11 @@ public class UseraccountsService {
     /**
      * 修改手机号时， 向新手机号发送验证码。
      */
-    public Response postsendresetmobilecode(String newmobile) throws TException {
+    public Response postsendresetmobilecode(String countryCode, String newmobile) throws TException {
         Query.QueryBuilder query = new Query.QueryBuilder();
 
         if (newmobile.length() > 0) {
-            query.where("username", newmobile);
+            query.where("username", newmobile).and("country_code",countryCode);
             try {
                 UserUserRecord user = userdao.getRecord(query.buildQuery());
                 if (user != null) {
@@ -703,11 +740,21 @@ public class UseraccountsService {
 
             }
         }
-
-        if (smsSender.sendSMS_resetmobilecode(newmobile)) {
-            return ResponseUtils.success(null);
-        } else {
+        boolean result=false;
+        if (newmobile.length() < 7) {
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+        }
+        try {
+            result = smsSender.sendSMS(newmobile, 4,countryCode);
+            if (result) {
+                return ResponseUtils.success("success");
+            } else {
+                return ResponseUtils.fail(ConstantErrorCodeMessage.USER_SMS_LIMITED);
+            }
+        } catch (Exception e) {
+            logger.info(e.toString());
             return ResponseUtils.fail(ConstantErrorCodeMessage.USER_SMS_LIMITED);
+
         }
     }
 

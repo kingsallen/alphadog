@@ -134,17 +134,17 @@ public class SmsSender {
      * @param mobile
      * @return
      */
-    public boolean sendSMS_signup(String mobile){
-        HashMap<String, String> params = new HashMap<String, String>();
-        String signupcode = getRandomStr();
-        params.put("code", signupcode);    
-        try {
-			redisClient.set(0, "SMS_SIGNUP", mobile, signupcode);
-		} catch (CacheConfigNotExistException e) {
-			logger.error(e.getMessage(), e);
-		}
-        return sendSMS(mobile,"SMS_5755096",params);
-    } 
+//    public boolean sendSMS_signup(String mobile){
+//        HashMap<String, String> params = new HashMap<String, String>();
+//        String signupcode = getRandomStr();
+//        params.put("code", signupcode);
+//        try {
+//			redisClient.set(0, "SMS_SIGNUP", mobile, signupcode);
+//		} catch (CacheConfigNotExistException e) {
+//			logger.error(e.getMessage(), e);
+//		}
+//        return sendSMS(mobile,"SMS_5755096",params);
+//    }
 
     /**
      *      SMS_5755096
@@ -152,13 +152,13 @@ public class SmsSender {
      * @param mobile
      * @return
      */
-    public boolean sendSMS_passwordforgot(String mobile){
-        HashMap<String, String> params = new HashMap<String, String>();
-        String passwordforgotcode = getRandomStr();
-        params.put("code", passwordforgotcode);        
-        redisClient.set(0, "SMS_PWD_FORGOT", mobile, passwordforgotcode);
-        return sendSMS(mobile,"SMS_5755096",params);
-    } 
+//    public boolean sendSMS_passwordforgot(String mobile){
+//        HashMap<String, String> params = new HashMap<String, String>();
+//        String passwordforgotcode = getRandomStr();
+//        params.put("code", passwordforgotcode);
+//        redisClient.set(0, "SMS_PWD_FORGOT", mobile, passwordforgotcode);
+//        return sendSMS(mobile,"SMS_5755096",params);
+//    }
     
 
     /**
@@ -181,13 +181,13 @@ public class SmsSender {
      * @param mobile
      * @return
      */
-    public boolean sendSMS_changemobilecode(String mobile){
-        HashMap<String, String> params = new HashMap<String, String>();
-        String code = getRandomStr();
-        params.put("code", code);    
-        redisClient.set(0, "SMS_CHANGEMOBILE_CODE", mobile, code);
-        return sendSMS(mobile,"SMS_5755096",params);
-    }     
+//    public boolean sendSMS_changemobilecode(String mobile){
+//        HashMap<String, String> params = new HashMap<String, String>();
+//        String code = getRandomStr();
+//        params.put("code", code);
+//        redisClient.set(0, "SMS_CHANGEMOBILE_CODE", mobile, code);
+//        return sendSMS(mobile,"SMS_5755096",params);
+//    }
     
     /**
      *      SMS_5755096  重置手机号时， 向新手机号发送验证码。
@@ -195,13 +195,13 @@ public class SmsSender {
      * @param mobile
      * @return
      */
-    public boolean sendSMS_resetmobilecode(String mobile){
-        HashMap<String, String> params = new HashMap<String, String>();
-        String code = getRandomStr();
-        params.put("code", code);    
-        redisClient.set(0, "SMS_RESETMOBILE_CODE", mobile, code);
-        return sendSMS(mobile,"SMS_5755096",params);
-    }
+//    public boolean sendSMS_resetmobilecode(String mobile){
+//        HashMap<String, String> params = new HashMap<String, String>();
+//        String code = getRandomStr();
+//        params.put("code", code);
+//        redisClient.set(0, "SMS_RESETMOBILE_CODE", mobile, code);
+//        return sendSMS(mobile,"SMS_5755096",params);
+//    }
 
     /**
      * SMS_5755096 手机发送验证码。
