@@ -100,9 +100,9 @@ public abstract class EmployeeBinder {
         userEmployee.setCompanyId(bindingParams.getCompanyId());
         userEmployee.setEmployeeid(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getMobile(), ""));
         userEmployee.setSysuserId(bindingParams.getUserId());
-        userEmployee.setCname(bindingParams.getName());
-        userEmployee.setMobile(bindingParams.getMobile());
-        userEmployee.setEmail(bindingParams.getEmail());
+        userEmployee.setCname(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getName(), userEmployee.getCname()));
+        userEmployee.setMobile(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getMobile(), userEmployee.getMobile()));
+        userEmployee.setEmail(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getEmail(), userEmployee.getEmail()));
         userEmployee.setWxuserId(wxEntity.getWxuserId(bindingParams.getUserId(), bindingParams.getCompanyId()));
         userEmployee.setAuthMethod((byte)bindingParams.getType().getValue());
         userEmployee.setActivation((byte)0);
