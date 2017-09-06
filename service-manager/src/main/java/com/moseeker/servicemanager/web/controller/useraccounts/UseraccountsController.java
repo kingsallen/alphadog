@@ -177,7 +177,11 @@ public class UseraccountsController {
 	public String postsendsignupcode(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			Object mobile = ParamUtils.parseRequestParam(request).get("mobile");
-			Response result = useraccountsServices.postsendsignupcode(BeanUtils.converToString(mobile));
+			String countryCode= (String) ParamUtils.parseRequestParam(request).get("countryCode");
+			if(StringUtils.isNullOrEmpty(countryCode)){
+				countryCode="86";
+			}
+			Response result = useraccountsServices.postsendsignupcode(countryCode,BeanUtils.converToString(mobile));
 			if (result.getStatus() == 0) {
 				return ResponseLogNotification.success(request, result);
 			} else {
@@ -194,7 +198,11 @@ public class UseraccountsController {
     public String postsendsignupcodeVice(HttpServletRequest request, HttpServletResponse response) {
         try {
             Object mobile = ParamUtils.parseRequestParam(request).get("mobile");
-            Response result = useraccountsServices.postsendsignupcodeVoice(BeanUtils.converToString(mobile));
+			String countryCode= (String) ParamUtils.parseRequestParam(request).get("countryCode");
+			if(StringUtils.isNullOrEmpty(countryCode)){
+				countryCode="86";
+			}
+            Response result = useraccountsServices.postsendsignupcodeVoice(countryCode,BeanUtils.converToString(mobile));
             if (result.getStatus() == 0) {
                 return ResponseLogNotification.success(request, result);
             } else {
@@ -267,7 +275,11 @@ public class UseraccountsController {
 			Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
 			String unionid = BeanUtils.converToString(reqParams.get("unionid"));
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
-			Response result = useraccountsServices.userChangeBind(unionid, mobile);
+			String countryCode= (String) ParamUtils.parseRequestParam(request).get("countryCode");
+			if(StringUtils.isNullOrEmpty(countryCode)){
+				countryCode="86";
+			}
+			Response result = useraccountsServices.userChangeBind(unionid,countryCode, mobile);
 			if (result.getStatus() == 0) {
 				return ResponseLogNotification.success(request, result);
 			} else {
@@ -306,7 +318,11 @@ public class UseraccountsController {
 	public String postusersendpasswordforgotcode(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			Object mobile = ParamUtils.parseRequestParam(request).get("mobile");
-			Response result = useraccountsServices.postusersendpasswordforgotcode(BeanUtils.converToString(mobile));
+			String countryCode= (String) ParamUtils.parseRequestParam(request).get("countryCode");
+			if(StringUtils.isNullOrEmpty(countryCode)){
+				countryCode="86";
+			}
+			Response result = useraccountsServices.postusersendpasswordforgotcode(countryCode,BeanUtils.converToString(mobile));
 			if (result.getStatus() == 0) {
 				return ResponseLogNotification.success(request, result);
 			} else {
@@ -330,7 +346,7 @@ public class UseraccountsController {
 			if(StringUtils.isNullOrEmpty(countryCode)){
 				countryCode="86";
 			}
-			Response result = useraccountsServices.postuserresetpassword(mobile, password, code,countryCode);
+			Response result = useraccountsServices.postuserresetpassword(mobile,countryCode, password, code);
 			if (result.getStatus() == 0) {
 				return ResponseLogNotification.success(request, result);
 			} else {
@@ -350,8 +366,11 @@ public class UseraccountsController {
 			Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
 			Integer appid = BeanUtils.converToInteger(reqParams.get("appid"));
-
-			Response result = useraccountsServices.postusermergebymobile(appid, mobile);
+			String countryCode= (String) reqParams.get("countryCode");
+			if(StringUtils.isNullOrEmpty(countryCode)){
+				countryCode="86";
+			}
+			Response result = useraccountsServices.postusermergebymobile(appid,countryCode, mobile);
 			if (result.getStatus() == 0) {
 				return ResponseLogNotification.success(request, result);
 			} else {
@@ -407,8 +426,11 @@ public class UseraccountsController {
 			Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
 			String code = BeanUtils.converToString(reqParams.get("code"));
-
-			Response result = useraccountsServices.postvalidatepasswordforgotcode(mobile, code);
+			String countryCode= (String) reqParams.get("countryCode");
+			if(StringUtils.isNullOrEmpty(countryCode)){
+				countryCode="86";
+			}
+			Response result = useraccountsServices.postvalidatepasswordforgotcode(countryCode,mobile, code);
 			if (result.getStatus() == 0) {
 				return ResponseLogNotification.success(request, result);
 			} else {
@@ -443,7 +465,7 @@ public class UseraccountsController {
 				countryCode="86";
 			}
 			//
-			Response result = useraccountsServices.validateVerifyCode(mobile, code, type,countryCode);
+			Response result = useraccountsServices.validateVerifyCode(countryCode,mobile, code, type);
 			if (result.getStatus() == 0) {
 				return ResponseLogNotification.success(request, result);
 			} else {
@@ -473,11 +495,11 @@ public class UseraccountsController {
 				type = 0;
 			}
 			String countryCode= (String) reqParams.get("countryCode");
-			if(countryCode==null){
+			if(StringUtils.isNullOrEmpty(countryCode)){
 				countryCode="86";
 			}
 			//
-			Response result = useraccountsServices.sendVerifyCode(mobile, type,countryCode);
+			Response result = useraccountsServices.sendVerifyCode(countryCode,mobile, type);
 			if (result.getStatus() == 0) {
 				return ResponseLogNotification.success(request, result);
 			} else {
@@ -529,8 +551,11 @@ public class UseraccountsController {
 		try {
 			Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
-
-			Response result = useraccountsServices.postsendchangemobilecode(mobile);
+			String countryCode= (String) reqParams.get("countryCode");
+			if(StringUtils.isNullOrEmpty(countryCode)){
+				countryCode="86";
+			}
+			Response result = useraccountsServices.postsendchangemobilecode(countryCode,mobile);
 			if (result.getStatus() == 0) {
 				return ResponseLogNotification.success(request, result);
 			} else {
@@ -556,8 +581,11 @@ public class UseraccountsController {
 			Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
 			String code = BeanUtils.converToString(reqParams.get("code"));
-
-			Response result = useraccountsServices.postvalidatechangemobilecode(mobile, code);
+			String countryCode= (String) reqParams.get("countryCode");
+			if(StringUtils.isNullOrEmpty(countryCode)){
+				countryCode="86";
+			}
+			Response result = useraccountsServices.postvalidatechangemobilecode(countryCode,mobile, code);
 			if (result.getStatus() == 0) {
 				return ResponseLogNotification.success(request, result);
 			} else {
@@ -582,8 +610,11 @@ public class UseraccountsController {
 		try {
 			Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
-
-			Response result = useraccountsServices.postsendresetmobilecode(mobile);
+			String countryCode= (String) reqParams.get("countryCode");
+			if(StringUtils.isNullOrEmpty(countryCode)){
+				countryCode="86";
+			}
+			Response result = useraccountsServices.postsendresetmobilecode(countryCode,mobile);
 			if (result.getStatus() == 0) {
 				return ResponseLogNotification.success(request, result);
 			} else {
@@ -610,8 +641,11 @@ public class UseraccountsController {
 			int user_id = BeanUtils.converToInteger(reqParams.get("user_id"));
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
 			String code = BeanUtils.converToString(reqParams.get("code"));
-
-			Response result = useraccountsServices.postresetmobile(user_id, mobile, code);
+			String countryCode= (String) reqParams.get("countryCode");
+			if(StringUtils.isNullOrEmpty(countryCode)){
+				countryCode="86";
+			}
+			Response result = useraccountsServices.postresetmobile(user_id,countryCode, mobile, code);
 			if (result.getStatus() == 0) {
 				return ResponseLogNotification.success(request, result);
 			} else {

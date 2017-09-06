@@ -379,9 +379,9 @@ public class UseraccountsService {
      * code验证码可选.
      */
     @Deprecated
-    public Response postuserwxbindmobile(int appid, String unionid, String code, String mobile) throws TException {
+    public Response postuserwxbindmobile(int appid,String countryCode, String unionid, String code, String mobile) throws TException {
         try {
-            return bindOnAccount.get("wechat").handler(appid, unionid, mobile);
+            return bindOnAccount.get("wechat").handler(appid, unionid, mobile,countryCode);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         } finally {
@@ -396,9 +396,9 @@ public class UseraccountsService {
      * 否则userid和mobile分别存在2条记录里面， 需要做合并。 如果userid或者手机号均没有， 应该在之前先注册.
      */
     @Deprecated
-    public Response postuserbdbindmobile(int appid, String userid, String mobile) throws TException {
+    public Response postuserbdbindmobile(int appid,String countryCode, String userid, String mobile) throws TException {
         try {
-            return bindOnAccount.get("baidu").handler(appid, userid, mobile);
+            return bindOnAccount.get("baidu").handler(appid, userid, mobile,countryCode);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         } finally {
@@ -407,9 +407,9 @@ public class UseraccountsService {
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
     }
 
-    public Response postuserbindmobile(int appid, String unionid, String code, String mobile, BindType bindType) throws TException {
+    public Response postuserbindmobile(int appid, String countryCode,String unionid, String code, String mobile, BindType bindType) throws TException {
         try {
-            return bindOnAccount.get(String.valueOf(bindType).toLowerCase()).handler(appid, unionid, mobile);
+            return bindOnAccount.get(String.valueOf(bindType).toLowerCase()).handler(appid, unionid, mobile,countryCode);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         } finally {
