@@ -224,8 +224,11 @@ public class UseraccountsController {
 			String code = BeanUtils.converToString(reqParams.get("code"));
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
 			Integer appid = BeanUtils.converToInteger(reqParams.get("appid"));
-
-			Response result = userBS.bindOnAccount(appid, unionid, code, mobile, BindType.WECHAT);
+			String countryCode= (String) ParamUtils.parseRequestParam(request).get("countryCode");
+			if(StringUtils.isNullOrEmpty(countryCode)){
+				countryCode="86";
+			}
+			Response result = userBS.bindOnAccount(appid, unionid, code, mobile, BindType.WECHAT,countryCode);
 			if (result.getStatus() == 0) {
 				return ResponseLogNotification.success(request, result);
 			} else {
@@ -246,8 +249,11 @@ public class UseraccountsController {
 			String userid = BeanUtils.converToString(reqParams.get("userid"));
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
 			Integer appid = BeanUtils.converToInteger(reqParams.get("appid"));
-
-			Response result = userBS.bindOnAccount(appid, userid, null, mobile, BindType.BAIDU);
+			String countryCode= (String) ParamUtils.parseRequestParam(request).get("countryCode");
+			if(StringUtils.isNullOrEmpty(countryCode)){
+				countryCode="86";
+			}
+			Response result = userBS.bindOnAccount(appid, userid, null, mobile, BindType.BAIDU,countryCode);
 			if (result.getStatus() == 0) {
 				return ResponseLogNotification.success(request, result);
 			} else {
@@ -400,7 +406,7 @@ public class UseraccountsController {
 			if(StringUtils.isNullOrEmpty(countryCode)){
 				countryCode="86";
 			}
-			Response result = useraccountsServices.getismobileregisted(mobile,countryCode);
+			Response result = useraccountsServices.getismobileregisted(countryCode,mobile);
 			if (result.getStatus() == 0) {
 				return ResponseLogNotification.success(request, result);
 			} else {
