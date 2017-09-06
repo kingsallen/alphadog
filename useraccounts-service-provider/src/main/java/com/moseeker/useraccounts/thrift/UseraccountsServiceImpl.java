@@ -125,7 +125,7 @@ public class UseraccountsServiceImpl implements Iface {
 	 * code验证码可选.
 	 */
 	@Override
-	public Response postuserwxbindmobile(int appid,String countryCode, String unionid, String code, String mobile) throws TException {
+	public Response postuserwxbindmobile(int appid, String unionid, String code,String countryCode, String mobile) throws TException {
 		try {
 			return service.postuserwxbindmobile(appid,countryCode, unionid, code, mobile);
 		} catch (CommonException e) {
@@ -535,10 +535,10 @@ public class UseraccountsServiceImpl implements Iface {
 	}
 
 	@Override
-	public Response postuserbindmobile(int appid, String countryCode,String unionid, String code,
+	public Response postuserbindmobile(int appid, String unionid, String code,String countryCode,
 			String mobile, BindType bindType) throws TException {
 		try {
-			return service.postuserbindmobile(appid,countryCode, unionid, code, mobile, bindType);
+			return service.postuserbindmobile(appid,unionid, code,countryCode, mobile, bindType);
 		} catch (CommonException e) {
 			throw ExceptionConvertUtil.convertCommonException(e);
 		} catch (Exception e) {

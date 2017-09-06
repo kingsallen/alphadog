@@ -18,6 +18,6 @@ public class UserBSThriftService implements Iface {
 	@Override
 	public Response bindOnAccount(int appid, String unionid, String code,
 			String mobile, BindType bindType,String countryCode) throws TException {
-		return userbs.bindOnAccount(appid, unionid, code, mobile, bindType);
+		return userbs.bindOnAccount(appid, unionid, code, mobile, bindType,countryCode);
 	}
 }

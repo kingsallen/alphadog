@@ -407,7 +407,7 @@ public class UseraccountsService {
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
     }
 
-    public Response postuserbindmobile(int appid, String countryCode,String unionid, String code, String mobile, BindType bindType) throws TException {
+    public Response postuserbindmobile(int appid, String unionid, String code,String countryCode, String mobile, BindType bindType) throws TException {
         try {
             return bindOnAccount.get(String.valueOf(bindType).toLowerCase()).handler(appid, unionid, mobile,countryCode);
         } catch (Exception e) {
