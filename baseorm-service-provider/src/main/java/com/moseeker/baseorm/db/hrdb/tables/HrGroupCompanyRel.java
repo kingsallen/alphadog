@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrGroupCompanyRel extends TableImpl<HrGroupCompanyRelRecord> {
 
-    private static final long serialVersionUID = 611905716;
+    private static final long serialVersionUID = 609025105;
 
     /**
      * The reference instance of <code>hrdb.hr_group_company_rel</code>
@@ -127,7 +127,7 @@ public class HrGroupCompanyRel extends TableImpl<HrGroupCompanyRelRecord> {
      */
     @Override
     public List<UniqueKey<HrGroupCompanyRelRecord>> getKeys() {
-        return Arrays.<UniqueKey<HrGroupCompanyRelRecord>>asList(Keys.KEY_HR_GROUP_COMPANY_REL_PRIMARY);
+        return Arrays.<UniqueKey<HrGroupCompanyRelRecord>>asList(Keys.KEY_HR_GROUP_COMPANY_REL_PRIMARY, Keys.KEY_HR_GROUP_COMPANY_REL_COMPANY_ID, Keys.KEY_HR_GROUP_COMPANY_REL_COMPANY_ID_2, Keys.KEY_HR_GROUP_COMPANY_REL_COMPANY_ID_3);
     }
 
     /**

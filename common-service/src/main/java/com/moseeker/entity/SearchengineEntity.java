@@ -466,7 +466,7 @@ public class SearchengineEntity {
                         Map awardMap = (Map) entry.getValue();
                         // 判断是否追加积分信息
                         if (entry.getKey().equals(year) || entry.getKey().equals(season) || entry.getKey().equals(month)) {
-                            Integer award = (Integer) awardMap.get("award");
+                            int award = Double.valueOf(awardMap.get("award").toString()).intValue();
                             award = award + point;
                             object.put("last_update_time", LocalDateTime.parse(userEmployeePointsRecordDO.getUpdateTime(), java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
                             object.put("award", award);

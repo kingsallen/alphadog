@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyPosition extends TableImpl<HrThirdPartyPositionRecord> {
 
-    private static final long serialVersionUID = 2139021719;
+    private static final long serialVersionUID = 875070296;
 
     /**
      * The reference instance of <code>hrdb.hr_third_party_position</code>
@@ -64,7 +64,7 @@ public class HrThirdPartyPosition extends TableImpl<HrThirdPartyPositionRecord> 
     /**
      * The column <code>hrdb.hr_third_party_position.third_part_position_id</code>. 第三方渠道编号
      */
-    public final TableField<HrThirdPartyPositionRecord, String> THIRD_PART_POSITION_ID = createField("third_part_position_id", org.jooq.impl.SQLDataType.VARCHAR.length(40).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "第三方渠道编号");
+    public final TableField<HrThirdPartyPositionRecord, String> THIRD_PART_POSITION_ID = createField("third_part_position_id", org.jooq.impl.SQLDataType.VARCHAR.length(200).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "第三方渠道编号");
 
     /**
      * The column <code>hrdb.hr_third_party_position.channel</code>. 1=51job,2=猎聘,3=智联,4=linkedin
