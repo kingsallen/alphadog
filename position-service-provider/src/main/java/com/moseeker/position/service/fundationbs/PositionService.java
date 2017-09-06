@@ -5,27 +5,20 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.ValueFilter;
 import com.moseeker.baseorm.dao.dictdb.*;
-import com.moseeker.baseorm.crud.JooqCrudImpl;
-import com.moseeker.baseorm.dao.dictdb.DictCityDao;
-import com.moseeker.baseorm.dao.dictdb.DictCityPostcodeDao;
-import com.moseeker.baseorm.dao.dictdb.DictConstantDao;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.*;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictAlipaycampusCityRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictAlipaycampusJobcategoryRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityPostcodeRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
-import com.moseeker.baseorm.db.hrdb.tables.HrHbConfig;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrTeamRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyPositionRecord;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.records.*;
 import com.moseeker.baseorm.pojo.JobPositionPojo;
 import com.moseeker.baseorm.pojo.RecommendedPositonPojo;
 import com.moseeker.baseorm.redis.RedisClient;
-import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.*;
@@ -36,6 +29,7 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.entity.PositionEntity;
 import com.moseeker.position.pojo.DictConstantPojo;
 import com.moseeker.position.pojo.JobPositionFailMess;
 import com.moseeker.position.pojo.JobPostionResponse;
@@ -54,12 +48,10 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
-import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionCityDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobOccupationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.position.struct.*;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
-
 import org.apache.thrift.TException;
 import org.jooq.Field;
 import org.slf4j.Logger;
@@ -69,7 +61,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -126,6 +117,9 @@ public class PositionService {
 
     @Autowired
     private CommonPositionUtils commonPositionUtils;
+
+    @Autowired
+    private PositionEntity positionEntity;
 
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
@@ -187,12 +181,10 @@ public class PositionService {
                     .fail(ConstantErrorCodeMessage.PROGRAM_VALIDATE_REQUIRED.replace("{0}", "position_id"));
         }
         // NullPoint check
-        Query query = new Query.QueryBuilder().where("id", positionId).buildQuery();
-        JobPositionRecord jobPositionRecord = jobPositionDao.getRecord(query);
-        if (jobPositionRecord == null) {
+        JobPositionPojo jobPositionPojo = jobPositionDao.getPosition(positionId);
+        if (jobPositionPojo == null) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
-        JobPositionPojo jobPositionPojo = jobPositionDao.getPosition(positionId);
         jobPositionPojo.team_name = "";
         jobPositionPojo.department = "";
         int team_id = jobPositionPojo.team_id;
@@ -1848,6 +1840,16 @@ public class PositionService {
             dest = m.replaceAll("");
         }
         return dest;
+    }
+
+    /**
+     * 根据查询条件查找职位信息
+     * 职位数据如果存在job_position_city 数据，则使用职位数据如果存在job_position_city对应城市，否则直接取city
+     * @param query
+     * @return
+     */
+    public List<JobPositionRecord> getPositionRecords(Query query) {
+        return positionEntity.getPositions(query);
     }
 
     /**
