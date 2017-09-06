@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobCustomRecord extends UpdatableRecordImpl<JobCustomRecord> implements Record7<Integer, Integer, Byte, String, Byte, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = -1293119516;
+    private static final long serialVersionUID = -1120267935;
 
     /**
      * Setter for <code>jobdb.job_custom.id</code>.
@@ -167,7 +167,7 @@ public class JobCustomRecord extends UpdatableRecordImpl<JobCustomRecord> implem
      */
     @Override
     public Field<Integer> field1() {
-        return JobCustom.ID;
+        return JobCustom.JOB_CUSTOM.ID;
     }
 
     /**
@@ -175,7 +175,7 @@ public class JobCustomRecord extends UpdatableRecordImpl<JobCustomRecord> implem
      */
     @Override
     public Field<Integer> field2() {
-        return JobCustom.COMPANY_ID;
+        return JobCustom.JOB_CUSTOM.COMPANY_ID;
     }
 
     /**
@@ -183,7 +183,7 @@ public class JobCustomRecord extends UpdatableRecordImpl<JobCustomRecord> implem
      */
     @Override
     public Field<Byte> field3() {
-        return JobCustom.STATUS;
+        return JobCustom.JOB_CUSTOM.STATUS;
     }
 
     /**
@@ -191,7 +191,7 @@ public class JobCustomRecord extends UpdatableRecordImpl<JobCustomRecord> implem
      */
     @Override
     public Field<String> field4() {
-        return JobCustom.NAME;
+        return JobCustom.JOB_CUSTOM.NAME;
     }
 
     /**
@@ -199,7 +199,7 @@ public class JobCustomRecord extends UpdatableRecordImpl<JobCustomRecord> implem
      */
     @Override
     public Field<Byte> field5() {
-        return JobCustom.TYPE;
+        return JobCustom.JOB_CUSTOM.TYPE;
     }
 
     /**
@@ -207,7 +207,7 @@ public class JobCustomRecord extends UpdatableRecordImpl<JobCustomRecord> implem
      */
     @Override
     public Field<Timestamp> field6() {
-        return JobCustom.CREATE_TIME;
+        return JobCustom.JOB_CUSTOM.CREATE_TIME;
     }
 
     /**
@@ -215,7 +215,7 @@ public class JobCustomRecord extends UpdatableRecordImpl<JobCustomRecord> implem
      */
     @Override
     public Field<Timestamp> field7() {
-        return JobCustom.UPDATE_TIME;
+        return JobCustom.JOB_CUSTOM.UPDATE_TIME;
     }
 
     /**

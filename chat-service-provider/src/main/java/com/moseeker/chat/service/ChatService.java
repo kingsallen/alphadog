@@ -52,8 +52,8 @@ public class ChatService {
 
     private ThreadPool pool = ThreadPool.Instance;
 
-    private static String AUTO_CONTENT_WITH_HR_NOTEXIST = "我是{companyName}HR，我可以推荐您或者您的朋友加入我们！";
-    private static String AUTO_CONTENT_WITH_HR_EXIST = "我是{hrName}，{companyName}HR，我可以推荐您或者您的朋友加入我们！";
+    private static String AUTO_CONTENT_WITH_HR_NOTEXIST = "您好，我是{companyName}HR，关于职位和公司信息有任何问题请随时和我沟通。";
+    private static String AUTO_CONTENT_WITH_HR_EXIST = "您好，我是{hrName}，{companyName}HR，关于职位和公司信息有任何问题请随时和我沟通。";
 
     /** 聊天页面欢迎语 **/
     private static String WELCOMES_CONTER = "亲爱的%s：\n" +
@@ -474,7 +474,9 @@ public class ChatService {
         if(is_gamma) {
             content = String.format(WELCOMES_CONTER, resultOfSaveRoomVO.getUser().getUserName());
         } else {
-            if(resultOfSaveRoomVO.getHr() != null && resultOfSaveRoomVO.getPosition() != null) {
+            if(resultOfSaveRoomVO.getHr() != null
+                    && StringUtils.isNotNullOrEmpty(resultOfSaveRoomVO.getHr().getHrName())
+                    && resultOfSaveRoomVO.getPosition() != null) {
                 content = AUTO_CONTENT_WITH_HR_EXIST.replace("{hrName}", resultOfSaveRoomVO.getHr()
                         .getHrName()).replace("{companyName}", resultOfSaveRoomVO.getPosition().getCompanyName());
             } else {

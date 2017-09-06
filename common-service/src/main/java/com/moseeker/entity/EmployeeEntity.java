@@ -38,7 +38,6 @@ import com.moseeker.thrift.gen.employee.struct.RewardVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
-
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -148,6 +147,7 @@ public class EmployeeEntity {
         addReward(employeeId, companyId, "", applicationId, positionId, templateId, berecomUserId);
     }
 
+
     /**
      * 增加员工积点
      *
@@ -157,16 +157,12 @@ public class EmployeeEntity {
     @Transactional
     public int addReward(int employeeId, int companyId, UserEmployeePointsRecordDO ueprDo) throws Exception {
         Query.QueryBuilder query = new Query.QueryBuilder();
-        query.where("id", employeeId);
+        query.where("id", employeeId).and("disable", 0).and("activation", 0);
         UserEmployeeDO userEmployeeDO = employeeDao.getData(query.buildQuery());
         if (userEmployeeDO != null && userEmployeeDO.getId() > 0 && ueprDo != null) {
             // 修改用户总积分, 产品说 积分不能扣成负数 所以为负数 填为 0
-            if ((userEmployeeDO.getAward() + ueprDo.getAward()) >= 0) {
-                userEmployeeDO.setAward(userEmployeeDO.getAward() + ueprDo.getAward());
-            } else {
-                userEmployeeDO.setAward(0);
-            }
-            int row = employeeDao.updateData(userEmployeeDO);
+            int totalAward = userEmployeeDO.getAward() + ueprDo.getAward();
+            int row = employeeDao.addAward(userEmployeeDO.getId(), totalAward < 0 ? 0 : totalAward, userEmployeeDO.getAward());
             // 积分记录
             if (row > 0) {
                 ueprDo = ueprDao.addData(ueprDo);
@@ -178,8 +174,8 @@ public class EmployeeEntity {
                     ueprcrDo.setEmployeePointsRecordId(ueprDo.getId());
                     ueprcrDao.addData(ueprcrDo);
                     // 更新ES中的user_employee数据，以便积分排行实时更新
-                    searchengineEntity.updateEmployeeAwards(Arrays.asList(employeeId));
-                    return userEmployeeDO.getAward();
+                    searchengineEntity.updateEmployeeAwards(employeeId, ueprDo.getId());
+                    return totalAward;
                 } else {
                     logger.error("增加用户积分失败：为用户{},添加积分{}点, reason:{}", employeeId, ueprDo.getAward(), ueprDo.getReason());
                     throw new RuntimeException("增加积分失败");
@@ -437,7 +433,7 @@ public class EmployeeEntity {
      * @param employeeIds
      * @return
      */
-    public boolean unbind(Collection<Integer> employeeIds) throws Exception {
+    public boolean unbind(Collection<Integer> employeeIds) throws CommonException {
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.and(new Condition("id", employeeIds, ValueOp.IN))
                 .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), 0);
@@ -456,6 +452,7 @@ public class EmployeeEntity {
             employees.stream().filter(f -> f.getActivation() == 0).forEach(e -> {
                 e.setActivation((byte) 1);
                 e.setEmailIsvalid((byte) 0);
+                e.setCustomFieldValues("[]");
             });
             int[] rows = employeeDao.updateDatas(employees);
             if (Arrays.stream(rows).sum() > 0) {
@@ -591,6 +588,22 @@ public class EmployeeEntity {
                 list.add(hrGroupCompanyRelDOTemp.getCompanyId())
         );
         return list;
+    }
+
+    /**
+     * 通过companyId 查询group id
+     *
+     * @return
+     */
+    public int getGroupIdByCompanyId(int companyId) {
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where(HrGroupCompanyRel.HR_GROUP_COMPANY_REL.COMPANY_ID.getName(), companyId);
+        HrGroupCompanyRelDO hrGroupCompanyRelDO = hrGroupCompanyRelDao.getData(queryBuilder.buildQuery());
+        // 没有集团信息，返回0
+        if (hrGroupCompanyRelDO == null) {
+            return 0;
+        }
+        return hrGroupCompanyRelDO.getId();
     }
 
     /**
@@ -914,4 +927,20 @@ public class EmployeeEntity {
                 .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), AbleFlag.OLDENABLE);
         return employeeDao.getData(queryBuilder.buildQuery());
     }
+
+    public int updateData(UserEmployeeDO userEmployeeDO) {
+        int result = employeeDao.updateData(userEmployeeDO);
+        searchengineEntity.updateEmployeeAwards(Arrays.asList(userEmployeeDO.getId()));
+        return result;
+    }
+
+    /**
+     *  获取员工认证信息的redisKey <br/>
+     *  集团公司： key=userId_groupId, 非集团公司：key=userId-companyId
+     */
+    public final String getAuthInfoKey(int userId, int companyId) {
+        int groupId = getGroupIdByCompanyId(companyId);
+        return userId + (groupId == 0 ? "-" + companyId : "_" + groupId);
+    }
+
 }

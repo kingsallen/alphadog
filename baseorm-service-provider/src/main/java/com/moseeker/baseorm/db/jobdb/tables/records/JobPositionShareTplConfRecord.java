@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionShareTplConfRecord extends UpdatableRecordImpl<JobPositionShareTplConfRecord> implements Record8<Integer, Short, String, String, String, Byte, String, Byte> {
 
-    private static final long serialVersionUID = 2013674783;
+    private static final long serialVersionUID = -1704226045;
 
     /**
      * Setter for <code>jobdb.job_position_share_tpl_conf.id</code>. PK
@@ -179,7 +179,7 @@ public class JobPositionShareTplConfRecord extends UpdatableRecordImpl<JobPositi
      */
     @Override
     public Field<Integer> field1() {
-        return JobPositionShareTplConf.ID;
+        return JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF.ID;
     }
 
     /**
@@ -187,7 +187,7 @@ public class JobPositionShareTplConfRecord extends UpdatableRecordImpl<JobPositi
      */
     @Override
     public Field<Short> field2() {
-        return JobPositionShareTplConf.TYPE;
+        return JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF.TYPE;
     }
 
     /**
@@ -195,7 +195,7 @@ public class JobPositionShareTplConfRecord extends UpdatableRecordImpl<JobPositi
      */
     @Override
     public Field<String> field3() {
-        return JobPositionShareTplConf.NAME;
+        return JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF.NAME;
     }
 
     /**
@@ -203,7 +203,7 @@ public class JobPositionShareTplConfRecord extends UpdatableRecordImpl<JobPositi
      */
     @Override
     public Field<String> field4() {
-        return JobPositionShareTplConf.TITLE;
+        return JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF.TITLE;
     }
 
     /**
@@ -211,7 +211,7 @@ public class JobPositionShareTplConfRecord extends UpdatableRecordImpl<JobPositi
      */
     @Override
     public Field<String> field5() {
-        return JobPositionShareTplConf.DESCRIPTION;
+        return JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF.DESCRIPTION;
     }
 
     /**
@@ -219,7 +219,7 @@ public class JobPositionShareTplConfRecord extends UpdatableRecordImpl<JobPositi
      */
     @Override
     public Field<Byte> field6() {
-        return JobPositionShareTplConf.DISABLE;
+        return JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF.DISABLE;
     }
 
     /**
@@ -227,7 +227,7 @@ public class JobPositionShareTplConfRecord extends UpdatableRecordImpl<JobPositi
      */
     @Override
     public Field<String> field7() {
-        return JobPositionShareTplConf.REMARK;
+        return JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF.REMARK;
     }
 
     /**
@@ -235,7 +235,7 @@ public class JobPositionShareTplConfRecord extends UpdatableRecordImpl<JobPositi
      */
     @Override
     public Field<Byte> field8() {
-        return JobPositionShareTplConf.PRIORITY;
+        return JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF.PRIORITY;
     }
 
     /**

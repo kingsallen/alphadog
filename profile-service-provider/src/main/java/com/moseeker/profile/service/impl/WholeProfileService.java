@@ -354,14 +354,14 @@ public class WholeProfileService {
         if (userRecord == null) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_USER_NOTEXIST);
         }
-        logger.info("importCV user_id:" + userRecord.getId().intValue());
+        logger.info("importCV user_id:" + userRecord.getId());
         // ProfileProfileRecord profileRecord =
         // profileUtils.mapToProfileRecord((Map<String, Object>)
         // resume.get("user_user"));
         List<ProfileProfileRecord> oldProfile = profileDao.getProfilesByIdOrUserIdOrUUID(userId, 0, null);
 
         if (oldProfile != null && oldProfile.size() > 0 && StringUtils.isNotNullOrEmpty(oldProfile.get(0).getUuid())) {
-            logger.info("importCV oldProfile:" + oldProfile.get(0).getId().intValue());
+            logger.info("importCV oldProfile:" + oldProfile.get(0).getId());
             profileRecord.setUuid(oldProfile.get(0).getUuid());
         } else {
             profileRecord.setUuid(UUID.randomUUID().toString());

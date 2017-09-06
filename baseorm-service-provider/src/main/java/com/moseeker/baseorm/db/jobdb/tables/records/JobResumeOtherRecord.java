@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobResumeOtherRecord extends UpdatableRecordImpl<JobResumeOtherRecord> implements Record4<Integer, String, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = -2063772793;
+    private static final long serialVersionUID = 1140992965;
 
     /**
      * Setter for <code>jobdb.job_resume_other.app_id</code>. job_application.id
@@ -47,14 +47,14 @@ public class JobResumeOtherRecord extends UpdatableRecordImpl<JobResumeOtherReco
     }
 
     /**
-     * Setter for <code>jobdb.job_resume_other.other</code>. 自定义字段
+     * Setter for <code>jobdb.job_resume_other.other</code>.
      */
     public void setOther(String value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>jobdb.job_resume_other.other</code>. 自定义字段
+     * Getter for <code>jobdb.job_resume_other.other</code>.
      */
     public String getOther() {
         return (String) get(1);
@@ -125,7 +125,7 @@ public class JobResumeOtherRecord extends UpdatableRecordImpl<JobResumeOtherReco
      */
     @Override
     public Field<Integer> field1() {
-        return JobResumeOther.APP_ID;
+        return JobResumeOther.JOB_RESUME_OTHER.APP_ID;
     }
 
     /**
@@ -133,7 +133,7 @@ public class JobResumeOtherRecord extends UpdatableRecordImpl<JobResumeOtherReco
      */
     @Override
     public Field<String> field2() {
-        return JobResumeOther.OTHER;
+        return JobResumeOther.JOB_RESUME_OTHER.OTHER;
     }
 
     /**
@@ -141,7 +141,7 @@ public class JobResumeOtherRecord extends UpdatableRecordImpl<JobResumeOtherReco
      */
     @Override
     public Field<Timestamp> field3() {
-        return JobResumeOther.CREATE_TIME;
+        return JobResumeOther.JOB_RESUME_OTHER.CREATE_TIME;
     }
 
     /**
@@ -149,7 +149,7 @@ public class JobResumeOtherRecord extends UpdatableRecordImpl<JobResumeOtherReco
      */
     @Override
     public Field<Timestamp> field4() {
-        return JobResumeOther.UPDATE_TIME;
+        return JobResumeOther.JOB_RESUME_OTHER.UPDATE_TIME;
     }
 
     /**

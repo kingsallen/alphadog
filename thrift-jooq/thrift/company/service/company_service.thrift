@@ -32,6 +32,8 @@ service CompanyServices {
     hrdb_struct.HrImporterMonitorDO getImporterMonitor(1:i32 comanyId, 2:i32 hraccountId, 3:i32 type) throws (1: common_struct.BIZException e)
     // 公司员工认证开关
     common_struct.Response bindingSwitch(1:i32 companyId, 2:i32 disable) throws (1: common_struct.BIZException e)
+    //  公司员工认证后补填字段配置信息列表
+    list<company_struct.HrEmployeeCustomFieldsVO> getHrEmployeeCustomFields(1:i32 companyId) throws (1: common_struct.BIZException e)
 
 }
 

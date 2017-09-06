@@ -90,7 +90,7 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 		return list;
 	}
 	public List<ApplicationAts> getApplicationByLApId(List<Integer> lists) throws Exception{
-		List<ApplicationAts> list=new ArrayList<ApplicationAts>();
+		List<ApplicationAts> list=new ArrayList<>();
 		SelectConditionStep<Record3<Integer, Integer, Integer>> table =create.select(
 				JobApplication.JOB_APPLICATION.COMPANY_ID,
 				JobApplication.JOB_APPLICATION.ID,

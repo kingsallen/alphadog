@@ -5,14 +5,12 @@ package com.moseeker.baseorm.db.jobdb.tables.records;
 
 
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionCity;
-
-import javax.annotation.Generated;
-
 import org.jooq.Field;
 import org.jooq.Record2;
 import org.jooq.Row2;
-import org.jooq.impl.TableRecordImpl;
 import org.jooq.impl.UpdatableRecordImpl;
+
+import javax.annotation.Generated;
 
 
 /**
@@ -28,7 +26,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionCityRecord extends UpdatableRecordImpl<JobPositionCityRecord> implements Record2<Integer, Integer> {
 
-    private static final long serialVersionUID = 1751940190;
+    private static final long serialVersionUID = -783272770;
 
     /**
      * Setter for <code>jobdb.job_position_city.pid</code>. 职位id
@@ -83,7 +81,7 @@ public class JobPositionCityRecord extends UpdatableRecordImpl<JobPositionCityRe
      */
     @Override
     public Field<Integer> field1() {
-        return JobPositionCity.PID;
+        return JobPositionCity.JOB_POSITION_CITY.PID;
     }
 
     /**
@@ -91,7 +89,7 @@ public class JobPositionCityRecord extends UpdatableRecordImpl<JobPositionCityRe
      */
     @Override
     public Field<Integer> field2() {
-        return JobPositionCity.CODE;
+        return JobPositionCity.JOB_POSITION_CITY.CODE;
     }
 
     /**

@@ -5,6 +5,7 @@ include "../../common/struct/common_struct.thrift"
 include "../../foundataionbs/wordpress/struct/wordpress_foundation_strcut.thrift"
 include "../struct/bindtype_struct.thrift"
 include "../../dao/struct/userdb/user_user_struct.thrift"
+include "../../dao/struct/userdb/user_hr_account_struct.thrift"
 include "../../dao/struct/userdb/user_employee_struct.thrift"
 include "../../dao/struct/hrdb/hr_third_party_account_struct.thrift"
 include "../../employee/struct/employee_struct.thrift"
@@ -87,6 +88,12 @@ service UsersettingServices {
 * HR账户服务
 **/
 service UserHrAccountService {
+    //更新手机号
+    void updateMobile(1:i32 hrId,2:string mobile) throws (1: common_struct.BIZException e);
+    //添加帐号
+    user_hr_account_struct.UserHrAccountDO addAccount(1:user_hr_account_struct.UserHrAccountDO hrAccount) throws (1: common_struct.BIZException e);
+    //是否可以添加子帐号
+    bool ifAddSubAccountAllowed(1:i32 hrId) throws (1: common_struct.BIZException e);
 
     // 发送手机验证码
     common_struct.Response sendMobileVerifiyCode(1: string mobile, 2: string code,  3: i32 source);
@@ -157,7 +164,7 @@ service UserHrAccountService {
     // 员工信息
     useraccounts_struct.UserEmployeeDetailVO userEmployeeDetail(1:i32 userEmployeeId,2:i32 companyId) throws (1: common_struct.BIZException e)
     // 更新公司员工信息
-    common_struct.Response updateUserEmployee(1:string cname, 2:string mobile, 3:string email, 4:string customField, 5:i32 userEmployeeId,6:i32 companyId) throws (1: common_struct.BIZException e)
+    common_struct.Response updateUserEmployee(1:string cname, 2:string mobile, 3:string email, 4:string customField, 5:i32 userEmployeeId,6:i32 companyId,7:string customFieldValues) throws (1: common_struct.BIZException e)
     // 员工信息导入
     common_struct.Response employeeImport(1:map<i32,user_employee_struct.UserEmployeeDO> userEmployeeDOS, 2:i32 companyId,3:string filePath,4:string fileName,5:i32 type,6:i32 hraccountId) throws (1: common_struct.BIZException e)
     // 检查员工重复
