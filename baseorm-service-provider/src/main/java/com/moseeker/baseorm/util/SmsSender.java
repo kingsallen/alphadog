@@ -224,7 +224,7 @@ public class SmsSender {
         return sendSMS(mobile, "SMS_5755096", params);
     }
     
-    public boolean sendSMS(String mobile, int scene){
+    public boolean sendSMS(String mobile, int scene,String countryCode) throws Exception {
     	String event = null;
     	switch(scene) {
     	case 1:event= "SMS_SIGNUP"; break;
@@ -234,9 +234,15 @@ public class SmsSender {
     	}
         HashMap<String, String> params = new HashMap<String, String>();
         String passwordforgotcode = getRandomStr();
-        params.put("code", passwordforgotcode);        
-        redisClient.set(0, event, mobile, passwordforgotcode);
-        return sendSMS(mobile,"SMS_5755096",params);
+        params.put("code", passwordforgotcode);
+        if("86".equals(countryCode)){
+            redisClient.set(0, event, mobile, passwordforgotcode);
+            return sendSMS(mobile,"SMS_5755096",params);
+        }else{
+            redisClient.set(0, event, countryCode+mobile, passwordforgotcode);
+            return sendNationalSMS(countryCode,mobile,"SMS_5755096",params);
+        }
+
     } 
 
     /**
@@ -312,20 +318,20 @@ public class SmsSender {
     /*
     发送国际短信验证
      */
-    public boolean sendNationSMS(String mobile, int scene,String countryCode)throws Exception{
-        String event = null;
-        switch(scene) {
-            case 1:event= "SMS_SIGNUP"; break;
-            case 2:event = "SMS_PWD_FORGOT"; break;
-            case 3:event = "SMS_CHANGEMOBILE_CODE"; break;
-            case 4:event = "SMS_RESETMOBILE_CODE"; break;
-        }
-        HashMap<String, String> params = new HashMap<String, String>();
-        String passwordforgotcode = getRandomStr();
-        params.put("code",passwordforgotcode);
-        redisClient.set(0, event, countryCode+mobile, passwordforgotcode);
-        return sendNationalSMS(countryCode,mobile,"SMS_5755096",params);
-    }
+//    public boolean sendNationSMS(String mobile, int scene,String countryCode)throws Exception{
+//        String event = null;
+//        switch(scene) {
+//            case 1:event= "SMS_SIGNUP"; break;
+//            case 2:event = "SMS_PWD_FORGOT"; break;
+//            case 3:event = "SMS_CHANGEMOBILE_CODE"; break;
+//            case 4:event = "SMS_RESETMOBILE_CODE"; break;
+//        }
+//        HashMap<String, String> params = new HashMap<String, String>();
+//        String passwordforgotcode = getRandomStr();
+//        params.put("code",passwordforgotcode);
+//        redisClient.set(0, event, countryCode+mobile, passwordforgotcode);
+//        return sendNationalSMS(countryCode,mobile,"SMS_5755096",params);
+//    }
     /*
        发送国际短信验证码
       */

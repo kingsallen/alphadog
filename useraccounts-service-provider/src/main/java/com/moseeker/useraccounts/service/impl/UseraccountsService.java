@@ -969,11 +969,7 @@ public class UseraccountsService {
 
     public Response sendVerifyCode(String mobile, int type,String countryCode) throws Exception {
         boolean result=false;
-        if("86".equals(countryCode)){
-            result = smsSender.sendSMS(mobile, type);
-        }else{
-            result=smsSender.sendNationSMS(mobile,type,countryCode);
-        }
+        result = smsSender.sendSMS(mobile, type,countryCode);
         if (result) {
             return ResponseUtils.success("success");
         } else {
