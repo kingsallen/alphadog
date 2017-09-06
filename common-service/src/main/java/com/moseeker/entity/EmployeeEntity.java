@@ -940,6 +940,7 @@ public class EmployeeEntity {
      */
     public final String getAuthInfoKey(int userId, int companyId) {
         int groupId = getGroupIdByCompanyId(companyId);
-        return userId + groupId == 0 ? "-" + companyId : "_" + groupId;
+        return userId + (groupId == 0 ? "-" + companyId : "_" + groupId);
     }
+
 }
