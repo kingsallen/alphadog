@@ -461,8 +461,12 @@ public class UseraccountsController {
 			if(type == null) {
 				type = 0;
 			}
+			String countryCode= (String) reqParams.get("countryCode");
+			if(countryCode==null){
+				return ResponseLogNotification.fail(request, "请填写国家编号");
+			}
 			//
-			Response result = useraccountsServices.sendVerifyCode(mobile, type);
+			Response result = useraccountsServices.sendVerifyCode(mobile, type,countryCode);
 			if (result.getStatus() == 0) {
 				return ResponseLogNotification.success(request, result);
 			} else {

@@ -309,8 +309,10 @@ public class SmsSender {
         return  false;
     }
 
-
-    public boolean sendNationSMS(String mobile, int scene){
+    /*
+    发送国际短信验证
+     */
+    public boolean sendNationSMS(String mobile, int scene,String countryCode){
         String event = null;
         switch(scene) {
             case 1:event= "SMS_SIGNUP"; break;
@@ -322,10 +324,10 @@ public class SmsSender {
         String passwordforgotcode = getRandomStr();
         String content= SmsNationUtil.SMS_5755096;
         content=content.replace("${code}",passwordforgotcode);
-        redisClient.set(0, event, mobile, passwordforgotcode);
-        boolean result= sendNationalSMS(mobile,content);
+        redisClient.set(0, event, countryCode+mobile, passwordforgotcode);
+        boolean result= sendNationalSMS(countryCode+mobile,content);
         if(result){
-            addNationRecord(mobile,content);
+            addNationRecord(mobile,content,countryCode);
         }
         return result;
     }
@@ -366,7 +368,7 @@ public class SmsSender {
         }
         return false;
     }
-    public  boolean addNationRecord(String mobile,String content ){
+    public  boolean addNationRecord(String mobile,String content,String countryCode ){
         LogSmsSendrecordRecord record = new LogSmsSendrecordRecord();
         record.setMobile(Long.valueOf(mobile));
         record.setSys(Constant.LOG_SMS_SENDRECORD_SYS_ALPHADOG);

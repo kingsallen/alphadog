@@ -961,8 +961,13 @@ public class UseraccountsService {
         }
     }
 
-    public Response sendVerifyCode(String mobile, int type) throws TException {
-        boolean result = smsSender.sendSMS(mobile, type);
+    public Response sendVerifyCode(String mobile, int type,String countryCode) throws TException {
+        boolean result=false;
+        if("86".equals(countryCode)){
+            result = smsSender.sendSMS(mobile, type);
+        }else{
+            smsSender.sendNationSMS(mobile,type,countryCode);
+        }
         if (result) {
             return ResponseUtils.success("success");
         } else {
