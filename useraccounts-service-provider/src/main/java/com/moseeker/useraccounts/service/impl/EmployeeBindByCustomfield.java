@@ -37,7 +37,7 @@ public class EmployeeBindByCustomfield extends EmployeeBinder {
 
     @Override
     protected UserEmployeeDO createEmployee(BindingParams bindingParams) {
-        UserEmployeeDO userEmployeeDO = new UserEmployeeDO();
+        UserEmployeeDO userEmployeeDO = userEmployeeDOThreadLocal.get();
         if (employeeThreadLocal.get().getSysuserId() == 0) { // sysuserId =  0 说明员工信息是批量上传的未设置user_id
             if (userEmployeeDOThreadLocal.get() != null && userEmployeeDOThreadLocal.get().getId() != 0) {
                 userEmployeeDO = userEmployeeDOThreadLocal.get();
