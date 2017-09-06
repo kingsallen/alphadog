@@ -25,7 +25,7 @@ service UseraccountsServices {
     // 更新用户数据
     common_struct.Response updateUser(1: useraccounts_struct.User user);
 
-    common_struct.Response getismobileregisted(1: string mobile);
+    common_struct.Response getismobileregisted(1: string mobile,2: string countryCode);
     common_struct.Response postuserlogin(1: useraccounts_struct.Userloginreq userloginreq);
     common_struct.Response postuserlogout(1: i32 userid);
     common_struct.Response postsendsignupcode(1: string mobile);
@@ -42,7 +42,7 @@ service UseraccountsServices {
     common_struct.Response validateVerifyCode(1: string mobile, 2:string code, 3:i32 type,4:string countryCode);
     common_struct.Response sendVerifyCode(1: string mobile, 2:i32 type,3:string countryCode);
     common_struct.Response checkEmail(1: string email);
-    common_struct.Response postuserresetpassword(1: string mobile, 2: string code, 3: string password);
+    common_struct.Response postuserresetpassword(1: string mobile, 2: string code, 3: string password,4: string countryCode);
     common_struct.Response postusermergebymobile(1: i32 appid, 2: string mobile);
     common_struct.Response postsendchangemobilecode(1: string oldmobile);
     common_struct.Response postvalidatechangemobilecode(1: string oldmobile, 2:string code);

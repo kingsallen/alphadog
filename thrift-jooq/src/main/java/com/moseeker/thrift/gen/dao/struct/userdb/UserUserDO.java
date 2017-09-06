@@ -38,7 +38,7 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
   private static final org.apache.thrift.protocol.TField NICKNAME_FIELD_DESC = new org.apache.thrift.protocol.TField("nickname", org.apache.thrift.protocol.TType.STRING, (short)25);
   private static final org.apache.thrift.protocol.TField EMAIL_VERIFIED_FIELD_DESC = new org.apache.thrift.protocol.TField("emailVerified", org.apache.thrift.protocol.TType.BYTE, (short)26);
   private static final org.apache.thrift.protocol.TField UPDATE_TIME_FIELD_DESC = new org.apache.thrift.protocol.TField("updateTime", org.apache.thrift.protocol.TType.STRING, (short)27);
-  private static final org.apache.thrift.protocol.TField COUNTRY_CODE_FIELD_DESC = new org.apache.thrift.protocol.TField("countryCode", org.apache.thrift.protocol.TType.I32, (short)28);
+  private static final org.apache.thrift.protocol.TField COUNTRY_CODE_FIELD_DESC = new org.apache.thrift.protocol.TField("countryCode", org.apache.thrift.protocol.TType.STRING, (short)28);
 
   private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new UserUserDOStandardSchemeFactory();
   private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new UserUserDOTupleSchemeFactory();
@@ -70,7 +70,7 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
   public java.lang.String nickname; // optional
   public byte emailVerified; // optional
   public java.lang.String updateTime; // optional
-  public int countryCode; // optional
+  public java.lang.String countryCode; // optional
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -223,7 +223,6 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
   private static final int __SOURCE_ISSET_ID = 8;
   private static final int __PARENTID_ISSET_ID = 9;
   private static final int __EMAILVERIFIED_ISSET_ID = 10;
-  private static final int __COUNTRYCODE_ISSET_ID = 11;
   private short __isset_bitfield = 0;
   private static final _Fields optionals[] = {_Fields.ID,_Fields.USERNAME,_Fields.PASSWORD,_Fields.IS_DISABLE,_Fields.RANK,_Fields.REGISTER_TIME,_Fields.REGISTER_IP,_Fields.LAST_LOGIN_TIME,_Fields.LAST_LOGIN_IP,_Fields.LOGIN_COUNT,_Fields.MOBILE,_Fields.EMAIL,_Fields.ACTIVATION,_Fields.ACTIVATION_CODE,_Fields.TOKEN,_Fields.NAME,_Fields.HEADIMG,_Fields.NATIONAL_CODE_ID,_Fields.WECHAT_ID,_Fields.UNIONID,_Fields.SOURCE,_Fields.COMPANY,_Fields.POSITION,_Fields.PARENTID,_Fields.NICKNAME,_Fields.EMAIL_VERIFIED,_Fields.UPDATE_TIME,_Fields.COUNTRY_CODE};
   public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
@@ -284,7 +283,7 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
     tmpMap.put(_Fields.UPDATE_TIME, new org.apache.thrift.meta_data.FieldMetaData("updateTime", org.apache.thrift.TFieldRequirementType.OPTIONAL,
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.COUNTRY_CODE, new org.apache.thrift.meta_data.FieldMetaData("countryCode", org.apache.thrift.TFieldRequirementType.OPTIONAL,
-            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(UserUserDO.class, metaDataMap);
   }
@@ -356,7 +355,9 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
     if (other.isSetUpdateTime()) {
       this.updateTime = other.updateTime;
     }
-    this.countryCode = other.countryCode;
+    if (other.isSetCountryCode()) {
+      this.countryCode = other.countryCode;
+    }
   }
 
   public UserUserDO deepCopy() {
@@ -403,8 +404,7 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
     setEmailVerifiedIsSet(false);
     this.emailVerified = 0;
     this.updateTime = null;
-    setCountryCodeIsSet(false);
-    this.countryCode = 0;
+    this.countryCode = null;
   }
 
   public int getId() {
@@ -1044,27 +1044,28 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
     }
   }
 
-  public int getCountryCode() {
+  public java.lang.String getCountryCode() {
     return this.countryCode;
   }
 
-  public UserUserDO setCountryCode(int countryCode) {
+  public UserUserDO setCountryCode(java.lang.String countryCode) {
     this.countryCode = countryCode;
-    setCountryCodeIsSet(true);
     return this;
   }
 
   public void unsetCountryCode() {
-    __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __COUNTRYCODE_ISSET_ID);
+    this.countryCode = null;
   }
 
   /** Returns true if field countryCode is set (has been assigned a value) and false otherwise */
   public boolean isSetCountryCode() {
-    return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __COUNTRYCODE_ISSET_ID);
+    return this.countryCode != null;
   }
 
   public void setCountryCodeIsSet(boolean value) {
-    __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __COUNTRYCODE_ISSET_ID, value);
+    if (!value) {
+      this.countryCode = null;
+    }
   }
 
   public void setFieldValue(_Fields field, java.lang.Object value) {
@@ -1289,7 +1290,7 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
         if (value == null) {
           unsetCountryCode();
         } else {
-          setCountryCode((java.lang.Integer)value);
+          setCountryCode((java.lang.String)value);
         }
         break;
 
@@ -1716,7 +1717,7 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
     if (this_present_countryCode || that_present_countryCode) {
       if (!(this_present_countryCode && that_present_countryCode))
         return false;
-      if (this.countryCode != that.countryCode)
+      if (!this.countryCode.equals(that.countryCode))
         return false;
     }
 
@@ -1837,7 +1838,7 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
 
     hashCode = hashCode * 8191 + ((isSetCountryCode()) ? 131071 : 524287);
     if (isSetCountryCode())
-      hashCode = hashCode * 8191 + countryCode;
+      hashCode = hashCode * 8191 + countryCode.hashCode();
 
     return hashCode;
   }
@@ -2378,7 +2379,11 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
     if (isSetCountryCode()) {
       if (!first) sb.append(", ");
       sb.append("countryCode:");
-      sb.append(this.countryCode);
+      if (this.countryCode == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.countryCode);
+      }
       first = false;
     }
     sb.append(")");
@@ -2643,8 +2648,8 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
             }
             break;
           case 28: // COUNTRY_CODE
-            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-              struct.countryCode = iprot.readI32();
+            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+              struct.countryCode = iprot.readString();
               struct.setCountryCodeIsSet(true);
             } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
@@ -2832,10 +2837,12 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
           oprot.writeFieldEnd();
         }
       }
-      if (struct.isSetCountryCode()) {
-        oprot.writeFieldBegin(COUNTRY_CODE_FIELD_DESC);
-        oprot.writeI32(struct.countryCode);
-        oprot.writeFieldEnd();
+      if (struct.countryCode != null) {
+        if (struct.isSetCountryCode()) {
+          oprot.writeFieldBegin(COUNTRY_CODE_FIELD_DESC);
+          oprot.writeString(struct.countryCode);
+          oprot.writeFieldEnd();
+        }
       }
       oprot.writeFieldStop();
       oprot.writeStructEnd();
@@ -3022,7 +3029,7 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
         oprot.writeString(struct.updateTime);
       }
       if (struct.isSetCountryCode()) {
-        oprot.writeI32(struct.countryCode);
+        oprot.writeString(struct.countryCode);
       }
     }
 
@@ -3139,7 +3146,7 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
         struct.setUpdateTimeIsSet(true);
       }
       if (incoming.get(27)) {
-        struct.countryCode = iprot.readI32();
+        struct.countryCode = iprot.readString();
         struct.setCountryCodeIsSet(true);
       }
     }

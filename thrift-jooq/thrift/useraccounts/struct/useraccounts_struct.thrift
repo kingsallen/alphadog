@@ -49,7 +49,8 @@ struct User {
     23: optional string     position        ,    // 点击我感兴趣时填写的职位
     24: optional i64        parentid             // 合并到了新用户的id
     25: optional i32        email_verified  ,    // 邮箱是否认证
-    26: optional string     nickname       	 // 用户昵称
+    26: optional string     nickname       	, // 用户昵称
+    27: optional string     country_code="86"
 }
 
 /*

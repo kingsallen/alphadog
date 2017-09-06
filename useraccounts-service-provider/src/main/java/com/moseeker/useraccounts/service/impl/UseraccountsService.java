@@ -500,15 +500,17 @@ public class UseraccountsService {
      *
      * @param code 验证码，可选， 填写时必须判断。不填时， 请先调用postvalidatepasswordforgotcode 进行验证。
      */
-    public Response postuserresetpassword(String mobile, String password, String code) throws TException {
-
-        if (code != null && !validateCode(mobile, code, 2)) {
+    public Response postuserresetpassword(String mobile, String password, String code,String countryCode) throws TException {
+        String validateMobile=mobile;
+        if(!"86".equals(countryCode)){
+            validateMobile=countryCode+mobile;
+        }
+        if (code != null && !validateCode(validateMobile, code, 2)) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);
         }
 
         Query.QueryBuilder query = new Query.QueryBuilder();
-        query.where("username", mobile);
-
+        query.where("username", mobile).and("country_code",countryCode);
         int result;
         try {
             UserUserRecord user = userdao.getRecord(query.buildQuery());
@@ -619,10 +621,11 @@ public class UseraccountsService {
     /**
      * 检查手机号是否已经注册。 exist: true 已经存在， exist：false 不存在。
      */
-    public Response getismobileregisted(String mobile) throws TException {
+    public Response getismobileregisted(String mobile,String countryCode) throws TException {
         Query.QueryBuilder query = new Query.QueryBuilder();
         if (mobile != null && mobile.length() > 0) {
-            query.where("username", mobile);
+            query.where("username", mobile).and("country_code",countryCode);
+
             try {
                 UserUserRecord user = userdao.getRecord(query.buildQuery());
                 Map<String, Boolean> hashmap = new HashMap<>();

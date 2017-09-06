@@ -180,9 +180,9 @@ public class UseraccountsServiceImpl implements Iface {
 	 *            验证码，可选， 填写时必须判断。不填时， 请先调用postvalidatepasswordforgotcode 进行验证。
 	 */
 	@Override
-	public Response postuserresetpassword(String mobile, String password, String code) throws TException {
+	public Response postuserresetpassword(String mobile, String password, String code,String countryCode) throws TException {
 		try {
-			return service.postuserresetpassword(mobile, password, code);
+			return service.postuserresetpassword(mobile, password, code,countryCode);
 		} catch (CommonException e) {
 			throw ExceptionConvertUtil.convertCommonException(e);
 		} catch (Exception e) {
@@ -261,9 +261,9 @@ public class UseraccountsServiceImpl implements Iface {
 	 * @throws TException
 	 */
 	@Override
-	public Response getismobileregisted(String mobile) throws TException {
+	public Response getismobileregisted(String mobile,String countryCode) throws TException {
 		try {
-			return service.getismobileregisted(mobile);
+			return service.getismobileregisted(mobile,countryCode);
 		} catch (CommonException e) {
 			throw ExceptionConvertUtil.convertCommonException(e);
 		} catch (Exception e) {

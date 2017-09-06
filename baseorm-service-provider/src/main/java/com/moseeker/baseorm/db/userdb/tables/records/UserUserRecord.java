@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserUserRecord extends UpdatableRecordImpl<UserUserRecord> {
 
-    private static final long serialVersionUID = 1630908685;
+    private static final long serialVersionUID = 1835102657;
 
     /**
      * Setter for <code>userdb.user_user.id</code>. 主key
@@ -46,15 +46,15 @@ public class UserUserRecord extends UpdatableRecordImpl<UserUserRecord> {
     /**
      * Setter for <code>userdb.user_user.country_code</code>. 国家代码，用于支持国际短信
      */
-    public void setCountryCode(Integer value) {
+    public void setCountryCode(String value) {
         set(1, value);
     }
 
     /**
      * Getter for <code>userdb.user_user.country_code</code>. 国家代码，用于支持国际短信
      */
-    public Integer getCountryCode() {
-        return (Integer) get(1);
+    public String getCountryCode() {
+        return (String) get(1);
     }
 
     /**
@@ -447,7 +447,7 @@ public class UserUserRecord extends UpdatableRecordImpl<UserUserRecord> {
     /**
      * Create a detached, initialised UserUserRecord
      */
-    public UserUserRecord(Integer id, Integer countryCode, String username, String password, Byte isDisable, Integer rank, Timestamp registerTime, String registerIp, Timestamp lastLoginTime, String lastLoginIp, Integer loginCount, Long mobile, String email, Byte activation, String activationCode, String token, String name, String headimg, Integer nationalCodeId, Integer wechatId, String unionid, Short source, String company, String position, Integer parentid, String nickname, Byte emailVerified, Timestamp updateTime) {
+    public UserUserRecord(Integer id, String countryCode, String username, String password, Byte isDisable, Integer rank, Timestamp registerTime, String registerIp, Timestamp lastLoginTime, String lastLoginIp, Integer loginCount, Long mobile, String email, Byte activation, String activationCode, String token, String name, String headimg, Integer nationalCodeId, Integer wechatId, String unionid, Short source, String company, String position, Integer parentid, String nickname, Byte emailVerified, Timestamp updateTime) {
         super(UserUser.USER_USER);
 
         set(0, id);

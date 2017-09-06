@@ -326,8 +326,11 @@ public class UseraccountsController {
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
 			String code = BeanUtils.converToString(reqParams.get("code"));
 			String password = BeanUtils.converToString(reqParams.get("password"));
-
-			Response result = useraccountsServices.postuserresetpassword(mobile, password, code);
+			String countryCode= (String) reqParams.get("countryCode");
+			if(StringUtils.isNullOrEmpty(countryCode)){
+				countryCode="86";
+			}
+			Response result = useraccountsServices.postuserresetpassword(mobile, password, code,countryCode);
 			if (result.getStatus() == 0) {
 				return ResponseLogNotification.success(request, result);
 			} else {
@@ -374,8 +377,11 @@ public class UseraccountsController {
 			// GET方法 通用参数解析并赋值
 			Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
-
-			Response result = useraccountsServices.getismobileregisted(mobile);
+			String countryCode= (String) reqParams.get("countryCode");
+			if(StringUtils.isNullOrEmpty(countryCode)){
+				countryCode="86";
+			}
+			Response result = useraccountsServices.getismobileregisted(mobile,countryCode);
 			if (result.getStatus() == 0) {
 				return ResponseLogNotification.success(request, result);
 			} else {

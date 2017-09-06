@@ -31,6 +31,6 @@ struct UserUserDO {
 	25: optional string nickname,	//用户昵称
 	26: optional i8 emailVerified,	//邮箱是认证 2:老数据 1:已认证 0:未认证
 	27: optional string updateTime,	//null
-	28: optional i32 countryCode	//国家代码，用于支持国际短信
+	28: optional string countryCode	//国家代码，用于支持国际短信
 
 }

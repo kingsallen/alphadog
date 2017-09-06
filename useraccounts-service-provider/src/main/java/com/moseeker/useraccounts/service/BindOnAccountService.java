@@ -52,14 +52,14 @@ public abstract class BindOnAccountService {
 	 * @param unionid
 	 * @param mobile
 	 */
-	public Response handler(int appid, String unionid, String mobile) {
+	public Response handler(int appid, String unionid, String mobile,String countryCode) {
 		try {
 			
 			UserUserRecord userUnionid = getUserByUnionId(unionid);
 
             Query.QueryBuilder query = new Query.QueryBuilder();
 			Map<String, String> filters = new HashMap<>();
-			query.where("username", mobile);
+			query.where("username", mobile).and("country_code",countryCode);
 			UserUserRecord userMobile = userdao.getRecord(query.buildQuery());
 
 			if (userUnionid == null && userMobile == null) {
@@ -71,6 +71,7 @@ public abstract class BindOnAccountService {
 			} else if (userUnionid != null && userMobile == null) {
 				userUnionid.setMobile(Long.valueOf(mobile));
 				userUnionid.setUsername(mobile);
+				userUnionid.setCountryCode(countryCode);
 				if (userdao.updateRecord(userUnionid) > 0) {
 					Map<String, Object> map = new HashMap<String, Object>();
 					resultFull(userUnionid, map);
