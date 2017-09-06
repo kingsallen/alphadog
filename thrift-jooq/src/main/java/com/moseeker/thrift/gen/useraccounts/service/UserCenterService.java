@@ -439,7 +439,7 @@ public class UserCenterService {
 
       public org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.useraccounts.struct.ApplicationRecordsForm>> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.useraccounts.struct.ApplicationRecordsForm>>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.useraccounts.struct.ApplicationRecordsForm>>() {
           public void onComplete(java.util.List<com.moseeker.thrift.gen.useraccounts.struct.ApplicationRecordsForm> o) {
             getApplications_result result = new getApplications_result();
             result.success = o;
@@ -500,7 +500,7 @@ public class UserCenterService {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.ApplicationDetailVO> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.ApplicationDetailVO>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.ApplicationDetailVO>() {
           public void onComplete(com.moseeker.thrift.gen.useraccounts.struct.ApplicationDetailVO o) {
             getApplicationDetail_result result = new getApplicationDetail_result();
             result.success = o;
@@ -561,7 +561,7 @@ public class UserCenterService {
 
       public org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.useraccounts.struct.FavPositionForm>> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.useraccounts.struct.FavPositionForm>>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.useraccounts.struct.FavPositionForm>>() {
           public void onComplete(java.util.List<com.moseeker.thrift.gen.useraccounts.struct.FavPositionForm> o) {
             getFavPositions_result result = new getFavPositions_result();
             result.success = o;
@@ -622,7 +622,7 @@ public class UserCenterService {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.RecommendationVO> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.RecommendationVO>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.RecommendationVO>() {
           public void onComplete(com.moseeker.thrift.gen.useraccounts.struct.RecommendationVO o) {
             getRecommendation_result result = new getRecommendation_result();
             result.success = o;
@@ -748,8 +748,8 @@ public class UserCenterService {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.USER_ID, new org.apache.thrift.meta_data.FieldMetaData("userId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.USER_ID, new org.apache.thrift.meta_data.FieldMetaData("userId", org.apache.thrift.TFieldRequirementType.DEFAULT,
+              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getApplications_args.class, metaDataMap);
     }
@@ -758,7 +758,7 @@ public class UserCenterService {
     }
 
     public getApplications_args(
-      int userId)
+            int userId)
     {
       this();
       this.userId = userId;
@@ -808,21 +808,21 @@ public class UserCenterService {
 
     public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
-      case USER_ID:
-        if (value == null) {
-          unsetUserId();
-        } else {
-          setUserId((java.lang.Integer)value);
-        }
-        break;
+        case USER_ID:
+          if (value == null) {
+            unsetUserId();
+          } else {
+            setUserId((java.lang.Integer)value);
+          }
+          break;
 
       }
     }
 
     public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
-      case USER_ID:
-        return getUserId();
+        case USER_ID:
+          return getUserId();
 
       }
       throw new java.lang.IllegalStateException();
@@ -835,8 +835,8 @@ public class UserCenterService {
       }
 
       switch (field) {
-      case USER_ID:
-        return isSetUserId();
+        case USER_ID:
+          return isSetUserId();
       }
       throw new java.lang.IllegalStateException();
     }
@@ -959,7 +959,7 @@ public class UserCenterService {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -967,7 +967,7 @@ public class UserCenterService {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.userId = iprot.readI32();
                 struct.setUserIdIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -1104,9 +1104,9 @@ public class UserCenterService {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
-              new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.useraccounts.struct.ApplicationRecordsForm.class))));
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
+              new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST,
+                      new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.useraccounts.struct.ApplicationRecordsForm.class))));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getApplications_result.class, metaDataMap);
     }
@@ -1115,7 +1115,7 @@ public class UserCenterService {
     }
 
     public getApplications_result(
-      java.util.List<com.moseeker.thrift.gen.useraccounts.struct.ApplicationRecordsForm> success)
+            java.util.List<com.moseeker.thrift.gen.useraccounts.struct.ApplicationRecordsForm> success)
     {
       this();
       this.success = success;
@@ -1184,21 +1184,21 @@ public class UserCenterService {
 
     public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
-      case SUCCESS:
-        if (value == null) {
-          unsetSuccess();
-        } else {
-          setSuccess((java.util.List<com.moseeker.thrift.gen.useraccounts.struct.ApplicationRecordsForm>)value);
-        }
-        break;
+        case SUCCESS:
+          if (value == null) {
+            unsetSuccess();
+          } else {
+            setSuccess((java.util.List<com.moseeker.thrift.gen.useraccounts.struct.ApplicationRecordsForm>)value);
+          }
+          break;
 
       }
     }
 
     public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
-      case SUCCESS:
-        return getSuccess();
+        case SUCCESS:
+          return getSuccess();
 
       }
       throw new java.lang.IllegalStateException();
@@ -1211,8 +1211,8 @@ public class UserCenterService {
       }
 
       switch (field) {
-      case SUCCESS:
-        return isSetSuccess();
+        case SUCCESS:
+          return isSetSuccess();
       }
       throw new java.lang.IllegalStateException();
     }
@@ -1286,7 +1286,7 @@ public class UserCenterService {
 
     public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       scheme(oprot).write(oprot, this);
-      }
+    }
 
     @Override
     public java.lang.String toString() {
@@ -1339,7 +1339,7 @@ public class UserCenterService {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -1358,7 +1358,7 @@ public class UserCenterService {
                   iprot.readListEnd();
                 }
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -1528,10 +1528,10 @@ public class UserCenterService {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.USER_ID, new org.apache.thrift.meta_data.FieldMetaData("userId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.APP_ID, new org.apache.thrift.meta_data.FieldMetaData("appId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.USER_ID, new org.apache.thrift.meta_data.FieldMetaData("userId", org.apache.thrift.TFieldRequirementType.DEFAULT,
+              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.APP_ID, new org.apache.thrift.meta_data.FieldMetaData("appId", org.apache.thrift.TFieldRequirementType.DEFAULT,
+              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getApplicationDetail_args.class, metaDataMap);
     }
@@ -1540,8 +1540,8 @@ public class UserCenterService {
     }
 
     public getApplicationDetail_args(
-      int userId,
-      int appId)
+            int userId,
+            int appId)
     {
       this();
       this.userId = userId;
@@ -1619,32 +1619,32 @@ public class UserCenterService {
 
     public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
-      case USER_ID:
-        if (value == null) {
-          unsetUserId();
-        } else {
-          setUserId((java.lang.Integer)value);
-        }
-        break;
+        case USER_ID:
+          if (value == null) {
+            unsetUserId();
+          } else {
+            setUserId((java.lang.Integer)value);
+          }
+          break;
 
-      case APP_ID:
-        if (value == null) {
-          unsetAppId();
-        } else {
-          setAppId((java.lang.Integer)value);
-        }
-        break;
+        case APP_ID:
+          if (value == null) {
+            unsetAppId();
+          } else {
+            setAppId((java.lang.Integer)value);
+          }
+          break;
 
       }
     }
 
     public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
-      case USER_ID:
-        return getUserId();
+        case USER_ID:
+          return getUserId();
 
-      case APP_ID:
-        return getAppId();
+        case APP_ID:
+          return getAppId();
 
       }
       throw new java.lang.IllegalStateException();
@@ -1657,10 +1657,10 @@ public class UserCenterService {
       }
 
       switch (field) {
-      case USER_ID:
-        return isSetUserId();
-      case APP_ID:
-        return isSetAppId();
+        case USER_ID:
+          return isSetUserId();
+        case APP_ID:
+          return isSetAppId();
       }
       throw new java.lang.IllegalStateException();
     }
@@ -1808,7 +1808,7 @@ public class UserCenterService {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -1816,7 +1816,7 @@ public class UserCenterService {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.userId = iprot.readI32();
                 struct.setUserIdIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -1824,7 +1824,7 @@ public class UserCenterService {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.appId = iprot.readI32();
                 struct.setAppIdIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -1974,8 +1974,8 @@ public class UserCenterService {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.useraccounts.struct.ApplicationDetailVO.class)));
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
+              new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.useraccounts.struct.ApplicationDetailVO.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getApplicationDetail_result.class, metaDataMap);
     }
@@ -1984,7 +1984,7 @@ public class UserCenterService {
     }
 
     public getApplicationDetail_result(
-      com.moseeker.thrift.gen.useraccounts.struct.ApplicationDetailVO success)
+            com.moseeker.thrift.gen.useraccounts.struct.ApplicationDetailVO success)
     {
       this();
       this.success = success;
@@ -2034,21 +2034,21 @@ public class UserCenterService {
 
     public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
-      case SUCCESS:
-        if (value == null) {
-          unsetSuccess();
-        } else {
-          setSuccess((com.moseeker.thrift.gen.useraccounts.struct.ApplicationDetailVO)value);
-        }
-        break;
+        case SUCCESS:
+          if (value == null) {
+            unsetSuccess();
+          } else {
+            setSuccess((com.moseeker.thrift.gen.useraccounts.struct.ApplicationDetailVO)value);
+          }
+          break;
 
       }
     }
 
     public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
-      case SUCCESS:
-        return getSuccess();
+        case SUCCESS:
+          return getSuccess();
 
       }
       throw new java.lang.IllegalStateException();
@@ -2061,8 +2061,8 @@ public class UserCenterService {
       }
 
       switch (field) {
-      case SUCCESS:
-        return isSetSuccess();
+        case SUCCESS:
+          return isSetSuccess();
       }
       throw new java.lang.IllegalStateException();
     }
@@ -2136,7 +2136,7 @@ public class UserCenterService {
 
     public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       scheme(oprot).write(oprot, this);
-      }
+    }
 
     @Override
     public java.lang.String toString() {
@@ -2192,7 +2192,7 @@ public class UserCenterService {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -2201,7 +2201,7 @@ public class UserCenterService {
                 struct.success = new com.moseeker.thrift.gen.useraccounts.struct.ApplicationDetailVO();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -2343,8 +2343,8 @@ public class UserCenterService {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.USER_ID, new org.apache.thrift.meta_data.FieldMetaData("userId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.USER_ID, new org.apache.thrift.meta_data.FieldMetaData("userId", org.apache.thrift.TFieldRequirementType.DEFAULT,
+              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getFavPositions_args.class, metaDataMap);
     }
@@ -2353,7 +2353,7 @@ public class UserCenterService {
     }
 
     public getFavPositions_args(
-      int userId)
+            int userId)
     {
       this();
       this.userId = userId;
@@ -2403,21 +2403,21 @@ public class UserCenterService {
 
     public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
-      case USER_ID:
-        if (value == null) {
-          unsetUserId();
-        } else {
-          setUserId((java.lang.Integer)value);
-        }
-        break;
+        case USER_ID:
+          if (value == null) {
+            unsetUserId();
+          } else {
+            setUserId((java.lang.Integer)value);
+          }
+          break;
 
       }
     }
 
     public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
-      case USER_ID:
-        return getUserId();
+        case USER_ID:
+          return getUserId();
 
       }
       throw new java.lang.IllegalStateException();
@@ -2430,8 +2430,8 @@ public class UserCenterService {
       }
 
       switch (field) {
-      case USER_ID:
-        return isSetUserId();
+        case USER_ID:
+          return isSetUserId();
       }
       throw new java.lang.IllegalStateException();
     }
@@ -2554,7 +2554,7 @@ public class UserCenterService {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -2562,7 +2562,7 @@ public class UserCenterService {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.userId = iprot.readI32();
                 struct.setUserIdIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -2699,9 +2699,9 @@ public class UserCenterService {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
-              new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.useraccounts.struct.FavPositionForm.class))));
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
+              new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST,
+                      new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.useraccounts.struct.FavPositionForm.class))));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getFavPositions_result.class, metaDataMap);
     }
@@ -2710,7 +2710,7 @@ public class UserCenterService {
     }
 
     public getFavPositions_result(
-      java.util.List<com.moseeker.thrift.gen.useraccounts.struct.FavPositionForm> success)
+            java.util.List<com.moseeker.thrift.gen.useraccounts.struct.FavPositionForm> success)
     {
       this();
       this.success = success;
@@ -2779,21 +2779,21 @@ public class UserCenterService {
 
     public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
-      case SUCCESS:
-        if (value == null) {
-          unsetSuccess();
-        } else {
-          setSuccess((java.util.List<com.moseeker.thrift.gen.useraccounts.struct.FavPositionForm>)value);
-        }
-        break;
+        case SUCCESS:
+          if (value == null) {
+            unsetSuccess();
+          } else {
+            setSuccess((java.util.List<com.moseeker.thrift.gen.useraccounts.struct.FavPositionForm>)value);
+          }
+          break;
 
       }
     }
 
     public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
-      case SUCCESS:
-        return getSuccess();
+        case SUCCESS:
+          return getSuccess();
 
       }
       throw new java.lang.IllegalStateException();
@@ -2806,8 +2806,8 @@ public class UserCenterService {
       }
 
       switch (field) {
-      case SUCCESS:
-        return isSetSuccess();
+        case SUCCESS:
+          return isSetSuccess();
       }
       throw new java.lang.IllegalStateException();
     }
@@ -2881,7 +2881,7 @@ public class UserCenterService {
 
     public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       scheme(oprot).write(oprot, this);
-      }
+    }
 
     @Override
     public java.lang.String toString() {
@@ -2934,7 +2934,7 @@ public class UserCenterService {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -2953,7 +2953,7 @@ public class UserCenterService {
                   iprot.readListEnd();
                 }
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -3135,14 +3135,14 @@ public class UserCenterService {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.USER_ID, new org.apache.thrift.meta_data.FieldMetaData("userId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.TYPE, new org.apache.thrift.meta_data.FieldMetaData("type", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BYTE)));
-      tmpMap.put(_Fields.PAGE_NO, new org.apache.thrift.meta_data.FieldMetaData("pageNo", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.PAGE_SIZE, new org.apache.thrift.meta_data.FieldMetaData("pageSize", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.USER_ID, new org.apache.thrift.meta_data.FieldMetaData("userId", org.apache.thrift.TFieldRequirementType.DEFAULT,
+              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.TYPE, new org.apache.thrift.meta_data.FieldMetaData("type", org.apache.thrift.TFieldRequirementType.DEFAULT,
+              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BYTE)));
+      tmpMap.put(_Fields.PAGE_NO, new org.apache.thrift.meta_data.FieldMetaData("pageNo", org.apache.thrift.TFieldRequirementType.DEFAULT,
+              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.PAGE_SIZE, new org.apache.thrift.meta_data.FieldMetaData("pageSize", org.apache.thrift.TFieldRequirementType.DEFAULT,
+              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getRecommendation_args.class, metaDataMap);
     }
@@ -3151,10 +3151,10 @@ public class UserCenterService {
     }
 
     public getRecommendation_args(
-      int userId,
-      byte type,
-      int pageNo,
-      int pageSize)
+            int userId,
+            byte type,
+            int pageNo,
+            int pageSize)
     {
       this();
       this.userId = userId;
@@ -3288,54 +3288,54 @@ public class UserCenterService {
 
     public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
-      case USER_ID:
-        if (value == null) {
-          unsetUserId();
-        } else {
-          setUserId((java.lang.Integer)value);
-        }
-        break;
+        case USER_ID:
+          if (value == null) {
+            unsetUserId();
+          } else {
+            setUserId((java.lang.Integer)value);
+          }
+          break;
 
-      case TYPE:
-        if (value == null) {
-          unsetType();
-        } else {
-          setType((java.lang.Byte)value);
-        }
-        break;
+        case TYPE:
+          if (value == null) {
+            unsetType();
+          } else {
+            setType((java.lang.Byte)value);
+          }
+          break;
 
-      case PAGE_NO:
-        if (value == null) {
-          unsetPageNo();
-        } else {
-          setPageNo((java.lang.Integer)value);
-        }
-        break;
+        case PAGE_NO:
+          if (value == null) {
+            unsetPageNo();
+          } else {
+            setPageNo((java.lang.Integer)value);
+          }
+          break;
 
-      case PAGE_SIZE:
-        if (value == null) {
-          unsetPageSize();
-        } else {
-          setPageSize((java.lang.Integer)value);
-        }
-        break;
+        case PAGE_SIZE:
+          if (value == null) {
+            unsetPageSize();
+          } else {
+            setPageSize((java.lang.Integer)value);
+          }
+          break;
 
       }
     }
 
     public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
-      case USER_ID:
-        return getUserId();
+        case USER_ID:
+          return getUserId();
 
-      case TYPE:
-        return getType();
+        case TYPE:
+          return getType();
 
-      case PAGE_NO:
-        return getPageNo();
+        case PAGE_NO:
+          return getPageNo();
 
-      case PAGE_SIZE:
-        return getPageSize();
+        case PAGE_SIZE:
+          return getPageSize();
 
       }
       throw new java.lang.IllegalStateException();
@@ -3348,14 +3348,14 @@ public class UserCenterService {
       }
 
       switch (field) {
-      case USER_ID:
-        return isSetUserId();
-      case TYPE:
-        return isSetType();
-      case PAGE_NO:
-        return isSetPageNo();
-      case PAGE_SIZE:
-        return isSetPageSize();
+        case USER_ID:
+          return isSetUserId();
+        case TYPE:
+          return isSetType();
+        case PAGE_NO:
+          return isSetPageNo();
+        case PAGE_SIZE:
+          return isSetPageSize();
       }
       throw new java.lang.IllegalStateException();
     }
@@ -3553,7 +3553,7 @@ public class UserCenterService {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -3561,7 +3561,7 @@ public class UserCenterService {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.userId = iprot.readI32();
                 struct.setUserIdIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -3569,7 +3569,7 @@ public class UserCenterService {
               if (schemeField.type == org.apache.thrift.protocol.TType.BYTE) {
                 struct.type = iprot.readByte();
                 struct.setTypeIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -3577,7 +3577,7 @@ public class UserCenterService {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.pageNo = iprot.readI32();
                 struct.setPageNoIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -3585,7 +3585,7 @@ public class UserCenterService {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.pageSize = iprot.readI32();
                 struct.setPageSizeIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -3761,8 +3761,8 @@ public class UserCenterService {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.useraccounts.struct.RecommendationVO.class)));
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
+              new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.useraccounts.struct.RecommendationVO.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getRecommendation_result.class, metaDataMap);
     }
@@ -3771,7 +3771,7 @@ public class UserCenterService {
     }
 
     public getRecommendation_result(
-      com.moseeker.thrift.gen.useraccounts.struct.RecommendationVO success)
+            com.moseeker.thrift.gen.useraccounts.struct.RecommendationVO success)
     {
       this();
       this.success = success;
@@ -3821,21 +3821,21 @@ public class UserCenterService {
 
     public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
-      case SUCCESS:
-        if (value == null) {
-          unsetSuccess();
-        } else {
-          setSuccess((com.moseeker.thrift.gen.useraccounts.struct.RecommendationVO)value);
-        }
-        break;
+        case SUCCESS:
+          if (value == null) {
+            unsetSuccess();
+          } else {
+            setSuccess((com.moseeker.thrift.gen.useraccounts.struct.RecommendationVO)value);
+          }
+          break;
 
       }
     }
 
     public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
-      case SUCCESS:
-        return getSuccess();
+        case SUCCESS:
+          return getSuccess();
 
       }
       throw new java.lang.IllegalStateException();
@@ -3848,8 +3848,8 @@ public class UserCenterService {
       }
 
       switch (field) {
-      case SUCCESS:
-        return isSetSuccess();
+        case SUCCESS:
+          return isSetSuccess();
       }
       throw new java.lang.IllegalStateException();
     }
@@ -3923,7 +3923,7 @@ public class UserCenterService {
 
     public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       scheme(oprot).write(oprot, this);
-      }
+    }
 
     @Override
     public java.lang.String toString() {
@@ -3979,7 +3979,7 @@ public class UserCenterService {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -3988,7 +3988,7 @@ public class UserCenterService {
                 struct.success = new com.moseeker.thrift.gen.useraccounts.struct.RecommendationVO();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;

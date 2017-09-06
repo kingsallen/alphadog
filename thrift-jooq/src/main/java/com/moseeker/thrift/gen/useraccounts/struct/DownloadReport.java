@@ -118,22 +118,22 @@ public class DownloadReport implements org.apache.thrift.TBase<DownloadReport, D
   public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-    tmpMap.put(_Fields.CODE, new org.apache.thrift.meta_data.FieldMetaData("code", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.COMPANY_NAME, new org.apache.thrift.meta_data.FieldMetaData("company_name", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.MOBILE, new org.apache.thrift.meta_data.FieldMetaData("mobile", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.NAME, new org.apache.thrift.meta_data.FieldMetaData("name", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.SOURCE, new org.apache.thrift.meta_data.FieldMetaData("source", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-    tmpMap.put(_Fields.REGISTER_IP, new org.apache.thrift.meta_data.FieldMetaData("register_ip", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.LAST_LOGIN_IP, new org.apache.thrift.meta_data.FieldMetaData("last_login_ip", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.COUNTRY_CODE, new org.apache.thrift.meta_data.FieldMetaData("countryCode", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+    tmpMap.put(_Fields.CODE, new org.apache.thrift.meta_data.FieldMetaData("code", org.apache.thrift.TFieldRequirementType.DEFAULT,
+            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+    tmpMap.put(_Fields.COMPANY_NAME, new org.apache.thrift.meta_data.FieldMetaData("company_name", org.apache.thrift.TFieldRequirementType.DEFAULT,
+            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+    tmpMap.put(_Fields.MOBILE, new org.apache.thrift.meta_data.FieldMetaData("mobile", org.apache.thrift.TFieldRequirementType.DEFAULT,
+            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+    tmpMap.put(_Fields.NAME, new org.apache.thrift.meta_data.FieldMetaData("name", org.apache.thrift.TFieldRequirementType.DEFAULT,
+            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+    tmpMap.put(_Fields.SOURCE, new org.apache.thrift.meta_data.FieldMetaData("source", org.apache.thrift.TFieldRequirementType.OPTIONAL,
+            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+    tmpMap.put(_Fields.REGISTER_IP, new org.apache.thrift.meta_data.FieldMetaData("register_ip", org.apache.thrift.TFieldRequirementType.OPTIONAL,
+            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+    tmpMap.put(_Fields.LAST_LOGIN_IP, new org.apache.thrift.meta_data.FieldMetaData("last_login_ip", org.apache.thrift.TFieldRequirementType.OPTIONAL,
+            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+    tmpMap.put(_Fields.COUNTRY_CODE, new org.apache.thrift.meta_data.FieldMetaData("countryCode", org.apache.thrift.TFieldRequirementType.OPTIONAL,
+            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(DownloadReport.class, metaDataMap);
   }
@@ -144,10 +144,10 @@ public class DownloadReport implements org.apache.thrift.TBase<DownloadReport, D
   }
 
   public DownloadReport(
-    java.lang.String code,
-    java.lang.String company_name,
-    java.lang.String mobile,
-    java.lang.String name)
+          java.lang.String code,
+          java.lang.String company_name,
+          java.lang.String mobile,
+          java.lang.String name)
   {
     this();
     this.code = code;
@@ -396,98 +396,98 @@ public class DownloadReport implements org.apache.thrift.TBase<DownloadReport, D
 
   public void setFieldValue(_Fields field, java.lang.Object value) {
     switch (field) {
-    case CODE:
-      if (value == null) {
-        unsetCode();
-      } else {
-        setCode((java.lang.String)value);
-      }
-      break;
+      case CODE:
+        if (value == null) {
+          unsetCode();
+        } else {
+          setCode((java.lang.String)value);
+        }
+        break;
 
-    case COMPANY_NAME:
-      if (value == null) {
-        unsetCompany_name();
-      } else {
-        setCompany_name((java.lang.String)value);
-      }
-      break;
+      case COMPANY_NAME:
+        if (value == null) {
+          unsetCompany_name();
+        } else {
+          setCompany_name((java.lang.String)value);
+        }
+        break;
 
-    case MOBILE:
-      if (value == null) {
-        unsetMobile();
-      } else {
-        setMobile((java.lang.String)value);
-      }
-      break;
+      case MOBILE:
+        if (value == null) {
+          unsetMobile();
+        } else {
+          setMobile((java.lang.String)value);
+        }
+        break;
 
-    case NAME:
-      if (value == null) {
-        unsetName();
-      } else {
-        setName((java.lang.String)value);
-      }
-      break;
+      case NAME:
+        if (value == null) {
+          unsetName();
+        } else {
+          setName((java.lang.String)value);
+        }
+        break;
 
-    case SOURCE:
-      if (value == null) {
-        unsetSource();
-      } else {
-        setSource((java.lang.Integer)value);
-      }
-      break;
+      case SOURCE:
+        if (value == null) {
+          unsetSource();
+        } else {
+          setSource((java.lang.Integer)value);
+        }
+        break;
 
-    case REGISTER_IP:
-      if (value == null) {
-        unsetRegister_ip();
-      } else {
-        setRegister_ip((java.lang.String)value);
-      }
-      break;
+      case REGISTER_IP:
+        if (value == null) {
+          unsetRegister_ip();
+        } else {
+          setRegister_ip((java.lang.String)value);
+        }
+        break;
 
-    case LAST_LOGIN_IP:
-      if (value == null) {
-        unsetLast_login_ip();
-      } else {
-        setLast_login_ip((java.lang.String)value);
-      }
-      break;
+      case LAST_LOGIN_IP:
+        if (value == null) {
+          unsetLast_login_ip();
+        } else {
+          setLast_login_ip((java.lang.String)value);
+        }
+        break;
 
-    case COUNTRY_CODE:
-      if (value == null) {
-        unsetCountryCode();
-      } else {
-        setCountryCode((java.lang.String)value);
-      }
-      break;
+      case COUNTRY_CODE:
+        if (value == null) {
+          unsetCountryCode();
+        } else {
+          setCountryCode((java.lang.String)value);
+        }
+        break;
 
     }
   }
 
   public java.lang.Object getFieldValue(_Fields field) {
     switch (field) {
-    case CODE:
-      return getCode();
+      case CODE:
+        return getCode();
 
-    case COMPANY_NAME:
-      return getCompany_name();
+      case COMPANY_NAME:
+        return getCompany_name();
 
-    case MOBILE:
-      return getMobile();
+      case MOBILE:
+        return getMobile();
 
-    case NAME:
-      return getName();
+      case NAME:
+        return getName();
 
-    case SOURCE:
-      return getSource();
+      case SOURCE:
+        return getSource();
 
-    case REGISTER_IP:
-      return getRegister_ip();
+      case REGISTER_IP:
+        return getRegister_ip();
 
-    case LAST_LOGIN_IP:
-      return getLast_login_ip();
+      case LAST_LOGIN_IP:
+        return getLast_login_ip();
 
-    case COUNTRY_CODE:
-      return getCountryCode();
+      case COUNTRY_CODE:
+        return getCountryCode();
 
     }
     throw new java.lang.IllegalStateException();
@@ -500,22 +500,22 @@ public class DownloadReport implements org.apache.thrift.TBase<DownloadReport, D
     }
 
     switch (field) {
-    case CODE:
-      return isSetCode();
-    case COMPANY_NAME:
-      return isSetCompany_name();
-    case MOBILE:
-      return isSetMobile();
-    case NAME:
-      return isSetName();
-    case SOURCE:
-      return isSetSource();
-    case REGISTER_IP:
-      return isSetRegister_ip();
-    case LAST_LOGIN_IP:
-      return isSetLast_login_ip();
-    case COUNTRY_CODE:
-      return isSetCountryCode();
+      case CODE:
+        return isSetCode();
+      case COMPANY_NAME:
+        return isSetCompany_name();
+      case MOBILE:
+        return isSetMobile();
+      case NAME:
+        return isSetName();
+      case SOURCE:
+        return isSetSource();
+      case REGISTER_IP:
+        return isSetRegister_ip();
+      case LAST_LOGIN_IP:
+        return isSetLast_login_ip();
+      case COUNTRY_CODE:
+        return isSetCountryCode();
     }
     throw new java.lang.IllegalStateException();
   }
@@ -865,7 +865,7 @@ public class DownloadReport implements org.apache.thrift.TBase<DownloadReport, D
       while (true)
       {
         schemeField = iprot.readFieldBegin();
-        if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+        if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
           break;
         }
         switch (schemeField.id) {
@@ -873,7 +873,7 @@ public class DownloadReport implements org.apache.thrift.TBase<DownloadReport, D
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
               struct.code = iprot.readString();
               struct.setCodeIsSet(true);
-            } else { 
+            } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
@@ -881,7 +881,7 @@ public class DownloadReport implements org.apache.thrift.TBase<DownloadReport, D
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
               struct.company_name = iprot.readString();
               struct.setCompany_nameIsSet(true);
-            } else { 
+            } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
@@ -889,7 +889,7 @@ public class DownloadReport implements org.apache.thrift.TBase<DownloadReport, D
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
               struct.mobile = iprot.readString();
               struct.setMobileIsSet(true);
-            } else { 
+            } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
@@ -897,7 +897,7 @@ public class DownloadReport implements org.apache.thrift.TBase<DownloadReport, D
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
               struct.name = iprot.readString();
               struct.setNameIsSet(true);
-            } else { 
+            } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
@@ -905,7 +905,7 @@ public class DownloadReport implements org.apache.thrift.TBase<DownloadReport, D
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
               struct.source = iprot.readI32();
               struct.setSourceIsSet(true);
-            } else { 
+            } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
@@ -913,7 +913,7 @@ public class DownloadReport implements org.apache.thrift.TBase<DownloadReport, D
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
               struct.register_ip = iprot.readString();
               struct.setRegister_ipIsSet(true);
-            } else { 
+            } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
@@ -921,7 +921,7 @@ public class DownloadReport implements org.apache.thrift.TBase<DownloadReport, D
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
               struct.last_login_ip = iprot.readString();
               struct.setLast_login_ipIsSet(true);
-            } else { 
+            } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
@@ -929,7 +929,7 @@ public class DownloadReport implements org.apache.thrift.TBase<DownloadReport, D
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
               struct.countryCode = iprot.readString();
               struct.setCountryCodeIsSet(true);
-            } else { 
+            } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;

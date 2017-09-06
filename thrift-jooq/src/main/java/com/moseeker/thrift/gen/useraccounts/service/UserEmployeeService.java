@@ -516,7 +516,7 @@ public class UserEmployeeService {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             getUserEmployee_result result = new getUserEmployee_result();
             result.success = o;
@@ -577,7 +577,7 @@ public class UserEmployeeService {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             getUserEmployees_result result = new getUserEmployees_result();
             result.success = o;
@@ -638,7 +638,7 @@ public class UserEmployeeService {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             delUserEmployee_result result = new delUserEmployee_result();
             result.success = o;
@@ -699,7 +699,7 @@ public class UserEmployeeService {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             postPutUserEmployeeBatch_result result = new postPutUserEmployeeBatch_result();
             result.success = o;
@@ -760,7 +760,7 @@ public class UserEmployeeService {
 
       public org.apache.thrift.async.AsyncMethodCallback<java.lang.Boolean> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<java.lang.Boolean>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<java.lang.Boolean>() {
           public void onComplete(java.lang.Boolean o) {
             isEmployee_result result = new isEmployee_result();
             result.success = o;
@@ -889,8 +889,8 @@ public class UserEmployeeService {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.QUERY, new org.apache.thrift.meta_data.FieldMetaData("query", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.CommonQuery.class)));
+      tmpMap.put(_Fields.QUERY, new org.apache.thrift.meta_data.FieldMetaData("query", org.apache.thrift.TFieldRequirementType.DEFAULT,
+              new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.CommonQuery.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getUserEmployee_args.class, metaDataMap);
     }
@@ -899,7 +899,7 @@ public class UserEmployeeService {
     }
 
     public getUserEmployee_args(
-      com.moseeker.thrift.gen.common.struct.CommonQuery query)
+            com.moseeker.thrift.gen.common.struct.CommonQuery query)
     {
       this();
       this.query = query;
@@ -949,21 +949,21 @@ public class UserEmployeeService {
 
     public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
-      case QUERY:
-        if (value == null) {
-          unsetQuery();
-        } else {
-          setQuery((com.moseeker.thrift.gen.common.struct.CommonQuery)value);
-        }
-        break;
+        case QUERY:
+          if (value == null) {
+            unsetQuery();
+          } else {
+            setQuery((com.moseeker.thrift.gen.common.struct.CommonQuery)value);
+          }
+          break;
 
       }
     }
 
     public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
-      case QUERY:
-        return getQuery();
+        case QUERY:
+          return getQuery();
 
       }
       throw new java.lang.IllegalStateException();
@@ -976,8 +976,8 @@ public class UserEmployeeService {
       }
 
       switch (field) {
-      case QUERY:
-        return isSetQuery();
+        case QUERY:
+          return isSetQuery();
       }
       throw new java.lang.IllegalStateException();
     }
@@ -1107,7 +1107,7 @@ public class UserEmployeeService {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -1116,7 +1116,7 @@ public class UserEmployeeService {
                 struct.query = new com.moseeker.thrift.gen.common.struct.CommonQuery();
                 struct.query.read(iprot);
                 struct.setQueryIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -1256,8 +1256,8 @@ public class UserEmployeeService {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
+              new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getUserEmployee_result.class, metaDataMap);
     }
@@ -1266,7 +1266,7 @@ public class UserEmployeeService {
     }
 
     public getUserEmployee_result(
-      com.moseeker.thrift.gen.common.struct.Response success)
+            com.moseeker.thrift.gen.common.struct.Response success)
     {
       this();
       this.success = success;
@@ -1316,21 +1316,21 @@ public class UserEmployeeService {
 
     public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
-      case SUCCESS:
-        if (value == null) {
-          unsetSuccess();
-        } else {
-          setSuccess((com.moseeker.thrift.gen.common.struct.Response)value);
-        }
-        break;
+        case SUCCESS:
+          if (value == null) {
+            unsetSuccess();
+          } else {
+            setSuccess((com.moseeker.thrift.gen.common.struct.Response)value);
+          }
+          break;
 
       }
     }
 
     public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
-      case SUCCESS:
-        return getSuccess();
+        case SUCCESS:
+          return getSuccess();
 
       }
       throw new java.lang.IllegalStateException();
@@ -1343,8 +1343,8 @@ public class UserEmployeeService {
       }
 
       switch (field) {
-      case SUCCESS:
-        return isSetSuccess();
+        case SUCCESS:
+          return isSetSuccess();
       }
       throw new java.lang.IllegalStateException();
     }
@@ -1418,7 +1418,7 @@ public class UserEmployeeService {
 
     public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       scheme(oprot).write(oprot, this);
-      }
+    }
 
     @Override
     public java.lang.String toString() {
@@ -1474,7 +1474,7 @@ public class UserEmployeeService {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -1483,7 +1483,7 @@ public class UserEmployeeService {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -1623,8 +1623,8 @@ public class UserEmployeeService {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.QUERY, new org.apache.thrift.meta_data.FieldMetaData("query", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.CommonQuery.class)));
+      tmpMap.put(_Fields.QUERY, new org.apache.thrift.meta_data.FieldMetaData("query", org.apache.thrift.TFieldRequirementType.DEFAULT,
+              new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.CommonQuery.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getUserEmployees_args.class, metaDataMap);
     }
@@ -1633,7 +1633,7 @@ public class UserEmployeeService {
     }
 
     public getUserEmployees_args(
-      com.moseeker.thrift.gen.common.struct.CommonQuery query)
+            com.moseeker.thrift.gen.common.struct.CommonQuery query)
     {
       this();
       this.query = query;
@@ -1683,21 +1683,21 @@ public class UserEmployeeService {
 
     public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
-      case QUERY:
-        if (value == null) {
-          unsetQuery();
-        } else {
-          setQuery((com.moseeker.thrift.gen.common.struct.CommonQuery)value);
-        }
-        break;
+        case QUERY:
+          if (value == null) {
+            unsetQuery();
+          } else {
+            setQuery((com.moseeker.thrift.gen.common.struct.CommonQuery)value);
+          }
+          break;
 
       }
     }
 
     public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
-      case QUERY:
-        return getQuery();
+        case QUERY:
+          return getQuery();
 
       }
       throw new java.lang.IllegalStateException();
@@ -1710,8 +1710,8 @@ public class UserEmployeeService {
       }
 
       switch (field) {
-      case QUERY:
-        return isSetQuery();
+        case QUERY:
+          return isSetQuery();
       }
       throw new java.lang.IllegalStateException();
     }
@@ -1841,7 +1841,7 @@ public class UserEmployeeService {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -1850,7 +1850,7 @@ public class UserEmployeeService {
                 struct.query = new com.moseeker.thrift.gen.common.struct.CommonQuery();
                 struct.query.read(iprot);
                 struct.setQueryIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -1990,8 +1990,8 @@ public class UserEmployeeService {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
+              new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getUserEmployees_result.class, metaDataMap);
     }
@@ -2000,7 +2000,7 @@ public class UserEmployeeService {
     }
 
     public getUserEmployees_result(
-      com.moseeker.thrift.gen.common.struct.Response success)
+            com.moseeker.thrift.gen.common.struct.Response success)
     {
       this();
       this.success = success;
@@ -2050,21 +2050,21 @@ public class UserEmployeeService {
 
     public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
-      case SUCCESS:
-        if (value == null) {
-          unsetSuccess();
-        } else {
-          setSuccess((com.moseeker.thrift.gen.common.struct.Response)value);
-        }
-        break;
+        case SUCCESS:
+          if (value == null) {
+            unsetSuccess();
+          } else {
+            setSuccess((com.moseeker.thrift.gen.common.struct.Response)value);
+          }
+          break;
 
       }
     }
 
     public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
-      case SUCCESS:
-        return getSuccess();
+        case SUCCESS:
+          return getSuccess();
 
       }
       throw new java.lang.IllegalStateException();
@@ -2077,8 +2077,8 @@ public class UserEmployeeService {
       }
 
       switch (field) {
-      case SUCCESS:
-        return isSetSuccess();
+        case SUCCESS:
+          return isSetSuccess();
       }
       throw new java.lang.IllegalStateException();
     }
@@ -2152,7 +2152,7 @@ public class UserEmployeeService {
 
     public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       scheme(oprot).write(oprot, this);
-      }
+    }
 
     @Override
     public java.lang.String toString() {
@@ -2208,7 +2208,7 @@ public class UserEmployeeService {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -2217,7 +2217,7 @@ public class UserEmployeeService {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -2357,8 +2357,8 @@ public class UserEmployeeService {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.QUERY, new org.apache.thrift.meta_data.FieldMetaData("query", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.CommonQuery.class)));
+      tmpMap.put(_Fields.QUERY, new org.apache.thrift.meta_data.FieldMetaData("query", org.apache.thrift.TFieldRequirementType.DEFAULT,
+              new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.CommonQuery.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(delUserEmployee_args.class, metaDataMap);
     }
@@ -2367,7 +2367,7 @@ public class UserEmployeeService {
     }
 
     public delUserEmployee_args(
-      com.moseeker.thrift.gen.common.struct.CommonQuery query)
+            com.moseeker.thrift.gen.common.struct.CommonQuery query)
     {
       this();
       this.query = query;
@@ -2417,21 +2417,21 @@ public class UserEmployeeService {
 
     public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
-      case QUERY:
-        if (value == null) {
-          unsetQuery();
-        } else {
-          setQuery((com.moseeker.thrift.gen.common.struct.CommonQuery)value);
-        }
-        break;
+        case QUERY:
+          if (value == null) {
+            unsetQuery();
+          } else {
+            setQuery((com.moseeker.thrift.gen.common.struct.CommonQuery)value);
+          }
+          break;
 
       }
     }
 
     public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
-      case QUERY:
-        return getQuery();
+        case QUERY:
+          return getQuery();
 
       }
       throw new java.lang.IllegalStateException();
@@ -2444,8 +2444,8 @@ public class UserEmployeeService {
       }
 
       switch (field) {
-      case QUERY:
-        return isSetQuery();
+        case QUERY:
+          return isSetQuery();
       }
       throw new java.lang.IllegalStateException();
     }
@@ -2575,7 +2575,7 @@ public class UserEmployeeService {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -2584,7 +2584,7 @@ public class UserEmployeeService {
                 struct.query = new com.moseeker.thrift.gen.common.struct.CommonQuery();
                 struct.query.read(iprot);
                 struct.setQueryIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -2724,8 +2724,8 @@ public class UserEmployeeService {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
+              new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(delUserEmployee_result.class, metaDataMap);
     }
@@ -2734,7 +2734,7 @@ public class UserEmployeeService {
     }
 
     public delUserEmployee_result(
-      com.moseeker.thrift.gen.common.struct.Response success)
+            com.moseeker.thrift.gen.common.struct.Response success)
     {
       this();
       this.success = success;
@@ -2784,21 +2784,21 @@ public class UserEmployeeService {
 
     public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
-      case SUCCESS:
-        if (value == null) {
-          unsetSuccess();
-        } else {
-          setSuccess((com.moseeker.thrift.gen.common.struct.Response)value);
-        }
-        break;
+        case SUCCESS:
+          if (value == null) {
+            unsetSuccess();
+          } else {
+            setSuccess((com.moseeker.thrift.gen.common.struct.Response)value);
+          }
+          break;
 
       }
     }
 
     public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
-      case SUCCESS:
-        return getSuccess();
+        case SUCCESS:
+          return getSuccess();
 
       }
       throw new java.lang.IllegalStateException();
@@ -2811,8 +2811,8 @@ public class UserEmployeeService {
       }
 
       switch (field) {
-      case SUCCESS:
-        return isSetSuccess();
+        case SUCCESS:
+          return isSetSuccess();
       }
       throw new java.lang.IllegalStateException();
     }
@@ -2886,7 +2886,7 @@ public class UserEmployeeService {
 
     public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       scheme(oprot).write(oprot, this);
-      }
+    }
 
     @Override
     public java.lang.String toString() {
@@ -2942,7 +2942,7 @@ public class UserEmployeeService {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -2951,7 +2951,7 @@ public class UserEmployeeService {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -3091,8 +3091,8 @@ public class UserEmployeeService {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.BATCH_FORM, new org.apache.thrift.meta_data.FieldMetaData("batchForm", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm.class)));
+      tmpMap.put(_Fields.BATCH_FORM, new org.apache.thrift.meta_data.FieldMetaData("batchForm", org.apache.thrift.TFieldRequirementType.DEFAULT,
+              new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(postPutUserEmployeeBatch_args.class, metaDataMap);
     }
@@ -3101,7 +3101,7 @@ public class UserEmployeeService {
     }
 
     public postPutUserEmployeeBatch_args(
-      com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm batchForm)
+            com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm batchForm)
     {
       this();
       this.batchForm = batchForm;
@@ -3151,21 +3151,21 @@ public class UserEmployeeService {
 
     public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
-      case BATCH_FORM:
-        if (value == null) {
-          unsetBatchForm();
-        } else {
-          setBatchForm((com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm)value);
-        }
-        break;
+        case BATCH_FORM:
+          if (value == null) {
+            unsetBatchForm();
+          } else {
+            setBatchForm((com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm)value);
+          }
+          break;
 
       }
     }
 
     public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
-      case BATCH_FORM:
-        return getBatchForm();
+        case BATCH_FORM:
+          return getBatchForm();
 
       }
       throw new java.lang.IllegalStateException();
@@ -3178,8 +3178,8 @@ public class UserEmployeeService {
       }
 
       switch (field) {
-      case BATCH_FORM:
-        return isSetBatchForm();
+        case BATCH_FORM:
+          return isSetBatchForm();
       }
       throw new java.lang.IllegalStateException();
     }
@@ -3309,7 +3309,7 @@ public class UserEmployeeService {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -3318,7 +3318,7 @@ public class UserEmployeeService {
                 struct.batchForm = new com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm();
                 struct.batchForm.read(iprot);
                 struct.setBatchFormIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -3458,8 +3458,8 @@ public class UserEmployeeService {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
+              new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(postPutUserEmployeeBatch_result.class, metaDataMap);
     }
@@ -3468,7 +3468,7 @@ public class UserEmployeeService {
     }
 
     public postPutUserEmployeeBatch_result(
-      com.moseeker.thrift.gen.common.struct.Response success)
+            com.moseeker.thrift.gen.common.struct.Response success)
     {
       this();
       this.success = success;
@@ -3518,21 +3518,21 @@ public class UserEmployeeService {
 
     public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
-      case SUCCESS:
-        if (value == null) {
-          unsetSuccess();
-        } else {
-          setSuccess((com.moseeker.thrift.gen.common.struct.Response)value);
-        }
-        break;
+        case SUCCESS:
+          if (value == null) {
+            unsetSuccess();
+          } else {
+            setSuccess((com.moseeker.thrift.gen.common.struct.Response)value);
+          }
+          break;
 
       }
     }
 
     public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
-      case SUCCESS:
-        return getSuccess();
+        case SUCCESS:
+          return getSuccess();
 
       }
       throw new java.lang.IllegalStateException();
@@ -3545,8 +3545,8 @@ public class UserEmployeeService {
       }
 
       switch (field) {
-      case SUCCESS:
-        return isSetSuccess();
+        case SUCCESS:
+          return isSetSuccess();
       }
       throw new java.lang.IllegalStateException();
     }
@@ -3620,7 +3620,7 @@ public class UserEmployeeService {
 
     public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       scheme(oprot).write(oprot, this);
-      }
+    }
 
     @Override
     public java.lang.String toString() {
@@ -3676,7 +3676,7 @@ public class UserEmployeeService {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -3685,7 +3685,7 @@ public class UserEmployeeService {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -3833,10 +3833,10 @@ public class UserEmployeeService {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.USER_ID, new org.apache.thrift.meta_data.FieldMetaData("userId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("companyId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.USER_ID, new org.apache.thrift.meta_data.FieldMetaData("userId", org.apache.thrift.TFieldRequirementType.DEFAULT,
+              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("companyId", org.apache.thrift.TFieldRequirementType.DEFAULT,
+              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(isEmployee_args.class, metaDataMap);
     }
@@ -3845,8 +3845,8 @@ public class UserEmployeeService {
     }
 
     public isEmployee_args(
-      int userId,
-      int companyId)
+            int userId,
+            int companyId)
     {
       this();
       this.userId = userId;
@@ -3924,32 +3924,32 @@ public class UserEmployeeService {
 
     public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
-      case USER_ID:
-        if (value == null) {
-          unsetUserId();
-        } else {
-          setUserId((java.lang.Integer)value);
-        }
-        break;
+        case USER_ID:
+          if (value == null) {
+            unsetUserId();
+          } else {
+            setUserId((java.lang.Integer)value);
+          }
+          break;
 
-      case COMPANY_ID:
-        if (value == null) {
-          unsetCompanyId();
-        } else {
-          setCompanyId((java.lang.Integer)value);
-        }
-        break;
+        case COMPANY_ID:
+          if (value == null) {
+            unsetCompanyId();
+          } else {
+            setCompanyId((java.lang.Integer)value);
+          }
+          break;
 
       }
     }
 
     public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
-      case USER_ID:
-        return getUserId();
+        case USER_ID:
+          return getUserId();
 
-      case COMPANY_ID:
-        return getCompanyId();
+        case COMPANY_ID:
+          return getCompanyId();
 
       }
       throw new java.lang.IllegalStateException();
@@ -3962,10 +3962,10 @@ public class UserEmployeeService {
       }
 
       switch (field) {
-      case USER_ID:
-        return isSetUserId();
-      case COMPANY_ID:
-        return isSetCompanyId();
+        case USER_ID:
+          return isSetUserId();
+        case COMPANY_ID:
+          return isSetCompanyId();
       }
       throw new java.lang.IllegalStateException();
     }
@@ -4113,7 +4113,7 @@ public class UserEmployeeService {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -4121,7 +4121,7 @@ public class UserEmployeeService {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.userId = iprot.readI32();
                 struct.setUserIdIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -4129,7 +4129,7 @@ public class UserEmployeeService {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.companyId = iprot.readI32();
                 struct.setCompanyIdIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -4286,10 +4286,10 @@ public class UserEmployeeService {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BOOL)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
+              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BOOL)));
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
+              new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(isEmployee_result.class, metaDataMap);
     }
@@ -4298,8 +4298,8 @@ public class UserEmployeeService {
     }
 
     public isEmployee_result(
-      boolean success,
-      com.moseeker.thrift.gen.common.struct.BIZException e)
+            boolean success,
+            com.moseeker.thrift.gen.common.struct.BIZException e)
     {
       this();
       this.success = success;
@@ -4378,32 +4378,32 @@ public class UserEmployeeService {
 
     public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
-      case SUCCESS:
-        if (value == null) {
-          unsetSuccess();
-        } else {
-          setSuccess((java.lang.Boolean)value);
-        }
-        break;
+        case SUCCESS:
+          if (value == null) {
+            unsetSuccess();
+          } else {
+            setSuccess((java.lang.Boolean)value);
+          }
+          break;
 
-      case E:
-        if (value == null) {
-          unsetE();
-        } else {
-          setE((com.moseeker.thrift.gen.common.struct.BIZException)value);
-        }
-        break;
+        case E:
+          if (value == null) {
+            unsetE();
+          } else {
+            setE((com.moseeker.thrift.gen.common.struct.BIZException)value);
+          }
+          break;
 
       }
     }
 
     public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
-      case SUCCESS:
-        return isSuccess();
+        case SUCCESS:
+          return isSuccess();
 
-      case E:
-        return getE();
+        case E:
+          return getE();
 
       }
       throw new java.lang.IllegalStateException();
@@ -4416,10 +4416,10 @@ public class UserEmployeeService {
       }
 
       switch (field) {
-      case SUCCESS:
-        return isSetSuccess();
-      case E:
-        return isSetE();
+        case SUCCESS:
+          return isSetSuccess();
+        case E:
+          return isSetE();
       }
       throw new java.lang.IllegalStateException();
     }
@@ -4514,7 +4514,7 @@ public class UserEmployeeService {
 
     public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       scheme(oprot).write(oprot, this);
-      }
+    }
 
     @Override
     public java.lang.String toString() {
@@ -4573,7 +4573,7 @@ public class UserEmployeeService {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -4581,7 +4581,7 @@ public class UserEmployeeService {
               if (schemeField.type == org.apache.thrift.protocol.TType.BOOL) {
                 struct.success = iprot.readBool();
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -4590,7 +4590,7 @@ public class UserEmployeeService {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;

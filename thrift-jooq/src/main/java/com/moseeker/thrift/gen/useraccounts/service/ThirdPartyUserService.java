@@ -180,7 +180,7 @@ public class ThirdPartyUserService {
 
       public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
             updateUser_result result = new updateUser_result();
             result.success = o;
@@ -304,8 +304,8 @@ public class ThirdPartyUserService {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.USER, new org.apache.thrift.meta_data.FieldMetaData("user", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.useraccounts.struct.ThirdPartyUser.class)));
+      tmpMap.put(_Fields.USER, new org.apache.thrift.meta_data.FieldMetaData("user", org.apache.thrift.TFieldRequirementType.DEFAULT,
+              new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.useraccounts.struct.ThirdPartyUser.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(updateUser_args.class, metaDataMap);
     }
@@ -314,7 +314,7 @@ public class ThirdPartyUserService {
     }
 
     public updateUser_args(
-      com.moseeker.thrift.gen.useraccounts.struct.ThirdPartyUser user)
+            com.moseeker.thrift.gen.useraccounts.struct.ThirdPartyUser user)
     {
       this();
       this.user = user;
@@ -364,21 +364,21 @@ public class ThirdPartyUserService {
 
     public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
-      case USER:
-        if (value == null) {
-          unsetUser();
-        } else {
-          setUser((com.moseeker.thrift.gen.useraccounts.struct.ThirdPartyUser)value);
-        }
-        break;
+        case USER:
+          if (value == null) {
+            unsetUser();
+          } else {
+            setUser((com.moseeker.thrift.gen.useraccounts.struct.ThirdPartyUser)value);
+          }
+          break;
 
       }
     }
 
     public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
-      case USER:
-        return getUser();
+        case USER:
+          return getUser();
 
       }
       throw new java.lang.IllegalStateException();
@@ -391,8 +391,8 @@ public class ThirdPartyUserService {
       }
 
       switch (field) {
-      case USER:
-        return isSetUser();
+        case USER:
+          return isSetUser();
       }
       throw new java.lang.IllegalStateException();
     }
@@ -522,7 +522,7 @@ public class ThirdPartyUserService {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -531,7 +531,7 @@ public class ThirdPartyUserService {
                 struct.user = new com.moseeker.thrift.gen.useraccounts.struct.ThirdPartyUser();
                 struct.user.read(iprot);
                 struct.setUserIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -671,8 +671,8 @@ public class ThirdPartyUserService {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
+              new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(updateUser_result.class, metaDataMap);
     }
@@ -681,7 +681,7 @@ public class ThirdPartyUserService {
     }
 
     public updateUser_result(
-      com.moseeker.thrift.gen.common.struct.Response success)
+            com.moseeker.thrift.gen.common.struct.Response success)
     {
       this();
       this.success = success;
@@ -731,21 +731,21 @@ public class ThirdPartyUserService {
 
     public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
-      case SUCCESS:
-        if (value == null) {
-          unsetSuccess();
-        } else {
-          setSuccess((com.moseeker.thrift.gen.common.struct.Response)value);
-        }
-        break;
+        case SUCCESS:
+          if (value == null) {
+            unsetSuccess();
+          } else {
+            setSuccess((com.moseeker.thrift.gen.common.struct.Response)value);
+          }
+          break;
 
       }
     }
 
     public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
-      case SUCCESS:
-        return getSuccess();
+        case SUCCESS:
+          return getSuccess();
 
       }
       throw new java.lang.IllegalStateException();
@@ -758,8 +758,8 @@ public class ThirdPartyUserService {
       }
 
       switch (field) {
-      case SUCCESS:
-        return isSetSuccess();
+        case SUCCESS:
+          return isSetSuccess();
       }
       throw new java.lang.IllegalStateException();
     }
@@ -833,7 +833,7 @@ public class ThirdPartyUserService {
 
     public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       scheme(oprot).write(oprot, this);
-      }
+    }
 
     @Override
     public java.lang.String toString() {
@@ -889,7 +889,7 @@ public class ThirdPartyUserService {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -898,7 +898,7 @@ public class ThirdPartyUserService {
                 struct.success = new com.moseeker.thrift.gen.common.struct.Response();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
