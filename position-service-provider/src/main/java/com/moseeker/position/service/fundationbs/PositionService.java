@@ -676,10 +676,10 @@ public class PositionService {
             }
             // 按company_id + .source_id + .jobnumber + source=9取得数据
             Query queryUtil = new Query.QueryBuilder()
-                    .where(JobPosition.COMPANY_ID.getName(), jobPositionHandlerDate.getCompany_id())
-                    .and(JobPosition.SOURCE.getName(), 9)
-                    .and(JobPosition.SOURCE_ID.getName(), jobPositionHandlerDate.getSource_id())
-                    .and(JobPosition.JOBNUMBER.getName(), jobPositionHandlerDate.getJobnumber())
+                    .where(JobPosition.JOB_POSITION.COMPANY_ID.getName(), jobPositionHandlerDate.getCompany_id())
+                    .and(JobPosition.JOB_POSITION.SOURCE.getName(), 9)
+                    .and(JobPosition.JOB_POSITION.SOURCE_ID.getName(), jobPositionHandlerDate.getSource_id())
+                    .and(JobPosition.JOB_POSITION.JOBNUMBER.getName(), jobPositionHandlerDate.getJobnumber())
                     .buildQuery();
             JobPositionRecord jobPositionRecord = jobPositionDao.getRecord(queryUtil);
 
@@ -947,7 +947,7 @@ public class PositionService {
 
     /**
      * 将地区或者邮编转换成行政编码
-     *
+     * //todo 地区入库，jobdb.job_position.city 与 jobdb.job_position_city.code 入库不一致
      * @param citys
      * @param pid
      * @return

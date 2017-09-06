@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobResumeOther extends TableImpl<JobResumeOtherRecord> {
 
-    private static final long serialVersionUID = -1435296521;
+    private static final long serialVersionUID = 1968553026;
 
     /**
      * The reference instance of <code>jobdb.job_resume_other</code>
@@ -53,28 +53,35 @@ public class JobResumeOther extends TableImpl<JobResumeOtherRecord> {
     /**
      * The column <code>jobdb.job_resume_other.app_id</code>. job_application.id
      */
-    public static final TableField<JobResumeOtherRecord, Integer> APP_ID = createField("app_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), JOB_RESUME_OTHER, "job_application.id");
+    public final TableField<JobResumeOtherRecord, Integer> APP_ID = createField("app_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "job_application.id");
 
     /**
-     * The column <code>jobdb.job_resume_other.other</code>. 自定义字段
+     * The column <code>jobdb.job_resume_other.other</code>.
      */
-    public static final TableField<JobResumeOtherRecord, String> OTHER = createField("other", org.jooq.impl.SQLDataType.CLOB, JOB_RESUME_OTHER, "自定义字段");
+    public final TableField<JobResumeOtherRecord, String> OTHER = createField("other", org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>jobdb.job_resume_other.create_time</code>. 创建时间
      */
-    public static final TableField<JobResumeOtherRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), JOB_RESUME_OTHER, "创建时间");
+    public final TableField<JobResumeOtherRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
 
     /**
      * The column <code>jobdb.job_resume_other.update_time</code>. 更新时间
      */
-    public static final TableField<JobResumeOtherRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), JOB_RESUME_OTHER, "更新时间");
+    public final TableField<JobResumeOtherRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
 
     /**
-     * No further instances allowed
+     * Create a <code>jobdb.job_resume_other</code> table reference
      */
-    private JobResumeOther() {
+    public JobResumeOther() {
         this("job_resume_other", null);
+    }
+
+    /**
+     * Create an aliased <code>jobdb.job_resume_other</code> table reference
+     */
+    public JobResumeOther(String alias) {
+        this(alias, JOB_RESUME_OTHER);
     }
 
     private JobResumeOther(String alias, Table<JobResumeOtherRecord> aliased) {
@@ -107,5 +114,20 @@ public class JobResumeOther extends TableImpl<JobResumeOtherRecord> {
     @Override
     public List<UniqueKey<JobResumeOtherRecord>> getKeys() {
         return Arrays.<UniqueKey<JobResumeOtherRecord>>asList(Keys.KEY_JOB_RESUME_OTHER_PRIMARY);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public JobResumeOther as(String alias) {
+        return new JobResumeOther(alias, this);
+    }
+
+    /**
+     * Rename this table
+     */
+    public JobResumeOther rename(String name) {
+        return new JobResumeOther(name, null);
     }
 }

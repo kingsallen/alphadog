@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionCity extends TableImpl<JobPositionCityRecord> {
 
-    private static final long serialVersionUID = 228657433;
+    private static final long serialVersionUID = 498149360;
 
     /**
      * The reference instance of <code>jobdb.job_position_city</code>
@@ -52,18 +52,25 @@ public class JobPositionCity extends TableImpl<JobPositionCityRecord> {
     /**
      * The column <code>jobdb.job_position_city.pid</code>. 职位id
      */
-    public static final TableField<JobPositionCityRecord, Integer> PID = createField("pid", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), JOB_POSITION_CITY, "职位id");
+    public final TableField<JobPositionCityRecord, Integer> PID = createField("pid", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "职位id");
 
     /**
      * The column <code>jobdb.job_position_city.code</code>. 城市code
      */
-    public static final TableField<JobPositionCityRecord, Integer> CODE = createField("code", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), JOB_POSITION_CITY, "城市code");
+    public final TableField<JobPositionCityRecord, Integer> CODE = createField("code", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "城市code");
 
     /**
-     * No further instances allowed
+     * Create a <code>jobdb.job_position_city</code> table reference
      */
-    private JobPositionCity() {
+    public JobPositionCity() {
         this("job_position_city", null);
+    }
+
+    /**
+     * Create an aliased <code>jobdb.job_position_city</code> table reference
+     */
+    public JobPositionCity(String alias) {
+        this(alias, JOB_POSITION_CITY);
     }
 
     private JobPositionCity(String alias, Table<JobPositionCityRecord> aliased) {
@@ -88,5 +95,20 @@ public class JobPositionCity extends TableImpl<JobPositionCityRecord> {
     @Override
     public List<UniqueKey<JobPositionCityRecord>> getKeys() {
         return Arrays.<UniqueKey<JobPositionCityRecord>>asList(Keys.KEY_JOB_POSITION_CITY_IDX_PID_CODE);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public JobPositionCity as(String alias) {
+        return new JobPositionCity(alias, this);
+    }
+
+    /**
+     * Rename this table
+     */
+    public JobPositionCity rename(String name) {
+        return new JobPositionCity(name, null);
     }
 }
