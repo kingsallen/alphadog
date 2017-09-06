@@ -944,12 +944,15 @@ public class UseraccountsService {
         return false;
     }
 
-    public Response validateVerifyCode(String mobile, String code, int type) throws TException {
+    public Response validateVerifyCode(String mobile, String code, int type,String countryCode) throws TException {
         ValidateUtil vu = new ValidateUtil();
         vu.addRequiredStringValidate("手机号码", mobile, null, null);
         vu.addRequiredStringValidate("验证码", code, null, null);
         String message = vu.validate();
         if (StringUtils.isNullOrEmpty(message)) {
+            if(!"86".equals(countryCode)){
+                mobile=countryCode+mobile;
+            }
             boolean flag = validateCode(mobile, code, type);
             if (flag) {
                 return ResponseUtils.success(1);

@@ -404,9 +404,9 @@ public class UseraccountsServiceImpl implements Iface {
 	}
 
 	@Override
-	public Response validateVerifyCode(String mobile, String code, int type) throws TException {
+	public Response validateVerifyCode(String mobile, String code, int type,String countryCode) throws TException {
 		try {
-			return service.validateVerifyCode(mobile, code, type);
+			return service.validateVerifyCode(mobile, code, type,countryCode);
 		} catch (CommonException e) {
 			throw ExceptionConvertUtil.convertCommonException(e);
 		} catch (Exception e) {

@@ -44,7 +44,7 @@ public class UseraccountsServices {
 
         public com.moseeker.thrift.gen.common.struct.Response postvalidatepasswordforgotcode(java.lang.String mobile, java.lang.String code) throws org.apache.thrift.TException;
 
-        public com.moseeker.thrift.gen.common.struct.Response validateVerifyCode(java.lang.String mobile, java.lang.String code, int type) throws org.apache.thrift.TException;
+        public com.moseeker.thrift.gen.common.struct.Response validateVerifyCode(java.lang.String mobile, java.lang.String code, int type, java.lang.String countryCode) throws org.apache.thrift.TException;
 
         public com.moseeker.thrift.gen.common.struct.Response sendVerifyCode(java.lang.String mobile, int type, java.lang.String countryCode) throws org.apache.thrift.TException;
 
@@ -114,7 +114,7 @@ public class UseraccountsServices {
 
         public void postvalidatepasswordforgotcode(java.lang.String mobile, java.lang.String code, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
-        public void validateVerifyCode(java.lang.String mobile, java.lang.String code, int type, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+        public void validateVerifyCode(java.lang.String mobile, java.lang.String code, int type, java.lang.String countryCode, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
         public void sendVerifyCode(java.lang.String mobile, int type, java.lang.String countryCode, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
@@ -507,18 +507,19 @@ public class UseraccountsServices {
             throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "postvalidatepasswordforgotcode failed: unknown result");
         }
 
-        public com.moseeker.thrift.gen.common.struct.Response validateVerifyCode(java.lang.String mobile, java.lang.String code, int type) throws org.apache.thrift.TException
+        public com.moseeker.thrift.gen.common.struct.Response validateVerifyCode(java.lang.String mobile, java.lang.String code, int type, java.lang.String countryCode) throws org.apache.thrift.TException
         {
-            send_validateVerifyCode(mobile, code, type);
+            send_validateVerifyCode(mobile, code, type, countryCode);
             return recv_validateVerifyCode();
         }
 
-        public void send_validateVerifyCode(java.lang.String mobile, java.lang.String code, int type) throws org.apache.thrift.TException
+        public void send_validateVerifyCode(java.lang.String mobile, java.lang.String code, int type, java.lang.String countryCode) throws org.apache.thrift.TException
         {
             validateVerifyCode_args args = new validateVerifyCode_args();
             args.setMobile(mobile);
             args.setCode(code);
             args.setType(type);
+            args.setCountryCode(countryCode);
             sendBase("validateVerifyCode", args);
         }
 
@@ -1461,9 +1462,9 @@ public class UseraccountsServices {
             }
         }
 
-        public void validateVerifyCode(java.lang.String mobile, java.lang.String code, int type, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+        public void validateVerifyCode(java.lang.String mobile, java.lang.String code, int type, java.lang.String countryCode, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
             checkReady();
-            validateVerifyCode_call method_call = new validateVerifyCode_call(mobile, code, type, resultHandler, this, ___protocolFactory, ___transport);
+            validateVerifyCode_call method_call = new validateVerifyCode_call(mobile, code, type, countryCode, resultHandler, this, ___protocolFactory, ___transport);
             this.___currentMethod = method_call;
             ___manager.call(method_call);
         }
@@ -1472,11 +1473,13 @@ public class UseraccountsServices {
             private java.lang.String mobile;
             private java.lang.String code;
             private int type;
-            public validateVerifyCode_call(java.lang.String mobile, java.lang.String code, int type, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+            private java.lang.String countryCode;
+            public validateVerifyCode_call(java.lang.String mobile, java.lang.String code, int type, java.lang.String countryCode, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
                 super(client, protocolFactory, transport, resultHandler, false);
                 this.mobile = mobile;
                 this.code = code;
                 this.type = type;
+                this.countryCode = countryCode;
             }
 
             public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
@@ -1485,6 +1488,7 @@ public class UseraccountsServices {
                 args.setMobile(mobile);
                 args.setCode(code);
                 args.setType(type);
+                args.setCountryCode(countryCode);
                 args.write(prot);
                 prot.writeMessageEnd();
             }
@@ -2467,7 +2471,7 @@ public class UseraccountsServices {
 
             public validateVerifyCode_result getResult(I iface, validateVerifyCode_args args) throws org.apache.thrift.TException {
                 validateVerifyCode_result result = new validateVerifyCode_result();
-                result.success = iface.validateVerifyCode(args.mobile, args.code, args.type);
+                result.success = iface.validateVerifyCode(args.mobile, args.code, args.type, args.countryCode);
                 return result;
             }
         }
@@ -3794,7 +3798,7 @@ public class UseraccountsServices {
             }
 
             public void start(I iface, validateVerifyCode_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
-                iface.validateVerifyCode(args.mobile, args.code, args.type,resultHandler);
+                iface.validateVerifyCode(args.mobile, args.code, args.type, args.countryCode,resultHandler);
             }
         }
 
@@ -16272,6 +16276,7 @@ public class UseraccountsServices {
         private static final org.apache.thrift.protocol.TField MOBILE_FIELD_DESC = new org.apache.thrift.protocol.TField("mobile", org.apache.thrift.protocol.TType.STRING, (short)1);
         private static final org.apache.thrift.protocol.TField CODE_FIELD_DESC = new org.apache.thrift.protocol.TField("code", org.apache.thrift.protocol.TType.STRING, (short)2);
         private static final org.apache.thrift.protocol.TField TYPE_FIELD_DESC = new org.apache.thrift.protocol.TField("type", org.apache.thrift.protocol.TType.I32, (short)3);
+        private static final org.apache.thrift.protocol.TField COUNTRY_CODE_FIELD_DESC = new org.apache.thrift.protocol.TField("countryCode", org.apache.thrift.protocol.TType.STRING, (short)4);
 
         private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new validateVerifyCode_argsStandardSchemeFactory();
         private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new validateVerifyCode_argsTupleSchemeFactory();
@@ -16279,12 +16284,14 @@ public class UseraccountsServices {
         public java.lang.String mobile; // required
         public java.lang.String code; // required
         public int type; // required
+        public java.lang.String countryCode; // required
 
         /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
         public enum _Fields implements org.apache.thrift.TFieldIdEnum {
             MOBILE((short)1, "mobile"),
             CODE((short)2, "code"),
-            TYPE((short)3, "type");
+            TYPE((short)3, "type"),
+            COUNTRY_CODE((short)4, "countryCode");
 
             private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
@@ -16305,6 +16312,8 @@ public class UseraccountsServices {
                         return CODE;
                     case 3: // TYPE
                         return TYPE;
+                    case 4: // COUNTRY_CODE
+                        return COUNTRY_CODE;
                     default:
                         return null;
                 }
@@ -16356,6 +16365,8 @@ public class UseraccountsServices {
                     new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
             tmpMap.put(_Fields.TYPE, new org.apache.thrift.meta_data.FieldMetaData("type", org.apache.thrift.TFieldRequirementType.DEFAULT,
                     new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+            tmpMap.put(_Fields.COUNTRY_CODE, new org.apache.thrift.meta_data.FieldMetaData("countryCode", org.apache.thrift.TFieldRequirementType.DEFAULT,
+                    new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
             metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
             org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(validateVerifyCode_args.class, metaDataMap);
         }
@@ -16366,13 +16377,15 @@ public class UseraccountsServices {
         public validateVerifyCode_args(
                 java.lang.String mobile,
                 java.lang.String code,
-                int type)
+                int type,
+                java.lang.String countryCode)
         {
             this();
             this.mobile = mobile;
             this.code = code;
             this.type = type;
             setTypeIsSet(true);
+            this.countryCode = countryCode;
         }
 
         /**
@@ -16387,6 +16400,9 @@ public class UseraccountsServices {
                 this.code = other.code;
             }
             this.type = other.type;
+            if (other.isSetCountryCode()) {
+                this.countryCode = other.countryCode;
+            }
         }
 
         public validateVerifyCode_args deepCopy() {
@@ -16399,6 +16415,7 @@ public class UseraccountsServices {
             this.code = null;
             setTypeIsSet(false);
             this.type = 0;
+            this.countryCode = null;
         }
 
         public java.lang.String getMobile() {
@@ -16472,6 +16489,30 @@ public class UseraccountsServices {
             __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __TYPE_ISSET_ID, value);
         }
 
+        public java.lang.String getCountryCode() {
+            return this.countryCode;
+        }
+
+        public validateVerifyCode_args setCountryCode(java.lang.String countryCode) {
+            this.countryCode = countryCode;
+            return this;
+        }
+
+        public void unsetCountryCode() {
+            this.countryCode = null;
+        }
+
+        /** Returns true if field countryCode is set (has been assigned a value) and false otherwise */
+        public boolean isSetCountryCode() {
+            return this.countryCode != null;
+        }
+
+        public void setCountryCodeIsSet(boolean value) {
+            if (!value) {
+                this.countryCode = null;
+            }
+        }
+
         public void setFieldValue(_Fields field, java.lang.Object value) {
             switch (field) {
                 case MOBILE:
@@ -16498,6 +16539,14 @@ public class UseraccountsServices {
                     }
                     break;
 
+                case COUNTRY_CODE:
+                    if (value == null) {
+                        unsetCountryCode();
+                    } else {
+                        setCountryCode((java.lang.String)value);
+                    }
+                    break;
+
             }
         }
 
@@ -16511,6 +16560,9 @@ public class UseraccountsServices {
 
                 case TYPE:
                     return getType();
+
+                case COUNTRY_CODE:
+                    return getCountryCode();
 
             }
             throw new java.lang.IllegalStateException();
@@ -16529,6 +16581,8 @@ public class UseraccountsServices {
                     return isSetCode();
                 case TYPE:
                     return isSetType();
+                case COUNTRY_CODE:
+                    return isSetCountryCode();
             }
             throw new java.lang.IllegalStateException();
         }
@@ -16575,6 +16629,15 @@ public class UseraccountsServices {
                     return false;
             }
 
+            boolean this_present_countryCode = true && this.isSetCountryCode();
+            boolean that_present_countryCode = true && that.isSetCountryCode();
+            if (this_present_countryCode || that_present_countryCode) {
+                if (!(this_present_countryCode && that_present_countryCode))
+                    return false;
+                if (!this.countryCode.equals(that.countryCode))
+                    return false;
+            }
+
             return true;
         }
 
@@ -16591,6 +16654,10 @@ public class UseraccountsServices {
                 hashCode = hashCode * 8191 + code.hashCode();
 
             hashCode = hashCode * 8191 + type;
+
+            hashCode = hashCode * 8191 + ((isSetCountryCode()) ? 131071 : 524287);
+            if (isSetCountryCode())
+                hashCode = hashCode * 8191 + countryCode.hashCode();
 
             return hashCode;
         }
@@ -16633,6 +16700,16 @@ public class UseraccountsServices {
                     return lastComparison;
                 }
             }
+            lastComparison = java.lang.Boolean.valueOf(isSetCountryCode()).compareTo(other.isSetCountryCode());
+            if (lastComparison != 0) {
+                return lastComparison;
+            }
+            if (isSetCountryCode()) {
+                lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.countryCode, other.countryCode);
+                if (lastComparison != 0) {
+                    return lastComparison;
+                }
+            }
             return 0;
         }
 
@@ -16671,6 +16748,14 @@ public class UseraccountsServices {
             if (!first) sb.append(", ");
             sb.append("type:");
             sb.append(this.type);
+            first = false;
+            if (!first) sb.append(", ");
+            sb.append("countryCode:");
+            if (this.countryCode == null) {
+                sb.append("null");
+            } else {
+                sb.append(this.countryCode);
+            }
             first = false;
             sb.append(")");
             return sb.toString();
@@ -16741,6 +16826,14 @@ public class UseraccountsServices {
                                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
                             }
                             break;
+                        case 4: // COUNTRY_CODE
+                            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                                struct.countryCode = iprot.readString();
+                                struct.setCountryCodeIsSet(true);
+                            } else {
+                                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+                            }
+                            break;
                         default:
                             org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
                     }
@@ -16769,6 +16862,11 @@ public class UseraccountsServices {
                 oprot.writeFieldBegin(TYPE_FIELD_DESC);
                 oprot.writeI32(struct.type);
                 oprot.writeFieldEnd();
+                if (struct.countryCode != null) {
+                    oprot.writeFieldBegin(COUNTRY_CODE_FIELD_DESC);
+                    oprot.writeString(struct.countryCode);
+                    oprot.writeFieldEnd();
+                }
                 oprot.writeFieldStop();
                 oprot.writeStructEnd();
             }
@@ -16796,7 +16894,10 @@ public class UseraccountsServices {
                 if (struct.isSetType()) {
                     optionals.set(2);
                 }
-                oprot.writeBitSet(optionals, 3);
+                if (struct.isSetCountryCode()) {
+                    optionals.set(3);
+                }
+                oprot.writeBitSet(optionals, 4);
                 if (struct.isSetMobile()) {
                     oprot.writeString(struct.mobile);
                 }
@@ -16806,12 +16907,15 @@ public class UseraccountsServices {
                 if (struct.isSetType()) {
                     oprot.writeI32(struct.type);
                 }
+                if (struct.isSetCountryCode()) {
+                    oprot.writeString(struct.countryCode);
+                }
             }
 
             @Override
             public void read(org.apache.thrift.protocol.TProtocol prot, validateVerifyCode_args struct) throws org.apache.thrift.TException {
                 org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-                java.util.BitSet incoming = iprot.readBitSet(3);
+                java.util.BitSet incoming = iprot.readBitSet(4);
                 if (incoming.get(0)) {
                     struct.mobile = iprot.readString();
                     struct.setMobileIsSet(true);
@@ -16823,6 +16927,10 @@ public class UseraccountsServices {
                 if (incoming.get(2)) {
                     struct.type = iprot.readI32();
                     struct.setTypeIsSet(true);
+                }
+                if (incoming.get(3)) {
+                    struct.countryCode = iprot.readString();
+                    struct.setCountryCodeIsSet(true);
                 }
             }
         }

@@ -2,6 +2,7 @@ package com.moseeker.servicemanager.web.controller.useraccounts;
 
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
@@ -431,8 +432,12 @@ public class UseraccountsController {
 			if(type == null) {
 				type = 0;
 			}
+			String countryCode=(String)reqParams.get("countryCode");
+			if(StringUtils.isNullOrEmpty(countryCode)){
+				countryCode="86";
+			}
 			//
-			Response result = useraccountsServices.validateVerifyCode(mobile, code, type);
+			Response result = useraccountsServices.validateVerifyCode(mobile, code, type,countryCode);
 			if (result.getStatus() == 0) {
 				return ResponseLogNotification.success(request, result);
 			} else {
