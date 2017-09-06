@@ -525,7 +525,7 @@ public class UseraccountsServiceImpl implements Iface {
 	@Override
 	public Response userChangeBind(String unionid,String countryCode, String mobile) throws TException {
 		try {
-			return service.userChangeBind(unionid,mobile);
+			return service.userChangeBind(unionid,mobile,countryCode);
 		} catch (CommonException e) {
 			throw ExceptionConvertUtil.convertCommonException(e);
 		} catch (Exception e) {

@@ -106,7 +106,7 @@ public class UseraccountsService {
     /**
      * 账号换绑操作
      */
-    public Response userChangeBind(String unionid, String mobile) {
+    public Response userChangeBind(String unionid, String mobile,String countryCode) {
         try {
             // 通过unionid查询，查询新微信是否已经被绑定
             try {
@@ -127,7 +127,7 @@ public class UseraccountsService {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.WEIXIN_HASBEEN_BIND);
             } else {  // 新绑定的微信未被其他用户绑定
                 query.clear();
-                query.where("username", mobile);
+                query.where("username", mobile).and("country_code",countryCode);
                 UserUserDO userUserDO = userdao.getData(query.buildQuery());
                 // 验证手机号码是否正确
                 if (userUserDO == null) {
