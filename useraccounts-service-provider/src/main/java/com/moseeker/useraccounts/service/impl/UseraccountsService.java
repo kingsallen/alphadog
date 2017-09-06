@@ -961,7 +961,7 @@ public class UseraccountsService {
         }
     }
 
-    public Response sendVerifyCode(String mobile, int type,String countryCode) throws TException {
+    public Response sendVerifyCode(String mobile, int type,String countryCode) throws Exception {
         boolean result=false;
         if("86".equals(countryCode)){
             result = smsSender.sendSMS(mobile, type);

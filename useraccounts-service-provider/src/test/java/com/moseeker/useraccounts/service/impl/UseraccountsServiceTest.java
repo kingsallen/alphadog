@@ -135,7 +135,7 @@ public class UseraccountsServiceTest {
     public void nationSmsTest() throws Exception {
         String mobile="15618250616";
         String countryCode="358";
-        int type=0;
+        int type=1;
         Response res = service.sendVerifyCode(mobile, type, countryCode);
         System.out.println(res);
 //        ExecutorService pool= Executors.newFixedThreadPool(10);
