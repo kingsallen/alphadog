@@ -7,6 +7,8 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.employee.struct.BindingParams;
 import com.moseeker.useraccounts.service.EmployeeBinder;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import org.springframework.stereotype.Service;
 
 /**
@@ -39,13 +41,18 @@ public class EmployeeBindByCustomfield extends EmployeeBinder {
             if (userEmployeeDOThreadLocal.get() != null && userEmployeeDOThreadLocal.get().getId() != 0) {
                 return userEmployeeDOThreadLocal.get();
             } else {
+                employeeThreadLocal.get().setCompanyId(bindingParams.getCompanyId());
+                employeeThreadLocal.get().setEmployeeid(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getMobile(), ""));
                 employeeThreadLocal.get().setSysuserId(bindingParams.getUserId());
-                int rownum = employeeDao.updateData(employeeThreadLocal.get());
-                if (rownum > 0){
-                    return employeeThreadLocal.get();
-                } else {
-                    throw new RuntimeException("fail");
-                }
+                employeeThreadLocal.get().setCname(bindingParams.getName());
+                employeeThreadLocal.get().setMobile(bindingParams.getMobile());
+                employeeThreadLocal.get().setEmail(bindingParams.getEmail());
+                employeeThreadLocal.get().setWxuserId(wxEntity.getWxuserId(bindingParams.getUserId(), bindingParams.getCompanyId()));
+                employeeThreadLocal.get().setAuthMethod((byte)bindingParams.getType().getValue());
+                employeeThreadLocal.get().setActivation((byte)0);
+                employeeThreadLocal.get().setCreateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+                employeeThreadLocal.get().setBindingTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+                return employeeThreadLocal.get();
             }
         } else if (employeeThreadLocal.get().getSysuserId() == bindingParams.getUserId()) {
             if (userEmployeeDOThreadLocal.get() != null && userEmployeeDOThreadLocal.get().getId() != 0) {
