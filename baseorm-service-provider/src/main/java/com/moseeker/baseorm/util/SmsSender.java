@@ -7,6 +7,7 @@ import com.moseeker.baseorm.dao.logdb.LogSmsSendrecordDao;
 import com.moseeker.baseorm.db.logdb.tables.records.LogSmsSendrecordRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.SmsNationUtil;
 import com.moseeker.common.exception.CacheConfigNotExistException;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.StringUtils;
@@ -23,6 +24,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -303,5 +309,73 @@ public class SmsSender {
         return  false;
     }
 
+
+    public boolean sendNationSMS(String mobile, int scene){
+        String event = null;
+        switch(scene) {
+            case 1:event= "SMS_SIGNUP"; break;
+            case 2:event = "SMS_PWD_FORGOT"; break;
+            case 3:event = "SMS_CHANGEMOBILE_CODE"; break;
+            case 4:event = "SMS_RESETMOBILE_CODE"; break;
+        }
+        HashMap<String, String> params = new HashMap<String, String>();
+        String passwordforgotcode = getRandomStr();
+        String content= SmsNationUtil.SMS_5755096;
+        content=content.replace("${code}",passwordforgotcode);
+        redisClient.set(0, event, mobile, passwordforgotcode);
+        boolean result= sendNationalSMS(mobile,content);
+        if(result){
+            addNationRecord(mobile,content);
+        }
+        return result;
+    }
+    /*
+       发送国际短信验证码
+      */
+    public boolean sendNationalSMS(String mobile,String content){
+        StringBuffer buffer = new StringBuffer();
+        String encode = "GBK"; //页面编码和短信内容编码为GBK。重要说明：如提交短信后收到乱码，请将GBK改为UTF-8测试。如本程序页面为编码格式为：ASCII/GB2312/GBK则该处为GBK。如本页面编码为UTF-8或需要支持繁体，阿拉伯文等Unicode，请将此处写为：UTF-8
+//        String encode = "UTF-8";
+        ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil.getInstance();
+        String password_md5 = propertiesUtils.get("sms.nation.password_md5",String.class);
+        String apikey = propertiesUtils.get("sms.nation.apikey",String.class);
+        String username = propertiesUtils.get("sms.nation.username",String.class);  //用户名
+
+        try {
+            String contentUrlEncode = URLEncoder.encode(content,encode);  //对短信内容做Urlencode编码操作。注意：如            //把发送链接存入buffer中，如连接超时，可能是您服务器不支持域名解析，请将下面连接中的：【m.5c.com.cn】修改为IP：【115.28.23.78】
+            buffer.append("http://m.5c.com.cn/api/send/index.php");
+            buffer.append("?username="+username+"&password_md5="+password_md5+"&apikey="+apikey);
+            buffer.append("&mobile="+mobile+"&content="+contentUrlEncode+"&encode="+encode);
+            System.out.println(buffer); //调试功能，输入完整的请求URL地址
+            URL url = new URL(buffer.toString());
+            HttpURLConnection connection= (HttpURLConnection)url.openConnection();     //打开URL链接
+            connection.setRequestMethod("POST");     //使用POST方式发送
+            connection.setRequestProperty("Connection", "Keep-Alive");    //使用长链接方式
+            connection.setConnectTimeout(30000);
+            connection.setReadTimeout(3000);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));    //发送短信内容
+            String result = reader.readLine();//获取返回值
+            if(result.indexOf("success")>-1){
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally{
+
+        }
+        return false;
+    }
+    public  boolean addNationRecord(String mobile,String content ){
+        LogSmsSendrecordRecord record = new LogSmsSendrecordRecord();
+        record.setMobile(Long.valueOf(mobile));
+        record.setSys(Constant.LOG_SMS_SENDRECORD_SYS_ALPHADOG);
+        JSONObject json = new JSONObject();
+        json.put("content", content);
+        record.setMsg(json.toJSONString());
+        smsRecordDao.addRecord(record);
+        logger.info(json.toJSONString());
+        return true;
+    }
 
 }
