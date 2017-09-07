@@ -1,4 +1,4 @@
-package com.moseeker.profile.service.impl.serviceutils;
+package com.moseeker.entity.biz;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.profiledb.IntentionRecord;
