@@ -7,6 +7,8 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.employee.struct.BindingParams;
 import com.moseeker.useraccounts.service.EmployeeBinder;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import org.springframework.stereotype.Service;
 
 /**
@@ -35,25 +37,32 @@ public class EmployeeBindByCustomfield extends EmployeeBinder {
 
     @Override
     protected UserEmployeeDO createEmployee(BindingParams bindingParams) {
+        UserEmployeeDO userEmployeeDO = employeeThreadLocal.get();
         if (employeeThreadLocal.get().getSysuserId() == 0) { // sysuserId =  0 说明员工信息是批量上传的未设置user_id
             if (userEmployeeDOThreadLocal.get() != null && userEmployeeDOThreadLocal.get().getId() != 0) {
-                return userEmployeeDOThreadLocal.get();
+                userEmployeeDO = userEmployeeDOThreadLocal.get();
             } else {
-                employeeThreadLocal.get().setSysuserId(bindingParams.getUserId());
-                int rownum = employeeDao.updateData(employeeThreadLocal.get());
-                if (rownum > 0){
-                    return employeeThreadLocal.get();
-                } else {
-                    throw new RuntimeException("fail");
-                }
+                userEmployeeDO = employeeThreadLocal.get();
             }
         } else if (employeeThreadLocal.get().getSysuserId() == bindingParams.getUserId()) {
             if (userEmployeeDOThreadLocal.get() != null && userEmployeeDOThreadLocal.get().getId() != 0) {
-                return userEmployeeDOThreadLocal.get();
+                userEmployeeDO = userEmployeeDOThreadLocal.get();
             }
         } else {  // 说明 employee.user_id != bindingParams.user_id 用户提供的信息与员工信息不匹配
             throw new RuntimeException("员工认证信息不匹配");
         }
-        return userEmployeeDOThreadLocal.get();
+        userEmployeeDO.setCompanyId(bindingParams.getCompanyId());
+        userEmployeeDO.setEmployeeid(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getMobile(), ""));
+        userEmployeeDO.setSysuserId(bindingParams.getUserId());
+        userEmployeeDO.setCname(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getName(), userEmployeeDO.getCname()));
+        userEmployeeDO.setMobile(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getMobile(), userEmployeeDO.getMobile()));
+        userEmployeeDO.setEmail(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getEmail(), userEmployeeDO.getEmail()));
+        userEmployeeDO.setWxuserId(wxEntity.getWxuserId(bindingParams.getUserId(), bindingParams.getCompanyId()));
+        userEmployeeDO.setAuthMethod((byte)bindingParams.getType().getValue());
+        userEmployeeDO.setActivation((byte)0);
+        userEmployeeDO.setCreateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        userEmployeeDO.setBindingTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        userEmployeeDO.setCustomField(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getCustomField(), userEmployeeDO.getCustomField()));
+        return userEmployeeDO;
     }
 }

@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
 
-    private static final long serialVersionUID = 1238623491;
+    private static final long serialVersionUID = 1944802773;
 
     /**
      * The reference instance of <code>hrdb.hr_company_conf</code>
@@ -149,6 +149,11 @@ public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
      * The column <code>hrdb.hr_company_conf.show_in_qx</code>. 公司信息、团队信息、职位信息在仟寻展示，0: 否， 1: 是
      */
     public final TableField<HrCompanyConfRecord, Byte> SHOW_IN_QX = createField("show_in_qx", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("1", org.jooq.impl.SQLDataType.TINYINT)), this, "公司信息、团队信息、职位信息在仟寻展示，0: 否， 1: 是");
+
+    /**
+     * The column <code>hrdb.hr_company_conf.employee_slug</code>. 员工自定义称谓
+     */
+    public final TableField<HrCompanyConfRecord, String> EMPLOYEE_SLUG = createField("employee_slug", org.jooq.impl.SQLDataType.VARCHAR.length(512).nullable(false).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "员工自定义称谓");
 
     /**
      * Create a <code>hrdb.hr_company_conf</code> table reference
