@@ -24,7 +24,7 @@ public class UserBs {
 	@CounterIface
 	public Response bindOnAccount(int appid, String unionid, String code,
 			String mobile, BindType bindType,String countryCode) throws TException {
-		Response result = useraccountsServices.postuserbindmobile(appid,countryCode, unionid, code, mobile, bindType);
+		Response result = useraccountsServices.postuserbindmobile(appid, unionid, code,countryCode, mobile, bindType);
 		JSONObject data = JSON.parseObject(result.getData());
 		int destId = NumberUtils.toInt(String.valueOf(data.remove("dest_id")), -1);
 		int originId = NumberUtils.toInt(String.valueOf(data.remove("origin_id")), -1);
