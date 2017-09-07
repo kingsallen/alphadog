@@ -149,6 +149,11 @@ public class PositionPcService {
 		map.put("company",companyData);
 		Map<String,Object> team=this.handleTeamData(teamId);
 		map.put("team",team);
+		if(teamId!=0){
+			int num=this.getTeamPositionNum(teamId);
+			map.put("teamPositionNum",num);
+		}
+
 		int parentId= (int) companyData.get("parentId");
 		int confCompanyId= (int) companyData.get("id");
 		if(parentId!=0){
@@ -156,6 +161,12 @@ public class PositionPcService {
 		}
 		this.handlePositionJdData(confCompanyId,map,teamId);
 		return map;
+	}
+	//获取团队下职位数量
+	public int getTeamPositionNum(int teamId){
+		Query query=new Query.QueryBuilder().where("team_id",teamId).and("status",0).buildQuery();
+		int num=jobPositionDao.getCount(query);
+		return num;
 	}
 	/*
 	   获取推荐职位的信息
