@@ -54,7 +54,7 @@ public class RecommendedPositionsController {
                 page="1";
             }
             if(pageSize==null){
-                page="10";
+                pageSize="10";
             }
             Response result = positonServices.getPcRecommendPosition(Integer.parseInt(positionId),Integer.parseInt(page),Integer.parseInt(pageSize));
             return ResponseLogNotification.success(request, result);
