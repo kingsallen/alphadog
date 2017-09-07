@@ -352,7 +352,7 @@ public class UseraccountsController {
 			if(StringUtils.isNullOrEmpty(countryCode)){
 				countryCode="86";
 			}
-			Response result = useraccountsServices.postuserresetpassword(mobile,countryCode, password, code);
+			Response result = useraccountsServices.postuserresetpassword(countryCode,mobile, password, code);
 			if (result.getStatus() == 0) {
 				return ResponseLogNotification.success(request, result);
 			} else {
