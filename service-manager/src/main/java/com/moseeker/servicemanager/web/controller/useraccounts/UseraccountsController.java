@@ -1,7 +1,7 @@
 package com.moseeker.servicemanager.web.controller.useraccounts;
 
-import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
@@ -16,12 +16,6 @@ import com.moseeker.thrift.gen.useraccounts.service.UserQxService;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
 import com.moseeker.thrift.gen.useraccounts.service.UsersettingServices;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.apache.thrift.TSerializer;
 import org.apache.thrift.protocol.TSimpleJSONProtocol;
 import org.slf4j.Logger;
@@ -30,6 +24,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 //@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
 @Controller
@@ -224,7 +225,7 @@ public class UseraccountsController {
 			String code = BeanUtils.converToString(reqParams.get("code"));
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
 			Integer appid = BeanUtils.converToInteger(reqParams.get("appid"));
-			String countryCode= (String) ParamUtils.parseRequestParam(request).get("countryCode");
+			String countryCode= BeanUtils.converToString(reqParams.get("countryCode"));
 			if(StringUtils.isNullOrEmpty(countryCode)){
 				countryCode="86";
 			}
@@ -249,7 +250,7 @@ public class UseraccountsController {
 			String userid = BeanUtils.converToString(reqParams.get("userid"));
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
 			Integer appid = BeanUtils.converToInteger(reqParams.get("appid"));
-			String countryCode= (String) ParamUtils.parseRequestParam(request).get("countryCode");
+			String countryCode= BeanUtils.converToString(reqParams.get("countryCode"));
 			if(StringUtils.isNullOrEmpty(countryCode)){
 				countryCode="86";
 			}
@@ -281,7 +282,7 @@ public class UseraccountsController {
 			Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
 			String unionid = BeanUtils.converToString(reqParams.get("unionid"));
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
-			String countryCode= (String) ParamUtils.parseRequestParam(request).get("countryCode");
+			String countryCode= BeanUtils.converToString(reqParams.get("countryCode"));
 			if(StringUtils.isNullOrEmpty(countryCode)){
 				countryCode="86";
 			}
@@ -348,7 +349,7 @@ public class UseraccountsController {
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
 			String code = BeanUtils.converToString(reqParams.get("code"));
 			String password = BeanUtils.converToString(reqParams.get("password"));
-			String countryCode= (String) reqParams.get("countryCode");
+			String countryCode= BeanUtils.converToString(reqParams.get("countryCode"));
 			if(StringUtils.isNullOrEmpty(countryCode)){
 				countryCode="86";
 			}
@@ -372,7 +373,7 @@ public class UseraccountsController {
 			Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
 			Integer appid = BeanUtils.converToInteger(reqParams.get("appid"));
-			String countryCode= (String) reqParams.get("countryCode");
+			String countryCode= BeanUtils.converToString(reqParams.get("countryCode"));
 			if(StringUtils.isNullOrEmpty(countryCode)){
 				countryCode="86";
 			}
@@ -402,7 +403,7 @@ public class UseraccountsController {
 			// GET方法 通用参数解析并赋值
 			Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
-			String countryCode= (String) reqParams.get("countryCode");
+			String countryCode= BeanUtils.converToString(reqParams.get("countryCode"));
 			if(StringUtils.isNullOrEmpty(countryCode)){
 				countryCode="86";
 			}
@@ -432,7 +433,7 @@ public class UseraccountsController {
 			Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
 			String code = BeanUtils.converToString(reqParams.get("code"));
-			String countryCode= (String) reqParams.get("countryCode");
+			String countryCode= BeanUtils.converToString(reqParams.get("countryCode"));
 			if(StringUtils.isNullOrEmpty(countryCode)){
 				countryCode="86";
 			}
@@ -466,7 +467,7 @@ public class UseraccountsController {
 			if(type == null) {
 				type = 0;
 			}
-			String countryCode=(String)reqParams.get("countryCode");
+			String countryCode = BeanUtils.converToString(reqParams.get("countryCode"));
 			if(StringUtils.isNullOrEmpty(countryCode)){
 				countryCode="86";
 			}
@@ -500,7 +501,7 @@ public class UseraccountsController {
 			if(type == null) {
 				type = 0;
 			}
-			String countryCode= (String) reqParams.get("countryCode");
+			String countryCode= BeanUtils.converToString(reqParams.get("countryCode"));
 			if(StringUtils.isNullOrEmpty(countryCode)){
 				countryCode="86";
 			}
@@ -557,7 +558,7 @@ public class UseraccountsController {
 		try {
 			Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
-			String countryCode= (String) reqParams.get("countryCode");
+			String countryCode= BeanUtils.converToString(reqParams.get("countryCode"));
 			if(StringUtils.isNullOrEmpty(countryCode)){
 				countryCode="86";
 			}
@@ -587,7 +588,7 @@ public class UseraccountsController {
 			Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
 			String code = BeanUtils.converToString(reqParams.get("code"));
-			String countryCode= (String) reqParams.get("countryCode");
+			String countryCode= BeanUtils.converToString(reqParams.get("countryCode"));
 			if(StringUtils.isNullOrEmpty(countryCode)){
 				countryCode="86";
 			}
@@ -616,7 +617,7 @@ public class UseraccountsController {
 		try {
 			Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
-			String countryCode= (String) reqParams.get("countryCode");
+			String countryCode= BeanUtils.converToString(reqParams.get("countryCode"));
 			if(StringUtils.isNullOrEmpty(countryCode)){
 				countryCode="86";
 			}
@@ -647,7 +648,7 @@ public class UseraccountsController {
 			int user_id = BeanUtils.converToInteger(reqParams.get("user_id"));
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
 			String code = BeanUtils.converToString(reqParams.get("code"));
-			String countryCode= (String) reqParams.get("countryCode");
+			String countryCode= BeanUtils.converToString(reqParams.get("countryCode"));
 			if(StringUtils.isNullOrEmpty(countryCode)){
 				countryCode="86";
 			}
