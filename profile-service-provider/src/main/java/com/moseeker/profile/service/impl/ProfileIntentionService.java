@@ -21,6 +21,7 @@ import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.Pagination;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.entity.ProfileEntity;
 import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -68,7 +69,7 @@ public class ProfileIntentionService {
     private ProfileProfileDao profileDao;
 
     @Autowired
-    private ProfileCompletenessImpl completenessImpl;
+    private ProfileEntity profileEntity;
 
     public Pagination getPagination(Query query) throws TException {
         int totalRow = dao.getCount(query);
@@ -197,7 +198,7 @@ public class ProfileIntentionService {
             updateIntentionPosition(struct, record.getId());
 
 				/* 计算profile完整度 */
-            completenessImpl.reCalculateProfileIntention(struct.getProfile_id(), record.getId());
+            profileEntity.reCalculateProfileIntention(struct.getProfile_id(), record.getId());
 
             Set<Integer> profileIds = new HashSet<>();
             profileIds.add(struct.getProfile_id());
@@ -220,7 +221,7 @@ public class ProfileIntentionService {
             updateIntentionPosition(struct, record.getId().intValue());
 
 				/* 计算profile完整度 */
-            completenessImpl.reCalculateProfileIntention(struct.getProfile_id(), intentionId);
+            profileEntity.reCalculateProfileIntention(struct.getProfile_id(), intentionId);
             updateUpdateTime(struct);
             return ResponseUtils.success(String.valueOf(intentionId));
         }
@@ -247,7 +248,7 @@ public class ProfileIntentionService {
                 intentionIndustryDao.deleteByIntentionId(record.getId());
 
 				/* 计算profile完整度 */
-                completenessImpl.reCalculateProfileIntention(record.getProfileId().intValue(), record.getId().intValue());
+                profileEntity.reCalculateProfileIntention(record.getProfileId().intValue(), record.getId().intValue());
                 /* 更新profile的更新时间 */
                 updateUpdateTime(struct);
                 return ResponseUtils.success(String.valueOf(intentionId));
@@ -282,7 +283,7 @@ public class ProfileIntentionService {
         });
         profileIds.forEach(profileId -> {
                  /* 计算profile完整度 */
-            completenessImpl.reCalculateProfileIntention(profileId, 0);
+            profileEntity.reCalculateProfileIntention(profileId, 0);
         });
         profileDao.updateUpdateTime(profileIds);
         return ResponseUtils.success("0");
@@ -303,7 +304,7 @@ public class ProfileIntentionService {
                 updateIntentionCity(struct, struct.getId());
                 updateIntentionIndustry(struct, struct.getId());
                 updateIntentionPosition(struct, struct.getId());
-                completenessImpl.reCalculateProfileIntention(struct.getProfile_id(), struct.getId());
+                profileEntity.reCalculateProfileIntention(struct.getProfile_id(), struct.getId());
             });
             return ResponseUtils.success("1");
         }
@@ -343,7 +344,7 @@ public class ProfileIntentionService {
                 updateUpdateTime(structs);
                 profileIds.forEach(profileId -> {
                  /* 计算profile完整度 */
-                    completenessImpl.reCalculateProfileIntention(profileId, 0);
+                    profileEntity.reCalculateProfileIntention(profileId, 0);
                 });
                 return ResponseUtils.success("1");
             }
@@ -619,15 +620,6 @@ public class ProfileIntentionService {
         }
         return false;
     }
-
-    public ProfileCompletenessImpl getCompletenessImpl() {
-        return completenessImpl;
-    }
-
-    public void setCompletenessImpl(ProfileCompletenessImpl completenessImpl) {
-        this.completenessImpl = completenessImpl;
-    }
-
 
     protected Intention DBToStruct(ProfileIntentionRecord r) {
         return (Intention) BeanUtils.DBToStruct(Intention.class, r);

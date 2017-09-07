@@ -11,9 +11,10 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.OrderBy;
 import com.moseeker.common.util.query.Query;
-import com.moseeker.profile.constants.ValidationMessage;
+import com.moseeker.entity.ProfileEntity;
+import com.moseeker.entity.biz.ProfileValidation;
+import com.moseeker.entity.biz.ValidationMessage;
 import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
-import com.moseeker.profile.utils.ProfileValidation;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.struct.ProjectExp;
 import org.apache.commons.lang.ArrayUtils;
@@ -39,7 +40,7 @@ public class ProfileProjectExpService {
     private ProfileProfileDao profileDao;
 
     @Autowired
-    private ProfileCompletenessImpl completenessImpl;
+    private ProfileEntity profileEntity;
 
     public Response getResource(Query query) throws TException {
         ProfileProjectexpRecord record = dao.getRecord(query);
@@ -99,7 +100,7 @@ public class ProfileProjectExpService {
 
             profileIds.forEach(profileId -> {
                 /* 计算profile完成度 */
-                completenessImpl.reCalculateProfileProjectExpByProfileId(profileId);
+                profileEntity.reCalculateProfileProjectExpByProfileId(profileId);
             });
             return ResponseUtils.success("1");
         } else {
@@ -116,7 +117,7 @@ public class ProfileProjectExpService {
 
             structs.forEach(struct -> {
                 /* 计算profile完成度 */
-                completenessImpl.reCalculateProfileProjectExpByProjectExpId(struct.getId());
+                profileEntity.reCalculateProfileProjectExpByProjectExpId(struct.getId());
             });
 
             return ResponseUtils.success("1");
@@ -152,7 +153,7 @@ public class ProfileProjectExpService {
 
                 profileIds.forEach(profileId -> {
                 /* 计算profile完成度 */
-                    completenessImpl.reCalculateProfileProjectExp(profileId, 0);
+                    profileEntity.reCalculateProfileProjectExp(profileId, 0);
                 });
                 return ResponseUtils.success("1");
             }
@@ -171,7 +172,7 @@ public class ProfileProjectExpService {
         profileIds.add(struct.getProfile_id());
         profileDao.updateUpdateTime(profileIds);
             /* 计算profile完成度 */
-        completenessImpl.reCalculateProfileProjectExpByProfileId(struct.getProfile_id());
+        profileEntity.reCalculateProfileProjectExpByProfileId(struct.getProfile_id());
         return ResponseUtils.success(String.valueOf(record.getId()));
     }
 
@@ -181,7 +182,7 @@ public class ProfileProjectExpService {
         if (result > 0) {
             updateUpdateTime(struct);
             /* 计算profile完成度 */
-            completenessImpl.reCalculateProfileProjectExpByProjectExpId(struct.getId());
+            profileEntity.reCalculateProfileProjectExpByProjectExpId(struct.getId());
             return ResponseUtils.success("1");
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
@@ -198,7 +199,7 @@ public class ProfileProjectExpService {
             if (result > 0) {
                 updateUpdateTime(struct);
             /* 计算profile完成度 */
-                completenessImpl.reCalculateProfileProjectExp(projectExpRecord.getProfileId().intValue(),
+                profileEntity.reCalculateProfileProjectExp(projectExpRecord.getProfileId().intValue(),
                         projectExpRecord.getId().intValue());
                 return ResponseUtils.success("1");
             }

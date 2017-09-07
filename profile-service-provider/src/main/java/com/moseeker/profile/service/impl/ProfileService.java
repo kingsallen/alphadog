@@ -15,26 +15,10 @@ import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
-import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.query.Query;
-import com.moseeker.profile.entity.ProfileEntity;
-import com.moseeker.profile.pojo.profile.Basic;
-import com.moseeker.profile.pojo.profile.Company;
-import com.moseeker.profile.pojo.profile.Credential;
-import com.moseeker.profile.pojo.profile.Education;
-import com.moseeker.profile.pojo.profile.Language;
-import com.moseeker.profile.pojo.profile.ProfileObj;
-import com.moseeker.profile.pojo.profile.Projectexps;
-import com.moseeker.profile.pojo.profile.Skill;
-import com.moseeker.profile.pojo.profile.User;
-import com.moseeker.profile.pojo.profile.Workexps;
-import com.moseeker.profile.pojo.resume.CertObj;
-import com.moseeker.profile.pojo.resume.EducationObj;
-import com.moseeker.profile.pojo.resume.JobExpObj;
-import com.moseeker.profile.pojo.resume.LangObj;
-import com.moseeker.profile.pojo.resume.ProjectexpObj;
-import com.moseeker.profile.pojo.resume.ResumeObj;
-import com.moseeker.profile.pojo.resume.SkillsObjs;
+import com.moseeker.entity.ProfileEntity;
+import com.moseeker.entity.pojo.profile.*;
+import com.moseeker.entity.pojo.resume.*;
 import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
 import com.moseeker.profile.utils.DegreeSource;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -73,9 +57,6 @@ public class ProfileService {
     private UserSettingsDao settingDao;
 
     @Autowired
-    private ProfileCompletenessImpl completenessImpl;
-
-    @Autowired
     private ProfileEntity profileEntity;
 
     public Response getResource(Query query) throws TException {
@@ -84,7 +65,7 @@ public class ProfileService {
         if (record != null) {
             Profile s = dao.recordToData(record, Profile.class);
             if (record.getCompleteness().intValue() == 0 || record.getCompleteness().intValue() == 10) {
-                int completeness = completenessImpl.getCompleteness(record.getUserId().intValue(), record.getUuid(),
+                int completeness = profileEntity.getCompleteness(record.getUserId().intValue(), record.getUuid(),
                         record.getId().intValue());
                 s.setCompleteness(completeness);
             }
@@ -116,13 +97,13 @@ public class ProfileService {
     }
 
     public Response getCompleteness(int userId, String uuid, int profileId) throws TException {
-        int totalComplementness = completenessImpl.getCompleteness(userId, uuid, profileId);
+        int totalComplementness = profileEntity.getCompleteness(userId, uuid, profileId);
         return ResponseUtils.success(totalComplementness);
     }
 
     public Response reCalculateUserCompleteness(int userId, String mobile) throws TException {
-        completenessImpl.reCalculateUserUserByUserIdOrMobile(userId, mobile);
-        int totalComplementness = completenessImpl.getCompleteness(userId, null, 0);
+        profileEntity.reCalculateUserUserByUserIdOrMobile(userId, mobile);
+        int totalComplementness = profileEntity.getCompleteness(userId, null, 0);
         return ResponseUtils.success(totalComplementness);
     }
 
@@ -131,8 +112,8 @@ public class ProfileService {
         qu.addEqualFilter("id", String.valueOf(id));
         UserSettingsRecord record = settingDao.getRecord(qu);
         if (record != null) {
-            completenessImpl.reCalculateUserUserByUserIdOrMobile(record.getUserId().intValue(), null);
-            int totalComplementness = completenessImpl.getCompleteness(record.getUserId().intValue(), null, 0);
+            profileEntity.reCalculateUserUserByUserIdOrMobile(record.getUserId().intValue(), null);
+            int totalComplementness = profileEntity.getCompleteness(record.getUserId().intValue(), null, 0);
             return ResponseUtils.success(totalComplementness);
         } else {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);

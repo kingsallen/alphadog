@@ -3,17 +3,18 @@ package com.moseeker.profile.service.impl;
 import com.moseeker.baseorm.dao.profiledb.ProfileCredentialsDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileCredentialsRecord;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
-import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.Pagination;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
-import com.moseeker.profile.constants.ValidationMessage;
+import com.moseeker.entity.ProfileEntity;
+import com.moseeker.entity.biz.ProfileValidation;
+import com.moseeker.entity.biz.ValidationMessage;
 import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
-import com.moseeker.profile.utils.ProfileValidation;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileCredentialsDO;
 import com.moseeker.thrift.gen.profile.struct.Credentials;
 import org.apache.thrift.TException;
@@ -39,7 +40,7 @@ public class ProfileCredentialsService {
     private ProfileProfileDao profileDao;
 
     @Autowired
-    private ProfileCompletenessImpl completenessImpl;
+    private ProfileEntity profileEntity;
 
     public Credentials getResource(Query query) throws TException {
         return dao.getData(query, Credentials.class);
@@ -82,7 +83,7 @@ public class ProfileCredentialsService {
             profileDao.updateUpdateTime(profileIds);
 
             profileIds.forEach(profileId -> {
-                completenessImpl.recalculateProfileCredential(profileId, 0);
+                profileEntity.recalculateProfileCredential(profileId, 0);
             });
         }
         return resultDatas;
@@ -103,7 +104,7 @@ public class ProfileCredentialsService {
             }
             updateUpdateTime(updatedDatas);
             updatedDatas.forEach(data -> {
-                completenessImpl.recalculateProfileCredential(data.getProfile_id(), data.getId());
+                profileEntity.recalculateProfileCredential(data.getProfile_id(), data.getId());
             });
             return updateResult;
         } else {
@@ -131,7 +132,7 @@ public class ProfileCredentialsService {
                 //更新对应的profile更新时间
                 profileDao.updateUpdateTime(deleteDatas.stream().map(data -> data.getProfileId()).collect(Collectors.toSet()));
                 for (ProfileCredentialsDO data : deleteDatas) {
-                    completenessImpl.recalculateProfileCredential(data.getProfileId(), 0);
+                    profileEntity.recalculateProfileCredential(data.getProfileId(), 0);
                 }
             }
             return result;
@@ -154,7 +155,7 @@ public class ProfileCredentialsService {
             profileIds.add(result.getProfile_id());
             profileDao.updateUpdateTime(profileIds);
 
-            completenessImpl.recalculateProfileCredential(result.getProfile_id(), result.getId());
+            profileEntity.recalculateProfileCredential(result.getProfile_id(), result.getId());
         }
         return result;
     }
@@ -189,7 +190,7 @@ public class ProfileCredentialsService {
                     profileDao.updateUpdateTime(new HashSet<Integer>() {{
                         add(deleteData.getProfileId());
                     }});
-                    completenessImpl.recalculateProfileCredential(deleteData.getProfileId(), 0);
+                    profileEntity.recalculateProfileCredential(deleteData.getProfileId(), 0);
                 }
             }
         }

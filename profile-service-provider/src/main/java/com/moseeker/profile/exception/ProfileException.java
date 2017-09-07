@@ -21,7 +21,7 @@ public class ProfileException extends CommonException {
     public static final ProfileException PROFILE_DICT_COLLEGE_NOTEXIST = new ProfileException(30020,"院校字典不存在！");
     public static final ProfileException PROFILE_DICT_MAJOR_NOTEXIST = new ProfileException(30021,"专业字典不存在！");
     public static final ProfileException PROFILE_OUTPUT_FAILED = new ProfileException(30022,"导出失败！");
-    public static final ProfileException PROFILE_ALLREADY_NOT_EXIST = new ProfileException(30023,"个人profile不存在！");
+    public static final ProfileException PROFILE_NOT_EXIST = new ProfileException(30023,"个人profile不存在！");
     public static final ProfileException VALIDATION_USERNAME_REQUIRED = new ProfileException(30024,"缺少手机号码这个必要参数！");
     public static final ProfileException VALIDATION_USER_ILLEGAL_PARAM = new ProfileException(30025, "用户信息错误错误！");
     public static final ProfileException VALIDATION_SMS_FAILTURE = new ProfileException(30026,"密码发送失败！");

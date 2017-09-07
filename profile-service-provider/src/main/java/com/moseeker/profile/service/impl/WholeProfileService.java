@@ -30,9 +30,9 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.OrderBy;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.entity.ProfileEntity;
 import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.profile.constants.StatisticsForChannelmportVO;
-import com.moseeker.profile.entity.ProfileEntity;
 import com.moseeker.profile.service.impl.retriveprofile.RetriveProfile;
 import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -74,7 +74,7 @@ public class WholeProfileService {
         if (profileRecord != null) {
             if (profileRecord.getCompleteness().intValue() == 0
                     || profileRecord.getCompleteness().intValue() == 10) {
-                int completeness = completenessImpl.getCompleteness(profileRecord.getUserId().intValue(),
+                int completeness = profileEntity.getCompleteness(profileRecord.getUserId().intValue(),
                         profileRecord.getUuid(), profileRecord.getId().intValue());
                 profileRecord.setCompleteness((byte) (completeness));
             }
@@ -470,7 +470,7 @@ public class WholeProfileService {
             profileEntity.improveSkill(profilePojo.getSkillRecords(), profileId);
             profileEntity.improveWorkexp(profilePojo.getWorkexpRecords(), profileId);
             profileEntity.improveWorks(profilePojo.getWorksRecords(), profileId);
-            completenessImpl.getCompleteness1(0, null, profileId);
+            profileEntity.getCompleteness(0, null, profileId);
 
             try {
                 StatisticsForChannelmportVO statisticsForChannelmportVO = createStaticstics(profileDB.getId().intValue(), profileDB.getUserId().intValue(), (byte) 2,
@@ -544,7 +544,7 @@ public class WholeProfileService {
                 profileEntity.improveSkill(destSkills, originProfileId);
                 profileEntity.improveWorks(destWorks, originProfileId);
                 profileEntity.improveWorkexp(destWorkxps, originProfileId);
-                completenessImpl.getCompleteness(0, null, originProfile.getId().intValue());
+                profileEntity.getCompleteness(0, null, originProfile.getId().intValue());
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -1032,9 +1032,6 @@ public class WholeProfileService {
 
     @Autowired
     private ProfileWorkexpDao workExpDao;
-
-    @Autowired
-    private ProfileCompletenessImpl completenessImpl;
 
     @Autowired
     RetriveProfile retriveProfile;

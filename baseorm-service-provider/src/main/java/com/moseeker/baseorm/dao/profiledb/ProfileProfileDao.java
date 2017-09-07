@@ -69,14 +69,14 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
 
             if (userId > 0) {
                 if (condition == null) {
-                    condition = ProfileProfile.PROFILE_PROFILE.USER_ID.equal((int) (userId));
+                    condition = ProfileProfile.PROFILE_PROFILE.USER_ID.equal(userId);
                 }
             }
             if (profileId > 0) {
                 if (condition == null) {
-                    condition = ProfileProfile.PROFILE_PROFILE.ID.equal((int) (profileId));
+                    condition = ProfileProfile.PROFILE_PROFILE.ID.equal(profileId);
                 } else {
-                    condition = condition.or(ProfileProfile.PROFILE_PROFILE.ID.equal((int) (profileId)));
+                    condition = condition.or(ProfileProfile.PROFILE_PROFILE.ID.equal(profileId));
                 }
             }
             if (!StringUtils.isNullOrEmpty(uuid)) {

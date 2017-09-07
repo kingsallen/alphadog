@@ -7,6 +7,7 @@ import com.moseeker.baseorm.db.profiledb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.util.FormCheck;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,6 +66,12 @@ public class ProfilePojo {
                 if (!org.apache.commons.lang.StringUtils.isNumeric(mobile)) {
                     userMap.remove("mobile");
                 }
+                if (userMap.get("email") != null) {
+					if (!FormCheck.isEmail((String)userMap.get("email"))) {
+						userMap.remove("email");
+					}
+				}
+
                 crawlerUser = profileUtils.mapToUserUserRecord(userMap);
                 pojo.setUserRecord(crawlerUser);
             }
@@ -239,6 +246,11 @@ public class ProfilePojo {
 				String mobile = String.valueOf(userMap.get("mobile"));
 				if (!org.apache.commons.lang.StringUtils.isNumeric(mobile)) {
 					userMap.remove("mobile");
+				}
+				if (userMap.get("email") != null) {
+					if (!FormCheck.isEmail((String)userMap.get("email"))) {
+						userMap.remove("email");
+					}
 				}
 				crawlerUser = profileUtils.mapToUserUserRecord(userMap);
 				pojo.setUserRecord(crawlerUser);

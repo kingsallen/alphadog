@@ -9,6 +9,7 @@ import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.entity.ProfileEntity;
 import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.struct.Works;
@@ -40,7 +41,7 @@ public class ProfileWorksService {
     private ProfileProfileDao profileDao;
 
     @Autowired
-    private ProfileCompletenessImpl completenessImpl;
+    private ProfileEntity profileEntity;
 
     public Response getResource(Query query) throws TException {
         Works data = dao.getData(query, Works.class);
@@ -80,7 +81,7 @@ public class ProfileWorksService {
             }
         });
         profileIds.forEach(profileId -> {
-            completenessImpl.reCalculateProfileWorks(profileId, 0);
+            profileEntity.reCalculateProfileWorks(profileId, 0);
         });
         profileDao.updateUpdateTime(profileIds);
         return ResponseUtils.success("1");
@@ -93,7 +94,7 @@ public class ProfileWorksService {
         if (ArrayUtils.contains(result, 1)) {
             updateUpdateTime(structs);
             structs.forEach(struct -> {
-                completenessImpl.reCalculateProfileWorks(struct.getProfile_id(), struct.getId());
+                profileEntity.reCalculateProfileWorks(struct.getProfile_id(), struct.getId());
             });
             return ResponseUtils.success("1");
         }
@@ -126,7 +127,7 @@ public class ProfileWorksService {
             if (ArrayUtils.contains(result, 1)) {
                 updateUpdateTime(structs);
                 profileIds.forEach(profileId -> {
-                    completenessImpl.reCalculateProfileWorks(profileId, 0);
+                    profileEntity.reCalculateProfileWorks(profileId, 0);
                 });
                 return ResponseUtils.success("1");
             }
@@ -141,7 +142,7 @@ public class ProfileWorksService {
         Set<Integer> profileIds = new HashSet<>();
         profileIds.add(struct.getProfile_id());
         profileDao.updateUpdateTime(profileIds);
-        completenessImpl.reCalculateProfileWorks(struct.getProfile_id(), struct.getId());
+        profileEntity.reCalculateProfileWorks(struct.getProfile_id(), struct.getId());
         return ResponseUtils.success(String.valueOf(record.getId()));
     }
 
@@ -151,7 +152,7 @@ public class ProfileWorksService {
         /* 重新计算profile完整度 */
         if (result > 0) {
             updateUpdateTime(struct);
-            completenessImpl.reCalculateProfileWorks(struct.getProfile_id(), struct.getId());
+            profileEntity.reCalculateProfileWorks(struct.getProfile_id(), struct.getId());
             return ResponseUtils.success("1");
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
@@ -163,7 +164,7 @@ public class ProfileWorksService {
         /* 重新计算profile完整度 */
         if (result > 0) {
             updateUpdateTime(struct);
-            completenessImpl.reCalculateProfileWorks(struct.getProfile_id(), struct.getId());
+            profileEntity.reCalculateProfileWorks(struct.getProfile_id(), struct.getId());
             return ResponseUtils.success("1");
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DEL_FAILED);

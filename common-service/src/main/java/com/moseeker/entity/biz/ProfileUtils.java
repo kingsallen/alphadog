@@ -32,7 +32,7 @@ import java.util.Map;
 @Component
 public class ProfileUtils {
 
-	Logger logger = LoggerFactory.getLogger(ProfileUtils.class);
+	protected Logger logger = LoggerFactory.getLogger(ProfileUtils.class);
 
 	public List<ProfileWorksRecord> mapToWorksRecords(List<Map<String, Object>> works) {
 		List<ProfileWorksRecord> worksRecords = new ArrayList<>();

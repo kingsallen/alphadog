@@ -21,9 +21,10 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.OrderBy;
 import com.moseeker.common.util.query.Query;
-import com.moseeker.profile.constants.ValidationMessage;
+import com.moseeker.entity.ProfileEntity;
+import com.moseeker.entity.biz.ProfileValidation;
+import com.moseeker.entity.biz.ValidationMessage;
 import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
-import com.moseeker.profile.utils.ProfileValidation;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.struct.WorkExp;
 
@@ -68,7 +69,7 @@ public class ProfileWorkExpService {
     private ProfileProfileDao profileDao;
 
     @Autowired
-    private ProfileCompletenessImpl completenessImpl;
+    private ProfileEntity profileEntity;
 
 
     public Response getResources(Query query) throws TException {
@@ -236,7 +237,7 @@ public class ProfileWorkExpService {
             profileIds.add(struct.getProfile_id());
             profileDao.updateUpdateTime(profileIds);
                 /* 计算用户基本信息的简历完整度 */
-            completenessImpl.reCalculateProfileWorkExp(struct.getProfile_id(), struct.getId());
+            profileEntity.reCalculateProfileWorkExp(struct.getProfile_id(), struct.getId());
             return ResponseUtils.success(String.valueOf(record.getId()));
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
@@ -299,7 +300,7 @@ public class ProfileWorkExpService {
         if (result > 0) {
             updateUpdateTime(struct);
                 /* 计算用户基本信息的简历完整度 */
-            completenessImpl.reCalculateProfileWorkExp(struct.getProfile_id(), struct.getId());
+            profileEntity.reCalculateProfileWorkExp(struct.getProfile_id(), struct.getId());
             return ResponseUtils.success("1");
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
@@ -322,7 +323,7 @@ public class ProfileWorkExpService {
                 for (WorkExp struct : structs) {
                     profileIds.add(struct.getProfile_id());
                 /* 计算用户基本信息的简历完整度 */
-                    completenessImpl.reCalculateProfileWorkExp(struct.getProfile_id(), struct.getId());
+                    profileEntity.reCalculateProfileWorkExp(struct.getProfile_id(), struct.getId());
                 }
                 profileDao.updateUpdateTime(profileIds);
                 return ResponseUtils.success("1");
@@ -339,7 +340,7 @@ public class ProfileWorkExpService {
             for (WorkExp struct : structs) {
                 updateUpdateTime(structs);
                 /* 计算用户基本信息的简历完整度 */
-                completenessImpl.reCalculateProfileWorkExpUseWorkExpId(struct.getId());
+                profileEntity.reCalculateProfileWorkExpUseWorkExpId(struct.getId());
             }
             return ResponseUtils.success("1");
         }
@@ -373,7 +374,7 @@ public class ProfileWorkExpService {
                 profileIds.forEach(profileId -> {
                     updateUpdateTime(structs);
                 /* 计算用户基本信息的简历完整度 */
-                    completenessImpl.reCalculateProfileWorkExp(profileId, 0);
+                    profileEntity.reCalculateProfileWorkExp(profileId, 0);
                 });
                 return ResponseUtils.success("1");
             }
@@ -387,7 +388,7 @@ public class ProfileWorkExpService {
         if (result > 0) {
             updateUpdateTime(struct);
             /* 计算用户基本信息的简历完整度 */
-            completenessImpl.reCalculateProfileWorkExp(struct.getProfile_id(), struct.getId());
+            profileEntity.reCalculateProfileWorkExp(struct.getProfile_id(), struct.getId());
             return ResponseUtils.success("1");
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DEL_FAILED);

@@ -9,13 +9,11 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileSkillRecord;
 import com.moseeker.common.util.query.Query;
-import com.moseeker.profile.constants.ValidationMessage;
+import com.moseeker.entity.ProfileEntity;
+import com.moseeker.entity.biz.ProfileValidation;
+import com.moseeker.entity.biz.ValidationMessage;
 import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
-import com.moseeker.profile.utils.ProfileValidation;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.profile.struct.Awards;
-import com.moseeker.thrift.gen.profile.struct.ProfileImport;
 import com.moseeker.thrift.gen.profile.struct.Skill;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -42,7 +40,7 @@ public class ProfileSkillService {
     private ProfileProfileDao profileDao;
 
     @Autowired
-    private ProfileCompletenessImpl completenessImpl;
+    private ProfileEntity profileEntity;
 
     @Transactional
     public Response postResources(List<Skill> structs) throws TException {
@@ -66,7 +64,7 @@ public class ProfileSkillService {
             profileIds.add(struct.getProfile_id());
         });
         profileIds.forEach(profileId -> {
-            completenessImpl.reCalculateProfileSkill(profileId, 0);
+            profileEntity.reCalculateProfileSkill(profileId, 0);
         });
         profileDao.updateUpdateTime(profileIds);
         return ResponseUtils.success("1");
@@ -77,7 +75,7 @@ public class ProfileSkillService {
         int[] result = dao.updateRecords(BeanUtils.structToDB(structs, ProfileSkillRecord.class));
         if (ArrayUtils.contains(result, 1)) {
             structs.forEach(struct -> {
-                completenessImpl.reCalculateProfileSkill(struct.getProfile_id(), struct.getId());
+                profileEntity.reCalculateProfileSkill(struct.getProfile_id(), struct.getId());
             });
             return ResponseUtils.success("1");
         }
@@ -109,7 +107,7 @@ public class ProfileSkillService {
             int[] result = dao.deleteRecords(BeanUtils.structToDB(structs, ProfileSkillRecord.class));
             if (ArrayUtils.contains(result, 1)) {
                 profileIds.forEach(profileId -> {
-                    completenessImpl.reCalculateProfileSkill(profileId, 0);
+                    profileEntity.reCalculateProfileSkill(profileId, 0);
                 });
                 return ResponseUtils.success("1");
             }
@@ -127,7 +125,7 @@ public class ProfileSkillService {
         Set<Integer> profileIds = new HashSet<>();
         profileIds.add(struct.getProfile_id());
         profileDao.updateUpdateTime(profileIds);
-        completenessImpl.reCalculateProfileSkill(struct.getProfile_id(), struct.getId());
+        profileEntity.reCalculateProfileSkill(struct.getProfile_id(), struct.getId());
         return ResponseUtils.success(String.valueOf(record.getId()));
     }
 
@@ -136,7 +134,7 @@ public class ProfileSkillService {
         int result = dao.updateRecord(BeanUtils.structToDB(struct, ProfileSkillRecord.class));
         if (result > 0) {
             updateUpdateTime(struct);
-            completenessImpl.reCalculateProfileSkill(struct.getProfile_id(), struct.getId());
+            profileEntity.reCalculateProfileSkill(struct.getProfile_id(), struct.getId());
             return ResponseUtils.success("1");
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
@@ -152,7 +150,7 @@ public class ProfileSkillService {
             int result = dao.deleteRecord(skillRecord);
             if (result > 0) {
                 updateUpdateTime(struct);
-                completenessImpl.reCalculateProfileSkill(skillRecord.getProfileId().intValue(),
+                profileEntity.reCalculateProfileSkill(skillRecord.getProfileId().intValue(),
                         skillRecord.getId().intValue());
                 return ResponseUtils.success("1");
             }
