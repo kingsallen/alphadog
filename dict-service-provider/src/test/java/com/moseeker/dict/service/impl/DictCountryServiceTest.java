@@ -13,14 +13,14 @@ import static org.junit.Assert.*;
 /**
  * Created by lucky8987 on 17/5/10.
  */
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(classes = AppConfig.class)
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = AppConfig.class)
 public class DictCountryServiceTest {
 
-//    @Autowired
+    @Autowired
     private DictCountryService service;
 
-    //@Test
+    @Test
     public void getDictCountry() throws Exception {
         Response response = service.getDictCountry();
         System.out.println(response);
