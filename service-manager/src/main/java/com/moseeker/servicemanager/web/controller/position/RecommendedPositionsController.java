@@ -47,7 +47,7 @@ public class RecommendedPositionsController {
     public String getPcPositionRecommend(HttpServletRequest request, HttpServletResponse response) {
         try {
             Map<String,Object> params = ParamUtils.parseRequestParam(request);
-            int positionId=(int)params.get("positionId");
+            String positionId=(String)params.get("positionId");
             String page= (String) params.get("page");
             String pageSize= (String) params.get("pageSize");
             if(page==null){
@@ -56,7 +56,7 @@ public class RecommendedPositionsController {
             if(pageSize==null){
                 page="10";
             }
-            Response result = positonServices.getPcRecommendPosition(positionId,Integer.parseInt(page),Integer.parseInt(pageSize));
+            Response result = positonServices.getPcRecommendPosition(Integer.parseInt(positionId),Integer.parseInt(page),Integer.parseInt(pageSize));
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
