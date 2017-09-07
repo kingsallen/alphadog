@@ -52,17 +52,38 @@ public class UserHrAccountServiceImpl implements Iface {
 
     @Override
     public void updateMobile(int hrId, String mobile) throws TException {
-        service.updateMobile(hrId, mobile);
+        try {
+            service.updateMobile(hrId, mobile);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
     }
 
     @Override
     public UserHrAccountDO addAccount(UserHrAccountDO hrAccount) throws TException {
-        return service.addAccount(hrAccount);
+        try {
+            return service.addAccount(hrAccount);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
     }
 
     @Override
     public boolean ifAddSubAccountAllowed(int hrId) throws TException {
-        return service.ifAddSubAccountAllowed(hrId);
+        try {
+            return service.ifAddSubAccountAllowed(hrId);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
     }
 
     /**

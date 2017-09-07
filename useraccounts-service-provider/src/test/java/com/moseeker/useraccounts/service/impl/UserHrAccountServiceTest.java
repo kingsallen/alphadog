@@ -1,27 +1,19 @@
 package com.moseeker.useraccounts.service.impl;
 
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.parser.Feature;
 import com.moseeker.baseorm.util.BeanUtils;
-import com.moseeker.common.util.DateUtils;
 import com.moseeker.entity.SearchengineEntity;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.useraccounts.config.AppConfig;
-
 import org.apache.thrift.TException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = AppConfig.class)
@@ -29,6 +21,10 @@ public class UserHrAccountServiceTest {
 
     @Autowired
     private UserHrAccountService userHrAccountService;
+
+
+    @Autowired
+    private SearchengineEntity searchengineEntity;
 
     @Test
     public void testUpdateMobile() {
@@ -59,9 +55,6 @@ public class UserHrAccountServiceTest {
         System.out.println(BeanUtils.convertStructToJSON(userHrAccountDO));
 
     }
-    @Autowired
-    private SearchengineEntity searchengineEntity;
-
 
     //@Test
     public void testUserHrAccount() {

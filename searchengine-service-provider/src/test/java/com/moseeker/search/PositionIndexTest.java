@@ -45,7 +45,7 @@ public class PositionIndexTest {
     }
     @Test
     public void searchPositionByTeam(){
-        Map<String,Object> result=positionSearchEngine.search("","",null,1,10,"","","",39978,188350558,0,1);
+        Map<String,Object> result=positionSearchEngine.search("","",null,1,10,"120000","","",0,0,0,1);
         System.out.println(result);
     }
 

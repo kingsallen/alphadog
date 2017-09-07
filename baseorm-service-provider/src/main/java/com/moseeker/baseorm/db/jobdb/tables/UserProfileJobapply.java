@@ -29,7 +29,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserProfileJobapply extends TableImpl<UserProfileJobapplyRecord> {
 
-    private static final long serialVersionUID = 2118210085;
+    private static final long serialVersionUID = -1269913775;
 
     /**
      * The reference instance of <code>jobdb.user_profile_jobapply</code>
@@ -75,9 +75,9 @@ public class UserProfileJobapply extends TableImpl<UserProfileJobapplyRecord> {
     public final TableField<UserProfileJobapplyRecord, Integer> 投递状态 = createField("投递状态", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "0:unuse, 1:waiting, 2:failed, 3:success, 4:position expire, 5:resume unqualified 6:excess apply times");
 
     /**
-     * The column <code>jobdb.user_profile_jobapply.来源</code>. 0:社招 1：校招 2:定向招聘
+     * The column <code>jobdb.user_profile_jobapply.来源</code>. 0:社招 1：校招
      */
-    public final TableField<UserProfileJobapplyRecord, Byte> 来源 = createField("来源", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0:社招 1：校招 2:定向招聘");
+    public final TableField<UserProfileJobapplyRecord, Byte> 来源 = createField("来源", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0:社招 1：校招");
 
     /**
      * The column <code>jobdb.user_profile_jobapply.ats来源是9</code>. 职位来源 0：Moseeker

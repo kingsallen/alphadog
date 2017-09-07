@@ -651,7 +651,8 @@ public class CompanyService {
         List<HrEmployeeCustomFieldsVO> hrEmployeeCustomFieldsVOS = new ArrayList<>();
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         queryBuilder.where(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.DISABLE.getName(), 0)
-                .and(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.COMPANY_ID.getName(), companyId);
+                .and(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.COMPANY_ID.getName(), companyId)
+                .and(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.STATUS.getName(), 0);
         List<HrEmployeeCustomFieldsDO> list = hrEmployeeCustomFieldsDao.getDatas(queryBuilder.buildQuery());
         for (HrEmployeeCustomFieldsDO hrEmployeeCustomFieldsDO : list) {
             HrEmployeeCustomFieldsVO hrEmployeeCustomFieldsVO = new HrEmployeeCustomFieldsVO();

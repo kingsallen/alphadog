@@ -157,7 +157,7 @@ public class EmployeeEntity {
     @Transactional
     public int addReward(int employeeId, int companyId, UserEmployeePointsRecordDO ueprDo) throws Exception {
         Query.QueryBuilder query = new Query.QueryBuilder();
-        query.where("id", employeeId);
+        query.where("id", employeeId).and("disable", 0).and("activation", 0);
         UserEmployeeDO userEmployeeDO = employeeDao.getData(query.buildQuery());
         if (userEmployeeDO != null && userEmployeeDO.getId() > 0 && ueprDo != null) {
             // 修改用户总积分, 产品说 积分不能扣成负数 所以为负数 填为 0
@@ -933,4 +933,14 @@ public class EmployeeEntity {
         searchengineEntity.updateEmployeeAwards(Arrays.asList(userEmployeeDO.getId()));
         return result;
     }
+
+    /**
+     *  获取员工认证信息的redisKey <br/>
+     *  集团公司： key=userId_groupId, 非集团公司：key=userId-companyId
+     */
+    public final String getAuthInfoKey(int userId, int companyId) {
+        int groupId = getGroupIdByCompanyId(companyId);
+        return userId + (groupId == 0 ? "-" + companyId : "_" + groupId);
+    }
+
 }

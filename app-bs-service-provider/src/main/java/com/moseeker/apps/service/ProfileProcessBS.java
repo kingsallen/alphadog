@@ -242,7 +242,8 @@ public class ProfileProcessBS {
                         logger.info("ProfileProcessBS processProfile rewardsToBeAdd:{}", rewardsToBeAdd);
                         //注意在获取employyee时，weChatIds已经不用，此处没有修改thrift的代码，所以还在
                         Query.QueryBuilder query = new Query.QueryBuilder();
-                        query.where(new Condition("sysuser_id", recommenderIds, ValueOp.IN)).and(new Condition("company_id", employeeEntity.getCompanyIds(companyId), ValueOp.IN));
+                        query.where(new Condition("sysuser_id", recommenderIds, ValueOp.IN)).and(new Condition("company_id", employeeEntity.getCompanyIds(companyId), ValueOp.IN))
+                        .and("disable", 0).and("activation", 0);
                         List<UserEmployeeStruct> employeesToBeUpdates = userEmployeeDao.getDatas(query.buildQuery(), UserEmployeeStruct.class);
                         Map<Integer, Integer> userIdToEmployeeId = (employeesToBeUpdates == null || employeesToBeUpdates.isEmpty()) ?
                                 new HashMap<>() : employeesToBeUpdates.stream().collect(Collectors.toMap(k -> k.getSysuser_id(), v -> v.getId(), (newKey, oldKey) -> newKey));

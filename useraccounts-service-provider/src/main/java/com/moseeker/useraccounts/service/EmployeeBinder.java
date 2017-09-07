@@ -100,9 +100,9 @@ public abstract class EmployeeBinder {
         userEmployee.setCompanyId(bindingParams.getCompanyId());
         userEmployee.setEmployeeid(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getMobile(), ""));
         userEmployee.setSysuserId(bindingParams.getUserId());
-        userEmployee.setCname(bindingParams.getName());
-        userEmployee.setMobile(bindingParams.getMobile());
-        userEmployee.setEmail(bindingParams.getEmail());
+        userEmployee.setCname(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getName(), userEmployee.getCname()));
+        userEmployee.setMobile(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getMobile(), userEmployee.getMobile()));
+        userEmployee.setEmail(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getEmail(), userEmployee.getEmail()));
         userEmployee.setWxuserId(wxEntity.getWxuserId(bindingParams.getUserId(), bindingParams.getCompanyId()));
         userEmployee.setAuthMethod((byte)bindingParams.getType().getValue());
         userEmployee.setActivation((byte)0);
@@ -160,7 +160,7 @@ public abstract class EmployeeBinder {
             response.setMessage("success");
             if (StringUtils.isNotNullOrEmpty(useremployee.getActivationCode())) {
                 client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, useremployee.getActivationCode());
-                client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, useremployee.getSysuserId()+"-"+useremployee.getCompanyId()+"-"+employeeEntity.getGroupIdByCompanyId(useremployee.getCompanyId()));
+                client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, employeeEntity.getAuthInfoKey(useremployee.getSysuserId(), useremployee.getCompanyId()));
             }
             // 更新ES中useremployee信息
             searchengineEntity.updateEmployeeDOAwards(employees);
