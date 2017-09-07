@@ -75,7 +75,7 @@ public class PositionServicesImpl implements Iface {
     @Override
     public Response getResources(CommonQuery query) throws TException {
         try {
-            List<JobPositionRecord> list = jobPositionDao.getRecords(QueryConvert.commonQueryConvertToQuery(query));
+            List<JobPositionRecord> list = service.getPositionRecords(QueryConvert.commonQueryConvertToQuery(query));
             List<Position> structs = BeanUtils.DBToStruct(Position.class, list);
 
             if (!structs.isEmpty()) {
