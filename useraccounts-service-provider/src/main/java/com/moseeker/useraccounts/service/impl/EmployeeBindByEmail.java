@@ -91,7 +91,7 @@ public class EmployeeBindByEmail extends EmployeeBinder{
             String activationCode = MD5Util.encryptSHA(userEmployee.getId()+"-"+userEmployee.getEmail()+"-"+System.currentTimeMillis());
             //MD5Util.encryptSHA(bindingParams.getUserId()+"_"+bindingParams.getCompanyId()+"_"+employeeEntity.getGroupIdByCompanyId(bindingParams.getCompanyId()));
             Map<String, String> mesBody = new HashMap<>();
-            mesBody.put("#employee_slug", org.apache.commons.lang.StringUtils.defaultIfEmpty(hrCompanyConfDO.getEmployeeSlug(), "员工"));
+            mesBody.put("#employee_slug#", org.apache.commons.lang.StringUtils.defaultIfEmpty(hrCompanyConfDO.getEmployeeSlug(), "员工"));
             mesBody.put("#company_logo#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(companyDO.getLogo(), ""));
             mesBody.put("#employee_name#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(userEmployee.getCname(), userAccountEntity.genUsername(userEmployee.getSysuserId())));
             mesBody.put("#company_abbr#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(companyDO.getAbbreviation(), ""));
