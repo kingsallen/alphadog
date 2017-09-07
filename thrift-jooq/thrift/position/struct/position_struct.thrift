@@ -175,6 +175,7 @@ struct ThirdPartyPositionForSynchronization {
     27: i32 practice_salary,
     28: i8 practice_per_week,
     29: i8 practice_salary_unit
+    30: list<string> welfare
 }
 
 struct ThirdPartyPositionForSynchronizationWithAccount {
