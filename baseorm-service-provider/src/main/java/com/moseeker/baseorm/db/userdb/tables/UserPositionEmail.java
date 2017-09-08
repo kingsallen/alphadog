@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserPositionEmail extends TableImpl<UserPositionEmailRecord> {
 
-    private static final long serialVersionUID = 1393039844;
+    private static final long serialVersionUID = -985016701;
 
     /**
      * The reference instance of <code>userdb.user_position_email</code>
@@ -132,7 +132,7 @@ public class UserPositionEmail extends TableImpl<UserPositionEmailRecord> {
      */
     @Override
     public List<UniqueKey<UserPositionEmailRecord>> getKeys() {
-        return Arrays.<UniqueKey<UserPositionEmailRecord>>asList(Keys.KEY_USER_POSITION_EMAIL_PRIMARY);
+        return Arrays.<UniqueKey<UserPositionEmailRecord>>asList(Keys.KEY_USER_POSITION_EMAIL_PRIMARY, Keys.KEY_USER_POSITION_EMAIL_USER_POSITION_EMAIL_USER_ID_UINDEX);
     }
 
     /**

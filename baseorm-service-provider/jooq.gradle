@@ -1,29 +1,14 @@
-project.description = '''
-    jooq 生成table和record
-'''
 apply plugin: 'java'
-apply plugin: 'idea'
-apply plugin: 'eclipse'
-
-apply from: '../versions.gradle'
-
-dependencies {
-    compile 'org.jooq:jooq:3.9.0'
-    compile 'org.jooq:jooq-meta:3.9.0'
-    compile 'org.jooq:jooq-codegen:3.9.0'
-    testCompile deps["junit"]
-}
 
 buildscript {
-    apply from: '../versions.gradle'
     repositories {
         mavenLocal()
-        mavenCentral()
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
     }
 
     dependencies {
         classpath fileTree(dir:'../libs',include:'jooq*.jar')
-        classpath deps["mysql-connector-java"]
+        classpath 'mysql:mysql-connector-java:5.1.6'
     }
 }
 
@@ -34,10 +19,8 @@ task generate << {
     def dbxml = file("jooq/jooqdb.xml")
     // 读取统一的模板，填充dbname
     dbxml.filterLine("utf-8") { String text -> if(text.contains("\${db}"))
-            text.replace("\${db}", dbname)
+        text.replace("\${db}", dbname)
     }
-
-    GenerationTool.main(
-            JAXB.unmarshal(new StringReader(writer.toString()), org.jooq.util.jaxb.Configuration.class)
-    )
+    // 调用jooq生成java代码
+    org.jooq.util.GenerationTool.main(org.jooq.util.GenerationTool.load(new FileInputStream(dbxml)))
 }

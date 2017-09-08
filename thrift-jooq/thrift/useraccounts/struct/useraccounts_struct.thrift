@@ -1,19 +1,20 @@
 # file: useraccounts.struct
 
 namespace java com.moseeker.thrift.gen.useraccounts.struct
-include "../../dao/struct/userdb_struct.thrift"
+include "../../dao/struct/userdb/user_employee_struct.thrift"
 
 typedef string Timestamp
 
 
-struct Userloginreq { 
+struct Userloginreq {
     1: optional string unionid,
     2: optional string mobile,
     3: optional string password,
-    4: optional string code
+    4: optional string code,
+    5: optional string countryCode="86"
 }
 
-struct Usersetting { 
+struct Usersetting {
     1: optional i32 id,
     2: optional i32 user_id,
     3: optional string banner_url,
@@ -49,8 +50,10 @@ struct User {
     23: optional string     position        ,    // 点击我感兴趣时填写的职位
     24: optional i64        parentid             // 合并到了新用户的id
     25: optional i32        email_verified  ,    // 邮箱是否认证
-    26: optional string     nickname       	 // 用户昵称
+    26: optional string     nickname,       	 // 用户昵称
+    27: optional string     countryCode="86"
 }
+
 
 /*
   我感兴趣/职位收藏关系表
@@ -92,14 +95,15 @@ struct UserHrAccount{
     19: optional Timestamp         update_time       // 修改时间
 }
 
-struct DownloadReport { 
+struct DownloadReport {
    1: string code,									//验证码
    2: string company_name,							//公司名称
    3: string mobile,								//手机号码
    4: string name,							//联系人
    5: optional i32 source,							//来源
    6: optional string register_ip,					//注册IP
-   7: optional string last_login_ip					//最后登录IP
+   7: optional string last_login_ip,					//最后登录IP
+   8: optional string countryCode="86"
 }
 
 /*
@@ -137,7 +141,7 @@ struct SearchCondition {
    13: i32 max_age, // 最大年龄
    14: string intention_city_name, // 期望城市
    15: i32 sex, // 性别
-   16: string intention_salary_code, // 期望薪资 
+   16: string intention_salary_code, // 期望薪资
    17: string company_name, // 城市名称
    18: i32 in_last_job_search_company, // 是否只在最近一份工作中搜索公司名称（0:否，1:是）
    19: i32 hr_account_id, // 创建人id(user_hr_account.id)
@@ -249,7 +253,7 @@ struct FavPositionForm {
     2: optional string title,           //职位名称
     3: optional string department,      //招聘部门
     4: optional Timestamp time,         //收藏的更新时间
-    5: optional string city,            //再招城市 
+    5: optional string city,            //再招城市
     6: optional i32 salary_top,          //薪资上限
     7: optional i32 salary_bottom,       //薪资下限
     8: optional i8 status,              //薪资下限
@@ -272,7 +276,7 @@ struct RecommendationRecordVO {
     4: optional string position,                //职位名称
     5: optional Timestamp click_time,           //点击事件
     6: optional i16 status,                     //招聘进度状态
-    7: optional i8 is_interested,               //是否推荐 0没有推荐 1推荐 
+    7: optional i8 is_interested,               //是否推荐 0没有推荐 1推荐
     8: optional i32 view_number,                //点击次数
     9: optional string headimgurl,              //头像
     10: optional i32 id                         //编号
@@ -302,7 +306,7 @@ struct AwardRecordForm {
 struct ApplicationOperationRecordVO {
     1: optional string date,                    // 操作日期
     2: optional string event,                   // 描述
-    3: optional i32 hide,                       // 是否隐藏 
+    3: optional i32 hide,                       // 是否隐藏
     4: optional i32 step_status                 // 状态 2表示拒绝
 }
 
@@ -427,7 +431,7 @@ struct UserEmployeeDetailVO{
 struct ImportErrorUserEmployee{
     1: optional i32 rowNum, // 第几条数据
     2: optional string message, // 错误原因
-    3: optional userdb_struct.UserEmployeeDO userEmployeeDO // 员工实体
+    3: optional user_employee_struct.UserEmployeeDO userEmployeeDO // 员工实体
 }
 
 struct ImportUserEmployeeStatistic{

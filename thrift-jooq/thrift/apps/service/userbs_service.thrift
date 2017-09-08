@@ -11,5 +11,5 @@ namespace java com.moseeker.thrift.gen.apps.userbs.service
  
 service UserBS {
 	//账号绑定
-	common_struct.Response bindOnAccount(1: i32 appid, 2: string unionid, 3: string code, 4: string mobile, 5: bindtype_struct.BindType bindType);
+	common_struct.Response bindOnAccount(1: i32 appid, 2: string unionid, 3: string code, 4: string mobile, 5: bindtype_struct.BindType bindType,6: string countryCode);
 }

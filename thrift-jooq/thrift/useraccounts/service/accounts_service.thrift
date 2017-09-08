@@ -11,6 +11,7 @@ include "../../dao/struct/hrdb/hr_third_party_account_struct.thrift"
 include "../../employee/struct/employee_struct.thrift"
 
 
+
 namespace java com.moseeker.thrift.gen.useraccounts.service
 
 /**
@@ -25,35 +26,35 @@ service UseraccountsServices {
     // 更新用户数据
     common_struct.Response updateUser(1: useraccounts_struct.User user);
 
-    common_struct.Response getismobileregisted(1: string mobile);
+    common_struct.Response getismobileregisted(1: string countryCode, 2: string mobile);
     common_struct.Response postuserlogin(1: useraccounts_struct.Userloginreq userloginreq);
     common_struct.Response postuserlogout(1: i32 userid);
-    common_struct.Response postsendsignupcode(1: string mobile);
-    common_struct.Response postsendsignupcodeVoice(1: string mobile);
+    common_struct.Response postsendsignupcode(1: string countryCode, 2: string mobile);
+    common_struct.Response postsendsignupcodeVoice(1: string countryCode, 2: string mobile);
     // 用户注册
     //common_struct.Response postusermobilesignup(1: string mobile, 2: string code, 3: string password);
     common_struct.Response postusermobilesignup(1: useraccounts_struct.User user, 2: string code);
 
-    common_struct.Response postuserwxbindmobile(1: i32 appid, 2: string unionid, 3: string code,4: string mobile);
-    common_struct.Response postuserbindmobile(1: i32 appid, 2: string unionid, 3: string code, 4: string mobile, 5: bindtype_struct.BindType bindType);
+    common_struct.Response postuserwxbindmobile(1: i32 appid, 2: string unionid, 3: string code,4: string countryCode, 5: string mobile);
+    common_struct.Response postuserbindmobile(1: i32 appid, 2: string unionid, 3: string code, 4: string countryCode, 5: string mobile, 6: bindtype_struct.BindType bindType);
     common_struct.Response postuserchangepassword(1: i32 user_id, 2: string old_password,  3: string password);
-    common_struct.Response postusersendpasswordforgotcode(1: string mobile);
-    common_struct.Response postvalidatepasswordforgotcode(1: string mobile, 2:string code);
-    common_struct.Response validateVerifyCode(1: string mobile, 2:string code, 3:i32 type);
-    common_struct.Response sendVerifyCode(1: string mobile, 3:i32 type);
+    common_struct.Response postusersendpasswordforgotcode(1: string countryCode, 2: string mobile);
+    common_struct.Response postvalidatepasswordforgotcode(1: string countryCode, 2: string mobile, 3:string code);
+    common_struct.Response validateVerifyCode(1: string countryCode, 2: string mobile, 3:string code, 4:i32 type);
+    common_struct.Response sendVerifyCode(1: string countryCode, 2: string mobile, 3:i32 type);
     common_struct.Response checkEmail(1: string email);
-    common_struct.Response postuserresetpassword(1: string mobile, 2: string code, 3: string password);
-    common_struct.Response postusermergebymobile(1: i32 appid, 2: string mobile);
-    common_struct.Response postsendchangemobilecode(1: string oldmobile);
-    common_struct.Response postvalidatechangemobilecode(1: string oldmobile, 2:string code);
-    common_struct.Response postsendresetmobilecode(1:string newmobile);
-    common_struct.Response postresetmobile(1: i32 user_id, 2: string newmobile, 3:string code);
+    common_struct.Response postuserresetpassword(1: string countryCode, 2: string mobile, 3: string code, 4: string password);
+    common_struct.Response postusermergebymobile(1: i32 appid, 2: string countryCode, 3: string mobile);
+    common_struct.Response postsendchangemobilecode(1: string countryCode, 2: string oldmobile);
+    common_struct.Response postvalidatechangemobilecode(1: string countryCode, 2: string oldmobile, 3:string code);
+    common_struct.Response postsendresetmobilecode(1: string countryCode, 2:string newmobile);
+    common_struct.Response postresetmobile(1: i32 user_id, 2: string countryCode, 3: string newmobile, 4:string code);
 
     // 用户是否对该职位已经感兴趣
     common_struct.Response getUserFavPositionCountByUserIdAndPositionId(1: i32 userId, 2: i32 positionId);
     // 用户感兴趣账职位
     common_struct.Response postUserFavoritePosition(1: useraccounts_struct.UserFavoritePosition userFavoritePosition);
-    
+
     //创建微信二维码
     common_struct.Response cerateQrcode(1: i32 wechatId, 2: i64 sceneId, 3: i32 expireSeconds, 4:i32 action_name);
     //获取qrcode
@@ -62,15 +63,15 @@ service UseraccountsServices {
     common_struct.Response getScanResult(1: i32 wechatId, 2: i64 sceneId);
     //设置二维码是否查看
     common_struct.Response setScanResult(1: i32 wechatId, 2: i64 sceneId, 3:string value);
-	
+
     //根据手机号码获取用户数据
-    user_user_struct.UserUserDO ifExistUser(1: string mobile);
+    user_user_struct.UserUserDO ifExistUser(1: string countryCode, 2: string mobile);
     //简历回收的自动生成帐号
     i32 createRetrieveProfileUser(1: user_user_struct.UserUserDO user);
     //查询用户是否存在简历
-    bool ifExistProfile(1:string mobile);
+    bool ifExistProfile(1: string countryCode, 2:string mobile);
     // 换绑操作
-    common_struct.Response userChangeBind(1:string unionid, 2:string mobile);
+    common_struct.Response userChangeBind(1:string unionid, 2: string countryCode, 3:string mobile);
 
 
 }
@@ -170,6 +171,7 @@ service UserHrAccountService {
     // 检查员工重复
     useraccounts_struct.ImportUserEmployeeStatistic checkBatchInsert(1:map<i32,user_employee_struct.UserEmployeeDO> userEmployeeDOS, 2:i32 companyId) throws (1: common_struct.BIZException e)
 }
+
 
 
 /**

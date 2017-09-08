@@ -71,9 +71,9 @@ public class UseraccountsServiceImpl implements Iface {
 	 * 发送手机注册的验证码
 	 */
 	@Override
-	public Response postsendsignupcode(String mobile) throws TException {
+	public Response postsendsignupcode(String countryCode,String mobile) throws TException {
 		try {
-			return service.postsendsignupcode(mobile);
+			return service.postsendsignupcode(countryCode, mobile);
 		} catch (CommonException e) {
 			throw ExceptionConvertUtil.convertCommonException(e);
 		} catch (Exception e) {
@@ -83,7 +83,7 @@ public class UseraccountsServiceImpl implements Iface {
 	}
 
     @Override
-    public Response postsendsignupcodeVoice(String mobile) throws TException {
+    public Response postsendsignupcodeVoice(String countryCode,String mobile) throws TException {
 		try {
 			return service.postsendsignupcodeVoice(mobile);
 		} catch (CommonException e) {
@@ -125,9 +125,9 @@ public class UseraccountsServiceImpl implements Iface {
 	 * code验证码可选.
 	 */
 	@Override
-	public Response postuserwxbindmobile(int appid, String unionid, String code, String mobile) throws TException {
+	public Response postuserwxbindmobile(int appid, String unionid, String code,String countryCode, String mobile) throws TException {
 		try {
-			return service.postuserwxbindmobile(appid, unionid, code, mobile);
+			return service.postuserwxbindmobile(appid,countryCode, unionid, code, mobile);
 		} catch (CommonException e) {
 			throw ExceptionConvertUtil.convertCommonException(e);
 		} catch (Exception e) {
@@ -161,10 +161,10 @@ public class UseraccountsServiceImpl implements Iface {
 	 * 发送忘记密码的验证码
 	 */
 	@Override
-	public Response postusersendpasswordforgotcode(String mobile) throws TException {
+	public Response postusersendpasswordforgotcode(String countryCode,String mobile) throws TException {
 		// TODO 只有已经存在的用户才能发验证码。
 		try {
-			return service.postusersendpasswordforgotcode(mobile);
+			return service.postusersendpasswordforgotcode(countryCode, mobile);
 		} catch (CommonException e) {
 			throw ExceptionConvertUtil.convertCommonException(e);
 		} catch (Exception e) {
@@ -180,9 +180,9 @@ public class UseraccountsServiceImpl implements Iface {
 	 *            验证码，可选， 填写时必须判断。不填时， 请先调用postvalidatepasswordforgotcode 进行验证。
 	 */
 	@Override
-	public Response postuserresetpassword(String mobile, String password, String code) throws TException {
+	public Response postuserresetpassword(String countryCode,String mobile, String password, String code) throws TException {
 		try {
-			return service.postuserresetpassword(mobile, password, code);
+			return service.postuserresetpassword(mobile, password, code,countryCode);
 		} catch (CommonException e) {
 			throw ExceptionConvertUtil.convertCommonException(e);
 		} catch (Exception e) {
@@ -192,7 +192,7 @@ public class UseraccountsServiceImpl implements Iface {
 	}
 
 	@Override
-	public Response postusermergebymobile(int appid, String mobile) throws TException {
+	public Response postusermergebymobile(int appid,String countryCode, String mobile) throws TException {
 		try {
 			return service.postusermergebymobile(appid, mobile);
 		} catch (CommonException e) {
@@ -261,9 +261,9 @@ public class UseraccountsServiceImpl implements Iface {
 	 * @throws TException
 	 */
 	@Override
-	public Response getismobileregisted(String mobile) throws TException {
+	public Response getismobileregisted(String countryCode,String mobile) throws TException {
 		try {
-			return service.getismobileregisted(mobile);
+			return service.getismobileregisted(mobile,countryCode);
 		} catch (CommonException e) {
 			throw ExceptionConvertUtil.convertCommonException(e);
 		} catch (Exception e) {
@@ -277,10 +277,10 @@ public class UseraccountsServiceImpl implements Iface {
 	 *
 	 */
 	@Override
-	public Response postsendchangemobilecode(String oldmobile) throws TException {
+	public Response postsendchangemobilecode(String countryCode,String oldmobile) throws TException {
 		// TODO 只有已经存在的用户才能发验证码。
 		try {
-			return service.postsendchangemobilecode(oldmobile);
+			return service.postsendchangemobilecode(countryCode, oldmobile);
 		} catch (CommonException e) {
 			throw ExceptionConvertUtil.convertCommonException(e);
 		} catch (Exception e) {
@@ -294,9 +294,9 @@ public class UseraccountsServiceImpl implements Iface {
 	 *
 	 */
 	@Override
-	public Response postvalidatechangemobilecode(String oldmobile, String code) throws TException {
+	public Response postvalidatechangemobilecode(String countryCode,String oldmobile, String code) throws TException {
 		try {
-			return service.postvalidatechangemobilecode(oldmobile, code);
+			return service.postvalidatechangemobilecode(countryCode,oldmobile, code);
 		} catch (CommonException e) {
 			throw ExceptionConvertUtil.convertCommonException(e);
 		} catch (Exception e) {
@@ -310,9 +310,9 @@ public class UseraccountsServiceImpl implements Iface {
 	 *
 	 */
 	@Override
-	public Response postsendresetmobilecode(String newmobile) throws TException {
+	public Response postsendresetmobilecode(String countryCode,String newmobile) throws TException {
 		try {
-			return service.postsendresetmobilecode(newmobile);
+			return service.postsendresetmobilecode(countryCode,newmobile);
 		} catch (CommonException e) {
 			throw ExceptionConvertUtil.convertCommonException(e);
 		} catch (Exception e) {
@@ -331,7 +331,7 @@ public class UseraccountsServiceImpl implements Iface {
 	 *            新手机号的验证码
 	 */
 	@Override
-	public Response postresetmobile(int user_id, String newmobile, String code) throws TException {
+	public Response postresetmobile(int user_id,String countryCode, String newmobile, String code) throws TException {
 		try {
 			return service.postresetmobile(user_id, newmobile, code);
 		} catch (CommonException e) {
@@ -392,8 +392,11 @@ public class UseraccountsServiceImpl implements Iface {
 	 * 验证忘记密码的验证码是否正确
 	 */
 	@Override
-	public Response postvalidatepasswordforgotcode(String mobile, String code) throws TException {
+	public Response postvalidatepasswordforgotcode(String countryCode,String mobile, String code) throws TException {
 		try {
+			if(!"86".equals(countryCode)){
+				mobile=countryCode+mobile;
+			}
 			return service.postvalidatepasswordforgotcode(mobile, code);
 		} catch (CommonException e) {
 			throw ExceptionConvertUtil.convertCommonException(e);
@@ -404,9 +407,9 @@ public class UseraccountsServiceImpl implements Iface {
 	}
 
 	@Override
-	public Response validateVerifyCode(String mobile, String code, int type) throws TException {
+	public Response validateVerifyCode(String countryCode,String mobile, String code, int type) throws TException {
 		try {
-			return service.validateVerifyCode(mobile, code, type);
+			return service.validateVerifyCode(mobile, code, type,countryCode);
 		} catch (CommonException e) {
 			throw ExceptionConvertUtil.convertCommonException(e);
 		} catch (Exception e) {
@@ -416,9 +419,9 @@ public class UseraccountsServiceImpl implements Iface {
 	}
 
 	@Override
-	public Response sendVerifyCode(String mobile, int type) throws TException {
+	public Response sendVerifyCode(String countryCode,String mobile, int type) throws TException {
 		try {
-			return service.sendVerifyCode(mobile, type);
+			return service.sendVerifyCode(mobile, type,countryCode);
 		} catch (CommonException e) {
 			throw ExceptionConvertUtil.convertCommonException(e);
 		} catch (Exception e) {
@@ -487,7 +490,7 @@ public class UseraccountsServiceImpl implements Iface {
 	}
 
 	@Override
-	public UserUserDO ifExistUser(String mobile) throws TException {
+	public UserUserDO ifExistUser(String countryCode,String mobile) throws TException {
 		try {
 			return service.ifExistUser(mobile);
 		} catch (CommonException e) {
@@ -511,7 +514,7 @@ public class UseraccountsServiceImpl implements Iface {
 	}
 
 	@Override
-	public boolean ifExistProfile(String mobile) throws TException {
+	public boolean ifExistProfile(String countryCode,String mobile) throws TException {
 		try {
 			return service.ifExistProfile(mobile);
 		} catch (CommonException e) {
@@ -523,9 +526,9 @@ public class UseraccountsServiceImpl implements Iface {
 	}
 
 	@Override
-	public Response userChangeBind(String unionid, String mobile) throws TException {
+	public Response userChangeBind(String unionid,String countryCode, String mobile) throws TException {
 		try {
-			return service.userChangeBind(unionid,mobile);
+			return service.userChangeBind(unionid,mobile,countryCode);
 		} catch (CommonException e) {
 			throw ExceptionConvertUtil.convertCommonException(e);
 		} catch (Exception e) {
@@ -535,10 +538,10 @@ public class UseraccountsServiceImpl implements Iface {
 	}
 
 	@Override
-	public Response postuserbindmobile(int appid, String unionid, String code,
+	public Response postuserbindmobile(int appid, String unionid, String code,String countryCode,
 			String mobile, BindType bindType) throws TException {
 		try {
-			return service.postuserbindmobile(appid, unionid, code, mobile, bindType);
+			return service.postuserbindmobile(appid,unionid, code,countryCode, mobile, bindType);
 		} catch (CommonException e) {
 			throw ExceptionConvertUtil.convertCommonException(e);
 		} catch (Exception e) {
