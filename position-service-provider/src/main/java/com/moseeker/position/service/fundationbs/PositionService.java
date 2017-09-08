@@ -244,6 +244,9 @@ public class PositionService {
             }
 
 
+        }else{
+            jobPositionPojo.custom = "";
+            jobPositionPojo.occupation = "";
         }
 
         // 修改更新时间
