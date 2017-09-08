@@ -21,7 +21,7 @@ public enum ELKLog {
 
     private JedisPool jedisPool;
 
-    private final String redisKey = "log_0_info";
+    private final String redisKey = "log_0_stats";
 
     private Logger logger = LoggerFactory.getLogger(ELKLog.class);
 

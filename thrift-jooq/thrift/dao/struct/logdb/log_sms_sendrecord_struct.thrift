@@ -9,6 +9,7 @@ struct LogSmsSendrecordDO {
 	3: optional double mobile,	//null
 	4: optional string msg,	//发送内容
 	5: optional string ip,	//IP
-	6: optional string createTime	//null
+	6: optional string createTime,	//null
+	7: optional string countryCode	//null
 
 }
