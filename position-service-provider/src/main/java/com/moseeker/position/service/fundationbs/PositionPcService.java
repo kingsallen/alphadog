@@ -85,8 +85,11 @@ public class PositionPcService {
 	private UserHrAccountDao userHrAccountDao;
 	@Autowired
 	private StJobSimilarityDao stJobSimilarityDao;
+	@Autowired
 	private JobPositionExtDao jobPositionExtDao;
+	@Autowired
 	private JobCustomDao jobCustomDao;
+	@Autowired
 	private JobOccupationDao  jobOccupationDao;
 	/*
 	 * 获取pc首页职位推荐
@@ -173,7 +176,7 @@ public class PositionPcService {
 	//获取自定义字段
 	public Map<String,Object> handleCustomField(int positionId,int companyId){
 		Map<String,Object> map=new HashMap<String,Object>();
-		JobPositionExtDO extDO=getJobPositionExt(positionId);
+		JobPositionExtDO extDO=this.getJobPositionExt(positionId);
 		if(extDO!=null){
 			int customId=extDO.getJobCustomId();
 			int occupationId=extDO.getJobOccupationId();
@@ -242,14 +245,14 @@ public class PositionPcService {
 
 	//获取job_position_custom
 	public JobCustomDO getJobCustom(int customId){
-		Query query=new Query.QueryBuilder().where("id",customId).buildQuery();
+		Query query=new Query.QueryBuilder().where("id",customId).and("status",1).buildQuery();
 		JobCustomDO DO=jobCustomDao.getData(query);
 		return DO;
 	}
 
 	//获取job_position_custom
 	public JobOccupationDO getJobOccupation(int occupationId){
-		Query query=new Query.QueryBuilder().where("id",occupationId).buildQuery();
+		Query query=new Query.QueryBuilder().where("id",occupationId).and("status",1).buildQuery();
 		JobOccupationDO DO=jobOccupationDao.getData(query);
 		return DO;
 	}

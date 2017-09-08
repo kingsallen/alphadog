@@ -98,7 +98,7 @@ public class PositionPcServiceTest {
   //获取职位详情
   @Test
   public void getPositionDetailsTest() throws Exception {
-  	  Map<String,Object> result=service.getPositionDetails(1001030);
+  	  Map<String,Object> result=service.getPositionDetails(124596);
 	  System.out.println(result);
   }
   //获取推荐职位
