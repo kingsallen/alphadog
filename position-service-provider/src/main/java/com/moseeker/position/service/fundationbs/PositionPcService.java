@@ -8,6 +8,7 @@ import java.util.Set;
 
 import com.moseeker.baseorm.dao.analyticsd.StJobSimilarityDao;
 import com.moseeker.baseorm.dao.hrdb.*;
+import com.moseeker.baseorm.dao.jobdb.*;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.baseorm.pojo.RecommendedPositonPojo;
@@ -17,7 +18,11 @@ import com.moseeker.common.util.query.SelectOp;
 import com.moseeker.entity.PcRevisionEntity;
 import com.moseeker.thrift.gen.dao.struct.analytics.StJobSimilarityDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobCustomDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobOccupationDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionExtDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
+import com.moseeker.thrift.gen.position.struct.JobPositionExt;
 import org.apache.thrift.TException;
 import org.apache.thrift.TSerializer;
 import org.apache.thrift.protocol.TSimpleJSONProtocol;
@@ -29,8 +34,6 @@ import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.campaigndb.CampaignPcRecommendCompanyDao;
 import com.moseeker.baseorm.dao.campaigndb.CampaignPcRecommendPositionDao;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
-import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
-import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
@@ -82,6 +85,9 @@ public class PositionPcService {
 	private UserHrAccountDao userHrAccountDao;
 	@Autowired
 	private StJobSimilarityDao stJobSimilarityDao;
+	private JobPositionExtDao jobPositionExtDao;
+	private JobCustomDao jobCustomDao;
+	private JobOccupationDao  jobOccupationDao;
 	/*
 	 * 获取pc首页职位推荐
 	 */
@@ -160,14 +166,103 @@ public class PositionPcService {
 			confCompanyId=parentId;
 		}
 		this.handlePositionJdData(confCompanyId,map,teamId);
+		Map<String,Object> customField=this.handleCustomField(positionId,confCompanyId);
+		map.put("customField",customField);
 		return map;
 	}
+	//获取自定义字段
+	public Map<String,Object> handleCustomField(int positionId,int companyId){
+		Map<String,Object> map=new HashMap<String,Object>();
+		JobPositionExtDO extDO=getJobPositionExt(positionId);
+		if(extDO!=null){
+			int customId=extDO.getJobCustomId();
+			int occupationId=extDO.getJobOccupationId();
+			if(customId!=0||occupationId!=0){
+				Map<String,String> custom=this.handleCustomData(customId,companyId);
+				if(custom!=null&&!custom.isEmpty()){
+					map.put("custom",custom);
+				}
+				Map<String,String> occupation=this.handleOccupationData(occupationId,companyId);
+				if(occupation!=null&&!occupation.isEmpty()){
+					map.put("occupation",occupation);
+				}
+			}
+		}
+		return map;
+	}
+	//处理自定义字段数据
+	private Map<String,String> handleCustomData(int customId,int companyId){
+		Map<String,String> custom=new HashMap<>();
+		if(customId!=0){
+			JobCustomDO customDO=getJobCustom(customId);
+			if(customDO!=null){
+				String customContent=customDO.getName();
+				if(StringUtils.isNotNullOrEmpty(customContent)){
+					HrCompanyConfDO conf=getHrCompanyConf(companyId);
+					custom.put("content",customContent);
+					String customName="自定义";
+					if(conf!=null&&StringUtils.isNotNullOrEmpty(conf.getJobCustomTitle())){
+						customName=conf.getJobCustomTitle();
+					}
+					custom.put("name",customContent);
+				}
+			}
+
+		}
+
+		return custom;
+	}
+	//处理职位职能数据
+	public Map<String,String> handleOccupationData(int occupationId,int companyId){
+		Map<String, String> occupationMap = new HashMap<>();
+		if(occupationId!=0){
+			JobOccupationDO occupationDO=getJobOccupation(occupationId);
+			if(occupationDO!=null){
+				String occupation=occupationDO.getName();
+				if(StringUtils.isNotNullOrEmpty(occupation)) {
+					HrCompanyConfDO conf=getHrCompanyConf(companyId);
+					occupationMap.put("content", occupation);
+					String occupationName="职位职能";
+					if(conf!=null&&StringUtils.isNotNullOrEmpty(conf.getJobOccupation())){
+						occupationName=conf.getJobOccupation();
+					}
+					occupationMap.put("name",occupationName);
+				}
+			}
+		}
+	    return occupationMap;
+	}
+
+	//获取Job_Position_Ext
+	private JobPositionExtDO getJobPositionExt(int positionId){
+		Query query=new Query.QueryBuilder().where("pid",positionId).buildQuery();
+		JobPositionExtDO DO=jobPositionExtDao.getData(query);
+		return DO;
+	}
+
+	//获取job_position_custom
+	public JobCustomDO getJobCustom(int customId){
+		Query query=new Query.QueryBuilder().where("id",customId).buildQuery();
+		JobCustomDO DO=jobCustomDao.getData(query);
+		return DO;
+	}
+
+	//获取job_position_custom
+	public JobOccupationDO getJobOccupation(int occupationId){
+		Query query=new Query.QueryBuilder().where("id",occupationId).buildQuery();
+		JobOccupationDO DO=jobOccupationDao.getData(query);
+		return DO;
+	}
+	//获取企业配置信息
+
 	//获取团队下职位数量
 	public int getTeamPositionNum(int teamId){
 		Query query=new Query.QueryBuilder().where("team_id",teamId).and("status",0).buildQuery();
 		int num=jobPositionDao.getCount(query);
 		return num;
 	}
+
+
 	/*
 	   获取推荐职位的信息
 	 */
