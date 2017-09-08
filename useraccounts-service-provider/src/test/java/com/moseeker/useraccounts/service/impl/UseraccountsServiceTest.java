@@ -27,12 +27,12 @@ import java.util.concurrent.Executors;
 /**
  * Created by lucky8987 on 17/5/17.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = AppConfig.class)
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(classes = AppConfig.class)
 public class UseraccountsServiceTest {
 
-    @Autowired
-    private UseraccountsService service;
+//    @Autowired
+//    private UseraccountsService service;
 
 //    @Mock
 //    SmsSender smsSender;
@@ -131,13 +131,13 @@ public class UseraccountsServiceTest {
 //        System.out.println(existProfile);
 //    }
 
-    @Test
-    public void nationSmsTest() throws Exception {
-        String mobile="15618250616";
-        String countryCode="358";
-        int type=1;
-        Response res = service.sendVerifyCode(mobile, type, countryCode);
-        System.out.println(res);
+//    @Test
+//    public void nationSmsTest() throws Exception {
+//        String mobile="15618250616";
+//        String countryCode="1";
+//        int type=1;
+//        Response res = service.sendVerifyCode(mobile, type, countryCode);
+//        System.out.println(res);
 //        ExecutorService pool= Executors.newFixedThreadPool(10);
 //        for(int i=0;i<10;i++){
 //            pool.submit(new sndSMS(service,mobile,type,countryCode));
@@ -145,32 +145,32 @@ public class UseraccountsServiceTest {
 //        Thread.sleep(10000);
 //        pool.shutdown();
 
-    }
+//    }
 
 }
 
-class sndSMS implements Runnable{
-    private UseraccountsService service;
-    private String mobile;
-    private int type;
-    private String countryCode;
-    public sndSMS(UseraccountsService service,String mobile,int type,String countryCode){
-        this.service=service;
-        this.countryCode=countryCode;
-        this.mobile=mobile;
-        this.type=type;
-    }
-    @Override
-    public void run() {
-        Response res = null;
-        try {
-            System.out.println(Thread.currentThread().getName());
-            res = service.sendVerifyCode(mobile, type, countryCode);
-            Thread.sleep(1000);
-            System.out.println(res);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-}
+//class sndSMS implements Runnable{
+//    private UseraccountsService service;
+//    private String mobile;
+//    private int type;
+//    private String countryCode;
+//    public sndSMS(UseraccountsService service,String mobile,int type,String countryCode){
+//        this.service=service;
+//        this.countryCode=countryCode;
+//        this.mobile=mobile;
+//        this.type=type;
+//    }
+//    @Override
+//    public void run() {
+//        Response res = null;
+//        try {
+//            System.out.println(Thread.currentThread().getName());
+//            res = service.sendVerifyCode(mobile, type, countryCode);
+//            Thread.sleep(1000);
+//            System.out.println(res);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//    }
+//}

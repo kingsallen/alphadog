@@ -383,7 +383,7 @@ public class SmsSender {
         buffer.append("http://m.5c.com.cn/api/send/index.php");
         buffer.append("?username="+username+"&password_md5="+password_md5+"&apikey="+apikey);
         buffer.append("&mobile="+mobile+"&content="+contentUrlEncode+"&encode="+encode);
-        System.out.println(buffer); //调试功能，输入完整的请求URL地址
+//        System.out.println(buffer); //调试功能，输入完整的请求URL地址
         URL url = new URL(buffer.toString());
         HttpURLConnection connection= (HttpURLConnection)url.openConnection();     //打开URL链接
         connection.setRequestMethod("POST");     //使用POST方式发送
