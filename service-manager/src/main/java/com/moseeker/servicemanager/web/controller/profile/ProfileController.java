@@ -383,4 +383,31 @@ public class ProfileController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
+    /**
+     * 给用户添加或者更新profile
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "v2/profile", method = RequestMethod.POST)
+    @ResponseBody
+    public String upsertProfile(HttpServletRequest request) {
+        try {
+            Params<String, Object> params = ParamUtils.parseequestParameter(request);
+            int userId = 0;
+            if (params.get("userId") != null) {
+                userId = (Integer)params.get("userId");
+            }
+            String profile = null;
+            if (params.get("profile") != null) {
+                profile = (String) params.get("profile");
+            }
+            int profileId = service.upsertProfile(userId, profile);
+            return ResponseLogNotification.successJson(request, profileId);
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 }

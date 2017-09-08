@@ -50,6 +50,7 @@ service ProfileServices {
     common_struct.Response reCalculateUserCompletenessBySettingId(1:i32 id);
     common_struct.Response getProfileByApplication(1:profile_struct.ProfileApplicationForm profileForm);
     common_struct.Response resumeProfile(1:i32 uid,2:string fileName,3:string file)throws (1: common_struct.BIZException e);
+    i32 upsertProfile(1:i32 userId, 2:string profile)throws (1: common_struct.BIZException e);
 }
 
 service AttachmentServices {
