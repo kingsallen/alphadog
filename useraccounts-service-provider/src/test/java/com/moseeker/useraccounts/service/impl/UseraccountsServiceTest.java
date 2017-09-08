@@ -30,7 +30,7 @@ import java.util.concurrent.Executors;
 //@RunWith(SpringJUnit4ClassRunner.class)
 //@ContextConfiguration(classes = AppConfig.class)
 public class UseraccountsServiceTest {
-
+//
 //    @Autowired
 //    private UseraccountsService service;
 
