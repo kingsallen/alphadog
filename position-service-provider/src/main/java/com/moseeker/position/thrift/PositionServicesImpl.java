@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.position.service.fundationbs.PositionPcService;
 import com.moseeker.position.service.fundationbs.PositionQxService;
 import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
@@ -267,14 +268,6 @@ public class PositionServicesImpl implements Iface {
         }
     }
 
-    @Override
-    public ThirdPartyPositionResult getThirdPartyPositionInfo(ThirdPartyPositionInfoForm infoForm) throws BIZException, TException {
-        try {
-            return thirdPositionService.getThirdPartyPositionInfo(infoForm);
-        } catch (Exception e) {
-            throw ExceptionUtils.convertException(e);
-        }
-    }
 
     @Override
 	public Response getPcRecommand(int page, int pageSize)  {
@@ -311,6 +304,46 @@ public class PositionServicesImpl implements Iface {
 		}
 	}
 
+    @Override
+    public Response getPcPositionDetail(int positionId) throws TException {
+        try{
+            Map<String,Object> map=positionPcService.getPositionDetails(positionId);
+            if(map==null||map.isEmpty()){
+                Response res= ResponseUtils.success("");
+            }
+            Response res= ResponseUtils.success(map);
+            return res;
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+
+    }
+
+    @Override
+    public Response getPcRecommendPosition(int positionId, int page, int pageSize) throws TException {
+        try {
+            List<Map<String, Object>> list = positionPcService.getRecommendPosition(positionId,page,pageSize);
+            if(StringUtils.isEmptyList(list)){
+                Response res= ResponseUtils.success("");
+            }
+            Response res= ResponseUtils.success(list);
+            return res;
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+
+    }
+
+    @Override
+    public ThirdPartyPositionResult getThirdPartyPositionInfo(ThirdPartyPositionInfoForm infoForm) throws BIZException, TException {
+        try {
+            return thirdPositionService.getThirdPartyPositionInfo(infoForm);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
     @Override
     public Response getPositionForThirdParty(int positionId, int channel) throws TException {
         try {

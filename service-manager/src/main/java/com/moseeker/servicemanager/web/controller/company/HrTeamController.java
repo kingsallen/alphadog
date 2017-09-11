@@ -38,14 +38,10 @@ public class HrTeamController {
     public String getHrTeam(HttpServletRequest request, HttpServletResponse response) {
         try {
             CommonQuery commonQuery = ParamUtils.initCommonQuery(request,CommonQuery.class);
-
             List<HrTeamDO> hrTeamDOList = hrTeamServices.getHrTeams(commonQuery);
-
             Response result = ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(hrTeamDOList));
             return ResponseLogNotification.success(request, result);
-
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
         } finally {
@@ -69,11 +65,10 @@ public class HrTeamController {
             if(pageSize==null){
                 pageSize=15;
             }
+            logger.info("param====companyId=={1}======page=={2}====pageSize==={3}",companyId,page,pageSize);
             Response result=hrTeamServices.teamListInfo(companyId,page,pageSize);
             return ResponseLogNotification.success(request, result);
-
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
         } finally {
@@ -90,10 +85,10 @@ public class HrTeamController {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             Integer teamId = params.getInt("teamId");
             Integer companyId=params.getInt("companyId");
+            logger.info("param====companyId=={1}======teamId=={2}====",companyId,teamId);
             Response result=hrTeamServices.teamDeatils(companyId,teamId);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
         } finally {

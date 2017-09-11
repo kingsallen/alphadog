@@ -123,25 +123,25 @@ public class UserPositionEmailService {
 		}
 		return 0;
 	}
-	
+
 	//根据条件获取职位
 	public Map<String,Object> getRecommendPosition(Map<String,Object> map) throws Exception{
-		 String keyWord=(String) map.get("keyWord");
-		 String citys=(String) map.get("citys");
-		 String industry=(String) map.get("industry");
-		 int page=1;
-		 int pageSize=10;
-		 String salaryCode=(String) map.get("salaryCode");
-		 Calendar lastDate = Calendar.getInstance();
-		 SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss" );
-	     lastDate.roll(Calendar.DATE, -7);//日期回滚7天
-	     String startTime=format.format(lastDate.getTime());
-	     Response res=searchengineServices.positionQuery(keyWord, citys, industry, salaryCode, page, pageSize, null, null,0,0,0,1);
-	     if(res.getStatus()==0&&!Strings.isNullOrEmpty(res.getData())){
-	    	 String data=res.getData();
-	    	 Map<String,Object> result=JSON.parseObject(data);
-	    	 return result;
-	     }
+		String keyWord=(String) map.get("keyWord");
+		String citys=(String) map.get("citys");
+		String industry=(String) map.get("industry");
+		int page=1;
+		int pageSize=10;
+		String salaryCode=(String) map.get("salaryCode");
+		Calendar lastDate = Calendar.getInstance();
+		SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss" );
+		lastDate.roll(Calendar.DATE, -7);//日期回滚7天
+		String startTime=format.format(lastDate.getTime());
+		Response res=searchengineServices.positionQuery(keyWord, citys, industry, salaryCode, page, pageSize, null, null,0,0,0,1);
+		if(res.getStatus()==0&&!Strings.isNullOrEmpty(res.getData())){
+			String data=res.getData();
+			Map<String,Object> result=JSON.parseObject(data);
+			return result;
+		}
 		return null;
 	}
 	//发送职位推荐邮件

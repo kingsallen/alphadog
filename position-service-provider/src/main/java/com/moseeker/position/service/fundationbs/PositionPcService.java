@@ -6,12 +6,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.moseeker.baseorm.dao.analyticsd.StJobSimilarityDao;
 import com.moseeker.baseorm.dao.hrdb.*;
+import com.moseeker.baseorm.dao.jobdb.*;
+import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
+import com.moseeker.baseorm.pojo.RecommendedPositonPojo;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.query.SelectOp;
 
 import com.moseeker.entity.PcRevisionEntity;
+import com.moseeker.thrift.gen.dao.struct.analytics.StJobSimilarityDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobCustomDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobOccupationDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionExtDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
+import com.moseeker.thrift.gen.position.struct.JobPositionExt;
 import org.apache.thrift.TException;
 import org.apache.thrift.TSerializer;
 import org.apache.thrift.protocol.TSimpleJSONProtocol;
@@ -72,6 +83,16 @@ public class PositionPcService {
 	private DictCityDao dictCityDao;
 	@Autowired
 	private PcRevisionEntity pcRevisionEntity;
+	@Autowired
+	private UserHrAccountDao userHrAccountDao;
+	@Autowired
+	private StJobSimilarityDao stJobSimilarityDao;
+	@Autowired
+	private JobPositionExtDao jobPositionExtDao;
+	@Autowired
+	private JobCustomDao jobCustomDao;
+	@Autowired
+	private JobOccupationDao  jobOccupationDao;
 	/*
 	 * 获取pc首页职位推荐
 	 */
@@ -139,14 +160,248 @@ public class PositionPcService {
 		map.put("company",companyData);
 		Map<String,Object> team=this.handleTeamData(teamId);
 		map.put("team",team);
+		if(teamId!=0){
+			int num=this.getTeamPositionNum(teamId);
+			map.put("teamPositionNum",num);
+		}
+
 		int parentId= (int) companyData.get("parentId");
 		int confCompanyId= (int) companyData.get("id");
 		if(parentId!=0){
 			confCompanyId=parentId;
 		}
 		this.handlePositionJdData(confCompanyId,map,teamId);
+		Map<String,Object> customField=this.handleCustomField(positionId,confCompanyId);
+		map.put("customField",customField);
 		return map;
 	}
+	//获取自定义字段
+	public Map<String,Object> handleCustomField(int positionId,int companyId){
+		Map<String,Object> map=new HashMap<String,Object>();
+		JobPositionExtDO extDO=this.getJobPositionExt(positionId);
+		if(extDO!=null){
+			int customId=extDO.getJobCustomId();
+			int occupationId=extDO.getJobOccupationId();
+			if(customId!=0||occupationId!=0){
+				Map<String,String> custom=this.handleCustomData(customId,companyId);
+				if(custom!=null&&!custom.isEmpty()){
+					map.put("custom",custom);
+				}
+				Map<String,String> occupation=this.handleOccupationData(occupationId,companyId);
+				if(occupation!=null&&!occupation.isEmpty()){
+					map.put("occupation",occupation);
+				}
+			}
+		}
+		return map;
+	}
+	//处理自定义字段数据
+	private Map<String,String> handleCustomData(int customId,int companyId){
+		Map<String,String> custom=new HashMap<>();
+		if(customId!=0){
+			JobCustomDO customDO=getJobCustom(customId);
+			if(customDO!=null){
+				String customContent=customDO.getName();
+				if(StringUtils.isNotNullOrEmpty(customContent)){
+					HrCompanyConfDO conf=getHrCompanyConf(companyId);
+					custom.put("content",customContent);
+					String customName="自定义";
+					if(conf!=null&&StringUtils.isNotNullOrEmpty(conf.getJobCustomTitle())){
+						customName=conf.getJobCustomTitle();
+					}
+					custom.put("name",customContent);
+				}
+			}
+
+		}
+
+		return custom;
+	}
+	//处理职位职能数据
+	public Map<String,String> handleOccupationData(int occupationId,int companyId){
+		Map<String, String> occupationMap = new HashMap<>();
+		if(occupationId!=0){
+			JobOccupationDO occupationDO=getJobOccupation(occupationId);
+			if(occupationDO!=null){
+				String occupation=occupationDO.getName();
+				if(StringUtils.isNotNullOrEmpty(occupation)) {
+					HrCompanyConfDO conf=getHrCompanyConf(companyId);
+					occupationMap.put("content", occupation);
+					String occupationName="职位职能";
+					if(conf!=null&&StringUtils.isNotNullOrEmpty(conf.getJobOccupation())){
+						occupationName=conf.getJobOccupation();
+					}
+					occupationMap.put("name",occupationName);
+				}
+			}
+		}
+	    return occupationMap;
+	}
+
+	//获取Job_Position_Ext
+	private JobPositionExtDO getJobPositionExt(int positionId){
+		Query query=new Query.QueryBuilder().where("pid",positionId).buildQuery();
+		JobPositionExtDO DO=jobPositionExtDao.getData(query);
+		return DO;
+	}
+
+	//获取job_position_custom
+	public JobCustomDO getJobCustom(int customId){
+		Query query=new Query.QueryBuilder().where("id",customId).and("status",1).buildQuery();
+		JobCustomDO DO=jobCustomDao.getData(query);
+		return DO;
+	}
+
+	//获取job_position_custom
+	public JobOccupationDO getJobOccupation(int occupationId){
+		Query query=new Query.QueryBuilder().where("id",occupationId).and("status",1).buildQuery();
+		JobOccupationDO DO=jobOccupationDao.getData(query);
+		return DO;
+	}
+	//获取企业配置信息
+
+	//获取团队下职位数量
+	public int getTeamPositionNum(int teamId){
+		Query query=new Query.QueryBuilder().where("team_id",teamId).and("status",0).buildQuery();
+		int num=jobPositionDao.getCount(query);
+		return num;
+	}
+
+
+	/*
+	   获取推荐职位的信息
+	 */
+	public List<Map<String,Object>> getRecommendPosition(int positionId,int page,int pageSize) throws TException {
+		List<Integer> positionIdList=getRecommendPositionidList(positionId, page, pageSize);
+		List<Map<String,Object>> result=handleDataJDAndPosition(positionIdList,3);
+		return result;
+	}
+	/*
+	   获取单个职位
+	 */
+	public JobPositionDO getSinglePosition(int positionId){
+		Query query=new Query.QueryBuilder().where("id",positionId).and("status",0).buildQuery();
+		JobPositionDO DO=jobPositionDao.getData(query);
+		return DO;
+	}
+	/*
+	 根据publisher获取hr_company_account
+	 */
+	public HrCompanyAccountDO  getSingleCompanyAccount(int publisher){
+		Query query=new Query.QueryBuilder().where("account_id",publisher).buildQuery();
+		HrCompanyAccountDO DO=hrCompanyAccountDao.getData(query);
+		return DO;
+	}
+	/*
+	  获取相关职位的推荐职位
+	 */
+	public List<Integer> getRecommendPositionidList(int positionId,int page,int pageSize){
+		JobPositionDO positionDO=getSinglePosition(positionId);
+		if(positionDO==null){
+			return null;
+		}
+		int publisher=positionDO.getPublisher();
+		HrCompanyAccountDO companyAccountDO=this.getSingleCompanyAccount(publisher);
+		if(companyAccountDO==null){
+			return null;
+		}
+		int companyId=companyAccountDO.getCompanyId();
+		HrCompanyDO companyDO=getSingleCompany(companyId);
+		int parentId=companyDO.getParentId();
+		List<Integer> positionIdList=new ArrayList<Integer>();
+		if(parentId!=0){
+			positionIdList=getChildRecommendPosition(companyId,positionId,page,pageSize);
+		}else{
+			positionIdList=getMotherRecommendPosition(companyId,positionId,page,pageSize);
+		}
+		return positionIdList;
+	}
+	/*
+	 获取母公司的推荐职位
+	 */
+	public List<Integer> getMotherRecommendPosition(int companyId,int positionId,int page,int pageSize){
+		List<UserHrAccountDO>  userHrAccountList=getUserHrAccountDOS(companyId);
+		List<Integer> publisher=getPublisherByUserHrAccount(userHrAccountList);
+		List<HrCompanyAccountDO> companyAccountDOList=getCompanyAccountList(publisher);
+		List<Integer> companyIdList=getHrCompanyIdList(companyAccountDOList);
+		if(StringUtils.isEmptyList(companyIdList)){
+			return null;
+		}
+		List<StJobSimilarityDO> StJobSimilarityDOList=getStJobSimilarityDOList(companyIdList,positionId,page,pageSize);
+		List<Integer> positionIdList=getPositionListByStJobSimilarityDOList(StJobSimilarityDOList);
+		return positionIdList;
+	}
+	/*
+	  获取所有的推荐职位
+	 */
+	public List<StJobSimilarityDO> getStJobSimilarityDOList(List<Integer> companyIdList,int positionId,int page,int pageSize){
+		if(StringUtils.isEmptyList(companyIdList)){
+			return null;
+		}
+		Query query=new Query.QueryBuilder()
+				.where(new Condition("department_id",companyIdList.toArray(),ValueOp.IN))
+				.and("pos_id",positionId)
+				.setPageNum(page)
+				.setPageSize(pageSize)
+				.buildQuery();
+		List<StJobSimilarityDO> list=stJobSimilarityDao.getDatas(query);
+		return list;
+	}
+	/*
+	 获取job_position.id的list
+	 */
+	public List<Integer> getPositionListByStJobSimilarityDOList(List<StJobSimilarityDO> list){
+		if(StringUtils.isEmptyList(list)){
+			return null;
+		}
+		List<Integer> result=new ArrayList<Integer>();
+		for(StJobSimilarityDO DO:list){
+			result.add(DO.getRecomId());
+		}
+		return result;
+	}
+	/*
+	 获取userhraccount的信息
+	 */
+	public List<UserHrAccountDO> getUserHrAccountDOS(int companyId){
+		Query query=new Query.QueryBuilder().where("company_id",companyId).buildQuery();
+		List<UserHrAccountDO> list=userHrAccountDao.getDatas(query);
+		return list;
+	}
+	/*
+	  通过userhraccount获取publisher列表
+	 */
+	public List<Integer> getPublisherByUserHrAccount(List<UserHrAccountDO> userHrAccountList){
+		List<Integer> list=new ArrayList<Integer>();
+		if(StringUtils.isEmptyList(userHrAccountList)){
+			return null;
+		}
+		for(UserHrAccountDO DO:userHrAccountList){
+			list.add(DO.getId());
+		}
+		return list;
+	}
+
+	/*
+	 获取子公司的推荐职位
+	 */
+	public List<Integer> getChildRecommendPosition(int companyId,int positionId,int page,int pageSize){
+        List<Integer> companyIdList=new ArrayList<Integer>();
+        companyIdList.add(companyId);
+		List<StJobSimilarityDO> list=getStJobSimilarityDOList(companyIdList,positionId,page,pageSize);
+		if(StringUtils.isEmptyList(list)){
+			return null;
+		}
+		List<Integer> result=new ArrayList<Integer>();
+		for(StJobSimilarityDO DO:list){
+			result.add(DO.getRecomId());
+
+		}
+		return result;
+	}
+	/*
+	获取推荐职位的id
+	 */
 	/*
         获取职位的jd页
      */
@@ -287,6 +542,9 @@ public class PositionPcService {
 	}
 	//获取hrcompanyAccount列表
 	public List<HrCompanyAccountDO> getCompanyAccountList(List<Integer> list){
+		if(StringUtils.isEmptyList(list)){
+			return null;
+		}
 		Query query=new Query.QueryBuilder().where(new Condition("account_id",list.toArray(),ValueOp.IN)).buildQuery();
 		List<HrCompanyAccountDO> records=hrCompanyAccountDao.getDatas(query);
 		return records;
@@ -295,7 +553,7 @@ public class PositionPcService {
 	 * 通过publisher的id列表获取公司的id列表
 	 */
 	public List<Integer> getHrCompanyIdList(List<HrCompanyAccountDO> list){
-		if(list==null||list.size()==0){
+		if(StringUtils.isEmptyList(list)){
 			return null;
 		}
 		List<Integer> result=new ArrayList<Integer>();
@@ -764,4 +1022,5 @@ public class PositionPcService {
 		 }
 		 return newList;
 	 }
+
 }

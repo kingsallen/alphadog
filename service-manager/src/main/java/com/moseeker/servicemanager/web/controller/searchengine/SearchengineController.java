@@ -262,11 +262,11 @@ public class SearchengineController {
     		 String salaryCode=(String) reqParams.get("salaryCode");
     		 String startTime=(String) reqParams.get("startTime");
     		 String endTime=(String) reqParams.get("endTime");
-    		 String order=(String) reqParams.get("order");
-    		 String companyId=(String)reqParams.get("companyId");
-    		 String teamId=(String)reqParams.get("teamId");
-    		 String motherCompanyId=(String)reqParams.get("motherCompanyId");
-    		 if(companyId==null){
+             String order=(String) reqParams.get("order");
+             String companyId=(String)reqParams.get("companyId");
+             String teamId=(String)reqParams.get("teamId");
+             String motherCompanyId=(String)reqParams.get("motherCompanyId");
+             if(companyId==null){
                  companyId="0";
              }
              if(teamId==null){
@@ -275,21 +275,21 @@ public class SearchengineController {
              if(motherCompanyId==null){
                  motherCompanyId="0";
              }
-    		 if(order==null){
+             if(order==null){
                  order="0";
              }
-    		 if(StringUtils.isNullOrEmpty(page)){
-    			 page="1";
-    		 }
-    		 if(StringUtils.isNullOrEmpty(pageSize)){
-    			 pageSize="10";
-    		 }
-    		  logger.info(keyWord, citys, industry, scale, page,
-    				  pageSize,companyId,teamId,"=============");
-    		 Response res=searchengineServices.positionQuery(keyWord, citys, industry, salaryCode, Integer.parseInt(page),
+             if(StringUtils.isNullOrEmpty(page)){
+                 page="1";
+             }
+             if(StringUtils.isNullOrEmpty(pageSize)){
+                 pageSize="10";
+             }
+             logger.info(keyWord, citys, industry, scale, page,
+                     pageSize,companyId,teamId,"=============");
+             Response res=searchengineServices.positionQuery(keyWord, citys, industry, salaryCode, Integer.parseInt(page),
                      Integer.parseInt(pageSize), startTime, endTime,Integer.parseInt(companyId),
                      Integer.parseInt(teamId),Integer.parseInt(motherCompanyId),Integer.parseInt(order));
-    		 return ResponseLogNotification.success(request,res);
+             return ResponseLogNotification.success(request,res);
     	 }catch(Exception e){
     		 logger.info(e.getMessage(),e);
     		 return ResponseLogNotification.fail(request, e.getMessage());

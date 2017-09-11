@@ -35,10 +35,28 @@ public class RecommendedPositionsController {
             // GET方法 通用参数解析并赋值
             Map<String,Object> params = ParamUtils.parseRequestParam(request);
             String pid = String.valueOf(params.get("pid"));
-
             int id = Integer.parseInt(pid);
             Response result = positonServices.getRecommendedPositions(id);
-
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+    @RequestMapping(value = "/position/pc/recommended", method = RequestMethod.GET)
+    @ResponseBody
+    public String getPcPositionRecommend(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String,Object> params = ParamUtils.parseRequestParam(request);
+            String positionId=(String)params.get("positionId");
+            String page= (String) params.get("page");
+            String pageSize= (String) params.get("pageSize");
+            if(page==null){
+                page="1";
+            }
+            if(pageSize==null){
+                pageSize="10";
+            }
+            Response result = positonServices.getPcRecommendPosition(Integer.parseInt(positionId),Integer.parseInt(page),Integer.parseInt(pageSize));
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());

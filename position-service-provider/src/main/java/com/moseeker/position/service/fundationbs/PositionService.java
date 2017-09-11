@@ -1841,8 +1841,6 @@ public class PositionService {
     }
 
     /**
-     * 内部线程类
-     * 用于更改ES索引
      * 根据查询条件查找职位信息
      * 职位数据如果存在job_position_city 数据，则使用职位数据如果存在job_position_city对应城市，否则直接取city
      * @param query
@@ -1854,6 +1852,7 @@ public class PositionService {
 
     /**
      * 内部线程类 用于更改ES索引
+>>>>>>> Temporary merge branch 2
      */
     private class UpdateES extends Thread {
         private List<Integer> list;
