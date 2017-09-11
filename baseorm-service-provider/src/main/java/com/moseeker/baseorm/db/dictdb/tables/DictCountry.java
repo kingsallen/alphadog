@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictCountry extends TableImpl<DictCountryRecord> {
 
-    private static final long serialVersionUID = 1987630190;
+    private static final long serialVersionUID = -1936269998;
 
     /**
      * The reference instance of <code>dictdb.dict_country</code>
@@ -79,6 +79,11 @@ public class DictCountry extends TableImpl<DictCountryRecord> {
      * The column <code>dictdb.dict_country.code</code>. COUNTRY CODE
      */
     public final TableField<DictCountryRecord, String> CODE = createField("code", org.jooq.impl.SQLDataType.CHAR.length(11).nullable(false).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.CHAR)), this, "COUNTRY CODE");
+
+    /**
+     * The column <code>dictdb.dict_country.sms_enabled</code>. 是否发送国际短信
+     */
+    public final TableField<DictCountryRecord, Byte> SMS_ENABLED = createField("sms_enabled", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否发送国际短信");
 
     /**
      * The column <code>dictdb.dict_country.icon_class</code>. 国旗样式

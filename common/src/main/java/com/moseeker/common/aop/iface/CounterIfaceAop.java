@@ -34,7 +34,7 @@ public class CounterIfaceAop implements Ordered {
 
     private Logger log = LoggerFactory.getLogger(getClass());
 
-    private final String redisKey = "log_0_info";
+    private final String redisKey = "log_0_interface";
 
     JedisPool jedisPool;
 

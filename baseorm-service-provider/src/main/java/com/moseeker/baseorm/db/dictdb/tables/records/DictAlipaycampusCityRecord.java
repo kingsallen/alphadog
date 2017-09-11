@@ -9,9 +9,9 @@ import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusCity;
 import javax.annotation.Generated;
 
 import org.jooq.Field;
+import org.jooq.Record1;
 import org.jooq.Record4;
 import org.jooq.Row4;
-import org.jooq.impl.TableRecordImpl;
 import org.jooq.impl.UpdatableRecordImpl;
 
 
@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictAlipaycampusCityRecord extends UpdatableRecordImpl<DictAlipaycampusCityRecord> implements Record4<Integer, String, Integer, Integer> {
 
-    private static final long serialVersionUID = 607511649;
+    private static final long serialVersionUID = -1059134024;
 
     /**
      * Setter for <code>dictdb.dict_alipaycampus_city.id</code>.
@@ -84,6 +84,18 @@ public class DictAlipaycampusCityRecord extends UpdatableRecordImpl<DictAlipayca
      */
     public Integer getPid() {
         return (Integer) get(3);
+    }
+
+    // -------------------------------------------------------------------------
+    // Primary key information
+    // -------------------------------------------------------------------------
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Record1<Integer> key() {
+        return (Record1) super.key();
     }
 
     // -------------------------------------------------------------------------

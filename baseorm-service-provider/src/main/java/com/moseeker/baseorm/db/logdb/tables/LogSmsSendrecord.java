@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogSmsSendrecord extends TableImpl<LogSmsSendrecordRecord> {
 
-    private static final long serialVersionUID = 1853747957;
+    private static final long serialVersionUID = -943618147;
 
     /**
      * The reference instance of <code>logdb.log_sms_sendrecord</code>
@@ -80,6 +80,11 @@ public class LogSmsSendrecord extends TableImpl<LogSmsSendrecordRecord> {
      * The column <code>logdb.log_sms_sendrecord.create_time</code>.
      */
     public final TableField<LogSmsSendrecordRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>logdb.log_sms_sendrecord.country_code</code>.
+     */
+    public final TableField<LogSmsSendrecordRecord, String> COUNTRY_CODE = createField("country_code", org.jooq.impl.SQLDataType.VARCHAR.length(10).defaultValue(org.jooq.impl.DSL.field("86", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * Create a <code>logdb.log_sms_sendrecord</code> table reference

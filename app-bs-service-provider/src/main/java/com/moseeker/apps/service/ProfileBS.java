@@ -108,8 +108,8 @@ public class ProfileBS {
             profileProfile.put("source", 0);
             resume.put("profile", profileProfile);
 
-            //如果有profile，进行profile合并
-            if (useraccountsServices.ifExistProfile(mobile)) {
+            //如果有profile，进行profile合并,简历回流一般都是临时用户，很少有涉及国外，所以传国家编码86
+            if (useraccountsServices.ifExistProfile("86",mobile)) {
                 logger.info("ProfileBS retrieveProfile profile exist");
                 Response improveProfile = wholeProfileService.improveProfile(JSON.toJSONString(resume));
                 if (improveProfile.getStatus() == 0) {

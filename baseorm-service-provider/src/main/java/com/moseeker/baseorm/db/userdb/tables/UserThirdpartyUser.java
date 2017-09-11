@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserThirdpartyUser extends TableImpl<UserThirdpartyUserRecord> {
 
-    private static final long serialVersionUID = 361036537;
+    private static final long serialVersionUID = -1659096063;
 
     /**
      * The reference instance of <code>userdb.user_thirdparty_user</code>
@@ -62,9 +62,9 @@ public class UserThirdpartyUser extends TableImpl<UserThirdpartyUserRecord> {
     public final TableField<UserThirdpartyUserRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "user_user.id, C端用户ID");
 
     /**
-     * The column <code>userdb.user_thirdparty_user.source_id</code>. 第三方平台ID，0：SF，1：Taleo，2：workday,3:51job,4:zhaopin,5,liepin
+     * The column <code>userdb.user_thirdparty_user.source_id</code>. 第三方平台ID,  0:Mars(SuccessFactors), 1:Ey(Taleo), 2:Philips(Workday), 3:51job, 4:Zhaopin, 5:Liepin, 6:Sanofi(Workday), 7:Unilever(Taleo)，8:Spacetalent,  9:Micron (Successfactors2)
      */
-    public final TableField<UserThirdpartyUserRecord, Integer> SOURCE_ID = createField("source_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "第三方平台ID，0：SF，1：Taleo，2：workday,3:51job,4:zhaopin,5,liepin");
+    public final TableField<UserThirdpartyUserRecord, Integer> SOURCE_ID = createField("source_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "第三方平台ID,  0:Mars(SuccessFactors), 1:Ey(Taleo), 2:Philips(Workday), 3:51job, 4:Zhaopin, 5:Liepin, 6:Sanofi(Workday), 7:Unilever(Taleo)，8:Spacetalent,  9:Micron (Successfactors2)");
 
     /**
      * The column <code>userdb.user_thirdparty_user.username</code>. 用户名，比如手机号、邮箱等

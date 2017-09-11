@@ -16,6 +16,7 @@ import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecordCompanyRel;
 import com.moseeker.baseorm.db.userdb.tables.UserFavPosition;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.UserIntention;
+import com.moseeker.baseorm.db.userdb.tables.UserPositionEmail;
 import com.moseeker.baseorm.db.userdb.tables.UserSearchCondition;
 import com.moseeker.baseorm.db.userdb.tables.UserSettings;
 import com.moseeker.baseorm.db.userdb.tables.UserSysAuthGroup;
@@ -49,7 +50,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Userdb extends SchemaImpl {
 
-    private static final long serialVersionUID = -458830358;
+    private static final long serialVersionUID = -19771936;
 
     /**
      * The reference instance of <code>userdb</code>
@@ -115,6 +116,11 @@ public class Userdb extends SchemaImpl {
      * 用户求职意向
      */
     public final UserIntention USER_INTENTION = com.moseeker.baseorm.db.userdb.tables.UserIntention.USER_INTENTION;
+
+    /**
+     * 用户订阅职位推荐邮件
+     */
+    public final UserPositionEmail USER_POSITION_EMAIL = com.moseeker.baseorm.db.userdb.tables.UserPositionEmail.USER_POSITION_EMAIL;
 
     /**
      * 用户搜索条件(qx职位搜索)
@@ -193,6 +199,7 @@ public class Userdb extends SchemaImpl {
             UserFavPosition.USER_FAV_POSITION,
             UserHrAccount.USER_HR_ACCOUNT,
             UserIntention.USER_INTENTION,
+            UserPositionEmail.USER_POSITION_EMAIL,
             UserSearchCondition.USER_SEARCH_CONDITION,
             UserSettings.USER_SETTINGS,
             UserSysAuthGroup.USER_SYS_AUTH_GROUP,

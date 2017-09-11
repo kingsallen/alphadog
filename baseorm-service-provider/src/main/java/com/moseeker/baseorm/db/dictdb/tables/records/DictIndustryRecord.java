@@ -11,6 +11,7 @@ import javax.annotation.Generated;
 import org.jooq.Field;
 import org.jooq.Record3;
 import org.jooq.Row3;
+import org.jooq.impl.TableRecordImpl;
 import org.jooq.impl.UpdatableRecordImpl;
 
 
@@ -191,7 +192,7 @@ public class DictIndustryRecord extends UpdatableRecordImpl<DictIndustryRecord> 
     /**
      * Create a detached, initialised DictIndustryRecord
      */
-    public DictIndustryRecord(Integer code, String name, Integer type) {
+    public DictIndustryRecord(Integer code, String name, DictIndustryTypeRecord type) {
         super(DictIndustry.DICT_INDUSTRY);
 
         set(0, code);

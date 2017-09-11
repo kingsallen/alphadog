@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserThirdpartyUserRecord extends UpdatableRecordImpl<UserThirdpartyUserRecord> implements Record7<Long, Integer, Integer, String, String, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = -1648686668;
+    private static final long serialVersionUID = -315843068;
 
     /**
      * Setter for <code>userdb.user_thirdparty_user.id</code>. 主key
@@ -61,14 +61,14 @@ public class UserThirdpartyUserRecord extends UpdatableRecordImpl<UserThirdparty
     }
 
     /**
-     * Setter for <code>userdb.user_thirdparty_user.source_id</code>. 第三方平台ID，0：SF，1：Taleo，2：workday,3:51job,4:zhaopin,5,liepin
+     * Setter for <code>userdb.user_thirdparty_user.source_id</code>. 第三方平台ID,  0:Mars(SuccessFactors), 1:Ey(Taleo), 2:Philips(Workday), 3:51job, 4:Zhaopin, 5:Liepin, 6:Sanofi(Workday), 7:Unilever(Taleo)，8:Spacetalent,  9:Micron (Successfactors2)
      */
     public void setSourceId(Integer value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>userdb.user_thirdparty_user.source_id</code>. 第三方平台ID，0：SF，1：Taleo，2：workday,3:51job,4:zhaopin,5,liepin
+     * Getter for <code>userdb.user_thirdparty_user.source_id</code>. 第三方平台ID,  0:Mars(SuccessFactors), 1:Ey(Taleo), 2:Philips(Workday), 3:51job, 4:Zhaopin, 5:Liepin, 6:Sanofi(Workday), 7:Unilever(Taleo)，8:Spacetalent,  9:Micron (Successfactors2)
      */
     public Integer getSourceId() {
         return (Integer) get(2);
