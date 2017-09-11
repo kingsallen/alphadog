@@ -71,6 +71,9 @@ service PositionServices {
     common_struct.Response getPcRecommand(1:i32 page,2:i32 pageSize);
     common_struct.Response getPcRecommandCompany(1:i32 page,2:i32 pageSize);
     common_struct.Response getPcRecommandCompanyAll(1:i32 page,2:i32 pageSize);
+    common_struct.Response getPcPositionDetail(1:i32 positionId);
+    common_struct.Response getPcRecommendPosition(1:i32 positionId,2:i32 page,3:i32 pageSize);
+
 }
 /*
 	查询第三方自定义职能

@@ -630,4 +630,21 @@ public class PositionController {
     		 return ResponseLogNotification.fail(request, e.getMessage());
     	}
     }
+    /*
+ *获取pc端职位的详情
+ */
+    @RequestMapping(value = "/position/pc/details", method = RequestMethod.GET)
+    @ResponseBody
+    public String getPcPositionDetail(HttpServletRequest request, HttpServletResponse response){
+        try{
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int positionId = params.getInt("positionId");
+            Response result=positonServices.getPcPositionDetail(positionId);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
 }
