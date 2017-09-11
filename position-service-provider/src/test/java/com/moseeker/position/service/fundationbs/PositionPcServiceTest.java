@@ -1,5 +1,6 @@
 package com.moseeker.position.service.fundationbs;
 
+import com.moseeker.baseorm.dao.dictdb.DictLiepinOccupationDao;
 import com.moseeker.entity.PcRevisionEntity;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignPcRecommendPositionDO;
@@ -29,6 +30,8 @@ public class PositionPcServiceTest {
     private PositionPcService service;
     @Autowired
 	private PcRevisionEntity pcRevisionEntity;
+    @Autowired
+	private DictLiepinOccupationDao dao;
     //测试总接口
     @Test
     public void recommendPcPosition() throws TException{
@@ -105,7 +108,12 @@ public class PositionPcServiceTest {
   @Test
   public void getRecommendTest() throws TException {
   	 List<Map<String,Object>> list=service.getRecommendPosition(124597,1,10);
-	  System.out.println(list);
+  	 System.out.println(list);
+  }
+  @Test
+  public void testGetAll(){
+  	List list=dao.getAll();
+	System.out.println(list);
   }
 
 }

@@ -2,6 +2,7 @@ package com.moseeker.servicemanager.web.controller.useraccounts;
 
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
@@ -959,7 +960,7 @@ public class UseraccountsController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "/user/position/status", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+    @RequestMapping(value = "/user/position/status", method = {RequestMethod.GET,RequestMethod.POST}, produces = "application/json; charset=utf-8")
     @ResponseBody
     public String userPositionStatus(HttpServletRequest request) {
         try {
@@ -973,4 +974,5 @@ public class UseraccountsController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
 }

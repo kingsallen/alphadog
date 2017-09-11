@@ -434,23 +434,6 @@ public class PositionController {
     }
 
     /**
-     * 根据用户id批量获取用户之于职位的状态
-     */
-    @RequestMapping(value = "/positions/status", method = RequestMethod.GET)
-    @ResponseBody
-    public String getPositionsStatus(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            Integer user_id = params.getInt("user_id");
-            List<Integer> prositions = (List<Integer>) params.get("position_ids");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-
-    /**
      * 职位查询头图查询
      */
     @RequestMapping(value = "/head/image", method = RequestMethod.GET)
