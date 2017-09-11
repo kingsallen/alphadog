@@ -1,9 +1,11 @@
 package com.moseeker.function.service.chaos;
 
+import java.util.List;
+
 public class PositionForSyncResultPojo {
 
 	private int status;
-	private String message;
+	private List<String> message;
 	private String job_id;
 	private String position_id;
 	private String channel;
@@ -19,12 +21,15 @@ public class PositionForSyncResultPojo {
 	public void setStatus(int status) {
 		this.status = status;
 	}
-	public String getMessage() {
+
+	public List<String> getMessage() {
 		return message;
 	}
-	public void setMessage(String message) {
+
+	public void setMessage(List<String> message) {
 		this.message = message;
 	}
+
 	public String getJob_id() {
 		return job_id;
 	}

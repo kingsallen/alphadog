@@ -76,13 +76,14 @@ public class PositionSyncConsumer extends RedisConsumer<PositionForSyncResultPoj
         } else if (pojo.getStatus() == 2 || pojo.getStatus() == 9) {
             //只会出现在猎聘的情况，这种情况下面会发送邮件
             data.setIsSynchronization((byte) PositionSync.bindingError.getValue());
-            data.setSyncFailReason(pojo.getMessage());
+            data.setSyncFailReason(JSON.toJSONString(pojo.getMessage()));
         } else {
             data.setIsSynchronization((byte) PositionSync.failed.getValue());
             if (StringUtils.isNotNullOrEmpty(pojo.getPub_place_name())) {
-                data.setSyncFailReason(pojo.getMessage().replace("{}", pojo.getPub_place_name()));
+
+                data.setSyncFailReason(JSON.toJSONString(pojo.getMessage()).replace("{}", pojo.getPub_place_name()));
             } else {
-                data.setSyncFailReason(pojo.getMessage());
+                data.setSyncFailReason(JSON.toJSONString(pojo.getMessage()));
             }
         }
 
