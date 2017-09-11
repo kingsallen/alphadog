@@ -397,7 +397,8 @@ public class PositionChangeUtil {
 
         logger.info("setCities:{}", positionCityCodes);
         //转城市
-        if (channelType == ChannelType.LIEPIN || channelType == ChannelType.ZHILIAN) {
+        if (channelType == ChannelType.LIEPIN || channelType == ChannelType.ZHILIAN
+                || channelType == ChannelType.JOB51) {
             List<List<String>> otherCityCodes = cityMapDao.getOtherCityByLastCodes(channelType, new ArrayList<>(positionCityCodes));
             syncPosition.setCities(otherCityCodes);
             logger.info("setCities:otherCityCodes:{}", otherCityCodes);
