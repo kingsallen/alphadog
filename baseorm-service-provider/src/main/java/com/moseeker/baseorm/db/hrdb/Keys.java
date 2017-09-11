@@ -206,6 +206,9 @@ public class Keys {
     public static final UniqueKey<HrFeedbackRecord> KEY_HR_FEEDBACK_PRIMARY = UniqueKeys0.KEY_HR_FEEDBACK_PRIMARY;
     public static final UniqueKey<HrGroupCompanyRecord> KEY_HR_GROUP_COMPANY_PRIMARY = UniqueKeys0.KEY_HR_GROUP_COMPANY_PRIMARY;
     public static final UniqueKey<HrGroupCompanyRelRecord> KEY_HR_GROUP_COMPANY_REL_PRIMARY = UniqueKeys0.KEY_HR_GROUP_COMPANY_REL_PRIMARY;
+    public static final UniqueKey<HrGroupCompanyRelRecord> KEY_HR_GROUP_COMPANY_REL_COMPANY_ID = UniqueKeys0.KEY_HR_GROUP_COMPANY_REL_COMPANY_ID;
+    public static final UniqueKey<HrGroupCompanyRelRecord> KEY_HR_GROUP_COMPANY_REL_COMPANY_ID_2 = UniqueKeys0.KEY_HR_GROUP_COMPANY_REL_COMPANY_ID_2;
+    public static final UniqueKey<HrGroupCompanyRelRecord> KEY_HR_GROUP_COMPANY_REL_COMPANY_ID_3 = UniqueKeys0.KEY_HR_GROUP_COMPANY_REL_COMPANY_ID_3;
     public static final UniqueKey<HrHbConfigRecord> KEY_HR_HB_CONFIG_PRIMARY = UniqueKeys0.KEY_HR_HB_CONFIG_PRIMARY;
     public static final UniqueKey<HrHbItemsRecord> KEY_HR_HB_ITEMS_PRIMARY = UniqueKeys0.KEY_HR_HB_ITEMS_PRIMARY;
     public static final UniqueKey<HrHbItemsRecord> KEY_HR_HB_ITEMS_HB_CONFIG_BINDING_INDEX = UniqueKeys0.KEY_HR_HB_ITEMS_HB_CONFIG_BINDING_INDEX;
@@ -326,6 +329,9 @@ public class Keys {
         public static final UniqueKey<HrFeedbackRecord> KEY_HR_FEEDBACK_PRIMARY = createUniqueKey(HrFeedback.HR_FEEDBACK, "KEY_hr_feedback_PRIMARY", HrFeedback.HR_FEEDBACK.ID);
         public static final UniqueKey<HrGroupCompanyRecord> KEY_HR_GROUP_COMPANY_PRIMARY = createUniqueKey(HrGroupCompany.HR_GROUP_COMPANY, "KEY_hr_group_company_PRIMARY", HrGroupCompany.HR_GROUP_COMPANY.ID);
         public static final UniqueKey<HrGroupCompanyRelRecord> KEY_HR_GROUP_COMPANY_REL_PRIMARY = createUniqueKey(HrGroupCompanyRel.HR_GROUP_COMPANY_REL, "KEY_hr_group_company_rel_PRIMARY", HrGroupCompanyRel.HR_GROUP_COMPANY_REL.ID);
+        public static final UniqueKey<HrGroupCompanyRelRecord> KEY_HR_GROUP_COMPANY_REL_COMPANY_ID = createUniqueKey(HrGroupCompanyRel.HR_GROUP_COMPANY_REL, "KEY_hr_group_company_rel_company_id", HrGroupCompanyRel.HR_GROUP_COMPANY_REL.COMPANY_ID, HrGroupCompanyRel.HR_GROUP_COMPANY_REL.GROUP_ID);
+        public static final UniqueKey<HrGroupCompanyRelRecord> KEY_HR_GROUP_COMPANY_REL_COMPANY_ID_2 = createUniqueKey(HrGroupCompanyRel.HR_GROUP_COMPANY_REL, "KEY_hr_group_company_rel_company_id_2", HrGroupCompanyRel.HR_GROUP_COMPANY_REL.COMPANY_ID, HrGroupCompanyRel.HR_GROUP_COMPANY_REL.GROUP_ID);
+        public static final UniqueKey<HrGroupCompanyRelRecord> KEY_HR_GROUP_COMPANY_REL_COMPANY_ID_3 = createUniqueKey(HrGroupCompanyRel.HR_GROUP_COMPANY_REL, "KEY_hr_group_company_rel_company_id_3", HrGroupCompanyRel.HR_GROUP_COMPANY_REL.COMPANY_ID, HrGroupCompanyRel.HR_GROUP_COMPANY_REL.GROUP_ID);
         public static final UniqueKey<HrHbConfigRecord> KEY_HR_HB_CONFIG_PRIMARY = createUniqueKey(HrHbConfig.HR_HB_CONFIG, "KEY_hr_hb_config_PRIMARY", HrHbConfig.HR_HB_CONFIG.ID);
         public static final UniqueKey<HrHbItemsRecord> KEY_HR_HB_ITEMS_PRIMARY = createUniqueKey(HrHbItems.HR_HB_ITEMS, "KEY_hr_hb_items_PRIMARY", HrHbItems.HR_HB_ITEMS.ID);
         public static final UniqueKey<HrHbItemsRecord> KEY_HR_HB_ITEMS_HB_CONFIG_BINDING_INDEX = createUniqueKey(HrHbItems.HR_HB_ITEMS, "KEY_hr_hb_items_hb_config_binding_index", HrHbItems.HR_HB_ITEMS.HB_CONFIG_ID, HrHbItems.HR_HB_ITEMS.INDEX, HrHbItems.HR_HB_ITEMS.BINDING_ID);

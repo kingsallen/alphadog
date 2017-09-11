@@ -5,14 +5,12 @@ package com.moseeker.baseorm.db.jobdb.tables.records;
 
 
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionTopic;
-
-import javax.annotation.Generated;
-
 import org.jooq.Field;
 import org.jooq.Record2;
 import org.jooq.Row2;
-import org.jooq.impl.TableRecordImpl;
 import org.jooq.impl.UpdatableRecordImpl;
+
+import javax.annotation.Generated;
 
 
 /**
@@ -28,7 +26,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionTopicRecord extends UpdatableRecordImpl<JobPositionTopicRecord> implements Record2<Integer, Integer> {
 
-    private static final long serialVersionUID = 1186106876;
+    private static final long serialVersionUID = -723968060;
 
     /**
      * Setter for <code>jobdb.job_position_topic.position_id</code>. hr_position.id, 职位ID
@@ -83,7 +81,7 @@ public class JobPositionTopicRecord extends UpdatableRecordImpl<JobPositionTopic
      */
     @Override
     public Field<Integer> field1() {
-        return JobPositionTopic.POSITION_ID;
+        return JobPositionTopic.JOB_POSITION_TOPIC.POSITION_ID;
     }
 
     /**
@@ -91,7 +89,7 @@ public class JobPositionTopicRecord extends UpdatableRecordImpl<JobPositionTopic
      */
     @Override
     public Field<Integer> field2() {
-        return JobPositionTopic.TOPIC_ID;
+        return JobPositionTopic.JOB_POSITION_TOPIC.TOPIC_ID;
     }
 
     /**

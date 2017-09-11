@@ -2,6 +2,7 @@ package com.moseeker.useraccounts;
 
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.email.Email;
 import com.moseeker.common.util.DateUtils;
@@ -14,22 +15,17 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
-import com.moseeker.useraccounts.config.AppConfig;
-import com.moseeker.useraccounts.service.impl.UserEmployeeServiceImpl;
-import com.moseeker.useraccounts.service.thirdpartyaccount.ThirdPartyAccountService;
 import com.moseeker.useraccounts.thrift.UserHrAccountServiceImpl;
-import org.apache.thrift.TException;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
+import com.moseeker.useraccounts.service.impl.UserEmployeeServiceImpl;
+import org.apache.thrift.TException;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import java.util.Date;
 
 /**
  * HR账号服务
@@ -89,7 +85,7 @@ public class UserHrAccountServiceImplTest {
 
     public UserHrAccountService.Iface service;
 
-//    @Before
+    @Before
     public void init() {
         service = ServiceManager.SERVICEMANAGER.getService(UserHrAccountService.Iface.class);
     }
@@ -121,51 +117,63 @@ public class UserHrAccountServiceImplTest {
     }
 
 
-//    @Autowired
+    @Autowired
     UserHrAccountDao userHrAccountDao;
 
-//    @Test
+    @Test
     public void testNpsList() throws Exception {
         HrNpsStatistic result = userHrAccountDao.npsList(null, null, 1, 500);
         System.out.println(BeanUtils.convertStructToJSON(result));
     }
 
 
+    @Test
+    public void testStructToDB() {
+        HrThirdPartyAccountDO hrThirdPartyAccountDO = new HrThirdPartyAccountDO();
+        hrThirdPartyAccountDO.setChannel(Short.valueOf("2"));
+        hrThirdPartyAccountDO.setUsername("fdfdsaf");
+        hrThirdPartyAccountDO.setPassword("fdfdsfdpwd");
+        hrThirdPartyAccountDO.setBinding(Short.valueOf("1"));
+        HrThirdPartyAccountRecord record = BeanUtils.structToDB(hrThirdPartyAccountDO, HrThirdPartyAccountRecord.class);
+
+        record.toString();
+    }
+
     @Autowired
-    ThirdPartyAccountService userHrAccountService;
+    com.moseeker.useraccounts.service.impl.UserHrAccountService userHrAccountService;
 
     @Autowired
     UserHrAccountServiceImpl userHrAccountServiceImpl;
 
-//    @Test
+    @Test
     public void testBinding() throws Exception {
         HrThirdPartyAccountDO hrThirdPartyAccountDO = new HrThirdPartyAccountDO();
         hrThirdPartyAccountDO.setUsername("fiqb60145062");
         hrThirdPartyAccountDO.setPassword("2892c63f12e0e8849f2a7dd981375331");
         hrThirdPartyAccountDO.setChannel((short) 3);
-        userHrAccountService.bindThirdAccount(82752, hrThirdPartyAccountDO, false);
+//        userHrAccountService.bindThirdAccount(82752, hrThirdPartyAccountDO, false);
 
         Thread.sleep(1000000);
     }
 
-//    @Test
+    @Test
     public void testRefresh() throws Exception {
-        userHrAccountService.synchronizeThirdpartyAccount(82752, 66, true);
+//        userHrAccountService.synchronizeThirdpartyAccount(82752, 66, true);
         HrThirdPartyAccountDO hrThirdPartyAccountDO = new HrThirdPartyAccountDO();
         hrThirdPartyAccountDO.setUsername("xxxxx");
         hrThirdPartyAccountDO.setPassword("xxxxx");
         hrThirdPartyAccountDO.setChannel((short) 2);
-        userHrAccountService.bindThirdAccount(82847, hrThirdPartyAccountDO, true);
+//        userHrAccountService.bindThirdAccount(82847, hrThirdPartyAccountDO, true);
     }
 
 
-//    @Autowired
+    @Autowired
     UserEmployeeDao userEmployeeDao;
 
-//    @Autowired
+    @Autowired
     UserEmployeeServiceImpl userEmployeeService;
 
-//    @Test
+    @Test
     public void testUserEmployeeBatch() throws Exception {
 
         System.out.println(DateUtils.dateToLongTime(new Date()));

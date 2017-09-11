@@ -9,10 +9,8 @@ import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionCityDO;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import org.jooq.Condition;
 import org.jooq.impl.TableImpl;

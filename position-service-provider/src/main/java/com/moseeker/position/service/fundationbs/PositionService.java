@@ -5,27 +5,20 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.ValueFilter;
 import com.moseeker.baseorm.dao.dictdb.*;
-import com.moseeker.baseorm.crud.JooqCrudImpl;
-import com.moseeker.baseorm.dao.dictdb.DictCityDao;
-import com.moseeker.baseorm.dao.dictdb.DictCityPostcodeDao;
-import com.moseeker.baseorm.dao.dictdb.DictConstantDao;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.*;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictAlipaycampusCityRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictAlipaycampusJobcategoryRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityPostcodeRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
-import com.moseeker.baseorm.db.hrdb.tables.HrHbConfig;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrTeamRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyPositionRecord;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.records.*;
 import com.moseeker.baseorm.pojo.JobPositionPojo;
 import com.moseeker.baseorm.pojo.RecommendedPositonPojo;
 import com.moseeker.baseorm.redis.RedisClient;
-import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.*;
@@ -36,6 +29,7 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.entity.PositionEntity;
 import com.moseeker.position.pojo.DictConstantPojo;
 import com.moseeker.position.pojo.JobPositionFailMess;
 import com.moseeker.position.pojo.JobPostionResponse;
@@ -54,12 +48,10 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
-import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionCityDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobOccupationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.position.struct.*;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
-
 import org.apache.thrift.TException;
 import org.jooq.Field;
 import org.slf4j.Logger;
@@ -69,7 +61,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -126,6 +117,9 @@ public class PositionService {
 
     @Autowired
     private CommonPositionUtils commonPositionUtils;
+
+    @Autowired
+    private PositionEntity positionEntity;
 
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
@@ -187,12 +181,10 @@ public class PositionService {
                     .fail(ConstantErrorCodeMessage.PROGRAM_VALIDATE_REQUIRED.replace("{0}", "position_id"));
         }
         // NullPoint check
-        Query query = new Query.QueryBuilder().where("id", positionId).buildQuery();
-        JobPositionRecord jobPositionRecord = jobPositionDao.getRecord(query);
-        if (jobPositionRecord == null) {
+        JobPositionPojo jobPositionPojo = jobPositionDao.getPosition(positionId);
+        if (jobPositionPojo == null) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
-        JobPositionPojo jobPositionPojo = jobPositionDao.getPosition(positionId);
         jobPositionPojo.team_name = "";
         jobPositionPojo.department = "";
         int team_id = jobPositionPojo.team_id;
@@ -676,10 +668,10 @@ public class PositionService {
             }
             // 按company_id + .source_id + .jobnumber + source=9取得数据
             Query queryUtil = new Query.QueryBuilder()
-                    .where(JobPosition.COMPANY_ID.getName(), jobPositionHandlerDate.getCompany_id())
-                    .and(JobPosition.SOURCE.getName(), 9)
-                    .and(JobPosition.SOURCE_ID.getName(), jobPositionHandlerDate.getSource_id())
-                    .and(JobPosition.JOBNUMBER.getName(), jobPositionHandlerDate.getJobnumber())
+                    .where(JobPosition.JOB_POSITION.COMPANY_ID.getName(), jobPositionHandlerDate.getCompany_id())
+                    .and(JobPosition.JOB_POSITION.SOURCE.getName(), 9)
+                    .and(JobPosition.JOB_POSITION.SOURCE_ID.getName(), jobPositionHandlerDate.getSource_id())
+                    .and(JobPosition.JOB_POSITION.JOBNUMBER.getName(), jobPositionHandlerDate.getJobnumber())
                     .buildQuery();
             JobPositionRecord jobPositionRecord = jobPositionDao.getRecord(queryUtil);
 
@@ -731,10 +723,11 @@ public class PositionService {
                         // 将需要更新JobPosition的数据放入更新的列表
                         jobPositionUpdateRecordList.add(record);
                         // 需要更新JobPositionCity数据
-                        if (cityCode(jobPositionHandlerDate.getCity(), record.getId()) != null && cityCode(jobPositionHandlerDate.getCity(), record.getId()).size() > 0) {
+                        List<JobPositionCityRecord> jobPositionCityRecordList = cityCode(jobPositionHandlerDate.getCity(), record.getId());
+                        if (jobPositionCityRecordList != null && jobPositionCityRecordList.size() > 0) {
                             // 更新时候需要把之前的jobPositionCity数据删除
                             deleteCitylist.add(record.getId());
-                            jobPositionCityRecordsUpdatelist.addAll(cityCode(jobPositionHandlerDate.getCity(), record.getId()));
+                            jobPositionCityRecordsUpdatelist.addAll(jobPositionCityRecordList);
                         }
                         // 需要更新的JobPositionExra数据
                         if (jobPositionHandlerDate.getExtra() != null || jobOccupationId != 0 || customId != 0) {
@@ -773,9 +766,10 @@ public class PositionService {
                 logger.info("-- 新增jobPostion数据结束,新增职位ID为：" + pid);
                 if (pid != null) {
                     jobPositionIds.add(pid);
-                    if (cityCode(jobPositionHandlerDate.getCity(), record.getId()) != null && cityCode(jobPositionHandlerDate.getCity(), record.getId()).size() > 0) {
+                    List<JobPositionCityRecord> jobPositionCityRecordList = cityCode(jobPositionHandlerDate.getCity(), record.getId());
+                    if (jobPositionCityRecordList != null && jobPositionCityRecordList.size() > 0) {
                         // 新增城市code时，需要先删除jobpostionCity数据
-                        jobPositionCityRecordsAddlist.addAll(cityCode(jobPositionHandlerDate.getCity(), record.getId()));
+                        jobPositionCityRecordsAddlist.addAll(jobPositionCityRecordList);
                     }
                 }
                 // 需要新增的JobPosition数据
@@ -949,7 +943,7 @@ public class PositionService {
 
     /**
      * 将地区或者邮编转换成行政编码
-     *
+     * //todo 地区入库，jobdb.job_position.city 与 jobdb.job_position_city.code 入库不一致
      * @param citys
      * @param pid
      * @return
@@ -1245,8 +1239,9 @@ public class PositionService {
                 logger.info("jdIdList: " + jdIdList);
                 Condition con = new Condition("id", jdIdList.toArray(), ValueOp.IN);
                 Query q = new Query.QueryBuilder().where(con).buildQuery();
-                List<JobPositionRecord> jobRecords = jobPositionDao.getRecords(q);
-                Map<Integer, Set<String>> cityMap = commonPositionUtils.handlePositionCity(jdIdList);
+                List<JobPositionRecord> jobRecords = positionEntity.getPositions(q);
+                //List<JobPositionRecord> jobRecords = jobPositionDao.getRecords(q);
+                //Map<Integer, Set<String>> cityMap = commonPositionUtils.handlePositionCity(jdIdList);
                 for (int i = 0; i < jdIdList.size(); i++) {
                     int positionId = jdIdList.get(i);
                     for (JobPositionRecord jr : jobRecords) {
@@ -1273,19 +1268,6 @@ public class PositionService {
                             e.setIn_hb(jr.getHbStatus() > 0);
                             e.setCount(jr.getCount());
                             e.setCity(jr.getCity());
-                            if (cityMap != null && !cityMap.isEmpty()) {
-                                Set<String> positionCity = cityMap.get(jr.getId());
-                                if (positionCity != null && positionCity.size() > 0) {
-                                    String cityName = "";
-                                    for (String city : positionCity) {
-                                        cityName += city + "，";
-                                    }
-                                    if (StringUtils.isNotNullOrEmpty(cityName)) {
-                                        cityName = cityName.substring(0, cityName.lastIndexOf("，"));
-                                    }
-                                    e.setCity(cityName);
-                                }
-                            }
                             e.setPriority(jr.getPriority());
                             e.setPublisher(jr.getPublisher()); // will be used for fetching sub company info
                             dataList.add(e);
@@ -1852,8 +1834,17 @@ public class PositionService {
     }
 
     /**
-     * 内部线程类
-     * 用于更改ES索引
+     * 根据查询条件查找职位信息
+     * 职位数据如果存在job_position_city 数据，则使用职位数据如果存在job_position_city对应城市，否则直接取city
+     * @param query
+     * @return
+     */
+    public List<JobPositionRecord> getPositionRecords(Query query) {
+        return positionEntity.getPositions(query);
+    }
+
+    /**
+     * 内部线程类 用于更改ES索引
      */
     private class UpdateES extends Thread {
         private List<Integer> list;

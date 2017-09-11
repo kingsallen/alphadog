@@ -12,6 +12,7 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.company.struct.CompanyCertConf;
 import com.moseeker.thrift.gen.company.struct.CompanyForVerifyEmployee;
+import com.moseeker.thrift.gen.company.struct.HrEmployeeCustomFieldsVO;
 import com.moseeker.thrift.gen.employee.struct.RewardConfig;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -25,6 +26,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices.Iface;
 import com.moseeker.thrift.gen.company.struct.CompanyOptions;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrImporterMonitorDO;
 
 import java.util.ArrayList;
@@ -35,7 +37,7 @@ import java.util.Map;
 public class CompanyServicesImpl implements Iface {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
-    
+
     @Autowired
     private CompanyService service;
 
@@ -306,5 +308,18 @@ public class CompanyServicesImpl implements Iface {
         }
     }
 
+
+    /**
+     * 获取公司员工认证后补填字段配置信息列表
+     *
+     * @param companyId
+     * @return
+     * @throws BIZException
+     * @throws TException
+     */
+    @Override
+    public List<HrEmployeeCustomFieldsVO> getHrEmployeeCustomFields(int companyId) throws BIZException, TException {
+        return service.getHrEmployeeCustomFields(companyId);
+    }
 }
 

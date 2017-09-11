@@ -35,4 +35,5 @@ public class EmployeeBindByQuestion extends EmployeeBinder{
             throw new RuntimeException("员工认证信息不正确");
         }
     }
+
 }

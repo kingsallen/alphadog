@@ -13,7 +13,6 @@ public class UserTaskParam {
     private String mobile;
     private String email;
     private String name;
-
     public void parse(Map<String, Object> param) throws CommonException {
         if (param != null) {
             if (param.get("mobile") != null) {

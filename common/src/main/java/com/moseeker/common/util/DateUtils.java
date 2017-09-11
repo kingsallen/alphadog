@@ -152,7 +152,7 @@ public class DateUtils {
             } else if (currentMonth >= 11 && currentMonth <= 12) {
                 c.set(Calendar.MONTH, 11);
             }
-            c.set(Calendar.DATE, getLastDayOfMonth(LocalDate.now().getYear(), c.get(Calendar.MONTH)+1));
+            c.set(Calendar.DATE, getLastDayOfMonth(LocalDate.now().getYear(), c.get(Calendar.MONTH) + 1));
             now = LocalDateTime.parse(normalDateSDF.format(c.getTime()) + " 23:59:59", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         } catch (Exception e) {
             e.printStackTrace();
@@ -215,4 +215,99 @@ public class DateUtils {
         }
         return now;
     }
+
+
+    /**
+     * 取得日期：年
+     *
+     * @param date
+     * @return
+     */
+    public static int getYear(Date date) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        int year = c.get(Calendar.YEAR);
+        return year;
+    }
+
+
+    /**
+     * format date
+     *
+     * @param date
+     * @param pattern
+     * @return
+     */
+    public static String formatDate(Date date, String pattern) {
+        String strDate = null;
+        try {
+            if (pattern == null) {
+                pattern = "yyyy-MM-dd";
+            }
+            SimpleDateFormat format = new SimpleDateFormat(pattern);
+            strDate = format.format(date);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return strDate;
+    }
+
+    /**
+     * 1 第一季度 2 第二季度 3 第三季度 4 第四季度
+     *
+     * @param date
+     * @return
+     */
+    public static int getSeason(Date date) {
+        int season = 0;
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        int month = c.get(Calendar.MONTH);
+        switch (month) {
+            case Calendar.JANUARY:
+            case Calendar.FEBRUARY:
+            case Calendar.MARCH:
+                season = 1;
+                break;
+            case Calendar.APRIL:
+            case Calendar.MAY:
+            case Calendar.JUNE:
+                season = 2;
+                break;
+            case Calendar.JULY:
+            case Calendar.AUGUST:
+            case Calendar.SEPTEMBER:
+                season = 3;
+                break;
+            case Calendar.OCTOBER:
+            case Calendar.NOVEMBER:
+            case Calendar.DECEMBER:
+                season = 4;
+                break;
+            default:
+                break;
+        }
+        return season;
+    }
+
+    /**
+     * 取得日期：年
+     *
+     * @param date
+     * @return
+     */
+    public static String getMonth(Date date) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        int month = c.get(Calendar.MONTH) + 1;
+        StringBuffer stringBuffer = new StringBuffer();
+        if (month <= 9) {
+            stringBuffer.append("0");
+            stringBuffer.append(month);
+        } else {
+            stringBuffer.append(month);
+        }
+        return stringBuffer.toString();
+    }
+
 }

@@ -21,7 +21,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -80,8 +79,8 @@ public abstract class EmployeeBinder {
                 throw new RuntimeException("暂时不接受员工认证");
             }
             paramCheck(bindingParams, certConf);
-            int userEmployeeId = createEmployee(bindingParams);
-            response = doneBind(bindingParams, userEmployeeId);
+            UserEmployeeDO userEmployee = createEmployee(bindingParams);
+            response = doneBind(userEmployee);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             response.setSuccess(false);
@@ -91,29 +90,26 @@ public abstract class EmployeeBinder {
         return response;
     }
 
-    protected int createEmployee(BindingParams bindingParams) {
-        if (userEmployeeDOThreadLocal.get() == null || userEmployeeDOThreadLocal.get().getId() == 0) {
-            UserEmployeeDO userEmployee = new UserEmployeeDO();
-            userEmployee.setCompanyId(bindingParams.getCompanyId());
-            userEmployee.setEmployeeid(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getMobile(), ""));
-            userEmployee.setSysuserId(bindingParams.getUserId());
-            userEmployee.setCname(bindingParams.getName());
-            userEmployee.setMobile(bindingParams.getMobile());
-            userEmployee.setEmail(bindingParams.getEmail());
-            userEmployee.setWxuserId(wxEntity.getWxuserId(bindingParams.getUserId(), bindingParams.getCompanyId()));
-            userEmployee.setAuthMethod((byte)bindingParams.getType().getValue());
-            userEmployee.setActivation((byte)3);
-            userEmployee.setCreateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-            int primaryKey = employeeEntity.addEmployee(userEmployee).getId();
-            if( primaryKey == 0) {
-                log.info("员工邮箱认证，保存员工信息失败 employee={}", userEmployee);
-                throw new RuntimeException("认证失败，请检查员工信息");
-            }
-            userEmployee.setId(primaryKey);
-            userEmployeeDOThreadLocal.set(userEmployee);
-            return primaryKey;
-        }
-        return userEmployeeDOThreadLocal.get().getId();
+    /**
+     * 创建员工记录
+     * @param bindingParams
+     * @return
+     */
+    protected UserEmployeeDO createEmployee(BindingParams bindingParams) {
+        UserEmployeeDO userEmployee = userEmployeeDOThreadLocal.get() == null ? new UserEmployeeDO() : userEmployeeDOThreadLocal.get();
+        userEmployee.setCompanyId(bindingParams.getCompanyId());
+        userEmployee.setEmployeeid(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getMobile(), ""));
+        userEmployee.setSysuserId(bindingParams.getUserId());
+        userEmployee.setCname(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getName(), userEmployee.getCname()));
+        userEmployee.setMobile(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getMobile(), userEmployee.getMobile()));
+        userEmployee.setEmail(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getEmail(), userEmployee.getEmail()));
+        userEmployee.setWxuserId(wxEntity.getWxuserId(bindingParams.getUserId(), bindingParams.getCompanyId()));
+        userEmployee.setAuthMethod((byte)bindingParams.getType().getValue());
+        userEmployee.setActivation((byte)0);
+        userEmployee.setCreateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        userEmployee.setBindingTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        userEmployeeDOThreadLocal.set(userEmployee);
+        return userEmployee;
     }
 
 
@@ -128,36 +124,32 @@ public abstract class EmployeeBinder {
 
     /**
      * step 1: 认证当前员工   step 2: 将其他公司的该用户员工设为未认证
-     * @param bindingParams
+     * @param useremployee
      * @return
      * @throws TException
      */
-    protected Result doneBind(BindingParams bindingParams, int employeeId) throws TException {
-        log.info("updateEmployee param: BindingParams={}", bindingParams);
+    protected Result doneBind(UserEmployeeDO useremployee) throws TException {
+        log.info("doneBind param: useremployee={}", useremployee);
         Result response = new Result();
+        int employeeId;
+        if (useremployee.getId() == 0) {
+            employeeId = employeeDao.addData(useremployee).getId();
+            useremployee.setId(employeeId);
+        } else {
+            employeeDao.updateData(useremployee);
+            employeeId = useremployee.getId();
+        }
+        // 将其他公司的员工认证记录设为未认证
         Query.QueryBuilder query = new Query.QueryBuilder();
-        query.where("sysuser_id", String.valueOf(bindingParams.getUserId())).and("disable", "0");
+        query.where("sysuser_id", String.valueOf(useremployee.getSysuserId())).and("disable", "0");
         List<UserEmployeeDO> employees = employeeDao.getDatas(query.buildQuery());
         log.info("select employees by: {}, result = {}", query, Arrays.toString(employees.toArray()));
         if (!StringUtils.isEmptyList(employees)) {
             employees.forEach(e -> {
-                if (e.getId() == employeeId) {
-                    e.setActivation((byte)0);
-                    e.setCompanyId(bindingParams.getCompanyId());
-                    e.setAuthMethod((byte)bindingParams.getType().getValue());
-                    e.setWxuserId(wxEntity.getWxuserId(bindingParams.getUserId(), bindingParams.getCompanyId()));
-                    e.setEmail(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getEmail(), e.getEmail()));
-                    e.setBindingTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-                    e.setUpdateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-                    e.setCname(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getName(), e.getCname()));
-                    e.setMobile(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getMobile(), e.getMobile()));
-                    e.setCustomField(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getCustomField(), e.getCustomField()));
-                    if (StringUtils.isNotNullOrEmpty(e.getActivationCode())) {
-                        client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, e.getActivationCode());
-                    }
-                } else if (e.getActivation() == 0) {
+                if (e.getId() != employeeId && e.getActivation() == 0) {
                     e.setEmailIsvalid((byte)0);
                     e.setActivation((byte)1);
+                    e.setCustomFieldValues("[]");
                 }
             });
         }
@@ -166,6 +158,10 @@ public abstract class EmployeeBinder {
         if (Arrays.stream(updateResult).allMatch(m -> m == 1)){
             response.setSuccess(true);
             response.setMessage("success");
+            if (StringUtils.isNotNullOrEmpty(useremployee.getActivationCode())) {
+                client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, useremployee.getActivationCode());
+                client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, employeeEntity.getAuthInfoKey(useremployee.getSysuserId(), useremployee.getCompanyId()));
+            }
             // 更新ES中useremployee信息
             searchengineEntity.updateEmployeeDOAwards(employees);
         } else {

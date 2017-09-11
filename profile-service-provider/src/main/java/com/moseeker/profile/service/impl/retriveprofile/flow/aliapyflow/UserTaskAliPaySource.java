@@ -2,6 +2,7 @@ package com.moseeker.profile.service.impl.retriveprofile.flow.aliapyflow;
 
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.common.constants.UserSource;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.profile.service.impl.retriveprofile.parameters.UserTaskParam;
 import com.moseeker.profile.service.impl.retriveprofile.tasks.UserTask;
 import org.springframework.stereotype.Component;
@@ -12,6 +13,13 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class UserTaskAliPaySource extends UserTask {
+
+    @Override
+    protected Query initQuery(UserTaskParam param) {
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where("username", param.getMobile());
+        return queryBuilder.buildQuery();
+    }
 
     /**
      * 标记用户来源，标记为阿里简历回收
