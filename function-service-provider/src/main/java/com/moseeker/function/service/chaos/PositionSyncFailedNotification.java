@@ -28,6 +28,7 @@ import javax.mail.event.TransportEvent;
 import javax.mail.event.TransportListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by zhangdi on 2017/7/6.
@@ -153,7 +154,13 @@ public class PositionSyncFailedNotification {
         emailMessgeBuilder.append("【职位标题】：").append(moseekerPosition.getTitle()).append(divider);
         emailMessgeBuilder.append(divider).append("<hr>").append(divider);
         emailMessgeBuilder.append("【错误信息】：").append(divider);
-        emailMessgeBuilder.append(StringUtils.isNullOrEmpty(pojo.getMessage()) ? "无" : pojo.getMessage());
+        String errorMessage = null;
+        if (pojo.getMessage() != null && pojo.getMessage().size() > 0) {
+            errorMessage = pojo.getMessage().stream().collect(Collectors.joining("\n\r"));
+        } else {
+            errorMessage = "无";
+        }
+        emailMessgeBuilder.append(errorMessage);
         sendEmail(emails, emailTitle.toString(), emailMessgeBuilder.toString());
     }
 
@@ -254,7 +261,13 @@ public class PositionSyncFailedNotification {
         emailMessgeBuilder.append(descript.toString().replaceAll("\n", divider)).append(divider);
         emailMessgeBuilder.append(divider).append("<hr>").append(divider);
         emailMessgeBuilder.append("【错误信息】：").append(divider);
-        emailMessgeBuilder.append(StringUtils.isNullOrEmpty(pojo.getMessage()) ? "无" : pojo.getMessage());
+        String errorMessage = null;
+        if (pojo.getMessage() != null && pojo.getMessage().size() > 0) {
+            errorMessage = pojo.getMessage().stream().collect(Collectors.joining("\n\r"));
+        } else {
+            errorMessage = "无";
+        }
+        emailMessgeBuilder.append(errorMessage);
 
         sendEmail(emails, emailTitle.toString(), emailMessgeBuilder.toString());
     }
