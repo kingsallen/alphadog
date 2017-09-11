@@ -1032,4 +1032,38 @@ public class UseraccountsController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
+	/**
+	 * 批量查询用户职位状态
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/user/pc/position/status", method = {RequestMethod.GET,RequestMethod.POST}, produces = "application/json; charset=utf-8")
+	@ResponseBody
+	public String userPcPositionStatus(HttpServletRequest request) {
+		try {
+			Params<String, Object> params = ParamUtils.parseRequestParam(request);
+			int userId = params.getInt("user_id", 0);
+			String positionIds = (String)params.get("position_ids");
+			if(StringUtils.isNotNullOrEmpty(positionIds)&&positionIds.startsWith("[")&&positionIds.endsWith("]")){
+				positionIds=positionIds.replace("[","").replace("]","");
+				if(StringUtils.isNotNullOrEmpty(positionIds)){
+					String array[]=positionIds.split(",");
+					List<Integer> list=new ArrayList<Integer>();
+					for(String arr :array){
+						list.add(Integer.parseInt(arr));
+					}
+					return new TSerializer(new TSimpleJSONProtocol.Factory()).toString(userQxService.getUserPositionStatus(userId, list));
+				}
+				else{
+					return ResponseLogNotification.fail(request, "position_ids参数不能为空");
+				}
+			}else{
+				return ResponseLogNotification.fail(request, "position_ids参数不能为空");
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
 }
