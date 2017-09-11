@@ -179,7 +179,7 @@ public class UseraccountsController {
 		try {
 			Map<String,Object> map=ParamUtils.parseRequestParam(request);
 			Object mobile = map.get("mobile");
-			String countryCode= (String) map.get("countryCode");
+			String countryCode= (String)map.get("countryCode");
 			if(StringUtils.isNullOrEmpty(countryCode)){
 				countryCode="86";
 			}
@@ -327,7 +327,7 @@ public class UseraccountsController {
 	public String postusersendpasswordforgotcode(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			Map<String,Object> map=ParamUtils.parseRequestParam(request);
-			Object mobile = map.get("mobile");
+			Object mobile =map.get("mobile");
 			String countryCode= (String) map.get("countryCode");
 			if(StringUtils.isNullOrEmpty(countryCode)){
 				countryCode="86";
