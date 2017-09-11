@@ -81,25 +81,40 @@ public class PositionEntity {
             for (JobPositionCityRecord positionCityRecord : jobPositionCityRecordList) {
                 cityIds.add(positionCityRecord.getCode());
             }
-
             query = new Query.QueryBuilder().where(new com.moseeker.common.util.query.Condition("code", cityIds, ValueOp.IN)).buildQuery();
             List<DictCityRecord> dictCityRecordList = cityDao.getRecords(query);
+
 
             if (dictCityRecordList == null || dictCityRecordList.size() == 0) {
                 return positionRecordList;
             }
 
             /** 职位数据如果存在job_position_city 数据，则使用职位数据如果存在job_position_city对应城市，否则直接取city */
-            jobPositionCityRecordList.forEach(positionCity -> {
-                List<DictCityRecord> cityDOList = dictCityRecordList.stream()
-                        .filter(dictCityRecord -> dictCityRecord.getCode() == positionCity.getCode()).collect(Collectors.toList());
-                Optional<JobPositionRecord> positionRecordOptional = positionRecordList.stream()
-                        .filter(p -> p.getId() == positionCity.getPid()).findAny();
-                if (positionRecordOptional.isPresent() && cityDOList != null && cityDOList.size() > 0) {
-                    String cityName = cityDOList.stream().map(city -> city.getName()).collect(Collectors.joining(","));
-                    positionRecordOptional.get().setCity(cityName);
+            for (JobPositionRecord positionRecord: positionRecordList) {
+
+                /** 职位城市关系记录 */
+                List<JobPositionCityRecord> positionCityRecordList = jobPositionCityRecordList.stream()
+                        .filter(jobPositionCity ->
+                                jobPositionCity.getPid().intValue() == positionRecord.getId().intValue())
+                        .collect(Collectors.toList());
+
+                if (positionCityRecordList != null && positionCityRecordList.size() > 0) {
+                    StringBuffer cityNameBuffer = new StringBuffer();
+                    for (JobPositionCityRecord positionCityRecord : positionCityRecordList) {
+                        Optional<DictCityRecord> optionalDictCity = dictCityRecordList.stream()
+                                .filter(dictCityRecord ->
+                                        dictCityRecord.getCode().intValue() == positionCityRecord.getCode().intValue())
+                                .findAny();
+                        if (optionalDictCity.isPresent()) {
+                            cityNameBuffer.append(optionalDictCity.get().getName()).append(",");
+                        }
+                    }
+                    if (cityNameBuffer.length() > 0) {
+                        cityNameBuffer.deleteCharAt(cityNameBuffer.length()-1);
+                        positionRecord.setCity(cityNameBuffer.toString());
+                    }
                 }
-            });
+            }
         }
         return positionRecordList;
     }

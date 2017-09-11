@@ -4,6 +4,7 @@
 package com.moseeker.baseorm.db.dictdb;
 
 
+import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusCity;
 import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusJobcategory;
 import com.moseeker.baseorm.db.dictdb.tables.DictCity;
 import com.moseeker.baseorm.db.dictdb.tables.DictCityMap;
@@ -18,6 +19,7 @@ import com.moseeker.baseorm.db.dictdb.tables.DictMajor;
 import com.moseeker.baseorm.db.dictdb.tables.DictPosition;
 import com.moseeker.baseorm.db.dictdb.tables.DictZhilianOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.Dict_51jobOccupation;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictAlipaycampusCityRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictAlipaycampusJobcategoryRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityMapRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityPostcodeRecord;
@@ -71,6 +73,7 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final UniqueKey<Dict_51jobOccupationRecord> KEY_DICT_51JOB_OCCUPATION_PRIMARY = UniqueKeys0.KEY_DICT_51JOB_OCCUPATION_PRIMARY;
+    public static final UniqueKey<DictAlipaycampusCityRecord> KEY_DICT_ALIPAYCAMPUS_CITY_PRIMARY = UniqueKeys0.KEY_DICT_ALIPAYCAMPUS_CITY_PRIMARY;
     public static final UniqueKey<DictAlipaycampusJobcategoryRecord> KEY_DICT_ALIPAYCAMPUS_JOBCATEGORY_PRIMARY = UniqueKeys0.KEY_DICT_ALIPAYCAMPUS_JOBCATEGORY_PRIMARY;
     public static final UniqueKey<DictCityRecord> KEY_DICT_CITY_CODE = UniqueKeys0.KEY_DICT_CITY_CODE;
     public static final UniqueKey<DictCityMapRecord> KEY_DICT_CITY_MAP_PRIMARY = UniqueKeys0.KEY_DICT_CITY_MAP_PRIMARY;
@@ -108,6 +111,7 @@ public class Keys {
 
     private static class UniqueKeys0 extends AbstractKeys {
         public static final UniqueKey<Dict_51jobOccupationRecord> KEY_DICT_51JOB_OCCUPATION_PRIMARY = createUniqueKey(Dict_51jobOccupation.DICT_51JOB_OCCUPATION, "KEY_dict_51job_occupation_PRIMARY", Dict_51jobOccupation.DICT_51JOB_OCCUPATION.CODE);
+        public static final UniqueKey<DictAlipaycampusCityRecord> KEY_DICT_ALIPAYCAMPUS_CITY_PRIMARY = createUniqueKey(DictAlipaycampusCity.DICT_ALIPAYCAMPUS_CITY, "KEY_dict_alipaycampus_city_PRIMARY", DictAlipaycampusCity.DICT_ALIPAYCAMPUS_CITY.ID);
         public static final UniqueKey<DictAlipaycampusJobcategoryRecord> KEY_DICT_ALIPAYCAMPUS_JOBCATEGORY_PRIMARY = createUniqueKey(DictAlipaycampusJobcategory.DICT_ALIPAYCAMPUS_JOBCATEGORY, "KEY_dict_alipaycampus_jobcategory_PRIMARY", DictAlipaycampusJobcategory.DICT_ALIPAYCAMPUS_JOBCATEGORY.ID);
         public static final UniqueKey<DictCityRecord> KEY_DICT_CITY_CODE = createUniqueKey(DictCity.DICT_CITY, "KEY_dict_city_code", DictCity.DICT_CITY.CODE);
         public static final UniqueKey<DictCityMapRecord> KEY_DICT_CITY_MAP_PRIMARY = createUniqueKey(DictCityMap.DICT_CITY_MAP, "KEY_dict_city_map_PRIMARY", DictCityMap.DICT_CITY_MAP.ID);

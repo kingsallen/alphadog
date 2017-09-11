@@ -23,8 +23,8 @@ public class UserBs {
 	WholeProfileServices.Iface wholeService = ServiceManager.SERVICEMANAGER.getService(WholeProfileServices.Iface.class);
 	@CounterIface
 	public Response bindOnAccount(int appid, String unionid, String code,
-			String mobile, BindType bindType) throws TException {
-		Response result = useraccountsServices.postuserbindmobile(appid, unionid, code, mobile, bindType);
+			String mobile, BindType bindType,String countryCode) throws TException {
+		Response result = useraccountsServices.postuserbindmobile(appid, unionid, code,countryCode, mobile, bindType);
 		JSONObject data = JSON.parseObject(result.getData());
 		int destId = NumberUtils.toInt(String.valueOf(data.remove("dest_id")), -1);
 		int originId = NumberUtils.toInt(String.valueOf(data.remove("origin_id")), -1);
