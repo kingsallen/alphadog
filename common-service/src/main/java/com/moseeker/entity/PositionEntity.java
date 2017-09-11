@@ -106,7 +106,6 @@ public class PositionEntity {
                                         dictCityRecord.getCode().intValue() == positionCityRecord.getCode().intValue())
                                 .findAny();
                         if (optionalDictCity.isPresent()) {
-                                    positionCityRecord.getPid(), optionalDictCity.get());
                             cityNameBuffer.append(optionalDictCity.get().getName()).append(",");
                         }
                     }
