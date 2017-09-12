@@ -122,6 +122,21 @@ public class ConfigSysCvTpl extends TableImpl<ConfigSysCvTplRecord> {
     public final TableField<ConfigSysCvTplRecord, String> MAP = createField("map", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "与profile的映射关系");
 
     /**
+     * The column <code>configdb.config_sys_cv_tpl.dict_constant_id</code>. 下拉选项关联字典表
+     */
+    public final TableField<ConfigSysCvTplRecord, Integer> DICT_CONSTANT_ID = createField("dict_constant_id", org.jooq.impl.SQLDataType.INTEGER, this, "下拉选项关联字典表");
+
+    /**
+     * The column <code>configdb.config_sys_cv_tpl.parent_id</code>. 复合字段关联
+     */
+    public final TableField<ConfigSysCvTplRecord, Integer> PARENT_ID = createField("parent_id", org.jooq.impl.SQLDataType.INTEGER, this, "复合字段关联");
+
+    /**
+     * The column <code>configdb.config_sys_cv_tpl.validate_re</code>. 数据校验规则（正则）
+     */
+    public final TableField<ConfigSysCvTplRecord, String> VALIDATE_RE = createField("validate_re", org.jooq.impl.SQLDataType.VARCHAR.length(200), this, "数据校验规则（正则）");
+
+    /**
      * Create a <code>configdb.config_sys_cv_tpl</code> table reference
      */
     public ConfigSysCvTpl() {

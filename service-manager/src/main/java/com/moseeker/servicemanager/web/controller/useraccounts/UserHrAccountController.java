@@ -2,6 +2,7 @@ package com.moseeker.servicemanager.web.controller.useraccounts;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileOther;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
@@ -18,6 +19,7 @@ import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.config.ConfigCustomMetaData;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
@@ -986,7 +988,8 @@ public class UserHrAccountController {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             int companyId = params.getInt("companyId", 0);
-            return ResponseLogNotification.success(request, ResponseUtils.success(profileOtherService.getCustomMetaData(companyId)));
+            List<ConfigCustomMetaData> list = profileOtherService.getCustomMetaData(companyId);
+            return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(JSONObject.toJSONString(list, BeanUtils.profilter, SerializerFeature.WriteNullNumberAsZero, SerializerFeature.WriteNullStringAsEmpty)));
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {

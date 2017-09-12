@@ -168,9 +168,10 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
 
     @Override
     public List<ConfigCustomMetaData> getCustomMetaData(int companyId) throws BIZException, TException {
+        List<ConfigCustomMetaData> configCustomMetaDatas = new ArrayList<>();
         try {
-            Query.QueryBuilder queryBuilder = new Query.QueryBuilder().where("companyId", companyId);
-            List<ConfigCustomMetaData> configCustomMetaDatas = configSysCvTplDao.getDatas(queryBuilder.buildQuery(), ConfigCustomMetaData.class);
+            Query.QueryBuilder queryBuilder = new Query.QueryBuilder().where("company_id", companyId);
+            configCustomMetaDatas = configSysCvTplDao.getDatas(queryBuilder.buildQuery(), ConfigCustomMetaData.class);
             if (configCustomMetaDatas != null && configCustomMetaDatas.size() > 0) {
                 configCustomMetaDatas.stream().filter(f -> f.getDictConstantId() != 0).forEach(e -> {
                     queryBuilder.clear();
@@ -197,6 +198,6 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
                 throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
             }
         }
-        return null;
+        return configCustomMetaDatas;
     }
 }
