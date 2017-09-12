@@ -9,6 +9,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.email.Email;
 import com.moseeker.common.util.ConfigPropertiesUtil;
+import com.moseeker.common.util.EmojiFilter;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.dao.struct.dictdb.Dict51jobOccupationDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
@@ -156,7 +157,7 @@ public class PositionSyncFailedNotification {
         emailMessgeBuilder.append("【错误信息】：").append(divider);
         String errorMessage = null;
         if (pojo.getMessage() != null && pojo.getMessage().size() > 0) {
-            errorMessage = pojo.getMessage().stream().collect(Collectors.joining("\n\r"));
+            errorMessage = pojo.getMessage().stream().map(message -> EmojiFilter.unicodeToUtf8(message)).collect(Collectors.joining("\n\r"));
         } else {
             errorMessage = "无";
         }
@@ -263,7 +264,7 @@ public class PositionSyncFailedNotification {
         emailMessgeBuilder.append("【错误信息】：").append(divider);
         String errorMessage = null;
         if (pojo.getMessage() != null && pojo.getMessage().size() > 0) {
-            errorMessage = pojo.getMessage().stream().collect(Collectors.joining("\n\r"));
+            errorMessage = pojo.getMessage().stream().map(message -> EmojiFilter.unicodeToUtf8(message)).collect(Collectors.joining("\n\r"));
         } else {
             errorMessage = "无";
         }
