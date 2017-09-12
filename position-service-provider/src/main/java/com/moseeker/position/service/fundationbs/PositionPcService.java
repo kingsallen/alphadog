@@ -154,25 +154,28 @@ public class PositionPcService {
 		map.put("position",positionData);
 		int teamId=DO.getTeamId();
 		int publisher=DO.getPublisher();
-		HrCompanyDO companyDO= handleCompanyData(publisher);
-		String companyDOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(companyDO);
-		Map<String,Object> companyData= JSON.parseObject(companyDOs, Map.class);
-		map.put("company",companyData);
 		Map<String,Object> team=this.handleTeamData(teamId);
 		map.put("team",team);
 		if(teamId!=0){
 			int num=this.getTeamPositionNum(teamId);
 			map.put("teamPositionNum",num);
 		}
+		HrCompanyDO companyDO= handleCompanyData(publisher);
+		if(companyDO!=null){
 
-		int parentId= (int) companyData.get("parentId");
-		int confCompanyId= (int) companyData.get("id");
-		if(parentId!=0){
-			confCompanyId=parentId;
+			String companyDOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(companyDO);
+			Map<String,Object> companyData= JSON.parseObject(companyDOs, Map.class);
+			map.put("company",companyData);
+			int parentId= (int) companyData.get("parentId");
+			int confCompanyId= (int) companyData.get("id");
+			if(parentId!=0){
+				confCompanyId=parentId;
+			}
+			this.handlePositionJdData(confCompanyId,map,teamId);
+			Map<String,Object> customField=this.handleCustomField(positionId,confCompanyId);
+			map.put("customField",customField);
 		}
-		this.handlePositionJdData(confCompanyId,map,teamId);
-		Map<String,Object> customField=this.handleCustomField(positionId,confCompanyId);
-		map.put("customField",customField);
+
 		return map;
 	}
 	//获取自定义字段
@@ -277,22 +280,6 @@ public class PositionPcService {
 		return result;
 	}
 	/*
-	   获取单个职位
-	 */
-	public JobPositionDO getSinglePosition(int positionId){
-		Query query=new Query.QueryBuilder().where("id",positionId).and("status",0).buildQuery();
-		JobPositionDO DO=jobPositionDao.getData(query);
-		return DO;
-	}
-	/*
-	 根据publisher获取hr_company_account
-	 */
-	public HrCompanyAccountDO  getSingleCompanyAccount(int publisher){
-		Query query=new Query.QueryBuilder().where("account_id",publisher).buildQuery();
-		HrCompanyAccountDO DO=hrCompanyAccountDao.getData(query);
-		return DO;
-	}
-	/*
 	  获取相关职位的推荐职位
 	 */
 	public List<Integer> getRecommendPositionidList(int positionId,int page,int pageSize){
@@ -316,6 +303,23 @@ public class PositionPcService {
 		}
 		return positionIdList;
 	}
+	/*
+	   获取单个职位
+	 */
+	public JobPositionDO getSinglePosition(int positionId){
+		Query query=new Query.QueryBuilder().where("id",positionId).and("status",0).buildQuery();
+		JobPositionDO DO=jobPositionDao.getData(query);
+		return DO;
+	}
+	/*
+	 根据publisher获取hr_company_account
+	 */
+	public HrCompanyAccountDO  getSingleCompanyAccount(int publisher){
+		Query query=new Query.QueryBuilder().where("account_id",publisher).buildQuery();
+		HrCompanyAccountDO DO=hrCompanyAccountDao.getData(query);
+		return DO;
+	}
+
 	/*
 	 获取母公司的推荐职位
 	 */
@@ -468,6 +472,9 @@ public class PositionPcService {
 	private  Map<String,Object> handleTeamData(int teamId) throws TException{
 		Map<String,Object> map=new HashMap<String,Object>();
 		HrTeamDO teamDO=getSingleTeamInfo(teamId);
+		if(teamDO==null){
+			return map;
+		}
 		String teamDOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(teamDO);
 		Map<String,Object> teamData= JSON.parseObject(teamDOs, Map.class);
 		map.put("teamInfo",teamData);
