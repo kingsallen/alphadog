@@ -56,7 +56,7 @@ public class CompanyService {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	
+
 	ChaosServices.Iface chaosService = ServiceManager.SERVICEMANAGER.getService(ChaosServices.Iface.class);
 
     @Autowired

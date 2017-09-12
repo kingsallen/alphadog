@@ -17,21 +17,25 @@ import java.util.Map;
 public class CompanyPcServiceTest {
     @Autowired
     private CompanyPcService companyPcService;
+    //获取公司信息
     @Test
     public void companyDetailsTest()throws Exception{
         Map<String,Object> result=companyPcService.getCompanyDetail(2);
         System.out.println(result+"======");
     }
+    //获取团队列表
     @Test
     public void teamListTest() throws Exception {
         Map<String,Object> result=companyPcService.getTeamListinfo(2,1,10);
         System.out.println(result+"======");
     }
+    //获取团队详情
     @Test
     public void teamDetailsTest() throws Exception {
         Map<String,Object> result=companyPcService.getTeamDetails(103,1);
         System.out.println(result+"======");
     }
+    //获取公司信息
     @Test
     public void companyInfo() throws Exception {
         Map<String,Object> result=companyPcService.getCompanyMessage(2);

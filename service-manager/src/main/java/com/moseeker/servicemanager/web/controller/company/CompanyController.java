@@ -469,7 +469,6 @@ public class CompanyController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
-
     //获取公司信息，包括团队信息
     @RequestMapping(value = "/company/details", method = RequestMethod.GET)
     @ResponseBody
@@ -477,6 +476,7 @@ public class CompanyController {
         try{
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             Integer companyId = params.getInt("companyId");
+            logger.info("param====companyId=={}",companyId);
             Response res=companyServices.companyDetails(companyId);
             return ResponseLogNotification.success(request,res);
         }catch(Exception e){
@@ -509,6 +509,7 @@ public class CompanyController {
         try{
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             Integer companyId = params.getInt("companyId");
+            logger.info("param====companyId=={}",companyId);
             Response res=companyServices.companyMessage(companyId);
             return ResponseLogNotification.success(request, res);
         }catch(Exception e){
