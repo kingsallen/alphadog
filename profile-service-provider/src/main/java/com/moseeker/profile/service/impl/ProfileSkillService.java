@@ -12,7 +12,7 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.ProfileEntity;
 import com.moseeker.entity.biz.ProfileValidation;
 import com.moseeker.entity.biz.ValidationMessage;
-import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
+import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.struct.Skill;
 
@@ -204,6 +204,6 @@ public class ProfileSkillService {
         int totalRow = dao.getCount(query);
         List<?> datas = dao.getDatas(query);
 
-        return ResponseUtils.success(ProfileUtils.getPagination(totalRow, query.getPageNum(), query.getPageSize(), datas));
+        return ResponseUtils.success(ProfileExtUtils.getPagination(totalRow, query.getPageNum(), query.getPageSize(), datas));
     }
 }

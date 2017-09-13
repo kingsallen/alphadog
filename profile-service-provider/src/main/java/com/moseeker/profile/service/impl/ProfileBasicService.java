@@ -18,7 +18,7 @@ import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.ProfileEntity;
-import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
+import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileBasicDO;
 import com.moseeker.thrift.gen.profile.struct.Basic;
@@ -351,6 +351,6 @@ public class ProfileBasicService {
         int totalRow = dao.getCount(query);
         List<?> datas = dao.getDatas(query);
 
-        return ProfileUtils.getPagination(totalRow, query.getPageNum(), query.getPageSize(), datas);
+        return ProfileExtUtils.getPagination(totalRow, query.getPageNum(), query.getPageSize(), datas);
     }
 }

@@ -22,7 +22,7 @@ import com.moseeker.common.util.Pagination;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.ProfileEntity;
-import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
+import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.struct.Intention;
@@ -34,7 +34,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.ParseException;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -75,7 +74,7 @@ public class ProfileIntentionService {
         int totalRow = dao.getCount(query);
         List<?> datas = dao.getDatas(query);
 
-        return ProfileUtils.getPagination(totalRow, query.getPageNum(), query.getPageSize(), datas);
+        return ProfileExtUtils.getPagination(totalRow, query.getPageNum(), query.getPageSize(), datas);
     }
 
     public Response getResources(CommonQuery query) throws TException {

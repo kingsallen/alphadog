@@ -14,7 +14,7 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.ProfileEntity;
 import com.moseeker.entity.biz.ProfileValidation;
 import com.moseeker.entity.biz.ValidationMessage;
-import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
+import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.struct.ProjectExp;
 import org.apache.commons.lang.ArrayUtils;
@@ -58,7 +58,7 @@ public class ProfileProjectExpService {
         List<ProfileProjectexpRecord> recordList = dao.getRecords(query);
         List<ProjectExp> datas = recordsToStructs(recordList);
 
-        return ResponseUtils.success(ProfileUtils.getPagination(totalRow, query.getPageNum(), query.getPageSize(), datas));
+        return ResponseUtils.success(ProfileExtUtils.getPagination(totalRow, query.getPageNum(), query.getPageSize(), datas));
     }
 
     public Response getResources(Query query) throws TException {

@@ -9,10 +9,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ProfileUtils extends com.moseeker.entity.biz.ProfileUtils {
+public class ProfileExtUtils extends com.moseeker.entity.biz.ProfileUtils {
 
 	/**
-	 * 为
+	 * 统计添加日志
 	 * @param method
 	 * @param params
 	 * @param statisticsForChannelmportVO

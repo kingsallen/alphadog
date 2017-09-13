@@ -34,7 +34,7 @@ import com.moseeker.entity.ProfileEntity;
 import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.profile.constants.StatisticsForChannelmportVO;
 import com.moseeker.profile.service.impl.retriveprofile.RetriveProfile;
-import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
+import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCollegeDO;
 import org.apache.thrift.TException;
@@ -54,7 +54,7 @@ import java.util.concurrent.Future;
 public class WholeProfileService {
 
     Logger logger = LoggerFactory.getLogger(WholeProfileService.class);
-    ProfileUtils profileUtils = new ProfileUtils();
+    ProfileExtUtils profileUtils = new ProfileExtUtils();
 
     ThreadPool pool = ThreadPool.Instance;
 

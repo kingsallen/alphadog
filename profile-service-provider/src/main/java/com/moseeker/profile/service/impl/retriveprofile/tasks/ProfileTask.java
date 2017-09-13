@@ -7,7 +7,7 @@ import com.moseeker.entity.ProfileEntity;
 import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.profile.constants.StatisticsForChannelmportVO;
 import com.moseeker.profile.service.impl.retriveprofile.Task;
-import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
+import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ public class ProfileTask implements Task<ProfilePojo, Integer> {
     private ProfileProfileDao profileDao;
 
     @Autowired
-    ProfileUtils profileUtils;
+    ProfileExtUtils profileUtils;
 
     @Autowired
     ProfileEntity profileEntity;
