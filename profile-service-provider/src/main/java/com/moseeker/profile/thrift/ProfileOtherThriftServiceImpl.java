@@ -173,6 +173,8 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
         List<ConfigCustomMetaData> configCustomMetaDatas = new ArrayList<>();
         try {
             Query.QueryBuilder queryBuilder = new Query.QueryBuilder().where("company_id", companyId);
+            queryBuilder.and("disable", 0);
+            queryBuilder.orderBy("priority");
             configCustomMetaDatas = configSysCvTplDao.getDatas(queryBuilder.buildQuery(), ConfigCustomMetaData.class);
             if (configCustomMetaDatas != null && configCustomMetaDatas.size() > 0) {
                 configCustomMetaDatas.stream().filter(f -> f.getConstantParentCode() != 0).forEach(e -> {
