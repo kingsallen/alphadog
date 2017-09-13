@@ -376,7 +376,7 @@ public class ProfileController {
     @ResponseBody
     public String upsertProfile(HttpServletRequest request) {
         try {
-            Params<String, Object> params = ParamUtils.parseequestParameter(request);
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
             int userId = 0;
             if (params.get("userId") != null) {
                 userId = (Integer)params.get("userId");
