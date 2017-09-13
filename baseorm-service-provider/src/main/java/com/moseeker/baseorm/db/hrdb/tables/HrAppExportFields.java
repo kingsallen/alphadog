@@ -83,7 +83,7 @@ public class HrAppExportFields extends TableImpl<HrAppExportFieldsRecord> {
     /**
      * The column <code>hrdb.hr_app_export_fields.sample</code>. 示例
      */
-    public final TableField<HrAppExportFieldsRecord, String> SAMPLE = createField("sample", org.jooq.impl.SQLDataType.VARCHAR.length(200).nullable(false).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "示例");
+    public final TableField<HrAppExportFieldsRecord, String> SAMPLE = createField("sample", org.jooq.impl.SQLDataType.VARCHAR.length(500).nullable(false).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "示例");
 
     /**
      * Create a <code>hrdb.hr_app_export_fields</code> table reference

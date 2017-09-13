@@ -1,7 +1,11 @@
 package com.moseeker.profile.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.dao.hrdb.HrAppCvConfDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileCompletenessDao;
+import com.moseeker.baseorm.dao.profiledb.ProfileOtherDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.userdb.UserSettingsDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
@@ -15,16 +19,20 @@ import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.entity.PositionEntity;
 import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrAppCvConfDO;
+import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileOtherDO;
+import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
 import com.moseeker.thrift.gen.profile.struct.Profile;
-
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
-
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -53,6 +61,15 @@ public class ProfileService {
 
     @Autowired
     private ProfileCompletenessImpl completenessImpl;
+
+    @Autowired
+    private HrAppCvConfDao hrAppCvConfDao;
+
+    @Autowired
+    private PositionEntity positionEntity;
+
+    @Autowired
+    private ProfileOtherDao profileOtherDao;
 
     public Response getResource(Query query) throws TException {
         ProfileProfileRecord record = null;
@@ -186,5 +203,59 @@ public class ProfileService {
         String password = propertiesUtils.get("GENERATE_USER_PASSWORD", String.class);
         logger.info("profilesByApplication:{}", JSON.toJSONString(profileApplicationForm));
         return dao.getResourceByApplication(downloadUrl, password, profileApplicationForm);
+    }
+
+    public Response checkProfileOther(int userId, int positionId) {
+        int appCvConfigId = positionEntity.getAppCvConfigIdByPosition(positionId);
+        if (appCvConfigId == 0) {
+            return ResponseUtils.success("");
+        } else {
+            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+            queryBuilder.where("id", appCvConfigId);
+            HrAppCvConfDO hrAppCvConfDO = hrAppCvConfDao.getData(queryBuilder.buildQuery());
+            if (hrAppCvConfDO == null || StringUtils.isNullOrEmpty(hrAppCvConfDO.getFieldValue())) {
+                return ResponseUtils.success("");
+            } else {
+                queryBuilder.clear();
+                queryBuilder.where("sysuser_id", userId);
+                ProfileProfileDO profileProfile = dao.getData(queryBuilder.buildQuery());
+                if (profileProfile == null || profileProfile.getId() == 0) {
+                    return ResponseUtils.fail("获取简历失败");
+                }
+                queryBuilder.clear();
+                queryBuilder.where("profile_id", profileProfile.getId());
+                ProfileOtherDO profileOther = profileOtherDao.getData(queryBuilder.buildQuery());
+                if (profileOther == null || StringUtils.isNullOrEmpty(profileOther.getOther())) {
+                    return ResponseUtils.fail("自定义简历为空");
+                }
+                JSONObject profileOtherJson = JSONObject.parseObject(profileOther.getOther());
+                List<JSONObject> appCvConfigJson = JSONArray.parseArray(hrAppCvConfDO.getFieldValue()).getJSONObject(0).getJSONArray("fields").stream().
+                        map(m -> JSONObject.parseObject(m.toString())).filter(f -> f.getIntValue("needed") == 0).collect(Collectors.toList());
+                for (JSONObject appCvConfig : appCvConfigJson) {
+                    Object customResult = "";
+                    if (appCvConfig.containsKey("map")) {
+                        // 复合字段校验
+                        String mappingFiled = appCvConfig.getString("map");
+                        if (mappingFiled.contains(".")) {
+                            String[] mappingStr = mappingFiled.split(".", 2);
+                            customResult = mappingStr[0].startsWith("user") ? userDao.customSelect(mappingStr[0], mappingStr[1], profileProfile.getUserId()) : profileOtherDao.customSelect(mappingStr[0], mappingStr[1], profileProfile.getId());
+                        } else {
+                            return ResponseUtils.fail("自定义字段"+appCvConfig.getString("field_name")+"为空");
+                        }
+                    } else {
+                        // 普通字段校验
+                        if (profileOtherJson.containsKey(appCvConfig.getString("field_name"))) {
+                            customResult = profileOtherJson.get(appCvConfig.getString("field_name"));
+                        } else {
+                            return ResponseUtils.fail("自定义字段"+appCvConfig.getString("field_name")+"为空");
+                        }
+                    }
+                    if (!Pattern.matches(appCvConfig.getString("validate_re"), String.valueOf(customResult))) {
+                        return ResponseUtils.fail("自定义字段"+appCvConfig.getString("field_name")+"校验失败");
+                    }
+                }
+            }
+        }
+        return ResponseUtils.success("");
     }
 }

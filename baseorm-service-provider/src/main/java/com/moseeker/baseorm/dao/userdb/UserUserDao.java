@@ -330,4 +330,10 @@ public class UserUserDao extends JooqCrudImpl<UserUserDO, UserUserRecord> {
         com.moseeker.common.util.query.Query query = new Query.QueryBuilder().where(UserUser.USER_USER.ID.getName(),userId).buildQuery();
         return getData(query);
     }
+
+    public Object customSelect(String tableName, String selectColumn, int userId) {
+        String sql = "select " + selectColumn + " from " + tableName + " where id = " + userId;
+        Record result = create.fetchOne(sql);
+        return result.get(selectColumn);
+    }
 }

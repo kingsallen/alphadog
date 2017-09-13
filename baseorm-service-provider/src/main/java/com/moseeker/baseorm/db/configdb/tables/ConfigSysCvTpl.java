@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSysCvTpl extends TableImpl<ConfigSysCvTplRecord> {
 
-    private static final long serialVersionUID = 929383872;
+    private static final long serialVersionUID = 1393772249;
 
     /**
      * The reference instance of <code>configdb.config_sys_cv_tpl</code>
@@ -122,9 +122,9 @@ public class ConfigSysCvTpl extends TableImpl<ConfigSysCvTplRecord> {
     public final TableField<ConfigSysCvTplRecord, String> MAP = createField("map", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "与profile的映射关系");
 
     /**
-     * The column <code>configdb.config_sys_cv_tpl.dict_constant_id</code>. 下拉选项关联字典表
+     * The column <code>configdb.config_sys_cv_tpl.constant_parent_code</code>.
      */
-    public final TableField<ConfigSysCvTplRecord, Integer> DICT_CONSTANT_ID = createField("dict_constant_id", org.jooq.impl.SQLDataType.INTEGER, this, "下拉选项关联字典表");
+    public final TableField<ConfigSysCvTplRecord, Integer> CONSTANT_PARENT_CODE = createField("constant_parent_code", org.jooq.impl.SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>configdb.config_sys_cv_tpl.parent_id</code>. 复合字段关联

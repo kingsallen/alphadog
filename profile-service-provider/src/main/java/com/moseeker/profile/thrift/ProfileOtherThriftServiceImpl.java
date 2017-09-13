@@ -1,7 +1,6 @@
 package com.moseeker.profile.thrift;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.NameFilter;
 import com.alibaba.fastjson.serializer.PropertyFilter;
 import com.moseeker.baseorm.dao.configdb.ConfigSysCvTplDao;
 import com.moseeker.baseorm.dao.dictdb.DictConstantDao;
@@ -10,16 +9,16 @@ import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.profile.service.impl.ProfileService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.config.ConfigCustomMetaData;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictConstantDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileOtherDO;
 import com.moseeker.thrift.gen.profile.service.ProfileOtherThriftService;
-import javax.naming.NamingEnumeration;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.thrift.TException;
-import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +44,9 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
 
     @Autowired
     private DictConstantDao dictConstantDao;
+
+    @Autowired
+    private ProfileService profileService;
 
     @Override
     public List<ProfileOtherDO> getResources(CommonQuery query) throws TException {
@@ -173,9 +175,9 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
             Query.QueryBuilder queryBuilder = new Query.QueryBuilder().where("company_id", companyId);
             configCustomMetaDatas = configSysCvTplDao.getDatas(queryBuilder.buildQuery(), ConfigCustomMetaData.class);
             if (configCustomMetaDatas != null && configCustomMetaDatas.size() > 0) {
-                configCustomMetaDatas.stream().filter(f -> f.getDictConstantId() != 0).forEach(e -> {
+                configCustomMetaDatas.stream().filter(f -> f.getConstantParentCode() != 0).forEach(e -> {
                     queryBuilder.clear();
-                    queryBuilder.where("parent_code", e.getDictConstantId());
+                    queryBuilder.where("parent_code", e.getConstantParentCode());
                     List<DictConstantDO> dictConstantDO = dictConstantDao.getDatas(queryBuilder.buildQuery());
                     String dictconstantValue = JSON.toJSONString(dictConstantDO, new PropertyFilter() {
                             @Override
@@ -187,7 +189,7 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
                             }
                         }
                     );
-                    e.setDictConstantValue(dictconstantValue);
+                    e.setConstantValue(dictconstantValue);
                 });
             }
         } catch (Exception e) {
@@ -200,4 +202,11 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
         }
         return configCustomMetaDatas;
     }
+
+    @Override
+    public Response checkProfileOther(int userId, int positionId) throws BIZException, TException {
+        return profileService.checkProfileOther(userId, positionId);
+    }
+
+
 }

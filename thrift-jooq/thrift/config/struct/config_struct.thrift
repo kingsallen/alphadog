@@ -34,6 +34,6 @@ struct ConfigCustomMetaData {
      10: optional string mapping,
      11: optional i32 parentId,
      12: optional string validateRe,
-     13: optional i32 dictConstantId,
-     14: optional string dictConstantValue
+     13: optional i32 constantParentCode,
+     14: optional string constantValue
 }

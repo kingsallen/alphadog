@@ -3,13 +3,11 @@ package com.moseeker.baseorm.dao.profiledb;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileOther;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileOtherRecord;
-import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileOtherDO;
-import com.moseeker.thrift.gen.profile.struct.CustomizeResume;
+import org.jooq.Record;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
-import java.text.ParseException;
 
 /**
  * Created by jack on 15/03/2017.
@@ -32,5 +30,11 @@ public class ProfileOtherDao extends JooqCrudImpl<ProfileOtherDO, ProfileOtherRe
                 ProfileOther.PROFILE_OTHER.PROFILE_ID.equal((int) (profileId))).execute();
 
         return count;
+    }
+
+    public Object customSelect(String tableName, String selectColumn, int profileId) {
+        String sql = "select " + selectColumn + " from " + tableName + " where profile_id = " + profileId;
+        Record result = create.fetchOne(sql);
+        return result.get(selectColumn);
     }
 }

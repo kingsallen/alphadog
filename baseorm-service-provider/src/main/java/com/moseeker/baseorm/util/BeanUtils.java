@@ -131,7 +131,7 @@ public class BeanUtils {
         }
 
         // 将strut对象的属性名和get方法提取成map
-        Map<String, Method> destGetMeths = Arrays.asList(dest.getClass().getMethods()).stream().filter(f -> f.getName().startsWith("get") || f.getName().startsWith("is")).collect(Collectors.toMap(k -> k.getName(), v -> v, (oldKey, newKey) -> newKey));
+        Map<String, Method> destGetMeths = Arrays.asList(dest.getClass().getMethods()).stream().filter(f -> (f.getName().startsWith("get") || f.getName().startsWith("is")) && f.getParameterTypes().length == 0).collect(Collectors.toMap(k -> k.getName(), v -> v, (oldKey, newKey) -> newKey));
         Map<String, Method> destMap = Arrays.asList(dest.getClass().getFields()).stream().filter(f -> !f.getName().equals("metaDataMap")).collect(MyCollectors.toMap(k -> humpName(k.getName()), v -> {
             String fileName = v.getName().substring(0, 1).toUpperCase() + v.getName().substring(1);
             Method isSetMethod;
@@ -230,7 +230,7 @@ public class BeanUtils {
         }
 
         // 将strut对象的属性名和set方法提取成map
-        Map<String, Method> destGetMeths = Arrays.asList(dest.getClass().getMethods()).stream().filter(f -> f.getName().startsWith("set")).collect(Collectors.toMap(k -> k.getName(), v -> v, (oldKey, newKey) -> newKey));
+        Map<String, Method> destGetMeths = Arrays.asList(dest.getClass().getMethods()).stream().filter(f -> f.getName().startsWith("set") && f.getParameterTypes().length == 1).collect(Collectors.toMap(k -> k.getName(), v -> v, (oldKey, newKey) -> newKey));
         Map<String, Method> destMap = Arrays.asList(dest.getClass().getFields()).stream().filter(f -> !f.getName().equals("metaDataMap")).collect(MyCollectors.toMap(k -> humpName(k.getName()), v -> {
             String fileName = v.getName().substring(0, 1).toUpperCase() + v.getName().substring(1);
             if (destGetMeths.containsKey("set".concat(fileName))) {

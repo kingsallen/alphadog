@@ -361,7 +361,7 @@ public class CompanyController {
      */
     @RequestMapping(value = "/groupcompanies/{companyId}", method = RequestMethod.GET)
     @ResponseBody
-    public String getGroupCompanies(@PathVariable int companyId, HttpServletRequest request) {
+    public String getGroupCompanies(@PathVariable("companyId") int companyId, HttpServletRequest request) {
         try {
             List<CompanyForVerifyEmployee> companyForVerifyEmployeeList = companyServices.getGroupCompanies(companyId);
             return ResponseLogNotification.success(request,

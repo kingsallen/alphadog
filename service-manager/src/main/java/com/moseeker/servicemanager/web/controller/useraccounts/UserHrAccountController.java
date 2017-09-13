@@ -1,6 +1,7 @@
 package com.moseeker.servicemanager.web.controller.useraccounts;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileOther;
@@ -20,6 +21,7 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.config.ConfigCustomMetaData;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrAppExportFieldsDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
@@ -32,12 +34,14 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.http.RequestLine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.RequestContextListener;
 
 /**
  * HR账号服务
@@ -990,6 +994,36 @@ public class UserHrAccountController {
             int companyId = params.getInt("companyId", 0);
             List<ConfigCustomMetaData> list = profileOtherService.getCustomMetaData(companyId);
             return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(JSONObject.toJSONString(list, BeanUtils.profilter, SerializerFeature.WriteNullNumberAsZero, SerializerFeature.WriteNullStringAsEmpty)));
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     * 获取自定义申请导出字段
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/hraccount/export/fields", method = RequestMethod.GET)
+    @ResponseBody
+    public String getExportFields(HttpServletRequest request) {
+        try {
+            ValidateUtil vu = new ValidateUtil();
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int companyId = params.getInt("companyId", 0);
+            int userHrAccountId = params.getInt("userHrAccountId", 0);
+            vu.addIntTypeValidate("companyId", companyId, null, null, 1, Integer.MAX_VALUE);
+            String message = vu.validate();
+            if (StringUtils.isNullOrEmpty(message)) {
+                List<HrAppExportFieldsDO> resultList = userHrAccountService.getExportFields(companyId, userHrAccountId);
+                return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(resultList)));
+            } else {
+                return ResponseLogNotification.failJson(request, message);
+            }
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {

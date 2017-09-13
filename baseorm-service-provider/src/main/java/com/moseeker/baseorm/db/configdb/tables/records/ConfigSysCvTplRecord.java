@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSysCvTplRecord extends UpdatableRecordImpl<ConfigSysCvTplRecord> implements Record17<Integer, String, String, Integer, String, Integer, Integer, Timestamp, Timestamp, Integer, Integer, Integer, String, String, Integer, Integer, String> {
 
-    private static final long serialVersionUID = 509525538;
+    private static final long serialVersionUID = -1373646981;
 
     /**
      * Setter for <code>configdb.config_sys_cv_tpl.id</code>.
@@ -229,16 +229,16 @@ public class ConfigSysCvTplRecord extends UpdatableRecordImpl<ConfigSysCvTplReco
     }
 
     /**
-     * Setter for <code>configdb.config_sys_cv_tpl.dict_constant_id</code>. 下拉选项关联字典表
+     * Setter for <code>configdb.config_sys_cv_tpl.constant_parent_code</code>.
      */
-    public void setDictConstantId(Integer value) {
+    public void setConstantParentCode(Integer value) {
         set(14, value);
     }
 
     /**
-     * Getter for <code>configdb.config_sys_cv_tpl.dict_constant_id</code>. 下拉选项关联字典表
+     * Getter for <code>configdb.config_sys_cv_tpl.constant_parent_code</code>.
      */
-    public Integer getDictConstantId() {
+    public Integer getConstantParentCode() {
         return (Integer) get(14);
     }
 
@@ -419,7 +419,7 @@ public class ConfigSysCvTplRecord extends UpdatableRecordImpl<ConfigSysCvTplReco
      */
     @Override
     public Field<Integer> field15() {
-        return ConfigSysCvTpl.CONFIG_SYS_CV_TPL.DICT_CONSTANT_ID;
+        return ConfigSysCvTpl.CONFIG_SYS_CV_TPL.CONSTANT_PARENT_CODE;
     }
 
     /**
@@ -555,7 +555,7 @@ public class ConfigSysCvTplRecord extends UpdatableRecordImpl<ConfigSysCvTplReco
      */
     @Override
     public Integer value15() {
-        return getDictConstantId();
+        return getConstantParentCode();
     }
 
     /**
@@ -705,7 +705,7 @@ public class ConfigSysCvTplRecord extends UpdatableRecordImpl<ConfigSysCvTplReco
      */
     @Override
     public ConfigSysCvTplRecord value15(Integer value) {
-        setDictConstantId(value);
+        setConstantParentCode(value);
         return this;
     }
 
@@ -766,7 +766,7 @@ public class ConfigSysCvTplRecord extends UpdatableRecordImpl<ConfigSysCvTplReco
     /**
      * Create a detached, initialised ConfigSysCvTplRecord
      */
-    public ConfigSysCvTplRecord(Integer id, String fieldName, String fieldTitle, Integer fieldType, String fieldValue, Integer priority, Integer isBasic, Timestamp createTime, Timestamp updateTime, Integer disable, Integer companyId, Integer required, String fieldDescription, String map, Integer dictConstantId, Integer parentId, String validateRe) {
+    public ConfigSysCvTplRecord(Integer id, String fieldName, String fieldTitle, Integer fieldType, String fieldValue, Integer priority, Integer isBasic, Timestamp createTime, Timestamp updateTime, Integer disable, Integer companyId, Integer required, String fieldDescription, String map, Integer constantParentCode, Integer parentId, String validateRe) {
         super(ConfigSysCvTpl.CONFIG_SYS_CV_TPL);
 
         set(0, id);
@@ -783,7 +783,7 @@ public class ConfigSysCvTplRecord extends UpdatableRecordImpl<ConfigSysCvTplReco
         set(11, required);
         set(12, fieldDescription);
         set(13, map);
-        set(14, dictConstantId);
+        set(14, constantParentCode);
         set(15, parentId);
         set(16, validateRe);
     }
