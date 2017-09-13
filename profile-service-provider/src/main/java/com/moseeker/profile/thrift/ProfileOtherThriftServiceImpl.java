@@ -172,7 +172,7 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
     public List<ConfigCustomMetaData> getCustomMetaData(int companyId) throws BIZException, TException {
         List<ConfigCustomMetaData> configCustomMetaDatas = new ArrayList<>();
         try {
-            Query.QueryBuilder queryBuilder = new Query.QueryBuilder().where("company_id", companyId);
+            Query.QueryBuilder queryBuilder = new Query.QueryBuilder().where("company_id", companyId).or("company_id", 0);
             queryBuilder.and("disable", 0);
             queryBuilder.orderBy("priority");
             configCustomMetaDatas = configSysCvTplDao.getDatas(queryBuilder.buildQuery(), ConfigCustomMetaData.class);
