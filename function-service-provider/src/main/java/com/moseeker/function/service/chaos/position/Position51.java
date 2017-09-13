@@ -282,7 +282,7 @@ public class Position51 implements Serializable {
         position51.setEmail(positionInfo.getEmail());
         position51.setStop_date(positionInfo.getStop_date());
         position51.setChannel(positionInfo.getChannel());
-        position51.setType_code(positionInfo.getType_code());
+        position51.setType_code(positionInfo.getWork_type());
         position51.setJob_id(positionInfo.getJob_id());
         position51.setDepartment(positionInfo.getDepartment());
         position51.setAccount_id(positionInfo.getAccount_id());

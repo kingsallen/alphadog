@@ -27,34 +27,47 @@ public abstract class ExecuteTask {
 
     static Logger logger = LoggerFactory.getLogger(ExecuteTask.class);
 
-    static ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil.getInstance();
-
-    static List<String> mails = new ArrayList<>();
-
     @Autowired
     HrCompanyDao companyDao;
 
     @Autowired
     private HRThirdPartyAccountDao hrThirdPartyAccountDao;
 
+    static List<String> devMails = new ArrayList<>();
+
+    static List<String> mails = new ArrayList<>();
 
     static {
+        mails = getEmails("account_sync.email");
+        devMails = getEmails("account_sync.email.dev");
+    }
+
+    private static String getConfig(String key) {
         try {
-            propertiesUtils.loadResource("setting.properties");
-            String emailConfig = propertiesUtils.get("THIRD_PARTY_ACCOUNT_SYNC_EMAIL", String.class);
-
-            if (StringUtils.isNotNullOrEmpty(emailConfig)) {
-
-                String[] emailArrays = emailConfig.split(",");
-
-                for (String s : emailArrays) {
-                    mails.add(s);
-                }
-            }
+            ConfigPropertiesUtil configUtils = ConfigPropertiesUtil.getInstance();
+            configUtils.loadResource("setting.properties");
+            return configUtils.get(key, String.class);
         } catch (Exception e) {
             e.printStackTrace();
-            logger.error(e.getMessage(), e);
         }
+        return null;
+    }
+
+    private static List<String> getEmails(String configKey) {
+        String confitStr = getConfig(configKey);
+        if (confitStr == null) {
+            return new ArrayList<>();
+        }
+
+        String[] emailArrays = confitStr.split(",");
+
+        List<String> emails = new ArrayList<>();
+
+        for (String s : emailArrays) {
+            emails.add(s);
+        }
+
+        return emails;
     }
 
     /**
@@ -97,12 +110,16 @@ public abstract class ExecuteTask {
             return;
         }
         if (hrThirdPartyAccount.getBinding() == 6 || hrThirdPartyAccount.getBinding() == 7) {
-            sendFailureMail(hrThirdPartyAccount, extras);
+            //发邮件cs
+            sendFailureMail(mails, hrThirdPartyAccount, extras);
+        } else if (hrThirdPartyAccount.getBinding() != 1) {
+            //发邮件dev
+            sendFailureMail(devMails, hrThirdPartyAccount, extras);
         }
     }
 
     //发送同步失败的邮件
-    public void sendFailureMail(HrThirdPartyAccountDO thirdPartyAccount, Map<String, String> extras) {
+    public void sendFailureMail(List<String> mails, HrThirdPartyAccountDO thirdPartyAccount, Map<String, String> extras) {
         logger.info("发送同步或刷新错误的邮件:syncType{}:thirdPartyAccount:{}", JSON.toJSONString(thirdPartyAccount));
 
         if (mails == null || mails.size() == 0) {

@@ -265,6 +265,7 @@ public class ChaosServiceImpl {
 
             position.getPosition_info().setEmail("cv_" + position.getPosition_id() + email);
 
+            logger.info("synchronize positions before change :" + positions);
             String positionJson = null;
 
             if (position.getChannel() == ChannelType.LIEPIN.getValue()) {

@@ -165,12 +165,17 @@ struct ThirdPartyPositionForSynchronization {
     17: string email="",
     18: string stop_date="",
     19: i32 channel,
-    20: string type_code="",
+    20: string work_type="",
     21: string job_id="",
     22: string pub_place_name="",
     23: string department="",
     24: i32 account_id,
-    25:  i32 feedback_period
+    25: i32 feedback_period,
+    26: string recruit_type,
+    27: i32 practice_salary,
+    28: i8 practice_per_week,
+    29: i8 practice_salary_unit
+    30: list<string> welfare
 }
 
 struct ThirdPartyPositionForSynchronizationWithAccount {
