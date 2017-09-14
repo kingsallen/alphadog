@@ -700,7 +700,7 @@ public class PositionPcService {
 			return  null;
 		}
 		List<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
-		List<JobPositionDO> positionList=jobPositionDao.getPositionList(positionIds);
+		List<JobPositionDO> positionList=this.orderPosition(positionIds,jobPositionDao.getPositionList(positionIds));
 		List<Integer> publisherIds=this.getPublisherIdList(positionList);
 		List<HrCompanyAccountDO> companyAccountList= getCompanyAccountList(publisherIds);
 		List<Integer> compantIds=this.getHrCompanyIdList(companyAccountList);
@@ -715,7 +715,20 @@ public class PositionPcService {
 		this.handleJDAndPosition(list, jdpictureList);
 		return list;
 	}
-
+	//将数据库中查出的职位列表按照原有顺序返回
+	private List<JobPositionDO> orderPosition(List<Integer> positionIds,List<JobPositionDO> positionList){
+		List<JobPositionDO> list=new ArrayList<>();
+		for(Integer pid:positionIds){
+			for(JobPositionDO DO:positionList){
+				int positionId=DO.getId();
+				if(pid==positionId){
+					list.add(DO);
+				}
+			}
+		}
+		return list;
+	}
+	//获取职位中的company_id列表
 	private List<Integer> getPositionCompanyId(List<JobPositionDO> positionList){
 		if(StringUtils.isEmptyList(positionList)){
 			return null;
