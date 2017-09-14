@@ -5,18 +5,21 @@ import com.alibaba.fastjson.serializer.PropertyFilter;
 import com.moseeker.baseorm.dao.configdb.ConfigSysCvTplDao;
 import com.moseeker.baseorm.dao.dictdb.DictConstantDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileOtherDao;
+import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysCvTplRecord;
 import com.moseeker.baseorm.tool.QueryConvert;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.profile.constants.ConfigCustomMetaVO;
 import com.moseeker.profile.service.impl.ProfileService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.config.ConfigCustomMetaData;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictConstantDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileOtherDO;
 import com.moseeker.thrift.gen.profile.service.ProfileOtherThriftService;
+import java.util.stream.Collectors;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -169,14 +172,15 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
     }
 
     @Override
-    public List<ConfigCustomMetaData> getCustomMetaData(int companyId) throws BIZException, TException {
-        List<ConfigCustomMetaData> configCustomMetaDatas = new ArrayList<>();
+    public Response getCustomMetaData(int companyId) throws BIZException, TException {
+        List<ConfigCustomMetaVO> configCustomMetaDatas = new ArrayList<>();
         try {
             Query.QueryBuilder queryBuilder = new Query.QueryBuilder().where("company_id", companyId).or("company_id", 0);
             queryBuilder.and("disable", 0);
             queryBuilder.orderBy("priority");
-            configCustomMetaDatas = configSysCvTplDao.getDatas(queryBuilder.buildQuery(), ConfigCustomMetaData.class);
-            if (configCustomMetaDatas != null && configCustomMetaDatas.size() > 0) {
+            List<ConfigSysCvTplRecord> configSysCvTplRecordList = configSysCvTplDao.getRecords(queryBuilder.buildQuery());
+            if (configSysCvTplRecordList != null && configSysCvTplRecordList.size() > 0) {
+                configCustomMetaDatas = configSysCvTplRecordList.stream().map(m -> BeanUtils.DBToBean(m, ConfigCustomMetaVO.class)).collect(Collectors.toList());
                 configCustomMetaDatas.stream().filter(f -> f.getConstantParentCode() != 0).forEach(e -> {
                     queryBuilder.clear();
                     queryBuilder.where("parent_code", e.getConstantParentCode());
@@ -202,13 +206,11 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
                 throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
             }
         }
-        return configCustomMetaDatas;
+        return ResponseUtils.success(configCustomMetaDatas);
     }
 
     @Override
     public Response checkProfileOther(int userId, int positionId) throws BIZException, TException {
         return profileService.checkProfileOther(userId, positionId);
     }
-
-
 }

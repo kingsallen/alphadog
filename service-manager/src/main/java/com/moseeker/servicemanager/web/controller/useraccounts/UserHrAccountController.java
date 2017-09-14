@@ -992,8 +992,7 @@ public class UserHrAccountController {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             int companyId = params.getInt("companyId", 0);
-            List<ConfigCustomMetaData> list = profileOtherService.getCustomMetaData(companyId);
-            return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(JSONObject.toJSONString(list, BeanUtils.profilter, SerializerFeature.WriteNullNumberAsZero, SerializerFeature.WriteNullStringAsEmpty)));
+            return ResponseLogNotification.success(request, profileOtherService.getCustomMetaData(companyId));
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
