@@ -13,6 +13,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dict.service.DictCountryService;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 国家字典数据服务
@@ -29,7 +30,6 @@ public class DictCountryServiceImpl implements DictCountryService.Iface {
 
     @Override
     public Response getDictCountry(CommonQuery query) throws TException {
-
         Response res=service.getDictCountry(QueryConvert.commonQueryConvertToQuery(query));
         return res;
 
