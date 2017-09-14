@@ -18,7 +18,7 @@ public class ConfigCustomMetaVO {
     public int parentId; // optional
     public java.lang.String validateRe; // optional
     public int constantParentCode; // optional
-    public java.lang.String constantValue; // optional
+    public java.lang.String constantValue = ""; // optional
 
     public int getId() {
         return id;
