@@ -5,6 +5,7 @@ import com.moseeker.baseorm.dao.dictdb.DictCountryDao;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCountryPojo;
 import org.apache.thrift.TException;
@@ -31,9 +32,9 @@ public class DictCountryService {
     public DictCountryDao dictCountryDao;
 
     @CounterIface
-    public Response getDictCountry() throws TException {
+    public Response getDictCountry(Query query) throws TException {
         try{
-            List<DictCountryPojo> dictConstantList = dictCountryDao.getDictCountry();
+            List<DictCountryPojo> dictConstantList = dictCountryDao.getDatas(query,DictCountryPojo.class);
             return ResponseUtils.success(dictConstantList);
         }catch (Exception e){
             log.error(e.getMessage(), e);

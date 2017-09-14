@@ -4,6 +4,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.servicemanager.common.ParamUtils;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,6 +36,7 @@ public class DictCountryController {
     @ResponseBody
     public String get(HttpServletRequest request, HttpServletResponse response) {
         try {
+            CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
             Response result = dictCountryService.getDictCountry();
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
