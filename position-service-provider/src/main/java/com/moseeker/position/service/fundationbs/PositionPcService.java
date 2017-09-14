@@ -5,16 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import com.moseeker.baseorm.dao.analyticsd.StJobSimilarityDao;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.*;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
-import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
-import com.moseeker.baseorm.pojo.RecommendedPositonPojo;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.query.SelectOp;
-
 import com.moseeker.entity.PcRevisionEntity;
 import com.moseeker.thrift.gen.dao.struct.analytics.StJobSimilarityDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
@@ -22,14 +18,12 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobCustomDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobOccupationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionExtDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
-import com.moseeker.thrift.gen.position.struct.JobPositionExt;
 import org.apache.thrift.TException;
 import org.apache.thrift.TSerializer;
 import org.apache.thrift.protocol.TSimpleJSONProtocol;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.campaigndb.CampaignPcRecommendCompanyDao;
 import com.moseeker.baseorm.dao.campaigndb.CampaignPcRecommendPositionDao;
@@ -457,6 +451,21 @@ public class PositionPcService {
 	private HrCompanyDO handleCompanyData(int publisher){
 		HrCompanyAccountDO accountDO=this.getSingleCompanyId(publisher);
 		HrCompanyDO companyDO=this.getSingleCompany(accountDO.getCompanyId());
+		if(companyDO!=null){
+			int parentId=companyDO.getParentId();
+			if(parentId!=0){
+				HrCompanyDO companyParent=this.getSingleCompany(parentId);
+				if(StringUtils.isNullOrEmpty(companyDO.getImpression())){
+					String impression=companyParent.getImpression();
+					companyDO.setImpression(impression);
+				}
+				if(StringUtils.isNullOrEmpty(companyDO.getBanner())){
+					String banner=companyParent.getBanner();
+					companyDO.setImpression(banner);
+				}
+			}
+		}
+
 		return companyDO;
 	}
 	/*
@@ -693,8 +702,8 @@ public class PositionPcService {
 	}
 
 	/*
-	 总体上处理数据
-	  */
+     总体上处理数据
+      */
 	public List<Map<String,Object>> handleDataJDAndPosition(List<Integer> positionIds,int type) throws TException{
 		if(StringUtils.isEmptyList(positionIds)){
 			return  null;
@@ -706,6 +715,7 @@ public class PositionPcService {
 		List<Integer> compantIds=this.getHrCompanyIdList(companyAccountList);
 		List<HrCompanyDO> companyList=hrCompanyDao.getHrCompanyByCompanyIds(compantIds);
 		companyList=this.filterCompanyList(companyList);
+		companyList=this.handlerCompanys(companyList);
 		List<Map<String,Integer>> publisherAndCompanyId=getPublisherCompanyId(companyAccountList);
 		List<Integer> teamIds=this.getTeamIdList(positionList);
 		List<HrTeamDO> teamList=hrTeamDao.getTeamList(teamIds);
@@ -835,6 +845,7 @@ public class PositionPcService {
 		if(StringUtils.isEmptyList(companyList)){
 			return  null;
 		}
+		companyList=this.handlerCompanys(companyList);
 		Map<Integer,List<Integer>> companyPulisher=pcRevisionEntity.handleCompanyPublisher(companyIds);
 		Map<Integer,Integer> mapTeamNum=this.getTeamNum(companyList, companyPulisher);
 		List<Integer> companyids=this.getCompanyIds(companyList);
@@ -843,6 +854,7 @@ public class PositionPcService {
 		List<Map<String,Object>> list=handleDataForCompanyRecommend(companyList,companyPulisher,mapTeamNum,jdlist,companyPositionCityData);
 		return list;
 	}
+
 	//获取推荐公司下边团队的数量
 	private Map<Integer,Integer> getTeamNum(List<HrCompanyDO> companyList, Map<Integer,List<Integer>> companyPulisher){
 		if(StringUtils.isEmptyList(companyList)){
@@ -887,7 +899,7 @@ public class PositionPcService {
 		if(childCompanyPublisherMap!=null||!childCompanyPublisherMap.isEmpty()){
 			List<Integer> publisherList=pcRevisionEntity.getAllPulisherByCompanyPublisher(childCompanyPublisherMap);
 			List<Map<String,Object>> mapList=getChildTeamNumBypublisherList(publisherList);
-			Map<Integer,Integer> result=this.handleChildTeamNum(mapList,companyPulisher);
+			Map<Integer,Integer> result=this.handleChildTeamNum(mapList,childCompanyPublisherMap);
 			return result;
 		}
 		return null;
@@ -1027,7 +1039,6 @@ public class PositionPcService {
 		if(StringUtils.isEmptyList(list)){
 			return null;
 		}
-
 		List<HrCompanyDO> newList=new ArrayList<HrCompanyDO>();
 		for(HrCompanyDO companyDO:list){
 			int parentId=companyDO.getParentId();
@@ -1042,5 +1053,41 @@ public class PositionPcService {
 		}
 		return newList;
 	}
+	//处理impression和banner
+	private List<HrCompanyDO> handlerCompanys(List<HrCompanyDO> list){
+		if(StringUtils.isEmptyList(list)){
+			return null;
+		}
+		List<Integer> parentIdList=new ArrayList<Integer>();
+		for(HrCompanyDO DO:list){
+			int parentId=DO.getParentId();
+			if(parentId!=0){
+				parentIdList.add(parentId);
+			}
+		}
+		if(StringUtils.isEmptyList(parentIdList)){
+			return list;
+		}
+		List<HrCompanyDO> parentCompanyDOList=hrCompanyDao.getHrCompanyByCompanyIds(parentIdList);
+		if(StringUtils.isEmptyList(parentCompanyDOList)){
+			return list;
+		}
+		for(HrCompanyDO childDO:list){
+			int parentId=childDO.getParentId();
+			if(parentId!=0&&(StringUtils.isNullOrEmpty(childDO.getImpression())||StringUtils.isNullOrEmpty(childDO.getBanner()))){
+				for(HrCompanyDO parentDO:parentCompanyDOList){
+					if(parentDO.getId()==parentId){
+						if(StringUtils.isNullOrEmpty(childDO.getImpression())){
+							childDO.setImpression(parentDO.getImpression());
+						}
+						if(StringUtils.isNullOrEmpty(childDO.getBanner())){
+							childDO.setBanner(parentDO.getBanner());
+						}
+					}
 
+				}
+			}
+		}
+		return list;
+	}
 }

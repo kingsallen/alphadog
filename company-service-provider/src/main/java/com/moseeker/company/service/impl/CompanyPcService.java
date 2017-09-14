@@ -10,7 +10,6 @@ import com.moseeker.common.util.query.*;
 import com.moseeker.entity.PcRevisionEntity;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
-import org.apache.thrift.TException;
 import org.apache.thrift.TSerializer;
 import org.apache.thrift.protocol.TSimpleJSONProtocol;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,7 +73,6 @@ public class CompanyPcService {
         this.putMapInNewMap(positionMap,map);
         return map;
     }
-
     /*
      获取团队列表
      */
@@ -230,6 +228,22 @@ public class CompanyPcService {
         if(company==null){
             return null;
         }
+
+        if(StringUtils.isNullOrEmpty(company.getImpression())&&StringUtils.isNullOrEmpty(company.getBanner())){
+            int parentId=company.getParentId();
+            if(parentId!=0){
+                HrCompanyDO companyParent=this.getHrCompany(parentId);
+                if(StringUtils.isNullOrEmpty(company.getImpression())){
+                    String impression=companyParent.getImpression();
+                    company.setImpression(impression);
+                }
+                if(StringUtils.isNullOrEmpty(company.getBanner())){
+                    String banner=companyParent.getBanner();
+                    company.setImpression(banner);
+                }
+            }
+        }
+
         String companyDOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(company);
         Map<String,Object> companyData= JSON.parseObject(companyDOs, Map.class);
         return companyData;
@@ -239,7 +253,6 @@ public class CompanyPcService {
      */
     private int  judgeJDOrCS(int confCompanyId){
         Map<String,Object> map=new HashMap<String,Object>();
-
         HrCompanyConfDO hrCompanyConfDO=getHrCompanyConf(confCompanyId);
         if(hrCompanyConfDO!=null){
             int newJdStatus=hrCompanyConfDO.getNewjdStatus();
@@ -300,8 +313,8 @@ public class CompanyPcService {
         return map;
     }
     /*
-    获取企业微信号配置
-     */
+        获取企业微信号配置
+         */
     private HrWxWechatDO  getHrWxWechatDO(int companyId){
         Query query=new Query.QueryBuilder().where("company_id",companyId).buildQuery();
         HrWxWechatDO DO=hrWxWechatDao.getData(query);
