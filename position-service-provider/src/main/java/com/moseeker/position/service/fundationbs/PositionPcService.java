@@ -461,7 +461,7 @@ public class PositionPcService {
 				}
 				if(StringUtils.isNullOrEmpty(companyDO.getBanner())){
 					String banner=companyParent.getBanner();
-					companyDO.setImpression(banner);
+					companyDO.setBanner(banner);
 				}
 			}
 		}

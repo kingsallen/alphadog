@@ -239,7 +239,7 @@ public class CompanyPcService {
                 }
                 if(StringUtils.isNullOrEmpty(company.getBanner())){
                     String banner=companyParent.getBanner();
-                    company.setImpression(banner);
+                    company.setBanner(banner);
                 }
             }
         }
