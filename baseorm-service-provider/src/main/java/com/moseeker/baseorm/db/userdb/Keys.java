@@ -106,6 +106,7 @@ public class Keys {
     public static final UniqueKey<UserHrAccountRecord> KEY_USER_HR_ACCOUNT_PRIMARY = UniqueKeys0.KEY_USER_HR_ACCOUNT_PRIMARY;
     public static final UniqueKey<UserHrAccountRecord> KEY_USER_HR_ACCOUNT_WXUSER_ID = UniqueKeys0.KEY_USER_HR_ACCOUNT_WXUSER_ID;
     public static final UniqueKey<UserPositionEmailRecord> KEY_USER_POSITION_EMAIL_PRIMARY = UniqueKeys0.KEY_USER_POSITION_EMAIL_PRIMARY;
+    public static final UniqueKey<UserPositionEmailRecord> KEY_USER_POSITION_EMAIL_USER_POSITION_EMAIL_USER_ID_UINDEX = UniqueKeys0.KEY_USER_POSITION_EMAIL_USER_POSITION_EMAIL_USER_ID_UINDEX;
     public static final UniqueKey<UserSearchConditionRecord> KEY_USER_SEARCH_CONDITION_PRIMARY = UniqueKeys0.KEY_USER_SEARCH_CONDITION_PRIMARY;
     public static final UniqueKey<UserSettingsRecord> KEY_USER_SETTINGS_PRIMARY = UniqueKeys0.KEY_USER_SETTINGS_PRIMARY;
     public static final UniqueKey<UserSettingsRecord> KEY_USER_SETTINGS_UID = UniqueKeys0.KEY_USER_SETTINGS_UID;
@@ -113,7 +114,7 @@ public class Keys {
     public static final UniqueKey<UserThirdpartyUserRecord> KEY_USER_THIRDPARTY_USER_PRIMARY = UniqueKeys0.KEY_USER_THIRDPARTY_USER_PRIMARY;
     public static final UniqueKey<UserThirdpartyUserRecord> KEY_USER_THIRDPARTY_USER_USER_ID = UniqueKeys0.KEY_USER_THIRDPARTY_USER_USER_ID;
     public static final UniqueKey<UserUserRecord> KEY_USER_USER_PRIMARY = UniqueKeys0.KEY_USER_USER_PRIMARY;
-    public static final UniqueKey<UserUserRecord> KEY_USER_USER_UK_USER_USERNAME = UniqueKeys0.KEY_USER_USER_UK_USER_USERNAME;
+    public static final UniqueKey<UserUserRecord> KEY_USER_USER_COUNTRYCODE_USERNAME = UniqueKeys0.KEY_USER_USER_COUNTRYCODE_USERNAME;
     public static final UniqueKey<UserViewedPositionRecord> KEY_USER_VIEWED_POSITION_PRIMARY = UniqueKeys0.KEY_USER_VIEWED_POSITION_PRIMARY;
     public static final UniqueKey<UserViewedPositionRecord> KEY_USER_VIEWED_POSITION_USER_POSITION_UNIQUE = UniqueKeys0.KEY_USER_VIEWED_POSITION_USER_POSITION_UNIQUE;
     public static final UniqueKey<UserWxUserRecord> KEY_USER_WX_USER_PRIMARY = UniqueKeys0.KEY_USER_WX_USER_PRIMARY;
@@ -166,6 +167,7 @@ public class Keys {
         public static final UniqueKey<UserHrAccountRecord> KEY_USER_HR_ACCOUNT_PRIMARY = createUniqueKey(UserHrAccount.USER_HR_ACCOUNT, "KEY_user_hr_account_PRIMARY", UserHrAccount.USER_HR_ACCOUNT.ID);
         public static final UniqueKey<UserHrAccountRecord> KEY_USER_HR_ACCOUNT_WXUSER_ID = createUniqueKey(UserHrAccount.USER_HR_ACCOUNT, "KEY_user_hr_account_wxuser_id", UserHrAccount.USER_HR_ACCOUNT.WXUSER_ID);
         public static final UniqueKey<UserPositionEmailRecord> KEY_USER_POSITION_EMAIL_PRIMARY = createUniqueKey(UserPositionEmail.USER_POSITION_EMAIL, "KEY_user_position_email_PRIMARY", UserPositionEmail.USER_POSITION_EMAIL.ID);
+        public static final UniqueKey<UserPositionEmailRecord> KEY_USER_POSITION_EMAIL_USER_POSITION_EMAIL_USER_ID_UINDEX = createUniqueKey(UserPositionEmail.USER_POSITION_EMAIL, "KEY_user_position_email_user_position_email_user_id_uindex", UserPositionEmail.USER_POSITION_EMAIL.USER_ID);
         public static final UniqueKey<UserSearchConditionRecord> KEY_USER_SEARCH_CONDITION_PRIMARY = createUniqueKey(UserSearchCondition.USER_SEARCH_CONDITION, "KEY_user_search_condition_PRIMARY", UserSearchCondition.USER_SEARCH_CONDITION.ID);
         public static final UniqueKey<UserSettingsRecord> KEY_USER_SETTINGS_PRIMARY = createUniqueKey(UserSettings.USER_SETTINGS, "KEY_user_settings_PRIMARY", UserSettings.USER_SETTINGS.ID);
         public static final UniqueKey<UserSettingsRecord> KEY_USER_SETTINGS_UID = createUniqueKey(UserSettings.USER_SETTINGS, "KEY_user_settings_uid", UserSettings.USER_SETTINGS.USER_ID);
@@ -173,7 +175,7 @@ public class Keys {
         public static final UniqueKey<UserThirdpartyUserRecord> KEY_USER_THIRDPARTY_USER_PRIMARY = createUniqueKey(UserThirdpartyUser.USER_THIRDPARTY_USER, "KEY_user_thirdparty_user_PRIMARY", UserThirdpartyUser.USER_THIRDPARTY_USER.ID);
         public static final UniqueKey<UserThirdpartyUserRecord> KEY_USER_THIRDPARTY_USER_USER_ID = createUniqueKey(UserThirdpartyUser.USER_THIRDPARTY_USER, "KEY_user_thirdparty_user_user_id", UserThirdpartyUser.USER_THIRDPARTY_USER.USER_ID, UserThirdpartyUser.USER_THIRDPARTY_USER.SOURCE_ID);
         public static final UniqueKey<UserUserRecord> KEY_USER_USER_PRIMARY = createUniqueKey(UserUser.USER_USER, "KEY_user_user_PRIMARY", UserUser.USER_USER.ID);
-        public static final UniqueKey<UserUserRecord> KEY_USER_USER_UK_USER_USERNAME = createUniqueKey(UserUser.USER_USER, "KEY_user_user_uk_user_username", UserUser.USER_USER.USERNAME);
+        public static final UniqueKey<UserUserRecord> KEY_USER_USER_COUNTRYCODE_USERNAME = createUniqueKey(UserUser.USER_USER, "KEY_user_user_countrycode_username", UserUser.USER_USER.COUNTRY_CODE, UserUser.USER_USER.USERNAME);
         public static final UniqueKey<UserViewedPositionRecord> KEY_USER_VIEWED_POSITION_PRIMARY = createUniqueKey(UserViewedPosition.USER_VIEWED_POSITION, "KEY_user_viewed_position_PRIMARY", UserViewedPosition.USER_VIEWED_POSITION.ID);
         public static final UniqueKey<UserViewedPositionRecord> KEY_USER_VIEWED_POSITION_USER_POSITION_UNIQUE = createUniqueKey(UserViewedPosition.USER_VIEWED_POSITION, "KEY_user_viewed_position_user_position_unique", UserViewedPosition.USER_VIEWED_POSITION.USER_ID, UserViewedPosition.USER_VIEWED_POSITION.POSITION_ID);
         public static final UniqueKey<UserWxUserRecord> KEY_USER_WX_USER_PRIMARY = createUniqueKey(UserWxUser.USER_WX_USER, "KEY_user_wx_user_PRIMARY", UserWxUser.USER_WX_USER.ID);

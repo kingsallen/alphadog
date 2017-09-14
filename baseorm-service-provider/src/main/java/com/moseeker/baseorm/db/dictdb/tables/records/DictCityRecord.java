@@ -11,6 +11,8 @@ import javax.annotation.Generated;
 import org.jooq.Field;
 import org.jooq.Record6;
 import org.jooq.Row6;
+import org.jooq.UpdatableRecord;
+import org.jooq.impl.TableRecordImpl;
 import org.jooq.impl.UpdatableRecordImpl;
 
 

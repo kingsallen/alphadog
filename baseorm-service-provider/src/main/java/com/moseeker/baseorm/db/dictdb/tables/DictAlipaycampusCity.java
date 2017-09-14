@@ -5,7 +5,11 @@ package com.moseeker.baseorm.db.dictdb.tables;
 
 
 import com.moseeker.baseorm.db.dictdb.Dictdb;
+import com.moseeker.baseorm.db.dictdb.Keys;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictAlipaycampusCityRecord;
+
+import java.util.Arrays;
+import java.util.List;
 
 import javax.annotation.Generated;
 
@@ -13,6 +17,7 @@ import org.jooq.Field;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
+import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
 
 
@@ -29,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictAlipaycampusCity extends TableImpl<DictAlipaycampusCityRecord> {
 
-    private static final long serialVersionUID = -74870625;
+    private static final long serialVersionUID = 1547959317;
 
     /**
      * The reference instance of <code>dictdb.dict_alipaycampus_city</code>
@@ -47,7 +52,7 @@ public class DictAlipaycampusCity extends TableImpl<DictAlipaycampusCityRecord> 
     /**
      * The column <code>dictdb.dict_alipaycampus_city.id</code>.
      */
-    public final TableField<DictAlipaycampusCityRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER, this, "");
+    public final TableField<DictAlipaycampusCityRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>dictdb.dict_alipaycampus_city.name</code>.
@@ -92,6 +97,22 @@ public class DictAlipaycampusCity extends TableImpl<DictAlipaycampusCityRecord> 
     @Override
     public Schema getSchema() {
         return Dictdb.DICTDB;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UniqueKey<DictAlipaycampusCityRecord> getPrimaryKey() {
+        return Keys.KEY_DICT_ALIPAYCAMPUS_CITY_PRIMARY;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<UniqueKey<DictAlipaycampusCityRecord>> getKeys() {
+        return Arrays.<UniqueKey<DictAlipaycampusCityRecord>>asList(Keys.KEY_DICT_ALIPAYCAMPUS_CITY_PRIMARY);
     }
 
     /**
