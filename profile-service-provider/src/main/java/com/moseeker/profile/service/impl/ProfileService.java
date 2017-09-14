@@ -16,15 +16,20 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.query.Query;
-import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
+import com.moseeker.entity.ProfileEntity;
+import com.moseeker.entity.pojo.profile.*;
+import com.moseeker.entity.pojo.resume.*;
+import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
+import com.moseeker.profile.utils.DegreeSource;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.struct.Profile;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -52,7 +57,7 @@ public class ProfileService {
     private UserSettingsDao settingDao;
 
     @Autowired
-    private ProfileCompletenessImpl completenessImpl;
+    private ProfileEntity profileEntity;
 
     public Response getResource(Query query) throws TException {
         ProfileProfileRecord record = null;
@@ -60,7 +65,7 @@ public class ProfileService {
         if (record != null) {
             Profile s = dao.recordToData(record, Profile.class);
             if (record.getCompleteness().intValue() == 0 || record.getCompleteness().intValue() == 10) {
-                int completeness = completenessImpl.getCompleteness(record.getUserId().intValue(), record.getUuid(),
+                int completeness = profileEntity.getCompleteness(record.getUserId().intValue(), record.getUuid(),
                         record.getId().intValue());
                 s.setCompleteness(completeness);
             }
@@ -92,13 +97,13 @@ public class ProfileService {
     }
 
     public Response getCompleteness(int userId, String uuid, int profileId) throws TException {
-        int totalComplementness = completenessImpl.getCompleteness(userId, uuid, profileId);
+        int totalComplementness = profileEntity.getCompleteness(userId, uuid, profileId);
         return ResponseUtils.success(totalComplementness);
     }
 
     public Response reCalculateUserCompleteness(int userId, String mobile) throws TException {
-        completenessImpl.reCalculateUserUserByUserIdOrMobile(userId, mobile);
-        int totalComplementness = completenessImpl.getCompleteness(userId, null, 0);
+        profileEntity.reCalculateUserUserByUserIdOrMobile(userId, mobile);
+        int totalComplementness = profileEntity.getCompleteness(userId, null, 0);
         return ResponseUtils.success(totalComplementness);
     }
 
@@ -107,8 +112,8 @@ public class ProfileService {
         qu.addEqualFilter("id", String.valueOf(id));
         UserSettingsRecord record = settingDao.getRecord(qu);
         if (record != null) {
-            completenessImpl.reCalculateUserUserByUserIdOrMobile(record.getUserId().intValue(), null);
-            int totalComplementness = completenessImpl.getCompleteness(record.getUserId().intValue(), null, 0);
+            profileEntity.reCalculateUserUserByUserIdOrMobile(record.getUserId().intValue(), null);
+            int totalComplementness = profileEntity.getCompleteness(record.getUserId().intValue(), null, 0);
             return ResponseUtils.success(totalComplementness);
         } else {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
@@ -128,7 +133,7 @@ public class ProfileService {
         int totalRow = dao.getCount(query);
         List<?> datas = dao.getDatas(query);
 
-        return ResponseUtils.success(ProfileUtils.getPagination(totalRow, query.getPageNum(), query.getPageSize(), datas));
+        return ResponseUtils.success(ProfileExtUtils.getPagination(totalRow, query.getPageNum(), query.getPageSize(), datas));
     }
 
     @Transactional
@@ -187,4 +192,141 @@ public class ProfileService {
         logger.info("profilesByApplication:{}", JSON.toJSONString(profileApplicationForm));
         return dao.getResourceByApplication(downloadUrl, password, profileApplicationForm);
     }
+
+
+    /**
+     * 解析简历
+     *
+     * @param uid
+     * @param fileName
+     * @param file
+     * @return
+     * @throws TException
+     */
+    public Response profileParser(int uid, String fileName, String file) throws TException {
+        ProfileObj profileObj = new ProfileObj();
+        try {
+            // 调用SDK得到结果
+            ResumeObj resumeObj = profileEntity.profileParser(fileName, file);
+            // 调用成功,开始转换对象
+            if (resumeObj.getStatus().getCode() == 200) {
+                // 项目经验
+                List<Projectexps> projectexps = new ArrayList<>();
+                if (resumeObj.getResult().getProj_exp_objs() != null && resumeObj.getResult().getProj_exp_objs().size() > 0) {
+                    for (ProjectexpObj projectexpObj : resumeObj.getResult().getProj_exp_objs()) {
+                        Projectexps project = new Projectexps();
+                        if (projectexpObj.getEnd_date() != null && projectexpObj.getEnd_date().equals("至今")) {
+                            project.setEndUntilNow(1);
+                        } else {
+                            project.setEndDate(projectexpObj.getEnd_date());
+                        }
+                        project.setStartDate(projectexpObj.getStart_date());
+                        // 职责
+                        project.setResponsibility(projectexpObj.getProj_resp());
+                        project.setDescription(projectexpObj.getProj_content());
+                        projectexps.add(project);
+                    }
+                }
+                profileObj.setProjectexps(projectexps);
+
+                // 教育经历
+                List<Education> educationList = new ArrayList<>();
+                if (resumeObj.getResult().getEducation_objs() != null && resumeObj.getResult().getEducation_objs().size() > 0) {
+                    for (EducationObj educationObj : resumeObj.getResult().getEducation_objs()) {
+                        Education education = new Education();
+                        if (educationObj.getEdu_degree() != null) {
+                            if (DegreeSource.intToEnum.get(educationObj.getEdu_degree()) != null) {
+                                education.setDegree(DegreeSource.intToEnum.get(educationObj.getEdu_degree()));
+                            } else {
+                                education.setDegree(0);
+                            }
+                        }
+                        // 学校名称
+                        education.setCollegeName(educationObj.getEdu_college());
+                        // 专业名称
+                        education.setMajorName(educationObj.getEdu_major());
+                        educationList.add(education);
+                    }
+                }
+                profileObj.setEducations(educationList);
+                // 技能
+                List<Skill> skills = new ArrayList<>();
+                if (resumeObj.getResult().getSkills_objs() != null && resumeObj.getResult().getSkills_objs().size() > 0) {
+                    for (SkillsObjs skillsObjs : resumeObj.getResult().getSkills_objs()) {
+                        Skill skill = new Skill();
+                        skill.setName(skillsObjs.getSkills_name());
+                        skills.add(skill);
+                    }
+                }
+                profileObj.setSkills(skills);
+
+                // 工作经验
+                List<Workexps> workexpsList = new ArrayList<>();
+                if (resumeObj.getResult().getJob_exp_objs() != null && resumeObj.getResult().getJob_exp_objs().size() > 0) {
+                    for (JobExpObj jobExpObj : resumeObj.getResult().getJob_exp_objs()) {
+                        Workexps workexps = new Workexps();
+                        Company company = new Company();
+                        company.setCompanyIndustry(jobExpObj.getJob_industry());
+                        company.setCompanyName(jobExpObj.getJob_cpy());
+                        company.setCompanyScale(Integer.valueOf(jobExpObj.getJob_cpy_size() == null ? "0" : jobExpObj.getJob_cpy_size()));
+                        workexps.setCompany(company);
+                        workexps.setDescription(jobExpObj.getJob_nature());
+                        workexps.setStartDate(jobExpObj.getStart_date());
+                        workexps.setEndDate(jobExpObj.getEnd_date());
+                        workexps.setJob(jobExpObj.getJob_position());
+                        workexpsList.add(workexps);
+                    }
+                }
+                profileObj.setWorkexps(workexpsList);
+                // 语言
+                List<Language> languageList = new ArrayList<>();
+                if (resumeObj.getResult().getLang_objs() != null && resumeObj.getResult().getLang_objs().size() > 0) {
+                    for (LangObj langObj : resumeObj.getResult().getLang_objs()) {
+                        Language language = new Language();
+                        language.setName(langObj.getLanguage_name());
+                        languageList.add(language);
+                    }
+                }
+                profileObj.setLanguages(languageList);
+
+                // 查询
+                UserUserRecord userUser = userDao.getUserById(uid);
+                if (userUser != null) {
+                    User user = new User();
+                    user.setEmail(userUser.getEmail());
+                    user.setMobile(String.valueOf(userUser.getMobile()));
+                    user.setUid(String.valueOf(uid));
+                    user.setName(userUser.getName());
+                    profileObj.setUser(user);
+                }
+
+
+                // 证书
+                List<Credential> credentialList = new ArrayList<>();
+                if (resumeObj.getResult().getCert_objs() != null && resumeObj.getResult().getCert_objs().size() > 0) {
+                    for (CertObj certObj : resumeObj.getResult().getCert_objs()) {
+                        Credential credential = new Credential();
+                        credential.setName(certObj.getLangcert_name());
+                        credentialList.add(credential);
+                    }
+                }
+                profileObj.setCredentials(credentialList);
+
+                // basic信息
+                Basic basic = new Basic();
+                basic.setCityName(resumeObj.getResult().getCity());
+                basic.setGender(resumeObj.getResult().getGender());
+                basic.setName(resumeObj.getResult().getName());
+                basic.setSelfIntroduction(resumeObj.getResult().getCont_my_desc());
+                basic.setBirth(resumeObj.getResult().getBirthday());
+                profileObj.setBasic(basic);
+
+                profileObj.setResumeObj(resumeObj);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseUtils.success(profileObj);
+    }
+
 }

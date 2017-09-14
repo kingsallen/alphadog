@@ -1,4 +1,4 @@
-package com.moseeker.profile.service.impl;
+package com.moseeker.entity.biz;
 
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.profiledb.*;
@@ -13,6 +13,7 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,20 +115,6 @@ public class ProfileCompletenessImpl {
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
-        }
-        return totalComplementness;
-    }
-
-    public int getCompleteness1(int userId, String uuid, int profileId) {
-        int totalComplementness = 0;
-        ProfileProfileRecord profileRecord = profileDao.getProfileByIdOrUserIdOrUUID(userId, profileId, uuid);
-        if (profileRecord == null) {
-            return calculateUserUserByUserId(userId);
-        }
-        try {
-            totalComplementness = reCalculateProfileCompleteness(profileRecord.getId().intValue());
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
         }
         return totalComplementness;
     }
@@ -431,7 +418,7 @@ public class ProfileCompletenessImpl {
 
     public int recalculateprofileLanguage(Integer profileId, int languageId) {
         int result = 0;
-        if (profileId == 0) {
+        if (profileId == null || profileId == 0) {
             QueryUtil qu = new QueryUtil();
             qu.addEqualFilter("id", String.valueOf(languageId));
             try {
@@ -544,10 +531,10 @@ public class ProfileCompletenessImpl {
     public int reCalculateProfileAward(Integer profileId, int awardId) {
         int result = 0;
         if (profileId == 0) {
-            QueryUtil qu = new QueryUtil();
-            qu.addEqualFilter("id", String.valueOf(awardId));
+            Query.QueryBuilder qu = new Query.QueryBuilder();
+            qu.where("id", awardId);
             try {
-                ProfileAwardsRecord awardRecord = awardsDao.getRecord(qu);
+                ProfileAwardsRecord awardRecord = awardsDao.getRecord(qu.buildQuery());
                 if (awardRecord != null && awardRecord.getProfileId() != null) {
                     profileId = awardRecord.getProfileId().intValue();
                 }

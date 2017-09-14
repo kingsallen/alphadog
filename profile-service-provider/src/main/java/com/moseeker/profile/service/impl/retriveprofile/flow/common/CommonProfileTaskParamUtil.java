@@ -1,9 +1,9 @@
 package com.moseeker.profile.service.impl.retriveprofile.flow.common;
 
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.profile.service.impl.retriveprofile.ExecutorParam;
 import com.moseeker.profile.service.impl.retriveprofile.executor.CouplerParamUtil;
-import com.moseeker.profile.service.impl.serviceutils.ProfilePojo;
 import org.springframework.stereotype.Component;
 
 /**

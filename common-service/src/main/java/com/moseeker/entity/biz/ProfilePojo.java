@@ -1,4 +1,4 @@
-package com.moseeker.profile.service.impl.serviceutils;
+package com.moseeker.entity.biz;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.profiledb.IntentionRecord;
@@ -66,12 +66,12 @@ public class ProfilePojo {
                 if (!org.apache.commons.lang.StringUtils.isNumeric(mobile)) {
                     userMap.remove("mobile");
                 }
-				if (userMap.get("email") != null) {
-					String email = String.valueOf(userMap.get("email"));
-					if (!FormCheck.isEmail(email)) {
+                if (userMap.get("email") != null) {
+					if (!FormCheck.isEmail((String)userMap.get("email"))) {
 						userMap.remove("email");
 					}
 				}
+
                 crawlerUser = profileUtils.mapToUserUserRecord(userMap);
                 pojo.setUserRecord(crawlerUser);
             }
@@ -252,6 +252,11 @@ public class ProfilePojo {
 				if (userMap.get("email") != null) {
 					String email = String.valueOf(userMap.get("email"));
 					if (!FormCheck.isEmail(email)) {
+						userMap.remove("email");
+					}
+				}
+				if (userMap.get("email") != null) {
+					if (!FormCheck.isEmail((String)userMap.get("email"))) {
 						userMap.remove("email");
 					}
 				}

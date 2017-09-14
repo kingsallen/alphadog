@@ -1,12 +1,8 @@
-package com.moseeker.profile.utils;
+package com.moseeker.entity.biz;
 
 import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
-import com.moseeker.common.util.StringUtils;
 import com.moseeker.baseorm.db.profiledb.tables.records.*;
-import com.moseeker.profile.constants.ValidationMessage;
-import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileCredentialsDO;
-import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileEducationDO;
-import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileOtherDO;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.profile.struct.*;
 
 public class ProfileValidation {
