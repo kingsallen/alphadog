@@ -693,29 +693,42 @@ public class PositionPcService {
 	 }
 
 	/*
-	 总体上处理数据
-	  */
-	 public List<Map<String,Object>> handleDataJDAndPosition(List<Integer> positionIds,int type) throws TException{
-		 if(StringUtils.isEmptyList(positionIds)){
-			 return  null;
-		 }
-		 List<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
-		 List<JobPositionDO> positionList=jobPositionDao.getPositionList(positionIds);
-		 List<Integer> publisherIds=this.getPublisherIdList(positionList);
-		 List<HrCompanyAccountDO> companyAccountList= getCompanyAccountList(publisherIds);
-		 List<Integer> compantIds=this.getHrCompanyIdList(companyAccountList);
-		 List<HrCompanyDO> companyList=hrCompanyDao.getHrCompanyByCompanyIds(compantIds);
-		 companyList=this.filterCompanyList(companyList);
-		 List<Map<String,Integer>> publisherAndCompanyId=getPublisherCompanyId(companyAccountList);
-		 List<Integer> teamIds=this.getTeamIdList(positionList);
-		 List<HrTeamDO> teamList=hrTeamDao.getTeamList(teamIds);
-		 Map<Integer,List<String>> positionCitys=pcRevisionEntity.handlePositionCity(positionIds);
-		 list=this.handleCompanyAndPositionData(positionList,companyList,teamList,publisherAndCompanyId,positionCitys);
-		 List<Map<String,Object>> jdpictureList=this.handlePositionJdPic(teamList,this.getPositionCompanyId(positionList),type);
-		 this.handleJDAndPosition(list, jdpictureList);
-		 return list;
-	 }
-
+     总体上处理数据
+      */
+	public List<Map<String,Object>> handleDataJDAndPosition(List<Integer> positionIds,int type) throws TException{
+		if(StringUtils.isEmptyList(positionIds)){
+			return  null;
+		}
+		List<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
+		List<JobPositionDO> positionList=this.orderPosition(positionIds,jobPositionDao.getPositionList(positionIds));
+		List<Integer> publisherIds=this.getPublisherIdList(positionList);
+		List<HrCompanyAccountDO> companyAccountList= getCompanyAccountList(publisherIds);
+		List<Integer> compantIds=this.getHrCompanyIdList(companyAccountList);
+		List<HrCompanyDO> companyList=hrCompanyDao.getHrCompanyByCompanyIds(compantIds);
+		companyList=this.filterCompanyList(companyList);
+		List<Map<String,Integer>> publisherAndCompanyId=getPublisherCompanyId(companyAccountList);
+		List<Integer> teamIds=this.getTeamIdList(positionList);
+		List<HrTeamDO> teamList=hrTeamDao.getTeamList(teamIds);
+		Map<Integer,List<String>> positionCitys=pcRevisionEntity.handlePositionCity(positionIds);
+		list=this.handleCompanyAndPositionData(positionList,companyList,teamList,publisherAndCompanyId,positionCitys);
+		List<Map<String,Object>> jdpictureList=this.handlePositionJdPic(teamList,this.getPositionCompanyId(positionList),type);
+		this.handleJDAndPosition(list, jdpictureList);
+		return list;
+	}
+	//将数据库中查出的职位列表按照原有顺序返回
+	private List<JobPositionDO> orderPosition(List<Integer> positionIds,List<JobPositionDO> positionList){
+		List<JobPositionDO> list=new ArrayList<>();
+		for(Integer pid:positionIds){
+			for(JobPositionDO DO:positionList){
+				int positionId=DO.getId();
+				if(pid==positionId){
+					list.add(DO);
+				}
+			}
+		}
+		return list;
+	}
+	//获取职位中的company_id列表
 	private List<Integer> getPositionCompanyId(List<JobPositionDO> positionList){
 		if(StringUtils.isEmptyList(positionList)){
 			return null;
