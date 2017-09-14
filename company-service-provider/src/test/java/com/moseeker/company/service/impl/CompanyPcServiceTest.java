@@ -20,13 +20,13 @@ public class CompanyPcServiceTest {
     //获取公司信息
     @Test
     public void companyDetailsTest()throws Exception{
-        Map<String,Object> result=companyPcService.getCompanyDetail(2);
+        Map<String,Object> result=companyPcService.getCompanyDetail(39978);
         System.out.println(result+"======");
     }
     //获取团队列表
     @Test
     public void teamListTest() throws Exception {
-        Map<String,Object> result=companyPcService.getTeamListinfo(2,1,10);
+        Map<String,Object> result=companyPcService.getTeamListinfo(39978,1,10);
         System.out.println(result+"======");
     }
     //获取团队详情
