@@ -9,7 +9,7 @@ import com.moseeker.common.util.Pagination;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
-import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
+import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileAttachmentDO;
 import com.moseeker.thrift.gen.profile.struct.Attachment;
 import org.apache.thrift.TException;
@@ -192,6 +192,6 @@ public class ProfileAttachmentService {
         int totalRow = dao.getCount(query);
         List<?> datas = dao.getDatas(query);
 
-        return ProfileUtils.getPagination(totalRow, query.getPageNum(), query.getPageSize(), datas);
+        return ProfileExtUtils.getPagination(totalRow, query.getPageNum(), query.getPageSize(), datas);
     }
 }

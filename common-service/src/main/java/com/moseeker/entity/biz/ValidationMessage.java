@@ -1,12 +1,12 @@
-package com.moseeker.profile.constants;
+package com.moseeker.entity.biz;
+
+import com.moseeker.common.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-
-import com.moseeker.common.util.StringUtils;
 
 /**
  * 校验结果

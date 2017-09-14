@@ -1,13 +1,10 @@
 package com.moseeker.profile.service.impl.retriveprofile.flow.aliapyflow;
 
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.profile.service.impl.retriveprofile.ExecutorParam;
 import com.moseeker.profile.service.impl.retriveprofile.executor.CouplerParamUtil;
-import com.moseeker.profile.service.impl.serviceutils.ProfilePojo;
 import org.springframework.stereotype.Component;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * profile任务参数生成工具。
