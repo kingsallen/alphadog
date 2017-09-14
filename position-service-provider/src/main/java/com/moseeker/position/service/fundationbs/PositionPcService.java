@@ -451,7 +451,22 @@ public class PositionPcService {
 	 private HrCompanyDO handleCompanyData(int publisher){
 		 HrCompanyAccountDO accountDO=this.getSingleCompanyId(publisher);
 		 HrCompanyDO companyDO=this.getSingleCompany(accountDO.getCompanyId());
-	 	 return companyDO;
+		 if(companyDO!=null){
+			 int parentId=companyDO.getParentId();
+			 if(parentId!=0){
+				 HrCompanyDO companyParent=this.getSingleCompany(parentId);
+				 if(StringUtils.isNullOrEmpty(companyDO.getImpression())){
+					 String impression=companyParent.getImpression();
+					 companyDO.setImpression(impression);
+				 }
+				 if(StringUtils.isNullOrEmpty(companyDO.getBanner())){
+					 String banner=companyParent.getBanner();
+					 companyDO.setImpression(banner);
+				 }
+			 }
+		 }
+
+		 return companyDO;
 	 }
 	/*
 	    获取团队信息
