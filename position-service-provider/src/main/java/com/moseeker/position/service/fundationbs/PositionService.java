@@ -1350,6 +1350,7 @@ public class PositionService {
      * @param pids pids
      * @return pids 对应职位红包活动的额外信息
      */
+    @CounterIface
     public List<RpExtInfo> getPositionListRpExt(List<Integer> pids) {
         List<RpExtInfo> result = new ArrayList<>();
         // 获取 company_id
