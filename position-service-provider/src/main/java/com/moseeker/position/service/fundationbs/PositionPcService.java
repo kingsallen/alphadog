@@ -206,7 +206,7 @@ public class PositionPcService {
 					if(conf!=null&&StringUtils.isNotNullOrEmpty(conf.getJobCustomTitle())){
 						customName=conf.getJobCustomTitle();
 					}
-					custom.put("name",customContent);
+					custom.put("name",customName);
 				}
 			}
 
