@@ -8,6 +8,10 @@ import com.moseeker.thrift.gen.employee.struct.*;
 import com.moseeker.useraccounts.config.AppConfig;
 import com.moseeker.useraccounts.service.EmployeeBinder;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,10 +19,12 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
+import sun.jvm.hotspot.runtime.Thread;
 
 /**
  * Created by lucky8987 on 17/5/17.
@@ -111,14 +117,46 @@ public class EmployeeServiceTest {
         System.out.println(response);
     }
 
-    @Test
+//    @Test
+//    @Commit
     public void addAwardTest() throws Exception{
-        UserEmployeePointsRecordDO ueprDo = new UserEmployeePointsRecordDO();
-        ueprDo.setAward(10);
-        ueprDo.setEmployeeId(677720);
-        ueprDo.setReason("加积分");
-        int total = employeeEntity.addReward(677720, 2878, ueprDo);
-        System.out.println("用户："+ueprDo.getEmployeeId()+", 积分："+total);
+    /**
+     * 线程池
+     */
+     ExecutorService threadPool = new ThreadPoolExecutor(10, 15, 60L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+        for (int i = 0; i < 100; i++) {
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    UserEmployeePointsRecordDO ueprDo = new UserEmployeePointsRecordDO();
+                    ueprDo.setAward(1);
+                    ueprDo.setEmployeeId(677720);
+                    ueprDo.setReason("加积分");
+                    int total = 0;
+                    try {
+                        total = employeeEntity.addReward(677720, 96, ueprDo);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    System.out.println("用户："+ueprDo.getEmployeeId()+", 积分："+total);
+                }
+            };
+            threadPool.submit(runnable);
+        }
+
+        threadPool.shutdown();
+        int retry = 50;
+        while(retry > 0){
+            try {
+                // 每10秒检查一次是否关闭
+                if (threadPool.awaitTermination(10, TimeUnit.SECONDS)) {
+                    break;
+                }
+                retry--;
+            } catch (InterruptedException e) {
+                break;
+            }
+        }
     }
 
     @Test
