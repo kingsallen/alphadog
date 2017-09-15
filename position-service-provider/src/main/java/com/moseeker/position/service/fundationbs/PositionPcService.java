@@ -741,7 +741,7 @@ public class PositionPcService {
 	//处理 公司的顺序
 	private  List<HrCompanyDO> orderCompany(List<Integer> companyIds,List<HrCompanyDO> list){
 		List<HrCompanyDO> result=new ArrayList<>();
-		if(StringUtils.isEmptyList(result)){
+		if(StringUtils.isEmptyList(list)){
 			return result;
 		}
 		for(Integer companyId:companyIds){
