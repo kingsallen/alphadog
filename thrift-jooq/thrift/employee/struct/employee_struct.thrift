@@ -95,7 +95,7 @@ struct RewardConfig {
 
 struct RewardsResponse {
     1: optional i32 total,
-    2: optional list<RewardVO> rewards,
+    2: optional list<Reward> rewards,
     3: optional list<RewardConfig> rewardConfigs
 }
 
@@ -118,6 +118,7 @@ struct RecomInfo {
 	15: required i32 view_number = 0;          	// 点击次数
 	16: required string headimgurl = "";        // 微信头像
 }
+
 
 // 时间跨度（月、季、年）
 enum Timespan {

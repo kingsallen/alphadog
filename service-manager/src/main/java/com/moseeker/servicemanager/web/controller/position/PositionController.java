@@ -65,10 +65,12 @@ public class PositionController {
         try {
             // GET方法 通用参数解析并赋值
             CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
+            logger.info(query.toString());
             Response result = positonServices.getResources(query);
 
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
+        	logger.info(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
@@ -80,6 +82,7 @@ public class PositionController {
             Response result = positonServices.getPositionById(id);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
+        	logger.info(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
@@ -431,23 +434,6 @@ public class PositionController {
     }
 
     /**
-     * 根据用户id批量获取用户之于职位的状态
-     */
-    @RequestMapping(value = "/positions/status", method = RequestMethod.GET)
-    @ResponseBody
-    public String getPositionsStatus(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            Integer user_id = params.getInt("user_id");
-            List<Integer> prositions = (List<Integer>) params.get("position_ids");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-
-    /**
      * 职位查询头图查询
      */
     @RequestMapping(value = "/head/image", method = RequestMethod.GET)
@@ -552,16 +538,11 @@ public class PositionController {
             List<Integer> positions =  positonServices.getPositionListForThirdParty(channel,type,start_time,end_time);
             Response res = ResponseUtils.success(positions);
             return ResponseLogNotification.success(request, res);
-
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseLogNotification.fail(request,e.getMessage());
         }
     }
-
-
-
-
     /**
      * 第三方职位列表详情
      */
@@ -602,5 +583,44 @@ public class PositionController {
             return ResponseLogNotification.failJson(request, e);
         }
     }
+    /*
+        *获取pc端推荐职位列表
+        */
+    @RequestMapping(value = "/positions/apolegamic", method = RequestMethod.GET)
+    @ResponseBody
+    public String getPcRecommendPosition(HttpServletRequest request, HttpServletResponse response){
+        try{
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer page = params.getInt("page");
+            Integer pageSize = params.getInt("pageSize");
+            if(page==null){
+                page=1;
+            }
+            if(pageSize==null){
+                pageSize=15;
+            }
+            Response result=positonServices.getPcRecommand(page,pageSize);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 
+    /*
+    *获取pc端职位的详情
+    */
+    @RequestMapping(value = "/position/pc/details", method = RequestMethod.GET)
+    @ResponseBody
+    public String getPcPositionDetail(HttpServletRequest request, HttpServletResponse response){
+        try{
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int positionId = params.getInt("positionId");
+            Response result=positonServices.getPcPositionDetail(positionId);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 }

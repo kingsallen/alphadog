@@ -103,7 +103,6 @@ public class LocalCondition<R extends Record> {
                 parseInnerCondition(condition, conditionCollectionList);
                 parseNextCondition(conditionCollectionList, condition);
                 jooqCondition = packageCondition(jooqCondition, conditionCollectionList);
-
             }
         }
         return jooqCondition;

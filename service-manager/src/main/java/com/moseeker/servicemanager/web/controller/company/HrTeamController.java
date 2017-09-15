@@ -5,6 +5,7 @@ import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
+import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices;
@@ -37,14 +38,57 @@ public class HrTeamController {
     public String getHrTeam(HttpServletRequest request, HttpServletResponse response) {
         try {
             CommonQuery commonQuery = ParamUtils.initCommonQuery(request,CommonQuery.class);
-
             List<HrTeamDO> hrTeamDOList = hrTeamServices.getHrTeams(commonQuery);
-
             Response result = ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(hrTeamDOList));
             return ResponseLogNotification.success(request, result);
-
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        } finally {
+            // do nothing
+        }
+    }
+    /*
+      获取团队列表的接口
+     */
+    @RequestMapping(value = "/team/list", method = RequestMethod.GET)
+    @ResponseBody
+    public String getHrTeamList(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer page = params.getInt("page");
+            Integer pageSize = params.getInt("pageSize");
+            Integer companyId=params.getInt("companyId");
+            if(page==null){
+                page=1;
+            }
+            if(pageSize==null){
+                pageSize=15;
+            }
+            logger.info("param====companyId=={1}======page=={2}====pageSize==={3}",companyId,page,pageSize);
+            Response result=hrTeamServices.teamListInfo(companyId,page,pageSize);
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        } finally {
+            // do nothing
+        }
+    }
+    /*
+       获取团队详情的接口
+     */
+    @RequestMapping(value = "/team/details", method = RequestMethod.GET)
+    @ResponseBody
+    public String getHrTeamDetails(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer teamId = params.getInt("teamId");
+            Integer companyId=params.getInt("companyId");
+            logger.info("param====companyId=={1}======teamId=={2}====",companyId,teamId);
+            Response result=hrTeamServices.teamDeatils(companyId,teamId);
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
         } finally {

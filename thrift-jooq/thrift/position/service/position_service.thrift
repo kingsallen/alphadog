@@ -67,6 +67,12 @@ service PositionServices {
     third_position_struct.ThirdPartyPositionResult getThirdPartyPositionInfo(1:third_position_struct.ThirdPartyPositionInfoForm infoForm ) throws (1: common_struct.BIZException e);
     i32 updateThirdPartyPosition(1:hr_third_party_position_struct.HrThirdPartyPositionDO thirdPartyPosition) throws (1: common_struct.BIZException e);
     i32 updateThirdPartyPositionWithAccount(1:hr_third_party_position_struct.HrThirdPartyPositionDO thirdPartyPosition,2:hr_third_party_account_struct.HrThirdPartyAccountDO thirdPartyAccount) throws (1: common_struct.BIZException e);
+    //获取pc端职位推荐
+    common_struct.Response getPcRecommand(1:i32 page,2:i32 pageSize);
+    common_struct.Response getPcRecommandCompany(1:i32 page,2:i32 pageSize);
+    common_struct.Response getPcRecommandCompanyAll(1:i32 page,2:i32 pageSize);
+    common_struct.Response getPcPositionDetail(1:i32 positionId);
+    common_struct.Response getPcRecommendPosition(1:i32 positionId,2:i32 page,3:i32 pageSize);
 }
 /*
 	查询第三方自定义职能

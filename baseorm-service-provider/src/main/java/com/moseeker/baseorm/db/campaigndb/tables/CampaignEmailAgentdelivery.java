@@ -21,6 +21,7 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
+import org.jooq.types.UInteger;
 
 
 /**
@@ -36,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CampaignEmailAgentdelivery extends TableImpl<CampaignEmailAgentdeliveryRecord> {
 
-    private static final long serialVersionUID = -235291608;
+    private static final long serialVersionUID = -533686721;
 
     /**
      * The reference instance of <code>campaigndb.campaign_email_agentdelivery</code>
@@ -59,17 +60,17 @@ public class CampaignEmailAgentdelivery extends TableImpl<CampaignEmailAgentdeli
     /**
      * The column <code>campaigndb.campaign_email_agentdelivery.company_id</code>. hr_company.id
      */
-    public final TableField<CampaignEmailAgentdeliveryRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "hr_company.id");
+    public final TableField<CampaignEmailAgentdeliveryRecord, UInteger> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGERUNSIGNED)), this, "hr_company.id");
 
     /**
      * The column <code>campaigndb.campaign_email_agentdelivery.position_id</code>. job_position.id
      */
-    public final TableField<CampaignEmailAgentdeliveryRecord, Integer> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "job_position.id");
+    public final TableField<CampaignEmailAgentdeliveryRecord, UInteger> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGERUNSIGNED)), this, "job_position.id");
 
     /**
      * The column <code>campaigndb.campaign_email_agentdelivery.employee_id</code>. hr_employee.id
      */
-    public final TableField<CampaignEmailAgentdeliveryRecord, Integer> EMPLOYEE_ID = createField("employee_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "hr_employee.id");
+    public final TableField<CampaignEmailAgentdeliveryRecord, UInteger> EMPLOYEE_ID = createField("employee_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGERUNSIGNED)), this, "hr_employee.id");
 
     /**
      * The column <code>campaigndb.campaign_email_agentdelivery.friendname</code>. 推荐朋友姓名
@@ -84,7 +85,7 @@ public class CampaignEmailAgentdelivery extends TableImpl<CampaignEmailAgentdeli
     /**
      * The column <code>campaigndb.campaign_email_agentdelivery.status</code>. 该条记录的状态
      */
-    public final TableField<CampaignEmailAgentdeliveryRecord, Integer> STATUS = createField("status", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("1", org.jooq.impl.SQLDataType.INTEGER)), this, "该条记录的状态");
+    public final TableField<CampaignEmailAgentdeliveryRecord, UInteger> STATUS = createField("status", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaultValue(org.jooq.impl.DSL.field("1", org.jooq.impl.SQLDataType.INTEGERUNSIGNED)), this, "该条记录的状态");
 
     /**
      * The column <code>campaigndb.campaign_email_agentdelivery.fname</code>. 附件原始名称
