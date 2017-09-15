@@ -36,7 +36,6 @@ import com.moseeker.position.pojo.JobPostionResponse;
 import com.moseeker.position.pojo.PositionForSynchronizationPojo;
 import com.moseeker.position.service.position.DegreeChangeUtil;
 import com.moseeker.position.service.position.PositionChangeUtil;
-import com.moseeker.position.utils.CommonPositionUtils;
 import com.moseeker.position.service.position.PositionForAlipaycampusPojo;
 import com.moseeker.position.service.position.WorkTypeChangeUtil;
 import com.moseeker.position.service.position.qianxun.Degree;
@@ -242,14 +241,12 @@ public class PositionService {
                     jobPositionPojo.occupation = jobOccupationRecord.getName();
                 }
             }
+        } else{
+                   jobPositionPojo.custom = "";
+                   jobPositionPojo.occupation = "";
+    }
 
-
-        }else{
-            jobPositionPojo.custom = "";
-            jobPositionPojo.occupation = "";
-        }
-
-        // 修改更新时间
+    // 修改更新时间
         jobPositionPojo.publish_date_view = DateUtils.dateToPattern(jobPositionPojo.publish_date,
                 DateUtils.SHOT_TIME);
         jobPositionPojo.update_time_view = DateUtils.dateToPattern(jobPositionPojo.update_time,
@@ -1357,6 +1354,7 @@ public class PositionService {
      * @param pids pids
      * @return pids 对应职位红包活动的额外信息
      */
+    @CounterIface
     public List<RpExtInfo> getPositionListRpExt(List<Integer> pids) {
         List<RpExtInfo> result = new ArrayList<>();
         // 获取 company_id
@@ -1489,6 +1487,7 @@ public class PositionService {
                 logger.warn("pid: " + p.getId() + " 已经不属于任何红包活动");
             }
         }
+        logger.info("result=========="+result);
         return result;
     }
 
@@ -1852,7 +1851,6 @@ public class PositionService {
 
     /**
      * 内部线程类 用于更改ES索引
->>>>>>> Temporary merge branch 2
      */
     private class UpdateES extends Thread {
         private List<Integer> list;
