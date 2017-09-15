@@ -2,6 +2,7 @@ package com.moseeker.position.service.position;
 
 import com.moseeker.position.service.position.alipaycampus.AlipaycampusWorkType;
 import com.moseeker.position.service.position.job51.Job51WorkType;
+import com.moseeker.position.service.position.liepin.LiepinWorkType;
 import com.moseeker.position.service.position.qianxun.WorkType;
 import com.moseeker.position.service.position.zhilian.ZhilianWorkType;
 
@@ -32,6 +33,15 @@ public class WorkTypeChangeUtil {
 		default: zhilianWorkType = ZhilianWorkType.fullTime;
 		}
 		return zhilianWorkType;
+	}
+
+	public static LiepinWorkType getLiepinWorkType(WorkType workType) {
+
+		LiepinWorkType liepinWorkType = LiepinWorkType.other;
+		switch(workType) {
+			case practice: liepinWorkType = LiepinWorkType.practice; break;
+		}
+		return liepinWorkType;
 	}
 
 	public static AlipaycampusWorkType getAlipaycampusWorkType(WorkType workType) {
