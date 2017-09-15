@@ -88,8 +88,8 @@ public class PositionPcService {
 	@Autowired
 	private JobOccupationDao  jobOccupationDao;
 	/*
-	 * 获取pc首页职位推荐
-	 */
+     * 获取pc首页职位推荐
+     */
 	@CounterIface
 	public Response getRecommendPositionPC(int page,int pageSize) throws TException{
 		List<CampaignPcRecommendPositionDO>  list=campaignPcRecommendPositionDao.getPcRemmendPositionIdList(page,pageSize);
@@ -133,8 +133,8 @@ public class PositionPcService {
 		return res;
 	}
 	/*
-	  获取职位详情
-	 */
+      获取职位详情
+     */
 	@CounterIface
 	public Map<String,Object> getPositionDetails(int positionId) throws Exception {
 		Map<String,Object> map=new HashMap<String,Object>();
@@ -266,16 +266,16 @@ public class PositionPcService {
 
 
 	/*
-	   获取推荐职位的信息
-	 */
+       获取推荐职位的信息
+     */
 	public List<Map<String,Object>> getRecommendPosition(int positionId,int page,int pageSize) throws TException {
 		List<Integer> positionIdList=getRecommendPositionidList(positionId, page, pageSize);
 		List<Map<String,Object>> result=handleDataJDAndPosition(positionIdList,3);
 		return result;
 	}
 	/*
-	  获取相关职位的推荐职位
-	 */
+      获取相关职位的推荐职位
+     */
 	public List<Integer> getRecommendPositionidList(int positionId,int page,int pageSize){
 		JobPositionDO positionDO=getSinglePosition(positionId);
 		if(positionDO==null){
@@ -298,16 +298,16 @@ public class PositionPcService {
 		return positionIdList;
 	}
 	/*
-	   获取单个职位
-	 */
+       获取单个职位
+     */
 	public JobPositionDO getSinglePosition(int positionId){
 		Query query=new Query.QueryBuilder().where("id",positionId).and("status",0).buildQuery();
 		JobPositionDO DO=jobPositionDao.getData(query);
 		return DO;
 	}
 	/*
-	 根据publisher获取hr_company_account
-	 */
+     根据publisher获取hr_company_account
+     */
 	public HrCompanyAccountDO  getSingleCompanyAccount(int publisher){
 		Query query=new Query.QueryBuilder().where("account_id",publisher).buildQuery();
 		HrCompanyAccountDO DO=hrCompanyAccountDao.getData(query);
@@ -315,8 +315,8 @@ public class PositionPcService {
 	}
 
 	/*
-	 获取母公司的推荐职位
-	 */
+     获取母公司的推荐职位
+     */
 	public List<Integer> getMotherRecommendPosition(int companyId,int positionId,int page,int pageSize){
 		List<UserHrAccountDO>  userHrAccountList=getUserHrAccountDOS(companyId);
 		List<Integer> publisher=getPublisherByUserHrAccount(userHrAccountList);
@@ -330,8 +330,8 @@ public class PositionPcService {
 		return positionIdList;
 	}
 	/*
-	  获取所有的推荐职位
-	 */
+      获取所有的推荐职位
+     */
 	public List<StJobSimilarityDO> getStJobSimilarityDOList(List<Integer> companyIdList,int positionId,int page,int pageSize){
 		if(StringUtils.isEmptyList(companyIdList)){
 			return null;
@@ -346,8 +346,8 @@ public class PositionPcService {
 		return list;
 	}
 	/*
-	 获取job_position.id的list
-	 */
+     获取job_position.id的list
+     */
 	public List<Integer> getPositionListByStJobSimilarityDOList(List<StJobSimilarityDO> list){
 		if(StringUtils.isEmptyList(list)){
 			return null;
@@ -359,16 +359,16 @@ public class PositionPcService {
 		return result;
 	}
 	/*
-	 获取userhraccount的信息
-	 */
+     获取userhraccount的信息
+     */
 	public List<UserHrAccountDO> getUserHrAccountDOS(int companyId){
 		Query query=new Query.QueryBuilder().where("company_id",companyId).buildQuery();
 		List<UserHrAccountDO> list=userHrAccountDao.getDatas(query);
 		return list;
 	}
 	/*
-	  通过userhraccount获取publisher列表
-	 */
+      通过userhraccount获取publisher列表
+     */
 	public List<Integer> getPublisherByUserHrAccount(List<UserHrAccountDO> userHrAccountList){
 		List<Integer> list=new ArrayList<Integer>();
 		if(StringUtils.isEmptyList(userHrAccountList)){
@@ -381,8 +381,8 @@ public class PositionPcService {
 	}
 
 	/*
-	 获取子公司的推荐职位
-	 */
+     获取子公司的推荐职位
+     */
 	public List<Integer> getChildRecommendPosition(int companyId,int positionId,int page,int pageSize){
 		List<Integer> companyIdList=new ArrayList<Integer>();
 		companyIdList.add(companyId);
@@ -398,9 +398,9 @@ public class PositionPcService {
 		return result;
 	}
 	/*
-	获取推荐职位的id
-	 */
-	/*
+    获取推荐职位的id
+     */
+    /*
         获取职位的jd页
      */
 	private void handlePositionJdData(int confCompanyId,Map<String,Object> map,int teamId) throws Exception {
@@ -431,8 +431,8 @@ public class PositionPcService {
 		return DO;
 	}
 	/*
-	    获取发布职位的公司信息
-	 */
+        获取发布职位的公司信息
+     */
 	public HrCompanyAccountDO getSingleCompanyId(int publisher){
 		Query query=new Query.QueryBuilder().where("account_id",publisher).buildQuery();
 		HrCompanyAccountDO DO=hrCompanyAccountDao.getData(query);
@@ -469,15 +469,15 @@ public class PositionPcService {
 		return companyDO;
 	}
 	/*
-	    获取团队信息
-	 */
+        获取团队信息
+     */
 	public HrTeamDO getSingleTeamInfo(int teamId){
 		HrTeamDO DO=hrTeamDao.getHrTeam(teamId);
 		return DO;
 	}
 	/*
-	   处理团队数据
-	 */
+       处理团队数据
+     */
 	private  Map<String,Object> handleTeamData(int teamId) throws TException{
 		Map<String,Object> map=new HashMap<String,Object>();
 		HrTeamDO teamDO=getSingleTeamInfo(teamId);
@@ -509,8 +509,8 @@ public class PositionPcService {
 		return map;
 	}
 	/*
-	 * 根据推荐职位列表获取职位id
-	 */
+     * 根据推荐职位列表获取职位id
+     */
 	private List<Integer> getPCRecommendPositionIds(List<CampaignPcRecommendPositionDO> list){
 		if(list==null||list.size()==0){
 			return null;
@@ -525,7 +525,7 @@ public class PositionPcService {
 
 	/*
         获取publisher的列表
-   */
+    */
 	private List<Integer> getPublisherIdList(List<JobPositionDO> list){
 		if(list==null||list.size()==0){
 			return null;
@@ -538,8 +538,8 @@ public class PositionPcService {
 		return result;
 	}
 	/*
-	获取publisher和companyId的对应关系集合
-	 */
+    获取publisher和companyId的对应关系集合
+     */
 	private List<Map<String,Integer>> getPublisherCompanyId(List<HrCompanyAccountDO> list){
 		if(list==null||list.size()==0){
 			return null;
@@ -566,8 +566,8 @@ public class PositionPcService {
 		return records;
 	}
 	/*
-	 * 通过publisher的id列表获取公司的id列表
-	 */
+     * 通过publisher的id列表获取公司的id列表
+     */
 	public List<Integer> getHrCompanyIdList(List<HrCompanyAccountDO> list){
 		if(StringUtils.isEmptyList(list)){
 			return null;
@@ -580,8 +580,8 @@ public class PositionPcService {
 	}
 
 	/*
-		获取所有有jd的公司
-	 */
+        获取所有有jd的公司
+     */
 	public List<Integer> getJdCompanyIds(List<HrCompanyConfDO>  list){
 		if(list==null||list.size()==0){
 			return null;
@@ -595,8 +595,8 @@ public class PositionPcService {
 	}
 
 	/*
-	   获取团队列表
-	 */
+       获取团队列表
+     */
 	public List<Integer> getTeamIdList(List<JobPositionDO> list){
 		if(list==null||list.size()==0){
 			return null;
@@ -668,7 +668,7 @@ public class PositionPcService {
 		return list;
 	}
 	/*
-        获取有jd的团队列表
+       获取有jd的团队列表
      */
 	public List<Integer> getJdTeamIdList(List<Integer> companyIds,List<HrTeamDO> list){
 		List<Integer> result=new ArrayList<Integer>();
@@ -691,7 +691,7 @@ public class PositionPcService {
 	}
 
 	/*
-        处理position 或者 Team jd页数据，获取首张图片
+       处理position 或者 Team jd页数据，获取首张图片
      */
 	public List<Map<String,Object>> handlePositionJdPic(List<HrTeamDO> teamList,List<Integer> companyIds,int type) throws TException{
 		List<HrCompanyConfDO> AccountList=hrCompanyConfDao.getHrCompanyConfByCompanyIds(companyIds);
@@ -737,6 +737,22 @@ public class PositionPcService {
 			}
 		}
 		return list;
+	}
+	//处理 公司的顺序
+	private  List<HrCompanyDO> orderCompany(List<Integer> companyIds,List<HrCompanyDO> list){
+		List<HrCompanyDO> result=new ArrayList<>();
+		if(StringUtils.isEmptyList(list)){
+			return result;
+		}
+		for(Integer companyId:companyIds){
+			for(HrCompanyDO DO:list){
+				int id=DO.getId();
+				if(id==companyId){
+					result.add(DO);
+				}
+			}
+		}
+		return result;
 	}
 	//获取职位中的company_id列表
 	private List<Integer> getPositionCompanyId(List<JobPositionDO> positionList){
@@ -845,6 +861,7 @@ public class PositionPcService {
 		if(StringUtils.isEmptyList(companyList)){
 			return  null;
 		}
+		companyList=orderCompany(companyIds,companyList);
 		companyList=this.handlerCompanys(companyList);
 		Map<Integer,List<Integer>> companyPulisher=pcRevisionEntity.handleCompanyPublisher(companyIds);
 		Map<Integer,Integer> mapTeamNum=this.getTeamNum(companyList, companyPulisher);
@@ -982,6 +999,9 @@ public class PositionPcService {
 			,List<Map<String,Object>> jdlist,Map<Integer,Set<String>> companyPositionCityData) throws TException{
 		List<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
 		Map<String,Object> map=null;
+		if(StringUtils.isEmptyList(companyList)){
+			return list;
+		}
 		for(int i=0;i<companyList.size();i++){
 			map=new HashMap<String,Object>();
 			HrCompanyDO companyDO=companyList.get(i);

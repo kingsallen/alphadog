@@ -228,7 +228,8 @@ public class CompanyPcService {
         if(company==null){
             return null;
         }
-        if(StringUtils.isNullOrEmpty(company.getImpression())&&StringUtils.isNullOrEmpty(company.getBanner())){
+
+        if(StringUtils.isNullOrEmpty(company.getImpression())||StringUtils.isNullOrEmpty(company.getBanner())){
             int parentId=company.getParentId();
             if(parentId!=0){
                 HrCompanyDO companyParent=this.getHrCompany(parentId);
