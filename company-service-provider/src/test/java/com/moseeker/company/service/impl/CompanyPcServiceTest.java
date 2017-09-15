@@ -38,7 +38,7 @@ public class CompanyPcServiceTest {
     //获取公司信息
     @Test
     public void companyInfo() throws Exception {
-        Map<String,Object> result=companyPcService.getCompanyMessage(2);
+        Map<String,Object> result=companyPcService.getCompanyMessage(139183);
         System.out.println(result+"======");
     }
     @Test
