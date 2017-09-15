@@ -8,6 +8,7 @@ import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.util.ConfigPropertiesUtil;
+import com.moseeker.common.util.EmojiFilter;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.UrlUtil;
 import com.moseeker.function.service.chaos.position.Position51WithAccount;
@@ -97,10 +98,12 @@ public class ChaosServiceImpl {
                     throw new BIZException(1, message);
                 } else if (status == 100) {
                     hrThirdPartyAccount.setBinding(Integer.valueOf(100).shortValue());
-                } else if (status == 2 || status == 9) {
+                } else if (status == 2) {
                     hrThirdPartyAccount.setBinding(Integer.valueOf(6).shortValue());
                     if (StringUtils.isNullOrEmpty(message)) {
                         message = "绑定异常，请重新绑定";
+                    } else {
+                        message = EmojiFilter.unicodeToUtf8(message);
                     }
                 } else {
                     if (StringUtils.isNullOrEmpty(message)) {
@@ -228,10 +231,12 @@ public class ChaosServiceImpl {
 
             } else if (status == 100) {
                 hrThirdPartyAccount.setBinding(Integer.valueOf(100).shortValue());
-            } else if (status == 2 || status == 9) {
+            } else if (status == 2) {
                 hrThirdPartyAccount.setBinding(Integer.valueOf(7).shortValue());
                 if (StringUtils.isNullOrEmpty(message)) {
                     message = "刷新异常，请重试";
+                } else {
+                    message = EmojiFilter.unicodeToUtf8(message);
                 }
             } else {
                 hrThirdPartyAccount.setBinding(Integer.valueOf(5).shortValue());

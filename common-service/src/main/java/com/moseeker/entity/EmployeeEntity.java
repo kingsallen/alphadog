@@ -158,7 +158,7 @@ public class EmployeeEntity {
     public int addReward(int employeeId, int companyId, UserEmployeePointsRecordDO ueprDo) throws Exception {
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.where("id", employeeId).and("disable", 0).and("activation", 0);
-        UserEmployeeDO userEmployeeDO = employeeDao.getData(query.buildQuery());
+        UserEmployeeDO userEmployeeDO = employeeDao.getUserEmployeeForUpdate(employeeId);
         if (userEmployeeDO != null && userEmployeeDO.getId() > 0 && ueprDo != null) {
             // 修改用户总积分, 产品说 积分不能扣成负数 所以为负数 填为 0
             int totalAward = userEmployeeDO.getAward() + ueprDo.getAward();
