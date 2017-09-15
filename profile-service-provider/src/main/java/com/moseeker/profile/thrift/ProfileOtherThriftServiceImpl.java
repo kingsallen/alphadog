@@ -210,7 +210,12 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
     }
 
     @Override
-    public Response checkProfileOther(int userId, int positionId) throws BIZException, TException {
+    public Response checkProfileOther(int userId, int positionId) throws TException {
         return profileService.checkProfileOther(userId, positionId);
+    }
+
+    @Override
+    public Response getProfileOther(String params) throws BIZException, TException {
+        return profileService.getProfileOther(params);
     }
 }

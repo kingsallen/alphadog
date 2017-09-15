@@ -20,7 +20,9 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.PositionEntity;
 import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -28,11 +30,11 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrAppCvConfDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileOtherDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
 import com.moseeker.thrift.gen.profile.struct.Profile;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -230,12 +232,12 @@ public class ProfileService {
                 }
                 JSONObject profileOtherJson = JSONObject.parseObject(profileOther.getOther());
                 List<JSONObject> appCvConfigJson = JSONArray.parseArray(hrAppCvConfDO.getFieldValue()).getJSONObject(0).getJSONArray("fields").stream().
-                        map(m -> JSONObject.parseObject(m.toString())).filter(f -> f.getIntValue("needed") == 0).collect(Collectors.toList());
+                        map(m -> JSONObject.parseObject(m.toString())).filter(f -> f.getIntValue("required") == 0).collect(Collectors.toList());
                 for (JSONObject appCvConfig : appCvConfigJson) {
                     Object customResult = "";
-                    if (appCvConfig.containsKey("map")) {
+                    if (appCvConfig.containsKey("mapping")) {
                         // 复合字段校验
-                        String mappingFiled = appCvConfig.getString("map");
+                        String mappingFiled = appCvConfig.getString("mapping");
                         if (mappingFiled.contains(".")) {
                             String[] mappingStr = mappingFiled.split(".", 2);
                             customResult = mappingStr[0].startsWith("user") ? userDao.customSelect(mappingStr[0], mappingStr[1], profileProfile.getUserId()) : profileOtherDao.customSelect(mappingStr[0], mappingStr[1], profileProfile.getId());
@@ -257,5 +259,36 @@ public class ProfileService {
             }
         }
         return ResponseUtils.success("");
+    }
+
+
+    public Response getProfileOther(String params) {
+        List<JSONObject> paramsStream = JSONArray.parseArray(params).parallelStream().map(m -> JSONObject.parseObject(String.valueOf(m))).collect(Collectors.toList());
+        // 批量获取职位自定义配置&简历自定义字段
+        List<Integer> positionIds = paramsStream.parallelStream().map(m -> m.getIntValue("positionId")).collect(Collectors.toList());
+        List<Integer> profileIds = paramsStream.parallelStream().map(m -> m.getIntValue("profileId")).collect(Collectors.toList());
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where(new Condition("profile_id", profileIds, ValueOp.IN));
+        List<ProfileOtherDO> profileOtherDOList = profileOtherDao.getDatas(queryBuilder.buildQuery());
+        Map<Integer, String> profileOtherMap = (profileOtherDOList == null || profileOtherDOList.isEmpty()) ? new HashMap<>() :
+                profileOtherDOList.parallelStream().collect(Collectors.toMap(k -> k.getProfileId(), v -> v.getOther(), (oldKey, newKey) -> newKey));
+        Map<Integer, Integer> positionCustomConfigMap =  positionEntity.getAppCvConfigIdByPositions(positionIds);
+        queryBuilder.clear();
+        queryBuilder.where(new Condition("id", new ArrayList<>(positionCustomConfigMap.values()), ValueOp.IN));
+        List<HrAppCvConfDO> hrAppCvConfDOList = hrAppCvConfDao.getDatas(queryBuilder.buildQuery());
+        Map<Integer, String> positionOtherMap = (hrAppCvConfDOList == null || hrAppCvConfDOList.isEmpty()) ? new HashMap<>() :
+                hrAppCvConfDOList.parallelStream().collect(Collectors.toMap(k -> k.getId(), v -> v.getFieldValue()));
+        paramsStream.parallelStream().map(m -> JSONObject.parseObject(String.valueOf(m))).forEach(e -> {
+            int positionId = e.getIntValue("positionId");
+            int profileId = e.getIntValue("profileId");
+            e.put("other", "");
+            if (positionCustomConfigMap.containsKey(positionId)) {
+                JSONObject profileOtherJson = JSONObject.parseObject(profileOtherMap.get(profileId));
+                Map<String, String> otherMap = JSONArray.parseArray(positionOtherMap.get(positionCustomConfigMap.get(positionId))).getJSONObject(0).getJSONArray("fields").stream().
+                        map(m -> JSONObject.parseObject(m.toString())).map(mm -> mm.getString("field_name")).collect(Collectors.toMap(k -> k, v -> profileOtherJson.getString(v), (oldKey, newKey) -> newKey));
+                e.put("other", otherMap);
+            }
+        });
+        return ResponseUtils.successWithoutStringify(params);
     }
 }

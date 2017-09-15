@@ -29,12 +29,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(classes = AppConfig.class)
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = AppConfig.class)
 public class ProfileServicesImplTest {
 
     @Autowired
     ProfileServicesImpl service;
+
+    @Autowired
+    ProfileService profileService;
 
     Object response;
 
@@ -229,4 +232,10 @@ public class ProfileServicesImplTest {
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
     }
+
+    @Test
+    public void getProfileOtherTest() {
+        profileService.getProfileOther("[{\"profileId\":63986, \"positionId\":129042}]");
+    }
+
 }

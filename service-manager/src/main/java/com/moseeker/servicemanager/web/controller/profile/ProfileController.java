@@ -1,5 +1,7 @@
 package com.moseeker.servicemanager.web.controller.profile;
 
+import com.alibaba.fastjson.JSONObject;
+import com.moseeker.thrift.gen.profile.service.ProfileOtherThriftService;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,11 +20,9 @@ import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.alibaba.fastjson.JSON;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -52,6 +52,8 @@ public class ProfileController {
     OutPutResumeUtil outPutResumeService = new OutPutResumeUtil();
 
     ProfileBS.Iface profileBSService = ServiceManager.SERVICEMANAGER.getService(ProfileBS.Iface.class);
+
+    ProfileOtherThriftService.Iface profileOtherService = ServiceManager.SERVICEMANAGER.getService(ProfileOtherThriftService.Iface.class);
 
     JobApplicationServices.Iface jobApplicationServices = ServiceManager.SERVICEMANAGER.getService(JobApplicationServices.Iface.class);
 
@@ -349,7 +351,48 @@ public class ProfileController {
     @RequestMapping(value = "/profile/check/other", method = RequestMethod.POST)
     @ResponseBody
     public String checkOther(HttpServletRequest request) {
+        try {
+            Params<String, Object> form = ParamUtils.parseRequestParam(request);
+            int userId = form.getInt("userId", 0);
+            int positionId = form.getInt("positionId", 0);
+            return ResponseLogNotification.success(request, profileOtherService.checkProfileOther(userId, positionId));
+        } catch (BIZException e) {
+            Response result = new Response();
+            result.setStatus(e.getCode());
+            result.setMessage(e.getMessage());
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, result);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        } finally {
+            // do nothing
+        }
+    }
 
-        return null;
+    @RequestMapping(value = "/profile/other", method = RequestMethod.POST)
+    @ResponseBody
+    public String getOther(HttpServletRequest request) {
+        try {
+            Params<String, Object> form = ParamUtils.parseRequestParam(request);
+            String params = form.getString("params", "[]");
+            JSONObject paramsJson = JSONObject.parseObject(params);
+            if (paramsJson.containsKey("positionId") && paramsJson.containsKey("profileId")) {
+                return ResponseLogNotification.success(request, profileOtherService.getProfileOther(params));
+            } else {
+                return ResponseLogNotification.fail(request, ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST));
+            }
+        } catch (BIZException e) {
+            Response result = new Response();
+            result.setStatus(e.getCode());
+            result.setMessage(e.getMessage());
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, result);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        } finally {
+            // do nothing
+        }
     }
 }

@@ -144,4 +144,12 @@ public class PositionEntity {
         return jobPositionDO == null ? 0 : jobPositionDO.getAppCvConfigId();
     }
 
+    public Map<Integer, Integer> getAppCvConfigIdByPositions(List<Integer> positionIds) {
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where(new Condition("id", positionIds, ValueOp.IN));
+        List<JobPositionDO> jobPositionList = positionDao.getDatas(queryBuilder.buildQuery());
+        return (jobPositionList == null || jobPositionList.isEmpty()) ? new HashMap<>() :
+                jobPositionList.parallelStream().collect(Collectors.toMap(k -> k.getId(), v -> v.getAppCvConfigId()));
+    }
+
 }
