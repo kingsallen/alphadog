@@ -152,7 +152,7 @@ public class PositionSearchEngine {
     }
     //公共查询的条件部分
     private void CommonQuerySentence(String industry,String salaryCode,String cityCode,String startTime,String endTime,int companyId,int teamId,int motherCompanyId,QueryBuilder query){
-        searchUtil.handleTerms(industry, query, "company.industry_data.industry_code");
+        searchUtil.handleTerms(industry, query, "company.industry_code");
         searchUtil.handleTerms(cityCode, query, "position.city_data.code");
         if(companyId>0){
             searchUtil.handleMatch(companyId,query,"company.id");
