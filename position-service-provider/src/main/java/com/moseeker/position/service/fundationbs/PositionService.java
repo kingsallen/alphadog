@@ -1382,54 +1382,8 @@ public class PositionService {
 
             qu = new Query.QueryBuilder().where("id", pid).buildQuery();
             Position p = jobPositionDao.getPositionByQuery(qu);
-            ;
 
-            if (p.getHb_status() == 1 || p.getHb_status() == 2) {
-                // 该职位参与了一个红包活动
-
-                //获取 binding 记录
-                Condition con = new Condition("hb_config_id", hbConfgIds.toArray(), ValueOp.IN);
-                qu = new Query.QueryBuilder().where("position_id", p.getId()).and(con).buildQuery();
-                List<HrHbPositionBindingDO> bindings = hrHbPositionBindingDao.getDatas(qu, HrHbPositionBindingDO.class);
-
-                logger.info(bindings.toString());
-
-                // 确认 binding 只有一个，获取 binding 对应的红包活动信息
-                if (bindings.size() > 0) {
-
-                    HrHbPositionBindingDO binding = bindings.get(0);
-
-                    HrHbConfigDO hbConfig = hbConfigs.stream().filter(c -> c.getId() == binding.getHbConfigId())
-                            .findFirst().orElseGet(null);
-
-                    if (hbConfig != null) {
-                        // 更新红包发送对象
-                        rpExtInfo.setEmployee_only(hbConfig.getTarget() == 0);
-                    } else {
-                        logger.warn("查询不到对应的 hbConfig");
-                        rpExtInfo.setEmployee_only(false);
-                        continue;
-                    }
-
-                    // 根据 binding 获取 hb_items 记录
-                    qu = new Query.QueryBuilder().where("binding_id", bindings.get(0).getId()).and("wxuser_id", 0).buildQuery();
-
-                    List<HrHbItemsDO> remainItems = hrHbItemsDao.getDatas(qu, HrHbItemsDO.class);
-                    Double remain = remainItems.stream().mapToDouble(HrHbItemsDO::getAmount).sum();
-                    Integer remainInt = toIntExact(round(remain));
-                    if (remainInt < 0) {
-                        remainInt = 0;
-                    }
-
-                    rpExtInfo.setPid(p.getId());
-                    rpExtInfo.setRemain(remainInt);
-
-                    logger.info(rpExtInfo.toString());
-
-                    result.add(rpExtInfo);
-                }
-
-            } else if (p.getHb_status() == 3) {
+            if (p.getHb_status() > 0) {
                 // 该职位参与了两个红包活动
                 // 获取 binding 记录
                 Condition cons = new Condition("hb_config_id", hbConfgIds.toArray(), ValueOp.IN);
