@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
+import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.util.ConfigPropertiesUtil;
@@ -156,6 +157,14 @@ public class EmployeeBindByEmail extends EmployeeBinder{
                 }
                 client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, activationCode);
                 client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, value);
+            }
+        } else {
+            query.clear();
+            query.where("activation_code", activationCode).and("activation", 0);
+            UserEmployeeDO employeeDO = employeeDao.getData(query.buildQuery());
+            if (employeeDO != null && employeeDO.getId() > 0) {
+                response.setSuccess(true);
+                response.setMessage("认证成功，请勿重复点击该链接");
             }
         }
         log.info("emailActivation response: {}", response);
