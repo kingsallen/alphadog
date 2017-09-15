@@ -1,6 +1,9 @@
 package com.moseeker.dict.thrift;
 
 import com.moseeker.baseorm.tool.QueryConvert;
+import com.moseeker.common.util.query.Condition;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCountryPojo;
 import org.apache.thrift.TException;
@@ -26,7 +29,6 @@ public class DictCountryServiceImpl implements DictCountryService.Iface {
     Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     public com.moseeker.dict.service.impl.DictCountryService service;
-
 
     @Override
     public Response getDictCountry(CommonQuery query) throws TException {

@@ -17,6 +17,9 @@ import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dict.service.DictCountryService;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 国家字典数据服务
  * <p>
@@ -37,7 +40,7 @@ public class DictCountryController {
     public String get(HttpServletRequest request, HttpServletResponse response) {
         try {
             CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
-            Response result = dictCountryService.getDictCountry();
+            Response result = dictCountryService.getDictCountry(query);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());

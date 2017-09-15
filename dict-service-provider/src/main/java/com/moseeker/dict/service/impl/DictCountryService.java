@@ -7,6 +7,7 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.dictdb.DictCountryDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCountryPojo;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -34,7 +36,7 @@ public class DictCountryService {
     @CounterIface
     public Response getDictCountry(Query query) throws TException {
         try{
-            List<DictCountryPojo> dictConstantList = dictCountryDao.getDatas(query,DictCountryPojo.class);
+            List<Map<String,Object>> dictConstantList = dictCountryDao.getMaps(query);
             return ResponseUtils.success(dictConstantList);
         }catch (Exception e){
             log.error(e.getMessage(), e);
