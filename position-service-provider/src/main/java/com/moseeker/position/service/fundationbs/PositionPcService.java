@@ -738,6 +738,22 @@ public class PositionPcService {
 		}
 		return list;
 	}
+	//处理 公司的顺序
+	private  List<HrCompanyDO> orderCompany(List<Integer> companyIds,List<HrCompanyDO> list){
+		List<HrCompanyDO> result=new ArrayList<>();
+		if(StringUtils.isEmptyList(result)){
+			return result;
+		}
+		for(Integer companyId:companyIds){
+			for(HrCompanyDO DO:list){
+				int id=DO.getId();
+				if(id==companyId){
+					result.add(DO);
+				}
+			}
+		}
+		return result;
+	}
 	//获取职位中的company_id列表
 	private List<Integer> getPositionCompanyId(List<JobPositionDO> positionList){
 		if(StringUtils.isEmptyList(positionList)){
@@ -845,6 +861,7 @@ public class PositionPcService {
 		 if(StringUtils.isEmptyList(companyList)){
 			 return  null;
 		 }
+		 companyList=orderCompany(companyIds,companyList);
 		 companyList=this.handlerCompanys(companyList);
 		 Map<Integer,List<Integer>> companyPulisher=pcRevisionEntity.handleCompanyPublisher(companyIds);
 		 Map<Integer,Integer> mapTeamNum=this.getTeamNum(companyList, companyPulisher);
