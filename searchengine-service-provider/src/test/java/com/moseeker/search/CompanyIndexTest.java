@@ -13,20 +13,20 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.moseeker.searchengine.config.AppConfig;
 import com.moseeker.searchengine.service.impl.CompanySearchengine;
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes =AppConfig.class)
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(classes =AppConfig.class)
 public class CompanyIndexTest {
-	@Autowired
-	private CompanySearchengine companySearchengine;
-	@Autowired
-	private SearchUtil searchUtil;
-	@Test
-	public void queryTest() throws Exception{
-		Map<String,Object> res=companySearchengine.query("上海那里", null, null, null, 1, 10);
-		System.out.println(res);
-	}
-	public void queryStringTest() throws Exception{
-		SearchResponse res=companySearchengine.queryString("上海那里", "1000,10001", "100,200", "1,4", 1, 10,searchUtil.getEsClient());
-		System.out.println(res);
-	}
+//	@Autowired
+//	private CompanySearchengine companySearchengine;
+//	@Autowired
+//	private SearchUtil searchUtil;
+//	@Test
+//	public void queryTest() throws Exception{
+//		Map<String,Object> res=companySearchengine.query("上海那里", null, null, null, 1, 10);
+//		System.out.println(res);
+//	}
+//	public void queryStringTest() throws Exception{
+//		SearchResponse res=companySearchengine.queryString("上海那里", "1000,10001", "100,200", "1,4", 1, 10,searchUtil.getEsClient());
+//		System.out.println(res);
+//	}
 }

@@ -52,11 +52,11 @@ public class CompanySearchengine {
 			if(hitNum==0&&StringUtils.isNotEmpty(keywords)){
 				SearchResponse hitsData=queryString(keywords,citys,industry,scale,page,pageSize,client);
 				map=searchUtil.handleData(hitsData,"companies");
-				logger.info(map.toString());
+//				logger.info(map.toString());
 
 			}else{
 				map=searchUtil.handleData(hits,"companies");
-				logger.info(map.toString());
+//				logger.info(map.toString());
 			}
 		}finally{
 			if(client!=null){

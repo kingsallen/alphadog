@@ -43,11 +43,11 @@ public class PositionSearchEngine {
                 if(hitNum==0&&StringUtils.isNotEmpty(keyWord)){
                     SearchResponse hitsData=this.quertString(keyWord, industry, salaryCode, page, pageSize, cityCode,startTime,endTime, companyId,teamId,motherCompanyId,order,client);
                     map=searchUtil.handleData(hitsData,"positions");
-                    logger.info(map.toString());
+//                    logger.info(map.toString());
                     return map;
                 }else{
                     map=searchUtil.handleData(hits,"positions");
-                    logger.info(map.toString());
+//                    logger.info(map.toString());
                     return map;
                 }
             }
