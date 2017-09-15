@@ -232,7 +232,7 @@ public class ProfileService {
                 }
                 JSONObject profileOtherJson = JSONObject.parseObject(profileOther.getOther());
                 List<JSONObject> appCvConfigJson = JSONArray.parseArray(hrAppCvConfDO.getFieldValue()).getJSONObject(0).getJSONArray("fields").stream().
-                        map(m -> JSONObject.parseObject(m.toString())).filter(f -> f.getIntValue("required") == 0).collect(Collectors.toList());
+                        map(m -> JSONObject.parseObject(String.valueOf(m))).filter(f -> f.getIntValue("required") == 0).collect(Collectors.toList());
                 for (JSONObject appCvConfig : appCvConfigJson) {
                     Object customResult = "";
                     if (appCvConfig.containsKey("mapping")) {
@@ -278,17 +278,17 @@ public class ProfileService {
         List<HrAppCvConfDO> hrAppCvConfDOList = hrAppCvConfDao.getDatas(queryBuilder.buildQuery());
         Map<Integer, String> positionOtherMap = (hrAppCvConfDOList == null || hrAppCvConfDOList.isEmpty()) ? new HashMap<>() :
                 hrAppCvConfDOList.parallelStream().collect(Collectors.toMap(k -> k.getId(), v -> v.getFieldValue()));
-        paramsStream.parallelStream().map(m -> JSONObject.parseObject(String.valueOf(m))).forEach(e -> {
+        paramsStream.stream().forEach(e -> {
             int positionId = e.getIntValue("positionId");
             int profileId = e.getIntValue("profileId");
             e.put("other", "");
             if (positionCustomConfigMap.containsKey(positionId)) {
                 JSONObject profileOtherJson = JSONObject.parseObject(profileOtherMap.get(profileId));
                 Map<String, String> otherMap = JSONArray.parseArray(positionOtherMap.get(positionCustomConfigMap.get(positionId))).getJSONObject(0).getJSONArray("fields").stream().
-                        map(m -> JSONObject.parseObject(m.toString())).map(mm -> mm.getString("field_name")).collect(Collectors.toMap(k -> k, v -> profileOtherJson.getString(v), (oldKey, newKey) -> newKey));
+                        map(m -> JSONObject.parseObject(String.valueOf(m))).map(mm -> mm.getString("field_name")).collect(Collectors.toMap(k -> k, v -> org.apache.commons.lang.StringUtils.defaultIfBlank(profileOtherJson.getString(v), ""), (oldKey, newKey) -> newKey));
                 e.put("other", otherMap);
             }
         });
-        return ResponseUtils.successWithoutStringify(params);
+        return ResponseUtils.success(paramsStream);
     }
 }

@@ -235,7 +235,8 @@ public class ProfileServicesImplTest {
 
     @Test
     public void getProfileOtherTest() {
-        profileService.getProfileOther("[{\"profileId\":63986, \"positionId\":129042}]");
+        Response response = profileService.getProfileOther("[{\"profileId\":63986, \"positionId\":129042}]");
+        System.out.println(response);
     }
 
 }
