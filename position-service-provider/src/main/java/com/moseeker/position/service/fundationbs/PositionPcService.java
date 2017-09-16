@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import com.moseeker.baseorm.dao.analyticsd.StJobSimilarityDao;
+import com.moseeker.baseorm.dao.dictdb.DictIndustryDao;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.*;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
@@ -13,6 +14,7 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.query.SelectOp;
 import com.moseeker.entity.PcRevisionEntity;
 import com.moseeker.thrift.gen.dao.struct.analytics.StJobSimilarityDO;
+import com.moseeker.thrift.gen.dao.struct.dictdb.DictIndustryDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobCustomDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobOccupationDO;
@@ -58,12 +60,6 @@ public class PositionPcService {
 	@Autowired
 	private HrCompanyAccountDao hrCompanyAccountDao;
 	@Autowired
-	private HrCmsPagesDao hrCmsPagesDao;
-	@Autowired
-	private HrCmsModuleDao hrCmsModuleDao;
-	@Autowired
-	private HrCmsMediaDao hrCmsMediaDao;
-	@Autowired
 	private HrResourceDao  hrResourceDao;
 	@Autowired
 	private HrCompanyConfDao hrCompanyConfDao;
@@ -71,10 +67,6 @@ public class PositionPcService {
 	private HrTeamDao hrTeamDao;
 	@Autowired
 	private CampaignPcRecommendCompanyDao campaignPcRecommendCompanyDao;
-	@Autowired
-	private JobPositionCityDao jobPositionCityDao;
-	@Autowired
-	private DictCityDao dictCityDao;
 	@Autowired
 	private PcRevisionEntity pcRevisionEntity;
 	@Autowired
@@ -87,6 +79,8 @@ public class PositionPcService {
 	private JobCustomDao jobCustomDao;
 	@Autowired
 	private JobOccupationDao  jobOccupationDao;
+	@Autowired
+	private DictIndustryDao dictIndustryDao;
 	/*
      * 获取pc首页职位推荐
      */
@@ -106,7 +100,6 @@ public class PositionPcService {
 		}
 		return res;
 	}
-	//======================================================
 	//获取仟寻推荐公司和相关职位信息接口
 	@CounterIface
 	public Response getQXRecommendCompanyList(int page,int pageSize) throws TException{
@@ -156,6 +149,15 @@ public class PositionPcService {
 		}
 		HrCompanyDO companyDO= handleCompanyData(publisher);
 		if(companyDO!=null){
+			String industryName=companyDO.getIndustry();
+			if(StringUtils.isNotNullOrEmpty(industryName)){
+				DictIndustryDO industryDO=getDictIndustryByName(industryName);
+				if(industryDO!=null){
+					String industryDOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(industryDO);
+					Map<String,Object> industryData= JSON.parseObject(industryDOs, Map.class);
+					map.put("industryData",industryData);
+				}
+			}
 
 			String companyDOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(companyDO);
 			Map<String,Object> companyData= JSON.parseObject(companyDOs, Map.class);
@@ -617,6 +619,8 @@ public class PositionPcService {
 		if(positionList==null||positionList.size()==0){
 			return null;
 		}
+		List<String> industryNameList=this.getIndustryName(companyList);
+		List<DictIndustryDO> industryList=this.getDictIndustryListByName(industryNameList);
 		for(int i=0;i<positionList.size();i++){
 			JobPositionDO positionDo=positionList.get(i);
 			int publisher=positionDo.getPublisher();
@@ -627,6 +631,18 @@ public class PositionPcService {
 				for(int j=0;j<companyList.size();j++){
 					HrCompanyDO companyDO=companyList.get(j);
 					int companyId=companyDO.getId();
+					String industryName=companyDO.getIndustry();
+					if(!StringUtils.isEmptyList(industryList)&&StringUtils.isNotNullOrEmpty(industryName)){
+						for(DictIndustryDO dictIndustryDO:industryList){
+							String name=dictIndustryDO.getName();
+							if(name.equals(industryName)){
+								String industryDOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(dictIndustryDO);
+								Map<String,Object> industryData=JSON.parseObject(industryDOs, Map.class);
+								map.put("industryData",industryData);
+								break;
+							}
+						}
+					}
 					// 本处如此做是为了过滤掉已经删除的子公司的信息
 					if(!StringUtils.isEmptyList(publisherAndCompanyId)){
 						for(int z=0;z<publisherAndCompanyId.size();z++){
@@ -1002,6 +1018,8 @@ public class PositionPcService {
 		if(StringUtils.isEmptyList(companyList)){
 			return list;
 		}
+		List<String> industryNameList=this.getIndustryName(companyList);
+		List<DictIndustryDO> industryList=this.getDictIndustryListByName(industryNameList);
 		for(int i=0;i<companyList.size();i++){
 			map=new HashMap<String,Object>();
 			HrCompanyDO companyDO=companyList.get(i);
@@ -1009,6 +1027,18 @@ public class PositionPcService {
 			String companyDOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(companyDO);
 			Map<String,Object> companyData=JSON.parseObject(companyDOs, Map.class);
 			map.put("company", companyData);
+			String industryName=companyDO.getIndustry();
+			if(!StringUtils.isEmptyList(industryList)&&StringUtils.isNotNullOrEmpty(industryName)){
+				for(DictIndustryDO industryDO:industryList){
+					String name=industryDO.getName();
+					if(industryName.equals(name)){
+						String industryDOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(industryDO);
+						Map<String,Object> industryData=JSON.parseObject(industryDOs, Map.class);
+						map.put("industryData",industryData);
+						break;
+					}
+				}
+			}
 			if(companyPulisher!=null&&!companyPulisher.isEmpty()){
 				List<Integer> publisherIds=companyPulisher.get(companyId);
 				if(publisherIds!=null&&publisherIds.size()>0){
@@ -1109,5 +1139,34 @@ public class PositionPcService {
 			}
 		}
 		return list;
+	}
+
+
+	//获取企业行业list <String>
+	private List<String> getIndustryName(List<HrCompanyDO> list){
+		if(StringUtils.isEmptyList(list)){
+			return null;
+		}
+		List<String> result=new ArrayList<String>();
+		for(HrCompanyDO DO:list){
+			String name=DO.getIndustry();
+			result.add(name);
+		}
+		return result;
+	}
+	//根据企业行业的名称获取行业信息
+	private List<DictIndustryDO> getDictIndustryListByName(List<String> industryNameList){
+		if(StringUtils.isEmptyList(industryNameList)){
+			return null;
+		}
+		Query query=new Query.QueryBuilder().where(new Condition("name",industryNameList.toArray(),ValueOp.IN)).buildQuery();
+		List<DictIndustryDO> list=dictIndustryDao.getDatas(query);
+		return list;
+	}
+	//根据name获取单个dictindustry
+	private DictIndustryDO getDictIndustryByName(String name){
+		Query query=new Query.QueryBuilder().where("name",name).buildQuery();
+		DictIndustryDO DO=dictIndustryDao.getData(query);
+		return DO;
 	}
 }
