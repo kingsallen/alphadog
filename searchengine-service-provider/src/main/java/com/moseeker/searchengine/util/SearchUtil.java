@@ -181,6 +181,34 @@ public class SearchUtil {
         return build;
     }
 
+    public AbstractAggregationBuilder handleIndustry(String name){
+        StringBuffer sb=new StringBuffer();
+        sb.append("scale_new=_source.company; ");
+        sb.append("if(scale_new){scale=scale_new['industry_data'];");
+        sb.append("if(scale  in _agg['transactions'] ){}");
+        sb.append("else{_agg['transactions'].add(scale)};};");
+        String mapScript=sb.toString();
+        StringBuffer sb1=new StringBuffer();
+        sb1.append("jsay=[];");
+        sb1.append("for(a in _aggs){");
+        sb1.append("for(ss in a){");
+        sb1.append("if(ss in jsay||!ss){}");
+        sb1.append("else{jsay.add(ss);}}};");
+        sb1.append("return jsay");
+        String reduceScript=sb1.toString();
+        StringBuffer sb2=new StringBuffer();
+        sb2.append("jsay=[];");
+        sb2.append("for(ss in _agg['transactions']){jsay.add(ss)};");
+        sb2.append("return jsay");
+        String combinScript=sb2.toString();
+        MetricsAggregationBuilder build=AggregationBuilders.scriptedMetric(name)
+                .initScript(new Script("_agg['transactions'] = []"))
+                .mapScript(new Script(mapScript))
+                .reduceScript(new Script(reduceScript))
+                .combineScript(new Script(combinScript));
+        return build;
+    }
+
     public AbstractAggregationBuilder handleArray(String fieldName, String name) {
         StringBuffer sb = new StringBuffer();
         sb.append("city=" + fieldName);
