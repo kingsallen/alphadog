@@ -631,18 +631,7 @@ public class PositionPcService {
 				for(int j=0;j<companyList.size();j++){
 					HrCompanyDO companyDO=companyList.get(j);
 					int companyId=companyDO.getId();
-					String industryName=companyDO.getIndustry();
-					if(!StringUtils.isEmptyList(industryList)&&StringUtils.isNotNullOrEmpty(industryName)){
-						for(DictIndustryDO dictIndustryDO:industryList){
-							String name=dictIndustryDO.getName();
-							if(name.equals(industryName)){
-								String industryDOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(dictIndustryDO);
-								Map<String,Object> industryData=JSON.parseObject(industryDOs, Map.class);
-								map.put("industryData",industryData);
-								break;
-							}
-						}
-					}
+
 					// 本处如此做是为了过滤掉已经删除的子公司的信息
 					if(!StringUtils.isEmptyList(publisherAndCompanyId)){
 						for(int z=0;z<publisherAndCompanyId.size();z++){
@@ -660,12 +649,29 @@ public class PositionPcService {
 							}
 						}
 					}
-				}
-				if(positionCitys!=null&&!positionCitys.isEmpty()&&!map.isEmpty()){
-					if(positionCitys.get(positionId)!=null){
-						map.put("cityList", positionCitys.get(positionId));
+					if(map.get("position")!=null){
+						String industryName=companyDO.getIndustry();
+						if(!StringUtils.isEmptyList(industryList)&&StringUtils.isNotNullOrEmpty(industryName)){
+							for(DictIndustryDO dictIndustryDO:industryList){
+								String name=dictIndustryDO.getName();
+								if(name.equals(industryName)){
+									String industryDOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(dictIndustryDO);
+									Map<String,Object> industryData=JSON.parseObject(industryDOs, Map.class);
+									map.put("industryData",industryData);
+									break;
+								}
+							}
+						}
 					}
 				}
+				if(map.get("position")!=null){
+					if(positionCitys!=null&&!positionCitys.isEmpty()&&!map.isEmpty()){
+						if(positionCitys.get(positionId)!=null){
+							map.put("cityList", positionCitys.get(positionId));
+						}
+					}
+				}
+
 			}
 			// 本处如此做是为了过滤掉已经删除的子公司的信息
 			if(!map.isEmpty()){
