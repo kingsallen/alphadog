@@ -1,31 +1,31 @@
-package com.moseeker.position.service.fundationbs;
-
-import com.moseeker.baseorm.dao.dictdb.DictLiepinOccupationDao;
-import com.moseeker.entity.PcRevisionEntity;
-import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignPcRecommendPositionDO;
-
-import org.apache.thrift.TException;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.junit.runner.RunWith;
-
-import com.alibaba.fastjson.JSON;
-import com.moseeker.position.config.AppConfig;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-
-/**
- * Created by zztaiwll on 17/6/29.
- */
+//package com.moseeker.position.service.fundationbs;
+//
+//import com.moseeker.baseorm.dao.dictdb.DictLiepinOccupationDao;
+//import com.moseeker.entity.PcRevisionEntity;
+//import com.moseeker.thrift.gen.common.struct.Response;
+//import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignPcRecommendPositionDO;
+//
+//import org.apache.thrift.TException;
+//import org.junit.Test;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.test.context.ContextConfiguration;
+//import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+//import org.junit.runner.RunWith;
+//
+//import com.alibaba.fastjson.JSON;
+//import com.moseeker.position.config.AppConfig;
+//
+//import java.util.ArrayList;
+//import java.util.List;
+//import java.util.Map;
+//
+//
+///**
+// * Created by zztaiwll on 17/6/29.
+// */
 //@RunWith(SpringJUnit4ClassRunner.class)
 //@ContextConfiguration(classes = AppConfig.class)
-public class PositionPcServiceTest {
+//public class PositionPcServiceTest {
 //    @Autowired
 //    private PositionPcService service;
 //    @Autowired
@@ -115,5 +115,4 @@ public class PositionPcServiceTest {
 //		List list=dao.getAll();
 //		System.out.println(list);
 //	  }
-
-}
+//}
