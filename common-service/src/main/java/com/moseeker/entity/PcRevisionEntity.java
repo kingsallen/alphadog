@@ -108,7 +108,7 @@ public class PcRevisionEntity {
                 .where(new Condition("publisher",publisherList.toArray(), ValueOp.IN))
                 .and("status",0)
                 .setPageNum(1)
-                .setPageSize(100)
+                .setPageSize(200)
                 .buildQuery();
         List<JobPositionDO> list=jobPositionDao.getDatas(query);
         return list;
