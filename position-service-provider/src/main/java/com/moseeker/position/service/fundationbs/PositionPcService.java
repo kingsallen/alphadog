@@ -23,6 +23,7 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import org.apache.thrift.TException;
 import org.apache.thrift.TSerializer;
 import org.apache.thrift.protocol.TSimpleJSONProtocol;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,6 +52,7 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 @Service
 @Transactional
 public class PositionPcService {
+	org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	private CampaignPcRecommendPositionDao campaignPcRecommendPositionDao;
 	@Autowired
@@ -886,10 +888,12 @@ public class PositionPcService {
 		companyList=orderCompany(companyIds,companyList);
 		companyList=this.handlerCompanys(companyList);
 		Map<Integer,List<Integer>> companyPulisher=pcRevisionEntity.handleCompanyPublisher(companyIds);
+		logger.info("companyPulisher========"+companyPulisher);
 		Map<Integer,Integer> mapTeamNum=this.getTeamNum(companyList, companyPulisher);
 		List<Integer> companyids=this.getCompanyIds(companyList);
 		List<Map<String,Object>> jdlist=pcRevisionEntity.HandleCmsResource(companyids,1);
 		Map<Integer,Set<String>> companyPositionCityData=pcRevisionEntity.handlerCompanyPositionCity(companyPulisher);
+		logger.info("companyPositionCityData========"+companyPositionCityData);
 		List<Map<String,Object>> list=handleDataForCompanyRecommend(companyList,companyPulisher,mapTeamNum,jdlist,companyPositionCityData);
 		return list;
 	}

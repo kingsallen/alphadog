@@ -48,23 +48,84 @@ public class PcRevisionEntity {
     private HrTeamMemberDao hrTeamMemberDao;
     //获取企业id和publisher的集合
     public Map<Integer,List<Integer>> handleCompanyPublisher(List<Integer> companyIdsList){
+        Map<Integer,List<Integer>> map=new HashMap<Integer,List<Integer>>();
         if(StringUtils.isEmptyList(companyIdsList)){
             return null;
         }
-        List<HrCompanyDO> companyList=getAllCommpany(companyIdsList);
-        if(companyList==null||companyList.isEmpty()){
+        Map<String,List<Integer>> companyMap=this.handleCompanyId(companyIdsList);
+        List<Integer> childCompanyList=companyMap.get("child");
+        List<Integer> motherCompanyList=companyMap.get("mother");
+        if(!StringUtils.isEmptyList(motherCompanyList)){
+            List<HrCompanyDO> companyList=getAllCommpany(motherCompanyList);
+            if(companyList==null||companyList.isEmpty()){
+                return null;
+            }
+            Map<Integer,Set<Integer>> companySubData=getCompanySubAndSelf(companyList,motherCompanyList);
+            if(companySubData==null||companySubData.isEmpty()){
+                return null;
+            }
+            List<HrCompanyAccountDO> accountList=getCompanyAccountListByCompanyIds(motherCompanyList);
+            if(StringUtils.isEmptyList(accountList)){
+                return null;
+            }
+            HandleCompanyPublisher(companySubData,accountList,map);
+        }
+        if(!StringUtils.isEmptyList(childCompanyList)){
+            Map<Integer,Set<Integer>> childMap=this.handleChildCompanyMap(childCompanyList);
+            List<HrCompanyAccountDO> childAccountList=getCompanyAccountListByCompanyIds(childCompanyList);
+            HandleCompanyPublisher(childMap,childAccountList,map);
+        }
+
+        return map;
+    }
+    //处理子公司的company——id
+    private Map<Integer,Set<Integer>> handleChildCompanyMap(List<Integer> childCompanyList){
+        if(StringUtils.isEmptyList(childCompanyList)){
             return null;
         }
-        Map<Integer,Set<Integer>> companySubData=getCompanySubAndSelf(companyList,companyIdsList);
-        if(companySubData==null||companySubData.isEmpty()){
-            return null;
+        Map<Integer,Set<Integer>> map=new HashMap<>();
+        for(Integer id:childCompanyList){
+            Set<Integer> set=new HashSet<>();
+            set.add(id);
+            map.put(id,set);
         }
-        List<HrCompanyAccountDO> accountList=getCompanyAccountListByCompanyIds(companyIdsList);
-        if(StringUtils.isEmptyList(accountList)){
-            return null;
+        return map;
+    }
+
+
+
+    //处理company_id,区分公司是子公司还是母公司
+    private Map<String,List<Integer>> handleCompanyId(List<Integer> companyIdList){
+        Query query=new Query.QueryBuilder().where(new Condition("id",companyIdList.toArray(),ValueOp.IN)).buildQuery();
+        List<HrCompanyDO> list=hrCompanyDao.getDatas(query);
+        Map<String,List<Integer>> map=new HashMap<>();
+        if(!StringUtils.isEmptyList(list)){
+            for(HrCompanyDO DO:list){
+                int id=DO.getId();
+                int disable=DO.getDisable();
+                int parentId=DO.getParentId();
+                if(parentId!=0&&disable==0){
+                    continue;
+                }
+                if(parentId!=0){
+                    if(map.get("child")!=null){
+                        map.get("child").add(id);
+                    }else{
+                        List<Integer> set=new ArrayList<>();
+                        set.add(id);
+                        map.put("child",set);
+                    }
+                }else{
+                    if(map.get("mother")!=null){
+                        map.get("mother").add(id);
+                    }else{
+                        List<Integer> set=new ArrayList<>();
+                        set.add(id);
+                        map.put("mother",set);
+                    }
+                }
+            }
         }
-        Map<Integer,List<Integer>> map=new HashMap<Integer,List<Integer>>();
-        HandleCompanyPublisher(companySubData,accountList,map);
         return map;
     }
     //处理公司下面的地址
