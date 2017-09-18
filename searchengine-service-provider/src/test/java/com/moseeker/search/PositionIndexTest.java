@@ -34,7 +34,7 @@
 //        map1.put("salaryBottom",4);
 //        list.add(map1);
 //        String ss=JSON.toJSONString(list);
-//        Map<String,Object> result=positionSearchEngine.search("上海哪里","",null,1,10,"","","",0,0,0,0);
+//        Map<String,Object> result=positionSearchEngine.search(null, null, null, 1, 18, null, null, null, 1424, 24, 0, 0);
 //        System.out.println(result);
 //    }
 //    @Test
