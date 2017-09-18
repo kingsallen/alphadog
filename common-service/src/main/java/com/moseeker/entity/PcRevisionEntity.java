@@ -130,8 +130,22 @@ public class PcRevisionEntity {
     }
     //处理公司下面的地址
     public Map<Integer,Set<String>> handlerCompanyPositionCity(Map<Integer,List<Integer>> companyPublisher){
-        List<Integer> publisherList=getAllPulisherByCompanyPublisher(companyPublisher);
-        List<JobPositionDO> positionData=getPositionByPublisher(publisherList);
+        if(companyPublisher==null||companyPublisher.isEmpty()){
+            return null;
+        }
+        List<JobPositionDO> positionData=new ArrayList<>();
+        for(Integer key:companyPublisher.keySet()){
+            List<Integer> publisherIdList=companyPublisher.get(key);
+            if(!StringUtils.isEmptyList(publisherIdList)){
+                List<JobPositionDO> publisherPositionList=getPositionByPublisher(publisherIdList);
+                if(!StringUtils.isEmptyList(publisherPositionList)){
+                    positionData.addAll(publisherPositionList);
+                }
+            }
+
+        }
+//        List<Integer> publisherList=getAllPulisherByCompanyPublisher(companyPublisher);
+
         List<Integer> positionIdList=this.getIdByPositionList(positionData);
         Map<Integer,Set<Integer>> companyPosition=getCompanyPositionIds(companyPublisher,positionData);
         if(companyPosition==null||companyPosition.isEmpty()){
@@ -158,6 +172,8 @@ public class PcRevisionEntity {
         }
         return list;
     }
+
+
     /*
      * 获取公司hr下的职位
      */
@@ -169,7 +185,7 @@ public class PcRevisionEntity {
                 .where(new Condition("publisher",publisherList.toArray(), ValueOp.IN))
                 .and("status",0)
                 .setPageNum(1)
-                .setPageSize(200)
+                .setPageSize(50)
                 .buildQuery();
         List<JobPositionDO> list=jobPositionDao.getDatas(query);
         return list;
