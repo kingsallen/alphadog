@@ -69,14 +69,14 @@ public class PositionSearchEngine {
                     .addAggregation(searchUtil.handleArray("_source.position.city_data","city"))
                     .addAggregation(searchUtil.handle("_source.position.salary_data","salary"))
                     .setFrom((page-1)*pageSize)
-                    .setSize(pageSize);
+                    .setSize(pageSize)
+                    .setTrackScores(true);
             if(order==1){
+                responseBuilder.addSort("position.update_time",SortOrder.DESC);
                 if(StringUtils.isNotEmpty(cityCode)&&!cityCode.contains("233333")&&!cityCode.equals("111111")){
                     SortBuilder builder=new ScriptSortBuilder(this.buildScriptCitySort(cityCode,1),"number");
                     builder.order(SortOrder.DESC);
                     responseBuilder.addSort(builder);
-                }else{
-                    responseBuilder.addSort("position.update_time",SortOrder.DESC);
                 }
             }else{
                 if(StringUtils.isNotEmpty(cityCode)&&!cityCode.equals("233333")&&!cityCode.equals("111111")){
@@ -101,22 +101,24 @@ public class PositionSearchEngine {
                     .addAggregation(searchUtil.handleArray("_source.position.city_data","city"))
                     .addAggregation(searchUtil.handle("_source.position.salary_data","salary"))
                     .setFrom((page-1)*pageSize)
-                    .setSize(pageSize);
+                    .setSize(pageSize)
+                    .setTrackScores(true);
             if(StringUtils.isNotEmpty(keyWord)){
                 Script script=this.buildScriptSort(keyWord);
                 ScriptSortBuilder builder=new ScriptSortBuilder(script,"number");
                 builder.order( SortOrder.DESC);
                 responseBuilder.addSort(builder);
-                responseBuilder.setTrackScores(true);
+
             }
             if(order==1){
+                responseBuilder.addSort("position.update_time",SortOrder.DESC);
                 if(StringUtils.isNotEmpty(cityCode)&&!cityCode.contains("233333")&&!cityCode.equals("111111")){
                     SortBuilder builder=new ScriptSortBuilder(this.buildScriptCitySort(cityCode,1),"number");
                     builder.order(SortOrder.DESC);
                     responseBuilder.addSort(builder);
-                }else{
-                    responseBuilder.addSort("position.update_time",SortOrder.DESC);
                 }
+
+
             }else{
                 if(StringUtils.isNotEmpty(cityCode)&&!cityCode.equals("233333")&&!cityCode.equals("111111")){
                     SortBuilder builder=new ScriptSortBuilder(this.buildScriptCitySort(cityCode,2),"number");
