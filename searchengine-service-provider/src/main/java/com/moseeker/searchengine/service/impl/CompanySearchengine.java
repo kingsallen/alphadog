@@ -79,7 +79,8 @@ public class CompanySearchengine {
 						.setSize(pageSize)
 						.addAggregation(this.handleAggIndustry())
 						.addAggregation(this.handleAggPositionCity())
-						.addAggregation(this.handleAggScale());
+						.addAggregation(this.handleAggScale())
+						.setTrackScores(true);
 				if(!org.springframework.util.StringUtils.isEmpty(keywords)){
 					responseBuilder.addSort("_score", SortOrder.DESC);
 				}
