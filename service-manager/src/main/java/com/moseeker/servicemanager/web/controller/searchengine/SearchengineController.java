@@ -274,7 +274,7 @@ public class SearchengineController {
                  pageSize="10";
              }
              logger.info(keyWord, citys, industry, scale, page,
-                     pageSize,companyId,teamId,"=============");
+                     pageSize,companyId,teamId,salaryCode,"=============");
              Response res=searchengineServices.positionQuery(keyWord, citys, industry, salaryCode, Integer.parseInt(page),
                      Integer.parseInt(pageSize), startTime, endTime,Integer.parseInt(companyId),
                      Integer.parseInt(teamId),Integer.parseInt(motherCompanyId),Integer.parseInt(order));

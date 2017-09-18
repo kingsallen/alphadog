@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.moseeker.common.annotation.iface.CounterIface;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
@@ -29,6 +31,7 @@ public class PositionSearchEngine {
     @Autowired
     private SearchUtil searchUtil;
     //按条件查询，如果prefix的方式无法差的数据，那么转换为query_string的方式查询
+    @CounterIface
     public Map<String,Object> search(String keyWord,String industry,String salaryCode,int page,int pageSize,String cityCode,String startTime,String endTime,int companyId,int teamId,int motherCompanyId,int order){
         Map<String,Object> map=new HashMap<String,Object>();
         TransportClient client=null;
