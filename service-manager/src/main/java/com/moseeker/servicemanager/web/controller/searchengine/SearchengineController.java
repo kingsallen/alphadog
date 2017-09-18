@@ -277,10 +277,10 @@ public class SearchengineController {
                  pageSize="10";
              }
              Map<String,Integer> map=new HashMap<>();
-             if(StringUtils.isNullOrEmpty(salaryTop)){
+             if(StringUtils.isNotNullOrEmpty(salaryTop)&&!"0".equals(salaryTop)){
                  map.put("salaryTop",Integer.parseInt(salaryTop));
              }
-             if(StringUtils.isNullOrEmpty(salaryBottom)){
+             if(StringUtils.isNotNullOrEmpty(salaryBottom)&&!"0".equals(salaryBottom)){
                  map.put("salaryBottom",Integer.parseInt(salaryBottom));
              }
              List<Map<String,Integer>> salary=null;
