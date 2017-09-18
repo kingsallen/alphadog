@@ -42,6 +42,7 @@ public class CompanySearchengine {
 	@Autowired
 	private SearchUtil searchUtil;
 	//搜索信息
+	@CounterIface
 	public Map<String,Object>  query(String keywords,String citys,String industry,String scale,Integer page,Integer pageSize) throws TException{
 		TransportClient client=null;
 		Map<String,Object> map=new HashMap<String,Object>();
