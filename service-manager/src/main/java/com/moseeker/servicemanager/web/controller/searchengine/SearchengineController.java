@@ -15,6 +15,8 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -248,7 +250,8 @@ public class SearchengineController {
     		 String scale=(String) reqParams.get("scale");
     		 String page=(String) reqParams.get("page");
     		 String pageSize=(String) reqParams.get("pageSize");
-    		 String salaryCode=(String) reqParams.get("salaryCode");
+    		 String salaryBottom=(String) reqParams.get("salaryBottom");
+    		 String salaryTop=(String)reqParams.get("salaryTop");
     		 String startTime=(String) reqParams.get("startTime");
     		 String endTime=(String) reqParams.get("endTime");
              String order=(String) reqParams.get("order");
@@ -272,6 +275,22 @@ public class SearchengineController {
              }
              if(StringUtils.isNullOrEmpty(pageSize)){
                  pageSize="10";
+             }
+             Map<String,Integer> map=new HashMap<>();
+             if(StringUtils.isNullOrEmpty(salaryTop)){
+                 map.put("salaryTop",Integer.parseInt(salaryTop));
+             }
+             if(StringUtils.isNullOrEmpty(salaryBottom)){
+                 map.put("salaryBottom",Integer.parseInt(salaryBottom));
+             }
+             List<Map<String,Integer>> salary=null;
+             if(map!=null&&!map.isEmpty()){
+                 salary=new ArrayList<>();
+                 salary.add(map);
+             }
+             String salaryCode=null;
+             if(salary!=null){
+                 salaryCode=JSON.toJSONString(salary);
              }
              logger.info(keyWord, citys, industry, scale, page,
                      pageSize,companyId,teamId,salaryCode,"=============");
