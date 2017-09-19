@@ -326,6 +326,7 @@ public class ProfileService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        logger.info("profileParser:{}", profileObj);
         return ResponseUtils.success(profileObj);
     }
 
