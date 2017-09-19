@@ -11,6 +11,8 @@ import com.moseeker.entity.ProfileEntity;
 import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +30,8 @@ import static com.moseeker.profile.exception.ProfileException.PROFILE_USER_NOTEX
 @CounterIface
 public class ProfileServiceImpl implements com.moseeker.profile.service.ProfileService {
 
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     ProfileEntity profileEntity;
 
@@ -36,6 +40,9 @@ public class ProfileServiceImpl implements com.moseeker.profile.service.ProfileS
 
     @Override
     public int upsertProfile(int userId, String profileParameter) throws CommonException {
+
+        logger.info("ProfileServiceImpl.upsertProfile:{}", profileParameter);
+
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         queryBuilder.where(USER_USER.ID.getName(), userId);
         UserUserDO userUserDO = userUserDao.getData(queryBuilder.buildQuery());
