@@ -181,6 +181,9 @@ public class PositionBS {
             data.setSalaryTop(p.getSalary_top());
             data.setSalaryDiscuss(p.isSalary_discuss() ? 1 : 0);
             data.setSalaryMonth(p.getSalary_month());
+            data.setPracticeSalary(p.getPractice_salary());
+            data.setPracticePerWeek(p.getPractice_per_week());
+            data.setPracticeSalaryUnit(p.getPractice_salary_unit());
             pds.add(data);
         });
         // 回写数据到第三方职位表表
@@ -199,11 +202,11 @@ public class PositionBS {
         }
         if(p != null) {
             boolean needWriteBackToPositin = false;
-            if (p.getSalary_top() != moseekerPosition.getSalaryTop() * 1000) {
+            if (p.getSalary_top() > 0 && p.getSalary_top() != moseekerPosition.getSalaryTop() * 1000) {
                 moseekerPosition.setSalaryTop(p.getSalary_top() / 1000);
                 needWriteBackToPositin = true;
             }
-            if (p.getSalary_bottom() != moseekerPosition.getSalaryBottom() * 1000) {
+            if (p.getSalary_bottom() > 0 && p.getSalary_bottom() != moseekerPosition.getSalaryBottom() * 1000) {
                 moseekerPosition.setSalaryBottom(p.getSalary_bottom() / 1000);
                 needWriteBackToPositin = true;
             }

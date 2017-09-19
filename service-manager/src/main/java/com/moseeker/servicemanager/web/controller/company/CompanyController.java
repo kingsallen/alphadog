@@ -17,10 +17,11 @@ import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.company.struct.CompanyCertConf;
 import com.moseeker.thrift.gen.company.struct.CompanyForVerifyEmployee;
 import com.moseeker.thrift.gen.company.struct.CompanyOptions;
+import com.moseeker.thrift.gen.company.struct.HrEmployeeCustomFieldsVO;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrImporterMonitorDO;
 import com.moseeker.thrift.gen.employee.struct.RewardConfig;
-
+import com.moseeker.thrift.gen.position.service.PositionServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -45,6 +46,8 @@ public class CompanyController {
     Logger logger = LoggerFactory.getLogger(CompanyController.class);
 
     CompanyServices.Iface companyServices = ServiceManager.SERVICEMANAGER.getService(CompanyServices.Iface.class);
+
+	private PositionServices.Iface positonServices = ServiceManager.SERVICEMANAGER.getService(PositionServices.Iface.class);
 
     @RequestMapping(value = "/company", method = RequestMethod.GET)
     @ResponseBody
@@ -396,5 +399,123 @@ public class CompanyController {
             e.printStackTrace();
             return ResponseLogNotification.fail(request, e.getMessage());
         }
+    }
+    /*
+     * 获取pc端五个广告位
+     */
+    @RequestMapping(value = "/company/strictselection", method = RequestMethod.GET)
+    @ResponseBody
+    public String getPcBanner(HttpServletRequest request, HttpServletResponse response) {
+        try{
+            Map<String, Object> data = ParamUtils.parseRequestParam(request);
+            String page=(String) data.get("page");
+            String pageSize=(String) data.get("pagesize");
+            if(page==null){
+                page="1";
+            }
+            if(pageSize==null){
+                pageSize="15";
+            }
+            Response res=companyServices.getPcBanner(Integer.parseInt(page), Integer.parseInt(pageSize));
+            return ResponseLogNotification.success(request, res);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+    /*
+     * 获取pc端仟寻推荐的企业
+     */
+    @RequestMapping(value = "/company/apolegamic", method = RequestMethod.GET)
+    @ResponseBody
+    public String getPcQXRecommendCompany(HttpServletRequest request, HttpServletResponse response) {
+        try{
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer page = params.getInt("page");
+            Integer pageSize = params.getInt("pageSize");
+            if(page==null){
+                page=1;
+            }
+            if(pageSize==null){
+                pageSize=15;
+            }
+            Response res=positonServices.getPcRecommandCompany(page,pageSize);
+            return ResponseLogNotification.success(request, res);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+    /*
+     * 获取pc端全部的企业
+     */
+    @RequestMapping(value = "/company/apolegamicall", method = RequestMethod.GET)
+    @ResponseBody
+    public String getPcQXRecommendAll(HttpServletRequest request, HttpServletResponse response) {
+        try{
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer page = params.getInt("page");
+            Integer pageSize = params.getInt("pageSize");
+            if(page==null){
+                page=1;
+            }
+            if(pageSize==null){
+                pageSize=15;
+            }
+            Response res=positonServices.getPcRecommandCompanyAll(page,pageSize);
+            return ResponseLogNotification.success(request, res);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+    //获取公司信息，包括团队信息
+    @RequestMapping(value = "/company/details", method = RequestMethod.GET)
+    @ResponseBody
+    public String companyDetails(HttpServletRequest request, HttpServletResponse response) {
+        try{
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer companyId = params.getInt("companyId");
+            logger.info("param====companyId=={}",companyId);
+            Response res=companyServices.companyDetails(companyId);
+            return ResponseLogNotification.success(request,res);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+    /*
+     * 获取pc单个公司信息，不带团队信息
+     */
+    @RequestMapping(value = "/company/info", method = RequestMethod.GET)
+    @ResponseBody
+    public String getPcCompanyInfo(HttpServletRequest request, HttpServletResponse response) {
+        try{
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer companyId = params.getInt("companyId");
+            logger.info("param====companyId=={}",companyId);
+            Response res=companyServices.companyMessage(companyId);
+            return ResponseLogNotification.success(request, res);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+
+    /**
+     * 公司员工认证后补填字段配置信息列表
+     *
+     * @param request
+     */
+    @RequestMapping(value = "/company/customfields", method = RequestMethod.GET)
+    @ResponseBody
+    public String getCustomfields(HttpServletRequest request) throws Exception {
+        Params<String, Object> params = ParamUtils.parseRequestParam(request);
+        int companyId = params.getInt("companyId", 0);
+        List<HrEmployeeCustomFieldsVO> result = companyServices.getHrEmployeeCustomFields(companyId);
+        return ResponseLogNotification.success(request,
+                ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(result)));
+
     }
 }

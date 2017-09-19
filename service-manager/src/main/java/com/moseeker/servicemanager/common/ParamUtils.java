@@ -16,6 +16,7 @@ import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.moseeker.common.exception.CommonException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,7 +76,7 @@ public class ParamUtils {
         data.putAll(initParamFromRequestBody(request));
 
         if (data.get("appid") == null) {
-            throw new Exception("请设置 appid!");
+            throw new CommonException(1,"请设置 appid!");
         }
         return data;
     }

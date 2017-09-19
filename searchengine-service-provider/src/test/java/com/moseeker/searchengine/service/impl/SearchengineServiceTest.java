@@ -20,27 +20,27 @@ import static org.junit.Assert.*;
  *
  * Project_name :alphadog
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = AppConfig.class)
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(classes = AppConfig.class)
 public class SearchengineServiceTest {
 
 
-    @Autowired
-    private SearchengineService searchengineService;
-
-    @Test
-    public void updateEmployeeAwards() throws Exception {
-        List<Integer> employeeIds = new ArrayList<>();
-        employeeIds.add(446152);
-        searchengineService.updateEmployeeAwards(employeeIds);
-    }
-
-
-    @Test
-    public void deleteEmployeeDO() throws Exception {
-        List<Integer> employeeIds = new ArrayList<>();
-        employeeIds.add(2);
-        employeeIds.add(1);
-        searchengineService.deleteEmployeeDO(employeeIds);
-    }
+//    @Autowired
+//    private SearchengineService searchengineService;
+//
+//    @Test
+//    public void updateEmployeeAwards() throws Exception {
+//        List<Integer> employeeIds = new ArrayList<>();
+//        employeeIds.add(446152);
+//        searchengineService.updateEmployeeAwards(employeeIds);
+//    }
+//
+//
+//    @Test
+//    public void deleteEmployeeDO() throws Exception {
+//        List<Integer> employeeIds = new ArrayList<>();
+//        employeeIds.add(2);
+//        employeeIds.add(1);
+//        searchengineService.deleteEmployeeDO(employeeIds);
+//    }
 }

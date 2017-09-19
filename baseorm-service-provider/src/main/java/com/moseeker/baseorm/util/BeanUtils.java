@@ -258,13 +258,12 @@ public class BeanUtils {
                         destMap.get(field).invoke(dest, object);
                     }
                 } catch (IllegalArgumentException e) {
-                    logger.info("IllegalArgumentException -- method:{}, methodType:{}, param value:{}, param before convert:", origMap.get(field).getName().trim(), destMap.get(field).getParameterTypes()[0], object, orig);
-                    e.printStackTrace();
+                    logger.error("IllegalArgumentException", e);
+                    logger.error("IllegalArgumentException -- method:{}, methodType:{}, param value:{}, param before convert:", origMap.get(field).getName().trim(), destMap.get(field).getParameterTypes()[0], object, orig);
                 } catch (InvocationTargetException e) {
-                    e.printStackTrace();
-                    logger.error("InvocationTargetException -- origin:{}, method:{}, param value:{}", orig, origMap.get(field), destMap.get(field).getParameterTypes()[0]);
+                    logger.error("InvocationTargetException -- origin:{}, origin_method:{}, origin_value:{}, desc_method:{} ", orig, origMap.get(field), object, destMap.get(field));
+                    logger.error("InvocationTargetException", e);
                 } catch (Exception e) {
-                    e.printStackTrace();
                     logger.error(e.getMessage(), e);
                 }
             }

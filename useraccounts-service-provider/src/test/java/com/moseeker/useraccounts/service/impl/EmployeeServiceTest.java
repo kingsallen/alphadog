@@ -1,12 +1,17 @@
 package com.moseeker.useraccounts.service.impl;
 
 import com.moseeker.baseorm.redis.RedisClient;
-import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.AopTargetUtils;
+import com.moseeker.entity.EmployeeEntity;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
 import com.moseeker.thrift.gen.employee.struct.*;
-import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.useraccounts.config.AppConfig;
+import com.moseeker.useraccounts.service.EmployeeBinder;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,10 +19,12 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
+import sun.jvm.hotspot.runtime.Thread;
 
 /**
  * Created by lucky8987 on 17/5/17.
@@ -29,26 +36,27 @@ public class EmployeeServiceTest {
     @Autowired
     EmployeeService service;
 
-    @Mock
-    MqService.Iface mqService;
+    @Autowired
+    EmployeeBindByEmail bindByEmail;
 
-    @Mock
-    RedisClient client;
+    @Autowired
+    EmployeeEntity employeeEntity;
 
-    @Before
-    public void init() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        // EmployeeService 是通过aop代理的bean对象，所以要通过AopTargetUtils获取bean本身然后将mock的对象设置进去
-        ReflectionTestUtils.setField(AopTargetUtils.getTarget(service), "mqService", mqService);
-        ReflectionTestUtils.setField(AopTargetUtils.getTarget(service), "client", client);
-        Mockito.when(mqService.sendAuthEMail(Mockito.anyMap(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn(ResponseUtils.success("success"));
-        Mockito.when(client.set(Mockito.anyInt(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("insert success");
-        Mockito.when(client.get(Mockito.anyInt(), Mockito.anyString(), Mockito.anyString())).thenReturn(null);
-    }
+//    @Mock
+//    RedisClient client;
 
-    //@Test
+//    @Before
+//    public void init() throws Exception {
+//        MockitoAnnotations.initMocks(this);
+//        // EmployeeService 是通过aop代理的bean对象，所以要通过AopTargetUtils获取bean本身然后将mock的对象设置进去
+//        ReflectionTestUtils.setField(AopTargetUtils.getTarget(service), "client", client);
+//        Mockito.when(client.set(Mockito.anyInt(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("insert success");
+//        Mockito.when(client.get(Mockito.anyInt(), Mockito.anyString(), Mockito.anyString())).thenReturn(null);
+//    }
+
+    @Test
     public void getEmployee() throws Exception {
-        EmployeeResponse employee = service.getEmployee(4, 32);
+        EmployeeResponse employee = service.getEmployee(2376, 2878);
         System.out.println(employee);
     }
 
@@ -58,7 +66,7 @@ public class EmployeeServiceTest {
         System.out.println(response);
     }
 
-    //@Test
+    @Test
     @Transactional
     public void bind() throws Exception {
         BindingParams bp = new BindingParams();
@@ -66,7 +74,7 @@ public class EmployeeServiceTest {
         bp.setCompanyId(2878);
         bp.setType(BindType.EMAIL);
         bp.setUserId(2376);
-        bp.setName("小飞");
+        bp.setName("fly");
         Result result = service.bind(bp);
         System.out.println(result);
     }
@@ -78,7 +86,7 @@ public class EmployeeServiceTest {
         System.out.println(result);
     }
 
-    //@Testls
+    @Test
     public void getEmployeeCustomFieldsConf() throws Exception {
         EmployeeVerificationConfResponse response = service.getEmployeeVerificationConf(650);
         System.out.println(response);
@@ -97,16 +105,63 @@ public class EmployeeServiceTest {
         System.out.println(result);
     }
 
-    //@Test
-    @Transactional
+    @Test
     public void emailActivation() throws Exception {
-        //Result result = service.emailActivation("1d6006dbb2296da2");
-        //System.out.println(result);
+        Result result = bindByEmail.emailActivation("b9122ca1f6254e74e69f64708a182b53a857b397");
+        System.out.println(result);
     }
 
 //    @Test
     public void awardRankingTest() {
         List<EmployeeAward> response = service.awardRanking(45082, 39978, "2017-08");
         System.out.println(response);
+    }
+
+//    @Test
+//    @Commit
+    public void addAwardTest() throws Exception{
+    /**
+     * 线程池
+     */
+     ExecutorService threadPool = new ThreadPoolExecutor(10, 15, 60L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+        for (int i = 0; i < 100; i++) {
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    UserEmployeePointsRecordDO ueprDo = new UserEmployeePointsRecordDO();
+                    ueprDo.setAward(1);
+                    ueprDo.setEmployeeId(677720);
+                    ueprDo.setReason("加积分");
+                    int total = 0;
+                    try {
+                        total = employeeEntity.addReward(677720, 96, ueprDo);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    System.out.println("用户："+ueprDo.getEmployeeId()+", 积分："+total);
+                }
+            };
+            threadPool.submit(runnable);
+        }
+
+        threadPool.shutdown();
+        int retry = 50;
+        while(retry > 0){
+            try {
+                // 每10秒检查一次是否关闭
+                if (threadPool.awaitTermination(10, TimeUnit.SECONDS)) {
+                    break;
+                }
+                retry--;
+            } catch (InterruptedException e) {
+                break;
+            }
+        }
+    }
+
+    @Test
+    public void setCacheEmployeeCustomInfo() throws Exception {
+        Result result = service.setCacheEmployeeCustomInfo(2376, 2878, "[{\"a\":2}]");
+        System.out.println(result);
     }
 }

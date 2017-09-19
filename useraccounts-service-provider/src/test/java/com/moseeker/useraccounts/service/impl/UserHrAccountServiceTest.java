@@ -1,21 +1,19 @@
 package com.moseeker.useraccounts.service.impl;
 
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.parser.Feature;
+import com.moseeker.entity.SearchengineEntity;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.useraccounts.config.AppConfig;
-
+import org.apache.thrift.TException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = AppConfig.class)
@@ -24,6 +22,38 @@ public class UserHrAccountServiceTest {
     @Autowired
     private UserHrAccountService userHrAccountService;
 
+    @Autowired
+    private SearchengineEntity searchengineEntity;
+
+    @Test
+    public void testUpdateMobile() {
+        userHrAccountService.updateMobile(1,"15502117047");
+    }
+
+    @Test
+    public void testAllowAddMobile(){
+        System.out.println(userHrAccountService.ifAddSubAccountAllowed(82752));
+    }
+
+    @Test
+    public void addSubAccount() throws TException {
+        UserHrAccountDO userHrAccountDO = new UserHrAccountDO();
+
+        userHrAccountDO.setUsername("testSubAccount");
+        userHrAccountDO.setPassword("XXXXX");
+        userHrAccountDO.setWxuserId(100);
+        userHrAccountDO.setMobile("18221883365");
+        userHrAccountDO.setSource(1);
+        userHrAccountDO.setAccountType(1);
+        userHrAccountDO.setDisable(1);
+        userHrAccountDO.setActivation(Integer.valueOf(1).byteValue());
+        userHrAccountDO.setCompanyId(39978);
+
+        userHrAccountDO = userHrAccountService.addAccount(userHrAccountDO);
+
+        System.out.println(BeanUtils.convertStructToJSON(userHrAccountDO));
+
+    }
 
     //@Test
     public void testUserHrAccount() {
@@ -126,21 +156,16 @@ public class UserHrAccountServiceTest {
     }
 
 
-    /**
-     * 主入口
-     *
-     * @param args
-     */
-    public static void main(String args[]) {
-        String str = "";
-        Map dataMap = (Map) JSONObject.parseObject(str,LinkedHashMap.class, Feature.OrderedField);
-        List<LinkedHashMap<String,Integer>> data = (List<LinkedHashMap<String,Integer>>) dataMap.get("data");
-//        for (Map map : data) {
-//            System.out.println(map.get("award"));
-//            System.out.println(map.get("employeeId"));
-//        }
-        System.out.println(dataMap);
+    @Test
+    public void updateEmployeeAwards() {
+//        System.out.println(DateUtils.getSeason(new Date()));
+//        System.out.println(DateUtils.formatDate(), "yyyy年MM月"));
+        searchengineEntity.updateEmployeeAwards(69826, 2);
+//
+//        List<Integer> list = new ArrayList<>();
+//        list.add(69826);
+//
+//        searchengineEntity.updateEmployeeAwards(list);
     }
-
 
 }

@@ -1,7 +1,9 @@
 package com.moseeker.servicemanager.web.controller.useraccounts;
 
-import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
@@ -15,12 +17,6 @@ import com.moseeker.thrift.gen.useraccounts.service.UserQxService;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
 import com.moseeker.thrift.gen.useraccounts.service.UsersettingServices;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.apache.thrift.TSerializer;
 import org.apache.thrift.protocol.TSimpleJSONProtocol;
 import org.slf4j.Logger;
@@ -29,6 +25,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 //@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
 @Controller
@@ -175,8 +178,13 @@ public class UseraccountsController {
 	@ResponseBody
 	public String postsendsignupcode(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			Object mobile = ParamUtils.parseRequestParam(request).get("mobile");
-			Response result = useraccountsServices.postsendsignupcode(BeanUtils.converToString(mobile));
+			Map<String,Object> map=ParamUtils.parseRequestParam(request);
+			Object mobile = map.get("mobile");
+			String countryCode= (String)map.get("countryCode");
+			if(StringUtils.isNullOrEmpty(countryCode)){
+				countryCode="86";
+			}
+			Response result = useraccountsServices.postsendsignupcode(countryCode,BeanUtils.converToString(mobile));
 			if (result.getStatus() == 0) {
 				return ResponseLogNotification.success(request, result);
 			} else {
@@ -192,8 +200,13 @@ public class UseraccountsController {
     @ResponseBody
     public String postsendsignupcodeVice(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Object mobile = ParamUtils.parseRequestParam(request).get("mobile");
-            Response result = useraccountsServices.postsendsignupcodeVoice(BeanUtils.converToString(mobile));
+        	Map<String,Object> map=ParamUtils.parseRequestParam(request);
+            Object mobile = map.get("mobile");
+			String countryCode= (String) map.get("countryCode");
+			if(StringUtils.isNullOrEmpty(countryCode)){
+				countryCode="86";
+			}
+            Response result = useraccountsServices.postsendsignupcodeVoice(countryCode,BeanUtils.converToString(mobile));
             if (result.getStatus() == 0) {
                 return ResponseLogNotification.success(request, result);
             } else {
@@ -215,8 +228,11 @@ public class UseraccountsController {
 			String code = BeanUtils.converToString(reqParams.get("code"));
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
 			Integer appid = BeanUtils.converToInteger(reqParams.get("appid"));
-
-			Response result = userBS.bindOnAccount(appid, unionid, code, mobile, BindType.WECHAT);
+			String countryCode= BeanUtils.converToString(reqParams.get("countryCode"));
+			if(StringUtils.isNullOrEmpty(countryCode)){
+				countryCode="86";
+			}
+			Response result = userBS.bindOnAccount(appid, unionid, code, mobile, BindType.WECHAT,countryCode);
 			if (result.getStatus() == 0) {
 				return ResponseLogNotification.success(request, result);
 			} else {
@@ -237,8 +253,11 @@ public class UseraccountsController {
 			String userid = BeanUtils.converToString(reqParams.get("userid"));
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
 			Integer appid = BeanUtils.converToInteger(reqParams.get("appid"));
-
-			Response result = userBS.bindOnAccount(appid, userid, null, mobile, BindType.BAIDU);
+			String countryCode= BeanUtils.converToString(reqParams.get("countryCode"));
+			if(StringUtils.isNullOrEmpty(countryCode)){
+				countryCode="86";
+			}
+			Response result = userBS.bindOnAccount(appid, userid, null, mobile, BindType.BAIDU,countryCode);
 			if (result.getStatus() == 0) {
 				return ResponseLogNotification.success(request, result);
 			} else {
@@ -266,7 +285,11 @@ public class UseraccountsController {
 			Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
 			String unionid = BeanUtils.converToString(reqParams.get("unionid"));
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
-			Response result = useraccountsServices.userChangeBind(unionid, mobile);
+			String countryCode= BeanUtils.converToString(reqParams.get("countryCode"));
+			if(StringUtils.isNullOrEmpty(countryCode)){
+				countryCode="86";
+			}
+			Response result = useraccountsServices.userChangeBind(unionid,countryCode, mobile);
 			if (result.getStatus() == 0) {
 				return ResponseLogNotification.success(request, result);
 			} else {
@@ -304,8 +327,13 @@ public class UseraccountsController {
 	@ResponseBody
 	public String postusersendpasswordforgotcode(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			Object mobile = ParamUtils.parseRequestParam(request).get("mobile");
-			Response result = useraccountsServices.postusersendpasswordforgotcode(BeanUtils.converToString(mobile));
+			Map<String,Object> map=ParamUtils.parseRequestParam(request);
+			Object mobile =map.get("mobile");
+			String countryCode= (String) map.get("countryCode");
+			if(StringUtils.isNullOrEmpty(countryCode)){
+				countryCode="86";
+			}
+			Response result = useraccountsServices.postusersendpasswordforgotcode(countryCode,BeanUtils.converToString(mobile));
 			if (result.getStatus() == 0) {
 				return ResponseLogNotification.success(request, result);
 			} else {
@@ -325,8 +353,11 @@ public class UseraccountsController {
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
 			String code = BeanUtils.converToString(reqParams.get("code"));
 			String password = BeanUtils.converToString(reqParams.get("password"));
-
-			Response result = useraccountsServices.postuserresetpassword(mobile, password, code);
+			String countryCode= BeanUtils.converToString(reqParams.get("countryCode"));
+			if(StringUtils.isNullOrEmpty(countryCode)){
+				countryCode="86";
+			}
+			Response result = useraccountsServices.postuserresetpassword(countryCode,mobile, password, code);
 			if (result.getStatus() == 0) {
 				return ResponseLogNotification.success(request, result);
 			} else {
@@ -346,8 +377,11 @@ public class UseraccountsController {
 			Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
 			Integer appid = BeanUtils.converToInteger(reqParams.get("appid"));
-
-			Response result = useraccountsServices.postusermergebymobile(appid, mobile);
+			String countryCode= BeanUtils.converToString(reqParams.get("countryCode"));
+			if(StringUtils.isNullOrEmpty(countryCode)){
+				countryCode="86";
+			}
+			Response result = useraccountsServices.postusermergebymobile(appid,countryCode, mobile);
 			if (result.getStatus() == 0) {
 				return ResponseLogNotification.success(request, result);
 			} else {
@@ -373,8 +407,11 @@ public class UseraccountsController {
 			// GET方法 通用参数解析并赋值
 			Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
-
-			Response result = useraccountsServices.getismobileregisted(mobile);
+			String countryCode= BeanUtils.converToString(reqParams.get("countryCode"));
+			if(StringUtils.isNullOrEmpty(countryCode)){
+				countryCode="86";
+			}
+			Response result = useraccountsServices.getismobileregisted(countryCode,mobile);
 			if (result.getStatus() == 0) {
 				return ResponseLogNotification.success(request, result);
 			} else {
@@ -400,8 +437,11 @@ public class UseraccountsController {
 			Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
 			String code = BeanUtils.converToString(reqParams.get("code"));
-
-			Response result = useraccountsServices.postvalidatepasswordforgotcode(mobile, code);
+			String countryCode= BeanUtils.converToString(reqParams.get("countryCode"));
+			if(StringUtils.isNullOrEmpty(countryCode)){
+				countryCode="86";
+			}
+			Response result = useraccountsServices.postvalidatepasswordforgotcode(countryCode,mobile, code);
 			if (result.getStatus() == 0) {
 				return ResponseLogNotification.success(request, result);
 			} else {
@@ -431,8 +471,12 @@ public class UseraccountsController {
 			if(type == null) {
 				type = 0;
 			}
+			String countryCode = BeanUtils.converToString(reqParams.get("countryCode"));
+			if(StringUtils.isNullOrEmpty(countryCode)){
+				countryCode="86";
+			}
 			//
-			Response result = useraccountsServices.validateVerifyCode(mobile, code, type);
+			Response result = useraccountsServices.validateVerifyCode(countryCode,mobile, code, type);
 			if (result.getStatus() == 0) {
 				return ResponseLogNotification.success(request, result);
 			} else {
@@ -461,8 +505,12 @@ public class UseraccountsController {
 			if(type == null) {
 				type = 0;
 			}
+			String countryCode= BeanUtils.converToString(reqParams.get("countryCode"));
+			if(StringUtils.isNullOrEmpty(countryCode)){
+				countryCode="86";
+			}
 			//
-			Response result = useraccountsServices.sendVerifyCode(mobile, type);
+			Response result = useraccountsServices.sendVerifyCode(countryCode,mobile, type);
 			if (result.getStatus() == 0) {
 				return ResponseLogNotification.success(request, result);
 			} else {
@@ -514,8 +562,11 @@ public class UseraccountsController {
 		try {
 			Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
-
-			Response result = useraccountsServices.postsendchangemobilecode(mobile);
+			String countryCode= BeanUtils.converToString(reqParams.get("countryCode"));
+			if(StringUtils.isNullOrEmpty(countryCode)){
+				countryCode="86";
+			}
+			Response result = useraccountsServices.postsendchangemobilecode(countryCode,mobile);
 			if (result.getStatus() == 0) {
 				return ResponseLogNotification.success(request, result);
 			} else {
@@ -541,8 +592,11 @@ public class UseraccountsController {
 			Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
 			String code = BeanUtils.converToString(reqParams.get("code"));
-
-			Response result = useraccountsServices.postvalidatechangemobilecode(mobile, code);
+			String countryCode= BeanUtils.converToString(reqParams.get("countryCode"));
+			if(StringUtils.isNullOrEmpty(countryCode)){
+				countryCode="86";
+			}
+			Response result = useraccountsServices.postvalidatechangemobilecode(countryCode,mobile, code);
 			if (result.getStatus() == 0) {
 				return ResponseLogNotification.success(request, result);
 			} else {
@@ -567,8 +621,11 @@ public class UseraccountsController {
 		try {
 			Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
-
-			Response result = useraccountsServices.postsendresetmobilecode(mobile);
+			String countryCode= BeanUtils.converToString(reqParams.get("countryCode"));
+			if(StringUtils.isNullOrEmpty(countryCode)){
+				countryCode="86";
+			}
+			Response result = useraccountsServices.postsendresetmobilecode(countryCode,mobile);
 			if (result.getStatus() == 0) {
 				return ResponseLogNotification.success(request, result);
 			} else {
@@ -595,8 +652,11 @@ public class UseraccountsController {
 			int user_id = BeanUtils.converToInteger(reqParams.get("user_id"));
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
 			String code = BeanUtils.converToString(reqParams.get("code"));
-
-			Response result = useraccountsServices.postresetmobile(user_id, mobile, code);
+			String countryCode= BeanUtils.converToString(reqParams.get("countryCode"));
+			if(StringUtils.isNullOrEmpty(countryCode)){
+				countryCode="86";
+			}
+			Response result = useraccountsServices.postresetmobile(user_id,countryCode, mobile, code);
 			if (result.getStatus() == 0) {
 				return ResponseLogNotification.success(request, result);
 			} else {
@@ -959,7 +1019,7 @@ public class UseraccountsController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "/user/position/status", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+    @RequestMapping(value = "/user/position/status", method = {RequestMethod.GET,RequestMethod.POST}, produces = "application/json; charset=utf-8")
     @ResponseBody
     public String userPositionStatus(HttpServletRequest request) {
         try {
@@ -973,4 +1033,37 @@ public class UseraccountsController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+	/**
+	 * 批量查询用户职位状态。pc用
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/user/pc/position/status", method = {RequestMethod.GET,RequestMethod.POST}, produces = "application/json; charset=utf-8")
+	@ResponseBody
+	public String userPcPositionStatus(HttpServletRequest request) {
+		try {
+			Params<String, Object> params = ParamUtils.parseRequestParam(request);
+			int userId = params.getInt("user_id", 0);
+			String positionIds = (String)params.get("position_ids");
+			if(StringUtils.isNotNullOrEmpty(positionIds)&&positionIds.startsWith("[")&&positionIds.endsWith("]")){
+				positionIds=positionIds.replace("[","").replace("]","");
+				if(StringUtils.isNotNullOrEmpty(positionIds)){
+					String array[]=positionIds.split(",");
+					List<Integer> list=new ArrayList<Integer>();
+					for(String arr :array){
+						list.add(Integer.parseInt(arr));
+					}
+					return new TSerializer(new TSimpleJSONProtocol.Factory()).toString(userQxService.getUserPositionStatus(userId, list));
+				}
+				else{
+					return ResponseLogNotification.fail(request, "position_ids参数不能为空");
+				}
+			}else{
+				return ResponseLogNotification.fail(request, "position_ids参数不能为空");
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
 }

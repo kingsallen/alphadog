@@ -1,5 +1,7 @@
 package com.moseeker.company.service.impl;
 
+import com.moseeker.baseorm.dao.campaigndb.CampaignPcBannerDao;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.db.hrdb.tables.*;
@@ -22,14 +24,18 @@ import com.moseeker.company.constant.ResultMessage;
 import com.moseeker.company.exception.ExceptionCategory;
 import com.moseeker.company.exception.ExceptionFactory;
 import com.moseeker.entity.EmployeeEntity;
+import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.CompanyCertConf;
 import com.moseeker.thrift.gen.company.struct.CompanyForVerifyEmployee;
 import com.moseeker.thrift.gen.company.struct.CompanyOptions;
+import com.moseeker.thrift.gen.company.struct.HrEmployeeCustomFieldsVO;
 import com.moseeker.thrift.gen.company.struct.HrImporterMonitorVO;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
+import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignPcBannerDO;
+import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.employee.struct.RewardConfig;
@@ -49,6 +55,9 @@ import java.util.stream.Collectors;
 public class CompanyService {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
+
+
+	ChaosServices.Iface chaosService = ServiceManager.SERVICEMANAGER.getService(ChaosServices.Iface.class);
 
     @Autowired
     protected HrCompanyDao companyDao;
@@ -82,6 +91,13 @@ public class CompanyService {
 
     @Autowired
     private HRThirdPartyAccountDao hrThirdPartyAccountDao;
+
+
+    @Autowired
+    private HrEmployeeCustomFieldsDao hrEmployeeCustomFieldsDao;
+
+    @Autowired
+    private CampaignPcBannerDao campaignPcBannerDao;
 
     public Response getResource(CommonQuery query) throws TException {
         try {
@@ -610,5 +626,46 @@ public class CompanyService {
         }
         return 1;
     }
+    /*
+     * 获取pc端获取banner图
+     */
+    @CounterIface
+    public Response getPcBannerByPage(int page,int pageSize) throws Exception{
+        Query query=new Query.QueryBuilder().setPageNum(page).setPageSize(pageSize).buildQuery();
+        List<CampaignPcBannerDO> list=campaignPcBannerDao.getDatas(query);
+        if(StringUtils.isEmptyList(list)){
+            ResponseUtils.success("");
+        }
+        return ResponseUtils.success(list);
+    }
 
+    /**
+     * 获取公司员工认证后补填字段配置信息列表
+     *
+     * @param companyId
+     * @return
+     */
+    public List<HrEmployeeCustomFieldsVO> getHrEmployeeCustomFields(Integer companyId) {
+        if (companyId == 0) {
+            throw ExceptionFactory.buildException(ExceptionCategory.COMPANY_ID_EMPTY);
+        }
+        List<HrEmployeeCustomFieldsVO> hrEmployeeCustomFieldsVOS = new ArrayList<>();
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.DISABLE.getName(), 0)
+                .and(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.COMPANY_ID.getName(), companyId)
+                .and(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.STATUS.getName(), 0);
+        List<HrEmployeeCustomFieldsDO> list = hrEmployeeCustomFieldsDao.getDatas(queryBuilder.buildQuery());
+        for (HrEmployeeCustomFieldsDO hrEmployeeCustomFieldsDO : list) {
+            HrEmployeeCustomFieldsVO hrEmployeeCustomFieldsVO = new HrEmployeeCustomFieldsVO();
+            hrEmployeeCustomFieldsVO.setFname(hrEmployeeCustomFieldsDO.getFname());
+            hrEmployeeCustomFieldsVO.setId(hrEmployeeCustomFieldsDO.getId());
+            String fvaluesTemp = hrEmployeeCustomFieldsDO.getFvalues();
+            if (fvaluesTemp != null) {
+                List fvalues = JSONObject.parseArray(fvaluesTemp);
+                hrEmployeeCustomFieldsVO.setFvalues(fvalues);
+            }
+            hrEmployeeCustomFieldsVOS.add(hrEmployeeCustomFieldsVO);
+        }
+        return hrEmployeeCustomFieldsVOS;
+    }
 }

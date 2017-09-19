@@ -16,6 +16,7 @@ import org.jooq.Result;
 import org.jooq.SelectField;
 import org.jooq.SelectJoinStep;
 import org.jooq.impl.TableImpl;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -75,27 +76,14 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
         return 0;
     }
 
-//    public int updateUserEmployeePoint(int id) {
-//        int count = 0;
-//        Result<Record1<BigDecimal>> result = create.select(sum(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.AWARD))
-//                .from(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD)
-//                .where(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.EMPLOYEE_ID.equal((long) id)).fetch();
-//        if (result != null) {
-//            Record1<BigDecimal> record1 = result.get(0);
-//            BigDecimal sum = (BigDecimal) record1.get(
-//            UserEmployeeRecord userEmployeeRecord = new UserEmployeeRecord();
-//            userEmployeeRecord.setId(id);
-//            userEmployeeRecord.setAward(sum.intValue());
-//            create.attach(userEmployeeRecord);
-//            userEmployeeRecord.update();
-//            count = sum.intValue();
-//        }
-//        return count;
-//    }
+    public UserEmployeeDO getUserEmployeeForUpdate(int id) {
+        UserEmployeeRecord record = create.selectFrom(table).where(UserEmployee.USER_EMPLOYEE.ID.eq(id)).and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte)0)).
+                and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte)0)).forUpdate().fetchOne();
+        return BeanUtils.DBToStruct(UserEmployeeDO.class, record);
+    }
 
-    /**
-     * @param employeeIds
-     */
-
+    public int addAward(Integer employeeId, int award, int oldAward){
+        return create.update(table).set(UserEmployee.USER_EMPLOYEE.AWARD, award).where(UserEmployee.USER_EMPLOYEE.ID.eq(employeeId)).and(UserEmployee.USER_EMPLOYEE.AWARD.eq(oldAward)).execute();
+    }
 
 }

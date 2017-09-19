@@ -2,10 +2,12 @@ package com.moseeker.useraccounts.thrift;
 
 import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.baseorm.tool.QueryConvert;
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.Category;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
+import com.moseeker.commonservice.annotation.iface.ExceptionTransfer;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -14,6 +16,7 @@ import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService.Iface;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
@@ -50,6 +53,42 @@ public class UserHrAccountServiceImpl implements Iface {
 
     @Autowired
     private EmployeeEntity employeeEntity;
+
+    @Override
+    public void updateMobile(int hrId, String mobile) throws TException {
+        try {
+            service.updateMobile(hrId, mobile);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
+    }
+
+    @Override
+    public UserHrAccountDO addAccount(UserHrAccountDO hrAccount) throws TException {
+        try {
+            return service.addAccount(hrAccount);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
+    }
+
+    @Override
+    public boolean ifAddSubAccountAllowed(int hrId) throws TException {
+        try {
+            return service.ifAddSubAccountAllowed(hrId);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
+    }
 
     /**
      * HR在下载行业报告是注册
@@ -524,20 +563,20 @@ public class UserHrAccountServiceImpl implements Iface {
     /**
      * 编辑公司员工信息
      *
-     * @param cname          姓名
-     * @param mobile         手机号
-     * @param email          邮箱
-     * @param customField    自定义字段
-     * @param userEmployeeId user_employee.id
-     * @param companyId      公司ID
+     * @param cname             姓名
+     * @param mobile            手机号
+     * @param email             邮箱
+     * @param customField       自定义字段
+     * @param userEmployeeId    user_employee.id
+     * @param companyId         公司ID
+     * @param customFieldValues 公司员工认证后补填字段配置信息
      * @return
      * @throws BIZException
      */
     @Override
-    public Response updateUserEmployee(String cname, String mobile, String email, String customField, int userEmployeeId, int companyId) throws BIZException, TException {
+    public Response updateUserEmployee(String cname, String mobile, String email, String customField, int userEmployeeId, int companyId, String customFieldValues) throws BIZException, TException {
         try {
-            return service.updateUserEmployee(cname, mobile, email, customField, userEmployeeId, companyId);
-        } catch (CommonException e) {
+            return service.updateUserEmployee(cname, mobile, email, customField, userEmployeeId, companyId, customFieldValues);        } catch (CommonException e) {
             throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

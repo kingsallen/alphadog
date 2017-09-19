@@ -66,12 +66,12 @@ public class ProfilePojo {
                 if (!org.apache.commons.lang.StringUtils.isNumeric(mobile)) {
                     userMap.remove("mobile");
                 }
-                if (userMap.get("email") != null) {
-					if (!FormCheck.isEmail((String)userMap.get("email"))) {
+				if (userMap.get("email") != null) {
+					String email = String.valueOf(userMap.get("email"));
+					if (!FormCheck.isEmail(email)) {
 						userMap.remove("email");
 					}
 				}
-
                 crawlerUser = profileUtils.mapToUserUserRecord(userMap);
                 pojo.setUserRecord(crawlerUser);
             }
@@ -243,9 +243,17 @@ public class ProfilePojo {
 		try {
 			Map<String, Object> userMap = (Map<String, Object>) resume.get("user");
 			if (userMap != null) {
-				String mobile = String.valueOf(userMap.get("mobile"));
-				if (!org.apache.commons.lang.StringUtils.isNumeric(mobile)) {
-					userMap.remove("mobile");
+				if (userMap.get("mobile") != null) {
+					String mobile = String.valueOf(userMap.get("mobile"));
+					if (!org.apache.commons.lang.StringUtils.isNumeric(mobile)) {
+						userMap.remove("mobile");
+					}
+				}
+				if (userMap.get("email") != null) {
+					String email = String.valueOf(userMap.get("email"));
+					if (!FormCheck.isEmail(email)) {
+						userMap.remove("email");
+					}
 				}
 				if (userMap.get("email") != null) {
 					if (!FormCheck.isEmail((String)userMap.get("email"))) {

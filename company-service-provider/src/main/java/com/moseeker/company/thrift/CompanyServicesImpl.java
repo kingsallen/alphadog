@@ -4,16 +4,16 @@ import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.Category;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.company.exception.ExceptionFactory;
+import com.moseeker.company.service.impl.CompanyPcService;
 import com.moseeker.entity.CompanyConfigEntity;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.company.struct.CompanyCertConf;
 import com.moseeker.thrift.gen.company.struct.CompanyForVerifyEmployee;
+import com.moseeker.thrift.gen.company.struct.HrEmployeeCustomFieldsVO;
 import com.moseeker.thrift.gen.employee.struct.RewardConfig;
-
-import java.util.ArrayList;
-
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +29,9 @@ import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrImporterMonitorDO;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class CompanyServicesImpl implements Iface {
@@ -41,26 +43,40 @@ public class CompanyServicesImpl implements Iface {
 
     @Autowired
     private CompanyConfigEntity companyConfigEntity;
+    @Autowired
+    private CompanyPcService companyPcService;
 
     public Response getAllCompanies(CommonQuery query) {
-        return service.getAllCompanies(query);
+       return service.getAllCompanies(query);
     }
 
-    @Override
-    public Response add(Hrcompany company) throws TException {
-        return service.add(company);
-    }
+	@Override
+	public Response add(Hrcompany company) throws TException {
+		return service.add(company);
+	}
 
-    @Override
-    public Response getResource(CommonQuery query) throws TException {
-        return service.getResource(query);
-    }
+	@Override
+	public Response getResource(CommonQuery query) throws TException {
+		return service.getResource(query);
+	}
 
-    @Override
-    public Response getResources(CommonQuery query) throws TException {
-        return service.getResources(query);
-    }
+	@Override
+	public Response getResources(CommonQuery query) throws TException {
+		return service.getResources(query);
+	}
 
+
+
+	@Override
+	public Response getPcBanner(int page, int pageSize){
+		// TODO Auto-generated method stub
+		try{
+			return service.getPcBannerByPage(page,pageSize);
+		}catch(Exception e){
+			logger.info(e.getMessage(),e);
+		}
+		return  ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+	}
     @Override
     public Response getWechat(long companyId, long wechatId) throws TException {
         // TODO Auto-generated method stub
@@ -264,6 +280,46 @@ public class CompanyServicesImpl implements Iface {
             logger.error(e.getMessage(), e);
             throw new SysBIZException();
         }
+    }
+    /*
+        获取company的details,包含team
+     */
+    @Override
+    public Response companyDetails(int companyId){
+        try{
+            Map<String,Object> map=companyPcService.getCompanyDetail(companyId);
+            return ResponseUtils.success(map);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+    /*
+    获取公司信息，不带团队信息的
+     */
+    @Override
+    public Response companyMessage(int companyId) throws BIZException, TException {
+        try{
+            Map<String,Object> map=companyPcService.getCompanyMessage(companyId);
+            return ResponseUtils.success(map);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
+
+    /**
+     * 获取公司员工认证后补填字段配置信息列表
+     *
+     * @param companyId
+     * @return
+     * @throws BIZException
+     * @throws TException
+     */
+    @Override
+    public List<HrEmployeeCustomFieldsVO> getHrEmployeeCustomFields(int companyId) throws BIZException, TException {
+        return service.getHrEmployeeCustomFields(companyId);
     }
 }
 

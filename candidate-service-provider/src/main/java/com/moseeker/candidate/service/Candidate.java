@@ -6,6 +6,7 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 候选人
@@ -86,4 +87,7 @@ public interface Candidate {
      * @throws BIZException 业务异常
      */
     RecommendResult ignore(int id, int companyId, int postUserId, String clickTime) throws CommonException;
+
+
+    Map<String,Object> getCandidateInfo(int hrId, int userId, int positionId);
 }

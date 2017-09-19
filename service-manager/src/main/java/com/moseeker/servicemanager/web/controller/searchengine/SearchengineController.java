@@ -15,6 +15,8 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -99,6 +101,7 @@ public class SearchengineController {
     
         try {
             Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
+            logger.info(JSON.toJSONString(reqParams)+"=============");
             String keywords = BeanUtils.converToString(reqParams.get("keywords"));
             String cities = BeanUtils.converToString(reqParams.get("cities"));
             String industries = BeanUtils.converToString(reqParams.get("industries"));
@@ -124,8 +127,9 @@ public class SearchengineController {
             Response result = searchengineServices.query(keywords, cities, industries, occupations, scale,
                     employment_type, candidate_source, experience, degree, salary, company_id, page_from, page_size,
                     child_company_id,department, order_by_priority, custom);
-            
-            
+            logger.info(keywords, cities, industries, occupations, scale,
+                    employment_type, candidate_source, experience, degree, salary, company_id, page_from, page_size,
+                    child_company_id,department, order_by_priority, custom,"=============");
             if (result.getStatus() == 0) {
                 return ResponseLogNotification.success(request, result);
             } else {
@@ -133,6 +137,7 @@ public class SearchengineController {
             }
 
         } catch (Exception e) {
+        	logger.info(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
@@ -202,4 +207,100 @@ public class SearchengineController {
         }
         return null;
   }
+    
+    //pc端企业搜索的es
+    @RequestMapping(value = "/search/company", method = RequestMethod.GET)
+    @ResponseBody
+    public String searchCompany(HttpServletRequest request, HttpServletResponse response){
+    	 Map<String, Object> reqParams = null;
+    	 try{
+    		 reqParams = ParamUtils.parseRequestParam(request);
+    		 String keyWord=(String) reqParams.get("keyWord");
+    		 String citys=(String) reqParams.get("citys");
+    		 String industry=(String) reqParams.get("industry");
+    		 String scale=(String) reqParams.get("scale");
+    		 String page=(String) reqParams.get("page");
+    		 String pageSize=(String) reqParams.get("pageSize");
+    		 if(StringUtils.isNullOrEmpty(page)){
+    			 page="1";
+    		 }
+    		 if(StringUtils.isNullOrEmpty(pageSize)){
+    			 pageSize="10";
+    		 }
+    		  logger.info(keyWord, citys, industry, scale, page,
+    				  pageSize,"=============");
+    		 Response res=searchengineServices.companyQuery(keyWord,citys,industry,scale,Integer.parseInt(page), Integer.parseInt(pageSize));
+    		 return ResponseLogNotification.success(request,res);
+    	 }catch(Exception e){
+    		 logger.info(e.getMessage(),e);
+    		 return ResponseLogNotification.fail(request, e.getMessage());
+    	 }
+    	
+    }
+  //pc端企业搜索的es
+    @RequestMapping(value = "/search/pc/position", method = RequestMethod.GET)
+    @ResponseBody
+    public String searchPosition(HttpServletRequest request, HttpServletResponse response){
+    	 Map<String, Object> reqParams = null;
+    	 try{
+    		 reqParams = ParamUtils.parseRequestParam(request);
+    		 String keyWord=(String) reqParams.get("keyWord");
+    		 String citys=(String) reqParams.get("citys");
+    		 String industry=(String) reqParams.get("industry");
+    		 String scale=(String) reqParams.get("scale");
+    		 String page=(String) reqParams.get("page");
+    		 String pageSize=(String) reqParams.get("pageSize");
+    		 String salaryBottom=(String) reqParams.get("salaryBottom");
+    		 String salaryTop=(String)reqParams.get("salaryTop");
+    		 String startTime=(String) reqParams.get("startTime");
+    		 String endTime=(String) reqParams.get("endTime");
+             String order=(String) reqParams.get("order");
+             String companyId=(String)reqParams.get("companyId");
+             String teamId=(String)reqParams.get("teamId");
+             String motherCompanyId=(String)reqParams.get("motherCompanyId");
+             if(companyId==null){
+                 companyId="0";
+             }
+             if(teamId==null){
+                 teamId="0";
+             }
+             if(motherCompanyId==null){
+                 motherCompanyId="0";
+             }
+             if(order==null){
+                 order="0";
+             }
+             if(StringUtils.isNullOrEmpty(page)){
+                 page="1";
+             }
+             if(StringUtils.isNullOrEmpty(pageSize)){
+                 pageSize="10";
+             }
+             Map<String,Integer> map=new HashMap<>();
+             if(StringUtils.isNotNullOrEmpty(salaryTop)&&!"0".equals(salaryTop)){
+                 map.put("salaryTop",Integer.parseInt(salaryTop));
+             }
+             if(StringUtils.isNotNullOrEmpty(salaryBottom)&&!"0".equals(salaryBottom)){
+                 map.put("salaryBottom",Integer.parseInt(salaryBottom));
+             }
+             List<Map<String,Integer>> salary=null;
+             if(map!=null&&!map.isEmpty()){
+                 salary=new ArrayList<>();
+                 salary.add(map);
+             }
+             String salaryCode=null;
+             if(salary!=null){
+                 salaryCode=JSON.toJSONString(salary);
+             }
+             logger.info(keyWord, citys, industry, scale, page,
+                     pageSize,companyId,teamId,salaryCode,"=============");
+             Response res=searchengineServices.positionQuery(keyWord, citys, industry, salaryCode, Integer.parseInt(page),
+                     Integer.parseInt(pageSize), startTime, endTime,Integer.parseInt(companyId),
+                     Integer.parseInt(teamId),Integer.parseInt(motherCompanyId),Integer.parseInt(order));
+             return ResponseLogNotification.success(request,res);
+    	 }catch(Exception e){
+    		 logger.info(e.getMessage(),e);
+    		 return ResponseLogNotification.fail(request, e.getMessage());
+    	 }
+    }
 }

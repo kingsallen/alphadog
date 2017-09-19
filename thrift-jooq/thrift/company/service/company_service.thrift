@@ -14,6 +14,7 @@ service CompanyServices {
     common_struct.Response getAllCompanies(1:common_struct.CommonQuery query);
     common_struct.Response add(1:company_struct.Hrcompany company);
     common_struct.Response getWechat(1:i64 companyId, 2:i64 wechatId);
+    common_struct.Response getPcBanner(1:i32 page, 2:i32 pageSize);
     // 更新公司员工认证配置
     bool updateEmployeeBindConf(1:i32 companyId,2:i32 authMode,3:string emailSuffix,4:string custom, 5:string customHint, 6:string questions,7:string filePath,8:string fileName,9:i32 type,10:i32 hraccountId) throws (1: common_struct.BIZException e);
     // 获取公司员工认证配置
@@ -32,9 +33,17 @@ service CompanyServices {
     hrdb_struct.HrImporterMonitorDO getImporterMonitor(1:i32 comanyId, 2:i32 hraccountId, 3:i32 type) throws (1: common_struct.BIZException e)
     // 公司员工认证开关
     common_struct.Response bindingSwitch(1:i32 companyId, 2:i32 disable) throws (1: common_struct.BIZException e)
+    //  公司员工认证后补填字段配置信息列表
+    list<company_struct.HrEmployeeCustomFieldsVO> getHrEmployeeCustomFields(1:i32 companyId) throws (1: common_struct.BIZException e)
+    //获取公司详细请
+    common_struct.Response companyDetails(1:i32 companyId) throws (1: common_struct.BIZException e)
+    //获取pc端团队列表的企业信息
+    common_struct.Response companyMessage(1:i32 companyId) throws (1: common_struct.BIZException e)
 
 }
 
 service HrTeamServices {
     list<hrdb_struct.HrTeamDO> getHrTeams(1:common_struct.CommonQuery query);
+    common_struct.Response teamListInfo(1:i32 companyId,2:i32 page,3:i32 pageSize) throws (1: common_struct.BIZException e)
+    common_struct.Response teamDeatils(1:i32 companyId,2:i32 teamId) throws (1: common_struct.BIZException e)
 }

@@ -5,6 +5,8 @@ import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.Update;
 import org.jooq.Field;
+import org.jooq.Record;
+import org.jooq.Result;
 import org.jooq.UpdatableRecord;
 import org.jooq.UpdateSetFirstStep;
 import org.jooq.UpdateSetMoreStep;
@@ -119,7 +121,12 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> extends Crud<S, R> {
         return new LocalQuery<>(create, table, query).convertForCount().fetchOne().value1();
     }
 
-    public List<Map<String, Object>> getMaps(Query query) {
+
+    public Map<String,Object> getMap(Query query) {
+        return new LocalQuery<>(create, table, query).convertToOneResult().fetchAnyMap();
+    }
+
+    public List<Map<String,Object>> getMaps(Query query) {
         return new LocalQuery<>(create, table, query).convertToResultLimit().fetchMaps();
     }
 }

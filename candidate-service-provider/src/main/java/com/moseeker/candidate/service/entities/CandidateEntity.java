@@ -2,16 +2,33 @@ package com.moseeker.candidate.service.entities;
 
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
+import com.moseeker.baseorm.db.candidatedb.tables.CandidateCompany;
+import com.moseeker.baseorm.db.candidatedb.tables.CandidatePosition;
+import com.moseeker.baseorm.db.candidatedb.tables.CandidateRemark;
+import com.moseeker.baseorm.db.candidatedb.tables.CandidateShareChain;
+import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateCompanyRecord;
+import com.moseeker.baseorm.db.candidatedb.tables.records.CandidatePositionRecord;
+import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRemarkRecord;
+import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateShareChainRecord;
+import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompanyRel;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrGroupCompanyRelRecord;
+import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
+import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
+import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
+import com.moseeker.baseorm.db.userdb.tables.UserUser;
+import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
+import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.candidate.constant.EmployeeType;
 import com.moseeker.candidate.constant.RecomType;
 import com.moseeker.candidate.service.Candidate;
 import com.moseeker.candidate.service.checkout.ParamCheckTool;
 import com.moseeker.candidate.service.dao.CandidateDBDao;
 import com.moseeker.candidate.service.exception.CandidateCategory;
+import com.moseeker.candidate.service.exception.CandidateException;
 import com.moseeker.candidate.service.exception.CandidateExceptionFactory;
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.biztools.RecruitmentScheduleEnum;
-import static com.moseeker.common.biztools.RecruitmentScheduleEnum.*;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.Category;
@@ -34,6 +51,9 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
+import org.jooq.Record1;
+import org.jooq.Result;
+import org.jooq.impl.DefaultDSLContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +66,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static com.moseeker.common.biztools.RecruitmentScheduleEnum.IMPROVE_CANDIDATE;
 
 /**
  * 候选人实体，提供候选人相关业务
@@ -1013,4 +1035,348 @@ public class CandidateEntity implements Candidate {
             return null;
         }
     }
+
+    @Autowired
+    protected DefaultDSLContext create;
+
+
+    @Override
+    public Map<String, Object> getCandidateInfo(int hrId, int userId, int positionId) {
+        logger.info("getCandidateInfo:{},{},{}", hrId, userId, positionId);
+
+        Map<String, Object> result = new HashMap<>();
+
+        UserHrAccountRecord userHrAccountRecord = create.select().from(UserHrAccount.USER_HR_ACCOUNT)
+                .where(UserHrAccount.USER_HR_ACCOUNT.ID.eq(hrId)).fetchOneInto(UserHrAccountRecord.class);
+
+        if (userHrAccountRecord == null) {
+            throw CandidateException.NODATA_EXCEPTION.setMess("无效的HR账号");
+        }
+
+        UserUserRecord userRecord = create.select().from(UserUser.USER_USER).where(UserUser.USER_USER.ID.eq(userId)).fetchOneInto(UserUserRecord.class);
+
+        if (userRecord == null) {
+            throw CandidateException.NODATA_EXCEPTION.setMess("找不到该用户");
+        }
+
+        //判断该候选人是否属于该公司
+        CandidateCompanyRecord candidateCompanyRecord = create.select().from(CandidateCompany.CANDIDATE_COMPANY)
+                .where(CandidateCompany.CANDIDATE_COMPANY.COMPANY_ID.eq(userHrAccountRecord.getCompanyId()))
+                .and(CandidateCompany.CANDIDATE_COMPANY.SYS_USER_ID.eq(userId))
+                .fetchAnyInto(CandidateCompanyRecord.class);
+
+        if (candidateCompanyRecord == null) {
+            throw CandidateException.NO_PERMISSION_EXCEPTION;
+        }
+
+        CandidateRemarkRecord candidateRemarkRecord = create.select().from(CandidateRemark.CANDIDATE_REMARK)
+                .where(CandidateRemark.CANDIDATE_REMARK.USER_ID.eq(userId))
+                .and(CandidateRemark.CANDIDATE_REMARK.HRACCOUNT_ID.eq(hrId))
+                .fetchAnyInto(CandidateRemarkRecord.class);
+
+        // 如果是新数据需要添加一条新数据
+        if (candidateRemarkRecord == null) {
+            candidateRemarkRecord = new CandidateRemarkRecord();
+            candidateRemarkRecord.setHraccountId(hrId);
+            candidateRemarkRecord.setUserId(userId);
+            candidateRemarkRecord.setStatus(1);
+            create.attach(candidateRemarkRecord);
+            candidateRemarkRecord.insert();
+        } else {
+            if (candidateRemarkRecord.getStatus() == 0 || candidateRemarkRecord.getStatus() == 2) {
+                candidateRemarkRecord.setStatus(1);
+                candidateRemarkRecord.update();
+            }
+        }
+
+        result.putAll(candidateRemarkRecord.intoMap());
+
+        // 检查该用户是否申请过职位
+        int companyId = userHrAccountRecord.getCompanyId();
+
+        int appNum = create.selectCount().from(JobApplication.JOB_APPLICATION)
+                .where(JobApplication.JOB_APPLICATION.APPLIER_ID.eq(userId))
+                .and(JobApplication.JOB_APPLICATION.COMPANY_ID.eq(companyId))
+                .and(JobApplication.JOB_APPLICATION.APPLY_TYPE.in(0, 1))
+                .and(JobApplication.JOB_APPLICATION.EMAIL_STATUS.eq(0))
+                .fetchOne().value1();
+        result.put("has_app", appNum > 0 ? 1 : 0);
+
+        Set<Integer> userIds = new HashSet<>();            //存储需要检索的微信编号
+
+        List<Map<String, Object>> chain = new LinkedList<>();
+
+        CandidatePosition CP = CandidatePosition.CANDIDATE_POSITION;
+            /* 查找相关职位 */
+        List<CandidatePositionRecord> listA = create.select().from(CP)
+                .where(CP.CANDIDATE_COMPANY_ID.eq(candidateCompanyRecord.getId()))
+                .groupBy(CP.CANDIDATE_COMPANY_ID)
+                .fetchInto(CandidatePositionRecord.class);
+        List<CandidatePositionRecord> listB = create.select().from(CP)
+                .where(CP.CANDIDATE_COMPANY_ID.eq(candidateCompanyRecord.getId()))
+                .and(CP.SHARED_FROM_EMPLOYEE.eq(Integer.valueOf(1).byteValue()))
+                .groupBy(CP.CANDIDATE_COMPANY_ID)
+                .fetchInto(CandidatePositionRecord.class);
+        List<CandidatePositionRecord> records = listA.size() == listB.size() ? listB : listA;
+
+        CandidatePositionRecord position = records.get(0);
+
+        if (position != null) {
+            /* 查找相关的转发链路 */
+            CandidateShareChain CSC = CandidateShareChain.CANDIDATE_SHARE_CHAIN;
+            List<CandidateShareChainRecord> shareRecords = create.select().from(CSC)
+                    .where(CSC.PRESENTEE_USER_ID.ne(CSC.RECOM_USER_ID))
+                    .and(CSC.PRESENTEE_USER_ID.gt(0))
+                    .and(CSC.RECOM_USER_ID.gt(0))
+                    .and(CSC.POSITION_ID.eq(position.getPositionId()))
+                    .orderBy(CSC.ID.desc())
+                    .fetchInto(CandidateShareChainRecord.class);
+
+            List<UserEmployeeRecord> employeeUserIds = getValidEmployeeUserIds(userHrAccountRecord.getCompanyId());
+
+            chain = buildChain(userId, position.getPositionId(), shareRecords, employeeUserIds, userIds);
+
+            if (userIds.size() > 0) {
+                List<UserUserRecord> userInfos = create.select().from(UserUser.USER_USER)
+                        .where(UserUser.USER_USER.ID.in(userIds))
+                        .fetchInto(UserUserRecord.class);
+                List<CandidateRemarkRecord> remarks = create.select().from(CandidateRemark.CANDIDATE_REMARK)
+                        .where(CandidateRemark.CANDIDATE_REMARK.USER_ID.in(userIds))
+                        .and(CandidateRemark.CANDIDATE_REMARK.HRACCOUNT_ID.eq(hrId))
+                        .fetchInto(CandidateRemarkRecord.class);
+
+					/* 将查询到的微信信息加入到链路中 */
+                for (Map<String, Object> map : chain) {
+                    for (UserUserRecord userInfo : userInfos) {
+                        if (((Integer) map.get("user_id")).intValue() == userInfo.getId()) {
+                            map.put("headimg", userInfo.getHeadimg());
+                            if (StringUtils.isNullOrEmpty(userInfo.getName())) {
+                                map.put("nickname", userInfo.getNickname());
+                            } else {
+                                map.put("nickname", userInfo.getName());
+                            }
+                        }
+                    }
+                    for (CandidateRemarkRecord remark : remarks) {
+                        if (((Integer) map.get("user_id")).intValue() == remark.getUserId()) {
+                            map.put("status", remark.getStatus());
+                        }
+                    }
+                }
+            }
+        }
+        result.put("sharechain", chain);
+        result.put("sysuser", userRecord.intoMap());
+        return result;
+    }
+
+    /**
+     * 查找候选人的链路
+     *
+     * @param shareChainRecords 职位转发集合
+     * @param employeeUserIds   需要检索的微信编号集合
+     * @param userIds           用户集合
+     */
+    private List<Map<String, Object>> buildChain(int userId, int positionId,
+                                                 List<CandidateShareChainRecord> shareChainRecords,
+                                                 List<UserEmployeeRecord> employeeUserIds,
+                                                 Set<Integer> userIds) {
+
+        LinkedList<Map<String, Object>> chain = new LinkedList<>();
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("user_id", userId);
+        map.put("status", 0);
+
+        logger.info("1st Add " + map.get("user_id") + " for position " + positionId);
+        chain.add(map);
+
+        userIds.add(userId);
+
+        addPreNode(userId, positionId, -1, shareChainRecords, chain, employeeUserIds, userIds);
+
+        // chain 生成完毕
+        // 开始处理 sharechain 包含相同节点的问题
+        chain = (LinkedList<Map<String, Object>>) transformChain(chain);
+        return chain;
+    }
+
+    /**
+     * 递归查找前一个链路数据
+     *
+     * @param user_id           查找该 user_id 之前的记录
+     * @param shareChainRecords 职位转发集合
+     * @param userIds           需要检索的微信编号集合
+     */
+    private void addPreNode(int user_id,
+                            int positionId,
+                            int recordId,
+                            List<CandidateShareChainRecord> shareChainRecords,
+                            LinkedList<Map<String, Object>> chain,
+                            List<UserEmployeeRecord> employeeUserIds, Set<Integer> userIds) {
+
+        if (shareChainRecords != null && shareChainRecords.size() > 0) {
+
+            List<CandidateShareChainRecord> records;
+
+            if (recordId == -1) {
+                records = shareChainRecords.stream()
+                        .filter(p -> p.getPositionId() == positionId &&
+                                p.getPresenteeUserId() == user_id).collect(Collectors.toList());
+
+                if (records.size() == 0)
+                    return;
+            } else {
+                records = shareChainRecords.stream().filter(p -> p.getId().intValue() == recordId).collect(Collectors.toList());
+            }
+
+            if (records.size() > 0) {
+                CandidateShareChainRecord latestShareChainRecord = records.get(0);
+                if (latestShareChainRecord.getDepth() == 1) {
+                    logger.info("depth is 1, end iteration");
+
+
+                    Map<String, Object> map = new HashMap<>();
+                    int recom_user_id = latestShareChainRecord.getRecomUserId().intValue();
+
+
+                    logger.info("Add recom_user_id: " + recom_user_id + " into chain");
+
+                    map.put("user_id", recom_user_id);
+                    map.put("status", 0);
+
+                    List<UserEmployeeRecord> matchedEmpoyeeInfoList = employeeUserIds.stream().filter(p -> p.getSysuserId() == recom_user_id).collect(Collectors.toList());
+                    if (matchedEmpoyeeInfoList.size() > 0) {
+                        UserEmployeeRecord matchedEmployee = matchedEmpoyeeInfoList.get(0);
+                        map.put("employee_id", matchedEmployee.getId());
+                    }
+
+                    chain.addFirst(map);
+                    userIds.add(recom_user_id);
+                } else if (latestShareChainRecord.getDepth() > 1) {
+
+                    logger.info("parentID:" + recordId + "depth = " + latestShareChainRecord.getDepth() + " , recursive run");
+
+                    Map<String, Object> map = new HashMap<>();
+                    int recom_user_id = latestShareChainRecord.getRecomUserId();
+
+                    logger.info("Add recom_user_id: " + recom_user_id + " into chain");
+
+                    map.put("user_id", recom_user_id);
+                    map.put("status", 0);
+
+                    List<UserEmployeeRecord> matchedEmpoyeeInfoList = employeeUserIds.stream().filter(p -> p.getSysuserId() == recom_user_id).collect(Collectors.toList());
+                    if (matchedEmpoyeeInfoList.size() > 0) {
+                        UserEmployeeRecord matchedEmployee = matchedEmpoyeeInfoList.get(0);
+                        map.put("employee_id", matchedEmployee.getId());
+                    }
+
+                    chain.addFirst(map);
+                    userIds.add(recom_user_id);
+
+                    if (latestShareChainRecord.getParentId() <= 0) {
+                        return;
+                    }
+                    addPreNode(user_id, positionId, latestShareChainRecord.getParentId(), shareChainRecords, chain, employeeUserIds, userIds);
+
+                }
+            }
+        }
+    }
+
+    /**
+     * 检查链路是否包含重复的人
+     *
+     * @param chain 原始链路
+     * @return
+     */
+    private boolean containsDuplicatedNodes(List<Map<String, Object>> chain) {
+        List<Integer> chainUserIdList = chain.stream().map(m -> (Integer) m.get("user_id")).collect(Collectors.toList());
+        for (int index = chainUserIdList.size() - 1; index > 0; index--) {
+            Integer checkTarget = chainUserIdList.get(index);
+            long count = chainUserIdList.stream().filter(i -> i.equals(checkTarget)).count();
+            if (count == 1) {
+                continue;
+            }
+            if (count >= 2) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 循环去除链路中重复的wxuser
+     *
+     * @param chain 原始链路
+     * @return
+     */
+    private List<Map<String, Object>> transformChain(List<Map<String, Object>> chain) {
+        while (containsDuplicatedNodes(chain)) {
+            List<Integer> chainWxuserIdList = chain.stream().map(m -> (Integer) m.get("user_id")).collect(Collectors.toList());
+            int startIndex = -1, endIndex = -1;
+            for (int index = chainWxuserIdList.size() - 1; index > 0; index--) {
+                Integer checkTarget = chainWxuserIdList.get(index);
+                long count = chainWxuserIdList.stream().filter(i -> i.equals(checkTarget)).count();
+                if (count == 1) {
+                    continue;
+                }
+                if (count >= 2) {
+                    for (int i = 0; i < chainWxuserIdList.size(); i++) {
+                        if (chainWxuserIdList.get(i).equals(checkTarget)) {
+                            startIndex = i;
+                            break;
+                        }
+                    }
+                    for (int i = chainWxuserIdList.size() - 1; i > 0; i--) {
+                        if (chainWxuserIdList.get(i).equals(checkTarget)) {
+                            endIndex = i;
+                            break;
+                        }
+                    }
+                    assert startIndex > -1;
+                    assert endIndex > -1;
+                    break;
+                }
+            }
+
+            if (startIndex > -1 && endIndex > -1) {
+                chain = new LinkedList<>(
+                        Stream.concat(chain.subList(0, startIndex).stream(), chain.subList(endIndex, chain.size()).stream())
+                                .collect(Collectors.toList()));
+            }
+        }
+        return chain;
+    }
+
+    /**
+     * 获取该公司 ID 下所有合法的员工的 user_id （在需要显示链路的时候即时查询）
+     * 如果该公司属于某个集团公司，会返回该集团公司下所有公司的合法员工 user_id
+     *
+     * @param companyId 公司 ID
+     */
+    private List<UserEmployeeRecord> getValidEmployeeUserIds(Integer companyId) {
+        // 如果返回空列表，即该公司不属于集团公司
+        HrGroupCompanyRel groupCompanyRel = HrGroupCompanyRel.HR_GROUP_COMPANY_REL;
+        List<HrGroupCompanyRelRecord> retCheckGroup = create.select().from(groupCompanyRel)
+                .where(groupCompanyRel.GROUP_ID
+                        .eq(create.select(groupCompanyRel.GROUP_ID)
+                                .from(groupCompanyRel)
+                                .where(groupCompanyRel.COMPANY_ID.eq(companyId))))
+                .fetchInto(HrGroupCompanyRelRecord.class);
+        // yiliang： user_employee.status 以后确认不再使用，所以在此不使用
+        org.jooq.Condition condition;
+        if (!retCheckGroup.isEmpty()) {
+            List<Integer> companyIds = retCheckGroup.stream().map(e -> e.getCompanyId()).collect(Collectors.toList());
+            condition = UserEmployee.USER_EMPLOYEE.COMPANY_ID.in(companyIds);
+        } else {
+            condition = UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId);
+        }
+        return create.select().from(UserEmployee.USER_EMPLOYEE)
+                .where(UserEmployee.USER_EMPLOYEE.DISABLE.eq(Integer.valueOf(0).byteValue()))
+                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq(Integer.valueOf(0).byteValue()))
+                .and(condition)
+                .fetchInto(UserEmployeeRecord.class);
+    }
+
 }

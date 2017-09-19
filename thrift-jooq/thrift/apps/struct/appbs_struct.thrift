@@ -18,7 +18,10 @@ struct ThirdPartyPosition {
      9: optional i32 third_party_account_id, // 使用的第三方的帐号的
      10: optional string department,         // 部门名称
      11: optional i32 feedback_period,       // 应聘反馈时常
-     12: optional bool salary_discuss = false               //是否显示为面议
+     12: optional bool salary_discuss = false,               //是否显示为面议
+     13: optional i32 practice_salary,                      //实习薪资
+     14: optional i8 practice_per_week,      //每周实习天数
+     15: optional i8 practice_salary_unit,   //实习薪资单位，0：元/每月，1：元/每天
 }
 
 struct ThirdPartyPositionForm {

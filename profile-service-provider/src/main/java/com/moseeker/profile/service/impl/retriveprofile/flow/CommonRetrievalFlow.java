@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 public class CommonRetrievalFlow extends RetrievalFlow {
 
     @Autowired
-    UserTask userTask;
+    NomalUserTask userTask;
 
     @Autowired
     ProfileTask profileTask;

@@ -23,6 +23,8 @@ struct HrThirdPartyPositionDO {
     17: optional i32 feedbackPeriod,	//招聘反馈时长
     18: optional i32 salaryDiscuss,	//是否显示为面议0否1是
     19: optional i32 salaryBottom,	//薪资底线
-    20: optional i32 salaryTop	//薪资封顶
-
+    20: optional i32 salaryTop,	//薪资封顶
+    21: optional i32 practiceSalary, //实习薪资
+    22: optional i8 practicePerWeek, //每周实习天数
+    23: optional i8 practiceSalaryUnit //实习薪资单位，0：元/月；1：元/天
 }

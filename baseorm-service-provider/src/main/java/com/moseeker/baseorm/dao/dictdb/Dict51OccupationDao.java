@@ -25,7 +25,9 @@ public class Dict51OccupationDao extends JooqCrudImpl<Dict51jobOccupationDO, Dic
 
     public List getAll() {
         List<Map<String, Object>> result = new ArrayList<>();
-        Query query = new Query.QueryBuilder().where("status", 1).buildQuery();
+        Query query = new Query.QueryBuilder()
+                .where(Dict_51jobOccupation.DICT_51JOB_OCCUPATION.STATUS.getName(), 1)
+                .buildQuery();
         List<Map<String, Object>> allData = new ArrayList<>();
         List<Dict_51jobOccupationRecord> list = getRecords(query);
         if (list != null && list.size() > 0) {
