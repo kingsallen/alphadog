@@ -164,7 +164,7 @@ public class CompanySearchengine {
 
 	//公共查询的条件部分
 	private void CommonQuerySentence(String industry,String cityCode,String scale,QueryBuilder query){
-		searchUtil.handleTerms(industry, query, "company.industry.code");
+		searchUtil.handleTerms(industry, query, "company.industry_data.code");
 		searchUtil.handleTerms(cityCode, query, "position_city.code");
 		searchUtil.handleTerms(scale, query, "company.scale");
 	}
@@ -196,7 +196,7 @@ public class CompanySearchengine {
 	//做行业的统计
 	private AbstractAggregationBuilder handleAggIndustry(){
 		StringBuffer sb=new StringBuffer();
-		sb.append("industry=_source.company.industry;");
+		sb.append("industry=_source.company.industry_data;");
 		sb.append("if(industry  in _agg['transactions'] || !industry){}");
 		sb.append("else{_agg['transactions'].add(industry)};");
 		String mapScript=sb.toString();
