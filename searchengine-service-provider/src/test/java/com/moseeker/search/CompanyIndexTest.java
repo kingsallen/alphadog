@@ -4,7 +4,6 @@ import java.util.Map;
 
 import com.moseeker.searchengine.util.SearchUtil;
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.search.SearchHits;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

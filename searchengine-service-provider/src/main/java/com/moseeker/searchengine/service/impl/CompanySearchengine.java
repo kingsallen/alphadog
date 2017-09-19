@@ -42,6 +42,7 @@ public class CompanySearchengine {
 	@Autowired
 	private SearchUtil searchUtil;
 	//搜索信息
+	@CounterIface
 	public Map<String,Object>  query(String keywords,String citys,String industry,String scale,Integer page,Integer pageSize) throws TException{
 		TransportClient client=null;
 		Map<String,Object> map=new HashMap<String,Object>();
@@ -52,11 +53,11 @@ public class CompanySearchengine {
 			if(hitNum==0&&StringUtils.isNotEmpty(keywords)){
 				SearchResponse hitsData=queryString(keywords,citys,industry,scale,page,pageSize,client);
 				map=searchUtil.handleData(hitsData,"companies");
-				logger.info(map.toString());
+//				logger.info(map.toString());
 
 			}else{
 				map=searchUtil.handleData(hits,"companies");
-				logger.info(map.toString());
+//				logger.info(map.toString());
 			}
 		}finally{
 			if(client!=null){
@@ -79,7 +80,8 @@ public class CompanySearchengine {
 						.setSize(pageSize)
 						.addAggregation(this.handleAggIndustry())
 						.addAggregation(this.handleAggPositionCity())
-						.addAggregation(this.handleAggScale());
+						.addAggregation(this.handleAggScale())
+						.setTrackScores(true);
 				if(!org.springframework.util.StringUtils.isEmpty(keywords)){
 					responseBuilder.addSort("_score", SortOrder.DESC);
 				}
@@ -162,7 +164,7 @@ public class CompanySearchengine {
 
 	//公共查询的条件部分
 	private void CommonQuerySentence(String industry,String cityCode,String scale,QueryBuilder query){
-		searchUtil.handleTerms(industry, query, "company.industry.code");
+		searchUtil.handleTerms(industry, query, "company.industry_data.code");
 		searchUtil.handleTerms(cityCode, query, "position_city.code");
 		searchUtil.handleTerms(scale, query, "company.scale");
 	}
@@ -194,7 +196,7 @@ public class CompanySearchengine {
 	//做行业的统计
 	private AbstractAggregationBuilder handleAggIndustry(){
 		StringBuffer sb=new StringBuffer();
-		sb.append("industry=_source.company.industry;");
+		sb.append("industry=_source.company.industry_data;");
 		sb.append("if(industry  in _agg['transactions'] || !industry){}");
 		sb.append("else{_agg['transactions'].add(industry)};");
 		String mapScript=sb.toString();

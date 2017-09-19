@@ -1,5 +1,6 @@
 package com.moseeker.company.service.impl;
 import com.alibaba.fastjson.JSON;
+import com.moseeker.baseorm.dao.dictdb.DictIndustryDao;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
@@ -8,6 +9,7 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.*;
 import com.moseeker.entity.PcRevisionEntity;
+import com.moseeker.thrift.gen.dao.struct.dictdb.DictIndustryDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import org.apache.thrift.TSerializer;
@@ -33,8 +35,6 @@ public class CompanyPcService {
     @Autowired
     private HrTeamDao hrTeamDao;
     @Autowired
-    private JobPositionCityDao jobPositionCityDao;
-    @Autowired
     private PcRevisionEntity pcRevisionEntity;
     @Autowired
     private UserHrAccountDao userHrAccountDao;
@@ -43,8 +43,7 @@ public class CompanyPcService {
     @Autowired
     private HrWxWechatDao hrWxWechatDao;
     @Autowired
-    private HrTeamMemberDao hrTeamMemberDao;
-
+    private DictIndustryDao dictIndustryDao;
     /*
       获取企业详情
      */
@@ -58,6 +57,15 @@ public class CompanyPcService {
         map.put("company",companyData);
         int parentId= (int) companyData.get("parentId");
         int confCompanyId= (int) companyData.get("id");
+        String industryName= (String) companyData.get("industry");
+        if(StringUtils.isNotNullOrEmpty(industryName)){
+            DictIndustryDO industryDO=getDictIndustryByName(industryName);
+            if(industryDO!=null){
+                String industryDOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(industryDO);
+                Map<String,Object> industryData= JSON.parseObject(industryDOs, Map.class);
+                map.put("industryData",industryData);
+            }
+        }
         boolean isMother=true;
         if(parentId!=0){
             confCompanyId=parentId;
@@ -83,6 +91,15 @@ public class CompanyPcService {
         if(companyData==null||companyData.isEmpty()){
             return null;
         }
+        String industryName= (String) companyData.get("industry");
+        if(StringUtils.isNotNullOrEmpty(industryName)){
+            DictIndustryDO industryDO=getDictIndustryByName(industryName);
+            if(industryDO!=null){
+                String industryDOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(industryDO);
+                Map<String,Object> industryData= JSON.parseObject(industryDOs, Map.class);
+                map.put("industryData",industryData);
+            }
+        }
         int parentId= (int) companyData.get("parentId");
         boolean isMother=true;
         if(parentId!=0){
@@ -103,6 +120,15 @@ public class CompanyPcService {
             return null;
         }
         map.put("company",companyData);
+        String industryName= (String) companyData.get("industry");
+        if(StringUtils.isNotNullOrEmpty(industryName)){
+            DictIndustryDO industryDO=getDictIndustryByName(industryName);
+            if(industryDO!=null){
+                String industryDOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(industryDO);
+                Map<String,Object> industryData= JSON.parseObject(industryDOs, Map.class);
+                map.put("industryData",industryData);
+            }
+        }
         int parentId= (int) companyData.get("parentId");
         int confCompanyId= (int) companyData.get("id");
         boolean isMother=true;
@@ -127,6 +153,15 @@ public class CompanyPcService {
             return null;
         }
         map.put("company",companyData);
+        String industryName= (String) companyData.get("industry");
+        if(StringUtils.isNotNullOrEmpty(industryName)){
+            DictIndustryDO industryDO=getDictIndustryByName(industryName);
+            if(industryDO!=null){
+                String industryDOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(industryDO);
+                Map<String,Object> industryData= JSON.parseObject(industryDOs, Map.class);
+                map.put("industryData",industryData);
+            }
+        }
         boolean isMother=true;
         int parentId= (int) companyData.get("parentId");
         int confCompanyId= (int) companyData.get("id");
@@ -312,9 +347,9 @@ public class CompanyPcService {
         }
         return map;
     }
-/*
-    获取企业微信号配置
-     */
+    /*
+        获取企业微信号配置
+         */
     private HrWxWechatDO  getHrWxWechatDO(int companyId){
         Query query=new Query.QueryBuilder().where("company_id",companyId).buildQuery();
         HrWxWechatDO DO=hrWxWechatDao.getData(query);
@@ -617,4 +652,10 @@ public class CompanyPcService {
         return teamPosition;
     }
 
+    //根据name获取单个dictindustry
+    private DictIndustryDO getDictIndustryByName(String name){
+        Query query=new Query.QueryBuilder().where("name",name).buildQuery();
+        DictIndustryDO DO=dictIndustryDao.getData(query);
+        return DO;
+    }
 }

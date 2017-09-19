@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.moseeker.common.annotation.iface.CounterIface;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
@@ -29,6 +31,7 @@ public class PositionSearchEngine {
     @Autowired
     private SearchUtil searchUtil;
     //按条件查询，如果prefix的方式无法差的数据，那么转换为query_string的方式查询
+    @CounterIface
     public Map<String,Object> search(String keyWord,String industry,String salaryCode,int page,int pageSize,String cityCode,String startTime,String endTime,int companyId,int teamId,int motherCompanyId,int order){
         Map<String,Object> map=new HashMap<String,Object>();
         TransportClient client=null;
@@ -43,11 +46,11 @@ public class PositionSearchEngine {
                 if(hitNum==0&&StringUtils.isNotEmpty(keyWord)){
                     SearchResponse hitsData=this.quertString(keyWord, industry, salaryCode, page, pageSize, cityCode,startTime,endTime, companyId,teamId,motherCompanyId,order,client);
                     map=searchUtil.handleData(hitsData,"positions");
-                    logger.info(map.toString());
+//                    logger.info(map.toString());
                     return map;
                 }else{
                     map=searchUtil.handleData(hits,"positions");
-                    logger.info(map.toString());
+//                    logger.info(map.toString());
                     return map;
                 }
             }
@@ -65,18 +68,18 @@ public class PositionSearchEngine {
             QueryBuilder sentence=this.handleStringSearchSentence(keyWord, industry, salaryCode, page, pageSize, cityCode,startTime,endTime,companyId,teamId,motherCompanyId);
             SearchRequestBuilder responseBuilder=client.prepareSearch("positions").setTypes("position")
                     .setQuery(sentence)
-                    .addAggregation(searchUtil.handle("_source.company.industry_data","industry"))
+                    .addAggregation(searchUtil.handleIndustry("industry"))
                     .addAggregation(searchUtil.handleArray("_source.position.city_data","city"))
                     .addAggregation(searchUtil.handle("_source.position.salary_data","salary"))
                     .setFrom((page-1)*pageSize)
-                    .setSize(pageSize);
+                    .setSize(pageSize)
+                    .setTrackScores(true);
             if(order==1){
+                responseBuilder.addSort("position.update_time",SortOrder.DESC);
                 if(StringUtils.isNotEmpty(cityCode)&&!cityCode.contains("233333")&&!cityCode.equals("111111")){
                     SortBuilder builder=new ScriptSortBuilder(this.buildScriptCitySort(cityCode,1),"number");
                     builder.order(SortOrder.DESC);
                     responseBuilder.addSort(builder);
-                }else{
-                    responseBuilder.addSort("position.update_time",SortOrder.DESC);
                 }
             }else{
                 if(StringUtils.isNotEmpty(cityCode)&&!cityCode.equals("233333")&&!cityCode.equals("111111")){
@@ -97,26 +100,28 @@ public class PositionSearchEngine {
             QueryBuilder sentence=this.handlePrefixSearchSentence(keyWord, industry, salaryCode, page, pageSize, cityCode,startTime,endTime,companyId,teamId,motherCompanyId);
             SearchRequestBuilder responseBuilder=client.prepareSearch("positions").setTypes("position")
                     .setQuery(sentence)
-                    .addAggregation(searchUtil.handle("_source.company.industry_data","industry"))
+                    .addAggregation(searchUtil.handleIndustry("industry"))
                     .addAggregation(searchUtil.handleArray("_source.position.city_data","city"))
                     .addAggregation(searchUtil.handle("_source.position.salary_data","salary"))
                     .setFrom((page-1)*pageSize)
-                    .setSize(pageSize);
+                    .setSize(pageSize)
+                    .setTrackScores(true);
             if(StringUtils.isNotEmpty(keyWord)){
                 Script script=this.buildScriptSort(keyWord);
                 ScriptSortBuilder builder=new ScriptSortBuilder(script,"number");
                 builder.order( SortOrder.DESC);
                 responseBuilder.addSort(builder);
-                responseBuilder.setTrackScores(true);
+
             }
             if(order==1){
+                responseBuilder.addSort("position.update_time",SortOrder.DESC);
                 if(StringUtils.isNotEmpty(cityCode)&&!cityCode.contains("233333")&&!cityCode.equals("111111")){
                     SortBuilder builder=new ScriptSortBuilder(this.buildScriptCitySort(cityCode,1),"number");
                     builder.order(SortOrder.DESC);
                     responseBuilder.addSort(builder);
-                }else{
-                    responseBuilder.addSort("position.update_time",SortOrder.DESC);
                 }
+
+
             }else{
                 if(StringUtils.isNotEmpty(cityCode)&&!cityCode.equals("233333")&&!cityCode.equals("111111")){
                     SortBuilder builder=new ScriptSortBuilder(this.buildScriptCitySort(cityCode,2),"number");
