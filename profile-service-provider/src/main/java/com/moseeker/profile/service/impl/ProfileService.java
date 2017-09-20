@@ -211,6 +211,7 @@ public class ProfileService {
             // 调用成功,开始转换对象
             if (resumeObj.getStatus().getCode() == 200) {
                 // 项目经验
+                logger.info("profileParser resumeObj.getResult().getProj_exp_objs():{}", JSON.toJSONString(resumeObj.getResult().getProj_exp_objs()));
                 List<Projectexps> projectexps = new ArrayList<>();
                 if (resumeObj.getResult().getProj_exp_objs() != null && resumeObj.getResult().getProj_exp_objs().size() > 0) {
                     for (ProjectexpObj projectexpObj : resumeObj.getResult().getProj_exp_objs()) {
@@ -229,6 +230,7 @@ public class ProfileService {
                 }
                 profileObj.setProjectexps(projectexps);
 
+                logger.info("profileParser resumeObj.getResult().getEducation_objs():{}", JSON.toJSONString(resumeObj.getResult().getEducation_objs()));
                 // 教育经历
                 List<Education> educationList = new ArrayList<>();
                 if (resumeObj.getResult().getEducation_objs() != null && resumeObj.getResult().getEducation_objs().size() > 0) {
@@ -245,11 +247,14 @@ public class ProfileService {
                         education.setCollegeName(educationObj.getEdu_college());
                         // 专业名称
                         education.setMajorName(educationObj.getEdu_major());
+                        education.setStartDate(educationObj.getStart_date());
+                        education.setEndDate(educationObj.getEnd_date());
                         educationList.add(education);
                     }
                 }
                 profileObj.setEducations(educationList);
                 // 技能
+                logger.info("profileParser resumeObj.getResult().getSkills_objs():{}", JSON.toJSONString(resumeObj.getResult().getSkills_objs()));
                 List<Skill> skills = new ArrayList<>();
                 if (resumeObj.getResult().getSkills_objs() != null && resumeObj.getResult().getSkills_objs().size() > 0) {
                     for (SkillsObjs skillsObjs : resumeObj.getResult().getSkills_objs()) {
@@ -261,6 +266,7 @@ public class ProfileService {
                 profileObj.setSkills(skills);
 
                 // 工作经验
+                logger.info("profileParser resumeObj.getResult().getJob_exp_objs():{}", JSON.toJSONString(resumeObj.getResult().getJob_exp_objs()));
                 List<Workexps> workexpsList = new ArrayList<>();
                 if (resumeObj.getResult().getJob_exp_objs() != null && resumeObj.getResult().getJob_exp_objs().size() > 0) {
                     for (JobExpObj jobExpObj : resumeObj.getResult().getJob_exp_objs()) {
@@ -279,6 +285,7 @@ public class ProfileService {
                 }
                 profileObj.setWorkexps(workexpsList);
                 // 语言
+                logger.info("profileParser resumeObj.getResult().getLang_objs():{}", JSON.toJSONString(resumeObj.getResult().getLang_objs()));
                 List<Language> languageList = new ArrayList<>();
                 if (resumeObj.getResult().getLang_objs() != null && resumeObj.getResult().getLang_objs().size() > 0) {
                     for (LangObj langObj : resumeObj.getResult().getLang_objs()) {
@@ -302,6 +309,7 @@ public class ProfileService {
 
 
                 // 证书
+                logger.info("profileParser resumeObj.getResult().getCert_objs():{}", JSON.toJSONString(resumeObj.getResult().getCert_objs()));
                 List<Credential> credentialList = new ArrayList<>();
                 if (resumeObj.getResult().getCert_objs() != null && resumeObj.getResult().getCert_objs().size() > 0) {
                     for (CertObj certObj : resumeObj.getResult().getCert_objs()) {
@@ -313,6 +321,11 @@ public class ProfileService {
                 profileObj.setCredentials(credentialList);
 
                 // basic信息
+                logger.info("profileParser resumeObj.getResult().getCity():{}", resumeObj.getResult().getCity());
+                logger.info("profileParser resumeObj.getResult().getGender():{}", resumeObj.getResult().getGender());
+                logger.info("profileParser resumeObj.getResult().getName():{}", resumeObj.getResult().getName());
+                logger.info("profileParser resumeObj.getResult().getCont_my_desc():{}", resumeObj.getResult().getCont_my_desc());
+                logger.info("profileParser resumeObj.getResult().getBirthday():{}", resumeObj.getResult().getBirthday());
                 Basic basic = new Basic();
                 basic.setCityName(resumeObj.getResult().getCity());
                 basic.setGender(resumeObj.getResult().getGender());
