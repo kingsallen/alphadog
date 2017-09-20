@@ -1,6 +1,7 @@
 package com.moseeker.profile.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.profiledb.ProfileCompletenessDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.userdb.UserSettingsDao;
@@ -326,7 +327,7 @@ public class ProfileService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        logger.info("profileParser:{}", profileObj);
+        logger.info("profileParser:{}", JSON.toJSONString(profileObj));
         return ResponseUtils.success(profileObj);
     }
 
