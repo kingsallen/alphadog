@@ -221,6 +221,7 @@ public class ProfileService {
                         } else {
                             project.setEndDate(projectexpObj.getEnd_date());
                         }
+                        project.setName(projectexpObj.getProj_name());
                         project.setStartDate(projectexpObj.getStart_date());
                         // 职责
                         project.setResponsibility(projectexpObj.getProj_resp());
@@ -229,6 +230,7 @@ public class ProfileService {
                     }
                 }
                 profileObj.setProjectexps(projectexps);
+                logger.info("profileParser getProjectexps:{}", JSON.toJSONString(profileObj.getProjectexps()));
 
                 logger.info("profileParser resumeObj.getResult().getEducation_objs():{}", JSON.toJSONString(resumeObj.getResult().getEducation_objs()));
                 // 教育经历
@@ -253,6 +255,7 @@ public class ProfileService {
                     }
                 }
                 profileObj.setEducations(educationList);
+                logger.info("profileParser getEducations:{}", JSON.toJSONString(profileObj.getEducations()));
                 // 技能
                 logger.info("profileParser resumeObj.getResult().getSkills_objs():{}", JSON.toJSONString(resumeObj.getResult().getSkills_objs()));
                 List<Skill> skills = new ArrayList<>();
@@ -264,6 +267,7 @@ public class ProfileService {
                     }
                 }
                 profileObj.setSkills(skills);
+                logger.info("profileParser getSkills:{}", JSON.toJSONString(profileObj.getSkills()));
 
                 // 工作经验
                 logger.info("profileParser resumeObj.getResult().getJob_exp_objs():{}", JSON.toJSONString(resumeObj.getResult().getJob_exp_objs()));
@@ -284,6 +288,7 @@ public class ProfileService {
                     }
                 }
                 profileObj.setWorkexps(workexpsList);
+                logger.info("profileParser getWorkexps:{}", JSON.toJSONString(profileObj.getWorkexps()));
                 // 语言
                 logger.info("profileParser resumeObj.getResult().getLang_objs():{}", JSON.toJSONString(resumeObj.getResult().getLang_objs()));
                 List<Language> languageList = new ArrayList<>();
@@ -295,6 +300,7 @@ public class ProfileService {
                     }
                 }
                 profileObj.setLanguages(languageList);
+                logger.info("profileParser getLanguages:{}", JSON.toJSONString(profileObj.getLanguages()));
 
                 // 查询
                 UserUserRecord userUser = userDao.getUserById(uid);
@@ -306,7 +312,7 @@ public class ProfileService {
                     user.setName(userUser.getName());
                     profileObj.setUser(user);
                 }
-
+                logger.info("profileParser getUser:{}", JSON.toJSONString(profileObj.getUser()));
 
                 // 证书
                 logger.info("profileParser resumeObj.getResult().getCert_objs():{}", JSON.toJSONString(resumeObj.getResult().getCert_objs()));
@@ -319,6 +325,7 @@ public class ProfileService {
                     }
                 }
                 profileObj.setCredentials(credentialList);
+                logger.info("profileParser getCredentials:{}", JSON.toJSONString(profileObj.getCredentials()));
 
                 // basic信息
                 logger.info("profileParser resumeObj.getResult().getCity():{}", resumeObj.getResult().getCity());
@@ -333,8 +340,10 @@ public class ProfileService {
                 basic.setSelfIntroduction(resumeObj.getResult().getCont_my_desc());
                 basic.setBirth(resumeObj.getResult().getBirthday());
                 profileObj.setBasic(basic);
+                logger.info("profileParser getBasic:{}", JSON.toJSONString(profileObj.getBasic()));
 
                 profileObj.setResumeObj(resumeObj);
+                logger.info("profileParser getResumeObj:{}", JSON.toJSONString(profileObj.getResumeObj()));
             }
         } catch (Exception e) {
             e.printStackTrace();
