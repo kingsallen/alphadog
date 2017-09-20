@@ -24,6 +24,7 @@ import com.moseeker.profile.utils.DegreeSource;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.struct.Profile;
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
+import com.sun.org.apache.regexp.internal.RE;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -206,7 +207,7 @@ public class ProfileService {
         try {
             // 调用SDK得到结果
             ResumeObj resumeObj = profileEntity.profileParser(fileName, file);
-            logger.info("profileParser resumeObj:{}", resumeObj);
+            logger.info("profileParser resumeObj:{}", JSON.toJSONString(resumeObj));
             // 调用成功,开始转换对象
             if (resumeObj.getStatus().getCode() == 200) {
                 // 项目经验
