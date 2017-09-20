@@ -56,14 +56,14 @@ public class SearchUtil {
         return client;
     }
     /*
-     * 拼接city
+     * 处理terms的查询
      */
     public void handleTerms(String conditions,QueryBuilder query,String conditionField){
-    	if (StringUtils.isNotEmpty(conditions)) {
-    		List<Integer> codes=new ArrayList<Integer>();
+        if (StringUtils.isNotEmpty(conditions)) {
+            List<Object> codes = new ArrayList<Object>();
             String[] conditions_list = conditions.split(",");
             for(String code:conditions_list){
-            	codes.add(Integer.parseInt(code));
+                codes.add(code);
             }
             QueryBuilder cityfilter = QueryBuilders.termsQuery(conditionField, codes);
             ((BoolQueryBuilder) query).must(cityfilter);
