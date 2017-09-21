@@ -1,6 +1,7 @@
 package com.moseeker.baseorm.dao.profiledb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.profiledb.Profiledb;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileOther;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileOtherRecord;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileOtherDO;
@@ -33,8 +34,9 @@ public class ProfileOtherDao extends JooqCrudImpl<ProfileOtherDO, ProfileOtherRe
     }
 
     public Object customSelect(String tableName, String selectColumn, int profileId) {
-        String sql = "select " + selectColumn + " from profiledb." + tableName + " where profile_id = " + profileId;
+        String sql = "select " + selectColumn + " from " + Profiledb.PROFILEDB.getName() + "." + tableName + " where profile_id = " + profileId;
         Record result = create.fetchOne(sql);
         return result == null ? "" : result.get(selectColumn);
     }
+
 }

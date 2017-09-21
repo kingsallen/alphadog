@@ -2,6 +2,7 @@ package com.moseeker.baseorm.dao.userdb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
+import com.moseeker.baseorm.db.userdb.Userdb;
 import com.moseeker.baseorm.db.userdb.tables.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.util.BeanUtils;
@@ -332,7 +333,7 @@ public class UserUserDao extends JooqCrudImpl<UserUserDO, UserUserRecord> {
     }
 
     public Object customSelect(String tableName, String selectColumn, int userId) {
-        String sql = "select " + selectColumn + " from " + tableName + " where id = " + userId;
+        String sql = "select " + selectColumn + " from " + Userdb.USERDB.getName() + "." + tableName + " where id = " + userId;
         Record result = create.fetchOne(sql);
         return result == null ? "" : result.get(selectColumn);
     }
