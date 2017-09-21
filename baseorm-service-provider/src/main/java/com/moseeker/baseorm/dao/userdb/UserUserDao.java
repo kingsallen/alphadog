@@ -334,6 +334,6 @@ public class UserUserDao extends JooqCrudImpl<UserUserDO, UserUserRecord> {
     public Object customSelect(String tableName, String selectColumn, int userId) {
         String sql = "select " + selectColumn + " from " + tableName + " where id = " + userId;
         Record result = create.fetchOne(sql);
-        return result.get(selectColumn);
+        return result == null ? "" : result.get(selectColumn);
     }
 }

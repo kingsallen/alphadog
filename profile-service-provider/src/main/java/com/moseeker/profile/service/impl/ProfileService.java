@@ -237,12 +237,7 @@ public class ProfileService {
                     String mappingFiled = appCvConfig.getString("map");
                     if (mappingFiled.contains(".")) {
                         String[] mappingStr = mappingFiled.split("\\.", 2);
-//                        customResult = mappingStr[0].startsWith("user") ? (userDao.customSelect(mappingStr[0], mappingStr[1], profileProfile.getUserId())) : (profileOtherDao.customSelect(mappingStr[0], mappingStr[1], profileProfile.getId()));
-                        if (mappingStr[0].startsWith("user")) {
-                            customResult = userDao.customSelect(mappingStr[0], mappingStr[1], profileProfile.getUserId());
-                        } else {
-                            customResult = profileOtherDao.customSelect(mappingStr[0], mappingStr[1], profileProfile.getId());
-                        }
+                        customResult = mappingStr[0].startsWith("user") ? (userDao.customSelect(mappingStr[0], mappingStr[1], profileProfile.getUserId())) : (profileOtherDao.customSelect(mappingStr[0], mappingStr[1], profileProfile.getId()));
                     } else {
                         return ResponseUtils.success(new HashMap<String, String>(){{put("result:","false");put("resultMsg","自定义字段"+appCvConfig.getString("field_name")+"为空");}});
                     }
