@@ -209,52 +209,48 @@ public class ProfileService {
 
     public Response checkProfileOther(int userId, int positionId) {
         int appCvConfigId = positionEntity.getAppCvConfigIdByPosition(positionId);
-        if (appCvConfigId == 0) {
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where("id", appCvConfigId);
+        HrAppCvConfDO hrAppCvConfDO = hrAppCvConfDao.getData(queryBuilder.buildQuery());
+        if (hrAppCvConfDO == null || StringUtils.isNullOrEmpty(hrAppCvConfDO.getFieldValue())) {
             return ResponseUtils.success("");
         } else {
-            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-            queryBuilder.where("id", appCvConfigId);
-            HrAppCvConfDO hrAppCvConfDO = hrAppCvConfDao.getData(queryBuilder.buildQuery());
-            if (hrAppCvConfDO == null || StringUtils.isNullOrEmpty(hrAppCvConfDO.getFieldValue())) {
-                return ResponseUtils.success("");
-            } else {
-                queryBuilder.clear();
-                queryBuilder.where("sysuser_id", userId);
-                ProfileProfileDO profileProfile = dao.getData(queryBuilder.buildQuery());
-                if (profileProfile == null || profileProfile.getId() == 0) {
-                    return ResponseUtils.fail("获取简历失败");
-                }
-                queryBuilder.clear();
-                queryBuilder.where("profile_id", profileProfile.getId());
-                ProfileOtherDO profileOther = profileOtherDao.getData(queryBuilder.buildQuery());
-                if (profileOther == null || StringUtils.isNullOrEmpty(profileOther.getOther())) {
-                    return ResponseUtils.fail("自定义简历为空");
-                }
-                JSONObject profileOtherJson = JSONObject.parseObject(profileOther.getOther());
-                List<JSONObject> appCvConfigJson = JSONArray.parseArray(hrAppCvConfDO.getFieldValue()).getJSONObject(0).getJSONArray("fields").stream().
-                        map(m -> JSONObject.parseObject(String.valueOf(m))).filter(f -> f.getIntValue("required") == 0).collect(Collectors.toList());
-                for (JSONObject appCvConfig : appCvConfigJson) {
-                    Object customResult = "";
-                    if (appCvConfig.containsKey("mapping")) {
-                        // 复合字段校验
-                        String mappingFiled = appCvConfig.getString("mapping");
-                        if (mappingFiled.contains(".")) {
-                            String[] mappingStr = mappingFiled.split(".", 2);
-                            customResult = mappingStr[0].startsWith("user") ? userDao.customSelect(mappingStr[0], mappingStr[1], profileProfile.getUserId()) : profileOtherDao.customSelect(mappingStr[0], mappingStr[1], profileProfile.getId());
-                        } else {
-                            return ResponseUtils.fail("自定义字段"+appCvConfig.getString("field_name")+"为空");
-                        }
+            queryBuilder.clear();
+            queryBuilder.where("sysuser_id", userId);
+            ProfileProfileDO profileProfile = dao.getData(queryBuilder.buildQuery());
+            if (profileProfile == null || profileProfile.getId() == 0) {
+                return ResponseUtils.fail("获取简历失败");
+            }
+            queryBuilder.clear();
+            queryBuilder.where("profile_id", profileProfile.getId());
+            ProfileOtherDO profileOther = profileOtherDao.getData(queryBuilder.buildQuery());
+            if (profileOther == null || StringUtils.isNullOrEmpty(profileOther.getOther())) {
+                return ResponseUtils.fail("自定义简历为空");
+            }
+            JSONObject profileOtherJson = JSONObject.parseObject(profileOther.getOther());
+            List<JSONObject> appCvConfigJson = JSONArray.parseArray(hrAppCvConfDO.getFieldValue()).getJSONObject(0).getJSONArray("fields").stream().
+                    map(m -> JSONObject.parseObject(String.valueOf(m))).filter(f -> f.getIntValue("required") == 0).collect(Collectors.toList());
+            for (JSONObject appCvConfig : appCvConfigJson) {
+                Object customResult = "";
+                if (appCvConfig.containsKey("mapping")) {
+                    // 复合字段校验
+                    String mappingFiled = appCvConfig.getString("mapping");
+                    if (mappingFiled.contains(".")) {
+                        String[] mappingStr = mappingFiled.split(".", 2);
+                        customResult = mappingStr[0].startsWith("user") ? userDao.customSelect(mappingStr[0], mappingStr[1], profileProfile.getUserId()) : profileOtherDao.customSelect(mappingStr[0], mappingStr[1], profileProfile.getId());
                     } else {
-                        // 普通字段校验
-                        if (profileOtherJson.containsKey(appCvConfig.getString("field_name"))) {
-                            customResult = profileOtherJson.get(appCvConfig.getString("field_name"));
-                        } else {
-                            return ResponseUtils.fail("自定义字段"+appCvConfig.getString("field_name")+"为空");
-                        }
+                        return ResponseUtils.fail("自定义字段"+appCvConfig.getString("field_name")+"为空");
                     }
-                    if (!Pattern.matches(appCvConfig.getString("validate_re"), String.valueOf(customResult))) {
-                        return ResponseUtils.fail("自定义字段"+appCvConfig.getString("field_name")+"校验失败");
+                } else {
+                    // 普通字段校验
+                    if (profileOtherJson.containsKey(appCvConfig.getString("field_name"))) {
+                        customResult = profileOtherJson.get(appCvConfig.getString("field_name"));
+                    } else {
+                        return ResponseUtils.fail("自定义字段"+appCvConfig.getString("field_name")+"为空");
                     }
+                }
+                if (!Pattern.matches(appCvConfig.getString("validate_re"), String.valueOf(customResult))) {
+                    return ResponseUtils.fail("自定义字段"+appCvConfig.getString("field_name")+"校验失败");
                 }
             }
         }

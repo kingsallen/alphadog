@@ -1,5 +1,6 @@
 package com.moseeker.servicemanager.web.controller.profile;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.thrift.gen.profile.service.ProfileOtherThriftService;
 import java.util.ArrayList;
@@ -375,9 +376,9 @@ public class ProfileController {
     public String getOther(HttpServletRequest request) {
         try {
             Params<String, Object> form = ParamUtils.parseRequestParam(request);
-            String params = form.getString("params", "[]");
-            JSONObject paramsJson = JSONObject.parseObject(params);
-            if (paramsJson.containsKey("positionId") && paramsJson.containsKey("profileId")) {
+            String params = JSONArray.toJSONString(form.get("params"));
+            JSONArray paramsJson = JSONArray.parseArray(params);
+            if (!params.isEmpty() && (paramsJson.getJSONObject(0).containsKey("positionId") && paramsJson.getJSONObject(0).containsKey("profileId"))) {
                 return ResponseLogNotification.success(request, profileOtherService.getProfileOther(params));
             } else {
                 return ResponseLogNotification.fail(request, ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST));
