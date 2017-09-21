@@ -239,4 +239,10 @@ public class ProfileServicesImplTest {
         System.out.println(response);
     }
 
+    @Test
+    public void profileCheckTest() {
+        Response response = profileService.checkProfileOther(676256,134130);
+        System.out.println(response);
+    }
+
 }

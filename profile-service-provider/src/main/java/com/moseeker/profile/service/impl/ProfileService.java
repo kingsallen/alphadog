@@ -216,7 +216,7 @@ public class ProfileService {
             return ResponseUtils.success("");
         } else {
             queryBuilder.clear();
-            queryBuilder.where("sysuser_id", userId);
+            queryBuilder.where("user_id", userId);
             ProfileProfileDO profileProfile = dao.getData(queryBuilder.buildQuery());
             if (profileProfile == null || profileProfile.getId() == 0) {
                 return ResponseUtils.fail("获取简历失败");
@@ -230,14 +230,19 @@ public class ProfileService {
             JSONObject profileOtherJson = JSONObject.parseObject(profileOther.getOther());
             List<JSONObject> appCvConfigJson = JSONArray.parseArray(hrAppCvConfDO.getFieldValue()).getJSONObject(0).getJSONArray("fields").stream().
                     map(m -> JSONObject.parseObject(String.valueOf(m))).filter(f -> f.getIntValue("required") == 0).collect(Collectors.toList());
+            Object customResult = null;
             for (JSONObject appCvConfig : appCvConfigJson) {
-                Object customResult = "";
-                if (appCvConfig.containsKey("mapping")) {
+                if (appCvConfig.containsKey("map") && StringUtils.isNotNullOrEmpty(appCvConfig.getString("map"))) {
                     // 复合字段校验
-                    String mappingFiled = appCvConfig.getString("mapping");
+                    String mappingFiled = appCvConfig.getString("map");
                     if (mappingFiled.contains(".")) {
-                        String[] mappingStr = mappingFiled.split(".", 2);
-                        customResult = mappingStr[0].startsWith("user") ? userDao.customSelect(mappingStr[0], mappingStr[1], profileProfile.getUserId()) : profileOtherDao.customSelect(mappingStr[0], mappingStr[1], profileProfile.getId());
+                        String[] mappingStr = mappingFiled.split("\\.", 2);
+//                        customResult = mappingStr[0].startsWith("user") ? (userDao.customSelect(mappingStr[0], mappingStr[1], profileProfile.getUserId())) : (profileOtherDao.customSelect(mappingStr[0], mappingStr[1], profileProfile.getId()));
+                        if (mappingStr[0].startsWith("user")) {
+                            customResult = userDao.customSelect(mappingStr[0], mappingStr[1], profileProfile.getUserId());
+                        } else {
+                            customResult = profileOtherDao.customSelect(mappingStr[0], mappingStr[1], profileProfile.getId());
+                        }
                     } else {
                         return ResponseUtils.fail("自定义字段"+appCvConfig.getString("field_name")+"为空");
                     }

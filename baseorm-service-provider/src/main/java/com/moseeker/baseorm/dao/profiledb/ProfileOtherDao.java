@@ -33,7 +33,7 @@ public class ProfileOtherDao extends JooqCrudImpl<ProfileOtherDO, ProfileOtherRe
     }
 
     public Object customSelect(String tableName, String selectColumn, int profileId) {
-        String sql = "select " + selectColumn + " from " + tableName + " where profile_id = " + profileId;
+        String sql = "select " + selectColumn + " from profiledb." + tableName + " where profile_id = " + profileId;
         Record result = create.fetchOne(sql);
         return result.get(selectColumn);
     }
