@@ -1,5 +1,6 @@
 package com.moseeker.position.service.position;
 
+import com.alibaba.fastjson.JSONArray;
 import com.moseeker.baseorm.dao.dictdb.DictCityMapDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HrTeamDao;
@@ -82,6 +83,9 @@ public class PositionChangeUtil {
         //学历要求
         setDegree((int) positionDB.getDegree(), channelType, position);
 
+        //福利特色
+        setFeature(positionDB.getFeature(), position);
+
         //工作经验要求
         Integer experience = null;
         try {
@@ -120,6 +124,16 @@ public class PositionChangeUtil {
         //反馈时间
         position.setFeedback_period(form.getFeedback_period());
 
+        //实习薪资
+        position.setPractice_salary(form.getPractice_salary());
+
+        //每周实习天数
+        position.setPractice_per_week(form.getPractice_per_week());
+
+        //区分校招还是社招
+        position.setRecruit_type(String.valueOf(Double.valueOf(positionDB.getCandidateSource()).intValue()));
+
+        position.setPractice_salary_unit(form.getPractice_salary_unit());
 
         setDepartment(form, positionDB, position);
 
@@ -154,16 +168,12 @@ public class PositionChangeUtil {
                                         ThirdPartyPositionForSynchronization position) {
         if (salaryBottom > 0) {
             position.setSalary_bottom(salaryBottom * 1000);
-        } else {
-            position.setSalary_bottom(salaryBottomDB * 1000);
         }
     }
 
     private static void setSalaryTop(int salary_top, int salaryTopDB, ThirdPartyPositionForSynchronization position) {
         if (salary_top > 0) {
             position.setSalary_top(salary_top * 1000);
-        } else {
-            position.setSalary_bottom(salaryTopDB * 1000);
         }
     }
 
@@ -208,13 +218,13 @@ public class PositionChangeUtil {
         ChannelType channelType = ChannelType.instaceFromInteger(channel);
         switch (channelType) {
             case JOB51:
-                position.setType_code(String.valueOf(WorkTypeChangeUtil.getJob51EmployeeType(workType).getValue()));
+                position.setWork_type(String.valueOf(WorkTypeChangeUtil.getJob51EmployeeType(workType).getValue()));
                 break;
             case ZHILIAN:
-                position.setType_code(String.valueOf(WorkTypeChangeUtil.getZhilianEmployeeType(workType).getValue()));
+                position.setWork_type(String.valueOf(WorkTypeChangeUtil.getZhilianEmployeeType(workType).getValue()));
                 break;
             default:
-                position.setType_code("");
+                position.setWork_type(String.valueOf(WorkTypeChangeUtil.getLiepinWorkType(workType).getValue()));
         }
     }
 
@@ -239,6 +249,26 @@ public class PositionChangeUtil {
             case LIEPIN:
                 position.setDegree_code(DegreeChangeUtil.getLiepinDegree(degree).getValue());
                 position.setDegree(DegreeChangeUtil.getLiepinDegree(degree).getName());
+        }
+    }
+
+    /**
+     * 设置职位福利特色
+     * @param feature 福利特色
+     * @param position 职位信息
+     */
+    public static void setFeature(String feature, ThirdPartyPositionForSynchronization position) {
+        if (StringUtils.isNotNullOrEmpty(feature)) {
+            String[] featureArray = feature.trim().split(",");
+            List<String> featureList = new ArrayList<>();
+            for (String featureElement : featureArray) {
+                if (!featureElement.trim().equals("")) {
+                    featureList.add(featureElement);
+                }
+            }
+            if (featureList.size() > 0) {
+                position.setWelfare(featureList);
+            }
         }
     }
 

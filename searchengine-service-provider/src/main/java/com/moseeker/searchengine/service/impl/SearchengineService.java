@@ -137,8 +137,8 @@ public class SearchengineService {
                             .field("city", 10.0f)
 //                            .field("company_name", 5.0f)
                             .field("team_name",5.0f)
-                    		.field("custom",4.0f)
-                    		.field("occupation",3.0f);
+                            .field("custom",4.0f)
+                            .field("occupation",3.0f);
                     ((BoolQueryBuilder) keyand).must(fullf);
                 }
                 ((BoolQueryBuilder) query).must(keyand);

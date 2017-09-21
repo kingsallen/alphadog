@@ -1,5 +1,6 @@
 package com.moseeker.company.service.impl;
 
+import com.moseeker.baseorm.dao.campaigndb.CampaignPcBannerDao;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
@@ -23,6 +24,7 @@ import com.moseeker.company.constant.ResultMessage;
 import com.moseeker.company.exception.ExceptionCategory;
 import com.moseeker.company.exception.ExceptionFactory;
 import com.moseeker.entity.EmployeeEntity;
+import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -32,6 +34,8 @@ import com.moseeker.thrift.gen.company.struct.CompanyOptions;
 import com.moseeker.thrift.gen.company.struct.HrEmployeeCustomFieldsVO;
 import com.moseeker.thrift.gen.company.struct.HrImporterMonitorVO;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
+import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignPcBannerDO;
+import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.employee.struct.RewardConfig;
@@ -51,6 +55,9 @@ import java.util.stream.Collectors;
 public class CompanyService {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
+
+
+	ChaosServices.Iface chaosService = ServiceManager.SERVICEMANAGER.getService(ChaosServices.Iface.class);
 
     @Autowired
     protected HrCompanyDao companyDao;
@@ -88,6 +95,9 @@ public class CompanyService {
 
     @Autowired
     private HrEmployeeCustomFieldsDao hrEmployeeCustomFieldsDao;
+
+    @Autowired
+    private CampaignPcBannerDao campaignPcBannerDao;
 
     public Response getResource(CommonQuery query) throws TException {
         try {
@@ -615,6 +625,18 @@ public class CompanyService {
             throw ExceptionFactory.buildException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS);
         }
         return 1;
+    }
+    /*
+     * 获取pc端获取banner图
+     */
+    @CounterIface
+    public Response getPcBannerByPage(int page,int pageSize) throws Exception{
+        Query query=new Query.QueryBuilder().setPageNum(page).setPageSize(pageSize).buildQuery();
+        List<CampaignPcBannerDO> list=campaignPcBannerDao.getDatas(query);
+        if(StringUtils.isEmptyList(list)){
+            ResponseUtils.success("");
+        }
+        return ResponseUtils.success(list);
     }
 
     /**

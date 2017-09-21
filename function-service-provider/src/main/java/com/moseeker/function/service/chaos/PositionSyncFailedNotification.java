@@ -9,6 +9,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.email.Email;
 import com.moseeker.common.util.ConfigPropertiesUtil;
+import com.moseeker.common.util.EmojiFilter;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.dao.struct.dictdb.Dict51jobOccupationDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
@@ -28,6 +29,7 @@ import javax.mail.event.TransportEvent;
 import javax.mail.event.TransportListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by zhangdi on 2017/7/6.
@@ -57,7 +59,16 @@ public class PositionSyncFailedNotification {
     @Autowired
     HrCompanyAccountDao companyAccountDao;
 
-    private String getConfigString(String key) {
+    static List<String> devMails = new ArrayList<>();
+
+    static List<String> csMails = new ArrayList<>();
+
+    static {
+        csMails = getEmails("position_sync.email");//发给cs处理的邮件地址
+        devMails = getEmails("position_sync.email.dev");//发给dev知晓的邮件地址
+    }
+
+    private static String getConfigString(String key) {
         try {
             ConfigPropertiesUtil configUtils = ConfigPropertiesUtil.getInstance();
             configUtils.loadResource("chaos.properties");
@@ -68,8 +79,8 @@ public class PositionSyncFailedNotification {
         return null;
     }
 
-    private List<String> getEmails() {
-        String emailConfig = getConfigString("position_sync.email");
+    private static List<String> getEmails(String configKey) {
+        String emailConfig = getConfigString(configKey);
         if (emailConfig == null) {
             return new ArrayList<>();
         }
@@ -99,7 +110,13 @@ public class PositionSyncFailedNotification {
             return;
         }
 
-        List<String> emails = getEmails();
+        List<String> emails;
+
+        if(pojo.getStatus() == 2 || pojo.getStatus() == 9){
+            emails = csMails;
+        }else{
+            emails = devMails;
+        }
 
         if (emails == null || emails.size() == 0) {
             logger.error("职位刷新到第三方失败，且不能发送邮件:邮件地址为空：返回信息:{}", JSON.toJSONString(pojo));
@@ -131,14 +148,20 @@ public class PositionSyncFailedNotification {
         if (subCompany != null) {
             emailMessgeBuilder.append("【子公司简称】：").append(subCompany.getAbbreviation()).append(divider);
         }
+        emailMessgeBuilder.append("【同步记录ID】：").append(thirdPartyPositionDO.getId()).append(divider);
         emailMessgeBuilder.append("【职位ID】：").append(pojo.getPosition_id()).append(divider);
         emailMessgeBuilder.append("【第三方帐号ID】：").append(pojo.getAccount_id()).append(divider);
-        emailMessgeBuilder.append("【第三方职位ID】：").append(thirdPartyPositionDO.getId()).append(divider);
         emailMessgeBuilder.append("【").append(channelName).append("职位编号】：").append(thirdPartyPositionDO.getThirdPartPositionId()).append(divider);
         emailMessgeBuilder.append("【职位标题】：").append(moseekerPosition.getTitle()).append(divider);
         emailMessgeBuilder.append(divider).append("<hr>").append(divider);
         emailMessgeBuilder.append("【错误信息】：").append(divider);
-        emailMessgeBuilder.append(StringUtils.isNullOrEmpty(pojo.getMessage()) ? "无" : pojo.getMessage());
+        String errorMessage = null;
+        if (pojo.getMessage() != null && pojo.getMessage().size() > 0) {
+            errorMessage = pojo.getMessage().stream().map(message -> EmojiFilter.unicodeToUtf8(message)).collect(Collectors.joining("\n\r"));
+        } else {
+            errorMessage = "无";
+        }
+        emailMessgeBuilder.append(errorMessage);
         sendEmail(emails, emailTitle.toString(), emailMessgeBuilder.toString());
     }
 
@@ -154,7 +177,13 @@ public class PositionSyncFailedNotification {
             return;
         }
 
-        List<String> emails = getEmails();
+        List<String> emails;
+
+        if(pojo.getStatus() == 2 || pojo.getStatus() == 9){
+            emails = csMails;
+        }else{
+            emails = devMails;
+        }
 
         if (emails == null || emails.size() == 0) {
             logger.error("职位同步到第三方的时候无法确认状态，且不能发送邮件:邮件地址为空：返回信息:{}", JSON.toJSONString(pojo));
@@ -194,18 +223,28 @@ public class PositionSyncFailedNotification {
         emailMessgeBuilder.append("【同步记录ID】：").append(thirdPartyPositionDO.getId()).append(divider);
         emailMessgeBuilder.append("【职位ID】：").append(pojo.getPosition_id()).append(divider);
         emailMessgeBuilder.append("【第三方帐号ID】：").append(pojo.getAccount_id()).append(divider);
+        emailMessgeBuilder.append("【招聘类型】：").append(moseekerPosition.getCandidateSource() == 1 ? "校招" : "社招").append(divider);
         emailMessgeBuilder.append("【标题】：").append(moseekerPosition.getTitle()).append(divider);
         emailMessgeBuilder.append("【城市】：").append(getCitys(moseekerPosition.getId())).append(divider);
         emailMessgeBuilder.append("【地址】：").append(getAddress(thirdPartyPositionDO.getAddress())).append(divider);
         emailMessgeBuilder.append("【职能】：").append(getOccupation(thirdPartyPositionDO.getChannel(), thirdPartyPositionDO.getOccupation())).append(divider);
         emailMessgeBuilder.append("【部门】：").append(thirdPartyPositionDO.getDepartment()).append(divider);
-        emailMessgeBuilder.append("【月薪】：").append(Double.valueOf(moseekerPosition.getSalaryBottom()).intValue()).append("-").append(Double.valueOf(moseekerPosition.getSalaryTop()).intValue()).append(divider);
+        if (thirdPartyPositionDO.getSalaryBottom() > 0 && thirdPartyPositionDO.getSalaryTop() > 0) {
+            emailMessgeBuilder.append("【月薪】：").append(thirdPartyPositionDO.getSalaryBottom()).append("-").append(thirdPartyPositionDO.getSalaryTop()).append(divider);
+        }
         emailMessgeBuilder.append("【面议】：").append(thirdPartyPositionDO.getSalaryDiscuss() == 0 ? "否" : "是").append(divider);
         emailMessgeBuilder.append("【招聘人数】：").append(Double.valueOf(moseekerPosition.getCount()).intValue()).append(divider);
-        emailMessgeBuilder.append("【发放月数】：").append(thirdPartyPositionDO.getSalaryMonth()).append(divider);
         emailMessgeBuilder.append("【工作年限】：").append(getExperience(moseekerPosition.getExperience())).append(divider);
         emailMessgeBuilder.append("【学历要求】：").append(getDegree(moseekerPosition.getDegree())).append(divider);
-        emailMessgeBuilder.append("【反馈时长】：").append(thirdPartyPositionDO.getFeedbackPeriod()).append(divider);
+        if (thirdPartyPositionDO.getChannel() == ChannelType.LIEPIN.getValue()) {
+            if (moseekerPosition.getCandidateSource() == 1) {
+                emailMessgeBuilder.append("【实习薪资】：").append(thirdPartyPositionDO.getPracticeSalary()).append(thirdPartyPositionDO.getPracticeSalaryUnit() == 1 ? "元/天" : "元/月").append(divider);
+                emailMessgeBuilder.append("【每周实习天数】：").append(thirdPartyPositionDO.getPracticePerWeek()).append(divider);
+            } else {
+                emailMessgeBuilder.append("【发放月数】：").append(thirdPartyPositionDO.getSalaryMonth()).append(divider);
+                emailMessgeBuilder.append("【反馈时长】：").append(thirdPartyPositionDO.getFeedbackPeriod()).append(divider);
+            }
+        }
         emailMessgeBuilder.append("<b style=\"color:blue;text-decoration:underline\">【简历邮箱】：").append("cv_").append(moseekerPosition.getId()).append(positionEmail).append("</b>");
         emailMessgeBuilder.append("<b style=\"color:red\">（手动发布该职位时，请一定将该邮箱填写在简历回收邮箱中）</b>").append(divider);
         emailMessgeBuilder.append("【职位描述】：").append(divider);
@@ -223,7 +262,13 @@ public class PositionSyncFailedNotification {
         emailMessgeBuilder.append(descript.toString().replaceAll("\n", divider)).append(divider);
         emailMessgeBuilder.append(divider).append("<hr>").append(divider);
         emailMessgeBuilder.append("【错误信息】：").append(divider);
-        emailMessgeBuilder.append(StringUtils.isNullOrEmpty(pojo.getMessage()) ? "无" : pojo.getMessage());
+        String errorMessage = null;
+        if (pojo.getMessage() != null && pojo.getMessage().size() > 0) {
+            errorMessage = pojo.getMessage().stream().map(message -> EmojiFilter.unicodeToUtf8(message)).collect(Collectors.joining("\n\r"));
+        } else {
+            errorMessage = "无";
+        }
+        emailMessgeBuilder.append(errorMessage);
 
         sendEmail(emails, emailTitle.toString(), emailMessgeBuilder.toString());
     }

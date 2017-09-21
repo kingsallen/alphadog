@@ -93,7 +93,7 @@ public class PositionRefreshConsumer extends RedisConsumer<PositionForSyncResult
             logger.error("读取职位刷新队列后无法更新到数据库:{}", JSON.toJSONString(data));
         }
 
-        if (pojo.getStatus() == 2 || pojo.getStatus() == 9) {
+        if (pojo.getStatus() != 0) {
             syncFailedNotification.sendRefreshFailedMail(moseekerPosition, thirdPartyPositionDO, pojo);
         }
 

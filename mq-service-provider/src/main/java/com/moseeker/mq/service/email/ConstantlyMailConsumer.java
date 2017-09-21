@@ -34,7 +34,7 @@ import com.moseeker.mq.service.WarnService;
 import org.springframework.stereotype.Component;
 
 /**
- * 
+ *
  * 业务邮件处理工具
  * <p>
  * Company: MoSeeker
@@ -45,24 +45,24 @@ import org.springframework.stereotype.Component;
  * <p>
  * Email: wjf2255@gmail.com
  * </p>
- * 
+ *
  * @author wjf
  * @version
  */
 @Component
 public class ConstantlyMailConsumer {
-	
+
 	private static Logger logger = LoggerFactory.getLogger(MqServer.class);
 
 	private HashMap<Integer, String> templates = new HashMap<>(); // 模版信息
 	private ExecutorService executorService;
 
-    @Resource(name = "cacheClient")
-    private RedisClient redisClient;
+	@Resource(name = "cacheClient")
+	private RedisClient redisClient;
 
 	/**
 	 * 从redis业务邮件队列中获取邮件信息
-	 * 
+	 *
 	 * @return
 	 */
 	private String fetchConstantlyMessage() {
@@ -81,18 +81,22 @@ public class ConstantlyMailConsumer {
 
 	/**
 	 * 初始化业务邮件处理工具
-	 * 
+	 *
 	 * @throws IOException
 	 * @throws MessagingException
 	 */
 	private void initConstantlyMail() throws IOException, MessagingException {
 		// 加载模版文件
-		templates.putAll(Stream.of(Constant.EVENT_TYPE_EMAIL_VERIFIED, Constant.EVENT_TYPE_EMPLOYEE_AUTH).collect(Collectors.toMap(k -> k, v -> {
+		templates.putAll(Stream.of(Constant.EVENT_TYPE_EMAIL_VERIFIED, Constant.EVENT_TYPE_EMPLOYEE_AUTH,Constant.EVENT_TYPE_RECOMMEND_VALID_EMAIL,Constant.EVENT_TYPE_RECOMMEND_POSITION_EMAIL).collect(Collectors.toMap(k -> k, v -> {
 			String templateName = "";
 			if (v == 1) {
 				templateName = "email_verifier_template.html";
 			} else if (v == 2) {
 				templateName = "employee_auth_template.html";
+			}else if(v==3){
+				templateName = "position_subscribe_activation_template.html";
+			}else if(v==4){
+				templateName = "position_subscribe_weekly_template.html";
 			}
 			StringBuffer sb = new StringBuffer();
 			try (InputStreamReader is = new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(templateName), "UTF-8")) {
@@ -100,7 +104,7 @@ public class ConstantlyMailConsumer {
 				for (String s = ""; (s = br.readLine()) != null; sb.append(s));
 			} catch (Exception e) {
 				logger.info(e.getMessage(), e);
-			} 
+			}
 			return sb.toString();
 		})));
 	}
@@ -108,11 +112,11 @@ public class ConstantlyMailConsumer {
 	/**
 	 * 发送邮件
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	private String sendMail() throws Exception {
 		String redisMsg = fetchConstantlyMessage();
-		
+
 		if(redisMsg != null) {
 			executorService.submit(() -> {
 				try {
@@ -153,9 +157,9 @@ public class ConstantlyMailConsumer {
 	public void start() throws IOException, MessagingException {
 		initConstantlyMail();
 		executorService = new ThreadPoolExecutor(3, 10,
-                60L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<Runnable>());
-		
+				60L, TimeUnit.MILLISECONDS,
+				new LinkedBlockingQueue<Runnable>());
+
 		new Thread(() -> {
 			try {
 				while(true) {
