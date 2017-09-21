@@ -370,7 +370,7 @@ public class ProfileController {
         }
     }
 
-    @RequestMapping(value = "/profile/other1", method = RequestMethod.POST)
+    @RequestMapping(value = "/profile/custom/other", method = RequestMethod.POST)
     @ResponseBody
     public String getOther(HttpServletRequest request) {
         try {
