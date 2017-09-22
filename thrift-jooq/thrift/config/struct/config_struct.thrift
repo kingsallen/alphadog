@@ -20,3 +20,20 @@ struct HrAwardConfigTemplate{
  8: optional i64 reward,
  9: optional i32 points_conf_id
 }
+
+struct ConfigCustomMetaData {
+     1: optional i32 id,
+     2: optional string fieldName,
+     3: optional string fieldTitle,
+     4: optional i32 fieldType,
+     5: optional i32 priority,
+     6: optional i8 isBasic,
+     7: optional i32 companyId,
+     8: optional i8 needed,
+     9: optional string fieldDescription,
+     10: optional string mapping,
+     11: optional i32 parentId,
+     12: optional string validateRe,
+     13: optional i32 constantParentCode,
+     14: optional string constantValue
+}

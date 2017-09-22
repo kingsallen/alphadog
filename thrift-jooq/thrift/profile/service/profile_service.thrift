@@ -3,6 +3,7 @@
 include "../struct/profile_struct.thrift"
 include "../../dao/struct/db/profiledb_struct.thrift"
 include "../../common/struct/common_struct.thrift"
+include "../../config/struct/config_struct.thrift"
 namespace java com.moseeker.thrift.gen.profile.service
 
 /**
@@ -20,6 +21,9 @@ service ProfileOtherThriftService {
     i32 putResource(1: profiledb_struct.ProfileOtherDO Other) throws (1: common_struct.BIZException e);
     list<i32> delResources(1: list<profiledb_struct.ProfileOtherDO> Others) throws (1: common_struct.BIZException e);
     i32 delResource(1: profiledb_struct.ProfileOtherDO Other) throws (1: common_struct.BIZException e);
+    common_struct.Response getCustomMetaData(1: i32 companyId) throws (1: common_struct.BIZException e);
+    common_struct.Response checkProfileOther(1: i32 userId, 2: i32 positionId) throws (1: common_struct.BIZException e);
+    common_struct.Response getProfileOther(1: string params) throws (1: common_struct.BIZException e);
 }
 
 service WholeProfileServices {

@@ -1,7 +1,11 @@
 package com.moseeker.profile.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.dao.hrdb.HrAppCvConfDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileCompletenessDao;
+import com.moseeker.baseorm.dao.profiledb.ProfileOtherDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.userdb.UserSettingsDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
@@ -15,16 +19,28 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
+import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.ProfileEntity;
 import com.moseeker.entity.pojo.profile.*;
 import com.moseeker.entity.pojo.resume.*;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.profile.utils.DegreeSource;
+import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.entity.PositionEntity;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrAppCvConfDO;
+import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileOtherDO;
+import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
 import com.moseeker.thrift.gen.profile.struct.Profile;
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
 import com.sun.org.apache.regexp.internal.RE;
+import java.util.*;
+import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -57,6 +73,15 @@ public class ProfileService {
 
     @Autowired
     private ProfileEntity profileEntity;
+
+    @Autowired
+    private HrAppCvConfDao hrAppCvConfDao;
+
+    @Autowired
+    private PositionEntity positionEntity;
+
+    @Autowired
+    private ProfileOtherDao profileOtherDao;
 
     public Response getResource(Query query) throws TException {
         ProfileProfileRecord record = null;
@@ -352,4 +377,84 @@ public class ProfileService {
         return ResponseUtils.success(profileObj);
     }
 
+    public Response checkProfileOther(int userId, int positionId) {
+        int appCvConfigId = positionEntity.getAppCvConfigIdByPosition(positionId);
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where("id", appCvConfigId);
+        HrAppCvConfDO hrAppCvConfDO = hrAppCvConfDao.getData(queryBuilder.buildQuery());
+        if (hrAppCvConfDO == null || StringUtils.isNullOrEmpty(hrAppCvConfDO.getFieldValue())) {
+            return ResponseUtils.success("");
+        } else {
+            queryBuilder.clear();
+            queryBuilder.where("user_id", userId);
+            ProfileProfileDO profileProfile = dao.getData(queryBuilder.buildQuery());
+            if (profileProfile == null || profileProfile.getId() == 0) {
+                return ResponseUtils.success(new HashMap<String, String>(){{put("result:","false"); put("resultMsg","获取简历失败");}});
+            }
+            queryBuilder.clear();
+            queryBuilder.where("profile_id", profileProfile.getId());
+            ProfileOtherDO profileOther = profileOtherDao.getData(queryBuilder.buildQuery());
+            if (profileOther == null || StringUtils.isNullOrEmpty(profileOther.getOther())) {
+                return ResponseUtils.success(new HashMap<String, String>(){{put("result:","false");put("resultMsg","自定义简历为空");}});
+            }
+            JSONObject profileOtherJson = JSONObject.parseObject(profileOther.getOther());
+            List<JSONObject> appCvConfigJson = JSONArray.parseArray(hrAppCvConfDO.getFieldValue()).getJSONObject(0).getJSONArray("fields").stream().
+                    map(m -> JSONObject.parseObject(String.valueOf(m))).filter(f -> f.getIntValue("required") == 0).collect(Collectors.toList());
+            Object customResult = null;
+            for (JSONObject appCvConfig : appCvConfigJson) {
+                if (appCvConfig.containsKey("map") && StringUtils.isNotNullOrEmpty(appCvConfig.getString("map"))) {
+                    // 复合字段校验
+                    String mappingFiled = appCvConfig.getString("map");
+                    if (mappingFiled.contains(".")) {
+                        String[] mappingStr = mappingFiled.split("\\.", 2);
+                        customResult = mappingStr[0].startsWith("user") ? (userDao.customSelect(mappingStr[0], mappingStr[1], profileProfile.getUserId())) : (profileOtherDao.customSelect(mappingStr[0], mappingStr[1], profileProfile.getId()));
+                    } else {
+                        return ResponseUtils.success(new HashMap<String, String>(){{put("result:","false");put("resultMsg","自定义字段"+appCvConfig.getString("field_name")+"为空");}});
+                    }
+                } else {
+                    // 普通字段校验
+                    if (profileOtherJson.containsKey(appCvConfig.getString("field_name"))) {
+                        customResult = profileOtherJson.get(appCvConfig.getString("field_name"));
+                    } else {
+                        return ResponseUtils.success(new HashMap<String, String>(){{put("result:","false");put("resultMsg","自定义字段"+appCvConfig.getString("field_name")+"为空");}});
+                    }
+                }
+                if (!Pattern.matches(appCvConfig.getString("validate_re"), String.valueOf(customResult))) {
+                    return ResponseUtils.success(new HashMap<String, String>(){{put("result:","false");put("resultMsg","自定义字段"+appCvConfig.getString("field_name")+"校验失败");}});
+                }
+            }
+        }
+        return ResponseUtils.success(new HashMap<String, String>(){{put("result:","true");put("resultMsg","");}});
+    }
+
+
+    public Response getProfileOther(String params) {
+        List<JSONObject> paramsStream = JSONArray.parseArray(params).parallelStream().map(m -> JSONObject.parseObject(String.valueOf(m))).collect(Collectors.toList());
+        // 批量获取职位自定义配置&简历自定义字段
+        List<Integer> positionIds = paramsStream.parallelStream().map(m -> m.getIntValue("positionId")).collect(Collectors.toList());
+        List<Integer> profileIds = paramsStream.parallelStream().map(m -> m.getIntValue("profileId")).collect(Collectors.toList());
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where(new Condition("profile_id", profileIds, ValueOp.IN));
+        List<ProfileOtherDO> profileOtherDOList = profileOtherDao.getDatas(queryBuilder.buildQuery());
+        Map<Integer, String> profileOtherMap = (profileOtherDOList == null || profileOtherDOList.isEmpty()) ? new HashMap<>() :
+                profileOtherDOList.parallelStream().collect(Collectors.toMap(k -> k.getProfileId(), v -> v.getOther(), (oldKey, newKey) -> newKey));
+        Map<Integer, Integer> positionCustomConfigMap =  positionEntity.getAppCvConfigIdByPositions(positionIds);
+        queryBuilder.clear();
+        queryBuilder.where(new Condition("id", new ArrayList<>(positionCustomConfigMap.values()), ValueOp.IN));
+        List<HrAppCvConfDO> hrAppCvConfDOList = hrAppCvConfDao.getDatas(queryBuilder.buildQuery());
+        Map<Integer, String> positionOtherMap = (hrAppCvConfDOList == null || hrAppCvConfDOList.isEmpty()) ? new HashMap<>() :
+                hrAppCvConfDOList.parallelStream().collect(Collectors.toMap(k -> k.getId(), v -> v.getFieldValue()));
+        paramsStream.stream().forEach(e -> {
+            int positionId = e.getIntValue("positionId");
+            int profileId = e.getIntValue("profileId");
+            e.put("other", "");
+            if (positionCustomConfigMap.containsKey(positionId)) {
+                JSONObject profileOtherJson = JSONObject.parseObject(profileOtherMap.get(profileId));
+                Map<String, String> otherMap = JSONArray.parseArray(positionOtherMap.get(positionCustomConfigMap.get(positionId))).getJSONObject(0).getJSONArray("fields").stream().
+                        map(m -> JSONObject.parseObject(String.valueOf(m))).map(mm -> mm.getString("field_name")).collect(Collectors.toMap(k -> k, v -> org.apache.commons.lang.StringUtils.defaultIfBlank(profileOtherJson.getString(v), ""), (oldKey, newKey) -> newKey));
+                e.put("other", otherMap);
+            }
+        });
+        return ResponseUtils.success(paramsStream);
+    }
 }

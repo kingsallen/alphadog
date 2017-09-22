@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSysCvTpl extends TableImpl<ConfigSysCvTplRecord> {
 
-    private static final long serialVersionUID = 929383872;
+    private static final long serialVersionUID = 1393772249;
 
     /**
      * The reference instance of <code>configdb.config_sys_cv_tpl</code>
@@ -120,6 +120,21 @@ public class ConfigSysCvTpl extends TableImpl<ConfigSysCvTplRecord> {
      * The column <code>configdb.config_sys_cv_tpl.map</code>. 与profile的映射关系
      */
     public final TableField<ConfigSysCvTplRecord, String> MAP = createField("map", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "与profile的映射关系");
+
+    /**
+     * The column <code>configdb.config_sys_cv_tpl.constant_parent_code</code>.
+     */
+    public final TableField<ConfigSysCvTplRecord, Integer> CONSTANT_PARENT_CODE = createField("constant_parent_code", org.jooq.impl.SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>configdb.config_sys_cv_tpl.parent_id</code>. 复合字段关联
+     */
+    public final TableField<ConfigSysCvTplRecord, Integer> PARENT_ID = createField("parent_id", org.jooq.impl.SQLDataType.INTEGER, this, "复合字段关联");
+
+    /**
+     * The column <code>configdb.config_sys_cv_tpl.validate_re</code>. 数据校验规则（正则）
+     */
+    public final TableField<ConfigSysCvTplRecord, String> VALIDATE_RE = createField("validate_re", org.jooq.impl.SQLDataType.VARCHAR.length(200), this, "数据校验规则（正则）");
 
     /**
      * Create a <code>configdb.config_sys_cv_tpl</code> table reference

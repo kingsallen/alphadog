@@ -175,6 +175,8 @@ public class WholeProfileService {
             logger.info("WholeProfileService getResource done : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
 
             profile.put("others", others);
+
+            profile.put("countryCode", userDao.getUser(userId).getCountryCode());
             return ResponseUtils.success(profile);
         } else {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
