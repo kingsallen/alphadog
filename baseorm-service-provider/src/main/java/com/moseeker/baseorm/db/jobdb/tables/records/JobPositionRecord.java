@@ -102,15 +102,15 @@ public class JobPositionRecord extends UpdatableRecordImpl<JobPositionRecord> {
     /**
      * Setter for <code>jobdb.job_position.city</code>. 所在城市，多城市使用中文逗号分割
      */
-    public void setCity(JobPositionCityRecord value) {
+    public void setCity(String value) {
         set(5, value);
     }
 
     /**
      * Getter for <code>jobdb.job_position.city</code>. 所在城市，多城市使用中文逗号分割
      */
-    public JobPositionCityRecord getCity() {
-        return (JobPositionCityRecord) get(5);
+    public String getCity() {
+        return (String) get(5);
     }
 
     /**
