@@ -119,7 +119,7 @@ public class ConfigSysCvTpl extends TableImpl<ConfigSysCvTplRecord> {
     /**
      * The column <code>configdb.config_sys_cv_tpl.map</code>. 与profile的映射关系
      */
-    public final TableField<ConfigSysCvTplRecord, String> MAP = createField("map", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "与profile的映射关系");
+    public final TableField<ConfigSysCvTplRecord, String> MAP = createField("map", org.jooq.impl.SQLDataType.VARCHAR.length(200).nullable(false).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "与profile的映射关系");
 
     /**
      * The column <code>configdb.config_sys_cv_tpl.constant_parent_code</code>.
