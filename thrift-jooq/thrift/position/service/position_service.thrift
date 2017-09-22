@@ -7,6 +7,7 @@ include "../../dao/struct/campaignrvo_struct.thrift"
 include "../../dao/struct/jobdb/job_position_struct.thrift"
 include "../struct/third_position_struct.thrift"
 include "../../dao/struct/hrdb/hr_third_party_account_struct.thrift"
+include "../../dao/struct/jobdb/job_pc_reported_struct.thrift"
 
 namespace java com.moseeker.thrift.gen.position.service
 /*
@@ -73,6 +74,7 @@ service PositionServices {
     common_struct.Response getPcRecommandCompanyAll(1:i32 page,2:i32 pageSize);
     common_struct.Response getPcPositionDetail(1:i32 positionId);
     common_struct.Response getPcRecommendPosition(1:i32 positionId,2:i32 page,3:i32 pageSize);
+    common_struct.Response addPcReport(1:job_pc_reported_struct.JobPcReportedDO jobPcReportedDO);
 }
 /*
 	查询第三方自定义职能

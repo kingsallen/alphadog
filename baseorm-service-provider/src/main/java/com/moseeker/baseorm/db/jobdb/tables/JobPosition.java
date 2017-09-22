@@ -6,6 +6,7 @@ package com.moseeker.baseorm.db.jobdb.tables;
 
 import com.moseeker.baseorm.db.jobdb.Jobdb;
 import com.moseeker.baseorm.db.jobdb.Keys;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionCityRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 
 import java.sql.Timestamp;
@@ -36,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPosition extends TableImpl<JobPositionRecord> {
 
-    private static final long serialVersionUID = -1365760042;
+    private static final long serialVersionUID = 182854989;
 
     /**
      * The reference instance of <code>jobdb.job_position</code>
@@ -79,7 +80,7 @@ public class JobPosition extends TableImpl<JobPositionRecord> {
     /**
      * The column <code>jobdb.job_position.city</code>. 所在城市，多城市使用中文逗号分割
      */
-    public final TableField<JobPositionRecord, String> CITY = createField("city", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "所在城市，多城市使用中文逗号分割");
+    public final TableField<JobPositionRecord, JobPositionCityRecord> CITY = createField("city", com.moseeker.baseorm.db.jobdb.tables.JobPositionCity.JOB_POSITION_CITY.getDataType(), this, "所在城市，多城市使用中文逗号分割");
 
     /**
      * The column <code>jobdb.job_position.department</code>. 所在部门

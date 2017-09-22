@@ -16,9 +16,7 @@ import com.moseeker.entity.PcRevisionEntity;
 import com.moseeker.thrift.gen.dao.struct.analytics.StJobSimilarityDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictIndustryDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
-import com.moseeker.thrift.gen.dao.struct.jobdb.JobCustomDO;
-import com.moseeker.thrift.gen.dao.struct.jobdb.JobOccupationDO;
-import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionExtDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import org.apache.thrift.TException;
 import org.apache.thrift.TSerializer;
@@ -42,7 +40,6 @@ import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignPcRecommendCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignPcRecommendPositionDO;
-import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 
 /*
  * create by zzt
@@ -83,6 +80,8 @@ public class PositionPcService {
 	private JobOccupationDao  jobOccupationDao;
 	@Autowired
 	private DictIndustryDao dictIndustryDao;
+	@Autowired
+	private  JobPcReportedDao jobPcReportedDao;
 	/*
      * 获取pc首页职位推荐
      */
@@ -175,6 +174,14 @@ public class PositionPcService {
 		}
 
 		return map;
+	}
+	//添加举报信息
+	public  int addPositionReport(JobPcReportedDO DO){
+		JobPcReportedDO reportDO=jobPcReportedDao.addData(DO);
+		if(reportDO!=null&&reportDO.getId()>0){
+			return 1;
+		}
+		return 0;
 	}
 	//获取自定义字段
 	public Map<String,Object> handleCustomField(int positionId,int companyId){
@@ -633,7 +640,7 @@ public class PositionPcService {
 				for(int j=0;j<companyList.size();j++){
 					HrCompanyDO companyDO=companyList.get(j);
 					int companyId=companyDO.getId();
-
+					int parentId=companyDO.getParentId();
 					// 本处如此做是为了过滤掉已经删除的子公司的信息
 					if(!StringUtils.isEmptyList(publisherAndCompanyId)){
 						for(int z=0;z<publisherAndCompanyId.size();z++){
@@ -1178,5 +1185,37 @@ public class PositionPcService {
 		Query query=new Query.QueryBuilder().where("name",name).buildQuery();
 		DictIndustryDO DO=dictIndustryDao.getData(query);
 		return DO;
+	}
+    //根据company_ids获取hr_company_conf的列表
+	public List<HrCompanyConfDO> getHrCompanyConfDOList(List<Integer> companyIdList){
+		if(StringUtils.isEmptyList(companyIdList)){
+			return null;
+		}
+		Query query=new Query.QueryBuilder().where(new Condition("company_id",companyIdList.toArray(),ValueOp.IN)).buildQuery();
+		List<HrCompanyConfDO> list=hrCompanyConfDao.getDatas(query);
+		return list;
+	}
+	//获取公司列表中所有公司的母公司的列表
+	public List<Integer> getAllMotherCompanyIdList(List<HrCompanyDO> list){
+		List<Integer> result=new ArrayList<>();
+		if(StringUtils.isEmptyList(list)){
+			return result;
+		}
+		for(HrCompanyDO DO:list){
+			int id=DO.getId();
+			int parentId=DO.getParentId();
+			if(parentId>0){
+				result.add(parentId);
+			}else{
+				result.add(id);
+			}
+		}
+		return result;
+	}
+
+	private List<HrCompanyConfDO> getHrCompanyConfData(List<HrCompanyDO> list){
+		List<Integer> idList=this.getAllMotherCompanyIdList(list);
+		List<HrCompanyConfDO> confList=this.getHrCompanyConfDOList(idList);
+		return confList;
 	}
 }

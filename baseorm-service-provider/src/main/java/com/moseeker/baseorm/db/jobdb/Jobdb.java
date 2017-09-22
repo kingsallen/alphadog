@@ -7,6 +7,10 @@ package com.moseeker.baseorm.db.jobdb;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.JobCustom;
 import com.moseeker.baseorm.db.jobdb.tables.JobOccupation;
+import com.moseeker.baseorm.db.jobdb.tables.JobPcAdvertisement;
+import com.moseeker.baseorm.db.jobdb.tables.JobPcRecommendPositionItem;
+import com.moseeker.baseorm.db.jobdb.tables.JobPcRecommendPositionsModule;
+import com.moseeker.baseorm.db.jobdb.tables.JobPcReported;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionCity;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionExt;
@@ -39,7 +43,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Jobdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 1566440615;
+    private static final long serialVersionUID = -1427267558;
 
     /**
      * The reference instance of <code>jobdb</code>
@@ -60,6 +64,26 @@ public class Jobdb extends SchemaImpl {
      * 公司自定义职能表
      */
     public final JobOccupation JOB_OCCUPATION = com.moseeker.baseorm.db.jobdb.tables.JobOccupation.JOB_OCCUPATION;
+
+    /**
+     * The table <code>jobdb.job_pc_advertisement</code>.
+     */
+    public final JobPcAdvertisement JOB_PC_ADVERTISEMENT = com.moseeker.baseorm.db.jobdb.tables.JobPcAdvertisement.JOB_PC_ADVERTISEMENT;
+
+    /**
+     * The table <code>jobdb.job_pc_recommend_positions_module</code>.
+     */
+    public final JobPcRecommendPositionsModule JOB_PC_RECOMMEND_POSITIONS_MODULE = com.moseeker.baseorm.db.jobdb.tables.JobPcRecommendPositionsModule.JOB_PC_RECOMMEND_POSITIONS_MODULE;
+
+    /**
+     * 推荐职位明细关系表
+     */
+    public final JobPcRecommendPositionItem JOB_PC_RECOMMEND_POSITION_ITEM = com.moseeker.baseorm.db.jobdb.tables.JobPcRecommendPositionItem.JOB_PC_RECOMMEND_POSITION_ITEM;
+
+    /**
+     * 被举报职位数据表
+     */
+    public final JobPcReported JOB_PC_REPORTED = com.moseeker.baseorm.db.jobdb.tables.JobPcReported.JOB_PC_REPORTED;
 
     /**
      * The table <code>jobdb.job_position</code>.
@@ -124,6 +148,10 @@ public class Jobdb extends SchemaImpl {
             JobApplication.JOB_APPLICATION,
             JobCustom.JOB_CUSTOM,
             JobOccupation.JOB_OCCUPATION,
+            JobPcAdvertisement.JOB_PC_ADVERTISEMENT,
+            JobPcRecommendPositionsModule.JOB_PC_RECOMMEND_POSITIONS_MODULE,
+            JobPcRecommendPositionItem.JOB_PC_RECOMMEND_POSITION_ITEM,
+            JobPcReported.JOB_PC_REPORTED,
             JobPosition.JOB_POSITION,
             JobPositionCity.JOB_POSITION_CITY,
             JobPositionExt.JOB_POSITION_EXT,

@@ -23,6 +23,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPcReportedDO;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.position.struct.*;
 import org.jooq.tools.json.JSONObject;
@@ -617,6 +618,22 @@ public class PositionController {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             int positionId = params.getInt("positionId");
             Response result=positonServices.getPcPositionDetail(positionId);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /*
+      *职位举报
+      */
+    @RequestMapping(value = "/position/pc/report", method = RequestMethod.GET)
+    @ResponseBody
+    public String addPcReport(HttpServletRequest request, HttpServletResponse response){
+        try{
+            JobPcReportedDO DO=ParamUtils.initCommonQuery(request, JobPcReportedDO.class);
+            Response result=positonServices.addPcReport(DO);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
             logger.error(e.getMessage());

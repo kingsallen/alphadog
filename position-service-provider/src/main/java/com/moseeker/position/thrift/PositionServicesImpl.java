@@ -8,6 +8,7 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.position.service.fundationbs.PositionPcService;
 import com.moseeker.position.service.fundationbs.PositionQxService;
 import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPcReportedDO;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.position.struct.RpExtInfo;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
@@ -335,6 +336,8 @@ public class PositionServicesImpl implements Iface {
 
     }
 
+
+
     @Override
     public ThirdPartyPositionResult getThirdPartyPositionInfo(ThirdPartyPositionInfoForm infoForm) throws BIZException, TException {
         try {
@@ -378,6 +381,21 @@ public class PositionServicesImpl implements Iface {
         try {
             return thirdPositionService.updateThirdPartyPositionWithAccount(thirdPartyPosition, thirdPartyAccount);
         } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public Response addPcReport(JobPcReportedDO jobPcReportedDO) throws TException {
+        try{
+            int result=positionPcService.addPositionReport(jobPcReportedDO);
+            if(result>0){
+                return ResponseUtils.success("");
+            }else{
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
+            }
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
             throw ExceptionUtils.convertException(e);
         }
     }

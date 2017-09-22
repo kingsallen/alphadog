@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -18,6 +19,8 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.AttachmentServices;
 import com.moseeker.thrift.gen.profile.struct.Attachment;
+
+import java.util.Map;
 
 //@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
 @Controller
@@ -78,6 +81,22 @@ public class AttachmentController {
 		try {
 			Attachment attachment = ParamUtils.initModelForm(request, Attachment.class);
 			Response result = attachmentService.delResource(attachment);
+			return ResponseLogNotification.success(request, result);
+		} catch (Exception e) {
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
+	//pc端删除简历附件
+	@RequestMapping(value = "/profile/pc/attachment", method = RequestMethod.DELETE)
+	@ResponseBody
+	public String deletePcAttachment(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			Map<String, Object> data = ParamUtils.parseRequestParam(request);
+			String id=(String)data.get("id");
+			if(StringUtils.isNullOrEmpty(id)){
+				return ResponseLogNotification.fail(request, "参数id不能为空");
+			}
+			Response result = attachmentService.delPcResource(Integer.parseInt(id));
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
 			return ResponseLogNotification.fail(request, e.getMessage());

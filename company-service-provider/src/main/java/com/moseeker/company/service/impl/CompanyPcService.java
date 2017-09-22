@@ -71,8 +71,8 @@ public class CompanyPcService {
             confCompanyId=parentId;
             isMother=false;
         }
-        int newJd=this.judgeJDOrCS(confCompanyId);
-        map.put("newJd",newJd);
+        Map<String,Integer> confMap=this.judgeJDOrCS(confCompanyId);
+        map.put("newJd",confMap.get("newJD"));
         Map<String,Object> jdMap=this.handleCompanyJdData(confCompanyId,companyId);
         this.putMapInNewMap(jdMap,map);
         Map<String,Object>teamMap=this.handleTeamInfo(companyId,isMother,1,20);
@@ -136,8 +136,8 @@ public class CompanyPcService {
             confCompanyId=parentId;
             isMother=false;
         }
-        int newJd=this.judgeJDOrCS(confCompanyId);
-        map.put("newJd",newJd);
+        Map<String,Integer> confMap=this.judgeJDOrCS(confCompanyId);
+        map.put("newJd",confMap.get("newJD"));
         Map<String,Object> positionMap=this.handleCompanyPositionCity(companyId,isMother);
         this.putMapInNewMap(positionMap,map);
         return map;
@@ -173,9 +173,9 @@ public class CompanyPcService {
         this.putMapInNewMap(positionMap,map);
         Map<String,Object> jdMap=this.handleTeamJdData(confCompanyId,teamId);
         this.putMapInNewMap(jdMap,map);
-        int newJd=this.judgeJDOrCS(confCompanyId);
-        map.put("newJd",newJd);
-        Map<String,Object> otherMap=this.getOtherTeamList(companyId,teamId,isMother,newJd);
+        Map<String,Integer> confMap=this.judgeJDOrCS(confCompanyId);
+        map.put("newJd",confMap.get("newJD"));
+        Map<String,Object> otherMap=this.getOtherTeamList(companyId,teamId,isMother,confMap.get("newJD"));
         this.putMapInNewMap(otherMap,map);
         Map<String,Object> team=this.getSingleTeamInfo(teamId);
         if(team!=null&&!team.isEmpty()){
@@ -286,16 +286,17 @@ public class CompanyPcService {
     /*
     判断是否有jd页，或者cs
      */
-    private int  judgeJDOrCS(int confCompanyId){
-        Map<String,Object> map=new HashMap<String,Object>();
+    private Map<String,Integer>  judgeJDOrCS(int confCompanyId){
+        Map<String,Integer> map=new HashMap<String,Integer>();
+        map.put("newJD",0);
         HrCompanyConfDO hrCompanyConfDO=getHrCompanyConf(confCompanyId);
         if(hrCompanyConfDO!=null){
             int newJdStatus=hrCompanyConfDO.getNewjdStatus();
             if(newJdStatus==2){
-                return 1;
+                map.put("newJD",1);
             }
         }
-        return 0;
+        return map;
     }
     /*
      获取company jd信息

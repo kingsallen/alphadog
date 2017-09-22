@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionRecord extends UpdatableRecordImpl<JobPositionRecord> {
 
-    private static final long serialVersionUID = 960242519;
+    private static final long serialVersionUID = 810263413;
 
     /**
      * Setter for <code>jobdb.job_position.id</code>.
@@ -102,15 +102,15 @@ public class JobPositionRecord extends UpdatableRecordImpl<JobPositionRecord> {
     /**
      * Setter for <code>jobdb.job_position.city</code>. 所在城市，多城市使用中文逗号分割
      */
-    public void setCity(String value) {
+    public void setCity(JobPositionCityRecord value) {
         set(5, value);
     }
 
     /**
      * Getter for <code>jobdb.job_position.city</code>. 所在城市，多城市使用中文逗号分割
      */
-    public String getCity() {
-        return (String) get(5);
+    public JobPositionCityRecord getCity() {
+        return (JobPositionCityRecord) get(5);
     }
 
     /**
@@ -951,7 +951,7 @@ public class JobPositionRecord extends UpdatableRecordImpl<JobPositionRecord> {
     /**
      * Create a detached, initialised JobPositionRecord
      */
-    public JobPositionRecord(Integer id, String jobnumber, Integer companyId, String title, String province, String city, String department, Integer lJobid, Timestamp publishDate, Timestamp stopDate, String accountabilities, String experience, String requirement, String salary, String language, Integer jobGrade, Byte status, Integer visitnum, String lastvisit, Integer sourceId, Timestamp updateTime, String businessGroup, Byte employmentType, String hrEmail, String benefits, Byte degree, String feature, Byte emailNotice, Byte candidateSource, String occupation, Integer isRecom, String industry, Integer hongbaoConfigId, Integer hongbaoConfigRecomId, Integer hongbaoConfigAppId, Byte emailResumeConf, Integer lPostingtargetid, Byte priority, Integer shareTplId, String district, Short count, Integer salaryTop, Integer salaryBottom, Byte experienceAbove, Byte degreeAbove, Byte managementExperience, Byte gender, Integer publisher, Integer appCvConfigId, Short source, Byte hbStatus, Integer childCompanyId, Byte age, String majorRequired, String workAddress, String keyword, String reportingTo, Byte isHiring, Byte underlings, Byte languageRequired, Byte targetIndustry, Byte currentStatus, Integer positionCode, Integer teamId) {
+    public JobPositionRecord(Integer id, String jobnumber, Integer companyId, String title, String province, JobPositionCityRecord city, String department, Integer lJobid, Timestamp publishDate, Timestamp stopDate, String accountabilities, String experience, String requirement, String salary, String language, Integer jobGrade, Byte status, Integer visitnum, String lastvisit, Integer sourceId, Timestamp updateTime, String businessGroup, Byte employmentType, String hrEmail, String benefits, Byte degree, String feature, Byte emailNotice, Byte candidateSource, String occupation, Integer isRecom, String industry, Integer hongbaoConfigId, Integer hongbaoConfigRecomId, Integer hongbaoConfigAppId, Byte emailResumeConf, Integer lPostingtargetid, Byte priority, Integer shareTplId, String district, Short count, Integer salaryTop, Integer salaryBottom, Byte experienceAbove, Byte degreeAbove, Byte managementExperience, Byte gender, Integer publisher, Integer appCvConfigId, Short source, Byte hbStatus, Integer childCompanyId, Byte age, String majorRequired, String workAddress, String keyword, String reportingTo, Byte isHiring, Byte underlings, Byte languageRequired, Byte targetIndustry, Byte currentStatus, Integer positionCode, Integer teamId) {
         super(JobPosition.JOB_POSITION);
 
         set(0, id);

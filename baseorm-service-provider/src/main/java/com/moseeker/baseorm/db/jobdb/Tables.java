@@ -7,6 +7,10 @@ package com.moseeker.baseorm.db.jobdb;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.JobCustom;
 import com.moseeker.baseorm.db.jobdb.tables.JobOccupation;
+import com.moseeker.baseorm.db.jobdb.tables.JobPcAdvertisement;
+import com.moseeker.baseorm.db.jobdb.tables.JobPcRecommendPositionItem;
+import com.moseeker.baseorm.db.jobdb.tables.JobPcRecommendPositionsModule;
+import com.moseeker.baseorm.db.jobdb.tables.JobPcReported;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionCity;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionExt;
@@ -45,6 +49,26 @@ public class Tables {
      * 公司自定义职能表
      */
     public static final JobOccupation JOB_OCCUPATION = com.moseeker.baseorm.db.jobdb.tables.JobOccupation.JOB_OCCUPATION;
+
+    /**
+     * The table <code>jobdb.job_pc_advertisement</code>.
+     */
+    public static final JobPcAdvertisement JOB_PC_ADVERTISEMENT = com.moseeker.baseorm.db.jobdb.tables.JobPcAdvertisement.JOB_PC_ADVERTISEMENT;
+
+    /**
+     * The table <code>jobdb.job_pc_recommend_positions_module</code>.
+     */
+    public static final JobPcRecommendPositionsModule JOB_PC_RECOMMEND_POSITIONS_MODULE = com.moseeker.baseorm.db.jobdb.tables.JobPcRecommendPositionsModule.JOB_PC_RECOMMEND_POSITIONS_MODULE;
+
+    /**
+     * 推荐职位明细关系表
+     */
+    public static final JobPcRecommendPositionItem JOB_PC_RECOMMEND_POSITION_ITEM = com.moseeker.baseorm.db.jobdb.tables.JobPcRecommendPositionItem.JOB_PC_RECOMMEND_POSITION_ITEM;
+
+    /**
+     * 被举报职位数据表
+     */
+    public static final JobPcReported JOB_PC_REPORTED = com.moseeker.baseorm.db.jobdb.tables.JobPcReported.JOB_PC_REPORTED;
 
     /**
      * The table <code>jobdb.job_position</code>.
