@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyRecord extends UpdatableRecordImpl<HrCompanyRecord> implements Record22<Integer, Byte, String, String, Byte, String, Byte, String, String, String, String, String, String, Integer, Integer, Byte, Timestamp, Timestamp, Byte, String, String, Byte> {
 
-    private static final long serialVersionUID = -1465210377;
+    private static final long serialVersionUID = -705767888;
 
     /**
      * Setter for <code>hrdb.hr_company.id</code>.
@@ -327,16 +327,16 @@ public class HrCompanyRecord extends UpdatableRecordImpl<HrCompanyRecord> implem
     }
 
     /**
-     * Setter for <code>hrdb.hr_company.is_top_500</code>. 是否世界500强，0：不是 1：是
+     * Setter for <code>hrdb.hr_company.fortune</code>. 是否世界500强，0：不是 1：是
      */
-    public void setIsTop_500(Byte value) {
+    public void setFortune(Byte value) {
         set(21, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_company.is_top_500</code>. 是否世界500强，0：不是 1：是
+     * Getter for <code>hrdb.hr_company.fortune</code>. 是否世界500强，0：不是 1：是
      */
-    public Byte getIsTop_500() {
+    public Byte getFortune() {
         return (Byte) get(21);
     }
 
@@ -545,7 +545,7 @@ public class HrCompanyRecord extends UpdatableRecordImpl<HrCompanyRecord> implem
      */
     @Override
     public Field<Byte> field22() {
-        return HrCompany.HR_COMPANY.IS_TOP_500;
+        return HrCompany.HR_COMPANY.FORTUNE;
     }
 
     /**
@@ -721,7 +721,7 @@ public class HrCompanyRecord extends UpdatableRecordImpl<HrCompanyRecord> implem
      */
     @Override
     public Byte value22() {
-        return getIsTop_500();
+        return getFortune();
     }
 
     /**
@@ -918,7 +918,7 @@ public class HrCompanyRecord extends UpdatableRecordImpl<HrCompanyRecord> implem
      */
     @Override
     public HrCompanyRecord value22(Byte value) {
-        setIsTop_500(value);
+        setFortune(value);
         return this;
     }
 
@@ -966,7 +966,7 @@ public class HrCompanyRecord extends UpdatableRecordImpl<HrCompanyRecord> implem
     /**
      * Create a detached, initialised HrCompanyRecord
      */
-    public HrCompanyRecord(Integer id, Byte type, String name, String introduction, Byte scale, String address, Byte property, String industry, String homepage, String logo, String abbreviation, String impression, String banner, Integer parentId, Integer hraccountId, Byte disable, Timestamp createTime, Timestamp updateTime, Byte source, String slogan, String feature, Byte isTop_500) {
+    public HrCompanyRecord(Integer id, Byte type, String name, String introduction, Byte scale, String address, Byte property, String industry, String homepage, String logo, String abbreviation, String impression, String banner, Integer parentId, Integer hraccountId, Byte disable, Timestamp createTime, Timestamp updateTime, Byte source, String slogan, String feature, Byte fortune) {
         super(HrCompany.HR_COMPANY);
 
         set(0, id);
@@ -990,6 +990,6 @@ public class HrCompanyRecord extends UpdatableRecordImpl<HrCompanyRecord> implem
         set(18, source);
         set(19, slogan);
         set(20, feature);
-        set(21, isTop_500);
+        set(21, fortune);
     }
 }
