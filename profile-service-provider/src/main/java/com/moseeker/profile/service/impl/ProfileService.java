@@ -36,6 +36,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -235,9 +236,15 @@ public class ProfileService {
                 if (appCvConfig.containsKey("map") && StringUtils.isNotNullOrEmpty(appCvConfig.getString("map"))) {
                     // 复合字段校验
                     String mappingFiled = appCvConfig.getString("map");
-                    if (mappingFiled.contains(".")) {
+                    if (mappingFiled.contains("&")) {
+                        String[] mapStr = mappingFiled.split("&", 2);
+                        String[] mapLeft = mapStr[0].split("\\.", 2);
+                        String[] mapRight = mapStr[1].split("\\.", 2);
+                        customResult = profileOtherDao.customSelect(mapLeft[0], mapLeft[1], "profile_id", profileProfile.getId());
+                        customResult = profileOtherDao.customSelect(mapRight[0], mapRight[1], mapStr[0].replace("\\.", "_"), NumberUtils.toInt(String.valueOf(customResult), 0));
+                    } else if (mappingFiled.contains(".")) {
                         String[] mappingStr = mappingFiled.split("\\.", 2);
-                        customResult = mappingStr[0].startsWith("user") ? (userDao.customSelect(mappingStr[0], mappingStr[1], profileProfile.getUserId())) : (profileOtherDao.customSelect(mappingStr[0], mappingStr[1], profileProfile.getId()));
+                        customResult = mappingStr[0].startsWith("user") ? (userDao.customSelect(mappingStr[0], mappingStr[1], profileProfile.getUserId())) : (profileOtherDao.customSelect(mappingStr[0], mappingStr[1], "profile_id", profileProfile.getId()));
                     } else {
                         return ResponseUtils.success(new HashMap<String, String>(){{put("result:","false");put("resultMsg","自定义字段"+appCvConfig.getString("field_name")+"为空");}});
                     }
