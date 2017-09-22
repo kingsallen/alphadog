@@ -388,12 +388,8 @@ public class PositionServicesImpl implements Iface {
     @Override
     public Response addPcReport(JobPcReportedDO jobPcReportedDO) throws TException {
         try{
-            int result=positionPcService.addPositionReport(jobPcReportedDO);
-            if(result>0){
-                return ResponseUtils.success("");
-            }else{
-                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
-            }
+            Response result=positionPcService.addPositionReport(jobPcReportedDO);
+            return result;
         }catch(Exception e){
             logger.info(e.getMessage(),e);
             throw ExceptionUtils.convertException(e);

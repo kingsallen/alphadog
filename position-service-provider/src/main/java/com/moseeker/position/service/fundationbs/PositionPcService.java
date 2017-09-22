@@ -10,6 +10,9 @@ import com.moseeker.baseorm.dao.dictdb.DictIndustryDao;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.*;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
+import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.query.SelectOp;
 import com.moseeker.entity.PcRevisionEntity;
@@ -40,6 +43,8 @@ import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignPcRecommendCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignPcRecommendPositionDO;
+
+import javax.annotation.Resource;
 
 /*
  * create by zzt
@@ -82,6 +87,9 @@ public class PositionPcService {
 	private DictIndustryDao dictIndustryDao;
 	@Autowired
 	private  JobPcReportedDao jobPcReportedDao;
+	@Resource(name = "cacheClient")
+	private RedisClient redisClient;
+	private static final String POSITION_PC_REPORT = "POSITION_PC_REPORT";
 	/*
      * 获取pc首页职位推荐
      */
@@ -176,12 +184,17 @@ public class PositionPcService {
 		return map;
 	}
 	//添加举报信息
-	public  int addPositionReport(JobPcReportedDO DO){
+	public  Response addPositionReport(JobPcReportedDO DO){
+		String positionReport = redisClient.get(Constant.APPID_ALPHADOG, POSITION_PC_REPORT,
+				String.valueOf(DO.getUserId()), String.valueOf(DO.getPositionId()));
+		if(positionReport!=null){
+			return ResponseUtils.fail(1,"举报职位过度频繁");
+		}
 		JobPcReportedDO reportDO=jobPcReportedDao.addData(DO);
 		if(reportDO!=null&&reportDO.getId()>0){
-			return 1;
+			return ResponseUtils.success("");
 		}
-		return 0;
+		return ResponseUtils.fail(1,"举报职位失败");
 	}
 	//获取自定义字段
 	public Map<String,Object> handleCustomField(int positionId,int companyId){
