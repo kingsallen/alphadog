@@ -228,20 +228,30 @@ public class ProfileService {
             if (profileOther == null || StringUtils.isNullOrEmpty(profileOther.getOther())) {
                 return ResponseUtils.success(new HashMap<String, Object>(){{put("result:",false);put("resultMsg","自定义简历为空");}});
             }
-            JSONObject profileOtherJson = JSONObject.parseObject(profileOther.getOther());
-            List<JSONObject> appCvConfigJson = JSONArray.parseArray(hrAppCvConfDO.getFieldValue()).getJSONObject(0).getJSONArray("fields").stream().
-                    map(m -> JSONObject.parseObject(String.valueOf(m))).filter(f -> f.getIntValue("required") == 0).collect(Collectors.toList());
-            Object customResult = null;
+            JSONObject profileOtherJson = new JSONObject();
+            List<JSONObject> appCvConfigJson = new ArrayList<>();
+            try {
+                profileOtherJson = JSONObject.parseObject(profileOther.getOther());
+                appCvConfigJson = JSONArray.parseArray(hrAppCvConfDO.getFieldValue()).getJSONObject(0).getJSONArray("fields").stream().
+                        map(m -> JSONObject.parseObject(String.valueOf(m))).filter(f -> f.getIntValue("required") == 0).collect(Collectors.toList());
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+                logger.error("profileOther: {}; hrAppCvConf: {}", profileOther, hrAppCvConfDO);
+                return ResponseUtils.success(new HashMap<String, Object>(){{put("result:",false);put("resultMsg","自定义简历解析错误");}});
+            }
+            Object customResult = "";
             for (JSONObject appCvConfig : appCvConfigJson) {
                 if (appCvConfig.containsKey("map") && StringUtils.isNotNullOrEmpty(appCvConfig.getString("map"))) {
                     // 复合字段校验
                     String mappingFiled = appCvConfig.getString("map");
                     if (mappingFiled.contains("&")) {
                         String[] mapStr = mappingFiled.split("&", 2);
-                        String[] mapLeft = mapStr[0].split("\\.", 2);
-                        String[] mapRight = mapStr[1].split("\\.", 2);
-                        customResult = profileOtherDao.customSelect(mapLeft[0], mapLeft[1], "profile_id", profileProfile.getId());
-                        customResult = profileOtherDao.customSelect(mapRight[0], mapRight[1], mapStr[0].replace(".", "_"), NumberUtils.toInt(String.valueOf(customResult), 0));
+                        if (mapStr[0].contains(".") && mapStr[1].contains(".")) {
+                            String[] mapLeft = mapStr[0].split("\\.", 2);
+                            String[] mapRight = mapStr[1].split("\\.", 2);
+                            customResult = profileOtherDao.customSelect(mapLeft[0], mapLeft[1], "profile_id", profileProfile.getId());
+                            customResult = profileOtherDao.customSelect(mapRight[0], mapRight[1], mapStr[0].replace(".", "_"), NumberUtils.toInt(String.valueOf(customResult), 0));
+                        }
                     } else if (mappingFiled.contains(".")) {
                         String[] mappingStr = mappingFiled.split("\\.", 2);
                         customResult = mappingStr[0].startsWith("user") ? (userDao.customSelect(mappingStr[0], mappingStr[1], profileProfile.getUserId())) : (profileOtherDao.customSelect(mappingStr[0], mappingStr[1], "profile_id", profileProfile.getId()));
@@ -256,14 +266,13 @@ public class ProfileService {
                         return ResponseUtils.success(new HashMap<String, Object>(){{put("result:",false);put("resultMsg","自定义字段"+appCvConfig.getString("field_name")+"为空");}});
                     }
                 }
-                if (!Pattern.matches(appCvConfig.getString("validate_re"), String.valueOf(customResult))) {
+                if (!Pattern.matches(org.apache.commons.lang.StringUtils.defaultIfEmpty(appCvConfig.getString("validate_re"), ""), String.valueOf(customResult))) {
                     return ResponseUtils.success(new HashMap<String, Object>(){{put("result:",false);put("resultMsg","自定义字段"+appCvConfig.getString("field_name")+"校验失败");}});
                 }
             }
         }
         return ResponseUtils.success(new HashMap<String, Object>(){{put("result:",true);put("resultMsg","");}});
     }
-
 
     public Response getProfileOther(String params) {
         List<JSONObject> paramsStream = JSONArray.parseArray(params).parallelStream().map(m -> JSONObject.parseObject(String.valueOf(m))).collect(Collectors.toList());
@@ -285,11 +294,15 @@ public class ProfileService {
             int positionId = e.getIntValue("positionId");
             int profileId = e.getIntValue("profileId");
             e.put("other", "");
-            if (positionCustomConfigMap.containsKey(positionId)) {
-                JSONObject profileOtherJson = JSONObject.parseObject(profileOtherMap.get(profileId));
-                Map<String, String> otherMap = JSONArray.parseArray(positionOtherMap.get(positionCustomConfigMap.get(positionId))).getJSONObject(0).getJSONArray("fields").stream().
-                        map(m -> JSONObject.parseObject(String.valueOf(m))).map(mm -> mm.getString("field_name")).collect(Collectors.toMap(k -> k, v -> org.apache.commons.lang.StringUtils.defaultIfBlank(profileOtherJson.getString(v), ""), (oldKey, newKey) -> newKey));
-                e.put("other", otherMap);
+            try {
+                if (positionCustomConfigMap.containsKey(positionId)) {
+                    JSONObject profileOtherJson = JSONObject.parseObject(profileOtherMap.get(profileId));
+                    Map<String, String> otherMap = JSONArray.parseArray(positionOtherMap.get(positionCustomConfigMap.get(positionId))).getJSONObject(0).getJSONArray("fields").stream().
+                            map(m -> JSONObject.parseObject(String.valueOf(m))).map(mm -> mm.getString("field_name")).collect(Collectors.toMap(k -> k, v -> org.apache.commons.lang.StringUtils.defaultIfBlank(profileOtherJson.getString(v), ""), (oldKey, newKey) -> newKey));
+                    e.put("other", otherMap);
+                }
+            } catch (Exception e1) {
+                logger.error(e1.getMessage(), e1);
             }
         });
         return ResponseUtils.success(paramsStream);
