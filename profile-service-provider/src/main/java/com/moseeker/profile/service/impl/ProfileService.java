@@ -214,19 +214,19 @@ public class ProfileService {
         queryBuilder.where("id", appCvConfigId);
         HrAppCvConfDO hrAppCvConfDO = hrAppCvConfDao.getData(queryBuilder.buildQuery());
         if (hrAppCvConfDO == null || StringUtils.isNullOrEmpty(hrAppCvConfDO.getFieldValue())) {
-            return ResponseUtils.success(new HashMap<String, Object>(){{put("result:",true);put("resultMsg","");}});
+            return ResponseUtils.success(new HashMap<String, Object>(){{put("result",true);put("resultMsg","");}});
         } else {
             queryBuilder.clear();
             queryBuilder.where("user_id", userId);
             ProfileProfileDO profileProfile = dao.getData(queryBuilder.buildQuery());
             if (profileProfile == null || profileProfile.getId() == 0) {
-                return ResponseUtils.success(new HashMap<String, Object>(){{put("result:",false); put("resultMsg","获取简历失败");}});
+                return ResponseUtils.success(new HashMap<String, Object>(){{put("result",false); put("resultMsg","获取简历失败");}});
             }
             queryBuilder.clear();
             queryBuilder.where("profile_id", profileProfile.getId());
             ProfileOtherDO profileOther = profileOtherDao.getData(queryBuilder.buildQuery());
             if (profileOther == null || StringUtils.isNullOrEmpty(profileOther.getOther())) {
-                return ResponseUtils.success(new HashMap<String, Object>(){{put("result:",false);put("resultMsg","自定义简历为空");}});
+                return ResponseUtils.success(new HashMap<String, Object>(){{put("result",false);put("resultMsg","自定义简历为空");}});
             }
             JSONObject profileOtherJson = new JSONObject();
             List<JSONObject> appCvConfigJson = new ArrayList<>();
@@ -237,7 +237,7 @@ public class ProfileService {
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
                 logger.error("profileOther: {}; hrAppCvConf: {}", profileOther, hrAppCvConfDO);
-                return ResponseUtils.success(new HashMap<String, Object>(){{put("result:",false);put("resultMsg","自定义简历解析错误");}});
+                return ResponseUtils.success(new HashMap<String, Object>(){{put("result",false);put("resultMsg","自定义简历解析错误");}});
             }
             Object customResult = "";
             for (JSONObject appCvConfig : appCvConfigJson) {
@@ -256,22 +256,22 @@ public class ProfileService {
                         String[] mappingStr = mappingFiled.split("\\.", 2);
                         customResult = mappingStr[0].startsWith("user") ? (userDao.customSelect(mappingStr[0], mappingStr[1], profileProfile.getUserId())) : (profileOtherDao.customSelect(mappingStr[0], mappingStr[1], "profile_id", profileProfile.getId()));
                     } else {
-                        return ResponseUtils.success(new HashMap<String, Object>(){{put("result:",false);put("resultMsg","自定义字段"+appCvConfig.getString("field_name")+"为空");}});
+                        return ResponseUtils.success(new HashMap<String, Object>(){{put("result",false);put("resultMsg","自定义字段"+appCvConfig.getString("field_name")+"为空");}});
                     }
                 } else {
                     // 普通字段校验
                     if (profileOtherJson.containsKey(appCvConfig.getString("field_name"))) {
                         customResult = profileOtherJson.get(appCvConfig.getString("field_name"));
                     } else {
-                        return ResponseUtils.success(new HashMap<String, Object>(){{put("result:",false);put("resultMsg","自定义字段"+appCvConfig.getString("field_name")+"为空");}});
+                        return ResponseUtils.success(new HashMap<String, Object>(){{put("result",false);put("resultMsg","自定义字段"+appCvConfig.getString("field_name")+"为空");}});
                     }
                 }
                 if (!Pattern.matches(org.apache.commons.lang.StringUtils.defaultIfEmpty(appCvConfig.getString("validate_re"), ""), String.valueOf(customResult))) {
-                    return ResponseUtils.success(new HashMap<String, Object>(){{put("result:",false);put("resultMsg","自定义字段"+appCvConfig.getString("field_name")+"校验失败");}});
+                    return ResponseUtils.success(new HashMap<String, Object>(){{put("result",false);put("resultMsg","自定义字段"+appCvConfig.getString("field_name")+"校验失败");}});
                 }
             }
         }
-        return ResponseUtils.success(new HashMap<String, Object>(){{put("result:",true);put("resultMsg","");}});
+        return ResponseUtils.success(new HashMap<String, Object>(){{put("result",true);put("resultMsg","");}});
     }
 
     public Response getProfileOther(String params) {
