@@ -231,7 +231,7 @@ public class ProfileServicesImplTest {
 
     @Test
     public void getProfileOtherTest() {
-        Response response = profileService.getProfileOther("[{'positionId': 134295, 'profileId': 63999}, {'positionId': 127311, 'profileId': 63999}, {'positionId': 134129, 'profileId': 63999}]");
+        Response response = profileService.getProfileOther("[{'positionId': 134294, 'profileId': 63999}, {'positionId': 134295, 'profileId': 63999}, {'positionId': 127311, 'profileId': 63999}, {'positionId': 134129, 'profileId': 63999}]");
         System.out.println(response);
     }
 

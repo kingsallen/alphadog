@@ -290,16 +290,25 @@ public class ProfileService {
         List<HrAppCvConfDO> hrAppCvConfDOList = hrAppCvConfDao.getDatas(queryBuilder.buildQuery());
         Map<Integer, String> positionOtherMap = (hrAppCvConfDOList == null || hrAppCvConfDOList.isEmpty()) ? new HashMap<>() :
                 hrAppCvConfDOList.parallelStream().collect(Collectors.toMap(k -> k.getId(), v -> v.getFieldValue()));
-        paramsStream.stream().forEach(e -> {
+        paramsStream.stream().forEach((JSONObject e) -> {
             int positionId = e.getIntValue("positionId");
             int profileId = e.getIntValue("profileId");
             e.put("other", "");
             try {
                 if (positionCustomConfigMap.containsKey(positionId)) {
                     JSONObject profileOtherJson = JSONObject.parseObject(profileOtherMap.get(profileId));
-                    Map<String, String> otherMap = JSONArray.parseArray(positionOtherMap.get(positionCustomConfigMap.get(positionId))).getJSONObject(0).getJSONArray("fields").stream().
-                            map(m -> JSONObject.parseObject(String.valueOf(m))).map(mm -> mm.getString("field_name")).collect(Collectors.toMap(k -> k, v -> org.apache.commons.lang.StringUtils.defaultIfBlank(profileOtherJson.getString(v), ""), (oldKey, newKey) -> newKey));
-                    e.put("other", otherMap);
+                    Map<Integer, Map<String, String>> childValue = JSONArray.parseArray(positionOtherMap.get(positionCustomConfigMap.get(positionId))).getJSONObject(0).getJSONArray("fields").stream().
+                            map(m -> JSONObject.parseObject(String.valueOf(m))).filter(f -> f.getIntValue("parent_id") > 0).
+                            collect(Collectors.groupingBy(g -> g.getIntValue("parent_id"),
+                                    Collectors.mapping(mm -> mm.getString("field_name"),
+                                            Collectors.toMap(k -> k, v -> org.apache.commons.lang.StringUtils.defaultIfBlank(profileOtherJson.getString(v), ""),
+                                                    (oldKey, newKey) -> newKey))));
+                    Map<String, Object> parentValue = JSONArray.parseArray(positionOtherMap.get(positionCustomConfigMap.get(positionId))).getJSONObject(0).getJSONArray("fields").stream().
+                            map(m -> JSONObject.parseObject(String.valueOf(m))).filter(f -> f.getIntValue("parent_id") == 0).collect(Collectors.toMap(k -> k.getString("field_name"), v -> {
+                                return childValue.containsKey(v.getIntValue("id")) ? childValue.get(v.getIntValue("id")) : org.apache.commons.lang.StringUtils.defaultIfBlank(profileOtherJson.getString(v.getString("field_name")), "");
+                            }, (oldKey, newKey) -> newKey));
+
+                    e.put("other", parentValue);
                 }
             } catch (Exception e1) {
                 logger.error(e1.getMessage(), e1);
