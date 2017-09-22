@@ -5,10 +5,12 @@ import com.moseeker.baseorm.db.jobdb.tables.JobPcAdvertisement;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPcAdvertisementRecord;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPcAdvertisementDO;
 import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Service;
 
 /**
  * Created by zztaiwll on 17/9/20.
  */
+@Service
 public class JobPcAdvertisementDao extends JooqCrudImpl<JobPcAdvertisementDO,JobPcAdvertisementRecord> {
     public JobPcAdvertisementDao(){
         super(JobPcAdvertisement.JOB_PC_ADVERTISEMENT,JobPcAdvertisementDO.class);
