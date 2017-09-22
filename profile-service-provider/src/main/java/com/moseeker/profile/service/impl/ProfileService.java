@@ -241,7 +241,7 @@ public class ProfileService {
                         String[] mapLeft = mapStr[0].split("\\.", 2);
                         String[] mapRight = mapStr[1].split("\\.", 2);
                         customResult = profileOtherDao.customSelect(mapLeft[0], mapLeft[1], "profile_id", profileProfile.getId());
-                        customResult = profileOtherDao.customSelect(mapRight[0], mapRight[1], mapStr[0].replace("\\.", "_"), NumberUtils.toInt(String.valueOf(customResult), 0));
+                        customResult = profileOtherDao.customSelect(mapRight[0], mapRight[1], mapStr[0].replace(".", "_"), NumberUtils.toInt(String.valueOf(customResult), 0));
                     } else if (mappingFiled.contains(".")) {
                         String[] mappingStr = mappingFiled.split("\\.", 2);
                         customResult = mappingStr[0].startsWith("user") ? (userDao.customSelect(mappingStr[0], mappingStr[1], profileProfile.getUserId())) : (profileOtherDao.customSelect(mappingStr[0], mappingStr[1], "profile_id", profileProfile.getId()));
