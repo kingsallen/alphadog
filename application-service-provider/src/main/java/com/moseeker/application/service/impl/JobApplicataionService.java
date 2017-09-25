@@ -42,6 +42,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserAliUserDO;
 
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -126,6 +127,17 @@ public class JobApplicataionService {
             Response responseJob = validateJobPosition(jobPositionRecord);
             if (responseJob.status > 0) {
                 return responseJob;
+            }
+            long userId=(long)jobApplication.getApplier_id();
+            int companyId=jobPositionRecord.getCompanyId();
+            Query queryEmployee=new Query.QueryBuilder().where("sys_user_id",userId)
+                    .and("company_id",companyId)
+                    .and("disable",0)
+                    .and("activation",0)
+                    .buildQuery();
+            UserEmployeeDO userEmployeeDO=userEmployeedao.getEmployee(queryEmployee);
+            if(userEmployeeDO!=null){
+                return ResponseUtils.fail(1,"申请人已经是该公司的员工，所以无法申请该职位");
             }
             if (checkApplicationCountAtCompany(jobApplication.getApplier_id(), jobPositionRecord.getCompanyId())) {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_VALIDATE_COUNT_CHECK);
