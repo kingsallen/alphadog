@@ -10,6 +10,7 @@ import com.moseeker.baseorm.dao.dictdb.DictIndustryDao;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.*;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
+import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
@@ -21,6 +22,7 @@ import com.moseeker.thrift.gen.dao.struct.dictdb.DictIndustryDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.jobdb.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import org.apache.thrift.TException;
 import org.apache.thrift.TSerializer;
 import org.apache.thrift.protocol.TSimpleJSONProtocol;
@@ -90,6 +92,8 @@ public class PositionPcService {
 	@Resource(name = "cacheClient")
 	private RedisClient redisClient;
 	private static final String POSITION_PC_REPORT = "POSITION_PC_REPORT";
+	@Autowired
+	private UserUserDao userUserDao;
 	/*
      * 获取pc首页职位推荐
      */
@@ -190,8 +194,16 @@ public class PositionPcService {
 		if(positionReport!=null){
 			return ResponseUtils.fail(1,"举报职位过度频繁");
 		}
+		int userId=DO.getUserId();
+		Query query=new Query.QueryBuilder().where("id",userId).and("is_disable",0).and("activation",1).buildQuery();
+		UserUserDO userUserDO=userUserDao.getData(query);
+		if(userUserDO==null){
+			return ResponseUtils.fail(1,"该用户不存在");
+		}
 		JobPcReportedDO reportDO=jobPcReportedDao.addData(DO);
 		if(reportDO!=null&&reportDO.getId()>0){
+			redisClient.set(Constant.APPID_ALPHADOG, POSITION_PC_REPORT,
+					String.valueOf(DO.getUserId()), String.valueOf(DO.getPositionId()),JSON.toJSONString(reportDO));
 			return ResponseUtils.success("");
 		}
 		return ResponseUtils.fail(1,"举报职位失败");

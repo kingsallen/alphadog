@@ -632,7 +632,19 @@ public class PositionController {
     @ResponseBody
     public String addPcReport(HttpServletRequest request, HttpServletResponse response){
         try{
-            JobPcReportedDO DO=ParamUtils.initCommonQuery(request, JobPcReportedDO.class);
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            String type= (String) params.get("type");
+            String descrptiton= (String) params.get("description");
+            String userId= (String) params.get("userId");
+            String positionId= (String) params.get("positionId");
+            if(StringUtils.isNullOrEmpty(type)||StringUtils.isNullOrEmpty(userId)||StringUtils.isNullOrEmpty(positionId)){
+                return ResponseLogNotification.fail(request, "参数不全");
+            }
+            JobPcReportedDO DO=new JobPcReportedDO();
+            DO.setDescription(descrptiton);
+            DO.setPositionId(Integer.parseInt(positionId));
+            DO.setUserId(Integer.parseInt(userId));
+            DO.setType(Integer.parseInt(type));
             Response result=positonServices.addPcReport(DO);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
