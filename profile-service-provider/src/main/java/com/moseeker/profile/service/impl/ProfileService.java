@@ -233,7 +233,7 @@ public class ProfileService {
             try {
                 profileOtherJson = JSONObject.parseObject(profileOther.getOther());
                 appCvConfigJson = JSONArray.parseArray(hrAppCvConfDO.getFieldValue()).getJSONObject(0).getJSONArray("fields").stream().
-                        map(m -> JSONObject.parseObject(String.valueOf(m))).filter(f -> f.getIntValue("required") == 0).collect(Collectors.toList());
+                        map(m -> JSONObject.parseObject(String.valueOf(m))).filter(f -> f.getIntValue("required") == 0 && f.getIntValue("parent_id") == 0).collect(Collectors.toList());
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
                 logger.error("profileOther: {}; hrAppCvConf: {}", profileOther, hrAppCvConfDO);
@@ -289,7 +289,7 @@ public class ProfileService {
         queryBuilder.where(new Condition("id", new ArrayList<>(positionCustomConfigMap.values()), ValueOp.IN));
         List<HrAppCvConfDO> hrAppCvConfDOList = hrAppCvConfDao.getDatas(queryBuilder.buildQuery());
         Map<Integer, String> positionOtherMap = (hrAppCvConfDOList == null || hrAppCvConfDOList.isEmpty()) ? new HashMap<>() :
-                hrAppCvConfDOList.parallelStream().collect(Collectors.toMap(k -> k.getId(), v -> v.getFieldValue()));
+                hrAppCvConfDOList.stream().collect(Collectors.toMap(k -> k.getId(), v -> v.getFieldValue()));
         paramsStream.stream().forEach((JSONObject e) -> {
             int positionId = e.getIntValue("positionId");
             int profileId = e.getIntValue("profileId");
@@ -297,15 +297,15 @@ public class ProfileService {
             try {
                 if (positionCustomConfigMap.containsKey(positionId)) {
                     JSONObject profileOtherJson = JSONObject.parseObject(profileOtherMap.get(profileId));
-                    Map<Integer, Map<String, String>> childValue = JSONArray.parseArray(positionOtherMap.get(positionCustomConfigMap.get(positionId))).getJSONObject(0).getJSONArray("fields").stream().
-                            map(m -> JSONObject.parseObject(String.valueOf(m))).filter(f -> f.getIntValue("parent_id") > 0).
-                            collect(Collectors.groupingBy(g -> g.getIntValue("parent_id"),
-                                    Collectors.mapping(mm -> mm.getString("field_name"),
-                                            Collectors.toMap(k -> k, v -> org.apache.commons.lang.StringUtils.defaultIfBlank(profileOtherJson.getString(v), ""),
-                                                    (oldKey, newKey) -> newKey))));
-                    Map<String, Object> parentValue = JSONArray.parseArray(positionOtherMap.get(positionCustomConfigMap.get(positionId))).getJSONObject(0).getJSONArray("fields").stream().
+//                    Map<Integer, Map<String, String>> childValue = JSONArray.parseArray(positionOtherMap.get(positionCustomConfigMap.get(positionId))).stream().flatMap(fm -> JSONObject.parseObject(String.valueOf(fm)).getJSONArray("fields").stream()).
+//                            map(m -> JSONObject.parseObject(String.valueOf(m))).filter(f -> f.getIntValue("parent_id") > 0).
+//                            collect(Collectors.groupingBy(g -> g.getIntValue("parent_id"),
+//                                    Collectors.mapping(mm -> mm.getString("field_name"),
+//                                            Collectors.toMap(k -> k, v -> org.apache.commons.lang.StringUtils.defaultIfBlank(profileOtherJson.getString(v), ""),
+//                                                    (oldKey, newKey) -> newKey))));
+                    Map<String, Object> parentValue = JSONArray.parseArray(positionOtherMap.get(positionCustomConfigMap.get(positionId))).stream().flatMap(fm -> JSONObject.parseObject(String.valueOf(fm)).getJSONArray("fields").stream()).
                             map(m -> JSONObject.parseObject(String.valueOf(m))).filter(f -> f.getIntValue("parent_id") == 0).collect(Collectors.toMap(k -> k.getString("field_name"), v -> {
-                                return childValue.containsKey(v.getIntValue("id")) ? childValue.get(v.getIntValue("id")) : org.apache.commons.lang.StringUtils.defaultIfBlank(profileOtherJson.getString(v.getString("field_name")), "");
+                                    return org.apache.commons.lang.StringUtils.defaultIfBlank(profileOtherJson.getString(v.getString("field_name")), "");
                             }, (oldKey, newKey) -> newKey));
 
                     e.put("other", parentValue);
@@ -315,5 +315,9 @@ public class ProfileService {
             }
         });
         return ResponseUtils.success(paramsStream);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(Pattern.matches(".+", "2017-09-01"));
     }
 }
