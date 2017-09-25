@@ -195,7 +195,7 @@ public class PositionPcService {
 			return ResponseUtils.fail(1,"举报职位过度频繁");
 		}
 		int userId=DO.getUserId();
-		Query query=new Query.QueryBuilder().where("id",userId).and("is_disable",0).and("activation",1).buildQuery();
+		Query query=new Query.QueryBuilder().where("id",userId).and("is_disable",0).buildQuery();
 		UserUserDO userUserDO=userUserDao.getData(query);
 		if(userUserDO==null){
 			return ResponseUtils.fail(1,"该用户不存在");
