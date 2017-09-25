@@ -15,6 +15,7 @@ import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.ProfileEntity;
 import com.moseeker.entity.pojo.profile.*;
@@ -224,6 +225,7 @@ public class ProfileService {
                         // 职责
                         project.setResponsibility(projectexpObj.getProj_resp());
                         project.setDescription(projectexpObj.getProj_content());
+                        project.setName(projectexpObj.getProj_name());
                         projectexps.add(project);
                     }
                 }
@@ -241,10 +243,19 @@ public class ProfileService {
                                 education.setDegree(0);
                             }
                         }
+                        education.setStartDate(educationObj.getStart_date());
+                        if (educationObj.getEnd_date() != null && educationObj.getEnd_date().equals("至今")) {
+                            education.setEndUntilNow(1);
+                        } else {
+                            education.setEndDate(educationObj.getEnd_date());
+                        }
                         // 学校名称
                         education.setCollegeName(educationObj.getEdu_college());
                         // 专业名称
                         education.setMajorName(educationObj.getEdu_major());
+                        if (StringUtils.isNotNullOrEmpty(educationObj.getEdu_recruit())) {
+                            education.setIsUnified(educationObj.getEdu_recruit().equals("统招") ? 1 : 2);
+                        }
                         educationList.add(education);
                     }
                 }
@@ -272,8 +283,13 @@ public class ProfileService {
                         workexps.setCompany(company);
                         workexps.setDescription(jobExpObj.getJob_nature());
                         workexps.setStartDate(jobExpObj.getStart_date());
-                        workexps.setEndDate(jobExpObj.getEnd_date());
+                        if (jobExpObj.getEnd_date() != null && jobExpObj.getEnd_date().equals("至今")) {
+                            workexps.setEndUntilNow(1);
+                        } else {
+                            workexps.setEndDate(jobExpObj.getEnd_date());
+                        }
                         workexps.setJob(jobExpObj.getJob_position());
+                        workexps.setDepartmentName(jobExpObj.getJob_cpy_dept());
                         workexpsList.add(workexps);
                     }
                 }
