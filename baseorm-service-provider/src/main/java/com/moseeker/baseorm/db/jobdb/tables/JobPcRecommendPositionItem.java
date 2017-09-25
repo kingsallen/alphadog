@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPcRecommendPositionItem extends TableImpl<JobPcRecommendPositionItemRecord> {
 
-    private static final long serialVersionUID = -321518690;
+    private static final long serialVersionUID = 1573917707;
 
     /**
      * The reference instance of <code>jobdb.job_pc_recommend_position_item</code>
@@ -67,9 +67,14 @@ public class JobPcRecommendPositionItem extends TableImpl<JobPcRecommendPosition
     public final TableField<JobPcRecommendPositionItemRecord, Integer> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "职位id");
 
     /**
-     * The column <code>jobdb.job_pc_recommend_position_item.create_time</code>.
+     * The column <code>jobdb.job_pc_recommend_position_item.status</code>. 删除状态:0不可用（未删除） 1：可用（已删除）
      */
-    public final TableField<JobPcRecommendPositionItemRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "");
+    public final TableField<JobPcRecommendPositionItemRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("1", org.jooq.impl.SQLDataType.TINYINT)), this, "删除状态:0不可用（未删除） 1：可用（已删除）");
+
+    /**
+     * The column <code>jobdb.job_pc_recommend_position_item.create_time</code>. 创建时间
+     */
+    public final TableField<JobPcRecommendPositionItemRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
 
     /**
      * The column <code>jobdb.job_pc_recommend_position_item.update_time</code>. 更新时间

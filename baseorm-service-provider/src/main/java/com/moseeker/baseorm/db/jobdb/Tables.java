@@ -51,12 +51,12 @@ public class Tables {
     public static final JobOccupation JOB_OCCUPATION = com.moseeker.baseorm.db.jobdb.tables.JobOccupation.JOB_OCCUPATION;
 
     /**
-     * The table <code>jobdb.job_pc_advertisement</code>.
+     * 首页广告位数据表设计
      */
     public static final JobPcAdvertisement JOB_PC_ADVERTISEMENT = com.moseeker.baseorm.db.jobdb.tables.JobPcAdvertisement.JOB_PC_ADVERTISEMENT;
 
     /**
-     * The table <code>jobdb.job_pc_recommend_positions_module</code>.
+     * 推荐列表数据库设计
      */
     public static final JobPcRecommendPositionsModule JOB_PC_RECOMMEND_POSITIONS_MODULE = com.moseeker.baseorm.db.jobdb.tables.JobPcRecommendPositionsModule.JOB_PC_RECOMMEND_POSITIONS_MODULE;
 

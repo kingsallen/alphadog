@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPcReported extends TableImpl<JobPcReportedRecord> {
 
-    private static final long serialVersionUID = 888517628;
+    private static final long serialVersionUID = -1068003825;
 
     /**
      * The reference instance of <code>jobdb.job_pc_reported</code>
@@ -67,21 +67,6 @@ public class JobPcReported extends TableImpl<JobPcReportedRecord> {
     public final TableField<JobPcReportedRecord, Integer> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "职位id");
 
     /**
-     * The column <code>jobdb.job_pc_reported.position_name</code>. 职位名称
-     */
-    public final TableField<JobPcReportedRecord, String> POSITION_NAME = createField("position_name", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "职位名称");
-
-    /**
-     * The column <code>jobdb.job_pc_reported.company_id</code>. 公司id
-     */
-    public final TableField<JobPcReportedRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "公司id");
-
-    /**
-     * The column <code>jobdb.job_pc_reported.company_name</code>.
-     */
-    public final TableField<JobPcReportedRecord, String> COMPANY_NAME = createField("company_name", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
-
-    /**
      * The column <code>jobdb.job_pc_reported.type</code>. 举报原因：0：公司信息不真实， 1：职位实际已停止招聘， 2：其他
      */
     public final TableField<JobPcReportedRecord, Integer> TYPE = createField("type", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "举报原因：0：公司信息不真实， 1：职位实际已停止招聘， 2：其他");
@@ -94,7 +79,7 @@ public class JobPcReported extends TableImpl<JobPcReportedRecord> {
     /**
      * The column <code>jobdb.job_pc_reported.create_time</code>. 举报时间
      */
-    public final TableField<JobPcReportedRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "举报时间");
+    public final TableField<JobPcReportedRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "举报时间");
 
     /**
      * The column <code>jobdb.job_pc_reported.update_time</code>. 更新时间

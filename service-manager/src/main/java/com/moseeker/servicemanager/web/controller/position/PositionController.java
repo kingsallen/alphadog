@@ -628,9 +628,25 @@ public class PositionController {
     /*
       *职位举报
       */
-    @RequestMapping(value = "/position/pc/report", method = RequestMethod.GET)
+    @RequestMapping(value = "/position/pc/report", method = RequestMethod.POST)
     @ResponseBody
     public String addPcReport(HttpServletRequest request, HttpServletResponse response){
+        try{
+            JobPcReportedDO DO=ParamUtils.initCommonQuery(request, JobPcReportedDO.class);
+            Response result=positonServices.addPcReport(DO);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /*
+     *pc端广告位的获取
+     */
+    @RequestMapping(value = "/position/pc/advertisement", method = RequestMethod.GET)
+    @ResponseBody
+    public String getPcdvertisement(HttpServletRequest request, HttpServletResponse response){
         try{
             JobPcReportedDO DO=ParamUtils.initCommonQuery(request, JobPcReportedDO.class);
             Response result=positonServices.addPcReport(DO);
