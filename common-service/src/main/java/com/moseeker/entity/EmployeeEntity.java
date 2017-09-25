@@ -1,5 +1,6 @@
 package com.moseeker.entity;
 
+import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
 import com.moseeker.baseorm.dao.configdb.ConfigSysPointsConfTplDao;
 import com.moseeker.baseorm.dao.historydb.HistoryUserEmployeeDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
@@ -27,6 +28,7 @@ import com.moseeker.entity.Constant.EmployeeType;
 import com.moseeker.entity.biz.EmployeeEntityBiz;
 import com.moseeker.entity.exception.ExceptionCategory;
 import com.moseeker.entity.exception.ExceptionFactory;
+import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysPointsConfTplDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrGroupCompanyRelDO;
@@ -98,7 +100,8 @@ public class EmployeeEntity {
     @Autowired
     private SearchengineEntity searchengineEntity;
 
-
+    @Autowired
+    private CandidateCompanyDao candidateCompanyDao;
     @Autowired
     private UserWxUserDao userWxUserDao;
 
@@ -455,6 +458,11 @@ public class EmployeeEntity {
                 e.setCustomFieldValues("[]");
             });
             int[] rows = employeeDao.updateDatas(employees);
+            for(UserEmployeeDO DO:employees){
+                int userId=DO.getSysuserId();
+                int companyId=DO.getCompanyId();
+                convertCandidatePerson(userId,companyId);
+            }
             if (Arrays.stream(rows).sum() > 0) {
                 // 更新ES中useremployee信息
                 searchengineEntity.updateEmployeeAwards(employees.stream().map(m -> m.getId()).collect(Collectors.toList()));
@@ -482,6 +490,11 @@ public class EmployeeEntity {
                 historyUserEmployeeDao.addAllData(userEmployeeDOList);
                 // 更新ES中useremployee信息
                 searchengineEntity.deleteEmployeeDO(employeeIds);
+                for(UserEmployeeDO DO:userEmployeeDOList){
+                    int userId=DO.getSysuserId();
+                    int companyId=DO.getCompanyId();
+                    convertCandidatePerson(userId,companyId);
+                }
                 return true;
             } else {
                 throw ExceptionFactory.buildException(ExceptionCategory.EMPLOYEE_HASBEENDELETEOR);
@@ -489,7 +502,16 @@ public class EmployeeEntity {
         }
         return false;
     }
-
+    protected void convertCandidatePerson(int userId,int companyId){
+        Query query=new Query.QueryBuilder().where("sys_user_id",userId).and("company_id",companyId).and("status",0).buildQuery();
+        List<CandidateCompanyDO> list=candidateCompanyDao.getDatas(query);
+        if(!StringUtils.isEmptyList(list)){
+            for(CandidateCompanyDO DO:list){
+                DO.setStatus(1);
+            }
+            candidateCompanyDao.updateDatas(list);
+        }
+    }
 
     /**
      * 权限的判断
