@@ -676,4 +676,32 @@ public class PositionController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
+    /*
+     *pc端广告位的获取
+     */
+    @RequestMapping(value = "/position/pc/recommendposition", method = RequestMethod.GET)
+    @ResponseBody
+    public String getPcecommendposition(HttpServletRequest request, HttpServletResponse response){
+        try{
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer page = params.getInt("page");
+            Integer pageSize = params.getInt("pageSize");
+            if(page==null){
+                page=1;
+            }
+            if(pageSize==null){
+                pageSize=15;
+            }
+            String moduleId=params.getString("id");
+            if(StringUtils.isNullOrEmpty(moduleId)){
+                return ResponseLogNotification.fail(request, "模块id不能为空");
+            }
+            Response result=positonServices.getPositionRecommendByModuleId(page,pageSize,Integer.parseInt(moduleId));
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 }

@@ -412,4 +412,19 @@ public class PositionServicesImpl implements Iface {
             throw ExceptionUtils.convertException(e);
         }
     }
+
+    @Override
+    public Response getPositionRecommendByModuleId(int page, int pageSize, int moduleId) throws TException {
+        try {
+            Map<String,Object> result=positionPcService.getModuleRecommendPosition(page, pageSize, moduleId);
+            if(result==null||result.isEmpty()){
+                return ResponseUtils.fail(1,"模块不存在或者模块已失效");
+            }
+            Response res= ResponseUtils.success(result);
+            return res;
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
 }

@@ -76,6 +76,7 @@ service PositionServices {
     common_struct.Response getPcRecommendPosition(1:i32 positionId,2:i32 page,3:i32 pageSize);
     common_struct.Response addPcReport(1:job_pc_reported_struct.JobPcReportedDO jobPcReportedDO);
     common_struct.Response getPcAdvertisement(1:i32 page,2:i32 pageSize);
+    common_struct.Response getPositionRecommendByModuleId(1:i32 page,2:i32 pageSize,3:i32 moduleId);
 }
 /*
 	查询第三方自定义职能
