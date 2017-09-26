@@ -144,6 +144,9 @@ public class ProfileUtils {
 					if (projectexp.get("end_date") != null) {
 						record.setEnd(BeanUtils.convertToSQLDate(projectexp.get("end_date")));
 					}
+					if (record.getResponsibility() != null && record.getResponsibility().length() >1000) {
+						record.setResponsibility(record.getResponsibility().substring(0, 995)+"...");
+					}
 					ValidationMessage<ProfileProjectexpRecord> vm = ProfileValidation.verifyProjectExp(record);
 					if(vm.isPass()) {
 						projectExpRecords.add(record);
