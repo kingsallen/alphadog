@@ -172,10 +172,13 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
     }
 
     @Override
-    public Response getCustomMetaData(int companyId) throws BIZException, TException {
+    public Response getCustomMetaData(int companyId, boolean selectAll) throws BIZException, TException {
         List<ConfigCustomMetaVO> configCustomMetaDatas = new ArrayList<>();
         try {
-            Query.QueryBuilder queryBuilder = new Query.QueryBuilder().where("company_id", companyId).or("company_id", 0);
+            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+            if (!selectAll) {
+                queryBuilder.where("company_id", companyId).or("company_id", 0);
+            }
             queryBuilder.and("disable", 0);
             queryBuilder.orderBy("priority");
             List<ConfigSysCvTplRecord> configSysCvTplRecordList = configSysCvTplDao.getRecords(queryBuilder.buildQuery());
