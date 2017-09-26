@@ -6,6 +6,7 @@ package com.moseeker.baseorm.db.jobdb.tables;
 
 import com.moseeker.baseorm.db.jobdb.Jobdb;
 import com.moseeker.baseorm.db.jobdb.Keys;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionCityRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 
 import java.sql.Timestamp;
@@ -36,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPosition extends TableImpl<JobPositionRecord> {
 
-    private static final long serialVersionUID = -1365760042;
+    private static final long serialVersionUID = 182854989;
 
     /**
      * The reference instance of <code>jobdb.job_position</code>

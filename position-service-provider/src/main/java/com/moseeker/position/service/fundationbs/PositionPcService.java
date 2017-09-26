@@ -10,16 +10,19 @@ import com.moseeker.baseorm.dao.dictdb.DictIndustryDao;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.*;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
+import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.query.SelectOp;
 import com.moseeker.entity.PcRevisionEntity;
 import com.moseeker.thrift.gen.dao.struct.analytics.StJobSimilarityDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictIndustryDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
-import com.moseeker.thrift.gen.dao.struct.jobdb.JobCustomDO;
-import com.moseeker.thrift.gen.dao.struct.jobdb.JobOccupationDO;
-import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionExtDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import org.apache.thrift.TException;
 import org.apache.thrift.TSerializer;
 import org.apache.thrift.protocol.TSimpleJSONProtocol;
@@ -42,7 +45,8 @@ import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignPcRecommendCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignPcRecommendPositionDO;
-import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+
+import javax.annotation.Resource;
 
 /*
  * create by zzt
@@ -83,6 +87,13 @@ public class PositionPcService {
 	private JobOccupationDao  jobOccupationDao;
 	@Autowired
 	private DictIndustryDao dictIndustryDao;
+	@Autowired
+	private  JobPcReportedDao jobPcReportedDao;
+	@Resource(name = "cacheClient")
+	private RedisClient redisClient;
+	private static final String POSITION_PC_REPORT = "POSITION_PC_REPORT";
+	@Autowired
+	private UserUserDao userUserDao;
 	/*
      * 获取pc首页职位推荐
      */
@@ -175,6 +186,27 @@ public class PositionPcService {
 		}
 
 		return map;
+	}
+	//添加举报信息
+	public  Response addPositionReport(JobPcReportedDO DO){
+		String positionReport = redisClient.get(Constant.APPID_ALPHADOG, POSITION_PC_REPORT,
+				String.valueOf(DO.getUserId()), String.valueOf(DO.getPositionId()));
+		if(positionReport!=null){
+			return ResponseUtils.fail(1,"举报职位过度频繁");
+		}
+		int userId=DO.getUserId();
+		Query query=new Query.QueryBuilder().where("id",userId).and("is_disable",0).buildQuery();
+		UserUserDO userUserDO=userUserDao.getData(query);
+		if(userUserDO==null){
+			return ResponseUtils.fail(1,"该用户不存在");
+		}
+		JobPcReportedDO reportDO=jobPcReportedDao.addData(DO);
+		if(reportDO!=null&&reportDO.getId()>0){
+			redisClient.set(Constant.APPID_ALPHADOG, POSITION_PC_REPORT,
+					String.valueOf(DO.getUserId()), String.valueOf(DO.getPositionId()),JSON.toJSONString(reportDO));
+			return ResponseUtils.success("");
+		}
+		return ResponseUtils.fail(1,"举报职位失败");
 	}
 	//获取自定义字段
 	public Map<String,Object> handleCustomField(int positionId,int companyId){
@@ -633,7 +665,7 @@ public class PositionPcService {
 				for(int j=0;j<companyList.size();j++){
 					HrCompanyDO companyDO=companyList.get(j);
 					int companyId=companyDO.getId();
-
+					int parentId=companyDO.getParentId();
 					// 本处如此做是为了过滤掉已经删除的子公司的信息
 					if(!StringUtils.isEmptyList(publisherAndCompanyId)){
 						for(int z=0;z<publisherAndCompanyId.size();z++){
@@ -1176,5 +1208,37 @@ public class PositionPcService {
 		Query query=new Query.QueryBuilder().where("name",name).buildQuery();
 		DictIndustryDO DO=dictIndustryDao.getData(query);
 		return DO;
+	}
+    //根据company_ids获取hr_company_conf的列表
+	public List<HrCompanyConfDO> getHrCompanyConfDOList(List<Integer> companyIdList){
+		if(StringUtils.isEmptyList(companyIdList)){
+			return null;
+		}
+		Query query=new Query.QueryBuilder().where(new Condition("company_id",companyIdList.toArray(),ValueOp.IN)).buildQuery();
+		List<HrCompanyConfDO> list=hrCompanyConfDao.getDatas(query);
+		return list;
+	}
+	//获取公司列表中所有公司的母公司的列表
+	public List<Integer> getAllMotherCompanyIdList(List<HrCompanyDO> list){
+		List<Integer> result=new ArrayList<>();
+		if(StringUtils.isEmptyList(list)){
+			return result;
+		}
+		for(HrCompanyDO DO:list){
+			int id=DO.getId();
+			int parentId=DO.getParentId();
+			if(parentId>0){
+				result.add(parentId);
+			}else{
+				result.add(id);
+			}
+		}
+		return result;
+	}
+
+	private List<HrCompanyConfDO> getHrCompanyConfData(List<HrCompanyDO> list){
+		List<Integer> idList=this.getAllMotherCompanyIdList(list);
+		List<HrCompanyConfDO> confList=this.getHrCompanyConfDOList(idList);
+		return confList;
 	}
 }

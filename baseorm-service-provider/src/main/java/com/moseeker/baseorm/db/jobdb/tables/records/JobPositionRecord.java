@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionRecord extends UpdatableRecordImpl<JobPositionRecord> {
 
-    private static final long serialVersionUID = 960242519;
+    private static final long serialVersionUID = 810263413;
 
     /**
      * Setter for <code>jobdb.job_position.id</code>.

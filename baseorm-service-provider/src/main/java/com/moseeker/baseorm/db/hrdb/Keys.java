@@ -5,6 +5,7 @@ package com.moseeker.baseorm.db.hrdb;
 
 
 import com.moseeker.baseorm.db.hrdb.tables.HrAppCvConf;
+import com.moseeker.baseorm.db.hrdb.tables.HrAppExportFields;
 import com.moseeker.baseorm.db.hrdb.tables.HrChatUnreadCount;
 import com.moseeker.baseorm.db.hrdb.tables.HrCmsMedia;
 import com.moseeker.baseorm.db.hrdb.tables.HrCmsModule;
@@ -58,6 +59,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrWxTemplateMessage;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrAppCvConfRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrAppExportFieldsRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrChatUnreadCountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCmsMediaRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCmsModuleRecord;
@@ -110,8 +112,6 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrWxRuleRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxTemplateMessageRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatNoticeSyncStatusRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
-import com.moseeker.baseorm.db.hrdb.tables.HrAppExportFields;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrAppExportFieldsRecord;
 
 import javax.annotation.Generated;
 
@@ -139,6 +139,7 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final Identity<HrAppCvConfRecord, Integer> IDENTITY_HR_APP_CV_CONF = Identities0.IDENTITY_HR_APP_CV_CONF;
+    public static final Identity<HrAppExportFieldsRecord, Integer> IDENTITY_HR_APP_EXPORT_FIELDS = Identities0.IDENTITY_HR_APP_EXPORT_FIELDS;
     public static final Identity<HrCmsMediaRecord, Integer> IDENTITY_HR_CMS_MEDIA = Identities0.IDENTITY_HR_CMS_MEDIA;
     public static final Identity<HrCmsModuleRecord, Integer> IDENTITY_HR_CMS_MODULE = Identities0.IDENTITY_HR_CMS_MODULE;
     public static final Identity<HrCmsPagesRecord, Integer> IDENTITY_HR_CMS_PAGES = Identities0.IDENTITY_HR_CMS_PAGES;
@@ -188,14 +189,13 @@ public class Keys {
     public static final Identity<HrWxTemplateMessageRecord, Integer> IDENTITY_HR_WX_TEMPLATE_MESSAGE = Identities0.IDENTITY_HR_WX_TEMPLATE_MESSAGE;
     public static final Identity<HrWxWechatRecord, Integer> IDENTITY_HR_WX_WECHAT = Identities0.IDENTITY_HR_WX_WECHAT;
     public static final Identity<HrWxWechatNoticeSyncStatusRecord, Integer> IDENTITY_HR_WX_WECHAT_NOTICE_SYNC_STATUS = Identities0.IDENTITY_HR_WX_WECHAT_NOTICE_SYNC_STATUS;
-    public static final Identity<HrAppExportFieldsRecord, Integer> IDENTITY_HR_APP_EXPORT_FIELDS = Identities0.IDENTITY_HR_APP_EXPORT_FIELDS;
-
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
     public static final UniqueKey<HrAppCvConfRecord> KEY_HR_APP_CV_CONF_PRIMARY = UniqueKeys0.KEY_HR_APP_CV_CONF_PRIMARY;
+    public static final UniqueKey<HrAppExportFieldsRecord> KEY_HR_APP_EXPORT_FIELDS_PRIMARY = UniqueKeys0.KEY_HR_APP_EXPORT_FIELDS_PRIMARY;
     public static final UniqueKey<HrChatUnreadCountRecord> KEY_HR_CHAT_UNREAD_COUNT_PRIMARY = UniqueKeys0.KEY_HR_CHAT_UNREAD_COUNT_PRIMARY;
     public static final UniqueKey<HrCmsMediaRecord> KEY_HR_CMS_MEDIA_PRIMARY = UniqueKeys0.KEY_HR_CMS_MEDIA_PRIMARY;
     public static final UniqueKey<HrCmsModuleRecord> KEY_HR_CMS_MODULE_PRIMARY = UniqueKeys0.KEY_HR_CMS_MODULE_PRIMARY;
@@ -254,7 +254,6 @@ public class Keys {
     public static final UniqueKey<HrWxTemplateMessageRecord> KEY_HR_WX_TEMPLATE_MESSAGE_PRIMARY = UniqueKeys0.KEY_HR_WX_TEMPLATE_MESSAGE_PRIMARY;
     public static final UniqueKey<HrWxWechatRecord> KEY_HR_WX_WECHAT_PRIMARY = UniqueKeys0.KEY_HR_WX_WECHAT_PRIMARY;
     public static final UniqueKey<HrWxWechatNoticeSyncStatusRecord> KEY_HR_WX_WECHAT_NOTICE_SYNC_STATUS_PRIMARY = UniqueKeys0.KEY_HR_WX_WECHAT_NOTICE_SYNC_STATUS_PRIMARY;
-    public static final UniqueKey<HrAppExportFieldsRecord> KEY_HR_APP_EXPORT_FIELDS_PRIMARY = UniqueKeys0.KEY_HR_APP_EXPORT_FIELDS_PRIMARY;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -267,6 +266,7 @@ public class Keys {
 
     private static class Identities0 extends AbstractKeys {
         public static Identity<HrAppCvConfRecord, Integer> IDENTITY_HR_APP_CV_CONF = createIdentity(HrAppCvConf.HR_APP_CV_CONF, HrAppCvConf.HR_APP_CV_CONF.ID);
+        public static Identity<HrAppExportFieldsRecord, Integer> IDENTITY_HR_APP_EXPORT_FIELDS = createIdentity(HrAppExportFields.HR_APP_EXPORT_FIELDS, HrAppExportFields.HR_APP_EXPORT_FIELDS.ID);
         public static Identity<HrCmsMediaRecord, Integer> IDENTITY_HR_CMS_MEDIA = createIdentity(HrCmsMedia.HR_CMS_MEDIA, HrCmsMedia.HR_CMS_MEDIA.ID);
         public static Identity<HrCmsModuleRecord, Integer> IDENTITY_HR_CMS_MODULE = createIdentity(HrCmsModule.HR_CMS_MODULE, HrCmsModule.HR_CMS_MODULE.ID);
         public static Identity<HrCmsPagesRecord, Integer> IDENTITY_HR_CMS_PAGES = createIdentity(HrCmsPages.HR_CMS_PAGES, HrCmsPages.HR_CMS_PAGES.ID);
@@ -316,11 +316,11 @@ public class Keys {
         public static Identity<HrWxTemplateMessageRecord, Integer> IDENTITY_HR_WX_TEMPLATE_MESSAGE = createIdentity(HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE, HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE.ID);
         public static Identity<HrWxWechatRecord, Integer> IDENTITY_HR_WX_WECHAT = createIdentity(HrWxWechat.HR_WX_WECHAT, HrWxWechat.HR_WX_WECHAT.ID);
         public static Identity<HrWxWechatNoticeSyncStatusRecord, Integer> IDENTITY_HR_WX_WECHAT_NOTICE_SYNC_STATUS = createIdentity(HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS, HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS.ID);
-        public static Identity<HrAppExportFieldsRecord, Integer> IDENTITY_HR_APP_EXPORT_FIELDS = createIdentity(HrAppExportFields.HR_APP_EXPORT_FIELDS, HrAppExportFields.HR_APP_EXPORT_FIELDS.ID);
     }
 
     private static class UniqueKeys0 extends AbstractKeys {
         public static final UniqueKey<HrAppCvConfRecord> KEY_HR_APP_CV_CONF_PRIMARY = createUniqueKey(HrAppCvConf.HR_APP_CV_CONF, "KEY_hr_app_cv_conf_PRIMARY", HrAppCvConf.HR_APP_CV_CONF.ID);
+        public static final UniqueKey<HrAppExportFieldsRecord> KEY_HR_APP_EXPORT_FIELDS_PRIMARY = createUniqueKey(HrAppExportFields.HR_APP_EXPORT_FIELDS, "KEY_hr_app_export_fields_PRIMARY", HrAppExportFields.HR_APP_EXPORT_FIELDS.ID);
         public static final UniqueKey<HrChatUnreadCountRecord> KEY_HR_CHAT_UNREAD_COUNT_PRIMARY = createUniqueKey(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT, "KEY_hr_chat_unread_count_PRIMARY", HrChatUnreadCount.HR_CHAT_UNREAD_COUNT.ROOM_ID);
         public static final UniqueKey<HrCmsMediaRecord> KEY_HR_CMS_MEDIA_PRIMARY = createUniqueKey(HrCmsMedia.HR_CMS_MEDIA, "KEY_hr_cms_media_PRIMARY", HrCmsMedia.HR_CMS_MEDIA.ID);
         public static final UniqueKey<HrCmsModuleRecord> KEY_HR_CMS_MODULE_PRIMARY = createUniqueKey(HrCmsModule.HR_CMS_MODULE, "KEY_hr_cms_module_PRIMARY", HrCmsModule.HR_CMS_MODULE.ID);
@@ -379,6 +379,5 @@ public class Keys {
         public static final UniqueKey<HrWxTemplateMessageRecord> KEY_HR_WX_TEMPLATE_MESSAGE_PRIMARY = createUniqueKey(HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE, "KEY_hr_wx_template_message_PRIMARY", HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE.ID);
         public static final UniqueKey<HrWxWechatRecord> KEY_HR_WX_WECHAT_PRIMARY = createUniqueKey(HrWxWechat.HR_WX_WECHAT, "KEY_hr_wx_wechat_PRIMARY", HrWxWechat.HR_WX_WECHAT.ID);
         public static final UniqueKey<HrWxWechatNoticeSyncStatusRecord> KEY_HR_WX_WECHAT_NOTICE_SYNC_STATUS_PRIMARY = createUniqueKey(HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS, "KEY_hr_wx_wechat_notice_sync_status_PRIMARY", HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS.ID);
-        public static final UniqueKey<HrAppExportFieldsRecord> KEY_HR_APP_EXPORT_FIELDS_PRIMARY = createUniqueKey(HrAppExportFields.HR_APP_EXPORT_FIELDS, "KEY_hr_app_export_fields_PRIMARY", HrAppExportFields.HR_APP_EXPORT_FIELDS.ID);
     }
 }
