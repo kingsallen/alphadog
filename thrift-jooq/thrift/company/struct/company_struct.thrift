@@ -26,7 +26,8 @@ struct Hrcompany {
    16: optional i32 disable,
    17: optional Timestamp create_time,
    18: optional Timestamp update_time,
-   19: optional i32 source
+   19: optional i32 source,
+   20: optional string feature
 }
 
 struct CompanyForVerifyEmployee{
