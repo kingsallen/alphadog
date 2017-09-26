@@ -59,11 +59,11 @@ public class SearchUtil {
      * 拼接city
      */
     public void handleTerms(String conditions,QueryBuilder query,String conditionField){
-    	if (StringUtils.isNotEmpty(conditions)) {
+        if (StringUtils.isNotEmpty(conditions)) {
             List<Object> codes = new ArrayList<Object>();
             String[] conditions_list = conditions.split(",");
             for(String code:conditions_list){
-            	codes.add(code);
+                codes.add(code);
             }
             QueryBuilder cityfilter = QueryBuilders.termsQuery(conditionField, codes);
             ((BoolQueryBuilder) query).must(cityfilter);

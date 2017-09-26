@@ -5,6 +5,7 @@ package com.moseeker.baseorm.db.hrdb;
 
 
 import com.moseeker.baseorm.db.hrdb.tables.HrAppCvConf;
+import com.moseeker.baseorm.db.hrdb.tables.HrAppExportFields;
 import com.moseeker.baseorm.db.hrdb.tables.HrChatUnreadCount;
 import com.moseeker.baseorm.db.hrdb.tables.HrCmsMedia;
 import com.moseeker.baseorm.db.hrdb.tables.HrCmsModule;
@@ -89,7 +90,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Hrdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 1834886235;
+    private static final long serialVersionUID = -2134569638;
 
     /**
      * The reference instance of <code>hrdb</code>
@@ -110,6 +111,11 @@ public class Hrdb extends SchemaImpl {
      * 企业申请简历校验配置
      */
     public final HrAppCvConf HR_APP_CV_CONF = com.moseeker.baseorm.db.hrdb.tables.HrAppCvConf.HR_APP_CV_CONF;
+
+    /**
+     * 自定义简历模板导出字段表
+     */
+    public final HrAppExportFields HR_APP_EXPORT_FIELDS = com.moseeker.baseorm.db.hrdb.tables.HrAppExportFields.HR_APP_EXPORT_FIELDS;
 
     /**
      * 聊天室未读消息
@@ -424,6 +430,7 @@ public class Hrdb extends SchemaImpl {
             HrdbHrHtml5Statistics.HRDB_HR_HTML5_STATISTICS,
             HrdbHrHtml5UniqueStatistics.HRDB_HR_HTML5_UNIQUE_STATISTICS,
             HrAppCvConf.HR_APP_CV_CONF,
+            HrAppExportFields.HR_APP_EXPORT_FIELDS,
             HrChatUnreadCount.HR_CHAT_UNREAD_COUNT,
             HrCmsMedia.HR_CMS_MEDIA,
             HrCmsModule.HR_CMS_MODULE,
