@@ -326,6 +326,7 @@ public class PositionServicesImpl implements Iface {
             List<Map<String, Object>> list = positionPcService.getRecommendPosition(positionId,page,pageSize);
             if(StringUtils.isEmptyList(list)){
                 Response res= ResponseUtils.success("");
+                return res;
             }
             Response res= ResponseUtils.success(list);
             return res;
@@ -390,6 +391,22 @@ public class PositionServicesImpl implements Iface {
         try{
             Response result=positionPcService.addPositionReport(jobPcReportedDO);
             return result;
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public Response getPcAdvertisement(int page, int pageSize) throws TException {
+        try{
+            List<Map<String,Object>> list=positionPcService.getAdvertisement(page,pageSize);
+            if(StringUtils.isEmptyList(list)){
+                Response res= ResponseUtils.success("");
+                return res;
+            }
+            Response res= ResponseUtils.success(list);
+            return res;
         }catch(Exception e){
             logger.info(e.getMessage(),e);
             throw ExceptionUtils.convertException(e);

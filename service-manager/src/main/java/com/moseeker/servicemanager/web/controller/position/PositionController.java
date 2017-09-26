@@ -660,8 +660,16 @@ public class PositionController {
     @ResponseBody
     public String getPcdvertisement(HttpServletRequest request, HttpServletResponse response){
         try{
-            JobPcReportedDO DO=ParamUtils.initCommonQuery(request, JobPcReportedDO.class);
-            Response result=positonServices.addPcReport(DO);
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer page = params.getInt("page");
+            Integer pageSize = params.getInt("pageSize");
+            if(page==null){
+                page=1;
+            }
+            if(pageSize==null){
+                pageSize=15;
+            }
+            Response result=positonServices.getPcAdvertisement(page,pageSize);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
             logger.error(e.getMessage());

@@ -94,6 +94,8 @@ public class PositionPcService {
 	private static final String POSITION_PC_REPORT = "POSITION_PC_REPORT";
 	@Autowired
 	private UserUserDao userUserDao;
+	@Autowired
+	private JobPcAdvertisementDao jobPcAdvertisementDao;
 	/*
      * 获取pc首页职位推荐
      */
@@ -188,6 +190,7 @@ public class PositionPcService {
 		return map;
 	}
 	//添加举报信息
+	@CounterIface
 	public  Response addPositionReport(JobPcReportedDO DO){
 		String positionReport = redisClient.get(Constant.APPID_ALPHADOG, POSITION_PC_REPORT,
 				String.valueOf(DO.getUserId()), String.valueOf(DO.getPositionId()));
@@ -207,6 +210,24 @@ public class PositionPcService {
 			return ResponseUtils.success("");
 		}
 		return ResponseUtils.fail(1,"举报职位失败");
+	}
+	/*
+	  获取pc端的广告位
+	 */
+	@CounterIface
+	public List<Map<String,Object>> getAdvertisement(int page,int pageSize) throws TException {
+		List<Map<String,Object>> result=new ArrayList<Map<String, Object>>();
+		Query query=new Query.QueryBuilder().setPageNum(page).setPageSize(pageSize).buildQuery();
+		List<JobPcAdvertisementDO> list=jobPcAdvertisementDao.getDatas(query);
+		if(StringUtils.isEmptyList(list)){
+			return result;
+		}
+		for(JobPcAdvertisementDO DO:list){
+			String DOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
+			Map<String,Object> jobPcAdvertisementDOs= JSON.parseObject(DOs, Map.class);
+			result.add(jobPcAdvertisementDOs);
+		}
+		return result;
 	}
 	//获取自定义字段
 	public Map<String,Object> handleCustomField(int positionId,int companyId){
