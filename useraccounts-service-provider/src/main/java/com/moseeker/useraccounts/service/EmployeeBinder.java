@@ -145,7 +145,7 @@ public abstract class EmployeeBinder {
             employeeId = useremployee.getId();
         }
         //将属于本公司的潜在候选人设置为无效
-//        convertCandidatePerson(useremployee.getSysuserId(),useremployee.getCompanyId());
+        convertCandidatePerson(useremployee.getSysuserId(),useremployee.getCompanyId());
         // 将其他公司的员工认证记录设为未认证
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.where("sysuser_id", String.valueOf(useremployee.getSysuserId())).and("disable", "0");
@@ -159,13 +159,13 @@ public abstract class EmployeeBinder {
                     e.setCustomFieldValues("[]");
                 }
             });
-//            if(!StringUtils.isEmptyList(employees)){
-//                for(UserEmployeeDO DO:employees){
-//                    int userId=DO.getSysuserId();
-//                    int companyId=DO.getCompanyId();
-//                    convertCandidatePerson(userId,companyId);
-//                }
-//            }
+            if(!StringUtils.isEmptyList(employees)){
+                for(UserEmployeeDO DO:employees){
+                    int userId=DO.getSysuserId();
+                    int companyId=DO.getCompanyId();
+                    convertCandidatePerson(userId,companyId);
+                }
+            }
 
         }
         log.info("update employess = {}", Arrays.toString(employees.toArray()));
@@ -186,31 +186,31 @@ public abstract class EmployeeBinder {
         log.info("updateEmployee response : {}", response);
         return response;
     }
-///*
-//    员工认证成功时，需要将潜在候选人置为无效
-// */
-//    public void cancelCandidate(int userId,int companyId) {
-//        Query query = new Query.QueryBuilder().where("sys_user_id", userId).and("company_id", companyId).and("status", 1).buildQuery();
-//        List<CandidateCompanyDO> list = candidateCompanyDao.getDatas(query);
-//        if (!StringUtils.isEmptyList(list)) {
-//            for (CandidateCompanyDO DO : list) {
-//                DO.setStatus(0);
-//            }
-//            candidateCompanyDao.updateDatas(list);
-//        }
-//    }
-//    /*
-//        员工取消后，需要将潜在候选人置为有效
-//     */
-//     public void convertCandidatePerson(int userId,int companyId){
-//         Query query=new Query.QueryBuilder().where("sys_user_id",userId).and("company_id",companyId).and("status",0).buildQuery();
-//         List<CandidateCompanyDO> list=candidateCompanyDao.getDatas(query);
-//         if(!StringUtils.isEmptyList(list)){
-//             for(CandidateCompanyDO DO:list){
-//                 DO.setStatus(1);
-//             }
-//             candidateCompanyDao.updateDatas(list);
-//         }
-//    }
+/*
+    员工认证成功时，需要将潜在候选人置为无效
+ */
+    public void cancelCandidate(int userId,int companyId) {
+        Query query = new Query.QueryBuilder().where("sys_user_id", userId).and("company_id", companyId).and("status", 1).buildQuery();
+        List<CandidateCompanyDO> list = candidateCompanyDao.getDatas(query);
+        if (!StringUtils.isEmptyList(list)) {
+            for (CandidateCompanyDO DO : list) {
+                DO.setStatus(0);
+            }
+            candidateCompanyDao.updateDatas(list);
+        }
+    }
+    /*
+        员工取消后，需要将潜在候选人置为有效
+     */
+     public void convertCandidatePerson(int userId,int companyId){
+         Query query=new Query.QueryBuilder().where("sys_user_id",userId).and("company_id",companyId).and("status",0).buildQuery();
+         List<CandidateCompanyDO> list=candidateCompanyDao.getDatas(query);
+         if(!StringUtils.isEmptyList(list)){
+             for(CandidateCompanyDO DO:list){
+                 DO.setStatus(1);
+             }
+             candidateCompanyDao.updateDatas(list);
+         }
+    }
 
 }
