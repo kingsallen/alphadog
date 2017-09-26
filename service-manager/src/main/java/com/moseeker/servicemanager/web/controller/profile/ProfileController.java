@@ -18,6 +18,7 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
 
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
+import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -167,9 +168,13 @@ public class ProfileController {
                     if (uuids != null && uuids.size() - 1 >= i) {
                         uuid = BeanUtils.converToString(uuids.get(i));
                     }
-                    result = profileService.getResource(userId, profileId, uuid);
+                    try {
+                        result = profileService.getResource(userId, profileId, uuid);
+                        logger.info("data:" + JSON.parse(result.getData()));
+                    } catch (Exception e) {
+                        logger.error(e.getMessage(), e);
+                    }
                     logger.info("current:" + i);
-                    logger.info("data:" + JSON.parse(result.getData()));
                     if (result != null && result.getStatus() == 0) {
                         profileData.add(JSON.parse(result.getData()));
                     }
