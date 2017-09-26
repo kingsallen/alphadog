@@ -985,7 +985,8 @@ public class UserHrAccountController {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             int companyId = params.getInt("companyId", 0);
-            return ResponseLogNotification.success(request, profileOtherService.getCustomMetaData(companyId));
+            boolean selectAll = params.getBoolean("selectAll", false);
+            return ResponseLogNotification.success(request, profileOtherService.getCustomMetaData(companyId, selectAll));
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
