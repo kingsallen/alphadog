@@ -200,6 +200,7 @@ public abstract class EmployeeBinder {
             for (CandidateCompanyDO DO : list) {
                 DO.setStatus(0);
             }
+            log.info("CandidateCompanyDO3====="+JSON.toJSONString(list));
             candidateCompanyDao.updateDatas(list);
         }
     }
@@ -214,6 +215,7 @@ public abstract class EmployeeBinder {
              for(CandidateCompanyDO DO:list){
                  DO.setStatus(1);
              }
+             log.info("CandidateCompanyDO2====="+JSON.toJSONString(list));
              candidateCompanyDao.updateDatas(list);
          }
     }
