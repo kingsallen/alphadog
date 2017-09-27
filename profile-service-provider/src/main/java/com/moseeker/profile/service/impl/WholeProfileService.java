@@ -109,6 +109,7 @@ public class WholeProfileService {
             Future<List<ProfileOtherRecord>> otherRecordsFuture = pool.startTast(() -> customizeResumeDao.getRecords(getProfileQuery(profileRecord.getId())));
 
             Map<String, Object> basic = basicFuture.get();
+            basic.put("country_code", userDao.getUser(userId).getCountryCode());
             profile.put("basic", basic);
 
             logger.debug("WholeProfileService getResource basicFuture.get() : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
@@ -176,6 +177,7 @@ public class WholeProfileService {
             logger.info("WholeProfileService getResource done : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
 
             profile.put("others", others);
+
             return ResponseUtils.success(profile);
         } else {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);

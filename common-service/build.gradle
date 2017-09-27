@@ -6,6 +6,7 @@ dependencies {
     compile project (":common")
     compile project (":thrift-jooq")
     compile project (":baseorm-service-provider")
+
     compile deps["spring-core"]
     compile deps["spring-context"]
     compile deps["spring-test"]
