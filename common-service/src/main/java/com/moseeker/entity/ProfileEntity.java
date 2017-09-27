@@ -19,6 +19,7 @@ import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.entity.pojo.resume.ResumeObj;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
+import java.util.Date;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Consts;
 import org.apache.http.HttpResponse;
@@ -122,11 +123,8 @@ public class ProfileEntity {
                 try {
                     if (profileRecord.getOrigin() != null && record.getOrigin() != null && !profileRecord.getOrigin().equals(record.getOrigin())) {
                         record.setOrigin(profileRecord.getOrigin());
-                        flag = true;
                     }
-                    if (flag) {
-                        profileDao.updateRecord(record);
-                    }
+                    profileDao.updateRecord(record);
                 } catch (Exception e) {
                     e.printStackTrace();
                     logger.error(e.getMessage(), e);

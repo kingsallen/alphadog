@@ -7,7 +7,7 @@ public class Company {
     private String companyIndustry;
     private int companyProperty;
     private String companyName;
-    private int companyScale;
+    private String companyScale;
 
     public void setCompanyIndustry(String companyIndustry) {
         this.companyIndustry = companyIndustry;
@@ -33,11 +33,11 @@ public class Company {
         return companyName;
     }
 
-    public void setCompanyScale(int companyScale) {
+    public void setCompanyScale(String companyScale) {
         this.companyScale = companyScale;
     }
 
-    public int getCompanyScale() {
+    public String getCompanyScale() {
         return companyScale;
     }
 
