@@ -279,7 +279,7 @@ public class ProfileService {
                         Company company = new Company();
                         company.setCompanyIndustry(jobExpObj.getJob_industry());
                         company.setCompanyName(jobExpObj.getJob_cpy());
-                        company.setCompanyScale(Integer.valueOf(jobExpObj.getJob_cpy_size() == null ? "0" : jobExpObj.getJob_cpy_size()));
+                        company.setCompanyScale(org.apache.commons.lang.StringUtils.defaultIfBlank(jobExpObj.getJob_cpy_size().replace("人", ""), ""));
                         workexps.setCompany(company);
                         workexps.setDescription(jobExpObj.getJob_nature());
                         workexps.setStartDate(jobExpObj.getStart_date());
@@ -337,7 +337,7 @@ public class ProfileService {
                 basic.setBirth(resumeObj.getResult().getBirthday());
                 profileObj.setBasic(basic);
 
-                profileObj.setResumeObj(resumeObj);
+//                profileObj.setResumeObj(resumeObj);
             }
         } catch (Exception e) {
             e.printStackTrace();
