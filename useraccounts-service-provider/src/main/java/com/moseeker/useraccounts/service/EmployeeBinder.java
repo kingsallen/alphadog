@@ -146,7 +146,7 @@ public abstract class EmployeeBinder {
             employeeId = useremployee.getId();
         }
         //将属于本公司的潜在候选人设置为无效
-        convertCandidatePerson(useremployee.getSysuserId(),useremployee.getCompanyId());
+        cancelCandidate(useremployee.getSysuserId(),useremployee.getCompanyId());
         // 将其他公司的员工认证记录设为未认证
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.where("sysuser_id", String.valueOf(useremployee.getSysuserId())).and("disable", "0");
@@ -200,6 +200,7 @@ public abstract class EmployeeBinder {
             for (CandidateCompanyDO DO : list) {
                 DO.setStatus(0);
             }
+            log.info("CandidateCompanyDO3====="+JSON.toJSONString(list));
             candidateCompanyDao.updateDatas(list);
         }
     }
@@ -214,6 +215,7 @@ public abstract class EmployeeBinder {
              for(CandidateCompanyDO DO:list){
                  DO.setStatus(1);
              }
+             log.info("CandidateCompanyDO2====="+JSON.toJSONString(list));
              candidateCompanyDao.updateDatas(list);
          }
     }
