@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.service;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrEmployeeCertConfDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
@@ -159,6 +160,7 @@ public abstract class EmployeeBinder {
                     e.setCustomFieldValues("[]");
                 }
             });
+            log.info("employees========"+JSON.toJSONString(employees));
             if(!StringUtils.isEmptyList(employees)){
                 for(UserEmployeeDO DO:employees){
                     int userId=DO.getSysuserId();
@@ -192,7 +194,9 @@ public abstract class EmployeeBinder {
     public void cancelCandidate(int userId,int companyId) {
         Query query = new Query.QueryBuilder().where("sys_user_id", userId).and("company_id", companyId).and("status", 1).buildQuery();
         List<CandidateCompanyDO> list = candidateCompanyDao.getDatas(query);
+        log.info("CandidateCompanyDO1====="+JSON.toJSONString(list));
         if (!StringUtils.isEmptyList(list)) {
+            log.info(JSON.toJSONString(list));
             for (CandidateCompanyDO DO : list) {
                 DO.setStatus(0);
             }
@@ -205,6 +209,7 @@ public abstract class EmployeeBinder {
      public void convertCandidatePerson(int userId,int companyId){
          Query query=new Query.QueryBuilder().where("sys_user_id",userId).and("company_id",companyId).and("status",0).buildQuery();
          List<CandidateCompanyDO> list=candidateCompanyDao.getDatas(query);
+         log.info("CandidateCompanyDO2====="+JSON.toJSONString(list));
          if(!StringUtils.isEmptyList(list)){
              for(CandidateCompanyDO DO:list){
                  DO.setStatus(1);
