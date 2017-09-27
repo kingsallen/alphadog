@@ -506,7 +506,7 @@ public class EmployeeEntity {
     protected void convertCandidatePerson(int userId,int companyId){
         Query query=new Query.QueryBuilder().where("sys_user_id",userId).and("company_id",companyId).and("status",0).buildQuery();
         List<CandidateCompanyDO> list=candidateCompanyDao.getDatas(query);
-        logger.info(JSON.toJSONString(list));
+        logger.info("CandidateCompanyDO====="+JSON.toJSONString(list));
         if(!StringUtils.isEmptyList(list)){
             for(CandidateCompanyDO DO:list){
                 DO.setStatus(1);
