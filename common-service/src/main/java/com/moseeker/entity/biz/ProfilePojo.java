@@ -1,6 +1,7 @@
 package com.moseeker.entity.biz;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.profiledb.IntentionRecord;
 import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
 import com.moseeker.baseorm.db.profiledb.tables.records.*;
