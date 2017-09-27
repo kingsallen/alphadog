@@ -79,17 +79,26 @@ public class ProfileBS {
         }
         Map<String, Object> resume = JSON.parseObject(profile);
         Map<String, Object> map = (Map<String, Object>) resume.get("user");
-        String mobile = (String) map.get("mobile");
+        String mobile = ((String) map.get("mobile"));
+        String countryCode = "86";
         logger.info("ProfileBS retrieveProfile mobile:{}", mobile);
         if (StringUtils.isNullOrEmpty(mobile)) {
             return ResultMessage.PROGRAM_PARAM_NOTEXIST.toResponse();
+        } else {
+            String[] mobileArray = mobile.split("-");
+            if (mobileArray.length > 1) {
+                map.put("mobile", mobileArray[1]);
+                map.put("countryCode", mobileArray[0]);
+                countryCode = mobileArray[0];
+                mobile = mobileArray[1];
+            }
         }
 
         //更新profile数据
         resume.put("channel", channel);
 //		try {
         //查询是否存在相同手机号码的C端帐号
-        Query findRetrieveUserQU = new Query.QueryBuilder().where("mobile", mobile).and("source", UserSource.RETRIEVE_PROFILE.getValue()).buildQuery();
+        Query findRetrieveUserQU = new Query.QueryBuilder().where("mobile", mobile).and("countryCode", countryCode).and("source", UserSource.RETRIEVE_PROFILE.getValue()).buildQuery();
         UserUserDO user = userUserDao.getData(findRetrieveUserQU); //userDao.getUser(findRetrieveUserQU);
         logger.info("ProfileBS retrieveProfile user:{}", user);
         if (user == null) {
@@ -109,7 +118,7 @@ public class ProfileBS {
             resume.put("profile", profileProfile);
 
             //如果有profile，进行profile合并,简历回流一般都是临时用户，很少有涉及国外，所以传国家编码86
-            if (useraccountsServices.ifExistProfile("86",mobile)) {
+            if (useraccountsServices.ifExistProfile(countryCode, mobile)) {
                 logger.info("ProfileBS retrieveProfile profile exist");
                 Response improveProfile = wholeProfileService.improveProfile(JSON.toJSONString(resume));
                 if (improveProfile.getStatus() == 0) {

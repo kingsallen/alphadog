@@ -1,5 +1,6 @@
 package com.moseeker.entity;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
 import com.moseeker.baseorm.dao.configdb.ConfigSysPointsConfTplDao;
 import com.moseeker.baseorm.dao.historydb.HistoryUserEmployeeDao;
@@ -505,6 +506,7 @@ public class EmployeeEntity {
     protected void convertCandidatePerson(int userId,int companyId){
         Query query=new Query.QueryBuilder().where("sys_user_id",userId).and("company_id",companyId).and("status",0).buildQuery();
         List<CandidateCompanyDO> list=candidateCompanyDao.getDatas(query);
+        logger.info(JSON.toJSONString(list));
         if(!StringUtils.isEmptyList(list)){
             for(CandidateCompanyDO DO:list){
                 DO.setStatus(1);

@@ -255,7 +255,7 @@ public class ProfileEntity {
             projectExpDao.delProjectExpByProfileId(profileId);
             projectExps.forEach(language -> {
                 language.setId(null);
-                language.setProfileId((int) (profileId));
+                language.setProfileId((profileId));
             });
             projectExpDao.addAllRecord(projectExps);
         }
