@@ -33,7 +33,7 @@ public class ProfileIntentionServicesImplTest {
     ProfileIntentionServicesImpl profileIntentionService;
 
     @Autowired
-    private ProfileCompletenessImpl completenessImpl;
+//    private ProfileCompletenessImpl completenessImpl;
 
 //    //@Test
     public void testGetResources() {

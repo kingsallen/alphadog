@@ -252,6 +252,7 @@ public class ProfileService {
                         // 职责
                         project.setResponsibility(projectexpObj.getProj_resp());
                         project.setDescription(projectexpObj.getProj_content());
+                        project.setName(projectexpObj.getProj_name());
                         projectexps.add(project);
                     }
                 }
@@ -271,12 +272,19 @@ public class ProfileService {
                                 education.setDegree(0);
                             }
                         }
+                        education.setStartDate(educationObj.getStart_date());
+                        if (educationObj.getEnd_date() != null && educationObj.getEnd_date().equals("至今")) {
+                            education.setEndUntilNow(1);
+                        } else {
+                            education.setEndDate(educationObj.getEnd_date());
+                        }
                         // 学校名称
                         education.setCollegeName(educationObj.getEdu_college());
                         // 专业名称
                         education.setMajorName(educationObj.getEdu_major());
-                        education.setStartDate(educationObj.getStart_date());
-                        education.setEndDate(educationObj.getEnd_date());
+                        if (StringUtils.isNotNullOrEmpty(educationObj.getEdu_recruit())) {
+                            education.setIsUnified(educationObj.getEdu_recruit().equals("统招") ? 1 : 2);
+                        }
                         educationList.add(education);
                     }
                 }
@@ -304,12 +312,17 @@ public class ProfileService {
                         Company company = new Company();
                         company.setCompanyIndustry(jobExpObj.getJob_industry());
                         company.setCompanyName(jobExpObj.getJob_cpy());
-                        company.setCompanyScale(Integer.valueOf(jobExpObj.getJob_cpy_size() == null ? "0" : jobExpObj.getJob_cpy_size()));
+                        company.setCompanyScale(org.apache.commons.lang.StringUtils.defaultIfBlank(jobExpObj.getJob_cpy_size().replace("人", ""), ""));
                         workexps.setCompany(company);
                         workexps.setDescription(jobExpObj.getJob_nature());
                         workexps.setStartDate(jobExpObj.getStart_date());
-                        workexps.setEndDate(jobExpObj.getEnd_date());
+                        if (jobExpObj.getEnd_date() != null && jobExpObj.getEnd_date().equals("至今")) {
+                            workexps.setEndUntilNow(1);
+                        } else {
+                            workexps.setEndDate(jobExpObj.getEnd_date());
+                        }
                         workexps.setJob(jobExpObj.getJob_position());
+                        workexps.setDepartmentName(jobExpObj.getJob_cpy_dept());
                         workexpsList.add(workexps);
                     }
                 }
@@ -368,8 +381,9 @@ public class ProfileService {
                 profileObj.setBasic(basic);
                 logger.info("profileParser getBasic:{}", JSON.toJSONString(profileObj.getBasic()));
 
-                profileObj.setResumeObj(resumeObj);
+//              profileObj.setResumeObj(resumeObj);
                 logger.info("profileParser getResumeObj:{}", JSON.toJSONString(profileObj.getResumeObj()));
+
             }
         } catch (Exception e) {
             e.printStackTrace();
