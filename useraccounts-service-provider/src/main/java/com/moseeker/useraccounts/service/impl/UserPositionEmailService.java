@@ -136,7 +136,8 @@ public class UserPositionEmailService {
 		SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss" );
 		lastDate.roll(Calendar.DATE, -7);//日期回滚7天
 		String startTime=format.format(lastDate.getTime());
-		Response res=searchengineServices.positionQuery(keyWord, citys, industry, salaryCode, page, pageSize, null, null,0,0,0,1);
+		Response res=searchengineServices.positionQuery(keyWord, citys, industry, salaryCode, page, pageSize,
+				null, null,0,0,0,1,0);
 		if(res.getStatus()==0&&!Strings.isNullOrEmpty(res.getData())){
 			String data=res.getData();
 			Map<String,Object> result=JSON.parseObject(data);

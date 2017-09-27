@@ -34,17 +34,17 @@ public class PositionIndexTest {
         map1.put("salaryBottom",4);
         list.add(map1);
         String ss=JSON.toJSONString(list);
-        Map<String,Object> result=positionSearchEngine.search(null, null, null, 1, 18, null, null, null, 1424, 24, 0, 0);
+        Map<String,Object> result=positionSearchEngine.search(null, null, null, 1, 18, null, null, null, 1424, 24, 0, 0,0);
         System.out.println(result);
     }
     @Test
     public void searchPositionByCompany(){
-        Map<String,Object> result=positionSearchEngine.search("","",null,1,10,"","","",39978,0,0,1);
+        Map<String,Object> result=positionSearchEngine.search("","",null,1,10,"","","",39978,0,0,1,0);
         System.out.println(result);
     }
     @Test
     public void searchPositionByTeam(){
-        Map<String,Object> result=positionSearchEngine.search("","",null,1,10,"","","",39978,188350558,0,1);
+        Map<String,Object> result=positionSearchEngine.search("","",null,1,10,"","","",39978,188350558,0,1,0);
         System.out.println(result);
     }
 }
