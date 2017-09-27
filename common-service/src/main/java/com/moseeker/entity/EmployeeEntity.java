@@ -160,9 +160,13 @@ public class EmployeeEntity {
         query.where("id", employeeId).and("disable", 0).and("activation", 0);
         UserEmployeeDO userEmployeeDO = employeeDao.getUserEmployeeForUpdate(employeeId);
         if (userEmployeeDO != null && userEmployeeDO.getId() > 0 && ueprDo != null) {
-            // 修改用户总积分, 产品说 积分不能扣成负数 所以为负数 填为 0
+            // 修改用户总积分, 积分不能扣成负数
             int totalAward = userEmployeeDO.getAward() + ueprDo.getAward();
-            int row = employeeDao.addAward(userEmployeeDO.getId(), totalAward < 0 ? 0 : totalAward, userEmployeeDO.getAward());
+            if (totalAward < 0) {
+                logger.error("增加用户积分失败，用户积分不足：为用户{},用户当前积分{}点,添加积分{}点, reason:{}", employeeId, userEmployeeDO.getAward(), ueprDo.getAward(), ueprDo.getReason());
+                throw new RuntimeException("用户积分不足");
+            }
+            int row = employeeDao.addAward(userEmployeeDO.getId(), totalAward, userEmployeeDO.getAward());
             // 积分记录
             if (row > 0) {
                 ueprDo = ueprDao.addData(ueprDo);
