@@ -20,6 +20,7 @@ import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.Pagination;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
+import org.joda.time.field.ImpreciseDateTimeField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -58,10 +59,14 @@ public class ProfileUtils {
 				if (record != null) {
 					if (workexp.get("start_date") != null) {
 						record.setStart(BeanUtils.convertToSQLDate(workexp.get("start_date")));
-					}
+					} else if (workexp.get("startDate") != null) {
+                        record.setStart(BeanUtils.convertToSQLDate(workexp.get("startDate")));
+                    }
 					if (workexp.get("end_date") != null) {
 						record.setEnd(BeanUtils.convertToSQLDate(workexp.get("end_date")));
-					}
+					} else if (workexp.get("endDate") != null) {
+                        record.setEnd(BeanUtils.convertToSQLDate(workexp.get("endDate")));
+                    }
 					if(StringUtils.isNotNullOrEmpty(record.getDescription()) && record.getDescription().length() > Constant.DESCRIPTION_LENGTH) {
 						record.setDescription(record.getDescription().substring(0, Constant.DESCRIPTION_LENGTH));
 					}
@@ -72,20 +77,31 @@ public class ProfileUtils {
 							HrCompanyRecord hrCompany = new HrCompanyRecord();
 							if (company.get("company_name") != null) {
 								hrCompany.setName(BeanUtils.converToString(company.get("company_name")));
-							}
+							} else if (company.get("companyName") != null) {
+                                hrCompany.setName(BeanUtils.converToString(company.get("companyName")));
+                            }
 							if (company.get("company_industry") != null) {
 								hrCompany.setIndustry(BeanUtils.converToString(company.get("company_industry")));
-							}
+							} else if (company.get("companyIndustry") != null) {
+                                hrCompany.setIndustry(BeanUtils.converToString(company.get("companyIndustry")));
+                            }
 							if (company.get("company_introduction") != null) {
 								hrCompany
 										.setIntroduction(BeanUtils.converToString(company.get("company_introduction")));
-							}
-							if (company.get("company_scale") != null) {
-								hrCompany.setScale(BeanUtils.converToByte(company.get("company_scale")));
-							}
+							} else if (company.get("companyIntroduction") != null) {
+                                hrCompany
+                                        .setIntroduction(BeanUtils.converToString(company.get("companyIntroduction")));
+                            }
+							if (company.get("scale") != null) {
+								hrCompany.setScale(BeanUtils.converToByte(company.get("scale")));
+							} else if ((company.get("companyScale") != null)) {
+                                hrCompany.setScale(BeanUtils.converToByte(company.get("companyScale")));
+                            }
 							if (company.get("company_property") != null) {
 								hrCompany.setProperty(BeanUtils.converToByte(company.get("company_property")));
-							}
+							} else if (company.get("companyProperty") != null) {
+                                hrCompany.setProperty(BeanUtils.converToByte(company.get("companyProperty")));
+                            }
 							hrCompany.setType((byte)(Constant.COMPANY_TYPE_FREE));
 							switch(source) {
 								case Constant.PROFILE_SOURCE_WEIXIN_TEGETHER_IMPORT:
@@ -135,10 +151,14 @@ public class ProfileUtils {
 					}
 					if (projectexp.get("start_date") != null) {
 						record.setStart(BeanUtils.convertToSQLDate(projectexp.get("start_date")));
-					}
+					} else if (projectexp.get("startDate") != null) {
+                        record.setStart(BeanUtils.convertToSQLDate(projectexp.get("startDate")));
+                    }
 					if (projectexp.get("end_date") != null) {
 						record.setEnd(BeanUtils.convertToSQLDate(projectexp.get("end_date")));
-					}
+					} else if (projectexp.get("endDate") != null) {
+                        record.setEnd(BeanUtils.convertToSQLDate(projectexp.get("endDate")));
+                    }
 					if (record.getResponsibility() != null && record.getResponsibility().length() >1000) {
 						record.setResponsibility(record.getResponsibility().substring(0, 995)+"...");
 					}
