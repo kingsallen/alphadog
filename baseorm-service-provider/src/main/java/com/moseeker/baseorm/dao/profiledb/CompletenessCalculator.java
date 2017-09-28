@@ -57,7 +57,8 @@ public class CompletenessCalculator {
 		int completeness = 0;
 
 		if (basicRecord == null) {
-			throw new ParamIllegalException(Constant.EXCEPTION_PROFILEBASIC_LOST);
+		    return completeness;
+//			throw new ParamIllegalException(Constant.EXCEPTION_PROFILEBASIC_LOST);
 		}
 		//此处修改规则，性别＋1
 		if (basicRecord.getGender() != null && basicRecord.getGender().intValue() > 0) {
