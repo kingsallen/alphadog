@@ -22,7 +22,7 @@ import java.util.List;
  */
 @Configuration
 @EnableRabbit
-@ComponentScan({"com.moseeker.useraccounts", "com.moseeker.entity", "com.moseeker.common.aop.iface", "com.moseeker.common.aop.iface", "com.moseeker.common.aop.notify"})
+@ComponentScan({"com.moseeker.useraccounts", "com.moseeker.entity", "com.moseeker.common.aop.iface", "com.moseeker.common.aop.notify"})
 @PropertySource("classpath:common.properties")
 @Import(com.moseeker.baseorm.config.AppConfig.class)
 public class AppConfig {
