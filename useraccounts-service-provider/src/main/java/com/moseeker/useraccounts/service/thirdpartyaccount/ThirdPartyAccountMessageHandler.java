@@ -2,6 +2,7 @@ package com.moseeker.useraccounts.service.thirdpartyaccount;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.logdb.LogDeadLetterDao;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.entity.pojos.ThirdPartyAccountExt;
 import com.moseeker.thrift.gen.dao.struct.logdb.LogDeadLetterDO;
 import com.moseeker.useraccounts.pojo.BindResult;
@@ -35,6 +36,8 @@ public class ThirdPartyAccountMessageHandler {
             msgBody = new String(message.getBody(), "UTF-8");
             BindResult bindResult = JSON.parseObject(msgBody, BindResult.class);
             thirdPartyAccountService.bingResultHandler(bindResult);
+        } catch (CommonException e) {
+            logger.error(e.getMessage(), e);
         } catch (Exception e) {
             // 错误日志记录到数据库 的 log_dead_letter 表中
             LogDeadLetterDO logDeadLetterDO = new LogDeadLetterDO();
@@ -55,6 +58,7 @@ public class ThirdPartyAccountMessageHandler {
         String msgBody = "{}";
         try {
             msgBody = new String(message.getBody(), "UTF-8");
+            System.out.println(msgBody);
             ThirdPartyAccountExt accountExt = JSON.parseObject(msgBody, ThirdPartyAccountExt.class);
             thirdPartyAccountService.thirdPartyAccountExtHandler(accountExt);
         } catch (Exception e) {

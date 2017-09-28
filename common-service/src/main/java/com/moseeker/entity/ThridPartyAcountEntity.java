@@ -17,6 +17,7 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.entity.pojos.Data;
 import com.moseeker.entity.pojos.ThirdPartyAccountExt;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityMapDO;
@@ -27,6 +28,7 @@ import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyAccountCompanyD
 import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyAccountDepartmentDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -63,18 +65,19 @@ public class ThridPartyAcountEntity {
      * @param accountDO
      * @throws CommonException
      */
-    public void saveAccountExt(ThirdPartyAccountExt.Data data, HrThirdPartyAccountDO accountDO) throws CommonException {
+    @Transactional
+    public void saveAccountExt(Data data, HrThirdPartyAccountDO accountDO) throws CommonException {
 
         Query query = new Query.QueryBuilder().where(DictCityMap.DICT_CITY_MAP.CHANNEL.getName(), accountDO.getChannel()).buildQuery();
         List<DictCityMapDO> cityMapDOList = cityMapDao.getDatas(query);
         List<Integer> codeList = cityMapDOList.stream().map(cityMapDO -> cityMapDO.getCode()).collect(Collectors.toList());
         Condition condition = new Condition(DictCity.DICT_CITY.CODE.getName(), codeList, ValueOp.IN);
         Query findCityList = new Query.QueryBuilder().where(condition).buildQuery();
-        List<DictCityDO> cityDOList = cityDao.getDatas(findCityList);
+        List<DictCityDO> cityDOList = cityDao.getFullCity();
 
         if (data.getCities() != null && data.getCities().size() > 0) {
             Condition deleteCondition = new Condition(ThirdpartyAccountCity.THIRDPARTY_ACCOUNT_CITY.ACCOUNT_ID.getName(), data.getAccountId());
-            cityDao.delete(deleteCondition);
+            accountCityDao.delete(deleteCondition);
 
             List<ThirdpartyAccountCityDO> thirdpartyAccountCityDOList = data.getCities()
                     .stream()
@@ -93,9 +96,11 @@ public class ThridPartyAcountEntity {
                                 .findAny();
                         if (cityDOOptional.isPresent()) {
                             thirdpartyAccountCityDO.setCode(cityDOOptional.get().getCode());
+                        } else {
+                            thirdpartyAccountCityDO.setCode(0);
                         }
                         thirdpartyAccountCityDO.setRemainNum(city.getAmout());
-                        thirdpartyAccountCityDO.setJobtype((byte) city.getJobType());
+                        thirdpartyAccountCityDO.setJobtype((byte) city.getJobTypeInt());
                         thirdpartyAccountCityDO.setAccountId(data.getAccountId());
                         return thirdpartyAccountCityDO;
 

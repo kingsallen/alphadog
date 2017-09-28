@@ -2,6 +2,7 @@ package com.moseeker.useraccounts.config;
 
 import com.rabbitmq.client.ConnectionFactory;
 import org.springframework.amqp.core.*;
+import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
@@ -20,6 +21,7 @@ import java.util.List;
  * Created by lucky8987 on 17/5/12.
  */
 @Configuration
+@EnableRabbit
 @ComponentScan({"com.moseeker.useraccounts", "com.moseeker.entity", "com.moseeker.common.aop.iface", "com.moseeker.common.aop.iface", "com.moseeker.common.aop.notify"})
 @PropertySource("classpath:common.properties")
 @Import(com.moseeker.baseorm.config.AppConfig.class)
@@ -86,6 +88,9 @@ public class AppConfig {
     public RabbitListenerContainerFactory rabbitListenerContainerFactoryAutoAck() {
         SimpleRabbitListenerContainerFactory listenerContainerFactory = new SimpleRabbitListenerContainerFactory();
         listenerContainerFactory.setConnectionFactory(cachingConnectionFactory());
+
+        // 设置自动 ACK
+        listenerContainerFactory.setAcknowledgeMode(AcknowledgeMode.AUTO);
         return listenerContainerFactory;
     }
 

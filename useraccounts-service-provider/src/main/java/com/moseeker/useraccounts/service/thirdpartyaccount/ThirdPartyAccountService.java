@@ -37,6 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -184,17 +185,24 @@ public class ThirdPartyAccountService {
      */
     public void bingResultHandler(BindResult bindResult) throws CommonException {
         HrThirdPartyAccountDO accountDO = thirdPartyAccountDao.getAccountById(bindResult.getAccount().getAccountId());
-        if (bindResult.getStatus() != 0) {
+        if (accountDO == null) {
+            throw UserAccountException.THIRD_PARTY_ACCOUNT_NOTEXIST;
+        }
+        boolean changed = false;
+        if (bindResult != null && bindResult.getStatus() != 0) {
             emailNotification.sendFailureMail(emailNotification.getMails(), accountDO);
             accountDO.setErrorMessage(bindResult.getMessage());
+            changed = true;
             //发邮件cs
             //sendFailureMail(mails, hrThirdPartyAccount, extras);
         } else {
-            if (accountDO.getBinding() == BindingStatus.UNBIND.getValue()) {
+            if (accountDO.getBinding() != BindingStatus.BOUND.getValue()) {
                 accountDO.setBinding((short) BindingStatus.BOUND.getValue());
+                changed = true;
             }
         }
-        thirdPartyAccountDao.updateData(accountDO);
+        if (changed)
+            thirdPartyAccountDao.updateData(accountDO);
     }
 
     /**
@@ -202,6 +210,7 @@ public class ThirdPartyAccountService {
      * @param accountExt 账号绑定结果
      * @throws CommonException 业务异常
      */
+    @Transactional
     public void thirdPartyAccountExtHandler(ThirdPartyAccountExt accountExt) throws CommonException {
         HrThirdPartyAccountDO accountDO = thirdPartyAccountDao.getAccountById(accountExt.getData().getAccountId());
         if (accountDO == null) {
@@ -213,10 +222,13 @@ public class ThirdPartyAccountService {
             } else {
                 emailNotification.sendThirdPartyAccountExtHandlerFailureMail(emailNotification.getDevMails(),accountDO, "职位同步之后获取第三方渠道扩展信息失败！");
             }
+            if (accountDO.getBinding() != BindingStatus.BOUND.getValue()) {
+                accountDO.setBinding((short) BindingStatus.BOUND.getValue());
+                thirdPartyAccountDao.updateData(accountDO);
+            }
         } else {
             thridPartyAcountEntity.saveAccountExt(accountExt.getData(), accountDO);
         }
-        thirdPartyAccountDao.updateData(accountDO);
     }
 
     /**
