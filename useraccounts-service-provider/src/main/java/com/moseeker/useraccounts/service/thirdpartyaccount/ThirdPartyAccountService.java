@@ -10,7 +10,6 @@ import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccountHr;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.redis.RedisClient;
-import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.ChannelType;
@@ -22,6 +21,8 @@ import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.Update;
 import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.entity.ThridPartyAcountEntity;
+import com.moseeker.entity.pojos.ThirdPartyAccountExt;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
@@ -29,6 +30,9 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountHrDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.useraccounts.struct.ThirdPartyAccountHrInfo;
 import com.moseeker.thrift.gen.useraccounts.struct.ThirdPartyAccountInfo;
+import com.moseeker.useraccounts.constant.BindingStatus;
+import com.moseeker.useraccounts.exception.UserAccountException;
+import com.moseeker.useraccounts.pojo.BindResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +67,12 @@ public class ThirdPartyAccountService {
 
     @Autowired
     private HrCompanyDao hrCompanyDao;
+
+    @Autowired
+    EmailNotification emailNotification;
+
+    @Autowired
+    ThridPartyAcountEntity thridPartyAcountEntity;
 
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
@@ -167,6 +177,47 @@ public class ThirdPartyAccountService {
         }
     }
 
+    /**
+     * 账号绑定结果处理程序
+     * @param bindResult 账号绑定结果
+     * @throws CommonException 业务异常
+     */
+    public void bingResultHandler(BindResult bindResult) throws CommonException {
+        HrThirdPartyAccountDO accountDO = thirdPartyAccountDao.getAccountById(bindResult.getAccount().getAccountId());
+        if (bindResult.getStatus() != 0) {
+            emailNotification.sendFailureMail(emailNotification.getMails(), accountDO);
+            accountDO.setErrorMessage(bindResult.getMessage());
+            //发邮件cs
+            //sendFailureMail(mails, hrThirdPartyAccount, extras);
+        } else {
+            if (accountDO.getBinding() == BindingStatus.UNBIND.getValue()) {
+                accountDO.setBinding((short) BindingStatus.BOUND.getValue());
+            }
+        }
+        thirdPartyAccountDao.updateData(accountDO);
+    }
+
+    /**
+     * 第三方账号的预填项信息
+     * @param accountExt 账号绑定结果
+     * @throws CommonException 业务异常
+     */
+    public void thirdPartyAccountExtHandler(ThirdPartyAccountExt accountExt) throws CommonException {
+        HrThirdPartyAccountDO accountDO = thirdPartyAccountDao.getAccountById(accountExt.getData().getAccountId());
+        if (accountDO == null) {
+            throw UserAccountException.THIRD_PARTY_ACCOUNT_NOTEXIST;
+        }
+        if (accountExt.getStatus() != 0) {
+            if (accountExt.getData().getOperationType() == 1) {
+                emailNotification.sendThirdPartyAccountExtHandlerFailureMail(emailNotification.getMails(),accountDO, accountExt.getMessage());
+            } else {
+                emailNotification.sendThirdPartyAccountExtHandlerFailureMail(emailNotification.getDevMails(),accountDO, "职位同步之后获取第三方渠道扩展信息失败！");
+            }
+        } else {
+            thridPartyAcountEntity.saveAccountExt(accountExt.getData(), accountDO);
+        }
+        thirdPartyAccountDao.updateData(accountDO);
+    }
 
     /**
      * 防止两个人同时绑定一个帐号

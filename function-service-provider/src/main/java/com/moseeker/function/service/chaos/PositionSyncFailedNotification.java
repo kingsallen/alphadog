@@ -262,7 +262,7 @@ public class PositionSyncFailedNotification {
         emailMessgeBuilder.append(descript.toString().replaceAll("\n", divider)).append(divider);
         emailMessgeBuilder.append(divider).append("<hr>").append(divider);
         emailMessgeBuilder.append("【错误信息】：").append(divider);
-        String errorMessage = null;
+        String errorMessage;
         if (pojo.getMessage() != null && pojo.getMessage().size() > 0) {
             errorMessage = pojo.getMessage().stream().map(message -> EmojiFilter.unicodeToUtf8(message)).collect(Collectors.joining("\n\r"));
         } else {

@@ -98,4 +98,8 @@ public class DictCityMapDao extends JooqCrudImpl<DictCityMapDO, DictCityMapRecor
 
         return null;
     }
+
+    public List<DictCityMapDO> getOtherCityByChannel(short channel) {
+        return null;
+    }
 }

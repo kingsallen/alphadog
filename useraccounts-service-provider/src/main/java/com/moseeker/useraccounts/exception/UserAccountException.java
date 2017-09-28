@@ -27,6 +27,7 @@ public class UserAccountException extends CommonException {
     public static final UserAccountException SEARCH_ES_ERROR = new UserAccountException(90011, "查询ES数据发生异常!");
     public static final UserAccountException ILLEGAL_MOBILE = new UserAccountException(42017, "手机号码格式不合法!");
     public static final UserAccountException HR_UPDATEMOBILE_FAILED = new UserAccountException(42020, "手机号码修改失败!");
+    public static final UserAccountException THIRD_PARTY_ACCOUNT_NOTEXIST = new UserAccountException(42021, "第三方账号信息错误!");
 
     private final int code;
 

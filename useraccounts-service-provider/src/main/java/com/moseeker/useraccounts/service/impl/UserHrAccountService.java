@@ -1000,7 +1000,7 @@ public class UserHrAccountService {
         // ES取到数据
         if (response != null && response.getStatus() == 0) {
             logger.info("ES date:{}", response.getData());
-            EmployeeRankObj rankObj = JSONObject.parseObject(response.getData(), EmployeeRankObj.class);
+             EmployeeRankObj rankObj = JSONObject.parseObject(response.getData(), EmployeeRankObj.class);
             List<EmployeeRank> employeeRankList = rankObj.getData();
             if (employeeRankList != null && employeeRankList.size() > 0) {
                 logger.info("ES Data Size:{}", employeeRankList.size());
