@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.service;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrEmployeeCertConfDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
@@ -145,7 +146,7 @@ public abstract class EmployeeBinder {
             employeeId = useremployee.getId();
         }
         //将属于本公司的潜在候选人设置为无效
-        convertCandidatePerson(useremployee.getSysuserId(),useremployee.getCompanyId());
+        cancelCandidate(useremployee.getSysuserId(),useremployee.getCompanyId());
         // 将其他公司的员工认证记录设为未认证
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.where("sysuser_id", String.valueOf(useremployee.getSysuserId())).and("disable", "0");
@@ -159,8 +160,13 @@ public abstract class EmployeeBinder {
                     e.setCustomFieldValues("[]");
                 }
             });
+            log.info("employees========"+JSON.toJSONString(employees));
             if(!StringUtils.isEmptyList(employees)){
                 for(UserEmployeeDO DO:employees){
+                    int employeeIdOther=DO.getId();
+                    if(employeeIdOther==employeeId){
+                        continue;
+                    }
                     int userId=DO.getSysuserId();
                     int companyId=DO.getCompanyId();
                     convertCandidatePerson(userId,companyId);
@@ -186,31 +192,35 @@ public abstract class EmployeeBinder {
         log.info("updateEmployee response : {}", response);
         return response;
     }
-/*
-    员工认证成功时，需要将潜在候选人置为无效
- */
+    /*
+        员工认证成功时，需要将潜在候选人置为无效
+     */
     public void cancelCandidate(int userId,int companyId) {
         Query query = new Query.QueryBuilder().where("sys_user_id", userId).and("company_id", companyId).and("status", 1).buildQuery();
         List<CandidateCompanyDO> list = candidateCompanyDao.getDatas(query);
         if (!StringUtils.isEmptyList(list)) {
+            log.info(JSON.toJSONString(list));
             for (CandidateCompanyDO DO : list) {
                 DO.setStatus(0);
+
             }
             candidateCompanyDao.updateDatas(list);
+
         }
     }
     /*
         员工取消后，需要将潜在候选人置为有效
      */
-     public void convertCandidatePerson(int userId,int companyId){
-         Query query=new Query.QueryBuilder().where("sys_user_id",userId).and("company_id",companyId).and("status",0).buildQuery();
-         List<CandidateCompanyDO> list=candidateCompanyDao.getDatas(query);
-         if(!StringUtils.isEmptyList(list)){
-             for(CandidateCompanyDO DO:list){
-                 DO.setStatus(1);
-             }
-             candidateCompanyDao.updateDatas(list);
-         }
+    public void convertCandidatePerson(int userId,int companyId){
+        Query query=new Query.QueryBuilder().where("sys_user_id",userId).and("company_id",companyId).and("status",0).buildQuery();
+        List<CandidateCompanyDO> list=candidateCompanyDao.getDatas(query);
+        if(!StringUtils.isEmptyList(list)){
+            for(CandidateCompanyDO DO:list){
+                DO.setStatus(1);
+
+            }
+            candidateCompanyDao.updateDatas(list);
+        }
     }
 
 }
