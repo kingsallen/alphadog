@@ -184,7 +184,7 @@ public class ThirdPartyAccountService {
      * @throws CommonException 业务异常
      */
     public void bingResultHandler(BindResult bindResult) throws CommonException {
-        HrThirdPartyAccountDO accountDO = thirdPartyAccountDao.getAccountById(bindResult.getAccount().getAccountId());
+        HrThirdPartyAccountDO accountDO = thirdPartyAccountDao.getAccountById(bindResult.getData().getAccountId());
         if (accountDO == null) {
             throw UserAccountException.THIRD_PARTY_ACCOUNT_NOTEXIST;
         }

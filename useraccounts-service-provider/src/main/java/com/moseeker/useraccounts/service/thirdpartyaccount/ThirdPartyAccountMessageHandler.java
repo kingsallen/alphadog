@@ -36,6 +36,7 @@ public class ThirdPartyAccountMessageHandler {
         String msgBody = "{}";
         try {
             msgBody = new String(message.getBody(), "UTF-8");
+            logger.info("ThirdPartyAccountMessageHandler bindAccountQueue msgBody : {}", msgBody);
             BindResult bindResult = JSON.parseObject(msgBody, BindResult.class);
             thirdPartyAccountService.bingResultHandler(bindResult);
         } catch (CommonException e) {
@@ -52,6 +53,7 @@ public class ThirdPartyAccountMessageHandler {
         String msgBody = "{}";
         try {
             msgBody = new String(message.getBody(), "UTF-8");
+            logger.info("ThirdPartyAccountMessageHandler presetHandler msgBody : {}", msgBody);
             ThirdPartyAccountExt accountExt = JSON.parseObject(msgBody, ThirdPartyAccountExt.class);
             thirdPartyAccountService.thirdPartyAccountExtHandler(accountExt);
         } catch (Exception e) {

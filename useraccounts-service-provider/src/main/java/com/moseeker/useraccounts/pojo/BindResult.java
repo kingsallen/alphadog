@@ -8,7 +8,7 @@ public class BindResult {
 
     private int status;
     private String message;
-    private Account account;
+    private Account data;
 
     public class Account{
         private int accountId;
@@ -38,12 +38,12 @@ public class BindResult {
         this.message = message;
     }
 
-    public Account getAccount() {
-        return account;
+    public Account getData() {
+        return data;
     }
 
-    public void setAccount(Account account) {
-        this.account = account;
+    public void setData(Account data) {
+        this.data = data;
     }
 
     public Account createAccount() {
