@@ -7,6 +7,8 @@ import com.moseeker.entity.pojos.ThirdPartyAccountExt;
 import com.moseeker.thrift.gen.dao.struct.logdb.LogDeadLetterDO;
 import com.moseeker.useraccounts.pojo.BindResult;
 import com.rabbitmq.client.Channel;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
@@ -40,15 +42,7 @@ public class ThirdPartyAccountMessageHandler {
             logger.error(e.getMessage(), e);
         } catch (Exception e) {
             // 错误日志记录到数据库 的 log_dead_letter 表中
-            LogDeadLetterDO logDeadLetterDO = new LogDeadLetterDO();
-            logDeadLetterDO.setAppid(Integer.valueOf(message.getMessageProperties().getAppId()));
-            logDeadLetterDO.setErrorLog(e.getMessage());
-            logDeadLetterDO.setMsg(msgBody);
-            logDeadLetterDO.setExchangeName(message.getMessageProperties().getReceivedExchange());
-            logDeadLetterDO.setRoutingKey(message.getMessageProperties().getReceivedRoutingKey());
-            logDeadLetterDO.setQueueName(message.getMessageProperties().getConsumerQueue());
-            logDeadLetterDao.addData(logDeadLetterDO);
-            logger.error(e.getMessage(), e);
+            log(message, e, msgBody);
         }
     }
 
@@ -58,20 +52,25 @@ public class ThirdPartyAccountMessageHandler {
         String msgBody = "{}";
         try {
             msgBody = new String(message.getBody(), "UTF-8");
-            System.out.println(msgBody);
             ThirdPartyAccountExt accountExt = JSON.parseObject(msgBody, ThirdPartyAccountExt.class);
             thirdPartyAccountService.thirdPartyAccountExtHandler(accountExt);
         } catch (Exception e) {
             // 错误日志记录到数据库 的 log_dead_letter 表中
-            LogDeadLetterDO logDeadLetterDO = new LogDeadLetterDO();
-            logDeadLetterDO.setAppid(Integer.valueOf(message.getMessageProperties().getAppId()));
-            logDeadLetterDO.setErrorLog(e.getMessage());
-            logDeadLetterDO.setMsg(msgBody);
-            logDeadLetterDO.setExchangeName(message.getMessageProperties().getReceivedExchange());
-            logDeadLetterDO.setRoutingKey(message.getMessageProperties().getReceivedRoutingKey());
-            logDeadLetterDO.setQueueName(message.getMessageProperties().getConsumerQueue());
-            logDeadLetterDao.addData(logDeadLetterDO);
-            logger.error(e.getMessage(), e);
+            log(message, e, msgBody);
         }
+    }
+
+    private void log(Message message, Exception e, String msgBody) {
+        LogDeadLetterDO logDeadLetterDO = new LogDeadLetterDO();
+        logDeadLetterDO.setAppid(NumberUtils.toInt(message.getMessageProperties().getAppId(), 0));
+        logDeadLetterDO.setErrorLog(e.getMessage());
+        logDeadLetterDO.setMsg(msgBody);
+        logDeadLetterDO.setErrorLog(e.getMessage());
+        logDeadLetterDO.setMsg(msgBody);
+        logDeadLetterDO.setExchangeName(StringUtils.defaultIfBlank(message.getMessageProperties().getReceivedExchange(), ""));
+        logDeadLetterDO.setRoutingKey(StringUtils.defaultIfBlank(message.getMessageProperties().getReceivedRoutingKey(), ""));
+        logDeadLetterDO.setQueueName(StringUtils.defaultIfBlank(message.getMessageProperties().getConsumerQueue(), ""));
+        logDeadLetterDao.addData(logDeadLetterDO);
+        logger.error(e.getMessage(), e);
     }
 }
