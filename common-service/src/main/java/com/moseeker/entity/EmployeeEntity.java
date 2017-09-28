@@ -453,12 +453,12 @@ public class EmployeeEntity {
      */
     public boolean unbind(List<UserEmployeeDO> employees) throws CommonException {
         if (employees != null && employees.size() > 0) {
+           logger.info("=====取消认证======="+JSON.toJSONString(employees));
             employees.stream().filter(f -> f.getActivation() == 0).forEach(e -> {
                 e.setActivation((byte) 1);
                 e.setEmailIsvalid((byte) 0);
                 e.setCustomFieldValues("[]");
             });
-            int[] rows = employeeDao.updateDatas(employees);
             for(UserEmployeeDO DO:employees){
                 if(DO.getActivation()==0){
                     int userId=DO.getSysuserId();
@@ -467,6 +467,8 @@ public class EmployeeEntity {
                 }
 
             }
+            int[] rows = employeeDao.updateDatas(employees);
+
             if (Arrays.stream(rows).sum() > 0) {
                 // 更新ES中useremployee信息
                 searchengineEntity.updateEmployeeAwards(employees.stream().map(m -> m.getId()).collect(Collectors.toList()));
@@ -484,21 +486,24 @@ public class EmployeeEntity {
      */
     @Transactional
     public boolean removeEmployee(List<Integer> employeeIds) throws CommonException {
+
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.where(new Condition("id", employeeIds, ValueOp.IN));
         List<UserEmployeeDO> userEmployeeDOList = employeeDao.getDatas(query.buildQuery());
+        logger.info("=====取消认证2======="+JSON.toJSONString(userEmployeeDOList));
         if (userEmployeeDOList != null && userEmployeeDOList.size() > 0) {
+            for(UserEmployeeDO DO:userEmployeeDOList){
+                int userId=DO.getSysuserId();
+                int companyId=DO.getCompanyId();
+                convertCandidatePerson(userId,companyId);
+            }
             int[] rows = employeeDao.deleteDatas(userEmployeeDOList);
             // 受影响行数大于零，说明删除成功， 将数据copy到history_user_employee中
             if (Arrays.stream(rows).sum() > 0) {
                 historyUserEmployeeDao.addAllData(userEmployeeDOList);
                 // 更新ES中useremployee信息
                 searchengineEntity.deleteEmployeeDO(employeeIds);
-                for(UserEmployeeDO DO:userEmployeeDOList){
-                    int userId=DO.getSysuserId();
-                    int companyId=DO.getCompanyId();
-                    convertCandidatePerson(userId,companyId);
-                }
+
                 return true;
             } else {
                 throw ExceptionFactory.buildException(ExceptionCategory.EMPLOYEE_HASBEENDELETEOR);
