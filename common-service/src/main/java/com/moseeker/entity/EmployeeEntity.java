@@ -460,9 +460,12 @@ public class EmployeeEntity {
             });
             int[] rows = employeeDao.updateDatas(employees);
             for(UserEmployeeDO DO:employees){
-                int userId=DO.getSysuserId();
-                int companyId=DO.getCompanyId();
-                convertCandidatePerson(userId,companyId);
+                if(DO.getActivation()==0){
+                    int userId=DO.getSysuserId();
+                    int companyId=DO.getCompanyId();
+                    convertCandidatePerson(userId,companyId);
+                }
+
             }
             if (Arrays.stream(rows).sum() > 0) {
                 // 更新ES中useremployee信息
