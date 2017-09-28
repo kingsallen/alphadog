@@ -94,7 +94,7 @@ public class ThirdPartyAccountMessageHandlerTest {
     @Test
     public void testJson() {
 
-        String json = "{\"data\":{\"accountId\":8,\"addresses\":[{\"address\":\"乐山路33号\",\"city\":\"上海市\",\"code\":\"071100\",\"value\":461827}],\"cities\":[{\"amout\":148,\"area\":\"全国\",\"expiryDate\":\"2018-09-01\",\"jobType\":0}],\"companies\":[\"company1\",\"company2\"],\"departments\":[\"department1\",\"department2\"],\"operationType\":1},\"message\":\"success\",\"status\":0}";
+        String json = "{\"data\":{\"accountId\":8,\"addresses\":[{\"address\":\"乐山路33号\",\"city\":\"上海市\",\"code\":\"071100\",\"value\":461827}],\"cities\":[{\"amout\":148,\"area\":\"全国\",\"expiryDate\":\"2018-09-01\",\"jobType\":\"社会招聘\"}],\"companies\":[\"company1\",\"company2\"],\"departments\":[\"department1\",\"department2\"],\"operationType\":1},\"message\":\"success\",\"status\":0}";
 
         try {
             ThirdPartyAccountExt accountExt = JSON.parseObject(json, ThirdPartyAccountExt.class);

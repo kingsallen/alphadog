@@ -61,16 +61,20 @@ public class ThirdPartyAccountMessageHandler {
     }
 
     private void log(Message message, Exception e, String msgBody) {
-        LogDeadLetterDO logDeadLetterDO = new LogDeadLetterDO();
-        logDeadLetterDO.setAppid(NumberUtils.toInt(message.getMessageProperties().getAppId(), 0));
-        logDeadLetterDO.setErrorLog(e.getMessage());
-        logDeadLetterDO.setMsg(msgBody);
-        logDeadLetterDO.setErrorLog(e.getMessage());
-        logDeadLetterDO.setMsg(msgBody);
-        logDeadLetterDO.setExchangeName(StringUtils.defaultIfBlank(message.getMessageProperties().getReceivedExchange(), ""));
-        logDeadLetterDO.setRoutingKey(StringUtils.defaultIfBlank(message.getMessageProperties().getReceivedRoutingKey(), ""));
-        logDeadLetterDO.setQueueName(StringUtils.defaultIfBlank(message.getMessageProperties().getConsumerQueue(), ""));
-        logDeadLetterDao.addData(logDeadLetterDO);
-        logger.error(e.getMessage(), e);
+        try {
+            LogDeadLetterDO logDeadLetterDO = new LogDeadLetterDO();
+            logDeadLetterDO.setAppid(NumberUtils.toInt(message.getMessageProperties().getAppId(), 0));
+            logDeadLetterDO.setErrorLog(e.getMessage());
+            logDeadLetterDO.setMsg(msgBody);
+            logDeadLetterDO.setErrorLog(e.getMessage());
+            logDeadLetterDO.setMsg(msgBody);
+            logDeadLetterDO.setExchangeName(StringUtils.defaultIfBlank(message.getMessageProperties().getReceivedExchange(), ""));
+            logDeadLetterDO.setRoutingKey(StringUtils.defaultIfBlank(message.getMessageProperties().getReceivedRoutingKey(), ""));
+            logDeadLetterDO.setQueueName(StringUtils.defaultIfBlank(message.getMessageProperties().getConsumerQueue(), ""));
+            logDeadLetterDao.addData(logDeadLetterDO);
+            logger.error(e.getMessage(), e);
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
     }
 }
