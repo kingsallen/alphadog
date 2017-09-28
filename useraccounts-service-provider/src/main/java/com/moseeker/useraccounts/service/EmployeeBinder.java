@@ -199,9 +199,10 @@ public abstract class EmployeeBinder {
             log.info(JSON.toJSONString(list));
             for (CandidateCompanyDO DO : list) {
                 DO.setStatus(0);
+                candidateCompanyDao.updateData(DO);
             }
             log.info("CandidateCompanyDO3====="+JSON.toJSONString(list));
-            candidateCompanyDao.updateDatas(list);
+
         }
     }
     /*
@@ -214,9 +215,9 @@ public abstract class EmployeeBinder {
          if(!StringUtils.isEmptyList(list)){
              for(CandidateCompanyDO DO:list){
                  DO.setStatus(1);
+                 candidateCompanyDao.updateData(DO);
              }
              log.info("CandidateCompanyDO2====="+JSON.toJSONString(list));
-             candidateCompanyDao.updateDatas(list);
          }
     }
 
