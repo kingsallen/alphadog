@@ -460,12 +460,9 @@ public class EmployeeEntity {
                 e.setCustomFieldValues("[]");
             });
             for(UserEmployeeDO DO:employees){
-                if(DO.getActivation()==0){
                     int userId=DO.getSysuserId();
                     int companyId=DO.getCompanyId();
                     convertCandidatePerson(userId,companyId);
-                }
-
             }
             int[] rows = employeeDao.updateDatas(employees);
 
