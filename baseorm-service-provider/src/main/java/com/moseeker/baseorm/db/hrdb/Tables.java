@@ -65,7 +65,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
 import com.moseeker.baseorm.db.hrdb.tables.HrdbHrHtml5Statistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrdbHrHtml5UniqueStatistics;
-
+import com.moseeker.baseorm.db.hrdb.tables.HrAppExportFields;
 import javax.annotation.Generated;
 
 

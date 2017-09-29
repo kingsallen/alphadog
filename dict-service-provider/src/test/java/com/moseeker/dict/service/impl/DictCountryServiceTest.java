@@ -1,6 +1,9 @@
 package com.moseeker.dict.service.impl;
 
+import com.moseeker.baseorm.tool.QueryConvert;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.dict.config.AppConfig;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,7 +25,9 @@ public class DictCountryServiceTest {
 
     @Test
     public void getDictCountry() throws Exception {
-        Response response = service.getDictCountry();
+        CommonQuery query=new CommonQuery();
+        Query query1= QueryConvert.commonQueryConvertToQuery(query);
+        Response response = service.getDictCountry(query1);
         System.out.println(response);
     }
 
