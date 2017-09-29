@@ -4,7 +4,67 @@
 package com.moseeker.baseorm.db.hrdb;
 
 
-import com.moseeker.baseorm.db.hrdb.tables.*;
+import com.moseeker.baseorm.db.hrdb.tables.HrAppCvConf;
+import com.moseeker.baseorm.db.hrdb.tables.HrAppExportFields;
+import com.moseeker.baseorm.db.hrdb.tables.HrChatUnreadCount;
+import com.moseeker.baseorm.db.hrdb.tables.HrCmsMedia;
+import com.moseeker.baseorm.db.hrdb.tables.HrCmsModule;
+import com.moseeker.baseorm.db.hrdb.tables.HrCmsPages;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf;
+import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCertConf;
+import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCustomFields;
+import com.moseeker.baseorm.db.hrdb.tables.HrEmployeePosition;
+import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeSection;
+import com.moseeker.baseorm.db.hrdb.tables.HrFeedback;
+import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompany;
+import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompanyRel;
+import com.moseeker.baseorm.db.hrdb.tables.HrHbConfig;
+import com.moseeker.baseorm.db.hrdb.tables.HrHbItems;
+import com.moseeker.baseorm.db.hrdb.tables.HrHbPositionBinding;
+import com.moseeker.baseorm.db.hrdb.tables.HrHbScratchCard;
+import com.moseeker.baseorm.db.hrdb.tables.HrHbSendRecord;
+import com.moseeker.baseorm.db.hrdb.tables.HrHtml5Statistics;
+import com.moseeker.baseorm.db.hrdb.tables.HrHtml5UniqueStatistics;
+import com.moseeker.baseorm.db.hrdb.tables.HrImporterMonitor;
+import com.moseeker.baseorm.db.hrdb.tables.HrMediaBackupChendi;
+import com.moseeker.baseorm.db.hrdb.tables.HrNps;
+import com.moseeker.baseorm.db.hrdb.tables.HrNpsRecommend;
+import com.moseeker.baseorm.db.hrdb.tables.HrOperationRecord;
+import com.moseeker.baseorm.db.hrdb.tables.HrPointsConf;
+import com.moseeker.baseorm.db.hrdb.tables.HrRecruitStatistics;
+import com.moseeker.baseorm.db.hrdb.tables.HrRecruitUniqueStatistics;
+import com.moseeker.baseorm.db.hrdb.tables.HrReferralStatistics;
+import com.moseeker.baseorm.db.hrdb.tables.HrResource;
+import com.moseeker.baseorm.db.hrdb.tables.HrResourceBackupChendi;
+import com.moseeker.baseorm.db.hrdb.tables.HrResourceOnline;
+import com.moseeker.baseorm.db.hrdb.tables.HrRuleStatistics;
+import com.moseeker.baseorm.db.hrdb.tables.HrRuleUniqueStatistics;
+import com.moseeker.baseorm.db.hrdb.tables.HrSearchCondition;
+import com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply;
+import com.moseeker.baseorm.db.hrdb.tables.HrTalentpool;
+import com.moseeker.baseorm.db.hrdb.tables.HrTeam;
+import com.moseeker.baseorm.db.hrdb.tables.HrTeamBackupChendi;
+import com.moseeker.baseorm.db.hrdb.tables.HrTeamMember;
+import com.moseeker.baseorm.db.hrdb.tables.HrTeamMemberBackupChendi;
+import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
+import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccountHr;
+import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
+import com.moseeker.baseorm.db.hrdb.tables.HrTopic;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxBasicReply;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxHrChat;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxHrChatList;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxImageReply;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxModule;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxNewsReply;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxNoticeMessage;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxRule;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxTemplateMessage;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
+import com.moseeker.baseorm.db.hrdb.tables.HrdbHrHtml5Statistics;
+import com.moseeker.baseorm.db.hrdb.tables.HrdbHrHtml5UniqueStatistics;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,7 +90,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Hrdb extends SchemaImpl {
 
-    private static final long serialVersionUID = -266333574;
+    private static final long serialVersionUID = -2134569638;
 
     /**
      * The reference instance of <code>hrdb</code>
@@ -343,12 +403,6 @@ public class Hrdb extends SchemaImpl {
     public final HrWxWechatNoticeSyncStatus HR_WX_WECHAT_NOTICE_SYNC_STATUS = com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS;
 
     /**
-     * 自定义简历模板导出字段表
-     */
-    public final HrAppExportFields HR_APP_EXPORT_FIELDS = com.moseeker.baseorm.db.hrdb.tables.HrAppExportFields.HR_APP_EXPORT_FIELDS;
-
-
-    /**
      * No further instances allowed
      */
     private Hrdb() {
@@ -376,6 +430,7 @@ public class Hrdb extends SchemaImpl {
             HrdbHrHtml5Statistics.HRDB_HR_HTML5_STATISTICS,
             HrdbHrHtml5UniqueStatistics.HRDB_HR_HTML5_UNIQUE_STATISTICS,
             HrAppCvConf.HR_APP_CV_CONF,
+            HrAppExportFields.HR_APP_EXPORT_FIELDS,
             HrChatUnreadCount.HR_CHAT_UNREAD_COUNT,
             HrCmsMedia.HR_CMS_MEDIA,
             HrCmsModule.HR_CMS_MODULE,
@@ -432,7 +487,6 @@ public class Hrdb extends SchemaImpl {
             HrWxRule.HR_WX_RULE,
             HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE,
             HrWxWechat.HR_WX_WECHAT,
-            HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS,
-                HrAppExportFields.HR_APP_EXPORT_FIELDS);
+            HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS);
     }
 }
