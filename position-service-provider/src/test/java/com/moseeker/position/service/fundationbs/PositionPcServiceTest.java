@@ -120,4 +120,10 @@ public class PositionPcServiceTest {
           List<Map<String,Object>> list=service.getAdvertisement(1,10);
           System.out.println(list);
       }
+      @Test
+	  public void testModulePosition() throws TException {
+		  Map<String,Object> map=service.getModuleRecommendPosition(1,10,2);
+		  System.out.println(map);
+	  }
+
 }

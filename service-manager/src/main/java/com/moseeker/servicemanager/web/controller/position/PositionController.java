@@ -680,7 +680,7 @@ public class PositionController {
     /*
      *pc端广告位的获取
      */
-    @RequestMapping(value = "/position/pc/recommendposition", method = RequestMethod.GET)
+    @RequestMapping(value = "/position/pc/advertisementposition", method = RequestMethod.GET)
     @ResponseBody
     public String getPcecommendposition(HttpServletRequest request, HttpServletResponse response){
         try{
