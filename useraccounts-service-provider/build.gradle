@@ -18,6 +18,8 @@ dependencies {
     testCompile deps["mockito"]
     compile group: 'org.elasticsearch', name: 'elasticsearch', version: '2.2.1'
 
+    compile deps["spring-rabbit"]
+
 }
 
 //compileJava.dependsOn(":thrift-jooq:copyGeneratedFile") 
