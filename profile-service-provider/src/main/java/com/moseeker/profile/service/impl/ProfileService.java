@@ -232,12 +232,13 @@ public class ProfileService {
             queryBuilder.where("profile_id", profileProfile.getId());
             ProfileOtherDO profileOther = profileOtherDao.getData(queryBuilder.buildQuery());
             if (profileOther == null || StringUtils.isNullOrEmpty(profileOther.getOther())) {
-                return ResponseUtils.success(new HashMap<String, Object>(){{put("result",false);put("resultMsg","自定义简历为空");}});
+                profileOther = new ProfileOtherDO();
+//                return ResponseUtils.success(new HashMap<String, Object>(){{put("result",false);put("resultMsg","自定义简历为空");}});
             }
             JSONObject profileOtherJson = new JSONObject();
             List<JSONObject> appCvConfigJson = new ArrayList<>();
             try {
-                profileOtherJson = JSONObject.parseObject(profileOther.getOther());
+                profileOtherJson = JSONObject.parseObject(org.apache.commons.lang.StringUtils.defaultIfBlank(profileOther.getOther(), "{}"));
                 appCvConfigJson = JSONArray.parseArray(hrAppCvConfDO.getFieldValue()).getJSONObject(0).getJSONArray("fields").stream().
                         map(m -> JSONObject.parseObject(String.valueOf(m))).filter(f -> f.getIntValue("required") == 0 && f.getIntValue("parent_id") == 0).collect(Collectors.toList());
             } catch (Exception e) {
