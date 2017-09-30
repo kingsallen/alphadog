@@ -360,21 +360,18 @@ public class PositionPcService {
 		}
 		return occupationMap;
 	}
-
 	//获取Job_Position_Ext
 	private JobPositionExtDO getJobPositionExt(int positionId){
 		Query query=new Query.QueryBuilder().where("pid",positionId).buildQuery();
 		JobPositionExtDO DO=jobPositionExtDao.getData(query);
 		return DO;
 	}
-
 	//获取job_position_custom
 	public JobCustomDO getJobCustom(int customId){
 		Query query=new Query.QueryBuilder().where("id",customId).and("status",1).buildQuery();
 		JobCustomDO DO=jobCustomDao.getData(query);
 		return DO;
 	}
-
 	//获取job_position_custom
 	public JobOccupationDO getJobOccupation(int occupationId){
 		Query query=new Query.QueryBuilder().where("id",occupationId).and("status",1).buildQuery();
@@ -389,8 +386,6 @@ public class PositionPcService {
 		int num=jobPositionDao.getCount(query);
 		return num;
 	}
-
-
 	/*
        获取推荐职位的信息
      */
@@ -835,7 +830,6 @@ public class PositionPcService {
 		}
 		return result;
 	}
-
 	/*
        处理position 或者 Team jd页数据，获取首张图片
      */
@@ -846,7 +840,6 @@ public class PositionPcService {
 		List<Map<String,Object>> list=pcRevisionEntity.HandleCmsResource(jdTeamids,type);
 		return list;
 	}
-
 	/*
      总体上处理数据
       */
@@ -948,9 +941,6 @@ public class PositionPcService {
 		List<Map<String,Object>> result=handleRecommendPcCompanyData(companyIdList);
 		return result;
 	}
-
-
-
 	//获取所有公司
 	public List<Integer> getAllCompanyIds(Map<Integer,Set<Integer>> data){
 		if(data==null||data.isEmpty()){
@@ -1139,8 +1129,6 @@ public class PositionPcService {
 		}
 		return map;
 	}
-
-
 	//处理企业信息的组合问题
 	public List<Map<String,Object>> handleDataForCompanyRecommend( List<HrCompanyDO> companyList,
 																   Map<Integer,List<Integer>> companyPulisher,Map<Integer,Integer> mapTeamNum
@@ -1272,8 +1260,6 @@ public class PositionPcService {
 		}
 		return list;
 	}
-
-
 	//获取企业行业list <String>
 	private List<String> getIndustryName(List<HrCompanyDO> list){
 		if(StringUtils.isEmptyList(list)){
@@ -1327,7 +1313,7 @@ public class PositionPcService {
 		}
 		return result;
 	}
-
+    //获取hr_company_conf的数据
 	private List<HrCompanyConfDO> getHrCompanyConfData(List<HrCompanyDO> list){
 		List<Integer> idList=this.getAllMotherCompanyIdList(list);
 		List<HrCompanyConfDO> confList=this.getHrCompanyConfDOList(idList);
