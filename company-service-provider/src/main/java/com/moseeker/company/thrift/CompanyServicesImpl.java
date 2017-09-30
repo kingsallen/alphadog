@@ -316,15 +316,13 @@ public class CompanyServicesImpl implements Iface {
         try{
             List<Map<String,Object>> list=companyPcService.getCompanyFourtuneAndPaid();
             if(StringUtils.isEmptyList(list)){
-                ResponseUtils.success("");
+                return ResponseUtils.success("");
             }
-            ResponseUtils.success(list);
+            return ResponseUtils.success(list);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
             throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
         }
-
-        return null;
     }
 
 
