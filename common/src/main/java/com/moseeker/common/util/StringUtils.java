@@ -214,4 +214,20 @@ public class StringUtils {
         return map;
 
     }
+
+    /**
+     * 匹配是否是最后一段字符串
+     * @param context 被校验的字符串
+     * @param c 字符串
+     * @return true 是，false 否
+     */
+    public static boolean lastContain(String context, String c) {
+        if (isNotNullOrEmpty(context)) {
+            int index = context.lastIndexOf(c);
+            if (index > 0 && context.length() - c.length() == index) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
