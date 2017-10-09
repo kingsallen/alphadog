@@ -11,6 +11,7 @@ import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.*;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.db.jobdb.tables.JobPcRecommendPositionItem;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
@@ -246,7 +247,7 @@ public class PositionPcService {
 		List<Map<String,Object>> positionList=handleModuleRecommendPosition(page,pageSize,moduleId);
 		String DOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(jobPcRecommendPositionsModuleDO);
 		Map<String,Object> ModuleDOMap= JSON.parseObject(DOs, Map.class);
-		int totalnum=getCountrecommendPositionItemByModuleId(moduleId);
+		int totalnum=handleModulePositionNum(moduleId);
 		map.put("module",ModuleDOMap);
 		map.put("position",positionList);
 		map.put("totalnum",totalnum);
@@ -293,9 +294,40 @@ public class PositionPcService {
 	/*
 	 获取该模块的item的总数
 	 */
-	public int getCountrecommendPositionItemByModuleId(int moduleId){
+	public int handleModulePositionNum(int moduleId){
+		List<JobPcRecommendPositionItemDO> jobPcRecommendPositionItemDOS=getRecommendPositionItemByModuleId(moduleId);
+		List<Integer> positionIdList=getPositionIdByJobPcRecommendPositionItemDOs(jobPcRecommendPositionItemDOS);
+		return getPositionNumByIdList(positionIdList);
+	}
+	/*
+	 获取推荐职位模块下的具体推荐项
+	 */
+	public List<JobPcRecommendPositionItemDO> getRecommendPositionItemByModuleId(int moduleId){
 		Query query=new Query.QueryBuilder().where("module_id",moduleId).and("status",1).buildQuery();
-		int num=jobPcRecommendPositionItemDao.getCount(query);
+		List<JobPcRecommendPositionItemDO> jobPcRecommendPositionItemDOs=jobPcRecommendPositionItemDao.getDatas(query);
+		return jobPcRecommendPositionItemDOs;
+	}
+	//根据JobPcRecommendPositionItemDO的list获取positionid
+
+	public List<Integer> getPositionIdByJobPcRecommendPositionItemDOs(List<JobPcRecommendPositionItemDO> list){
+		if(StringUtils.isEmptyList(list)){
+			return null;
+		}
+		List<Integer> result=new ArrayList<Integer>();
+		for(JobPcRecommendPositionItemDO DO:list){
+			result.add(DO.getPositionId());
+		}
+		return result;
+	}
+	/*
+	根据position。id获取position的数量
+	 */
+	public int getPositionNumByIdList(List<Integer> positionIdList){
+		if(StringUtils.isEmptyList(positionIdList)){
+			return 0;
+		}
+		Query query=new Query.QueryBuilder().where(new Condition("id",positionIdList.toArray(),ValueOp.IN)).and("status",0).buildQuery();
+		int num=jobPositionDao.getCount(query);
 		return num;
 	}
 	//获取自定义字段
