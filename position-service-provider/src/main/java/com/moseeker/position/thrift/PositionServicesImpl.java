@@ -335,6 +335,9 @@ public class PositionServicesImpl implements Iface {
 
     }
 
+
+
+
     @Override
     public ThirdPartyPositionResult getThirdPartyPositionInfo(ThirdPartyPositionInfoForm infoForm) throws BIZException, TException {
         try {
@@ -380,5 +383,14 @@ public class PositionServicesImpl implements Iface {
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }
+    }
+    @Override
+    public Response getThirdpartySyncedPositions(int channel, int publisher, int companyId, int candidateSource) throws TException {
+        return null;
+    }
+
+    @Override
+    public Response putAlipayResult(int channel, int positionId, int alipayJobId) throws TException {
+        return null;
     }
 }

@@ -73,6 +73,8 @@ service PositionServices {
     common_struct.Response getPcRecommandCompanyAll(1:i32 page,2:i32 pageSize);
     common_struct.Response getPcPositionDetail(1:i32 positionId);
     common_struct.Response getPcRecommendPosition(1:i32 positionId,2:i32 page,3:i32 pageSize);
+    common_struct.Response getThirdpartySyncedPositions(1:i32 channel,2:i32 publisher,3:i32 companyId,4:i32 candidateSource);
+    common_struct.Response putAlipayResult(1:i32 channel,2:i32 positionId,3:i32 alipayJobId );
 }
 /*
 	查询第三方自定义职能
