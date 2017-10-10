@@ -312,7 +312,7 @@ public class ProfileService {
                         Company company = new Company();
                         company.setCompanyIndustry(jobExpObj.getJob_industry());
                         company.setCompanyName(jobExpObj.getJob_cpy());
-                        company.setCompanyScale(org.apache.commons.lang.StringUtils.defaultIfBlank(jobExpObj.getJob_cpy_size().replace("人", ""), ""));
+                        company.setCompanyScale(org.apache.commons.lang.StringUtils.defaultIfBlank(jobExpObj.getJob_cpy_size() == null ? "0-0" : jobExpObj.getJob_cpy_size().replaceAll("人", ""), "0-0"));
                         workexps.setCompany(company);
                         workexps.setDescription(org.apache.commons.lang.StringUtils.defaultIfBlank(jobExpObj.getJob_cpy_desc(), jobExpObj.getJob_content()));
                         workexps.setStartDate(jobExpObj.getStart_date());
@@ -365,37 +365,6 @@ public class ProfileService {
                 }
                 profileObj.setCredentials(credentialList);
                 logger.info("profileParser getCredentials:{}", JSON.toJSONString(profileObj.getCredentials()));
-
-                // 期望
-//                Intentions intentions = new Intentions();
-//                if (resumeObj.getResult().getExpect_jnature() != null) {
-//                    switch (resumeObj.getResult().getExpect_jnature()) {
-//                        case "全职":
-//                            intentions.setWorktype(1);
-//                            break;
-//                        case "兼职":
-//                            intentions.setWorktype(2);
-//                            break;
-//                        case "实习":
-//                            intentions.setWorktype(2);
-//                            break;
-//                        default:
-//                            intentions.setWorktype(0);
-//                    }
-//                }
-//
-//                if (resumeObj.getResult().getExpect_jstatus() != null) {
-//                    switch (resumeObj.getResult().getExpect_jstatus()) {
-//                        case "在职":
-//                            intentions.setWorkstate(1);
-//                            break;
-//                        case "离职":
-//                            intentions.setWorkstate(4);
-//                            break;
-//                        default:
-//                            intentions.setWorkstate(0);
-//                    }
-//                }
 
                 // basic信息
                 logger.info("profileParser resumeObj.getResult().getCity():{}", resumeObj.getResult().getCity());
