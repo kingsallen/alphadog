@@ -4,7 +4,7 @@ apply plugin: 'eclipse'
 dependencies {
 
     compile project(":baseorm-service-provider")
-    compile project(":common")
+    compile project(":common-service")
     compile project(":rpc-center")
     compile deps["spring-context"]
     compile deps["spring-tx"]

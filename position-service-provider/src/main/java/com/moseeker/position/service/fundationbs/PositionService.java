@@ -107,6 +107,8 @@ public class PositionService {
     @Autowired
     private HrCompanyDao hrCompanyDao;
     @Autowired
+    private HrCompanyConfDao hrCompanyConfDao;
+    @Autowired
     private HrHbConfigDao hrHbConfigDao;
     @Autowired
     private HrHbPositionBindingDao hrHbPositionBindingDao;
@@ -1763,13 +1765,31 @@ public class PositionService {
                 return null;
         }
 
+        Query queryShowInQxCompany = new Query.QueryBuilder().select("company_id").where("show_in_qx", 1).buildQuery();
+
+        List<HrCompanyConfDO> companyShowInQxList = hrCompanyConfDao.getDatas(queryShowInQxCompany);
+        List<Integer> companylist = null;
+        if (companyShowInQxList != null) {
+            companylist = new ArrayList<>(companyShowInQxList.size());
+            for (HrCompanyConfDO companyconf : companyShowInQxList) {
+                companylist.add(companyconf.getCompanyId());
+            }
+        }
 
         List<JobPositionDO> jobPositionList = jobPositionDao.getPositions(query);
         List<Integer> positionlist = null;
         if (jobPositionList != null) {
             positionlist = new ArrayList<>(jobPositionList.size());
             for (JobPositionDO position : jobPositionList) {
-                positionlist.add(position.getId());
+
+                // 上架或者刷新，需要严格判断开启仟寻展示； 由于目前所有职位都在支付宝， 下架不需要判断是否开启。
+                if (type==0 || type==1){
+                    if (companylist.contains(position.getCompanyId())){
+                        positionlist.add(position.getId());
+                    }
+                }else{
+                    positionlist.add(position.getId());
+                }
 
             }
         }

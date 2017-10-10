@@ -1,6 +1,8 @@
 package com.moseeker.servicemanager.web.controller.profile;
 
+
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
@@ -18,9 +20,16 @@ import com.moseeker.thrift.gen.application.struct.ApplicationResponse;
 import com.moseeker.thrift.gen.apps.profilebs.service.ProfileBS;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.profile.service.ProfileOtherThriftService;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Consts;
 import org.slf4j.Logger;
@@ -31,13 +40,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Controller
 @CounterIface
@@ -52,6 +54,8 @@ public class ProfileController {
     OutPutResumeUtil outPutResumeService = new OutPutResumeUtil();
 
     ProfileBS.Iface profileBSService = ServiceManager.SERVICEMANAGER.getService(ProfileBS.Iface.class);
+
+    ProfileOtherThriftService.Iface profileOtherService = ServiceManager.SERVICEMANAGER.getService(ProfileOtherThriftService.Iface.class);
 
     JobApplicationServices.Iface jobApplicationServices = ServiceManager.SERVICEMANAGER.getService(JobApplicationServices.Iface.class);
 
@@ -164,9 +168,13 @@ public class ProfileController {
                     if (uuids != null && uuids.size() - 1 >= i) {
                         uuid = BeanUtils.converToString(uuids.get(i));
                     }
-                    result = profileService.getResource(userId, profileId, uuid);
+                    try {
+                        result = profileService.getResource(userId, profileId, uuid);
+                        logger.info("data:" + JSON.parse(result.getData()));
+                    } catch (Exception e) {
+                        logger.error(e.getMessage(), e);
+                    }
                     logger.info("current:" + i);
-                    logger.info("data:" + JSON.parse(result.getData()));
                     if (result != null && result.getStatus() == 0) {
                         profileData.add(JSON.parse(result.getData()));
                     }
@@ -379,7 +387,7 @@ public class ProfileController {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             int userId = 0;
             if (params.get("userId") != null) {
-                userId = (Integer)params.get("userId");
+                userId = (Integer) params.get("userId");
             }
             String profile = null;
             if (params.get("profile") != null) {
@@ -391,6 +399,54 @@ public class ProfileController {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/profile/check/other", method = RequestMethod.POST)
+    @ResponseBody
+    public String checkOther(HttpServletRequest request) {
+        try {
+            Params<String, Object> form = ParamUtils.parseRequestParam(request);
+            int userId = form.getInt("userId", 0);
+            int positionId = form.getInt("positionId", 0);
+            return ResponseLogNotification.success(request, profileOtherService.checkProfileOther(userId, positionId));
+        } catch (BIZException e) {
+            Response result = new Response();
+            result.setStatus(e.getCode());
+            result.setMessage(e.getMessage());
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, result);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        } finally {
+            // do nothing
+        }
+    }
+
+    @RequestMapping(value = "/profile/custom/other", method = RequestMethod.POST)
+    @ResponseBody
+    public String getOther(HttpServletRequest request) {
+        try {
+            Params<String, Object> form = ParamUtils.parseRequestParam(request);
+            String params = JSONArray.toJSONString(form.get("params"));
+            JSONArray paramsJson = JSONArray.parseArray(params);
+            if (!params.isEmpty() && (paramsJson.getJSONObject(0).containsKey("positionId") && paramsJson.getJSONObject(0).containsKey("profileId"))) {
+                return ResponseLogNotification.success(request, profileOtherService.getProfileOther(params));
+            } else {
+                return ResponseLogNotification.fail(request, ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST));
+            }
+        } catch (BIZException e) {
+            Response result = new Response();
+            result.setStatus(e.getCode());
+            result.setMessage(e.getMessage());
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, result);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        } finally {
+            // do nothing
         }
     }
 }

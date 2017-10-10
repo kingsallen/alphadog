@@ -79,10 +79,12 @@ public class ProfileBS {
         }
         Map<String, Object> resume = JSON.parseObject(profile);
         Map<String, Object> map = (Map<String, Object>) resume.get("user");
-        String mobile = (String) map.get("mobile");
+        String mobile = ((String) map.get("mobile"));
         logger.info("ProfileBS retrieveProfile mobile:{}", mobile);
         if (StringUtils.isNullOrEmpty(mobile)) {
             return ResultMessage.PROGRAM_PARAM_NOTEXIST.toResponse();
+        } else {
+            mobile = mobile.replace(" ","").replace("-", "");
         }
 
         //更新profile数据
