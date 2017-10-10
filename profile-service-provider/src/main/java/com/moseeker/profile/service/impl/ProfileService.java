@@ -295,7 +295,7 @@ public class ProfileService {
                         Company company = new Company();
                         company.setCompanyIndustry(jobExpObj.getJob_industry());
                         company.setCompanyName(jobExpObj.getJob_cpy());
-                        company.setCompanyScale(org.apache.commons.lang.StringUtils.defaultIfBlank(jobExpObj.getJob_cpy_size() == null ? "0-0" : jobExpObj.getJob_cpy_size().replaceAll("人", ""), "0-0"));
+                        company.setCompanyScale(org.apache.commons.lang.StringUtils.defaultIfBlank(jobExpObj.getJob_cpy_size() == null ? "0-0" : jobExpObj.getJob_cpy_size().replaceAll("[\\u4E00-\\u9FA5]", ""), "0-0"));
                         workexps.setCompany(company);
                         workexps.setDescription(org.apache.commons.lang.StringUtils.defaultIfBlank(jobExpObj.getJob_cpy_desc(), jobExpObj.getJob_content()));
                         workexps.setStartDate(jobExpObj.getStart_date());
