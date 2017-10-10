@@ -18,7 +18,7 @@ service CollegeServices {
   获取国家字典数据服务
 */
 service DictCountryService {
-    common_struct.Response getDictCountry();
+    common_struct.Response getDictCountry(1:common_struct.CommonQuery query);
 }
 
 /*

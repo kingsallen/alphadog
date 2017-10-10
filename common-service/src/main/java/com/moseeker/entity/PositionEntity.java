@@ -7,10 +7,12 @@ import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionCityRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionCityDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -118,4 +120,36 @@ public class PositionEntity {
         }
         return positionRecordList;
     }
+
+    public List<Integer> getAppCvConfigIdByCompany(int companyId, int hrAccountId) {
+        List<Integer> appConfigCvIds = new ArrayList<>();
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.select("app_cv_config_id");
+        queryBuilder.where("company_id", companyId).and(new Condition("app_cv_config_id", 0, ValueOp.NEQ));
+        if (hrAccountId != 0) {
+            queryBuilder.and("publisher", hrAccountId);
+        }
+        queryBuilder.and(new Condition("status", 1, ValueOp.NEQ));
+        List<JobPositionDO> list = positionDao.getDatas(queryBuilder.buildQuery());
+        if (list != null && !list.isEmpty()) {
+            appConfigCvIds = list.stream().map(m -> m.getAppCvConfigId()).collect(Collectors.toList());
+        }
+        return appConfigCvIds;
+    }
+
+    public int getAppCvConfigIdByPosition(int positionId) {
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where("id", positionId);
+        JobPositionDO jobPositionDO = positionDao.getData(queryBuilder.buildQuery());
+        return jobPositionDO == null ? 0 : jobPositionDO.getAppCvConfigId();
+    }
+
+    public Map<Integer, Integer> getAppCvConfigIdByPositions(List<Integer> positionIds) {
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where(new Condition("id", positionIds, ValueOp.IN)).and(new Condition("app_cv_config_id", 0 ,ValueOp.NEQ));
+        List<JobPositionDO> jobPositionList = positionDao.getDatas(queryBuilder.buildQuery());
+        return (jobPositionList == null || jobPositionList.isEmpty()) ? new HashMap<>() :
+                jobPositionList.parallelStream().collect(Collectors.toMap(k -> k.getId(), v -> v.getAppCvConfigId()));
+    }
+
 }

@@ -300,7 +300,7 @@ public class SmsSender {
             req.setExtend("");
             req.setTtsParamString("{\"product\":\"仟寻\",\"code\":\"" + code + "\"}");
             req.setCalledNum(mobile);
-            req.setCalledShowNum("02131314860");
+            req.setCalledShowNum("02160554686");
             req.setTtsCode("TTS_5555419");
             AlibabaAliqinFcTtsNumSinglecallResponse rsp = taobaoclient.execute(req);
 

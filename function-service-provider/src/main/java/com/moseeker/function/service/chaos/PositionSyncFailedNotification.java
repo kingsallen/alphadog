@@ -11,6 +11,7 @@ import com.moseeker.common.email.Email;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.EmojiFilter;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.entity.CityEntity;
 import com.moseeker.thrift.gen.dao.struct.dictdb.Dict51jobOccupationDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictLiepinOccupationDO;
@@ -56,6 +57,10 @@ public class PositionSyncFailedNotification {
 
     @Autowired
     HrCompanyDao companyDao;
+
+    @Autowired
+    CityEntity cityEntity;
+
     @Autowired
     HrCompanyAccountDao companyAccountDao;
 
@@ -262,7 +267,7 @@ public class PositionSyncFailedNotification {
         emailMessgeBuilder.append(descript.toString().replaceAll("\n", divider)).append(divider);
         emailMessgeBuilder.append(divider).append("<hr>").append(divider);
         emailMessgeBuilder.append("【错误信息】：").append(divider);
-        String errorMessage = null;
+        String errorMessage;
         if (pojo.getMessage() != null && pojo.getMessage().size() > 0) {
             errorMessage = pojo.getMessage().stream().map(message -> EmojiFilter.unicodeToUtf8(message)).collect(Collectors.joining("\n\r"));
         } else {
@@ -377,11 +382,11 @@ public class PositionSyncFailedNotification {
             return "无";
         }
 
-        List<List<DictCityDO>> fullCitys = dictCityDao.getFullCity(dictCityDOS);
+        List<List<DictCityDO>> fullCities = cityEntity.getFullCities(dictCityDOS);
 
         StringBuilder cityBuilder = new StringBuilder();
         StringBuilder innerBuilder = new StringBuilder();
-        for (List<DictCityDO> cityDOS : fullCitys) {
+        for (List<DictCityDO> cityDOS : fullCities) {
             cityBuilder.append("【");
             innerBuilder.delete(0, innerBuilder.length());
             for (DictCityDO cityDO : cityDOS) {
