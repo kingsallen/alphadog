@@ -20,7 +20,7 @@ public enum DegreeSource {
     UNDERGRADUATE(5, "本科"),
     MASTER(6, "硕士"),
     DOCTOR(7, "博士"),
-    POSTDOCTOR(8, "本科"),
+    POSTDOCTOR(8, "博士以上"),
     OTHER(9, "其他");
 
     private int value;
