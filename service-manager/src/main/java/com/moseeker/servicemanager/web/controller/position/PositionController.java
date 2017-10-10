@@ -623,4 +623,72 @@ public class PositionController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
+    /*
+    *获取alipay同步的职位
+    */
+    @RequestMapping(value = "/positions/thirdpartysyncedpositions", method = RequestMethod.GET)
+    @ResponseBody
+    public String getAliPayPosition(HttpServletRequest request, HttpServletResponse response){
+        try{
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            String publisher = (String) params.get("publisher");
+            String companyId= (String) params.get("companyId");
+            int candidateSource=params.getInt("candidatesource ");
+            String channel= (String) params.get("channel");
+            String page= (String) params.get("page");
+            String pageSize= (String) params.get("pageSize");
+            if(StringUtils.isNullOrEmpty(publisher)&&StringUtils.isNullOrEmpty(companyId)){
+                return ResponseLogNotification.fail(request, "companyId和publisher至少有一个不能为空");
+            }
+            if(StringUtils.isNullOrEmpty(publisher)){
+               publisher="0";
+            }
+            if(StringUtils.isNullOrEmpty(companyId)){
+                companyId="0";
+            }
+            if(StringUtils.isNullOrEmpty(channel)){
+                channel="5";
+            }
+            if(StringUtils.isNullOrEmpty(page)){
+                page="1";
+            }
+            if(StringUtils.isNullOrEmpty(pageSize)){
+                pageSize="15";
+            }
+            Response result=positonServices.getThirdpartySyncedPositions(Integer.parseInt(channel)
+                    ,Integer.parseInt(publisher),Integer.parseInt(companyId),candidateSource
+                    ,Integer.parseInt(page)
+                    ,Integer.parseInt(pageSize)
+            );
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /*
+    *获取alipay同步的职位
+    */
+    @RequestMapping(value = "/position/alipayresult", method = RequestMethod.GET)
+    @ResponseBody
+    public String putAlipayResult(HttpServletRequest request, HttpServletResponse response){
+        try{
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            String channel= (String) params.get("channel");
+            int positionId=params.getInt("positionId");
+            int alipayJobId=params.getInt("alipayJobid");
+            if(StringUtils.isNullOrEmpty(channel)){
+                channel="5";
+            }
+            Response result=positonServices.putAlipayResult(Integer.parseInt(channel)
+                    ,positionId,alipayJobId
+               );
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 }

@@ -23,14 +23,14 @@ public class JobPositionExtDao extends JooqCrudImpl<JobPositionExtDO, JobPositio
     public JobPositionExtDao(TableImpl<JobPositionExtRecord> table, Class<JobPositionExtDO> jobPositionExtDOClass) {
         super(table, jobPositionExtDOClass);
     }
-
-//    public int insertOrUpdateData(int userId,String conditions){
-//        int result=create.insertInto(JobPositionExt.JOB_POSITION_EXT, JobPositionExt.JOB_POSITION_EXT.PID, JobPositionExt.JOB_POSITION_EXT.J)
-//                .values(userId, conditions)
-//                .onDuplicateKeyUpdate()
-//                .set(UserPositionEmail.USER_POSITION_EMAIL.USER_ID, userId)
-//                .set(UserPositionEmail.USER_POSITION_EMAIL.CONDITIONS,conditions)
-//                .execute();
-//        return result;
-//    }
+    //如果有更新，没有则插入
+    public int insertOrUpdateData(int pid,int jobId){
+        int result=create.insertInto(JobPositionExt.JOB_POSITION_EXT, JobPositionExt.JOB_POSITION_EXT.PID, JobPositionExt.JOB_POSITION_EXT.ALIPAY_JOB_ID)
+                .values(pid, jobId)
+                .onDuplicateKeyUpdate()
+                .set(JobPositionExt.JOB_POSITION_EXT.PID, pid)
+                .set( JobPositionExt.JOB_POSITION_EXT.ALIPAY_JOB_ID,jobId)
+                .execute();
+        return result;
+    }
 }
