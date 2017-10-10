@@ -163,6 +163,10 @@ public abstract class EmployeeBinder {
             log.info("employees========"+JSON.toJSONString(employees));
             if(!StringUtils.isEmptyList(employees)){
                 for(UserEmployeeDO DO:employees){
+                    int employeeIdOther=DO.getId();
+                    if(employeeIdOther==employeeId){
+                        continue;
+                    }
                     int userId=DO.getSysuserId();
                     int companyId=DO.getCompanyId();
                     convertCandidatePerson(userId,companyId);
@@ -199,9 +203,11 @@ public abstract class EmployeeBinder {
             log.info(JSON.toJSONString(list));
             for (CandidateCompanyDO DO : list) {
                 DO.setStatus(0);
+
             }
-            log.info("CandidateCompanyDO3====="+JSON.toJSONString(list));
             candidateCompanyDao.updateDatas(list);
+            log.info("CandidateCompanyDO3====="+JSON.toJSONString(list));
+
         }
     }
     /*
@@ -214,9 +220,10 @@ public abstract class EmployeeBinder {
          if(!StringUtils.isEmptyList(list)){
              for(CandidateCompanyDO DO:list){
                  DO.setStatus(1);
+
              }
-             log.info("CandidateCompanyDO2====="+JSON.toJSONString(list));
              candidateCompanyDao.updateDatas(list);
+             log.info("CandidateCompanyDO2====="+JSON.toJSONString(list));
          }
     }
 
