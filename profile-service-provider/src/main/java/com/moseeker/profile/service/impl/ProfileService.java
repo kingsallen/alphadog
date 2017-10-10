@@ -27,6 +27,7 @@ import com.moseeker.entity.pojo.profile.*;
 import com.moseeker.entity.pojo.resume.*;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.profile.utils.DegreeSource;
+import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.PositionEntity;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -217,7 +218,6 @@ public class ProfileService {
         logger.info("profilesByApplication:{}", JSON.toJSONString(profileApplicationForm));
         return dao.getResourceByApplication(downloadUrl, password, profileApplicationForm);
     }
-
 
     /**
      * 解析简历
@@ -423,6 +423,13 @@ public class ProfileService {
         return ResponseUtils.success(profileObj);
     }
 
+
+    /**
+     * 自定义简历数据校验
+     * @param userId
+     * @param positionId
+     * @return
+     */
     public Response checkProfileOther(int userId, int positionId) {
         int appCvConfigId = positionEntity.getAppCvConfigIdByPosition(positionId);
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
@@ -441,12 +448,13 @@ public class ProfileService {
             queryBuilder.where("profile_id", profileProfile.getId());
             ProfileOtherDO profileOther = profileOtherDao.getData(queryBuilder.buildQuery());
             if (profileOther == null || StringUtils.isNullOrEmpty(profileOther.getOther())) {
-                return ResponseUtils.success(new HashMap<String, Object>(){{put("result",false);put("resultMsg","自定义简历为空");}});
+                profileOther = new ProfileOtherDO();
+//                return ResponseUtils.success(new HashMap<String, Object>(){{put("result",false);put("resultMsg","自定义简历为空");}});
             }
             JSONObject profileOtherJson = new JSONObject();
             List<JSONObject> appCvConfigJson = new ArrayList<>();
             try {
-                profileOtherJson = JSONObject.parseObject(profileOther.getOther());
+                profileOtherJson = JSONObject.parseObject(org.apache.commons.lang.StringUtils.defaultIfBlank(profileOther.getOther(), "{}"));
                 appCvConfigJson = JSONArray.parseArray(hrAppCvConfDO.getFieldValue()).getJSONObject(0).getJSONArray("fields").stream().
                         map(m -> JSONObject.parseObject(String.valueOf(m))).filter(f -> f.getIntValue("required") == 0 && f.getIntValue("parent_id") == 0).collect(Collectors.toList());
             } catch (Exception e) {
@@ -489,6 +497,12 @@ public class ProfileService {
         return ResponseUtils.success(new HashMap<String, Object>(){{put("result",true);put("resultMsg","");}});
     }
 
+
+    /**
+     * 获取自定义简历数据
+     * @param params
+     * @return
+     */
     public Response getProfileOther(String params) {
         List<JSONObject> paramsStream = JSONArray.parseArray(params).parallelStream().map(m -> JSONObject.parseObject(String.valueOf(m))).collect(Collectors.toList());
         // 批量获取职位自定义配置&简历自定义字段
@@ -512,12 +526,6 @@ public class ProfileService {
             try {
                 if (positionCustomConfigMap.containsKey(positionId)) {
                     JSONObject profileOtherJson = JSONObject.parseObject(profileOtherMap.get(profileId));
-//                    Map<Integer, Map<String, String>> childValue = JSONArray.parseArray(positionOtherMap.get(positionCustomConfigMap.get(positionId))).stream().flatMap(fm -> JSONObject.parseObject(String.valueOf(fm)).getJSONArray("fields").stream()).
-//                            map(m -> JSONObject.parseObject(String.valueOf(m))).filter(f -> f.getIntValue("parent_id") > 0).
-//                            collect(Collectors.groupingBy(g -> g.getIntValue("parent_id"),
-//                                    Collectors.mapping(mm -> mm.getString("field_name"),
-//                                            Collectors.toMap(k -> k, v -> org.apache.commons.lang.StringUtils.defaultIfBlank(profileOtherJson.getString(v), ""),
-//                                                    (oldKey, newKey) -> newKey))));
                     Map<String, Object> parentValue = JSONArray.parseArray(positionOtherMap.get(positionCustomConfigMap.get(positionId))).stream().flatMap(fm -> JSONObject.parseObject(String.valueOf(fm)).getJSONArray("fields").stream()).
                             map(m -> JSONObject.parseObject(String.valueOf(m))).filter(f -> f.getIntValue("parent_id") == 0).collect(Collectors.toMap(k -> k.getString("field_name"), v -> {
                                     return org.apache.commons.lang.StringUtils.defaultIfBlank(profileOtherJson.getString(v.getString("field_name")), "");
@@ -532,7 +540,4 @@ public class ProfileService {
         return ResponseUtils.success(paramsStream);
     }
 
-    public static void main(String[] args) {
-        System.out.println(Pattern.matches(".+", "2017-09-01"));
-    }
 }

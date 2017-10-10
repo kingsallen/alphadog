@@ -1,19 +1,6 @@
 package com.moseeker.servicemanager.web.controller.profile;
 
 
-import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.thrift.gen.application.service.JobApplicationServices;
-import com.moseeker.thrift.gen.application.struct.ApplicationResponse;
-import com.moseeker.thrift.gen.common.struct.BIZException;
-import com.moseeker.thrift.gen.profile.service.ProfileServices;
-import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
-import org.apache.thrift.TException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.moseeker.baseorm.util.BeanUtils;
