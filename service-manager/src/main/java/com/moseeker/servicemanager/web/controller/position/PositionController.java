@@ -654,7 +654,7 @@ public class PositionController {
                 page="1";
             }
             if(StringUtils.isNullOrEmpty(pageSize)){
-                pageSize="15";
+                pageSize=Integer.MAX_VALUE+"";
             }
             Response result=positonServices.getThirdpartySyncedPositions(Integer.parseInt(channel)
                     ,Integer.parseInt(publisher),Integer.parseInt(companyId),candidateSource

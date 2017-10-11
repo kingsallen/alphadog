@@ -65,6 +65,7 @@ public class PositionThridService {
         if(!StringUtils.isEmptyList(result)){
             map.put("positions",result);
             map.put("company",this.getCompanyData(publisher,companyId));
+            map.put("positionNum",getJobPositionExtNum(pidList));
         }
         return map;
     }
@@ -158,7 +159,18 @@ public class PositionThridService {
          List<JobPositionExtDO> list=jobPositionExtDao.getDatas(query);
          return list;
      }
-
+    /*
+        获取jobPositionExt的总数
+     */
+    public int getJobPositionExtNum(List<Integer> pidList){
+        if(StringUtils.isEmptyList(pidList)){
+            return 0;
+        }
+        Query query=new Query.QueryBuilder().where(new Condition("pid",pidList.toArray(), ValueOp.IN))
+                .and(new Condition("alipay_job_id",0,ValueOp.GT)).buildQuery();
+        int num=jobPositionExtDao.getCount(query);
+        return num;
+    }
      //获取公司
     public Map<String,Object> getCompanyData(int publisher,int companyId) throws TException {
          HrCompanyDO DO=null;
