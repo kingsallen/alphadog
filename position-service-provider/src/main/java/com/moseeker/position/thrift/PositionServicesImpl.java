@@ -387,11 +387,11 @@ public class PositionServicesImpl implements Iface {
     @Override
     public Response getThirdpartySyncedPositions(int channel, int publisher, int companyId, int candidateSource,int page,int pageSize) throws TException {
         try{
-            List<Map<String,Object>> list=positionThridService.getThridPositionAlipay(publisher,companyId,candidateSource,page,pageSize);
-            if(StringUtils.isEmptyList(list)){
+            Map<String,Object> map=positionThridService.getThridPositionAlipay(publisher,companyId,candidateSource,page,pageSize);
+            if(map==null||map.isEmpty()){
                 return  ResponseUtils.success("");
             }
-            return  ResponseUtils.success(list);
+            return  ResponseUtils.success(map);
         }catch (Exception e){
             logger.info(e.getMessage(),e);
             throw ExceptionUtils.convertException(e);
