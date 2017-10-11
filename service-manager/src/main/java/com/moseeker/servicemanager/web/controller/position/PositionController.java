@@ -634,7 +634,7 @@ public class PositionController {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             String publisher = (String) params.get("publisher");
             String companyId= (String) params.get("companyId");
-            int candidateSource=params.getInt("candidatesource ");
+            int candidateSource=params.getInt("candidatesource");
             String channel= (String) params.get("channel");
             String page= (String) params.get("page");
             String pageSize= (String) params.get("pageSize");
@@ -671,7 +671,7 @@ public class PositionController {
     /*
     *获取alipay同步的职位
     */
-    @RequestMapping(value = "/position/alipayresult", method = RequestMethod.GET)
+    @RequestMapping(value = "/position/alipayresult", method = RequestMethod.POST)
     @ResponseBody
     public String putAlipayResult(HttpServletRequest request, HttpServletResponse response){
         try{
