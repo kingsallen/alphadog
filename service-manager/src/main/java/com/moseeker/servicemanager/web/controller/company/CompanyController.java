@@ -524,12 +524,12 @@ public class CompanyController {
      *
      * @param request
      */
-    @RequestMapping(value = "/company/fortuneandpaid", method = RequestMethod.GET)
+    @RequestMapping(value = "/company/fortuneorpaid", method = RequestMethod.GET)
     @ResponseBody
     public String getFortuneOrPaid(HttpServletRequest request) throws Exception {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            Response result = companyServices.companyPaidAndFortune();
+            Response result = companyServices.companyPaidOrFortune();
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
             logger.info(e.getMessage(),e);

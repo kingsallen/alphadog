@@ -312,7 +312,7 @@ public class CompanyServicesImpl implements Iface {
       获取付费公司和世界五百强公司
      */
     @Override
-    public Response companyPaidAndFortune() throws BIZException, TException {
+    public Response companyPaidOrFortune() throws BIZException, TException {
         try{
             List<Map<String,Object>> list=companyPcService.getCompanyFourtuneAndPaid();
             if(StringUtils.isEmptyList(list)){
