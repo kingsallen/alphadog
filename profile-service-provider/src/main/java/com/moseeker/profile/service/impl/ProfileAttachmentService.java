@@ -205,7 +205,7 @@ public class ProfileAttachmentService {
             ResponseUtils.fail(1,"附件不存在");
         }
         int profileId=attachmentDO.getProfileId();
-        Query query=new Query.QueryBuilder().where("profile_id",profileId).and("disable",1).buildQuery();
+        Query query=new Query.QueryBuilder().where("id",profileId).and("disable",1).buildQuery();
         ProfileProfileDO profileDO=profileDao.getData(query);
         if(profileDO==null){
             ResponseUtils.fail(1,"简历不存在");
