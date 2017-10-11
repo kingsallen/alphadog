@@ -202,7 +202,7 @@ public class ProfileAttachmentService {
         Query query1=new Query.QueryBuilder().where("id",id).buildQuery();
         ProfileAttachmentDO attachmentDO=dao.getData(query1);
         if(attachmentDO==null){
-            ResponseUtils.fail(1,"附件不存在");
+            return ResponseUtils.fail(1,"附件不存在");
         }
         int profileId=attachmentDO.getProfileId();
         Query query=new Query.QueryBuilder().where("id",profileId).and("disable",1).buildQuery();
