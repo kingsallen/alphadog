@@ -2,6 +2,7 @@ package com.moseeker.entity;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.parser.ParserConfig;
 import com.moseeker.baseorm.dao.profiledb.*;
 import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
@@ -106,6 +107,8 @@ public class ProfileEntity {
         // 处理返回结果
         String resCont = EntityUtils.toString(response.getEntity(), Consts.UTF_8);
         logger.info(resCont);
+        // 参考博客：http://loveljy119.iteye.com/blog/2366623  反序列化的ASM代码问题：https://github.com/alibaba/fastjson/issues/383
+        ParserConfig.getGlobalInstance().setAsmEnable(false);
         ResumeObj res = JSONObject.parseObject(resCont, ResumeObj.class);
         return res;
     }

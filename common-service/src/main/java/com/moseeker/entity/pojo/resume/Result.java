@@ -36,6 +36,7 @@ public class Result {
     private String living_address;
     private String work_position;
     private String work_start_time;
+    private String cont_certificate;
 
     public void setSurname(String surname) {
         this.surname = surname;
@@ -286,4 +287,11 @@ public class Result {
         return work_start_time;
     }
 
+    public String getCont_certificate() {
+        return cont_certificate;
+    }
+
+    public void setCont_certificate(String cont_certificate) {
+        this.cont_certificate = cont_certificate;
+    }
 }
