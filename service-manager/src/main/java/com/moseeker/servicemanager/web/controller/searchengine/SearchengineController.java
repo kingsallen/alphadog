@@ -277,7 +277,7 @@ public class SearchengineController {
              if(StringUtils.isNullOrEmpty(pageSize)){
                  pageSize="10";
              }
-             if(!StringUtils.isNullOrEmpty(moduleId)){
+             if(StringUtils.isNullOrEmpty(moduleId)){
                  moduleId="0";
              }
              Map<String,Integer> map=new HashMap<>();
