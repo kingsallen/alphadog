@@ -46,7 +46,6 @@ import java.util.Map;
  * @author wjf
  */
 @Service
-@RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = AppConfig.class)
 public class ChaosServiceImpl {
 
@@ -88,12 +87,6 @@ public class ChaosServiceImpl {
         return data;
     }
 
-    @Test
-    public void test()throws  ConnectException{
-//        sendBind("234");
-        redisClient.existWithTimeOutCheck("123",1000);
-    }
-
     private void sendBind(String param){
         amqpTemplate.send(topicExchange.getName(), "chaos.preset.response.#", MessageBuilder.withBody(param.getBytes()).build());
     }
@@ -117,7 +110,7 @@ public class ChaosServiceImpl {
             //尝试从从redis中获取绑定结果,超时后推出
             int appId = 0;
             String key_identifier="";
-            String account_Id=hrThirdPartyAccount.;
+            String account_Id="";
             String cacheKey=redisClient.genCacheKey(appId,key_identifier,account_Id);
             long timeout=240000;
 
