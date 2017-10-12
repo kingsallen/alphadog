@@ -1,5 +1,7 @@
 package com.moseeker.common.util;
 
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.joda.time.DateTime;
 
 import java.text.ParseException;
@@ -310,4 +312,21 @@ public class DateUtils {
         return stringBuffer.toString();
     }
 
+    /**
+     * 日期补全：<br/>
+     * 2017 -> 2017-01-01<br/>
+     * 2017-05 ->  2017-05-01<br/>
+     * @param date
+     * @param splitRegex
+     * @return
+     */
+    public static String dateRepair(String date, String splitRegex) throws ParseException {
+        if (StringUtils.isNullOrEmpty(date)) {
+            return "";
+        }
+        date = date.replaceAll(splitRegex, "-");
+        date += Stream.generate(() -> "-01").limit(3-date.split("-").length).collect(Collectors.joining(""));
+        nomalDateToDate(date);
+        return date;
+    }
 }

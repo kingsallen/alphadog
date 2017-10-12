@@ -10,6 +10,7 @@ public class Workexps {
     private String departmentName;
     private String job;
     private String startDate;
+    private int type;
 
     public void setEndUntilNow(int endUntilNow) {
         this.endUntilNow = endUntilNow;
@@ -65,5 +66,13 @@ public class Workexps {
 
     public void setStartDate(String startDate) {
         this.startDate = startDate;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 }

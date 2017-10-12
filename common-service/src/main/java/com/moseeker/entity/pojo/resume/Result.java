@@ -114,6 +114,7 @@ public class Result {
     }
 
     public String getEmail() {
+
         return email;
     }
 
