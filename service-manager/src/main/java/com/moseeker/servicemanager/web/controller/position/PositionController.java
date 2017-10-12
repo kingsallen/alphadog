@@ -676,13 +676,13 @@ public class PositionController {
     public String putAlipayResult(HttpServletRequest request, HttpServletResponse response){
         try{
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            String channel= (String) params.get("channel");
+            Integer channel=params.getInt("channel");
             int positionId=params.getInt("positionId");
             int alipayJobId=params.getInt("alipayJobid");
-            if(StringUtils.isNullOrEmpty(channel)){
-                channel="5";
+            if(channel==null){
+                channel=5;
             }
-            Response result=positonServices.putAlipayResult(Integer.parseInt(channel)
+            Response result=positonServices.putAlipayResult(channel
                     ,positionId,alipayJobId
                );
             return ResponseLogNotification.success(request, result);
