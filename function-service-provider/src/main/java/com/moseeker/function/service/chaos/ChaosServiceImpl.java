@@ -18,9 +18,18 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
 import org.joda.time.DateTime;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.MessageBuilder;
+import org.springframework.amqp.core.TopicExchange;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.test.context.ContextConfiguration;
+import com.moseeker.function.config.AppConfig;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.annotation.Resource;
 import java.net.ConnectException;
@@ -37,12 +46,21 @@ import java.util.Map;
  * @author wjf
  */
 @Service
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = AppConfig.class)
 public class ChaosServiceImpl {
 
     Logger logger = LoggerFactory.getLogger(ChaosServiceImpl.class);
 
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
+
+    @Autowired
+    private AmqpTemplate amqpTemplate;
+
+    @Autowired
+    private TopicExchange topicExchange;
+
 
     private String getConfigString(String key) throws Exception {
         ConfigPropertiesUtil configUtils = ConfigPropertiesUtil.getInstance();
@@ -70,6 +88,16 @@ public class ChaosServiceImpl {
         return data;
     }
 
+    @Test
+    public void test()throws  ConnectException{
+//        sendBind("234");
+        redisClient.existWithTimeOutCheck("123",1000);
+    }
+
+    private void sendBind(String param){
+        amqpTemplate.send(topicExchange.getName(), "chaos.preset.response.#", MessageBuilder.withBody(param.getBytes()).build());
+    }
+
     /**
      * 绑定第三方账号
      *
@@ -79,8 +107,24 @@ public class ChaosServiceImpl {
     public HrThirdPartyAccountDO bind(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras) throws Exception {
         logger.info("ChaosServiceImpl bind");
         try {
-//        String data = "{\"status\":100,\"message\":\"182****3365\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
-            String data = postBind(hrThirdPartyAccount.getChannel(), ChaosTool.getParams(hrThirdPartyAccount, extras));
+//            String data = "{\"status\":100,\"message\":\"182****3365\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
+//            String data = postBind(hrThirdPartyAccount.getChannel(), ChaosTool.getParams(hrThirdPartyAccount, extras));
+
+            //推送需要绑定第三方账号的信息到rabbitMQ中
+            sendBind(ChaosTool.getParams(hrThirdPartyAccount, extras));
+
+
+            //尝试从从redis中获取绑定结果,超时后推出
+            int appId = 0;
+            String key_identifier="";
+            String account_Id=hrThirdPartyAccount.;
+            String cacheKey=redisClient.genCacheKey(appId,key_identifier,account_Id);
+            long timeout=240000;
+
+            redisClient.existWithTimeOutCheck(cacheKey,timeout);
+
+            String data=redisClient.get(appId,key_identifier,account_Id);
+
             JSONObject jsonObject = JSONObject.parseObject(data);
             int status = jsonObject.getIntValue("status");
 
