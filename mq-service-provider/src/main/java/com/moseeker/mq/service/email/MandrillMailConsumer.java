@@ -165,11 +165,11 @@ public class MandrillMailConsumer {
 					if (messageStatus.length == 0){
 						logger.error("mandrill send failed: " + mandrillEmailStruct.getTo_email());
 						emailrecord.setEmail(recipient.getEmail());
-						emailrecord.setContent("failed,"+message.toString());
+						emailrecord.setContent("failed,"+message.getSubject());
 						logEmailSendrecordDao.addData(emailrecord);
 					}else{
 						emailrecord.setEmail(recipient.getEmail());
-						emailrecord.setContent(messageStatus[0].getStatus()+","+message.toString());
+						emailrecord.setContent(messageStatus[0].getStatus()+","+message.getSubject());
 						logEmailSendrecordDao.addData(emailrecord);
 
 						logger.debug(messageStatus[0].getEmail() +" "+ messageStatus[0].getStatus());
