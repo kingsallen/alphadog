@@ -54,6 +54,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.math.NumberUtils;
+import org.apache.lucene.util.MathUtil;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -354,8 +355,8 @@ public class ProfileService {
                         company.setCompanyName(jobExpObj.getJob_cpy());
                         int companyScaleMaxValue = 0;
                         try {
-                            companyScaleMaxValue = Integer.valueOf(org.apache.commons.lang.StringUtils.defaultIfBlank(jobExpObj.getJob_cpy_size() == null ? "0-0" :
-                                    jobExpObj.getJob_cpy_size().replaceAll("[\\u4E00-\\u9FA5]", ""), "0-0").split("-", 2)[1]);
+                            companyScaleMaxValue = Arrays.stream(org.apache.commons.lang.StringUtils.defaultIfBlank(jobExpObj.getJob_cpy_size() == null ? "0-0" :
+                                    jobExpObj.getJob_cpy_size().replaceAll("[\\u4E00-\\u9FA5]", ""), "0-0").split("-", 2)).max(String::compareTo).map(m -> Integer.valueOf(m)).get();
                         } catch (Exception e) {
                             LogResumeRecordRecord logResumeRecordRecord = new LogResumeRecordRecord();
                             logResumeRecordRecord.setErrorLog("公司规模转换异常: " + e.getMessage());
@@ -438,7 +439,7 @@ public class ProfileService {
 
                 if (StringUtils.isNotNullOrEmpty(resumeObj.getResult().getExpect_salary())) {
                     try{
-                        int topSalary = Integer.valueOf(resumeObj.getResult().getExpect_salary().replaceAll("[\\u4E00-\\u9FA5|/]", "").split("-|~", 2)[1]);
+                        int topSalary = Arrays.stream(resumeObj.getResult().getExpect_salary().replaceAll("[\\u4E00-\\u9FA5|/]", "").split("-|~", 2)).max(String::compareTo).map(m -> Integer.valueOf(m)).get();
                         intentions.setSalaryCode(String.valueOf(DictCode.salary(topSalary)));
                     } catch (Exception e) {
                         LogResumeRecordRecord logResumeRecordRecord = new LogResumeRecordRecord();
@@ -545,7 +546,7 @@ public class ProfileService {
 
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
         logger.info("profileParser:{}", JSON.toJSONString(profileObj));
         return ResponseUtils.success(profileObj);
