@@ -96,13 +96,7 @@ public class AppConfig {
         return listenerContainerFactory;
     }
 
-
-    @Bean
-    public Queue bindAccountQueue() {
-        Queue queue = new Queue("chaos.bind.response", true, false, false);
-        return queue;
-    }
-
+    //设置rabbitMQ的Exchange
     @Bean
     public TopicExchange bindAccountExchange() {
         TopicExchange topicExchange = new TopicExchange(BindThridPart.BIND_EXCHANGE_NAME, true, false);
@@ -110,7 +104,12 @@ public class AppConfig {
     }
 
 
-    //绑定Queue到exchange+rountingKey
+    //绑定第一次推送第三方账号队列(即推送需要绑定的账号和密码)
+    @Bean
+    public Queue bindAccountQueue() {
+        Queue queue = new Queue(BindThridPart.BIND_GET_QUEUE_NAME, true, false, false);
+        return queue;
+    }
     @Bean
     public List<Binding> bindingBindQueue() {
         return new ArrayList<Binding>(){{
@@ -118,18 +117,29 @@ public class AppConfig {
         }};
     }
 
+    //绑定第二次推送第三方账号队列（即确认是否需要发送手机验证码）
     @Bean
     public Queue confirmQueue() {
-        Queue queue = new Queue("chaos.confirm.response", true, false, false);
+        Queue queue = new Queue(BindThridPart.BIND_CONFIRM_GET_QUEUE_NAME, true, false, false);
         return queue;
     }
-
-    //绑定Queue到exchange+rountingKey
     @Bean
     public List<Binding> confirmBindQueue() {
         return new ArrayList<Binding>(){{
-            add(BindingBuilder.bind(bindAccountQueue()).to(bindAccountExchange()).with(BindThridPart.BIND_CONFIRM_GET_ROUTING_KEY));
+            add(BindingBuilder.bind(confirmQueue()).to(bindAccountExchange()).with(BindThridPart.BIND_CONFIRM_GET_ROUTING_KEY));
         }};
     }
 
+    //绑定第三次推送第三方账号队列（即推送手机验证码）
+    @Bean
+    public Queue codeQueue() {
+        Queue queue = new Queue(BindThridPart.BIND_CODE_GET_QUEUE_NAME, true, false, false);
+        return queue;
+    }
+    @Bean
+    public List<Binding> codeBindQueue() {
+        return new ArrayList<Binding>(){{
+            add(BindingBuilder.bind(confirmQueue()).to(bindAccountExchange()).with(BindThridPart.BIND_CODE_GET_ROUTING_KEY));
+        }};
+    }
 }

@@ -670,11 +670,11 @@ public abstract class RedisClient {
 				count++;
 			}
 			if(count*tick>time){
-				logger.info("验证:"+key+"超时");
+				logger.info("Redis验证:"+key+"超时");
 				throw new ConnectException();
 			}
 		}
-		logger.info("redis中存在:"+key);
+		logger.info("Redis中存在:"+key);
 		return true;
 	}
 }

@@ -19,18 +19,14 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
 import org.joda.time.DateTime;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.MessageBuilder;
-import org.springframework.amqp.core.TopicExchange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.test.context.ContextConfiguration;
 import com.moseeker.function.config.AppConfig;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 
 import javax.annotation.Resource;
@@ -48,7 +44,6 @@ import java.util.Map;
  * @author wjf
  */
 @Service
-@RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = AppConfig.class)
 public class ChaosServiceImpl {
 
@@ -59,9 +54,6 @@ public class ChaosServiceImpl {
 
     @Autowired
     private AmqpTemplate amqpTemplate;
-
-    @Autowired
-    private TopicExchange topicExchange;
 
 
     private String getConfigString(String key) throws Exception {
@@ -81,12 +73,23 @@ public class ChaosServiceImpl {
     }
 
 
-    private String postBind(int channel, String params) throws Exception {
-        String domain = getDomain();
+    private String postBind(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras, String routingKey) throws Exception {
+        //推送需要绑定第三方账号的信息到rabbitMQ中
+        String param=ChaosTool.getParams(hrThirdPartyAccount, extras);
+        String account_Id=hrThirdPartyAccount.getId()+"";
+        logger.info("准备推送"+account_Id+"数据到RabbitMQ的RoutingKey："+routingKey);
+        amqpTemplate.send(BindThridPart.BIND_EXCHANGE_NAME, routingKey, MessageBuilder.withBody(param.getBytes()).build());
+        logger.info("推送RabbitMQ成功");
 
-        ChannelType chnnelType = ChannelType.instaceFromInteger(channel);
-        String bindURI = chnnelType.getBindURI(domain);
-        String data = UrlUtil.sendPost(bindURI, params, Constant.CONNECTION_TIME_OUT, Constant.READ_TIME_OUT);
+        //尝试从从redis中获取绑定结果,超时后推出
+        String cacheKey=redisClient.genCacheKey(BindThridPart.APP_ID,BindThridPart.KEY_IDENTIFIER,account_Id);
+
+        logger.info("准备从Redis获取"+routingKey+"结果");
+        redisClient.existWithTimeOutCheck(cacheKey);
+
+        String data=redisClient.get(BindThridPart.APP_ID,BindThridPart.KEY_IDENTIFIER,account_Id);
+        logger.info("成功从Redis获取推送绑定结果");
+
         return data;
     }
 
@@ -100,25 +103,7 @@ public class ChaosServiceImpl {
         logger.info("ChaosServiceImpl bind");
         try {
 //            String data = "{\"status\":100,\"message\":\"182****3365\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
-//            String data = postBind(hrThirdPartyAccount.getChannel(), ChaosTool.getParams(hrThirdPartyAccount, extras));
-
-            //推送需要绑定第三方账号的信息到rabbitMQ中
-            String param=ChaosTool.getParams(hrThirdPartyAccount, extras);
-            logger.info("准备推送绑定数据:"+param);
-            amqpTemplate.send(BindThridPart.BIND_EXCHANGE_NAME, BindThridPart.BIND_SEND_ROUTING_KEY, MessageBuilder.withBody(param.getBytes()).build());
-            logger.info("推送成功");
-
-
-
-            //尝试从从redis中获取绑定结果,超时后推出
-            String account_Id=hrThirdPartyAccount.getId()+"";
-            String cacheKey=redisClient.genCacheKey(BindThridPart.APP_ID,BindThridPart.KEY_IDENTIFIER,account_Id);
-
-            logger.info("准备获取推送绑定结果"+param);
-            redisClient.existWithTimeOutCheck(cacheKey);
-
-            String data=redisClient.get(BindThridPart.APP_ID,BindThridPart.KEY_IDENTIFIER,account_Id);
-            logger.info("成功获取推送绑定结果"+param);
+            String data=postBind(hrThirdPartyAccount,extras, BindThridPart.BIND_SEND_ROUTING_KEY);
 
             JSONObject jsonObject = JSONObject.parseObject(data);
             int status = jsonObject.getIntValue("status");
@@ -137,9 +122,7 @@ public class ChaosServiceImpl {
                     throw new BIZException(1, message);
                 } else if (status == 100) {
                     hrThirdPartyAccount.setBinding(Integer.valueOf(100).shortValue());
-                } else if (status == 101) { //异地登陆需要验证码
-                    message = BindThridPart.BIND_CODE_MSG;
-                } else if (status == 2) {
+                }  else if (status == 2) {
                     hrThirdPartyAccount.setBinding(Integer.valueOf(6).shortValue());
                     if (StringUtils.isNullOrEmpty(message)) {
                         message = BindThridPart.BIND_EXP_MSG;
@@ -164,10 +147,6 @@ public class ChaosServiceImpl {
         return hrThirdPartyAccount;
     }
 
-    @Test
-    public void test(){
-        amqpTemplate.send(BindThridPart.BIND_CONFIRM_EXCHANGE_NAME, BindThridPart.BIND_CONFIRM_SEND_ROUTING_KEY, MessageBuilder.withBody("aabbcc".getBytes()).build());
-    }
 
     /**
      * 确认发送短信验证码
@@ -182,25 +161,7 @@ public class ChaosServiceImpl {
         paramsMap.putAll(extras);
         paramsMap.put("confirm", confirm);
 
-        String account_Id=hrThirdPartyAccount.getId()+"";
-//        String data = postBind(hrThirdPartyAccount.getChannel(), ChaosTool.getParams(hrThirdPartyAccount, paramsMap));
-
-        //推送需要绑定第三方账号的信息到rabbitMQ中
-        String param=ChaosTool.getParams(hrThirdPartyAccount, paramsMap);
-        logger.info("准备推送短信验证码:"+account_Id);
-        amqpTemplate.send(BindThridPart.BIND_CONFIRM_EXCHANGE_NAME, BindThridPart.BIND_CONFIRM_SEND_ROUTING_KEY, MessageBuilder.withBody(param.getBytes()).build());
-        logger.info("短信验证码发送成功");
-
-
-        //尝试从从redis中获取绑定结果,超时后推出
-
-        String cacheKey=redisClient.genCacheKey(BindThridPart.APP_ID,BindThridPart.KEY_IDENTIFIER,account_Id);
-
-        logger.info("准备获取推送短信验证码结果"+account_Id);
-        redisClient.existWithTimeOutCheck(cacheKey);
-
-        String data=redisClient.get(BindThridPart.APP_ID,BindThridPart.KEY_IDENTIFIER,account_Id);
-        logger.info("成功获取推送短信验证码结果");
+        String data=postBind(hrThirdPartyAccount,extras, BindThridPart.BIND_CONFIRM_SEND_ROUTING_KEY);
 
         JSONObject jsonObject = JSONObject.parseObject(data);
 
@@ -226,7 +187,9 @@ public class ChaosServiceImpl {
         Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.putAll(extras);
         paramsMap.put("code", code);
-        String data = postBind(hrThirdPartyAccount.getChannel(), ChaosTool.getParams(hrThirdPartyAccount, paramsMap));
+
+        String data=postBind(hrThirdPartyAccount,extras, BindThridPart.BIND_CODE_SEND_ROUTING_KEY);
+
         JSONObject jsonObject = JSONObject.parseObject(data);
         int status = jsonObject.getIntValue("status");
         String message = jsonObject.getString("message");
