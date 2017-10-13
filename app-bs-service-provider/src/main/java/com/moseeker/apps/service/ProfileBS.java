@@ -98,7 +98,7 @@ public class ProfileBS {
         resume.put("channel", channel);
 //		try {
         //查询是否存在相同手机号码的C端帐号
-        Query findRetrieveUserQU = new Query.QueryBuilder().where("mobile", mobile).and("countryCode", countryCode).and("source", UserSource.RETRIEVE_PROFILE.getValue()).buildQuery();
+        Query findRetrieveUserQU = new Query.QueryBuilder().where("mobile", mobile).and("country_code", countryCode).and("source", UserSource.RETRIEVE_PROFILE.getValue()).buildQuery();
         UserUserDO user = userUserDao.getData(findRetrieveUserQU); //userDao.getUser(findRetrieveUserQU);
         logger.info("ProfileBS retrieveProfile user:{}", user);
         if (user == null) {
