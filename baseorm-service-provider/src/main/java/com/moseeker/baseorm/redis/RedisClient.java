@@ -638,6 +638,17 @@ public abstract class RedisClient {
 		return String.format(redisKey.getPattern(), str);
 	}
 
+
+	/**
+	 * 长时间验证redis是否存在key,超时时长默认4分钟，240000毫秒
+	 * @param key	验证的key
+	 * @return
+	 * @throws ConnectException
+	 */
+	public boolean existWithTimeOutCheck(String key) throws ConnectException {
+		return existWithTimeOutCheck(key,Constant.BIND_GET_REDIS_TIMEOUT);
+	}
+
 	/**
 	 * 长时间验证redis是否存在key
 	 * @param key	验证的key
@@ -646,6 +657,7 @@ public abstract class RedisClient {
 	 * @throws ConnectException
 	 */
 	public boolean existWithTimeOutCheck(String key,long time) throws ConnectException{
+		logger.info("尝试循环验证redis中是否存在:"+key);
 		int tick=2000;
 		int count=0;
 
@@ -658,9 +670,11 @@ public abstract class RedisClient {
 				count++;
 			}
 			if(count*tick>time){
+				logger.info("验证:"+key+"超时");
 				throw new ConnectException();
 			}
 		}
+		logger.info("redis中存在:"+key);
 		return true;
 	}
 }

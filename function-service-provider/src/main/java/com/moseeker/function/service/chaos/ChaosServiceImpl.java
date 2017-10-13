@@ -11,6 +11,7 @@ import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.EmojiFilter;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.UrlUtil;
+import com.moseeker.function.constants.BindThridPart;
 import com.moseeker.function.service.chaos.position.Position51WithAccount;
 import com.moseeker.function.service.chaos.position.PositionLiepinWithAccount;
 import com.moseeker.function.service.chaos.position.PositionZhilianWithAccount;
@@ -31,6 +32,7 @@ import org.springframework.test.context.ContextConfiguration;
 import com.moseeker.function.config.AppConfig;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+
 import javax.annotation.Resource;
 import java.net.ConnectException;
 import java.util.HashMap;
@@ -46,6 +48,7 @@ import java.util.Map;
  * @author wjf
  */
 @Service
+@RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = AppConfig.class)
 public class ChaosServiceImpl {
 
@@ -87,10 +90,6 @@ public class ChaosServiceImpl {
         return data;
     }
 
-    private void sendBind(String param){
-        amqpTemplate.send(topicExchange.getName(), "chaos.preset.response.#", MessageBuilder.withBody(param.getBytes()).build());
-    }
-
     /**
      * 绑定第三方账号
      *
@@ -104,19 +103,22 @@ public class ChaosServiceImpl {
 //            String data = postBind(hrThirdPartyAccount.getChannel(), ChaosTool.getParams(hrThirdPartyAccount, extras));
 
             //推送需要绑定第三方账号的信息到rabbitMQ中
-            sendBind(ChaosTool.getParams(hrThirdPartyAccount, extras));
+            String param=ChaosTool.getParams(hrThirdPartyAccount, extras);
+            logger.info("准备推送绑定数据:"+param);
+            amqpTemplate.send(BindThridPart.BIND_EXCHANGE_NAME, BindThridPart.BIND_SEND_ROUTING_KEY, MessageBuilder.withBody(param.getBytes()).build());
+            logger.info("推送成功");
+
 
 
             //尝试从从redis中获取绑定结果,超时后推出
-            int appId = 0;
-            String key_identifier="";
-            String account_Id="";
-            String cacheKey=redisClient.genCacheKey(appId,key_identifier,account_Id);
-            long timeout=240000;
+            String account_Id=hrThirdPartyAccount.getId()+"";
+            String cacheKey=redisClient.genCacheKey(BindThridPart.APP_ID,BindThridPart.KEY_IDENTIFIER,account_Id);
 
-            redisClient.existWithTimeOutCheck(cacheKey,timeout);
+            logger.info("准备获取推送绑定结果"+param);
+            redisClient.existWithTimeOutCheck(cacheKey);
 
-            String data=redisClient.get(appId,key_identifier,account_Id);
+            String data=redisClient.get(BindThridPart.APP_ID,BindThridPart.KEY_IDENTIFIER,account_Id);
+            logger.info("成功获取推送绑定结果"+param);
 
             JSONObject jsonObject = JSONObject.parseObject(data);
             int status = jsonObject.getIntValue("status");
@@ -130,37 +132,42 @@ public class ChaosServiceImpl {
 
                 if (status == 1) {
                     if (StringUtils.isNullOrEmpty(message)) {
-                        message = "用户名或密码错误";
+                        message = BindThridPart.BIND_UP_ERR_MSG;
                     }
                     throw new BIZException(1, message);
                 } else if (status == 100) {
                     hrThirdPartyAccount.setBinding(Integer.valueOf(100).shortValue());
+                } else if (status == 101) { //异地登陆需要验证码
+                    message = BindThridPart.BIND_CODE_MSG;
                 } else if (status == 2) {
                     hrThirdPartyAccount.setBinding(Integer.valueOf(6).shortValue());
                     if (StringUtils.isNullOrEmpty(message)) {
-                        message = "绑定异常，请重新绑定";
+                        message = BindThridPart.BIND_EXP_MSG;
                     } else {
                         message = EmojiFilter.unicodeToUtf8(message);
                     }
                 } else {
                     if (StringUtils.isNullOrEmpty(message)) {
-                        message = "绑定错误，请重新绑定";
+                        message = BindThridPart.BIND_ERR_MSG;
                     }
                     throw new BIZException(1, message);
                 }
-
                 hrThirdPartyAccount.setErrorMessage(message);
             }
         } catch (ConnectException e) {
             //绑定超时发送邮件
             hrThirdPartyAccount.setBinding(Integer.valueOf(6).shortValue());
-            hrThirdPartyAccount.setErrorMessage("绑定超时，请稍后重试");
+            hrThirdPartyAccount.setErrorMessage(BindThridPart.BIND_TIMEOUT_MSG);
         }
 
 
         return hrThirdPartyAccount;
     }
 
+    @Test
+    public void test(){
+        amqpTemplate.send(BindThridPart.BIND_CONFIRM_EXCHANGE_NAME, BindThridPart.BIND_CONFIRM_SEND_ROUTING_KEY, MessageBuilder.withBody("aabbcc".getBytes()).build());
+    }
 
     /**
      * 确认发送短信验证码
@@ -174,7 +181,26 @@ public class ChaosServiceImpl {
         Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.putAll(extras);
         paramsMap.put("confirm", confirm);
-        String data = postBind(hrThirdPartyAccount.getChannel(), ChaosTool.getParams(hrThirdPartyAccount, paramsMap));
+
+        String account_Id=hrThirdPartyAccount.getId()+"";
+//        String data = postBind(hrThirdPartyAccount.getChannel(), ChaosTool.getParams(hrThirdPartyAccount, paramsMap));
+
+        //推送需要绑定第三方账号的信息到rabbitMQ中
+        String param=ChaosTool.getParams(hrThirdPartyAccount, paramsMap);
+        logger.info("准备推送短信验证码:"+account_Id);
+        amqpTemplate.send(BindThridPart.BIND_CONFIRM_EXCHANGE_NAME, BindThridPart.BIND_CONFIRM_SEND_ROUTING_KEY, MessageBuilder.withBody(param.getBytes()).build());
+        logger.info("短信验证码发送成功");
+
+
+        //尝试从从redis中获取绑定结果,超时后推出
+
+        String cacheKey=redisClient.genCacheKey(BindThridPart.APP_ID,BindThridPart.KEY_IDENTIFIER,account_Id);
+
+        logger.info("准备获取推送短信验证码结果"+account_Id);
+        redisClient.existWithTimeOutCheck(cacheKey);
+
+        String data=redisClient.get(BindThridPart.APP_ID,BindThridPart.KEY_IDENTIFIER,account_Id);
+        logger.info("成功获取推送短信验证码结果");
 
         JSONObject jsonObject = JSONObject.parseObject(data);
 

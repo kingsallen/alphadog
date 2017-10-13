@@ -188,6 +188,7 @@ public class ThirdPartyAccountService {
         if (accountDO == null) {
             throw UserAccountException.THIRD_PARTY_ACCOUNT_NOTEXIST;
         }
+
         boolean changed = false;
         if (bindResult != null && bindResult.getStatus() != 0) {
             emailNotification.sendFailureMail(emailNotification.getMails(), accountDO);

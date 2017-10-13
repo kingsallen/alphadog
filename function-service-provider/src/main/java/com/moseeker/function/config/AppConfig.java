@@ -1,5 +1,6 @@
 package com.moseeker.function.config;
 
+import com.moseeker.function.constants.BindThridPart;
 import com.rabbitmq.client.ConnectionFactory;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
@@ -24,7 +25,7 @@ import java.util.List;
 @EnableRabbit
 @ComponentScan({"com.moseeker.function", "com.moseeker.common.aop.iface", "com.moseeker.entity"})
 @Import(com.moseeker.baseorm.config.AppConfig.class)
-@PropertySource("classpath:production/common.properties")
+@PropertySource("classpath:common.properties")
 public class AppConfig {
 
 
@@ -104,22 +105,31 @@ public class AppConfig {
 
     @Bean
     public TopicExchange bindAccountExchange() {
-        TopicExchange topicExchange = new TopicExchange("chaos.bind.response.exchange", true, false);
+        TopicExchange topicExchange = new TopicExchange(BindThridPart.BIND_EXCHANGE_NAME, true, false);
         return topicExchange;
     }
 
+
+    //绑定Queue到exchange+rountingKey
     @Bean
-    public List<Binding> bindingBindAccount() {
+    public List<Binding> bindingBindQueue() {
         return new ArrayList<Binding>(){{
-            add(BindingBuilder.bind(bindAccountQueue()).to(bindAccountExchange()).with("chaos.bind.response.#"));
+            add(BindingBuilder.bind(bindAccountQueue()).to(bindAccountExchange()).with(BindThridPart.BIND_GET_ROUTING_KEY));
         }};
     }
 
     @Bean
-    public Queue presetQueue() {
-        Queue queue = new Queue("chaos.preset.response", true, false, false);
+    public Queue confirmQueue() {
+        Queue queue = new Queue("chaos.confirm.response", true, false, false);
         return queue;
     }
 
+    //绑定Queue到exchange+rountingKey
+    @Bean
+    public List<Binding> confirmBindQueue() {
+        return new ArrayList<Binding>(){{
+            add(BindingBuilder.bind(bindAccountQueue()).to(bindAccountExchange()).with(BindThridPart.BIND_CONFIRM_GET_ROUTING_KEY));
+        }};
+    }
 
 }
