@@ -18,23 +18,22 @@ import org.apache.thrift.TException;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(classes = AppConfig.class)
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = AppConfig.class)
 public class ProfileServicesImplTest {
 
     @Autowired
     ProfileServicesImpl service;
+
+    @Autowired
+    ProfileService profileService;
 
     Object response;
 
@@ -229,4 +228,17 @@ public class ProfileServicesImplTest {
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
     }
+
+    @Test
+    public void getProfileOtherTest() {
+        Response response = profileService.getProfileOther("[{'positionId': 134299, 'profileId': 64}]");
+        System.out.println(response);
+    }
+
+    @Test
+    public void profileCheckTest() {
+        Response response = profileService.checkProfileOther(676202,11896);
+        System.out.println(response);
+    }
+
 }

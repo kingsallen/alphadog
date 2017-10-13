@@ -9,6 +9,7 @@ include "../../dao/struct/userdb/user_hr_account_struct.thrift"
 include "../../dao/struct/userdb/user_employee_struct.thrift"
 include "../../dao/struct/hrdb/hr_third_party_account_struct.thrift"
 include "../../employee/struct/employee_struct.thrift"
+include "../../dao/struct/hrdb/hr_app_export_fields_struct.thrift"
 
 
 
@@ -170,6 +171,8 @@ service UserHrAccountService {
     common_struct.Response employeeImport(1:map<i32,user_employee_struct.UserEmployeeDO> userEmployeeDOS, 2:i32 companyId,3:string filePath,4:string fileName,5:i32 type,6:i32 hraccountId) throws (1: common_struct.BIZException e)
     // 检查员工重复
     useraccounts_struct.ImportUserEmployeeStatistic checkBatchInsert(1:map<i32,user_employee_struct.UserEmployeeDO> userEmployeeDOS, 2:i32 companyId) throws (1: common_struct.BIZException e)
+    //查询自定义导出字段
+    list<hr_app_export_fields_struct.HrAppExportFieldsDO> getExportFields(1: i32 companyId, 2: i32 userHrAccountId) throws (1: common_struct.BIZException e)
 }
 
 

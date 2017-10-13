@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.*;
@@ -30,6 +31,7 @@ import com.moseeker.common.util.query.*;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.HREntity;
+import com.moseeker.entity.PositionEntity;
 import com.moseeker.entity.SearchengineEntity;
 import com.moseeker.entity.exception.HRException;
 import com.moseeker.rpccenter.client.ServiceManager;
@@ -129,6 +131,14 @@ public class UserHrAccountService {
     @Autowired
     HrCompanyAccountDao companyAccountDao;
 
+    @Autowired
+    private PositionEntity positionEntity;
+
+    @Autowired
+    private HrAppExportFieldsDao exportFieldsDao;
+
+    @Autowired
+    private HrAppCvConfDao appCvConfDao;
 
     /**
      * 修改手机号码
@@ -1000,7 +1010,7 @@ public class UserHrAccountService {
         // ES取到数据
         if (response != null && response.getStatus() == 0) {
             logger.info("ES date:{}", response.getData());
-            EmployeeRankObj rankObj = JSONObject.parseObject(response.getData(), EmployeeRankObj.class);
+             EmployeeRankObj rankObj = JSONObject.parseObject(response.getData(), EmployeeRankObj.class);
             List<EmployeeRank> employeeRankList = rankObj.getData();
             if (employeeRankList != null && employeeRankList.size() > 0) {
                 logger.info("ES Data Size:{}", employeeRankList.size());
@@ -1471,4 +1481,26 @@ public class UserHrAccountService {
         }
         return rewardVOPageVO;
     }
+
+    public List<HrAppExportFieldsDO> getExportFields(int companyId, int hraccountId) {
+        List<Integer> appConfigCvIds = positionEntity.getAppCvConfigIdByCompany(companyId, hraccountId);
+        Query.QueryBuilder query = new Query.QueryBuilder();
+        query.orderBy("display_order");
+        List<HrAppExportFieldsDO> hrAppExportFieldsDOList = exportFieldsDao.getDatas(query.buildQuery());
+        if (!appConfigCvIds.isEmpty()) {
+            query.clear();
+            query.where(new Condition("id", appConfigCvIds, ValueOp.IN));
+            List<HrAppCvConfDO> hrAppCvConfDOList = appCvConfDao.getDatas(query.buildQuery());
+            if (hrAppCvConfDOList != null && !hrAppCvConfDOList.isEmpty()) {
+                Set<String> configFieldName = hrAppCvConfDOList.stream().flatMap(m -> JSONArray.parseArray(m.getFieldValue()).getJSONObject(0).getJSONArray("fields").stream()).map(p -> JSONObject.parseObject(String.valueOf(p)).getString("field_name")).collect(Collectors.toSet());
+                hrAppExportFieldsDOList.stream().forEach(e -> {
+                    if (configFieldName.contains(e.getFieldName())) {
+                        e.showed = 1;
+                    }
+                });
+            }
+        }
+        return hrAppExportFieldsDOList.stream().filter(f -> f.showed == 1).collect(Collectors.toList());
+    }
+
 }

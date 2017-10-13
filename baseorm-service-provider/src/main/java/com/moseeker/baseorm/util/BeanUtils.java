@@ -131,7 +131,7 @@ public class BeanUtils {
         }
 
         // 将strut对象的属性名和get方法提取成map
-        Map<String, Method> destGetMeths = Arrays.asList(dest.getClass().getMethods()).stream().filter(f -> f.getName().startsWith("get") || f.getName().startsWith("is")).collect(Collectors.toMap(k -> k.getName(), v -> v, (oldKey, newKey) -> newKey));
+        Map<String, Method> destGetMeths = Arrays.asList(dest.getClass().getMethods()).stream().filter(f -> (f.getName().startsWith("get") || f.getName().startsWith("is")) && f.getParameterTypes().length == 0).collect(Collectors.toMap(k -> k.getName(), v -> v, (oldKey, newKey) -> newKey));
         Map<String, Method> destMap = Arrays.asList(dest.getClass().getFields()).stream().filter(f -> !f.getName().equals("metaDataMap")).collect(MyCollectors.toMap(k -> humpName(k.getName()), v -> {
             String fileName = v.getName().substring(0, 1).toUpperCase() + v.getName().substring(1);
             Method isSetMethod;
@@ -230,7 +230,7 @@ public class BeanUtils {
         }
 
         // 将strut对象的属性名和set方法提取成map
-        Map<String, Method> destGetMeths = Arrays.asList(dest.getClass().getMethods()).stream().filter(f -> f.getName().startsWith("set")).collect(Collectors.toMap(k -> k.getName(), v -> v, (oldKey, newKey) -> newKey));
+        Map<String, Method> destGetMeths = Arrays.asList(dest.getClass().getMethods()).stream().filter(f -> f.getName().startsWith("set") && f.getParameterTypes().length == 1).collect(Collectors.toMap(k -> k.getName(), v -> v, (oldKey, newKey) -> newKey));
         Map<String, Method> destMap = Arrays.asList(dest.getClass().getFields()).stream().filter(f -> !f.getName().equals("metaDataMap")).collect(MyCollectors.toMap(k -> humpName(k.getName()), v -> {
             String fileName = v.getName().substring(0, 1).toUpperCase() + v.getName().substring(1);
             if (destGetMeths.containsKey("set".concat(fileName))) {
@@ -268,6 +268,60 @@ public class BeanUtils {
                 }
             }
         }
+    }
+
+    @SuppressWarnings("rawtypes")
+    public static <T, R extends Record> T DBToBean(R orig, Class<T> destClazz) {
+        T dest = null;
+        try {
+            dest = destClazz.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            logger.error("error", e);
+        }
+        if (dest == null || orig == null) {
+            return dest;
+        }
+
+        // 将strut对象的属性名和set方法提取成map
+        Map<String, Method> destGetMeths = Arrays.asList(dest.getClass().getMethods()).stream().filter(f -> f.getName().startsWith("set") && f.getParameterTypes().length == 1).collect(Collectors.toMap(k -> k.getName(), v -> v, (oldKey, newKey) -> newKey));
+        Map<String, Method> destMap = Arrays.asList(dest.getClass().getFields()).stream().filter(f -> !f.getName().equals("metaDataMap")).collect(MyCollectors.toMap(k -> humpName(k.getName()), v -> {
+            String fileName = v.getName().substring(0, 1).toUpperCase() + v.getName().substring(1);
+            if (destGetMeths.containsKey("set".concat(fileName))) {
+                return destGetMeths.get("set".concat(fileName));
+            } else {
+                return null;
+            }
+        }));
+
+        // 将DO对象的属性名和get方法提取成map
+        Map<String, Method> origMap = Arrays.asList(orig.getClass().getMethods()).stream().filter(f -> f.getName().length() > 3 && f.getName().startsWith("get")).collect(Collectors.toMap(k -> {
+            String fileName = k.getName().substring(3, 4).toLowerCase() + k.getName().substring(4);
+            return humpName(fileName);
+        }, v -> v, (oldKey, newKey) -> newKey));
+
+
+        Set<String> destKey = destMap.keySet();
+        for (String field : destKey) {
+            if (destMap.containsKey(field) && origMap.get(field) != null && destMap.get(field) != null) {
+                Object object = null;
+                try {
+                    object = convertTo(origMap.get(field).invoke(orig, new Object[]{}),
+                            destMap.get(field).getParameterTypes()[0]);
+                    if (object != null) {
+                        destMap.get(field).invoke(dest, object);
+                    }
+                } catch (IllegalArgumentException e) {
+                    logger.error("IllegalArgumentException", e);
+                    logger.error("IllegalArgumentException -- method:{}, methodType:{}, param value:{}, param before convert:", origMap.get(field).getName().trim(), destMap.get(field).getParameterTypes()[0], object, orig);
+                } catch (InvocationTargetException e) {
+                    logger.error("InvocationTargetException -- origin:{}, origin_method:{}, origin_value:{}, desc_method:{} ", orig, origMap.get(field), object, destMap.get(field));
+                    logger.error("InvocationTargetException", e);
+                } catch (Exception e) {
+                    logger.error(e.getMessage(), e);
+                }
+            }
+        }
+        return dest;
     }
 
     private enum MethodType {

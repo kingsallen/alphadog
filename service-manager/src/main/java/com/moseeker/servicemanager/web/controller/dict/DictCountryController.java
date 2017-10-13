@@ -4,6 +4,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.servicemanager.common.ParamUtils;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +16,9 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dict.service.DictCountryService;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 国家字典数据服务
@@ -34,7 +39,8 @@ public class DictCountryController {
     @ResponseBody
     public String get(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Response result = dictCountryService.getDictCountry();
+            CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
+            Response result = dictCountryService.getDictCountry(query);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());

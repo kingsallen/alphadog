@@ -17,6 +17,8 @@ dependencies {
     testCompile deps["junit"]
     testCompile deps["mockito"]
 
+    compile deps["spring-rabbit"]
+
 }
 
 //compileJava.dependsOn(":thrift-jooq:copyGeneratedFile") 
