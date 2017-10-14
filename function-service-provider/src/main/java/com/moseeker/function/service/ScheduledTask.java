@@ -28,7 +28,7 @@ public class ScheduledTask {
         JSONObject msg= JSON.parseObject(data);
         System.out.println(data);
         logger.info("推送数据到redis中");
-        redisClient.set(BindThridPart.APP_ID,BindThridPart.KEY_IDENTIFIER,msg.getString("account_id"),data);
+        redisClient.set(BindThridPart.APP_ID,BindThridPart.KEY_IDENTIFIER,msg.getString(BindThridPart.CHAOS_ACCOUNTID),data);
         logger.info("推送数据成功");
     }
 }

@@ -24,4 +24,6 @@ public class BindThridPart {
     public final static String BIND_CODE_GET_ROUTING_KEY="mobile_code.response";
     public final static String BIND_CODE_GET_QUEUE_NAME="chaos.mobile_code.response";
 
+    public final static String CHAOS_ACCOUNTID="accountId";
+
 }
