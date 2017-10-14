@@ -38,6 +38,7 @@ public class ChaosTool {
         pramas.put("id",accountDO.getId());
         pramas.put("user_name", accountDO.getUsername());
         pramas.put("password", accountDO.getPassword());
+        pramas.put("channel", accountDO.getChannel());
 
         if (accountDO.getChannel() == ChannelType.JOB51.getValue()) {
             pramas.put("member_name", accountDO.getMembername());
