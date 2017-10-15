@@ -1,6 +1,6 @@
 package com.moseeker.function.constants;
 
-public class BindThridPart {
+public class BindThirdPart {
     public final static int APP_ID=0;
     public final static String KEY_IDENTIFIER="BIND_THRID_PART";
 

@@ -1,6 +1,6 @@
 package com.moseeker.function.config;
 
-import com.moseeker.function.constants.BindThridPart;
+import com.moseeker.function.constants.BindThirdPart;
 import com.rabbitmq.client.ConnectionFactory;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
@@ -73,7 +73,7 @@ public class AppConfig {
      * listener 容器 （consumer 需要手动确认消息）
      * @return
      */
-    @Bean
+    @Bean("rabbitListenerContainerFactory")
     public RabbitListenerContainerFactory rabbitListenerContainerFactory() {
         SimpleRabbitListenerContainerFactory listenerContainerFactory = new SimpleRabbitListenerContainerFactory();
         listenerContainerFactory.setConnectionFactory(cachingConnectionFactory());
@@ -99,7 +99,7 @@ public class AppConfig {
     //设置rabbitMQ的Exchange
     @Bean
     public TopicExchange bindAccountExchange() {
-        TopicExchange exchange = new TopicExchange(BindThridPart.BIND_EXCHANGE_NAME, true, false);
+        TopicExchange exchange = new TopicExchange(BindThirdPart.BIND_EXCHANGE_NAME, true, false);
         return exchange;
     }
 
@@ -107,39 +107,39 @@ public class AppConfig {
     //绑定第一次推送第三方账号队列(即推送需要绑定的账号和密码)
     @Bean
     public Queue bindAccountQueue() {
-        Queue queue = new Queue(BindThridPart.BIND_GET_QUEUE_NAME, true, false, false);
+        Queue queue = new Queue(BindThirdPart.BIND_GET_QUEUE_NAME, true, false, false);
         return queue;
     }
     @Bean
     public List<Binding> bindingBindQueue() {
         return new ArrayList<Binding>(){{
-            add(BindingBuilder.bind(bindAccountQueue()).to(bindAccountExchange()).with(BindThridPart.BIND_GET_ROUTING_KEY));
+            add(BindingBuilder.bind(bindAccountQueue()).to(bindAccountExchange()).with(BindThirdPart.BIND_GET_ROUTING_KEY));
         }};
     }
 
     //绑定第二次推送第三方账号队列（即确认是否需要发送手机验证码）
     @Bean
     public Queue confirmQueue() {
-        Queue queue = new Queue(BindThridPart.BIND_CONFIRM_GET_QUEUE_NAME, true, false, false);
+        Queue queue = new Queue(BindThirdPart.BIND_CONFIRM_GET_QUEUE_NAME, true, false, false);
         return queue;
     }
     @Bean
     public List<Binding> confirmBindQueue() {
         return new ArrayList<Binding>(){{
-            add(BindingBuilder.bind(confirmQueue()).to(bindAccountExchange()).with(BindThridPart.BIND_CONFIRM_GET_ROUTING_KEY));
+            add(BindingBuilder.bind(confirmQueue()).to(bindAccountExchange()).with(BindThirdPart.BIND_CONFIRM_GET_ROUTING_KEY));
         }};
     }
 
     //绑定第三次推送第三方账号队列（即推送手机验证码）
     @Bean
     public Queue codeQueue() {
-        Queue queue = new Queue(BindThridPart.BIND_CODE_GET_QUEUE_NAME, true, false, false);
+        Queue queue = new Queue(BindThirdPart.BIND_CODE_GET_QUEUE_NAME, true, false, false);
         return queue;
     }
     @Bean
     public List<Binding> codeBindQueue() {
         return new ArrayList<Binding>(){{
-            add(BindingBuilder.bind(confirmQueue()).to(bindAccountExchange()).with(BindThridPart.BIND_CODE_GET_ROUTING_KEY));
+            add(BindingBuilder.bind(confirmQueue()).to(bindAccountExchange()).with(BindThirdPart.BIND_CODE_GET_ROUTING_KEY));
         }};
     }
 }

@@ -11,7 +11,7 @@ import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.EmojiFilter;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.UrlUtil;
-import com.moseeker.function.constants.BindThridPart;
+import com.moseeker.function.constants.BindThirdPart;
 import com.moseeker.function.service.chaos.position.Position51WithAccount;
 import com.moseeker.function.service.chaos.position.PositionLiepinWithAccount;
 import com.moseeker.function.service.chaos.position.PositionZhilianWithAccount;
@@ -78,16 +78,16 @@ public class ChaosServiceImpl {
         String param=ChaosTool.getParams(hrThirdPartyAccount, extras);
         String account_Id=hrThirdPartyAccount.getId()+"";
         logger.info("准备推送"+account_Id+"数据到RabbitMQ的RoutingKey："+routingKey);
-        amqpTemplate.send(BindThridPart.BIND_EXCHANGE_NAME, routingKey, MessageBuilder.withBody(param.getBytes()).build());
+        amqpTemplate.send(BindThirdPart.BIND_EXCHANGE_NAME, routingKey, MessageBuilder.withBody(param.getBytes()).build());
         logger.info("推送RabbitMQ成功");
 
         //尝试从从redis中获取绑定结果,超时后推出
-        String cacheKey=redisClient.genCacheKey(BindThridPart.APP_ID,BindThridPart.KEY_IDENTIFIER,account_Id);
+        String cacheKey=redisClient.genCacheKey(BindThirdPart.APP_ID, BindThirdPart.KEY_IDENTIFIER,account_Id);
 
         logger.info("准备从Redis获取"+routingKey+"结果");
         redisClient.existWithTimeOutCheck(cacheKey);
 
-        String data=redisClient.get(BindThridPart.APP_ID,BindThridPart.KEY_IDENTIFIER,account_Id);
+        String data=redisClient.get(BindThirdPart.APP_ID, BindThirdPart.KEY_IDENTIFIER,account_Id);
         logger.info("成功从Redis获取推送绑定结果");
 
         return data;
@@ -103,7 +103,7 @@ public class ChaosServiceImpl {
         logger.info("ChaosServiceImpl bind");
         try {
 //            String data = "{\"status\":100,\"message\":\"182****3365\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
-            String data=postBind(hrThirdPartyAccount,extras, BindThridPart.BIND_SEND_ROUTING_KEY);
+            String data=postBind(hrThirdPartyAccount,extras, BindThirdPart.BIND_SEND_ROUTING_KEY);
 
             JSONObject jsonObject = JSONObject.parseObject(data);
             int status = jsonObject.getIntValue("status");
@@ -117,7 +117,7 @@ public class ChaosServiceImpl {
 
                 if (status == 1) {
                     if (StringUtils.isNullOrEmpty(message)) {
-                        message = BindThridPart.BIND_UP_ERR_MSG;
+                        message = BindThirdPart.BIND_UP_ERR_MSG;
                     }
                     throw new BIZException(1, message);
                 } else if (status == 100) {
@@ -125,13 +125,13 @@ public class ChaosServiceImpl {
                 }  else if (status == 2) {
                     hrThirdPartyAccount.setBinding(Integer.valueOf(6).shortValue());
                     if (StringUtils.isNullOrEmpty(message)) {
-                        message = BindThridPart.BIND_EXP_MSG;
+                        message = BindThirdPart.BIND_EXP_MSG;
                     } else {
                         message = EmojiFilter.unicodeToUtf8(message);
                     }
                 } else {
                     if (StringUtils.isNullOrEmpty(message)) {
-                        message = BindThridPart.BIND_ERR_MSG;
+                        message = BindThirdPart.BIND_ERR_MSG;
                     }
                     throw new BIZException(1, message);
                 }
@@ -140,7 +140,7 @@ public class ChaosServiceImpl {
         } catch (ConnectException e) {
             //绑定超时发送邮件
             hrThirdPartyAccount.setBinding(Integer.valueOf(6).shortValue());
-            hrThirdPartyAccount.setErrorMessage(BindThridPart.BIND_TIMEOUT_MSG);
+            hrThirdPartyAccount.setErrorMessage(BindThirdPart.BIND_TIMEOUT_MSG);
         }
 
 
@@ -161,7 +161,7 @@ public class ChaosServiceImpl {
         paramsMap.putAll(extras);
         paramsMap.put("confirm", confirm);
 
-        String data=postBind(hrThirdPartyAccount,extras, BindThridPart.BIND_CONFIRM_SEND_ROUTING_KEY);
+        String data=postBind(hrThirdPartyAccount,extras, BindThirdPart.BIND_CONFIRM_SEND_ROUTING_KEY);
 
         JSONObject jsonObject = JSONObject.parseObject(data);
 
@@ -188,7 +188,7 @@ public class ChaosServiceImpl {
         paramsMap.putAll(extras);
         paramsMap.put("code", code);
 
-        String data=postBind(hrThirdPartyAccount,extras, BindThridPart.BIND_CODE_SEND_ROUTING_KEY);
+        String data=postBind(hrThirdPartyAccount,extras, BindThirdPart.BIND_CODE_SEND_ROUTING_KEY);
 
         JSONObject jsonObject = JSONObject.parseObject(data);
         int status = jsonObject.getIntValue("status");
