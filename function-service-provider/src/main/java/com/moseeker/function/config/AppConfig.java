@@ -98,8 +98,8 @@ public class AppConfig {
 
     //设置rabbitMQ的Exchange
     @Bean
-    public DirectExchange bindAccountExchange() {
-        DirectExchange exchange = new DirectExchange(BindThridPart.BIND_EXCHANGE_NAME, true, false);
+    public TopicExchange bindAccountExchange() {
+        TopicExchange exchange = new TopicExchange(BindThridPart.BIND_EXCHANGE_NAME, true, false);
         return exchange;
     }
 

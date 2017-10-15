@@ -23,7 +23,7 @@ public class ScheduledTask {
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
 
-    @RabbitListener(queues = {BindThridPart.BIND_GET_QUEUE_NAME,BindThridPart.BIND_CONFIRM_GET_QUEUE_NAME,BindThridPart.BIND_CODE_GET_QUEUE_NAME})
+    @RabbitListener(queues = {BindThridPart.BIND_GET_QUEUE_NAME,BindThridPart.BIND_CONFIRM_GET_QUEUE_NAME,BindThridPart.BIND_CODE_GET_QUEUE_NAME}, containerFactory = "rabbitListenerContainerFactoryAutoAck")
     public void scheduler(String data) {
         logger.info("获取到数据:"+data);
         JSONObject msg= JSON.parseObject(data);
