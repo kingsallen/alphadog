@@ -13,16 +13,16 @@ public class BindThridPart {
     public final static String BIND_EXCHANGE_NAME="chaos";
 
     public final static String BIND_SEND_ROUTING_KEY="bind.request";
-    public final static String BIND_GET_ROUTING_KEY="bind.response";
-    public final static String BIND_GET_QUEUE_NAME="chaos.web_bind.response";
+    public final static String BIND_GET_ROUTING_KEY="bind.response.#";
+    public final static String BIND_GET_QUEUE_NAME="bind.response.web";
 
     public final static String BIND_CONFIRM_SEND_ROUTING_KEY="mobile_confirm.request";
-    public final static String BIND_CONFIRM_GET_ROUTING_KEY="mobile_confirm.response";
-    public final static String BIND_CONFIRM_GET_QUEUE_NAME="chaos.web_mobile_confirm.response";
+    public final static String BIND_CONFIRM_GET_ROUTING_KEY="mobile_confirm.response.#";
+    public final static String BIND_CONFIRM_GET_QUEUE_NAME="mobile_confirm.response.web";
 
     public final static String BIND_CODE_SEND_ROUTING_KEY="mobile_code.request";
-    public final static String BIND_CODE_GET_ROUTING_KEY="mobile_code.response";
-    public final static String BIND_CODE_GET_QUEUE_NAME="chaos.web_mobile_code.response";
+    public final static String BIND_CODE_GET_ROUTING_KEY="mobile_code.response.#";
+    public final static String BIND_CODE_GET_QUEUE_NAME="mobile_code.response.web";
 
     public final static String CHAOS_ACCOUNTID="accountId";
 
