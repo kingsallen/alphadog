@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 
 @Component
-@RabbitListener(queues = {BindThirdPart.BIND_GET_QUEUE_NAME, BindThirdPart.BIND_CONFIRM_GET_QUEUE_NAME, BindThirdPart.BIND_CODE_GET_QUEUE_NAME}, containerFactory = "rabbitListenerContainerFactoryAutoAck")
 public class ScheduledTask {
 
     Logger logger = LoggerFactory.getLogger(ChaosServiceImpl.class);
@@ -25,6 +24,7 @@ public class ScheduledTask {
     private RedisClient redisClient;
 
 
+    @RabbitListener(queues = {BindThirdPart.BIND_GET_QUEUE_NAME, BindThirdPart.BIND_CONFIRM_GET_QUEUE_NAME, BindThirdPart.BIND_CODE_GET_QUEUE_NAME}, containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
     public void scheduler(Message message, Channel channel) {
         try{
