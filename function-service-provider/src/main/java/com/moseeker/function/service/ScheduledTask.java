@@ -18,7 +18,6 @@ import org.springframework.test.context.ContextConfiguration;
 import javax.annotation.Resource;
 
 @Component
-@ContextConfiguration(classes = AppConfig.class)
 public class ScheduledTask {
 
     Logger logger = LoggerFactory.getLogger(ChaosServiceImpl.class);
@@ -26,7 +25,7 @@ public class ScheduledTask {
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
 
-    @RabbitListener(queues = {BindThridPart.BIND_GET_QUEUE_NAME,BindThridPart.BIND_CONFIRM_GET_QUEUE_NAME,BindThridPart.BIND_CODE_GET_QUEUE_NAME}, containerFactory = "rabbitListenerContainerFactoryAutoAck")
+    @RabbitListener(queues = "bind.response.web", containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
     public void scheduler(Message message, Channel channel) {
         try{
