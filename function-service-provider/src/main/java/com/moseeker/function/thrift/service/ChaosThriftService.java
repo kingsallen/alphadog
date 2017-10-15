@@ -40,6 +40,7 @@ public class ChaosThriftService implements Iface {
         try {
             return chaosService.bind(hrThirdPartyAccount, extras);
         } catch (Exception e) {
+            logger.error(e.getMessage(),e);
             throw ExceptionUtils.convertException(e);
         }
     }
@@ -49,6 +50,7 @@ public class ChaosThriftService implements Iface {
         try {
             return chaosService.bindConfirm(thirdPartyAccount, extras,confirm);
         } catch (Exception e) {
+            logger.error(e.getMessage(),e);
             throw ExceptionUtils.convertException(e);
         }
     }
@@ -58,6 +60,7 @@ public class ChaosThriftService implements Iface {
         try {
             return chaosService.bindMessage(thirdPartyAccount, extras,code);
         } catch (Exception e) {
+            logger.error(e.getMessage(),e);
             throw ExceptionUtils.convertException(e);
         }
     }
