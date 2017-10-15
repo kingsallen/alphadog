@@ -206,5 +206,5 @@ public final class Constant {
     public static final int PROFILE_IMPORT_UPPER_LIMIT = 3; //没人每天简历导入次数
 
 
-    public static final long BIND_GET_REDIS_TIMEOUT=420000;
+    public static final long BIND_GET_REDIS_TIMEOUT=240000;
 }
