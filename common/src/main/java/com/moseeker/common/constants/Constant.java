@@ -203,7 +203,7 @@ public final class Constant {
     public static final String WORDPRESS_POST_POSTSTATUS_PUBLISH = "publish";
 
     public static final int SMS_UPPER_LIMIT = 10; //暂时限制2条短信
-    public static final int PROFILE_IMPORT_UPPER_LIMIT = 3; //没人每天简历导入次数
+    public static final int PROFILE_IMPORT_UPPER_LIMIT = 10; //没人每天简历导入次数
 
 
     public static final long BIND_GET_REDIS_TIMEOUT=240000;
