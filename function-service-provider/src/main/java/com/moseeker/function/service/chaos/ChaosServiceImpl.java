@@ -12,6 +12,7 @@ import com.moseeker.common.util.EmojiFilter;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.UrlUtil;
 import com.moseeker.function.constants.BindThirdPart;
+import com.moseeker.common.constants.BindingStatus;
 import com.moseeker.function.service.chaos.position.Position51WithAccount;
 import com.moseeker.function.service.chaos.position.PositionLiepinWithAccount;
 import com.moseeker.function.service.chaos.position.PositionZhilianWithAccount;
@@ -109,7 +110,7 @@ public class ChaosServiceImpl {
             int status = jsonObject.getIntValue("status");
 
             if (status == 0) {
-                hrThirdPartyAccount.setBinding(Integer.valueOf(1).shortValue());
+                hrThirdPartyAccount.setBinding((short)BindingStatus.GETINGINFO.getValue());
                 logger.info("绑定成功，binding标志为"+hrThirdPartyAccount.getBinding());
                 hrThirdPartyAccount.setRemainNum(jsonObject.getJSONObject("data").getIntValue("remain_number"));
                 hrThirdPartyAccount.setRemainProfileNum(jsonObject.getJSONObject("data").getIntValue("resume_number"));
@@ -124,7 +125,7 @@ public class ChaosServiceImpl {
                 } else if (status == 100) {
                     hrThirdPartyAccount.setBinding(Integer.valueOf(100).shortValue());
                 }  else if (status == 2) {
-                    hrThirdPartyAccount.setBinding(Integer.valueOf(6).shortValue());
+                    hrThirdPartyAccount.setBinding((short)BindingStatus.ERROR.getValue());
                     if (StringUtils.isNullOrEmpty(message)) {
                         message = BindThirdPart.BIND_EXP_MSG;
                     } else {
@@ -140,7 +141,7 @@ public class ChaosServiceImpl {
             }
         } catch (ConnectException e) {
             //绑定超时发送邮件
-            hrThirdPartyAccount.setBinding(Integer.valueOf(6).shortValue());
+            hrThirdPartyAccount.setBinding((short)BindingStatus.ERROR.getValue());
             hrThirdPartyAccount.setErrorMessage(BindThirdPart.BIND_TIMEOUT_MSG);
         }
 
