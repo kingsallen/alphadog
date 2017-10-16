@@ -124,7 +124,7 @@ public class ChaosServiceImpl {
                 } else if (status == 100) {
                     hrThirdPartyAccount.setBinding(Integer.valueOf(100).shortValue());
                 }  else if (status == 2) {
-                    hrThirdPartyAccount.setBinding(Integer.valueOf(6).shortValue());
+                    hrThirdPartyAccount.setBinding((short)BindingStatus.ERROR.getValue());
                     if (StringUtils.isNullOrEmpty(message)) {
                         message = BindThirdPart.BIND_EXP_MSG;
                     } else {
@@ -140,7 +140,7 @@ public class ChaosServiceImpl {
             }
         } catch (ConnectException e) {
             //绑定超时发送邮件
-            hrThirdPartyAccount.setBinding(Integer.valueOf(6).shortValue());
+            hrThirdPartyAccount.setBinding((short)BindingStatus.ERROR.getValue());
             hrThirdPartyAccount.setErrorMessage(BindThirdPart.BIND_TIMEOUT_MSG);
         }
 
