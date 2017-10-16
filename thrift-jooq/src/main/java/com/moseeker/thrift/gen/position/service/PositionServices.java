@@ -75,6 +75,10 @@ public class PositionServices {
 
         public com.moseeker.thrift.gen.common.struct.Response getPcRecommendPosition(int positionId, int page, int pageSize) throws org.apache.thrift.TException;
 
+        public com.moseeker.thrift.gen.common.struct.Response getThirdpartySyncedPositions(int channel, int publisher, int companyId, int candidateSource, int page, int pageSize) throws org.apache.thrift.TException;
+
+        public com.moseeker.thrift.gen.common.struct.Response putAlipayResult(int channel, int positionId, int alipayJobId) throws org.apache.thrift.TException;
+
         public com.moseeker.thrift.gen.common.struct.Response addPcReport(com.moseeker.thrift.gen.dao.struct.jobdb.JobPcReportedDO jobPcReportedDO) throws org.apache.thrift.TException;
 
         public com.moseeker.thrift.gen.common.struct.Response getPcAdvertisement(int page, int pageSize) throws org.apache.thrift.TException;
@@ -144,6 +148,10 @@ public class PositionServices {
         public void getPcPositionDetail(int positionId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
         public void getPcRecommendPosition(int positionId, int page, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+
+        public void getThirdpartySyncedPositions(int channel, int publisher, int companyId, int candidateSource, int page, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+
+        public void putAlipayResult(int channel, int positionId, int alipayJobId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
         public void addPcReport(com.moseeker.thrift.gen.dao.struct.jobdb.JobPcReportedDO jobPcReportedDO, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
@@ -887,6 +895,59 @@ public class PositionServices {
                 return result.success;
             }
             throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getPcRecommendPosition failed: unknown result");
+        }
+
+        public com.moseeker.thrift.gen.common.struct.Response getThirdpartySyncedPositions(int channel, int publisher, int companyId, int candidateSource, int page, int pageSize) throws org.apache.thrift.TException
+        {
+            send_getThirdpartySyncedPositions(channel, publisher, companyId, candidateSource, page, pageSize);
+            return recv_getThirdpartySyncedPositions();
+        }
+
+        public void send_getThirdpartySyncedPositions(int channel, int publisher, int companyId, int candidateSource, int page, int pageSize) throws org.apache.thrift.TException
+        {
+            getThirdpartySyncedPositions_args args = new getThirdpartySyncedPositions_args();
+            args.setChannel(channel);
+            args.setPublisher(publisher);
+            args.setCompanyId(companyId);
+            args.setCandidateSource(candidateSource);
+            args.setPage(page);
+            args.setPageSize(pageSize);
+            sendBase("getThirdpartySyncedPositions", args);
+        }
+
+        public com.moseeker.thrift.gen.common.struct.Response recv_getThirdpartySyncedPositions() throws org.apache.thrift.TException
+        {
+            getThirdpartySyncedPositions_result result = new getThirdpartySyncedPositions_result();
+            receiveBase(result, "getThirdpartySyncedPositions");
+            if (result.isSetSuccess()) {
+                return result.success;
+            }
+            throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getThirdpartySyncedPositions failed: unknown result");
+        }
+
+        public com.moseeker.thrift.gen.common.struct.Response putAlipayResult(int channel, int positionId, int alipayJobId) throws org.apache.thrift.TException
+        {
+            send_putAlipayResult(channel, positionId, alipayJobId);
+            return recv_putAlipayResult();
+        }
+
+        public void send_putAlipayResult(int channel, int positionId, int alipayJobId) throws org.apache.thrift.TException
+        {
+            putAlipayResult_args args = new putAlipayResult_args();
+            args.setChannel(channel);
+            args.setPositionId(positionId);
+            args.setAlipayJobId(alipayJobId);
+            sendBase("putAlipayResult", args);
+        }
+
+        public com.moseeker.thrift.gen.common.struct.Response recv_putAlipayResult() throws org.apache.thrift.TException
+        {
+            putAlipayResult_result result = new putAlipayResult_result();
+            receiveBase(result, "putAlipayResult");
+            if (result.isSetSuccess()) {
+                return result.success;
+            }
+            throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "putAlipayResult failed: unknown result");
         }
 
         public com.moseeker.thrift.gen.common.struct.Response addPcReport(com.moseeker.thrift.gen.dao.struct.jobdb.JobPcReportedDO jobPcReportedDO) throws org.apache.thrift.TException
@@ -1990,6 +2051,91 @@ public class PositionServices {
             }
         }
 
+        public void getThirdpartySyncedPositions(int channel, int publisher, int companyId, int candidateSource, int page, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+            checkReady();
+            getThirdpartySyncedPositions_call method_call = new getThirdpartySyncedPositions_call(channel, publisher, companyId, candidateSource, page, pageSize, resultHandler, this, ___protocolFactory, ___transport);
+            this.___currentMethod = method_call;
+            ___manager.call(method_call);
+        }
+
+        public static class getThirdpartySyncedPositions_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
+            private int channel;
+            private int publisher;
+            private int companyId;
+            private int candidateSource;
+            private int page;
+            private int pageSize;
+            public getThirdpartySyncedPositions_call(int channel, int publisher, int companyId, int candidateSource, int page, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+                super(client, protocolFactory, transport, resultHandler, false);
+                this.channel = channel;
+                this.publisher = publisher;
+                this.companyId = companyId;
+                this.candidateSource = candidateSource;
+                this.page = page;
+                this.pageSize = pageSize;
+            }
+
+            public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+                prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("getThirdpartySyncedPositions", org.apache.thrift.protocol.TMessageType.CALL, 0));
+                getThirdpartySyncedPositions_args args = new getThirdpartySyncedPositions_args();
+                args.setChannel(channel);
+                args.setPublisher(publisher);
+                args.setCompanyId(companyId);
+                args.setCandidateSource(candidateSource);
+                args.setPage(page);
+                args.setPageSize(pageSize);
+                args.write(prot);
+                prot.writeMessageEnd();
+            }
+
+            public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
+                if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+                    throw new java.lang.IllegalStateException("Method call not finished!");
+                }
+                org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
+                org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
+                return (new Client(prot)).recv_getThirdpartySyncedPositions();
+            }
+        }
+
+        public void putAlipayResult(int channel, int positionId, int alipayJobId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+            checkReady();
+            putAlipayResult_call method_call = new putAlipayResult_call(channel, positionId, alipayJobId, resultHandler, this, ___protocolFactory, ___transport);
+            this.___currentMethod = method_call;
+            ___manager.call(method_call);
+        }
+
+        public static class putAlipayResult_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
+            private int channel;
+            private int positionId;
+            private int alipayJobId;
+            public putAlipayResult_call(int channel, int positionId, int alipayJobId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+                super(client, protocolFactory, transport, resultHandler, false);
+                this.channel = channel;
+                this.positionId = positionId;
+                this.alipayJobId = alipayJobId;
+            }
+
+            public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+                prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("putAlipayResult", org.apache.thrift.protocol.TMessageType.CALL, 0));
+                putAlipayResult_args args = new putAlipayResult_args();
+                args.setChannel(channel);
+                args.setPositionId(positionId);
+                args.setAlipayJobId(alipayJobId);
+                args.write(prot);
+                prot.writeMessageEnd();
+            }
+
+            public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
+                if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+                    throw new java.lang.IllegalStateException("Method call not finished!");
+                }
+                org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
+                org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
+                return (new Client(prot)).recv_putAlipayResult();
+            }
+        }
+
         public void addPcReport(com.moseeker.thrift.gen.dao.struct.jobdb.JobPcReportedDO jobPcReportedDO, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
             checkReady();
             addPcReport_call method_call = new addPcReport_call(jobPcReportedDO, resultHandler, this, ___protocolFactory, ___transport);
@@ -2138,6 +2284,8 @@ public class PositionServices {
             processMap.put("getPcRecommandCompanyAll", new getPcRecommandCompanyAll());
             processMap.put("getPcPositionDetail", new getPcPositionDetail());
             processMap.put("getPcRecommendPosition", new getPcRecommendPosition());
+            processMap.put("getThirdpartySyncedPositions", new getThirdpartySyncedPositions());
+            processMap.put("putAlipayResult", new putAlipayResult());
             processMap.put("addPcReport", new addPcReport());
             processMap.put("getPcAdvertisement", new getPcAdvertisement());
             processMap.put("getPositionRecommendByModuleId", new getPositionRecommendByModuleId());
@@ -2759,6 +2907,46 @@ public class PositionServices {
             }
         }
 
+        public static class getThirdpartySyncedPositions<I extends Iface> extends org.apache.thrift.ProcessFunction<I, getThirdpartySyncedPositions_args> {
+            public getThirdpartySyncedPositions() {
+                super("getThirdpartySyncedPositions");
+            }
+
+            public getThirdpartySyncedPositions_args getEmptyArgsInstance() {
+                return new getThirdpartySyncedPositions_args();
+            }
+
+            protected boolean isOneway() {
+                return false;
+            }
+
+            public getThirdpartySyncedPositions_result getResult(I iface, getThirdpartySyncedPositions_args args) throws org.apache.thrift.TException {
+                getThirdpartySyncedPositions_result result = new getThirdpartySyncedPositions_result();
+                result.success = iface.getThirdpartySyncedPositions(args.channel, args.publisher, args.companyId, args.candidateSource, args.page, args.pageSize);
+                return result;
+            }
+        }
+
+        public static class putAlipayResult<I extends Iface> extends org.apache.thrift.ProcessFunction<I, putAlipayResult_args> {
+            public putAlipayResult() {
+                super("putAlipayResult");
+            }
+
+            public putAlipayResult_args getEmptyArgsInstance() {
+                return new putAlipayResult_args();
+            }
+
+            protected boolean isOneway() {
+                return false;
+            }
+
+            public putAlipayResult_result getResult(I iface, putAlipayResult_args args) throws org.apache.thrift.TException {
+                putAlipayResult_result result = new putAlipayResult_result();
+                result.success = iface.putAlipayResult(args.channel, args.positionId, args.alipayJobId);
+                return result;
+            }
+        }
+
         public static class addPcReport<I extends Iface> extends org.apache.thrift.ProcessFunction<I, addPcReport_args> {
             public addPcReport() {
                 super("addPcReport");
@@ -2862,6 +3050,8 @@ public class PositionServices {
             processMap.put("getPcRecommandCompanyAll", new getPcRecommandCompanyAll());
             processMap.put("getPcPositionDetail", new getPcPositionDetail());
             processMap.put("getPcRecommendPosition", new getPcRecommendPosition());
+            processMap.put("getThirdpartySyncedPositions", new getThirdpartySyncedPositions());
+            processMap.put("putAlipayResult", new putAlipayResult());
             processMap.put("addPcReport", new addPcReport());
             processMap.put("getPcAdvertisement", new getPcAdvertisement());
             processMap.put("getPositionRecommendByModuleId", new getPositionRecommendByModuleId());
@@ -4710,6 +4900,128 @@ public class PositionServices {
 
             public void start(I iface, getPcRecommendPosition_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
                 iface.getPcRecommendPosition(args.positionId, args.page, args.pageSize,resultHandler);
+            }
+        }
+
+        public static class getThirdpartySyncedPositions<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, getThirdpartySyncedPositions_args, com.moseeker.thrift.gen.common.struct.Response> {
+            public getThirdpartySyncedPositions() {
+                super("getThirdpartySyncedPositions");
+            }
+
+            public getThirdpartySyncedPositions_args getEmptyArgsInstance() {
+                return new getThirdpartySyncedPositions_args();
+            }
+
+            public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
+                final org.apache.thrift.AsyncProcessFunction fcall = this;
+                return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
+                    public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
+                        getThirdpartySyncedPositions_result result = new getThirdpartySyncedPositions_result();
+                        result.success = o;
+                        try {
+                            fcall.sendResponse(fb, result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
+                        } catch (org.apache.thrift.transport.TTransportException e) {
+                            _LOGGER.error("TTransportException writing to internal frame buffer", e);
+                            fb.close();
+                        } catch (java.lang.Exception e) {
+                            _LOGGER.error("Exception writing to internal frame buffer", e);
+                            onError(e);
+                        }
+                    }
+                    public void onError(java.lang.Exception e) {
+                        byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
+                        org.apache.thrift.TSerializable msg;
+                        getThirdpartySyncedPositions_result result = new getThirdpartySyncedPositions_result();
+                        if (e instanceof org.apache.thrift.transport.TTransportException) {
+                            _LOGGER.error("TTransportException inside handler", e);
+                            fb.close();
+                            return;
+                        } else if (e instanceof org.apache.thrift.TApplicationException) {
+                            _LOGGER.error("TApplicationException inside handler", e);
+                            msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+                            msg = (org.apache.thrift.TApplicationException)e;
+                        } else {
+                            _LOGGER.error("Exception inside handler", e);
+                            msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+                            msg = new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
+                        }
+                        try {
+                            fcall.sendResponse(fb,msg,msgType,seqid);
+                        } catch (java.lang.Exception ex) {
+                            _LOGGER.error("Exception writing to internal frame buffer", ex);
+                            fb.close();
+                        }
+                    }
+                };
+            }
+
+            protected boolean isOneway() {
+                return false;
+            }
+
+            public void start(I iface, getThirdpartySyncedPositions_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+                iface.getThirdpartySyncedPositions(args.channel, args.publisher, args.companyId, args.candidateSource, args.page, args.pageSize,resultHandler);
+            }
+        }
+
+        public static class putAlipayResult<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, putAlipayResult_args, com.moseeker.thrift.gen.common.struct.Response> {
+            public putAlipayResult() {
+                super("putAlipayResult");
+            }
+
+            public putAlipayResult_args getEmptyArgsInstance() {
+                return new putAlipayResult_args();
+            }
+
+            public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
+                final org.apache.thrift.AsyncProcessFunction fcall = this;
+                return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
+                    public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
+                        putAlipayResult_result result = new putAlipayResult_result();
+                        result.success = o;
+                        try {
+                            fcall.sendResponse(fb, result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
+                        } catch (org.apache.thrift.transport.TTransportException e) {
+                            _LOGGER.error("TTransportException writing to internal frame buffer", e);
+                            fb.close();
+                        } catch (java.lang.Exception e) {
+                            _LOGGER.error("Exception writing to internal frame buffer", e);
+                            onError(e);
+                        }
+                    }
+                    public void onError(java.lang.Exception e) {
+                        byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
+                        org.apache.thrift.TSerializable msg;
+                        putAlipayResult_result result = new putAlipayResult_result();
+                        if (e instanceof org.apache.thrift.transport.TTransportException) {
+                            _LOGGER.error("TTransportException inside handler", e);
+                            fb.close();
+                            return;
+                        } else if (e instanceof org.apache.thrift.TApplicationException) {
+                            _LOGGER.error("TApplicationException inside handler", e);
+                            msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+                            msg = (org.apache.thrift.TApplicationException)e;
+                        } else {
+                            _LOGGER.error("Exception inside handler", e);
+                            msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+                            msg = new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
+                        }
+                        try {
+                            fcall.sendResponse(fb,msg,msgType,seqid);
+                        } catch (java.lang.Exception ex) {
+                            _LOGGER.error("Exception writing to internal frame buffer", ex);
+                            fb.close();
+                        }
+                    }
+                };
+            }
+
+            protected boolean isOneway() {
+                return false;
+            }
+
+            public void start(I iface, putAlipayResult_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+                iface.putAlipayResult(args.channel, args.positionId, args.alipayJobId,resultHandler);
             }
         }
 
@@ -29076,6 +29388,2128 @@ public class PositionServices {
 
             @Override
             public void read(org.apache.thrift.protocol.TProtocol prot, getPcRecommendPosition_result struct) throws org.apache.thrift.TException {
+                org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+                java.util.BitSet incoming = iprot.readBitSet(1);
+                if (incoming.get(0)) {
+                    struct.success = new com.moseeker.thrift.gen.common.struct.Response();
+                    struct.success.read(iprot);
+                    struct.setSuccessIsSet(true);
+                }
+            }
+        }
+
+        private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+            return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+        }
+    }
+
+    public static class getThirdpartySyncedPositions_args implements org.apache.thrift.TBase<getThirdpartySyncedPositions_args, getThirdpartySyncedPositions_args._Fields>, java.io.Serializable, Cloneable, Comparable<getThirdpartySyncedPositions_args>   {
+        private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getThirdpartySyncedPositions_args");
+
+        private static final org.apache.thrift.protocol.TField CHANNEL_FIELD_DESC = new org.apache.thrift.protocol.TField("channel", org.apache.thrift.protocol.TType.I32, (short)1);
+        private static final org.apache.thrift.protocol.TField PUBLISHER_FIELD_DESC = new org.apache.thrift.protocol.TField("publisher", org.apache.thrift.protocol.TType.I32, (short)2);
+        private static final org.apache.thrift.protocol.TField COMPANY_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("companyId", org.apache.thrift.protocol.TType.I32, (short)3);
+        private static final org.apache.thrift.protocol.TField CANDIDATE_SOURCE_FIELD_DESC = new org.apache.thrift.protocol.TField("candidateSource", org.apache.thrift.protocol.TType.I32, (short)4);
+        private static final org.apache.thrift.protocol.TField PAGE_FIELD_DESC = new org.apache.thrift.protocol.TField("page", org.apache.thrift.protocol.TType.I32, (short)5);
+        private static final org.apache.thrift.protocol.TField PAGE_SIZE_FIELD_DESC = new org.apache.thrift.protocol.TField("pageSize", org.apache.thrift.protocol.TType.I32, (short)6);
+
+        private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getThirdpartySyncedPositions_argsStandardSchemeFactory();
+        private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getThirdpartySyncedPositions_argsTupleSchemeFactory();
+
+        public int channel; // required
+        public int publisher; // required
+        public int companyId; // required
+        public int candidateSource; // required
+        public int page; // required
+        public int pageSize; // required
+
+        /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+        public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+            CHANNEL((short)1, "channel"),
+            PUBLISHER((short)2, "publisher"),
+            COMPANY_ID((short)3, "companyId"),
+            CANDIDATE_SOURCE((short)4, "candidateSource"),
+            PAGE((short)5, "page"),
+            PAGE_SIZE((short)6, "pageSize");
+
+            private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+            static {
+                for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+                    byName.put(field.getFieldName(), field);
+                }
+            }
+
+            /**
+             * Find the _Fields constant that matches fieldId, or null if its not found.
+             */
+            public static _Fields findByThriftId(int fieldId) {
+                switch(fieldId) {
+                    case 1: // CHANNEL
+                        return CHANNEL;
+                    case 2: // PUBLISHER
+                        return PUBLISHER;
+                    case 3: // COMPANY_ID
+                        return COMPANY_ID;
+                    case 4: // CANDIDATE_SOURCE
+                        return CANDIDATE_SOURCE;
+                    case 5: // PAGE
+                        return PAGE;
+                    case 6: // PAGE_SIZE
+                        return PAGE_SIZE;
+                    default:
+                        return null;
+                }
+            }
+
+            /**
+             * Find the _Fields constant that matches fieldId, throwing an exception
+             * if it is not found.
+             */
+            public static _Fields findByThriftIdOrThrow(int fieldId) {
+                _Fields fields = findByThriftId(fieldId);
+                if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+                return fields;
+            }
+
+            /**
+             * Find the _Fields constant that matches name, or null if its not found.
+             */
+            public static _Fields findByName(java.lang.String name) {
+                return byName.get(name);
+            }
+
+            private final short _thriftId;
+            private final java.lang.String _fieldName;
+
+            _Fields(short thriftId, java.lang.String fieldName) {
+                _thriftId = thriftId;
+                _fieldName = fieldName;
+            }
+
+            public short getThriftFieldId() {
+                return _thriftId;
+            }
+
+            public java.lang.String getFieldName() {
+                return _fieldName;
+            }
+        }
+
+        // isset id assignments
+        private static final int __CHANNEL_ISSET_ID = 0;
+        private static final int __PUBLISHER_ISSET_ID = 1;
+        private static final int __COMPANYID_ISSET_ID = 2;
+        private static final int __CANDIDATESOURCE_ISSET_ID = 3;
+        private static final int __PAGE_ISSET_ID = 4;
+        private static final int __PAGESIZE_ISSET_ID = 5;
+        private byte __isset_bitfield = 0;
+        public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+        static {
+            java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+            tmpMap.put(_Fields.CHANNEL, new org.apache.thrift.meta_data.FieldMetaData("channel", org.apache.thrift.TFieldRequirementType.DEFAULT,
+                    new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+            tmpMap.put(_Fields.PUBLISHER, new org.apache.thrift.meta_data.FieldMetaData("publisher", org.apache.thrift.TFieldRequirementType.DEFAULT,
+                    new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+            tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("companyId", org.apache.thrift.TFieldRequirementType.DEFAULT,
+                    new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+            tmpMap.put(_Fields.CANDIDATE_SOURCE, new org.apache.thrift.meta_data.FieldMetaData("candidateSource", org.apache.thrift.TFieldRequirementType.DEFAULT,
+                    new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+            tmpMap.put(_Fields.PAGE, new org.apache.thrift.meta_data.FieldMetaData("page", org.apache.thrift.TFieldRequirementType.DEFAULT,
+                    new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+            tmpMap.put(_Fields.PAGE_SIZE, new org.apache.thrift.meta_data.FieldMetaData("pageSize", org.apache.thrift.TFieldRequirementType.DEFAULT,
+                    new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+            metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+            org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getThirdpartySyncedPositions_args.class, metaDataMap);
+        }
+
+        public getThirdpartySyncedPositions_args() {
+        }
+
+        public getThirdpartySyncedPositions_args(
+                int channel,
+                int publisher,
+                int companyId,
+                int candidateSource,
+                int page,
+                int pageSize)
+        {
+            this();
+            this.channel = channel;
+            setChannelIsSet(true);
+            this.publisher = publisher;
+            setPublisherIsSet(true);
+            this.companyId = companyId;
+            setCompanyIdIsSet(true);
+            this.candidateSource = candidateSource;
+            setCandidateSourceIsSet(true);
+            this.page = page;
+            setPageIsSet(true);
+            this.pageSize = pageSize;
+            setPageSizeIsSet(true);
+        }
+
+        /**
+         * Performs a deep copy on <i>other</i>.
+         */
+        public getThirdpartySyncedPositions_args(getThirdpartySyncedPositions_args other) {
+            __isset_bitfield = other.__isset_bitfield;
+            this.channel = other.channel;
+            this.publisher = other.publisher;
+            this.companyId = other.companyId;
+            this.candidateSource = other.candidateSource;
+            this.page = other.page;
+            this.pageSize = other.pageSize;
+        }
+
+        public getThirdpartySyncedPositions_args deepCopy() {
+            return new getThirdpartySyncedPositions_args(this);
+        }
+
+        @Override
+        public void clear() {
+            setChannelIsSet(false);
+            this.channel = 0;
+            setPublisherIsSet(false);
+            this.publisher = 0;
+            setCompanyIdIsSet(false);
+            this.companyId = 0;
+            setCandidateSourceIsSet(false);
+            this.candidateSource = 0;
+            setPageIsSet(false);
+            this.page = 0;
+            setPageSizeIsSet(false);
+            this.pageSize = 0;
+        }
+
+        public int getChannel() {
+            return this.channel;
+        }
+
+        public getThirdpartySyncedPositions_args setChannel(int channel) {
+            this.channel = channel;
+            setChannelIsSet(true);
+            return this;
+        }
+
+        public void unsetChannel() {
+            __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __CHANNEL_ISSET_ID);
+        }
+
+        /** Returns true if field channel is set (has been assigned a value) and false otherwise */
+        public boolean isSetChannel() {
+            return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __CHANNEL_ISSET_ID);
+        }
+
+        public void setChannelIsSet(boolean value) {
+            __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __CHANNEL_ISSET_ID, value);
+        }
+
+        public int getPublisher() {
+            return this.publisher;
+        }
+
+        public getThirdpartySyncedPositions_args setPublisher(int publisher) {
+            this.publisher = publisher;
+            setPublisherIsSet(true);
+            return this;
+        }
+
+        public void unsetPublisher() {
+            __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __PUBLISHER_ISSET_ID);
+        }
+
+        /** Returns true if field publisher is set (has been assigned a value) and false otherwise */
+        public boolean isSetPublisher() {
+            return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __PUBLISHER_ISSET_ID);
+        }
+
+        public void setPublisherIsSet(boolean value) {
+            __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __PUBLISHER_ISSET_ID, value);
+        }
+
+        public int getCompanyId() {
+            return this.companyId;
+        }
+
+        public getThirdpartySyncedPositions_args setCompanyId(int companyId) {
+            this.companyId = companyId;
+            setCompanyIdIsSet(true);
+            return this;
+        }
+
+        public void unsetCompanyId() {
+            __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __COMPANYID_ISSET_ID);
+        }
+
+        /** Returns true if field companyId is set (has been assigned a value) and false otherwise */
+        public boolean isSetCompanyId() {
+            return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __COMPANYID_ISSET_ID);
+        }
+
+        public void setCompanyIdIsSet(boolean value) {
+            __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __COMPANYID_ISSET_ID, value);
+        }
+
+        public int getCandidateSource() {
+            return this.candidateSource;
+        }
+
+        public getThirdpartySyncedPositions_args setCandidateSource(int candidateSource) {
+            this.candidateSource = candidateSource;
+            setCandidateSourceIsSet(true);
+            return this;
+        }
+
+        public void unsetCandidateSource() {
+            __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __CANDIDATESOURCE_ISSET_ID);
+        }
+
+        /** Returns true if field candidateSource is set (has been assigned a value) and false otherwise */
+        public boolean isSetCandidateSource() {
+            return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __CANDIDATESOURCE_ISSET_ID);
+        }
+
+        public void setCandidateSourceIsSet(boolean value) {
+            __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __CANDIDATESOURCE_ISSET_ID, value);
+        }
+
+        public int getPage() {
+            return this.page;
+        }
+
+        public getThirdpartySyncedPositions_args setPage(int page) {
+            this.page = page;
+            setPageIsSet(true);
+            return this;
+        }
+
+        public void unsetPage() {
+            __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __PAGE_ISSET_ID);
+        }
+
+        /** Returns true if field page is set (has been assigned a value) and false otherwise */
+        public boolean isSetPage() {
+            return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __PAGE_ISSET_ID);
+        }
+
+        public void setPageIsSet(boolean value) {
+            __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __PAGE_ISSET_ID, value);
+        }
+
+        public int getPageSize() {
+            return this.pageSize;
+        }
+
+        public getThirdpartySyncedPositions_args setPageSize(int pageSize) {
+            this.pageSize = pageSize;
+            setPageSizeIsSet(true);
+            return this;
+        }
+
+        public void unsetPageSize() {
+            __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __PAGESIZE_ISSET_ID);
+        }
+
+        /** Returns true if field pageSize is set (has been assigned a value) and false otherwise */
+        public boolean isSetPageSize() {
+            return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __PAGESIZE_ISSET_ID);
+        }
+
+        public void setPageSizeIsSet(boolean value) {
+            __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __PAGESIZE_ISSET_ID, value);
+        }
+
+        public void setFieldValue(_Fields field, java.lang.Object value) {
+            switch (field) {
+                case CHANNEL:
+                    if (value == null) {
+                        unsetChannel();
+                    } else {
+                        setChannel((java.lang.Integer)value);
+                    }
+                    break;
+
+                case PUBLISHER:
+                    if (value == null) {
+                        unsetPublisher();
+                    } else {
+                        setPublisher((java.lang.Integer)value);
+                    }
+                    break;
+
+                case COMPANY_ID:
+                    if (value == null) {
+                        unsetCompanyId();
+                    } else {
+                        setCompanyId((java.lang.Integer)value);
+                    }
+                    break;
+
+                case CANDIDATE_SOURCE:
+                    if (value == null) {
+                        unsetCandidateSource();
+                    } else {
+                        setCandidateSource((java.lang.Integer)value);
+                    }
+                    break;
+
+                case PAGE:
+                    if (value == null) {
+                        unsetPage();
+                    } else {
+                        setPage((java.lang.Integer)value);
+                    }
+                    break;
+
+                case PAGE_SIZE:
+                    if (value == null) {
+                        unsetPageSize();
+                    } else {
+                        setPageSize((java.lang.Integer)value);
+                    }
+                    break;
+
+            }
+        }
+
+        public java.lang.Object getFieldValue(_Fields field) {
+            switch (field) {
+                case CHANNEL:
+                    return getChannel();
+
+                case PUBLISHER:
+                    return getPublisher();
+
+                case COMPANY_ID:
+                    return getCompanyId();
+
+                case CANDIDATE_SOURCE:
+                    return getCandidateSource();
+
+                case PAGE:
+                    return getPage();
+
+                case PAGE_SIZE:
+                    return getPageSize();
+
+            }
+            throw new java.lang.IllegalStateException();
+        }
+
+        /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+        public boolean isSet(_Fields field) {
+            if (field == null) {
+                throw new java.lang.IllegalArgumentException();
+            }
+
+            switch (field) {
+                case CHANNEL:
+                    return isSetChannel();
+                case PUBLISHER:
+                    return isSetPublisher();
+                case COMPANY_ID:
+                    return isSetCompanyId();
+                case CANDIDATE_SOURCE:
+                    return isSetCandidateSource();
+                case PAGE:
+                    return isSetPage();
+                case PAGE_SIZE:
+                    return isSetPageSize();
+            }
+            throw new java.lang.IllegalStateException();
+        }
+
+        @Override
+        public boolean equals(java.lang.Object that) {
+            if (that == null)
+                return false;
+            if (that instanceof getThirdpartySyncedPositions_args)
+                return this.equals((getThirdpartySyncedPositions_args)that);
+            return false;
+        }
+
+        public boolean equals(getThirdpartySyncedPositions_args that) {
+            if (that == null)
+                return false;
+            if (this == that)
+                return true;
+
+            boolean this_present_channel = true;
+            boolean that_present_channel = true;
+            if (this_present_channel || that_present_channel) {
+                if (!(this_present_channel && that_present_channel))
+                    return false;
+                if (this.channel != that.channel)
+                    return false;
+            }
+
+            boolean this_present_publisher = true;
+            boolean that_present_publisher = true;
+            if (this_present_publisher || that_present_publisher) {
+                if (!(this_present_publisher && that_present_publisher))
+                    return false;
+                if (this.publisher != that.publisher)
+                    return false;
+            }
+
+            boolean this_present_companyId = true;
+            boolean that_present_companyId = true;
+            if (this_present_companyId || that_present_companyId) {
+                if (!(this_present_companyId && that_present_companyId))
+                    return false;
+                if (this.companyId != that.companyId)
+                    return false;
+            }
+
+            boolean this_present_candidateSource = true;
+            boolean that_present_candidateSource = true;
+            if (this_present_candidateSource || that_present_candidateSource) {
+                if (!(this_present_candidateSource && that_present_candidateSource))
+                    return false;
+                if (this.candidateSource != that.candidateSource)
+                    return false;
+            }
+
+            boolean this_present_page = true;
+            boolean that_present_page = true;
+            if (this_present_page || that_present_page) {
+                if (!(this_present_page && that_present_page))
+                    return false;
+                if (this.page != that.page)
+                    return false;
+            }
+
+            boolean this_present_pageSize = true;
+            boolean that_present_pageSize = true;
+            if (this_present_pageSize || that_present_pageSize) {
+                if (!(this_present_pageSize && that_present_pageSize))
+                    return false;
+                if (this.pageSize != that.pageSize)
+                    return false;
+            }
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int hashCode = 1;
+
+            hashCode = hashCode * 8191 + channel;
+
+            hashCode = hashCode * 8191 + publisher;
+
+            hashCode = hashCode * 8191 + companyId;
+
+            hashCode = hashCode * 8191 + candidateSource;
+
+            hashCode = hashCode * 8191 + page;
+
+            hashCode = hashCode * 8191 + pageSize;
+
+            return hashCode;
+        }
+
+        @Override
+        public int compareTo(getThirdpartySyncedPositions_args other) {
+            if (!getClass().equals(other.getClass())) {
+                return getClass().getName().compareTo(other.getClass().getName());
+            }
+
+            int lastComparison = 0;
+
+            lastComparison = java.lang.Boolean.valueOf(isSetChannel()).compareTo(other.isSetChannel());
+            if (lastComparison != 0) {
+                return lastComparison;
+            }
+            if (isSetChannel()) {
+                lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.channel, other.channel);
+                if (lastComparison != 0) {
+                    return lastComparison;
+                }
+            }
+            lastComparison = java.lang.Boolean.valueOf(isSetPublisher()).compareTo(other.isSetPublisher());
+            if (lastComparison != 0) {
+                return lastComparison;
+            }
+            if (isSetPublisher()) {
+                lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.publisher, other.publisher);
+                if (lastComparison != 0) {
+                    return lastComparison;
+                }
+            }
+            lastComparison = java.lang.Boolean.valueOf(isSetCompanyId()).compareTo(other.isSetCompanyId());
+            if (lastComparison != 0) {
+                return lastComparison;
+            }
+            if (isSetCompanyId()) {
+                lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.companyId, other.companyId);
+                if (lastComparison != 0) {
+                    return lastComparison;
+                }
+            }
+            lastComparison = java.lang.Boolean.valueOf(isSetCandidateSource()).compareTo(other.isSetCandidateSource());
+            if (lastComparison != 0) {
+                return lastComparison;
+            }
+            if (isSetCandidateSource()) {
+                lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.candidateSource, other.candidateSource);
+                if (lastComparison != 0) {
+                    return lastComparison;
+                }
+            }
+            lastComparison = java.lang.Boolean.valueOf(isSetPage()).compareTo(other.isSetPage());
+            if (lastComparison != 0) {
+                return lastComparison;
+            }
+            if (isSetPage()) {
+                lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.page, other.page);
+                if (lastComparison != 0) {
+                    return lastComparison;
+                }
+            }
+            lastComparison = java.lang.Boolean.valueOf(isSetPageSize()).compareTo(other.isSetPageSize());
+            if (lastComparison != 0) {
+                return lastComparison;
+            }
+            if (isSetPageSize()) {
+                lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.pageSize, other.pageSize);
+                if (lastComparison != 0) {
+                    return lastComparison;
+                }
+            }
+            return 0;
+        }
+
+        public _Fields fieldForId(int fieldId) {
+            return _Fields.findByThriftId(fieldId);
+        }
+
+        public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+            scheme(iprot).read(iprot, this);
+        }
+
+        public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+            scheme(oprot).write(oprot, this);
+        }
+
+        @Override
+        public java.lang.String toString() {
+            java.lang.StringBuilder sb = new java.lang.StringBuilder("getThirdpartySyncedPositions_args(");
+            boolean first = true;
+
+            sb.append("channel:");
+            sb.append(this.channel);
+            first = false;
+            if (!first) sb.append(", ");
+            sb.append("publisher:");
+            sb.append(this.publisher);
+            first = false;
+            if (!first) sb.append(", ");
+            sb.append("companyId:");
+            sb.append(this.companyId);
+            first = false;
+            if (!first) sb.append(", ");
+            sb.append("candidateSource:");
+            sb.append(this.candidateSource);
+            first = false;
+            if (!first) sb.append(", ");
+            sb.append("page:");
+            sb.append(this.page);
+            first = false;
+            if (!first) sb.append(", ");
+            sb.append("pageSize:");
+            sb.append(this.pageSize);
+            first = false;
+            sb.append(")");
+            return sb.toString();
+        }
+
+        public void validate() throws org.apache.thrift.TException {
+            // check for required fields
+            // check for sub-struct validity
+        }
+
+        private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+            try {
+                write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+            } catch (org.apache.thrift.TException te) {
+                throw new java.io.IOException(te);
+            }
+        }
+
+        private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+            try {
+                // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
+                __isset_bitfield = 0;
+                read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+            } catch (org.apache.thrift.TException te) {
+                throw new java.io.IOException(te);
+            }
+        }
+
+        private static class getThirdpartySyncedPositions_argsStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+            public getThirdpartySyncedPositions_argsStandardScheme getScheme() {
+                return new getThirdpartySyncedPositions_argsStandardScheme();
+            }
+        }
+
+        private static class getThirdpartySyncedPositions_argsStandardScheme extends org.apache.thrift.scheme.StandardScheme<getThirdpartySyncedPositions_args> {
+
+            public void read(org.apache.thrift.protocol.TProtocol iprot, getThirdpartySyncedPositions_args struct) throws org.apache.thrift.TException {
+                org.apache.thrift.protocol.TField schemeField;
+                iprot.readStructBegin();
+                while (true)
+                {
+                    schemeField = iprot.readFieldBegin();
+                    if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
+                        break;
+                    }
+                    switch (schemeField.id) {
+                        case 1: // CHANNEL
+                            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                                struct.channel = iprot.readI32();
+                                struct.setChannelIsSet(true);
+                            } else {
+                                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+                            }
+                            break;
+                        case 2: // PUBLISHER
+                            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                                struct.publisher = iprot.readI32();
+                                struct.setPublisherIsSet(true);
+                            } else {
+                                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+                            }
+                            break;
+                        case 3: // COMPANY_ID
+                            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                                struct.companyId = iprot.readI32();
+                                struct.setCompanyIdIsSet(true);
+                            } else {
+                                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+                            }
+                            break;
+                        case 4: // CANDIDATE_SOURCE
+                            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                                struct.candidateSource = iprot.readI32();
+                                struct.setCandidateSourceIsSet(true);
+                            } else {
+                                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+                            }
+                            break;
+                        case 5: // PAGE
+                            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                                struct.page = iprot.readI32();
+                                struct.setPageIsSet(true);
+                            } else {
+                                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+                            }
+                            break;
+                        case 6: // PAGE_SIZE
+                            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                                struct.pageSize = iprot.readI32();
+                                struct.setPageSizeIsSet(true);
+                            } else {
+                                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+                            }
+                            break;
+                        default:
+                            org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+                    }
+                    iprot.readFieldEnd();
+                }
+                iprot.readStructEnd();
+
+                // check for required fields of primitive type, which can't be checked in the validate method
+                struct.validate();
+            }
+
+            public void write(org.apache.thrift.protocol.TProtocol oprot, getThirdpartySyncedPositions_args struct) throws org.apache.thrift.TException {
+                struct.validate();
+
+                oprot.writeStructBegin(STRUCT_DESC);
+                oprot.writeFieldBegin(CHANNEL_FIELD_DESC);
+                oprot.writeI32(struct.channel);
+                oprot.writeFieldEnd();
+                oprot.writeFieldBegin(PUBLISHER_FIELD_DESC);
+                oprot.writeI32(struct.publisher);
+                oprot.writeFieldEnd();
+                oprot.writeFieldBegin(COMPANY_ID_FIELD_DESC);
+                oprot.writeI32(struct.companyId);
+                oprot.writeFieldEnd();
+                oprot.writeFieldBegin(CANDIDATE_SOURCE_FIELD_DESC);
+                oprot.writeI32(struct.candidateSource);
+                oprot.writeFieldEnd();
+                oprot.writeFieldBegin(PAGE_FIELD_DESC);
+                oprot.writeI32(struct.page);
+                oprot.writeFieldEnd();
+                oprot.writeFieldBegin(PAGE_SIZE_FIELD_DESC);
+                oprot.writeI32(struct.pageSize);
+                oprot.writeFieldEnd();
+                oprot.writeFieldStop();
+                oprot.writeStructEnd();
+            }
+
+        }
+
+        private static class getThirdpartySyncedPositions_argsTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+            public getThirdpartySyncedPositions_argsTupleScheme getScheme() {
+                return new getThirdpartySyncedPositions_argsTupleScheme();
+            }
+        }
+
+        private static class getThirdpartySyncedPositions_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<getThirdpartySyncedPositions_args> {
+
+            @Override
+            public void write(org.apache.thrift.protocol.TProtocol prot, getThirdpartySyncedPositions_args struct) throws org.apache.thrift.TException {
+                org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+                java.util.BitSet optionals = new java.util.BitSet();
+                if (struct.isSetChannel()) {
+                    optionals.set(0);
+                }
+                if (struct.isSetPublisher()) {
+                    optionals.set(1);
+                }
+                if (struct.isSetCompanyId()) {
+                    optionals.set(2);
+                }
+                if (struct.isSetCandidateSource()) {
+                    optionals.set(3);
+                }
+                if (struct.isSetPage()) {
+                    optionals.set(4);
+                }
+                if (struct.isSetPageSize()) {
+                    optionals.set(5);
+                }
+                oprot.writeBitSet(optionals, 6);
+                if (struct.isSetChannel()) {
+                    oprot.writeI32(struct.channel);
+                }
+                if (struct.isSetPublisher()) {
+                    oprot.writeI32(struct.publisher);
+                }
+                if (struct.isSetCompanyId()) {
+                    oprot.writeI32(struct.companyId);
+                }
+                if (struct.isSetCandidateSource()) {
+                    oprot.writeI32(struct.candidateSource);
+                }
+                if (struct.isSetPage()) {
+                    oprot.writeI32(struct.page);
+                }
+                if (struct.isSetPageSize()) {
+                    oprot.writeI32(struct.pageSize);
+                }
+            }
+
+            @Override
+            public void read(org.apache.thrift.protocol.TProtocol prot, getThirdpartySyncedPositions_args struct) throws org.apache.thrift.TException {
+                org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+                java.util.BitSet incoming = iprot.readBitSet(6);
+                if (incoming.get(0)) {
+                    struct.channel = iprot.readI32();
+                    struct.setChannelIsSet(true);
+                }
+                if (incoming.get(1)) {
+                    struct.publisher = iprot.readI32();
+                    struct.setPublisherIsSet(true);
+                }
+                if (incoming.get(2)) {
+                    struct.companyId = iprot.readI32();
+                    struct.setCompanyIdIsSet(true);
+                }
+                if (incoming.get(3)) {
+                    struct.candidateSource = iprot.readI32();
+                    struct.setCandidateSourceIsSet(true);
+                }
+                if (incoming.get(4)) {
+                    struct.page = iprot.readI32();
+                    struct.setPageIsSet(true);
+                }
+                if (incoming.get(5)) {
+                    struct.pageSize = iprot.readI32();
+                    struct.setPageSizeIsSet(true);
+                }
+            }
+        }
+
+        private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+            return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+        }
+    }
+
+    public static class getThirdpartySyncedPositions_result implements org.apache.thrift.TBase<getThirdpartySyncedPositions_result, getThirdpartySyncedPositions_result._Fields>, java.io.Serializable, Cloneable, Comparable<getThirdpartySyncedPositions_result>   {
+        private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getThirdpartySyncedPositions_result");
+
+        private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
+
+        private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getThirdpartySyncedPositions_resultStandardSchemeFactory();
+        private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getThirdpartySyncedPositions_resultTupleSchemeFactory();
+
+        public com.moseeker.thrift.gen.common.struct.Response success; // required
+
+        /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+        public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+            SUCCESS((short)0, "success");
+
+            private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+            static {
+                for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+                    byName.put(field.getFieldName(), field);
+                }
+            }
+
+            /**
+             * Find the _Fields constant that matches fieldId, or null if its not found.
+             */
+            public static _Fields findByThriftId(int fieldId) {
+                switch(fieldId) {
+                    case 0: // SUCCESS
+                        return SUCCESS;
+                    default:
+                        return null;
+                }
+            }
+
+            /**
+             * Find the _Fields constant that matches fieldId, throwing an exception
+             * if it is not found.
+             */
+            public static _Fields findByThriftIdOrThrow(int fieldId) {
+                _Fields fields = findByThriftId(fieldId);
+                if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+                return fields;
+            }
+
+            /**
+             * Find the _Fields constant that matches name, or null if its not found.
+             */
+            public static _Fields findByName(java.lang.String name) {
+                return byName.get(name);
+            }
+
+            private final short _thriftId;
+            private final java.lang.String _fieldName;
+
+            _Fields(short thriftId, java.lang.String fieldName) {
+                _thriftId = thriftId;
+                _fieldName = fieldName;
+            }
+
+            public short getThriftFieldId() {
+                return _thriftId;
+            }
+
+            public java.lang.String getFieldName() {
+                return _fieldName;
+            }
+        }
+
+        // isset id assignments
+        public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+        static {
+            java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+            tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
+                    new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
+            metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+            org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getThirdpartySyncedPositions_result.class, metaDataMap);
+        }
+
+        public getThirdpartySyncedPositions_result() {
+        }
+
+        public getThirdpartySyncedPositions_result(
+                com.moseeker.thrift.gen.common.struct.Response success)
+        {
+            this();
+            this.success = success;
+        }
+
+        /**
+         * Performs a deep copy on <i>other</i>.
+         */
+        public getThirdpartySyncedPositions_result(getThirdpartySyncedPositions_result other) {
+            if (other.isSetSuccess()) {
+                this.success = new com.moseeker.thrift.gen.common.struct.Response(other.success);
+            }
+        }
+
+        public getThirdpartySyncedPositions_result deepCopy() {
+            return new getThirdpartySyncedPositions_result(this);
+        }
+
+        @Override
+        public void clear() {
+            this.success = null;
+        }
+
+        public com.moseeker.thrift.gen.common.struct.Response getSuccess() {
+            return this.success;
+        }
+
+        public getThirdpartySyncedPositions_result setSuccess(com.moseeker.thrift.gen.common.struct.Response success) {
+            this.success = success;
+            return this;
+        }
+
+        public void unsetSuccess() {
+            this.success = null;
+        }
+
+        /** Returns true if field success is set (has been assigned a value) and false otherwise */
+        public boolean isSetSuccess() {
+            return this.success != null;
+        }
+
+        public void setSuccessIsSet(boolean value) {
+            if (!value) {
+                this.success = null;
+            }
+        }
+
+        public void setFieldValue(_Fields field, java.lang.Object value) {
+            switch (field) {
+                case SUCCESS:
+                    if (value == null) {
+                        unsetSuccess();
+                    } else {
+                        setSuccess((com.moseeker.thrift.gen.common.struct.Response)value);
+                    }
+                    break;
+
+            }
+        }
+
+        public java.lang.Object getFieldValue(_Fields field) {
+            switch (field) {
+                case SUCCESS:
+                    return getSuccess();
+
+            }
+            throw new java.lang.IllegalStateException();
+        }
+
+        /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+        public boolean isSet(_Fields field) {
+            if (field == null) {
+                throw new java.lang.IllegalArgumentException();
+            }
+
+            switch (field) {
+                case SUCCESS:
+                    return isSetSuccess();
+            }
+            throw new java.lang.IllegalStateException();
+        }
+
+        @Override
+        public boolean equals(java.lang.Object that) {
+            if (that == null)
+                return false;
+            if (that instanceof getThirdpartySyncedPositions_result)
+                return this.equals((getThirdpartySyncedPositions_result)that);
+            return false;
+        }
+
+        public boolean equals(getThirdpartySyncedPositions_result that) {
+            if (that == null)
+                return false;
+            if (this == that)
+                return true;
+
+            boolean this_present_success = true && this.isSetSuccess();
+            boolean that_present_success = true && that.isSetSuccess();
+            if (this_present_success || that_present_success) {
+                if (!(this_present_success && that_present_success))
+                    return false;
+                if (!this.success.equals(that.success))
+                    return false;
+            }
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int hashCode = 1;
+
+            hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
+            if (isSetSuccess())
+                hashCode = hashCode * 8191 + success.hashCode();
+
+            return hashCode;
+        }
+
+        @Override
+        public int compareTo(getThirdpartySyncedPositions_result other) {
+            if (!getClass().equals(other.getClass())) {
+                return getClass().getName().compareTo(other.getClass().getName());
+            }
+
+            int lastComparison = 0;
+
+            lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+            if (lastComparison != 0) {
+                return lastComparison;
+            }
+            if (isSetSuccess()) {
+                lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+                if (lastComparison != 0) {
+                    return lastComparison;
+                }
+            }
+            return 0;
+        }
+
+        public _Fields fieldForId(int fieldId) {
+            return _Fields.findByThriftId(fieldId);
+        }
+
+        public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+            scheme(iprot).read(iprot, this);
+        }
+
+        public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+            scheme(oprot).write(oprot, this);
+        }
+
+        @Override
+        public java.lang.String toString() {
+            java.lang.StringBuilder sb = new java.lang.StringBuilder("getThirdpartySyncedPositions_result(");
+            boolean first = true;
+
+            sb.append("success:");
+            if (this.success == null) {
+                sb.append("null");
+            } else {
+                sb.append(this.success);
+            }
+            first = false;
+            sb.append(")");
+            return sb.toString();
+        }
+
+        public void validate() throws org.apache.thrift.TException {
+            // check for required fields
+            // check for sub-struct validity
+            if (success != null) {
+                success.validate();
+            }
+        }
+
+        private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+            try {
+                write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+            } catch (org.apache.thrift.TException te) {
+                throw new java.io.IOException(te);
+            }
+        }
+
+        private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+            try {
+                read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+            } catch (org.apache.thrift.TException te) {
+                throw new java.io.IOException(te);
+            }
+        }
+
+        private static class getThirdpartySyncedPositions_resultStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+            public getThirdpartySyncedPositions_resultStandardScheme getScheme() {
+                return new getThirdpartySyncedPositions_resultStandardScheme();
+            }
+        }
+
+        private static class getThirdpartySyncedPositions_resultStandardScheme extends org.apache.thrift.scheme.StandardScheme<getThirdpartySyncedPositions_result> {
+
+            public void read(org.apache.thrift.protocol.TProtocol iprot, getThirdpartySyncedPositions_result struct) throws org.apache.thrift.TException {
+                org.apache.thrift.protocol.TField schemeField;
+                iprot.readStructBegin();
+                while (true)
+                {
+                    schemeField = iprot.readFieldBegin();
+                    if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
+                        break;
+                    }
+                    switch (schemeField.id) {
+                        case 0: // SUCCESS
+                            if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                                struct.success = new com.moseeker.thrift.gen.common.struct.Response();
+                                struct.success.read(iprot);
+                                struct.setSuccessIsSet(true);
+                            } else {
+                                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+                            }
+                            break;
+                        default:
+                            org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+                    }
+                    iprot.readFieldEnd();
+                }
+                iprot.readStructEnd();
+
+                // check for required fields of primitive type, which can't be checked in the validate method
+                struct.validate();
+            }
+
+            public void write(org.apache.thrift.protocol.TProtocol oprot, getThirdpartySyncedPositions_result struct) throws org.apache.thrift.TException {
+                struct.validate();
+
+                oprot.writeStructBegin(STRUCT_DESC);
+                if (struct.success != null) {
+                    oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
+                    struct.success.write(oprot);
+                    oprot.writeFieldEnd();
+                }
+                oprot.writeFieldStop();
+                oprot.writeStructEnd();
+            }
+
+        }
+
+        private static class getThirdpartySyncedPositions_resultTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+            public getThirdpartySyncedPositions_resultTupleScheme getScheme() {
+                return new getThirdpartySyncedPositions_resultTupleScheme();
+            }
+        }
+
+        private static class getThirdpartySyncedPositions_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<getThirdpartySyncedPositions_result> {
+
+            @Override
+            public void write(org.apache.thrift.protocol.TProtocol prot, getThirdpartySyncedPositions_result struct) throws org.apache.thrift.TException {
+                org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+                java.util.BitSet optionals = new java.util.BitSet();
+                if (struct.isSetSuccess()) {
+                    optionals.set(0);
+                }
+                oprot.writeBitSet(optionals, 1);
+                if (struct.isSetSuccess()) {
+                    struct.success.write(oprot);
+                }
+            }
+
+            @Override
+            public void read(org.apache.thrift.protocol.TProtocol prot, getThirdpartySyncedPositions_result struct) throws org.apache.thrift.TException {
+                org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+                java.util.BitSet incoming = iprot.readBitSet(1);
+                if (incoming.get(0)) {
+                    struct.success = new com.moseeker.thrift.gen.common.struct.Response();
+                    struct.success.read(iprot);
+                    struct.setSuccessIsSet(true);
+                }
+            }
+        }
+
+        private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+            return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+        }
+    }
+
+    public static class putAlipayResult_args implements org.apache.thrift.TBase<putAlipayResult_args, putAlipayResult_args._Fields>, java.io.Serializable, Cloneable, Comparable<putAlipayResult_args>   {
+        private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("putAlipayResult_args");
+
+        private static final org.apache.thrift.protocol.TField CHANNEL_FIELD_DESC = new org.apache.thrift.protocol.TField("channel", org.apache.thrift.protocol.TType.I32, (short)1);
+        private static final org.apache.thrift.protocol.TField POSITION_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("positionId", org.apache.thrift.protocol.TType.I32, (short)2);
+        private static final org.apache.thrift.protocol.TField ALIPAY_JOB_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("alipayJobId", org.apache.thrift.protocol.TType.I32, (short)3);
+
+        private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new putAlipayResult_argsStandardSchemeFactory();
+        private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new putAlipayResult_argsTupleSchemeFactory();
+
+        public int channel; // required
+        public int positionId; // required
+        public int alipayJobId; // required
+
+        /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+        public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+            CHANNEL((short)1, "channel"),
+            POSITION_ID((short)2, "positionId"),
+            ALIPAY_JOB_ID((short)3, "alipayJobId");
+
+            private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+            static {
+                for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+                    byName.put(field.getFieldName(), field);
+                }
+            }
+
+            /**
+             * Find the _Fields constant that matches fieldId, or null if its not found.
+             */
+            public static _Fields findByThriftId(int fieldId) {
+                switch(fieldId) {
+                    case 1: // CHANNEL
+                        return CHANNEL;
+                    case 2: // POSITION_ID
+                        return POSITION_ID;
+                    case 3: // ALIPAY_JOB_ID
+                        return ALIPAY_JOB_ID;
+                    default:
+                        return null;
+                }
+            }
+
+            /**
+             * Find the _Fields constant that matches fieldId, throwing an exception
+             * if it is not found.
+             */
+            public static _Fields findByThriftIdOrThrow(int fieldId) {
+                _Fields fields = findByThriftId(fieldId);
+                if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+                return fields;
+            }
+
+            /**
+             * Find the _Fields constant that matches name, or null if its not found.
+             */
+            public static _Fields findByName(java.lang.String name) {
+                return byName.get(name);
+            }
+
+            private final short _thriftId;
+            private final java.lang.String _fieldName;
+
+            _Fields(short thriftId, java.lang.String fieldName) {
+                _thriftId = thriftId;
+                _fieldName = fieldName;
+            }
+
+            public short getThriftFieldId() {
+                return _thriftId;
+            }
+
+            public java.lang.String getFieldName() {
+                return _fieldName;
+            }
+        }
+
+        // isset id assignments
+        private static final int __CHANNEL_ISSET_ID = 0;
+        private static final int __POSITIONID_ISSET_ID = 1;
+        private static final int __ALIPAYJOBID_ISSET_ID = 2;
+        private byte __isset_bitfield = 0;
+        public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+        static {
+            java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+            tmpMap.put(_Fields.CHANNEL, new org.apache.thrift.meta_data.FieldMetaData("channel", org.apache.thrift.TFieldRequirementType.DEFAULT,
+                    new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+            tmpMap.put(_Fields.POSITION_ID, new org.apache.thrift.meta_data.FieldMetaData("positionId", org.apache.thrift.TFieldRequirementType.DEFAULT,
+                    new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+            tmpMap.put(_Fields.ALIPAY_JOB_ID, new org.apache.thrift.meta_data.FieldMetaData("alipayJobId", org.apache.thrift.TFieldRequirementType.DEFAULT,
+                    new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+            metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+            org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(putAlipayResult_args.class, metaDataMap);
+        }
+
+        public putAlipayResult_args() {
+        }
+
+        public putAlipayResult_args(
+                int channel,
+                int positionId,
+                int alipayJobId)
+        {
+            this();
+            this.channel = channel;
+            setChannelIsSet(true);
+            this.positionId = positionId;
+            setPositionIdIsSet(true);
+            this.alipayJobId = alipayJobId;
+            setAlipayJobIdIsSet(true);
+        }
+
+        /**
+         * Performs a deep copy on <i>other</i>.
+         */
+        public putAlipayResult_args(putAlipayResult_args other) {
+            __isset_bitfield = other.__isset_bitfield;
+            this.channel = other.channel;
+            this.positionId = other.positionId;
+            this.alipayJobId = other.alipayJobId;
+        }
+
+        public putAlipayResult_args deepCopy() {
+            return new putAlipayResult_args(this);
+        }
+
+        @Override
+        public void clear() {
+            setChannelIsSet(false);
+            this.channel = 0;
+            setPositionIdIsSet(false);
+            this.positionId = 0;
+            setAlipayJobIdIsSet(false);
+            this.alipayJobId = 0;
+        }
+
+        public int getChannel() {
+            return this.channel;
+        }
+
+        public putAlipayResult_args setChannel(int channel) {
+            this.channel = channel;
+            setChannelIsSet(true);
+            return this;
+        }
+
+        public void unsetChannel() {
+            __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __CHANNEL_ISSET_ID);
+        }
+
+        /** Returns true if field channel is set (has been assigned a value) and false otherwise */
+        public boolean isSetChannel() {
+            return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __CHANNEL_ISSET_ID);
+        }
+
+        public void setChannelIsSet(boolean value) {
+            __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __CHANNEL_ISSET_ID, value);
+        }
+
+        public int getPositionId() {
+            return this.positionId;
+        }
+
+        public putAlipayResult_args setPositionId(int positionId) {
+            this.positionId = positionId;
+            setPositionIdIsSet(true);
+            return this;
+        }
+
+        public void unsetPositionId() {
+            __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __POSITIONID_ISSET_ID);
+        }
+
+        /** Returns true if field positionId is set (has been assigned a value) and false otherwise */
+        public boolean isSetPositionId() {
+            return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __POSITIONID_ISSET_ID);
+        }
+
+        public void setPositionIdIsSet(boolean value) {
+            __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __POSITIONID_ISSET_ID, value);
+        }
+
+        public int getAlipayJobId() {
+            return this.alipayJobId;
+        }
+
+        public putAlipayResult_args setAlipayJobId(int alipayJobId) {
+            this.alipayJobId = alipayJobId;
+            setAlipayJobIdIsSet(true);
+            return this;
+        }
+
+        public void unsetAlipayJobId() {
+            __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __ALIPAYJOBID_ISSET_ID);
+        }
+
+        /** Returns true if field alipayJobId is set (has been assigned a value) and false otherwise */
+        public boolean isSetAlipayJobId() {
+            return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __ALIPAYJOBID_ISSET_ID);
+        }
+
+        public void setAlipayJobIdIsSet(boolean value) {
+            __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __ALIPAYJOBID_ISSET_ID, value);
+        }
+
+        public void setFieldValue(_Fields field, java.lang.Object value) {
+            switch (field) {
+                case CHANNEL:
+                    if (value == null) {
+                        unsetChannel();
+                    } else {
+                        setChannel((java.lang.Integer)value);
+                    }
+                    break;
+
+                case POSITION_ID:
+                    if (value == null) {
+                        unsetPositionId();
+                    } else {
+                        setPositionId((java.lang.Integer)value);
+                    }
+                    break;
+
+                case ALIPAY_JOB_ID:
+                    if (value == null) {
+                        unsetAlipayJobId();
+                    } else {
+                        setAlipayJobId((java.lang.Integer)value);
+                    }
+                    break;
+
+            }
+        }
+
+        public java.lang.Object getFieldValue(_Fields field) {
+            switch (field) {
+                case CHANNEL:
+                    return getChannel();
+
+                case POSITION_ID:
+                    return getPositionId();
+
+                case ALIPAY_JOB_ID:
+                    return getAlipayJobId();
+
+            }
+            throw new java.lang.IllegalStateException();
+        }
+
+        /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+        public boolean isSet(_Fields field) {
+            if (field == null) {
+                throw new java.lang.IllegalArgumentException();
+            }
+
+            switch (field) {
+                case CHANNEL:
+                    return isSetChannel();
+                case POSITION_ID:
+                    return isSetPositionId();
+                case ALIPAY_JOB_ID:
+                    return isSetAlipayJobId();
+            }
+            throw new java.lang.IllegalStateException();
+        }
+
+        @Override
+        public boolean equals(java.lang.Object that) {
+            if (that == null)
+                return false;
+            if (that instanceof putAlipayResult_args)
+                return this.equals((putAlipayResult_args)that);
+            return false;
+        }
+
+        public boolean equals(putAlipayResult_args that) {
+            if (that == null)
+                return false;
+            if (this == that)
+                return true;
+
+            boolean this_present_channel = true;
+            boolean that_present_channel = true;
+            if (this_present_channel || that_present_channel) {
+                if (!(this_present_channel && that_present_channel))
+                    return false;
+                if (this.channel != that.channel)
+                    return false;
+            }
+
+            boolean this_present_positionId = true;
+            boolean that_present_positionId = true;
+            if (this_present_positionId || that_present_positionId) {
+                if (!(this_present_positionId && that_present_positionId))
+                    return false;
+                if (this.positionId != that.positionId)
+                    return false;
+            }
+
+            boolean this_present_alipayJobId = true;
+            boolean that_present_alipayJobId = true;
+            if (this_present_alipayJobId || that_present_alipayJobId) {
+                if (!(this_present_alipayJobId && that_present_alipayJobId))
+                    return false;
+                if (this.alipayJobId != that.alipayJobId)
+                    return false;
+            }
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int hashCode = 1;
+
+            hashCode = hashCode * 8191 + channel;
+
+            hashCode = hashCode * 8191 + positionId;
+
+            hashCode = hashCode * 8191 + alipayJobId;
+
+            return hashCode;
+        }
+
+        @Override
+        public int compareTo(putAlipayResult_args other) {
+            if (!getClass().equals(other.getClass())) {
+                return getClass().getName().compareTo(other.getClass().getName());
+            }
+
+            int lastComparison = 0;
+
+            lastComparison = java.lang.Boolean.valueOf(isSetChannel()).compareTo(other.isSetChannel());
+            if (lastComparison != 0) {
+                return lastComparison;
+            }
+            if (isSetChannel()) {
+                lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.channel, other.channel);
+                if (lastComparison != 0) {
+                    return lastComparison;
+                }
+            }
+            lastComparison = java.lang.Boolean.valueOf(isSetPositionId()).compareTo(other.isSetPositionId());
+            if (lastComparison != 0) {
+                return lastComparison;
+            }
+            if (isSetPositionId()) {
+                lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.positionId, other.positionId);
+                if (lastComparison != 0) {
+                    return lastComparison;
+                }
+            }
+            lastComparison = java.lang.Boolean.valueOf(isSetAlipayJobId()).compareTo(other.isSetAlipayJobId());
+            if (lastComparison != 0) {
+                return lastComparison;
+            }
+            if (isSetAlipayJobId()) {
+                lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.alipayJobId, other.alipayJobId);
+                if (lastComparison != 0) {
+                    return lastComparison;
+                }
+            }
+            return 0;
+        }
+
+        public _Fields fieldForId(int fieldId) {
+            return _Fields.findByThriftId(fieldId);
+        }
+
+        public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+            scheme(iprot).read(iprot, this);
+        }
+
+        public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+            scheme(oprot).write(oprot, this);
+        }
+
+        @Override
+        public java.lang.String toString() {
+            java.lang.StringBuilder sb = new java.lang.StringBuilder("putAlipayResult_args(");
+            boolean first = true;
+
+            sb.append("channel:");
+            sb.append(this.channel);
+            first = false;
+            if (!first) sb.append(", ");
+            sb.append("positionId:");
+            sb.append(this.positionId);
+            first = false;
+            if (!first) sb.append(", ");
+            sb.append("alipayJobId:");
+            sb.append(this.alipayJobId);
+            first = false;
+            sb.append(")");
+            return sb.toString();
+        }
+
+        public void validate() throws org.apache.thrift.TException {
+            // check for required fields
+            // check for sub-struct validity
+        }
+
+        private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+            try {
+                write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+            } catch (org.apache.thrift.TException te) {
+                throw new java.io.IOException(te);
+            }
+        }
+
+        private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+            try {
+                // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
+                __isset_bitfield = 0;
+                read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+            } catch (org.apache.thrift.TException te) {
+                throw new java.io.IOException(te);
+            }
+        }
+
+        private static class putAlipayResult_argsStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+            public putAlipayResult_argsStandardScheme getScheme() {
+                return new putAlipayResult_argsStandardScheme();
+            }
+        }
+
+        private static class putAlipayResult_argsStandardScheme extends org.apache.thrift.scheme.StandardScheme<putAlipayResult_args> {
+
+            public void read(org.apache.thrift.protocol.TProtocol iprot, putAlipayResult_args struct) throws org.apache.thrift.TException {
+                org.apache.thrift.protocol.TField schemeField;
+                iprot.readStructBegin();
+                while (true)
+                {
+                    schemeField = iprot.readFieldBegin();
+                    if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
+                        break;
+                    }
+                    switch (schemeField.id) {
+                        case 1: // CHANNEL
+                            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                                struct.channel = iprot.readI32();
+                                struct.setChannelIsSet(true);
+                            } else {
+                                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+                            }
+                            break;
+                        case 2: // POSITION_ID
+                            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                                struct.positionId = iprot.readI32();
+                                struct.setPositionIdIsSet(true);
+                            } else {
+                                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+                            }
+                            break;
+                        case 3: // ALIPAY_JOB_ID
+                            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                                struct.alipayJobId = iprot.readI32();
+                                struct.setAlipayJobIdIsSet(true);
+                            } else {
+                                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+                            }
+                            break;
+                        default:
+                            org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+                    }
+                    iprot.readFieldEnd();
+                }
+                iprot.readStructEnd();
+
+                // check for required fields of primitive type, which can't be checked in the validate method
+                struct.validate();
+            }
+
+            public void write(org.apache.thrift.protocol.TProtocol oprot, putAlipayResult_args struct) throws org.apache.thrift.TException {
+                struct.validate();
+
+                oprot.writeStructBegin(STRUCT_DESC);
+                oprot.writeFieldBegin(CHANNEL_FIELD_DESC);
+                oprot.writeI32(struct.channel);
+                oprot.writeFieldEnd();
+                oprot.writeFieldBegin(POSITION_ID_FIELD_DESC);
+                oprot.writeI32(struct.positionId);
+                oprot.writeFieldEnd();
+                oprot.writeFieldBegin(ALIPAY_JOB_ID_FIELD_DESC);
+                oprot.writeI32(struct.alipayJobId);
+                oprot.writeFieldEnd();
+                oprot.writeFieldStop();
+                oprot.writeStructEnd();
+            }
+
+        }
+
+        private static class putAlipayResult_argsTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+            public putAlipayResult_argsTupleScheme getScheme() {
+                return new putAlipayResult_argsTupleScheme();
+            }
+        }
+
+        private static class putAlipayResult_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<putAlipayResult_args> {
+
+            @Override
+            public void write(org.apache.thrift.protocol.TProtocol prot, putAlipayResult_args struct) throws org.apache.thrift.TException {
+                org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+                java.util.BitSet optionals = new java.util.BitSet();
+                if (struct.isSetChannel()) {
+                    optionals.set(0);
+                }
+                if (struct.isSetPositionId()) {
+                    optionals.set(1);
+                }
+                if (struct.isSetAlipayJobId()) {
+                    optionals.set(2);
+                }
+                oprot.writeBitSet(optionals, 3);
+                if (struct.isSetChannel()) {
+                    oprot.writeI32(struct.channel);
+                }
+                if (struct.isSetPositionId()) {
+                    oprot.writeI32(struct.positionId);
+                }
+                if (struct.isSetAlipayJobId()) {
+                    oprot.writeI32(struct.alipayJobId);
+                }
+            }
+
+            @Override
+            public void read(org.apache.thrift.protocol.TProtocol prot, putAlipayResult_args struct) throws org.apache.thrift.TException {
+                org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+                java.util.BitSet incoming = iprot.readBitSet(3);
+                if (incoming.get(0)) {
+                    struct.channel = iprot.readI32();
+                    struct.setChannelIsSet(true);
+                }
+                if (incoming.get(1)) {
+                    struct.positionId = iprot.readI32();
+                    struct.setPositionIdIsSet(true);
+                }
+                if (incoming.get(2)) {
+                    struct.alipayJobId = iprot.readI32();
+                    struct.setAlipayJobIdIsSet(true);
+                }
+            }
+        }
+
+        private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+            return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+        }
+    }
+
+    public static class putAlipayResult_result implements org.apache.thrift.TBase<putAlipayResult_result, putAlipayResult_result._Fields>, java.io.Serializable, Cloneable, Comparable<putAlipayResult_result>   {
+        private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("putAlipayResult_result");
+
+        private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
+
+        private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new putAlipayResult_resultStandardSchemeFactory();
+        private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new putAlipayResult_resultTupleSchemeFactory();
+
+        public com.moseeker.thrift.gen.common.struct.Response success; // required
+
+        /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+        public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+            SUCCESS((short)0, "success");
+
+            private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+            static {
+                for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+                    byName.put(field.getFieldName(), field);
+                }
+            }
+
+            /**
+             * Find the _Fields constant that matches fieldId, or null if its not found.
+             */
+            public static _Fields findByThriftId(int fieldId) {
+                switch(fieldId) {
+                    case 0: // SUCCESS
+                        return SUCCESS;
+                    default:
+                        return null;
+                }
+            }
+
+            /**
+             * Find the _Fields constant that matches fieldId, throwing an exception
+             * if it is not found.
+             */
+            public static _Fields findByThriftIdOrThrow(int fieldId) {
+                _Fields fields = findByThriftId(fieldId);
+                if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+                return fields;
+            }
+
+            /**
+             * Find the _Fields constant that matches name, or null if its not found.
+             */
+            public static _Fields findByName(java.lang.String name) {
+                return byName.get(name);
+            }
+
+            private final short _thriftId;
+            private final java.lang.String _fieldName;
+
+            _Fields(short thriftId, java.lang.String fieldName) {
+                _thriftId = thriftId;
+                _fieldName = fieldName;
+            }
+
+            public short getThriftFieldId() {
+                return _thriftId;
+            }
+
+            public java.lang.String getFieldName() {
+                return _fieldName;
+            }
+        }
+
+        // isset id assignments
+        public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+        static {
+            java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+            tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
+                    new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
+            metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+            org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(putAlipayResult_result.class, metaDataMap);
+        }
+
+        public putAlipayResult_result() {
+        }
+
+        public putAlipayResult_result(
+                com.moseeker.thrift.gen.common.struct.Response success)
+        {
+            this();
+            this.success = success;
+        }
+
+        /**
+         * Performs a deep copy on <i>other</i>.
+         */
+        public putAlipayResult_result(putAlipayResult_result other) {
+            if (other.isSetSuccess()) {
+                this.success = new com.moseeker.thrift.gen.common.struct.Response(other.success);
+            }
+        }
+
+        public putAlipayResult_result deepCopy() {
+            return new putAlipayResult_result(this);
+        }
+
+        @Override
+        public void clear() {
+            this.success = null;
+        }
+
+        public com.moseeker.thrift.gen.common.struct.Response getSuccess() {
+            return this.success;
+        }
+
+        public putAlipayResult_result setSuccess(com.moseeker.thrift.gen.common.struct.Response success) {
+            this.success = success;
+            return this;
+        }
+
+        public void unsetSuccess() {
+            this.success = null;
+        }
+
+        /** Returns true if field success is set (has been assigned a value) and false otherwise */
+        public boolean isSetSuccess() {
+            return this.success != null;
+        }
+
+        public void setSuccessIsSet(boolean value) {
+            if (!value) {
+                this.success = null;
+            }
+        }
+
+        public void setFieldValue(_Fields field, java.lang.Object value) {
+            switch (field) {
+                case SUCCESS:
+                    if (value == null) {
+                        unsetSuccess();
+                    } else {
+                        setSuccess((com.moseeker.thrift.gen.common.struct.Response)value);
+                    }
+                    break;
+
+            }
+        }
+
+        public java.lang.Object getFieldValue(_Fields field) {
+            switch (field) {
+                case SUCCESS:
+                    return getSuccess();
+
+            }
+            throw new java.lang.IllegalStateException();
+        }
+
+        /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+        public boolean isSet(_Fields field) {
+            if (field == null) {
+                throw new java.lang.IllegalArgumentException();
+            }
+
+            switch (field) {
+                case SUCCESS:
+                    return isSetSuccess();
+            }
+            throw new java.lang.IllegalStateException();
+        }
+
+        @Override
+        public boolean equals(java.lang.Object that) {
+            if (that == null)
+                return false;
+            if (that instanceof putAlipayResult_result)
+                return this.equals((putAlipayResult_result)that);
+            return false;
+        }
+
+        public boolean equals(putAlipayResult_result that) {
+            if (that == null)
+                return false;
+            if (this == that)
+                return true;
+
+            boolean this_present_success = true && this.isSetSuccess();
+            boolean that_present_success = true && that.isSetSuccess();
+            if (this_present_success || that_present_success) {
+                if (!(this_present_success && that_present_success))
+                    return false;
+                if (!this.success.equals(that.success))
+                    return false;
+            }
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int hashCode = 1;
+
+            hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
+            if (isSetSuccess())
+                hashCode = hashCode * 8191 + success.hashCode();
+
+            return hashCode;
+        }
+
+        @Override
+        public int compareTo(putAlipayResult_result other) {
+            if (!getClass().equals(other.getClass())) {
+                return getClass().getName().compareTo(other.getClass().getName());
+            }
+
+            int lastComparison = 0;
+
+            lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+            if (lastComparison != 0) {
+                return lastComparison;
+            }
+            if (isSetSuccess()) {
+                lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+                if (lastComparison != 0) {
+                    return lastComparison;
+                }
+            }
+            return 0;
+        }
+
+        public _Fields fieldForId(int fieldId) {
+            return _Fields.findByThriftId(fieldId);
+        }
+
+        public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+            scheme(iprot).read(iprot, this);
+        }
+
+        public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+            scheme(oprot).write(oprot, this);
+        }
+
+        @Override
+        public java.lang.String toString() {
+            java.lang.StringBuilder sb = new java.lang.StringBuilder("putAlipayResult_result(");
+            boolean first = true;
+
+            sb.append("success:");
+            if (this.success == null) {
+                sb.append("null");
+            } else {
+                sb.append(this.success);
+            }
+            first = false;
+            sb.append(")");
+            return sb.toString();
+        }
+
+        public void validate() throws org.apache.thrift.TException {
+            // check for required fields
+            // check for sub-struct validity
+            if (success != null) {
+                success.validate();
+            }
+        }
+
+        private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+            try {
+                write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+            } catch (org.apache.thrift.TException te) {
+                throw new java.io.IOException(te);
+            }
+        }
+
+        private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+            try {
+                read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+            } catch (org.apache.thrift.TException te) {
+                throw new java.io.IOException(te);
+            }
+        }
+
+        private static class putAlipayResult_resultStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+            public putAlipayResult_resultStandardScheme getScheme() {
+                return new putAlipayResult_resultStandardScheme();
+            }
+        }
+
+        private static class putAlipayResult_resultStandardScheme extends org.apache.thrift.scheme.StandardScheme<putAlipayResult_result> {
+
+            public void read(org.apache.thrift.protocol.TProtocol iprot, putAlipayResult_result struct) throws org.apache.thrift.TException {
+                org.apache.thrift.protocol.TField schemeField;
+                iprot.readStructBegin();
+                while (true)
+                {
+                    schemeField = iprot.readFieldBegin();
+                    if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
+                        break;
+                    }
+                    switch (schemeField.id) {
+                        case 0: // SUCCESS
+                            if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                                struct.success = new com.moseeker.thrift.gen.common.struct.Response();
+                                struct.success.read(iprot);
+                                struct.setSuccessIsSet(true);
+                            } else {
+                                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+                            }
+                            break;
+                        default:
+                            org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+                    }
+                    iprot.readFieldEnd();
+                }
+                iprot.readStructEnd();
+
+                // check for required fields of primitive type, which can't be checked in the validate method
+                struct.validate();
+            }
+
+            public void write(org.apache.thrift.protocol.TProtocol oprot, putAlipayResult_result struct) throws org.apache.thrift.TException {
+                struct.validate();
+
+                oprot.writeStructBegin(STRUCT_DESC);
+                if (struct.success != null) {
+                    oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
+                    struct.success.write(oprot);
+                    oprot.writeFieldEnd();
+                }
+                oprot.writeFieldStop();
+                oprot.writeStructEnd();
+            }
+
+        }
+
+        private static class putAlipayResult_resultTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+            public putAlipayResult_resultTupleScheme getScheme() {
+                return new putAlipayResult_resultTupleScheme();
+            }
+        }
+
+        private static class putAlipayResult_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<putAlipayResult_result> {
+
+            @Override
+            public void write(org.apache.thrift.protocol.TProtocol prot, putAlipayResult_result struct) throws org.apache.thrift.TException {
+                org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+                java.util.BitSet optionals = new java.util.BitSet();
+                if (struct.isSetSuccess()) {
+                    optionals.set(0);
+                }
+                oprot.writeBitSet(optionals, 1);
+                if (struct.isSetSuccess()) {
+                    struct.success.write(oprot);
+                }
+            }
+
+            @Override
+            public void read(org.apache.thrift.protocol.TProtocol prot, putAlipayResult_result struct) throws org.apache.thrift.TException {
                 org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
                 java.util.BitSet incoming = iprot.readBitSet(1);
                 if (incoming.get(0)) {
