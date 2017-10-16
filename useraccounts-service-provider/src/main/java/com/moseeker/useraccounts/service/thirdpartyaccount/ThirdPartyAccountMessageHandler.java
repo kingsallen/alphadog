@@ -50,6 +50,23 @@ public class ThirdPartyAccountMessageHandler {
     @RabbitListener(queues = "#{presetQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
     public void presetHandler(Message message, Channel channel) {
+        logger.info("处理第三方相关信息队列开始");
+        String msgBody = "{}";
+        try {
+            msgBody = new String(message.getBody(), "UTF-8");
+            logger.info("ThirdPartyAccountMessageHandler presetHandler msgBody : {}", msgBody);
+            ThirdPartyAccountExt accountExt = JSON.parseObject(msgBody, ThirdPartyAccountExt.class);
+            thirdPartyAccountService.thirdPartyAccountExtHandler(accountExt);
+        } catch (Exception e) {
+            // 错误日志记录到数据库 的 log_dead_letter 表中
+            log(message, e, msgBody);
+        }
+    }
+
+    @RabbitListener(queues = "present.response.web", containerFactory = "rabbitListenerContainerFactoryAutoAck")
+    @RabbitHandler
+    public void presetWebHandler(Message message, Channel channel) {
+        logger.info("处理第三方相关信息队列开始");
         String msgBody = "{}";
         try {
             msgBody = new String(message.getBody(), "UTF-8");
