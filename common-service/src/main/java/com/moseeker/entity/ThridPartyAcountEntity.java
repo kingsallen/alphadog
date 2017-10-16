@@ -1,5 +1,6 @@
 package com.moseeker.entity;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.baseorm.dao.dictdb.DictCityMapDao;
 import com.moseeker.baseorm.dao.thirdpartydb.ThirdpartyAccountCityDao;
@@ -18,7 +19,6 @@ import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.pojos.Data;
-import com.moseeker.entity.pojos.ThirdPartyAccountExt;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityMapDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
@@ -26,6 +26,8 @@ import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyAccountCityDO;
 import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyAccountCompanyAddressDO;
 import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyAccountCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyAccountDepartmentDO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +42,8 @@ import java.util.stream.Collectors;
  */
 @Component
 public class ThridPartyAcountEntity {
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     ThirdpartyAccountCompanyDao accountCompanyDao;
@@ -68,6 +72,8 @@ public class ThridPartyAcountEntity {
     @Transactional
     public void saveAccountExt(Data data, HrThirdPartyAccountDO accountDO) throws CommonException {
 
+
+        logger.info("saveAccountExt data:{}", JSON.toJSONString(data));
         Query query = new Query.QueryBuilder().where(DictCityMap.DICT_CITY_MAP.CHANNEL.getName(), accountDO.getChannel()).buildQuery();
         List<DictCityMapDO> cityMapDOList = cityMapDao.getDatas(query);
         List<Integer> codeList = cityMapDOList.stream().map(cityMapDO -> cityMapDO.getCode()).collect(Collectors.toList());
@@ -102,9 +108,11 @@ public class ThridPartyAcountEntity {
                         thirdpartyAccountCityDO.setRemainNum(city.getAmount());
                         thirdpartyAccountCityDO.setJobtype((byte) city.getJobTypeInt());
                         thirdpartyAccountCityDO.setAccountId(data.getAccountId());
+                        logger.info("saveAccountExt area:{}, amount:{}, jobType:{}, accountId:{}", area, city.getAmount(), city.getJobType(), data.getAccountId());
                         return thirdpartyAccountCityDO;
 
             }).collect(Collectors.toList());
+            logger.info("saveAccountExt collectors.size:{}", thirdpartyAccountCityDOList.size());
             if (thirdpartyAccountCityDOList != null && thirdpartyAccountCityDOList.size() > 0) {
                 accountCityDao.addAllData(thirdpartyAccountCityDOList);
             }
