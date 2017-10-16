@@ -36,8 +36,6 @@ public class ThirdPartyAccountMessageHandlerTest {
 
         BindResult.Account account = result.createAccount();
         account.setAccountId(8);
-
-        result.setAccount(account);
         String str = JSON.toJSONString(result);
         amqpTemplate.send("chaos.bind.response.exchange", "chaos.bind.response", MessageBuilder.withBody(str.getBytes()).build());
     }
@@ -51,8 +49,6 @@ public class ThirdPartyAccountMessageHandlerTest {
 
         BindResult.Account account = result.createAccount();
         account.setAccountId(8);
-
-        result.setAccount(account);
         String str = JSON.toJSONString(result);
         amqpTemplate.send("chaos.bind.response.exchange", "chaos.bind.response", MessageBuilder.withBody(str.getBytes()).build());
     }
