@@ -110,6 +110,7 @@ public class ChaosServiceImpl {
 
             if (status == 0) {
                 hrThirdPartyAccount.setBinding(Integer.valueOf(1).shortValue());
+                logger.info("绑定成功，binding标志为"+hrThirdPartyAccount.getBinding());
                 hrThirdPartyAccount.setRemainNum(jsonObject.getJSONObject("data").getIntValue("remain_number"));
                 hrThirdPartyAccount.setRemainProfileNum(jsonObject.getJSONObject("data").getIntValue("resume_number"));
             } else {
