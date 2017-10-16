@@ -122,7 +122,7 @@ public class PositionPcServiceTest {
       }
       @Test
 	  public void testModulePosition() throws TException {
-		  Map<String,Object> map=service.getModuleRecommendPosition(1,10,10);
+		  Map<String,Object> map=service.getModuleRecommendPosition(1,10,9);
 		  System.out.println(map);
 	  }
 
