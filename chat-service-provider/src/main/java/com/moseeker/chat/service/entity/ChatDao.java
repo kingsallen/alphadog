@@ -22,12 +22,15 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import static com.moseeker.common.constants.Constant.HR_HEADIMG;
 
 /**
  * Created by jack on 09/03/2017.
@@ -230,9 +233,9 @@ public class ChatDao {
                     .filter(userHrAccountDO -> StringUtils.isNullOrEmpty(userHrAccountDO.getHeadimgurl()))
                     .mapToInt(userHrAccountDO -> userHrAccountDO.getWxuserId()).toArray();
             //查找头像不存在的公司编号
-            int[] companyIdArray = userHrAccountDOList.stream()
+            /*int[] companyIdArray = userHrAccountDOList.stream()
                     .filter(userHrAccountDO -> StringUtils.isNullOrEmpty(userHrAccountDO.getHeadimgurl()))
-                    .mapToInt(userHrAccountDO -> userHrAccountDO.getCompanyId()).toArray();
+                    .mapToInt(userHrAccountDO -> userHrAccountDO.getCompanyId()).toArray();*/
 
             /** 查找微信信息 */
             if(wxUserIdArray.length > 0) {
@@ -249,20 +252,25 @@ public class ChatDao {
                             try {
                                 List<UserWxUserDO> wxUserDOList = (List<UserWxUserDO>) wxUserFuture.get();
                                 if(wxUserDOList != null && wxUserDOList.size() > 0) {
-                                    wxUserDOList.forEach(wxUserDO -> {
-                                        if(userHrAccountDO.getWxuserId() == wxUserDO.getWechatId()) {
-                                            userHrAccountDO.setHeadimgurl(wxUserDO.getHeadimgurl());
-                                        }
-                                    });
+                                    Optional<UserWxUserDO> userWxUserDOOptional = wxUserDOList.stream()
+                                            .filter(userWxUserDO
+                                                    -> userHrAccountDO.getWxuserId() == userHrAccountDO.getWxuserId())
+                                            .findAny();
+                                    if (userWxUserDOOptional.isPresent()) {
+                                        userHrAccountDO.setHeadimgurl(userWxUserDOOptional.get().getHeadimgurl());
+                                    } else {
+                                        userHrAccountDO.setHeadimgurl(HR_HEADIMG);
+                                    }
                                 }
                             } catch (InterruptedException | ExecutionException e) {
+                                userHrAccountDO.setHeadimgurl(HR_HEADIMG);
                                 logger.error(e.getMessage(), e);
                             }
                         });
             }
 
             /** 查找公司信息 */
-            if(companyIdArray.length > 0) {
+            /*if(companyIdArray.length > 0) {
                 String companyIdStr = StringUtils.converFromArrayToStr(companyIdArray);
                 QueryUtil findCompany = new QueryUtil();
                 findCompany.addSelectAttribute("id").addSelectAttribute("logo");
@@ -270,7 +278,7 @@ public class ChatDao {
                 Future companyFuture = threadPool.startTast(() -> hrCompanyDao.getDatas(queryUtil));
 
 
-                /** 过滤头像不存在的HR，匹配公司logo*/
+                *//** 过滤头像不存在的HR，匹配公司logo*//*
                 userHrAccountDOList.stream()
                         .filter(userHrAccountDO -> StringUtils.isNullOrEmpty(userHrAccountDO.getHeadimgurl()))
                         .forEach(userHrAccountDO -> {
@@ -287,7 +295,7 @@ public class ChatDao {
                                 logger.error(e.getMessage(), e);
                             }
                         });
-            }
+            }*/
 
         }
         return userHrAccountDOList;

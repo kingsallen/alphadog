@@ -204,4 +204,6 @@ public final class Constant {
 
     public static final int SMS_UPPER_LIMIT = 10; //暂时限制2条短信
     public static final int PROFILE_IMPORT_UPPER_LIMIT = 3; //没人每天简历导入次数
+
+    public static final String HR_HEADIMG = "weixin/images/default-HR.png";
 }
