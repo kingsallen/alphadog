@@ -246,6 +246,9 @@ public class PositionPcService {
 			return map;
 		}
 		List<Map<String,Object>> positionList=handleModuleRecommendPosition(page,pageSize,moduleId);
+		if(StringUtils.isEmptyList(positionList)){
+			return null;
+		}
 		String DOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(jobPcRecommendPositionsModuleDO);
 		Map<String,Object> ModuleDOMap= JSON.parseObject(DOs, Map.class);
 		int totalnum=handleModulePositionNum(moduleId);
@@ -265,8 +268,8 @@ public class PositionPcService {
 	/*
 		获取该模块下所有的items
 	 */
-	public List<JobPcRecommendPositionItemDO> getJobPcRecommendPositionItemDOByModuleId(int page,int pageSize,int moduleId){
-		Query query=new Query.QueryBuilder().where("module_id",moduleId).and("status",1).setPageSize(pageSize).setPageNum(page).orderBy("id", Order.DESC).buildQuery();
+	public List<JobPcRecommendPositionItemDO> getJobPcRecommendPositionItemDOByModuleId(int moduleId){
+		Query query=new Query.QueryBuilder().where("module_id",moduleId).and("status",1).orderBy("id", Order.DESC).buildQuery();
 		List<JobPcRecommendPositionItemDO> list=jobPcRecommendPositionItemDao.getDatas(query);
 		return list;
 	}
@@ -287,10 +290,25 @@ public class PositionPcService {
 		处理推荐模块获取职位信息
 	 */
 	public List<Map<String,Object>> handleModuleRecommendPosition(int page,int pageSize,int moduleId) throws TException {
-		List<JobPcRecommendPositionItemDO> itemsList=getJobPcRecommendPositionItemDOByModuleId(page,pageSize,moduleId);
+		List<JobPcRecommendPositionItemDO> itemsList=getJobPcRecommendPositionItemDOByModuleId(moduleId);
 		List<Integer> positionIdList=getPositionIdByJobPcRecommendPositionItemDOList(itemsList);
 		List<Map<String,Object>> result=handleDataJDAndPosition(positionIdList,3);
-		return result;
+		List<Map<String,Object>> list=new ArrayList<>();
+		if(result.size()>=page*pageSize){
+			for(int i=(page-1)*pageSize;i<page*pageSize;i++){
+				list.add(result.get(i));
+			}
+		}else{
+			if((page-1)*pageSize>result.size()){
+				return null;
+			}else{
+				for(int i=(page-1)*pageSize;i<result.size();i++){
+					list.add(result.get(i));
+				}
+			}
+		}
+
+		return list;
 	}
 	/*
 	 获取该模块的item的总数
@@ -1320,7 +1338,7 @@ public class PositionPcService {
 		DictIndustryDO DO=dictIndustryDao.getData(query);
 		return DO;
 	}
-    //根据company_ids获取hr_company_conf的列表
+	//根据company_ids获取hr_company_conf的列表
 	public List<HrCompanyConfDO> getHrCompanyConfDOList(List<Integer> companyIdList){
 		if(StringUtils.isEmptyList(companyIdList)){
 			return null;
@@ -1346,7 +1364,7 @@ public class PositionPcService {
 		}
 		return result;
 	}
-    //获取hr_company_conf的数据
+	//获取hr_company_conf的数据
 	private List<HrCompanyConfDO> getHrCompanyConfData(List<HrCompanyDO> list){
 		List<Integer> idList=this.getAllMotherCompanyIdList(list);
 		List<HrCompanyConfDO> confList=this.getHrCompanyConfDOList(idList);
