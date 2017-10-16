@@ -132,6 +132,7 @@ public class AppConfig {
             add(BindingBuilder.bind(presetQueue()).to(presetExchange()).with("chaos.preset.response.#"));
         }};
     }
+
     @Bean
     public TopicExchange webPresetExchange() {
         TopicExchange topicExchange = new TopicExchange("chaos", true, false);
@@ -141,7 +142,7 @@ public class AppConfig {
     @Bean
     public List<Binding> webBindingPreset() {
         return new ArrayList<Binding>(){{
-            add(BindingBuilder.bind(bindAccountQueue()).to(webPresetExchange()).with("preset.response"));
+            add(BindingBuilder.bind(presetQueue()).to(webPresetExchange()).with("preset.response"));
         }};
     }
 }
