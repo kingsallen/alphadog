@@ -99,7 +99,7 @@ public class ThridPartyAcountEntity {
                         } else {
                             thirdpartyAccountCityDO.setCode(0);
                         }
-                        thirdpartyAccountCityDO.setRemainNum(city.getAmout());
+                        thirdpartyAccountCityDO.setRemainNum(city.getAmount());
                         thirdpartyAccountCityDO.setJobtype((byte) city.getJobTypeInt());
                         thirdpartyAccountCityDO.setAccountId(data.getAccountId());
                         return thirdpartyAccountCityDO;
