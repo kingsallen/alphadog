@@ -232,21 +232,22 @@ public class UserPositionEmailService {
 	}
 
 	private String getPositionHtmlData(String pic,String title,String citys,String companyName,String salary,String experience,int positionId){
+		if(!StringUtils.isEmpty(pic)){
+			pic=pic+"?imageMogr2/thumbnail/80x50";
+		}
 		StringBuffer sb=new StringBuffer();
-		sb.append("<tr><td align='center'><table width='500' height='90' cellpadding='0' cellspacing='0' border='0' class='wrapper'> <tbody><tr>");
-		sb.append("<td height='20' style='-ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; font-size: 10px; line-height: 10px; mso-table-lspace: 0pt;");
-		sb.append("mso-table-rspace: 0pt;'></td></tr><tr valign='middle'><td width='80' height='50'><img src='"+pic+"' width='80' height='50'");
-		sb.append("style='margin:0; padding:0; display:block;-ms-interpolation-mode: bicubic; border: 0; line-height: 100%; outline: none; text-decoration:");
-		sb.append(" none;' border='0' alt=''></td><td height='10' width='10' style='font-size:70px; line-height:10px;' class='mobileOn'>&nbsp;</td>");
-		sb.append("<td width='410' height='50'><table width='400' height='50' cellpadding='0' cellspacing='0' border='0' class='wrapper'><tbody><tr>");
-		sb.append("<td class='mobile' style='-ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt;'>");
-		sb.append("<table cellpadding='0' cellspacing='0' border='0'><tbody><tr><td valign='middle' align='left' style='-moz-hyphens: auto; -webkit-hyphens: ");
-		sb.append("auto; hyphens: auto; border: none; border-collapse: collapse !important; color: #66A4F9; font-family: Helvetica, Arial, sans-serif; font-size:");
-		sb.append("14px; font-weight: normal; line-height: 1; margin: 0; padding: 0; word-wrap: break-word;'><a href='https://www.moseeker.com/");
-		sb.append("job/:"+positionId+"?fr=edm' target='_blank' alias='' style='font-size:14px;font-family: Helvetica, Arial, sans-serif; color:#66A4F9; display:");
-		sb.append("inline-block; text-decoration: none; margin: 0; padding: 0; font-weight:normal;width: 400px;'>"+title+"</a></td></tr>");
-		sb.append("</tbody></table></td></tr><tr><td class='mobile' style='-ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; color: #4B525C; ");
-		sb.append("font-family: arial, sans-serif; font-size: 14px; line-height: 1; mso-table-lspace: 0pt; mso-table-rspace: 0pt;'>");
+		sb.append("<tr><td align='center' style='border: solid 1px #F1F5F8;border-radius: 4px;'>");
+		sb.append("<table width='520' cellpadding='0' cellspacing='0' border='0' class='wrapper' bgcolor='#ffffff'>");
+		sb.append("<tr><td align='center'><table width='520' height='90' cellpadding='0' cellspacing='0' border='0' class='wrapper' bgcolor='#ffffff'>");
+		sb.append("<tr><td align='center'><table width='500' height='90' cellpadding='0' cellspacing='0' border='0' class='wrapper'>");
+		sb.append("<tr><td height='20' style='-ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; font-size: 10px; line-height: 10px; mso-table-lspace: 0pt; mso-table-rspace: 0pt;'></td>");
+		sb.append("</tr><tr valign='middle' ><td width='80' height='50' align='center'><img src='"+pic+"' style='margin:0; padding:0; display:block;-ms-interpolation-mode: bicubic; border: 0; line-height: 100%; outline: none; text-decoration: none;' border='0' alt='' />");
+		sb.append("</td><td height='10' width='20' style='font-size:70px; line-height:10px;' class='mobileOn'>&nbsp;</td>");
+		sb.append("<td width='400' height='50'><table width='400' height='50' cellpadding='0' cellspacing='0' border='0' class='wrapper'>");
+		sb.append("<tr><td class='mobile' style='-ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt;'>");
+		sb.append("<table cellpadding='0' cellspacing='0' border='0'><tr><td valign='middle' align='left' style='-moz-hyphens: auto; -webkit-hyphens: auto; hyphens: auto; border: none; border-collapse: collapse !important; color: #66A4F9; font-family: Helvetica, Arial, sans-serif; font-size: 14px; font-weight: normal; line-height: 1; margin: 0; padding: 0; word-wrap: break-word;'>");
+		sb.append("<a href='https://www.moseeker.com/job/:"+positionId+"?fr=edm' target='_blank' alias='' style='font-size:14px;font-family: Helvetica, Arial, sans-serif; color:#66A4F9; display: inline-block; text-decoration: none; margin: 0; padding: 0; font-weight:normal;width: 400px;'>"+title+"</a></td></tr></table></td></tr><tr>");
+		sb.append("<td class='mobile' style='-ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; color: #4B525C; font-family: arial, sans-serif; font-size: 14px; line-height: 1; mso-table-lspace: 0pt; mso-table-rspace: 0pt;word-wrap: break-word;'>");
 		sb.append("<span>"+companyName+"</span>");
 		if(StringUtils.isNotEmpty(citys)){
 			sb.append("<span>/</span><span>"+citys+"</span>");
@@ -257,9 +258,8 @@ public class UserPositionEmailService {
 		if(StringUtils.isNotEmpty(experience)){
 			sb.append("<span>/</span><span>"+experience+"</span>");
 		}
-		sb.append("</td></tr></tbody></table></td></tr>");
-		sb.append("<tr><td height='20' style='-ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; font-size: 10px; line-height: 10px; ");
-		sb.append("mso-table-lspace: 0pt; mso-table-rspace: 0pt;'></td></tr></tbody></table></td></tr>");
+		sb.append("</td></tr></table></td></tr><tr><td height='20' style='-ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; font-size: 10px; line-height: 10px; mso-table-lspace: 0pt; mso-table-rspace: 0pt;'></td>");
+		sb.append("</tr></table></td></tr></table></td></tr>");
 		return sb.toString();
 	}
 
