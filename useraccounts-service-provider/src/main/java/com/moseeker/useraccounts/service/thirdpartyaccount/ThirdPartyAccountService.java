@@ -210,21 +210,25 @@ public class ThirdPartyAccountService {
     @Transactional
     public void thirdPartyAccountExtHandler(ThirdPartyAccountExt accountExt) throws CommonException {
         HrThirdPartyAccountDO accountDO = thirdPartyAccountDao.getAccountById(accountExt.getData().getAccountId());
+        logger.info("获取第三方账号相关信息账号ID："+accountExt.getData().getAccountId()+",状态："+accountExt.getStatus());
         if (accountDO == null) {
             throw UserAccountException.THIRD_PARTY_ACCOUNT_NOTEXIST;
         }
+
         if (accountExt.getStatus() != 0) {
             if (accountExt.getData().getOperationType() == 1) {
                 emailNotification.sendThirdPartyAccountExtHandlerFailureMail(emailNotification.getMails(),accountDO, accountExt.getMessage());
             } else {
                 emailNotification.sendThirdPartyAccountExtHandlerFailureMail(emailNotification.getDevMails(),accountDO, "职位同步之后获取第三方渠道扩展信息失败！");
             }
+        } else {
+            thridPartyAcountEntity.saveAccountExt(accountExt.getData(), accountDO);
+            logger.info("第三方账号相关信息绑定处理完成，准备更新"+accountDO.getBinding()+"为1");
             if (accountDO.getBinding() != BindingStatus.BOUND.getValue()) {
                 accountDO.setBinding((short) BindingStatus.BOUND.getValue());
                 thirdPartyAccountDao.updateData(accountDO);
+                logger.info(accountDO.getBinding()+"更新成功，状态为"+accountDO.getBinding());
             }
-        } else {
-            thridPartyAcountEntity.saveAccountExt(accountExt.getData(), accountDO);
         }
     }
 
