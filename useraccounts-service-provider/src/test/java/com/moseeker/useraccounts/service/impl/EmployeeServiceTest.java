@@ -24,7 +24,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
-import sun.jvm.hotspot.runtime.Thread;
+//import sun.jvm.hotspot.runtime.Thread;
 
 /**
  * Created by lucky8987 on 17/5/17.
