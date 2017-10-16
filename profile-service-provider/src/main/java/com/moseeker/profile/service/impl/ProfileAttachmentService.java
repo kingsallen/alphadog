@@ -215,6 +215,7 @@ public class ProfileAttachmentService {
             return ResponseUtils.fail(1,"简历完整度小于70");
         }
         int result=dao.delAttachmentsByProfileId(profileId);
+        logger.info("del attachments  result=============="+result);
         if(result==0){
             return ResponseUtils.fail(1,"简历附件删除失败");
         }
