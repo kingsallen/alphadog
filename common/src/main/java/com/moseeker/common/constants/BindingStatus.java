@@ -1,4 +1,4 @@
-package com.moseeker.function.constants;
+package com.moseeker.common.constants;
 
 import java.util.HashMap;
 import java.util.Map;

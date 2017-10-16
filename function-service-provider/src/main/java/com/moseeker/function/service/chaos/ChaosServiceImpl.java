@@ -12,6 +12,7 @@ import com.moseeker.common.util.EmojiFilter;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.UrlUtil;
 import com.moseeker.function.constants.BindThirdPart;
+import com.moseeker.common.constants.BindingStatus;
 import com.moseeker.function.service.chaos.position.Position51WithAccount;
 import com.moseeker.function.service.chaos.position.PositionLiepinWithAccount;
 import com.moseeker.function.service.chaos.position.PositionZhilianWithAccount;
@@ -109,7 +110,7 @@ public class ChaosServiceImpl {
             int status = jsonObject.getIntValue("status");
 
             if (status == 0) {
-                hrThirdPartyAccount.setBinding(Integer.valueOf(1).shortValue());
+                hrThirdPartyAccount.setBinding((short)BindingStatus.GETINGINFO.getValue());
                 hrThirdPartyAccount.setRemainNum(jsonObject.getJSONObject("data").getIntValue("remain_number"));
                 hrThirdPartyAccount.setRemainProfileNum(jsonObject.getJSONObject("data").getIntValue("resume_number"));
             } else {
