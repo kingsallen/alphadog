@@ -245,16 +245,17 @@ public class PositionPcService {
 		if(jobPcRecommendPositionsModuleDO==null){
 			return map;
 		}
-		List<Map<String,Object>> positionList=handleModuleRecommendPosition(page,pageSize,moduleId);
-		if(StringUtils.isEmptyList(positionList)){
+		Map<String,Object> positionMap=handleModuleRecommendPosition(page,pageSize,moduleId);
+		if(positionMap==null&&positionMap.isEmpty()){
 			return null;
 		}
 		String DOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(jobPcRecommendPositionsModuleDO);
 		Map<String,Object> ModuleDOMap= JSON.parseObject(DOs, Map.class);
-		int totalnum=handleModulePositionNum(moduleId);
+//		int totalnum=handleModulePositionNum(moduleId);
+		List<Map<String,Object>> positionList= (List<Map<String, Object>>) positionMap.get("list");
 		map.put("module",ModuleDOMap);
 		map.put("position",positionList);
-		map.put("totalnum",totalnum);
+		map.put("totalnum",positionMap.get("num"));
 		return map;
 	}
 	/*
@@ -289,11 +290,15 @@ public class PositionPcService {
 	/*
 		处理推荐模块获取职位信息
 	 */
-	public List<Map<String,Object>> handleModuleRecommendPosition(int page,int pageSize,int moduleId) throws TException {
+	public Map<String,Object> handleModuleRecommendPosition(int page,int pageSize,int moduleId) throws TException {
 		List<JobPcRecommendPositionItemDO> itemsList=getJobPcRecommendPositionItemDOByModuleId(moduleId);
 		List<Integer> positionIdList=getPositionIdByJobPcRecommendPositionItemDOList(itemsList);
 		List<Map<String,Object>> result=handleDataJDAndPosition(positionIdList,3);
 		List<Map<String,Object>> list=new ArrayList<>();
+		Map<String,Object> map=new HashMap<>();
+		if(StringUtils.isEmptyList(result)){
+			return null;
+		}
 		if(result.size()>=page*pageSize){
 			for(int i=(page-1)*pageSize;i<page*pageSize;i++){
 				list.add(result.get(i));
@@ -307,8 +312,9 @@ public class PositionPcService {
 				}
 			}
 		}
-
-		return list;
+		map.put("list",list);
+		map.put("num",result.size());
+		return map;
 	}
 	/*
 	 获取该模块的item的总数
