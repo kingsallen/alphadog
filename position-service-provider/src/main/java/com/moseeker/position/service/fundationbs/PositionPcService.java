@@ -208,6 +208,11 @@ public class PositionPcService {
 		if(userUserDO==null){
 			return ResponseUtils.fail(1,"该用户不存在");
 		}
+		Query query1=new Query.QueryBuilder().where("id",DO.getPositionId()).and("status",0).buildQuery();
+		JobPositionDO PositionDO=jobPositionDao.getData(query1);
+		if(PositionDO==null){
+			return ResponseUtils.fail(1,"该职位不存在");
+		}
 		JobPcReportedDO reportDO=jobPcReportedDao.addData(DO);
 		if(reportDO!=null&&reportDO.getId()>0){
 			redisClient.set(Constant.APPID_ALPHADOG, POSITION_PC_REPORT,
