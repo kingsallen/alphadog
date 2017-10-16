@@ -202,21 +202,21 @@ public class ProfileAttachmentService {
         Query query1=new Query.QueryBuilder().where("id",id).buildQuery();
         ProfileAttachmentDO attachmentDO=dao.getData(query1);
         if(attachmentDO==null){
-            ResponseUtils.fail(1,"附件不存在");
+            return ResponseUtils.fail(1,"附件不存在");
         }
         int profileId=attachmentDO.getProfileId();
-        Query query=new Query.QueryBuilder().where("profile_id",profileId).and("disable",1).buildQuery();
+        Query query=new Query.QueryBuilder().where("id",profileId).and("disable",1).buildQuery();
         ProfileProfileDO profileDO=profileDao.getData(query);
         if(profileDO==null){
-            ResponseUtils.fail(1,"简历不存在");
+            return ResponseUtils.fail(1,"简历不存在");
         }
         int completeness=profileDO.getCompleteness();
         if(completeness<70){
-            ResponseUtils.fail(1,"简历完整度小于70");
+            return ResponseUtils.fail(1,"简历完整度小于70");
         }
         int result=dao.delAttachmentsByProfileId(profileId);
         if(result==0){
-            ResponseUtils.fail(1,"简历附件删除失败");
+            return ResponseUtils.fail(1,"简历附件删除失败");
         }
         return ResponseUtils.success(result);
     }

@@ -58,7 +58,7 @@ public class HrAppExportFields extends TableImpl<HrAppExportFieldsRecord> {
     /**
      * The column <code>hrdb.hr_app_export_fields.field_name</code>. 属性含义
      */
-    public final TableField<HrAppExportFieldsRecord, String> FIELD_NAME = createField("field_name", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "属性含义");
+    public final TableField<HrAppExportFieldsRecord, String> FIELD_NAME = createField("field_name", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "属性含义");
 
     /**
      * The column <code>hrdb.hr_app_export_fields.field_title</code>. 属性标题

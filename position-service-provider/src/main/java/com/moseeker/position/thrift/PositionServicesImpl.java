@@ -327,6 +327,7 @@ public class PositionServicesImpl implements Iface {
             List<Map<String, Object>> list = positionPcService.getRecommendPosition(positionId,page,pageSize);
             if(StringUtils.isEmptyList(list)){
                 Response res= ResponseUtils.success("");
+                return res;
             }
             Response res= ResponseUtils.success(list);
             return res;
@@ -391,6 +392,37 @@ public class PositionServicesImpl implements Iface {
         try{
             Response result=positionPcService.addPositionReport(jobPcReportedDO);
             return result;
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public Response getPcAdvertisement(int page, int pageSize) throws TException {
+        try{
+            List<Map<String,Object>> list=positionPcService.getAdvertisement(page,pageSize);
+            if(StringUtils.isEmptyList(list)){
+                Response res= ResponseUtils.success("");
+                return res;
+            }
+            Response res= ResponseUtils.success(list);
+            return res;
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public Response getPositionRecommendByModuleId(int page, int pageSize, int moduleId) throws TException {
+        try {
+            Map<String,Object> result=positionPcService.getModuleRecommendPosition(page, pageSize, moduleId);
+            if(result==null||result.isEmpty()){
+                return ResponseUtils.fail(1,"模块不存在或者模块已失效");
+            }
+            Response res= ResponseUtils.success(result);
+            return res;
         }catch(Exception e){
             logger.info(e.getMessage(),e);
             throw ExceptionUtils.convertException(e);
