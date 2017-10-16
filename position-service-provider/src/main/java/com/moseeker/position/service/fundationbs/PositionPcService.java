@@ -308,7 +308,7 @@ public class PositionPcService {
 	 获取推荐职位模块下的具体推荐项
 	 */
 	public List<JobPcRecommendPositionItemDO> getRecommendPositionItemByModuleId(int moduleId){
-		Query query=new Query.QueryBuilder().where("module_id",moduleId).and("status",1).buildQuery();
+		Query query=new Query.QueryBuilder().where("module_id",moduleId).and("status",1).setPageSize(pageSize).setPageNum(page).orderBy("id", Order.DESC).buildQuery();
 		List<JobPcRecommendPositionItemDO> jobPcRecommendPositionItemDOs=jobPcRecommendPositionItemDao.getDatas(query);
 		return jobPcRecommendPositionItemDOs;
 	}
