@@ -221,14 +221,14 @@ public class ThirdPartyAccountService {
             } else {
                 emailNotification.sendThirdPartyAccountExtHandlerFailureMail(emailNotification.getDevMails(),accountDO, "职位同步之后获取第三方渠道扩展信息失败！");
             }
+        } else {
+            thridPartyAcountEntity.saveAccountExt(accountExt.getData(), accountDO);
             logger.info("第三方账号相关信息绑定处理完成，准备更新"+accountDO.getBinding()+"为1");
             if (accountDO.getBinding() != BindingStatus.BOUND.getValue()) {
                 accountDO.setBinding((short) BindingStatus.BOUND.getValue());
                 thirdPartyAccountDao.updateData(accountDO);
                 logger.info(accountDO.getBinding()+"更新成功，状态为"+accountDO.getBinding());
             }
-        } else {
-            thridPartyAcountEntity.saveAccountExt(accountExt.getData(), accountDO);
         }
     }
 
