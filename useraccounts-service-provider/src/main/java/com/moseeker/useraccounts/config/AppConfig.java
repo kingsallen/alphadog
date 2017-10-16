@@ -142,7 +142,7 @@ public class AppConfig {
     @Bean
     public List<Binding> webBindingPreset() {
         return new ArrayList<Binding>(){{
-            add(BindingBuilder.bind(presetQueue()).to(presetExchange()).with("preset.response"));
+            add(BindingBuilder.bind(presetQueue()).to(webPresetExchange()).with("preset.response"));
         }};
     }
 }
