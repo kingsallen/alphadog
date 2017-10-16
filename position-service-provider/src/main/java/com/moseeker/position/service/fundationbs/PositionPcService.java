@@ -16,7 +16,7 @@ import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.query.SelectOp;
+import com.moseeker.common.util.query.*;
 import com.moseeker.entity.PcRevisionEntity;
 import com.moseeker.thrift.gen.dao.struct.analytics.StJobSimilarityDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictIndustryDO;
@@ -39,10 +39,6 @@ import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.common.util.query.Condition;
-import com.moseeker.common.util.query.Query;
-import com.moseeker.common.util.query.Select;
-import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignPcRecommendCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignPcRecommendPositionDO;
@@ -270,7 +266,7 @@ public class PositionPcService {
 		获取该模块下所有的items
 	 */
 	public List<JobPcRecommendPositionItemDO> getJobPcRecommendPositionItemDOByModuleId(int page,int pageSize,int moduleId){
-		Query query=new Query.QueryBuilder().where("module_id",moduleId).and("status",1).setPageSize(pageSize).setPageNum(page).buildQuery();
+		Query query=new Query.QueryBuilder().where("module_id",moduleId).and("status",1).setPageSize(pageSize).setPageNum(page).orderBy("id", Order.DESC).buildQuery();
 		List<JobPcRecommendPositionItemDO> list=jobPcRecommendPositionItemDao.getDatas(query);
 		return list;
 	}
