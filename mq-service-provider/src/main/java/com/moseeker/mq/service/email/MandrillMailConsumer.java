@@ -7,12 +7,22 @@ import com.microtripit.mandrillapp.lutung.view.MandrillMessage.MergeVar;
 import com.microtripit.mandrillapp.lutung.view.MandrillMessage.MergeVarBucket;
 import com.microtripit.mandrillapp.lutung.view.MandrillMessage.Recipient;
 import com.microtripit.mandrillapp.lutung.view.MandrillMessageStatus;
+import com.moseeker.baseorm.dao.logdb.LogEmailSendrecordDao;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.thrift.gen.dao.struct.logdb.LogEmailSendrecordDO;
 import com.moseeker.thrift.gen.mq.struct.MandrillEmailStruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import javax.mail.MessagingException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,12 +32,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import javax.mail.MessagingException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 /**
  * 
@@ -56,6 +60,9 @@ public class MandrillMailConsumer {
 	private HashMap<Integer, String> templates = new HashMap<>(); // 模版信息
 	private ExecutorService executorService;
 	private MandrillApi mandrillApi;
+
+	@Autowired
+	private LogEmailSendrecordDao logEmailSendrecordDao;
 
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
@@ -153,13 +160,21 @@ public class MandrillMailConsumer {
 					
 					MandrillMessageStatus[] messageStatus = mandrillApi.messages().sendTemplate(mandrillEmailStruct.getTemplateName(), 
 							null,message, false);
+					LogEmailSendrecordDO emailrecord = new LogEmailSendrecordDO();
+
 					if (messageStatus.length == 0){
 						logger.error("mandrill send failed: " + mandrillEmailStruct.getTo_email());
+						emailrecord.setEmail(recipient.getEmail());
+						emailrecord.setContent("failed," + mandrillEmailStruct.getTemplateName() + "," + message.getSubject());
+						logEmailSendrecordDao.addData(emailrecord);
 					}else{
+						emailrecord.setEmail(recipient.getEmail());
+						emailrecord.setContent(messageStatus[0].getStatus()+","+ mandrillEmailStruct.getTemplateName() + "," + message.getSubject());
+						logEmailSendrecordDao.addData(emailrecord);
+
 						logger.debug(messageStatus[0].getEmail() +" "+ messageStatus[0].getStatus());
 					}
-									
-					
+
 				} catch (Exception e) {
 					e.printStackTrace();
 					logger.error(e.getMessage());

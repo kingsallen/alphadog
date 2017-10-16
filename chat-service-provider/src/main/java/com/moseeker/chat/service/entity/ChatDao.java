@@ -316,6 +316,7 @@ public class ChatDao {
         QueryUtil queryUtil = new QueryUtil();
         queryUtil.addEqualFilter("chatlist_id", roomId);
         queryUtil.orderBy("create_time", Order.DESC);
+        queryUtil.orderBy("id", Order.DESC);
         queryUtil.setPageNo(pageNo);
         queryUtil.setPer_page(pageSize);
         return hrWxHrChatDao.getDatas(queryUtil);
