@@ -143,6 +143,15 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
         Query query = new Query.QueryBuilder().where("hr_account_id", user_id).and("status", 1).and("channel", channel).buildQuery();
         HrThirdPartyAccountHrDO hrThirdPartyAccountHr = thirdPartyAccountHrDao.getData(query);
         if (hrThirdPartyAccountHr != null) {
+
+            HrThirdPartyAccountDO accountDO1 = getData(new Query.QueryBuilder().where("id", hrThirdPartyAccountHr.getThirdPartyAccountId()).buildQuery());
+            if (accountDO1 != null) {
+                logger.info(" accountDO1 is not null and binding: {}", accountDO1.getBinding());
+
+            } else {
+                logger.info(" accountDO1 is null");
+            }
+
             query = new Query.QueryBuilder()
                     .where("id", hrThirdPartyAccountHr.getThirdPartyAccountId())
                     .and(new Condition("binding", 0, ValueOp.NEQ))
