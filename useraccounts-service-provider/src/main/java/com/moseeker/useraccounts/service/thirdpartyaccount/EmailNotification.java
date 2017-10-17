@@ -130,17 +130,24 @@ public class EmailNotification {
 
     }
 
-    public void sendThirdPartyAccountExtHandlerFailureMail(List<String> mails, HrThirdPartyAccountDO accountDO, String message) {
+    public void sendThirdPartyAccountExtHandlerFailureMail(List<String> mails, HrThirdPartyAccountDO accountDO, String message, HrCompanyDO company) {
         if (mails == null || mails.size() == 0) {
             logger.error("没有配置同步邮箱地址!");
             return;
         }
         try {
-
             Email.EmailBuilder emailBuilder = new Email.EmailBuilder(mails.subList(0, 1));
+
+            ChannelType channelType = ChannelType.instaceFromInteger(accountDO.getChannel());
 
             StringBuilder titleBuilder = new StringBuilder();
             titleBuilder.append("【获取第三方渠道账号信息失败】");
+
+            if (company != null) {
+                titleBuilder.append(":【").append(company.getName()).append("】");
+            }
+            titleBuilder.append(":【").append(channelType.getAlias()).append("】");
+            titleBuilder.append(":【").append(accountDO.getId()).append("】");
 
             String br = "<br/>";
 

@@ -221,10 +221,13 @@ public class ThirdPartyAccountService {
         }
 
         if (accountExt.getStatus() != 0) {
+
+            HrCompanyDO companyDO = hrCompanyDao.getCompanyById(accountDO.getCompanyId());
+
             if (accountExt.getData().getOperationType() == 1) {
-                emailNotification.sendThirdPartyAccountExtHandlerFailureMail(emailNotification.getMails(),accountDO, accountExt.getMessage());
+                emailNotification.sendThirdPartyAccountExtHandlerFailureMail(emailNotification.getMails(),accountDO, accountExt.getMessage(),companyDO);
             } else {
-                emailNotification.sendThirdPartyAccountExtHandlerFailureMail(emailNotification.getDevMails(),accountDO, "职位同步之后获取第三方渠道扩展信息失败！");
+                emailNotification.sendThirdPartyAccountExtHandlerFailureMail(emailNotification.getDevMails(),accountDO, "职位同步之后获取第三方渠道扩展信息失败！",companyDO);
             }
         } else {
             thridPartyAcountEntity.saveAccountExt(accountExt.getData(), accountDO);
