@@ -50,7 +50,7 @@ public class PositionThridService {
         如果有则更新，没有则插入
      */
     public int putAlipayPositionResult(int channel,int positionId,int alipayJobId ){
-            return jobPositionExtDao.insertOrUpdateData(positionId,alipayJobId);
+        return jobPositionExtDao.insertOrUpdateData(positionId,alipayJobId);
 
     }
     /*
@@ -82,30 +82,29 @@ public class PositionThridService {
                     int positionId=DO.getId();
                     if(pid==positionId){
                         positionList.add(DO);
-
+                        String positionDOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
+                        Map<String,Object> positionData= JSON.parseObject(positionDOs, Map.class);
+                        positionData.put("alipayJobId",extDO.getAlipayJobId());
+                        result.add(positionData);
                     }
                 }
             }
         }
         //处理获取所有职位的城市
         Map<Integer,String> cityMap=this.handlePositionCityForAlipay(positionList);
-        if(StringUtils.isEmptyList(positionList)){
+        if(StringUtils.isEmptyList(result)){
             return null;
         }
-        for(JobPositionDO DO:positionList){
-
-               int pid=DO.getId();
+        for(Map<String,Object> map:result){
+            int pid= (int) map.get("id");
             if(cityMap!=null&&!cityMap.isEmpty()){
-               for(Integer key:cityMap.keySet()){
+                for(Integer key:cityMap.keySet()){
                     if(pid==key){
-                        DO.setCity(cityMap.get(key));
+                        map.put("city",cityMap.get(key));
                         break;
                     }
-               }
+                }
             }
-           String positionDOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
-           Map<String,Object> positionData= JSON.parseObject(positionDOs, Map.class);
-           result.add(positionData);
         }
         return result;
     }
@@ -132,7 +131,7 @@ public class PositionThridService {
         根据companyId和candidateSource获取position列表
     */
     private List<JobPositionDO> getPositionByCompanyIdAndCandidateSource(int companyId,int candidateSource){
-        Query query=new Query.QueryBuilder().where("candidate_source",candidateSource)
+        Query query=new Query.QueryBuilder().where("source",0).and("candidate_source",candidateSource)
                 .and("company_id",companyId).buildQuery();
         List<JobPositionDO> list=jobPositionDao.getDatas(query);
         return list;
@@ -140,29 +139,29 @@ public class PositionThridService {
     /*
       获取id
      */
-     public List<Integer> getIdByPositionList(List<JobPositionDO> list){
-         if(StringUtils.isEmptyList(list)){
-             return null;
-         }
-         List<Integer> result=new ArrayList<>();
-         for(JobPositionDO DO:list){
-             result.add(DO.getId());
-         }
-         return result;
-     }
-     /*
-        获取jobPositionExt
-      */
-     public List<JobPositionExtDO> getJobPositionExtByPositionIdList(List<Integer> pidList,int page,int pageSize){
-         if(StringUtils.isEmptyList(pidList)){
-             return null;
-         }
-         Query query=new Query.QueryBuilder().where(new Condition("pid",pidList.toArray(), ValueOp.IN))
-                 .and(new Condition("alipay_job_id",0,ValueOp.GT)).setPageNum(page)
-                 .setPageSize(pageSize).orderBy("update_time").buildQuery();
-         List<JobPositionExtDO> list=jobPositionExtDao.getDatas(query);
-         return list;
-     }
+    public List<Integer> getIdByPositionList(List<JobPositionDO> list){
+        if(StringUtils.isEmptyList(list)){
+            return null;
+        }
+        List<Integer> result=new ArrayList<>();
+        for(JobPositionDO DO:list){
+            result.add(DO.getId());
+        }
+        return result;
+    }
+    /*
+       获取jobPositionExt
+     */
+    public List<JobPositionExtDO> getJobPositionExtByPositionIdList(List<Integer> pidList,int page,int pageSize){
+        if(StringUtils.isEmptyList(pidList)){
+            return null;
+        }
+        Query query=new Query.QueryBuilder().where(new Condition("pid",pidList.toArray(), ValueOp.IN))
+                .and(new Condition("alipay_job_id",0,ValueOp.GT)).setPageNum(page)
+                .setPageSize(pageSize).orderBy("update_time").buildQuery();
+        List<JobPositionExtDO> list=jobPositionExtDao.getDatas(query);
+        return list;
+    }
     /*
         获取jobPositionExt的总数
      */
@@ -175,9 +174,9 @@ public class PositionThridService {
         int num=jobPositionExtDao.getCount(query);
         return num;
     }
-     //获取公司
+    //获取公司
     public Map<String,Object> getCompanyData(int publisher,int companyId) throws TException {
-         HrCompanyDO DO=null;
+        HrCompanyDO DO=null;
         if(publisher==0){
             DO=this.getCompanyDObyPublisher(publisher);
         }else{
