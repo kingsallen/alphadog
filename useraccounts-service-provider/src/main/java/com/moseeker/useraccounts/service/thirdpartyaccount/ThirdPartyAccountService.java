@@ -234,9 +234,9 @@ public class ThirdPartyAccountService {
             logger.info("第三方账号相关信息绑定处理完成，准备更新"+accountDO.getBinding()+"为1");
             if (accountDO.getBinding() != BindingStatus.BOUND.getValue()) {
                 accountDO.setBinding((short) BindingStatus.BOUND.getValue());
-                thirdPartyAccountDao.updateData(accountDO);
                 logger.info(accountDO.getBinding()+"更新成功，状态为"+accountDO.getBinding());
             }
+            thirdPartyAccountDao.updateData(accountDO);
         }
     }
 
