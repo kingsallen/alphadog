@@ -159,14 +159,14 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
         List<HrThirdPartyAccountHrDO> hrThirdPartyAccountHrDOList = thirdPartyAccountHrDao.getDatas(query);
         if (hrThirdPartyAccountHrDOList != null && hrThirdPartyAccountHrDOList.size() > 0) {
 
-            List<Integer> accountIdList = hrThirdPartyAccountHrDOList
+            List<Integer> thirdPartyAccountIdList = hrThirdPartyAccountHrDOList
                     .stream()
-                    .map(hrThirdPartyAccountHrDO -> hrThirdPartyAccountHrDO.getHrAccountId())
+                    .map(hrThirdPartyAccountHrDO -> hrThirdPartyAccountHrDO.getThirdPartyAccountId())
                     .collect(Collectors.toList());
 
-            logger.info("getThirdPartyAccountByUserId accountIdList:{}", accountIdList);
+            logger.info("getThirdPartyAccountByUserId thirdPartyAccountIdList:{}", thirdPartyAccountIdList);
 
-            Condition condition = new Condition("id", accountIdList, ValueOp.IN);
+            Condition condition = new Condition("id", thirdPartyAccountIdList, ValueOp.IN);
             query = new Query.QueryBuilder()
                     .where(condition)
                     .and(new Condition("binding", 0, ValueOp.NEQ))
