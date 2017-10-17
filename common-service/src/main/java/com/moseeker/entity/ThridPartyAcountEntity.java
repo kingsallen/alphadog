@@ -107,6 +107,12 @@ public class ThridPartyAcountEntity {
             }).collect(Collectors.toList());
             if (thirdpartyAccountCityDOList != null && thirdpartyAccountCityDOList.size() > 0) {
                 accountCityDao.addAllData(thirdpartyAccountCityDOList);
+
+                int remainNumSum=0;
+                for(ThirdpartyAccountCityDO node:thirdpartyAccountCityDOList){
+                    remainNumSum+=node.remainNum;
+                }
+                accountDO.setRemainNum(remainNumSum);
             }
         }
 
