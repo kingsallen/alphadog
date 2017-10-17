@@ -82,30 +82,29 @@ public class PositionThridService {
                     int positionId=DO.getId();
                     if(pid==positionId){
                         positionList.add(DO);
-
+                        String positionDOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
+                        Map<String,Object> positionData= JSON.parseObject(positionDOs, Map.class);
+                        positionData.put("alipayJobId",extDO.getAlipayJobId());
+                        result.add(positionData);
                     }
                 }
             }
         }
         //处理获取所有职位的城市
         Map<Integer,String> cityMap=this.handlePositionCityForAlipay(positionList);
-        if(StringUtils.isEmptyList(positionList)){
+        if(StringUtils.isEmptyList(result)){
             return null;
         }
-        for(JobPositionDO DO:positionList){
-
-            int pid=DO.getId();
+        for(Map<String,Object> map:result){
+            int pid= (int) map.get("id");
             if(cityMap!=null&&!cityMap.isEmpty()){
                 for(Integer key:cityMap.keySet()){
                     if(pid==key){
-                        DO.setCity(cityMap.get(key));
+                        map.put("city",cityMap.get(key));
                         break;
                     }
                 }
             }
-            String positionDOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
-            Map<String,Object> positionData= JSON.parseObject(positionDOs, Map.class);
-            result.add(positionData);
         }
         return result;
     }
