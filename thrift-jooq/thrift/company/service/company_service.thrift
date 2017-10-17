@@ -39,7 +39,7 @@ service CompanyServices {
     common_struct.Response companyDetails(1:i32 companyId) throws (1: common_struct.BIZException e)
     //获取pc端团队列表的企业信息
     common_struct.Response companyMessage(1:i32 companyId) throws (1: common_struct.BIZException e)
-
+    common_struct.Response companyPaidOrFortune() throws (1: common_struct.BIZException e)
 }
 
 service HrTeamServices {

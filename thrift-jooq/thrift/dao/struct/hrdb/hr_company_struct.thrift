@@ -23,6 +23,8 @@ struct HrCompanyDO {
 	17: optional string createTime,	//创建时间
 	18: optional string updateTime,	//更新时间
 	19: optional i8 source,	//添加来源 0:hr系统, 1:官网下载行业报告, 6:无线官网添加, 7:PC端 添加, 8:微信端添加, 9:PC导入, 10:微信端导入
-	20: optional string slogan	//公司口号
+	20: optional string slogan,	//公司口号
+	21: optional string feature,	//公司福利特色， 由公司下的职位的福利特色每天跑脚本合并而来，目前供支付宝使用
+	22: optional i8 fortune	//是否世界500强，0：不是 1：是
 
 }
