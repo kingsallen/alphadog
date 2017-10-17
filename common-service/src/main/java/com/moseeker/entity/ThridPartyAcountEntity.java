@@ -115,6 +115,14 @@ public class ThridPartyAcountEntity {
             logger.info("saveAccountExt collectors.size:{}", thirdpartyAccountCityDOList.size());
             if (thirdpartyAccountCityDOList != null && thirdpartyAccountCityDOList.size() > 0) {
                 accountCityDao.addAllData(thirdpartyAccountCityDOList);
+
+                logger.info("添加第三方账号城市相关信息成功");
+                int remainNumSum=0;
+                for(ThirdpartyAccountCityDO node:thirdpartyAccountCityDOList){
+                    remainNumSum+=node.remainNum;
+                }
+                logger.info(accountDO.id+"的remain_Num"+remainNumSum);
+                accountDO.setRemainNum(remainNumSum);
             }
         }
 
