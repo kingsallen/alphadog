@@ -1,17 +1,23 @@
 package com.moseeker.profile.thrift;
 
+import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.profile.service.impl.ProfileService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.profile.service.ProfileServices.Iface;
 import com.moseeker.thrift.gen.profile.struct.Profile;
+
+import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
 
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
+
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +32,8 @@ public class ProfileServicesImpl implements Iface {
     @Autowired
     private ProfileService service;
 
+    @Autowired
+    com.moseeker.profile.service.ProfileService profileService;
 
     @Override
     public Response getResource(CommonQuery query) throws TException {
@@ -83,12 +91,35 @@ public class ProfileServicesImpl implements Iface {
     }
 
     @Override
-	public Response getProfileByApplication(ProfileApplicationForm profileApplicationForm) throws TException {
+    public Response getProfileByApplication(ProfileApplicationForm profileApplicationForm) throws TException {
         try {
             return service.getProfileByApplication(profileApplicationForm);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
+    }
+
+    @Override
+    public Response resumeProfile(int uid, String fileName, String file) throws BIZException, TException {
+        try {
+            return service.profileParser(uid, fileName, file);
+        } catch (TException e) {
+            logger.error(e.getMessage(), e);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
+    }
+
+    @Override
+    public int upsertProfile(int userId, String profile) throws BIZException, TException {
+        try {
+            return profileService.upsertProfile(userId, profile);
+        } catch (CommonException e) {
+            logger.error(e.getMessage(), e);
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
         }
     }
 

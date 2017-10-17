@@ -6,6 +6,8 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CacheConfigNotExistException;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.util.StringUtils;
+
+import java.net.ConnectException;
 import java.util.List;
 import java.util.Set;
 
@@ -597,5 +599,82 @@ public abstract class RedisClient {
 			logger.info("每日操作次数达到上线。关键词：{}, 上线是：{}", pattern, limit);
 			return false;
 		}
+	}
+
+	/**
+	 *	验证redis中是否存在key
+	 * @param appId 调用方项目编号
+	 * @param key_identifier config_cacheconfig_rediskey.key_identifier 关键词标识符
+	 * @param str 关键词,可变参数
+	 * @return true:存在，false：不存在
+	 */
+	public boolean exists(int appId, String key_identifier, String...str){
+		String cacheKey = genCacheKey(appId,key_identifier,str);
+		return exists(cacheKey);
+	}
+
+	/**
+	 * 只验证key
+	 * @param cacheKey 需要验证的key
+	 * @return	true：存在，false：不存在
+	 */
+	public boolean exists(String cacheKey){
+		try {
+			return redisCluster.exists(cacheKey);
+		} catch (Exception e) {
+			throw new RedisException(e, Constant.REDIS_CONNECT_ERROR_APPID, className, Constant.REDIS_CONNECT_ERROR_EVENTKEY);
+		}
+	}
+
+	/**
+	 *	根据传入的参数生成redis的key
+	 * @param appId 调用方项目编号
+	 * @param key_identifier config_cacheconfig_rediskey.key_identifier 关键词标识符
+	 * @param str 关键词,可变参数
+	 * @return
+	 */
+	public String genCacheKey(int appId, String key_identifier, String...str){
+		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
+		return String.format(redisKey.getPattern(), str);
+	}
+
+
+	/**
+	 * 长时间验证redis是否存在key,超时时长默认4分钟，240000毫秒
+	 * @param key	验证的key
+	 * @return
+	 * @throws ConnectException
+	 */
+	public boolean existWithTimeOutCheck(String key) throws ConnectException {
+		return existWithTimeOutCheck(key,Constant.BIND_GET_REDIS_TIMEOUT);
+	}
+
+	/**
+	 * 长时间验证redis是否存在key
+	 * @param key	验证的key
+	 * @param time	超时时长，毫秒单位
+	 * @return
+	 * @throws ConnectException
+	 */
+	public boolean existWithTimeOutCheck(String key,long time) throws ConnectException{
+		logger.info("尝试循环验证redis中是否存在:"+key);
+		int tick=2000;
+		int count=0;
+
+		while (!exists(key)){
+			try {
+				Thread.sleep(tick);
+			}catch (InterruptedException e2){
+
+			}finally {
+				count++;
+			}
+			if(count*tick>time){
+				logger.info("Redis验证:"+key+"超时");
+				throw new ConnectException();
+			}
+		}
+		logger.info("Redis中存在:"+key);
+		return true;
 	}
 }

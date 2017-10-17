@@ -34,9 +34,11 @@ public class ChaosTool {
      */
     public static String getParams(HrThirdPartyAccountDO accountDO, Map<String, ? extends Object> extras) {
         Map<String, Object> pramas = new HashMap<>();
+        pramas.put("account_id",accountDO.getId());
         pramas.put("id",accountDO.getId());
         pramas.put("user_name", accountDO.getUsername());
         pramas.put("password", accountDO.getPassword());
+        pramas.put("channel", accountDO.getChannel());
 
         if (accountDO.getChannel() == ChannelType.JOB51.getValue()) {
             pramas.put("member_name", accountDO.getMembername());

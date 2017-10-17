@@ -4,7 +4,6 @@ import java.util.Map;
 
 import com.moseeker.searchengine.util.SearchUtil;
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.search.SearchHits;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +24,8 @@ public class CompanyIndexTest {
 		Map<String,Object> res=companySearchengine.query("上海那里", null, null, null, 1, 10);
 		System.out.println(res);
 	}
-	@Test
 	public void queryStringTest() throws Exception{
-		SearchResponse res=companySearchengine.queryString("上海那里", "1000,10001", "100,200", "1,4", 1, 10,searchUtil.getEsClient());
+		SearchResponse res=companySearchengine.queryString("上海那里", "", "", "", 1, 10,searchUtil.getEsClient());
 		System.out.println(res);
 	}
 }

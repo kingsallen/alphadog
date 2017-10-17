@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrAppExportFields extends TableImpl<HrAppExportFieldsRecord> {
 
-    private static final long serialVersionUID = -1569312684;
+    private static final long serialVersionUID = -2103984201;
 
     /**
      * The reference instance of <code>hrdb.hr_app_export_fields</code>

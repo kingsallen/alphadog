@@ -23,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
+
 
 /**
  * 第三方帐号数据访问层
@@ -141,13 +143,28 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
     public HrThirdPartyAccountDO getThirdPartyAccountByUserId(int user_id, int channel) {
         logger.info("getThirdPartyAccountByUserId:user_id{},channel:{}", user_id, channel);
         Query query = new Query.QueryBuilder().where("hr_account_id", user_id).and("status", 1).and("channel", channel).buildQuery();
-        HrThirdPartyAccountHrDO hrThirdPartyAccountHr = thirdPartyAccountHrDao.getData(query);
-        if (hrThirdPartyAccountHr != null) {
+        List<HrThirdPartyAccountHrDO> hrThirdPartyAccountHrDOList = thirdPartyAccountHrDao.getDatas(query);
+        if (hrThirdPartyAccountHrDOList != null && hrThirdPartyAccountHrDOList.size() > 0) {
+
+            List<Integer> thirdPartyAccountIdList = hrThirdPartyAccountHrDOList
+                    .stream()
+                    .map(hrThirdPartyAccountHrDO -> hrThirdPartyAccountHrDO.getThirdPartyAccountId())
+                    .collect(Collectors.toList());
+
+            logger.info("getThirdPartyAccountByUserId thirdPartyAccountIdList:{}", thirdPartyAccountIdList);
+
+            Condition condition = new Condition("id", thirdPartyAccountIdList, ValueOp.IN);
             query = new Query.QueryBuilder()
-                    .where("id", hrThirdPartyAccountHr.getThirdPartyAccountId())
+                    .where(condition)
                     .and(new Condition("binding", 0, ValueOp.NEQ))
                     .buildQuery();
-            return getData(query);
+            HrThirdPartyAccountDO accountDO =  getData(query);
+            if (accountDO != null) {
+                logger.info("getThirdPartyAccountByUserId id: id{}, channel:{}", accountDO.getId(), channel);
+            } else {
+                logger.info("getThirdPartyAccountByUserId accountDO is null");
+            }
+            return accountDO;
         }
         return null;
     }

@@ -3,8 +3,10 @@ package com.moseeker.useraccounts.service.thirdpartyaccount;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
+import com.moseeker.common.constants.BindingStatus;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import com.moseeker.thrift.gen.employee.struct.BindStatus;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,6 +64,15 @@ public abstract class ExecuteTask {
      * @return
      */
     public void updateThirdPartyAccount(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras) {
+
+        /**
+         * 如果已经是绑定成功的状态，并且需要改成绑定成功并在获取数据中的状态，操作不让进行。
+         */
+        HrThirdPartyAccountDO thirdPartyAccountDO = hrThirdPartyAccountDao.getAccountById(hrThirdPartyAccount.getId());
+        if (thirdPartyAccountDO != null && thirdPartyAccountDO.getBinding() == BindingStatus.BOUND.getValue()
+                && hrThirdPartyAccount.getBinding() == BindingStatus.GETINGINFO.getValue()) {
+            hrThirdPartyAccount.setBinding((short) BindingStatus.BOUND.getValue());
+        }
         int updateResult = hrThirdPartyAccountDao.updateData(hrThirdPartyAccount);
 
         if (updateResult < 1) {

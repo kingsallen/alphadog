@@ -1,7 +1,7 @@
 package com.moseeker.profile.refactor;
 
+import com.moseeker.entity.biz.ProfileCompletenessImpl;
 import com.moseeker.profile.config.AppConfig;
-import com.moseeker.profile.service.impl.ProfileCompletenessImpl;
 import com.moseeker.profile.service.impl.ProfileIntentionService;
 import com.moseeker.profile.thrift.ProfileIntentionServicesImpl;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -33,7 +33,7 @@ public class ProfileIntentionServicesImplTest {
     ProfileIntentionServicesImpl profileIntentionService;
 
     @Autowired
-    private ProfileCompletenessImpl completenessImpl;
+//    private ProfileCompletenessImpl completenessImpl;
 
 //    //@Test
     public void testGetResources() {

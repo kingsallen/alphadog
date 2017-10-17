@@ -1,6 +1,8 @@
 package com.moseeker.useraccounts.thrift;
 
+import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.baseorm.exception.ExceptionConvertUtil;

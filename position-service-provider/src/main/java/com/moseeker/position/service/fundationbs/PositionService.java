@@ -243,8 +243,12 @@ public class PositionService {
                     jobPositionPojo.occupation = jobOccupationRecord.getName();
                 }
             }
-        }
-        // 修改更新时间
+        } else{
+                   jobPositionPojo.custom = "";
+                   jobPositionPojo.occupation = "";
+    }
+
+    // 修改更新时间
         jobPositionPojo.publish_date_view = DateUtils.dateToPattern(jobPositionPojo.publish_date,
                 DateUtils.SHOT_TIME);
         jobPositionPojo.update_time_view = DateUtils.dateToPattern(jobPositionPojo.update_time,
@@ -1439,6 +1443,7 @@ public class PositionService {
                 logger.warn("pid: " + p.getId() + " 已经不属于任何红包活动");
             }
         }
+        logger.info("result=========="+result);
         return result;
     }
 

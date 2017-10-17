@@ -20,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.moseeker.company.service.impl.CompanyService;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -29,7 +28,6 @@ import com.moseeker.thrift.gen.company.struct.CompanyOptions;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrImporterMonitorDO;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
