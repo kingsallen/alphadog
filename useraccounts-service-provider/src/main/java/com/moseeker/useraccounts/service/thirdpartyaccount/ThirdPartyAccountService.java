@@ -162,7 +162,10 @@ public class ThirdPartyAccountService {
 
         try {
             HrThirdPartyAccountDO result = thirdPartyAccountSynctor.bindThirdPartyAccount(account, extras, sync);
-            if (allowStatus == 0 && (result.binding == 1 || result.binding == 6)) {
+            if (allowStatus == 0
+                    && (result.binding == BindingStatus.BOUND.getValue()
+                        || result.binding == BindingStatus.ERROR.getValue()
+                        || result.binding == BindingStatus.GETINGINFO.getValue())) {
                 checkDispatch(result, hrId);
             }
             if (result.getBinding() != 100) {
