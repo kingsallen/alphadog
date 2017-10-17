@@ -122,7 +122,7 @@ public class PositionThridService {
             根据publisher和candidateSource获取position列表
      */
     private List<JobPositionDO> getpositionByPublisherAndCandidateSource(int publisher, int candidateSource){
-        Query query=new Query.QueryBuilder().where("candidate_source",candidateSource)
+        Query query=new Query.QueryBuilder().where("candidate_source",candidateSource).and("status",0)
                 .and("publisher",publisher).buildQuery();
         List<JobPositionDO> list=jobPositionDao.getDatas(query);
         return list;
@@ -132,7 +132,7 @@ public class PositionThridService {
     */
     private List<JobPositionDO> getPositionByCompanyIdAndCandidateSource(int companyId,int candidateSource){
         Query query=new Query.QueryBuilder().where("candidate_source",candidateSource)
-                .and("company_id",companyId).buildQuery();
+                .and("company_id",companyId).and("status",0).buildQuery();
         List<JobPositionDO> list=jobPositionDao.getDatas(query);
         return list;
     }
