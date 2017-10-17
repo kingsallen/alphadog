@@ -76,12 +76,12 @@ public class ChatDao {
         queryUtil.addSelectAttribute("room_id");
         switch (type) {
             case HR:
-                queryUtil.addSelectAttribute("user_unread_count").addSelectAttribute("hr_unread_count").addSelectAttribute("user_id");
+                queryUtil.addSelectAttribute("user_have_unread_msg").addSelectAttribute("hr_have_unread_msg").addSelectAttribute("user_id");
                 queryUtil.addEqualFilter("hr_id", id);
                 queryUtil.orderBy("hr_have_unread_msg", Order.DESC).orderBy("wx_chat_time", Order.DESC);
                 break;
             case USER:
-                queryUtil.addSelectAttribute("user_unread_count").addSelectAttribute("hr_unread_count").addSelectAttribute("hr_id");
+                queryUtil.addSelectAttribute("user_have_unread_msg").addSelectAttribute("hr_have_unread_msg").addSelectAttribute("hr_id");
                 queryUtil.addEqualFilter("user_id", id);
                 queryUtil.orderBy("user_have_unread_msg", Order.DESC).orderBy("hr_chat_time", Order.DESC);
                 break;
@@ -316,6 +316,7 @@ public class ChatDao {
         QueryUtil queryUtil = new QueryUtil();
         queryUtil.addEqualFilter("chatlist_id", roomId);
         queryUtil.orderBy("create_time", Order.DESC);
+        queryUtil.orderBy("id", Order.DESC);
         queryUtil.setPageNo(pageNo);
         queryUtil.setPer_page(pageSize);
         return hrWxHrChatDao.getDatas(queryUtil);
