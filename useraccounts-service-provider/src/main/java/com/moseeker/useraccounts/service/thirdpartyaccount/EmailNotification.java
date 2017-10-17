@@ -140,7 +140,7 @@ public class EmailNotification {
             Email.EmailBuilder emailBuilder = new Email.EmailBuilder(mails.subList(0, 1));
 
             StringBuilder titleBuilder = new StringBuilder();
-            titleBuilder.append("【Sysplat插件获取第三方渠道账号信息失败】");
+            titleBuilder.append("【获取第三方渠道账号信息失败】");
 
             String br = "<br/>";
 
