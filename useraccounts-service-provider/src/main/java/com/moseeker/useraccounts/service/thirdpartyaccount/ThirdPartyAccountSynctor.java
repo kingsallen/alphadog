@@ -118,6 +118,7 @@ public class ThirdPartyAccountSynctor {
     private HrThirdPartyAccountDO syncWithBindThirdPartyAccount(HrThirdPartyAccountDO thirdPartyAccount, Map<String, String> extras) throws Exception {
 
         if (thirdPartyAccount.getId() == 0) {
+            logger.info("又插入绑定数据时的绑定状态？"+thirdPartyAccount.getBinding());
             thirdPartyAccount = hrThirdPartyAccountDao.addData(thirdPartyAccount);
         }
         logger.info("syncWithBindThirdPartyAccount before bindTask.execute");
