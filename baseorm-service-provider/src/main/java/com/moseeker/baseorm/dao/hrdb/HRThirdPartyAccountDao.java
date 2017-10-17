@@ -144,12 +144,13 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
         HrThirdPartyAccountHrDO hrThirdPartyAccountHr = thirdPartyAccountHrDao.getData(query);
         if (hrThirdPartyAccountHr != null) {
 
+            logger.info("getThirdPartyAccountByUserId accountId : {}",hrThirdPartyAccountHr.getThirdPartyAccountId());
             HrThirdPartyAccountDO accountDO1 = getData(new Query.QueryBuilder().where("id", hrThirdPartyAccountHr.getThirdPartyAccountId()).buildQuery());
             if (accountDO1 != null) {
-                logger.info(" accountDO1 is not null and binding: {}", accountDO1.getBinding());
+                logger.info("getThirdPartyAccountByUserId accountDO1 is not null and binding: {}", accountDO1.getBinding());
 
             } else {
-                logger.info(" accountDO1 is null");
+                logger.info("getThirdPartyAccountByUserId accountDO1 is null");
             }
 
             query = new Query.QueryBuilder()
@@ -158,9 +159,9 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
                     .buildQuery();
             HrThirdPartyAccountDO accountDO =  getData(query);
             if (accountDO != null) {
-                logger.info("id: id{}, channel:{}", accountDO.getId(), channel);
+                logger.info("getThirdPartyAccountByUserId id: id{}, channel:{}", accountDO.getId(), channel);
             } else {
-                logger.info(" accountDO is null");
+                logger.info("getThirdPartyAccountByUserId accountDO is null");
             }
             return accountDO;
         }
