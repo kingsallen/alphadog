@@ -115,6 +115,12 @@ public class ThridPartyAcountEntity {
             logger.info("saveAccountExt collectors.size:{}", thirdpartyAccountCityDOList.size());
             if (thirdpartyAccountCityDOList != null && thirdpartyAccountCityDOList.size() > 0) {
                 accountCityDao.addAllData(thirdpartyAccountCityDOList);
+
+                int remainNumSum=0;
+                for(ThirdpartyAccountCityDO node:thirdpartyAccountCityDOList){
+                    remainNumSum+=node.remainNum;
+                }
+                accountDO.setRemainNum(remainNumSum);
             }
         }
 
