@@ -156,6 +156,7 @@ public class ThirdPartyAccountService {
             logger.info("第一次插入绑定数据时的绑定状态"+account.getBinding());
             //将这次绑定记录到数据库
             account = thirdPartyAccountDao.addData(account);
+            logger.info("after 第一次插入绑定数据时的绑定状态"+account.getBinding());
         }
 
         setCache(account);
