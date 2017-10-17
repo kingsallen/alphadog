@@ -23,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 第三方帐号数据访问层
@@ -140,8 +142,9 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
 
     public HrThirdPartyAccountDO getThirdPartyAccountByUserId(int user_id, int channel) {
         logger.info("getThirdPartyAccountByUserId:user_id{},channel:{}", user_id, channel);
+
         Query query = new Query.QueryBuilder().where("hr_account_id", user_id).and("status", 1).and("channel", channel).buildQuery();
-        HrThirdPartyAccountHrDO hrThirdPartyAccountHr = thirdPartyAccountHrDao.getData(query);
+       /* HrThirdPartyAccountHrDO hrThirdPartyAccountHr = thirdPartyAccountHrDao.getData(query);
         if (hrThirdPartyAccountHr != null) {
 
             logger.info("getThirdPartyAccountByUserId accountId : {}",hrThirdPartyAccountHr.getThirdPartyAccountId());
@@ -151,10 +154,21 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
 
             } else {
                 logger.info("getThirdPartyAccountByUserId accountDO1 is null");
-            }
+            }*/
 
+        List<HrThirdPartyAccountHrDO> hrThirdPartyAccountHrDOList = thirdPartyAccountHrDao.getDatas(query);
+        if (hrThirdPartyAccountHrDOList != null && hrThirdPartyAccountHrDOList.size() > 0) {
+
+            List<Integer> accountIdList = hrThirdPartyAccountHrDOList
+                    .stream()
+                    .map(hrThirdPartyAccountHrDO -> hrThirdPartyAccountHrDO.getHrAccountId())
+                    .collect(Collectors.toList());
+
+            logger.info("getThirdPartyAccountByUserId accountIdList:{}", accountIdList);
+
+            Condition condition = new Condition("id", accountIdList, ValueOp.IN);
             query = new Query.QueryBuilder()
-                    .where("id", hrThirdPartyAccountHr.getThirdPartyAccountId())
+                    .where(condition)
                     .and(new Condition("binding", 0, ValueOp.NEQ))
                     .buildQuery();
             HrThirdPartyAccountDO accountDO =  getData(query);
