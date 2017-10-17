@@ -164,8 +164,7 @@ public class ThirdPartyAccountService {
         try {
             HrThirdPartyAccountDO result = thirdPartyAccountSynctor.bindThirdPartyAccount(account, extras, sync);
             if (allowStatus == 0
-                    && (result.binding == BindingStatus.BOUND.getValue()
-                        || result.binding == BindingStatus.ERROR.getValue()
+                    && (result.binding == BindingStatus.ERROR.getValue()
                         || result.binding == BindingStatus.GETINGINFO.getValue())) {
                 checkDispatch(result, hrId);
             }
@@ -364,8 +363,10 @@ public class ThirdPartyAccountService {
     }
 
     private void checkDispatch(HrThirdPartyAccountDO thirdPartyAccount, int hrId) {
+        logger.info("checkDispatch hrId:{}, channel:{}", hrId, thirdPartyAccount.getChannel());
         HrThirdPartyAccountDO bindingAccount = thirdPartyAccountDao.getThirdPartyAccountByUserId(hrId, thirdPartyAccount.getChannel());
         if (bindingAccount == null) {
+            logger.info("bindingAccount is null");
             thirdPartyAccountDao.dispatchAccountToHr(thirdPartyAccount, hrId);
         }
     }

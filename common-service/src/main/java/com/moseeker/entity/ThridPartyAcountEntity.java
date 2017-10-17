@@ -118,6 +118,7 @@ public class ThridPartyAcountEntity {
             }
         }
 
+
         if (data.getAddresses() != null && data.getAddresses().size() > 0) {
             Condition deleteCondition = new Condition(ThirdpartyAccountCompanyAddress.THIRDPARTY_ACCOUNT_COMPANY_ADDRESS.ACCOUNT_ID.getName(), data.getAccountId());
             accountCompanyAddressDao.delete(deleteCondition);
