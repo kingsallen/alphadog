@@ -24,7 +24,6 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * 第三方帐号数据访问层
@@ -144,17 +143,6 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
         logger.info("getThirdPartyAccountByUserId:user_id{},channel:{}", user_id, channel);
 
         Query query = new Query.QueryBuilder().where("hr_account_id", user_id).and("status", 1).and("channel", channel).buildQuery();
-       /* HrThirdPartyAccountHrDO hrThirdPartyAccountHr = thirdPartyAccountHrDao.getData(query);
-        if (hrThirdPartyAccountHr != null) {
-
-            logger.info("getThirdPartyAccountByUserId accountId : {}",hrThirdPartyAccountHr.getThirdPartyAccountId());
-            HrThirdPartyAccountDO accountDO1 = getData(new Query.QueryBuilder().where("id", hrThirdPartyAccountHr.getThirdPartyAccountId()).buildQuery());
-            if (accountDO1 != null) {
-                logger.info("getThirdPartyAccountByUserId accountDO1 is not null and binding: {}", accountDO1.getBinding());
-
-            } else {
-                logger.info("getThirdPartyAccountByUserId accountDO1 is null");
-            }*/
 
         List<HrThirdPartyAccountHrDO> hrThirdPartyAccountHrDOList = thirdPartyAccountHrDao.getDatas(query);
         if (hrThirdPartyAccountHrDOList != null && hrThirdPartyAccountHrDOList.size() > 0) {

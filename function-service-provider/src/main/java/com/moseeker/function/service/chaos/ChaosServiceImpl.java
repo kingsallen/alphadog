@@ -112,8 +112,6 @@ public class ChaosServiceImpl {
             if (status == 0) {
                 hrThirdPartyAccount.setBinding((short)BindingStatus.GETINGINFO.getValue());
                 logger.info("绑定成功，binding标志为"+hrThirdPartyAccount.getBinding());
-                hrThirdPartyAccount.setRemainNum(jsonObject.getJSONObject("data").getIntValue("remain_number"));
-                hrThirdPartyAccount.setRemainProfileNum(jsonObject.getJSONObject("data").getIntValue("resume_number"));
             } else {
                 String message = jsonObject.getString("message");
 
@@ -197,8 +195,6 @@ public class ChaosServiceImpl {
         String message = jsonObject.getString("message");
         if (status == 0) {
             hrThirdPartyAccount.setBinding(Integer.valueOf(1).shortValue());
-            hrThirdPartyAccount.setRemainNum(jsonObject.getJSONObject("data").getIntValue("remain_number"));
-            hrThirdPartyAccount.setRemainProfileNum(jsonObject.getJSONObject("data").getIntValue("resume_number"));
         } else if (status == 112) {//验证码错误
             if (StringUtils.isNullOrEmpty(message)) {
                 message = "验证码错误";

@@ -1,7 +1,5 @@
 package com.moseeker.common.util;
 
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.joda.time.DateTime;
 
 import java.text.ParseException;
@@ -9,10 +7,11 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class DateUtils {
 
@@ -32,39 +31,55 @@ public class DateUtils {
     }
 
     public static String dateToShortDate(Date date) {
-        return SHOT_DATE_SDF.format(date);
+        synchronized(SHOT_DATE_SDF) {
+            return SHOT_DATE_SDF.format(date);
+        }
     }
 
     public static String dateToNormalDate(Date date) {
-        return normalDateSDF.format(date);
+        synchronized(normalDateSDF) {
+            return normalDateSDF.format(date);
+        }
     }
 
     public static String dateToShortTime(Date date) {
-        return shotTimeSDF.format(date);
+        synchronized (shotTimeSDF) {
+            return shotTimeSDF.format(date);
+        }
     }
 
     public static String dateToLongTime(Date date) {
-        return longTimeSDF.format(date);
+        synchronized (longTimeSDF) {
+            return longTimeSDF.format(date);
+        }
     }
 
     public static Date shortDateToDate(String shortDate) throws ParseException {
-        Date date = SHOT_DATE_SDF.parse(shortDate);
-        return date;
+        synchronized (SHOT_DATE_SDF) {
+            Date date = SHOT_DATE_SDF.parse(shortDate);
+            return date;
+        }
     }
 
     public static Date nomalDateToDate(String normalDate) throws ParseException {
-        Date date = normalDateSDF.parse(normalDate);
-        return date;
+        synchronized (normalDateSDF) {
+            Date date = normalDateSDF.parse(normalDate);
+            return date;
+        }
     }
 
     public static Date shortTimeToDate(String shortTime) throws ParseException {
-        Date date = shotTimeSDF.parse(shortTime);
-        return date;
+        synchronized (shotTimeSDF) {
+            Date date = shotTimeSDF.parse(shortTime);
+            return date;
+        }
     }
 
     public static Date longTimeToDate(String longTime) throws ParseException {
-        Date date = longTimeSDF.parse(longTime);
-        return date;
+        synchronized (longTimeSDF) {
+            Date date = longTimeSDF.parse(longTime);
+            return date;
+        }
     }
 
     /**

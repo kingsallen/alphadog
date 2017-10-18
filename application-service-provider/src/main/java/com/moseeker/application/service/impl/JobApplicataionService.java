@@ -294,7 +294,7 @@ public class JobApplicataionService {
         if (jobApplicationDO != null) {
             ApplicationSource applicationSource = ApplicationSource.instaceFromInteger(jobApplication.getOrigin());
             if (applicationSource == null) {
-                jobApplication.setOrigin(jobApplication.getOrigin() | jobApplication.getOrigin());
+                jobApplication.setOrigin(jobApplication.getOrigin() | jobApplicationDO.getOrigin());
             } else {
                 jobApplication.setOrigin(applicationSource.andSource(jobApplicationDO.getOrigin()));
             }
