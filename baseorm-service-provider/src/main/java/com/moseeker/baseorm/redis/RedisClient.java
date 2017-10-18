@@ -658,7 +658,7 @@ public abstract class RedisClient {
 	 */
 	public boolean existWithTimeOutCheck(String key,long time) throws ConnectException{
 		logger.info("尝试循环验证redis中是否存在:"+key);
-		int tick=2000;
+		int tick=300;
 		int count=0;
 
 		while (!exists(key)){
