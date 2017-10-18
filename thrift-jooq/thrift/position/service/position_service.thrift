@@ -74,11 +74,11 @@ service PositionServices {
     common_struct.Response getPcRecommandCompanyAll(1:i32 page,2:i32 pageSize);
     common_struct.Response getPcPositionDetail(1:i32 positionId);
     common_struct.Response getPcRecommendPosition(1:i32 positionId,2:i32 page,3:i32 pageSize);
-    common_struct.Response getThirdpartySyncedPositions(1:i32 channel,2:i32 publisher,3:i32 companyId,4:i32 candidateSource,5:i32 page,6:i32 pageSize);
-    common_struct.Response putAlipayResult(1:i32 channel,2:i32 positionId,3:i32 alipayJobId );
     common_struct.Response addPcReport(1:job_pc_reported_struct.JobPcReportedDO jobPcReportedDO);
     common_struct.Response getPcAdvertisement(1:i32 page,2:i32 pageSize);
     common_struct.Response getPositionRecommendByModuleId(1:i32 page,2:i32 pageSize,3:i32 moduleId);
+    common_struct.Response getThirdpartySyncedPositions(1:i32 channel,2:i32 publisher,3:i32 companyId,4:i32 candidateSource,5:i32 page,6:i32 pageSize);
+    common_struct.Response putAlipayResult(1:i32 channel,2:i32 positionId,3:i32 alipayJobId );
 }
 /*
 	查询第三方自定义职能

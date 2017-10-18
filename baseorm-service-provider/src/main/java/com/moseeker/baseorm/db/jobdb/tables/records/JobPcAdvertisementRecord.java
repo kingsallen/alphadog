@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPcAdvertisementRecord extends UpdatableRecordImpl<JobPcAdvertisementRecord> implements Record8<Integer, String, String, String, Byte, String, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = -1803916306;
+    private static final long serialVersionUID = 1996963184;
 
     /**
      * Setter for <code>jobdb.job_pc_advertisement.id</code>. 自增主键

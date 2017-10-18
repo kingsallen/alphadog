@@ -326,6 +326,7 @@ public class PositionServicesImpl implements Iface {
             List<Map<String, Object>> list = positionPcService.getRecommendPosition(positionId,page,pageSize);
             if(StringUtils.isEmptyList(list)){
                 Response res= ResponseUtils.success("");
+                return res;
             }
             Response res= ResponseUtils.success(list);
             return res;
@@ -335,6 +336,8 @@ public class PositionServicesImpl implements Iface {
         }
 
     }
+
+
 
 
 
