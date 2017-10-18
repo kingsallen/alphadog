@@ -388,35 +388,6 @@ public class PositionServicesImpl implements Iface {
             throw ExceptionUtils.convertException(e);
         }
     }
-    @Override
-    public Response getThirdpartySyncedPositions(int channel, int publisher, int companyId, int candidateSource,int page,int pageSize) throws TException {
-        try{
-            Map<String,Object> map=positionThridService.getThridPositionAlipay(publisher,companyId,candidateSource,page,pageSize);
-            if(map==null||map.isEmpty()){
-                return  ResponseUtils.success("");
-            }
-            return  ResponseUtils.success(map);
-        }catch (Exception e){
-            logger.info(e.getMessage(),e);
-            throw ExceptionUtils.convertException(e);
-        }
-    }
-
-    @Override
-    public Response putAlipayResult(int channel, int positionId, int alipayJobId) throws TException {
-        try {
-            int result=positionThridService.putAlipayPositionResult(channel,positionId,alipayJobId);
-            if(result>0){
-                return  ResponseUtils.success("");
-            }else
-                return  ResponseUtils.fail(1,"alipay同步结果保存失败");
-        }catch (Exception e){
-            logger.info(e.getMessage(),e);
-            throw ExceptionUtils.convertException(e);
-        }
-
-
-    }
 
     @Override
     public Response addPcReport(JobPcReportedDO jobPcReportedDO) throws TException {
@@ -458,5 +429,35 @@ public class PositionServicesImpl implements Iface {
             logger.info(e.getMessage(),e);
             throw ExceptionUtils.convertException(e);
         }
+    }
+
+    @Override
+    public Response getThirdpartySyncedPositions(int channel, int publisher, int companyId, int candidateSource,int page,int pageSize) throws TException {
+        try{
+            Map<String,Object> map=positionThridService.getThridPositionAlipay(publisher,companyId,candidateSource,page,pageSize);
+            if(map==null||map.isEmpty()){
+                return  ResponseUtils.success("");
+            }
+            return  ResponseUtils.success(map);
+        }catch (Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public Response putAlipayResult(int channel, int positionId, int alipayJobId) throws TException {
+        try {
+            int result=positionThridService.putAlipayPositionResult(channel,positionId,alipayJobId);
+            if(result>0){
+                return  ResponseUtils.success("");
+            }else
+                return  ResponseUtils.fail(1,"alipay同步结果保存失败");
+        }catch (Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+
+
     }
 }

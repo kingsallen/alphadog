@@ -532,13 +532,9 @@ public class PcRevisionEntity {
                         if(map3.get("imgUrl")!=null){
                             break;
                         }
-
                     }
                 }
-
             }
-
-
         }
     }
     //处理hrresource的数据，将之放在map

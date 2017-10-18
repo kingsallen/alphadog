@@ -9,7 +9,8 @@ import com.moseeker.common.util.Pagination;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
-import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
+import com.moseeker.entity.ProfileEntity;
+import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileAwardsDO;
 import com.moseeker.thrift.gen.profile.struct.Awards;
 import org.apache.thrift.TException;
@@ -38,7 +39,7 @@ public class ProfileAwardsService {
     private ProfileProfileDao profileDao;
 
     @Autowired
-    private ProfileCompletenessImpl completenessImpl;
+    private ProfileEntity profileEntity;
 
     public Awards getResource(Query query) throws TException {
         return dao.getData(query, Awards.class);
@@ -71,7 +72,7 @@ public class ProfileAwardsService {
             profileDao.updateUpdateTime(profileIds);
 
             profileIds.forEach(profileId -> {
-                completenessImpl.reCalculateProfileAward(profileId, 0);
+                profileEntity.reCalculateProfileAward(profileId, 0);
             });
         }
         return datas;
@@ -92,7 +93,7 @@ public class ProfileAwardsService {
             updateUpdateTime(updatedList);
 
             updatedList.forEach(struct -> {
-                completenessImpl.reCalculateProfileAward(struct.getProfile_id(), struct.getId());
+                profileEntity.reCalculateProfileAward(struct.getProfile_id(), struct.getId());
             });
 
             return updateResult;
@@ -119,7 +120,7 @@ public class ProfileAwardsService {
 
             profileDao.updateUpdateTime(profileIds);
 
-            completenessImpl.reCalculateProfileAward(struct.getProfile_id(), struct.getId());
+            profileEntity.reCalculateProfileAward(struct.getProfile_id(), struct.getId());
         }
         return data;
     }
@@ -137,7 +138,7 @@ public class ProfileAwardsService {
         /* 计算profile完成度 */
             if (updateResult > 0) {
                 updateUpdateTime(struct);
-                completenessImpl.reCalculateProfileAward(struct.getProfile_id(), struct.getId());
+                profileEntity.reCalculateProfileAward(struct.getProfile_id(), struct.getId());
             }
         }
         return updateResult;
@@ -161,7 +162,7 @@ public class ProfileAwardsService {
                         add(deleteData.getProfileId());
                     }});
             /* 计算profile完成度 */
-                    completenessImpl.reCalculateProfileAward(deleteData.getProfileId(), struct.getId());
+                    profileEntity.reCalculateProfileAward(deleteData.getProfileId(), struct.getId());
                 }
             }
         }
@@ -191,7 +192,7 @@ public class ProfileAwardsService {
                 profileDao.updateUpdateTime(deleteDatas.stream().map(data -> data.getProfileId()).collect(Collectors.toSet()));
 
                 for (ProfileAwardsDO data : deleteDatas) {
-                    completenessImpl.reCalculateProfileAward(data.getProfileId(), 0);
+                    profileEntity.reCalculateProfileAward(data.getProfileId(), 0);
                 }
 
             }
@@ -229,6 +230,6 @@ public class ProfileAwardsService {
         int totalRow = dao.getCount(query);
         List<?> datas = dao.getDatas(query);
 
-        return ProfileUtils.getPagination(totalRow, query.getPageNum(), query.getPageSize(), datas);
+        return ProfileExtUtils.getPagination(totalRow, query.getPageNum(), query.getPageSize(), datas);
     }
 }

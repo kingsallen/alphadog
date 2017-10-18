@@ -1,6 +1,7 @@
-package com.moseeker.profile.service.impl.serviceutils;
+package com.moseeker.entity.biz;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.profiledb.IntentionRecord;
 import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
 import com.moseeker.baseorm.db.profiledb.tables.records.*;
@@ -252,6 +253,11 @@ public class ProfilePojo {
 				if (userMap.get("email") != null) {
 					String email = String.valueOf(userMap.get("email"));
 					if (!FormCheck.isEmail(email)) {
+						userMap.remove("email");
+					}
+				}
+				if (userMap.get("email") != null) {
+					if (!FormCheck.isEmail((String)userMap.get("email"))) {
 						userMap.remove("email");
 					}
 				}

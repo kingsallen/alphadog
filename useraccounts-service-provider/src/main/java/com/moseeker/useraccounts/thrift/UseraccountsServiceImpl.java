@@ -516,7 +516,7 @@ public class UseraccountsServiceImpl implements Iface {
 	@Override
 	public boolean ifExistProfile(String countryCode,String mobile) throws TException {
 		try {
-			return service.ifExistProfile(mobile);
+			return service.ifExistProfile(countryCode, mobile);
 		} catch (CommonException e) {
 			throw ExceptionConvertUtil.convertCommonException(e);
 		} catch (Exception e) {

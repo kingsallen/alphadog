@@ -47,4 +47,5 @@ public class PositionIndexTest {
         Map<String,Object> result=positionSearchEngine.search("","",null,1,10,"","","",39978,188350558,0,1,0);
         System.out.println(result);
     }
+
 }

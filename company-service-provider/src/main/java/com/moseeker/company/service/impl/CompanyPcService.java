@@ -675,6 +675,7 @@ public class CompanyPcService {
         }
         return teamPosition;
     }
+
     //根据name获取单个dictindustry
     private DictIndustryDO getDictIndustryByName(String name){
         Query query=new Query.QueryBuilder().where("name",name).buildQuery();

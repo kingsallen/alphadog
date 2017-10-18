@@ -27,7 +27,7 @@ public class PositionThridServiceTest {
     }
     @Test
     public void getThridPosition() throws TException {
-        Map<String,Object> list=positionThridService.getThridPositionAlipay(0,39978,1,1,10);
+        Map<String,Object> list=positionThridService.getThridPositionAlipay(0,1291,1,1,10);
         System.out.println("==========================================");
         System.out.println(list);
         System.out.println("===========================================");

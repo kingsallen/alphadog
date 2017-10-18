@@ -22,13 +22,21 @@
 //    //获取公司信息
 //    @Test
 //    public void companyDetailsTest()throws Exception{
+<<<<<<< HEAD
+//        Map<String,Object> result=companyPcService.getCompanyDetail(39978);
+=======
 //        Map<String,Object> result=companyPcService.getCompanyDetail(2);
+>>>>>>> master
 //        System.out.println(result+"======");
 //    }
 //    //获取团队列表
 //    @Test
 //    public void teamListTest() throws Exception {
+<<<<<<< HEAD
+//        Map<String,Object> result=companyPcService.getTeamListinfo(39978,1,10);
+=======
 //        Map<String,Object> result=companyPcService.getTeamListinfo(2,1,10);
+>>>>>>> master
 //        System.out.println(result+"======");
 //    }
 //    //获取团队详情
@@ -40,6 +48,25 @@
 //    //获取公司信息
 //    @Test
 //    public void companyInfo() throws Exception {
+<<<<<<< HEAD
+//        Map<String,Object> result=companyPcService.getCompanyMessage(139183);
+//        System.out.println(result+"======");
+//    }
+//    @Test
+//    public void getNoJdCompanyInfoTest() throws Exception {
+//        Map<String,Object> result=companyPcService.getCompanyDetail(2878);
+//        System.out.println(result+"======");
+//    }
+//    @Test
+//    public void getJdSubCompanyInfoTest() throws Exception {
+//        Map<String,Object> result=companyPcService.getCompanyDetail(41305);
+//        System.out.println(result+"======");
+//    }
+//    @Test
+//    public void getNoJdSubCompanyInfoTest() throws Exception {
+//        Map<String,Object> result=companyPcService.getCompanyDetail(39785);
+//        System.out.println(result+"======");
+=======
 //        Map<String,Object> result=companyPcService.getCompanyMessage(2);
 //        System.out.println(result+"======");
 //    }
@@ -47,5 +74,6 @@
 //    public void testFortuneCompany() throws TException {
 //        List<Map<String,Object>> list=companyPcService.getCompanyFourtuneAndPaid();
 //        System.out.println(list+"======");
+>>>>>>> master
 //    }
 //}
