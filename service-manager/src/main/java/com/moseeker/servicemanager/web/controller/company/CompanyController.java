@@ -518,4 +518,22 @@ public class CompanyController {
                 ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(result)));
 
     }
+
+    /**
+     * 获取付费和五百强的公司信息
+     *
+     * @param request
+     */
+    @RequestMapping(value = "/company/fortuneorpaid", method = RequestMethod.GET)
+    @ResponseBody
+    public String getFortuneOrPaid(HttpServletRequest request) throws Exception {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Response result = companyServices.companyPaidOrFortune();
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 }

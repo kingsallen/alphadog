@@ -12,6 +12,7 @@ import com.moseeker.entity.PcRevisionEntity;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictIndustryDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
+import org.apache.thrift.TException;
 import org.apache.thrift.TSerializer;
 import org.apache.thrift.protocol.TSimpleJSONProtocol;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,8 +72,8 @@ public class CompanyPcService {
             confCompanyId=parentId;
             isMother=false;
         }
-        int newJd=this.judgeJDOrCS(confCompanyId);
-        map.put("newJd",newJd);
+        Map<String,Integer> confMap=this.judgeJDOrCS(confCompanyId);
+        map.put("newJd",confMap.get("newJD"));
         Map<String,Object> jdMap=this.handleCompanyJdData(confCompanyId,companyId);
         this.putMapInNewMap(jdMap,map);
         Map<String,Object>teamMap=this.handleTeamInfo(companyId,isMother,1,20);
@@ -136,8 +137,8 @@ public class CompanyPcService {
             confCompanyId=parentId;
             isMother=false;
         }
-        int newJd=this.judgeJDOrCS(confCompanyId);
-        map.put("newJd",newJd);
+        Map<String,Integer> confMap=this.judgeJDOrCS(confCompanyId);
+        map.put("newJd",confMap.get("newJD"));
         Map<String,Object> positionMap=this.handleCompanyPositionCity(companyId,isMother);
         this.putMapInNewMap(positionMap,map);
         return map;
@@ -173,9 +174,9 @@ public class CompanyPcService {
         this.putMapInNewMap(positionMap,map);
         Map<String,Object> jdMap=this.handleTeamJdData(confCompanyId,teamId);
         this.putMapInNewMap(jdMap,map);
-        int newJd=this.judgeJDOrCS(confCompanyId);
-        map.put("newJd",newJd);
-        Map<String,Object> otherMap=this.getOtherTeamList(companyId,teamId,isMother,newJd);
+        Map<String,Integer> confMap=this.judgeJDOrCS(confCompanyId);
+        map.put("newJd",confMap.get("newJD"));
+        Map<String,Object> otherMap=this.getOtherTeamList(companyId,teamId,isMother,confMap.get("newJD"));
         this.putMapInNewMap(otherMap,map);
         Map<String,Object> team=this.getSingleTeamInfo(teamId);
         if(team!=null&&!team.isEmpty()){
@@ -183,6 +184,28 @@ public class CompanyPcService {
         }
         return map;
     }
+    @CounterIface
+    public List<Map<String,Object>> getCompanyFourtuneAndPaid() throws TException {
+        List<HrCompanyDO> list=this.getPaidCompany();
+        List<Map<String,Object>> result=new ArrayList<Map<String,Object>>();
+        if(!StringUtils.isEmptyList(list)){
+            for(HrCompanyDO DO:list){
+                String DOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
+                Map<String,Object> DOMap= JSON.parseObject(DOs, Map.class);
+                result.add(DOMap);
+            }
+        }
+        return result;
+    }
+    /*
+        获取所有付费母公司
+     */
+    public List<HrCompanyDO> getPaidCompany(){
+        Query query=new Query.QueryBuilder().where("parent_id",0).and("type",0).or("fortune",1).buildQuery();
+        List<HrCompanyDO> list=hrCompanyDao.getDatas(query);
+        return list;
+    }
+
     /*
       将旧的map放入新的map
      */
@@ -286,16 +309,17 @@ public class CompanyPcService {
     /*
     判断是否有jd页，或者cs
      */
-    private int  judgeJDOrCS(int confCompanyId){
-        Map<String,Object> map=new HashMap<String,Object>();
+    private Map<String,Integer>  judgeJDOrCS(int confCompanyId){
+        Map<String,Integer> map=new HashMap<String,Integer>();
+        map.put("newJD",0);
         HrCompanyConfDO hrCompanyConfDO=getHrCompanyConf(confCompanyId);
         if(hrCompanyConfDO!=null){
             int newJdStatus=hrCompanyConfDO.getNewjdStatus();
             if(newJdStatus==2){
-                return 1;
+                map.put("newJD",1);
             }
         }
-        return 0;
+        return map;
     }
     /*
      获取company jd信息

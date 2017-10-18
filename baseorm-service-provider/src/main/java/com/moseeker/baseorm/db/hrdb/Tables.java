@@ -5,6 +5,7 @@ package com.moseeker.baseorm.db.hrdb;
 
 
 import com.moseeker.baseorm.db.hrdb.tables.HrAppCvConf;
+import com.moseeker.baseorm.db.hrdb.tables.HrAppExportFields;
 import com.moseeker.baseorm.db.hrdb.tables.HrChatUnreadCount;
 import com.moseeker.baseorm.db.hrdb.tables.HrCmsMedia;
 import com.moseeker.baseorm.db.hrdb.tables.HrCmsModule;
@@ -64,7 +65,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
 import com.moseeker.baseorm.db.hrdb.tables.HrdbHrHtml5Statistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrdbHrHtml5UniqueStatistics;
-import com.moseeker.baseorm.db.hrdb.tables.HrAppExportFields;
+
 import javax.annotation.Generated;
 
 
@@ -95,6 +96,11 @@ public class Tables {
      * 企业申请简历校验配置
      */
     public static final HrAppCvConf HR_APP_CV_CONF = com.moseeker.baseorm.db.hrdb.tables.HrAppCvConf.HR_APP_CV_CONF;
+
+    /**
+     * 自定义简历模板导出字段表
+     */
+    public static final HrAppExportFields HR_APP_EXPORT_FIELDS = com.moseeker.baseorm.db.hrdb.tables.HrAppExportFields.HR_APP_EXPORT_FIELDS;
 
     /**
      * 聊天室未读消息

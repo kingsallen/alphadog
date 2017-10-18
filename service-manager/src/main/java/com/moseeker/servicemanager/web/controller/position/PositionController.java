@@ -23,6 +23,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPcReportedDO;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.position.struct.*;
 import org.jooq.tools.json.JSONObject;
@@ -617,6 +618,86 @@ public class PositionController {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             int positionId = params.getInt("positionId");
             Response result=positonServices.getPcPositionDetail(positionId);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /*
+      *职位举报
+      */
+    @RequestMapping(value = "/position/pc/report", method = RequestMethod.POST)
+    @ResponseBody
+    public String addPcReport(HttpServletRequest request, HttpServletResponse response){
+        try{
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            String type= (String) params.get("type");
+            String descrptiton= (String) params.get("description");
+            String userId= (String) params.get("userId");
+            String positionId= (String) params.get("positionId");
+            if(StringUtils.isNullOrEmpty(type)||StringUtils.isNullOrEmpty(userId)||StringUtils.isNullOrEmpty(positionId)){
+                return ResponseLogNotification.fail(request, "参数不全");
+            }
+            JobPcReportedDO DO=new JobPcReportedDO();
+            DO.setDescription(descrptiton);
+            DO.setPositionId(Integer.parseInt(positionId));
+            DO.setUserId(Integer.parseInt(userId));
+            DO.setType(Integer.parseInt(type));
+            Response result=positonServices.addPcReport(DO);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /*
+     *pc端广告位的获取
+     */
+    @RequestMapping(value = "/position/pc/advertisement", method = RequestMethod.GET)
+    @ResponseBody
+    public String getPcdvertisement(HttpServletRequest request, HttpServletResponse response){
+        try{
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer page = params.getInt("page");
+            Integer pageSize = params.getInt("pageSize");
+            if(page==null){
+                page=1;
+            }
+            if(pageSize==null){
+                pageSize=15;
+            }
+            Response result=positonServices.getPcAdvertisement(page,pageSize);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /*
+     *pc端广告位的获取
+     */
+    @RequestMapping(value = "/position/pc/advertisementposition", method = RequestMethod.GET)
+    @ResponseBody
+    public String getPcecommendposition(HttpServletRequest request, HttpServletResponse response){
+        try{
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer page = params.getInt("page");
+            Integer pageSize = params.getInt("pageSize");
+            if(page==null){
+                page=1;
+            }
+            if(pageSize==null){
+                pageSize=15;
+            }
+            String moduleId=params.getString("id");
+            if(StringUtils.isNullOrEmpty(moduleId)){
+                return ResponseLogNotification.fail(request, "模块id不能为空");
+            }
+            Response result=positonServices.getPositionRecommendByModuleId(page,pageSize,Integer.parseInt(moduleId));
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
             logger.error(e.getMessage());

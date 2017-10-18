@@ -56,7 +56,7 @@ public class SearchUtil {
         return client;
     }
     /*
-     * 处理terms的查询
+     * 拼接city
      */
     public void handleTerms(String conditions,QueryBuilder query,String conditionField){
         if (StringUtils.isNotEmpty(conditions)) {

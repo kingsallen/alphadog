@@ -66,6 +66,7 @@ service AttachmentServices {
     common_struct.Response postResource(1: profile_struct.Attachment attachment) throws (1: common_struct.BIZException e);
     common_struct.Response putResource(1: profile_struct.Attachment attachment) throws (1: common_struct.BIZException e);
     common_struct.Response delResource(1: profile_struct.Attachment attachment) throws (1: common_struct.BIZException e);
+    common_struct.Response delPcResource(1:i32 id ) throws (1: common_struct.BIZException e);
 }
 
 service AwardsServices {
