@@ -235,10 +235,11 @@ public class PositionThridService {
         }
         Query query=new Query.QueryBuilder().where(new Condition("pid",pidList.toArray(),ValueOp.IN)).buildQuery();
         List<JobPositionCityDO> list=jobPositionCityDao.getDatas(query);
+        list=this.handlepecialCityCode(list);
         return list;
     }
     //处理直辖市的特殊情况的数据
-    public List<JobPositionCityDO> handlepecialCityCodeS(List<JobPositionCityDO> list){
+    private List<JobPositionCityDO> handlepecialCityCode(List<JobPositionCityDO> list){
         if(StringUtils.isEmptyList(list)){
             return null;
         }
