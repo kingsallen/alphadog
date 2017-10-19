@@ -247,7 +247,7 @@ public class PositionThridService {
         for(JobPositionCityDO DO:list){
             int code=DO.getCode();
             if(code==310000){
-                DO.setCode(310000);
+                DO.setCode(310100);
             }
             if(code==110000){
                 DO.setCode(110100);
