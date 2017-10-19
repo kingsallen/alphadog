@@ -235,6 +235,9 @@ public class UserPositionEmailService {
 		if(!StringUtils.isEmpty(pic)){
 			pic=pic+"?imageMogr2/thumbnail/80x50";
 		}
+		logger.info("============================================================================");
+		logger.info(pic);
+		logger.info("===========================================================================");
 		StringBuffer sb=new StringBuffer();
 		sb.append("<tr><td align='center'><table width='520' height='90' cellpadding='0' cellspacing='0' border='0' class='wrapper' bgcolor='#ffffff'>");
 		sb.append("<tr><td align='center'><table width='500' height='90' cellpadding='0' cellspacing='0' border='0' class='wrapper'>");
@@ -262,6 +265,9 @@ public class UserPositionEmailService {
 		sb.append("</td></tr></table></td></tr><tr>");
 		sb.append("<td height='20'style='-ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; font-size: 10px; line-height: 10px; mso-table-lspace: 0pt; mso-table-rspace: 0pt;'></td></tr></table>");
 		sb.append("</td></tr></table></td></tr>");
+		logger.info("============================================================================");
+		logger.info(sb.toString());
+		logger.info("===========================================================================");
 		return sb.toString();
 	}
 
