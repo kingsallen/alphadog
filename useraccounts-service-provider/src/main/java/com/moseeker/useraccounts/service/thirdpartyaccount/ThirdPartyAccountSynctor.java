@@ -120,10 +120,12 @@ public class ThirdPartyAccountSynctor {
         if (thirdPartyAccount.getId() == 0) {
             thirdPartyAccount = hrThirdPartyAccountDao.addData(thirdPartyAccount);
         }
-
+        logger.info("syncWithBindThirdPartyAccount before bindTask.execute");
         thirdPartyAccount = bindTask.execute(thirdPartyAccount, extras);
+        logger.info("syncWithBindThirdPartyAccount after bindTask.execute");
 
         if (thirdPartyAccount.getBinding() < 100) {
+            logger.info("syncWithBindThirdPartyAccount after bindTask.execute thirdPartyAccount.binding:{}", thirdPartyAccount.getBinding());
             bindTask.updateThirdPartyAccount(thirdPartyAccount, extras);
         }
 

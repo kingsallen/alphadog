@@ -100,7 +100,6 @@ public class ProfileBasicServicesImpl implements Iface {
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
     }
-
     @Override
     public Response postResource(Basic struct) throws TException {
         try {
@@ -152,6 +151,7 @@ public class ProfileBasicServicesImpl implements Iface {
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
     }
+
 
     @Override
     public Response delResource(Basic struct) throws TException {

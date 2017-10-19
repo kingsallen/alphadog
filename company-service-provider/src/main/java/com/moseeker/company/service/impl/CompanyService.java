@@ -92,12 +92,11 @@ public class CompanyService {
     @Autowired
     private HRThirdPartyAccountDao hrThirdPartyAccountDao;
 
+    @Autowired
+    private CampaignPcBannerDao campaignPcBannerDao;
 
     @Autowired
     private HrEmployeeCustomFieldsDao hrEmployeeCustomFieldsDao;
-
-    @Autowired
-    private CampaignPcBannerDao campaignPcBannerDao;
 
     public Response getResource(CommonQuery query) throws TException {
         try {

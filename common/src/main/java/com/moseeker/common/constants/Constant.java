@@ -172,7 +172,7 @@ public final class Constant {
 	public static final int EVENT_TYPE_EMAIL_VERIFIED = 1;						//邮件认证邮件模版
 	public static final int EVENT_TYPE_EMPLOYEE_AUTH = 2; 						//员工认证邮件模板
 	public static final int EVENT_TYPE_RECOMMEND_VALID_EMAIL = 3;               //推荐职位时验证邮箱
-	public static final int EVENT_TYPE_RECOMMEND_POSITION_EMAIL = 4;               //推荐职位时验证邮箱
+	public static final int EVENT_TYPE_RECOMMEND_POSITION_EMAIL = 4;              //推荐职位邮箱
 	
 	public static final String MQ_MESSAGE_EMAIL_BIZ = "MQ_MESSAGE_EMAIL_BIZ";	//业务邮件消息队列的key_identifier
 	public static final String EMAIL_VERIFIED_SUBJECT = "邮箱认证";				//业务邮件消息队列的key_identifier
@@ -204,4 +204,7 @@ public final class Constant {
 
     public static final int SMS_UPPER_LIMIT = 10; //暂时限制2条短信
     public static final int PROFILE_IMPORT_UPPER_LIMIT = 3; //没人每天简历导入次数
+
+
+    public static final long BIND_GET_REDIS_TIMEOUT=240000;
 }

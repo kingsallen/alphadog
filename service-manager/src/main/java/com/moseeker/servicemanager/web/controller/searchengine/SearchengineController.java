@@ -221,14 +221,25 @@ public class SearchengineController {
     		 String scale=(String) reqParams.get("scale");
     		 String page=(String) reqParams.get("page");
     		 String pageSize=(String) reqParams.get("pageSize");
+             if(keyWord==null){
+                 keyWord="";
+             }
+             if(citys==null){
+                 citys="";
+             }
+             if(industry==null){
+                 industry="";
+             }
+             if(scale==null){
+                 scale="";
+             }
     		 if(StringUtils.isNullOrEmpty(page)){
     			 page="1";
     		 }
     		 if(StringUtils.isNullOrEmpty(pageSize)){
     			 pageSize="10";
     		 }
-    		  logger.info(keyWord, citys, industry, scale, page,
-    				  pageSize,"=============");
+             logger.info("======keyWord={},citys={},industry={},scale={},page={},pageSize={},pageSize={},order={}============",keyWord, citys, industry, scale, page,pageSize);
     		 Response res=searchengineServices.companyQuery(keyWord,citys,industry,scale,Integer.parseInt(page), Integer.parseInt(pageSize));
     		 return ResponseLogNotification.success(request,res);
     	 }catch(Exception e){
@@ -258,6 +269,7 @@ public class SearchengineController {
              String companyId=(String)reqParams.get("companyId");
              String teamId=(String)reqParams.get("teamId");
              String motherCompanyId=(String)reqParams.get("motherCompanyId");
+             String moduleId=(String)reqParams.get("moduleId");
              if(companyId==null){
                  companyId="0";
              }
@@ -275,6 +287,9 @@ public class SearchengineController {
              }
              if(StringUtils.isNullOrEmpty(pageSize)){
                  pageSize="10";
+             }
+             if(StringUtils.isNullOrEmpty(moduleId)){
+                 moduleId="0";
              }
              Map<String,Integer> map=new HashMap<>();
              if(StringUtils.isNotNullOrEmpty(salaryTop)&&!"0".equals(salaryTop)){
@@ -296,7 +311,7 @@ public class SearchengineController {
                      pageSize,companyId,teamId,salaryCode,"=============");
              Response res=searchengineServices.positionQuery(keyWord, citys, industry, salaryCode, Integer.parseInt(page),
                      Integer.parseInt(pageSize), startTime, endTime,Integer.parseInt(companyId),
-                     Integer.parseInt(teamId),Integer.parseInt(motherCompanyId),Integer.parseInt(order));
+                     Integer.parseInt(teamId),Integer.parseInt(motherCompanyId),Integer.parseInt(order),Integer.parseInt(moduleId));
              return ResponseLogNotification.success(request,res);
     	 }catch(Exception e){
     		 logger.info(e.getMessage(),e);

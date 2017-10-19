@@ -17,15 +17,16 @@ import com.moseeker.baseorm.db.logdb.tables.records.LogResumeRecordRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserSettingsRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.ProfileEntity;
 import com.moseeker.entity.pojo.profile.*;
@@ -43,11 +44,14 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrAppCvConfDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileOtherDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
 import com.moseeker.thrift.gen.profile.struct.Profile;
+import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
+import com.sun.org.apache.regexp.internal.RE;
 import java.text.ParseException;
 import java.util.*;
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.lucene.util.MathUtil;
@@ -57,6 +61,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @CounterIface
@@ -245,9 +253,11 @@ public class ProfileService {
         try {
             // 调用SDK得到结果
             ResumeObj resumeObj = profileEntity.profileParser(fileName, file);
+            logger.info("profileParser resumeObj:{}", JSON.toJSONString(resumeObj));
             // 调用成功,开始转换对象
             if (resumeObj.getStatus().getCode() == 200) {
                 // 项目经验
+                logger.info("profileParser resumeObj.getResult().getProj_exp_objs():{}", JSON.toJSONString(resumeObj.getResult().getProj_exp_objs()));
                 List<Projectexps> projectexps = new ArrayList<>();
                 if (resumeObj.getResult().getProj_exp_objs() != null && resumeObj.getResult().getProj_exp_objs().size() > 0) {
                     for (ProjectexpObj projectexpObj : resumeObj.getResult().getProj_exp_objs()) {
@@ -277,7 +287,9 @@ public class ProfileService {
                     }
                 }
                 profileObj.setProjectexps(projectexps);
+                logger.info("profileParser getProjectexps:{}", JSON.toJSONString(profileObj.getProjectexps()));
 
+                logger.info("profileParser resumeObj.getResult().getEducation_objs():{}", JSON.toJSONString(resumeObj.getResult().getEducation_objs()));
                 // 教育经历
                 List<Education> educationList = new ArrayList<>();
                 if (resumeObj.getResult().getEducation_objs() != null && resumeObj.getResult().getEducation_objs().size() > 0) {
@@ -318,7 +330,9 @@ public class ProfileService {
                     }
                 }
                 profileObj.setEducations(educationList);
+                logger.info("profileParser getEducations:{}", JSON.toJSONString(profileObj.getEducations()));
                 // 技能
+                logger.info("profileParser resumeObj.getResult().getSkills_objs():{}", JSON.toJSONString(resumeObj.getResult().getSkills_objs()));
                 List<Skill> skills = new ArrayList<>();
                 if (resumeObj.getResult().getSkills_objs() != null && resumeObj.getResult().getSkills_objs().size() > 0) {
                     for (SkillsObjs skillsObjs : resumeObj.getResult().getSkills_objs()) {
@@ -328,8 +342,10 @@ public class ProfileService {
                     }
                 }
                 profileObj.setSkills(skills);
+                logger.info("profileParser getSkills:{}", JSON.toJSONString(profileObj.getSkills()));
 
                 // 工作经验
+                logger.info("profileParser resumeObj.getResult().getJob_exp_objs():{}", JSON.toJSONString(resumeObj.getResult().getJob_exp_objs()));
                 List<Workexps> workexpsList = new ArrayList<>();
                 if (resumeObj.getResult().getJob_exp_objs() != null && resumeObj.getResult().getJob_exp_objs().size() > 0) {
                     for (JobExpObj jobExpObj : resumeObj.getResult().getJob_exp_objs()) {
@@ -389,7 +405,9 @@ public class ProfileService {
                     }
                 }
                 profileObj.setWorkexps(workexpsList);
+                logger.info("profileParser getWorkexps:{}", JSON.toJSONString(profileObj.getWorkexps()));
                 // 语言
+                logger.info("profileParser resumeObj.getResult().getLang_objs():{}", JSON.toJSONString(resumeObj.getResult().getLang_objs()));
                 List<Language> languageList = new ArrayList<>();
                 if (resumeObj.getResult().getLang_objs() != null && resumeObj.getResult().getLang_objs().size() > 0) {
                     for (LangObj langObj : resumeObj.getResult().getLang_objs()) {
@@ -399,6 +417,7 @@ public class ProfileService {
                     }
                 }
                 profileObj.setLanguages(languageList);
+                logger.info("profileParser getLanguages:{}", JSON.toJSONString(profileObj.getLanguages()));
 
                 // 查询
                 UserUserRecord userUser = userDao.getUserById(uid);
@@ -410,6 +429,7 @@ public class ProfileService {
                     user.setName(userUser.getName());
                     profileObj.setUser(user);
                 }
+                logger.info("profileParser getUser:{}", JSON.toJSONString(profileObj.getUser()));
 
                 // 期望
                 Intentions intentions = new Intentions();
@@ -480,6 +500,7 @@ public class ProfileService {
                 profileObj.setIntentions(intentionsList);
 
                 // 证书
+                logger.info("profileParser resumeObj.getResult().getCert_objs():{}", JSON.toJSONString(resumeObj.getResult().getCert_objs()));
                 List<Credential> credentialList = new ArrayList<>();
                 if (resumeObj.getResult().getCert_objs() != null && resumeObj.getResult().getCert_objs().size() > 0) {
                     for (CertObj certObj : resumeObj.getResult().getCert_objs()) {
@@ -489,6 +510,7 @@ public class ProfileService {
                     }
                 }
                 profileObj.setCredentials(credentialList);
+                logger.info("profileParser getCredentials:{}", JSON.toJSONString(profileObj.getCredentials()));
 
                 if (credentialList.isEmpty() && StringUtils.isNotNullOrEmpty(resumeObj.getResult().getCont_certificate())) {
                     LogResumeRecordRecord logResumeRecordRecord = new LogResumeRecordRecord();
@@ -501,6 +523,11 @@ public class ProfileService {
                 }
 
                 // basic信息
+                logger.info("profileParser resumeObj.getResult().getCity():{}", resumeObj.getResult().getCity());
+                logger.info("profileParser resumeObj.getResult().getGender():{}", resumeObj.getResult().getGender());
+                logger.info("profileParser resumeObj.getResult().getName():{}", resumeObj.getResult().getName());
+                logger.info("profileParser resumeObj.getResult().getCont_my_desc():{}", resumeObj.getResult().getCont_my_desc());
+                logger.info("profileParser resumeObj.getResult().getBirthday():{}", resumeObj.getResult().getBirthday());
                 Basic basic = new Basic();
                 basic.setCityName(resumeObj.getResult().getCity());
                 basic.setGender(String.valueOf(DictCode.gender(resumeObj.getResult().getGender())));
@@ -521,13 +548,19 @@ public class ProfileService {
                     }
                 }
                 profileObj.setBasic(basic);
+                logger.info("profileParser getBasic:{}", JSON.toJSONString(profileObj.getBasic()));
+
+//              profileObj.setResumeObj(resumeObj);
+                logger.info("profileParser getResumeObj:{}", JSON.toJSONString(profileObj.getResumeObj()));
 
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
+        logger.info("profileParser:{}", JSON.toJSONString(profileObj));
         return ResponseUtils.success(profileObj);
     }
+
 
     /**
      * 自定义简历数据校验
@@ -601,6 +634,7 @@ public class ProfileService {
         }
         return ResponseUtils.success(new HashMap<String, Object>(){{put("result",true);put("resultMsg","");}});
     }
+
 
     /**
      * 获取自定义简历数据

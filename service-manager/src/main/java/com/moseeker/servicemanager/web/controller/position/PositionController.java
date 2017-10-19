@@ -23,6 +23,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPcReportedDO;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.position.struct.*;
 import org.jooq.tools.json.JSONObject;
@@ -502,6 +503,30 @@ public class PositionController {
         return null;
     }
 
+    /*
+     *获取pc端推荐职位列表
+     */
+    @RequestMapping(value = "/positions/apolegamic", method = RequestMethod.GET)
+    @ResponseBody
+    public String getPcRecommendPosition(HttpServletRequest request, HttpServletResponse response){
+    	try{
+	    	Params<String, Object> params = ParamUtils.parseRequestParam(request);
+	        Integer page = params.getInt("page");
+	        Integer pageSize = params.getInt("pageSize");
+	        if(page==null){
+	        	page=0;
+	        }
+	        if(pageSize==null){
+	        	pageSize=15;
+	        }
+	    	Response result=positonServices.getPcRecommand(page,pageSize);
+	    	return ResponseLogNotification.success(request, result);
+    	}catch(Exception e){
+    		 logger.error(e.getMessage());
+    		 return ResponseLogNotification.fail(request, e.getMessage());
+    	}
+    }
+
     /**
      * 职位同步到第三方接口
      */
@@ -543,6 +568,10 @@ public class PositionController {
             return ResponseLogNotification.fail(request,e.getMessage());
         }
     }
+
+
+
+
     /**
      * 第三方职位列表详情
      */
@@ -583,29 +612,6 @@ public class PositionController {
             return ResponseLogNotification.failJson(request, e);
         }
     }
-    /*
-        *获取pc端推荐职位列表
-        */
-    @RequestMapping(value = "/positions/apolegamic", method = RequestMethod.GET)
-    @ResponseBody
-    public String getPcRecommendPosition(HttpServletRequest request, HttpServletResponse response){
-        try{
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            Integer page = params.getInt("page");
-            Integer pageSize = params.getInt("pageSize");
-            if(page==null){
-                page=1;
-            }
-            if(pageSize==null){
-                pageSize=15;
-            }
-            Response result=positonServices.getPcRecommand(page,pageSize);
-            return ResponseLogNotification.success(request, result);
-        }catch(Exception e){
-            logger.error(e.getMessage());
-            return ResponseLogNotification.fail(request, e.getMessage());
-        }
-    }
 
     /*
     *获取pc端职位的详情
@@ -617,6 +623,154 @@ public class PositionController {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             int positionId = params.getInt("positionId");
             Response result=positonServices.getPcPositionDetail(positionId);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /*
+      *职位举报
+      */
+    @RequestMapping(value = "/position/pc/report", method = RequestMethod.POST)
+    @ResponseBody
+    public String addPcReport(HttpServletRequest request, HttpServletResponse response){
+        try{
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            String type= (String) params.get("type");
+            String descrptiton= (String) params.get("description");
+            String userId= (String) params.get("userId");
+            String positionId= (String) params.get("positionId");
+            if(StringUtils.isNullOrEmpty(type)||StringUtils.isNullOrEmpty(userId)||StringUtils.isNullOrEmpty(positionId)){
+                return ResponseLogNotification.fail(request, "参数不全");
+            }
+            JobPcReportedDO DO=new JobPcReportedDO();
+            DO.setDescription(descrptiton);
+            DO.setPositionId(Integer.parseInt(positionId));
+            DO.setUserId(Integer.parseInt(userId));
+            DO.setType(Integer.parseInt(type));
+            Response result=positonServices.addPcReport(DO);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /*
+     *pc端广告位的获取
+     */
+    @RequestMapping(value = "/position/pc/advertisement", method = RequestMethod.GET)
+    @ResponseBody
+    public String getPcdvertisement(HttpServletRequest request, HttpServletResponse response){
+        try{
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer page = params.getInt("page");
+            Integer pageSize = params.getInt("pageSize");
+            if(page==null){
+                page=1;
+            }
+            if(pageSize==null){
+                pageSize=15;
+            }
+            Response result=positonServices.getPcAdvertisement(page,pageSize);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /*
+     *pc端广告位的获取
+     */
+    @RequestMapping(value = "/position/pc/advertisementposition", method = RequestMethod.GET)
+    @ResponseBody
+    public String getPcecommendposition(HttpServletRequest request, HttpServletResponse response){
+        try{
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer page = params.getInt("page");
+            Integer pageSize = params.getInt("pageSize");
+            if(page==null){
+                page=1;
+            }
+            if(pageSize==null){
+                pageSize=15;
+            }
+            String moduleId=params.getString("id");
+            if(StringUtils.isNullOrEmpty(moduleId)){
+                return ResponseLogNotification.fail(request, "模块id不能为空");
+            }
+            Response result=positonServices.getPositionRecommendByModuleId(page,pageSize,Integer.parseInt(moduleId));
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /*
+    *获取alipay同步的职位
+    */
+    @RequestMapping(value = "/positions/thirdpartysyncedpositions", method = RequestMethod.GET)
+    @ResponseBody
+    public String getAliPayPosition(HttpServletRequest request, HttpServletResponse response){
+        try{
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            String publisher = (String) params.get("publisher");
+            String companyId= (String) params.get("companyId");
+            int candidateSource=params.getInt("candidatesource");
+            String channel= (String) params.get("channel");
+            String page= (String) params.get("page");
+            String pageSize= (String) params.get("pageSize");
+            if(StringUtils.isNullOrEmpty(publisher)&&StringUtils.isNullOrEmpty(companyId)){
+                return ResponseLogNotification.fail(request, "companyId和publisher至少有一个不能为空");
+            }
+            if(StringUtils.isNullOrEmpty(publisher)){
+               publisher="0";
+            }
+            if(StringUtils.isNullOrEmpty(companyId)){
+                companyId="0";
+            }
+            if(StringUtils.isNullOrEmpty(channel)){
+                channel="5";
+            }
+            if(StringUtils.isNullOrEmpty(page)){
+                page="1";
+            }
+            if(StringUtils.isNullOrEmpty(pageSize)){
+                pageSize=Integer.MAX_VALUE+"";
+            }
+            Response result=positonServices.getThirdpartySyncedPositions(Integer.parseInt(channel)
+                    ,Integer.parseInt(publisher),Integer.parseInt(companyId),candidateSource
+                    ,Integer.parseInt(page)
+                    ,Integer.parseInt(pageSize)
+            );
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /*
+    *获取alipay同步的职位
+    */
+    @RequestMapping(value = "/position/alipayresult", method = RequestMethod.POST)
+    @ResponseBody
+    public String putAlipayResult(HttpServletRequest request, HttpServletResponse response){
+        try{
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer channel=params.getInt("channel");
+            int positionId=params.getInt("positionId");
+            int alipayJobId=params.getInt("alipayJobid");
+            if(channel==null){
+                channel=5;
+            }
+            Response result=positonServices.putAlipayResult(channel
+                    ,positionId,alipayJobId
+               );
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
             logger.error(e.getMessage());
