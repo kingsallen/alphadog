@@ -13,6 +13,7 @@ public class PositionServer {
 
     public static void main(String[] args) {
 
+
         AnnotationConfigApplicationContext acac = initSpring();
         try {
         	MoServer server = new MoServer(
@@ -35,6 +36,10 @@ public class PositionServer {
             e.printStackTrace();
         }
 
+    }
+
+    public static Logger getLOGGER() {
+        return LOGGER;
     }
 
     private static AnnotationConfigApplicationContext initSpring() {
