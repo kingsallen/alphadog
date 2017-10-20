@@ -13,7 +13,6 @@ public class PositionServer {
 
     public static void main(String[] args) {
 
-
         AnnotationConfigApplicationContext acac = initSpring();
         try {
         	MoServer server = new MoServer(
