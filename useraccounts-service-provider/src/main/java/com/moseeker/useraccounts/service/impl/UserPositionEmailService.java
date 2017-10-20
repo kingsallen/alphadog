@@ -243,7 +243,7 @@ public class UserPositionEmailService {
 		sb.append("<tr><td align='center'><table width='500' height='90' cellpadding='0' cellspacing='0' border='0' class='wrapper'>");
 		sb.append("<tr><td height='20'style='-ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; font-size: 10px; line-height: 10px; mso-table-lspace: 0pt; mso-table-rspace: 0pt;'></td></tr>");
 		sb.append("<tr valign='middle' >");
-		sb.append("<td width='80' height='50' align='center'>< img src='"+pic+"' style='margin:0; padding:0; display:block;-ms-interpolation-mode: bicubic; border: 0; line-height: 100%; outline: none; text-decoration: none;' border='0' alt='' /></td>");
+		sb.append("<td width='80' height='50' align='center'><img src='"+pic+"' style='margin:0; padding:0; display:block;-ms-interpolation-mode: bicubic; border: 0; line-height: 100%; outline: none; text-decoration: none;' border='0' alt='' /></td>");
 		sb.append("<td height='10' width='20' style='font-size:70px; line-height:10px;' class='mobileOn'>&nbsp;</td>");
 		sb.append("<td width='400' height='50'><table width='400' height='50' cellpadding='0' cellspacing='0' border='0' class='wrapper'><tr>");
 		sb.append("<td class='mobile' style='-ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt;'>");
