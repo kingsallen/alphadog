@@ -11,6 +11,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.RabbitListenerContainerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
 import org.springframework.retry.backoff.ExponentialBackOffPolicy;
 import org.springframework.retry.support.RetryTemplate;
@@ -140,6 +141,19 @@ public class AppConfig {
     public List<Binding> codeBindQueue() {
         return new ArrayList<Binding>(){{
             add(BindingBuilder.bind(confirmQueue()).to(bindAccountExchange()).with(BindThirdPart.BIND_CODE_GET_ROUTING_KEY));
+        }};
+    }
+
+    //同步职位队列
+    @Bean
+    public Queue positionQueue() {
+        Queue queue = new Queue(BindThirdPart.SYNC_POSITION_GET_QUEUE_NAME, true, false, false);
+        return queue;
+    }
+    @Bean
+    public List<Binding> positionBindQueue() {
+        return new ArrayList<Binding>(){{
+            add(BindingBuilder.bind(confirmQueue()).to(bindAccountExchange()).with(BindThirdPart.SYNC_POSITION_GET_ROUTING_KEY));
         }};
     }
 }
