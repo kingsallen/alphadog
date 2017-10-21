@@ -15,6 +15,10 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 
+/**
+ * 第三方相关功能中使用的rabbitMq监听类
+ * @author PanYongBing
+ */
 @Component
 public class ScheduledTask {
 
@@ -24,6 +28,11 @@ public class ScheduledTask {
     private RedisClient redisClient;
 
 
+    /**
+     * 监听第三方账号绑定结果队列
+     * @param message
+     * @param channel
+     */
     @RabbitListener(queues = {BindThirdPart.BIND_GET_QUEUE_NAME, BindThirdPart.BIND_CONFIRM_GET_QUEUE_NAME, BindThirdPart.BIND_CODE_GET_QUEUE_NAME}, containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
     public void scheduler(Message message, Channel channel) {

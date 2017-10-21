@@ -93,6 +93,7 @@ public class PositionBS {
             return ResultMessage.THIRD_PARTY_ACCOUNT_NOT_BIND.toResponse();
         }
 
+        //这个循环检查需要同步的职位对应渠道下是否有绑定过的账号
         for (ThirdPartyPosition p : position.getChannels()) {
             HrThirdPartyAccountDO avaliableAccount = null;
             for (HrThirdPartyAccountDO account : thirdPartyAccounts) {
@@ -125,9 +126,12 @@ public class PositionBS {
 
         // 转成第三方渠道职位
         List<ThirdPartyPositionForSynchronization> positions = positionServices.changeToThirdPartyPosition(positionFroms, moseekerPosition);
-        // 提交到chaos处理
-        HrCompanyDO subCompany = hrCompanyAccountDao.getHrCompany(moseekerPosition.getPublisher());
-        List<ThirdPartyPositionForSynchronizationWithAccount> PositionsForSynchronizations = new ArrayList<>();
+
+
+        HrCompanyDO subCompany = hrCompanyAccountDao.getHrCompany(moseekerPosition.getPublisher());//获取发布者对应的公司，只返回一个
+        List<ThirdPartyPositionForSynchronizationWithAccount> positionsForSynchronizations = new ArrayList<>();
+
+        //循环将第三方职位和账号信息封装到ThirdPartyPositionForSynchronizationWithAccount这个类中
         for (ThirdPartyPositionForSynchronization pos : positions) {
             ThirdPartyPositionForSynchronizationWithAccount p = new ThirdPartyPositionForSynchronizationWithAccount();
             if(subCompany!=null){
@@ -144,13 +148,14 @@ public class PositionBS {
                     p.setUser_name(account.getUsername());
                     p.setPosition_id(pos.getPosition_id());
                     p.setMember_name(account.getMembername());
-                    PositionsForSynchronizations.add(p);
+                    positionsForSynchronizations.add(p);
                     logger.info("ThirdPartyPositionForSynchronization:{}", JSON.toJSONString(p));
                 }
             }
         }
-        logger.info("chaosService.synchronizePosition:{}", JSON.toJSONString(PositionsForSynchronizations));
-        chaosService.synchronizePosition(PositionsForSynchronizations);
+        // 提交到chaos处理
+        logger.info("chaosService.synchronizePosition:{}", JSON.toJSONString(positionsForSynchronizations));
+        chaosService.synchronizePosition(positionsForSynchronizations);
 
         List<HrThirdPartyPositionDO> pds = new ArrayList<>();
 

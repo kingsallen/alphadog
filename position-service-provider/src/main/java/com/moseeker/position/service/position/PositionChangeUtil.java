@@ -380,8 +380,8 @@ public class PositionChangeUtil {
 
     public void setCities(JobPositionDO positionDB, ThirdPartyPositionForSynchronization syncPosition, ChannelType channelType) {
 
+        //获取职位对应的moseeker城市code
         Query query = new Query.QueryBuilder().where("pid", positionDB.getId()).buildQuery();
-
         List<JobPositionCityDO> positionCitys = jobPositionCityDao.getDatas(query);
 
         Set<Integer> positionCityCodes = new HashSet<>();
