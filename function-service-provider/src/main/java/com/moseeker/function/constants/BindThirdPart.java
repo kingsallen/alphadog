@@ -12,17 +12,25 @@ public class BindThirdPart {
 
     public final static String BIND_EXCHANGE_NAME="chaos";
 
+    //绑定第一次推送第三方账号队列信息(即推送需要绑定的账号和密码)
     public final static String BIND_SEND_ROUTING_KEY="bind.request";
     public final static String BIND_GET_ROUTING_KEY="bind.response";
     public final static String BIND_GET_QUEUE_NAME="bind.response.web";
 
+    //绑定第二次推送第三方账号队列信息（即确认是否需要发送手机验证码）
     public final static String BIND_CONFIRM_SEND_ROUTING_KEY="mobile_confirm.request";
     public final static String BIND_CONFIRM_GET_ROUTING_KEY="mobile_confirm.response";
     public final static String BIND_CONFIRM_GET_QUEUE_NAME="mobile_confirm.response.web";
 
+    //绑定第三次推送第三方账号队列信息（即推送手机验证码）
     public final static String BIND_CODE_SEND_ROUTING_KEY="mobile_code.request";
     public final static String BIND_CODE_GET_ROUTING_KEY="mobile_code.response";
     public final static String BIND_CODE_GET_QUEUE_NAME="mobile_code.response.web";
+
+    //同步职位队列信息
+    public final static String SYNC_POSITION_SEND_ROUTING_KEY="mobile_code.request";
+    public final static String SYNC_POSITION_GET_ROUTING_KEY="mobile_code.response";
+    public final static String SYNC_POSITION_GET_QUEUE_NAME="mobile_code.response.web";
 
     public final static String CHAOS_ACCOUNTID="accountId";
 
