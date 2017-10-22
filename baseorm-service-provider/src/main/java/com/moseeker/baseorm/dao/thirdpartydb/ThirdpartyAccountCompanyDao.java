@@ -5,10 +5,13 @@ import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountCity;
 import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountCompany;
 import com.moseeker.baseorm.db.thirdpartydb.tables.records.ThirdpartyAccountCityRecord;
 import com.moseeker.baseorm.db.thirdpartydb.tables.records.ThirdpartyAccountCompanyRecord;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyAccountCityDO;
 import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyAccountCompanyDO;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
 * @author xxx
@@ -25,5 +28,12 @@ public class ThirdpartyAccountCompanyDao extends JooqCrudImpl<ThirdpartyAccountC
 
     public ThirdpartyAccountCompanyDao(TableImpl<ThirdpartyAccountCompanyRecord> table, Class<ThirdpartyAccountCompanyDO> doClass) {
         super(table, doClass);
+    }
+
+    public List<ThirdpartyAccountCompanyDO> getCompanyByAccountId(int accountId) {
+        Query query = new Query.QueryBuilder()
+                .where(ThirdpartyAccountCompany.THIRDPARTY_ACCOUNT_COMPANY.ACCOUNT_ID.getName(),accountId).buildQuery();
+
+        return getDatas(query);
     }
 }
