@@ -547,7 +547,7 @@ public class WholeProfileService {
                 profileEntity.improveEducation(destEducations, originProfileId);
                 profileEntity.improveIntention(destIntentions, originProfileId);
                 profileEntity.improveLanguage(destLanguages, originProfileId);
-                profileEntity.improveOther(destOther, originProfileId);
+                profileEntity.mergeOther(destOther, originProfileId);
                 profileEntity.improveProjectexp(destProjectexps, originProfileId);
                 profileEntity.improveSkill(destSkills, originProfileId);
                 profileEntity.improveWorks(destWorks, originProfileId);

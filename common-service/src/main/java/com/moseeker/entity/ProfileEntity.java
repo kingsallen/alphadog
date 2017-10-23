@@ -21,7 +21,6 @@ import com.moseeker.entity.pojo.resume.ResumeObj;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import java.sql.Timestamp;
-import java.util.Date;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Consts;
 import org.apache.http.HttpResponse;
@@ -34,7 +33,6 @@ import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.objenesis.instantiator.sun.MagicInstantiator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -269,6 +267,19 @@ public class ProfileEntity {
 
     @Transactional
     public void improveOther(ProfileOtherRecord otherRecord, int profileId) {
+        if (otherRecord != null && StringUtils.isNotNullOrEmpty(otherRecord.getOther())) {
+            QueryUtil qu = new QueryUtil();
+            qu.addEqualFilter("profile_id", String.valueOf(profileId));
+            ProfileOtherRecord record = otherDao.getRecord(qu);
+            if (record == null && otherRecord != null) {
+                otherRecord.setProfileId((int) (profileId));
+                otherDao.addRecord(otherRecord);
+            }
+        }
+    }
+
+    @Transactional
+    public void mergeOther(ProfileOtherRecord otherRecord, int profileId) {
         if (otherRecord != null && StringUtils.isNotNullOrEmpty(otherRecord.getOther())) {
             Query.QueryBuilder query = new Query.QueryBuilder();
             query.where("profile_id", String.valueOf(profileId));
