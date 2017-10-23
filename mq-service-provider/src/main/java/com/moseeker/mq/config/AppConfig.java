@@ -102,6 +102,11 @@ public class AppConfig {
     }
 
     @Bean
+    public Queue sendTemplateQue() {
+        Queue queue = new Queue("send_template_que", true, false, false);
+        return queue;
+    }
+    @Bean
     public TopicExchange topicExchange() {
         TopicExchange topicExchange = new TopicExchange("user_action_topic_exchange", true, false);
         return topicExchange;
