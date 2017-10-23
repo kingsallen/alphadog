@@ -2,19 +2,28 @@ package com.moseeker.entity;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.configdb.ConfigSysTemplateMessageLibraryDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
+import com.moseeker.baseorm.dao.hrdb.HrEmployeePositionDao;
+import com.moseeker.baseorm.dao.hrdb.HrEmployeeSectionDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileBasicDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
+import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.configdb.tables.ConfigSysTemplateMessageLibrary;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.entity.pojos.Data;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysTemplateMessageLibraryDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeePositionDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeSectionDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileBasicDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileIntentionDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
@@ -22,8 +31,11 @@ import com.moseeker.thrift.gen.mq.struct.MessageTplDataCol;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.SimpleFormatter;
 
 /**
  * Created by zztaiwll on 17/10/20.
@@ -40,12 +52,20 @@ public class MessageTemplateEntity {
     private UserWxUserDao userWxUserDao;
     @Autowired
     private UserUserDao userUserDao;
+    @Autowired
+    private HrCompanyDao hrCompanyDao;
+    @Autowired
+    private UserEmployeeDao userEmployeeDao;
+    @Autowired
+    private HrEmployeePositionDao hrEmployeePositionDao;
+    @Autowired
+    private HrEmployeeSectionDao hrEmployeeSectionDao;
 
     public MessageTemplateNoticeStruct handlerTemplate(int userId,int companyId,int templateId,int type){
         ConfigSysTemplateMessageLibraryDO DO=this.getConfigSysTemplateMessageLibraryDOById(templateId);
         String url=DO.getUrl();
         MessageTemplateNoticeStruct messageTemplateNoticeStruct =new MessageTemplateNoticeStruct();
-        Map<String,MessageTplDataCol> colMap=this.handleMessageTemplateData(userId,type);
+        Map<String,MessageTplDataCol> colMap=this.handleMessageTemplateData(userId,type,companyId);
         if(colMap==null||colMap.isEmpty()){
             return null;
         }
@@ -59,22 +79,20 @@ public class MessageTemplateEntity {
     /*
         处理发送完善简历消息模板
      */
-    private  Map<String,MessageTplDataCol> handleMessageTemplateData(int userId,int type){
+    private  Map<String,MessageTplDataCol> handleMessageTemplateData(int userId,int type,int companyId){
 
         Map<String,MessageTplDataCol> colMap =new HashMap<>();
         if(type==1){
             colMap=this.handleDataForuestion(userId);
-        }else if(type==2){
-
-        }else if(type==3){
-
+        }else if(type==2||type==3){
+            colMap=this.handleDataRecommendTemplate(companyId);
         }else if(type==4){
 
         }
         return colMap;
     }
     /*
-        组装完善模板简历数据
+        组装完善粉丝模板数据
      */
     private Map<String,MessageTplDataCol> handleDataForuestion(int userId){
         Map<String,MessageTplDataCol> colMap =new HashMap<>();
@@ -89,32 +107,90 @@ public class MessageTemplateEntity {
         keyword1.setColor("#173177");
         keyword1.setValue(time);
         colMap.put("keyword2",keyword2);
-//        MessageTplDataCol remark=new MessageTplDataCol();
-//        remark.setColor("#173177");
-//        remark.setValue("完善简历信息，让HR更了解你，会得到更多的关注哦");
-//        colMap.put("remark",remark);
-//        MessageTplDataCol first=new MessageTplDataCol();
-//        first.setColor("#173177");
-//        first.setValue("您好，请完善简历信息。");
-//        colMap.put("first",first);
         return colMap;
     }
+
     /*
-        推荐职位列表消息
+        推荐职位列表消息数据
      */
     private Map<String,MessageTplDataCol> handleDataRecommendTemplate(int companyId){
         Map<String,MessageTplDataCol> colMap =new HashMap<>();
-
-        return null;
+        SimpleDateFormat sf=new SimpleDateFormat("YYYY-MM-DD hh:mm:ss");
+        String data=sf.format(new Date());
+        MessageTplDataCol keyword1=new MessageTplDataCol();
+        keyword1.setColor("#173177");
+        HrCompanyDO DO=this.getCompanyById(companyId);
+        if(DO==null){
+            return null;
+        }
+        keyword1.setValue(DO.getAbbreviation());
+        colMap.put("keyword1",keyword1);
+        MessageTplDataCol keyword2=new MessageTplDataCol();
+        keyword2.setColor("#173177");
+        keyword2.setValue(data);
+        colMap.put("keyword2",keyword2);
+        return colMap;
     }
 
     /*
-        职位邀请通知
+     完善简历信息数据模板
      */
-    private Map<String,MessageTplDataCol> handleDataProfileTemplate(int userId){
-
-        return null;
+    private Map<String,MessageTplDataCol> handleDataProfileTemplate(int userId,int companyId){
+        Map<String,MessageTplDataCol> colMap =new HashMap<>();
+        UserEmployeeDO DO=this.getUserEmployeeByUserIdAndCompanyId(userId,companyId);
+        if(DO==null){
+            return null;
+        }
+        HrEmployeePositionDO hrEmployeePositionDO=this.getHrEmployeePositionById(DO.getPositionId());
+        HrEmployeeSectionDO hrEmployeeSectionDO=this.getHrEmployeeSectionbyId(DO.getSectionId());
+        MessageTplDataCol keyword1=new MessageTplDataCol();
+        keyword1.setValue(DO.getCname());
+        keyword1.setColor("#173177");
+        colMap.put("keyword1",keyword1);
+        MessageTplDataCol keyword2=new MessageTplDataCol();
+        keyword2.setValue(hrEmployeePositionDO.getName());
+        keyword2.setColor("#173177");
+        colMap.put("keyword2",keyword2);
+        MessageTplDataCol keyword3=new MessageTplDataCol();
+        keyword3.setValue(hrEmployeeSectionDO.getName());
+        keyword3.setColor("#173177");
+        colMap.put("keyword3",keyword3);
+        return colMap;
     }
+    /*
+      根据user_id和company_id查找雇员信息
+     */
+    private UserEmployeeDO getUserEmployeeByUserIdAndCompanyId(int userId,int companyId){
+        Query query=new Query.QueryBuilder().where("sysuser_id",userId).and("company_id",companyId).buildQuery();
+        UserEmployeeDO DO=userEmployeeDao.getData(query);
+        return DO;
+    }
+    /*
+        根据id获取雇员的职位
+     */
+    private HrEmployeePositionDO getHrEmployeePositionById(int id){
+        Query query=new Query.QueryBuilder().where("id",id).buildQuery();
+        HrEmployeePositionDO DO=hrEmployeePositionDao.getData(query);
+        return DO;
+    }
+    /*
+       根据id获取雇员的部门
+     */
+    private HrEmployeeSectionDO getHrEmployeeSectionbyId(int id){
+        Query query=new Query.QueryBuilder().where("id",id).buildQuery();
+        HrEmployeeSectionDO DO=hrEmployeeSectionDao.getData(query);
+        return DO;
+
+    }
+    /*
+        根据companyId查询公司信息
+     */
+    private HrCompanyDO getCompanyById(int companyId){
+        Query query=new Query.QueryBuilder().where("id",companyId).buildQuery();
+        HrCompanyDO DO=hrCompanyDao.getData(query);
+        return DO;
+    }
+
 
     /*
      根据模板id获取模板的内容

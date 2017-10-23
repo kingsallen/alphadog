@@ -111,11 +111,17 @@ public class AppConfig {
         TopicExchange topicExchange = new TopicExchange("user_action_topic_exchange", true, false);
         return topicExchange;
     }
+    @Bean
+    public TopicExchange templateExchange() {
+        TopicExchange topicExchange = new TopicExchange("message_template_exchange", true, false);
+        return topicExchange;
+    }
 
     @Bean
     public List<Binding> binding() {
         return new ArrayList<Binding>(){{
             add(BindingBuilder.bind(addAwardQue()).to(topicExchange()).with("sharejd.#"));
+            add(BindingBuilder.bind(sendTemplateQue()).to(templateExchange()).with("messagetemplate.#"));
         }};
     }
 }

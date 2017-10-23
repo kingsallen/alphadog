@@ -8,6 +8,8 @@ import com.moseeker.mq.service.impl.TemplateMsgProducer;
 import com.moseeker.thrift.gen.dao.struct.logdb.LogDeadLetterDO;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
 import com.rabbitmq.client.Channel;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
@@ -72,19 +74,24 @@ public class ReceiverHandler {
             MessageTemplateNoticeStruct messageTemplate=messageTemplateEntity.handlerTemplate(userId,companyId,templateId,type);
             if(messageTemplate!=null){
                 templateMsgProducer.messageTemplateNotice(messageTemplate);
+            }else{
+                this.handleTemplateLogDeadLetter(message,msgBody,"没有查到末班所需的具体内容");
             }
-
         }catch(Exception e){
-            LogDeadLetterDO logDeadLetterDO = new LogDeadLetterDO();
-            logDeadLetterDO.setAppid(Integer.valueOf(message.getMessageProperties().getAppId()));
-            logDeadLetterDO.setErrorLog(e.getMessage());
-            logDeadLetterDO.setMsg(msgBody);
-            logDeadLetterDO.setExchangeName(message.getMessageProperties().getReceivedExchange());
-            logDeadLetterDO.setRoutingKey(message.getMessageProperties().getReceivedRoutingKey());
-            logDeadLetterDO.setQueueName(message.getMessageProperties().getConsumerQueue());
-            logDeadLetterDao.addData(logDeadLetterDO);
+            this.handleTemplateLogDeadLetter(message,msgBody,"没有查到末班所需的具体内容");
             log.error(e.getMessage(), e);
         }
+    }
+
+    private void handleTemplateLogDeadLetter(Message message,String msgBody,String errorMessage){
+        LogDeadLetterDO logDeadLetterDO = new LogDeadLetterDO();
+        logDeadLetterDO.setAppid(NumberUtils.toInt(message.getMessageProperties().getAppId(), 0));
+        logDeadLetterDO.setErrorLog(errorMessage);
+        logDeadLetterDO.setMsg(msgBody);
+        logDeadLetterDO.setExchangeName(StringUtils.defaultIfBlank(message.getMessageProperties().getReceivedExchange(), ""));
+        logDeadLetterDO.setRoutingKey(StringUtils.defaultIfBlank(message.getMessageProperties().getReceivedRoutingKey(), ""));
+        logDeadLetterDO.setQueueName(StringUtils.defaultIfBlank(message.getMessageProperties().getConsumerQueue(), ""));
+        logDeadLetterDao.addData(logDeadLetterDO);
     }
 
 }
