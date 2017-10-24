@@ -67,15 +67,17 @@ public class ReceiverHandler {
         try{
             msgBody = new String(message.getBody(), "UTF-8");
             JSONObject jsonObject = JSONObject.parseObject(msgBody);
+            log.info("rabitmq的参数是========"+jsonObject.toJSONString());
             int userId=jsonObject.getIntValue("userId");
             int companyId=jsonObject.getIntValue("companyId");
             int type=jsonObject.getIntValue("type");
             int templateId=jsonObject.getIntValue("templateId");
             MessageTemplateNoticeStruct messageTemplate=messageTemplateEntity.handlerTemplate(userId,companyId,templateId,type);
+            log.info("messageTemplate========"+JSONObject.toJSONString(messageTemplate));
             if(messageTemplate!=null){
                 templateMsgProducer.messageTemplateNotice(messageTemplate);
             }else{
-                this.handleTemplateLogDeadLetter(message,msgBody,"没有查到末班所需的具体内容");
+                this.handleTemplateLogDeadLetter(message,msgBody,"没有查到模板所需的具体内容");
             }
         }catch(Exception e){
             this.handleTemplateLogDeadLetter(message,msgBody,"没有查到末班所需的具体内容");
