@@ -27,7 +27,10 @@ public enum ResultMessage {
 	SUCCESS(0, "success"),
 	PROGRAM_EXCEPTION(99999, "程序异常，请稍后再试！"),
 	PROGRAM_EXHAUSTED(-1, "系统繁忙，请稍候再试!"),
+	COMPANY_NOT_EXIST(100007, "公司不存在!"),
 	POSITION_NOT_EXIST(100002, "职位数据不存在!");
+
+
 
 	
 	private static final HashMap<Integer, ResultMessage> intToCode = new HashMap<>();  //code池
