@@ -132,7 +132,12 @@ public class UserPositionEmailService {
 		String industry=(String) map.get("industry");
 		int page=1;
 		int pageSize=10;
-		String salaryCode= JSONObject.toJSONString(map.get("salaryCode"));
+		Map<String,Integer> salaryMap= (Map<String, Integer>) map.get("salaryCode");
+		List<Map<String,Integer>> salaryCodeList=new ArrayList<>();
+		if(salaryMap!=null&&!salaryMap.isEmpty()){
+			salaryCodeList.add(salaryMap);
+		}
+		String salaryCode= JSONObject.toJSONString(salaryCodeList);
 		Calendar lastDate = Calendar.getInstance();
 		SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss" );
 		lastDate.roll(Calendar.DATE, -7);//日期回滚7天
