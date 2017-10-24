@@ -74,6 +74,7 @@ public class MessageTemplateEntity {
         messageTemplateNoticeStruct.setUser_id(userId);
         messageTemplateNoticeStruct.setSys_template_id(templateId);
         messageTemplateNoticeStruct.setUrl(url);
+        messageTemplateNoticeStruct.setType((byte)0);
         return messageTemplateNoticeStruct;
     }
     /*
