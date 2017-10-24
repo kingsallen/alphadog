@@ -8,15 +8,17 @@ import java.util.Map;
  */
 public enum ApplicationSource {
 
-    PC(1, 1), ENTERPRISE(2, 10), GATHER(4, 100), JOB51(8, 1000), ZHILIAN(16, 10000), LIEPIN(32, 100000), ALIPAY(64, 1000000), PROXOYAPPLICATION(128, 10000000), DELEGATE(256, 100000000);
+    PC(1, 1), ENTERPRISE(2, 10), GATHER(4, 100), JOB51(8, 1000), ZHILIAN(16, 10000), LIEPIN(32, 100000),
+    ALIPAY(64, 1000000), PROXOYAPPLICATION(128, 10000000), DELEGATE(256, 100000000),
+    ProgramImport(512, 1000000000), EmailApply(1024, 10000000000l);
 
     private int value;
-    private int flag;
+    private long flag;
 
     private static final Map<Integer, ApplicationSource> intToEnum = new HashMap();
 
 
-    ApplicationSource(int value, int flag) {
+    ApplicationSource(int value, long flag) {
         this.value = value;
         this.flag = flag;
     }
@@ -43,7 +45,7 @@ public enum ApplicationSource {
      * @return true 存在；false 不存在
      */
     public boolean exist(int sources) {
-        int temp = sources & flag;
+        long temp = sources & flag;
         if (temp != 0) {
             return true;
         }

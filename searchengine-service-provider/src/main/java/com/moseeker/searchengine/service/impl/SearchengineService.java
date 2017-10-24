@@ -52,7 +52,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.LocalDateTime;
@@ -277,7 +276,6 @@ public class SearchengineService {
                     }else{
                         responseBuilder.addSort("_score", SortOrder.DESC);
                     }
-
                 } else {
                     responseBuilder.addSort("priority", SortOrder.ASC);
                     if(!StringUtils.isEmpty(cities)&&!"全国".equals(cities)){

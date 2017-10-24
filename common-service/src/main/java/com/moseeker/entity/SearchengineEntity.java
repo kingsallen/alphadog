@@ -1,5 +1,6 @@
 package com.moseeker.entity;
 
+
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
@@ -402,8 +403,8 @@ public class SearchengineEntity {
                 if (bulkResponse.buildFailureMessage() != null) {
                     return ResponseUtils.fail(9999, bulkResponse.buildFailureMessage());
                 }
-            } catch (Exception error) {
-                logger.error(error.getMessage());
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
             } finally {
                 client.close();
             }

@@ -12,12 +12,11 @@ import com.moseeker.common.util.Pagination;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
-import com.moseeker.profile.constants.ValidationMessage;
-import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
-import com.moseeker.profile.utils.ProfileValidation;
+import com.moseeker.entity.biz.ProfileValidation;
+import com.moseeker.entity.biz.ValidationMessage;
+import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileOtherDO;
 import com.moseeker.thrift.gen.profile.struct.CustomizeResume;
-import com.moseeker.thrift.gen.profile.struct.Profile;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +54,7 @@ public class ProfileCustomizeResumeService {
         int totalRow = dao.getCount(query);
         List<?> datas = dao.getDatas(query);
 
-        return ProfileUtils.getPagination(totalRow, query.getPageNum(), query.getPageSize(), datas);
+        return ProfileExtUtils.getPagination(totalRow, query.getPageNum(), query.getPageSize(), datas);
     }
 
     @Transactional

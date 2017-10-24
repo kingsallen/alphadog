@@ -24,7 +24,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
-import sun.jvm.hotspot.runtime.Thread;
+//import sun.jvm.hotspot.runtime.Thread;
 
 /**
  * Created by lucky8987 on 17/5/17.
@@ -42,17 +42,6 @@ public class EmployeeServiceTest {
     @Autowired
     EmployeeEntity employeeEntity;
 
-//    @Mock
-//    RedisClient client;
-
-//    @Before
-//    public void init() throws Exception {
-//        MockitoAnnotations.initMocks(this);
-//        // EmployeeService 是通过aop代理的bean对象，所以要通过AopTargetUtils获取bean本身然后将mock的对象设置进去
-//        ReflectionTestUtils.setField(AopTargetUtils.getTarget(service), "client", client);
-//        Mockito.when(client.set(Mockito.anyInt(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("insert success");
-//        Mockito.when(client.get(Mockito.anyInt(), Mockito.anyString(), Mockito.anyString())).thenReturn(null);
-//    }
 
     @Test
     public void getEmployee() throws Exception {
@@ -164,4 +153,12 @@ public class EmployeeServiceTest {
         Result result = service.setCacheEmployeeCustomInfo(2376, 2878, "[{\"a\":2}]");
         System.out.println(result);
     }
+//    @Test
+//    public void convertCandidatePerson(){
+//        bindByEmail.convertCandidatePerson(391471,2878);
+//    }
+//    @Test
+//    public void cancelCandidate(){
+//        bindByEmail.cancelCandidate(391471,2878);
+//    }
 }

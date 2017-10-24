@@ -95,7 +95,7 @@ public class ConstantlyMailConsumer {
 				templateName = "employee_auth_template.html";
 			}else if(v==3){
 				templateName = "position_subscribe_activation_template.html";
-			}else if(v==4){
+			}else if(v==4 ){
 				templateName = "position_subscribe_weekly_template.html";
 			}
 			StringBuffer sb = new StringBuffer();

@@ -241,4 +241,14 @@ public class ProfileServicesImplTest {
         System.out.println(response);
     }
 
+    @Test
+    public void profileParserTest() {
+        try {
+            Response response = profileService.profileParser(1707240, "77559bba-ad7d-11e7-9d40-00163e000f58.pdf", "");
+            System.out.println(response);
+        } catch (TException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

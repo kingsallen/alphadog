@@ -81,7 +81,7 @@ public class SearchUtil {
         ((BoolQueryBuilder) query).must(cityfilter);
         logger.info("组合的条件是==================" + query.toString() + "===========");
     }
-    
+
     //处理聚合的结果
     public Map<String,Object> handleAggs(Aggregations aggs){
     	List<Aggregation> list=aggs.asList();
@@ -93,7 +93,7 @@ public class SearchUtil {
     	}
     	return map;
     }
-    
+
   //处理es的返回数据
     public Map<String,Object> handleData(SearchResponse response,String dataName){
     	Map<String,Object> data=new HashMap<String,Object>();
@@ -116,7 +116,7 @@ public class SearchUtil {
     	}
     	return data;
     }
-    
+
     //组装prefix关键字查询语句
     public void handleKeyWordForPrefix(String keywords,boolean hasKey,QueryBuilder query,List<String> list){
     	if(StringUtils.isNotEmpty(keywords)){
@@ -128,8 +128,8 @@ public class SearchUtil {
     		((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
             ((BoolQueryBuilder) query).must(keyand);
     	}
-    } 
-    
+    }
+
 	 //组装query_string关键字查询语句
     public void handleKeyWordforQueryString(String keywords,boolean hasKey,QueryBuilder query,List<String> list){
     	if(StringUtils.isNotEmpty(keywords)){
@@ -238,6 +238,18 @@ public class SearchUtil {
         return build;
     }
 
+    public void shouldQuery(Map<String,Object> map,QueryBuilder query){
+    	if(map!=null&&!map.isEmpty()){
+			QueryBuilder keyand = QueryBuilders.boolQuery();
+			for(String key:map.keySet()){
+				QueryBuilder fullf = QueryBuilders.termsQuery(key,map.get(key));
+				((BoolQueryBuilder) keyand).should(fullf);
+			}
+			((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+			((BoolQueryBuilder) query).must(keyand);
+		}
+
+	}
 
     /**
      * term查询，查询的值包含单个值
