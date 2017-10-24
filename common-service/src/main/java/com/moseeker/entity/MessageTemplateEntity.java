@@ -105,8 +105,8 @@ public class MessageTemplateEntity {
         keyword1.setValue(name);
         colMap.put("keyword1",keyword1);
         MessageTplDataCol keyword2=new MessageTplDataCol();
-        keyword1.setColor("#173177");
-        keyword1.setValue(time);
+        keyword2.setColor("#173177");
+        keyword2.setValue(time);
         colMap.put("keyword2",keyword2);
         return colMap;
     }
