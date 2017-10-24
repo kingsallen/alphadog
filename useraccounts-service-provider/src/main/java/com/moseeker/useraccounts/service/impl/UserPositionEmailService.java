@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.annotation.iface.CounterIface;
 import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
@@ -131,7 +132,7 @@ public class UserPositionEmailService {
 		String industry=(String) map.get("industry");
 		int page=1;
 		int pageSize=10;
-		String salaryCode=(String) map.get("salaryCode");
+		String salaryCode= JSONObject.toJSONString(map.get("salaryCode"));
 		Calendar lastDate = Calendar.getInstance();
 		SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss" );
 		lastDate.roll(Calendar.DATE, -7);//日期回滚7天
