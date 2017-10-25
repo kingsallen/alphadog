@@ -1,23 +1,40 @@
-//package test.com.moseeker.application;
-//
-//import org.apache.thrift.TException;
-//import org.junit.Test;
-//import org.junit.runner.RunWith;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.test.context.ContextConfiguration;
-//import org.springframework.transaction.annotation.Transactional;
-//import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-//import com.moseeker.application.config.AppConfig;
-//import com.moseeker.application.service.impl.JobApplicataionService;
-//import com.moseeker.thrift.gen.application.struct.JobApplication;
-//import com.moseeker.thrift.gen.application.struct.JobResumeOther;
-//import com.moseeker.thrift.gen.common.struct.Response;
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(classes =AppConfig.class)
-//@Transactional
-//public class ApplicationTest {
-//	@Autowired
-//	private JobApplicataionService service;
+package test.com.moseeker.application;
+
+import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
+import org.apache.thrift.TException;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import com.moseeker.application.config.AppConfig;
+import com.moseeker.application.service.impl.JobApplicataionService;
+import com.moseeker.thrift.gen.application.struct.JobApplication;
+import com.moseeker.thrift.gen.application.struct.JobResumeOther;
+import com.moseeker.thrift.gen.common.struct.Response;
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes =AppConfig.class)
+@Transactional
+public class ApplicationTest {
+
+	@Autowired
+	private JobApplicataionService service;
+
+	@Autowired
+    private JobApplicationDao dao;
+
+	@Test
+    public void testAdd() {
+        JobApplicationRecord record = new JobApplicationRecord();
+        record.setApplierId(676230);
+        record.setApplierName("未知");
+        record.setPositionId(11123);
+        record.setAppTplId(10);
+	    dao.addIfNotExists(record);
+    }
+
 //	//@Test
 //	public void testSave() throws TException{
 //		JobApplication app=new JobApplication();
@@ -89,4 +106,4 @@
 //		System.out.println(res);
 //	}
 //
-//}
+}
