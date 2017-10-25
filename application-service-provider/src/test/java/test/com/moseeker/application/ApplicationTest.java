@@ -6,6 +6,7 @@ import org.apache.thrift.TException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -14,26 +15,28 @@ import com.moseeker.application.service.impl.JobApplicataionService;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.application.struct.JobResumeOther;
 import com.moseeker.thrift.gen.common.struct.Response;
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes =AppConfig.class)
-@Transactional
-public class ApplicationTest {
-
-	@Autowired
-	private JobApplicataionService service;
-
-	@Autowired
-    private JobApplicationDao dao;
-
-	@Test
-    public void testAdd() {
-        JobApplicationRecord record = new JobApplicationRecord();
-        record.setApplierId(676230);
-        record.setApplierName("未知");
-        record.setPositionId(11123);
-        record.setAppTplId(10);
-	    dao.addIfNotExists(record);
-    }
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(classes =AppConfig.class)
+//@Transactional
+//public class ApplicationTest {
+//
+//	@Autowired
+//	private JobApplicataionService service;
+//
+//	@Autowired
+//    private JobApplicationDao dao;
+//
+//	@Test
+//    @Commit
+//    public void testAdd() {
+//        JobApplicationRecord record = new JobApplicationRecord();
+//        record.setApplierId(676230);
+//        record.setApplierName("未知");
+//        record.setPositionId(11123);
+//        record.setAppTplId(10);
+//	    int result = dao.addIfNotExists(record);
+//        System.out.println(result);
+//    }
 
 //	//@Test
 //	public void testSave() throws TException{

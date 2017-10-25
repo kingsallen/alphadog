@@ -900,8 +900,8 @@ public class JobApplicataionService {
         int appId = 0;
         try {
             HrOperationRecordRecord hrOperationRecord = null;
-            jobApplicationDao.addRecord(jobApplicationRecord);
-            appId = jobApplicationRecord.getId().intValue();
+//            jobApplicationDao.addRecord(jobApplicationRecord);
+            appId = jobApplicationDao.addIfNotExists(jobApplicationRecord);
             if (appId > 0) {
                 hrOperationRecord = getHrOperationRecordRecord(appId, jobApplicationRecord, jobPositionRecord);
                 hrOperationRecordDao.addRecord(hrOperationRecord);
