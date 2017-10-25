@@ -1,5 +1,6 @@
 package com.moseeker.position.service.third;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.baseorm.dao.thirdpartydb.ThirdpartyAccountCityDao;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
@@ -36,6 +37,8 @@ public class ThirdPartyAccountInfoCityService {
         List<Integer> codes=new ArrayList<>();
         cityList.forEach(c->codes.add(c.getCode()));
 
+        logger.info(accountId+"对应的城市code"+ JSON.toJSONString(codes));
+
         //根据codes获取城市信息(名称)
         List<DictCityRecord> dictCityList=dictCityDao.getCitiesByCodes(codes);
 
@@ -48,8 +51,10 @@ public class ThirdPartyAccountInfoCityService {
             city.setRemainNum(c.getRemainNum());
             //遍历城市信息，获取对应code的城市名称
             String citName=dictCityList.stream().filter(dc->dc.getCode().equals(c.getCode())).findFirst().get().getName();
+            logger.info(accountId+"有城市"+citName);
             city.setName(citName);
         });
+        logger.info(accountId+"对应的城市code{}",codes);
 
         return infoCity;
     }
