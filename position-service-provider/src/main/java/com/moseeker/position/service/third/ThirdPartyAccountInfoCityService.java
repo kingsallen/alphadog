@@ -51,10 +51,10 @@ public class ThirdPartyAccountInfoCityService {
             city.setRemainNum(c.getRemainNum());
             //遍历城市信息，获取对应code的城市名称
             String citName=dictCityList.stream().filter(dc->dc.getCode().equals(c.getCode())).findFirst().get().getName();
-            logger.info(accountId+"有城市"+citName);
             city.setName(citName);
+            infoCity.add(city);
         });
-        logger.info(accountId+"对应的城市code{}",codes);
+        logger.info(accountId+"对应的城市{}",infoCity);
 
         return infoCity;
     }
