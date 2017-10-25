@@ -63,14 +63,14 @@ public class ThirdPartyAccountInfoService {
      * @throws TException 当没有获取HR账号在某个渠道下的第三方账号时，抛出异常
      */
     public HrThirdPartyAccountHrDO getThirdPartyAccount(ThirdPartyAccountInfoParam param) throws TException{
-        long hrId=param.getHr_id();
+        long hrId=param.getHrId();
         int channel=param.getChannel();
 
         logger.info("获取"+hrId+"HR在渠道"+channel+"下的第三方账号");
         HrThirdPartyAccountHrDO hrThirdPartyAccountHrDO=hrThirdPartyAccountHrDao.getData(hrId,channel);
 
         if(hrThirdPartyAccountHrDO == null || hrThirdPartyAccountHrDO.getId() == 0){
-            throw new TException(param.getHr_id()+"账号在渠道"+param.getChannel()+"没有绑定的第三方账号");
+            throw new TException(param.getHrId()+"账号在渠道"+param.getChannel()+"没有绑定的第三方账号");
         }
 
         logger.info("获取到的第三方账号为:"+hrThirdPartyAccountHrDO.getThirdPartyAccountId());
