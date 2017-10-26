@@ -61,7 +61,7 @@ public class ScheduledTask {
     public void positionSyncListener(Message message, Channel channel) throws UnsupportedEncodingException {
         try{
             String data=new String(message.getBody(), "UTF-8");
-            logger.info("获取到数据:"+data);
+            logger.info("成功获取同步职位结果数据:"+data);
             PositionForSyncResultPojo pojo=JSON.parseObject(data, PositionForSyncResultPojo.class);
             positionSyncConsumer.positionSyncComplete(pojo);
         }catch (Exception e){

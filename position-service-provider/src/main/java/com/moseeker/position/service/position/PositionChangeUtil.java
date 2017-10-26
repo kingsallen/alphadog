@@ -66,12 +66,16 @@ public class PositionChangeUtil {
      */
     public ThirdPartyPositionForSynchronization changeToThirdPartyPosition(ThirdPartyPosition form, JobPositionDO positionDB) {
         logger.info("changeToThirdPartyPosition---------------------");
+
+
         ThirdPartyPositionForSynchronization position = null;
 
         ChannelType channelType = ChannelType.instaceFromInteger(form.getChannel());
+
         PositionTransfer transfer=transferSimpleFactory(channelType);
 
         position=transfer.changeToThirdPartyPosition(form,positionDB);
+        logger.info("转换结果:{}"+position);
 
         return position;
     }

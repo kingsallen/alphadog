@@ -105,6 +105,8 @@ public class PositionSyncHandler {
         data.setAddressName(position.getAddressName());
         data.setDepartmentId(position.getDepartmentId());
         data.setDepartmentName(position.getDepartmentName());
+
+        logger.info("回写到第三方职位对象:{}",data);
         return data;
     }
 
@@ -113,8 +115,8 @@ public class PositionSyncHandler {
     //初始化公司
     public void initCompanyName(ThirdPartyPositionForSynchronizationWithAccount p,int publisher){
         HrCompanyDO subCompany = hrCompanyAccountDao.getHrCompany(publisher);//获取发布者对应的公司，只返回一个
-
         if (subCompany != null) {
+            logger.info("初始化公司名称:{}",subCompany);
             p.setCompany_name(subCompany.getAbbreviation());
         } else {
             p.setCompany_name("");
@@ -152,6 +154,7 @@ public class PositionSyncHandler {
         p.setUser_name(account.getUsername());
         p.setPosition_id(pos.getPosition_id());
         p.setMember_name(account.getMembername());
+        logger.info("初始化第三方账号:{}"+p);
         return p;
     }
 
@@ -164,6 +167,7 @@ public class PositionSyncHandler {
     public HrThirdPartyAccountDO getAvailableThirdAccount(int publisher,int channel){
         HrThirdPartyAccountDO account=getThirdPartAccount(publisher,channel);
         if(account!=null && account.remainNum>0){
+            logger.info("发布者：{}获取到渠道：{}第三方账号",publisher,channel,account);
             return account;
         }
         return null;

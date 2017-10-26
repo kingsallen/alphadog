@@ -101,7 +101,6 @@ public class Job51PositionTransfer extends PositionTransfer{
     protected void setDegree(int degreeInt, ThirdPartyPositionForSynchronization position) {
         Degree degree = Degree.instanceFromCode(String.valueOf(degreeInt));
         position.setDegree(DegreeChangeUtil.getJob51Degree(degree).getValue());
-//        position.setDegree(DegreeChangeUtil.getJob51Degree(degree).getName());
     }
 
     @Override
