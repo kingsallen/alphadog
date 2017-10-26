@@ -61,9 +61,11 @@ public class MessageTemplateEntity {
     @Autowired
     private HrEmployeeSectionDao hrEmployeeSectionDao;
 
-    public MessageTemplateNoticeStruct handlerTemplate(int userId,int companyId,int templateId,int type){
+    public MessageTemplateNoticeStruct handlerTemplate(int userId,int companyId,int templateId,int type,String url){
         ConfigSysTemplateMessageLibraryDO DO=this.getConfigSysTemplateMessageLibraryDOById(templateId);
-        String url=DO.getUrl();
+        if(StringUtils.isNullOrEmpty(url)){
+            url=DO.getUrl();
+        }
         MessageTemplateNoticeStruct messageTemplateNoticeStruct =new MessageTemplateNoticeStruct();
         Map<String,MessageTplDataCol> colMap=this.handleMessageTemplateData(userId,type,companyId);
         if(colMap==null||colMap.isEmpty()){

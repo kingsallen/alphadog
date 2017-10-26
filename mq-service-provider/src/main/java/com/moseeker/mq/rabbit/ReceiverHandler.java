@@ -68,13 +68,18 @@ public class ReceiverHandler {
             msgBody = new String(message.getBody(), "UTF-8");
             JSONObject jsonObject = JSONObject.parseObject(msgBody);
             log.info("rabitmq的参数是========"+jsonObject.toJSONString());
-            int userId=jsonObject.getIntValue("userId");
-            int companyId=jsonObject.getIntValue("companyId");
+            int userId=jsonObject.getIntValue("user_id");
+            int companyId=jsonObject.getIntValue("company_id");
             int type=jsonObject.getIntValue("type");
-            int templateId=jsonObject.getIntValue("templateId");
-            MessageTemplateNoticeStruct messageTemplate=messageTemplateEntity.handlerTemplate(userId,companyId,templateId,type);
+            int templateId=jsonObject.getIntValue("template_id");
+            String url=jsonObject.getString("url");
+            String enable_qx_retry=jsonObject.getString("enable_qx_retry");
+            MessageTemplateNoticeStruct messageTemplate=messageTemplateEntity.handlerTemplate(userId,companyId,templateId,type,url);
             log.info("messageTemplate========"+JSONObject.toJSONString(messageTemplate));
             if(messageTemplate!=null){
+                if(StringUtils.isNotEmpty(enable_qx_retry)){
+                    messageTemplate.setEnable_qx_retry(Byte.parseByte(enable_qx_retry));
+                }
                 templateMsgProducer.messageTemplateNotice(messageTemplate);
             }else{
                 this.handleTemplateLogDeadLetter(message,msgBody,"没有查到模板所需的具体内容");
