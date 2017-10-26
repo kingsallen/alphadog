@@ -101,7 +101,10 @@ public class MessageTemplateEntity {
         Map<String,MessageTplDataCol> colMap =new HashMap<>();
         String name=this.handleName(userId);
         UserUserDO DO=this.getUserUserById(userId);
-        String time=DO.getRegisterTime();
+        String time="";
+        if(DO!=null){
+            time=DO.getRegisterTime();
+        }
         MessageTplDataCol keyword1=new MessageTplDataCol();
         keyword1.setColor("#173177");
         keyword1.setValue(name);
@@ -145,7 +148,13 @@ public class MessageTemplateEntity {
             return null;
         }
         HrEmployeePositionDO hrEmployeePositionDO=this.getHrEmployeePositionById(DO.getPositionId());
+        if(hrEmployeePositionDO==null){
+            hrEmployeePositionDO=new HrEmployeePositionDO();
+        }
         HrEmployeeSectionDO hrEmployeeSectionDO=this.getHrEmployeeSectionbyId(DO.getSectionId());
+        if(hrEmployeeSectionDO==null){
+            hrEmployeeSectionDO=new HrEmployeeSectionDO();
+        }
         MessageTplDataCol keyword1=new MessageTplDataCol();
         keyword1.setValue(DO.getCname());
         keyword1.setColor("#173177");
