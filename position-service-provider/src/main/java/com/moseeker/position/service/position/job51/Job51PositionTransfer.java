@@ -121,6 +121,22 @@ public class Job51PositionTransfer extends PositionTransfer{
     public void setMore(ThirdPartyPositionForSynchronization position,ThirdPartyPosition form, JobPositionDO positionDB) {
         setAddress(position,form);
         position.setEmail(positionDB.getHrEmail());
+
+        //51职位需要补全到6位
+        if(position.getCities()!=null){
+            DecimalFormat df=new DecimalFormat("000000");
+            List<List<String>> newCity=new ArrayList<>();
+            for(List<String> city:position.getCities()){
+                if(city!=null){
+                    List<String> formatedCity=new ArrayList<>();
+                    for(String c:city){
+                        formatedCity.add(df.format(c));
+                    }
+                    newCity.add(formatedCity);
+                }
+            }
+            position.setCities(newCity);
+        }
     }
 
     public void setAddress(ThirdPartyPositionForSynchronization position,ThirdPartyPosition form){
