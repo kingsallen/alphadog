@@ -322,11 +322,21 @@ public class PositionService {
         List<ThirdPartyPositionForSynchronization> positions = new ArrayList<>();
         if (forms != null && forms.size() > 0 && position != null && position.getId() > 0) {
             forms.forEach(form -> {
-                ThirdPartyPositionForSynchronization p = positionChangeUtil.changeToThirdPartyPosition(form, position);
-                positions.add(p);
+                positions.add(changeToThirdPartyPosition(form,position));
             });
         }
         return positions;
+    }
+    /**
+     * 转成第三方渠道职位
+     */
+    public ThirdPartyPositionForSynchronization changeToThirdPartyPosition(ThirdPartyPosition form,
+                                                                                 JobPositionDO position) {
+        ThirdPartyPositionForSynchronization p= new ThirdPartyPositionForSynchronization();
+        if (form != null && position != null && position.getId() > 0) {
+                p = positionChangeUtil.changeToThirdPartyPosition(form, position);
+        }
+        return p;
     }
 
     /**
@@ -421,16 +431,16 @@ public class PositionService {
 
         ThirdPartyPosition form = new ThirdPartyPosition();
         form.setChannel((byte) thirdPartyAccount.getChannel());
-        form.setAddress(thirdPartyPosition.getAddress());
+        form.setAddressName(thirdPartyPosition.getAddress());
         //count,occupation暂时没有放进去，目前不需要
-        form.setDepartment(thirdPartyPosition.getDepartment());
-        form.setFeedback_period(thirdPartyPosition.getFeedbackPeriod());
-        form.setSalary_bottom(thirdPartyPosition.getSalaryBottom());
-        form.setSalary_top(thirdPartyPosition.getSalaryTop());
-        form.setSalary_discuss(thirdPartyPosition.getSalaryDiscuss() == 0 ? false : true);
-        form.setSalary_month(thirdPartyPosition.getSalaryMonth());
-        form.setUse_company_address(thirdPartyPosition.getUseCompanyAddress() == 0 ? false : true);
-        form.setThird_party_account_id(thirdPartyAccount.getId());
+        form.setDepartmentName(thirdPartyPosition.getDepartment());
+        form.setFeedbackPeriod(thirdPartyPosition.getFeedbackPeriod());
+        form.setSalaryBottom(thirdPartyPosition.getSalaryBottom());
+        form.setSalaryTop(thirdPartyPosition.getSalaryTop());
+        form.setSalaryDiscuss(thirdPartyPosition.getSalaryDiscuss() == 0 ? false : true);
+        form.setSalaryMonth(thirdPartyPosition.getSalaryMonth());
+        form.setUseCompanyAddress(thirdPartyPosition.getUseCompanyAddress() == 0 ? false : true);
+        form.setThirdPartyAccountId(thirdPartyAccount.getId());
         ThirdPartyPositionForSynchronization p = positionChangeUtil.changeToThirdPartyPosition(form, position);
         p.setJob_id(thirdPartyPosition.getThirdPartPositionId());
         syncAccount.setPosition_info(p);
