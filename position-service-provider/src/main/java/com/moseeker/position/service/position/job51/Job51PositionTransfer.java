@@ -130,7 +130,7 @@ public class Job51PositionTransfer extends PositionTransfer{
                 if(city!=null){
                     List<String> formatedCity=new ArrayList<>();
                     for(String c:city){
-                        formatedCity.add(df.format(c));
+                        formatedCity.add(df.format(Integer.valueOf(c)));
                     }
                     newCity.add(formatedCity);
                 }
