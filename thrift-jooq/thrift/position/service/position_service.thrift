@@ -21,8 +21,10 @@ service PositionServices {
     common_struct.Response getPositionById(1:i32 positionId);  
     //获取公司两种自定义的字段
     common_struct.Response CustomField(1:string param);    
-    //转成第三方同步职位数据    
+    //转成第三方同步职位数据
     list<position_struct.ThirdPartyPositionForSynchronization> changeToThirdPartyPosition(1:list<appbs_struct.ThirdPartyPosition> form, 2:job_position_struct.JobPositionDO position);
+    //转成第三方同步职位数据
+    position_struct.ThirdPartyPositionForSynchronization changeOneToThirdPartyPosition(1:appbs_struct.ThirdPartyPosition form, 2:job_position_struct.JobPositionDO position);
     //生成第三方同步职位数据
     position_struct.ThirdPartyPositionForSynchronizationWithAccount createRefreshPosition(1: i32 positionId, 2: i32 account_id);
     //是否可以刷新
