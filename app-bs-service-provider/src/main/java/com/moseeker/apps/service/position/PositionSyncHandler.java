@@ -166,7 +166,7 @@ public class PositionSyncHandler {
     //获取可用并且remainNum>0的第三方账号
     public HrThirdPartyAccountDO getAvailableThirdAccount(int publisher,int channel){
         HrThirdPartyAccountDO account=getThirdPartAccount(publisher,channel);
-        if(account!=null && account.remainNum>0){
+        if(account!=null && ( channel==ChannelType.JOB51.getValue() && account.remainNum>0) || (channel!=ChannelType.JOB51.getValue()) ){
             logger.info("发布者：{}获取到渠道：{}第三方账号",publisher,channel,account);
             return account;
         }
