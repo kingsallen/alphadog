@@ -95,8 +95,6 @@ public class PositionZhilianWithAccount implements Serializable {
         position51WithAccount.setPassword(syncPosition.getPassword());
         position51WithAccount.setPosition_id(String.valueOf(syncPosition.getPosition_id()));
         position51WithAccount.setChannel(String.valueOf(syncPosition.getChannel()));
-        position51WithAccount.setCompany(syncPosition.getCompany_name());
-        position51WithAccount.setChannel(String.valueOf(syncPosition.getChannel()));
         position51WithAccount.setAccount_id(String.valueOf(syncPosition.getAccount_id()));
         position51WithAccount.setPosition_info(PositionZhilian.copyFromSyncPosition(syncPosition.getPosition_info()));
 
