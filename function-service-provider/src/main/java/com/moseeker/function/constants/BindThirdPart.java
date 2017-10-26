@@ -28,9 +28,9 @@ public class BindThirdPart {
     public final static String BIND_CODE_GET_QUEUE_NAME="mobile_code.response.web";
 
     //同步职位队列信息
-    public final static String SYNC_POSITION_SEND_ROUTING_KEY="mobile_code.request";
-    public final static String SYNC_POSITION_GET_ROUTING_KEY="mobile_code.response";
-    public final static String SYNC_POSITION_GET_QUEUE_NAME="mobile_code.response.web";
+    public final static String SYNC_POSITION_SEND_ROUTING_KEY="publish.request";
+    public final static String SYNC_POSITION_GET_ROUTING_KEY="publish.response";
+    public final static String SYNC_POSITION_GET_QUEUE_NAME="publish.response.web";
 
     public final static String CHAOS_ACCOUNTID="accountId";
 

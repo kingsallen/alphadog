@@ -150,9 +150,9 @@ public class AppConfig {
         return queue;
     }
     @Bean
-    public List<Binding> positionBindQueue() {
+    public List<Binding> positionSyncQueue() {
         return new ArrayList<Binding>(){{
-            add(BindingBuilder.bind(confirmQueue()).to(bindAccountExchange()).with(BindThirdPart.SYNC_POSITION_GET_ROUTING_KEY));
+            add(BindingBuilder.bind(positionQueue()).to(bindAccountExchange()).with(BindThirdPart.SYNC_POSITION_GET_ROUTING_KEY));
         }};
     }
 }
