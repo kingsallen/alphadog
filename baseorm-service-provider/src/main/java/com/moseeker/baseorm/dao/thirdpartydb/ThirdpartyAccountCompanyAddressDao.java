@@ -36,4 +36,11 @@ public class ThirdpartyAccountCompanyAddressDao extends JooqCrudImpl<ThirdpartyA
 
         return getDatas(query);
     }
+
+    public ThirdpartyAccountCompanyAddressDO getAddressById(int id) {
+        Query query = new Query.QueryBuilder()
+                .where(ThirdpartyAccountCompanyAddress.THIRDPARTY_ACCOUNT_COMPANY_ADDRESS.ACCOUNT_ID.getName(),id).buildQuery();
+
+        return getData(query);
+    }
 }

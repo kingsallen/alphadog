@@ -6,6 +6,10 @@ import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.dao.thirdpartydb.ThirdpartyAccountCompanyAddressDao;
+import com.moseeker.baseorm.dao.thirdpartydb.ThirdpartyAccountCompanyDao;
+import com.moseeker.baseorm.dao.thirdpartydb.ThirdpartyAccountDepartmentDao;
+import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountCompanyAddress;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.PositionSync;
 import com.moseeker.common.util.query.Query;
@@ -15,6 +19,9 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyAccountCompanyAddressDO;
+import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyAccountCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyAccountDepartmentDO;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
@@ -39,6 +46,37 @@ public class PositionSyncHandler {
     private HrCompanyAccountDao hrCompanyAccountDao;
     @Autowired
     private HRThirdPartyAccountDao hrThirdPartyAccountDao;
+
+    @Autowired
+    private ThirdpartyAccountCompanyDao companyDao;
+    @Autowired
+    private ThirdpartyAccountCompanyAddressDao companyAddressDao;
+    @Autowired
+    private ThirdpartyAccountDepartmentDao departmentDao;
+
+    public void checkFormData(ThirdPartyPosition position){
+
+    }
+
+    public ThirdpartyAccountCompanyDO checkCompany(int companyId){
+        ThirdpartyAccountCompanyDO company=companyDao.getCompanyById(companyId);
+        if(company==null){
+
+        }
+        return company;
+    }
+
+    public ThirdpartyAccountCompanyAddressDO checkCompanyAddress(int addressId){
+        ThirdpartyAccountCompanyAddressDO companyAddress=companyAddressDao.getAddressById(addressId);
+
+        return companyAddress;
+    }
+
+    public ThirdpartyAccountDepartmentDO checkDepartment(int departmentId){
+        ThirdpartyAccountDepartmentDO department=departmentDao.getDepartmentById(departmentId);
+
+        return department;
+    }
 
     //回写到jobPosition需要的字段
     public void writeBackJobPositionField(JobPositionDO moseekerPosition, List<ThirdPartyPositionForSynchronizationWithAccount> positions){

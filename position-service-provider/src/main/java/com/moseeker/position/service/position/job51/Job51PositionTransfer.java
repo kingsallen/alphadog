@@ -8,6 +8,7 @@ import com.moseeker.baseorm.dao.jobdb.JobOccupationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.baseorm.dao.thirdpartydb.ThirdpartyAccountCityDao;
 import com.moseeker.baseorm.dao.thirdpartydb.ThirdpartyAccountCompanyAddressDao;
+import com.moseeker.baseorm.dao.thirdpartydb.ThirdpartyAccountDepartmentDao;
 import com.moseeker.baseorm.db.dictdb.tables.DictCityMap;
 import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountCompanyAddress;
 import com.moseeker.common.constants.ChannelType;
@@ -30,6 +31,7 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionCityDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyAccountCityDO;
 import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyAccountCompanyAddressDO;
+import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyAccountDepartmentDO;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,17 +57,17 @@ public class Job51PositionTransfer extends PositionTransfer{
     private Dict51OccupationDao dict51OccupationDao;
 
     @Autowired
-    private HrTeamDao hrTeamDao;
+    private ThirdpartyAccountDepartmentDao departmentDao;
 
 
     @Override
     protected void setDepartment(ThirdPartyPosition form, JobPositionDO positionDO, ThirdPartyPositionForSynchronization position) {
-        HrTeamDO hrTeam = hrTeamDao.getHrTeam(positionDO.getTeamId());
-        if (hrTeam != null) {
+        /*List<ThirdpartyAccountDepartmentDO> list=departmentDao.getDepartmentByAccountId(position.getAccount_id());
+        if (list != null) {
             position.setDepartment(hrTeam.getName());
         } else {
             position.setDepartment("");
-        }
+        }*/
     }
 
     @Override

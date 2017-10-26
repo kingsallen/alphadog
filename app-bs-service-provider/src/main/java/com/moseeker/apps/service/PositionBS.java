@@ -93,7 +93,6 @@ public class PositionBS {
             }
             //根据是否使用公司地址来设置工作地址
 //            positionSyncHandler.setCompanyAddress(p, company);
-
             // 转成第三方渠道职位
             ThirdPartyPositionForSynchronization pos = positionServices.changeOneToThirdPartyPosition(p, moseekerPosition);
 
@@ -112,11 +111,11 @@ public class PositionBS {
         }
 
         // 提交到chaos处理
-        logger.info("chaosService.synchronizePosition:{}", JSON.toJSONString(positionsForSynchronizations));
+        logger.info("chaosService.synchronizePosition:{}", positionsForSynchronizations);
         chaosService.synchronizePosition(positionsForSynchronizations);
 
         // 回写数据到第三方职位表表
-        logger.info("write back to thirdpartyposition:" + JSON.toJSONString(pds));
+        logger.info("write back to thirdpartyposition:{}",pds);
         hRThirdPartyPositionDao.upsertThirdPartyPositions(pds);
 
         //回写薪资到MoSeeker职位表

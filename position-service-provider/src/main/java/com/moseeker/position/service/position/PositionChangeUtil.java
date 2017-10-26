@@ -75,7 +75,7 @@ public class PositionChangeUtil {
         PositionTransfer transfer=transferSimpleFactory(channelType);
 
         position=transfer.changeToThirdPartyPosition(form,positionDB);
-        logger.info("转换结果:{}"+position);
+        logger.info("转换结果:{}",position);
 
         return position;
     }
