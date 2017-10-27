@@ -34,10 +34,7 @@ import com.moseeker.position.pojo.DictConstantPojo;
 import com.moseeker.position.pojo.JobPositionFailMess;
 import com.moseeker.position.pojo.JobPostionResponse;
 import com.moseeker.position.pojo.PositionForSynchronizationPojo;
-import com.moseeker.position.service.position.DegreeChangeUtil;
-import com.moseeker.position.service.position.PositionChangeUtil;
-import com.moseeker.position.service.position.PositionForAlipaycampusPojo;
-import com.moseeker.position.service.position.WorkTypeChangeUtil;
+import com.moseeker.position.service.position.*;
 import com.moseeker.position.service.position.qianxun.Degree;
 import com.moseeker.position.service.position.qianxun.WorkType;
 import com.moseeker.position.utils.CommonPositionUtils;
@@ -462,6 +459,9 @@ public class PositionService {
         List<JobPositionFailMess> jobPositionFailMessPojos = new ArrayList<>();
         // 提交的数据
         List<JobPostrionObj> jobPositionHandlerDates = batchHandlerJobPosition.getData();
+
+        //过滤职位信息中的emoji表情
+        PositionUtil.refineEmoji(jobPositionHandlerDates);
         // 如果为true, 数据不能删除. 否则,允许删除, data中的数据根据fields_nohash中以外的字段, 判断data中的记录和数据库中已有记录的关系, 进行添加, 修改,删除
         Boolean noDelete = batchHandlerJobPosition.nodelete;
         // 参数有误
