@@ -80,7 +80,7 @@ public class ReceiverHandler {
             int templateId=jsonObject.getIntValue("template_id");
             String url=jsonObject.getString("url");
             if(StringUtils.isEmpty(url)){
-                url=env.getProperty("message.template.fans.url");
+               url=handlerUrl(type);
             }
             String enable_qx_retry=jsonObject.getString("enable_qx_retry");
             MessageTemplateNoticeStruct messageTemplate=messageTemplateEntity.handlerTemplate(userId,companyId,templateId,type,url);
@@ -94,7 +94,7 @@ public class ReceiverHandler {
                 this.handleTemplateLogDeadLetter(message,msgBody,"没有查到模板所需的具体内容");
             }
         }catch(Exception e){
-            this.handleTemplateLogDeadLetter(message,msgBody,"没有查到末班所需的具体内容");
+            this.handleTemplateLogDeadLetter(message,msgBody,"没有查到模板所需的具体内容");
             log.error(e.getMessage(), e);
         }
     }
@@ -108,6 +108,21 @@ public class ReceiverHandler {
         logDeadLetterDO.setRoutingKey(StringUtils.defaultIfBlank(message.getMessageProperties().getReceivedRoutingKey(), ""));
         logDeadLetterDO.setQueueName(StringUtils.defaultIfBlank(message.getMessageProperties().getConsumerQueue(), ""));
         logDeadLetterDao.addData(logDeadLetterDO);
+    }
+
+    /*
+     处理url
+     */
+    private String handlerUrl(int type){
+        String url="";
+        if(type==1){
+            url=env.getProperty("message.template.fans.url");
+        }else if(type==2||type==3){
+
+        }else if(type==4){
+
+        }
+        return url;
     }
 
 }

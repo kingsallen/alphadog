@@ -66,7 +66,6 @@ public class MessageTemplateEntity {
 
     public MessageTemplateNoticeStruct handlerTemplate(int userId,int companyId,int templateId,int type,String url){
        //https://platform.moseeker.com/m/user/survey?wechat_siganture=xxx
-
         if(type==1){
             HrWxWechatDO DO= this.getHrWxWechatDOByCompanyId(companyId);
             String wxSignture=DO.getSignature();
