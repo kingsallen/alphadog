@@ -120,8 +120,9 @@ public class PositionSyncHandler {
         data.setChannel((byte) p.getChannel());
         data.setIsSynchronization((byte) PositionSync.binding.getValue());
         //将最后一个职能的Code存到数据库
-        if (p.getOccupation().size() > 0) {
-            data.setOccupation(p.getOccupation().get(p.getOccupation().size() - 1));
+        if (!position.getOccupation().isEmpty() && position.getOccupation().size() > 0) {
+//            data.setOccupation(p.getOccupation().get(p.getOccupation().size() - 1));
+            data.setOccupation(position.getOccupation().get(position.getOccupation().size() - 1));
         }
         data.setSyncTime(syncTime);
         data.setUpdateTime(syncTime);
