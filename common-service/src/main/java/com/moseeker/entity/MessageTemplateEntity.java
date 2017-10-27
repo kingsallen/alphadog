@@ -70,7 +70,7 @@ public class MessageTemplateEntity {
             if(type==1){
                 HrWxWechatDO DO= this.getHrWxWechatDOByCompanyId(companyId);
                 String wxSignture=DO.getSignature();
-                url="https://platform.moseeker.com/m/user/survey?wechat_siganture="+wxSignture;
+                url=url.replace("{}",wxSignture);
             }
         }
         MessageTemplateNoticeStruct messageTemplateNoticeStruct =new MessageTemplateNoticeStruct();
