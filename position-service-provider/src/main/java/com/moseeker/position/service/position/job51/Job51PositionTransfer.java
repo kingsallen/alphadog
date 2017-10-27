@@ -116,5 +116,6 @@ public class Job51PositionTransfer extends PositionTransfer{
         Query query=new Query.QueryBuilder().where("id",form.getAddressId()).buildQuery();
         ThirdpartyAccountCompanyAddressDO address=addressDao.getData(query);
         position.setAddress_city(address.getCity());
+        position.setWork_place(address.getAddress());
     }
 }
