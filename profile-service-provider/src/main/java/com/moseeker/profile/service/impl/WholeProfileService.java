@@ -37,6 +37,7 @@ import com.moseeker.profile.service.impl.retriveprofile.RetriveProfile;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCollegeDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -110,6 +111,9 @@ public class WholeProfileService {
             Map<String, Object> basic = basicFuture.get();
             String countryCode = "";
             if (profileRecord.getUserId().intValue() != 0) {
+                logger.info("WholeProfileService getResource userId:{}", profileRecord.getUserId());
+                UserUserDO userUserDO = userDao.getUser(profileRecord.getUserId().intValue());
+                logger.info("WholeProfileService getResource countryCode:{}", userUserDO.getCountryCode());
                 countryCode = org.apache.commons.lang.StringUtils.defaultIfBlank(userDao.getUser(profileRecord.getUserId().intValue()).getCountryCode(), "");
             } else if (userId != 0) {
                 countryCode = org.apache.commons.lang.StringUtils.defaultIfBlank(userDao.getUser(userId).getCountryCode(), "");
