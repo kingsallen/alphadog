@@ -2,15 +2,8 @@ package com.moseeker.position.service.position.job51;
 
 import com.moseeker.baseorm.dao.dictdb.Dict51OccupationDao;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
-import com.moseeker.baseorm.dao.dictdb.DictCityMapDao;
-import com.moseeker.baseorm.dao.hrdb.HrTeamDao;
-import com.moseeker.baseorm.dao.jobdb.JobOccupationDao;
-import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
-import com.moseeker.baseorm.dao.thirdpartydb.ThirdpartyAccountCityDao;
 import com.moseeker.baseorm.dao.thirdpartydb.ThirdpartyAccountCompanyAddressDao;
 import com.moseeker.baseorm.dao.thirdpartydb.ThirdpartyAccountDepartmentDao;
-import com.moseeker.baseorm.db.dictdb.tables.DictCityMap;
-import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountCompanyAddress;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
@@ -23,16 +16,10 @@ import com.moseeker.position.service.position.qianxun.Degree;
 import com.moseeker.position.service.position.qianxun.WorkType;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.dao.struct.dictdb.Dict51jobOccupationDO;
-import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
-import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityMapDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrTeamDO;
-import com.moseeker.thrift.gen.dao.struct.jobdb.JobOccupationDO;
-import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionCityDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
-import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyAccountCityDO;
 import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyAccountCompanyAddressDO;
-import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyAccountDepartmentDO;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,8 +27,8 @@ import org.springframework.stereotype.Service;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class Job51PositionTransfer extends PositionTransfer{
@@ -121,22 +108,8 @@ public class Job51PositionTransfer extends PositionTransfer{
     public void setMore(ThirdPartyPositionForSynchronization position,ThirdPartyPosition form, JobPositionDO positionDB) {
         setAddress(position,form);
         position.setEmail(positionDB.getHrEmail());
-
         //51职位需要补全到6位
-        if(position.getCities()!=null){
-            DecimalFormat df=new DecimalFormat("000000");
-            List<List<String>> newCity=new ArrayList<>();
-            for(List<String> city:position.getCities()){
-                if(city!=null){
-                    List<String> formatedCity=new ArrayList<>();
-                    for(String c:city){
-                        formatedCity.add(df.format(Integer.valueOf(c)));
-                    }
-                    newCity.add(formatedCity);
-                }
-            }
-            position.setCities(newCity);
-        }
+        position.setCities(formateList(position.getCities(),"000000"));
     }
 
     public void setAddress(ThirdPartyPositionForSynchronization position,ThirdPartyPosition form){
@@ -144,5 +117,4 @@ public class Job51PositionTransfer extends PositionTransfer{
         ThirdpartyAccountCompanyAddressDO address=addressDao.getData(query);
         position.setAddress_city(address.getCity());
     }
-
 }

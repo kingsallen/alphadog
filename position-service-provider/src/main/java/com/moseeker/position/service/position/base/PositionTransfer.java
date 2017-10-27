@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.text.DecimalFormat;
 import java.util.*;
 
 public abstract class PositionTransfer {
@@ -214,5 +215,32 @@ public abstract class PositionTransfer {
         position.setPractice_salary_unit(form.getPracticeSalaryUnit());
 
         return position;
+    }
+
+    public List<List<String>> formateList(List<List<String>> list,String pattern){
+        if(list==null || list.isEmpty()){
+            return list;
+        }
+        List<List<String>> result=new ArrayList<>();
+        for(List<String> o:list){
+            result.add(formateStr(o,pattern));
+        }
+        return result;
+    }
+
+    public List<String> formateStr(List<String> list,String pattern){
+        if(list==null || list.isEmpty()){
+            return list;
+        }
+        DecimalFormat df = new DecimalFormat(pattern);
+        List<String> result=new ArrayList<>();
+        for(String s:list){
+            try{
+                result.add(df.format(Integer.valueOf(s)));
+            }catch (NumberFormatException e){
+                continue;
+            }
+        }
+        return result;
     }
 }
