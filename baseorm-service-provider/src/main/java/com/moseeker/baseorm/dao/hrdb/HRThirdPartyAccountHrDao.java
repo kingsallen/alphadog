@@ -49,4 +49,11 @@ public class HRThirdPartyAccountHrDao extends JooqCrudImpl<HrThirdPartyAccountHr
 
     }
 
+    public HrThirdPartyAccountHrDO getData(long hrId,int channel){
+        Query query = new Query.QueryBuilder()
+                .where(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.HR_ACCOUNT_ID.getName(), hrId)
+                .and(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.CHANNEL.getName(),channel)
+                .and(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.STATUS.getName(), 1).buildQuery();
+        return getData(query);
+    }
 }

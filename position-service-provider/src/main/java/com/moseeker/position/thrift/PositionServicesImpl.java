@@ -134,6 +134,11 @@ public class PositionServicesImpl implements Iface {
     }
 
     @Override
+    public ThirdPartyPositionForSynchronization changeOneToThirdPartyPosition(ThirdPartyPosition form, JobPositionDO position) throws TException {
+        return service.changeToThirdPartyPosition(form, position);
+    }
+
+    @Override
     public boolean ifAllowRefresh(int positionId, int account_id) {
         try {
             return service.ifAllowRefresh(positionId, account_id);
