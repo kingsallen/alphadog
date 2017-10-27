@@ -16,12 +16,15 @@ import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 /**
  * Created by lucky8987 on 17/8/3.
  */
 @Component
+@PropertySource("classpath:common.properties")
 public class ReceiverHandler {
 
     private static Logger log = LoggerFactory.getLogger(ReceiverHandler.class);
@@ -37,6 +40,9 @@ public class ReceiverHandler {
 
     @Autowired
     private TemplateMsgProducer templateMsgProducer;
+    @Autowired
+    private Environment env;
+
 
     @RabbitListener(queues = "#{addAwardQue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
@@ -73,6 +79,9 @@ public class ReceiverHandler {
             int type=jsonObject.getIntValue("type");
             int templateId=jsonObject.getIntValue("template_id");
             String url=jsonObject.getString("url");
+            if(StringUtils.isEmpty(url)&&type==1){
+                url=env.getProperty("message.template.fans.url");
+            }
             String enable_qx_retry=jsonObject.getString("enable_qx_retry");
             MessageTemplateNoticeStruct messageTemplate=messageTemplateEntity.handlerTemplate(userId,companyId,templateId,type,url);
             log.info("messageTemplate========"+JSONObject.toJSONString(messageTemplate));
