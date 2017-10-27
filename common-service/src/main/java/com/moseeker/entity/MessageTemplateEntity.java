@@ -20,6 +20,7 @@ import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysTemplateMessageLibra
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeePositionDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeSectionDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileBasicDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileIntentionDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
@@ -60,11 +61,15 @@ public class MessageTemplateEntity {
     private HrEmployeePositionDao hrEmployeePositionDao;
     @Autowired
     private HrEmployeeSectionDao hrEmployeeSectionDao;
+    @Autowired
+    private HrWxWechatDao hrWxWechatDao;
 
     public MessageTemplateNoticeStruct handlerTemplate(int userId,int companyId,int templateId,int type,String url){
-        ConfigSysTemplateMessageLibraryDO DO=this.getConfigSysTemplateMessageLibraryDOById(templateId);
+       //https://platform.moseeker.com/m/user/survey?wechat_siganture=xxx
         if(StringUtils.isNullOrEmpty(url)){
-            url=DO.getUrl();
+           HrWxWechatDO DO= this.getHrWxWechatDOByCompanyId(companyId);
+           String wxSignture=DO.getSignature();
+           url="https://platform.moseeker.com/m/user/survey?wechat_siganture="+wxSignture;
         }
         MessageTemplateNoticeStruct messageTemplateNoticeStruct =new MessageTemplateNoticeStruct();
         Map<String,MessageTplDataCol> colMap=this.handleMessageTemplateData(userId,type,companyId);
@@ -90,7 +95,7 @@ public class MessageTemplateEntity {
         }else if(type==2||type==3){
             colMap=this.handleDataRecommendTemplate(companyId);
         }else if(type==4){
-
+             colMap=this.handleDataProfileTemplate(userId,companyId);
         }
         return colMap;
     }
@@ -203,7 +208,12 @@ public class MessageTemplateEntity {
         return DO;
     }
 
-
+    //获取企业微信公众号，根据company_id
+    private HrWxWechatDO getHrWxWechatDOByCompanyId(int companyId){
+        Query query=new Query.QueryBuilder().where("company_id",companyId).buildQuery();
+        HrWxWechatDO hrWxWechatDO=hrWxWechatDao.getData(query);
+        return hrWxWechatDO;
+    }
     /*
      根据模板id获取模板的内容
      */
