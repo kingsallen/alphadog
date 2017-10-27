@@ -6,14 +6,16 @@ public class PositionForSyncResultPojo {
 
 	private int status;
 	private List<String> message;
-	private String job_id;
-	private String position_id;
-	private String channel;
-	private int remain_number = -1;
-	private int resume_number = -1;
-	private String sync_time;
-	private String pub_place_name;
-	private int account_id;
+	private String operation;
+	private Data data;
+
+	public Data getData() {
+		return data;
+	}
+
+	public void setData(Data data) {
+		this.data = data;
+	}
 
 	public int getStatus() {
 		return status;
@@ -30,56 +32,50 @@ public class PositionForSyncResultPojo {
 		this.message = message;
 	}
 
-	public String getJob_id() {
-		return job_id;
+	public String getOperation() {
+		return operation;
 	}
-	public void setJob_id(String job_id) {
-		this.job_id = job_id;
-	}
-	public String getPosition_id() {
-		return position_id;
-	}
-	public void setPosition_id(String position_id) {
-		this.position_id = position_id;
-	}
-	public String getChannel() {
-		return channel;
-	}
-	public void setChannel(String channel) {
-		this.channel = channel;
-	}
-	public int getRemain_number() {
-		return remain_number;
-	}
-	public void setRemain_number(int remain_number) {
-		this.remain_number = remain_number;
-	}
-	public String getSync_time() {
-		return sync_time;
-	}
-	public void setSync_time(String sync_time) {
-		this.sync_time = sync_time;
-	}
-	public String getPub_place_name() {
-		return pub_place_name;
-	}
-	public void setPub_place_name(String pub_place_name) {
-		this.pub_place_name = pub_place_name;
+	public void setOperation(String operation) {
+		this.operation = operation;
 	}
 
-	public int getResume_number() {
-		return resume_number;
-	}
 
-	public void setResume_number(int resume_number) {
-		this.resume_number = resume_number;
-	}
+	public class Data{
+		private String jobId;
+		private String positionId;
+		private String channel;
+		private int accountId;
 
-	public int getAccount_id() {
-		return account_id;
-	}
+		public String getJobId() {
+			return jobId;
+		}
 
-	public void setAccount_id(int account_id) {
-		this.account_id = account_id;
+		public void setJobId(String jobId) {
+			this.jobId = jobId;
+		}
+
+		public String getPositionId() {
+			return positionId;
+		}
+
+		public void setPositionId(String positionId) {
+			this.positionId = positionId;
+		}
+
+		public String getChannel() {
+			return channel;
+		}
+
+		public void setChannel(String channel) {
+			this.channel = channel;
+		}
+
+		public int getAccountId() {
+			return accountId;
+		}
+
+		public void setAccountId(int accountId) {
+			this.accountId = accountId;
+		}
 	}
 }

@@ -24,7 +24,7 @@ public class PositionParamUtils extends ParamUtils {
         try {
             HashMap<String, Object> data = parseRequestParam(request);
             form.setAppid((Integer) data.get("appid"));
-            form.setPosition_id((Integer) data.get("position_id"));
+            form.setPositionId((Integer) data.get("positionId"));
             List<ThirdPartyPosition> cs = new ArrayList<>();
             List<HashMap<String, Object>> channels = (List<HashMap<String, Object>>) data.get("channels");
             if (channels != null) {

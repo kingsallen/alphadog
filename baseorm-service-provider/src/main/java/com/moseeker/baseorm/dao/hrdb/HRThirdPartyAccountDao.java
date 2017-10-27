@@ -12,6 +12,7 @@ import com.moseeker.common.util.query.*;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountHrDO;
+import org.apache.commons.lang.time.FastDateFormat;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.jooq.impl.TableImpl;
@@ -200,5 +201,5 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
     }
 
 
-    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private FastDateFormat sdf = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss");
 }

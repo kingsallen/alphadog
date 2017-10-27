@@ -40,7 +40,7 @@ public class UserPositionEmailServiceTest {
 	}
 	@Test
 	public void sendPositionEmail() throws Exception {
-		int userid=3314;
+		int userid=2191502;
 		int result=userPositionEmailService.sendEmailPosition(userid);
 	}
 }
