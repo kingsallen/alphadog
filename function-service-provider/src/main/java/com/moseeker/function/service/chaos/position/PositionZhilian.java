@@ -22,6 +22,15 @@ public class PositionZhilian implements Serializable {
     private String email;
     private String job_id;
     private String count;
+    private String company;
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
 
     public String getTitle() {
         return title;
@@ -142,6 +151,7 @@ public class PositionZhilian implements Serializable {
         positionLiepin.setEmail(positionInfo.getEmail());
         positionLiepin.setJob_id(positionInfo.getJob_id());
         positionLiepin.setCount(String.valueOf(positionInfo.getQuantity()));
+        positionLiepin.setCompany(positionInfo.getCompany_name());
         return positionLiepin;
     }
 }
