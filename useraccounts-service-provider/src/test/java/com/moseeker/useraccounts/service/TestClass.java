@@ -32,9 +32,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.moseeker.useraccounts.service.config.AppConfig;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.IntStream;
 
 //@Configuration
@@ -105,7 +103,44 @@ public class TestClass {
 //        DecimalFormat df = new DecimalFormat("000000");
 //        System.out.println(df.format("0123"));
 
-        System.out.println(Integer.valueOf("0123"));
+        String str="Title\t| Title\n" +
+                "Occupation\t| Occupation\n" +
+                "Quantity\t| Quantity\n" +
+                "Degree\t| Degree\n" +
+                "Experience\t| Experience\n" +
+                "Salary_low\t| Salary_bottom\n" +
+                "Salary_high\t| Salary_top\n" +
+                "Description\t| Description\n" +
+                "Cities\t| Cities\n" +
+                "Email\t| Email\n" +
+                "Type_code\t| Work_type\n" +
+                "Department\t| Department\n" +
+                "Company\t| Company_name";
+        String strs[]=str.split("\n");
+
+        String str2="| 数据库中取\n" +
+                "| 前台传的companyId查询third_party_account_company的company_name字段\n" +
+                "| job_position的degree字段映射51的degree,DegreeChangeUtil.getJob51Degree\n" +
+                "| 暂时没有赋值\n" +
+                "| 数据库中job_position的accountabilities,requirement\n" +
+                "| 数据库中job_position的hrEmail\n" +
+                "| 数据库中job_position的experience映射成51的exprience\n" +
+                "| 前台传的occipation去dict_51job_occupation查，对应的是code_other字段\t\n" +
+                "| 前台传了值>0就用前台,否则用job_position的count\n" +
+                "| 前台设置的salaryTop\n" +
+                "| 前台设置的salaryBottom\n" +
+                "| 数据库中job_position中的title字段\n" +
+                "| 数据库中job_position的EmploymentType映射成51的type_code";
+        String strs2[]=str2.split("\n");
+
+
+        Arrays.sort(strs);
+//        Arrays.sort(strs2);
+
+        for(int i=0;i<strs.length;i++){
+            System.out.println(strs[i]+"\t"+strs2[i]);
+        }
+
 
 //        System.out.println(FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss").format(new Date()));
 

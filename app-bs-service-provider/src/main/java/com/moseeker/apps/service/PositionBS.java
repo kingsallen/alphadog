@@ -74,7 +74,7 @@ public class PositionBS {
         List<PositionSyncResultPojo> results = new ArrayList<>();
 
         //第三方职位列表，用来回写写到第三方职位表
-        List<HrThirdPartyPositionDO> pds = new ArrayList<>();
+        List<HrThirdPartyPositionDO> writeBackThirdPartyPositionList = new ArrayList<>();
 
         //用来同步到chaos的职位列表
         List<ThirdPartyPositionForSynchronizationWithAccount>  positionsForSynchronizations=new ArrayList<>();
@@ -96,16 +96,15 @@ public class PositionBS {
             // 转成第三方渠道职位
             ThirdPartyPositionForSynchronization pos = positionServices.changeOneToThirdPartyPosition(p, moseekerPosition);
 
+            //创建并初始化
             ThirdPartyPositionForSynchronizationWithAccount positionSync = positionSyncHandler.createAndInitThirdAccount(pos,avaliableAccount);
-            positionSync.setPosition_info(pos);
 
             //初始化公司名称
             positionSyncHandler.initCompanyName(positionSync,moseekerPosition.getPublisher());
 
-
             positionsForSynchronizations.add(positionSync);
 
-            pds.add(positionSyncHandler.createHrThirdPartyPositionDO(pos,p));
+            writeBackThirdPartyPositionList.add(positionSyncHandler.createHrThirdPartyPositionDO(pos,p));
 
             results.add(positionSyncHandler.createNormalResult(pos.getChannel(),pos.getAccount_id()));
         }
@@ -115,8 +114,8 @@ public class PositionBS {
         chaosService.synchronizePosition(positionsForSynchronizations);
 
         // 回写数据到第三方职位表表
-        logger.info("write back to thirdpartyposition:{}",pds);
-        hRThirdPartyPositionDao.upsertThirdPartyPositions(pds);
+        logger.info("write back to thirdpartyposition:{}",writeBackThirdPartyPositionList);
+        hRThirdPartyPositionDao.upsertThirdPartyPositions(writeBackThirdPartyPositionList);
 
         //回写薪资到MoSeeker职位表
         positionSyncHandler.writeBackJobPositionField(moseekerPosition,positionsForSynchronizations);
