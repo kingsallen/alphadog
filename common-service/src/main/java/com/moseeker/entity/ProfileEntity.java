@@ -491,7 +491,8 @@ public class ProfileEntity {
         improveSkill(profilePojo.getSkillRecords(), profileId);
         improveWorkexp(profilePojo.getWorkexpRecords(), profileId);
         improveWorks(profilePojo.getWorksRecords(), profileId);
-        getCompleteness(0, null, profileId);
+//        getCompleteness(0, null, profileId);
+        reCalculateProfileCompleteness(profileId);
     }
 
     public int createProfile(ProfilePojo profilePojo, UserUserDO userUserDO) {
