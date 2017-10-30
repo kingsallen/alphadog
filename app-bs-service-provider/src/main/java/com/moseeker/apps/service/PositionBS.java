@@ -2,6 +2,7 @@ package com.moseeker.apps.service;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.apps.constants.ResultMessage;
+import com.moseeker.apps.service.position.PositionSyncHandler;
 import com.moseeker.apps.service.position.PositionSyncResultPojo;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
@@ -57,7 +58,7 @@ public class PositionBS {
     @Autowired
     private HRThirdPartyPositionDao thirdPartyPositionDao;
     @Autowired
-    private HrCompanyAccountDao hrCompanyAccountDao;
+    private PositionSyncHandler positionSyncHandler;
 
     /**
      * @param position
@@ -67,158 +68,57 @@ public class PositionBS {
     public Response synchronizePositionToThirdPartyPlatform(ThirdPartyPositionForm position) throws Exception {
         logger.info("synchronizePositionToThirdPartyPlatform:" + JSON.toJSONString(position));
         // 职位数据是否存在
-        Query qu = new Query.QueryBuilder().where("id", position.getPosition_id()).buildQuery();
-        JobPositionDO moseekerPosition = jobPositionDao.getData(qu);
-        logger.info("position:" + JSON.toJSONString(moseekerPosition));
-
-        // 如果职位数据不存在，并且是不是在招职位
-        if (moseekerPosition == null || moseekerPosition.getId() == 0 || moseekerPosition.getStatus() != 0) {
-            return ResultMessage.POSITION_NOT_EXIST.toResponse();
-        }
+        JobPositionDO moseekerPosition = positionSyncHandler.getAvailableMoSeekerPosition(position.getPositionId());
 
         // 返回结果
         List<PositionSyncResultPojo> results = new ArrayList<>();
 
-        // 可同步的职位
-        List<ThirdPartyPosition> positionFroms = new ArrayList<>();
+        //第三方职位列表，用来回写写到第三方职位表
+        List<HrThirdPartyPositionDO> writeBackThirdPartyPositionList = new ArrayList<>();
 
-        //根据是否使用公司地址来设置工作地址
-        setCompanyAddress(position.getChannels(), moseekerPosition.getCompanyId());
+        //用来同步到chaos的职位列表
+        List<ThirdPartyPositionForSynchronizationWithAccount>  positionsForSynchronizations=new ArrayList<>();
 
-        //获取发布人绑定的第三方帐号
-        List<HrThirdPartyAccountDO> thirdPartyAccounts = hRThirdPartyAccountDao.getThirdPartyAccountsByUserId(moseekerPosition.getPublisher());
+        //查询职位对应城市
+//        HrCompanyDO company=positionSyncHandler.getCompany(moseekerPosition.getCompanyId());
 
-        if (thirdPartyAccounts == null || thirdPartyAccounts.size() == 0) {
-            //没有找到有效的第三方帐号
-            return ResultMessage.THIRD_PARTY_ACCOUNT_NOT_BIND.toResponse();
-        }
-
+        //这个循环检查需要同步的职位对应渠道下是否有绑定过的账号
         for (ThirdPartyPosition p : position.getChannels()) {
-            HrThirdPartyAccountDO avaliableAccount = null;
-            for (HrThirdPartyAccountDO account : thirdPartyAccounts) {
-                if (p.getChannel() == account.getChannel()) {
-                    if (account.getRemainNum() > 0) {
-                        avaliableAccount = account;
-                    }
-                }
-            }
-
+            HrThirdPartyAccountDO avaliableAccount = positionSyncHandler.getAvailableThirdAccount(moseekerPosition.getPublisher(),p.getChannel());
             if (avaliableAccount == null) {
-                //没有有效的对应渠道的第三方帐号
-                PositionSyncResultPojo result = new PositionSyncResultPojo();
-                result.setChannel(p.getChannel());
-                result.setAccount_id(p.getThird_party_account_id());
-                result.setSync_fail_reason("未绑定或者没有可发布职位点数!");
-                results.add(result);
-            } else {
-                p.setThird_party_account_id(avaliableAccount.getId());
-                positionFroms.add(p);
-            }
-        }
-
-        logger.info("positionFroms:" + JSON.toJSONString(positionFroms));
-
-        if (positionFroms.size() == 0) {
-            //没有找到有效的第三方帐号
-            return ResultMessage.THIRD_PARTY_ACCOUNT_NOT_BIND.toResponse();
-        }
-
-        // 转成第三方渠道职位
-        List<ThirdPartyPositionForSynchronization> positions = positionServices.changeToThirdPartyPosition(positionFroms, moseekerPosition);
-        // 提交到chaos处理
-        HrCompanyDO subCompany = hrCompanyAccountDao.getHrCompany(moseekerPosition.getPublisher());
-        List<ThirdPartyPositionForSynchronizationWithAccount> PositionsForSynchronizations = new ArrayList<>();
-        for (ThirdPartyPositionForSynchronization pos : positions) {
-            ThirdPartyPositionForSynchronizationWithAccount p = new ThirdPartyPositionForSynchronizationWithAccount();
-            if(subCompany!=null){
-                p.setCompany_name(subCompany.getAbbreviation());
-            }else{
-                p.setCompany_name("");
-            }
-            p.setPosition_info(pos);
-            for (HrThirdPartyAccountDO account : thirdPartyAccounts) {
-                if (pos.getAccount_id() == account.getId()) {
-                    p.setAccount_id(pos.getAccount_id());
-                    p.setChannel(pos.getChannel());
-                    p.setPassword(account.getPassword());
-                    p.setUser_name(account.getUsername());
-                    p.setPosition_id(pos.getPosition_id());
-                    p.setMember_name(account.getMembername());
-                    PositionsForSynchronizations.add(p);
-                    logger.info("ThirdPartyPositionForSynchronization:{}", JSON.toJSONString(p));
-                }
-            }
-        }
-        logger.info("chaosService.synchronizePosition:{}", JSON.toJSONString(PositionsForSynchronizations));
-        chaosService.synchronizePosition(PositionsForSynchronizations);
-
-        List<HrThirdPartyPositionDO> pds = new ArrayList<>();
-
-        String syncTime = (new DateTime()).toString("yyyy-MM-dd HH:mm:ss");
-        positions.forEach(p -> {
-            PositionSyncResultPojo result = new PositionSyncResultPojo();
-            result.setChannel(p.getChannel());
-            result.setSync_status(2);
-            result.setSync_time(syncTime);
-            result.setAccount_id(p.getAccount_id());
-            results.add(result);
-
-            HrThirdPartyPositionDO data = new HrThirdPartyPositionDO();
-            data.setAddress(p.getWork_place());
-            data.setChannel((byte) p.getChannel());
-            data.setIsSynchronization((byte) PositionSync.binding.getValue());
-            //将最后一个职能的Code存到数据库
-            if (p.getOccupation().size() > 0) {
-                data.setOccupation(p.getOccupation().get(p.getOccupation().size() - 1));
-            }
-            data.setSyncTime(syncTime);
-            data.setUpdateTime(syncTime);
-            data.setPositionId(p.getPosition_id());
-            data.setThirdPartyAccountId(p.getAccount_id());
-            data.setFeedbackPeriod(p.getFeedback_period());
-            data.setDepartment(p.getDepartment());
-            data.setSalaryBottom(p.getSalary_bottom());
-            data.setSalaryTop(p.getSalary_top());
-            data.setSalaryDiscuss(p.isSalary_discuss() ? 1 : 0);
-            data.setSalaryMonth(p.getSalary_month());
-            data.setPracticeSalary(p.getPractice_salary());
-            data.setPracticePerWeek(p.getPractice_per_week());
-            data.setPracticeSalaryUnit(p.getPractice_salary_unit());
-            pds.add(data);
-        });
-        // 回写数据到第三方职位表表
-        logger.info("write back to thirdpartyposition:" + JSON.toJSONString(pds));
-        hRThirdPartyPositionDao.upsertThirdPartyPositions(pds);
-
-
-        //假如是同步到猎聘并且是面议那么不回写到数据库
-        ThirdPartyPositionForSynchronization p = null;
-        for(ThirdPartyPositionForSynchronization thirdPartyPositionForSynchronization : positions){
-            if(thirdPartyPositionForSynchronization.isSalary_discuss() && thirdPartyPositionForSynchronization.getChannel() == ChannelType.LIEPIN.getValue()){
+                results.add(positionSyncHandler.createFailResult(p.getChannel(),p.getThirdPartyAccountId(),ResultMessage.THIRD_PARTY_ACCOUNT_NOT_EXIST.getMessage()));
                 continue;
+            } else {
+                p.setThirdPartyAccountId(avaliableAccount.getId());
             }
-            p = thirdPartyPositionForSynchronization;
-            break;
+            //根据是否使用公司地址来设置工作地址
+//            positionSyncHandler.setCompanyAddress(p, company);
+            // 转成第三方渠道职位
+            ThirdPartyPositionForSynchronization pos = positionServices.changeOneToThirdPartyPosition(p, moseekerPosition);
+
+            //创建并初始化
+            ThirdPartyPositionForSynchronizationWithAccount positionSync = positionSyncHandler.createAndInitThirdAccount(pos,avaliableAccount);
+
+            //初始化公司名称
+            positionSyncHandler.initCompanyName(positionSync,moseekerPosition.getPublisher());
+
+            positionsForSynchronizations.add(positionSync);
+
+            writeBackThirdPartyPositionList.add(positionSyncHandler.createHrThirdPartyPositionDO(pos,p));
+
+            results.add(positionSyncHandler.createNormalResult(pos.getChannel(),pos.getAccount_id()));
         }
-        if(p != null) {
-            boolean needWriteBackToPositin = false;
-            if (p.getSalary_top() > 0 && p.getSalary_top() != moseekerPosition.getSalaryTop() * 1000) {
-                moseekerPosition.setSalaryTop(p.getSalary_top() / 1000);
-                needWriteBackToPositin = true;
-            }
-            if (p.getSalary_bottom() > 0 && p.getSalary_bottom() != moseekerPosition.getSalaryBottom() * 1000) {
-                moseekerPosition.setSalaryBottom(p.getSalary_bottom() / 1000);
-                needWriteBackToPositin = true;
-            }
-            if (p.getQuantity() != moseekerPosition.getCount()) {
-                moseekerPosition.setCount(Integer.valueOf(p.getQuantity()));
-                needWriteBackToPositin = true;
-            }
-            if (needWriteBackToPositin) {
-                logger.info("needWriteBackToPositin :" + JSON.toJSONString(moseekerPosition));
-                jobPositionDao.updateData(moseekerPosition);
-            }
-        }
+
+        // 提交到chaos处理
+        logger.info("chaosService.synchronizePosition:{}", positionsForSynchronizations);
+        chaosService.synchronizePosition(positionsForSynchronizations);
+
+        // 回写数据到第三方职位表表
+        logger.info("write back to thirdpartyposition:{}",writeBackThirdPartyPositionList);
+        hRThirdPartyPositionDao.upsertThirdPartyPositions(writeBackThirdPartyPositionList);
+
+        //回写薪资到MoSeeker职位表
+        positionSyncHandler.writeBackJobPositionField(moseekerPosition,positionsForSynchronizations);
 
         return ResultMessage.SUCCESS.toResponse(results);
     }
@@ -230,10 +130,10 @@ public class PositionBS {
      * @param companyId 公司编号
      */
 
-    private void setCompanyAddress(List<ThirdPartyPosition> channels, int companyId) {
+    private void setAddressByCompanyAddress(List<ThirdPartyPosition> channels, int companyId) {
         boolean useCompanyAddress = false;
         for (ThirdPartyPosition channel : channels) {
-            if (channel.isUse_company_address()) {
+            if (channel.isUseCompanyAddress()) {
                 useCompanyAddress = true;
                 break;
             }
@@ -242,8 +142,9 @@ public class PositionBS {
             Query query = new QueryBuilder().where("id", companyId).buildQuery();
             HrCompanyDO company = hrCompanyDao.getData(query, HrCompanyDO.class);
             for (ThirdPartyPosition channel : channels) {
-                if (channel.isUse_company_address()) {
-                    channel.setAddress(company.getAddress());
+                if (channel.isUseCompanyAddress()) {
+                    channel.setAddressId(company.getId());
+                    channel.setAddressName(company.getAddress());
                 }
             }
         }
