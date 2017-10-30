@@ -65,10 +65,11 @@ public class PositionSyncConsumer  {
         } else if (pojo.getStatus() == 2) {
             //只会出现在猎聘的情况，这种情况下面会发送邮件
             data.setIsSynchronization((byte) PositionSync.bindingError.getValue());
-            data.setSyncFailReason(JSON.toJSONString(pojo.getMessage()));
         } else {
             data.setIsSynchronization((byte) PositionSync.failed.getValue());
         }
+
+        data.setSyncFailReason(JSON.toJSONString(pojo.getMessage()));
 
         Query.QueryBuilder qu = new Query.QueryBuilder();
         qu.where("id", pojo.getData().getPositionId());
