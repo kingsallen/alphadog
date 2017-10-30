@@ -533,10 +533,19 @@ public class ProfileService {
                 basic.setGender(String.valueOf(DictCode.gender(resumeObj.getResult().getGender())));
                 basic.setName(resumeObj.getResult().getName());
                 basic.setSelfIntroduction(resumeObj.getResult().getCont_my_desc());
-                try {
-                    basic.setBirth(DateUtils.dateRepair(resumeObj.getResult().getBirthday(), "\\."));
-                } catch (Exception e) {
-                    e.printStackTrace();
+                if (StringUtils.isNotNullOrEmpty(resumeObj.getResult().getBirthday())) {
+                    try {
+                        basic.setBirth(DateUtils.dateRepair(resumeObj.getResult().getBirthday(), "\\."));
+                    } catch (Exception e) {
+                        LogResumeRecordRecord logResumeRecordRecord = new LogResumeRecordRecord();
+                        logResumeRecordRecord.setErrorLog("出生日期转换异常: " + e.getMessage());
+                        logResumeRecordRecord.setFieldValue("birthday: " + resumeObj.getResult().getBirthday());
+                        logResumeRecordRecord.setUserId(uid);
+                        logResumeRecordRecord.setFileName(fileName);
+                        logResumeRecordRecord.setResultData(JSONObject.toJSONString(resumeObj));
+                        resumeDao.addRecord(logResumeRecordRecord);
+                        logger.error(e.getMessage(), e);
+                    }
                 }
                 profileObj.setBasic(basic);
                 logger.info("profileParser getBasic:{}", JSON.toJSONString(profileObj.getBasic()));
