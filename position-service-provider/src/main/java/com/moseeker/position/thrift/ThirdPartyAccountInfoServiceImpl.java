@@ -2,6 +2,8 @@ package com.moseeker.position.thrift;
 
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.position.service.third.*;
+import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountHrDO;
 import com.moseeker.thrift.gen.thirdpart.struct.*;
 import org.apache.thrift.TException;
@@ -33,68 +35,68 @@ public class ThirdPartyAccountInfoServiceImpl implements Iface {
 
 
     @Override
-    public ThirdPartyAccountInfo getAllInfo(ThirdPartyAccountInfoParam param) throws TException {
+    public ThirdPartyAccountInfo getAllInfo(ThirdPartyAccountInfoParam param) throws BIZException {
         try {
             ThirdPartyAccountInfo info=service.getAllInfo(param);
             return info;
-        }catch (TException e){
+        }catch (BIZException e){
             throw e;
         }catch (Exception e){
             logger.error(e.getMessage(),e);
-            throw new TException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION,e);
+            throw new SysBIZException();
         }
 
     }
 
     @Override
-    public List<ThirdPartyAccountInfoCity> getCity(ThirdPartyAccountInfoParam param) throws TException {
+    public List<ThirdPartyAccountInfoCity> getCity(ThirdPartyAccountInfoParam param) throws BIZException {
         try{
             HrThirdPartyAccountHrDO hrAccountDoHr=service.getThirdPartyAccount(param);
             return cityService.getInfoCity(hrAccountDoHr.getThirdPartyAccountId());
-        }catch (TException e){
+        }catch (BIZException e){
             throw e;
         }catch (Exception e){
             logger.error(e.getMessage(),e);
-            throw new TException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION,e);
+            throw new SysBIZException();
         }
     }
 
     @Override
-    public List<ThirdPartyAccountInfoAddress> getCompanyAddress(ThirdPartyAccountInfoParam param) throws TException {
+    public List<ThirdPartyAccountInfoAddress> getCompanyAddress(ThirdPartyAccountInfoParam param) throws BIZException {
         try{
             HrThirdPartyAccountHrDO hrAccountDoHr=service.getThirdPartyAccount(param);
             return addressService.getInfoCompanyAddress(hrAccountDoHr.getThirdPartyAccountId());
-        }catch (TException e){
+        }catch (BIZException e){
             throw e;
         }catch (Exception e){
             logger.error(e.getMessage(),e);
-            throw new TException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION,e);
+            throw new SysBIZException();
         }
     }
 
     @Override
-    public List<ThirdPartyAccountInfoCompany> getCompany(ThirdPartyAccountInfoParam param) throws TException {
+    public List<ThirdPartyAccountInfoCompany> getCompany(ThirdPartyAccountInfoParam param) throws BIZException {
         try{
             HrThirdPartyAccountHrDO hrAccountDoHr=service.getThirdPartyAccount(param);
             return companyService.getInfoCompany(hrAccountDoHr.getThirdPartyAccountId());
-        }catch (TException e){
+        }catch (BIZException e){
             throw e;
         }catch (Exception e){
             logger.error(e.getMessage(),e);
-            throw new TException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION,e);
+            throw new SysBIZException();
         }
     }
 
     @Override
-    public List<ThirdPartyAccountInfoDepartment> getDepartment(ThirdPartyAccountInfoParam param) throws TException {
+    public List<ThirdPartyAccountInfoDepartment> getDepartment(ThirdPartyAccountInfoParam param) throws BIZException {
         try{
             HrThirdPartyAccountHrDO hrAccountDoHr=service.getThirdPartyAccount(param);
             return departmentService.getInfoDepartment(hrAccountDoHr.getThirdPartyAccountId());
-        }catch (TException e){
+        }catch (BIZException e){
             throw e;
         }catch (Exception e){
             logger.error(e.getMessage(),e);
-            throw new TException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION,e);
+            throw new SysBIZException();
         }
     }
 
