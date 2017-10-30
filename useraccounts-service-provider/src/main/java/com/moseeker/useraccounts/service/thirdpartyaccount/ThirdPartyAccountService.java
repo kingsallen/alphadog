@@ -90,19 +90,19 @@ public class ThirdPartyAccountService {
      * @throws Exception
      */
     private Map<String, String> getBindExtra(UserHrAccountDO userHrAccount, HrThirdPartyAccountDO account) throws Exception {
-        //获取子公司简称和ID
-        HrCompanyDO hrCompanyDO = hrCompanyAccountDao.getHrCompany(userHrAccount.getId());
-
-        if (hrCompanyDO == null) {
-            hrCompanyDO = hrCompanyDao.getCompanyById(userHrAccount.getCompanyId());
-
-            if (hrCompanyDO == null) {
-                throw new BIZException(-1, "无效的HR账号");
-            }
-        }
         Map<String, String> extras = new HashMap<>();
         //智联的帐号同步带上子公司简称
         if (account.getChannel() == ChannelType.ZHILIAN.getValue()) {
+            //获取子公司简称和ID
+            HrCompanyDO hrCompanyDO = hrCompanyAccountDao.getHrCompany(userHrAccount.getId());
+
+            if (hrCompanyDO == null) {
+                hrCompanyDO = hrCompanyDao.getCompanyById(userHrAccount.getCompanyId());
+
+                if (hrCompanyDO == null) {
+                    throw new BIZException(-1, "无效的HR账号");
+                }
+            }
             extras.put("company", hrCompanyDO.getAbbreviation());
         }
         return extras;
@@ -374,7 +374,7 @@ public class ThirdPartyAccountService {
     }
 
     public int checkRebinding(HrThirdPartyAccountDO bindingAccount) throws BIZException {
-        if (bindingAccount.getBinding() == 1 || bindingAccount.getBinding() == 3 || bindingAccount.getBinding() == 7) {
+        if (bindingAccount.getBinding() == 1 || bindingAccount.getBinding() == 3 || bindingAccount.getBinding() == 7 || bindingAccount.getBinding() == 8) {
             throw new BIZException(-1, "已经绑定该帐号了");
         } else if (bindingAccount.getBinding() == 2 || bindingAccount.getBinding() == 6) {
             throw new BIZException(-1, "该帐号已经在绑定中了");

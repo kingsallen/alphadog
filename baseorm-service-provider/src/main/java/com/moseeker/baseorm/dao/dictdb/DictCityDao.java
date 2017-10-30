@@ -92,7 +92,12 @@ public class DictCityDao extends JooqCrudImpl<DictCityDO, DictCityRecord> {
     /**
      * 获取完整的城市级别
      * 例:徐家汇 -> 上海，徐家汇
-     *
+     * 具体逻辑：
+     * 例如：栾城区（130111）- 石家庄（130100） - 河北省（130000）
+     * 城市选择的是130111，
+     * 要找上一级，130110，找到鹿泉区，level为3，和栾城区相同为3，放弃，
+     * 再找上一级，130100，找到石家庄，level为2，那上一级就是它
+     * 再找上一级，130000，找到河北省，level为1，那再上一级就是它
      * @param city
      * @return
      */
