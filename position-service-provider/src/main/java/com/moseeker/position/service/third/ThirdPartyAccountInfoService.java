@@ -44,7 +44,7 @@ public class ThirdPartyAccountInfoService {
     @Autowired
     HRThirdPartyAccountHrDao hrThirdPartyAccountHrDao;
 
-    public ThirdPartyAccountInfo getAllInfo(ThirdPartyAccountInfoParam param) throws TException {
+    public ThirdPartyAccountInfo getAllInfo(ThirdPartyAccountInfoParam param) throws Exception {
 
         int accountId=getThirdPartyAccount(param).getThirdPartyAccountId();
 
@@ -63,7 +63,7 @@ public class ThirdPartyAccountInfoService {
      * @return
      * @throws TException 当没有获取HR账号在某个渠道下的第三方账号时，抛出异常
      */
-    public HrThirdPartyAccountHrDO getThirdPartyAccount(ThirdPartyAccountInfoParam param) throws TException{
+    public HrThirdPartyAccountHrDO getThirdPartyAccount(ThirdPartyAccountInfoParam param) throws Exception{
         long hrId=param.getHrId();
         int channel=param.getChannel();
 
