@@ -765,8 +765,12 @@ public class UseraccountsService {
      * @param newmobile 新手机号
      * @param code      新手机号的验证码
      */
-    public Response postresetmobile(int user_id, String newmobile, String code) throws TException {
-        if (code != null && !validateCode(newmobile, code, 2)) {
+    public Response postresetmobile(int user_id, String countryCode, String newmobile, String code) throws TException {
+        String verifynewmobile = newmobile;
+        if(!"86".equals(countryCode)){
+            verifynewmobile = countryCode + newmobile;
+        }
+        if (code != null && !validateCode(verifynewmobile, code, 4)) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);
         }
 
@@ -787,10 +791,12 @@ public class UseraccountsService {
                     UserUserRecord userParent = userdao.getRecord(query.buildQuery());
                     userParent.setMobile(Long.parseLong(newmobile));
                     userParent.setUsername(newmobile);
+                    userParent.setCountryCode(countryCode);
                     userdao.updateRecord(userParent);
                 }
                 user.setMobile(Long.parseLong(newmobile));
                 user.setUsername(newmobile);
+                user.setCountryCode(countryCode);
 
                 result = userdao.updateRecord(user);
                 if (result > 0) {
