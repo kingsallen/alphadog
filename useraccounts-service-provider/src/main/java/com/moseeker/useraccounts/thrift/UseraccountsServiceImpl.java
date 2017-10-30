@@ -333,7 +333,8 @@ public class UseraccountsServiceImpl implements Iface {
 	@Override
 	public Response postresetmobile(int user_id,String countryCode, String newmobile, String code) throws TException {
 		try {
-			return service.postresetmobile(user_id, newmobile, code);
+
+			return service.postresetmobile(user_id, countryCode, newmobile, code);
 		} catch (CommonException e) {
 			throw ExceptionConvertUtil.convertCommonException(e);
 		} catch (Exception e) {
