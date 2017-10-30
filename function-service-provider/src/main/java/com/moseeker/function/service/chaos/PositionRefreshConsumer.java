@@ -13,6 +13,7 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import org.apache.commons.lang.time.FastDateFormat;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.Date;
 
 /**
  * 监听刷新完成队列
@@ -66,22 +68,24 @@ public class PositionRefreshConsumer extends RedisConsumer<PositionForSyncResult
         if (pojo == null) return;
 
         HrThirdPartyPositionDO data = new HrThirdPartyPositionDO();
-        data.setChannel(Byte.valueOf(pojo.getChannel()));
-        data.setPositionId(Integer.valueOf(pojo.getPosition_id()));
-        data.setThirdPartyAccountId(pojo.getAccount_id());
+        String now=FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss").format(new Date());
+
+        data.setChannel(Byte.valueOf(pojo.getData().getChannel()));
+        data.setPositionId(Integer.valueOf(pojo.getData().getPositionId()));
+        data.setThirdPartyAccountId(pojo.getData().getAccountId());
         if (pojo.getStatus() == 0) {
             data.setIsRefresh(PositionRefreshType.refreshed.getValue());
-            data.setRefreshTime(pojo.getSync_time());
+            data.setRefreshTime(now);
         } else if (pojo.getStatus() == 2 || pojo.getStatus() == 9) {
             data.setIsRefresh(PositionRefreshType.refreshError.getValue());
         } else {
             data.setIsRefresh(PositionRefreshType.failed.getValue());
         }
         Query.QueryBuilder qu = new Query.QueryBuilder();
-        qu.where("id", pojo.getPosition_id());
+        qu.where("id", pojo.getData().getPositionId());
         JobPositionDO moseekerPosition = positionDao.getData(qu.buildQuery());
         if (moseekerPosition == null || moseekerPosition.getId() < 1) {
-            logger.warn("刷新完成队列中包含不存在的职位:{}", pojo.getPosition_id());
+            logger.warn("刷新完成队列中包含不存在的职位:{}", pojo.getData().getPositionId());
             return;
         }
 
@@ -97,12 +101,10 @@ public class PositionRefreshConsumer extends RedisConsumer<PositionForSyncResult
             syncFailedNotification.sendRefreshFailedMail(moseekerPosition, thirdPartyPositionDO, pojo);
         }
 
-        if (pojo.getStatus() == 0 && pojo.getRemain_number() > -1 && pojo.getResume_number() > -1) {
+        if (pojo.getStatus() == 0 ) {
             HrThirdPartyAccountDO thirdPartyAccount = new HrThirdPartyAccountDO();
-            thirdPartyAccount.setId(pojo.getAccount_id());
-            thirdPartyAccount.setRemainNum(pojo.getRemain_number());
-            thirdPartyAccount.setRemainProfileNum(pojo.getResume_number());
-            thirdPartyAccount.setUpdateTime((new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
+            thirdPartyAccount.setId(pojo.getData().getAccountId());
+            thirdPartyAccount.setUpdateTime(now);
             thirdPartyAccount.setSyncTime(thirdPartyAccount.getUpdateTime());
             logger.info("刷新完成队列中更新第三方帐号信息:{}", JSON.toJSONString(thirdPartyAccount));
             thirdPartyAccountDao.updateData(thirdPartyAccount);
