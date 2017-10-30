@@ -5,10 +5,12 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.thirdpart.service.ThirdPartyAccountInfoService;
 import com.moseeker.thrift.gen.thirdpart.struct.ThirdPartyAccountInfo;
 import com.moseeker.thrift.gen.thirdpart.struct.ThirdPartyAccountInfoParam;
+import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +39,7 @@ public class ThirdPartyAccountInfoController {
             return ResponseLogNotification.successJson(request,info);
         }catch (Exception e){
             logger.error(e.getMessage(), e);
-            return ResponseLogNotification.failJson(request, e.getMessage());
+            return ResponseLogNotification.failJson(request, e);
         }
     }
 }

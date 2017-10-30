@@ -9,6 +9,7 @@ import com.moseeker.baseorm.dao.thirdpartydb.ThirdpartyAccountDepartmentDao;
 import com.moseeker.baseorm.db.dictdb.tables.DictCity;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
 import com.moseeker.baseorm.db.thirdpartydb.tables.pojos.ThirdpartyAccountDepartment;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountHrDO;
 import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyAccountCityDO;
@@ -70,7 +71,7 @@ public class ThirdPartyAccountInfoService {
         HrThirdPartyAccountHrDO hrThirdPartyAccountHrDO=hrThirdPartyAccountHrDao.getData(hrId,channel);
 
         if(hrThirdPartyAccountHrDO == null || hrThirdPartyAccountHrDO.getId() == 0){
-            throw new TException(param.getHrId()+"账号在渠道"+param.getChannel()+"没有绑定的第三方账号");
+            throw new BIZException(ConstantErrorCodeMessage.NO_BIND_THIRD_PARTY_ACCOUNT_STATUS,param.getHrId()+"账号在渠道"+param.getChannel()+"没有绑定的第三方账号");
         }
 
         logger.info("获取到的第三方账号为:"+hrThirdPartyAccountHrDO.getThirdPartyAccountId());
