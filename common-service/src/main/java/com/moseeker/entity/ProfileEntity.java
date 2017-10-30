@@ -504,4 +504,10 @@ public class ProfileEntity {
                 userUserRecord, null);
         return id;
     }
+    /*
+     重新计算建立的完整度
+     */
+    public int reCalculateProfileCompleteness(int profileId){
+        return completenessImpl.reCalculateProfileCompleteness(profileId);
+    }
 }
