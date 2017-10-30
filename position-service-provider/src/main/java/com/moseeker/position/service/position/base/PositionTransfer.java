@@ -60,7 +60,7 @@ public abstract class PositionTransfer {
         }
         setExperience(experience,  position);
         //薪资要求
-        setSalaryBottom(form.getSalaryBottom(), (int) positionDB.getSalaryBottom(), position);
+            setSalaryBottom(form.getSalaryBottom(), (int) positionDB.getSalaryBottom(), position);
         setSalaryTop(form.getSalaryTop(), (int) positionDB.getSalaryTop(), position);
         //招聘职位类型
         setEmployeeType((byte) positionDB.getEmploymentType(),  position);

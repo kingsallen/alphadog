@@ -193,6 +193,7 @@ public class PositionSyncHandler {
         p.setUser_name(account.getUsername());
         p.setPosition_id(pos.getPosition_id());
         p.setMember_name(account.getMembername());
+        p.setPosition_info(pos);
         logger.info("初始化第三方账号:{}"+p);
         return p;
     }

@@ -42,6 +42,8 @@ public class AppConfig {
         return cf;
     }
 
+
+
     @Bean
     public RabbitTemplate rabbitTemplate() {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(cachingConnectionFactory());
