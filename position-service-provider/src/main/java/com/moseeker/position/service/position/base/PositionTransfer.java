@@ -94,10 +94,10 @@ public abstract class PositionTransfer {
     protected abstract void setExperience(Integer experience, ThirdPartyPositionForSynchronization position);
     public abstract ChannelType getChannel();
 
-    //做一些额外操作,可以集成以后覆盖
+    //做一些额外操作,可以继承以后覆盖
     public void setMore(ThirdPartyPositionForSynchronization position,ThirdPartyPosition form, JobPositionDO positionDB){
         //do nothing
-    };
+    }
 
 
 
