@@ -48,7 +48,7 @@ public class ProfileWorkexpDao extends JooqCrudImpl<ProfileWorkexpDO, ProfileWor
         if (profileId > 0) {
             Result<ProfileWorkexpRecord> result = create.selectFrom(ProfileWorkexp.PROFILE_WORKEXP)
                     .where(ProfileWorkexp.PROFILE_WORKEXP.PROFILE_ID.equal((int) (profileId)))
-                    .and(ProfileWorkexp.PROFILE_WORKEXP.END_UNTIL_NOW.equal((byte)1))
+                    .and(ProfileWorkexp.PROFILE_WORKEXP.END_UNTIL_NOW.isTrue())
                     .orderBy(ProfileWorkexp.PROFILE_WORKEXP.ID.desc())
                     .limit(1).fetch();
 
