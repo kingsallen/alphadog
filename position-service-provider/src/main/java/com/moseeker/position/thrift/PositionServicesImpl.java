@@ -134,6 +134,11 @@ public class PositionServicesImpl implements Iface {
     }
 
     @Override
+    public ThirdPartyPositionForSynchronization changeOneToThirdPartyPosition(ThirdPartyPosition form, JobPositionDO position) throws TException {
+        return service.changeToThirdPartyPosition(form, position);
+    }
+
+    @Override
     public boolean ifAllowRefresh(int positionId, int account_id) {
         try {
             return service.ifAllowRefresh(positionId, account_id);
@@ -326,6 +331,7 @@ public class PositionServicesImpl implements Iface {
             List<Map<String, Object>> list = positionPcService.getRecommendPosition(positionId,page,pageSize);
             if(StringUtils.isEmptyList(list)){
                 Response res= ResponseUtils.success("");
+                return res;
             }
             Response res= ResponseUtils.success(list);
             return res;
@@ -335,6 +341,8 @@ public class PositionServicesImpl implements Iface {
         }
 
     }
+
+
 
 
 

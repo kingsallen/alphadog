@@ -27,7 +27,7 @@ import javax.annotation.PostConstruct;
  * @author wjf
  */
 @Component
-public class PositionSyncConsumer extends RedisConsumer<PositionForSyncResultPojo> {
+public class PositionSyncConsumer  {
 
     private static Logger logger = LoggerFactory.getLogger(PositionSyncConsumer.class);
 
@@ -44,15 +44,6 @@ public class PositionSyncConsumer extends RedisConsumer<PositionForSyncResultPoj
     PositionSyncFailedNotification syncFailedNotification;
 
 
-    @PostConstruct
-    public void startTask() {
-        loopTask(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_COMPLETED_QUEUE.toString());
-    }
-
-    @Override
-    protected PositionForSyncResultPojo convertData(String redisString) {
-        return JSON.parseObject(redisString, PositionForSyncResultPojo.class);
-    }
 
     /**
      * 同步信息回写到数据库
@@ -60,38 +51,31 @@ public class PositionSyncConsumer extends RedisConsumer<PositionForSyncResultPoj
      * @param pojo
      */
     @CounterIface
-    @Override
-    protected void onComplete(PositionForSyncResultPojo pojo) {
+    public void positionSyncComplete(PositionForSyncResultPojo pojo) {
 
         if (pojo == null) return;
 
         HrThirdPartyPositionDO data = new HrThirdPartyPositionDO();
-        data.setChannel(Byte.valueOf(pojo.getChannel()));
-        data.setPositionId(Integer.valueOf(pojo.getPosition_id()));
-        data.setThirdPartPositionId(pojo.getJob_id());
-        data.setThirdPartyAccountId(pojo.getAccount_id());
+        data.setChannel(Byte.valueOf(pojo.getData().getChannel()));
+        data.setPositionId(Integer.valueOf(pojo.getData().getPositionId()));
+        data.setThirdPartPositionId(pojo.getData().getJobId());
+        data.setThirdPartyAccountId(pojo.getData().getAccountId());
         if (pojo.getStatus() == 0) {
             data.setIsSynchronization((byte) PositionSync.bound.getValue());
-            data.setSyncTime(pojo.getSync_time());
         } else if (pojo.getStatus() == 2) {
             //只会出现在猎聘的情况，这种情况下面会发送邮件
             data.setIsSynchronization((byte) PositionSync.bindingError.getValue());
-            data.setSyncFailReason(JSON.toJSONString(pojo.getMessage()));
         } else {
             data.setIsSynchronization((byte) PositionSync.failed.getValue());
-            if (StringUtils.isNotNullOrEmpty(pojo.getPub_place_name())) {
-
-                data.setSyncFailReason(JSON.toJSONString(pojo.getMessage()).replace("{}", pojo.getPub_place_name()));
-            } else {
-                data.setSyncFailReason(JSON.toJSONString(pojo.getMessage()));
-            }
         }
 
+        data.setSyncFailReason(JSON.toJSONString(pojo.getMessage()));
+
         Query.QueryBuilder qu = new Query.QueryBuilder();
-        qu.where("id", pojo.getPosition_id());
+        qu.where("id", pojo.getData().getPositionId());
         JobPositionDO positionDO = positionDao.getData(qu.buildQuery());
         if (positionDO == null || positionDO.getId() < 1) {
-            logger.warn("同步完成队列中包含不存在的职位:{}", pojo.getPosition_id());
+            logger.warn("同步完成队列中包含不存在的职位:{}", pojo.getData().getPositionId());
             return;
         }
 
@@ -115,13 +99,10 @@ public class PositionSyncConsumer extends RedisConsumer<PositionForSyncResultPoj
             }
         }
 
-        if (pojo.getStatus() == 0 && pojo.getResume_number() > -1 && pojo.getRemain_number() > -1) {
+        if (pojo.getStatus() == 0) {
             HrThirdPartyAccountDO thirdPartyAccount = new HrThirdPartyAccountDO();
-            thirdPartyAccount.setRemainNum(pojo.getRemain_number());
-            thirdPartyAccount.setRemainProfileNum(pojo.getResume_number());
-            thirdPartyAccount.setChannel(Short.valueOf(pojo.getChannel().trim()));
-            thirdPartyAccount.setSyncTime(pojo.getSync_time());
-            thirdPartyAccount.setId(pojo.getAccount_id());
+            thirdPartyAccount.setChannel(Short.valueOf(pojo.getData().getChannel().trim()));
+            thirdPartyAccount.setId(pojo.getData().getAccountId());
             logger.info("同步完成队列中更新第三方帐号信息:{}", JSON.toJSONString(thirdPartyAccount));
             thirdPartyAccountDao.updateData(thirdPartyAccount);
         }

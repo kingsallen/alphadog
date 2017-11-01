@@ -5,10 +5,13 @@ import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountCity;
 import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountCompanyAddress;
 import com.moseeker.baseorm.db.thirdpartydb.tables.records.ThirdpartyAccountCityRecord;
 import com.moseeker.baseorm.db.thirdpartydb.tables.records.ThirdpartyAccountCompanyAddressRecord;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyAccountCityDO;
 import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyAccountCompanyAddressDO;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
 * @author xxx
@@ -25,5 +28,19 @@ public class ThirdpartyAccountCompanyAddressDao extends JooqCrudImpl<ThirdpartyA
 
     public ThirdpartyAccountCompanyAddressDao(TableImpl<ThirdpartyAccountCompanyAddressRecord> table, Class<ThirdpartyAccountCompanyAddressDO> doClass) {
         super(table, doClass);
+    }
+
+    public List<ThirdpartyAccountCompanyAddressDO> getAddressByAccountId(int accountId) {
+        Query query = new Query.QueryBuilder()
+                .where(ThirdpartyAccountCompanyAddress.THIRDPARTY_ACCOUNT_COMPANY_ADDRESS.ACCOUNT_ID.getName(),accountId).buildQuery();
+
+        return getDatas(query);
+    }
+
+    public ThirdpartyAccountCompanyAddressDO getAddressById(int id) {
+        Query query = new Query.QueryBuilder()
+                .where(ThirdpartyAccountCompanyAddress.THIRDPARTY_ACCOUNT_COMPANY_ADDRESS.ACCOUNT_ID.getName(),id).buildQuery();
+
+        return getData(query);
     }
 }

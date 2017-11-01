@@ -21,8 +21,10 @@ service PositionServices {
     common_struct.Response getPositionById(1:i32 positionId);  
     //获取公司两种自定义的字段
     common_struct.Response CustomField(1:string param);    
-    //转成第三方同步职位数据    
+    //转成第三方同步职位数据
     list<position_struct.ThirdPartyPositionForSynchronization> changeToThirdPartyPosition(1:list<appbs_struct.ThirdPartyPosition> form, 2:job_position_struct.JobPositionDO position);
+    //转成第三方同步职位数据
+    position_struct.ThirdPartyPositionForSynchronization changeOneToThirdPartyPosition(1:appbs_struct.ThirdPartyPosition form, 2:job_position_struct.JobPositionDO position);
     //生成第三方同步职位数据
     position_struct.ThirdPartyPositionForSynchronizationWithAccount createRefreshPosition(1: i32 positionId, 2: i32 account_id);
     //是否可以刷新
@@ -74,11 +76,11 @@ service PositionServices {
     common_struct.Response getPcRecommandCompanyAll(1:i32 page,2:i32 pageSize);
     common_struct.Response getPcPositionDetail(1:i32 positionId);
     common_struct.Response getPcRecommendPosition(1:i32 positionId,2:i32 page,3:i32 pageSize);
-    common_struct.Response getThirdpartySyncedPositions(1:i32 channel,2:i32 publisher,3:i32 companyId,4:i32 candidateSource,5:i32 page,6:i32 pageSize);
-    common_struct.Response putAlipayResult(1:i32 channel,2:i32 positionId,3:i32 alipayJobId );
     common_struct.Response addPcReport(1:job_pc_reported_struct.JobPcReportedDO jobPcReportedDO);
     common_struct.Response getPcAdvertisement(1:i32 page,2:i32 pageSize);
     common_struct.Response getPositionRecommendByModuleId(1:i32 page,2:i32 pageSize,3:i32 moduleId);
+    common_struct.Response getThirdpartySyncedPositions(1:i32 channel,2:i32 publisher,3:i32 companyId,4:i32 candidateSource,5:i32 page,6:i32 pageSize);
+    common_struct.Response putAlipayResult(1:i32 channel,2:i32 positionId,3:i32 alipayJobId );
 }
 /*
 	查询第三方自定义职能
