@@ -110,6 +110,10 @@ public class MessageTemplateEntity {
         if(DO!=null){
             time=DO.getRegisterTime();
         }
+        MessageTplDataCol first=new MessageTplDataCol();
+        first.setColor("#173177");
+        first.setValue("您好，请完善您的简历信息！");
+        colMap.put("first",first);
         MessageTplDataCol keyword1=new MessageTplDataCol();
         keyword1.setColor("#173177");
         keyword1.setValue(name);
@@ -118,6 +122,10 @@ public class MessageTemplateEntity {
         keyword2.setColor("#173177");
         keyword2.setValue(time);
         colMap.put("keyword2",keyword2);
+        MessageTplDataCol remark=new MessageTplDataCol();
+        remark.setColor("#173177");
+        remark.setValue("网站升级，请完善您的简历！");
+        colMap.put("remark",remark);
         return colMap;
     }
 
