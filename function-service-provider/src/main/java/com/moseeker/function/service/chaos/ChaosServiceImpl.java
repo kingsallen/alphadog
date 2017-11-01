@@ -312,13 +312,15 @@ public class ChaosServiceImpl {
                 continue;
             }
 
-            redisClient.lpush(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_QUEUE.toString(), positionJson);
+//            redisClient.lpush(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_QUEUE.toString(), positionJson);
+
+            amqpTemplate.send(BindThirdPart.BIND_EXCHANGE_NAME, BindThirdPart.SYNC_POSITION_SEND_ROUTING_KEY, MessageBuilder.withBody(positionJson.getBytes()).build());
 
             logger.info("成功将同步数据插入队列:{}", position.getPosition_id());
 
-            if (second < 60 * 60 * 24) {
+            /*if (second < 60 * 60 * 24) {
                 redisClient.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH.toString(), String.valueOf(position.getPosition_id()), String.valueOf(position.getAccount_id()), "1", 60 * 60 * 24 - second);
-            }
+            }*/
         }
     }
 

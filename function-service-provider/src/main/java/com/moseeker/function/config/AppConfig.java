@@ -42,6 +42,8 @@ public class AppConfig {
         return cf;
     }
 
+
+
     @Bean
     public RabbitTemplate rabbitTemplate() {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(cachingConnectionFactory());
@@ -140,6 +142,19 @@ public class AppConfig {
     public List<Binding> codeBindQueue() {
         return new ArrayList<Binding>(){{
             add(BindingBuilder.bind(confirmQueue()).to(bindAccountExchange()).with(BindThirdPart.BIND_CODE_GET_ROUTING_KEY));
+        }};
+    }
+
+    //同步职位队列
+    @Bean
+    public Queue positionQueue() {
+        Queue queue = new Queue(BindThirdPart.SYNC_POSITION_GET_QUEUE_NAME, true, false, false);
+        return queue;
+    }
+    @Bean
+    public List<Binding> positionSyncQueue() {
+        return new ArrayList<Binding>(){{
+            add(BindingBuilder.bind(positionQueue()).to(bindAccountExchange()).with(BindThirdPart.SYNC_POSITION_GET_ROUTING_KEY));
         }};
     }
 }

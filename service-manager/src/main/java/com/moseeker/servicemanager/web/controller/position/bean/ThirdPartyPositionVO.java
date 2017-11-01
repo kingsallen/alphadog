@@ -11,25 +11,39 @@ public class ThirdPartyPositionVO implements Serializable {
 
     private int id;
     private int position_id;
-    private String third_part_position_id;
-    private int is_synchronization;
-    private int is_refresh;
-    private String sync_time;
-    private String refresh_time;
-    private String update_time;
+    private String thirdPartPositionId;
+    private int isSynchronization;
+    private int isRefresh;
+    private String syncTime;
+    private String refreshTime;
+    private String updateTime;
     private String address;
     private String occupation;
-    private String sync_fail_reason;
-    private int use_company_address;
-    private int third_party_account_id;
+    private String syncFailReason;
+    private int useCompanyAddress;
+    private int thirdPartyAccountId;
     private int channel;
     private String department;
-    private int salary_month;
-    private int feedback_period;
-    private int salary_discuss;
-    private int salary_bottom;
-    private int salary_top;
-    public String account_id;
+    private int salaryMonth;
+    private int feedbackPeriod;
+    private int salaryDiscuss;
+    private int salaryBottom;
+    private int salaryTop;
+    private String accountId;
+    private int companyId;
+    private String companyName;
+    private int addressId;
+    private String addressName;
+    private int departmentId;
+    private String departmentName;
+
+    public String getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(String accountId) {
+        this.accountId = accountId;
+    }
 
     public int getId() {
         return id;
@@ -47,52 +61,52 @@ public class ThirdPartyPositionVO implements Serializable {
         this.position_id = position_id;
     }
 
-    public String getThird_part_position_id() {
-        return third_part_position_id;
+    public String getThirdPartPositionId() {
+        return thirdPartPositionId;
     }
 
-    public void setThird_part_position_id(String third_part_position_id) {
-        this.third_part_position_id = third_part_position_id;
+    public void setThirdPartPositionId(String thirdPartPositionId) {
+        this.thirdPartPositionId = thirdPartPositionId;
     }
 
-    public int getIs_synchronization() {
-        return is_synchronization;
+    public int getIsSynchronization() {
+        return isSynchronization;
     }
 
-    public void setIs_synchronization(int is_synchronization) {
-        this.is_synchronization = is_synchronization;
+    public void setIsSynchronization(int isSynchronization) {
+        this.isSynchronization = isSynchronization;
     }
 
-    public int getIs_refresh() {
-        return is_refresh;
+    public int getIsRefresh() {
+        return isRefresh;
     }
 
-    public void setIs_refresh(int is_refresh) {
-        this.is_refresh = is_refresh;
+    public void setIsRefresh(int isRefresh) {
+        this.isRefresh = isRefresh;
     }
 
-    public String getSync_time() {
-        return sync_time;
+    public String getSyncTime() {
+        return syncTime;
     }
 
-    public void setSync_time(String sync_time) {
-        this.sync_time = sync_time;
+    public void setSyncTime(String syncTime) {
+        this.syncTime = syncTime;
     }
 
-    public String getRefresh_time() {
-        return refresh_time;
+    public String getRefreshTime() {
+        return refreshTime;
     }
 
-    public void setRefresh_time(String refresh_time) {
-        this.refresh_time = refresh_time;
+    public void setRefreshTime(String refreshTime) {
+        this.refreshTime = refreshTime;
     }
 
-    public String getUpdate_time() {
-        return update_time;
+    public String getUpdateTime() {
+        return updateTime;
     }
 
-    public void setUpdate_time(String update_time) {
-        this.update_time = update_time;
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
     }
 
     public String getAddress() {
@@ -111,28 +125,28 @@ public class ThirdPartyPositionVO implements Serializable {
         this.occupation = occupation;
     }
 
-    public String getSync_fail_reason() {
-        return sync_fail_reason;
+    public String getSyncFailReason() {
+        return syncFailReason;
     }
 
-    public void setSync_fail_reason(String sync_fail_reason) {
-        this.sync_fail_reason = sync_fail_reason;
+    public void setSyncFailReason(String syncFailReason) {
+        this.syncFailReason = syncFailReason;
     }
 
-    public int getUse_company_address() {
-        return use_company_address;
+    public int getUseCompanyAddress() {
+        return useCompanyAddress;
     }
 
-    public void setUse_company_address(int use_company_address) {
-        this.use_company_address = use_company_address;
+    public void setUseCompanyAddress(int useCompanyAddress) {
+        this.useCompanyAddress = useCompanyAddress;
     }
 
-    public int getThird_party_account_id() {
-        return third_party_account_id;
+    public int getThirdPartyAccountId() {
+        return thirdPartyAccountId;
     }
 
-    public void setThird_party_account_id(int third_party_account_id) {
-        this.third_party_account_id = third_party_account_id;
+    public void setThirdPartyAccountId(int thirdPartyAccountId) {
+        this.thirdPartyAccountId = thirdPartyAccountId;
     }
 
     public int getChannel() {
@@ -151,76 +165,124 @@ public class ThirdPartyPositionVO implements Serializable {
         this.department = department;
     }
 
-    public int getSalary_month() {
-        return salary_month;
+    public int getSalaryMonth() {
+        return salaryMonth;
     }
 
-    public void setSalary_month(int salary_month) {
-        this.salary_month = salary_month;
+    public void setSalaryMonth(int salaryMonth) {
+        this.salaryMonth = salaryMonth;
     }
 
-    public int getFeedback_period() {
-        return feedback_period;
+    public int getFeedbackPeriod() {
+        return feedbackPeriod;
     }
 
-    public void setFeedback_period(int feedback_period) {
-        this.feedback_period = feedback_period;
+    public void setFeedbackPeriod(int feedbackPeriod) {
+        this.feedbackPeriod = feedbackPeriod;
     }
 
-    public int getSalary_discuss() {
-        return salary_discuss;
+    public int getSalaryDiscuss() {
+        return salaryDiscuss;
     }
 
-    public void setSalary_discuss(int salary_discuss) {
-        this.salary_discuss = salary_discuss;
+    public void setSalaryDiscuss(int salaryDiscuss) {
+        this.salaryDiscuss = salaryDiscuss;
     }
 
-    public int getSalary_bottom() {
-        return salary_bottom;
+    public int getSalaryBottom() {
+        return salaryBottom;
     }
 
-    public void setSalary_bottom(int salary_bottom) {
-        this.salary_bottom = salary_bottom;
+    public void setSalaryBottom(int salaryBottom) {
+        this.salaryBottom = salaryBottom;
     }
 
-    public int getSalary_top() {
-        return salary_top;
+    public int getSalaryTop() {
+        return salaryTop;
     }
 
-    public void setSalary_top(int salary_top) {
-        this.salary_top = salary_top;
+    public void setSalaryTop(int salaryTop) {
+        this.salaryTop = salaryTop;
     }
 
-    public String getAccount_id() {
-        return account_id;
+    public int getCompanyId() {
+        return companyId;
     }
 
-    public void setAccount_id(String account_id) {
-        this.account_id = account_id;
+    public void setCompanyId(int companyId) {
+        this.companyId = companyId;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    public int getAddressId() {
+        return addressId;
+    }
+
+    public void setAddressId(int addressId) {
+        this.addressId = addressId;
+    }
+
+    public String getAddressName() {
+        return addressName;
+    }
+
+    public void setAddressName(String addressName) {
+        this.addressName = addressName;
+    }
+
+    public int getDepartmentId() {
+        return departmentId;
+    }
+
+    public void setDepartmentId(int departmentId) {
+        this.departmentId = departmentId;
+    }
+
+    public String getDepartmentName() {
+        return departmentName;
+    }
+
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
     }
 
     public ThirdPartyPositionVO copyDO(HrThirdPartyPositionDO positionDO) {
         id = positionDO.id;
         position_id = positionDO.positionId;
-        third_part_position_id = positionDO.thirdPartPositionId;
-        is_synchronization = (byte) positionDO.isSynchronization;
-        is_refresh = (byte) positionDO.isRefresh;
-        sync_time = positionDO.syncTime;
-        refresh_time = positionDO.refreshTime;
-        update_time = positionDO.updateTime;
+        thirdPartPositionId = positionDO.thirdPartPositionId;
+        isSynchronization = (byte) positionDO.isSynchronization;
+        isRefresh = (byte) positionDO.isRefresh;
+        syncTime = positionDO.syncTime;
+        refreshTime = positionDO.refreshTime;
+        updateTime = positionDO.updateTime;
         address = positionDO.address;
         occupation = positionDO.occupation;
-        sync_fail_reason = positionDO.syncFailReason;
-        use_company_address = positionDO.useCompanyAddress;
-        third_party_account_id = positionDO.thirdPartyAccountId;
+        syncFailReason = positionDO.syncFailReason;
+        useCompanyAddress = positionDO.useCompanyAddress;
+        thirdPartyAccountId = positionDO.thirdPartyAccountId;
         channel = positionDO.channel;
         department = positionDO.department;
-        salary_month = positionDO.salaryMonth;
-        feedback_period = positionDO.feedbackPeriod;
-        salary_discuss = positionDO.salaryDiscuss;
-        salary_bottom = positionDO.salaryBottom;
-        salary_top = positionDO.salaryTop;
-        account_id = String.valueOf(positionDO.thirdPartyAccountId);
+        salaryMonth = positionDO.salaryMonth;
+        feedbackPeriod = positionDO.feedbackPeriod;
+        salaryDiscuss = positionDO.salaryDiscuss;
+        salaryBottom = positionDO.salaryBottom;
+        salaryTop = positionDO.salaryTop;
+        accountId = String.valueOf(positionDO.thirdPartyAccountId);
+
+        companyId = positionDO.companyId;
+        companyName = positionDO.companyName;
+        addressId = positionDO.addressId;
+        addressName =positionDO.addressName;
+        departmentId = positionDO.departmentId;
+        departmentName =positionDO.departmentName;
+
         return this;
     }
 }

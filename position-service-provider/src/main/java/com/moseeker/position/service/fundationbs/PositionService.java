@@ -34,10 +34,7 @@ import com.moseeker.position.pojo.DictConstantPojo;
 import com.moseeker.position.pojo.JobPositionFailMess;
 import com.moseeker.position.pojo.JobPostionResponse;
 import com.moseeker.position.pojo.PositionForSynchronizationPojo;
-import com.moseeker.position.service.position.DegreeChangeUtil;
-import com.moseeker.position.service.position.PositionChangeUtil;
-import com.moseeker.position.service.position.PositionForAlipaycampusPojo;
-import com.moseeker.position.service.position.WorkTypeChangeUtil;
+import com.moseeker.position.service.position.*;
 import com.moseeker.position.service.position.qianxun.Degree;
 import com.moseeker.position.service.position.qianxun.WorkType;
 import com.moseeker.position.utils.CommonPositionUtils;
@@ -322,11 +319,21 @@ public class PositionService {
         List<ThirdPartyPositionForSynchronization> positions = new ArrayList<>();
         if (forms != null && forms.size() > 0 && position != null && position.getId() > 0) {
             forms.forEach(form -> {
-                ThirdPartyPositionForSynchronization p = positionChangeUtil.changeToThirdPartyPosition(form, position);
-                positions.add(p);
+                positions.add(changeToThirdPartyPosition(form,position));
             });
         }
         return positions;
+    }
+    /**
+     * 转成第三方渠道职位
+     */
+    public ThirdPartyPositionForSynchronization changeToThirdPartyPosition(ThirdPartyPosition form,
+                                                                                 JobPositionDO position) {
+        ThirdPartyPositionForSynchronization p= new ThirdPartyPositionForSynchronization();
+        if (form != null && position != null && position.getId() > 0) {
+                p = positionChangeUtil.changeToThirdPartyPosition(form, position);
+        }
+        return p;
     }
 
     /**
@@ -421,16 +428,16 @@ public class PositionService {
 
         ThirdPartyPosition form = new ThirdPartyPosition();
         form.setChannel((byte) thirdPartyAccount.getChannel());
-        form.setAddress(thirdPartyPosition.getAddress());
+        form.setAddressName(thirdPartyPosition.getAddress());
         //count,occupation暂时没有放进去，目前不需要
-        form.setDepartment(thirdPartyPosition.getDepartment());
-        form.setFeedback_period(thirdPartyPosition.getFeedbackPeriod());
-        form.setSalary_bottom(thirdPartyPosition.getSalaryBottom());
-        form.setSalary_top(thirdPartyPosition.getSalaryTop());
-        form.setSalary_discuss(thirdPartyPosition.getSalaryDiscuss() == 0 ? false : true);
-        form.setSalary_month(thirdPartyPosition.getSalaryMonth());
-        form.setUse_company_address(thirdPartyPosition.getUseCompanyAddress() == 0 ? false : true);
-        form.setThird_party_account_id(thirdPartyAccount.getId());
+        form.setDepartmentName(thirdPartyPosition.getDepartment());
+        form.setFeedbackPeriod(thirdPartyPosition.getFeedbackPeriod());
+        form.setSalaryBottom(thirdPartyPosition.getSalaryBottom());
+        form.setSalaryTop(thirdPartyPosition.getSalaryTop());
+        form.setSalaryDiscuss(thirdPartyPosition.getSalaryDiscuss() == 0 ? false : true);
+        form.setSalaryMonth(thirdPartyPosition.getSalaryMonth());
+        form.setUseCompanyAddress(thirdPartyPosition.getUseCompanyAddress() == 0 ? false : true);
+        form.setThirdPartyAccountId(thirdPartyAccount.getId());
         ThirdPartyPositionForSynchronization p = positionChangeUtil.changeToThirdPartyPosition(form, position);
         p.setJob_id(thirdPartyPosition.getThirdPartPositionId());
         syncAccount.setPosition_info(p);
@@ -452,6 +459,9 @@ public class PositionService {
         List<JobPositionFailMess> jobPositionFailMessPojos = new ArrayList<>();
         // 提交的数据
         List<JobPostrionObj> jobPositionHandlerDates = batchHandlerJobPosition.getData();
+
+        //过滤职位信息中的emoji表情
+        PositionUtil.refineEmoji(jobPositionHandlerDates);
         // 如果为true, 数据不能删除. 否则,允许删除, data中的数据根据fields_nohash中以外的字段, 判断data中的记录和数据库中已有记录的关系, 进行添加, 修改,删除
         Boolean noDelete = batchHandlerJobPosition.nodelete;
         // 参数有误
