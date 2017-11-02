@@ -820,10 +820,11 @@ public class UserHrAccountService {
                             UserEmployeeVO userEmployeeVO = new UserEmployeeVO();
                             org.springframework.beans.BeanUtils.copyProperties(userEmployeeDO, userEmployeeVO);
                             userEmployeeVO.setUsername(userEmployeeDO.getCname());
+                            List customFieldValues = new ArrayList();
                             if (userEmployeeDO.getCustomFieldValues() != null) {
-                                List customFieldValues = JSONObject.parseObject(userEmployeeDO.getCustomFieldValues(), List.class);
-                                userEmployeeVO.setCustomFieldValues(customFieldValues);
+                                customFieldValues.addAll(JSONObject.parseObject(userEmployeeDO.getCustomFieldValues(), List.class));
                             }
+                            userEmployeeVO.setCustomFieldValues(customFieldValues);
                             // 微信昵称
                             if (userMap.size() > 0 && userMap.get(userEmployeeDO.getSysuserId()) != null) {
                                 userEmployeeVO.setNickName(userMap.get(userEmployeeDO.getSysuserId()).getNickname());
