@@ -60,19 +60,6 @@ public class ZhilianPositionTransfer extends PositionTransfer {
         position.setExperience(ExperienceChangeUtil.getZhilianExperience(experience).getName());
     }
 
-
-    @Override
-    //做一些额外操作
-    public void setMore(ThirdPartyPositionForSynchronization position,ThirdPartyPosition form, JobPositionDO positionDB){
-        setWelfare(position,positionDB);
-    }
-
-    public void setWelfare(ThirdPartyPositionForSynchronization position, JobPositionDO positionDB){
-        if(positionDB.getFeature() != null){
-            position.setWelfare(Arrays.asList(positionDB.getFeature().split("#")));
-        }
-    }
-
     @Override
     public ChannelType getChannel() {
         return ChannelType.ZHILIAN;
