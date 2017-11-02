@@ -865,6 +865,11 @@ public class UserHrAccountService {
                     } else if (flag.intValue() == 1) {
                         userEmployeeVO.setAward(0);
                     }
+                    List customFieldValues = new ArrayList();
+                    if (userEmployeeDO.getCustomFieldValues() != null) {
+                        customFieldValues.addAll(JSONObject.parseObject(userEmployeeDO.getCustomFieldValues(), List.class));
+                    }
+                    userEmployeeVO.setCustomFieldValues(customFieldValues);
                     // 微信昵称
                     if (userMap.size() > 0 && userMap.get(userEmployeeDO.getSysuserId()) != null) {
                         userEmployeeVO.setNickName(userMap.get(userEmployeeDO.getSysuserId()).getNickname());
