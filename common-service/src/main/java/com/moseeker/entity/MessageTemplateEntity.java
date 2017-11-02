@@ -64,7 +64,7 @@ public class MessageTemplateEntity {
     @Autowired
     private HrWxWechatDao hrWxWechatDao;
 
-    public MessageTemplateNoticeStruct handlerTemplate(int userId,int companyId,int templateId,int type,String url){
+    public MessageTemplateNoticeStruct handlerTemplate(int userId,int companyId,int templateId,int type,String url,String jobName,String companyName){
        //https://platform.moseeker.com/m/user/survey?wechat_siganture=xxx
         if(type==1){
             HrWxWechatDO DO= this.getHrWxWechatDOByCompanyId(companyId);
@@ -72,7 +72,7 @@ public class MessageTemplateEntity {
             url=url.replace("{}",wxSignture);
         }
         MessageTemplateNoticeStruct messageTemplateNoticeStruct =new MessageTemplateNoticeStruct();
-        Map<String,MessageTplDataCol> colMap=this.handleMessageTemplateData(userId,type,companyId);
+        Map<String,MessageTplDataCol> colMap=this.handleMessageTemplateData(userId,type,companyId,jobName,companyName);
         if(colMap==null||colMap.isEmpty()){
             return null;
         }
@@ -87,13 +87,13 @@ public class MessageTemplateEntity {
     /*
         处理发送完善简历消息模板
      */
-    private  Map<String,MessageTplDataCol> handleMessageTemplateData(int userId,int type,int companyId){
+    private  Map<String,MessageTplDataCol> handleMessageTemplateData(int userId,int type,int companyId,String jobName,String companyName){
 
         Map<String,MessageTplDataCol> colMap =new HashMap<>();
         if(type==1){
             colMap=this.handleDataForuestion(userId);
         }else if(type==2||type==3){
-            colMap=this.handleDataRecommendTemplate(companyId);
+            colMap=this.handleDataRecommendTemplate(companyId,userId,type,jobName,companyName);
         }else if(type==4){
              colMap=this.handleDataProfileTemplate(userId,companyId);
         }
@@ -110,6 +110,10 @@ public class MessageTemplateEntity {
         if(DO!=null){
             time=DO.getRegisterTime();
         }
+        MessageTplDataCol first=new MessageTplDataCol();
+        first.setColor("#173177");
+        first.setValue("您好，请完善简历信息。");
+        colMap.put("first",first);
         MessageTplDataCol keyword1=new MessageTplDataCol();
         keyword1.setColor("#173177");
         keyword1.setValue(name);
@@ -118,28 +122,57 @@ public class MessageTemplateEntity {
         keyword2.setColor("#173177");
         keyword2.setValue(time);
         colMap.put("keyword2",keyword2);
+        MessageTplDataCol remark=new MessageTplDataCol();
+        remark.setColor("#173177");
+        remark.setValue("完善简历信息，让HR更了解你，会得到更多的关注哦");
+        colMap.put("remark",remark);
         return colMap;
     }
 
     /*
         推荐职位列表消息数据
      */
-    private Map<String,MessageTplDataCol> handleDataRecommendTemplate(int companyId){
+    private Map<String,MessageTplDataCol> handleDataRecommendTemplate(int companyId,int userId,int type,String jobName,String companyName){
         Map<String,MessageTplDataCol> colMap =new HashMap<>();
+        UserUserDO userDO=this.getUserUserById(userId);
+        String name="";
+        if(userDO!=null){
+            name=userDO.getName();
+        }
+        if(type==2){
+            MessageTplDataCol first=new MessageTplDataCol();
+            first.setColor("#173177");
+            first.setValue("根据您的求职意愿，仟寻为您挑选了一些新机会。");
+            colMap.put("first",first);
+            MessageTplDataCol remark=new MessageTplDataCol();
+            remark.setColor("#173177");
+            remark.setValue("点击查看推荐职位。");
+            colMap.put("remark",remark);
+        }
+        if(type==3){
+            MessageTplDataCol first=new MessageTplDataCol();
+            first.setColor("#173177");
+            first.setValue("以下职位虚位以待，赶快转发起来吧~");
+            colMap.put("first",first);
+            MessageTplDataCol remark=new MessageTplDataCol();
+            remark.setColor("#173177");
+            remark.setValue("点击查看推荐职位。");
+            colMap.put("remark",remark);
+        }
         SimpleDateFormat sf=new SimpleDateFormat("YYYY-MM-DD hh:mm:ss");
-        String data=sf.format(new Date());
         MessageTplDataCol keyword1=new MessageTplDataCol();
         keyword1.setColor("#173177");
-        HrCompanyDO DO=this.getCompanyById(companyId);
-        if(DO==null){
-            return null;
-        }
-        keyword1.setValue(DO.getAbbreviation());
+        keyword1.setValue(jobName);
         colMap.put("keyword1",keyword1);
         MessageTplDataCol keyword2=new MessageTplDataCol();
         keyword2.setColor("#173177");
-        keyword2.setValue(data);
+        keyword2.setValue(companyName);
         colMap.put("keyword2",keyword2);
+        String data=sf.format(new Date());
+        MessageTplDataCol keyword3=new MessageTplDataCol();
+        keyword3.setColor("#173177");
+        keyword3.setValue(data);
+        colMap.put("keyword3",keyword3);
         return colMap;
     }
 
@@ -160,6 +193,14 @@ public class MessageTemplateEntity {
         if(hrEmployeeSectionDO==null){
             hrEmployeeSectionDO=new HrEmployeeSectionDO();
         }
+        MessageTplDataCol first=new MessageTplDataCol();
+        first.setColor("#173177");
+        first.setValue("您有待完善的员工信息。");
+        colMap.put("first",first);
+        MessageTplDataCol remark=new MessageTplDataCol();
+        remark.setColor("#173177");
+        remark.setValue("完善员工信息，参与企业内推，还可以赚积分哦~");
+        colMap.put("remark",remark);
         MessageTplDataCol keyword1=new MessageTplDataCol();
         keyword1.setValue(DO.getCname());
         keyword1.setColor("#173177");
