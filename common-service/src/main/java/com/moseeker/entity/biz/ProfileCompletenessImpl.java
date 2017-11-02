@@ -649,7 +649,7 @@ public class ProfileCompletenessImpl {
         return result;
     }
 
-    private int reCalculateProfileCompleteness(int profileId) {
+    public int reCalculateProfileCompleteness(int profileId) {
         int completeness = 0;
         ProfileProfileRecord profileRecord = profileDao.getProfileByIdOrUserIdOrUUID(0, profileId, null);
         if (profileRecord != null) {
