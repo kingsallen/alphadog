@@ -1098,11 +1098,11 @@ public class UserHrAccountService {
             userEmployeeVO.setCustomField(userEmployeeDO.getCustomField());
             userEmployeeVO.setEmail(userEmployeeDO.getEmail());
             userEmployeeVO.setCompanyId(userEmployeeDO.getCompanyId());
-
+            List customFieldValues = new ArrayList();
             if (userEmployeeDO.getCustomFieldValues() != null) {
-                List customFieldValues = JSONObject.parseObject(userEmployeeDO.getCustomFieldValues(), List.class);
-                userEmployeeVO.setCustomFieldValues(customFieldValues);
+                customFieldValues.addAll(JSONObject.parseObject(userEmployeeDO.getCustomFieldValues(), List.class));
             }
+            userEmployeeVO.setCustomFieldValues(customFieldValues);
             if (userMap != null && userMap.size() > 0 && userMap.get(userEmployeeDO.getSysuserId()) != null) {
                 userEmployeeVO.setNickName(userMap.get(userEmployeeDO.getSysuserId()).getNickname());
             } else {
