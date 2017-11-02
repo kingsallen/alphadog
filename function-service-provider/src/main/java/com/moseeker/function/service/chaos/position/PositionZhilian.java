@@ -24,15 +24,7 @@ public class PositionZhilian implements Serializable {
     private String job_id;
     private String count;
     private String company;
-    private List<String> welfare;
 
-    public List<String> getWelfare() {
-        return welfare;
-    }
-
-    public void setWelfare(List<String> welfare) {
-        this.welfare = welfare;
-    }
 
     public String getCompany() {
         return company;
@@ -162,7 +154,6 @@ public class PositionZhilian implements Serializable {
         positionLiepin.setJob_id(positionInfo.getJob_id());
         positionLiepin.setCount(String.valueOf(positionInfo.getQuantity()));
         positionLiepin.setCompany(positionInfo.getCompany_name());
-        positionLiepin.setWelfare(positionInfo.getWelfare());
         return positionLiepin;
     }
 }
