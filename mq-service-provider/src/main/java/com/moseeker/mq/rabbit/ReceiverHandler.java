@@ -79,11 +79,13 @@ public class ReceiverHandler {
             int type=jsonObject.getIntValue("type");
             int templateId=jsonObject.getIntValue("template_id");
             String url=jsonObject.getString("url");
+            String jobName=jsonObject.getString("job_name");
+            String companyName=jsonObject.getString("company_name");
             if(StringUtils.isEmpty(url)&&type==1){
                 url=env.getProperty("message.template.fans.url");
             }
             String enable_qx_retry=jsonObject.getString("enable_qx_retry");
-            MessageTemplateNoticeStruct messageTemplate=messageTemplateEntity.handlerTemplate(userId,companyId,templateId,type,url);
+            MessageTemplateNoticeStruct messageTemplate=messageTemplateEntity.handlerTemplate(userId,companyId,templateId,type,url,jobName,companyName);
             log.info("messageTemplate========"+JSONObject.toJSONString(messageTemplate));
             if(messageTemplate!=null){
                 if(StringUtils.isNotEmpty(enable_qx_retry)){
