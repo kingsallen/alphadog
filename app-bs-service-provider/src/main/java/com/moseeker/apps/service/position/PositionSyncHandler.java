@@ -168,6 +168,7 @@ public class PositionSyncHandler {
         result.setChannel(channel);
         result.setAccount_id(thirdPartyAccountId);
         result.setSync_fail_reason(reason);
+        result.setSync_status(3);
         return result;
     }
     //创建普通结果
