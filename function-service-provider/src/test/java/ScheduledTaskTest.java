@@ -36,7 +36,7 @@ public class ScheduledTaskTest {
         ThirdPartyAccountInfoParam param=new ThirdPartyAccountInfoParam();
         param.setHrId(10000);
         param.setChannel(3);
-        ThirdPartyAccountInfo info=thirdPartyAccountInfoServices.getAllInfo(param);
+//        ThirdPartyAccountInfo info=thirdPartyAccountInfoServices.getAllInfo(param);
     }
 
 }
