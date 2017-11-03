@@ -135,7 +135,10 @@ public class EmployeeEntity {
     }
 
     // 转发点击操作 前置
+    @Transactional
     public void addAwardBefore(int employeeId, int companyId, int positionId, int templateId, int berecomUserId, int applicationId) throws Exception {
+        // for update 对employeee信息加行锁 避免多个端同时对同一个用户加积分
+        employeeDao.getUserEmployeeForUpdate(employeeId);
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.where("company_id", companyId).and("template_id", templateId);
         HrPointsConfDO hrPointsConfDO = hrPointsConfDao.getData(query.buildQuery());
