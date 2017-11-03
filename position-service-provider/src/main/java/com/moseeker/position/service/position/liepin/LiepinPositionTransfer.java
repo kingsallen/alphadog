@@ -66,7 +66,7 @@ public class LiepinPositionTransfer extends PositionTransfer {
     }
 
     public void setWelfare(ThirdPartyPositionForSynchronization position, JobPositionDO positionDB){
-        if(positionDB.getFeature() != null){
+        if(positionDB.getFeature() != null && !positionDB.getFeature().isEmpty()){
             position.setWelfare(Arrays.asList(positionDB.getFeature().split("#")));
         }
     }
