@@ -18,10 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class LiepinPositionTransfer extends PositionTransfer {
@@ -61,6 +58,18 @@ public class LiepinPositionTransfer extends PositionTransfer {
         position.setExperience((experience == null || experience == 0) ? "不限" : String.valueOf(experience));
     }
 
+
+    @Override
+    //做一些额外操作
+    public void setMore(ThirdPartyPositionForSynchronization position,ThirdPartyPosition form, JobPositionDO positionDB){
+        setWelfare(position,positionDB);
+    }
+
+    public void setWelfare(ThirdPartyPositionForSynchronization position, JobPositionDO positionDB){
+        if(positionDB.getFeature() != null){
+            position.setWelfare(Arrays.asList(positionDB.getFeature().split("#")));
+        }
+    }
 
     @Override
     public ChannelType getChannel() {

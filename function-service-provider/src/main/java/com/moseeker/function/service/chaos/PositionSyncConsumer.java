@@ -67,7 +67,7 @@ public class PositionSyncConsumer  {
             data.setIsSynchronization((byte) PositionSync.bindingError.getValue());
         } else {
             data.setIsSynchronization((byte) PositionSync.failed.getValue());
-        }
+    }
 
         data.setSyncFailReason(JSON.toJSONString(pojo.getMessage()));
 

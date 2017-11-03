@@ -153,7 +153,7 @@ public class ThirdPartyAccountService {
         if (allowStatus > 0) {
             account.setId(allowStatus);
         } else {
-            account.setBinding((short)0);
+            account.setBinding((short)BindingStatus.UNBIND.getValue());
             logger.info("第一次插入绑定数据时的绑定状态"+account.getBinding());
             //将这次绑定记录到数据库
             account = thirdPartyAccountDao.addData(account);
@@ -557,7 +557,7 @@ public class ThirdPartyAccountService {
                     .where(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.THIRD_PARTY_ACCOUNT_ID.getName(), accountId)
                     .buildUpdate();
             thirdPartyAccountHrDao.update(update);
-            thirdPartyAccount.setBinding(Integer.valueOf(0).shortValue());
+            thirdPartyAccount.setBinding((short)BindingStatus.UNBIND.getValue());
             thirdPartyAccountDao.updateData(thirdPartyAccount);
         } else {
 
