@@ -66,7 +66,10 @@ public class LiepinPositionTransfer extends PositionTransfer {
     }
 
     public void setWelfare(ThirdPartyPositionForSynchronization position, JobPositionDO positionDB){
-        if(positionDB.getFeature() != null){
+        if(positionDB.getFeature() == null || positionDB.getFeature().isEmpty()){
+            //爬虫需要即使数据库这个字段为空，也需要要一个空列表
+            position.setWelfare(new ArrayList<>());
+        }else {
             position.setWelfare(Arrays.asList(positionDB.getFeature().split("#")));
         }
     }
