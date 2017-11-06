@@ -834,9 +834,9 @@ public class ThirdPartyAccountService {
         logger.info("分配之前的最后一个绑定人:{}", lastBinderId);
         //分配之后的最后一个绑定人
         logger.info("分配之后的最后一个绑定人:{}", newLastBinderId);
-        if (newLastBinderId > 0 && newLastBinderId != lastBinderId) {
+        /*if (newLastBinderId > 0 && newLastBinderId != lastBinderId) {
             autoRefreshThirdPartyAccount(thirdPartyAccount, newLastBinderId);
-        }
+        }*/
 
         return getThridAccount(thirdPartyAccount.getId());
     }
