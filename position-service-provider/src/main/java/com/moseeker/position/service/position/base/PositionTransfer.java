@@ -36,7 +36,9 @@ public abstract class PositionTransfer {
      */
     public ThirdPartyPositionForSynchronization changeToThirdPartyPosition(ThirdPartyPosition form, JobPositionDO positionDB) {
         logger.info("changeToThirdPartyPosition---------------------");
-        ThirdPartyPositionForSynchronization position = setDirectly(form, positionDB);
+
+        //设置一些不需要转换的字段，并且初始化对象
+        ThirdPartyPositionForSynchronization position = init(form, positionDB);
 
         ChannelType channelType = ChannelType.instaceFromInteger(form.getChannel());
 
@@ -77,31 +79,26 @@ public abstract class PositionTransfer {
         return position;
     }
 
-    protected abstract void setDepartment(ThirdPartyPosition form, JobPositionDO positionDO, ThirdPartyPositionForSynchronization position);
-    protected abstract void setOccupation(ThirdPartyPosition positionForm, ThirdPartyPositionForSynchronization position);
-    protected abstract void setEmployeeType(byte employment_type, ThirdPartyPositionForSynchronization position);
-    /**
-     * 转学位
-     * @param degreeInt
-     * @param position
-     */
-    protected abstract void setDegree(int degreeInt, ThirdPartyPositionForSynchronization position);
-    /**
-     * 转工作经验
-     * @param experience
-     * @param position
-     */
-    protected abstract void setExperience(Integer experience, ThirdPartyPositionForSynchronization position);
-    public abstract ChannelType getChannel();
 
-    //做一些额外操作,可以集成以后覆盖
+    /**========================抽象方法，让每个渠道去实现自己的逻辑========================*/
+    //设置部门
+    protected abstract void setDepartment(ThirdPartyPosition form, JobPositionDO positionDO, ThirdPartyPositionForSynchronization position);
+    //设置职位
+    protected abstract void setOccupation(ThirdPartyPosition positionForm, ThirdPartyPositionForSynchronization position);
+    //转换雇佣类型（全职，兼职。。。）
+    protected abstract void setEmployeeType(byte employment_type, ThirdPartyPositionForSynchronization position);
+    // 转学位
+    protected abstract void setDegree(int degreeInt, ThirdPartyPositionForSynchronization position);
+    //转工作经验
+    protected abstract void setExperience(Integer experience, ThirdPartyPositionForSynchronization position);
+    //获取渠道类型
+    public abstract ChannelType getChannel();
+    //做一些额外操作,可以继承以后覆盖
     public void setMore(ThirdPartyPositionForSynchronization position,ThirdPartyPosition form, JobPositionDO positionDB){
         //do nothing
-    };
+    }
 
-
-
-
+    /**========================每个渠道共用的逻辑，当然也可以覆盖实现自己的逻辑========================*/
     private static void setSalaryBottom(int salaryBottom, int salaryBottomDB,
                                         ThirdPartyPositionForSynchronization position) {
         if (salaryBottom > 0) {
@@ -182,7 +179,7 @@ public abstract class PositionTransfer {
     }
 
     //把直接赋值，不需要做处理的字段集合到一个方法中
-    private ThirdPartyPositionForSynchronization setDirectly(ThirdPartyPosition form, JobPositionDO positionDB) {
+    private ThirdPartyPositionForSynchronization init(ThirdPartyPosition form, JobPositionDO positionDB) {
         ThirdPartyPositionForSynchronization position = new ThirdPartyPositionForSynchronization();
 
         position.setCompany_name(form.getCompanyName());
