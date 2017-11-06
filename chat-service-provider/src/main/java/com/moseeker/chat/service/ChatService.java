@@ -23,6 +23,7 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatListDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
+import java.util.*;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,10 +31,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -206,17 +203,15 @@ public class ChatService {
                                 userChatRoomVO.setHeadImgUrl(hrAccountDOOptional.get().getHeadimgurl());
 
                                 /** 根据HR所属公司，匹配公司的名称和logo */
-                                List<HrCompanyDO> companyDOList = (List<HrCompanyDO>) companyFuture.get();
-                                if(companyDOList != null && companyDOList.size() > 0) {
-                                    Optional<HrCompanyDO> companyDOOptional = companyDOList.stream()
-                                            .filter(companyDO -> companyDO.getId() == hrAccountDOOptional.get().getCompanyId()).findAny();
-                                    if(companyDOOptional.isPresent()) {
-                                        userChatRoomVO.setCompanyLogo(companyDOOptional.get().getLogo());
+                                Map<Integer, HrCompanyDO> companyDOMap = (Map<Integer, HrCompanyDO>) companyFuture.get();
+                                if(companyDOMap != null && companyDOMap.size() > 0) {
+                                    if(companyDOMap.containsKey(hrAccountDOOptional.get().getId()) && companyDOMap.get(hrAccountDOOptional.get().getId()).getId() > 0) {
+                                        userChatRoomVO.setCompanyLogo(companyDOMap.get(hrAccountDOOptional.get().getId()).getLogo());
                                         String companyName;
-                                        if(StringUtils.isNotNullOrEmpty(companyDOOptional.get().getAbbreviation())) {
-                                            companyName = companyDOOptional.get().getAbbreviation();
+                                        if(StringUtils.isNotNullOrEmpty(companyDOMap.get(hrAccountDOOptional.get().getId()).getAbbreviation())) {
+                                            companyName = companyDOMap.get(hrAccountDOOptional.get().getId()).getAbbreviation();
                                         } else {
-                                            companyName = companyDOOptional.get().getName();
+                                            companyName = companyDOMap.get(hrAccountDOOptional.get().getId()).getName();
                                         }
                                         userChatRoomVO.setCompanyName(companyName);
                                     }
