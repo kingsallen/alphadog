@@ -2,6 +2,7 @@ package com.moseeker.entity;
 
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
@@ -50,5 +51,13 @@ public class UserWxEntity {
             log.error(e.getMessage(), e);
         }
         return wxUserId;
+    }
+
+    public <T> T getFieldById(int wxId, String fieldName, Class<T> clazz) {
+        Query.QueryBuilder query = new Query.QueryBuilder();
+        query.select(fieldName);
+        query.where("id", wxId);
+        HrWxWechatRecord wxWechatRecord = hrWxWechatDao.getRecord(query.buildQuery());
+        return wxWechatRecord.get(fieldName, clazz);
     }
 }

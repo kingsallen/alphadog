@@ -10,6 +10,9 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatListDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Rule;
@@ -240,6 +243,8 @@ public class ChatServiceTest {
         companyDO3.setHraccountId(3);
         companyDOList.add(companyDO3);
 
+        Map<Integer, HrCompanyDO> companyDOMap = companyDOList.stream().collect(Collectors.toMap(k -> k.getHraccountId(), v -> v));
+
 
         int[] roomId = {6,8,9};
         Mockito.when(chatDao.listChatRoom(roomId)).thenReturn(rooms);
@@ -254,7 +259,7 @@ public class ChatServiceTest {
         Mockito.when(chatDao.listHr(hrUser1)).thenReturn(hrAccountDOList);
 
         int[] companyIdUser1 = {1,2,3};
-        Mockito.when(chatDao.listCompany(companyIdUser1)).thenReturn(companyDOList);
+        Mockito.when(chatDao.listCompany(companyIdUser1)).thenReturn(companyDOMap);
 
         List<HrWxHrChatDO> chatListRoom1 = new ArrayList<>();
         HrWxHrChatDO chatDO1 = new HrWxHrChatDO();
