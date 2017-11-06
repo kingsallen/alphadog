@@ -335,7 +335,12 @@ public class UseraccountsService {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
 
-        if (!StringUtils.isNullOrEmpty(code) && !validateCode(String.valueOf(user.mobile), code, 1)) {
+        String validateMobile=String.valueOf(user.mobile);
+        if(!"86".equals(user.getCountryCode())){
+            validateMobile=user.getCountryCode()+user.mobile;
+        }
+
+        if (!StringUtils.isNullOrEmpty(code) && !validateCode(validateMobile, code, 1)) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);
         }
 
@@ -946,7 +951,11 @@ public class UseraccountsService {
     /**
      * 验证忘记密码的验证码是否正确
      */
-    public Response postvalidatepasswordforgotcode(String mobile, String code) throws TException {
+    public Response postvalidatepasswordforgotcode(String countryCode, String mobile, String code) throws TException {
+        if(!"86".equals(countryCode)){
+            mobile=countryCode+mobile;
+        }
+
         if (!validateCode(mobile, code, 2)) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);
         } else {
