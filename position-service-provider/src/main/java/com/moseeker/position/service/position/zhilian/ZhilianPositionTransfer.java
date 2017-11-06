@@ -20,10 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class ZhilianPositionTransfer extends PositionTransfer {
@@ -62,7 +59,6 @@ public class ZhilianPositionTransfer extends PositionTransfer {
         position.setExperience_code(ExperienceChangeUtil.getZhilianExperience(experience).getValue());
         position.setExperience(ExperienceChangeUtil.getZhilianExperience(experience).getName());
     }
-
 
     @Override
     public ChannelType getChannel() {

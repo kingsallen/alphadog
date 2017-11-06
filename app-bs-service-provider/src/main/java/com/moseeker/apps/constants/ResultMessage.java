@@ -23,7 +23,7 @@ public enum ResultMessage {
 	POSITION_NOT_ALLOW_REFRESH(100005, "职位不允许刷新!"),
 	THIRD_PART_ACCOUT_NOT_EXIST(100006, "没有绑定第三方账号!"),
 	COMPANY_NOT_EXIST(100007, "公司不存在!"),
-	THIRD_PARTY_ACCOUNT_NOT_EXIST(100008,"未绑定或者没有可发布职位点数!"),
+	THIRD_PARTY_ACCOUNT_NOT_EXIST(100008,"未绑定该渠道下的账号!"),
 
 	PROGRAM_PARAM_NOTEXIST(90015, "参数不正确!"),
 	SUCCESS(0, "success"),

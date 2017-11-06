@@ -168,6 +168,7 @@ public class PositionSyncHandler {
         result.setChannel(channel);
         result.setAccount_id(thirdPartyAccountId);
         result.setSync_fail_reason(reason);
+        result.setSync_status(3);
         return result;
     }
     //创建普通结果
@@ -206,7 +207,7 @@ public class PositionSyncHandler {
     //获取可用并且remainNum>0的第三方账号
     public HrThirdPartyAccountDO getAvailableThirdAccount(int publisher,int channel){
         HrThirdPartyAccountDO account=getThirdPartAccount(publisher,channel);
-        if(account!=null && ( channel==ChannelType.JOB51.getValue() && account.remainNum>0) || (channel!=ChannelType.JOB51.getValue()) ){
+        if(account!=null && account.getId()>0){
             logger.info("发布者：{}获取到渠道：{}第三方账号",publisher,channel,account);
             return account;
         }
