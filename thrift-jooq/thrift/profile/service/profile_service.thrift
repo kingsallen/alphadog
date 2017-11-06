@@ -24,6 +24,7 @@ service ProfileOtherThriftService {
     common_struct.Response getCustomMetaData(1: i32 companyId, 2: bool selectAll) throws (1: common_struct.BIZException e);
     common_struct.Response checkProfileOther(1: i32 userId, 2: i32 positionId) throws (1: common_struct.BIZException e);
     common_struct.Response getProfileOther(1: string params) throws (1: common_struct.BIZException e);
+    common_struct.Response otherFieldsCheck(1: i32 profileId, 2: string fields) throws(1: common_struct.BIZException e);
 }
 
 service WholeProfileServices {

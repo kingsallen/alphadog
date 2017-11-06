@@ -453,4 +453,28 @@ public class ProfileController {
             // do nothing
         }
     }
+
+    @RequestMapping(value = "/profile/other/fields/check", method = RequestMethod.POST)
+    @ResponseBody
+    public String otherFieldsCheck(HttpServletRequest request) {
+        try {
+            Params<String, Object> form = ParamUtils.parseRequestParam(request);
+            int positionId = form.getInt("positionId", 0);
+            String fields = form.getString("fields");
+            if (positionId != 0 && StringUtils.isNotNullOrEmpty(fields)) {
+                return ResponseLogNotification.success(request, profileOtherService.otherFieldsCheck(positionId, fields));
+            } else {
+                return ResponseLogNotification.fail(request, ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST));
+            }
+        } catch (BIZException e) {
+            Response result = new Response();
+            result.setStatus(e.getCode());
+            result.setMessage(e.getMessage());
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, result);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 }

@@ -251,4 +251,10 @@ public class ProfileServicesImplTest {
         }
     }
 
+    @Test
+    public void otherFieldCheckTest() {
+        Response response = profileService.otherFieldsCheck(985, "{\"Nation\":\"哈萨克斯坦族\",\"ZipCode\":\"123458\"}");
+        System.out.println(response);
+    }
+
 }

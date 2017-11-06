@@ -3,7 +3,7 @@ package com.moseeker.profile.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.parser.ParserConfig;
+import com.moseeker.baseorm.dao.configdb.ConfigSysCvTplDao;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.baseorm.dao.dictdb.DictPositionDao;
 import com.moseeker.baseorm.dao.hrdb.HrAppCvConfDao;
@@ -28,16 +28,16 @@ import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.entity.PositionEntity;
 import com.moseeker.entity.ProfileEntity;
 import com.moseeker.entity.pojo.profile.*;
 import com.moseeker.entity.pojo.resume.*;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.profile.utils.DegreeSource;
-import com.moseeker.common.util.query.Condition;
-import com.moseeker.common.util.query.ValueOp;
-import com.moseeker.entity.PositionEntity;
 import com.moseeker.profile.utils.DictCode;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysCvTplDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictPositionDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrAppCvConfDO;
@@ -45,26 +45,18 @@ import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileOtherDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
 import com.moseeker.thrift.gen.profile.struct.Profile;
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
-import com.sun.org.apache.regexp.internal.RE;
 import java.text.ParseException;
 import java.util.*;
-import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.math.NumberUtils;
-import org.apache.lucene.util.MathUtil;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 @Service
 @CounterIface
@@ -104,6 +96,9 @@ public class ProfileService {
 
     @Autowired
     private DictPositionDao dictPositionDao;
+
+    @Autowired
+    private ConfigSysCvTplDao configSysCvTplDao;
 
     public Response getResource(Query query) throws TException {
         ProfileProfileRecord record = null;
@@ -682,6 +677,62 @@ public class ProfileService {
             }
         });
         return ResponseUtils.success(paramsStream);
+    }
+
+    /**
+     * 校验other指定字段
+     * @param fields
+     * @return
+     */
+    public Response otherFieldsCheck(int profielId, String fields) {
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where("id", profielId);
+        ProfileProfileDO profileProfile = dao.getData(queryBuilder.buildQuery());
+        if (profileProfile == null || profileProfile.getId() == 0) {
+            return ResponseUtils.fail("获取简历失败");
+        }
+        JSONObject fieldJson = JSONObject.parseObject(fields);
+        queryBuilder.clear();
+        queryBuilder.where(new Condition("field_name", fieldJson.keySet(), ValueOp.IN));
+        Map<String, ConfigSysCvTplDO> configSysCvTplMap = new HashMap<>();
+        configSysCvTplMap.putAll(configSysCvTplDao.getDatas(queryBuilder.buildQuery()).stream().collect(Collectors.toMap(k -> k.getFieldName(), v -> v)));
+        fieldJson.keySet().forEach(fieldName -> {
+            if (!configSysCvTplMap.containsKey(fieldName)){
+                fieldJson.put(fieldName, new HashMap<String, Object>(){{put("result",false);put("msg","自定义字段："+fieldName+",不存在");}});
+                return;
+            }
+            Object customResult = "";
+            ConfigSysCvTplDO configSysCvTplDO = configSysCvTplMap.get(fieldName);
+            if (StringUtils.isNotNullOrEmpty(configSysCvTplDO.getMapping())) {
+                // 复合字段校验
+                String mappingFiled = configSysCvTplDO.getMapping();
+                if (mappingFiled.contains("&")) {
+                    String[] mapStr = mappingFiled.split("&", 2);
+                    if (mapStr[0].contains(".") && mapStr[1].contains(".")) {
+                        String[] mapLeft = mapStr[0].split("\\.", 2);
+                        String[] mapRight = mapStr[1].split("\\.", 2);
+                        customResult = profileOtherDao.customSelect(mapLeft[0], mapLeft[1], "profile_id", profileProfile.getId());
+                        customResult = profileOtherDao.customSelect(mapRight[0], mapRight[1], mapStr[0].replace(".", "_"), NumberUtils.toInt(String.valueOf(customResult), 0));
+                    }
+                } else if (mappingFiled.contains(".")) {
+                    String[] mappingStr = mappingFiled.split("\\.", 2);
+                    customResult = mappingStr[0].startsWith("user") ? (userDao.customSelect(mappingStr[0], mappingStr[1], profileProfile.getUserId())) : (profileOtherDao.customSelect(mappingStr[0], mappingStr[1], "profile_id", profileProfile.getId()));
+                } else {
+                    fieldJson.put(fieldName, new HashMap<String, Object>(){{put("result",false);put("msg","自定义字段:"+fieldName+",配置异常");}});
+                    return;
+                }
+            } else {
+                // 普通字段校验
+                customResult = fieldJson.get(fieldName);
+            }
+            if (Pattern.matches(org.apache.commons.lang.StringUtils.defaultIfEmpty(configSysCvTplDO.getValidateRe(), ""), String.valueOf(customResult))) {
+                fieldJson.put(fieldName, new HashMap<String, Object>(){{put("result",true);put("msg","success");}});
+            } else {
+                fieldJson.put(fieldName, new HashMap<String, Object>(){{put("result",false);put("msg", org.apache.commons.lang.StringUtils.defaultIfEmpty(configSysCvTplDO.getErrorMsg(),"自定义字段"+fieldName+"为空"));}});
+                logger.error("自定义字段校验失败! field_name:{}, value:{}, error_msg:{}", fieldName, customResult, configSysCvTplDO.getErrorMsg());
+            }
+        });
+        return ResponseUtils.successWithoutStringify(fieldJson.toJSONString());
     }
 
 }
