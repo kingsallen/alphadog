@@ -267,7 +267,7 @@ public class UseraccountsService {
 		 */
 
         boolean result=false;
-        if (mobile.length() < 7) {
+        if (mobile.length() < 5) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
         try {
@@ -501,7 +501,7 @@ public class UseraccountsService {
 
 
         boolean result=false;
-        if (mobile.length() < 7) {
+        if (mobile.length() < 5) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
         try {
@@ -689,7 +689,7 @@ public class UseraccountsService {
         }
 
         boolean result=false;
-        if (oldmobile.length() < 7) {
+        if (oldmobile.length() < 5) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
         try {
@@ -742,7 +742,7 @@ public class UseraccountsService {
             }
         }
         boolean result=false;
-        if (newmobile.length() < 7) {
+        if (newmobile.length() < 5) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
         try {
