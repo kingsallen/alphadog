@@ -176,7 +176,6 @@ public class HistoryJobApplicationStatusBeisen extends TableImpl<HistoryJobAppli
     /**
      * Rename this table
      */
-    @Override
     public HistoryJobApplicationStatusBeisen rename(String name) {
         return new HistoryJobApplicationStatusBeisen(name, null);
     }

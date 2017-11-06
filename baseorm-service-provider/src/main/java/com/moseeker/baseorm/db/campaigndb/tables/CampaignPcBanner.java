@@ -146,7 +146,6 @@ public class CampaignPcBanner extends TableImpl<CampaignPcBannerRecord> {
     /**
      * Rename this table
      */
-    @Override
     public CampaignPcBanner rename(String name) {
         return new CampaignPcBanner(name, null);
     }

@@ -5,10 +5,12 @@ import com.moseeker.baseorm.db.historydb.tables.HistoryCampaignPersonaRecom;
 import com.moseeker.baseorm.db.historydb.tables.records.HistoryCampaignPersonaRecomRecord;
 import com.moseeker.baseorm.pojo.HistoryCampaignPersonaRecomPojo;
 import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Service;
 
 /**
  * Created by zztaiwll on 17/11/3.
  */
+@Service
 public class HistoryCampaignPersonaRecomDao extends JooqCrudImpl<HistoryCampaignPersonaRecomPojo,HistoryCampaignPersonaRecomRecord> {
 
     public HistoryCampaignPersonaRecomDao(){

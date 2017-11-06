@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.ValueFilter;
+import com.moseeker.baseorm.dao.campaigndb.CampaignPersonaRecomDao;
 import com.moseeker.baseorm.dao.dictdb.*;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.*;
@@ -16,6 +17,7 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrTeamRecord;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.records.*;
+import com.moseeker.baseorm.pojo.CampaignPersonaRecomPojo;
 import com.moseeker.baseorm.pojo.JobPositionPojo;
 import com.moseeker.baseorm.pojo.RecommendedPositonPojo;
 import com.moseeker.baseorm.redis.RedisClient;
@@ -27,6 +29,7 @@ import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
+import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.PositionEntity;
@@ -113,12 +116,12 @@ public class PositionService {
     private HrHbItemsDao hrHbItemsDao;
     @Autowired
     private PositionChangeUtil positionChangeUtil;
-
     @Autowired
     private CommonPositionUtils commonPositionUtils;
-
     @Autowired
     private PositionEntity positionEntity;
+    @Autowired
+    private CampaignPersonaRecomDao campaignPersonaRecomDao;
 
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
@@ -1248,82 +1251,10 @@ public class PositionService {
                     query.getCustom());
 
             if (ret.getStatus() == 0 && !StringUtils.isNullOrEmpty(ret.getData())) {
-                // 通过 pid 列表查询 position 信息
                 JSONObject jobj = JSON.parseObject(ret.getData());
                 JSONArray jdIdJsonArray = jobj.getJSONArray("jd_id_list");
                 List<Integer> jdIdList = jdIdJsonArray.stream().map(m -> Integer.valueOf(String.valueOf(m))).collect(Collectors.toList());
-                logger.info("jdIdList: " + jdIdList);
-                Condition con = new Condition("id", jdIdList.toArray(), ValueOp.IN);
-                Query q = new Query.QueryBuilder().where(con).buildQuery();
-                List<JobPositionRecord> jobRecords = positionEntity.getPositions(q);
-                //List<JobPositionRecord> jobRecords = jobPositionDao.getRecords(q);
-                //Map<Integer, Set<String>> cityMap = commonPositionUtils.handlePositionCity(jdIdList);
-                for (int i = 0; i < jdIdList.size(); i++) {
-                    int positionId = jdIdList.get(i);
-                    for (JobPositionRecord jr : jobRecords) {
-                        if (positionId == jr.getId()) {
-                            logger.info("pid: " + String.valueOf(jr.getId()));
-                            WechatPositionListData e = new WechatPositionListData();
-                            e.setTitle(jr.getTitle());
-                            e.setId(jr.getId());
-                            // 数据库的 salary_top 和 salary_bottom 默认是 NULL 不是 0
-                            // 所以这里需要对这两个字段做 null pointer 检查
-                            if (jr.getSalaryTop() == null) {
-                                e.setSalary_top(0);
-                            } else {
-                                e.setSalary_top(jr.getSalaryTop());
-                            }
-                            if (jr.getSalaryBottom() == null) {
-                                e.setSalary_bottom(0);
-                            } else {
-                                e.setSalary_bottom(jr.getSalaryBottom());
-                            }
-                            e.setPublish_date(new SimpleDateFormat("YYYY-MM-dd HH:mm:ss").format(jr.getUpdateTime()));
-                            e.setDepartment(jr.getDepartment());
-                            e.setVisitnum(jr.getVisitnum());
-                            e.setIn_hb(jr.getHbStatus() > 0);
-                            e.setCount(jr.getCount());
-                            e.setCity(jr.getCity());
-                            e.setPriority(jr.getPriority());
-                            e.setPublisher(jr.getPublisher()); // will be used for fetching sub company info
-                            dataList.add(e);
-                            break;
-                        }
-                    }
-                }
-                logger.info(dataList.toString());
-                // 获取公司信息，拼装 company abbr, logo 等信息
-                Map<Integer /* publisher id */, HrCompanyDO> publisherCompanyMap = new HashMap<>();
-                //QueryUtil hrm = new QueryUtil();
-                Query.QueryBuilder hrm = new Query.QueryBuilder();
-                Set<Integer> publisherSet = dataList.stream().map(WechatPositionListData::getPublisher)
-                        .collect(Collectors.toSet());
-                // publisherList 应该不为空
-                // 如果 publisherList 为空，那么返回空 ArrayList
-                if (publisherSet == null || publisherSet.size() == 0) {
-                    return new ArrayList<>();
-                }
-                // 根据 publisherSet 查询 hr_company_account_list
-                Condition condition = new Condition("account_id", publisherSet.toArray(), ValueOp.IN);
-                hrm.where(condition);
-                List<HrCompanyAccountDO> companyAccountList = hrCompanyAccountDao.getDatas(hrm.buildQuery(), HrCompanyAccountDO.class);
-
-                for (HrCompanyAccountDO hrCompanyAccount : companyAccountList) {
-                    hrm = new Query.QueryBuilder();
-                    hrm.where("id", hrCompanyAccount.getCompanyId());
-                    HrCompanyDO companyInfo = hrCompanyDao.getData(hrm.buildQuery(), HrCompanyDO.class);
-                    publisherCompanyMap.put(hrCompanyAccount.accountId, companyInfo);
-
-                }
-
-                //拼装 company 相关内容
-                dataList = dataList.stream().map(s -> {
-                    s.setCompany_abbr(publisherCompanyMap.get(s.getPublisher()) == null ? "" : publisherCompanyMap.get(s.getPublisher()).getAbbreviation());
-                    s.setCompany_logo(publisherCompanyMap.get(s.getPublisher()) == null ? "" : publisherCompanyMap.get(s.getPublisher()).getLogo());
-                    s.setCompany_name(publisherCompanyMap.get(s.getPublisher()) == null ? "" : publisherCompanyMap.get(s.getPublisher()).getName());
-                    return s;
-                }).collect(Collectors.toList());
-
+                dataList=this.getWxPosition(jdIdList);
             } else {
                 return new ArrayList<>();
             }
@@ -1333,6 +1264,138 @@ public class PositionService {
         } finally {
             // do nothing
         }
+        return dataList;
+    }
+
+    /*
+       微信端获取个人画像推送职位
+     */
+    public List<WechatPositionListData> getPersonaRecomPosition(int userId,int pageNum,int pageSize) throws Exception{
+        List<CampaignPersonaRecomPojo> list=this.getPersonaRecomPositionList(userId,pageNum,pageSize);
+        List<Integer> pids=this.getRecomPositionIdList(list);
+        if(StringUtils.isEmptyList(pids)){
+            return null;
+        }
+        List<WechatPositionListData> result=this.getWxPosition(pids);
+        //这段本来可以不加，可是涉及到分页，所以肯定要在这边加上修改是否推送的功能
+        if(!StringUtils.isEmptyList(result)){
+            this.updateIsSendStatus(list);
+        }
+        return result;
+    }
+    /*
+      通过user_id 获取 CampaignPersonaRecomPojo 的list集合
+     */
+
+    private  List<CampaignPersonaRecomPojo> getPersonaRecomPositionList(int userId,int pageNum,int pageSize){
+        Query query=new Query.QueryBuilder().where("user_id",userId).orderBy("create_time", Order.DESC).setPageNum(pageNum).setPageSize(pageSize).buildQuery();
+        List<CampaignPersonaRecomPojo> list=campaignPersonaRecomDao.getDatas(query);
+        return list;
+    }
+    /*
+      获取position.id的list
+     */
+    private List<Integer> getRecomPositionIdList(List<CampaignPersonaRecomPojo> list ){
+        if(StringUtils.isEmptyList(list)){
+            return null;
+        }
+        List<Integer> result=new ArrayList<>();
+        for(CampaignPersonaRecomPojo DO:list){
+            int positionId=DO.getPositionId();
+            result.add(positionId);
+        }
+        return result;
+    }
+    /*
+      更新为已读状态
+     */
+    public void updateIsSendStatus(List<CampaignPersonaRecomPojo> list){
+        if(!StringUtils.isEmptyList(list)){
+           for(CampaignPersonaRecomPojo DO:list){
+               DO.setIsSend((byte)1);
+           }
+            campaignPersonaRecomDao.updateDatas(list);
+        }
+    }
+
+    /*
+     将通过position.id获取微信端职位列表的接口拆出来，单独成立私有方法，从而保证可共用性
+     */
+    private List<WechatPositionListData> getWxPosition(List<Integer> jdIdList){
+        // 通过 pid 列表查询 position 信息
+        List<WechatPositionListData> dataList = new ArrayList<>();
+        logger.info("jdIdList: " + jdIdList);
+        Condition con = new Condition("id", jdIdList.toArray(), ValueOp.IN);
+        Query q = new Query.QueryBuilder().where(con).buildQuery();
+        List<JobPositionRecord> jobRecords = positionEntity.getPositions(q);
+        //List<JobPositionRecord> jobRecords = jobPositionDao.getRecords(q);
+        //Map<Integer, Set<String>> cityMap = commonPositionUtils.handlePositionCity(jdIdList);
+        for (int i = 0; i < jdIdList.size(); i++) {
+            int positionId = jdIdList.get(i);
+            for (JobPositionRecord jr : jobRecords) {
+                if (positionId == jr.getId()) {
+                    logger.info("pid: " + String.valueOf(jr.getId()));
+                    WechatPositionListData e = new WechatPositionListData();
+                    e.setTitle(jr.getTitle());
+                    e.setId(jr.getId());
+                    // 数据库的 salary_top 和 salary_bottom 默认是 NULL 不是 0
+                    // 所以这里需要对这两个字段做 null pointer 检查
+                    if (jr.getSalaryTop() == null) {
+                        e.setSalary_top(0);
+                    } else {
+                        e.setSalary_top(jr.getSalaryTop());
+                    }
+                    if (jr.getSalaryBottom() == null) {
+                        e.setSalary_bottom(0);
+                    } else {
+                        e.setSalary_bottom(jr.getSalaryBottom());
+                    }
+                    e.setPublish_date(new SimpleDateFormat("YYYY-MM-dd HH:mm:ss").format(jr.getUpdateTime()));
+                    e.setDepartment(jr.getDepartment());
+                    e.setVisitnum(jr.getVisitnum());
+                    e.setIn_hb(jr.getHbStatus() > 0);
+                    e.setCount(jr.getCount());
+                    e.setCity(jr.getCity());
+                    e.setPriority(jr.getPriority());
+                    e.setPublisher(jr.getPublisher()); // will be used for fetching sub company info
+                    dataList.add(e);
+                    break;
+                }
+            }
+        }
+        logger.info(dataList.toString());
+        // 获取公司信息，拼装 company abbr, logo 等信息
+        Map<Integer /* publisher id */, HrCompanyDO> publisherCompanyMap = new HashMap<>();
+        //QueryUtil hrm = new QueryUtil();
+        Query.QueryBuilder hrm = new Query.QueryBuilder();
+        Set<Integer> publisherSet = dataList.stream().map(WechatPositionListData::getPublisher)
+                .collect(Collectors.toSet());
+        // publisherList 应该不为空
+        // 如果 publisherList 为空，那么返回空 ArrayList
+        if (publisherSet == null || publisherSet.size() == 0) {
+            return new ArrayList<>();
+        }
+        // 根据 publisherSet 查询 hr_company_account_list
+        Condition condition = new Condition("account_id", publisherSet.toArray(), ValueOp.IN);
+        hrm.where(condition);
+        List<HrCompanyAccountDO> companyAccountList = hrCompanyAccountDao.getDatas(hrm.buildQuery(), HrCompanyAccountDO.class);
+
+        for (HrCompanyAccountDO hrCompanyAccount : companyAccountList) {
+            hrm = new Query.QueryBuilder();
+            hrm.where("id", hrCompanyAccount.getCompanyId());
+            HrCompanyDO companyInfo = hrCompanyDao.getData(hrm.buildQuery(), HrCompanyDO.class);
+            publisherCompanyMap.put(hrCompanyAccount.accountId, companyInfo);
+
+        }
+
+        //拼装 company 相关内容
+        dataList = dataList.stream().map(s -> {
+            s.setCompany_abbr(publisherCompanyMap.get(s.getPublisher()) == null ? "" : publisherCompanyMap.get(s.getPublisher()).getAbbreviation());
+            s.setCompany_logo(publisherCompanyMap.get(s.getPublisher()) == null ? "" : publisherCompanyMap.get(s.getPublisher()).getLogo());
+            s.setCompany_name(publisherCompanyMap.get(s.getPublisher()) == null ? "" : publisherCompanyMap.get(s.getPublisher()).getName());
+            return s;
+        }).collect(Collectors.toList());
+
         return dataList;
     }
 

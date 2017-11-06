@@ -146,7 +146,6 @@ public class CampaignRecommendCompany extends TableImpl<CampaignRecommendCompany
     /**
      * Rename this table
      */
-    @Override
     public CampaignRecommendCompany rename(String name) {
         return new CampaignRecommendCompany(name, null);
     }

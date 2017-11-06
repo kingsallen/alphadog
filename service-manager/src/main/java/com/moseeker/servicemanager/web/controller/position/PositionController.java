@@ -777,4 +777,26 @@ public class PositionController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
+    /*
+    *获取alipay同步的职位
+    */
+    @RequestMapping(value = "/position/personarecom", method = RequestMethod.GET)
+    @ResponseBody
+    public String personaRecomPosition(HttpServletRequest request, HttpServletResponse response){
+        try{
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer pageNum=params.getInt("pageNum",1);
+            int pageSize=params.getInt("pageSize",20);
+            int userId=params.getInt("userId",0);
+            if(userId==0){
+                return ResponseLogNotification.fail(request, "userId不能为空");
+            }
+            Response result=positonServices.getPersonaRecomPositionList(userId,pageNum,pageSize);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 }

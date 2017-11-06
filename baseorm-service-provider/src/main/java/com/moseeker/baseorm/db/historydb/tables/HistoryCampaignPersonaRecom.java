@@ -152,7 +152,6 @@ public class HistoryCampaignPersonaRecom extends TableImpl<HistoryCampaignPerson
     /**
      * Rename this table
      */
-    @Override
     public HistoryCampaignPersonaRecom rename(String name) {
         return new HistoryCampaignPersonaRecom(name, null);
     }

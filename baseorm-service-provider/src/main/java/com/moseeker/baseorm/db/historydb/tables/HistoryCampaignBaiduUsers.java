@@ -136,7 +136,6 @@ public class HistoryCampaignBaiduUsers extends TableImpl<HistoryCampaignBaiduUse
     /**
      * Rename this table
      */
-    @Override
     public HistoryCampaignBaiduUsers rename(String name) {
         return new HistoryCampaignBaiduUsers(name, null);
     }

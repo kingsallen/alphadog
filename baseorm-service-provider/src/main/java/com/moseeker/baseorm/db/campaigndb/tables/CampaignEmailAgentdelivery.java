@@ -181,7 +181,6 @@ public class CampaignEmailAgentdelivery extends TableImpl<CampaignEmailAgentdeli
     /**
      * Rename this table
      */
-    @Override
     public CampaignEmailAgentdelivery rename(String name) {
         return new CampaignEmailAgentdelivery(name, null);
     }

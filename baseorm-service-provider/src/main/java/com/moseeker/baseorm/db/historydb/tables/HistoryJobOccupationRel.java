@@ -116,7 +116,6 @@ public class HistoryJobOccupationRel extends TableImpl<HistoryJobOccupationRelRe
     /**
      * Rename this table
      */
-    @Override
     public HistoryJobOccupationRel rename(String name) {
         return new HistoryJobOccupationRel(name, null);
     }

@@ -7,6 +7,7 @@ import com.moseeker.baseorm.pojo.CampaignPersonaRecomPojo;
 import com.moseeker.baseorm.pojo.HistoryCampaignPersonaRecomPojo;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.sun.xml.internal.txw2.TxwException;
 import org.apache.thrift.TException;
@@ -40,7 +41,30 @@ public class PersonaRecomEntity {
         }
         return 1;
     }
+    /*
+     根据createTime排序，获取固定userid的20条数据
+     */
+    public  List<CampaignPersonaRecomPojo> getCampaignPersonaRecomByuserId(int userId,int page,int pageSize){
+        Query query=new Query.QueryBuilder().where("user_id",userId).orderBy("create_time", Order.DESC).setPageNum(page).setPageSize(pageSize).buildQuery();
+        List<CampaignPersonaRecomPojo> list=campaignPersonaRecomDao.getDatas(query);
+        return list;
+    }
+    /*
+        更新推荐职位数据是否已经推荐
+     */
+    public int updateIsSendPersonaRecom(int userId,int page,int pageSize){
+        Query query=new Query.QueryBuilder().where("user_id",userId).orderBy("create_time", Order.DESC).setPageNum(page).setPageSize(pageSize).buildQuery();
+        List<CampaignPersonaRecomPojo> list=campaignPersonaRecomDao.getDatas(query);
+        if(StringUtils.isEmptyList(list)){
+            return 1;
+        }
+        for(CampaignPersonaRecomPojo pojo:list){
+            pojo.setIsSend((byte)1);
+        }
+        campaignPersonaRecomDao.updateDatas(list);
+        return 1;
 
+    }
     /*
      更新或者或者
      */
@@ -63,6 +87,7 @@ public class PersonaRecomEntity {
         }
         return 0;
     }
+
     /*
      处理历史数据
      */

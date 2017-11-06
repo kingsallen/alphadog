@@ -195,7 +195,6 @@ public class HistoryHrChildCompany extends TableImpl<HistoryHrChildCompanyRecord
     /**
      * Rename this table
      */
-    @Override
     public HistoryHrChildCompany rename(String name) {
         return new HistoryHrChildCompany(name, null);
     }

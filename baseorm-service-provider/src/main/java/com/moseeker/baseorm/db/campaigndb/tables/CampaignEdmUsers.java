@@ -146,7 +146,6 @@ public class CampaignEdmUsers extends TableImpl<CampaignEdmUsersRecord> {
     /**
      * Rename this table
      */
-    @Override
     public CampaignEdmUsers rename(String name) {
         return new CampaignEdmUsers(name, null);
     }

@@ -6,10 +6,12 @@ import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignPersonaRecomRec
 import com.moseeker.baseorm.db.userdb.tables.UserPositionEmail;
 import com.moseeker.baseorm.pojo.CampaignPersonaRecomPojo;
 import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Service;
 
 /**
  * Created by zztaiwll on 17/11/3.
  */
+@Service
 public class CampaignPersonaRecomDao extends JooqCrudImpl<CampaignPersonaRecomPojo,CampaignPersonaRecomRecord>{
     public CampaignPersonaRecomDao(){
         super(CampaignPersonaRecom.CAMPAIGN_PERSONA_RECOM,CampaignPersonaRecomPojo.class);

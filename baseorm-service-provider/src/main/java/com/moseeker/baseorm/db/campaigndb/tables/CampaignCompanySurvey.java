@@ -146,7 +146,6 @@ public class CampaignCompanySurvey extends TableImpl<CampaignCompanySurveyRecord
     /**
      * Rename this table
      */
-    @Override
     public CampaignCompanySurvey rename(String name) {
         return new CampaignCompanySurvey(name, null);
     }

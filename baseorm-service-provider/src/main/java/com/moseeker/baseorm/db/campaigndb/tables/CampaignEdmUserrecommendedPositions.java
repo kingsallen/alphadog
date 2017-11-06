@@ -146,7 +146,6 @@ public class CampaignEdmUserrecommendedPositions extends TableImpl<CampaignEdmUs
     /**
      * Rename this table
      */
-    @Override
     public CampaignEdmUserrecommendedPositions rename(String name) {
         return new CampaignEdmUserrecommendedPositions(name, null);
     }

@@ -156,7 +156,6 @@ public class HrWxHrChatListBak extends TableImpl<HrWxHrChatListBakRecord> {
     /**
      * Rename this table
      */
-    @Override
     public HrWxHrChatListBak rename(String name) {
         return new HrWxHrChatListBak(name, null);
     }

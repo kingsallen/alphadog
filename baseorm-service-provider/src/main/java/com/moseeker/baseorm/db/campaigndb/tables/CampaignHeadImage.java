@@ -141,7 +141,6 @@ public class CampaignHeadImage extends TableImpl<CampaignHeadImageRecord> {
     /**
      * Rename this table
      */
-    @Override
     public CampaignHeadImage rename(String name) {
         return new CampaignHeadImage(name, null);
     }
