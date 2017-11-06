@@ -80,10 +80,10 @@ public abstract class ExecuteTask {
             return;
         }
         HrCompanyDO companyDO = companyDao.getCompanyById(hrThirdPartyAccount.getCompanyId());
-        if (hrThirdPartyAccount.getBinding() == 6 || hrThirdPartyAccount.getBinding() == 7) {
+        if (hrThirdPartyAccount.getBinding() == BindingStatus.ERROR.getValue() || hrThirdPartyAccount.getBinding() == BindingStatus.REFRESHWRONG.getValue()) {
             //发邮件cs
             emailNotification.sendFailureMail(emailNotification.getMails(), hrThirdPartyAccount, extras, companyDO);
-        } else if (hrThirdPartyAccount.getBinding() != 1) {
+        } else if (hrThirdPartyAccount.getBinding() != BindingStatus.BOUND.getValue() && hrThirdPartyAccount.getBinding() != BindingStatus.GETINGINFO.getValue()) {
             //发邮件dev
             emailNotification.sendFailureMail(emailNotification.getDevMails(), hrThirdPartyAccount, extras, companyDO);
         }
