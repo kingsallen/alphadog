@@ -99,6 +99,7 @@ public class ReceiverHandler {
                     messageTemplate.setEnable_qx_retry(Byte.parseByte(enable_qx_retry));
                 }
                 templateMsgProducer.messageTemplateNotice(messageTemplate);
+                personaRecomEntity.updateIsSendPersonaRecom(userId,1,20);
             }else{
                 this.handleTemplateLogDeadLetter(message,msgBody,"没有查到模板所需的具体内容");
             }
