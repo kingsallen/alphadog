@@ -336,7 +336,7 @@ public class UseraccountsService {
         }
 
         String validateMobile=String.valueOf(user.mobile);
-        if(!"86".equals(user.getCountryCode())){
+        if(StringUtils.isNotNullOrEmpty(user.getCountryCode()) && !"86".equals(user.getCountryCode())){
             validateMobile=user.getCountryCode()+user.mobile;
         }
 
@@ -360,7 +360,7 @@ public class UseraccountsService {
 
                 // 未设置密码, 主动短信通知用户
                 if (!hasPassword) {
-                    smsSender.sendSMS_signupRandomPassword(String.valueOf(user.mobile), plainPassword);
+                    smsSender.sendSMS_signupRandomPassword(String.valueOf(user.mobile), plainPassword,String.valueOf(user.countryCode));
                 }
 
                 // // 初始化 user_setting 表.
