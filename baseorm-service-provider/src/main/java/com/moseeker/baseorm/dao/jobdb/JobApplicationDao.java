@@ -10,6 +10,9 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.application.struct.ApplicationAts;
 import com.moseeker.thrift.gen.application.struct.ProcessValidationStruct;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
+import java.util.Arrays;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.jooq.*;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Service;
@@ -112,4 +115,31 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 		}
 		return list;
 	}
+
+    /**
+     * insert 判断是否已存在
+     * @param record
+     * @return
+     */
+	public int addIfNotExists(JobApplicationRecord record) {
+        List<Field<?>> changedFieldList = Arrays.stream(record.fields()).filter(f -> record.changed(f)).collect(Collectors.toList());
+        String insertSql = " insert into jobdb.job_application ".concat(changedFieldList.stream().map(m -> m.getName()).collect(Collectors.joining(",", " (", ") ")))
+                .concat(" select ").concat(Stream.generate(() -> "?").limit(changedFieldList.size()).collect(Collectors.joining(",")))
+                .concat(" from dual where not exists ( ")
+                .concat(" select id from jobdb.job_application where ")
+                .concat(JobApplication.JOB_APPLICATION.DISABLE.getName()).concat(" = 0 and ")
+                .concat(JobApplication.JOB_APPLICATION.APPLIER_ID.getName()).concat(" = ").concat(record.getApplierId().toString()).concat(" and ")
+                .concat(JobApplication.JOB_APPLICATION.POSITION_ID.getName()).concat(" = ").concat(record.getPositionId().toString())
+                .concat(" ) ");
+        logger.info("addIfNotExisits job_application sql: {}", insertSql);
+        int result = create.execute(insertSql, changedFieldList.stream().map(m -> record.getValue(m)).collect(Collectors.toList()).toArray());
+        if (result == 0) {
+            logger.info("用户:{}已申请过职位:{}, 无需重复投递", record.getApplierId(), record.getPositionId());
+        }
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where(JobApplication.JOB_APPLICATION.DISABLE.getName(), 0).and(JobApplication.JOB_APPLICATION.APPLIER_ID.getName(), record.getApplierId())
+        .and(JobApplication.JOB_APPLICATION.POSITION_ID.getName(), record.getPositionId());
+        return getData(queryBuilder.buildQuery()).getId();
+    }
+
 }
