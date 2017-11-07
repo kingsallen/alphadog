@@ -168,9 +168,9 @@ public class SmsSender {
      * @param mobile
      * @return
      */
-    public boolean sendSMS_signupRandomPassword(String mobile, String randompassword, String $countryCode){
+    public boolean sendSMS_signupRandomPassword(String mobile, String randompassword, String countryCode){
 
-        if ($countryCode == "86"){
+        if (StringUtils.isNullOrEmpty(countryCode) ||  countryCode == "86"){
             HashMap<String, String> params = new HashMap<String, String>();
             params.put("name", mobile);
             params.put("code", randompassword);
@@ -240,7 +240,7 @@ public class SmsSender {
         HashMap<String, String> params = new HashMap<String, String>();
         String passwordforgotcode = getRandomStr();
         params.put("code", passwordforgotcode);
-        if("86".equals(countryCode)){
+        if(StringUtils.isNullOrEmpty(countryCode) || "86".equals(countryCode)){
             redisClient.set(0, event, mobile, passwordforgotcode);
             return sendSMS(mobile,"SMS_5755096",params);
         }else{

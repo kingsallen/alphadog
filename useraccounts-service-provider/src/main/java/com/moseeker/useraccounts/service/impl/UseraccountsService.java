@@ -164,7 +164,7 @@ public class UseraccountsService {
         if (code != null) {
             // 存在验证码,就是手机号+验证码登陆.
             String mobile = userloginreq.getMobile();
-            if(!"86".equals(userloginreq.getCountryCode())){
+            if(StringUtils.isNotNullOrEmpty(userloginreq.getCountryCode()) && !"86".equals(userloginreq.getCountryCode())){
                 mobile=userloginreq.getCountryCode()+mobile;
             }
             if (validateCode(mobile, code, 1)) {
@@ -336,7 +336,7 @@ public class UseraccountsService {
         }
 
         String validateMobile=String.valueOf(user.mobile);
-        if(!"86".equals(user.getCountryCode())){
+        if(StringUtils.isNotNullOrEmpty(user.getCountryCode()) && !"86".equals(user.getCountryCode())){
             validateMobile=user.getCountryCode()+user.mobile;
         }
 
@@ -530,7 +530,7 @@ public class UseraccountsService {
      */
     public Response postuserresetpassword(String mobile, String password, String code,String countryCode) throws TException {
         String validateMobile=mobile;
-        if(!"86".equals(countryCode)){
+        if(StringUtils.isNotNullOrEmpty(countryCode) && !"86".equals(countryCode)){
             validateMobile=countryCode+mobile;
         }
         if (code != null && !validateCode(validateMobile, code, 2)) {
@@ -716,7 +716,7 @@ public class UseraccountsService {
      */
     public Response postvalidatechangemobilecode(String countryCode, String oldmobile, String code) throws TException {
 
-        if(!"86".equals(countryCode)){
+        if(StringUtils.isNotNullOrEmpty(countryCode) && !"86".equals(countryCode)){
             oldmobile=countryCode+oldmobile;
         }
         if (!validateCode(oldmobile, code, 3)) {
@@ -772,7 +772,7 @@ public class UseraccountsService {
      */
     public Response postresetmobile(int user_id, String countryCode, String newmobile, String code) throws TException {
         String verifynewmobile = newmobile;
-        if(!"86".equals(countryCode)){
+        if(StringUtils.isNotNullOrEmpty(countryCode) && !"86".equals(countryCode)){
             verifynewmobile = countryCode + newmobile;
         }
         if (code != null && !validateCode(verifynewmobile, code, 4)) {
@@ -952,7 +952,7 @@ public class UseraccountsService {
      * 验证忘记密码的验证码是否正确
      */
     public Response postvalidatepasswordforgotcode(String countryCode, String mobile, String code) throws TException {
-        if(!"86".equals(countryCode)){
+        if(StringUtils.isNotNullOrEmpty(countryCode) && !"86".equals(countryCode)){
             mobile=countryCode+mobile;
         }
 
@@ -1016,7 +1016,7 @@ public class UseraccountsService {
         vu.addRequiredStringValidate("验证码", code, null, null);
         String message = vu.validate();
         if (StringUtils.isNullOrEmpty(message)) {
-            if(!"86".equals(countryCode)){
+            if(StringUtils.isNotNullOrEmpty(countryCode) && !"86".equals(countryCode)){
                 mobile=countryCode+mobile;
             }
             boolean flag = validateCode(mobile, code, type);
