@@ -261,25 +261,16 @@ public class ChatDao {
             }
 
             /** 查找公司信息 */
-            if(companyIdArray.length > 0) {
-
-                Future companyFuture = threadPool.startTast(() -> listCompany(hrIdArray));
-                /** 过滤头像不存在的HR，匹配公司logo*/
-                userHrAccountDOList.stream()
-                        .filter(userHrAccountDO -> StringUtils.isNullOrEmpty(userHrAccountDO.getHeadimgurl()))
-                        .forEach(userHrAccountDO -> {
-                            try {
-                                Map<Integer, HrCompanyDO> companyDOList = (Map<Integer, HrCompanyDO>) companyFuture.get();
-                                if(companyDOList != null && companyDOList.size() > 0) {
-                                    if(companyDOList.get(userHrAccountDO.getId()).getId() > 0) {
-                                        userHrAccountDO.setHeadimgurl(companyDOList.get(userHrAccountDO.getId()).getLogo());
-                                    }
-                                }
-                            } catch (InterruptedException | ExecutionException e) {
-                                logger.error(e.getMessage(), e);
-                            }
-                        });
-            }
+            Map<Integer, HrCompanyDO> companyDOMap = listCompany(hrIdArray);
+            logger.info("companyDOMap:{}", companyDOMap);
+            /** 过滤头像不存在的HR，匹配公司logo*/
+            userHrAccountDOList.stream().filter(userHrAccountDO -> StringUtils.isNullOrEmpty(userHrAccountDO.getHeadimgurl()))
+                                        .forEach(userHrAccountDO -> {
+                                            if(companyDOMap != null && companyDOMap.get(userHrAccountDO.getId()).getId() > 0) {
+                                                logger.info("hrId:{}, logo:{}", userHrAccountDO.getId(), companyDOMap.get(userHrAccountDO.getId()).getLogo());
+                                                userHrAccountDO.setHeadimgurl(companyDOMap.get(userHrAccountDO.getId()).getLogo());
+                                            }
+                                        });
 
         }
         return userHrAccountDOList;

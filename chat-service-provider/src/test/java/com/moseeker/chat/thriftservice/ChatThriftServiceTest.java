@@ -35,7 +35,7 @@ public class ChatThriftServiceTest {
         }
     }
 
-//    //@Test
+    @Test
     public void listUserChatRoom() throws Exception {
         UserChatRoomsVO roomsVO = chatService.listUserChatRoom(1, 1, 10);
         System.out.println("pageNo : "+roomsVO.getPageNo());
