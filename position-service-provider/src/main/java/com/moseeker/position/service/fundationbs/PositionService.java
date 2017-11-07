@@ -1278,7 +1278,7 @@ public class PositionService {
         }
         List<WechatPositionListData> result=this.getWxPosition(pids);
         //这段本来可以不加，可是涉及到分页，所以肯定要在这边加上修改是否推送的功能
-        if(!StringUtils.isEmptyList(result)){
+        if(!StringUtils.isEmptyList(result)&&pageNum>1){
             this.updateIsSendStatus(list);
         }
         return result;
@@ -1310,9 +1310,12 @@ public class PositionService {
       更新为已读状态
      */
     public void updateIsSendStatus(List<CampaignPersonaRecomPojo> list){
+        SimpleDateFormat f=new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
+        String date=f.format(new Date());
         if(!StringUtils.isEmptyList(list)){
            for(CampaignPersonaRecomPojo DO:list){
                DO.setIsSend((byte)1);
+               DO.setSendTime(date);
            }
             campaignPersonaRecomDao.updateDatas(list);
         }

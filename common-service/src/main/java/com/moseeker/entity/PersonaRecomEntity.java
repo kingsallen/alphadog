@@ -15,7 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -58,8 +60,11 @@ public class PersonaRecomEntity {
         if(StringUtils.isEmptyList(list)){
             return 1;
         }
+        SimpleDateFormat f=new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
+        String date=f.format(new Date());
         for(CampaignPersonaRecomPojo pojo:list){
             pojo.setIsSend((byte)1);
+            pojo.setSendTime(date);
         }
         campaignPersonaRecomDao.updateDatas(list);
         return 1;

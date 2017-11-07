@@ -463,7 +463,6 @@ public class PositionServicesImpl implements Iface {
             throw ExceptionUtils.convertException(e);
         }
 
-
     }
     /*
       获取只能回阿香推送的职位，用于在微信端展示
