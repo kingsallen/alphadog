@@ -271,7 +271,7 @@ public class ChatDao {
                     query.select("logo");
                     query.where(new Condition("id", hrCompanyAccountMap.values(), ValueOp.IN));
 
-                    Future companyFuture = threadPool.startTast(() -> hrCompanyDao.getDatas(queryUtil));
+                    Future companyFuture = threadPool.startTast(() -> hrCompanyDao.getDatas(query.buildQuery()));
                     /** 过滤头像不存在的HR，匹配公司logo*/
                     userHrAccountDOList.stream()
                             .filter(userHrAccountDO -> StringUtils.isNullOrEmpty(userHrAccountDO.getHeadimgurl()))
@@ -410,10 +410,14 @@ public class ChatDao {
             }
             /** 查找公司的logo */
             if(userHrAccountDO.getCompanyId() > 0) {
-                QueryUtil findCompany = new QueryUtil();
-                findCompany.addSelectAttribute("id").addSelectAttribute("logo");
-                findCompany.addEqualFilter("id", userHrAccountDO.getCompanyId());
-                companyFuture = threadPool.startTast(() -> hrCompanyDao.getData(findCompany));
+                Query.QueryBuilder query = new Query.QueryBuilder();
+                query.where("account_id", userHrAccountDO.getId());
+                HrCompanyAccountDO hrCompanyAccountDO = hrCompanyAccountDao.getData(query.buildQuery());
+                query.clear();
+                query.select("logo");
+                query.where("id", hrCompanyAccountDO.getCompanyId());
+                query.select("id").select("logo");
+                companyFuture = threadPool.startTast(() -> hrCompanyDao.getData(query.buildQuery()));
             }
 
             if(wxUserFuture != null) {
