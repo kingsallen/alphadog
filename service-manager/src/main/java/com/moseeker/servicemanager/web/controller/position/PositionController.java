@@ -223,48 +223,12 @@ public class PositionController {
         try {
             logger.info("/position/refresh");
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            List<HashMap<Integer, Integer>> paramList = PositionParamUtils.parseRefreshParam(params);
             List< Integer> paramQXList = PositionParamUtils.parseRefreshParamQX(params);
-            logger.info("/position/refresh paramList.size:" + paramList.size());
-            List<Object> refreshResult = new ArrayList<>();
-            if (paramList.size() > 0) {
-                paramList.forEach(map -> {
-                    map.forEach((positionId, channel) -> {
-                        try {
-                            //同步到智联的第三方职位不刷新
-                            if (ChannelType.ZHILIAN.getValue() == channel) {
-                                logger.info("synchronize position:{}:zhilian skip",positionId);
-                                List<Integer> positionIds =new ArrayList<Integer>();
-                                positionIds.add(positionId);
-                                positionBS.refreshPositionQXPlatform(positionIds);
-                            }else {
-                                logger.info("positionId:" + positionId + "    channel:" + channel);
-                                Response refreshPositionResponse = positionBS.refreshPositionToThirdPartyPlatform(positionId, channel);
-                                logger.info("data:" + refreshPositionResponse.getData());
-                                refreshResult.add(JSON.parse(refreshPositionResponse.getData()));
-                            }
-                        } catch (Exception e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                            HashMap<String, Object> param = new HashMap<>();
-                            param.put("position_id", String.valueOf(positionId));
-                            param.put("channel", String.valueOf(channel));
-                            param.put("sync_status", "0");
-                            param.put("sync_fail_reason", Constant.POSITION_REFRESH_FAILED);
-                            refreshResult.add(param);
-                        } finally {
-                            //do nothing
-                        }
-                    });
-                });
-                if(!StringUtils.isEmptyList(paramQXList)){
-                	 positionBS.refreshPositionQXPlatform(paramQXList);
-                }
+            logger.info("/position/refresh paramQXList{}:" ,paramQXList);
 
-            }else{
-            	  if(!StringUtils.isEmptyList(paramQXList)){
-                 	 positionBS.refreshPositionQXPlatform(paramQXList);
-                 }
+            List<Object> refreshResult = new ArrayList<>();
+            if(!StringUtils.isEmptyList(paramQXList)){
+                positionBS.refreshPositionQXPlatform(paramQXList);
             }
             Response res = ResponseUtils.success(refreshResult);
             return ResponseLogNotification.success(request, res);
