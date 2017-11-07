@@ -41,6 +41,7 @@ public class ReceiverHandler {
 
     @Autowired
     private TemplateMsgProducer templateMsgProducer;
+
     @Autowired
     private Environment env;
 
@@ -71,6 +72,9 @@ public class ReceiverHandler {
             log.error(e.getMessage(), e);
         }
     }
+    /*
+      智能画像数据推送的微信模板
+     */
     @RabbitListener(queues = "#{sendTemplateQue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
     public void handlerMessageTemplate(Message message, Channel channel){
@@ -87,12 +91,7 @@ public class ReceiverHandler {
             String jobName=jsonObject.getString("job_name");
             String companyName=jsonObject.getString("company_name");
             if(StringUtils.isEmpty(url)){
-                if(type==1){
-                    url=env.getProperty("message.template.fans.url");
-                }
-                if(type==2){
-                    url=env.getProperty("message.template.recom.url");
-                }
+                url=handlerUrl(type);
             }
             String enable_qx_retry=jsonObject.getString("enable_qx_retry");
             MessageTemplateNoticeStruct messageTemplate=messageTemplateEntity.handlerTemplate(userId,companyId,templateId,type,url,jobName,companyName);
@@ -108,10 +107,15 @@ public class ReceiverHandler {
                 this.handleTemplateLogDeadLetter(message,msgBody,"没有查到模板所需的具体内容");
             }
         }catch(Exception e){
-            this.handleTemplateLogDeadLetter(message,msgBody,"没有查到末班所需的具体内容");
+            this.handleTemplateLogDeadLetter(message,msgBody,"没有查到模板所需的具体内容");
             log.error(e.getMessage(), e);
         }
     }
+    /*
+      数据短传来数据，本初做处理，
+      1，把该user_id原有的职位迁移到history当中
+      2，插入新的数据
+     */
     @RabbitListener(queues = "#{personaRecomQue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
     public void handlerPersonRecom(Message message, Channel channel){
@@ -131,7 +135,9 @@ public class ReceiverHandler {
             log.error(e.getMessage(), e);
         }
     }
-
+    /*
+      处理异常消息的队列
+     */
     private void handleTemplateLogDeadLetter(Message message,String msgBody,String errorMessage){
         LogDeadLetterDO logDeadLetterDO = new LogDeadLetterDO();
         logDeadLetterDO.setAppid(NumberUtils.toInt(message.getMessageProperties().getAppId(), 0));
@@ -142,5 +148,20 @@ public class ReceiverHandler {
         logDeadLetterDO.setQueueName(StringUtils.defaultIfBlank(message.getMessageProperties().getConsumerQueue(), ""));
         logDeadLetterDao.addData(logDeadLetterDO);
     }
+    /*
+      处理url
+      */
+    private String handlerUrl(int type){
+        String url="";
+        if(type==1){
+            url=env.getProperty("message.template.fans.url");
+        }else if(type==2||type==3){
+
+        }else if(type==4){
+
+        }
+        return url;
+    }
+
 
 }
