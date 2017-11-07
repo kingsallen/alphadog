@@ -11,10 +11,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccountHr;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.constants.AppId;
-import com.moseeker.common.constants.ChannelType;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.constants.KeyIdentifier;
+import com.moseeker.common.constants.*;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.query.Condition;
@@ -30,7 +27,6 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountHrDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.useraccounts.struct.ThirdPartyAccountHrInfo;
 import com.moseeker.thrift.gen.useraccounts.struct.ThirdPartyAccountInfo;
-import com.moseeker.useraccounts.constant.BindingStatus;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.pojo.BindResult;
 import org.slf4j.Logger;
@@ -94,19 +90,19 @@ public class ThirdPartyAccountService {
      * @throws Exception
      */
     private Map<String, String> getBindExtra(UserHrAccountDO userHrAccount, HrThirdPartyAccountDO account) throws Exception {
-        //获取子公司简称和ID
-        HrCompanyDO hrCompanyDO = hrCompanyAccountDao.getHrCompany(userHrAccount.getId());
-
-        if (hrCompanyDO == null) {
-            hrCompanyDO = hrCompanyDao.getCompanyById(userHrAccount.getCompanyId());
-
-            if (hrCompanyDO == null) {
-                throw new BIZException(-1, "无效的HR账号");
-            }
-        }
         Map<String, String> extras = new HashMap<>();
         //智联的帐号同步带上子公司简称
         if (account.getChannel() == ChannelType.ZHILIAN.getValue()) {
+            //获取子公司简称和ID
+            HrCompanyDO hrCompanyDO = hrCompanyAccountDao.getHrCompany(userHrAccount.getId());
+
+            if (hrCompanyDO == null) {
+                hrCompanyDO = hrCompanyDao.getCompanyById(userHrAccount.getCompanyId());
+
+                if (hrCompanyDO == null) {
+                    throw new BIZException(-1, "无效的HR账号");
+                }
+            }
             extras.put("company", hrCompanyDO.getAbbreviation());
         }
         return extras;
@@ -157,15 +153,20 @@ public class ThirdPartyAccountService {
         if (allowStatus > 0) {
             account.setId(allowStatus);
         } else {
+            account.setBinding((short)BindingStatus.UNBIND.getValue());
+            logger.info("第一次插入绑定数据时的绑定状态"+account.getBinding());
             //将这次绑定记录到数据库
             account = thirdPartyAccountDao.addData(account);
+            logger.info("after 第一次插入绑定数据时的绑定状态"+account.getBinding());
         }
 
         setCache(account);
 
         try {
             HrThirdPartyAccountDO result = thirdPartyAccountSynctor.bindThirdPartyAccount(account, extras, sync);
-            if (allowStatus == 0 && (result.binding == 1 || result.binding == 6)) {
+            if (allowStatus == 0
+                    && (result.binding == BindingStatus.ERROR.getValue()
+                        || result.binding == BindingStatus.GETINGINFO.getValue())) {
                 checkDispatch(result, hrId);
             }
             if (result.getBinding() != 100) {
@@ -188,6 +189,7 @@ public class ThirdPartyAccountService {
         if (accountDO == null) {
             throw UserAccountException.THIRD_PARTY_ACCOUNT_NOTEXIST;
         }
+
         boolean changed = false;
         if (bindResult != null && bindResult.getStatus() != 0) {
             emailNotification.sendFailureMail(emailNotification.getMails(), accountDO);
@@ -213,21 +215,28 @@ public class ThirdPartyAccountService {
     @Transactional
     public void thirdPartyAccountExtHandler(ThirdPartyAccountExt accountExt) throws CommonException {
         HrThirdPartyAccountDO accountDO = thirdPartyAccountDao.getAccountById(accountExt.getData().getAccountId());
+        logger.info("获取第三方账号相关信息账号ID："+accountExt.getData().getAccountId()+",状态："+accountExt.getStatus());
         if (accountDO == null) {
             throw UserAccountException.THIRD_PARTY_ACCOUNT_NOTEXIST;
         }
+
         if (accountExt.getStatus() != 0) {
+
+            HrCompanyDO companyDO = hrCompanyDao.getCompanyById(accountDO.getCompanyId());
+
             if (accountExt.getData().getOperationType() == 1) {
-                emailNotification.sendThirdPartyAccountExtHandlerFailureMail(emailNotification.getMails(),accountDO, accountExt.getMessage());
+                emailNotification.sendThirdPartyAccountExtHandlerFailureMail(emailNotification.getMails(),accountDO, accountExt.getMessage(),companyDO);
             } else {
-                emailNotification.sendThirdPartyAccountExtHandlerFailureMail(emailNotification.getDevMails(),accountDO, "职位同步之后获取第三方渠道扩展信息失败！");
-            }
-            if (accountDO.getBinding() != BindingStatus.BOUND.getValue()) {
-                accountDO.setBinding((short) BindingStatus.BOUND.getValue());
-                thirdPartyAccountDao.updateData(accountDO);
+                emailNotification.sendThirdPartyAccountExtHandlerFailureMail(emailNotification.getDevMails(),accountDO, "职位同步之后获取第三方渠道扩展信息失败！",companyDO);
             }
         } else {
             thridPartyAcountEntity.saveAccountExt(accountExt.getData(), accountDO);
+            logger.info("第三方账号相关信息绑定处理完成，准备更新"+accountDO.getBinding()+"为1");
+            if (accountDO.getBinding() != BindingStatus.BOUND.getValue()) {
+                accountDO.setBinding((short) BindingStatus.BOUND.getValue());
+                logger.info(accountDO.getBinding()+"更新成功，状态为"+accountDO.getBinding());
+            }
+            thirdPartyAccountDao.updateData(accountDO);
         }
     }
 
@@ -365,7 +374,7 @@ public class ThirdPartyAccountService {
     }
 
     public int checkRebinding(HrThirdPartyAccountDO bindingAccount) throws BIZException {
-        if (bindingAccount.getBinding() == 1 || bindingAccount.getBinding() == 3 || bindingAccount.getBinding() == 7) {
+        if (bindingAccount.getBinding() == 1 || bindingAccount.getBinding() == 3 || bindingAccount.getBinding() == 7 || bindingAccount.getBinding() == 8) {
             throw new BIZException(-1, "已经绑定该帐号了");
         } else if (bindingAccount.getBinding() == 2 || bindingAccount.getBinding() == 6) {
             throw new BIZException(-1, "该帐号已经在绑定中了");
@@ -546,7 +555,7 @@ public class ThirdPartyAccountService {
                     .where(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.THIRD_PARTY_ACCOUNT_ID.getName(), accountId)
                     .buildUpdate();
             thirdPartyAccountHrDao.update(update);
-            thirdPartyAccount.setBinding(Integer.valueOf(0).shortValue());
+            thirdPartyAccount.setBinding((short)BindingStatus.UNBIND.getValue());
             thirdPartyAccountDao.updateData(thirdPartyAccount);
         } else {
 
@@ -823,9 +832,9 @@ public class ThirdPartyAccountService {
         logger.info("分配之前的最后一个绑定人:{}", lastBinderId);
         //分配之后的最后一个绑定人
         logger.info("分配之后的最后一个绑定人:{}", newLastBinderId);
-        if (newLastBinderId > 0 && newLastBinderId != lastBinderId) {
+        /*if (newLastBinderId > 0 && newLastBinderId != lastBinderId) {
             autoRefreshThirdPartyAccount(thirdPartyAccount, newLastBinderId);
-        }
+        }*/
 
         return getThridAccount(thirdPartyAccount.getId());
     }

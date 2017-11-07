@@ -24,7 +24,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
-import sun.jvm.hotspot.runtime.Thread;
+//import sun.jvm.hotspot.runtime.Thread;
 
 /**
  * Created by lucky8987 on 17/5/17.
@@ -113,7 +113,7 @@ public class EmployeeServiceTest {
      * 线程池
      */
      ExecutorService threadPool = new ThreadPoolExecutor(10, 15, 60L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 20; i++) {
             Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
@@ -121,16 +121,24 @@ public class EmployeeServiceTest {
                     ueprDo.setAward(1);
                     ueprDo.setEmployeeId(677720);
                     ueprDo.setReason("加积分");
-                    int total = 0;
                     try {
-                        total = employeeEntity.addReward(677720, 96, ueprDo);
+                        employeeEntity.addReward(677720, 96, ueprDo);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    System.out.println("用户："+ueprDo.getEmployeeId()+", 积分："+total);
                 }
             };
             threadPool.submit(runnable);
+            threadPool.submit(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        employeeEntity.addAwardBefore(677720, 96, 233, 7, 112, 0);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
         }
 
         threadPool.shutdown();

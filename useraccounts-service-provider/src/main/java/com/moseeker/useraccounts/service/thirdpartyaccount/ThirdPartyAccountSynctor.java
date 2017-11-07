@@ -1,6 +1,7 @@
 package com.moseeker.useraccounts.service.thirdpartyaccount;
 
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
+import com.moseeker.common.constants.BindingStatus;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import javafx.scene.control.SpinnerValueFactory;
@@ -120,10 +121,12 @@ public class ThirdPartyAccountSynctor {
         if (thirdPartyAccount.getId() == 0) {
             thirdPartyAccount = hrThirdPartyAccountDao.addData(thirdPartyAccount);
         }
-
+        logger.info("syncWithBindThirdPartyAccount before bindTask.execute");
         thirdPartyAccount = bindTask.execute(thirdPartyAccount, extras);
+        logger.info("syncWithBindThirdPartyAccount after bindTask.execute");
 
         if (thirdPartyAccount.getBinding() < 100) {
+            logger.info("syncWithBindThirdPartyAccount after bindTask.execute thirdPartyAccount.binding:{}", thirdPartyAccount.getBinding());
             bindTask.updateThirdPartyAccount(thirdPartyAccount, extras);
         }
 
@@ -155,7 +158,7 @@ public class ThirdPartyAccountSynctor {
      */
     private HrThirdPartyAccountDO asyncWithSyncThirdPartyAccount(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras) throws Exception {
         //先更新数据库的状态为刷新中3
-        hrThirdPartyAccount.setBinding(Short.valueOf("3"));
+        hrThirdPartyAccount.setBinding((short) BindingStatus.REFRESH.getValue());
         int updateResult = hrThirdPartyAccountDao.updateData(hrThirdPartyAccount);
         if (updateResult < 1) {
             //更新失败
@@ -176,7 +179,7 @@ public class ThirdPartyAccountSynctor {
      */
     private HrThirdPartyAccountDO asyncWithBindThirdPartyAccount(HrThirdPartyAccountDO thirdPartyAccount, Map<String, String> extras) throws Exception {
         //先保存信息到数据库,状态为2绑定中
-        thirdPartyAccount.setBinding(Short.valueOf("2"));
+        thirdPartyAccount.setBinding((short) BindingStatus.BOUNDING.getValue());
         if (thirdPartyAccount.getId() > 0) {
             int updateResult = hrThirdPartyAccountDao.updateData(thirdPartyAccount);
             if (updateResult < 1) {

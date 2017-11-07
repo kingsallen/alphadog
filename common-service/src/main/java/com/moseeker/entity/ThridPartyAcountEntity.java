@@ -1,5 +1,6 @@
 package com.moseeker.entity;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.baseorm.dao.dictdb.DictCityMapDao;
 import com.moseeker.baseorm.dao.thirdpartydb.ThirdpartyAccountCityDao;
@@ -18,7 +19,6 @@ import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.pojos.Data;
-import com.moseeker.entity.pojos.ThirdPartyAccountExt;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityMapDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
@@ -26,11 +26,16 @@ import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyAccountCityDO;
 import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyAccountCompanyAddressDO;
 import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyAccountCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyAccountDepartmentDO;
+import org.apache.commons.lang.time.FastDateFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -40,6 +45,8 @@ import java.util.stream.Collectors;
  */
 @Component
 public class ThridPartyAcountEntity {
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     ThirdpartyAccountCompanyDao accountCompanyDao;
@@ -68,12 +75,17 @@ public class ThridPartyAcountEntity {
     @Transactional
     public void saveAccountExt(Data data, HrThirdPartyAccountDO accountDO) throws CommonException {
 
+
+        logger.info("saveAccountExt data:{}", JSON.toJSONString(data));
         Query query = new Query.QueryBuilder().where(DictCityMap.DICT_CITY_MAP.CHANNEL.getName(), accountDO.getChannel()).buildQuery();
         List<DictCityMapDO> cityMapDOList = cityMapDao.getDatas(query);
         List<Integer> codeList = cityMapDOList.stream().map(cityMapDO -> cityMapDO.getCode()).collect(Collectors.toList());
         Condition condition = new Condition(DictCity.DICT_CITY.CODE.getName(), codeList, ValueOp.IN);
         Query findCityList = new Query.QueryBuilder().where(condition).buildQuery();
         List<DictCityDO> cityDOList = cityDao.getFullCity();
+
+        //初始化创建时间和更新时间
+        String currentTime=FastDateFormat.getDateInstance(FastDateFormat.LONG, Locale.CHINA).format(new Date());
 
         if (data.getCities() != null && data.getCities().size() > 0) {
             Condition deleteCondition = new Condition(ThirdpartyAccountCity.THIRDPARTY_ACCOUNT_CITY.ACCOUNT_ID.getName(), data.getAccountId());
@@ -99,12 +111,16 @@ public class ThridPartyAcountEntity {
                         } else {
                             thirdpartyAccountCityDO.setCode(0);
                         }
-                        thirdpartyAccountCityDO.setRemainNum(city.getAmout());
+                        thirdpartyAccountCityDO.setRemainNum(city.getAmount());
                         thirdpartyAccountCityDO.setJobtype((byte) city.getJobTypeInt());
                         thirdpartyAccountCityDO.setAccountId(data.getAccountId());
+                        thirdpartyAccountCityDO.setCreateTime(currentTime);
+                        thirdpartyAccountCityDO.setUpdateTime(currentTime);
+                        logger.info("saveAccountExt area:{}, amount:{}, jobType:{}, accountId:{}", area, city.getAmount(), city.getJobType(), data.getAccountId());
                         return thirdpartyAccountCityDO;
 
             }).collect(Collectors.toList());
+            logger.info("saveAccountExt collectors.size:{}", thirdpartyAccountCityDOList.size());
             if (thirdpartyAccountCityDOList != null && thirdpartyAccountCityDOList.size() > 0) {
                 accountCityDao.addAllData(thirdpartyAccountCityDOList);
             }
@@ -121,6 +137,8 @@ public class ThridPartyAcountEntity {
                         addressDO.setAccountId(data.getAccountId());
                         addressDO.setAddress(address.getAddress());
                         addressDO.setCity(address.getCity());
+                        addressDO.setCreateTime(currentTime);
+                        addressDO.setUpdateTime(currentTime);
                         return addressDO;
                     }).collect(Collectors.toList());
             if (addressDOList != null && addressDOList.size() > 0) {
@@ -138,6 +156,8 @@ public class ThridPartyAcountEntity {
                         ThirdpartyAccountCompanyDO companyDO = new ThirdpartyAccountCompanyDO();
                         companyDO.setAccountId(data.getAccountId());
                         companyDO.setCompanyName(company);
+                        companyDO.setCreateTime(currentTime);
+                        companyDO.setUpdateTime(currentTime);
                         return companyDO;
                     }).collect(Collectors.toList());
             if (companyDOList != null && companyDOList.size() > 0) {
@@ -155,6 +175,8 @@ public class ThridPartyAcountEntity {
                         ThirdpartyAccountDepartmentDO departmentDO = new ThirdpartyAccountDepartmentDO();
                         departmentDO.setAccountId(data.getAccountId());
                         departmentDO.setDepartmentName(department);
+                        departmentDO.setCreateTime(currentTime);
+                        departmentDO.setUpdateTime(currentTime);
                         return departmentDO;
                     }).collect(Collectors.toList());
             if (departmentDOList != null && departmentDOList.size() > 0) {

@@ -11,6 +11,8 @@ import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.EmojiFilter;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.UrlUtil;
+import com.moseeker.function.constants.BindThirdPart;
+import com.moseeker.common.constants.BindingStatus;
 import com.moseeker.function.service.chaos.position.Position51WithAccount;
 import com.moseeker.function.service.chaos.position.PositionLiepinWithAccount;
 import com.moseeker.function.service.chaos.position.PositionZhilianWithAccount;
@@ -20,7 +22,13 @@ import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizat
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.MessageBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.test.context.ContextConfiguration;
+import com.moseeker.function.config.AppConfig;
+
 
 import javax.annotation.Resource;
 import java.net.ConnectException;
@@ -37,12 +45,17 @@ import java.util.Map;
  * @author wjf
  */
 @Service
+@ContextConfiguration(classes = AppConfig.class)
 public class ChaosServiceImpl {
 
     Logger logger = LoggerFactory.getLogger(ChaosServiceImpl.class);
 
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
+
+    @Autowired
+    private AmqpTemplate amqpTemplate;
+
 
     private String getConfigString(String key) throws Exception {
         ConfigPropertiesUtil configUtils = ConfigPropertiesUtil.getInstance();
@@ -61,12 +74,23 @@ public class ChaosServiceImpl {
     }
 
 
-    private String postBind(int channel, String params) throws Exception {
-        String domain = getDomain();
+    private String postBind(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras, String routingKey) throws Exception {
+        //推送需要绑定第三方账号的信息到rabbitMQ中
+        String param=ChaosTool.getParams(hrThirdPartyAccount, extras);
+        String account_Id=hrThirdPartyAccount.getId()+"";
+        logger.info("准备推送"+account_Id+"数据到RabbitMQ的RoutingKey："+routingKey);
+        amqpTemplate.send(BindThirdPart.BIND_EXCHANGE_NAME, routingKey, MessageBuilder.withBody(param.getBytes()).build());
+        logger.info("推送RabbitMQ成功");
 
-        ChannelType chnnelType = ChannelType.instaceFromInteger(channel);
-        String bindURI = chnnelType.getBindURI(domain);
-        String data = UrlUtil.sendPost(bindURI, params, Constant.CONNECTION_TIME_OUT, Constant.READ_TIME_OUT);
+        //尝试从从redis中获取绑定结果,超时后推出
+        String cacheKey=redisClient.genCacheKey(BindThirdPart.APP_ID, BindThirdPart.KEY_IDENTIFIER,account_Id);
+
+        logger.info("准备从Redis获取"+routingKey+"结果");
+        redisClient.existWithTimeOutCheck(cacheKey);
+
+        String data=redisClient.get(BindThirdPart.APP_ID, BindThirdPart.KEY_IDENTIFIER,account_Id);
+        logger.info("成功从Redis获取推送绑定结果");
+
         return data;
     }
 
@@ -79,45 +103,44 @@ public class ChaosServiceImpl {
     public HrThirdPartyAccountDO bind(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras) throws Exception {
         logger.info("ChaosServiceImpl bind");
         try {
-//        String data = "{\"status\":100,\"message\":\"182****3365\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
-            String data = postBind(hrThirdPartyAccount.getChannel(), ChaosTool.getParams(hrThirdPartyAccount, extras));
+//            String data = "{\"status\":100,\"message\":\"182****3365\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
+            String data=postBind(hrThirdPartyAccount,extras, BindThirdPart.BIND_SEND_ROUTING_KEY);
+
             JSONObject jsonObject = JSONObject.parseObject(data);
             int status = jsonObject.getIntValue("status");
 
             if (status == 0) {
-                hrThirdPartyAccount.setBinding(Integer.valueOf(1).shortValue());
-                hrThirdPartyAccount.setRemainNum(jsonObject.getJSONObject("data").getIntValue("remain_number"));
-                hrThirdPartyAccount.setRemainProfileNum(jsonObject.getJSONObject("data").getIntValue("resume_number"));
+                hrThirdPartyAccount.setBinding((short)BindingStatus.GETINGINFO.getValue());
+                logger.info("绑定成功，binding标志为"+hrThirdPartyAccount.getBinding());
             } else {
                 String message = jsonObject.getString("message");
 
                 if (status == 1) {
                     if (StringUtils.isNullOrEmpty(message)) {
-                        message = "用户名或密码错误";
+                        message = BindThirdPart.BIND_UP_ERR_MSG;
                     }
                     throw new BIZException(1, message);
                 } else if (status == 100) {
-                    hrThirdPartyAccount.setBinding(Integer.valueOf(100).shortValue());
-                } else if (status == 2) {
-                    hrThirdPartyAccount.setBinding(Integer.valueOf(6).shortValue());
+                    hrThirdPartyAccount.setBinding((short) BindingStatus.NEEDCODE.getValue());
+                }  else if (status == 2) {
+                    hrThirdPartyAccount.setBinding((short)BindingStatus.ERROR.getValue());
                     if (StringUtils.isNullOrEmpty(message)) {
-                        message = "绑定异常，请重新绑定";
+                        message = BindThirdPart.BIND_EXP_MSG;
                     } else {
                         message = EmojiFilter.unicodeToUtf8(message);
                     }
                 } else {
                     if (StringUtils.isNullOrEmpty(message)) {
-                        message = "绑定错误，请重新绑定";
+                        message = BindThirdPart.BIND_ERR_MSG;
                     }
                     throw new BIZException(1, message);
                 }
-
                 hrThirdPartyAccount.setErrorMessage(message);
             }
         } catch (ConnectException e) {
             //绑定超时发送邮件
-            hrThirdPartyAccount.setBinding(Integer.valueOf(6).shortValue());
-            hrThirdPartyAccount.setErrorMessage("绑定超时，请稍后重试");
+            hrThirdPartyAccount.setBinding((short)BindingStatus.ERROR.getValue());
+            hrThirdPartyAccount.setErrorMessage(BindThirdPart.BIND_TIMEOUT_MSG);
         }
 
 
@@ -137,7 +160,8 @@ public class ChaosServiceImpl {
         Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.putAll(extras);
         paramsMap.put("confirm", confirm);
-        String data = postBind(hrThirdPartyAccount.getChannel(), ChaosTool.getParams(hrThirdPartyAccount, paramsMap));
+
+        String data=postBind(hrThirdPartyAccount,extras, BindThirdPart.BIND_CONFIRM_SEND_ROUTING_KEY);
 
         JSONObject jsonObject = JSONObject.parseObject(data);
 
@@ -163,14 +187,14 @@ public class ChaosServiceImpl {
         Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.putAll(extras);
         paramsMap.put("code", code);
-        String data = postBind(hrThirdPartyAccount.getChannel(), ChaosTool.getParams(hrThirdPartyAccount, paramsMap));
+
+        String data=postBind(hrThirdPartyAccount,extras, BindThirdPart.BIND_CODE_SEND_ROUTING_KEY);
+
         JSONObject jsonObject = JSONObject.parseObject(data);
         int status = jsonObject.getIntValue("status");
         String message = jsonObject.getString("message");
         if (status == 0) {
-            hrThirdPartyAccount.setBinding(Integer.valueOf(1).shortValue());
-            hrThirdPartyAccount.setRemainNum(jsonObject.getJSONObject("data").getIntValue("remain_number"));
-            hrThirdPartyAccount.setRemainProfileNum(jsonObject.getJSONObject("data").getIntValue("resume_number"));
+            hrThirdPartyAccount.setBinding((short)BindingStatus.BOUND.getValue());
         } else if (status == 112) {//验证码错误
             if (StringUtils.isNullOrEmpty(message)) {
                 message = "验证码错误";
@@ -188,7 +212,7 @@ public class ChaosServiceImpl {
             throw new BIZException(1, message);
         } else if (status == 9) {
             //发送绑定失败的邮件
-            hrThirdPartyAccount.setBinding(Integer.valueOf(6).shortValue());
+            hrThirdPartyAccount.setBinding((short)BindingStatus.ERROR.getValue());
         } else {
             if (StringUtils.isNullOrEmpty(message)) {
                 message = "绑定失败，请重试";
@@ -217,7 +241,7 @@ public class ChaosServiceImpl {
         JSONObject jsonObject = JSONObject.parseObject(data);
         int status = jsonObject.getIntValue("status");
         if (status == 0) {
-            hrThirdPartyAccount.setBinding(Integer.valueOf(1).shortValue());
+            hrThirdPartyAccount.setBinding((short) BindingStatus.BOUND.getValue());
             hrThirdPartyAccount.setRemainNum(jsonObject.getJSONObject("data").getIntValue("remain_number"));
             hrThirdPartyAccount.setRemainProfileNum(jsonObject.getJSONObject("data").getIntValue("resume_number"));
         } else {
@@ -227,19 +251,19 @@ public class ChaosServiceImpl {
                 if (StringUtils.isNullOrEmpty(message)) {
                     message = "用户名或密码错误";
                 }
-                hrThirdPartyAccount.setBinding(Integer.valueOf(4).shortValue());
+                hrThirdPartyAccount.setBinding((short) BindingStatus.INFOWRONG.getValue());
 
             } else if (status == 100) {
-                hrThirdPartyAccount.setBinding(Integer.valueOf(100).shortValue());
+                hrThirdPartyAccount.setBinding((short) BindingStatus.NEEDCODE.getValue());
             } else if (status == 2) {
-                hrThirdPartyAccount.setBinding(Integer.valueOf(7).shortValue());
+                hrThirdPartyAccount.setBinding((short)BindingStatus.REFRESHWRONG.getValue());
                 if (StringUtils.isNullOrEmpty(message)) {
                     message = "刷新异常，请重试";
                 } else {
                     message = EmojiFilter.unicodeToUtf8(message);
                 }
             } else {
-                hrThirdPartyAccount.setBinding(Integer.valueOf(5).shortValue());
+                hrThirdPartyAccount.setBinding((short)BindingStatus.FAIL.getValue());
                 if (StringUtils.isNullOrEmpty(message)) {
                     message = "绑定错误，请重新绑定";
                 }
@@ -288,13 +312,15 @@ public class ChaosServiceImpl {
                 continue;
             }
 
-            redisClient.lpush(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_QUEUE.toString(), positionJson);
+//            redisClient.lpush(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_QUEUE.toString(), positionJson);
+
+            amqpTemplate.send(BindThirdPart.BIND_EXCHANGE_NAME, BindThirdPart.SYNC_POSITION_SEND_ROUTING_KEY, MessageBuilder.withBody(positionJson.getBytes()).build());
 
             logger.info("成功将同步数据插入队列:{}", position.getPosition_id());
 
-            if (second < 60 * 60 * 24) {
+            /*if (second < 60 * 60 * 24) {
                 redisClient.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH.toString(), String.valueOf(position.getPosition_id()), String.valueOf(position.getAccount_id()), "1", 60 * 60 * 24 - second);
-            }
+            }*/
         }
     }
 

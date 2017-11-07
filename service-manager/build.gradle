@@ -31,6 +31,8 @@ dependencies {
     compile deps["spring-context"]
     compile deps["spring-webmvc"]
     compile deps["httpclient"]
+    compile deps["commons-io"]
+    compile deps["commons-fileupload"]
 
     runtime deps['jstl']
 
@@ -56,6 +58,7 @@ task copyJars(type: Copy) {
   from configurations.runtime
   into 'build/libs' // 目标位置
 }
+
 
 jettyRun{
     webAppSourceDirectory file("$projectDir/WebContent")

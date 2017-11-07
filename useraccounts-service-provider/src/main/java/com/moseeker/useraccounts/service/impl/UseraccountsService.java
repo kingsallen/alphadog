@@ -11,6 +11,7 @@ import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
+import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserFavPositionRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
@@ -1157,9 +1158,11 @@ public class UseraccountsService {
         return userId;
     }
 
-    public boolean ifExistProfile(String mobile) {
+    public boolean ifExistProfile(String countryCode, String mobile) {
         Query.QueryBuilder qu = new Query.QueryBuilder();
-        qu.where("mobile", mobile).and("source", String.valueOf(UserSource.RETRIEVE_PROFILE.getValue()));
+        qu.where(UserUser.USER_USER.MOBILE.getName(), mobile)
+                .and(UserUser.USER_USER.COUNTRY_CODE.getName(), countryCode)
+                .and(UserUser.USER_USER.SOURCE.getName(), String.valueOf(UserSource.RETRIEVE_PROFILE.getValue()));
         UserUserDO user = userdao.getData(qu.buildQuery());
         ProfileProfileRecord record = profileDao.getProfileByUserId(user.getId());
         if (record != null) {

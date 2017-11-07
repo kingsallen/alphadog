@@ -5,6 +5,7 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.Category;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.company.exception.ExceptionFactory;
 import com.moseeker.company.service.impl.CompanyPcService;
 import com.moseeker.entity.CompanyConfigEntity;
@@ -19,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.moseeker.company.service.impl.CompanyService;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -28,7 +28,6 @@ import com.moseeker.thrift.gen.company.struct.CompanyOptions;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrImporterMonitorDO;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -302,6 +301,22 @@ public class CompanyServicesImpl implements Iface {
         try{
             Map<String,Object> map=companyPcService.getCompanyMessage(companyId);
             return ResponseUtils.success(map);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+    /*
+      获取付费公司和世界五百强公司
+     */
+    @Override
+    public Response companyPaidOrFortune() throws BIZException, TException {
+        try{
+            List<Map<String,Object>> list=companyPcService.getCompanyFourtuneAndPaid();
+            if(StringUtils.isEmptyList(list)){
+                return ResponseUtils.success("");
+            }
+            return ResponseUtils.success(list);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
             throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);

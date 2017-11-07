@@ -130,7 +130,7 @@ public class JobApplicataionService {
             }
 //            long userId=(long)jobApplication.getApplier_id();
 //            int companyId=jobPositionRecord.getCompanyId();
-//            Query queryEmployee=new Query.QueryBuilder().where("sys_user_id",userId)
+//            Query queryEmployee=new Query.QueryBuilder().where("sysuser_id",userId)
 //                    .and("company_id",companyId)
 //                    .and("disable",0)
 //                    .and("activation",0)

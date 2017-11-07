@@ -25,10 +25,7 @@ import com.moseeker.common.util.JsonToMap;
 import com.moseeker.servicemanager.web.controller.util.Params;
 
 /**
- * 主要用于生成form表单
- * <p>Company: MoSeeker</P>
- * <p>date: Aug 22, 2016</p>
- * <p>Email: wjf2255@gmail.com</p>
+ * 主要用于生成form表单 <p>Company: MoSeeker</P> <p>date: Aug 22, 2016</p> <p>Email: wjf2255@gmail.com</p>
  *
  * @author wjf
  */
@@ -83,6 +80,17 @@ public class ParamUtils {
         }
         return data;
     }
+
+
+    public static Params<String, Object> parseequestParameter(HttpServletRequest request) throws Exception {
+        Params<String, Object> data = new Params<>();
+        data.putAll(initParamFromRequestParameter(request));
+        if (data.get("appid") == null) {
+            throw new Exception("请设置 appid!");
+        }
+        return data;
+    }
+
 
     public static String parseJsonParam(HttpServletRequest request) {
         return getParamFromBody(request);

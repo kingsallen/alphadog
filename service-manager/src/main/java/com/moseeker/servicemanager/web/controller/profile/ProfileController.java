@@ -1,34 +1,12 @@
 package com.moseeker.servicemanager.web.controller.profile;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.moseeker.thrift.gen.profile.service.ProfileOtherThriftService;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.thrift.gen.application.service.JobApplicationServices;
-import com.moseeker.thrift.gen.application.struct.ApplicationResponse;
-import com.moseeker.thrift.gen.common.struct.BIZException;
-import com.moseeker.thrift.gen.profile.service.ProfileServices;
-
-import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
-import org.apache.thrift.TException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
@@ -37,9 +15,31 @@ import com.moseeker.servicemanager.web.controller.profile.form.OutPutResumeForm;
 import com.moseeker.servicemanager.web.controller.profile.form.OutPutResumeUtil;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.servicemanager.web.controller.util.ProfileParamUtil;
+import com.moseeker.thrift.gen.application.service.JobApplicationServices;
+import com.moseeker.thrift.gen.application.struct.ApplicationResponse;
 import com.moseeker.thrift.gen.apps.profilebs.service.ProfileBS;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.profile.service.ProfileOtherThriftService;
+import com.moseeker.thrift.gen.profile.service.ProfileServices;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
+import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.http.Consts;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @CounterIface
@@ -327,8 +327,7 @@ public class ProfileController {
     }
 
     /**
-     * 回收简历
-     * 用于替换retrieveProfile
+     * 回收简历 用于替换retrieveProfile
      */
     @RequestMapping(value = "/retrieval/profile", method = RequestMethod.POST)
     @ResponseBody
@@ -353,6 +352,59 @@ public class ProfileController {
         }
     }
 
+    /**
+     * 回收简历 用于替换retrieveProfile
+     */
+    @RequestMapping(value = "/profile/parser", method = RequestMethod.POST)
+    @ResponseBody
+    public String profileParser(@RequestParam(value = "file", required = false) MultipartFile file, HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseequestParameter(request);
+            Integer uid = params.getInt("uid");
+            if (file != null) {
+                String data = new String(Base64.encodeBase64(file.getBytes()), Consts.UTF_8);
+                Response res = service.resumeProfile(uid, file.getOriginalFilename(), data);
+                return ResponseLogNotification.success(request, res);
+            } else {
+                return null;
+            }
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     * 给用户添加或者更新profile
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "v2/profile", method = RequestMethod.POST)
+    @ResponseBody
+    public String upsertProfile(HttpServletRequest request) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int userId = 0;
+            if (params.get("userId") != null) {
+                if (params.get("userId") instanceof String) {
+                    userId = Integer.parseInt((String) params.get("userId"));
+                } else if (params.get("userId") instanceof Integer) {
+                    userId = (Integer) params.get("userId");
+                }
+            }
+            String profile = null;
+            if (params.get("profile") != null) {
+                profile = (String) params.get("profile");
+            }
+            int profileId = service.upsertProfile(userId, profile);
+            return ResponseLogNotification.successJson(request, profileId);
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 
     @RequestMapping(value = "/profile/check/other", method = RequestMethod.POST)
     @ResponseBody

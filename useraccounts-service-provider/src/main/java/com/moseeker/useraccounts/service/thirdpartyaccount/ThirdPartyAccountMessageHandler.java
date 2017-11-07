@@ -50,6 +50,7 @@ public class ThirdPartyAccountMessageHandler {
     @RabbitListener(queues = "#{presetQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
     public void presetHandler(Message message, Channel channel) {
+        logger.info("处理第三方相关信息队列开始");
         String msgBody = "{}";
         try {
             msgBody = new String(message.getBody(), "UTF-8");
