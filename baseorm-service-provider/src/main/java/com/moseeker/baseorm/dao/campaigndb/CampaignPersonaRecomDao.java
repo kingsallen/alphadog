@@ -3,8 +3,6 @@ package com.moseeker.baseorm.dao.campaigndb;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignPersonaRecom;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignPersonaRecomRecord;
-import com.moseeker.baseorm.db.userdb.tables.UserPositionEmail;
-import com.moseeker.baseorm.pojo.CampaignPersonaRecomPojo;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Service;
 
@@ -12,11 +10,11 @@ import org.springframework.stereotype.Service;
  * Created by zztaiwll on 17/11/3.
  */
 @Service
-public class CampaignPersonaRecomDao extends JooqCrudImpl<CampaignPersonaRecomPojo,CampaignPersonaRecomRecord>{
+public class CampaignPersonaRecomDao extends JooqCrudImpl<com.moseeker.baseorm.db.campaigndb.tables.CampaignPersonaRecom,CampaignPersonaRecomRecord>{
     public CampaignPersonaRecomDao(){
-        super(CampaignPersonaRecom.CAMPAIGN_PERSONA_RECOM,CampaignPersonaRecomPojo.class);
+        super(CampaignPersonaRecom.CAMPAIGN_PERSONA_RECOM,com.moseeker.baseorm.db.campaigndb.tables.CampaignPersonaRecom.class);
     }
-    public CampaignPersonaRecomDao(TableImpl<CampaignPersonaRecomRecord> table, Class<CampaignPersonaRecomPojo> campaignPersonaRecomPojoClass) {
+    public CampaignPersonaRecomDao(TableImpl<CampaignPersonaRecomRecord> table, Class<com.moseeker.baseorm.db.campaigndb.tables.CampaignPersonaRecom> campaignPersonaRecomPojoClass) {
         super(table, campaignPersonaRecomPojoClass);
     }
 
