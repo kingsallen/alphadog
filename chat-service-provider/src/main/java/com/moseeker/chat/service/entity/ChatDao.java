@@ -350,13 +350,16 @@ public class ChatDao {
 
     /**
      * 根据HR查找HR所属公司的信息
-     * @param companyId 公司编号
+     * @param publisherId 发布人账号
      * @return 公司信息
      */
-    public HrCompanyDO getCompany(int companyId) {
-        QueryUtil findCompany = new QueryUtil();
-        findCompany.addEqualFilter("id", companyId);
-        return hrCompanyDao.getData(findCompany);
+    public HrCompanyDO getCompany(int publisherId) {
+        Query.QueryBuilder query = new Query.QueryBuilder();
+        query.where("account_id", publisherId);
+        HrCompanyAccountDO hrCompanyAccountDO = hrCompanyAccountDao.getData(query.buildQuery());
+        query.clear();
+        query.where("id", hrCompanyAccountDO.getCompanyId());
+        return hrCompanyDao.getData(query.buildQuery());
     }
 
     /**
@@ -414,7 +417,6 @@ public class ChatDao {
                 query.where("account_id", userHrAccountDO.getId());
                 HrCompanyAccountDO hrCompanyAccountDO = hrCompanyAccountDao.getData(query.buildQuery());
                 query.clear();
-                query.select("logo");
                 query.where("id", hrCompanyAccountDO.getCompanyId());
                 query.select("id").select("logo");
                 companyFuture = threadPool.startTast(() -> hrCompanyDao.getData(query.buildQuery()));
