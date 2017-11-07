@@ -8,7 +8,6 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
-import com.sun.xml.internal.txw2.TxwException;
 import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

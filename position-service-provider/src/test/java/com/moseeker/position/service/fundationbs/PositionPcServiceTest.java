@@ -1,7 +1,6 @@
 package com.moseeker.position.service.fundationbs;
 
 import com.moseeker.baseorm.dao.dictdb.DictLiepinOccupationDao;
-import com.moseeker.baseorm.pojo.CampaignPersonaRecomPojo;
 import com.moseeker.entity.PcRevisionEntity;
 import com.moseeker.entity.PersonaRecomEntity;
 import com.moseeker.thrift.gen.common.struct.Response;
