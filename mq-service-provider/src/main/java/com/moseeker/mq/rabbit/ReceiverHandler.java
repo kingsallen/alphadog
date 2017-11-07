@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.logdb.LogDeadLetterDao;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.MessageTemplateEntity;
+import com.moseeker.entity.PersonaRecomEntity;
 import com.moseeker.mq.service.impl.TemplateMsgProducer;
 import com.moseeker.thrift.gen.dao.struct.logdb.LogDeadLetterDO;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
@@ -43,6 +44,9 @@ public class ReceiverHandler {
 
     @Autowired
     private Environment env;
+    @Autowired
+    private PersonaRecomEntity personaRecomEntity;
+
 
     @RabbitListener(queues = "#{addAwardQue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
@@ -100,6 +104,25 @@ public class ReceiverHandler {
             }
         }catch(Exception e){
             this.handleTemplateLogDeadLetter(message,msgBody,"没有查到模板所需的具体内容");
+            log.error(e.getMessage(), e);
+        }
+    }
+    @RabbitListener(queues = "#{personaRecomQue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
+    @RabbitHandler
+    public void handlerPersonRecom(Message message, Channel channel){
+        String msgBody = "{}";
+        try{
+            msgBody = new String(message.getBody(), "UTF-8");
+            JSONObject jsonObject = JSONObject.parseObject(msgBody);
+            log.info("推送职位的rabitmq的参数是========"+jsonObject.toJSONString());
+            int userId=jsonObject.getIntValue("user_id");
+            String positionIds=jsonObject.getString("position_ids");
+            if(userId!=0&&StringUtils.isNotEmpty(positionIds)){
+                int result=personaRecomEntity.handlePersonaRecomData(userId,positionIds);
+            }
+
+        }catch(Exception e){
+            this.handleTemplateLogDeadLetter(message,msgBody,"插入推荐职位数据失败");
             log.error(e.getMessage(), e);
         }
     }
