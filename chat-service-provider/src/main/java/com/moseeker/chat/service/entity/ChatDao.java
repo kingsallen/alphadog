@@ -180,17 +180,15 @@ public class ChatDao {
     public Map<Integer, HrCompanyDO> listCompany(int[] hrIdArray) {
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.where(new Condition("account_id", Arrays.stream(hrIdArray).map(Integer::valueOf).collect(ArrayList::new, List::add, List::addAll), ValueOp.IN));
-        List<HrCompanyAccountDO> hrCompanyAccountDOList = null;
-        hrCompanyAccountDOList = hrCompanyAccountDao.getDatas(query.buildQuery());
-        Map<Integer, Object> hrCompanyMap = new HashMap<>();
+        List<HrCompanyAccountDO> hrCompanyAccountDOList = hrCompanyAccountDao.getDatas(query.buildQuery());
         if(hrCompanyAccountDOList != null && hrCompanyAccountDOList.size() > 0) {
-            hrCompanyMap = hrCompanyAccountDOList.stream().collect(Collectors.toMap(k -> k.getAccountId(), v -> v.getCompanyId(), (n, o) -> n));
+            Map<Integer, Object> hrCompanyMap = hrCompanyAccountDOList.stream().collect(Collectors.toMap(k -> k.getAccountId(), v -> v.getCompanyId(), (n, o) -> n));
             query.clear();
             query.select("id").select("name").select("abbreviation").select("logo");
             query.where(new Condition("id", new ArrayList<>(hrCompanyMap.values()), ValueOp.IN));
             List<HrCompanyDO> companyDOList = hrCompanyDao.getDatas(query.buildQuery());
             Map<Integer, HrCompanyDO> companyMap = companyDOList.stream().collect(Collectors.toMap(k -> k.getId(), v -> v));
-            return hrCompanyMap.keySet().stream().collect(Collectors.toMap(k -> k, v -> companyMap.getOrDefault(v, new HrCompanyDO())));
+            return hrCompanyMap.keySet().stream().collect(Collectors.toMap(k -> k, v -> companyMap.getOrDefault(hrCompanyMap.get(v), new HrCompanyDO())));
         }
         return null;
     }
