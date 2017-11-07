@@ -65,13 +65,16 @@ public class MessageTemplateEntity {
     private HrWxWechatDao hrWxWechatDao;
 
     public MessageTemplateNoticeStruct handlerTemplate(int userId,int companyId,int templateId,int type,String url,String jobName,String companyName){
-       //https://platform.moseeker.com/m/user/survey?wechat_siganture=xxx
+
+        HrWxWechatDO DO= this.getHrWxWechatDOByCompanyId(companyId);
         if(type==1){
-            HrWxWechatDO DO= this.getHrWxWechatDOByCompanyId(companyId);
+            //https://platform.moseeker.com/m/user/survey?wechat_siganture=xxx
             String wxSignture=DO.getSignature();
             url=url.replace("{}",wxSignture);
         }else if(type==2){
-
+            //https://platform-t.dqprism.com/m/user/ai-recom?wechat_signature=xxx
+            String wxSignture=DO.getSignature();
+            url=url.replace("{}",wxSignture);
         }
         MessageTemplateNoticeStruct messageTemplateNoticeStruct =new MessageTemplateNoticeStruct();
         Map<String,MessageTplDataCol> colMap=this.handleMessageTemplateData(userId,type,companyId,jobName,companyName);
