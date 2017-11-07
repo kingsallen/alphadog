@@ -44,8 +44,10 @@ public class ReceiverHandler {
 
     @Autowired
     private Environment env;
+
     @Autowired
     private PersonaRecomEntity personaRecomEntity;
+
 
 
     @RabbitListener(queues = "#{addAwardQue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
@@ -85,9 +87,6 @@ public class ReceiverHandler {
             String url=jsonObject.getString("url");
             String jobName=jsonObject.getString("job_name");
             String companyName=jsonObject.getString("company_name");
-            if(StringUtils.isEmpty(url)&&type==1){
-                url=env.getProperty("message.template.fans.url");
-            }
             if(StringUtils.isEmpty(url)){
                url=handlerUrl(type);
             }
@@ -100,6 +99,7 @@ public class ReceiverHandler {
                 }
                 templateMsgProducer.messageTemplateNotice(messageTemplate);
                 personaRecomEntity.updateIsSendPersonaRecom(userId,1,20);
+
             }else{
                 this.handleTemplateLogDeadLetter(message,msgBody,"没有查到模板所需的具体内容");
             }
@@ -138,10 +138,9 @@ public class ReceiverHandler {
         logDeadLetterDO.setQueueName(StringUtils.defaultIfBlank(message.getMessageProperties().getConsumerQueue(), ""));
         logDeadLetterDao.addData(logDeadLetterDO);
     }
-
     /*
-     处理url
-     */
+      处理url
+      */
     private String handlerUrl(int type){
         String url="";
         if(type==1){
@@ -153,5 +152,6 @@ public class ReceiverHandler {
         }
         return url;
     }
+
 
 }
