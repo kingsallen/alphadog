@@ -5,6 +5,7 @@ import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.chat.constant.ChatSpeakerType;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.thread.ThreadPool;
@@ -18,11 +19,10 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -179,7 +179,7 @@ public class ChatDao {
      */
     public Map<Integer, HrCompanyDO> listCompany(int[] hrIdArray) {
         Query.QueryBuilder query = new Query.QueryBuilder();
-        query.where(new Condition("account_id", hrIdArray, ValueOp.IN));
+        query.where(new Condition("account_id", Arrays.stream(hrIdArray).map(Integer::valueOf).collect(ArrayList::new, List::add, List::addAll), ValueOp.IN));
         List<HrCompanyAccountDO> hrCompanyAccountDOList = null;
         hrCompanyAccountDOList = hrCompanyAccountDao.getDatas(query.buildQuery());
         Map<Integer, Object> hrCompanyMap = new HashMap<>();
@@ -187,7 +187,7 @@ public class ChatDao {
             hrCompanyMap = hrCompanyAccountDOList.stream().collect(Collectors.toMap(k -> k.getAccountId(), v -> v.getCompanyId(), (n, o) -> n));
             query.clear();
             query.select("id").select("name").select("abbreviation").select("logo");
-            query.where(new Condition("id", hrCompanyMap.values(), ValueOp.IN));
+            query.where(new Condition("id", new ArrayList<>(hrCompanyMap.values()), ValueOp.IN));
             List<HrCompanyDO> companyDOList = hrCompanyDao.getDatas(query.buildQuery());
             Map<Integer, HrCompanyDO> companyMap = companyDOList.stream().collect(Collectors.toMap(k -> k.getId(), v -> v));
             return hrCompanyMap.keySet().stream().collect(Collectors.toMap(k -> k, v -> companyMap.getOrDefault(v, new HrCompanyDO())));
@@ -263,13 +263,13 @@ public class ChatDao {
             /** 查找公司信息 */
             if(companyIdArray.length > 0) {
                 Query.QueryBuilder query = new Query.QueryBuilder();
-                query.where(new Condition("account_id", hrIdArray, ValueOp.IN));
+                query.where(new Condition("account_id", Arrays.stream(hrIdArray).map(Integer::new).collect(ArrayList::new, List::add, List::addAll), ValueOp.IN));
                 List<HrCompanyAccountDO> hrCompanyAccountDOList = hrCompanyAccountDao.getDatas(query.buildQuery());
                 if (hrCompanyAccountDOList != null && hrCompanyAccountDOList.size() > 0){
                     Map<Integer, Integer> hrCompanyAccountMap = hrCompanyAccountDOList.stream().collect(Collectors.toMap(k -> k.getAccountId(), v -> v.getCompanyId(), (o, n) -> n));
                     query.clear();
                     query.select("logo");
-                    query.where(new Condition("id", hrCompanyAccountMap.values(), ValueOp.IN));
+                    query.where(new Condition("id", new ArrayList<>(hrCompanyAccountMap.values()), ValueOp.IN));
 
                     Future companyFuture = threadPool.startTast(() -> hrCompanyDao.getDatas(query.buildQuery()));
                     /** 过滤头像不存在的HR，匹配公司logo*/
