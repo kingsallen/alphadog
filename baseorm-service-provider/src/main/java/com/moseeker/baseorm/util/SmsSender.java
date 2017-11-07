@@ -235,7 +235,7 @@ public class SmsSender {
         HashMap<String, String> params = new HashMap<String, String>();
         String passwordforgotcode = getRandomStr();
         params.put("code", passwordforgotcode);
-        if("86".equals(countryCode)){
+        if(StringUtils.isNullOrEmpty(countryCode) || "86".equals(countryCode)){
             redisClient.set(0, event, mobile, passwordforgotcode);
             return sendSMS(mobile,"SMS_5755096",params);
         }else{
