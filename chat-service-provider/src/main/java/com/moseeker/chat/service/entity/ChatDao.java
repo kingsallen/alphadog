@@ -262,34 +262,23 @@ public class ChatDao {
 
             /** 查找公司信息 */
             if(companyIdArray.length > 0) {
-                Query.QueryBuilder query = new Query.QueryBuilder();
-                query.where(new Condition("account_id", Arrays.stream(hrIdArray).map(Integer::new).collect(ArrayList::new, List::add, List::addAll), ValueOp.IN));
-                List<HrCompanyAccountDO> hrCompanyAccountDOList = hrCompanyAccountDao.getDatas(query.buildQuery());
-                if (hrCompanyAccountDOList != null && hrCompanyAccountDOList.size() > 0){
-                    Map<Integer, Integer> hrCompanyAccountMap = hrCompanyAccountDOList.stream().collect(Collectors.toMap(k -> k.getAccountId(), v -> v.getCompanyId(), (o, n) -> n));
-                    query.clear();
-                    query.select("logo");
-                    query.where(new Condition("id", new ArrayList<>(hrCompanyAccountMap.values()), ValueOp.IN));
 
-                    Future companyFuture = threadPool.startTast(() -> hrCompanyDao.getDatas(query.buildQuery()));
-                    /** 过滤头像不存在的HR，匹配公司logo*/
-                    userHrAccountDOList.stream()
-                            .filter(userHrAccountDO -> StringUtils.isNullOrEmpty(userHrAccountDO.getHeadimgurl()))
-                            .forEach(userHrAccountDO -> {
-                                try {
-                                    List<HrCompanyDO> companyDOList = (List<HrCompanyDO>) companyFuture.get();
-                                    if(companyDOList != null && companyDOList.size() > 0) {
-                                        companyDOList.forEach(companyDO -> {
-                                            if(userHrAccountDO.getCompanyId() == companyDO.getId()) {
-                                                userHrAccountDO.setHeadimgurl(companyDO.getLogo());
-                                            }
-                                        });
+                Future companyFuture = threadPool.startTast(() -> listCompany(hrIdArray));
+                /** 过滤头像不存在的HR，匹配公司logo*/
+                userHrAccountDOList.stream()
+                        .filter(userHrAccountDO -> StringUtils.isNullOrEmpty(userHrAccountDO.getHeadimgurl()))
+                        .forEach(userHrAccountDO -> {
+                            try {
+                                Map<Integer, HrCompanyDO> companyDOList = (Map<Integer, HrCompanyDO>) companyFuture.get();
+                                if(companyDOList != null && companyDOList.size() > 0) {
+                                    if(companyDOList.get(userHrAccountDO.getId()).getId() > 0) {
+                                        userHrAccountDO.setHeadimgurl(companyDOList.get(userHrAccountDO.getId()).getLogo());
                                     }
-                                } catch (InterruptedException | ExecutionException e) {
-                                    logger.error(e.getMessage(), e);
                                 }
-                            });
-                }
+                            } catch (InterruptedException | ExecutionException e) {
+                                logger.error(e.getMessage(), e);
+                            }
+                        });
             }
 
         }
