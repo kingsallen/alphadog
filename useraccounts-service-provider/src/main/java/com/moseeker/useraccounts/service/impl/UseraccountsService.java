@@ -772,7 +772,7 @@ public class UseraccountsService {
      */
     public Response postresetmobile(int user_id, String countryCode, String newmobile, String code) throws TException {
         String verifynewmobile = newmobile;
-        if(!"86".equals(countryCode)){
+        if(StringUtils.isNotNullOrEmpty(countryCode) && !"86".equals(countryCode)){
             verifynewmobile = countryCode + newmobile;
         }
         if (code != null && !validateCode(verifynewmobile, code, 4)) {
@@ -952,7 +952,7 @@ public class UseraccountsService {
      * 验证忘记密码的验证码是否正确
      */
     public Response postvalidatepasswordforgotcode(String countryCode, String mobile, String code) throws TException {
-        if(!"86".equals(countryCode)){
+        if(StringUtils.isNotNullOrEmpty(countryCode) && !"86".equals(countryCode)){
             mobile=countryCode+mobile;
         }
 
