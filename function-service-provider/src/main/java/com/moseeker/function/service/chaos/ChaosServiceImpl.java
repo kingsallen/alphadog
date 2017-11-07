@@ -121,7 +121,7 @@ public class ChaosServiceImpl {
                     }
                     throw new BIZException(1, message);
                 } else if (status == 100) {
-                    hrThirdPartyAccount.setBinding(Integer.valueOf(100).shortValue());
+                    hrThirdPartyAccount.setBinding((short) BindingStatus.NEEDCODE.getValue());
                 }  else if (status == 2) {
                     hrThirdPartyAccount.setBinding((short)BindingStatus.ERROR.getValue());
                     if (StringUtils.isNullOrEmpty(message)) {
@@ -194,7 +194,7 @@ public class ChaosServiceImpl {
         int status = jsonObject.getIntValue("status");
         String message = jsonObject.getString("message");
         if (status == 0) {
-            hrThirdPartyAccount.setBinding(Integer.valueOf(1).shortValue());
+            hrThirdPartyAccount.setBinding((short)BindingStatus.BOUND.getValue());
         } else if (status == 112) {//验证码错误
             if (StringUtils.isNullOrEmpty(message)) {
                 message = "验证码错误";
@@ -212,7 +212,7 @@ public class ChaosServiceImpl {
             throw new BIZException(1, message);
         } else if (status == 9) {
             //发送绑定失败的邮件
-            hrThirdPartyAccount.setBinding(Integer.valueOf(6).shortValue());
+            hrThirdPartyAccount.setBinding((short)BindingStatus.ERROR.getValue());
         } else {
             if (StringUtils.isNullOrEmpty(message)) {
                 message = "绑定失败，请重试";
@@ -241,7 +241,7 @@ public class ChaosServiceImpl {
         JSONObject jsonObject = JSONObject.parseObject(data);
         int status = jsonObject.getIntValue("status");
         if (status == 0) {
-            hrThirdPartyAccount.setBinding(Integer.valueOf(1).shortValue());
+            hrThirdPartyAccount.setBinding((short) BindingStatus.BOUND.getValue());
             hrThirdPartyAccount.setRemainNum(jsonObject.getJSONObject("data").getIntValue("remain_number"));
             hrThirdPartyAccount.setRemainProfileNum(jsonObject.getJSONObject("data").getIntValue("resume_number"));
         } else {
@@ -251,19 +251,19 @@ public class ChaosServiceImpl {
                 if (StringUtils.isNullOrEmpty(message)) {
                     message = "用户名或密码错误";
                 }
-                hrThirdPartyAccount.setBinding(Integer.valueOf(4).shortValue());
+                hrThirdPartyAccount.setBinding((short) BindingStatus.INFOWRONG.getValue());
 
             } else if (status == 100) {
-                hrThirdPartyAccount.setBinding(Integer.valueOf(100).shortValue());
+                hrThirdPartyAccount.setBinding((short) BindingStatus.NEEDCODE.getValue());
             } else if (status == 2) {
-                hrThirdPartyAccount.setBinding(Integer.valueOf(7).shortValue());
+                hrThirdPartyAccount.setBinding((short)BindingStatus.REFRESHWRONG.getValue());
                 if (StringUtils.isNullOrEmpty(message)) {
                     message = "刷新异常，请重试";
                 } else {
                     message = EmojiFilter.unicodeToUtf8(message);
                 }
             } else {
-                hrThirdPartyAccount.setBinding(Integer.valueOf(5).shortValue());
+                hrThirdPartyAccount.setBinding((short)BindingStatus.FAIL.getValue());
                 if (StringUtils.isNullOrEmpty(message)) {
                     message = "绑定错误，请重新绑定";
                 }
@@ -312,13 +312,15 @@ public class ChaosServiceImpl {
                 continue;
             }
 
-            redisClient.lpush(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_QUEUE.toString(), positionJson);
+//            redisClient.lpush(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_QUEUE.toString(), positionJson);
+
+            amqpTemplate.send(BindThirdPart.BIND_EXCHANGE_NAME, BindThirdPart.SYNC_POSITION_SEND_ROUTING_KEY, MessageBuilder.withBody(positionJson.getBytes()).build());
 
             logger.info("成功将同步数据插入队列:{}", position.getPosition_id());
 
-            if (second < 60 * 60 * 24) {
+            /*if (second < 60 * 60 * 24) {
                 redisClient.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH.toString(), String.valueOf(position.getPosition_id()), String.valueOf(position.getAccount_id()), "1", 60 * 60 * 24 - second);
-            }
+            }*/
         }
     }
 
