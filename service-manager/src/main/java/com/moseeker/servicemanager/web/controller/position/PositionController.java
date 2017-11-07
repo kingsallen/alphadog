@@ -750,13 +750,19 @@ public class PositionController {
     public String personaRecomPosition(HttpServletRequest request, HttpServletResponse response){
         try{
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            Integer pageNum=params.getInt("pageNum",1);
-            int pageSize=params.getInt("pageSize",20);
-            int userId=params.getInt("userId",0);
-            if(userId==0){
+            String pageNum=params.getString("pageNum");
+            String pageSize=params.getString("pageSize");
+            String userId=params.getString("userId");
+            if(userId==null){
                 return ResponseLogNotification.fail(request, "userId不能为空");
             }
-            Response result=positonServices.getPersonaRecomPositionList(userId,pageNum,pageSize);
+            if(pageNum==null){
+                pageNum="1";
+            }
+            if(pageSize==null){
+                pageNum="20";
+            }
+            Response result=positonServices.getPersonaRecomPositionList(Integer.parseInt(userId),Integer.parseInt(pageNum),Integer.parseInt(pageSize));
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
             logger.error(e.getMessage());
