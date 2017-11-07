@@ -742,9 +742,10 @@ public class PositionController {
         }
     }
 
+
     /*
-    *获取alipay同步的职位
-    */
+      *获取alipay同步的职位
+     */
     @RequestMapping(value = "/position/personarecom", method = RequestMethod.GET)
     @ResponseBody
     public String personaRecomPosition(HttpServletRequest request, HttpServletResponse response){
