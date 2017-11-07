@@ -426,7 +426,7 @@ public class EmployeeEntity {
                     query.clear();
                     query.where(UserWxUser.USER_WX_USER.SYSUSER_ID.getName(), point.getBerecomUserId());
                     UserWxUserDO userWxUserDO = userWxUserDao.getData(query.buildQuery());
-                    if (userWxUserDO.getNickname() != null && !userWxUserDO.getNickname().equals("")) {
+                    if (userWxUserDO != null && org.apache.commons.lang.StringUtils.isNotBlank(userWxUserDO.getNickname())) {
                         reward.setBerecomName(userWxUserDO.getNickname());
                     }
                 }
