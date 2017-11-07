@@ -3,6 +3,7 @@ package com.moseeker.position.service.fundationbs;
 import com.moseeker.baseorm.dao.dictdb.DictLiepinOccupationDao;
 import com.moseeker.baseorm.pojo.CampaignPersonaRecomPojo;
 import com.moseeker.entity.PcRevisionEntity;
+import com.moseeker.entity.PersonaRecomEntity;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.position.struct.WechatPositionListData;
 import org.apache.thrift.TException;
@@ -32,6 +33,8 @@ public class PositionPcServiceTest {
 	private DictLiepinOccupationDao dao;
     @Autowired
     private PositionService positionService;
+    @Autowired
+	private PersonaRecomEntity personaRecomEntity;
     //测试总接口
     @Test
     public void recommendPcPosition() throws TException{
@@ -108,5 +111,10 @@ public class PositionPcServiceTest {
           List<WechatPositionListData> list=positionService.getPersonaRecomPosition(676252,1,20);
           System.out.println(list);
       }
+      @Test
+	  public void testRecomPosition() throws TException {
+	  	 int result=personaRecomEntity.handlePersonaRecomData(676252,"159,160,161,162,163,164,165,166");
+	  	 System.out.println("========================"+result+"================================");
+	  }
 
 }

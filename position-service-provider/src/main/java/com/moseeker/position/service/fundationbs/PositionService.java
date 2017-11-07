@@ -8,6 +8,7 @@ import com.moseeker.baseorm.dao.campaigndb.CampaignPersonaRecomDao;
 import com.moseeker.baseorm.dao.dictdb.*;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.*;
+import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignPersonaRecomRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictAlipaycampusCityRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictAlipaycampusJobcategoryRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityPostcodeRecord;
@@ -17,7 +18,6 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrTeamRecord;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.records.*;
-import com.moseeker.baseorm.pojo.CampaignPersonaRecomPojo;
 import com.moseeker.baseorm.pojo.JobPositionPojo;
 import com.moseeker.baseorm.pojo.RecommendedPositonPojo;
 import com.moseeker.baseorm.redis.RedisClient;
@@ -61,6 +61,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -1271,7 +1272,7 @@ public class PositionService {
        微信端获取个人画像推送职位
      */
     public List<WechatPositionListData> getPersonaRecomPosition(int userId,int pageNum,int pageSize) throws Exception{
-        List<CampaignPersonaRecomPojo> list=this.getPersonaRecomPositionList(userId,pageNum,pageSize);
+        List<CampaignPersonaRecomRecord> list=this.getPersonaRecomPositionList(userId,pageNum,pageSize);
         List<Integer> pids=this.getRecomPositionIdList(list);
         if(StringUtils.isEmptyList(pids)){
             return null;
@@ -1286,21 +1287,20 @@ public class PositionService {
     /*
       通过user_id 获取 CampaignPersonaRecomPojo 的list集合
      */
-
-    private  List<CampaignPersonaRecomPojo> getPersonaRecomPositionList(int userId,int pageNum,int pageSize){
+    private  List<CampaignPersonaRecomRecord> getPersonaRecomPositionList(int userId, int pageNum, int pageSize){
         Query query=new Query.QueryBuilder().where("user_id",userId).orderBy("create_time", Order.DESC).setPageNum(pageNum).setPageSize(pageSize).buildQuery();
-        List<CampaignPersonaRecomPojo> list=campaignPersonaRecomDao.getDatas(query);
+        List<CampaignPersonaRecomRecord> list=campaignPersonaRecomDao.getRecords(query);
         return list;
     }
     /*
       获取position.id的list
      */
-    private List<Integer> getRecomPositionIdList(List<CampaignPersonaRecomPojo> list ){
+    private List<Integer> getRecomPositionIdList(List<CampaignPersonaRecomRecord> list ){
         if(StringUtils.isEmptyList(list)){
             return null;
         }
         List<Integer> result=new ArrayList<>();
-        for(CampaignPersonaRecomPojo DO:list){
+        for(CampaignPersonaRecomRecord DO:list){
             int positionId=DO.getPositionId();
             result.add(positionId);
         }
@@ -1309,15 +1309,15 @@ public class PositionService {
     /*
       更新为已读状态
      */
-    public void updateIsSendStatus(List<CampaignPersonaRecomPojo> list){
+    public void updateIsSendStatus(List<CampaignPersonaRecomRecord> list){
         SimpleDateFormat f=new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
         String date=f.format(new Date());
         if(!StringUtils.isEmptyList(list)){
-           for(CampaignPersonaRecomPojo DO:list){
+           for(CampaignPersonaRecomRecord DO:list){
                DO.setIsSend((byte)1);
-               DO.setSendTime(date);
+               DO.setSendTime(new Timestamp(System.currentTimeMillis()));
            }
-            campaignPersonaRecomDao.updateDatas(list);
+            campaignPersonaRecomDao.updateRecords(list);
         }
     }
 

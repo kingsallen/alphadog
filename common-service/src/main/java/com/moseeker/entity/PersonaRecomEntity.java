@@ -3,8 +3,7 @@ package com.moseeker.entity;
 import com.moseeker.baseorm.dao.campaigndb.CampaignPersonaRecomDao;
 import com.moseeker.baseorm.dao.historydb.HistoryCampaignPersonaRecomDao;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignPersonaRecomRecord;
-import com.moseeker.baseorm.pojo.CampaignPersonaRecomPojo;
-import com.moseeker.baseorm.pojo.HistoryCampaignPersonaRecomPojo;
+import com.moseeker.baseorm.db.historydb.tables.records.HistoryCampaignPersonaRecomRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Order;
@@ -15,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -46,9 +46,9 @@ public class PersonaRecomEntity {
     /*
      根据createTime排序，获取固定userid的20条数据
      */
-    public  List<CampaignPersonaRecomPojo> getCampaignPersonaRecomByuserId(int userId,int page,int pageSize){
+    public  List<CampaignPersonaRecomRecord> getCampaignPersonaRecomByuserId(int userId,int page,int pageSize){
         Query query=new Query.QueryBuilder().where("user_id",userId).orderBy("create_time", Order.DESC).setPageNum(page).setPageSize(pageSize).buildQuery();
-        List<CampaignPersonaRecomPojo> list=campaignPersonaRecomDao.getDatas(query);
+        List<CampaignPersonaRecomRecord> list=campaignPersonaRecomDao.getRecords(query);
         return list;
     }
     /*
@@ -56,17 +56,17 @@ public class PersonaRecomEntity {
      */
     public int updateIsSendPersonaRecom(int userId,int page,int pageSize){
         Query query=new Query.QueryBuilder().where("user_id",userId).orderBy("create_time", Order.DESC).setPageNum(page).setPageSize(pageSize).buildQuery();
-        List<CampaignPersonaRecomPojo> list=campaignPersonaRecomDao.getDatas(query);
+        List<CampaignPersonaRecomRecord> list=campaignPersonaRecomDao.getRecords(query);
         if(StringUtils.isEmptyList(list)){
             return 1;
         }
         SimpleDateFormat f=new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
         String date=f.format(new Date());
-        for(CampaignPersonaRecomPojo pojo:list){
+        for(CampaignPersonaRecomRecord pojo:list){
             pojo.setIsSend((byte)1);
-            pojo.setSendTime(date);
+            pojo.setSendTime(new Timestamp(System.currentTimeMillis()));
         }
-        campaignPersonaRecomDao.updateDatas(list);
+        campaignPersonaRecomDao.updateRecords(list);
         return 1;
 
     }
@@ -97,8 +97,8 @@ public class PersonaRecomEntity {
      处理历史数据
      */
     private int handlerHistoryData(int userId){
-        List<CampaignPersonaRecomPojo> list=this.getCampaignPersonaRecomRecordByUserId(userId);
-        List<HistoryCampaignPersonaRecomPojo> hisList=this.convertToHistoryCampaignPersonaRecomPojo(list);
+        List<CampaignPersonaRecomRecord> list=this.getCampaignPersonaRecomRecordByUserId(userId);
+        List<HistoryCampaignPersonaRecomRecord> hisList=this.convertToHistoryCampaignPersonaRecomPojo(list);
         if(StringUtils.isEmptyList(hisList)){
             return 1;
         }
@@ -112,11 +112,11 @@ public class PersonaRecomEntity {
     /*
      删除原有的user_id的数据
      */
-    private int deleteRecomPosition(List<CampaignPersonaRecomPojo> list){
+    private int deleteRecomPosition(List<CampaignPersonaRecomRecord> list){
         if(StringUtils.isEmptyList(list)){
             return 1;
         }
-        int[] ids=campaignPersonaRecomDao.deleteDatas(list);
+        int[] ids=campaignPersonaRecomDao.deleteRecords(list);
         if(ids!=null&&ids.length>0){
             return 1;
         }
@@ -125,19 +125,19 @@ public class PersonaRecomEntity {
     /*
      根据user_id获取所有的campaign_persona_recom记录
      */
-    private List<CampaignPersonaRecomPojo>  getCampaignPersonaRecomRecordByUserId(int userId){
+    private List<CampaignPersonaRecomRecord>  getCampaignPersonaRecomRecordByUserId(int userId){
         Query query=new Query.QueryBuilder().where("user_id",userId).buildQuery();
-        List<CampaignPersonaRecomPojo> list=campaignPersonaRecomDao.getDatas(query);
+        List<CampaignPersonaRecomRecord> list=campaignPersonaRecomDao.getRecords(query);
         return list;
     }
     /*
      将数据插入到历史记录中
      */
-    private int  insertHistoryCampaignPersonaRecomRecord(List<HistoryCampaignPersonaRecomPojo> list){
+    private int  insertHistoryCampaignPersonaRecomRecord(List<HistoryCampaignPersonaRecomRecord> list){
         if(StringUtils.isEmptyList(list)){
             return 1;
         }
-        List<HistoryCampaignPersonaRecomPojo> result=historyCampaignPersonaRecomDao.addAllData(list);
+        List<HistoryCampaignPersonaRecomRecord> result=historyCampaignPersonaRecomDao.addAllRecord(list);
         if(!StringUtils.isEmptyList(result)){
             return 1;
         }
@@ -146,13 +146,13 @@ public class PersonaRecomEntity {
     /*
      将CampaignPersonaRecomPojo转化为HistoryCampaignPersonaRecomPojo
      */
-    private List<HistoryCampaignPersonaRecomPojo> convertToHistoryCampaignPersonaRecomPojo(List<CampaignPersonaRecomPojo> list){
+    private List<HistoryCampaignPersonaRecomRecord> convertToHistoryCampaignPersonaRecomPojo(List<CampaignPersonaRecomRecord> list){
         if(StringUtils.isEmptyList(list)){
             return null;
         }
-        List<HistoryCampaignPersonaRecomPojo> result=new ArrayList<>();
-        for(CampaignPersonaRecomPojo pojo:list){
-            HistoryCampaignPersonaRecomPojo historyCampaignPersonaRecomPojo=new HistoryCampaignPersonaRecomPojo();
+        List<HistoryCampaignPersonaRecomRecord> result=new ArrayList<>();
+        for(CampaignPersonaRecomRecord pojo:list){
+            HistoryCampaignPersonaRecomRecord historyCampaignPersonaRecomPojo=new HistoryCampaignPersonaRecomRecord();
             historyCampaignPersonaRecomPojo.setId(pojo.getId());
             historyCampaignPersonaRecomPojo.setCreateTime(pojo.getCreateTime());
             historyCampaignPersonaRecomPojo.setIsSend(pojo.getIsSend());
