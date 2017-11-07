@@ -394,7 +394,7 @@ public class ChatService {
                     positionVO.setCity(positionDO.getCity());
 
                     if(positionDO.getCompanyId() > 0) {
-                        HrCompanyDO companyDO = chaoDao.getCompany(positionDO.getCompanyId());
+                        HrCompanyDO companyDO = chaoDao.getCompany(positionDO.getPublisher());
                         String companyName;
                         if(StringUtils.isNotNullOrEmpty(companyDO.getAbbreviation())) {
                             companyName = companyDO.getAbbreviation();

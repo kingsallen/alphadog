@@ -271,7 +271,7 @@ public class ChatDao {
                     query.select("logo");
                     query.where(new Condition("id", hrCompanyAccountMap.values(), ValueOp.IN));
 
-                    Future companyFuture = threadPool.startTast(() -> hrCompanyDao.getDatas(queryUtil));
+                    Future companyFuture = threadPool.startTast(() -> hrCompanyDao.getDatas(query.buildQuery()));
                     /** 过滤头像不存在的HR，匹配公司logo*/
                     userHrAccountDOList.stream()
                             .filter(userHrAccountDO -> StringUtils.isNullOrEmpty(userHrAccountDO.getHeadimgurl()))
@@ -350,13 +350,16 @@ public class ChatDao {
 
     /**
      * 根据HR查找HR所属公司的信息
-     * @param companyId 公司编号
+     * @param publisherId 发布人账号
      * @return 公司信息
      */
-    public HrCompanyDO getCompany(int companyId) {
-        QueryUtil findCompany = new QueryUtil();
-        findCompany.addEqualFilter("id", companyId);
-        return hrCompanyDao.getData(findCompany);
+    public HrCompanyDO getCompany(int publisherId) {
+        Query.QueryBuilder query = new Query.QueryBuilder();
+        query.where("account_id", publisherId);
+        HrCompanyAccountDO hrCompanyAccountDO = hrCompanyAccountDao.getData(query.buildQuery());
+        query.clear();
+        query.where("id", hrCompanyAccountDO.getCompanyId());
+        return hrCompanyDao.getData(query.buildQuery());
     }
 
     /**
@@ -410,10 +413,13 @@ public class ChatDao {
             }
             /** 查找公司的logo */
             if(userHrAccountDO.getCompanyId() > 0) {
-                QueryUtil findCompany = new QueryUtil();
-                findCompany.addSelectAttribute("id").addSelectAttribute("logo");
-                findCompany.addEqualFilter("id", userHrAccountDO.getCompanyId());
-                companyFuture = threadPool.startTast(() -> hrCompanyDao.getData(findCompany));
+                Query.QueryBuilder query = new Query.QueryBuilder();
+                query.where("account_id", userHrAccountDO.getId());
+                HrCompanyAccountDO hrCompanyAccountDO = hrCompanyAccountDao.getData(query.buildQuery());
+                query.clear();
+                query.where("id", hrCompanyAccountDO.getCompanyId());
+                query.select("id").select("logo");
+                companyFuture = threadPool.startTast(() -> hrCompanyDao.getData(query.buildQuery()));
             }
 
             if(wxUserFuture != null) {
