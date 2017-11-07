@@ -423,6 +423,10 @@ public class ProfileEntity {
         completenessImpl.reCalculateProfileWorkExp(profileId, workExpId);
     }
 
+    public void reCalculateProfileCompleteness(int profileId){
+        completenessImpl.reCalculateProfileCompleteness(profileId);
+    }
+
     public void reCalculateProfileWorkExpUseWorkExpId(int id) {
         completenessImpl.reCalculateProfileWorkExp(id);
     }
@@ -491,7 +495,9 @@ public class ProfileEntity {
         improveSkill(profilePojo.getSkillRecords(), profileId);
         improveWorkexp(profilePojo.getWorkexpRecords(), profileId);
         improveWorks(profilePojo.getWorksRecords(), profileId);
-        getCompleteness(0, null, profileId);
+        //先前只是根据表的记录简单叠加完整度，这在修改是不准确，需要重新计算，所以改成这样，
+//        getCompleteness(0, null, profileId);
+        reCalculateProfileCompleteness(profileId);
     }
 
     public int createProfile(ProfilePojo profilePojo, UserUserDO userUserDO) {
