@@ -72,6 +72,9 @@ public class ReceiverHandler {
             log.error(e.getMessage(), e);
         }
     }
+    /*
+      智能画像数据推送的微信模板
+     */
     @RabbitListener(queues = "#{sendTemplateQue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
     public void handlerMessageTemplate(Message message, Channel channel){
@@ -108,6 +111,11 @@ public class ReceiverHandler {
             log.error(e.getMessage(), e);
         }
     }
+    /*
+      数据短传来数据，本初做处理，
+      1，把该user_id原有的职位迁移到history当中
+      2，插入新的数据
+     */
     @RabbitListener(queues = "#{personaRecomQue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
     public void handlerPersonRecom(Message message, Channel channel){
@@ -127,7 +135,9 @@ public class ReceiverHandler {
             log.error(e.getMessage(), e);
         }
     }
-
+    /*
+      处理异常消息的队列
+     */
     private void handleTemplateLogDeadLetter(Message message,String msgBody,String errorMessage){
         LogDeadLetterDO logDeadLetterDO = new LogDeadLetterDO();
         logDeadLetterDO.setAppid(NumberUtils.toInt(message.getMessageProperties().getAppId(), 0));
@@ -146,7 +156,7 @@ public class ReceiverHandler {
         if(type==1){
             url=env.getProperty("message.template.fans.url");
         }else if(type==2||type==3){
-
+            url=env.getProperty("message.template.recom.url");
         }else if(type==4){
 
         }
