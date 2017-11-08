@@ -160,6 +160,8 @@ public abstract class BindOnAccountService {
 		map.put("company", userUnionid.getCompany());
 		map.put("position", userUnionid.getPosition());
 		map.put("parentid", userUnionid.getParentid().intValue());
+		map.put("countryCode", userUnionid.getCountryCode());
+
 	}
 	
 	

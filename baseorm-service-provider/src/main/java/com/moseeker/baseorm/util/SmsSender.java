@@ -168,11 +168,16 @@ public class SmsSender {
      * @param mobile
      * @return
      */
-    public boolean sendSMS_signupRandomPassword(String mobile, String randompassword){
-        HashMap<String, String> params = new HashMap<String, String>();
-        params.put("name", mobile);        
-        params.put("code", randompassword);        
-        return sendSMS(mobile,"SMS_5895237",params);
+    public boolean sendSMS_signupRandomPassword(String mobile, String randompassword, String countryCode){
+
+        if (StringUtils.isNullOrEmpty(countryCode) ||  countryCode == "86"){
+            HashMap<String, String> params = new HashMap<String, String>();
+            params.put("name", mobile);
+            params.put("code", randompassword);
+            return sendSMS(mobile,"SMS_5895237",params);
+        }
+        return false;
+
     }
     
     /**

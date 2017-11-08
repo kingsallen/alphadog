@@ -2,7 +2,6 @@ package com.moseeker.useraccounts.thrift;
 
 import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.common.exception.CommonException;
-import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import org.apache.thrift.TException;
