@@ -112,6 +112,7 @@ public final class ConstantErrorCodeMessage {
     public static final String POSITION_DATA_ALLCITY_ERROR = "{'status':51015,'message':'全国职位暂不同步到支付宝'}";
     public static final String POSITION_DATA_NOCITYCODE_ERROR = "{'status':51016,'message':'无city code的职位暂不同步到支付宝'}";
     public static final String CITY_TOO_LONG = "{'status':51017,'message':'城市信息太长，无法入库'}";
+    public static final int NO_BIND_THIRD_PARTY_ACCOUNT_STATUS = 51018;
 
 
     //APPBS错误代码61000

@@ -87,7 +87,7 @@ public class ThirdPartyAccountMessageHandlerTest {
         data.setAddresses(new ArrayList<Address>(){{add(address);}});
 
         City city = new City();
-        city.setAmount(148);
+//        city.setAmout(148);
         city.setArea("全国");
         city.setExpiryDate("2018-09-01");
         city.setJobType("社会职位");

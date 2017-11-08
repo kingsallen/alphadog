@@ -387,7 +387,11 @@ public class ProfileController {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             int userId = 0;
             if (params.get("userId") != null) {
-                userId = (Integer) params.get("userId");
+                if (params.get("userId") instanceof String) {
+                    userId = Integer.parseInt((String) params.get("userId"));
+                } else if (params.get("userId") instanceof Integer) {
+                    userId = (Integer) params.get("userId");
+                }
             }
             String profile = null;
             if (params.get("profile") != null) {

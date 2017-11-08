@@ -352,7 +352,17 @@ public class ProfileService {
                         Workexps workexps = new Workexps();
                         Company company = new Company();
                         company.setCompanyIndustry(jobExpObj.getJob_industry());
-                        company.setCompanyName(jobExpObj.getJob_cpy());
+                        if (StringUtils.isNotNullOrEmpty(jobExpObj.getJob_cpy())) {
+                            company.setCompanyName(jobExpObj.getJob_cpy());
+                        } else {
+                            LogResumeRecordRecord logResumeRecordRecord = new LogResumeRecordRecord();
+                            logResumeRecordRecord.setErrorLog("公司名称为空");
+                            logResumeRecordRecord.setFieldValue("job_exp_obj: " + JSONObject.toJSONString(jobExpObj));
+                            logResumeRecordRecord.setUserId(uid);
+                            logResumeRecordRecord.setFileName(fileName);
+                            logResumeRecordRecord.setResultData(JSONObject.toJSONString(resumeObj));
+                            resumeDao.addRecord(logResumeRecordRecord);
+                        }
                         int companyScaleMaxValue = 0;
                         try {
                             companyScaleMaxValue = Arrays.stream(org.apache.commons.lang.StringUtils.defaultIfBlank(jobExpObj.getJob_cpy_size() == null ? "0-0" :
@@ -533,17 +543,22 @@ public class ProfileService {
                 basic.setGender(String.valueOf(DictCode.gender(resumeObj.getResult().getGender())));
                 basic.setName(resumeObj.getResult().getName());
                 basic.setSelfIntroduction(resumeObj.getResult().getCont_my_desc());
-                try {
-                    basic.setBirth(DateUtils.dateRepair(resumeObj.getResult().getBirthday(), "\\."));
-                } catch (Exception e) {
-                    e.printStackTrace();
+                if (StringUtils.isNotNullOrEmpty(resumeObj.getResult().getBirthday())) {
+                    try {
+                        basic.setBirth(DateUtils.dateRepair(resumeObj.getResult().getBirthday(), "\\."));
+                    } catch (Exception e) {
+                        LogResumeRecordRecord logResumeRecordRecord = new LogResumeRecordRecord();
+                        logResumeRecordRecord.setErrorLog("出生日期转换异常: " + e.getMessage());
+                        logResumeRecordRecord.setFieldValue("birthday: " + resumeObj.getResult().getBirthday());
+                        logResumeRecordRecord.setUserId(uid);
+                        logResumeRecordRecord.setFileName(fileName);
+                        logResumeRecordRecord.setResultData(JSONObject.toJSONString(resumeObj));
+                        resumeDao.addRecord(logResumeRecordRecord);
+                        logger.error(e.getMessage(), e);
+                    }
                 }
                 profileObj.setBasic(basic);
                 logger.info("profileParser getBasic:{}", JSON.toJSONString(profileObj.getBasic()));
-
-//              profileObj.setResumeObj(resumeObj);
-                logger.info("profileParser getResumeObj:{}", JSON.toJSONString(profileObj.getResumeObj()));
-
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

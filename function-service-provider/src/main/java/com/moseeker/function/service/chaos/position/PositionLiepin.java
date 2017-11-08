@@ -29,6 +29,15 @@ public class PositionLiepin implements Serializable {
     private String practice_salary;
     private String practice_salary_unit;
     private String practice_per_week;
+    private List<String> welfare;
+
+    public List<String> getWelfare() {
+        return welfare;
+    }
+
+    public void setWelfare(List<String> welfare) {
+        this.welfare = welfare;
+    }
 
     public String getTitle() {
         return title;
@@ -213,6 +222,7 @@ public class PositionLiepin implements Serializable {
         positionLiepin.setPractice_salary(String.valueOf(positionInfo.getPractice_salary()));
         positionLiepin.setPractice_salary_unit(String.valueOf(positionInfo.getPractice_salary_unit()));
         positionLiepin.setPractice_per_week(String.valueOf(positionInfo.getPractice_per_week()));
+        positionLiepin.setWelfare(positionInfo.getWelfare());
         return positionLiepin;
     }
 }

@@ -37,6 +37,35 @@ public class ThirdPartyPositionVO implements Serializable {
     private int departmentId;
     private String departmentName;
 
+    public int practiceSalary;
+    public byte practicePerWeek;
+    public byte practiceSalaryUnit;
+
+
+    public int getPracticeSalary() {
+        return practiceSalary;
+    }
+
+    public void setPracticeSalary(int practiceSalary) {
+        this.practiceSalary = practiceSalary;
+    }
+
+    public byte getPracticePerWeek() {
+        return practicePerWeek;
+    }
+
+    public void setPracticePerWeek(byte practicePerWeek) {
+        this.practicePerWeek = practicePerWeek;
+    }
+
+    public byte getPracticeSalaryUnit() {
+        return practiceSalaryUnit;
+    }
+
+    public void setPracticeSalaryUnit(byte practiceSalaryUnit) {
+        this.practiceSalaryUnit = practiceSalaryUnit;
+    }
+
     public String getAccountId() {
         return accountId;
     }
@@ -283,6 +312,10 @@ public class ThirdPartyPositionVO implements Serializable {
         departmentId = positionDO.departmentId;
         departmentName =positionDO.departmentName;
 
+        practiceSalary = positionDO.practiceSalary;
+        practicePerWeek = positionDO.practicePerWeek;
+        practiceSalaryUnit = positionDO.practiceSalaryUnit;
+        
         return this;
     }
 }

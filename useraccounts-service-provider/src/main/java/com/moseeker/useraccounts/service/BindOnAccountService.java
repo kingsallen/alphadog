@@ -60,10 +60,10 @@ public abstract class BindOnAccountService {
 
             Query.QueryBuilder query = new Query.QueryBuilder();
 			Map<String, String> filters = new HashMap<>();
-
 			if (StringUtils.isNullOrEmpty(countryCode)){
 				countryCode="86";
 			}
+
 			query.where("username", mobile).and("country_code",countryCode);
 			UserUserRecord userMobile = userdao.getRecord(query.buildQuery());
 

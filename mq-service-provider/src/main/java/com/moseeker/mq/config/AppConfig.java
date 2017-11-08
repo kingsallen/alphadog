@@ -102,8 +102,18 @@ public class AppConfig {
     }
 
     @Bean
+    public Queue sendTemplateQue() {
+        Queue queue = new Queue("send_template_que", true, false, false);
+        return queue;
+    }
+    @Bean
     public TopicExchange topicExchange() {
         TopicExchange topicExchange = new TopicExchange("user_action_topic_exchange", true, false);
+        return topicExchange;
+    }
+    @Bean
+    public TopicExchange templateExchange() {
+        TopicExchange topicExchange = new TopicExchange("message_template_exchange", true, false);
         return topicExchange;
     }
 
@@ -111,6 +121,7 @@ public class AppConfig {
     public List<Binding> binding() {
         return new ArrayList<Binding>(){{
             add(BindingBuilder.bind(addAwardQue()).to(topicExchange()).with("sharejd.#"));
+            add(BindingBuilder.bind(sendTemplateQue()).to(templateExchange()).with("messagetemplate.#"));
         }};
     }
 }

@@ -135,7 +135,10 @@ public class EmployeeEntity {
     }
 
     // 转发点击操作 前置
+    @Transactional
     public void addAwardBefore(int employeeId, int companyId, int positionId, int templateId, int berecomUserId, int applicationId) throws Exception {
+        // for update 对employeee信息加行锁 避免多个端同时对同一个用户加积分
+        employeeDao.getUserEmployeeForUpdate(employeeId);
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.where("company_id", companyId).and("template_id", templateId);
         HrPointsConfDO hrPointsConfDO = hrPointsConfDao.getData(query.buildQuery());
@@ -423,7 +426,7 @@ public class EmployeeEntity {
                     query.clear();
                     query.where(UserWxUser.USER_WX_USER.SYSUSER_ID.getName(), point.getBerecomUserId());
                     UserWxUserDO userWxUserDO = userWxUserDao.getData(query.buildQuery());
-                    if (userWxUserDO.getNickname() != null && !userWxUserDO.getNickname().equals("")) {
+                    if (userWxUserDO != null && org.apache.commons.lang.StringUtils.isNotBlank(userWxUserDO.getNickname())) {
                         reward.setBerecomName(userWxUserDO.getNickname());
                     }
                 }
@@ -457,16 +460,15 @@ public class EmployeeEntity {
      */
     public boolean unbind(List<UserEmployeeDO> employees) throws CommonException {
         if (employees != null && employees.size() > 0) {
-           logger.info("=====取消认证======="+JSON.toJSONString(employees));
             employees.stream().filter(f -> f.getActivation() == 0).forEach(e -> {
                 e.setActivation((byte) 1);
                 e.setEmailIsvalid((byte) 0);
                 e.setCustomFieldValues("[]");
             });
             for(UserEmployeeDO DO:employees){
-                    int userId=DO.getSysuserId();
-                    int companyId=DO.getCompanyId();
-                    convertCandidatePerson(userId,companyId);
+                int userId=DO.getSysuserId();
+                int companyId=DO.getCompanyId();
+                convertCandidatePerson(userId,companyId);
             }
             int[] rows = employeeDao.updateDatas(employees);
 
