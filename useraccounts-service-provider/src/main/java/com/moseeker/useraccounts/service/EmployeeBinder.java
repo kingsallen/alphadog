@@ -192,13 +192,12 @@ public abstract class EmployeeBinder {
         log.info("updateEmployee response : {}", response);
         return response;
     }
-/*
-    员工认证成功时，需要将潜在候选人置为无效
- */
+    /*
+        员工认证成功时，需要将潜在候选人置为无效
+     */
     public void cancelCandidate(int userId,int companyId) {
         Query query = new Query.QueryBuilder().where("sys_user_id", userId).and("company_id", companyId).and("status", 1).buildQuery();
         List<CandidateCompanyDO> list = candidateCompanyDao.getDatas(query);
-        log.info("CandidateCompanyDO1====="+JSON.toJSONString(list));
         if (!StringUtils.isEmptyList(list)) {
             log.info(JSON.toJSONString(list));
             for (CandidateCompanyDO DO : list) {
@@ -206,25 +205,22 @@ public abstract class EmployeeBinder {
 
             }
             candidateCompanyDao.updateDatas(list);
-            log.info("CandidateCompanyDO3====="+JSON.toJSONString(list));
 
         }
     }
     /*
         员工取消后，需要将潜在候选人置为有效
      */
-     public void convertCandidatePerson(int userId,int companyId){
-         Query query=new Query.QueryBuilder().where("sys_user_id",userId).and("company_id",companyId).and("status",0).buildQuery();
-         List<CandidateCompanyDO> list=candidateCompanyDao.getDatas(query);
-         log.info("CandidateCompanyDO2====="+JSON.toJSONString(list));
-         if(!StringUtils.isEmptyList(list)){
-             for(CandidateCompanyDO DO:list){
-                 DO.setStatus(1);
+    public void convertCandidatePerson(int userId,int companyId){
+        Query query=new Query.QueryBuilder().where("sys_user_id",userId).and("company_id",companyId).and("status",0).buildQuery();
+        List<CandidateCompanyDO> list=candidateCompanyDao.getDatas(query);
+        if(!StringUtils.isEmptyList(list)){
+            for(CandidateCompanyDO DO:list){
+                DO.setStatus(1);
 
-             }
-             candidateCompanyDao.updateDatas(list);
-             log.info("CandidateCompanyDO2====="+JSON.toJSONString(list));
-         }
+            }
+            candidateCompanyDao.updateDatas(list);
+        }
     }
 
 }
