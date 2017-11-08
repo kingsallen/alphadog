@@ -294,7 +294,7 @@ public class JobApplicataionService {
         if (jobApplicationDO != null) {
             ApplicationSource applicationSource = ApplicationSource.instaceFromInteger(jobApplication.getOrigin());
             if (applicationSource == null) {
-                jobApplication.setOrigin(jobApplication.getOrigin() | jobApplicationDO.getOrigin());
+                jobApplication.setOrigin(jobApplication.getOrigin() | jobApplication.getOrigin());
             } else {
                 jobApplication.setOrigin(applicationSource.andSource(jobApplicationDO.getOrigin()));
             }
@@ -848,16 +848,7 @@ public class JobApplicataionService {
         int appId = 0;
         try {
             if (jobApplicationRecord.getRecommenderUserId() != null && jobApplicationRecord.getRecommenderUserId().intValue() > 0) {
-                Query query = new QueryBuilder().where("id", jobApplicationRecord.getRecommenderUserId()).buildQuery();
-                UserUserRecord userUserRecord = userUserDao.getRecord(query);
-                boolean existUserEmployee = false;
-                Query query1 = new QueryBuilder().where("sysuser_id", userUserRecord.getId().intValue())
-                        .and("disable", 0).and("activation", 0).buildQuery();
-                UserEmployeeRecord userEmployeeRecord = userEmployeedao.getRecord(query1);
-                logger.info("JobApplicataionService saveJobApplication userEmployeeRecord:{}", userEmployeeRecord);
-                if (userEmployeeRecord != null) {
-                    existUserEmployee = true;
-                }
+                boolean existUserEmployee = employeeEntity.isEmployee(jobApplicationRecord.getRecommenderUserId(), jobApplicationRecord.getCompanyId());
                 logger.info("JobApplicataionService saveJobApplication existUserEmployee:{}", existUserEmployee);
                 if (!existUserEmployee) {
                     logger.info("JobApplicataionService saveJobApplication not employee");

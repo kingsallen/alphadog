@@ -11,16 +11,17 @@ import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.common.struct.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 /**
  * @author ltf
@@ -59,6 +60,9 @@ public abstract class BindOnAccountService {
 
             Query.QueryBuilder query = new Query.QueryBuilder();
 			Map<String, String> filters = new HashMap<>();
+			if (StringUtils.isNullOrEmpty(countryCode)){
+				countryCode="86";
+			}
 			query.where("username", mobile).and("country_code",countryCode);
 			UserUserRecord userMobile = userdao.getRecord(query.buildQuery());
 
