@@ -459,10 +459,10 @@ public class ProfileController {
     public String otherFieldsCheck(HttpServletRequest request) {
         try {
             Params<String, Object> form = ParamUtils.parseRequestParam(request);
-            int positionId = form.getInt("positionId", 0);
+            int profileId = form.getInt("profileId", 0);
             String fields = form.getString("fields");
-            if (positionId != 0 && StringUtils.isNotNullOrEmpty(fields)) {
-                return ResponseLogNotification.success(request, profileOtherService.otherFieldsCheck(positionId, fields));
+            if (profileId != 0 && StringUtils.isNotNullOrEmpty(fields)) {
+                return ResponseLogNotification.success(request, profileOtherService.otherFieldsCheck(profileId, fields));
             } else {
                 return ResponseLogNotification.fail(request, ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST));
             }
