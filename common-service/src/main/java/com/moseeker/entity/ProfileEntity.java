@@ -21,7 +21,6 @@ import com.moseeker.entity.pojo.resume.ResumeObj;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import java.sql.Timestamp;
-import java.util.Date;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Consts;
 import org.apache.http.HttpResponse;
@@ -275,6 +274,29 @@ public class ProfileEntity {
             if (record == null && otherRecord != null) {
                 otherRecord.setProfileId((int) (profileId));
                 otherDao.addRecord(otherRecord);
+            }
+        }
+    }
+
+    @Transactional
+    public void mergeOther(ProfileOtherRecord otherRecord, int profileId) {
+        if (otherRecord != null && StringUtils.isNotNullOrEmpty(otherRecord.getOther())) {
+            Query.QueryBuilder query = new Query.QueryBuilder();
+            query.where("profile_id", String.valueOf(profileId));
+            ProfileOtherRecord record = otherDao.getRecord(query.buildQuery());
+            if (record == null && otherRecord != null) {
+                otherRecord.setProfileId((int) (profileId));
+                otherDao.addRecord(otherRecord);
+            } else if (record != null && otherRecord != null) {
+                /**
+                 * 自定义合并逻辑：oldOther没有或为空的字段且存在newOther中 -> 将newOther中的字段补填到oldOther里
+                 */
+                Map<String, Object> oldOtherMap = JSONObject.parseObject(otherRecord.getOther(), Map.class);
+                Map<String, Object> newOtherMap = JSONObject.parseObject(record.getOther(), Map.class);
+                oldOtherMap.entrySet().stream().filter(f -> (StringUtils.isNullOrEmpty(String.valueOf(f.getValue())) || "[]".equals(String.valueOf(f.getValue())))  && newOtherMap.containsKey(f.getKey())).forEach(e -> e.setValue(newOtherMap.get(e.getKey())));
+                newOtherMap.putAll(oldOtherMap);
+                otherRecord.setOther(JSONObject.toJSONString(newOtherMap));
+                otherDao.updateRecord(otherRecord);
             }
         }
     }
