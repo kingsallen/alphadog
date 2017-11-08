@@ -59,6 +59,7 @@ task copyJars(type: Copy) {
   into 'build/libs' // 目标位置
 }
 
+
 jettyRun{
     webAppSourceDirectory file("$projectDir/WebContent")
     httpPort 8080
