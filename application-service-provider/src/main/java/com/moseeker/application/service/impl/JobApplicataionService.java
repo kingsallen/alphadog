@@ -860,7 +860,7 @@ public class JobApplicataionService {
                 }
                 logger.info("JobApplicataionService saveJobApplication existUserEmployee:{}", existUserEmployee);
                 if (!existUserEmployee) {
-                    logger.info("JobApplicataionService saveJobApplication not employee");
+                    logger.info("JobApplicataionService saveJobAp plication not employee");
                     jobApplicationRecord.setRecommenderUserId(0);
                 }
                 if (jobApplicationRecord.getApplierId() != null && jobApplicationRecord.getApplierId().intValue() == jobApplicationRecord.getRecommenderUserId().intValue()) {
