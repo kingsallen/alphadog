@@ -972,10 +972,17 @@ public class UserHrAccountService {
             }
 
         }
+
         // 查询总条数
         int counts = userEmployeeDao.getCount(queryBuilder.buildQuery());
         if (counts == 0) {
             throw UserAccountException.USEREMPLOYEES_EMPTY;
+        }
+
+        // 分页数据
+        if (pageNumber > 0 && pageSize > 0) {
+            queryBuilder.setPageNum(pageNumber);
+            queryBuilder.setPageSize(pageSize);
         }
 
         // 员工列表，不需要取排行榜
@@ -1018,35 +1025,18 @@ public class UserHrAccountService {
                 logger.info("ES Data is empty!!!!");
                 userEmployeeVOPageVO.setData(employeeList(queryBuilder, 1, companyIds, null));
             }
-
-            // 分页数据
-            if (pageNumber > 0 && pageSize > 0) {
-                // 取的数据超过了分页数，取最最后一页数据
-                if ((pageNumber * pageSize) > counts) {
-                    queryBuilder.setPageSize(pageSize);
-                    if ((counts % pageSize) == 0) {
-                        pageNumber = counts / pageSize;
-                    } else {
-                        pageNumber = counts / pageSize + 1;
-                    }
-                    queryBuilder.setPageNum(pageNumber);
-                } else {
-                    queryBuilder.setPageNum(pageNumber);
-                    queryBuilder.setPageSize(pageSize);
-                }
-            }
-
-            // 不管ES中有没有数据，员工的分页数据用于一样
-            if (pageSize > 0) {
-                userEmployeeVOPageVO.setPageSize(pageSize);
-            }
-            if (pageNumber > 0) {
-                userEmployeeVOPageVO.setPageNumber(pageNumber);
-            }
-            userEmployeeVOPageVO.setTotalRow(counts);
         } else {
             throw UserAccountException.SEARCH_ES_ERROR;
         }
+
+        // 不管ES中有没有数据，员工的分页数据用于一样
+        if (pageSize > 0) {
+            userEmployeeVOPageVO.setPageSize(pageSize);
+        }
+        if (pageNumber > 0) {
+            userEmployeeVOPageVO.setPageNumber(pageNumber);
+        }
+        userEmployeeVOPageVO.setTotalRow(counts);
         return userEmployeeVOPageVO;
     }
 
