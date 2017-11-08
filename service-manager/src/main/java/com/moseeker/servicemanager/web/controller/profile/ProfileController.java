@@ -454,7 +454,7 @@ public class ProfileController {
         }
     }
 
-    @RequestMapping(value = "/profile/other/fields/check", method = RequestMethod.POST)
+    @RequestMapping(value = "/profile/other/fields/check", method = RequestMethod.GET)
     @ResponseBody
     public String otherFieldsCheck(HttpServletRequest request) {
         try {
