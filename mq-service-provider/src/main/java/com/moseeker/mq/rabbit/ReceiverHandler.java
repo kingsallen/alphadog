@@ -156,7 +156,7 @@ public class ReceiverHandler {
         if(type==1){
             url=env.getProperty("message.template.fans.url");
         }else if(type==2||type==3){
-
+            url=env.getProperty("message.template.recom.url");
         }else if(type==4){
 
         }
