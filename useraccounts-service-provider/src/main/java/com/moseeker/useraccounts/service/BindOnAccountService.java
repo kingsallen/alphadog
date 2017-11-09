@@ -63,6 +63,7 @@ public abstract class BindOnAccountService {
 			if (StringUtils.isNullOrEmpty(countryCode)){
 				countryCode="86";
 			}
+
 			query.where("username", mobile).and("country_code",countryCode);
 			UserUserRecord userMobile = userdao.getRecord(query.buildQuery());
 
@@ -160,6 +161,8 @@ public abstract class BindOnAccountService {
 		map.put("company", userUnionid.getCompany());
 		map.put("position", userUnionid.getPosition());
 		map.put("parentid", userUnionid.getParentid().intValue());
+		map.put("countryCode", userUnionid.getCountryCode());
+
 	}
 	
 	

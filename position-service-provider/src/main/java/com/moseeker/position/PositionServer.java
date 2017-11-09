@@ -37,6 +37,10 @@ public class PositionServer {
 
     }
 
+    public static Logger getLOGGER() {
+        return LOGGER;
+    }
+
     private static AnnotationConfigApplicationContext initSpring() {
         AnnotationConfigApplicationContext acac = new AnnotationConfigApplicationContext();
         acac.register(AppConfig.class);

@@ -1,5 +1,6 @@
 package com.moseeker.profile.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
@@ -51,6 +52,7 @@ public class ProfileServiceImpl implements com.moseeker.profile.service.ProfileS
         }
         ProfileProfileDO profileProfileDO = profileEntity.getProfileByUserId(userId);
         ProfilePojo profilePojo = profileEntity.parseProfile(profileParameter);
+        logger.info("开始执行插入操作================");
         if (profileProfileDO == null) {
             ProfileProfileRecord profileProfileRecord = new ProfileProfileRecord();
             profileProfileRecord.setUserId(userUserDO.getId());
@@ -58,6 +60,8 @@ public class ProfileServiceImpl implements com.moseeker.profile.service.ProfileS
             profileProfileRecord.setUuid(UUID.randomUUID().toString());
             profileProfileRecord.setSource(220);
             profilePojo.setProfileRecord(profileProfileRecord);
+            logger.info("开始保存的参数=====");
+            logger.info(JSONObject.toJSONString(profilePojo));
             return profileEntity.createProfile(profilePojo, userUserDO);
         } else {
             profileEntity.updateProfile(profilePojo, profileProfileDO);
