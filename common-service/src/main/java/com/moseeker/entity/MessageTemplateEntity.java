@@ -102,16 +102,18 @@ public class MessageTemplateEntity {
     private String getJobName(int companyId) {
 
         List<Integer> positionIdList = positionDao.getPositionIds(new ArrayList<Integer>(){{add(companyId);}});
-        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-        queryBuilder.select(CampaignPersonaRecom.CAMPAIGN_PERSONA_RECOM.POSITION_ID.getName())
-                .where(new Condition(CampaignPersonaRecom.CAMPAIGN_PERSONA_RECOM.POSITION_ID.getName(), positionIdList, ValueOp.IN))
-                .setPageNum(1);
+        if (positionIdList != null && positionIdList.size() > 0) {
+            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+            queryBuilder.select(CampaignPersonaRecom.CAMPAIGN_PERSONA_RECOM.POSITION_ID.getName())
+                    .where(new Condition(CampaignPersonaRecom.CAMPAIGN_PERSONA_RECOM.POSITION_ID.getName(), positionIdList, ValueOp.IN))
+                    .setPageNum(1);
 
-        CampaignPersonaRecomRecord campaignPersonaRecom = campaignPersonaRecomDao.getRecord(queryBuilder.buildQuery());
-        if (campaignPersonaRecom != null) {
-            JobPositionPojo positionPojo = positionDao.getPosition(campaignPersonaRecom.getPositionId());
-            if (positionPojo != null) {
-                return positionPojo.title;
+            CampaignPersonaRecomRecord campaignPersonaRecom = campaignPersonaRecomDao.getRecord(queryBuilder.buildQuery());
+            if (campaignPersonaRecom != null) {
+                JobPositionPojo positionPojo = positionDao.getPosition(campaignPersonaRecom.getPositionId());
+                if (positionPojo != null) {
+                    return positionPojo.title;
+                }
             }
         }
         return null;
