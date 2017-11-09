@@ -449,6 +449,10 @@ public class ProfileEntity {
         completenessImpl.reCalculateProfileWorkExp(id);
     }
 
+    public void reCalculateProfileCompleteness(int profileId){
+        completenessImpl.reCalculateProfileCompleteness(profileId);
+    }
+
     @Autowired
     private ProfileAttachmentDao attachmentDao;
 
