@@ -112,7 +112,7 @@ public class MessageTemplateEntity {
             if (campaignPersonaRecom != null) {
                 JobPositionPojo positionPojo = positionDao.getPosition(campaignPersonaRecom.getPositionId());
                 if (positionPojo != null) {
-                    return positionPojo.title;
+                    return positionPojo.title+"等";
                 }
             }
         }
@@ -124,6 +124,9 @@ public class MessageTemplateEntity {
         HrCompanyDO companyDO = getCompanyById(companyId);
         if (companyDO != null) {
             companyName = org.apache.commons.lang.StringUtils.isNotBlank(companyDO.getAbbreviation())?companyDO.getAbbreviation():companyDO.getName();
+            if (org.apache.commons.lang.StringUtils.isNotBlank(companyName)) {
+                companyName += "等";
+            }
         }
         return companyName;
     }
