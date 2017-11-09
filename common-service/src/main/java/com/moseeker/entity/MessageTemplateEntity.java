@@ -1,28 +1,32 @@
 package com.moseeker.entity;
 
-import com.alibaba.fastjson.JSON;
+import com.moseeker.baseorm.dao.campaigndb.CampaignPersonaRecomDao;
 import com.moseeker.baseorm.dao.configdb.ConfigSysTemplateMessageLibraryDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrEmployeePositionDao;
 import com.moseeker.baseorm.dao.hrdb.HrEmployeeSectionDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileBasicDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
-import com.moseeker.baseorm.db.configdb.tables.ConfigSysTemplateMessageLibrary;
-import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.baseorm.db.campaigndb.tables.CampaignPersonaRecom;
+import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignPersonaRecomRecord;
+import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
+import com.moseeker.baseorm.pojo.JobPositionPojo;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
-import com.moseeker.entity.pojos.Data;
+import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.entity.Constant.JobStatus;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysTemplateMessageLibraryDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeePositionDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeSectionDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileBasicDO;
-import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileIntentionDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
@@ -33,10 +37,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.SimpleFormatter;
+import java.util.*;
 
 /**
  * Created by zztaiwll on 17/10/20.
@@ -63,6 +64,11 @@ public class MessageTemplateEntity {
     private HrEmployeeSectionDao hrEmployeeSectionDao;
     @Autowired
     private HrWxWechatDao hrWxWechatDao;
+    @Autowired
+    private JobPositionDao positionDao;
+    @Autowired
+    private CampaignPersonaRecomDao campaignPersonaRecomDao;
+
 
     public MessageTemplateNoticeStruct handlerTemplate(int userId,int companyId,int templateId,int type,String url,String jobName,String companyName){
 
@@ -77,6 +83,9 @@ public class MessageTemplateEntity {
             url=url.replace("{}",wxSignture);
         }
         MessageTemplateNoticeStruct messageTemplateNoticeStruct =new MessageTemplateNoticeStruct();
+
+        companyName = getCompanyName(companyId);
+        jobName = getJobName(companyId);
         Map<String,MessageTplDataCol> colMap=this.handleMessageTemplateData(userId,type,companyId,jobName,companyName);
         if(colMap==null||colMap.isEmpty()){
             return null;
@@ -89,6 +98,34 @@ public class MessageTemplateEntity {
         messageTemplateNoticeStruct.setType((byte)0);
         return messageTemplateNoticeStruct;
     }
+
+    private String getJobName(int companyId) {
+
+        List<Integer> positionIdList = positionDao.getPositionIds(new ArrayList<Integer>(){{add(companyId);}});
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.select(CampaignPersonaRecom.CAMPAIGN_PERSONA_RECOM.POSITION_ID.getName())
+                .where(new Condition(CampaignPersonaRecom.CAMPAIGN_PERSONA_RECOM.POSITION_ID.getName(), positionIdList, ValueOp.IN))
+                .setPageNum(1);
+
+        CampaignPersonaRecomRecord campaignPersonaRecom = campaignPersonaRecomDao.getRecord(queryBuilder.buildQuery());
+        if (campaignPersonaRecom != null) {
+            JobPositionPojo positionPojo = positionDao.getPosition(campaignPersonaRecom.getPositionId());
+            if (positionPojo != null) {
+                return positionPojo.title;
+            }
+        }
+        return null;
+    }
+
+    private String getCompanyName(int companyId) {
+        String companyName = null;
+        HrCompanyDO companyDO = getCompanyById(companyId);
+        if (companyDO != null) {
+            companyName = org.apache.commons.lang.StringUtils.isNotBlank(companyDO.getAbbreviation())?companyDO.getAbbreviation():companyDO.getName();
+        }
+        return companyName;
+    }
+
     /*
         处理发送完善简历消息模板
      */
