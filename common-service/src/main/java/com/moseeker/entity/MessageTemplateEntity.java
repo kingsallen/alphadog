@@ -203,7 +203,7 @@ public class MessageTemplateEntity {
             remark.setValue("点击查看推荐职位。");
             colMap.put("remark",remark);
         }
-        SimpleDateFormat sf=new SimpleDateFormat("YYYY-MM-DD hh:mm:ss");
+        SimpleDateFormat sf=new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
         MessageTplDataCol keyword1=new MessageTplDataCol();
         keyword1.setColor("#173177");
         keyword1.setValue(jobName);
