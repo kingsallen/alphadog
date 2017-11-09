@@ -480,6 +480,10 @@ public class WholeProfileService {
             profileEntity.improveWorks(profilePojo.getWorksRecords(), profileId);
 //            profileEntity.getCompleteness(0, null, profileId);
             profileEntity.reCalculateProfileCompleteness(profileId);
+<<<<<<< HEAD
+=======
+
+>>>>>>> master
             try {
                 StatisticsForChannelmportVO statisticsForChannelmportVO = createStaticstics(profileDB.getId().intValue(), profileDB.getUserId().intValue(), (byte) 2,
                         profilePojo.getImportRecords());
@@ -547,7 +551,7 @@ public class WholeProfileService {
                 profileEntity.improveEducation(destEducations, originProfileId);
                 profileEntity.improveIntention(destIntentions, originProfileId);
                 profileEntity.improveLanguage(destLanguages, originProfileId);
-                profileEntity.improveOther(destOther, originProfileId);
+                profileEntity.mergeOther(destOther, originProfileId);
                 profileEntity.improveProjectexp(destProjectexps, originProfileId);
                 profileEntity.improveSkill(destSkills, originProfileId);
                 profileEntity.improveWorks(destWorks, originProfileId);

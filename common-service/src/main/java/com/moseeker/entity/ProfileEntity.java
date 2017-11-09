@@ -21,7 +21,6 @@ import com.moseeker.entity.pojo.resume.ResumeObj;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import java.sql.Timestamp;
-import java.util.Date;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Consts;
 import org.apache.http.HttpResponse;
@@ -280,6 +279,29 @@ public class ProfileEntity {
     }
 
     @Transactional
+    public void mergeOther(ProfileOtherRecord otherRecord, int profileId) {
+        if (otherRecord != null && StringUtils.isNotNullOrEmpty(otherRecord.getOther())) {
+            Query.QueryBuilder query = new Query.QueryBuilder();
+            query.where("profile_id", String.valueOf(profileId));
+            ProfileOtherRecord record = otherDao.getRecord(query.buildQuery());
+            if (record == null && otherRecord != null) {
+                otherRecord.setProfileId((int) (profileId));
+                otherDao.addRecord(otherRecord);
+            } else if (record != null && otherRecord != null) {
+                /**
+                 * 自定义合并逻辑：oldOther没有或为空的字段且存在newOther中 -> 将newOther中的字段补填到oldOther里
+                 */
+                Map<String, Object> oldOtherMap = JSONObject.parseObject(otherRecord.getOther(), Map.class);
+                Map<String, Object> newOtherMap = JSONObject.parseObject(record.getOther(), Map.class);
+                oldOtherMap.entrySet().stream().filter(f -> (StringUtils.isNullOrEmpty(String.valueOf(f.getValue())) || "[]".equals(String.valueOf(f.getValue())))  && newOtherMap.containsKey(f.getKey())).forEach(e -> e.setValue(newOtherMap.get(e.getKey())));
+                newOtherMap.putAll(oldOtherMap);
+                otherRecord.setOther(JSONObject.toJSONString(newOtherMap));
+                otherDao.updateRecord(otherRecord);
+            }
+        }
+    }
+
+    @Transactional
     public void improveLanguage(List<ProfileLanguageRecord> languageRecords, int profileId) {
         if (languageRecords != null && languageRecords.size() > 0) {
             languageDao.delLanguageByProfileId(profileId);
@@ -491,7 +513,8 @@ public class ProfileEntity {
         improveSkill(profilePojo.getSkillRecords(), profileId);
         improveWorkexp(profilePojo.getWorkexpRecords(), profileId);
         improveWorks(profilePojo.getWorksRecords(), profileId);
-//        getCompleteness(0, null, profileId);
+        //先前只是根据表的记录简单叠加完整度，这在修改是不准确，需要重新计算，所以改成这样，
+        //getCompleteness(0, null, profileId);
         reCalculateProfileCompleteness(profileId);
     }
 
@@ -504,11 +527,5 @@ public class ProfileEntity {
                 profilePojo.getSkillRecords(), profilePojo.getWorkexpRecords(), profilePojo.getWorksRecords(),
                 userUserRecord, null);
         return id;
-    }
-    /*
-     重新计算建立的完整度
-     */
-    public int reCalculateProfileCompleteness(int profileId){
-        return completenessImpl.reCalculateProfileCompleteness(profileId);
     }
 }

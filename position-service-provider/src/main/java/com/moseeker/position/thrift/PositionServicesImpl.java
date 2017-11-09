@@ -84,6 +84,10 @@ public class PositionServicesImpl implements Iface {
         return service.verifyCustomize(positionId);
     }
 
+    public PositionServicesImpl(Logger logger) {
+        this.logger = logger;
+    }
+
     /**
      * 根据职位Id获取当前职位信息
      */
