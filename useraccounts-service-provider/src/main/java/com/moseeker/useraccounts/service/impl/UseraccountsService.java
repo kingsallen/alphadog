@@ -168,7 +168,7 @@ public class UseraccountsService {
                 mobile=userloginreq.getCountryCode()+mobile;
             }
             if (validateCode(mobile, code, 1)) {
-                query.where("username", mobile).and("country_code",userloginreq.getCountryCode());
+                query.where("username", userloginreq.getMobile()).and("country_code",userloginreq.getCountryCode());
             } else {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);
             }
@@ -267,7 +267,7 @@ public class UseraccountsService {
 		 */
 
         boolean result=false;
-        if (mobile.length() < 7) {
+        if (mobile.length() < 5) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
         try {
@@ -335,7 +335,12 @@ public class UseraccountsService {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
 
-        if (!StringUtils.isNullOrEmpty(code) && !validateCode(String.valueOf(user.mobile), code, 1)) {
+        String validateMobile=String.valueOf(user.mobile);
+        if(StringUtils.isNotNullOrEmpty(user.getCountryCode()) && !"86".equals(user.getCountryCode())){
+            validateMobile=user.getCountryCode()+user.mobile;
+        }
+
+        if (!StringUtils.isNullOrEmpty(code) && !validateCode(validateMobile, code, 1)) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);
         }
 
@@ -355,7 +360,7 @@ public class UseraccountsService {
 
                 // 未设置密码, 主动短信通知用户
                 if (!hasPassword) {
-                    smsSender.sendSMS_signupRandomPassword(String.valueOf(user.mobile), plainPassword);
+                    smsSender.sendSMS_signupRandomPassword(String.valueOf(user.mobile), plainPassword,String.valueOf(user.countryCode));
                 }
 
                 // // 初始化 user_setting 表.
@@ -501,7 +506,7 @@ public class UseraccountsService {
 
 
         boolean result=false;
-        if (mobile.length() < 7) {
+        if (mobile.length() < 5) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
         try {
@@ -689,7 +694,7 @@ public class UseraccountsService {
         }
 
         boolean result=false;
-        if (oldmobile.length() < 7) {
+        if (oldmobile.length() < 5) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
         try {
@@ -742,7 +747,7 @@ public class UseraccountsService {
             }
         }
         boolean result=false;
-        if (newmobile.length() < 7) {
+        if (newmobile.length() < 5) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
         try {
@@ -765,8 +770,12 @@ public class UseraccountsService {
      * @param newmobile 新手机号
      * @param code      新手机号的验证码
      */
-    public Response postresetmobile(int user_id, String newmobile, String code) throws TException {
-        if (code != null && !validateCode(newmobile, code, 2)) {
+    public Response postresetmobile(int user_id, String countryCode, String newmobile, String code) throws TException {
+        String verifynewmobile = newmobile;
+        if(StringUtils.isNotNullOrEmpty(countryCode) && !"86".equals(countryCode)){
+            verifynewmobile = countryCode + newmobile;
+        }
+        if (code != null && !validateCode(verifynewmobile, code, 4)) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);
         }
 
@@ -787,10 +796,12 @@ public class UseraccountsService {
                     UserUserRecord userParent = userdao.getRecord(query.buildQuery());
                     userParent.setMobile(Long.parseLong(newmobile));
                     userParent.setUsername(newmobile);
+                    userParent.setCountryCode(countryCode);
                     userdao.updateRecord(userParent);
                 }
                 user.setMobile(Long.parseLong(newmobile));
                 user.setUsername(newmobile);
+                user.setCountryCode(countryCode);
 
                 result = userdao.updateRecord(user);
                 if (result > 0) {
@@ -940,7 +951,11 @@ public class UseraccountsService {
     /**
      * 验证忘记密码的验证码是否正确
      */
-    public Response postvalidatepasswordforgotcode(String mobile, String code) throws TException {
+    public Response postvalidatepasswordforgotcode(String countryCode, String mobile, String code) throws TException {
+        if(StringUtils.isNotNullOrEmpty(countryCode) && !"86".equals(countryCode)){
+            mobile=countryCode+mobile;
+        }
+
         if (!validateCode(mobile, code, 2)) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);
         } else {
