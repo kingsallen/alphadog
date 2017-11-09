@@ -124,9 +124,6 @@ public class MessageTemplateEntity {
         HrCompanyDO companyDO = getCompanyById(companyId);
         if (companyDO != null) {
             companyName = org.apache.commons.lang.StringUtils.isNotBlank(companyDO.getAbbreviation())?companyDO.getAbbreviation():companyDO.getName();
-            if (org.apache.commons.lang.StringUtils.isNotBlank(companyName)) {
-                companyName += "等";
-            }
         }
         return companyName;
     }
