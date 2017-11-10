@@ -168,7 +168,7 @@ public class UseraccountsService {
                 mobile=userloginreq.getCountryCode()+mobile;
             }
             if (validateCode(mobile, code, 1)) {
-                query.where("username", mobile).and("country_code",userloginreq.getCountryCode());
+                query.where("username", userloginreq.getMobile()).and("country_code",userloginreq.getCountryCode());
             } else {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);
             }
