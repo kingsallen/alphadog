@@ -88,10 +88,10 @@ public class ReceiverHandler {
             int type=jsonObject.getIntValue("type");
             int templateId;
             switch (type) {
-                case 1: templateId = 57; break;
-                case 2: templateId = 59; break;
-                case 3: templateId = 60; break;
-                case 4: templateId = 59; break;
+                case 1: templateId = 56; break;
+                case 2: templateId = 57; break;
+                case 3: templateId = 58; break;
+                case 4: templateId = 57; break;
                 default: templateId = 0;
             }
             //int templateId=jsonObject.getIntValue("template_id");
