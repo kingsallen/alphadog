@@ -820,6 +820,11 @@ public class UserHrAccountService {
                             UserEmployeeVO userEmployeeVO = new UserEmployeeVO();
                             org.springframework.beans.BeanUtils.copyProperties(userEmployeeDO, userEmployeeVO);
                             userEmployeeVO.setUsername(userEmployeeDO.getCname());
+                            List customFieldValues = new ArrayList();
+                            if (userEmployeeDO.getCustomFieldValues() != null) {
+                                customFieldValues.addAll(JSONObject.parseObject(userEmployeeDO.getCustomFieldValues(), List.class));
+                            }
+                            userEmployeeVO.setCustomFieldValues(customFieldValues);
                             // 微信昵称
                             if (userMap.size() > 0 && userMap.get(userEmployeeDO.getSysuserId()) != null) {
                                 userEmployeeVO.setNickName(userMap.get(userEmployeeDO.getSysuserId()).getNickname());
@@ -860,6 +865,11 @@ public class UserHrAccountService {
                     } else if (flag.intValue() == 1) {
                         userEmployeeVO.setAward(0);
                     }
+                    List customFieldValues = new ArrayList();
+                    if (userEmployeeDO.getCustomFieldValues() != null) {
+                        customFieldValues.addAll(JSONObject.parseObject(userEmployeeDO.getCustomFieldValues(), List.class));
+                    }
+                    userEmployeeVO.setCustomFieldValues(customFieldValues);
                     // 微信昵称
                     if (userMap.size() > 0 && userMap.get(userEmployeeDO.getSysuserId()) != null) {
                         userEmployeeVO.setNickName(userMap.get(userEmployeeDO.getSysuserId()).getNickname());
@@ -1094,11 +1104,11 @@ public class UserHrAccountService {
             userEmployeeVO.setCustomField(userEmployeeDO.getCustomField());
             userEmployeeVO.setEmail(userEmployeeDO.getEmail());
             userEmployeeVO.setCompanyId(userEmployeeDO.getCompanyId());
-
+            List customFieldValues = new ArrayList();
             if (userEmployeeDO.getCustomFieldValues() != null) {
-                List customFieldValues = JSONObject.parseObject(userEmployeeDO.getCustomFieldValues(), List.class);
-                userEmployeeVO.setCustomFieldValues(customFieldValues);
+                customFieldValues.addAll(JSONObject.parseObject(userEmployeeDO.getCustomFieldValues(), List.class));
             }
+            userEmployeeVO.setCustomFieldValues(customFieldValues);
             if (userMap != null && userMap.size() > 0 && userMap.get(userEmployeeDO.getSysuserId()) != null) {
                 userEmployeeVO.setNickName(userMap.get(userEmployeeDO.getSysuserId()).getNickname());
             } else {
