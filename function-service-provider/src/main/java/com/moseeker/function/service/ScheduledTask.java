@@ -56,6 +56,12 @@ public class ScheduledTask {
         }
     }
 
+    /**
+     * 职位同步结果监听队列
+     * @param message   队列消息
+     * @param channel
+     * @throws UnsupportedEncodingException
+     */
     @RabbitListener(queues = {BindThirdPart.SYNC_POSITION_GET_QUEUE_NAME}, containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
     public void positionSyncListener(Message message, Channel channel) throws UnsupportedEncodingException {
