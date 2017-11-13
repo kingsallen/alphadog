@@ -4,6 +4,8 @@ import com.moseeker.baseorm.dao.thirdpartydb.ThirdpartyAccountDepartmentDao;
 import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyAccountDepartmentDO;
 import com.moseeker.thrift.gen.thirdpart.struct.ThirdPartyAccountInfoDepartment;
 import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +14,7 @@ import java.util.List;
 
 @Service
 public class ThirdPartyAccountInfoDepartmentService {
+    private static Logger logger= LoggerFactory.getLogger(ThirdPartyAccountInfoDepartmentService.class);
     @Autowired
     ThirdpartyAccountDepartmentDao departmentDao;
 
@@ -27,6 +30,7 @@ public class ThirdPartyAccountInfoDepartmentService {
             infoDepartmentList.add(department);
         });
 
+        logger.info("infoDepartmentList: {}",infoDepartmentList);
         return infoDepartmentList;
     }
 }

@@ -4,6 +4,8 @@ import com.moseeker.baseorm.dao.thirdpartydb.ThirdpartyAccountCompanyAddressDao;
 import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyAccountCompanyAddressDO;
 import com.moseeker.thrift.gen.thirdpart.struct.ThirdPartyAccountInfoAddress;
 import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +14,7 @@ import java.util.List;
 
 @Service
 public class ThirdPartyAccountInfoAddressService {
+    private static Logger logger= LoggerFactory.getLogger(ThirdPartyAccountInfoAddressService.class);
     @Autowired
     ThirdpartyAccountCompanyAddressDao addressDao;
 
@@ -28,6 +31,7 @@ public class ThirdPartyAccountInfoAddressService {
             address.setName(a.getAddress());
             infoAddressList.add(address);
         });
+        logger.info("infoAddressList:{}",infoAddressList);
         return infoAddressList;
     }
 
