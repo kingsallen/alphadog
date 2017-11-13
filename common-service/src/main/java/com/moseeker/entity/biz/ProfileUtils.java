@@ -18,10 +18,9 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.Pagination;
-import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.Constant.ProfileAttributeLengthLimit;
-import org.joda.time.field.ImpreciseDateTimeField;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -42,14 +41,34 @@ public class ProfileUtils {
 			works.forEach(work -> {
 				ProfileWorksRecord record = BeanUtils.MapToRecord(work, ProfileWorksRecord.class);
 				if (record != null) {
-					if(StringUtils.isNotNullOrEmpty(record.getDescription()) && record.getDescription().length() > Constant.DESCRIPTION_LENGTH) {
-						record.setDescription(record.getDescription().substring(0, Constant.DESCRIPTION_LENGTH));
-					}
+					subWorksMaxLimit(record);
+
 					worksRecords.add(record);
 				}
 			});
 		}
 		return worksRecords;
+	}
+
+	/**
+	 * 超过最大长度限制的字段，做截取操作
+	 * @param record
+	 */
+	private void subWorksMaxLimit(ProfileWorksRecord record) {
+		if(StringUtils.isNotBlank(record.getDescription())
+				&& record.getDescription().length() > ProfileAttributeLengthLimit.WorksDescription.getLengthLimit()) {
+			record.setDescription(record.getDescription()
+					.substring(0, ProfileAttributeLengthLimit.WorksDescription.getLengthLimit()));
+		}
+		if (StringUtils.isNotBlank(record.getName()) && record.getName().length() > ProfileAttributeLengthLimit.WorksName.getLengthLimit()) {
+			record.setName(record.getName().substring(0, ProfileAttributeLengthLimit.WorksName.getLengthLimit()));
+		}
+		if (StringUtils.isNotBlank(record.getUrl()) && record.getUrl().length() > ProfileAttributeLengthLimit.WorksURL.getLengthLimit()) {
+			record.setUrl(record.getUrl().substring(0, ProfileAttributeLengthLimit.WorksURL.getLengthLimit()));
+		}
+		if (StringUtils.isNotBlank(record.getCover()) && record.getCover().length() > ProfileAttributeLengthLimit.WorksCover.getLengthLimit()) {
+			record.setCover(record.getCover().substring(0, ProfileAttributeLengthLimit.WorksCover.getLengthLimit()));
+		}
 	}
 
 	public List<ProfileWorkexpEntity> mapToWorkexpRecords(List<Map<String, Object>> workexps, int source) {
@@ -68,17 +87,8 @@ public class ProfileUtils {
 					} else if (workexp.get("endDate") != null) {
                         record.setEnd(BeanUtils.convertToSQLDate(workexp.get("endDate")));
                     }
-					if(StringUtils.isNotNullOrEmpty(record.getDescription())
-							&& record.getDescription().length()
-							> ProfileAttributeLengthLimit.WorkExpDescriptionLengthLimit.getLengthLimit()) {
-						record.setDescription(record.getDescription()
-								.substring(0, ProfileAttributeLengthLimit.WorkExpDescriptionLengthLimit.getLengthLimit()));
-					}
-					if (org.apache.commons.lang.StringUtils.isNotBlank(record.getJob())
-							&& record.getJob().length() > ProfileAttributeLengthLimit.WorkExpJobLengthLimit.getLengthLimit()) {
-						record.setJob(record.getJob()
-								.substring(0, ProfileAttributeLengthLimit.WorkExpJobLengthLimit.getLengthLimit()));
-					}
+					subWorkExpMaxLimit(record);
+
 					if (workexp.get("company") != null) {
 						@SuppressWarnings("unchecked")
 						Map<String, Object> company = (Map<String, Object>) workexp.get("company");
@@ -135,6 +145,55 @@ public class ProfileUtils {
 		return workexpRecords;
 	}
 
+	/**
+	 * 如果超过长度限制，则做截取
+	 * @param record
+	 */
+	private void subWorkExpMaxLimit(ProfileWorkexpEntity record) {
+		if(StringUtils.isNotBlank(record.getDescription())
+				&& record.getDescription().length()
+				> ProfileAttributeLengthLimit.WorkExpDescription.getLengthLimit()) {
+			record.setDescription(record.getDescription()
+					.substring(0, ProfileAttributeLengthLimit.WorkExpDescription.getLengthLimit()));
+		}
+		if (StringUtils.isNotBlank(record.getJob())
+				&& record.getJob().length() > ProfileAttributeLengthLimit.WorkExpJob.getLengthLimit()) {
+			record.setJob(record.getJob()
+					.substring(0, ProfileAttributeLengthLimit.WorkExpJob.getLengthLimit()));
+		}
+		if (StringUtils.isNotBlank(record.getIndustryName())
+				&& record.getIndustryName().length() > ProfileAttributeLengthLimit.WorkExpIndustryName.getLengthLimit()) {
+			record.setIndustryName(record.getIndustryName().substring(0, ProfileAttributeLengthLimit.WorkExpIndustryName.getLengthLimit()));
+		}
+		if (StringUtils.isNotBlank(record.getDepartmentName())
+				&& record.getDepartmentName().length() > ProfileAttributeLengthLimit.WorkExpDepartmentName.getLengthLimit()) {
+			record.setDepartmentName(record.getDepartmentName().substring(0, ProfileAttributeLengthLimit.WorkExpDepartmentName.getLengthLimit()));
+		}
+		if (StringUtils.isNotBlank(record.getPositionName())
+				&& record.getPositionName().length() > ProfileAttributeLengthLimit.WorkExpPositionName.getLengthLimit()) {
+			record.setPositionName(record.getPositionName().substring(0, ProfileAttributeLengthLimit.WorkExpPositionName.getLengthLimit()));
+		}
+		if (StringUtils.isNotBlank(record.getCityName())
+				&& record.getCityName().length() > ProfileAttributeLengthLimit.WorkExpCityName.getLengthLimit()) {
+			record.setCityName(record.getCityName().substring(0, ProfileAttributeLengthLimit.WorkExpCityName.getLengthLimit()));
+		}
+		if (StringUtils.isNotBlank(record.getReportTo())
+				&& record.getReportTo().length() > ProfileAttributeLengthLimit.WorkExpReportTo.getLengthLimit()) {
+			record.setReportTo(record.getReportTo().substring(0, ProfileAttributeLengthLimit.WorkExpReportTo.getLengthLimit()));
+		}
+		if (StringUtils.isNotBlank(record.getReference()) && record.getReference().length() > ProfileAttributeLengthLimit.WorkExpReference.getLengthLimit()) {
+			record.setReference(record.getReference().substring(0, ProfileAttributeLengthLimit.WorkExpReference.getLengthLimit()));
+		}
+		if (StringUtils.isNotBlank(record.getResignReason())
+				&& record.getResignReason().length() > ProfileAttributeLengthLimit.WorkExpResignReason.getLengthLimit()) {
+			record.setResignReason(record.getResignReason().substring(0, ProfileAttributeLengthLimit.WorkExpResignReason.getLengthLimit()));
+		}
+		if (StringUtils.isNotBlank(record.getAchievement())
+				&& record.getAchievement().length() > ProfileAttributeLengthLimit.WorkExpAchievement.getLengthLimit()) {
+			record.setAchievement(record.getAchievement().substring(0, ProfileAttributeLengthLimit.WorkExpAchievement.getLengthLimit()));
+		}
+	}
+
 	public List<ProfileSkillRecord> mapToSkillRecords(List<Map<String, Object>> skills) {
 		List<ProfileSkillRecord> skillRecords = new ArrayList<>();
 		if (skills != null && skills.size() > 0) {
@@ -155,9 +214,7 @@ public class ProfileUtils {
 			projectexps.forEach(projectexp -> {
 				ProfileProjectexpRecord record = BeanUtils.MapToRecord(projectexp, ProfileProjectexpRecord.class);
 				if (record != null) {
-					if(StringUtils.isNotNullOrEmpty(record.getDescription()) && record.getDescription().length() > Constant.DESCRIPTION_LENGTH) {
-						record.setDescription(record.getDescription().substring(0, Constant.DESCRIPTION_LENGTH));
-					}
+
 					if (projectexp.get("start_date") != null) {
 						record.setStart(BeanUtils.convertToSQLDate(projectexp.get("start_date")));
 					} else if (projectexp.get("startDate") != null) {
@@ -168,9 +225,9 @@ public class ProfileUtils {
 					} else if (projectexp.get("endDate") != null) {
                         record.setEnd(BeanUtils.convertToSQLDate(projectexp.get("endDate")));
                     }
-					if (record.getResponsibility() != null && record.getResponsibility().length() >1000) {
-						record.setResponsibility(record.getResponsibility().substring(0, 995)+"...");
-					}
+
+                    subProjectExpMaxLimit(record);
+
 					ValidationMessage<ProfileProjectexpRecord> vm = ProfileValidation.verifyProjectExp(record);
 					if(vm.isPass()) {
 						projectExpRecords.add(record);
@@ -179,6 +236,28 @@ public class ProfileUtils {
 			});
 		}
 		return projectExpRecords;
+	}
+
+	private void subProjectExpMaxLimit(ProfileProjectexpRecord record) {
+		if(StringUtils.isNotBlank(record.getDescription())
+				&& record.getDescription().length() > ProfileAttributeLengthLimit.ProjectExpDescription.getLengthLimit()) {
+			record.setDescription(record.getDescription().substring(0, ProfileAttributeLengthLimit.ProjectExpDescription.getLengthLimit()));
+		}
+		if (StringUtils.isNotBlank(record.getResponsibility())
+				&& record.getResponsibility().length() > ProfileAttributeLengthLimit.ProjectExpResponsibility.getLengthLimit()) {
+			record.setResponsibility(record.getResponsibility().substring(0, ProfileAttributeLengthLimit.ProjectExpResponsibility.getLengthLimit())+"...");
+		}
+		if (StringUtils.isNotBlank(record.getName()) && record.getName().length() > ProfileAttributeLengthLimit.ProjectExpName.getLengthLimit()) {
+			record.setName(record.getName().substring(0, ProfileAttributeLengthLimit.ProjectExpName.getLengthLimit()));
+		}
+		if (StringUtils.isNotBlank(record.getCompanyName())
+				&& record.getCompanyName().length() > ProfileAttributeLengthLimit.ProjectExpCompanyName.getLengthLimit()) {
+			record.setCompanyName(record.getCompanyName().substring(0, ProfileAttributeLengthLimit.ProjectExpCompanyName.getLengthLimit()));
+		}
+		if (StringUtils.isNotBlank(record.getDevTool())
+				&& record.getDevTool().length() > ProfileAttributeLengthLimit.ProjectExpDevTool.getLengthLimit()) {
+			record.setDevTool(record.getDevTool().substring(0, ProfileAttributeLengthLimit.ProjectExpDevTool.getLengthLimit()));
+		}
 	}
 
 	public ProfileOtherRecord mapToOtherRecord(Map<String, Object> other) {
