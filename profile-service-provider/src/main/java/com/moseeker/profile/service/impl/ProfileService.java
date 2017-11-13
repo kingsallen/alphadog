@@ -696,9 +696,10 @@ public class ProfileService {
         queryBuilder.where(new Condition("field_name", fieldJson.keySet(), ValueOp.IN));
         Map<String, ConfigSysCvTplDO> configSysCvTplMap = new HashMap<>();
         configSysCvTplMap.putAll(configSysCvTplDao.getDatas(queryBuilder.buildQuery()).stream().collect(Collectors.toMap(k -> k.getFieldName(), v -> v)));
+        Map<String, Object> result = new HashMap<>();
         fieldJson.keySet().forEach(fieldName -> {
             if (!configSysCvTplMap.containsKey(fieldName)){
-                fieldJson.put(fieldName, new HashMap<String, Object>(){{put("result",false);put("msg","自定义字段："+fieldName+",不存在");}});
+                result.put(fieldName, new HashMap<String, Object>(){{put("result",false);put("msg","自定义字段："+fieldName+",不存在");}});
                 return;
             }
             Object customResult = "";
@@ -718,21 +719,27 @@ public class ProfileService {
                     String[] mappingStr = mappingFiled.split("\\.", 2);
                     customResult = mappingStr[0].startsWith("user") ? (userDao.customSelect(mappingStr[0], mappingStr[1], profileProfile.getUserId())) : (profileOtherDao.customSelect(mappingStr[0], mappingStr[1], "profile_id", profileProfile.getId()));
                 } else {
-                    fieldJson.put(fieldName, new HashMap<String, Object>(){{put("result",false);put("msg","自定义字段:"+fieldName+",配置异常");}});
+                    result.put(fieldName, new HashMap<String, Object>(){{put("result",false);put("msg","自定义字段:"+fieldName+",配置异常");}});
                     return;
                 }
+            } else if (fieldJson.getString(fieldName).startsWith("[{") && fieldJson.getString(fieldName).endsWith("}]")) {
+                result.put(fieldName, new ArrayList<>());
+                JSONArray.parseArray(fieldJson.getString(fieldName)).stream().forEach(e -> {
+                    Response childRes = otherFieldsCheck(profielId, e.toString());
+                    ((List)result.get(fieldName)).add(JSONObject.parseObject(childRes.getData()));
+                });
+                return;
             } else {
                 // 普通字段校验
                 customResult = fieldJson.get(fieldName);
             }
             if (Pattern.matches(org.apache.commons.lang.StringUtils.defaultIfEmpty(configSysCvTplDO.getValidateRe(), ""), String.valueOf(customResult))) {
-                fieldJson.put(fieldName, new HashMap<String, Object>(){{put("result",true);put("msg","success");}});
+                result.put(fieldName, new HashMap<String, Object>(){{put("result",true);put("msg","success");}});
             } else {
-                fieldJson.put(fieldName, new HashMap<String, Object>(){{put("result",false);put("msg", org.apache.commons.lang.StringUtils.defaultIfEmpty(configSysCvTplDO.getErrorMsg(),"自定义字段"+fieldName+"为空"));}});
+                result.put(fieldName, new HashMap<String, Object>(){{put("result",false);put("msg", org.apache.commons.lang.StringUtils.defaultIfEmpty(configSysCvTplDO.getErrorMsg(),"自定义字段"+fieldName+"为空"));}});
                 logger.error("自定义字段校验失败! field_name:{}, value:{}, error_msg:{}", fieldName, customResult, configSysCvTplDO.getErrorMsg());
             }
         });
-        return ResponseUtils.successWithoutStringify(fieldJson.toJSONString());
+        return ResponseUtils.success(result);
     }
-
 }
