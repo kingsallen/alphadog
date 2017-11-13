@@ -540,7 +540,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
             }
             if (attachmentRecords != null && attachmentRecords.size() > 0) {
                 logger.info("====================attachmentRecords==============");
-                logger.info(JSONObject.toJSONString(attachmentRecords));
+                logger.info(attachmentRecords.toString());
                 attachmentRecords.forEach(attachmentRecord -> {
                     attachmentRecord.setProfileId(profileRecord.getId());
                     attachmentRecord.setCreateTime(now);
@@ -550,7 +550,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
             }
             if (awardsRecords != null && awardsRecords.size() > 0) {
                 logger.info("====================awardsRecords==============");
-                logger.info(JSONObject.toJSONString(awardsRecords));
+                logger.info(awardsRecords.toString());
                 awardsRecords.forEach(awardsRecord -> {
                     awardsRecord.setProfileId(profileRecord.getId());
                     awardsRecord.setCreateTime(now);
@@ -667,7 +667,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
             }
             if (languages != null && languages.size() > 0) {
                 logger.info("====================languages==============");
-                logger.info(JSONObject.toJSONString(languages));
+                logger.info(languages.toString());
                 languages.forEach(language -> {
                     language.setProfileId(profileRecord.getId());
                     language.setCreateTime(now);
@@ -689,7 +689,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
 
             if (skillRecords != null && skillRecords.size() > 0) {
                 logger.info("====================skillRecords==============");
-                logger.info(JSONObject.toJSONString(skillRecords));
+                logger.info(skillRecords.toString());
                 skillRecords.forEach(skill -> {
                     skill.setProfileId(profileRecord.getId());
                     skill.setCreateTime(now);
@@ -702,7 +702,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
             }
             if (workexpRecords != null && workexpRecords.size() > 0) {
                 logger.info("====================workexpRecords==============");
-                logger.info(JSONObject.toJSONString(workexpRecords));
+                logger.info(workexpRecords.toString());
                 List<HrCompanyRecord> companies = new ArrayList<>();
                 workexpRecords.forEach(workexp -> {
                     workexp.setProfileId(profileRecord.getId());
@@ -757,7 +757,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
             }
             if (projectExps != null && projectExps.size() > 0) {
                 logger.info("====================projectExps==============");
-                logger.info(JSONObject.toJSONString(projectExps));
+                logger.info(projectExps.toString());
                 projectExps.forEach(projectExp -> {
                     projectExp.setProfileId(profileRecord.getId());
                     projectExp.setCreateTime(now);
@@ -770,7 +770,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
             }
             if (worksRecords != null && worksRecords.size() > 0) {
                 logger.info("====================worksRecords==============");
-                logger.info(JSONObject.toJSONString(worksRecords));
+                logger.info(worksRecords.toString());
                 worksRecords.forEach(worksRecord -> {
                     worksRecord.setProfileId(profileRecord.getId());
                     worksRecord.setCreateTime(now);
@@ -821,7 +821,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
             profileRecord.update();
             create.attach(completenessRecord);
             logger.info("====================profileRecord==============");
-            logger.info(JSONObject.toJSONString(profileRecord));
+            logger.info(profileRecord.toString());
             completenessRecord.insert();
             if (userRecord != null) {
                 create.attach(userRecord);
