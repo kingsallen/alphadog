@@ -121,6 +121,7 @@ public class ThridPartyAcountEntity {
 
             }).collect(Collectors.toList());
             logger.info("saveAccountExt collectors.size:{}", thirdpartyAccountCityDOList.size());
+            logger.info("thirdpartyAccountCityDOList : {}",thirdpartyAccountCityDOList);
             if (thirdpartyAccountCityDOList != null && thirdpartyAccountCityDOList.size() > 0) {
                 accountCityDao.addAllData(thirdpartyAccountCityDOList);
             }
@@ -141,6 +142,7 @@ public class ThridPartyAcountEntity {
                         addressDO.setUpdateTime(currentTime);
                         return addressDO;
                     }).collect(Collectors.toList());
+            logger.info("addressDOList : {}",addressDOList);
             if (addressDOList != null && addressDOList.size() > 0) {
                 accountCompanyAddressDao.addAllData(addressDOList);
             }
@@ -160,6 +162,7 @@ public class ThridPartyAcountEntity {
                         companyDO.setUpdateTime(currentTime);
                         return companyDO;
                     }).collect(Collectors.toList());
+            logger.info("companyDOList: {}",companyDOList);
             if (companyDOList != null && companyDOList.size() > 0) {
                 accountCompanyDao.addAllData(companyDOList);
             }
@@ -179,6 +182,7 @@ public class ThridPartyAcountEntity {
                         departmentDO.setUpdateTime(currentTime);
                         return departmentDO;
                     }).collect(Collectors.toList());
+            logger.info("departmentDOList : {}",departmentDOList);
             if (departmentDOList != null && departmentDOList.size() > 0) {
                 departmentDao.addAllData(departmentDOList);
             }
