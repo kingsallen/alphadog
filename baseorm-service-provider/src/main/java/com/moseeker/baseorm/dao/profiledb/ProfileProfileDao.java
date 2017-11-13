@@ -501,7 +501,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
         Result<DictIndustryRecord> industries = create.selectFrom(DictIndustry.DICT_INDUSTRY).fetch();
         if (profileRecord != null) {
             logger.info("====================profileRecord==============");
-            logger.info(JSONObject.toJSONString(profileRecord));
+            logger.info(profileRecord.toString());
             Timestamp now = new Timestamp(System.currentTimeMillis());
             profileRecord.setCreateTime(now);
             create.attach(profileRecord);
@@ -513,7 +513,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
             java.util.Date birthDay = null;
             if (basicRecord != null) {
                 logger.info("====================basicRecord==============");
-                logger.info(JSONObject.toJSONString(basicRecord));
+                logger.info(basicRecord.toString());
                 basicRecord.setProfileId(profileRecord.getId());
                 basicRecord.setCreateTime(now);
                 create.attach(basicRecord);
@@ -598,7 +598,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
             }
             if (importRecord != null) {
                 logger.info("====================importRecord==============");
-                logger.info(JSONObject.toJSONString(importRecord));
+                logger.info(importRecord.toString());
                 create.attach(importRecord);
                 importRecord.setCreateTime(now);
                 importRecord.setProfileId(profileRecord.getId());
@@ -680,7 +680,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
             }
             if (otherRecord != null) {
                 logger.info("====================otherRecord==============");
-                logger.info(JSONObject.toJSONString(otherRecord));
+                logger.info(otherRecord.toString());
                 create.attach(otherRecord);
                 otherRecord.setCreateTime(now);
                 otherRecord.setProfileId(profileRecord.getId());

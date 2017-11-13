@@ -114,14 +114,30 @@ public class ProfileUtils {
 						if (company != null) {
 							HrCompanyRecord hrCompany = new HrCompanyRecord();
 							if (company.get("company_name") != null) {
-								hrCompany.setName(BeanUtils.converToString(company.get("company_name")));
+							    String companyName=BeanUtils.converToString(company.get("company_name"));
+							    if(StringUtils.isNotBlank(companyName)&&companyName.length()>ProfileAttributeLengthLimit.CompanyName.getLengthLimit()){
+                                    hrCompany.setName(this.handlerOutLimitString(companyName,ProfileAttributeLengthLimit.CompanyName.getLengthLimit(),DEFAULT_FLAG));
+                                }
+
 							} else if (company.get("companyName") != null) {
-                                hrCompany.setName(BeanUtils.converToString(company.get("companyName")));
+                                String companyName=BeanUtils.converToString(company.get("companyName"));
+                                if(StringUtils.isNotBlank(companyName)&&companyName.length()>ProfileAttributeLengthLimit.CompanyName.getLengthLimit()){
+                                    hrCompany.setName(this.handlerOutLimitString(companyName,ProfileAttributeLengthLimit.CompanyName.getLengthLimit(),DEFAULT_FLAG));
+                                }
+//                                hrCompany.setName(BeanUtils.converToString(company.get("companyName")));
                             }
 							if (company.get("company_industry") != null) {
-								hrCompany.setIndustry(BeanUtils.converToString(company.get("company_industry")));
+							    String companyIndustry=BeanUtils.converToString(company.get("company_industry"));
+							    if(StringUtils.isNotBlank(companyIndustry)&&companyIndustry.length()>ProfileAttributeLengthLimit.CompanyIndustry.getLengthLimit()){
+							        hrCompany.setIndustry(this.handlerOutLimitString(companyIndustry,ProfileAttributeLengthLimit.CompanyIndustry.getLengthLimit(),DEFAULT_FLAG));
+                                }
+//								hrCompany.setIndustry(BeanUtils.converToString(company.get("company_industry")));
 							} else if (company.get("companyIndustry") != null) {
-                                hrCompany.setIndustry(BeanUtils.converToString(company.get("companyIndustry")));
+                                String companyIndustry=BeanUtils.converToString(company.get("companyIndustry"));
+                                if(StringUtils.isNotBlank(companyIndustry)&&companyIndustry.length()>ProfileAttributeLengthLimit.CompanyIndustry.getLengthLimit()){
+                                    hrCompany.setIndustry(this.handlerOutLimitString(companyIndustry,ProfileAttributeLengthLimit.CompanyIndustry.getLengthLimit(),DEFAULT_FLAG));
+                                }
+//                                hrCompany.setIndustry(BeanUtils.converToString(company.get("companyIndustry")));
                             }
 							if (company.get("company_introduction") != null) {
 								hrCompany

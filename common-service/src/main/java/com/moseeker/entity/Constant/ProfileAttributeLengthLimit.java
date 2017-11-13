@@ -17,6 +17,7 @@ public enum ProfileAttributeLengthLimit {
     , SkillName(128, "技能名称")
     , WorkExpIndustryName(100, "行业名称"), WorkExpDepartmentName(100, "部门名称"), WorkExpPositionName(100, "职能字典名称"), WorkExpDescription(900, "工作描述"), WorkExpCityName(50, "工作地点（城市）名称"), WorkExpReportTo(50, "汇报对象"), WorkExpReference(50, "证明人"), WorkExpResignReason(100, "离职原因"), WorkExpAchievement(1000, "主要业绩"), WorkExpJob(100, "所处职位")
     , WorksName(256, "作品名称"), WorksURL(1000, "作品网址"), WorksCover(1000, "作品封面"), WorksDescription(900, "作品描述")
+    ,CompanyName(999,"公司名称"),CompanyIndustry(100,"公司行业")
     ;
 
     private int lengthLimit;
