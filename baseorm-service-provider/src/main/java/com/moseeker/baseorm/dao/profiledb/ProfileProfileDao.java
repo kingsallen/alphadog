@@ -563,7 +563,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
             }
             if (credentialsRecords != null && credentialsRecords.size() > 0) {
                 logger.info("====================credentialsRecords==============");
-                logger.info(JSONObject.toJSONString(credentialsRecords));
+                logger.info(credentialsRecords.toString());
                 credentialsRecords.forEach(credentialsRecord -> {
                     credentialsRecord.setProfileId(profileRecord.getId());
                     credentialsRecord.setCreateTime(now);
@@ -576,7 +576,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
             }
             if (educationRecords != null && educationRecords.size() > 0) {
                 logger.info("====================educationRecords==============");
-                logger.info(JSONObject.toJSONString(educationRecords));
+                logger.info(educationRecords.toString());
                 educationRecords.forEach(educationRecord -> {
                     educationRecord.setProfileId(profileRecord.getId());
                     educationRecord.setCreateTime(now);
