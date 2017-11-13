@@ -34,6 +34,7 @@ import java.util.Map;
 public class ProfileUtils {
 
 	protected Logger logger = LoggerFactory.getLogger(ProfileUtils.class);
+	private final static int DEFAULT_FLAG=0;
 
 	public List<ProfileWorksRecord> mapToWorksRecords(List<Map<String, Object>> works) {
 		List<ProfileWorksRecord> worksRecords = new ArrayList<>();
@@ -57,18 +58,36 @@ public class ProfileUtils {
 	private void subWorksMaxLimit(ProfileWorksRecord record) {
 		if(StringUtils.isNotBlank(record.getDescription())
 				&& record.getDescription().length() > ProfileAttributeLengthLimit.WorksDescription.getLengthLimit()) {
-			record.setDescription(record.getDescription()
-					.substring(0, ProfileAttributeLengthLimit.WorksDescription.getLengthLimit()));
+//			record.setDescription(record.getDescription().substring(0, ProfileAttributeLengthLimit.WorksDescription.getLengthLimit()));
+			record.setDescription(this.handlerOutLimitString(record.getDescription(),ProfileAttributeLengthLimit.WorksDescription.getLengthLimit(),DEFAULT_FLAG));
 		}
 		if (StringUtils.isNotBlank(record.getName()) && record.getName().length() > ProfileAttributeLengthLimit.WorksName.getLengthLimit()) {
-			record.setName(record.getName().substring(0, ProfileAttributeLengthLimit.WorksName.getLengthLimit()));
+//			record.setName(record.getName().substring(0, ProfileAttributeLengthLimit.WorksName.getLengthLimit()));
+			record.setName(this.handlerOutLimitString(record.getName(),ProfileAttributeLengthLimit.WorksName.getLengthLimit(),DEFAULT_FLAG));
 		}
 		if (StringUtils.isNotBlank(record.getUrl()) && record.getUrl().length() > ProfileAttributeLengthLimit.WorksURL.getLengthLimit()) {
-			record.setUrl(record.getUrl().substring(0, ProfileAttributeLengthLimit.WorksURL.getLengthLimit()));
+//			record.setUrl(record.getUrl().substring(0, ProfileAttributeLengthLimit.WorksURL.getLengthLimit()));
+			record.setUrl(this.handlerOutLimitString(record.getUrl(),ProfileAttributeLengthLimit.WorksURL.getLengthLimit(),DEFAULT_FLAG));
 		}
 		if (StringUtils.isNotBlank(record.getCover()) && record.getCover().length() > ProfileAttributeLengthLimit.WorksCover.getLengthLimit()) {
-			record.setCover(record.getCover().substring(0, ProfileAttributeLengthLimit.WorksCover.getLengthLimit()));
+//			record.setCover(record.getCover().substring(0, ProfileAttributeLengthLimit.WorksCover.getLengthLimit()));
+			record.setCover(this.handlerOutLimitString(record.getCover(),ProfileAttributeLengthLimit.WorksCover.getLengthLimit(),DEFAULT_FLAG));
 		}
+	}
+	/*
+	  outLimitString  ----超出界限的字符串
+	  length ------- 最大长度限制
+	  flag--------扩展字段，用于支持其他特殊的情况
+	              0：是目前的使用，超出的部分取最大长度减3加上...
+	 */
+	private String handlerOutLimitString(String outLimitString,int length,int flag){
+		String symbol="";
+		if(flag==0){
+			symbol="...";
+			length=length-3;
+			outLimitString=outLimitString.substring(0,length)+symbol;
+		}
+		return outLimitString;
 	}
 
 	public List<ProfileWorkexpEntity> mapToWorkexpRecords(List<Map<String, Object>> workexps, int source) {
@@ -150,47 +169,45 @@ public class ProfileUtils {
 	 * @param record
 	 */
 	private void subWorkExpMaxLimit(ProfileWorkexpEntity record) {
-		if(StringUtils.isNotBlank(record.getDescription())
-				&& record.getDescription().length()
-				> ProfileAttributeLengthLimit.WorkExpDescription.getLengthLimit()) {
-			record.setDescription(record.getDescription()
-					.substring(0, ProfileAttributeLengthLimit.WorkExpDescription.getLengthLimit()));
+		if(StringUtils.isNotBlank(record.getDescription()) && record.getDescription().length() > ProfileAttributeLengthLimit.WorkExpDescription.getLengthLimit()) {
+//			record.setDescription(record.getDescription().substring(0, ProfileAttributeLengthLimit.WorkExpDescription.getLengthLimit()));
+			record.setDescription(this.handlerOutLimitString(record.getDescription(),ProfileAttributeLengthLimit.WorkExpDescription.getLengthLimit(),DEFAULT_FLAG));
 		}
-		if (StringUtils.isNotBlank(record.getJob())
-				&& record.getJob().length() > ProfileAttributeLengthLimit.WorkExpJob.getLengthLimit()) {
-			record.setJob(record.getJob()
-					.substring(0, ProfileAttributeLengthLimit.WorkExpJob.getLengthLimit()));
+		if (StringUtils.isNotBlank(record.getJob()) && record.getJob().length() > ProfileAttributeLengthLimit.WorkExpJob.getLengthLimit()) {
+//			record.setJob(record.getJob().substring(0, ProfileAttributeLengthLimit.WorkExpJob.getLengthLimit()));
+			record.setJob(this.handlerOutLimitString(record.getJob(),ProfileAttributeLengthLimit.WorkExpJob.getLengthLimit(),DEFAULT_FLAG));
 		}
-		if (StringUtils.isNotBlank(record.getIndustryName())
-				&& record.getIndustryName().length() > ProfileAttributeLengthLimit.WorkExpIndustryName.getLengthLimit()) {
-			record.setIndustryName(record.getIndustryName().substring(0, ProfileAttributeLengthLimit.WorkExpIndustryName.getLengthLimit()));
+		if (StringUtils.isNotBlank(record.getIndustryName()) && record.getIndustryName().length() > ProfileAttributeLengthLimit.WorkExpIndustryName.getLengthLimit()) {
+//			record.setIndustryName(record.getIndustryName().substring(0, ProfileAttributeLengthLimit.WorkExpIndustryName.getLengthLimit()));
+			record.setIndustryName(this.handlerOutLimitString(record.getIndustryName(),ProfileAttributeLengthLimit.WorkExpIndustryName.getLengthLimit(),DEFAULT_FLAG));
 		}
-		if (StringUtils.isNotBlank(record.getDepartmentName())
-				&& record.getDepartmentName().length() > ProfileAttributeLengthLimit.WorkExpDepartmentName.getLengthLimit()) {
-			record.setDepartmentName(record.getDepartmentName().substring(0, ProfileAttributeLengthLimit.WorkExpDepartmentName.getLengthLimit()));
+		if (StringUtils.isNotBlank(record.getDepartmentName()) && record.getDepartmentName().length() > ProfileAttributeLengthLimit.WorkExpDepartmentName.getLengthLimit()) {
+//			record.setDepartmentName(record.getDepartmentName().substring(0, ProfileAttributeLengthLimit.WorkExpDepartmentName.getLengthLimit()));
+			record.setDepartmentName(this.handlerOutLimitString(record.getDepartmentName(),ProfileAttributeLengthLimit.WorkExpDepartmentName.getLengthLimit(),DEFAULT_FLAG));
 		}
-		if (StringUtils.isNotBlank(record.getPositionName())
-				&& record.getPositionName().length() > ProfileAttributeLengthLimit.WorkExpPositionName.getLengthLimit()) {
-			record.setPositionName(record.getPositionName().substring(0, ProfileAttributeLengthLimit.WorkExpPositionName.getLengthLimit()));
+		if (StringUtils.isNotBlank(record.getPositionName()) && record.getPositionName().length() > ProfileAttributeLengthLimit.WorkExpPositionName.getLengthLimit()) {
+//			record.setPositionName(record.getPositionName().substring(0, ProfileAttributeLengthLimit.WorkExpPositionName.getLengthLimit()));
+			record.setPositionName(this.handlerOutLimitString(record.getPositionName(),ProfileAttributeLengthLimit.WorkExpPositionName.getLengthLimit(),DEFAULT_FLAG));
 		}
-		if (StringUtils.isNotBlank(record.getCityName())
-				&& record.getCityName().length() > ProfileAttributeLengthLimit.WorkExpCityName.getLengthLimit()) {
-			record.setCityName(record.getCityName().substring(0, ProfileAttributeLengthLimit.WorkExpCityName.getLengthLimit()));
+		if (StringUtils.isNotBlank(record.getCityName()) && record.getCityName().length() > ProfileAttributeLengthLimit.WorkExpCityName.getLengthLimit()) {
+//			record.setCityName(record.getCityName().substring(0, ProfileAttributeLengthLimit.WorkExpCityName.getLengthLimit()));
+			record.setCityName(this.handlerOutLimitString(record.getCityName(),ProfileAttributeLengthLimit.WorkExpCityName.getLengthLimit(),DEFAULT_FLAG));
 		}
-		if (StringUtils.isNotBlank(record.getReportTo())
-				&& record.getReportTo().length() > ProfileAttributeLengthLimit.WorkExpReportTo.getLengthLimit()) {
-			record.setReportTo(record.getReportTo().substring(0, ProfileAttributeLengthLimit.WorkExpReportTo.getLengthLimit()));
+		if (StringUtils.isNotBlank(record.getReportTo()) && record.getReportTo().length() > ProfileAttributeLengthLimit.WorkExpReportTo.getLengthLimit()) {
+//			record.setReportTo(record.getReportTo().substring(0, ProfileAttributeLengthLimit.WorkExpReportTo.getLengthLimit()));
+			record.setReportTo(this.handlerOutLimitString(record.getReportTo(),ProfileAttributeLengthLimit.WorkExpReportTo.getLengthLimit(),DEFAULT_FLAG));
 		}
 		if (StringUtils.isNotBlank(record.getReference()) && record.getReference().length() > ProfileAttributeLengthLimit.WorkExpReference.getLengthLimit()) {
-			record.setReference(record.getReference().substring(0, ProfileAttributeLengthLimit.WorkExpReference.getLengthLimit()));
+//			record.setReference(record.getReference().substring(0, ProfileAttributeLengthLimit.WorkExpReference.getLengthLimit()));
+			record.setReference(this.handlerOutLimitString(record.getReference(),ProfileAttributeLengthLimit.WorkExpReference.getLengthLimit(),DEFAULT_FLAG));
 		}
-		if (StringUtils.isNotBlank(record.getResignReason())
-				&& record.getResignReason().length() > ProfileAttributeLengthLimit.WorkExpResignReason.getLengthLimit()) {
-			record.setResignReason(record.getResignReason().substring(0, ProfileAttributeLengthLimit.WorkExpResignReason.getLengthLimit()));
+		if (StringUtils.isNotBlank(record.getResignReason()) && record.getResignReason().length() > ProfileAttributeLengthLimit.WorkExpResignReason.getLengthLimit()) {
+//			record.setResignReason(record.getResignReason().substring(0, ProfileAttributeLengthLimit.WorkExpResignReason.getLengthLimit()));
+			record.setResignReason(this.handlerOutLimitString(record.getResignReason(),ProfileAttributeLengthLimit.WorkExpResignReason.getLengthLimit(),DEFAULT_FLAG));
 		}
-		if (StringUtils.isNotBlank(record.getAchievement())
-				&& record.getAchievement().length() > ProfileAttributeLengthLimit.WorkExpAchievement.getLengthLimit()) {
-			record.setAchievement(record.getAchievement().substring(0, ProfileAttributeLengthLimit.WorkExpAchievement.getLengthLimit()));
+		if (StringUtils.isNotBlank(record.getAchievement()) && record.getAchievement().length() > ProfileAttributeLengthLimit.WorkExpAchievement.getLengthLimit()) {
+//			record.setAchievement(record.getAchievement().substring(0, ProfileAttributeLengthLimit.WorkExpAchievement.getLengthLimit()));
+			record.setAchievement(this.handlerOutLimitString(record.getAchievement(),ProfileAttributeLengthLimit.WorkExpAchievement.getLengthLimit(),DEFAULT_FLAG));
 		}
 	}
 
@@ -201,11 +218,20 @@ public class ProfileUtils {
 				ProfileSkillRecord record = BeanUtils.MapToRecord(skill, ProfileSkillRecord.class);
 				ValidationMessage<ProfileSkillRecord> vm = ProfileValidation.verifySkill(record);
 				if (record != null && vm.isPass()) {
+					this.skillMaxLimit(record);
 					skillRecords.add(record);
 				}
 			});
 		}
 		return skillRecords;
+	}
+	/*
+	 处理技巧的超长字段
+	 */
+	private  void  skillMaxLimit(ProfileSkillRecord record){
+		if(StringUtils.isNotBlank(record.getName())&&record.getName().length()>ProfileAttributeLengthLimit.SkillName.getLengthLimit()){
+			record.setName(this.handlerOutLimitString(record.getName(),ProfileAttributeLengthLimit.SkillName.getLengthLimit(),DEFAULT_FLAG));
+		}
 	}
 
 	public List<ProfileProjectexpRecord> mapToProjectExpsRecords(List<Map<String, Object>> projectexps) {
@@ -239,24 +265,26 @@ public class ProfileUtils {
 	}
 
 	private void subProjectExpMaxLimit(ProfileProjectexpRecord record) {
-		if(StringUtils.isNotBlank(record.getDescription())
-				&& record.getDescription().length() > ProfileAttributeLengthLimit.ProjectExpDescription.getLengthLimit()) {
-			record.setDescription(record.getDescription().substring(0, ProfileAttributeLengthLimit.ProjectExpDescription.getLengthLimit()));
+		if(StringUtils.isNotBlank(record.getDescription()) && record.getDescription().length() > ProfileAttributeLengthLimit.ProjectExpDescription.getLengthLimit()) {
+//			record.setDescription(record.getDescription().substring(0, ProfileAttributeLengthLimit.ProjectExpDescription.getLengthLimit()));
+			record.setDescription(this.handlerOutLimitString(record.getDescription(),ProfileAttributeLengthLimit.ProjectExpDescription.getLengthLimit(),DEFAULT_FLAG));
 		}
-		if (StringUtils.isNotBlank(record.getResponsibility())
-				&& record.getResponsibility().length() > ProfileAttributeLengthLimit.ProjectExpResponsibility.getLengthLimit()) {
-			record.setResponsibility(record.getResponsibility().substring(0, ProfileAttributeLengthLimit.ProjectExpResponsibility.getLengthLimit())+"...");
+		if (StringUtils.isNotBlank(record.getResponsibility()) && record.getResponsibility().length() > ProfileAttributeLengthLimit.ProjectExpResponsibility.getLengthLimit()) {
+//			record.setResponsibility(record.getResponsibility().substring(0, ProfileAttributeLengthLimit.ProjectExpResponsibility.getLengthLimit())+"...");
+			record.setResponsibility(this.handlerOutLimitString(record.getResponsibility(),ProfileAttributeLengthLimit.ProjectExpResponsibility.getLengthLimit(),DEFAULT_FLAG));
 		}
 		if (StringUtils.isNotBlank(record.getName()) && record.getName().length() > ProfileAttributeLengthLimit.ProjectExpName.getLengthLimit()) {
-			record.setName(record.getName().substring(0, ProfileAttributeLengthLimit.ProjectExpName.getLengthLimit()));
+//			record.setName(record.getName().substring(0, ProfileAttributeLengthLimit.ProjectExpName.getLengthLimit()));
+			record.setName(this.handlerOutLimitString(record.getName(),ProfileAttributeLengthLimit.ProjectExpName.getLengthLimit(),DEFAULT_FLAG));
 		}
-		if (StringUtils.isNotBlank(record.getCompanyName())
-				&& record.getCompanyName().length() > ProfileAttributeLengthLimit.ProjectExpCompanyName.getLengthLimit()) {
-			record.setCompanyName(record.getCompanyName().substring(0, ProfileAttributeLengthLimit.ProjectExpCompanyName.getLengthLimit()));
+		if (StringUtils.isNotBlank(record.getCompanyName()) && record.getCompanyName().length() > ProfileAttributeLengthLimit.ProjectExpCompanyName.getLengthLimit()) {
+
+//			record.setCompanyName(record.getCompanyName().substring(0, ProfileAttributeLengthLimit.ProjectExpCompanyName.getLengthLimit()));
+			record.setCompanyName(this.handlerOutLimitString(record.getCompanyName(),ProfileAttributeLengthLimit.ProjectExpCompanyName.getLengthLimit(),DEFAULT_FLAG));
 		}
-		if (StringUtils.isNotBlank(record.getDevTool())
-				&& record.getDevTool().length() > ProfileAttributeLengthLimit.ProjectExpDevTool.getLengthLimit()) {
-			record.setDevTool(record.getDevTool().substring(0, ProfileAttributeLengthLimit.ProjectExpDevTool.getLengthLimit()));
+		if (StringUtils.isNotBlank(record.getDevTool()) && record.getDevTool().length() > ProfileAttributeLengthLimit.ProjectExpDevTool.getLengthLimit()) {
+//			record.setDevTool(record.getDevTool().substring(0, ProfileAttributeLengthLimit.ProjectExpDevTool.getLengthLimit()));
+			record.setDevTool(this.handlerOutLimitString(record.getDevTool(),ProfileAttributeLengthLimit.ProjectExpDevTool.getLengthLimit(),DEFAULT_FLAG));
 		}
 	}
 
@@ -278,6 +306,7 @@ public class ProfileUtils {
 		if (languages != null && languages.size() > 0) {
 			languages.forEach(language -> {
 				ProfileLanguageRecord record = BeanUtils.MapToRecord(language, ProfileLanguageRecord.class);
+				this.languageMaxLimit(record);
 				ValidationMessage<ProfileLanguageRecord> vm = ProfileValidation.verifyLanguage(record);
 				if (record != null && vm.isPass()) {
 					languageRecords.add(record);
@@ -285,6 +314,14 @@ public class ProfileUtils {
 			});
 		}
 		return languageRecords;
+	}
+	/*
+	    语言名称最大长度限制处理
+	 */
+	private void languageMaxLimit(ProfileLanguageRecord record){
+		if(StringUtils.isNotBlank(record.getName())&&record.getName().length()>ProfileAttributeLengthLimit.LanguageName.getLengthLimit()) {
+			record.setName(this.handlerOutLimitString(record.getName(), ProfileAttributeLengthLimit.LanguageName.getLengthLimit(), DEFAULT_FLAG));
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -303,9 +340,7 @@ public class ProfileUtils {
 							for (Map<String, Object> city : cities) {
 								ProfileIntentionCityRecord cityRecord = BeanUtils.MapToRecord(city,
 										ProfileIntentionCityRecord.class);
-								if (cityRecord != null && ((cityRecord.getCityCode() != null
-										&& cityRecord.getCityCode().intValue() != 0)
-										|| !StringUtils.isNullOrEmpty(cityRecord.getCityName()))) {
+								if (cityRecord != null && ((cityRecord.getCityCode() != null&& cityRecord.getCityCode().intValue() != 0)|| StringUtils.isNotBlank(cityRecord.getCityName()))) {
 									record.getCities().add(cityRecord);
 									break;
 								}
@@ -321,7 +356,7 @@ public class ProfileUtils {
 										ProfileIntentionPositionRecord.class);
 								if (positionRecord != null && ((positionRecord.getPositionCode() != null
 										&& positionRecord.getPositionCode().intValue() != 0)
-										|| !StringUtils.isNullOrEmpty(positionRecord.getPositionName()))) {
+										|| StringUtils.isNotBlank(positionRecord.getPositionName()))) {
 									record.getPositions().add(positionRecord);
 									break;
 								}
@@ -337,19 +372,56 @@ public class ProfileUtils {
 										ProfileIntentionIndustryRecord.class);
 								if (industryRecord != null && ((industryRecord.getIndustryCode() != null
 										&& industryRecord.getIndustryCode().intValue() != 0)
-										|| !StringUtils.isNullOrEmpty(industryRecord.getIndustryName()))) {
+										|| StringUtils.isNotBlank(industryRecord.getIndustryName()))) {
 									record.getIndustries().add(industryRecord);
 									break;
 								}
 							}
 						}
 					}
+					this.intentionMaxLimit(record);
 					intentionRecords.add(record);
 				}
 			});
 		}
 		return intentionRecords;
 	}
+
+
+	/*
+	  处理求职意向中的超出长度的字段
+	 */
+	private void intentionMaxLimit(IntentionRecord record){
+		if(StringUtils.isNotBlank(record.getTag())&&record.getTag().length()>ProfileAttributeLengthLimit.IntentionTag.getLengthLimit()){
+			record.setTag(this.handlerOutLimitString(record.getTag(),ProfileAttributeLengthLimit.IntentionTag.getLengthLimit(),DEFAULT_FLAG));
+		}
+		if(record.getCities()!=null){
+			List<ProfileIntentionCityRecord> cityList=record.getCities();
+			for(ProfileIntentionCityRecord profileIntentionCityRecord:cityList){
+				if(StringUtils.isNotBlank(profileIntentionCityRecord.getCityName())&&profileIntentionCityRecord.getCityName().length()>ProfileAttributeLengthLimit.IntentionCityName.getLengthLimit()){
+					profileIntentionCityRecord.setCityName(this.handlerOutLimitString(profileIntentionCityRecord.getCityName(),ProfileAttributeLengthLimit.IntentionCityName.getLengthLimit(),DEFAULT_FLAG));
+				}
+			}
+		}
+
+		if(record.getIndustries()!=null){
+			List<ProfileIntentionIndustryRecord> industryList=record.getIndustries();
+			for(ProfileIntentionIndustryRecord industryRecord:industryList){
+				if(StringUtils.isNotBlank(industryRecord.getIndustryName())&&industryRecord.getIndustryName().length()>ProfileAttributeLengthLimit.IntentionIndustryName.getLengthLimit()){
+					industryRecord.setIndustryName(this.handlerOutLimitString(industryRecord.getIndustryName(),ProfileAttributeLengthLimit.IntentionIndustryName.getLengthLimit(),DEFAULT_FLAG));
+				}
+			}
+		}
+		if(record.getPositions()!=null){
+			List<ProfileIntentionPositionRecord> positionList=record.getPositions();
+			for(ProfileIntentionPositionRecord positionRecord:positionList){
+				if(StringUtils.isNotBlank(positionRecord.getPositionName())&&positionRecord.getPositionName().length()>ProfileAttributeLengthLimit.IntentionPositionName.getLengthLimit()){
+					positionRecord.setPositionName(this.handlerOutLimitString(positionRecord.getPositionName(),ProfileAttributeLengthLimit.IntentionPositionName.getLengthLimit(),DEFAULT_FLAG));
+				}
+			}
+		}
+	}
+
 
 	public ProfileImportRecord mapToImportRecord(Map<String, Object> importMap) {
 		ProfileImportRecord record = null;
@@ -369,9 +441,9 @@ public class ProfileUtils {
 			educations.forEach(education -> {
 				ProfileEducationRecord record = BeanUtils.MapToRecord(education, ProfileEducationRecord.class);
 				if (record != null) {
-					if(StringUtils.isNotNullOrEmpty(record.getDescription()) && record.getDescription().length() > Constant.DESCRIPTION_LENGTH) {
-						record.setDescription(record.getDescription().substring(0, Constant.DESCRIPTION_LENGTH));
-					}
+//					if(StringUtils.isNotBlank(record.getDescription()) && record.getDescription().length() > Constant.DESCRIPTION_LENGTH) {
+//						record.setDescription(record.getDescription().substring(0, Constant.DESCRIPTION_LENGTH));
+//					}
 					if (education.get("start_date") != null) {
 						record.setStart(BeanUtils.convertToSQLDate(education.get("start_date")));
 					} else if (education.get("startDate") != null) {
@@ -386,12 +458,33 @@ public class ProfileUtils {
 
 					ValidationMessage<ProfileEducationRecord> vm = ProfileValidation.verifyEducation(record);
 					if(vm.isPass()) {
+						this.EducationMaxLimit(record);
 						educationRecords.add(record);
 					}
 				}
 			});
 		}
 		return educationRecords;
+	}
+	/*
+	  处理教育经历的一些字段的最大长度限制
+	 */
+	private void EducationMaxLimit(ProfileEducationRecord record){
+		if(StringUtils.isNotBlank(record.getDescription())&&record.getDescription().length()>ProfileAttributeLengthLimit.EducationDescription.getLengthLimit()){
+			record.setDescription(this.handlerOutLimitString(record.getDescription(),ProfileAttributeLengthLimit.EducationDescription.getLengthLimit(),DEFAULT_FLAG));
+		}
+		if(StringUtils.isNotBlank(record.getCollegeName())&&record.getCollegeName().length()>ProfileAttributeLengthLimit.EducationCollegeName.getLengthLimit()){
+			record.setCollegeName(this.handlerOutLimitString(record.getCollegeName(),ProfileAttributeLengthLimit.EducationCollegeName.getLengthLimit(),DEFAULT_FLAG));
+		}
+		if(StringUtils.isNotBlank(record.getCollegeLogo())&&record.getCollegeLogo().length()>ProfileAttributeLengthLimit.EducationCollegeLogo.getLengthLimit()){
+			record.setCollegeLogo(this.handlerOutLimitString(record.getCollegeLogo(),ProfileAttributeLengthLimit.EducationCollegeLogo.getLengthLimit(),DEFAULT_FLAG));
+		}
+		if(StringUtils.isNotBlank(record.getMajorName())&&record.getMajorName().length()>ProfileAttributeLengthLimit.EducationMajorName.getLengthLimit()){
+			record.setMajorName(this.handlerOutLimitString(record.getMajorName(),ProfileAttributeLengthLimit.EducationMajorName.getLengthLimit(),DEFAULT_FLAG));
+		}
+		if(StringUtils.isNotBlank(record.getStudyAbroadCountry())&&record.getStudyAbroadCountry().length()>ProfileAttributeLengthLimit.EducationStudyAbroadCountry.getLengthLimit()){
+			record.setStudyAbroadCountry(this.handlerOutLimitString(record.getStudyAbroadCountry(),ProfileAttributeLengthLimit.EducationStudyAbroadCountry.getLengthLimit(),DEFAULT_FLAG));
+		}
 	}
 
 	public List<ProfileCredentialsRecord> mapToCredentialsRecords(List<Map<String, Object>> credentials) {
@@ -401,11 +494,33 @@ public class ProfileUtils {
 				ProfileCredentialsRecord record = BeanUtils.MapToRecord(credential, ProfileCredentialsRecord.class);
 				ValidationMessage<ProfileCredentialsRecord> vm = ProfileValidation.verifyCredential(record);
 				if (record != null && vm.isPass()) {
+					this.credentialMaxLimit(record);
 					credentialRecords.add(record);
 				}
 			});
 		}
 		return credentialRecords;
+	}
+
+	/*
+	 证书表超长字段处理
+	 */
+	private void credentialMaxLimit(ProfileCredentialsRecord record){
+		if(StringUtils.isNotBlank(record.getName())&&record.getName().length()>ProfileAttributeLengthLimit.CredentialName.getLengthLimit()){
+			record.setName(this.handlerOutLimitString(record.getName(),ProfileAttributeLengthLimit.CredentialName.getLengthLimit(),DEFAULT_FLAG));
+		}
+		if(StringUtils.isNotBlank(record.getCode())&&record.getCode().length()>ProfileAttributeLengthLimit.CredentialCode.getLengthLimit()){
+			record.setCode(this.handlerOutLimitString(record.getCode(),ProfileAttributeLengthLimit.CredentialCode.getLengthLimit(),DEFAULT_FLAG));
+		}
+		if(StringUtils.isNotBlank(record.getOrganization())&&record.getOrganization().length()>ProfileAttributeLengthLimit.CredentialOrganization.getLengthLimit()){
+			record.setOrganization(this.handlerOutLimitString(record.getOrganization(),ProfileAttributeLengthLimit.CredentialOrganization.getLengthLimit(),DEFAULT_FLAG));
+		}
+		if(StringUtils.isNotBlank(record.getScore())&&record.getScore().length()>ProfileAttributeLengthLimit.CredentialScore.getLengthLimit()){
+			record.setScore(this.handlerOutLimitString(record.getScore(),ProfileAttributeLengthLimit.CredentialScore.getLengthLimit(),DEFAULT_FLAG));
+		}
+		if(StringUtils.isNotBlank(record.getUrl())&&record.getUrl().length()>ProfileAttributeLengthLimit.CredentialURL.getLengthLimit()){
+			record.setUrl(this.handlerOutLimitString(record.getUrl(),ProfileAttributeLengthLimit.CredentialURL.getLengthLimit(),DEFAULT_FLAG));
+		}
 	}
 
 	public List<ProfileAwardsRecord> mapToAwardsRecords(List<Map<String, Object>> awards) {
@@ -414,14 +529,29 @@ public class ProfileUtils {
 			awards.forEach(award -> {
 				ProfileAwardsRecord record = BeanUtils.MapToRecord(award, ProfileAwardsRecord.class);
 				if (record != null) {
-					if(StringUtils.isNotNullOrEmpty(record.getDescription()) && record.getDescription().length() > Constant.DESCRIPTION_LENGTH) {
-						record.setDescription(record.getDescription().substring(0, Constant.DESCRIPTION_LENGTH));
-					}
+//					if(StringUtils.isNotNullOrEmpty(record.getDescription()) && record.getDescription().length() > Constant.DESCRIPTION_LENGTH) {
+//						record.setDescription(record.getDescription().substring(0, Constant.DESCRIPTION_LENGTH));
+//					}
+					this.awardsMaxLimit(record);
 					awardsRecords.add(record);
 				}
 			});
 		}
 		return awardsRecords;
+	}
+	/*
+	 处理获取奖项的部分中某些字段的最大长度
+	 */
+	private  void awardsMaxLimit(ProfileAwardsRecord record){
+		if(StringUtils.isNotBlank(record.getName())&&record.getName().length()>ProfileAttributeLengthLimit.AwardName.getLengthLimit()){
+			record.setName(this.handlerOutLimitString(record.getName(),ProfileAttributeLengthLimit.AwardName.getLengthLimit(),DEFAULT_FLAG));
+		}
+		if(StringUtils.isNotBlank(record.getDescription())&&record.getDescription().length()>ProfileAttributeLengthLimit.AwardDescription.getLengthLimit()){
+			record.setDescription(this.handlerOutLimitString(record.getDescription(),ProfileAttributeLengthLimit.AwardDescription.getLengthLimit(),DEFAULT_FLAG));
+		}
+		if(StringUtils.isNotBlank(record.getAwardWinningStatus())&&record.getAwardWinningStatus().length()>ProfileAttributeLengthLimit.AwardWinningStatus.getLengthLimit()){
+			record.setAwardWinningStatus(this.handlerOutLimitString(record.getAwardWinningStatus(),ProfileAttributeLengthLimit.AwardWinningStatus.getLengthLimit(),DEFAULT_FLAG));
+		}
 	}
 
 	public List<ProfileAttachmentRecord> mapToAttachmentRecords(List<Map<String, Object>> attachments) {
@@ -430,26 +560,71 @@ public class ProfileUtils {
 			attachments.forEach(attachment -> {
 				ProfileAttachmentRecord record = BeanUtils.MapToRecord(attachment, ProfileAttachmentRecord.class);
 				if (record != null) {
-					if(StringUtils.isNotNullOrEmpty(record.getDescription()) && record.getDescription().length() > Constant.DESCRIPTION_LENGTH) {
-						record.setDescription(record.getDescription().substring(0, Constant.DESCRIPTION_LENGTH));
-					}
+//					if(StringUtils.isNotNullOrEmpty(record.getDescription()) && record.getDescription().length() > Constant.DESCRIPTION_LENGTH) {
+//						record.setDescription(record.getDescription().substring(0, Constant.DESCRIPTION_LENGTH));
+//					}
+					this.attachmentMaxLimit(record);
 					attchmentRecords.add(record);
 				}
 			});
 		}
 		return attchmentRecords;
 	}
+	/*
+	 附件超长字段处理
+	 */
+	private void attachmentMaxLimit(ProfileAttachmentRecord record){
+		if(StringUtils.isNotBlank(record.getDescription())&&record.getDescription().length()>ProfileAttributeLengthLimit.AttachmentDescription.getLengthLimit()){
+			record.setDescription(this.handlerOutLimitString(record.getDescription(),ProfileAttributeLengthLimit.AttachmentDescription.getLengthLimit(),DEFAULT_FLAG));
+		}
+		if(StringUtils.isNotBlank(record.getPath())&&record.getPath().length()>ProfileAttributeLengthLimit.AttachmentPath.getLengthLimit()){
+			record.setPath(this.handlerOutLimitString(record.getPath(),ProfileAttributeLengthLimit.AttachmentPath.getLengthLimit(),DEFAULT_FLAG));
+		}
+		if(StringUtils.isNotBlank(record.getName())&&record.getName().length()>ProfileAttributeLengthLimit.AttachmentName.getLengthLimit()){
+			record.setName(this.handlerOutLimitString(record.getName(),ProfileAttributeLengthLimit.AttachmentName.getLengthLimit(),DEFAULT_FLAG));
+		}
+	}
 
 	public ProfileBasicRecord mapToBasicRecord(Map<String, Object> basic) {
 		ProfileBasicRecord record = null;
 		if (basic != null) {
 			record = BeanUtils.MapToRecord(basic, ProfileBasicRecord.class);
-			if(StringUtils.isNotNullOrEmpty(record.getSelfIntroduction()) && record.getSelfIntroduction().length() > Constant.DESCRIPTION_LENGTH) {
-				record.setSelfIntroduction(record.getSelfIntroduction().substring(0, Constant.DESCRIPTION_LENGTH));
-			}
+//			if(StringUtils.isNotNullOrEmpty(record.getSelfIntroduction()) && record.getSelfIntroduction().length() > Constant.DESCRIPTION_LENGTH) {
+//				record.setSelfIntroduction(record.getSelfIntroduction().substring(0, Constant.DESCRIPTION_LENGTH));
+//			}
+			this.basicMaxLimit(record);
 			return record;
 		}
 		return record;
+	}
+
+	/*
+	 处理basic中的字段
+	 , BasicName(100, "姓名"), BasicNationalityName(100, "国籍名称"), BasicCityName(50, "现居住地, 城市名称"), BasicWeiXin(50, "微信号")
+	 , BasicQQ(10, "QQ"), BasicMotto(50, "座右铭"), BasicSelfIntroduction(1000, "自我介绍")
+	 */
+	private void basicMaxLimit(ProfileBasicRecord record){
+		if(StringUtils.isNotBlank(record.getName())&&record.getName().length()>ProfileAttributeLengthLimit.BasicName.getLengthLimit()){
+			record.setName(this.handlerOutLimitString(record.getName(),ProfileAttributeLengthLimit.BasicName.getLengthLimit(),DEFAULT_FLAG));
+		}
+		if(StringUtils.isNotBlank(record.getNationalityName())&&record.getNationalityName().length()>ProfileAttributeLengthLimit.BasicNationalityName.getLengthLimit()){
+			record.setNationalityName(this.handlerOutLimitString(record.getNationalityName(),ProfileAttributeLengthLimit.BasicNationalityName.getLengthLimit(),DEFAULT_FLAG));
+		}
+		if(StringUtils.isNotBlank(record.getCityName())&&record.getCityName().length()>ProfileAttributeLengthLimit.BasicCityName.getLengthLimit()){
+			record.setCityName(this.handlerOutLimitString(record.getCityName(),ProfileAttributeLengthLimit.BasicCityName.getLengthLimit(),DEFAULT_FLAG));
+		}
+		if(StringUtils.isNotBlank(record.getWeixin())&&record.getWeixin().length()>ProfileAttributeLengthLimit.BasicWeiXin.getLengthLimit()){
+			record.setWeixin(this.handlerOutLimitString(record.getWeixin(),ProfileAttributeLengthLimit.BasicWeiXin.getLengthLimit(),DEFAULT_FLAG));
+		}
+		if(StringUtils.isNotBlank(record.getQq())&&record.getQq().length()>ProfileAttributeLengthLimit.BasicQQ.getLengthLimit()){
+			record.setQq(this.handlerOutLimitString(record.getQq(),ProfileAttributeLengthLimit.BasicQQ.getLengthLimit(),DEFAULT_FLAG));
+		}
+		if(StringUtils.isNotBlank(record.getMotto())&&record.getMotto().length()>ProfileAttributeLengthLimit.BasicMotto.getLengthLimit()){
+			record.setMotto(this.handlerOutLimitString(record.getMotto(),ProfileAttributeLengthLimit.BasicMotto.getLengthLimit(),DEFAULT_FLAG));
+		}
+		if(StringUtils.isNotBlank(record.getSelfIntroduction())&&record.getSelfIntroduction().length()>ProfileAttributeLengthLimit.BasicSelfIntroduction.getLengthLimit()){
+			record.setSelfIntroduction(this.handlerOutLimitString(record.getSelfIntroduction(),ProfileAttributeLengthLimit.BasicSelfIntroduction.getLengthLimit(),DEFAULT_FLAG));
+		}
 	}
 
 	public ProfileProfileRecord mapToProfileRecord(Map<String, Object> profile) {
@@ -646,7 +821,7 @@ public class ProfileUtils {
 						cityRecords.forEach(cityRecord -> {
 							Map<String, Object> cityMap = new HashMap<>();
 							cityMap.put("city_code", cityRecord.getCityCode().intValue());
-							if(StringUtils.isNullOrEmpty(cityRecord.getCityName())) {
+							if(StringUtils.isBlank(cityRecord.getCityName())) {
 								for(DictCityRecord dictCity : dictCities) {
 									if(cityRecord.getCityCode().intValue() == dictCity.getCode().intValue()) {
 										cityMap.put("city_name", dictCity.getName());
@@ -665,7 +840,7 @@ public class ProfileUtils {
 						industryRecords.forEach(record -> {
 							Map<String, Object> industryMap = new HashMap<>();
 							industryMap.put("industry_code", record.getIndustryCode().intValue());
-							if(StringUtils.isNullOrEmpty(record.getIndustryName())) {
+							if(StringUtils.isBlank(record.getIndustryName())) {
 								for(DictIndustryRecord dictIndustry : dictIndustries) {
 									if(dictIndustry.getCode().intValue() == record.getIndustryCode().intValue()) {
 										industryMap.put("industry_name", dictIndustry.getName());
@@ -683,7 +858,7 @@ public class ProfileUtils {
 						List<Map<String, Object>> positions = new ArrayList<>();
 						positionRecords.forEach(record -> {
 							Map<String, Object> positionMap = new HashMap<>();
-							if(StringUtils.isNullOrEmpty(record.getPositionName())) {
+							if(StringUtils.isBlank(record.getPositionName())) {
 								for(DictPositionRecord dictPosition : dictPositions) {
 									if(dictPosition.getCode().intValue() == record.getPositionCode().intValue()) {
 										positionMap.put("position_name", dictPosition.getName());
@@ -719,18 +894,18 @@ public class ProfileUtils {
 			if ((userRecord.getMobile() == null || userRecord.getMobile() == 0) && crawlerUser != null && crawlerUser.getMobile() != null) {
 				userRecord.setMobile(crawlerUser.getMobile());
 			}
-			if (StringUtils.isNullOrEmpty(userRecord.getName()) && crawlerUser != null && !StringUtils.isNullOrEmpty(crawlerUser.getName())) {
+			if (StringUtils.isBlank(userRecord.getName()) && crawlerUser != null && StringUtils.isNotBlank(crawlerUser.getName())) {
 				userRecord.setName(crawlerUser.getName());
 			}
-			if (StringUtils.isNullOrEmpty(userRecord.getHeadimg()) && crawlerUser != null && !StringUtils.isNullOrEmpty(crawlerUser.getHeadimg())) {
+			if (StringUtils.isBlank(userRecord.getHeadimg()) && crawlerUser != null && StringUtils.isNotBlank(crawlerUser.getHeadimg())) {
 				userRecord.setHeadimg(crawlerUser.getHeadimg());
 			}
-			if (StringUtils.isNullOrEmpty(userRecord.getEmail()) && crawlerUser != null && !StringUtils.isNullOrEmpty(crawlerUser.getEmail())) {
+			if (StringUtils.isBlank(userRecord.getEmail()) && crawlerUser != null && StringUtils.isNotBlank(crawlerUser.getEmail())) {
 				userRecord.setEmail(crawlerUser.getEmail());
 			}
 		}
 		if(userRecord != null && basicRecord != null) {
-			if (StringUtils.isNullOrEmpty(userRecord.getName()) && basicRecord != null && !StringUtils.isNullOrEmpty(basicRecord.getName())) {
+			if (StringUtils.isBlank(userRecord.getName()) && basicRecord != null && StringUtils.isNotBlank(basicRecord.getName())) {
 				userRecord.setName(basicRecord.getName());
 			}
 		}
