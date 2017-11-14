@@ -84,10 +84,6 @@ public class PositionServicesImpl implements Iface {
         return service.verifyCustomize(positionId);
     }
 
-    public PositionServicesImpl(Logger logger) {
-        this.logger = logger;
-    }
-
     /**
      * 根据职位Id获取当前职位信息
      */
@@ -467,6 +463,22 @@ public class PositionServicesImpl implements Iface {
             throw ExceptionUtils.convertException(e);
         }
 
+    }
+    /*
+      获取只能回阿香推送的职位，用于在微信端展示
+     */
+    @Override
+    public Response getPersonaRecomPositionList(int userId, int pageNum, int pageSize) throws TException {
+        try {
+            List<WechatPositionListData> result=service.getPersonaRecomPosition(userId,pageNum,pageSize);
+            if(StringUtils.isEmptyList(result)){
+                return  ResponseUtils.success("");
+            }
+            return  ResponseUtils.success(result);
+        }catch (Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
 
     }
 }
