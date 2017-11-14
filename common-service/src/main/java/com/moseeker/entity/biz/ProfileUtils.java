@@ -41,6 +41,7 @@ public class ProfileUtils {
 		if (works != null && works.size() > 0) {
 			works.forEach(work -> {
 				ProfileWorksRecord record = BeanUtils.MapToRecord(work, ProfileWorksRecord.class);
+
 				if (record != null) {
 					subWorksMaxLimit(record);
 
@@ -75,10 +76,10 @@ public class ProfileUtils {
 		}
 	}
 	/*
-	  outLimitString  ----超出界限的字符串
-	  length ------- 最大长度限制
-	  flag--------扩展字段，用于支持其他特殊的情况
-	              0：是目前的使用，超出的部分取最大长度减3加上...
+	  outLimitString  --------超出界限的字符串
+	  length          --------最大长度限制
+	  flag            --------扩展字段，用于支持其他特殊的情况
+	                  0：是目前的使用，超出的部分取最大长度减3加上...
 	 */
 	private String handlerOutLimitString(String outLimitString,int length,int flag){
 		String symbol="";
@@ -105,6 +106,9 @@ public class ProfileUtils {
 						record.setEnd(BeanUtils.convertToSQLDate(workexp.get("end_date")));
 					} else if (workexp.get("endDate") != null) {
                         record.setEnd(BeanUtils.convertToSQLDate(workexp.get("endDate")));
+                    }
+                    if(workexp.get("end_until_now")==null){
+                        record.setEndUntilNow((byte)0);
                     }
 					subWorkExpMaxLimit(record);
 
@@ -266,6 +270,9 @@ public class ProfileUtils {
 						record.setEnd(BeanUtils.convertToSQLDate(projectexp.get("end_date")));
 					} else if (projectexp.get("endDate") != null) {
                         record.setEnd(BeanUtils.convertToSQLDate(projectexp.get("endDate")));
+                    }
+                    if(projectexp.get("end_until_now")==null){
+                        record.setEndUntilNow((byte)0);
                     }
 
                     subProjectExpMaxLimit(record);
@@ -471,6 +478,9 @@ public class ProfileUtils {
 					} else if (education.get("endDate") != null) {
 						record.setEnd(BeanUtils.convertToSQLDate(education.get("endDate")));
 					}
+					if(education.get("end_until_now")==null){
+                        record.setEndUntilNow((byte)0);
+                    }
 
 					ValidationMessage<ProfileEducationRecord> vm = ProfileValidation.verifyEducation(record);
 					if(vm.isPass()) {
