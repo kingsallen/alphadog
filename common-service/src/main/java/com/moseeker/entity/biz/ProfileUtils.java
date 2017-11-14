@@ -75,11 +75,13 @@ public class ProfileUtils {
 			record.setCover(this.handlerOutLimitString(record.getCover(),ProfileAttributeLengthLimit.WorksCover.getLengthLimit(),DEFAULT_FLAG));
 		}
 	}
+
 	/*
-	  outLimitString  --------超出界限的字符串
-	  length          --------最大长度限制
-	  flag            --------扩展字段，用于支持其他特殊的情况
-	                  0：是目前的使用，超出的部分取最大长度减3加上...
+	    @author  zzt
+	    @param outLimitString  --------超出界限的字符串
+	    @param length          --------最大长度限制
+	    @param flag            --------扩展字段，用于支持其他特殊的情况  0：是目前的使用，超出的部分取最大长度减3加上...
+	    @return string
 	 */
 	private String handlerOutLimitString(String outLimitString,int length,int flag){
 		String symbol="";
@@ -248,6 +250,12 @@ public class ProfileUtils {
 	/*
 	 处理技巧的超长字段
 	 */
+
+    /*
+        @author  zzt
+        @param record
+        简历中掌握的技巧的名称超过长度的截取操作
+     */
 	private  void  skillMaxLimit(ProfileSkillRecord record){
 		if(StringUtils.isNotBlank(record.getName())&&record.getName().length()>ProfileAttributeLengthLimit.SkillName.getLengthLimit()){
 			record.setName(this.handlerOutLimitString(record.getName(),ProfileAttributeLengthLimit.SkillName.getLengthLimit(),DEFAULT_FLAG));
@@ -286,7 +294,11 @@ public class ProfileUtils {
 		}
 		return projectExpRecords;
 	}
-
+    /*
+           @author  zzt
+           @param record
+           简历中项目经历的中字段长度的截取操作
+        */
 	private void subProjectExpMaxLimit(ProfileProjectexpRecord record) {
 		if(StringUtils.isNotBlank(record.getDescription()) && record.getDescription().length() > ProfileAttributeLengthLimit.ProjectExpDescription.getLengthLimit()) {
 //			record.setDescription(record.getDescription().substring(0, ProfileAttributeLengthLimit.ProjectExpDescription.getLengthLimit()));
@@ -338,9 +350,11 @@ public class ProfileUtils {
 		}
 		return languageRecords;
 	}
-	/*
-	    语言名称最大长度限制处理
-	 */
+  /*
+       @author  zzt
+       @param record
+       语言名称最大长度限制处理
+    */
 	private void languageMaxLimit(ProfileLanguageRecord record){
 		if(StringUtils.isNotBlank(record.getName())&&record.getName().length()>ProfileAttributeLengthLimit.LanguageName.getLengthLimit()) {
 			record.setName(this.handlerOutLimitString(record.getName(), ProfileAttributeLengthLimit.LanguageName.getLengthLimit(), DEFAULT_FLAG));
@@ -411,8 +425,10 @@ public class ProfileUtils {
 	}
 
 
-	/*
-	  处理求职意向中的超出长度的字段
+    /*
+       @author  zzt
+       @param record  IntentionRecord
+       处理求职意向中的超出长度的字段
 	 */
 	private void intentionMaxLimit(IntentionRecord record){
 		if(StringUtils.isNotBlank(record.getTag())&&record.getTag().length()>ProfileAttributeLengthLimit.IntentionTag.getLengthLimit()){
@@ -493,6 +509,8 @@ public class ProfileUtils {
 		return educationRecords;
 	}
 	/*
+	   @author  zzt
+       @param record  ProfileEducationRecord
 	  处理教育经历的一些字段的最大长度限制
 	 */
 	private void EducationMaxLimit(ProfileEducationRecord record){
@@ -528,8 +546,11 @@ public class ProfileUtils {
 		return credentialRecords;
 	}
 
+
 	/*
-	 证书表超长字段处理
+	   @author  zzt
+       @param record  ProfileCredentialsRecord
+	   证书表超长字段处理
 	 */
 	private void credentialMaxLimit(ProfileCredentialsRecord record){
 		if(StringUtils.isNotBlank(record.getName())&&record.getName().length()>ProfileAttributeLengthLimit.CredentialName.getLengthLimit()){
@@ -565,8 +586,11 @@ public class ProfileUtils {
 		}
 		return awardsRecords;
 	}
-	/*
-	 处理获取奖项的部分中某些字段的最大长度
+
+    /*
+       @author  zzt
+       @param record  ProfileAwardsRecord
+       处理获取奖项的部分中某些字段的最大长度
 	 */
 	private  void awardsMaxLimit(ProfileAwardsRecord record){
 		if(StringUtils.isNotBlank(record.getName())&&record.getName().length()>ProfileAttributeLengthLimit.AwardName.getLengthLimit()){
@@ -596,8 +620,10 @@ public class ProfileUtils {
 		}
 		return attchmentRecords;
 	}
-	/*
-	 附件超长字段处理
+   /*
+       @author  zzt
+       @param record  ProfileAwardsRecord
+       附件超长字段处理
 	 */
 	private void attachmentMaxLimit(ProfileAttachmentRecord record){
 		if(StringUtils.isNotBlank(record.getDescription())&&record.getDescription().length()>ProfileAttributeLengthLimit.AttachmentDescription.getLengthLimit()){
@@ -624,10 +650,10 @@ public class ProfileUtils {
 		return record;
 	}
 
-	/*
-	 处理basic中的字段
-	 , BasicName(100, "姓名"), BasicNationalityName(100, "国籍名称"), BasicCityName(50, "现居住地, 城市名称"), BasicWeiXin(50, "微信号")
-	 , BasicQQ(10, "QQ"), BasicMotto(50, "座右铭"), BasicSelfIntroduction(1000, "自我介绍")
+   /*
+       @author  zzt
+       @param record  ProfileAwardsRecord
+       处理basic中的超长字段
 	 */
 	private void basicMaxLimit(ProfileBasicRecord record){
 		if(StringUtils.isNotBlank(record.getName())&&record.getName().length()>ProfileAttributeLengthLimit.BasicName.getLengthLimit()){
