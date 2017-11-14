@@ -221,4 +221,9 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
     public Response getProfileOther(String params) throws BIZException, TException {
         return profileService.getProfileOther(params);
     }
+
+    @Override
+    public Response otherFieldsCheck(int positionId, String fields) throws BIZException, TException {
+        return profileService.otherFieldsCheck(positionId, fields);
+    }
 }

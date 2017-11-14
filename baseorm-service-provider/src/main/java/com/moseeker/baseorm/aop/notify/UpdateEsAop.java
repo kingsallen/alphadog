@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 @Component
 @EnableAspectJAutoProxy(proxyTargetClass=true)
 public class UpdateEsAop {
-	
+
 	private Logger log = LoggerFactory.getLogger(getClass());
 	
 	/**
