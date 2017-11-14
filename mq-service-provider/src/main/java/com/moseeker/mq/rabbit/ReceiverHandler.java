@@ -86,7 +86,15 @@ public class ReceiverHandler {
             int userId=jsonObject.getIntValue("user_id");
             int companyId=jsonObject.getIntValue("company_id");
             int type=jsonObject.getIntValue("type");
-            int templateId=jsonObject.getIntValue("template_id");
+            int templateId;
+            switch (type) {
+                case 1: templateId = 57; break;
+                case 2: templateId = 59; break;
+                case 3: templateId = 60; break;
+                case 4: templateId = 59; break;
+                default: templateId = 0;
+            }
+            //int templateId=jsonObject.getIntValue("template_id");
             String url=jsonObject.getString("url");
             String jobName=jsonObject.getString("job_name");
             String companyName=jsonObject.getString("company_name");

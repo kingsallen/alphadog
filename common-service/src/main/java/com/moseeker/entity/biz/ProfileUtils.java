@@ -20,6 +20,7 @@ import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.Pagination;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.entity.Constant.ProfileAttributeLengthLimit;
 import org.joda.time.field.ImpreciseDateTimeField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,8 +68,16 @@ public class ProfileUtils {
 					} else if (workexp.get("endDate") != null) {
                         record.setEnd(BeanUtils.convertToSQLDate(workexp.get("endDate")));
                     }
-					if(StringUtils.isNotNullOrEmpty(record.getDescription()) && record.getDescription().length() > Constant.DESCRIPTION_LENGTH) {
-						record.setDescription(record.getDescription().substring(0, Constant.DESCRIPTION_LENGTH));
+					if(StringUtils.isNotNullOrEmpty(record.getDescription())
+							&& record.getDescription().length()
+							> ProfileAttributeLengthLimit.WorkExpDescriptionLengthLimit.getLengthLimit()) {
+						record.setDescription(record.getDescription()
+								.substring(0, ProfileAttributeLengthLimit.WorkExpDescriptionLengthLimit.getLengthLimit()));
+					}
+					if (org.apache.commons.lang.StringUtils.isNotBlank(record.getJob())
+							&& record.getJob().length() > ProfileAttributeLengthLimit.WorkExpJobLengthLimit.getLengthLimit()) {
+						record.setJob(record.getJob()
+								.substring(0, ProfileAttributeLengthLimit.WorkExpJobLengthLimit.getLengthLimit()));
 					}
 					if (workexp.get("company") != null) {
 						@SuppressWarnings("unchecked")

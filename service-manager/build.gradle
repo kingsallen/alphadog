@@ -58,8 +58,6 @@ task copyJars(type: Copy) {
   into 'build/libs' // 目标位置
 }
 
-
-
 war {
     dependsOn copyEnvResources
 }
