@@ -7,6 +7,7 @@ import com.moseeker.baseorm.dao.hrdb.HrEmployeeCertConfDao;
 import com.moseeker.baseorm.dao.hrdb.HrEmployeeCustomFieldsDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
+import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
@@ -82,6 +83,9 @@ public class EmployeeService {
 
     @Autowired
     private HrWxWechatDao wxWechatDao;
+
+    @Autowired
+    private UserUserDao userDao;
 
     public EmployeeResponse getEmployee(int userId, int companyId) throws TException {
         log.info("getEmployee param: userId={} , companyId={}", userId, companyId);
@@ -313,19 +317,23 @@ public class EmployeeService {
                Map<Integer, UserEmployeeDO> employeeDOMap = new HashMap<>();
                employeeDOMap.putAll(employeeDao.getDatas(query.buildQuery()).stream().filter(m -> m != null && m.getId() > 0).collect(Collectors.toMap(k -> k.getId(), v -> v)));
                List<Integer> userIds = employeeDOMap.values().stream().map(m -> m.getSysuserId()).collect(Collectors.toList());
+               // 用户头像获取，获取顺序 user_user.headimg > user_wx_user.headimgurl > ""(默认头像)
                query.clear();
                query.where(new Condition("company_id", employeeEntity.getCompanyIds(companyId), ValueOp.IN));
                List<Integer> wechatIds = wxWechatDao.getDatas(query.buildQuery()).stream().filter(m -> m != null && m.getId() > 0).map(m -> m.getId()).collect(Collectors.toList());
                query.clear();
                query.where(new Condition("sysuser_id", userIds, ValueOp.IN)).and(new Condition("wechat_id", wechatIds, ValueOp.IN));
-               Map<Integer, String> userWxUserMap = wxUserDao.getDatas(query.buildQuery()).stream().filter(m -> m != null && m.getSysuserId() > 0 && m.getHeadimgurl() != null).collect(Collectors.toMap(k -> k.getSysuserId(), v -> v.getHeadimgurl(), (newKey, oldKey) -> newKey));
+               Map<Integer, String> wxUserHeadimg = wxUserDao.getDatas(query.buildQuery()).stream().filter(m -> m != null && m.getSysuserId() > 0 && m.getHeadimgurl() != null).collect(Collectors.toMap(k -> k.getSysuserId(), v -> v.getHeadimgurl(), (newKey, oldKey) -> newKey));
+               query.clear();
+               query.where(new Condition("id", userIds, ValueOp.IN));
+               Map<Integer, String> userHeadimg = userDao.getDatas(query.buildQuery()).stream().filter(f -> StringUtils.isNullOrEmpty(f.getHeadimg())).map(m -> m.setHeadimg(wxUserHeadimg.getOrDefault(m.getId(),""))).collect(Collectors.toMap(k -> k.getId(), v -> v.getHeadimg(), (newKey, oldKey) -> newKey));
                map.entrySet().stream().forEach(e -> {
                    EmployeeAward employeeAward = new EmployeeAward();
                    JSONObject value = e.getValue();
                    employeeAward.setEmployeeId(e.getKey());
                    employeeAward.setAwardTotal(value.getInteger("award"));
                    employeeAward.setName(employeeDOMap.get(e.getKey()) != null ? employeeDOMap.get(e.getKey()).getCname() : "");
-                   employeeAward.setHeadimgurl(userWxUserMap.getOrDefault(employeeDOMap.containsKey(e.getKey()) ? employeeDOMap.get(e.getKey()).getSysuserId() : 0, ""));
+                   employeeAward.setHeadimgurl(userHeadimg.get(employeeDOMap.get(e.getKey()).getSysuserId()));
                    employeeAward.setRanking(value.getIntValue("ranking"));
                    response.add(employeeAward);
                });
