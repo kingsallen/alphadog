@@ -5,21 +5,21 @@ package com.moseeker.profile.constants;
  */
 public class ConfigCustomMetaVO {
 
-    private int id; // optional
-    private java.lang.String fieldName; // optional
-    private java.lang.String fieldTitle; // optional
-    private int fieldType; // optional
-    private int priority; // optional
-    private byte isBasic; // optional
-    private int companyId; // optional
-    private byte required; // optional
-    private java.lang.String fieldDescription; // optional
-    private java.lang.String map; // optional
-    private int parentId; // optional
-    private java.lang.String validateRe; // optional
-    private int constantParentCode; // optional
-    private java.lang.String constantValue = ""; // optional
-    private String errorMsg = "";
+    public int id; // optional
+    public java.lang.String fieldName; // optional
+    public java.lang.String fieldTitle; // optional
+    public int fieldType; // optional
+    public int priority; // optional
+    public byte isBasic; // optional
+    public int companyId; // optional
+    public byte required; // optional
+    public java.lang.String fieldDescription; // optional
+    public java.lang.String map; // optional
+    public int parentId; // optional
+    public java.lang.String validateRe; // optional
+    public int constantParentCode; // optional
+    public java.lang.String constantValue = ""; // optional
+    public String errorMsg = "";
 
 
     public int getId() {
