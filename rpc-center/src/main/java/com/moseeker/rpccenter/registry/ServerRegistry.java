@@ -132,7 +132,9 @@ public class ServerRegistry {
      */
     private void buildPath(String serverName) throws RegisterException {
 
-        data.setService(serverName);
+        ServerData dataCopy = data.copy();
+        dataCopy.setService(serverName);
+
         StringBuffer parentPath = new StringBuffer();
         parentPath.append(config.getZkSeparator()).append(serverName).append(config.getZkSeparator())
                 .append(config.getServers());
@@ -140,7 +142,7 @@ public class ServerRegistry {
         StringBuffer serverPath = new StringBuffer();
         serverPath.append(config.getZkSeparator()).append(serverName).append(config.getZkSeparator())
                 .append(config.getServers()).append(config.getZkSeparator())
-                .append(data.getIp()).append(":").append(data.getPort());
+                .append(dataCopy.getIp()).append(":").append(dataCopy.getPort());
         try {
             if(client.checkExists().forPath(parentPath.toString()) == null) {
                 try {
@@ -153,17 +155,17 @@ public class ServerRegistry {
 
             if(client.checkExists().forPath(serverPath.toString()) == null) {
                 try {
-                    client.create().withMode(CreateMode.EPHEMERAL).forPath(serverPath.toString(), JSON.toJSONString(data).getBytes(Constants.UTF8));
+                    client.create().withMode(CreateMode.EPHEMERAL).forPath(serverPath.toString(), JSON.toJSONString(dataCopy).getBytes(Constants.UTF8));
                 } catch (Exception e) {
                     client.inTransaction()
                         .delete().forPath(serverPath.toString())
-                        .and().create().forPath(serverPath.toString(), JSON.toJSONString(data).getBytes(Constants.UTF8))
+                        .and().create().forPath(serverPath.toString(), JSON.toJSONString(dataCopy).getBytes(Constants.UTF8))
                         .and().commit();
                 }
             } else {
                 client.inTransaction()
                     .delete().forPath(serverPath.toString())
-                    .and().create().forPath(serverPath.toString(), JSON.toJSONString(data).getBytes(Constants.UTF8))
+                    .and().create().forPath(serverPath.toString(), JSON.toJSONString(dataCopy).getBytes(Constants.UTF8))
                     .and().commit();
             }
 
