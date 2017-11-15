@@ -11,7 +11,7 @@ import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.query.Query;
-import com.moseeker.profile.constants.ConfigCustomMetaVO;
+import com.moseeker.thrift.gen.config.ConfigCustomMetaVO;
 import com.moseeker.profile.service.impl.ProfileService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;

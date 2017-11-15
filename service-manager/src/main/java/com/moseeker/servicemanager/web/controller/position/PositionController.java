@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -770,4 +771,26 @@ public class PositionController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
+    /*
+     * 获取职位自定义字段信息
+     */
+    @RequestMapping(value = "/position/cv/conf", method = RequestMethod.GET)
+    @ResponseBody
+    public String positionCvConf(HttpServletRequest request, HttpServletResponse response){
+        try{
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int positionId = params.getInt("positionId", 0);
+            if(positionId == 0){
+                return ResponseLogNotification.fail(request, "positionId不能为空");
+            }
+            Response result = positonServices.positionCvConf(positionId);
+           return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+
 }

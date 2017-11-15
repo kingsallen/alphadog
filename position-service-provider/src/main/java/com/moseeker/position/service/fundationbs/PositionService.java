@@ -3,6 +3,7 @@ package com.moseeker.position.service.fundationbs;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.PropertyFilter;
 import com.alibaba.fastjson.serializer.ValueFilter;
 import com.moseeker.baseorm.dao.campaigndb.CampaignPersonaRecomDao;
 import com.moseeker.baseorm.dao.dictdb.*;
@@ -46,12 +47,15 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
+import com.moseeker.thrift.gen.config.ConfigCustomMetaVO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
+import com.moseeker.thrift.gen.dao.struct.dictdb.DictConstantDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobOccupationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.position.struct.*;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
+import org.apache.log4j.spi.LoggerRepository;
 import org.apache.thrift.TException;
 import org.jooq.Field;
 import org.slf4j.Logger;
@@ -123,6 +127,9 @@ public class PositionService {
     private PositionEntity positionEntity;
     @Autowired
     private CampaignPersonaRecomDao campaignPersonaRecomDao;
+
+    @Autowired
+    private HrAppCvConfDao hrAppCvConfDao;
 
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
@@ -1952,6 +1959,38 @@ public class PositionService {
                 logger.error(e.getMessage(), e);
             }
         }
+    }
+
+    public Response positionCvConf(int positionId) {
+        int appCvConfId = positionEntity.getAppCvConfigIdByPosition(positionId);
+        if (appCvConfId != 0) {
+            Query.QueryBuilder query = new Query.QueryBuilder();
+            query.where("id", appCvConfId);
+            HrAppCvConfDO hrAppCvConfDO = hrAppCvConfDao.getData(query.buildQuery());
+            if (hrAppCvConfDO != null && StringUtils.isNotNullOrEmpty(hrAppCvConfDO.getFieldValue())) {
+                List<ConfigCustomMetaVO> configCustomMetaVOList = JSONArray.parseArray(hrAppCvConfDO.getFieldValue()).getJSONObject(0).getJSONArray("fields").stream().
+                        map(m -> JSONObject.parseObject(String.valueOf(m), ConfigCustomMetaVO.class)).collect(Collectors.toList());
+                configCustomMetaVOList.stream().filter(f -> f.getConstantParentCode() != 0).forEach(e -> {
+                    query.clear();
+                    query.where("parent_code", e.getConstantParentCode());
+                    List<DictConstantDO> dictConstantDO = dictConstantDao.getDatas(query.buildQuery());
+                    String dictconstantValue = JSON.toJSONString(dictConstantDO, new PropertyFilter() {
+                                @Override
+                                public boolean apply(Object object, String name, Object value) {
+                                    if ("code".equals(name) || "name".equals(name)){
+                                        return true;
+                                    }
+                                    return false;
+                                }
+                            }
+                    );
+                    e.setConstantValue(dictconstantValue);
+                });
+                return ResponseUtils.success(configCustomMetaVOList);
+            }
+        }
+        logger.error("自定义配置为空，positionId:{}, appCvConfId:{}", positionId, appCvConfId);
+        return ResponseUtils.fail(1,"自定义配置为空");
     }
 
 
