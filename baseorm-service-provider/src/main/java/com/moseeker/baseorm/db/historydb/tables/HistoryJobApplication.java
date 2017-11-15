@@ -202,6 +202,7 @@ public class HistoryJobApplication extends TableImpl<HistoryJobApplicationRecord
     /**
      * Rename this table
      */
+
     public HistoryJobApplication rename(String name) {
         return new HistoryJobApplication(name, null);
     }

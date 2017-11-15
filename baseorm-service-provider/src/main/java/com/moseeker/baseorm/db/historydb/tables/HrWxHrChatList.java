@@ -156,6 +156,7 @@ public class HrWxHrChatList extends TableImpl<HrWxHrChatListRecord> {
     /**
      * Rename this table
      */
+
     public HrWxHrChatList rename(String name) {
         return new HrWxHrChatList(name, null);
     }

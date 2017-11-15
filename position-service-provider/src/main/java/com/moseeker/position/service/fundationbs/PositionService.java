@@ -1271,8 +1271,9 @@ public class PositionService {
     /*
        微信端获取个人画像推送职位
      */
-    public List<WechatPositionListData> getPersonaRecomPosition(int userId,int pageNum,int pageSize) throws Exception{
-        List<CampaignPersonaRecomRecord> list=this.getPersonaRecomPositionList(userId,pageNum,pageSize);
+    @CounterIface
+    public List<WechatPositionListData> getPersonaRecomPosition(int userId,int companyId,int pageNum,int pageSize) throws Exception{
+        List<CampaignPersonaRecomRecord> list=this.getPersonaRecomPositionList(userId,companyId,pageNum,pageSize);
         List<Integer> pids=this.getRecomPositionIdList(list);
         if(StringUtils.isEmptyList(pids)){
             return null;
@@ -1287,8 +1288,8 @@ public class PositionService {
     /*
       通过user_id 获取 CampaignPersonaRecomPojo 的list集合
      */
-    private  List<CampaignPersonaRecomRecord> getPersonaRecomPositionList(int userId, int pageNum, int pageSize){
-        Query query=new Query.QueryBuilder().where("user_id",userId).orderBy("create_time", Order.DESC).setPageNum(pageNum).setPageSize(pageSize).buildQuery();
+    private  List<CampaignPersonaRecomRecord> getPersonaRecomPositionList(int userId,int companyId, int pageNum, int pageSize){
+        Query query=new Query.QueryBuilder().where("user_id",userId).and("company_id",companyId).orderBy("create_time", Order.DESC).setPageNum(pageNum).setPageSize(pageSize).buildQuery();
         List<CampaignPersonaRecomRecord> list=campaignPersonaRecomDao.getRecords(query);
         return list;
     }

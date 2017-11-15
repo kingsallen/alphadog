@@ -141,6 +141,7 @@ public class CampaignHeadImage extends TableImpl<CampaignHeadImageRecord> {
     /**
      * Rename this table
      */
+
     public CampaignHeadImage rename(String name) {
         return new CampaignHeadImage(name, null);
     }
