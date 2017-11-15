@@ -500,8 +500,6 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
         Result<DictPositionRecord> positions = create.selectFrom(DictPosition.DICT_POSITION).fetch();
         Result<DictIndustryRecord> industries = create.selectFrom(DictIndustry.DICT_INDUSTRY).fetch();
         if (profileRecord != null) {
-            logger.info("====================profileRecord==============");
-            logger.info(profileRecord.toString());
             Timestamp now = new Timestamp(System.currentTimeMillis());
             profileRecord.setCreateTime(now);
             create.attach(profileRecord);
@@ -512,8 +510,6 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
             completenessRecord.setProfileId(profileRecord.getId());
             java.util.Date birthDay = null;
             if (basicRecord != null) {
-                logger.info("====================basicRecord==============");
-                logger.info(basicRecord.toString());
                 basicRecord.setProfileId(profileRecord.getId());
                 basicRecord.setCreateTime(now);
                 create.attach(basicRecord);
@@ -539,8 +535,6 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                 completenessRecord.setProfileBasic(basicCompleteness);
             }
             if (attachmentRecords != null && attachmentRecords.size() > 0) {
-                logger.info("====================attachmentRecords==============");
-                logger.info(attachmentRecords.toString());
                 attachmentRecords.forEach(attachmentRecord -> {
                     attachmentRecord.setProfileId(profileRecord.getId());
                     attachmentRecord.setCreateTime(now);
@@ -549,8 +543,6 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                 });
             }
             if (awardsRecords != null && awardsRecords.size() > 0) {
-                logger.info("====================awardsRecords==============");
-                logger.info(awardsRecords.toString());
                 awardsRecords.forEach(awardsRecord -> {
                     awardsRecord.setProfileId(profileRecord.getId());
                     awardsRecord.setCreateTime(now);
@@ -562,8 +554,6 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                 completenessRecord.setProfileAwards(awardCompleteness);
             }
             if (credentialsRecords != null && credentialsRecords.size() > 0) {
-                logger.info("====================credentialsRecords==============");
-                logger.info(credentialsRecords.toString());
                 credentialsRecords.forEach(credentialsRecord -> {
                     credentialsRecord.setProfileId(profileRecord.getId());
                     credentialsRecord.setCreateTime(now);
@@ -575,8 +565,6 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                 completenessRecord.setProfileCredentials(credentialsCompleteness);
             }
             if (educationRecords != null && educationRecords.size() > 0) {
-                logger.info("====================educationRecords==============");
-                logger.info(educationRecords.toString());
                 educationRecords.forEach(educationRecord -> {
                     educationRecord.setProfileId(profileRecord.getId());
                     educationRecord.setCreateTime(now);
@@ -597,8 +585,6 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                 completenessRecord.setProfileEducation(educationCompleteness);
             }
             if (importRecord != null) {
-                logger.info("====================importRecord==============");
-                logger.info(importRecord.toString());
                 create.attach(importRecord);
                 importRecord.setCreateTime(now);
                 importRecord.setProfileId(profileRecord.getId());
@@ -666,8 +652,6 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                 completenessRecord.setProfileIntention(intentionCompleteness);
             }
             if (languages != null && languages.size() > 0) {
-                logger.info("====================languages==============");
-                logger.info(languages.toString());
                 languages.forEach(language -> {
                     language.setProfileId(profileRecord.getId());
                     language.setCreateTime(now);
@@ -679,8 +663,6 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                 completenessRecord.setProfileLanguage(languageCompleteness);
             }
             if (otherRecord != null) {
-                logger.info("====================otherRecord==============");
-                logger.info(otherRecord.toString());
                 create.attach(otherRecord);
                 otherRecord.setCreateTime(now);
                 otherRecord.setProfileId(profileRecord.getId());
@@ -688,8 +670,6 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
             }
 
             if (skillRecords != null && skillRecords.size() > 0) {
-                logger.info("====================skillRecords==============");
-                logger.info(skillRecords.toString());
                 skillRecords.forEach(skill -> {
                     skill.setProfileId(profileRecord.getId());
                     skill.setCreateTime(now);
@@ -701,8 +681,6 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                 completenessRecord.setProfileSkill(skillCompleteness);
             }
             if (workexpRecords != null && workexpRecords.size() > 0) {
-                logger.info("====================workexpRecords==============");
-                logger.info(workexpRecords.toString());
                 List<HrCompanyRecord> companies = new ArrayList<>();
                 workexpRecords.forEach(workexp -> {
                     workexp.setProfileId(profileRecord.getId());
@@ -756,8 +734,6 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                 completenessRecord.setProfileWorkexp(workExpCompleteness);
             }
             if (projectExps != null && projectExps.size() > 0) {
-                logger.info("====================projectExps==============");
-                logger.info(projectExps.toString());
                 projectExps.forEach(projectExp -> {
                     projectExp.setProfileId(profileRecord.getId());
                     projectExp.setCreateTime(now);
@@ -769,8 +745,6 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                 completenessRecord.setProfileProjectexp(projectExpCompleteness);
             }
             if (worksRecords != null && worksRecords.size() > 0) {
-                logger.info("====================worksRecords==============");
-                logger.info(worksRecords.toString());
                 worksRecords.forEach(worksRecord -> {
                     worksRecord.setProfileId(profileRecord.getId());
                     worksRecord.setCreateTime(now);
@@ -816,12 +790,8 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     : completenessRecord.getProfileIntention());
 
             profileRecord.setCompleteness((byte) (totalComplementness));
-            logger.info("====================totalComplementness==============");
-            logger.info(JSONObject.toJSONString(totalComplementness));
             profileRecord.update();
             create.attach(completenessRecord);
-            logger.info("====================profileRecord==============");
-            logger.info(profileRecord.toString());
             completenessRecord.insert();
             if (userRecord != null) {
                 create.attach(userRecord);

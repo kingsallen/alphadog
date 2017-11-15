@@ -2,19 +2,17 @@
 //
 //import com.moseeker.baseorm.dao.dictdb.DictLiepinOccupationDao;
 //import com.moseeker.entity.PcRevisionEntity;
+//import com.moseeker.entity.PersonaRecomEntity;
 //import com.moseeker.thrift.gen.common.struct.Response;
-//import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignPcRecommendPositionDO;
-//
+//import com.moseeker.thrift.gen.position.struct.WechatPositionListData;
 //import org.apache.thrift.TException;
 //import org.junit.Test;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.test.context.ContextConfiguration;
 //import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 //import org.junit.runner.RunWith;
-//
 //import com.alibaba.fastjson.JSON;
 //import com.moseeker.position.config.AppConfig;
-//
 //import java.util.ArrayList;
 //import java.util.List;
 //import java.util.Map;
@@ -32,6 +30,10 @@
 //	private PcRevisionEntity pcRevisionEntity;
 //    @Autowired
 //	private DictLiepinOccupationDao dao;
+//    @Autowired
+//    private PositionService positionService;
+//    @Autowired
+//	private PersonaRecomEntity personaRecomEntity;
 //    //测试总接口
 //    @Test
 //    public void recommendPcPosition() throws TException{
@@ -50,28 +52,6 @@
 //		  list.add(82752);
 //		  list.add(82753);
 //		  list.add(82755);
-//		  list.add(82756);
-//		  list.add(82767);
-//		  list.add(82787);
-//		  list.add(82794);
-//		  list.add(82795);
-//		  list.add(82796);
-//		  list.add(82797);
-//		  list.add(82798);
-//		  list.add(82800);
-//		  list.add(82805);
-//		  list.add(82806);
-//		  list.add(82807);
-//		  list.add(82808);
-//		  list.add(82827);
-//		  list.add(82851);
-//		  list.add(82852);
-//		  list.add(82862);
-//		  list.add(82864);
-//		  list.add(82948);
-//		  list.add(82976);
-//		  list.add(82980);
-//		  list.add(82980);
 //		  int num=service.getPositionNum(list);
 //		  System.out.println("职位的数量是＝＝＝＝＝＝＝"+num);
 //	  }
@@ -124,6 +104,16 @@
 //	  public void testModulePosition() throws TException {
 //		  Map<String,Object> map=service.getModuleRecommendPosition(1,10,2);
 //		  System.out.println(map);
+//	  }
+//	  @Test
+//      public void testPersonaRecomPosition() throws Exception {
+//          List<WechatPositionListData> list=positionService.getPersonaRecomPosition(676252,1,20);
+//          System.out.println(list);
+//      }
+//      @Test
+//	  public void testRecomPosition() throws TException {
+//	  	 int result=personaRecomEntity.handlePersonaRecomData(676252,"159,160,161,162,163,164,165,166");
+//	  	 System.out.println("========================"+result+"================================");
 //	  }
 //
 //}
