@@ -215,4 +215,6 @@ service UserEmployeeService {
     common_struct.Response postPutUserEmployeeBatch(1:useraccounts_struct.UserEmployeeBatchForm batchForm);
 
     bool isEmployee(1: i32 userId, 2: i32 companyId) throws (1: common_struct.BIZException e);
+
+    common_struct.Response putUserEmployee(1:useraccounts_struct.UserEmployeeStruct userEmployee) throws (1: common_struct.BIZException e);
 }
