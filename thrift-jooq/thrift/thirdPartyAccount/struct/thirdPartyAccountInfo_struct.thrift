@@ -2,10 +2,7 @@ namespace java com.moseeker.thrift.gen.thirdpart.struct
 
 
 struct ThirdPartyAccountInfo{
-    3:optional list<ThirdPartyAccountInfoCity> city,
-    4:optional list<ThirdPartyAccountInfoAddress> address,
-    5:optional list<ThirdPartyAccountInfoCompany> company,
-    6:optional list<ThirdPartyAccountInfoDepartment> department
+    1:optional string json
 }
 
 
