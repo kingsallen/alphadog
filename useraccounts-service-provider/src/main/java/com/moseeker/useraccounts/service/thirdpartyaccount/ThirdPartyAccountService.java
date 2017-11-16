@@ -805,37 +805,10 @@ public class ThirdPartyAccountService {
                         newHrIds.add(hrId);
                     }
                 }
-
                 dispathTo(thirdPartyAccount, newHrIds);
 
-                //有新的绑定关系，肯定需要重新刷新
-                if (newHrIds.size() > 0) {
-                    newLastBinderId = newHrIds.get(newHrIds.size() - 1);
-                } else if (canceledHrIds.size() > 0) {
-                    int lastContain;
-                    for (lastContain = 0; lastContain < binders.size(); lastContain++) {
-                        if (canceledHrIds.contains(binders.get(lastContain).getHrAccountId())) {
-                            continue;
-                        } else {
-                            break;
-                        }
-                    }
-
-                    if (lastContain > 0 && lastContain < binders.size()) {
-                        newLastBinderId = binders.get(lastContain).getHrAccountId();
-                    }
-                }
             }
         }
-
-        //分配之前的最后一个绑定人
-        logger.info("分配之前的最后一个绑定人:{}", lastBinderId);
-        //分配之后的最后一个绑定人
-        logger.info("分配之后的最后一个绑定人:{}", newLastBinderId);
-        /*if (newLastBinderId > 0 && newLastBinderId != lastBinderId) {
-            autoRefreshThirdPartyAccount(thirdPartyAccount, newLastBinderId);
-        }*/
-
         return getThridAccount(thirdPartyAccount.getId());
     }
 }
