@@ -97,9 +97,10 @@ public class UserEmployeeServiceImpl {
                 List<UserEmployeeStruct> userEmployeeStructs = new ArrayList<>(result.size());
                 List<Map<String,Object>> list=new ArrayList<>();
                 for (UserEmployeeRecord uer : result) {
-                    userEmployeeStructs.add(uer.into(UserEmployeeStruct.class));
+//                    userEmployeeStructs.add(uer.into(UserEmployeeStruct.class));
                     String employees=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(uer.into(UserEmployeeStruct.class));
                     Map<String,Object> employeeData= JSON.parseObject(employees, Map.class);
+                    logger.info(JSON.toJSONString(employeeData));
                     list.add(employeeData);
                 }
                 return ResponseUtils.success(list);
