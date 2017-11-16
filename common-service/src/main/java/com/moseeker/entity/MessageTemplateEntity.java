@@ -2,10 +2,7 @@ package com.moseeker.entity;
 
 import com.moseeker.baseorm.dao.campaigndb.CampaignPersonaRecomDao;
 import com.moseeker.baseorm.dao.configdb.ConfigSysTemplateMessageLibraryDao;
-import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
-import com.moseeker.baseorm.dao.hrdb.HrEmployeePositionDao;
-import com.moseeker.baseorm.dao.hrdb.HrEmployeeSectionDao;
-import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
+import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileBasicDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
@@ -15,6 +12,7 @@ import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignPersonaRecom;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignPersonaRecomRecord;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
+import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.pojo.JobPositionPojo;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
@@ -22,10 +20,7 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.Constant.JobStatus;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysTemplateMessageLibraryDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeePositionDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeSectionDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileBasicDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
@@ -68,6 +63,8 @@ public class MessageTemplateEntity {
     private JobPositionDao positionDao;
     @Autowired
     private CampaignPersonaRecomDao campaignPersonaRecomDao;
+    @Autowired
+    private HrTeamDao hrTeamDao;
 
 
     public MessageTemplateNoticeStruct handlerTemplate(int userId,int companyId,int templateId,int type,String url,String jobName,String companyName){
@@ -225,17 +222,9 @@ public class MessageTemplateEntity {
      */
     private Map<String,MessageTplDataCol> handleDataProfileTemplate(int userId,int companyId){
         Map<String,MessageTplDataCol> colMap =new HashMap<>();
-        UserEmployeeDO DO=this.getUserEmployeeByUserIdAndCompanyId(userId,companyId);
+        UserEmployeeRecord DO=this.getUserEmployeeByUserIdAndCompanyId(userId,companyId);
         if(DO==null){
             return null;
-        }
-        HrEmployeePositionDO hrEmployeePositionDO=this.getHrEmployeePositionById(DO.getPositionId());
-        if(hrEmployeePositionDO==null){
-            hrEmployeePositionDO=new HrEmployeePositionDO();
-        }
-        HrEmployeeSectionDO hrEmployeeSectionDO=this.getHrEmployeeSectionbyId(DO.getSectionId());
-        if(hrEmployeeSectionDO==null){
-            hrEmployeeSectionDO=new HrEmployeeSectionDO();
         }
         MessageTplDataCol first=new MessageTplDataCol();
         first.setColor("#173177");
@@ -250,21 +239,33 @@ public class MessageTemplateEntity {
         keyword1.setColor("#173177");
         colMap.put("keyword1",keyword1);
         MessageTplDataCol keyword2=new MessageTplDataCol();
-        keyword2.setValue(hrEmployeePositionDO.getName());
+        keyword2.setValue(DO.getPosition());
         keyword2.setColor("#173177");
         colMap.put("keyword2",keyword2);
+        HrTeamDO   hrTeamDO=this.getTeamById(DO.getTeamId());
         MessageTplDataCol keyword3=new MessageTplDataCol();
-        keyword3.setValue(hrEmployeeSectionDO.getName());
+        keyword3.setValue(hrTeamDO.getName());
         keyword3.setColor("#173177");
         colMap.put("keyword3",keyword3);
         return colMap;
     }
     /*
+     根据team.id获取公司部门信息
+     */
+    private HrTeamDO getTeamById(int id){
+        if(id==0){
+            return new HrTeamDO();
+        }
+        Query query=new Query.QueryBuilder().where("id",id).and("disable",0).buildQuery();
+        HrTeamDO DO=hrTeamDao.getData(query);
+        return DO;
+    }
+    /*
       根据user_id和company_id查找雇员信息
      */
-    private UserEmployeeDO getUserEmployeeByUserIdAndCompanyId(int userId,int companyId){
+    private UserEmployeeRecord getUserEmployeeByUserIdAndCompanyId(int userId,int companyId){
         Query query=new Query.QueryBuilder().where("sysuser_id",userId).and("company_id",companyId).buildQuery();
-        UserEmployeeDO DO=userEmployeeDao.getData(query);
+        UserEmployeeRecord DO=userEmployeeDao.getRecord(query);
         return DO;
     }
     /*
