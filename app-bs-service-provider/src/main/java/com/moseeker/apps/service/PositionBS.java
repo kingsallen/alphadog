@@ -68,7 +68,7 @@ public class PositionBS {
     public Response synchronizePositionToThirdPartyPlatform(ThirdPartyPositionForm position) throws Exception {
         logger.info("synchronizePositionToThirdPartyPlatform:" + JSON.toJSONString(position));
         // 职位数据是否存在
-        JobPositionDO moseekerPosition = positionSyncHandler.getAvailableMoSeekerPosition(position.getPositionId());
+        JobPositionDO moseekerJobPosition = positionSyncHandler.getAvailableMoSeekerPosition(position.getPositionId());
 
         // 返回结果
         List<PositionSyncResultPojo> results = new ArrayList<>();
@@ -84,7 +84,7 @@ public class PositionBS {
 
         //这个循环检查需要同步的职位对应渠道下是否有绑定过的账号
         for (ThirdPartyPosition p : position.getChannels()) {
-            HrThirdPartyAccountDO avaliableAccount = positionSyncHandler.getAvailableThirdAccount(moseekerPosition.getPublisher(),p.getChannel());
+            HrThirdPartyAccountDO avaliableAccount = positionSyncHandler.getAvailableThirdAccount(moseekerJobPosition.getPublisher(),p.getChannel());
             if (avaliableAccount == null) {
                 results.add(positionSyncHandler.createFailResult(p.getChannel(),p.getThirdPartyAccountId(),ResultMessage.THIRD_PARTY_ACCOUNT_NOT_EXIST.getMessage()));
                 continue;
@@ -94,13 +94,13 @@ public class PositionBS {
             //根据是否使用公司地址来设置工作地址
 //            positionSyncHandler.setCompanyAddress(p, company);
             // 转成第三方渠道职位
-            ThirdPartyPositionForSynchronization pos = positionServices.changeOneToThirdPartyPosition(p, moseekerPosition);
+            ThirdPartyPositionForSynchronization pos = positionServices.changeOneToThirdPartyPosition(p, moseekerJobPosition);
 
             //创建并初始化
             ThirdPartyPositionForSynchronizationWithAccount positionSync = positionSyncHandler.createAndInitThirdAccount(pos,avaliableAccount);
 
             //初始化公司名称
-            positionSyncHandler.initCompanyName(positionSync,moseekerPosition.getPublisher());
+            positionSyncHandler.initCompanyName(positionSync,moseekerJobPosition.getPublisher());
 
             positionsForSynchronizations.add(positionSync);
 
@@ -118,7 +118,7 @@ public class PositionBS {
         hRThirdPartyPositionDao.upsertThirdPartyPositions(writeBackThirdPartyPositionList);
 
         //回写薪资到MoSeeker职位表
-        positionSyncHandler.writeBackJobPositionField(moseekerPosition,positionsForSynchronizations);
+        positionSyncHandler.writeBackJobPositionField(moseekerJobPosition,positionsForSynchronizations);
 
         return ResultMessage.SUCCESS.toResponse(results);
     }
