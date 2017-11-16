@@ -262,6 +262,9 @@ public class MessageTemplateEntity {
         }
         Query query=new Query.QueryBuilder().where("id",id).and("disable",0).buildQuery();
         HrTeamDO DO=hrTeamDao.getData(query);
+        if(DO==null){
+            DO=new HrTeamDO();
+        }
         return DO;
     }
     /*
