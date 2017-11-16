@@ -689,7 +689,7 @@ public class ProfileService {
         queryBuilder.where("id", profielId);
         ProfileProfileDO profileProfile = dao.getData(queryBuilder.buildQuery());
         if (profileProfile == null || profileProfile.getId() == 0) {
-            return ResponseUtils.fail("获取简历失败");
+            return ResponseUtils.fail(1,"获取简历失败");
         }
         JSONObject fieldJson = JSONObject.parseObject(fields);
         queryBuilder.clear();

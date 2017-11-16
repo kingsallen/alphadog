@@ -15,6 +15,8 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 import org.apache.thrift.TException;
+import org.apache.thrift.TSerializer;
+import org.apache.thrift.protocol.TSimpleJSONProtocol;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -89,13 +92,20 @@ public class UserEmployeeServiceImpl {
 
     public Response getResources(CommonQuery query) throws TException {
         try {
-            List<UserEmployeeRecord> result = userEmployeeDao.getRecords(QueryConvert.commonQueryConvertToQuery(query));
+            List<UserEmployeeStruct> result = userEmployeeDao.getDatas(QueryConvert.commonQueryConvertToQuery(query),UserEmployeeStruct.class);
+//            List<UserEmployeeRecord> result = userEmployeeDao.getRecords(QueryConvert.commonQueryConvertToQuery(query));
             if (result != null) {
-                List<UserEmployeeStruct> userEmployeeStructs = new ArrayList<>(result.size());
-                for (UserEmployeeRecord uer : result) {
-                    userEmployeeStructs.add(uer.into(UserEmployeeStruct.class));
+//                List<UserEmployeeStruct> userEmployeeStructs = new ArrayList<>(result.size());
+                List<Map<String,Object>> list=new ArrayList<>();
+                for (UserEmployeeStruct uer : result) {
+//                    userEmployeeStructs.add(uer.into(UserEmployeeStruct.class));
+                    String employees=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(uer);
+                    Map<String,Object> employeeData= JSON.parseObject(employees, Map.class);
+//                    logger.info(JSON.toJSONString(employeeData));
+                    list.add(employeeData);
                 }
-                return ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(userEmployeeStructs));
+                return ResponseUtils.success(list);
+//                return ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(userEmployeeStructs));
             } else {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
             }
