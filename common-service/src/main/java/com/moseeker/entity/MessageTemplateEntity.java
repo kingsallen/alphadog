@@ -207,11 +207,11 @@ public class MessageTemplateEntity {
         SimpleDateFormat sf=new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
         MessageTplDataCol keyword1=new MessageTplDataCol();
         keyword1.setColor("#173177");
-        keyword1.setValue(jobName);
+        keyword1.setValue(companyName);
         colMap.put("keyword1",keyword1);
         MessageTplDataCol keyword2=new MessageTplDataCol();
         keyword2.setColor("#173177");
-        keyword2.setValue(companyName);
+        keyword2.setValue(jobName);
         colMap.put("keyword2",keyword2);
         String data=sf.format(new Date());
         MessageTplDataCol keyword3=new MessageTplDataCol();
