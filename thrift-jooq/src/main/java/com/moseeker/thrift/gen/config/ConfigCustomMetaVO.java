@@ -1,4 +1,4 @@
-package com.moseeker.profile.constants;
+package com.moseeker.thrift.gen.config;
 
 /**
  * Created by lucky8987 on 17/9/13.
@@ -140,5 +140,26 @@ public class ConfigCustomMetaVO {
 
     public void setErrorMsg(String errorMsg) {
         this.errorMsg = errorMsg;
+    }
+
+    @Override
+    public String toString() {
+        return "ConfigCustomMetaVO{" +
+                "id=" + id +
+                ", fieldName='" + fieldName + '\'' +
+                ", fieldTitle='" + fieldTitle + '\'' +
+                ", fieldType=" + fieldType +
+                ", priority=" + priority +
+                ", isBasic=" + isBasic +
+                ", companyId=" + companyId +
+                ", required=" + required +
+                ", fieldDescription='" + fieldDescription + '\'' +
+                ", map='" + map + '\'' +
+                ", parentId=" + parentId +
+                ", validateRe='" + validateRe + '\'' +
+                ", constantParentCode=" + constantParentCode +
+                ", constantValue='" + constantValue + '\'' +
+                ", errorMsg='" + errorMsg + '\'' +
+                '}';
     }
 }
