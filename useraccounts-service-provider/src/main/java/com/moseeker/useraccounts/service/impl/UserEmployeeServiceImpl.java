@@ -96,7 +96,7 @@ public class UserEmployeeServiceImpl {
                     logger.info(uer.toString()+"================================");
                     userEmployeeStructs.add(uer.into(UserEmployeeStruct.class));
                 }
-                logger.info(JSON.toJSONString(userEmployeeStructs+"+++++++++++++++++++++++++++++++++"));
+                logger.info(JSON.toJSONString(userEmployeeStructs));
                 return ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(userEmployeeStructs));
             } else {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
