@@ -78,6 +78,10 @@ public class MessageTemplateEntity {
             //https://platform-t.dqprism.com/m/user/ai-recom?wechat_signature=xxx
             String wxSignture=DO.getSignature();
             url=url.replace("{}",wxSignture);
+        }else if(type==4){
+            //https://platform-t.dqprism.com/m/employee/survey?wechat_signature={}
+            String wxSignture=DO.getSignature();
+            url=url.replace("{}",wxSignture);
         }
         MessageTemplateNoticeStruct messageTemplateNoticeStruct =new MessageTemplateNoticeStruct();
 

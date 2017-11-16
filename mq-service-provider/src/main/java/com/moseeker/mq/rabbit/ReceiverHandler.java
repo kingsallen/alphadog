@@ -89,10 +89,10 @@ public class ReceiverHandler {
             int type=jsonObject.getIntValue("type");
             int templateId;
             switch (type) {
-                case 1: templateId = 57; break;
-                case 2: templateId = 59; break;
-                case 3: templateId = 60; break;
-                case 4: templateId = 59; break;
+                case 1: templateId = 58; break;
+                case 2: templateId = 57; break;
+                case 3: templateId = 57; break;
+                case 4: templateId = 56; break;
                 default: templateId = 0;
             }
             //int templateId=jsonObject.getIntValue("template_id");
@@ -168,7 +168,7 @@ public class ReceiverHandler {
         }else if(type==2||type==3){
             url=env.getProperty("message.template.recom.url");
         }else if(type==4){
-
+            url=env.getProperty("message.template.new.employee.url");
         }
         return url;
 
