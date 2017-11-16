@@ -24,11 +24,9 @@ import java.util.List;
 @Configuration
 @EnableRabbit
 @ComponentScan({"com.moseeker.function", "com.moseeker.common.aop.iface", "com.moseeker.entity"})
-@Import(com.moseeker.baseorm.config.AppConfig.class)
+@Import({com.moseeker.baseorm.config.AppConfig.class})
 @PropertySource("classpath:common.properties")
 public class AppConfig {
-
-
     @Autowired
     private Environment env;
 
@@ -41,8 +39,6 @@ public class AppConfig {
         cf.setPassword(env.getProperty("rabbitmq.password").trim());
         return cf;
     }
-
-
 
     @Bean
     public RabbitTemplate rabbitTemplate() {

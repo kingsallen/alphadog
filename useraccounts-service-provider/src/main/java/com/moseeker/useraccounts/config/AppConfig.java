@@ -24,9 +24,8 @@ import java.util.List;
 @EnableRabbit
 @ComponentScan({"com.moseeker.useraccounts", "com.moseeker.entity", "com.moseeker.common.aop.iface", "com.moseeker.common.aop.notify"})
 @PropertySource("classpath:common.properties")
-@Import(com.moseeker.baseorm.config.AppConfig.class)
+@Import({com.moseeker.baseorm.config.AppConfig.class})
 public class AppConfig {
-
     @Autowired
     private Environment env;
 
@@ -71,7 +70,7 @@ public class AppConfig {
      * listener 容器 （consumer 需要手动确认消息）
      * @return
      */
-    @Bean
+    @Bean("rabbitListenerContainerFactory")
     public RabbitListenerContainerFactory rabbitListenerContainerFactory() {
         SimpleRabbitListenerContainerFactory listenerContainerFactory = new SimpleRabbitListenerContainerFactory();
         listenerContainerFactory.setConnectionFactory(cachingConnectionFactory());
@@ -93,7 +92,6 @@ public class AppConfig {
         listenerContainerFactory.setAcknowledgeMode(AcknowledgeMode.AUTO);
         return listenerContainerFactory;
     }
-
 
     @Bean
     public Queue bindAccountQueue() {
