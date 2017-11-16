@@ -1968,7 +1968,7 @@ public class PositionService {
             query.where("id", appCvConfId);
             HrAppCvConfDO hrAppCvConfDO = hrAppCvConfDao.getData(query.buildQuery());
             if (hrAppCvConfDO != null && StringUtils.isNotNullOrEmpty(hrAppCvConfDO.getFieldValue())) {
-                List<ConfigCustomMetaVO> configCustomMetaVOList = JSONArray.parseArray(hrAppCvConfDO.getFieldValue()).getJSONObject(0).getJSONArray("fields").stream().
+                List<ConfigCustomMetaVO> configCustomMetaVOList = JSONArray.parseArray(hrAppCvConfDO.getFieldValue()).stream().flatMap(fm -> JSON.parseObject(String.valueOf(fm)).getJSONArray("fields").stream()).
                         map(m -> JSONObject.parseObject(String.valueOf(m), ConfigCustomMetaVO.class)).collect(Collectors.toList());
                 configCustomMetaVOList.stream().filter(f -> f.getConstantParentCode() != 0).forEach(e -> {
                     query.clear();
