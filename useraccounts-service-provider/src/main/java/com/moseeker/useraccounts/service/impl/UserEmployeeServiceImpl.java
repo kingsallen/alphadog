@@ -93,14 +93,15 @@ public class UserEmployeeServiceImpl {
     public Response getResources(CommonQuery query) throws TException {
         try {
             List<UserEmployeeStruct> result = userEmployeeDao.getDatas(QueryConvert.commonQueryConvertToQuery(query),UserEmployeeStruct.class);
+//            List<UserEmployeeRecord> result = userEmployeeDao.getRecords(QueryConvert.commonQueryConvertToQuery(query));
             if (result != null) {
-                List<UserEmployeeStruct> userEmployeeStructs = new ArrayList<>(result.size());
+//                List<UserEmployeeStruct> userEmployeeStructs = new ArrayList<>(result.size());
                 List<Map<String,Object>> list=new ArrayList<>();
                 for (UserEmployeeStruct uer : result) {
 //                    userEmployeeStructs.add(uer.into(UserEmployeeStruct.class));
                     String employees=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(uer);
                     Map<String,Object> employeeData= JSON.parseObject(employees, Map.class);
-                    logger.info(JSON.toJSONString(employeeData));
+//                    logger.info(JSON.toJSONString(employeeData));
                     list.add(employeeData);
                 }
                 return ResponseUtils.success(list);

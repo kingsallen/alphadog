@@ -65,7 +65,6 @@ public class UserEmployeeController {
         try {
             CommonQuery commonQuery = ParamUtils.initCommonQuery(request, CommonQuery.class);
             Response result = service.getUserEmployees(commonQuery);
-            logger.info(JSON.toJSONString(result)+"================");
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
