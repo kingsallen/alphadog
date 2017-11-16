@@ -95,15 +95,12 @@ public class ReceiverHandler {
                 case 4: templateId = 56; break;
                 default: templateId = 0;
             }
-            //int templateId=jsonObject.getIntValue("template_id");
             String url=jsonObject.getString("url");
-            String jobName=jsonObject.getString("job_name");
-            String companyName=jsonObject.getString("company_name");
             if(StringUtils.isEmpty(url)){
                 url=handlerUrl(type);
             }
             String enable_qx_retry=jsonObject.getString("enable_qx_retry");
-            MessageTemplateNoticeStruct messageTemplate=messageTemplateEntity.handlerTemplate(userId,companyId,templateId,type,url,jobName,companyName);
+            MessageTemplateNoticeStruct messageTemplate=messageTemplateEntity.handlerTemplate(userId,companyId,templateId,type,url);
             log.info("messageTemplate========"+JSONObject.toJSONString(messageTemplate));
             if(messageTemplate!=null){
                 if(StringUtils.isNotEmpty(enable_qx_retry)){
