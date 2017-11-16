@@ -32,6 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -132,6 +133,24 @@ public class UserHrAccountController {
             } else {
                 return ResponseLogNotification.failJson(request, message);
             }
+        } catch (Exception e) {
+            return ResponseLogNotification.failJson(request, e);
+        }
+    }
+
+    /**
+     * 添加子账号
+     */
+    @RequestMapping(value = "/hraccount/{id}/subaccount", method = RequestMethod.POST)
+    @ResponseBody
+    public String addSubAccount(HttpServletRequest request, @PathVariable int id) {
+        try {
+            UserHrAccountDO userHrAccountDO = ParamUtils.initModelForm(request, UserHrAccountDO.class);
+            UserHRAccountAddAccountForm form = new UserHRAccountAddAccountForm();
+            form.setHrAccount(userHrAccountDO);
+            form.setId(id);
+            int userHRAccountId = userHrAccountService.addSubAccount(form);
+            return ResponseLogNotification.successJson(request, userHRAccountId);
         } catch (Exception e) {
             return ResponseLogNotification.failJson(request, e);
         }

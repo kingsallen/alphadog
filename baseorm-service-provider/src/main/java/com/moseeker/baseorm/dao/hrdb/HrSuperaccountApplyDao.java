@@ -22,4 +22,13 @@ public class HrSuperaccountApplyDao extends JooqCrudImpl<HrSuperaccountApplyDO, 
     public HrSuperaccountApplyDao(TableImpl<HrSuperaccountApplyRecord> table, Class<HrSuperaccountApplyDO> hrSuperaccountApplyDOClass) {
         super(table, hrSuperaccountApplyDOClass);
     }
+
+    public HrSuperaccountApplyDO getByCompanyId(int companyId) {
+
+        return create
+                .selectFrom(HrSuperaccountApply.HR_SUPERACCOUNT_APPLY)
+                .where(HrSuperaccountApply.HR_SUPERACCOUNT_APPLY.COMPANY_ID.eq(companyId))
+                .limit(1)
+                .fetchOneInto(HrSuperaccountApplyDO.class);
+    }
 }

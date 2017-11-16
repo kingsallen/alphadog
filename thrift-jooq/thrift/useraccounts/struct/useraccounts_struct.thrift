@@ -2,9 +2,14 @@
 
 namespace java com.moseeker.thrift.gen.useraccounts.struct
 include "../../dao/struct/userdb/user_employee_struct.thrift"
+include "../../dao/struct/userdb/user_hr_account_struct.thrift"
 
 typedef string Timestamp
 
+struct UserHRAccountAddAccountForm {
+    1: optional i32 id,
+    2: optional user_hr_account_struct.UserHrAccountDO hrAccount 
+}
 
 struct Userloginreq {
     1: optional string unionid,

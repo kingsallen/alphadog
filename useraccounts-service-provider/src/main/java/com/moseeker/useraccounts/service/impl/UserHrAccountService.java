@@ -46,6 +46,7 @@ import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
+import com.moseeker.useraccounts.constant.HRAccountType;
 import com.moseeker.useraccounts.constant.ResultMessage;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.pojo.EmployeeRank;
@@ -159,6 +160,64 @@ public class UserHrAccountService {
     }
 
     /**
+     * 添加子账号
+     * @param hrAccount 子账号
+     * @return 子账号编号
+     * @throws CommonException 90015 参数不存在(HR信息不正确；子账号所属公司和主账号不一致并且不是住公司的子公司) 42022 不允许添加子账号(子账号达到上线；不是主账号) 42023 HRAccount已经存在
+     */
+    public int addSubAccount(UserHRAccountAddAccountForm hrAccount) throws CommonException {
+
+        /** 持久化数据校验 */
+        UserHrAccountDO hrAccountDO = userHrAccountDao.getValidAccount(hrAccount.getId());
+        if (hrAccountDO == null || hrAccount.getHrAccount() == null) {
+            throw CommonException.PROGRAM_PARAM_NOTEXIST;
+        }
+        ValidateUtil vu = new ValidateUtil();
+        vu.addSensitiveValidate("用户名称", hrAccount.getHrAccount().getUsername(), null, null);
+        vu.addStringLengthValidate("用户名称", hrAccount.getHrAccount().getUsername(), null, null, 0, 60);
+        vu.addRequiredValidate("手机号码", hrAccount.getHrAccount().getMobile(), null, null);
+        vu.addStringLengthValidate("手机号码", hrAccount.getHrAccount().getMobile(), null, null, 0, 30);
+        vu.addStringLengthValidate("邮箱", hrAccount.getHrAccount().getEmail(), null, null, 0, 50);
+        vu.addStringLengthValidate("密码", hrAccount.getHrAccount().getPassword(), null, null, 0, 64);
+        vu.addIntTypeValidate("来源", hrAccount.getHrAccount().getSource(), null, null, 0, 99);
+        vu.addStringLengthValidate("注册IP", hrAccount.getHrAccount().getRegisterIp(), null, null, 0, 50);
+        vu.addRequiredValidate("公司", hrAccount.getHrAccount().getCompanyId(), null, null);
+        vu.addIntTypeValidate("公司", hrAccount.getHrAccount().getCompanyId(), null, null, 0, Integer.MAX_VALUE);
+        String message = vu.validate();
+        if (hrAccountDO.getAccountType() != HRAccountType.SupperAccount.getType()) {
+            throw UserAccountException.NOT_ALLOWED_ADD_SUBACCOUNT;
+        }
+        HrCompanyDO companyDO = hrCompanyDao.getCompanyById(hrAccount.getHrAccount().getCompanyId());
+        if (companyDO == null
+                || (companyDO.getParentId() != hrAccountDO.getCompanyId()
+                && companyDO.getId() != hrAccountDO.getCompanyId())) {
+            throw CommonException.PROGRAM_PARAM_NOTEXIST;
+        }
+
+        /** 查看是否能够继续添加子账号 */
+        boolean allowedAddHRSubAccount = allowAddSubAccount(hrAccountDO);
+        if (!allowedAddHRSubAccount) {
+            throw UserAccountException.NOT_ALLOWED_ADD_SUBACCOUNT;
+        }
+
+        if (hrAccount.getHrAccount().getPassword() == null) {
+            hrAccount.getHrAccount().setPassword("");
+        }
+        UserHrAccountRecord userHrAccountRecord = BeanUtils.structToDB(hrAccount.getHrAccount(), UserHrAccountRecord.class);
+        int id = userHrAccountDao.addIfNotExist(userHrAccountRecord);
+        if (id > 0) {
+            HrCompanyAccountDO companyAccount = new HrCompanyAccountDO();
+            companyAccount.setAccountId(id);
+            companyAccount.setCompanyId(hrAccount.getHrAccount().getCompanyId());
+            companyAccountDao.addData(companyAccount);
+        } else {
+            throw UserAccountException.HRACCOUNT_EXIST;
+        }
+
+        return id;
+    }
+
+    /**
      * 是否可以添加子帐号
      */
     public boolean ifAddSubAccountAllowed(int hrId) throws CommonException {
@@ -168,6 +227,16 @@ public class UserHrAccountService {
             throw HRException.USER_NOT_EXISTS;
         }
 
+        return allowAddSubAccount(hrAccountDO);
+
+    }
+
+    /**
+     * 是否可以继续添加子账号
+     * @param hrAccountDO HR 账号信息
+     * @return
+     */
+    private boolean allowAddSubAccount(UserHrAccountDO hrAccountDO) {
         Query query = new Query.QueryBuilder()
                 .where(HrSuperaccountApply.HR_SUPERACCOUNT_APPLY.COMPANY_ID.getName(), hrAccountDO.getCompanyId())
                 .buildQuery();
@@ -183,7 +252,6 @@ public class UserHrAccountService {
                 .and(hrTable.ACTIVATION.getName(), 1)
                 .buildQuery();
         return superaccountApplyDO.getAccountLimit() > userHrAccountDao.getCount(query);
-
     }
 
     /**
@@ -1512,5 +1580,4 @@ public class UserHrAccountService {
         }
         return hrAppExportFieldsDOList.stream().filter(f -> f.showed == 1).collect(Collectors.toList());
     }
-
 }

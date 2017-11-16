@@ -13,7 +13,6 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrPointsConfRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.baseorm.util.BeanUtils;
-import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.query.Query;
@@ -22,6 +21,7 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
+import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Result;
@@ -34,6 +34,8 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * HR帐号数据库持久类
@@ -455,5 +457,47 @@ public class UserHrAccountDao extends JooqCrudImpl<UserHrAccountDO, UserHrAccoun
                 .execute();
 
         return result;
+    }
+
+    /**
+     * 如果账号不存在则添加，否则不做添加
+     * @param userHrAccountRecord 账号信息
+     * @return 账号编号。如果未能够正常添加，则返回0。
+     */
+    public int addIfNotExist(UserHrAccountRecord userHrAccountRecord) {
+        int id = 0;
+
+        List<Field<?>> changedFieldList
+                = Arrays.stream(userHrAccountRecord.fields())
+                .filter(f -> userHrAccountRecord.changed(f)).collect(Collectors.toList());
+        if (changedFieldList!= null && changedFieldList.size() > 0) {
+            StringBuffer sb = new StringBuffer(200);
+            sb.append("insert into userdb.user_hr_account ");
+            sb.append(changedFieldList.stream().map(m -> m.getName()).collect(Collectors.joining(",", "(", ")")));
+            sb.append(" select ");
+            sb.append(Stream.generate(() -> "?").limit(changedFieldList.size()).collect(Collectors.joining(",")));
+            sb.append(" from dual where not exists ( ");
+            sb.append(" select id from userdb.user_hr_account where mobile = ? and disable = 1 limit 1");
+            sb.append(")");
+
+            logger.info("addIfNotExist userHRAccount sql: {}", sb.toString());
+            int result = create.execute(sb.toString(),
+                    changedFieldList.stream()
+                            .map(m -> userHrAccountRecord.getValue(m))
+                            .collect(Collectors.toList()).toArray());
+            if (result > 0) {
+                Record1<Integer> recordResult = create.select(UserHrAccount.USER_HR_ACCOUNT.ID)
+                        .from(UserHrAccount.USER_HR_ACCOUNT)
+                        .where(UserHrAccount.USER_HR_ACCOUNT.MOBILE.eq(userHrAccountRecord.getMobile()))
+                        .and(UserHrAccount.USER_HR_ACCOUNT.DISABLE.eq(1))
+                        .limit(1)
+                        .fetchOne();
+                if (recordResult != null && recordResult.value1() != null) {
+                    id = recordResult.value1();
+                }
+            }
+        }
+
+        return id;
     }
 }
