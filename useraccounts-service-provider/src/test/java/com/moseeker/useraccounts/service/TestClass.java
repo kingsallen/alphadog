@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.service;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountHrDao;
 import com.moseeker.baseorm.dao.thirdpartydb.ThirdpartyAccountCityDao;
@@ -11,12 +12,14 @@ import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccountHr;
 import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountCity;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountHrDO;
 import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyAccountCityDO;
 import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyAccountCompanyAddressDO;
 import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyAccountCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyAccountDepartmentDO;
+import com.moseeker.thrift.gen.thirdpart.struct.ThirdPartyAccountInfoAddress;
 import org.apache.commons.lang.time.FastDateFormat;
 import org.joda.time.DateTime;
 import org.jooq.impl.DefaultDSLContext;
@@ -29,8 +32,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import com.moseeker.useraccounts.service.config.AppConfig;
 
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.stream.IntStream;
@@ -100,10 +105,29 @@ public class TestClass {
 
     public  static void main(String arg[]){
 
+        GrandFather f=new Son();
+
+        System.out.println(f.getClass().getName());
+
+//        System.out.println(100/1000);
+
+/*        String data="{\"data\":{\"accountId\":506,\"channel\":2},\"status\":100,\"operation\":\"bind\",\"message\":\"[\\\"186****2895\\\"]\"}";
+        JSONObject jsonObject = JSONObject.parseObject(data);
+
+        int status = jsonObject.getIntValue("status");
+        String message = jsonObject.getString("message");
+        //发送成功
+        if (status == 0 || status == 110) {
+            System.out.println(status);
+        } else {
+            System.out.println("?"+status);
+        }*/
+
+
 //        DecimalFormat df = new DecimalFormat("000000");
 //        System.out.println(df.format("0123"));
 
-        String str="Title\t| Title\n" +
+        /*String str="Title\t| Title\n" +
                 "Occupation\t| Occupation\n" +
                 "Quantity\t| Quantity\n" +
                 "Degree\t| Degree\n" +
@@ -140,7 +164,7 @@ public class TestClass {
         for(int i=0;i<strs.length;i++){
             System.out.println(strs[i]+"\t"+strs2[i]);
         }
-
+*/
 
 //        System.out.println(FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss").format(new Date()));
 
@@ -179,4 +203,30 @@ public class TestClass {
                 "}");
         System.out.println(obj.get("data"));*/
     }
+}
+
+class Father implements GrandFather{
+    public <T extends Comparable<T>> T max(List<T> list){
+        return null;
+    }
+
+    public static <E> Set<E> union(Set<? extends E> s1,Set<? extends E> s2){
+        return null;
+    }
+
+    public void test(){
+        max(new ArrayList<Integer>());
+
+
+
+
+    }
+}
+
+class Son extends Father{
+
+}
+
+interface GrandFather{
+
 }
