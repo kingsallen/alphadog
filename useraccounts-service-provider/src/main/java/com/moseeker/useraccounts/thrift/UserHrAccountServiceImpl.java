@@ -75,7 +75,7 @@ public class UserHrAccountServiceImpl implements Iface {
     }
 
     @Override
-    public int addSubAccount(UserHRAccountAddAccountForm hrAccount) throws BIZException, TException {
+    public int addSubAccount(UserHrAccountDO hrAccount) throws BIZException, TException {
         try {
             return service.addSubAccount(hrAccount);
         } catch (CommonException e1) {

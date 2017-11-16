@@ -480,11 +480,13 @@ public class UserHrAccountDao extends JooqCrudImpl<UserHrAccountDO, UserHrAccoun
             sb.append(" select id from userdb.user_hr_account where mobile = ? and disable = 1 limit 1");
             sb.append(")");
 
+            List<Object> params = changedFieldList.stream()
+                    .map(m -> userHrAccountRecord.getValue(m))
+                    .collect(Collectors.toList());
+            params.add(userHrAccountRecord.getMobile());
+
             logger.info("addIfNotExist userHRAccount sql: {}", sb.toString());
-            int result = create.execute(sb.toString(),
-                    changedFieldList.stream()
-                            .map(m -> userHrAccountRecord.getValue(m))
-                            .collect(Collectors.toList()).toArray());
+            int result = create.execute(sb.toString(), params.toArray());
             if (result > 0) {
                 Record1<Integer> recordResult = create.select(UserHrAccount.USER_HR_ACCOUNT.ID)
                         .from(UserHrAccount.USER_HR_ACCOUNT)

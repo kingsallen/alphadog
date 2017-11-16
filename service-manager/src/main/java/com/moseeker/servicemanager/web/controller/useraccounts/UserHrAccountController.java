@@ -141,15 +141,12 @@ public class UserHrAccountController {
     /**
      * 添加子账号
      */
-    @RequestMapping(value = "/hraccount/{id}/subaccount", method = RequestMethod.POST)
+    @RequestMapping(value = "/hraccount/subaccount", method = RequestMethod.POST)
     @ResponseBody
-    public String addSubAccount(HttpServletRequest request, @PathVariable int id) {
+    public String addSubAccount(HttpServletRequest request) {
         try {
-            UserHrAccountDO userHrAccountDO = ParamUtils.initModelForm(request, UserHrAccountDO.class);
-            UserHRAccountAddAccountForm form = new UserHRAccountAddAccountForm();
-            form.setHrAccount(userHrAccountDO);
-            form.setId(id);
-            int userHRAccountId = userHrAccountService.addSubAccount(form);
+            UserHrAccountDO accountForm = ParamUtils.initModelForm(request, UserHrAccountDO.class);
+            int userHRAccountId = userHrAccountService.addSubAccount(accountForm);
             return ResponseLogNotification.successJson(request, userHRAccountId);
         } catch (Exception e) {
             return ResponseLogNotification.failJson(request, e);
