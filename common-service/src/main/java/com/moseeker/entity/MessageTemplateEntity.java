@@ -156,7 +156,7 @@ public class MessageTemplateEntity {
 
             colMap=this.handleDataRecommendTemplate(userId,companyId,type);
         }else if(type==4){
-             colMap=this.handleDataProfileTemplate(userId,companyId);
+            colMap=this.handleDataProfileTemplate(userId,companyId);
         }
         return colMap;
     }
@@ -259,12 +259,12 @@ public class MessageTemplateEntity {
         keyword1.setColor("#173177");
         colMap.put("keyword1",keyword1);
         MessageTplDataCol keyword2=new MessageTplDataCol();
-        keyword2.setValue(DO.getPosition());
+        HrTeamDO   hrTeamDO=this.getTeamById(DO.getTeamId());
+        keyword2.setValue(hrTeamDO.getName());
         keyword2.setColor("#173177");
         colMap.put("keyword2",keyword2);
-        HrTeamDO   hrTeamDO=this.getTeamById(DO.getTeamId());
         MessageTplDataCol keyword3=new MessageTplDataCol();
-        keyword3.setValue(hrTeamDO.getName());
+        keyword3.setValue(DO.getPosition());
         keyword3.setColor("#173177");
         colMap.put("keyword3",keyword3);
         return colMap;
