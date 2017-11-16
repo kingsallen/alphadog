@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.logdb.LogDeadLetterDao;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.MessageTemplateEntity;
+import com.moseeker.entity.PersonaRecomEntity;
 import com.moseeker.mq.service.impl.TemplateMsgProducer;
 import com.moseeker.thrift.gen.dao.struct.logdb.LogDeadLetterDO;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
@@ -40,8 +41,13 @@ public class ReceiverHandler {
 
     @Autowired
     private TemplateMsgProducer templateMsgProducer;
+
     @Autowired
     private Environment env;
+
+    @Autowired
+    private PersonaRecomEntity personaRecomEntity;
+
 
 
     @RabbitListener(queues = "#{addAwardQue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
@@ -66,6 +72,9 @@ public class ReceiverHandler {
             log.error(e.getMessage(), e);
         }
     }
+    /*
+      智能画像数据推送的微信模板
+     */
     @RabbitListener(queues = "#{sendTemplateQue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
     public void handlerMessageTemplate(Message message, Channel channel){
@@ -77,28 +86,66 @@ public class ReceiverHandler {
             int userId=jsonObject.getIntValue("user_id");
             int companyId=jsonObject.getIntValue("company_id");
             int type=jsonObject.getIntValue("type");
-            int templateId=jsonObject.getIntValue("template_id");
+            int templateId;
+            switch (type) {
+                case 1: templateId = 56; break;
+                case 2: templateId = 57; break;
+                case 3: templateId = 58; break;
+                case 4: templateId = 57; break;
+                default: templateId = 0;
+            }
+            //int templateId=jsonObject.getIntValue("template_id");
             String url=jsonObject.getString("url");
-            if(StringUtils.isEmpty(url)&&type==1){
-                url=env.getProperty("message.template.fans.url");
+            String jobName=jsonObject.getString("job_name");
+            String companyName=jsonObject.getString("company_name");
+            if(StringUtils.isEmpty(url)){
+                url=handlerUrl(type);
             }
             String enable_qx_retry=jsonObject.getString("enable_qx_retry");
-            MessageTemplateNoticeStruct messageTemplate=messageTemplateEntity.handlerTemplate(userId,companyId,templateId,type,url);
+            MessageTemplateNoticeStruct messageTemplate=messageTemplateEntity.handlerTemplate(userId,companyId,templateId,type,url,jobName,companyName);
             log.info("messageTemplate========"+JSONObject.toJSONString(messageTemplate));
             if(messageTemplate!=null){
                 if(StringUtils.isNotEmpty(enable_qx_retry)){
                     messageTemplate.setEnable_qx_retry(Byte.parseByte(enable_qx_retry));
                 }
                 templateMsgProducer.messageTemplateNotice(messageTemplate);
+                personaRecomEntity.updateIsSendPersonaRecom(userId,1,20);
+
             }else{
                 this.handleTemplateLogDeadLetter(message,msgBody,"没有查到模板所需的具体内容");
             }
         }catch(Exception e){
-            this.handleTemplateLogDeadLetter(message,msgBody,"没有查到末班所需的具体内容");
+            this.handleTemplateLogDeadLetter(message,msgBody,"没有查到模板所需的具体内容");
             log.error(e.getMessage(), e);
         }
     }
+    /*
+      数据短传来数据，本初做处理，
+      1，把该user_id原有的职位迁移到history当中
+      2，插入新的数据
+     */
+    @RabbitListener(queues = "#{personaRecomQue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
+    @RabbitHandler
+    public void handlerPersonRecom(Message message, Channel channel){
+        String msgBody = "{}";
+        try{
+            msgBody = new String(message.getBody(), "UTF-8");
+            JSONObject jsonObject = JSONObject.parseObject(msgBody);
+            log.info("推送职位的rabitmq的参数是========"+jsonObject.toJSONString());
+            int userId=jsonObject.getIntValue("user_id");
+            String positionIds=jsonObject.getString("position_ids");
+            if(userId!=0&&StringUtils.isNotEmpty(positionIds)){
+                int result=personaRecomEntity.handlePersonaRecomData(userId,positionIds);
+            }
 
+        }catch(Exception e){
+            this.handleTemplateLogDeadLetter(message,msgBody,"插入推荐职位数据失败");
+            log.error(e.getMessage(), e);
+        }
+    }
+    /*
+      处理异常消息的队列
+     */
     private void handleTemplateLogDeadLetter(Message message,String msgBody,String errorMessage){
         LogDeadLetterDO logDeadLetterDO = new LogDeadLetterDO();
         logDeadLetterDO.setAppid(NumberUtils.toInt(message.getMessageProperties().getAppId(), 0));
@@ -109,5 +156,20 @@ public class ReceiverHandler {
         logDeadLetterDO.setQueueName(StringUtils.defaultIfBlank(message.getMessageProperties().getConsumerQueue(), ""));
         logDeadLetterDao.addData(logDeadLetterDO);
     }
+    /*
+      处理url
+      */
+    private String handlerUrl(int type){
+        String url="";
+        if(type==1){
+            url=env.getProperty("message.template.fans.url");
+        }else if(type==2||type==3){
+            url=env.getProperty("message.template.recom.url");
+        }else if(type==4){
+
+        }
+        return url;
+    }
+
 
 }

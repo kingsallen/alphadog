@@ -1,19 +1,24 @@
 package com.moseeker.baseorm.util;
 
+import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import org.joda.time.DateTime;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by jack on 26/09/2017.
  */
 public class BeanUtilsTest {
+
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Test
     public void mapToRecord() throws Exception {
@@ -52,5 +57,4 @@ public class BeanUtilsTest {
         assertEquals("昵称", userUserRecord.getNickname());
         assertEquals(1, userUserRecord.getParentid().intValue());
     }
-
 }

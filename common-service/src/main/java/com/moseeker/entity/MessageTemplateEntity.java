@@ -1,28 +1,32 @@
 package com.moseeker.entity;
 
-import com.alibaba.fastjson.JSON;
+import com.moseeker.baseorm.dao.campaigndb.CampaignPersonaRecomDao;
 import com.moseeker.baseorm.dao.configdb.ConfigSysTemplateMessageLibraryDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrEmployeePositionDao;
 import com.moseeker.baseorm.dao.hrdb.HrEmployeeSectionDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileBasicDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
-import com.moseeker.baseorm.db.configdb.tables.ConfigSysTemplateMessageLibrary;
-import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.baseorm.db.campaigndb.tables.CampaignPersonaRecom;
+import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignPersonaRecomRecord;
+import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
+import com.moseeker.baseorm.pojo.JobPositionPojo;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
-import com.moseeker.entity.pojos.Data;
+import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.entity.Constant.JobStatus;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysTemplateMessageLibraryDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeePositionDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeSectionDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileBasicDO;
-import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileIntentionDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
@@ -33,10 +37,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.SimpleFormatter;
+import java.util.*;
 
 /**
  * Created by zztaiwll on 17/10/20.
@@ -63,16 +64,29 @@ public class MessageTemplateEntity {
     private HrEmployeeSectionDao hrEmployeeSectionDao;
     @Autowired
     private HrWxWechatDao hrWxWechatDao;
+    @Autowired
+    private JobPositionDao positionDao;
+    @Autowired
+    private CampaignPersonaRecomDao campaignPersonaRecomDao;
 
-    public MessageTemplateNoticeStruct handlerTemplate(int userId,int companyId,int templateId,int type,String url){
-       //https://platform.moseeker.com/m/user/survey?wechat_siganture=xxx
+
+    public MessageTemplateNoticeStruct handlerTemplate(int userId,int companyId,int templateId,int type,String url,String jobName,String companyName){
+
+        HrWxWechatDO DO= this.getHrWxWechatDOByCompanyId(companyId);
         if(type==1){
-            HrWxWechatDO DO= this.getHrWxWechatDOByCompanyId(companyId);
+            //https://platform.moseeker.com/m/user/survey?wechat_siganture=xxx
+            String wxSignture=DO.getSignature();
+            url=url.replace("{}",wxSignture);
+        }else if(type==2){
+            //https://platform-t.dqprism.com/m/user/ai-recom?wechat_signature=xxx
             String wxSignture=DO.getSignature();
             url=url.replace("{}",wxSignture);
         }
         MessageTemplateNoticeStruct messageTemplateNoticeStruct =new MessageTemplateNoticeStruct();
-        Map<String,MessageTplDataCol> colMap=this.handleMessageTemplateData(userId,type,companyId);
+
+        companyName = getCompanyName(companyId);
+        jobName = getJobName(companyId);
+        Map<String,MessageTplDataCol> colMap=this.handleMessageTemplateData(userId,type,companyId,jobName,companyName);
         if(colMap==null||colMap.isEmpty()){
             return null;
         }
@@ -84,16 +98,46 @@ public class MessageTemplateEntity {
         messageTemplateNoticeStruct.setType((byte)0);
         return messageTemplateNoticeStruct;
     }
+
+    private String getJobName(int companyId) {
+
+        List<Integer> positionIdList = positionDao.getPositionIds(new ArrayList<Integer>(){{add(companyId);}});
+        if (positionIdList != null && positionIdList.size() > 0) {
+            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+            queryBuilder.select(CampaignPersonaRecom.CAMPAIGN_PERSONA_RECOM.POSITION_ID.getName())
+                    .where(new Condition(CampaignPersonaRecom.CAMPAIGN_PERSONA_RECOM.POSITION_ID.getName(), positionIdList, ValueOp.IN))
+                    .setPageNum(1);
+
+            CampaignPersonaRecomRecord campaignPersonaRecom = campaignPersonaRecomDao.getRecord(queryBuilder.buildQuery());
+            if (campaignPersonaRecom != null) {
+                JobPositionPojo positionPojo = positionDao.getPosition(campaignPersonaRecom.getPositionId());
+                if (positionPojo != null) {
+                    return positionPojo.title+"等";
+                }
+            }
+        }
+        return null;
+    }
+
+    private String getCompanyName(int companyId) {
+        String companyName = null;
+        HrCompanyDO companyDO = getCompanyById(companyId);
+        if (companyDO != null) {
+            companyName = org.apache.commons.lang.StringUtils.isNotBlank(companyDO.getAbbreviation())?companyDO.getAbbreviation():companyDO.getName();
+        }
+        return companyName;
+    }
+
     /*
         处理发送完善简历消息模板
      */
-    private  Map<String,MessageTplDataCol> handleMessageTemplateData(int userId,int type,int companyId){
+    private  Map<String,MessageTplDataCol> handleMessageTemplateData(int userId,int type,int companyId,String jobName,String companyName){
 
         Map<String,MessageTplDataCol> colMap =new HashMap<>();
         if(type==1){
             colMap=this.handleDataForuestion(userId);
         }else if(type==2||type==3){
-            colMap=this.handleDataRecommendTemplate(companyId,userId,type);
+            colMap=this.handleDataRecommendTemplate(companyId,userId,type,jobName,companyName);
         }else if(type==4){
              colMap=this.handleDataProfileTemplate(userId,companyId);
         }
@@ -132,7 +176,7 @@ public class MessageTemplateEntity {
     /*
         推荐职位列表消息数据
      */
-    private Map<String,MessageTplDataCol> handleDataRecommendTemplate(int companyId,int userId,int type){
+    private Map<String,MessageTplDataCol> handleDataRecommendTemplate(int companyId,int userId,int type,String jobName,String companyName){
         Map<String,MessageTplDataCol> colMap =new HashMap<>();
         UserUserDO userDO=this.getUserUserById(userId);
         String name="";
@@ -159,20 +203,20 @@ public class MessageTemplateEntity {
             remark.setValue("点击查看推荐职位。");
             colMap.put("remark",remark);
         }
-        SimpleDateFormat sf=new SimpleDateFormat("YYYY-MM-DD hh:mm:ss");
-        String data=sf.format(new Date());
+        SimpleDateFormat sf=new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
         MessageTplDataCol keyword1=new MessageTplDataCol();
         keyword1.setColor("#173177");
-        HrCompanyDO DO=this.getCompanyById(companyId);
-        if(DO==null){
-            return null;
-        }
-        keyword1.setValue(DO.getAbbreviation());
+        keyword1.setValue(jobName);
         colMap.put("keyword1",keyword1);
         MessageTplDataCol keyword2=new MessageTplDataCol();
         keyword2.setColor("#173177");
-        keyword2.setValue(data);
+        keyword2.setValue(companyName);
         colMap.put("keyword2",keyword2);
+        String data=sf.format(new Date());
+        MessageTplDataCol keyword3=new MessageTplDataCol();
+        keyword3.setColor("#173177");
+        keyword3.setValue(data);
+        colMap.put("keyword3",keyword3);
         return colMap;
     }
 
