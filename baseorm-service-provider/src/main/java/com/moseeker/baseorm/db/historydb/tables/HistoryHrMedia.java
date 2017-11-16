@@ -150,6 +150,7 @@ public class HistoryHrMedia extends TableImpl<HistoryHrMediaRecord> {
     /**
      * Rename this table
      */
+
     public HistoryHrMedia rename(String name) {
         return new HistoryHrMedia(name, null);
     }

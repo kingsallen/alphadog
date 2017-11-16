@@ -2,6 +2,7 @@ package com.moseeker.mq.rabbit;
 
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.logdb.LogDeadLetterDao;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.MessageTemplateEntity;
 import com.moseeker.entity.PersonaRecomEntity;
@@ -109,7 +110,7 @@ public class ReceiverHandler {
                     messageTemplate.setEnable_qx_retry(Byte.parseByte(enable_qx_retry));
                 }
                 templateMsgProducer.messageTemplateNotice(messageTemplate);
-                personaRecomEntity.updateIsSendPersonaRecom(userId,1,20);
+                personaRecomEntity.updateIsSendPersonaRecom(userId,companyId,1,20);
 
             }else{
                 this.handleTemplateLogDeadLetter(message,msgBody,"没有查到模板所需的具体内容");
@@ -134,8 +135,9 @@ public class ReceiverHandler {
             log.info("推送职位的rabitmq的参数是========"+jsonObject.toJSONString());
             int userId=jsonObject.getIntValue("user_id");
             String positionIds=jsonObject.getString("position_ids");
+            int companyId=jsonObject.getIntValue("company_id");
             if(userId!=0&&StringUtils.isNotEmpty(positionIds)){
-                int result=personaRecomEntity.handlePersonaRecomData(userId,positionIds);
+                int result=personaRecomEntity.handlePersonaRecomData(userId,positionIds,companyId);
             }
 
         }catch(Exception e){
@@ -169,7 +171,7 @@ public class ReceiverHandler {
 
         }
         return url;
-    }
 
+    }
 
 }

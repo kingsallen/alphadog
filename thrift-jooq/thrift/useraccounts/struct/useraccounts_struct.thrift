@@ -199,7 +199,11 @@ struct UserEmployeeStruct {
 	47: optional i8 email_isvalid,
 	48: optional i8 auth_method,
 	49: optional string custom_field_values,
-	50: optional string departmentname
+	50: optional string departmentname,
+	51: optional i32 team_id,
+	52: optional i8 job_grade,
+	53: optional i32 city_code,
+	54: optional i8 degree
 }
 
 struct UserEmployeeBatchForm{

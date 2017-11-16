@@ -94,7 +94,7 @@ service PositionServices {
 
     common_struct.Response putAlipayResult(1:i32 channel,2:i32 positionId,3:i32 alipayJobId );
 
-    common_struct.Response getPersonaRecomPositionList(1:i32 userId,2:i32 pageNum,3:i32 pageSize);
+    common_struct.Response getPersonaRecomPositionList(1:i32 userId,2:i32 companyId,3:i32 pageNum,4:i32 pageSize);
 }
 /*
 	查询第三方自定义职能
