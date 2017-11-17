@@ -49,40 +49,19 @@ public class EmployeeServiceTest {
     @Autowired
     EmployeeEntity employeeEntity;
 
-    @Mock
-    SearchengineServices.Iface searchService;
+//    @Mock
+//    SearchengineServices.Iface searchService;
 
-    @Before
-    public void init() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        ReflectionTestUtils.setField(AopTargetUtils.getTarget(service), "searchService", searchService);
-        Mockito.when(searchService.queryAwardRankingInWx(Mockito.anyList(), Mockito.anyString(), Mockito.anyInt())).thenReturn(ResponseUtils.success(
-                new HashMap<Integer, JSONObject>(){{
-                   put(29157, JSON.parseObject("{\"award\":0,\"ranking\":1}"));
-                   put(784195,JSON.parseObject("{\"award\":0,\"ranking\":1}"));
-                   put(784196,JSON.parseObject("{\"award\":0,\"ranking\":1}"));
-                   put(784197,JSON.parseObject("{\"award\":0,\"ranking\":1}"));
-                   put(784198,JSON.parseObject("{\"award\":0,\"ranking\":1}"));
-                   put(880889,JSON.parseObject("{\"award\":0,\"ranking\":1}"));
-                   put(782667,JSON.parseObject("{\"award\":3,\"ranking\":1}"));
-                   put(45757, JSON.parseObject("{\"award\":0,\"ranking\":1}"));
-                   put(782666,JSON.parseObject("{\"award\":0,\"ranking\":1}"));
-                   put(782674,JSON.parseObject("{\"award\":0,\"ranking\":1}"));
-                   put(782668,JSON.parseObject("{\"award\":0,\"ranking\":1}"));
-                   put(782669,JSON.parseObject("{\"award\":0,\"ranking\":1}"));
-                   put(782670,JSON.parseObject("{\"award\":0,\"ranking\":1}"));
-                   put(782676,JSON.parseObject("{\"award\":6,\"ranking\":1}"));
-                   put(784194,JSON.parseObject("{\"award\":0,\"ranking\":1}"));
-                   put(784193,JSON.parseObject("{\"award\":0,\"ranking\":1}"));
-                   put(784190,JSON.parseObject("{\"award\":81,\"rankin\":1}"));
-                   put(784192,JSON.parseObject("{\"award\":0,\"ranking\":1}"));
-                   put(784191,JSON.parseObject("{\"award\":0,\"ranking\":1}"));
-                   put(880892,JSON.parseObject("{\"award\":0,\"ranking\":1}"));
-                   put(880891,JSON.parseObject("{\"award\":0,\"ranking\":1}"));
-                   put(880893,JSON.parseObject("{\"award\":0,\"ranking\":1}"));
-                }}
-        ));
-    }
+//    @Before
+//    public void init() throws Exception {
+//        MockitoAnnotations.initMocks(this);
+//        ReflectionTestUtils.setField(AopTargetUtils.getTarget(service), "searchService", searchService);
+//        Mockito.when(searchService.queryAwardRankingInWx(Mockito.anyList(), Mockito.anyString(), Mockito.anyInt())).thenReturn(ResponseUtils.success(
+//                new HashMap<Integer, JSONObject>(){{
+//                   put(29157, JSON.parseObject("{\"award\":0,\"ranking\":1}"));
+//                }}
+//        ));
+//    }
 
 
     @Test
@@ -142,11 +121,11 @@ public class EmployeeServiceTest {
         System.out.println(result);
     }
 
-    @Test
-    public void awardRankingTest() {
-        List<EmployeeAward> response = service.awardRanking(782667, 39978, "2017");
-        System.out.println(JSONObject.toJSONString(response));
-    }
+//    @Test
+//    public void awardRankingTest() {
+//        List<EmployeeAward> response = service.awardRanking(782667, 39978, "2017");
+//        System.out.println(JSONObject.toJSONString(response));
+//    }
 
 //    @Test
 //    @Commit
