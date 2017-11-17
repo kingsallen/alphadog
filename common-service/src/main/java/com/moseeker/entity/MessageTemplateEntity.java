@@ -132,6 +132,9 @@ public class MessageTemplateEntity {
 //                }
 //            }
 //        }
+        if(StringUtils.isNotNullOrEmpty(jobName)){
+            jobName+="等";
+        }
         return jobName;
     }
 
