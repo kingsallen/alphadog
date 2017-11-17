@@ -458,9 +458,9 @@ public class PositionServicesImpl implements Iface {
       获取只能回阿香推送的职位，用于在微信端展示
      */
     @Override
-    public Response getPersonaRecomPositionList(int userId, int pageNum, int pageSize) throws TException {
+    public Response getPersonaRecomPositionList(int userId,int companyId, int pageNum, int pageSize) throws TException {
         try {
-            List<WechatPositionListData> result=service.getPersonaRecomPosition(userId,pageNum,pageSize);
+            List<WechatPositionListData> result=service.getPersonaRecomPosition(userId,companyId,pageNum,pageSize);
             if(StringUtils.isEmptyList(result)){
                 return  ResponseUtils.success("");
             }

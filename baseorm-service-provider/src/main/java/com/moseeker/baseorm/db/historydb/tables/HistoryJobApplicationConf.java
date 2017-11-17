@@ -206,6 +206,7 @@ public class HistoryJobApplicationConf extends TableImpl<HistoryJobApplicationCo
     /**
      * Rename this table
      */
+
     public HistoryJobApplicationConf rename(String name) {
         return new HistoryJobApplicationConf(name, null);
     }

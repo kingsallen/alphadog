@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CampaignPersonaRecom extends TableImpl<CampaignPersonaRecomRecord> {
 
-    private static final long serialVersionUID = -959658367;
+    private static final long serialVersionUID = 1210915659;
 
     /**
      * The reference instance of <code>campaigndb.campaign_persona_recom</code>
@@ -60,6 +60,11 @@ public class CampaignPersonaRecom extends TableImpl<CampaignPersonaRecomRecord> 
      * The column <code>campaigndb.campaign_persona_recom.user_id</code>. 用户id user_user.id
      */
     public final TableField<CampaignPersonaRecomRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "用户id user_user.id");
+
+    /**
+     * The column <code>campaigndb.campaign_persona_recom.company_id</code>. 企业的id
+     */
+    public final TableField<CampaignPersonaRecomRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "企业的id");
 
     /**
      * The column <code>campaigndb.campaign_persona_recom.position_id</code>. 职位id job_position.id
@@ -138,7 +143,7 @@ public class CampaignPersonaRecom extends TableImpl<CampaignPersonaRecomRecord> 
      */
     @Override
     public List<UniqueKey<CampaignPersonaRecomRecord>> getKeys() {
-        return Arrays.<UniqueKey<CampaignPersonaRecomRecord>>asList(Keys.KEY_CAMPAIGN_PERSONA_RECOM_PRIMARY, Keys.KEY_CAMPAIGN_PERSONA_RECOM_CAMPAIGN_PERSONA_RECOM_USER_ID_POSITION_ID_UINDEX);
+        return Arrays.<UniqueKey<CampaignPersonaRecomRecord>>asList(Keys.KEY_CAMPAIGN_PERSONA_RECOM_PRIMARY, Keys.KEY_CAMPAIGN_PERSONA_RECOM_CAMPAIGN_PERSONA_RECOM_USER_ID_POSITION_ID_COMPANY_ID_UINDEX);
     }
 
     /**
@@ -152,6 +157,7 @@ public class CampaignPersonaRecom extends TableImpl<CampaignPersonaRecomRecord> 
     /**
      * Rename this table
      */
+
     public CampaignPersonaRecom rename(String name) {
         return new CampaignPersonaRecom(name, null);
     }

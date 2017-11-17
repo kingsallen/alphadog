@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HistoryCampaignPersonaRecom extends TableImpl<HistoryCampaignPersonaRecomRecord> {
 
-    private static final long serialVersionUID = 538638932;
+    private static final long serialVersionUID = 1281615743;
 
     /**
      * The reference instance of <code>historydb.history_campaign_persona_recom</code>
@@ -60,6 +60,11 @@ public class HistoryCampaignPersonaRecom extends TableImpl<HistoryCampaignPerson
      * The column <code>historydb.history_campaign_persona_recom.user_id</code>. 用户id user_user.id
      */
     public final TableField<HistoryCampaignPersonaRecomRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "用户id user_user.id");
+
+    /**
+     * The column <code>historydb.history_campaign_persona_recom.company_id</code>. 企业id
+     */
+    public final TableField<HistoryCampaignPersonaRecomRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "企业id");
 
     /**
      * The column <code>historydb.history_campaign_persona_recom.position_id</code>. 职位id job_position.id
