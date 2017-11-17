@@ -46,6 +46,9 @@ import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
+import com.moseeker.useraccounts.constant.HRAccountActivationType;
+import com.moseeker.useraccounts.constant.HRAccountStatus;
+import com.moseeker.useraccounts.constant.HRAccountType;
 import com.moseeker.useraccounts.constant.ResultMessage;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.pojo.EmployeeRank;
@@ -59,6 +62,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.sql.Timestamp;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -159,6 +163,85 @@ public class UserHrAccountService {
     }
 
     /**
+     * 添加子账号
+     * @param hrAccountDO 子账号
+     * @return 子账号编号
+     * @throws CommonException 90015 参数不存在(公司信息不正确;参数校验不通过) 42022 不允许添加子账号(子账号达到上线) 42023 HRAccount已经存在
+     */
+    public int addSubAccount(UserHrAccountDO hrAccountDO) throws CommonException {
+
+        ValidateUtil vu = new ValidateUtil();
+        vu.addSensitiveValidate("用户名称", hrAccountDO.getUsername(), null, null);
+        vu.addStringLengthValidate("用户名称", hrAccountDO.getUsername(), null, null, 0, 60);
+        vu.addRequiredValidate("手机号码", hrAccountDO.getMobile(), null, null);
+        vu.addStringLengthValidate("手机号码", hrAccountDO.getMobile(), null, null, 0, 30);
+        vu.addStringLengthValidate("邮箱", hrAccountDO.getEmail(), null, null, 0, 50);
+        vu.addStringLengthValidate("密码", hrAccountDO.getPassword(), null, null, 0, 64);
+        vu.addIntTypeValidate("来源", hrAccountDO.getSource(), null, null, 0, 99);
+        vu.addStringLengthValidate("注册IP", hrAccountDO.getRegisterIp(), null, null, 0, 50);
+        vu.addRequiredValidate("公司", hrAccountDO.getCompanyId(), null, null);
+        vu.addIntTypeValidate("公司", hrAccountDO.getCompanyId(), null, null, 0, Integer.MAX_VALUE);
+        vu.addStringLengthValidate("头像", hrAccountDO.getHeadimgurl(), null, null, 0, 120);
+
+        String message = vu.validate();
+        if (org.apache.commons.lang.StringUtils.isNotBlank(message)) {
+            throw CommonException.PROGRAM_PARAM_NOTEXIST.setMess(message);
+        }
+
+        /** 持久化数据校验 */
+        HrCompanyDO companyDO = hrCompanyDao.getCompanyById(hrAccountDO.getCompanyId());
+        if (companyDO == null) {
+            throw CommonException.PROGRAM_PARAM_NOTEXIST;
+        }
+        HrCompanyDO parentCompanyDO = companyDO;
+        if (companyDO.getParentId() != 0) {
+            parentCompanyDO = hrCompanyDao.getCompanyById(companyDO.getParentId());
+            if (parentCompanyDO == null) {
+                throw CommonException.PROGRAM_PARAM_NOTEXIST;
+            }
+        }
+
+        /** 查看是否能够继续添加子账号 */
+        boolean allowedAddHRSubAccount = allowAddSubAccount(parentCompanyDO.getId());
+        if (!allowedAddHRSubAccount) {
+            throw UserAccountException.NOT_ALLOWED_ADD_SUBACCOUNT;
+        }
+
+        UserHrAccountRecord userHrAccountRecord = BeanUtils.structToDB(hrAccountDO, UserHrAccountRecord.class);
+
+        /** 初始化账号信息 */
+        userHrAccountRecord.setLoginCount(0);
+        userHrAccountRecord.setAccountType(HRAccountType.SubAccount.getType());
+        if (userHrAccountRecord.getDisable() == null) {
+            userHrAccountRecord.setDisable(HRAccountStatus.Enabled.getStatus());
+        }
+        if (userHrAccountRecord.getActivation() == null) {
+            userHrAccountRecord.setActivation((byte)HRAccountActivationType.Actived.getValue());
+        }
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+        userHrAccountRecord.setCreateTime(now);
+        userHrAccountRecord.setUpdateTime(now);
+        userHrAccountRecord.setLastLoginTime(now);
+        userHrAccountRecord.setDownloadToken(null);
+        userHrAccountRecord.setLastLoginIp(null);
+        if (org.apache.commons.lang.StringUtils.isNotBlank(userHrAccountRecord.getPassword())) {
+            userHrAccountRecord.setPassword("");
+        }
+
+        int id = userHrAccountDao.addIfNotExist(userHrAccountRecord);
+        if (id > 0) {
+            HrCompanyAccountDO companyAccount = new HrCompanyAccountDO();
+            companyAccount.setAccountId(id);
+            companyAccount.setCompanyId(hrAccountDO.getCompanyId());
+            companyAccountDao.addData(companyAccount);
+        } else {
+            throw UserAccountException.HRACCOUNT_EXIST;
+        }
+
+        return id;
+    }
+
+    /**
      * 是否可以添加子帐号
      */
     public boolean ifAddSubAccountAllowed(int hrId) throws CommonException {
@@ -168,8 +251,18 @@ public class UserHrAccountService {
             throw HRException.USER_NOT_EXISTS;
         }
 
+        return allowAddSubAccount(hrAccountDO.getCompanyId());
+
+    }
+
+    /**
+     * 是否可以继续添加子账号
+     * @param companyId 公司编号
+     * @return
+     */
+    private boolean allowAddSubAccount(int companyId) {
         Query query = new Query.QueryBuilder()
-                .where(HrSuperaccountApply.HR_SUPERACCOUNT_APPLY.COMPANY_ID.getName(), hrAccountDO.getCompanyId())
+                .where(HrSuperaccountApply.HR_SUPERACCOUNT_APPLY.COMPANY_ID.getName(), companyId)
                 .buildQuery();
         HrSuperaccountApplyDO superaccountApplyDO = accountLimitDao.getData(query);
         if (superaccountApplyDO == null) {
@@ -177,13 +270,12 @@ public class UserHrAccountService {
         }
         com.moseeker.baseorm.db.userdb.tables.UserHrAccount hrTable = com.moseeker.baseorm.db.userdb.tables.UserHrAccount.USER_HR_ACCOUNT;
         query = new Query.QueryBuilder()
-                .where(hrTable.COMPANY_ID.getName(), hrAccountDO.getCompanyId())
+                .where(hrTable.COMPANY_ID.getName(), companyId)
                 .and(hrTable.ACCOUNT_TYPE.getName(), 1)
                 .and(hrTable.DISABLE.getName(), 1)
                 .and(hrTable.ACTIVATION.getName(), 1)
                 .buildQuery();
         return superaccountApplyDO.getAccountLimit() > userHrAccountDao.getCount(query);
-
     }
 
     /**
@@ -1516,5 +1608,4 @@ public class UserHrAccountService {
         }
         return hrAppExportFieldsDOList.stream().filter(f -> f.showed == 1).collect(Collectors.toList());
     }
-
 }
