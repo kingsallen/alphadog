@@ -89,7 +89,8 @@ public class ChaosServiceImpl {
         redisClient.existWithTimeOutCheck(cacheKey);
 
         String data=redisClient.get(BindThirdPart.APP_ID, BindThirdPart.KEY_IDENTIFIER,account_Id);
-        logger.info("成功从Redis获取推送绑定结果");
+        redisClient.del(BindThirdPart.APP_ID, BindThirdPart.KEY_IDENTIFIER,account_Id);
+        logger.info("成功从Redis获取推送绑定结果:{}",data);
 
         return data;
     }

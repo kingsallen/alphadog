@@ -845,7 +845,7 @@ public class JobApplicataionService {
 
     private int saveJobApplication(JobApplicationRecord jobApplicationRecord, JobPositionRecord jobPositionRecord) throws TException {
         // TODO Auto-generated method stub
-        int appId = 0;
+        int appId;
         try {
             if (jobApplicationRecord.getRecommenderUserId() != null && jobApplicationRecord.getRecommenderUserId().intValue() > 0) {
                 boolean existUserEmployee = employeeEntity.isEmployee(jobApplicationRecord.getRecommenderUserId(), jobApplicationRecord.getCompanyId());
@@ -861,8 +861,9 @@ public class JobApplicataionService {
 
             }
             logger.info("JobApplicataionService saveJobApplication jobApplicationRecord:{}", jobApplicationRecord);
-            jobApplicationDao.addRecord(jobApplicationRecord);
-            appId = jobApplicationRecord.getId();
+//            jobApplicationDao.addRecord(jobApplicationRecord);
+//            appId = jobApplicationRecord.getId();
+            appId = jobApplicationDao.addIfNotExists(jobApplicationRecord);
             if (appId > 0) {
                 HrOperationRecordRecord hrOperationRecord = getHrOperationRecordRecord(appId, jobApplicationRecord, jobPositionRecord);
                 hrOperationRecordDao.addRecord(hrOperationRecord);
@@ -888,11 +889,11 @@ public class JobApplicataionService {
 
     private int saveApplicationIfNotExist(JobApplicationRecord jobApplicationRecord, JobPositionRecord jobPositionRecord) throws TException {
         // TODO Auto-generated method stub
-        int appId = 0;
+        int appId;
         try {
             HrOperationRecordRecord hrOperationRecord = null;
-            jobApplicationDao.addRecord(jobApplicationRecord);
-            appId = jobApplicationRecord.getId().intValue();
+//            jobApplicationDao.addRecord(jobApplicationRecord);
+            appId = jobApplicationDao.addIfNotExists(jobApplicationRecord);
             if (appId > 0) {
                 hrOperationRecord = getHrOperationRecordRecord(appId, jobApplicationRecord, jobPositionRecord);
                 hrOperationRecordDao.addRecord(hrOperationRecord);

@@ -334,7 +334,8 @@ public class UseraccountsServiceImpl implements Iface {
 	@Override
 	public Response postresetmobile(int user_id,String countryCode, String newmobile, String code) throws TException {
 		try {
-			return service.postresetmobile(user_id, newmobile, code);
+
+			return service.postresetmobile(user_id, countryCode, newmobile, code);
 		} catch (CommonException e) {
 			throw ExceptionConvertUtil.convertCommonException(e);
 		} catch (Exception e) {
@@ -395,10 +396,7 @@ public class UseraccountsServiceImpl implements Iface {
 	@Override
 	public Response postvalidatepasswordforgotcode(String countryCode,String mobile, String code) throws TException {
 		try {
-			if(StringUtils.isNotNullOrEmpty(countryCode) && !"86".equals(countryCode)){
-				mobile=countryCode+mobile;
-			}
-			return service.postvalidatepasswordforgotcode(mobile, code);
+			return service.postvalidatepasswordforgotcode(countryCode, mobile, code);
 		} catch (CommonException e) {
 			throw ExceptionConvertUtil.convertCommonException(e);
 		} catch (Exception e) {
