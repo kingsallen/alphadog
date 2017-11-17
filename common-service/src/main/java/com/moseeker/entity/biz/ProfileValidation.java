@@ -2,12 +2,18 @@ package com.moseeker.entity.biz;
 
 import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
 import com.moseeker.baseorm.db.profiledb.tables.records.*;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.entity.Constant.UnitlNow;
 import com.moseeker.thrift.gen.profile.struct.*;
 import org.joda.time.DateTime;
 
+import java.sql.Timestamp;
+
 public class ProfileValidation {
+
+	private static long minTime = new DateTime("1900-01-01").getMillis();
+	private static long maxTime = new DateTime("2099-12-31").getMillis();
 
 	public static ValidationMessage<Credentials> verifyCredential(Credentials credentials) {
 		ValidationMessage<Credentials> vm = new ValidationMessage<>();
@@ -58,6 +64,13 @@ public class ProfileValidation {
 				&& education.getEnd_until_now() != UnitlNow.NotUntilNow.getStatus()) {
 			vm.addFailedElement("时间", "开始时间大于结束时间");
 		}
+		if (!legalDate(education.getStart_date())) {
+			vm.addFailedElement("开始时间", "时间限制在1900-01-01~2099-12-31之间");
+		}
+		if (education.getEnd_date() != null && !legalDate(education.getEnd_date())) {
+			vm.addFailedElement("结束时间", "时间限制在1900-01-01~2099-12-31之间");
+		}
+
 		return vm;
 	}
 	
@@ -74,9 +87,15 @@ public class ProfileValidation {
 		}
 		if (education.getStart() != null && education.getEnd() != null
 				&& education.getStart().getTime() > education.getEnd().getTime()
-				&& education.getEndUntilNow() != null
-				&& education.getEndUntilNow() != UnitlNow.NotUntilNow.getStatus()) {
+				&& (education.getEndUntilNow() == null
+				|| education.getEndUntilNow() != UnitlNow.NotUntilNow.getStatus())) {
 			vm.addFailedElement("时间", "开始时间大于结束时间");
+		}
+		if (!legalDate(education.getStart())) {
+			vm.addFailedElement("开始时间", "时间限制在1900-01-01~2099-12-31之间");
+		}
+		if (education.getEnd() != null && !legalDate(education.getEnd())) {
+			vm.addFailedElement("结束时间", "时间限制在1900-01-01~2099-12-31之间");
 		}
 		return vm;
 	}
@@ -111,6 +130,12 @@ public class ProfileValidation {
 				&& projectExp.getEnd_until_now() != UnitlNow.NotUntilNow.getStatus()) {
 			vm.addFailedElement("项目时间", "开始时间大于结束时间");
 		}
+		if (!legalDate(projectExp.getStart_date())) {
+			vm.addFailedElement("开始时间", "时间限制在1900-01-01~2099-12-31之间");
+		}
+		if (projectExp.getEnd_date() != null && !legalDate(projectExp.getEnd_date())) {
+			vm.addFailedElement("结束时间", "时间限制在1900-01-01~2099-12-31之间");
+		}
 		return vm;
 	}
 	
@@ -124,9 +149,15 @@ public class ProfileValidation {
 		}
 		if (projectExp.getStart() != null && projectExp.getEnd() != null
 				&& projectExp.getStart().getTime() > projectExp.getEnd().getTime()
-				&& projectExp.getEndUntilNow() != null
-				&& projectExp.getEndUntilNow()  != UnitlNow.NotUntilNow.getStatus()) {
+				&& (projectExp.getEndUntilNow() == null
+				|| projectExp.getEndUntilNow()  != UnitlNow.NotUntilNow.getStatus())) {
 			vm.addFailedElement("项目时间", "开始时间大于结束时间");
+		}
+		if (!legalDate(projectExp.getStart())) {
+			vm.addFailedElement("开始时间", "时间限制在1900-01-01~2099-12-31之间");
+		}
+		if (projectExp.getEnd() != null && !legalDate(projectExp.getEnd())) {
+			vm.addFailedElement("结束时间", "时间限制在1900-01-01~2099-12-31之间");
 		}
 		return vm;
 	}
@@ -168,6 +199,12 @@ public class ProfileValidation {
 				&& workExp.getEnd_until_now()  != UnitlNow.NotUntilNow.getStatus()) {
 			vm.addFailedElement("工作时间", "开始时间大于结束时间");
 		}
+		if (!legalDate(workExp.getStart_date())) {
+			vm.addFailedElement("开始时间", "时间限制在1900-01-01~2099-12-31之间");
+		}
+		if (workExp.getEnd_date() != null && !legalDate(workExp.getEnd_date())) {
+			vm.addFailedElement("结束时间", "时间限制在1900-01-01~2099-12-31之间");
+		}
 		return vm;
 	}
 	
@@ -187,10 +224,39 @@ public class ProfileValidation {
 		}
 		if (workExp.getStart() != null && workExp.getEnd() != null
 				&& workExp.getStart().getTime() > workExp.getEnd().getTime()
-				&& workExp.getEndUntilNow() != null
-				&& workExp.getEndUntilNow()  != UnitlNow.NotUntilNow.getStatus()) {
+				&& (workExp.getEndUntilNow() == null
+				|| workExp.getEndUntilNow()  != UnitlNow.NotUntilNow.getStatus())) {
 			vm.addFailedElement("工作时间", "开始时间大于结束时间");
 		}
+		if (!legalDate(workExp.getStart())) {
+			vm.addFailedElement("开始时间", "时间限制在1900-01-01~2099-12-31之间");
+		}
+		if (workExp.getEnd() != null && !legalDate(workExp.getEnd())) {
+			vm.addFailedElement("结束时间", "时间限制在1900-01-01~2099-12-31之间");
+		}
 		return vm;
+	}
+
+	public static boolean legalDate(String date) {
+		Timestamp timestamp = BeanUtils.convertToSQLTimestamp(date);
+		return legalDate(timestamp);
+	}
+
+	public static boolean legalDate(java.sql.Date timestamp) {
+		if (timestamp != null) {
+			if (timestamp.getTime() >= minTime && timestamp.getTime() <= maxTime) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static boolean legalDate(Timestamp timestamp) {
+		if (timestamp != null) {
+			if (timestamp.getTime() >= minTime && timestamp.getTime() <= maxTime) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
