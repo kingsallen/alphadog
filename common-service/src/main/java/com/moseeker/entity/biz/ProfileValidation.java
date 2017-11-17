@@ -130,10 +130,10 @@ public class ProfileValidation {
 				&& projectExp.getEnd_until_now() != UnitlNow.NotUntilNow.getStatus()) {
 			vm.addFailedElement("项目时间", "开始时间大于结束时间");
 		}
-		if (!legalDate(projectExp.getStart_date())) {
+		if (!lowerNow(projectExp.getStart_date())) {
 			vm.addFailedElement("开始时间", "时间限制在1900-01-01~2099-12-31之间");
 		}
-		if (projectExp.getEnd_date() != null && !legalDate(projectExp.getEnd_date())) {
+		if (projectExp.getEnd_date() != null && !lowerNow(projectExp.getEnd_date())) {
 			vm.addFailedElement("结束时间", "时间限制在1900-01-01~2099-12-31之间");
 		}
 		return vm;
@@ -153,10 +153,10 @@ public class ProfileValidation {
 				|| projectExp.getEndUntilNow()  != UnitlNow.NotUntilNow.getStatus())) {
 			vm.addFailedElement("项目时间", "开始时间大于结束时间");
 		}
-		if (!legalDate(projectExp.getStart())) {
+		if (!lowerNow(projectExp.getStart())) {
 			vm.addFailedElement("开始时间", "时间限制在1900-01-01~2099-12-31之间");
 		}
-		if (projectExp.getEnd() != null && !legalDate(projectExp.getEnd())) {
+		if (projectExp.getEnd() != null && !lowerNow(projectExp.getEnd())) {
 			vm.addFailedElement("结束时间", "时间限制在1900-01-01~2099-12-31之间");
 		}
 		return vm;
@@ -228,10 +228,10 @@ public class ProfileValidation {
 				|| workExp.getEndUntilNow()  != UnitlNow.NotUntilNow.getStatus())) {
 			vm.addFailedElement("工作时间", "开始时间大于结束时间");
 		}
-		if (!legalDate(workExp.getStart())) {
+		if (!lowerNow(workExp.getStart())) {
 			vm.addFailedElement("开始时间", "时间限制在1900-01-01~2099-12-31之间");
 		}
-		if (workExp.getEnd() != null && !legalDate(workExp.getEnd())) {
+		if (workExp.getEnd() != null && !lowerNow(workExp.getEnd())) {
 			vm.addFailedElement("结束时间", "时间限制在1900-01-01~2099-12-31之间");
 		}
 		return vm;
@@ -254,6 +254,29 @@ public class ProfileValidation {
 	public static boolean legalDate(Timestamp timestamp) {
 		if (timestamp != null) {
 			if (timestamp.getTime() >= minTime && timestamp.getTime() <= maxTime) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static boolean lowerNow(String date) {
+		Timestamp timestamp = BeanUtils.convertToSQLTimestamp(date);
+		return lowerNow(timestamp);
+	}
+
+	public static boolean lowerNow(java.sql.Date timestamp) {
+		if (timestamp != null) {
+			if (timestamp.getTime() <= System.currentTimeMillis() && timestamp.getTime() >= minTime) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static boolean lowerNow(Timestamp timestamp) {
+		if (timestamp != null) {
+			if (timestamp.getTime() <= System.currentTimeMillis() && timestamp.getTime() >= minTime) {
 				return true;
 			}
 		}

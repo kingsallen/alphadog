@@ -30,7 +30,7 @@ public class ProfileValidationTest {
 
         Education education1 = new Education();
         education1.setStart_date("2007-09-01");
-        education1.setEnd_date("2021-07-01");
+        education1.setEnd_date("2017-07-01");
         education1.setDegree(2);
         education1.setCollege_name("中原工学院");
         ValidationMessage<Education> vm1 = ProfileValidation.verifyEducation(education1);
@@ -83,7 +83,7 @@ public class ProfileValidationTest {
     public void verifyProjectExp() throws Exception {
         ProjectExp projectExp = new ProjectExp();
         projectExp.setStart_date("2007-09-01");
-        projectExp.setEnd_date("2021-07-01");
+        projectExp.setEnd_date("2017-07-01");
         projectExp.setName("项目名称");
         ValidationMessage<ProjectExp> vm = ProfileValidation.verifyProjectExp(projectExp);
         assertEquals(StringUtils.isBlank(vm.getResult()), true);
@@ -104,7 +104,7 @@ public class ProfileValidationTest {
     public void verifyProjectExp1() throws Exception {
         ProfileProjectexpRecord projectExp = new ProfileProjectexpRecord();
         projectExp.setStart(new Date(DateTime.parse("2017-09-01").getMillis()));
-        projectExp.setEnd(new Date(DateTime.parse("2021-07-01").getMillis()));
+        projectExp.setEnd(new Date(DateTime.parse("2017-11-01").getMillis()));
         projectExp.setName("项目名称");
         ValidationMessage<ProfileProjectexpRecord> vm = ProfileValidation.verifyProjectExp(projectExp);
         assertEquals(StringUtils.isBlank(vm.getResult()), true);
@@ -170,7 +170,7 @@ public class ProfileValidationTest {
     public void verifyWorkExp1() throws Exception {
         ProfileWorkexpEntity workExp = new ProfileWorkexpEntity();
         workExp.setStart(new Date(DateTime.parse("2017-09-01").getMillis()));
-        workExp.setEnd(new Date(DateTime.parse("2021-07-01").getMillis()));
+        workExp.setEnd(new Date(DateTime.parse("2017-11-01").getMillis()));
         HrCompanyRecord companyRecord = new HrCompanyRecord();
         companyRecord.setName("公司名称");
         workExp.setCompany(companyRecord);
