@@ -120,17 +120,14 @@ public class ThirdPartyAccountService {
         logger.info("-------bindThirdAccount--------{}:{}", hrId, JSON.toJSONString(account));
         // 判断Channel是否合法
         ChannelType channelType = ChannelType.instaceFromInteger(account.getChannel());
-
         if (channelType == null) {
             throw new BIZException(-1, "不支持的渠道类型：" + account.getChannel());
         }
 
         // 判断是否需要进行帐号绑定
-        Query qu = new Query.QueryBuilder().where("id", String.valueOf(hrId)).buildQuery();
 
-        UserHrAccountDO userHrAccount = hrAccountDao.getData(qu);
-
-        if (userHrAccount == null || userHrAccount.getActivation() != Byte.valueOf("1") || userHrAccount.getDisable() != 1) {
+        UserHrAccountDO userHrAccount = hrAccountDao.getValidAccount(hrId);
+        if (userHrAccount == null) {
             //没有找到该hr账号
             throw new BIZException(-1, "无效的HR帐号");
         }
@@ -141,13 +138,9 @@ public class ThirdPartyAccountService {
 
         //allowStatus==0,绑定之后将hrId和帐号关联起来，allowStatus>0,使用之前的绑定记录
         int allowStatus = allowBind(userHrAccount, account);
-
         logger.info("bindThirdAccount allowStatus:{}", allowStatus);
 
-        if (getCache(account) != null) {
-            //绑定中
-            throw new BIZException(-1, "正在尝试绑定该账号，请10分钟后再次尝试");
-        }
+        isAlreadyBinding(account);  //验证是否正在绑定
 
         //使用之前的绑定记录
         if (allowStatus > 0) {
@@ -269,6 +262,14 @@ public class ThirdPartyAccountService {
     private String getCache(HrThirdPartyAccountDO bindingAccount) throws BIZException {
         String cacheKey = getCacheKey(bindingAccount);
         return redisClient.get(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_ACCOUNT_BINDING.toString(), cacheKey);
+    }
+
+    private boolean isAlreadyBinding(HrThirdPartyAccountDO account) throws BIZException {
+        if (getCache(account) != null) {
+            //绑定中
+            throw new BIZException(-1, "正在尝试绑定该账号，请10分钟后再次尝试");
+        }
+        return false;
     }
 
     /**

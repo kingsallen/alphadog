@@ -91,8 +91,6 @@ public class PositionBS {
             } else {
                 p.setThirdPartyAccountId(avaliableAccount.getId());
             }
-            //根据是否使用公司地址来设置工作地址
-//            positionSyncHandler.setCompanyAddress(p, company);
             // 转成第三方渠道职位
             ThirdPartyPositionForSynchronization pos = positionServices.changeOneToThirdPartyPosition(p, moseekerJobPosition);
 

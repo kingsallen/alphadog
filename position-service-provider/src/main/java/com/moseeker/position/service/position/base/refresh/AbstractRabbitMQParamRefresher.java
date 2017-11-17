@@ -4,7 +4,11 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.common.constants.ChannelType;
+import com.moseeker.position.service.position.base.refresh.handler.ResultHandler;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,18 +19,35 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public abstract class AbstractRabbitMQParamRefresher implements ParamRefresher {
+    Logger logger= LoggerFactory.getLogger(AbstractRabbitMQParamRefresher.class);
+
     @Autowired
     DictCityDao cityDao;
 
+    @Autowired
+    private AmqpTemplate amqpTemplate;
+
     //发送消息去RabbitMQ
-    public abstract void send();
+    public abstract void addSendParam(JSONObject jsonSend);
+    public abstract String exchange();
+    public abstract String routingKey();
     //接受并处理刷新结果，需要加上{@RabbitListener}和{@RabbitHandler}两个注解
-    public abstract void receiveAndHandle(String json);
+    public abstract void receiveAndHandle(String str);
+
     public abstract ChannelType getChannel();
 
     @Override
     public void refresh() {
-        send();
+        JSONObject jsonSend=new JSONObject();
+
+        jsonSend.put("channel",getChannel().getValue());
+        addSendParam(jsonSend);
+
+        String json=jsonSend.toJSONString();
+        logger.info("refresh param send RabbitMQ :"+json);
+
+        amqpTemplate.send(exchange(),routingKey(), createMsg(json));
+        logger.info("send RabbitMQ success");
     }
 
     public Message createMsg(String str){
@@ -52,7 +73,6 @@ public abstract class AbstractRabbitMQParamRefresher implements ParamRefresher {
             moseekerRegin.put("text",chain);
             moseekerReginArray.add(moseekerRegin);
         }
-
         return moseekerReginArray;
     }
 }

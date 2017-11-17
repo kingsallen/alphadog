@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.position.constants.VeryEastConstant;
 import com.moseeker.position.service.position.base.refresh.AbstractRabbitMQParamRefresher;
+import com.moseeker.position.service.position.base.refresh.handler.ResultHandler;
 import com.moseeker.position.service.position.veryeast.refresh.handler.VEResultHandlerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,31 +21,12 @@ import java.util.*;
 public class VeryEastParamRefresher extends AbstractRabbitMQParamRefresher {
     Logger logger= LoggerFactory.getLogger(this.getClass());
 
-
-
     @Autowired
-    private AmqpTemplate amqpTemplate;
-
-    private List<VEResultHandlerAdapter> refreshList=new ArrayList<>();
-
-    @Autowired
-    public VeryEastParamRefresher(List<VEResultHandlerAdapter> list){
-        refreshList.addAll(list);
-    }
+    private List<VEResultHandlerAdapter> refreshList;
 
     @Override
-    public void send() {
-        JSONObject jsonSend=new JSONObject();
-        JSONArray moseekerReginArray=moseekerRegin();
-
-        jsonSend.put("channel",getChannel().getValue());
-        jsonSend.put("moseeker_region",moseekerReginArray);
-
-        String json=jsonSend.toJSONString();
-        logger.info("VeryEast refresh param send RabbitMQ :"+json);
-
-        amqpTemplate.send(VeryEastConstant.EXCHANGE,VeryEastConstant.PARAM_SEND_ROUTING_KEY, createMsg(json));
-        logger.info("send RabbitMQ success");
+    public void addSendParam(JSONObject jsonSend) {
+        jsonSend.put("moseeker_region",moseekerRegin());
     }
 
     @Override
@@ -52,11 +34,18 @@ public class VeryEastParamRefresher extends AbstractRabbitMQParamRefresher {
     @RabbitHandler
     public void receiveAndHandle(String json) {
         logger.info("receive json:{}" ,json);
-
         //调用所有处理策略
         refreshList.forEach(r->r.handle(json));
     }
 
+    @Override
+    public String exchange() {
+        return VeryEastConstant.EXCHANGE;
+    }
+    @Override
+    public String routingKey() {
+        return VeryEastConstant.PARAM_SEND_ROUTING_KEY;
+    }
     @Override
     public ChannelType getChannel() {
         return ChannelType.VERYEAST;
