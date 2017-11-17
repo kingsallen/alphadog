@@ -1330,7 +1330,7 @@ public class PositionService {
         List<WechatPositionListData> dataList = new ArrayList<>();
         logger.info("jdIdList: " + jdIdList);
         Condition con = new Condition("id", jdIdList.toArray(), ValueOp.IN);
-        Query q = new Query.QueryBuilder().where(con).buildQuery();
+        Query q = new Query.QueryBuilder().where(con).and("status",0).buildQuery();
         List<JobPositionRecord> jobRecords = positionEntity.getPositions(q);
         //List<JobPositionRecord> jobRecords = jobPositionDao.getRecords(q);
         //Map<Integer, Set<String>> cityMap = commonPositionUtils.handlePositionCity(jdIdList);
