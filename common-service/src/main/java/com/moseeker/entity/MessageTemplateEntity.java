@@ -287,7 +287,7 @@ public class MessageTemplateEntity {
       根据user_id和company_id查找雇员信息
      */
     private UserEmployeeRecord getUserEmployeeByUserIdAndCompanyId(int userId,int companyId){
-        Query query=new Query.QueryBuilder().where("sysuser_id",userId).and("company_id",companyId).buildQuery();
+        Query query=new Query.QueryBuilder().where("sysuser_id",userId).and("company_id",companyId).and("disable",0).and("activation",0).buildQuery();
         UserEmployeeRecord DO=userEmployeeDao.getRecord(query);
         return DO;
     }
