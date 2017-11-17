@@ -309,6 +309,7 @@ public class EmployeeService {
         List<Integer> companyIds = employeeEntity.getCompanyIds(companyId);
         try {
             Response result = searchService.queryAwardRankingInWx(companyIds, timespan, employeeId);
+            log.info("awardRanking:", result);
             if (result.getStatus() == 0){
 
                 // 解析数据
@@ -317,6 +318,7 @@ public class EmployeeService {
                 query.where(new Condition("id", map.keySet(), ValueOp.IN));
                 Map<Integer, UserEmployeeDO> employeeDOMap = new HashMap<>();
                 employeeDOMap.putAll(employeeDao.getDatas(query.buildQuery()).stream().filter(m -> m != null && m.getId() > 0).collect(Collectors.toMap(k -> k.getId(), v -> v)));
+                log.info("employeeDOMap:{}", employeeDOMap);
                 List<Integer> userIds = employeeDOMap.values().stream().map(m -> m.getSysuserId()).collect(Collectors.toList());
                 // 用户头像获取，获取顺序 user_user.headimg > user_wx_user.headimgurl > ""(默认头像)
                 String defaultHeadImg = "https://cdn.moseeker.com/weixin/images/hr-avatar-default.png";
@@ -329,6 +331,7 @@ public class EmployeeService {
                 query.clear();
                 query.where(new Condition("id", userIds, ValueOp.IN));
                 Map<Integer, String> userHeadimg = userDao.getDatas(query.buildQuery()).stream().map(m -> m.setHeadimg(StringUtils.isNullOrEmpty(m.getHeadimg())?wxUserHeadimg.get(m.getId()):m.getHeadimg())).collect(Collectors.toMap(k -> k.getId(), v -> v.getHeadimg(), (newKey, oldKey) -> newKey));
+                log.info("userHeadimg:{}", userHeadimg);
                 map.entrySet().stream().forEach(e -> {
                     EmployeeAward employeeAward = new EmployeeAward();
                     JSONObject value = e.getValue();
@@ -343,10 +346,11 @@ public class EmployeeService {
                 log.error("query awardRanking data error");
             }
         } catch (TException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         return response;
     }
+
 
     // 邮箱认证的员工记录保存在redis中所以要更新缓存数据
     public Result setCacheEmployeeCustomInfo(int userId, int companyId, String customValues)
