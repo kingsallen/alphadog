@@ -30,7 +30,7 @@ public class ProfileValidationTest {
 
         Education education1 = new Education();
         education1.setStart_date("2007-09-01");
-        education1.setEnd_date("2021-07-01");
+        education1.setEnd_date("2017-07-01");
         education1.setDegree(2);
         education1.setCollege_name("中原工学院");
         ValidationMessage<Education> vm1 = ProfileValidation.verifyEducation(education1);
@@ -58,17 +58,38 @@ public class ProfileValidationTest {
     }
 
     @Test
+    public void verifyEducation2() throws Exception {
+        ProfileEducationRecord record = new ProfileEducationRecord();
+        record.setStart(new Date(DateTime.parse("1890-09-01").getMillis()));
+        record.setEnd(new Date(DateTime.parse("2021-07-01").getMillis()));
+
+        ValidationMessage<ProfileEducationRecord> vm = ProfileValidation.verifyEducation(record);
+
+        assertEquals(StringUtils.isBlank(vm.getResult()), false);
+    }
+
+    @Test
+    public void verifyEducation3() throws Exception {
+        ProfileEducationRecord record = new ProfileEducationRecord();
+        record.setStart(new Date(DateTime.parse("1999-09-01").getMillis()));
+        record.setEnd(new Date(DateTime.parse("3010-07-01").getMillis()));
+
+        ValidationMessage<ProfileEducationRecord> vm = ProfileValidation.verifyEducation(record);
+
+        assertEquals(StringUtils.isBlank(vm.getResult()), false);
+    }
+
+    @Test
     public void verifyProjectExp() throws Exception {
         ProjectExp projectExp = new ProjectExp();
         projectExp.setStart_date("2007-09-01");
-        projectExp.setEnd_date("2021-07-01");
+        projectExp.setEnd_date("2017-07-01");
         projectExp.setName("项目名称");
         ValidationMessage<ProjectExp> vm = ProfileValidation.verifyProjectExp(projectExp);
         assertEquals(StringUtils.isBlank(vm.getResult()), true);
 
         ProjectExp projectExp1 = new ProjectExp();
         ValidationMessage<ProjectExp> vm1 = ProfileValidation.verifyProjectExp(projectExp1);
-        System.out.println(vm1.getResult());
         assertEquals(StringUtils.isBlank(vm1.getResult()), false);
 
         ProjectExp projectExp2 = new ProjectExp();
@@ -76,7 +97,6 @@ public class ProfileValidationTest {
         projectExp2.setStart_date("2027-09-01");
         projectExp2.setEnd_date("2021-07-01");
         ValidationMessage<ProjectExp> vm2 = ProfileValidation.verifyProjectExp(projectExp2);
-        System.out.println(vm2.getResult());
         assertEquals(StringUtils.isBlank(vm2.getResult()), false);
     }
 
@@ -84,7 +104,7 @@ public class ProfileValidationTest {
     public void verifyProjectExp1() throws Exception {
         ProfileProjectexpRecord projectExp = new ProfileProjectexpRecord();
         projectExp.setStart(new Date(DateTime.parse("2017-09-01").getMillis()));
-        projectExp.setEnd(new Date(DateTime.parse("2021-07-01").getMillis()));
+        projectExp.setEnd(new Date(DateTime.parse("2017-11-01").getMillis()));
         projectExp.setName("项目名称");
         ValidationMessage<ProfileProjectexpRecord> vm = ProfileValidation.verifyProjectExp(projectExp);
         assertEquals(StringUtils.isBlank(vm.getResult()), true);
@@ -98,8 +118,29 @@ public class ProfileValidationTest {
         projectExp2.setStart(new Date(DateTime.parse("2027-09-01").getMillis()));
         projectExp2.setEnd(new Date(DateTime.parse("2021-07-01").getMillis()));
         ValidationMessage<ProfileProjectexpRecord> vm2 = ProfileValidation.verifyProjectExp(projectExp2);
-        System.out.println(vm2.getResult());
         assertEquals(StringUtils.isBlank(vm2.getResult()), false);
+    }
+
+    @Test
+    public void verifyProjectExp2() throws Exception {
+        ProfileProjectexpRecord projectExp = new ProfileProjectexpRecord();
+        projectExp.setStart(new Date(DateTime.parse("1899-09-01").getMillis()));
+        projectExp.setEnd(new Date(DateTime.parse("2021-07-01").getMillis()));
+        projectExp.setName("项目名称");
+        ValidationMessage<ProfileProjectexpRecord> vm = ProfileValidation.verifyProjectExp(projectExp);
+        assertEquals(StringUtils.isBlank(vm.getResult()), false);
+
+    }
+
+    @Test
+    public void verifyProjectExp3() throws Exception {
+        ProfileProjectexpRecord projectExp = new ProfileProjectexpRecord();
+        projectExp.setStart(new Date(DateTime.parse("2017-09-01").getMillis()));
+        projectExp.setEnd(new Date(DateTime.parse("3017-07-01").getMillis()));
+        projectExp.setName("项目名称");
+        ValidationMessage<ProfileProjectexpRecord> vm = ProfileValidation.verifyProjectExp(projectExp);
+        assertEquals(StringUtils.isBlank(vm.getResult()), false);
+
     }
 
     @Test
@@ -114,7 +155,6 @@ public class ProfileValidationTest {
 
         WorkExp workExp1 = new WorkExp();
         ValidationMessage<WorkExp> vm1 = ProfileValidation.verifyWorkExp(workExp1);
-        System.out.println(vm1.getResult());
         assertEquals(StringUtils.isBlank(vm1.getResult()), false);
 
         WorkExp workExp2 = new WorkExp();
@@ -123,7 +163,6 @@ public class ProfileValidationTest {
         workExp2.setCompany_name("公司名称");
         workExp2.setJob("职位");
         ValidationMessage<WorkExp> vm2 = ProfileValidation.verifyWorkExp(workExp2);
-        System.out.println(vm2.getResult());
         assertEquals(StringUtils.isBlank(vm2.getResult()), false);
     }
 
@@ -131,19 +170,17 @@ public class ProfileValidationTest {
     public void verifyWorkExp1() throws Exception {
         ProfileWorkexpEntity workExp = new ProfileWorkexpEntity();
         workExp.setStart(new Date(DateTime.parse("2017-09-01").getMillis()));
-        workExp.setEnd(new Date(DateTime.parse("2021-07-01").getMillis()));
+        workExp.setEnd(new Date(DateTime.parse("2017-11-01").getMillis()));
         HrCompanyRecord companyRecord = new HrCompanyRecord();
         companyRecord.setName("公司名称");
         workExp.setCompany(companyRecord);
         workExp.setJob("职位");
         workExp.setDescription("描述");
         ValidationMessage<ProfileWorkexpEntity> vm = ProfileValidation.verifyWorkExp(workExp);
-        System.out.println(vm.getResult());
         assertEquals(StringUtils.isBlank(vm.getResult()), true);
 
         ProfileWorkexpEntity workExp1 = new ProfileWorkexpEntity();
         ValidationMessage<ProfileWorkexpEntity> vm1 = ProfileValidation.verifyWorkExp(workExp1);
-        System.out.println(vm1.getResult());
         assertEquals(StringUtils.isBlank(vm1.getResult()), false);
 
         ProfileWorkexpEntity workExp2 = new ProfileWorkexpEntity();
@@ -153,8 +190,34 @@ public class ProfileValidationTest {
         workExp2.setJob("职位");
         workExp2.setDescription("描述");
         ValidationMessage<ProfileWorkexpEntity> vm2 = ProfileValidation.verifyWorkExp(workExp2);
-        System.out.println(vm2.getResult());
         assertEquals(StringUtils.isBlank(vm2.getResult()), false);
     }
 
+    @Test
+    public void verifyWorkExp2() throws Exception {
+        ProfileWorkexpEntity workExp = new ProfileWorkexpEntity();
+        workExp.setStart(new Date(DateTime.parse("1889-09-01").getMillis()));
+        workExp.setEnd(new Date(DateTime.parse("2021-07-01").getMillis()));
+        HrCompanyRecord companyRecord = new HrCompanyRecord();
+        companyRecord.setName("公司名称");
+        workExp.setCompany(companyRecord);
+        workExp.setJob("职位");
+        workExp.setDescription("描述");
+        ValidationMessage<ProfileWorkexpEntity> vm = ProfileValidation.verifyWorkExp(workExp);
+        assertEquals(StringUtils.isBlank(vm.getResult()), false);
+    }
+
+    @Test
+    public void verifyWorkExp3() throws Exception {
+        ProfileWorkexpEntity workExp = new ProfileWorkexpEntity();
+        workExp.setStart(new Date(DateTime.parse("2017-09-01").getMillis()));
+        workExp.setEnd(new Date(DateTime.parse("3000-07-01").getMillis()));
+        HrCompanyRecord companyRecord = new HrCompanyRecord();
+        companyRecord.setName("公司名称");
+        workExp.setCompany(companyRecord);
+        workExp.setJob("职位");
+        workExp.setDescription("描述");
+        ValidationMessage<ProfileWorkexpEntity> vm = ProfileValidation.verifyWorkExp(workExp);
+        assertEquals(StringUtils.isBlank(vm.getResult()), false);
+    }
 }
