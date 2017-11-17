@@ -54,9 +54,9 @@ public class ProfileValidation {
 		}
 		if (education.getStart_date() != null && education.getEnd_date() != null
 				&& DateTime.parse(education.getStart_date()).getMillis()
-				>= DateTime.parse(education.getEnd_date()).getMillis()
+				> DateTime.parse(education.getEnd_date()).getMillis()
 				&& education.getEnd_until_now() != UnitlNow.NotUntilNow.getStatus()) {
-			vm.addFailedElement("项目时间", "开始时间大于或者等于结束时间");
+			vm.addFailedElement("时间", "开始时间大于结束时间");
 		}
 		return vm;
 	}
@@ -73,9 +73,9 @@ public class ProfileValidation {
 			vm.addFailedElement("开始时间", "未选择开始时间");
 		}
 		if (education.getStart() != null && education.getEnd() != null
-				&& education.getStart().getTime() >= education.getEnd().getTime()
+				&& education.getStart().getTime() > education.getEnd().getTime()
 				&& education.getEndUntilNow() != UnitlNow.NotUntilNow.getStatus()) {
-			vm.addFailedElement("项目时间", "开始时间大于或者等于结束时间");
+			vm.addFailedElement("时间", "开始时间大于结束时间");
 		}
 		return vm;
 	}
@@ -106,9 +106,9 @@ public class ProfileValidation {
 		}
 		if (projectExp.getStart_date() != null && projectExp.getEnd_date() != null
 				&& DateTime.parse(projectExp.getStart_date()).getMillis()
-				>= DateTime.parse(projectExp.getEnd_date()).getMillis()
+				> DateTime.parse(projectExp.getEnd_date()).getMillis()
 				&& projectExp.getEnd_until_now() != UnitlNow.NotUntilNow.getStatus()) {
-			vm.addFailedElement("项目时间", "开始时间大于或者等于结束时间");
+			vm.addFailedElement("项目时间", "开始时间大于结束时间");
 		}
 		return vm;
 	}
@@ -122,9 +122,9 @@ public class ProfileValidation {
 			vm.addFailedElement("开始时间", "未填写开始时间");
 		}
 		if (projectExp.getStart() != null && projectExp.getEnd() != null
-				&& projectExp.getStart().getTime() >= projectExp.getEnd().getTime()
+				&& projectExp.getStart().getTime() > projectExp.getEnd().getTime()
 				&& projectExp.getEndUntilNow()  != UnitlNow.NotUntilNow.getStatus()) {
-			vm.addFailedElement("项目时间", "开始时间大于或者等于结束时间");
+			vm.addFailedElement("项目时间", "开始时间大于结束时间");
 		}
 		return vm;
 	}
@@ -162,9 +162,9 @@ public class ProfileValidation {
 		}
 		if (workExp.getStart_date() != null && workExp.getEnd_date() != null
 				&& DateTime.parse(workExp.getStart_date()).getMillis()
-				>= DateTime.parse(workExp.getEnd_date()).getMillis()
+				> DateTime.parse(workExp.getEnd_date()).getMillis()
 				&& workExp.getEnd_until_now()  != UnitlNow.NotUntilNow.getStatus()) {
-			vm.addFailedElement("项目时间", "开始时间大于或者等于结束时间");
+			vm.addFailedElement("工作时间", "开始时间大于结束时间");
 		}
 		return vm;
 	}
@@ -184,9 +184,9 @@ public class ProfileValidation {
 			vm.addFailedElement("职位描述", "未对该职位做详细描述");
 		}
 		if (workExp.getStart() != null && workExp.getEnd() != null
-				&& workExp.getStart().getTime() >= workExp.getEnd().getTime()
+				&& workExp.getStart().getTime() > workExp.getEnd().getTime()
 				&& workExp.getEndUntilNow()  != UnitlNow.NotUntilNow.getStatus()) {
-			vm.addFailedElement("项目时间", "开始时间大于或者等于结束时间");
+			vm.addFailedElement("工作时间", "开始时间大于结束时间");
 		}
 		return vm;
 	}

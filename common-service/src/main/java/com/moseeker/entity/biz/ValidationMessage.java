@@ -15,12 +15,17 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public class ValidationMessage<T> {
 
-	private volatile boolean result = true;
-	private Map<String, List<String>> message = new HashMap<>();
+	private volatile boolean result = true;			//是否通过
+	private Map<String, List<String>> message = new HashMap<>();   //错误信息
 	private List<T> failedArray;
-	
+
 	ReentrantReadWriteLock lock = new ReentrantReadWriteLock(true);
-	
+
+	/**
+	 * 添加错误信息
+	 * @param elementName 错误项
+	 * @param reason	错误原因
+	 */
 	public void addFailedElement(String elementName, String reason) {
 		lock.writeLock().lock();
 		try {
@@ -44,28 +49,38 @@ public class ValidationMessage<T> {
 			lock.writeLock().unlock();
 		}
 	}
-	
+
+	/**
+	 * 校验结果
+	 * @return true 通过；false 未通过
+	 */
 	public boolean isPass() {
 		return result;
 	}
-	
+
+	/**
+	 * 错误详情
+	 * @return 错误详情
+	 */
 	public String getResult() {
 		lock.readLock().lock();
 		try {
 			if(!result) {
 				StringBuffer sb = new StringBuffer();
+
 				message.forEach((elementName, reasons) -> {
 					StringBuffer elementReason = new StringBuffer();
 					elementReason.append("|");
 					elementReason.append(elementName);
 					elementReason.append(":");
 					if(reasons != null && reasons.size() > 0) {
-						reasons.forEach(reason -> {
-							elementReason.append(reason);
-						});
+						reasons.forEach(reason -> elementReason.append(reason));
 					}
 					sb.append(elementReason);
 				});
+				if (sb.length() > 0) {
+					sb.deleteCharAt(0);
+				}
 				return sb.toString();
 			} else {
 				return "";
