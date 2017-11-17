@@ -8,13 +8,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class PositionParamUtils {
-    private static Logger logger= LoggerFactory.getLogger(PositionParamUtils.class);
+public class PositionRefreshUtils {
+    private static Logger logger= LoggerFactory.getLogger(PositionRefreshUtils.class);
 
     private static int defaultKeySeed=100000;
     private static int defaultKeySize=16;
 
-    private PositionParamUtils(){}
+    private PositionRefreshUtils(){}
 
     public static <K> Map<K,Integer> generateNewKey(Iterator<K> it){
         return generateNewKey(it,defaultKeySeed,defaultKeySize);
@@ -65,7 +65,7 @@ public class PositionParamUtils {
     public static int lastCode(List<String> codes){
         try {
             return Integer.valueOf(codes.get(codes.size()-1));
-        }catch (NumberFormatException e){
+        }catch (Exception e){
             logger.info("lastCode NumberFormatException:{}",codes);
             throw e;
         }

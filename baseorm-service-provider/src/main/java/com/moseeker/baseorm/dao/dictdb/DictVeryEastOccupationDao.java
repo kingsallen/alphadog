@@ -5,7 +5,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.dictdb.tables.DictVeryeastOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictVeryeastOccupationRecord;
+import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictVeryEastOccupationDO;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
@@ -43,5 +45,10 @@ public class DictVeryEastOccupationDao extends JooqCrudImpl<DictVeryEastOccupati
             build.and(DictVeryeastOccupation.DICT_VERYEAST_OCCUPATION.LEVEL.getName(), level);
         }
         return getDatas(build.buildQuery());
+    }
+
+    public int deleteAll(){
+        Condition condition=new Condition("code",0, ValueOp.NEQ);
+        return delete(condition);
     }
 }

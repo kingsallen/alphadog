@@ -13,13 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class ThirdPartyAccountInfoAddressService {
-    private static Logger logger= LoggerFactory.getLogger(ThirdPartyAccountInfoAddressService.class);
+public class ThirdPartyAccountAddressService {
+    private static Logger logger= LoggerFactory.getLogger(ThirdPartyAccountAddressService.class);
     @Autowired
     ThirdpartyAccountCompanyAddressDao addressDao;
 
     //把ThirdpartyAccountCompanyAddressDO转换成传给前台的类型ThirdPartyAccountInfoAddress
-    public List<ThirdPartyAccountInfoAddress> getInfoCompanyAddress(int accountId)throws TException {
+    public List<ThirdPartyAccountInfoAddress> getCompanyAddressByAccountId(int accountId)throws TException {
         List<ThirdpartyAccountCompanyAddressDO> addressList=addressDao.getAddressByAccountId(accountId);
 
         List<ThirdPartyAccountInfoAddress> infoAddressList=new ArrayList<>();

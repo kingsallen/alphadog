@@ -1,8 +1,7 @@
 package com.moseeker.position.service.schedule;
 
 
-import com.moseeker.position.service.position.base.ParamRefresh;
-import com.moseeker.position.service.position.veryeast.VeryEastParamRefresh;
+import com.moseeker.position.service.position.base.refresh.ParamRefresher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +16,10 @@ import java.util.List;
 public class ThirdPartyPositionParamRefresh {
     Logger logger= LoggerFactory.getLogger(ThirdPartyPositionParamRefresh.class);
 
-    private static List<ParamRefresh> refreshList=new ArrayList<>();
+    private static List<ParamRefresher> refreshList=new ArrayList<>();
 
     @Autowired
-    public ThirdPartyPositionParamRefresh(List<ParamRefresh> list){
+    public ThirdPartyPositionParamRefresh(List<ParamRefresher> list){
         refreshList.addAll(list);
     }
 

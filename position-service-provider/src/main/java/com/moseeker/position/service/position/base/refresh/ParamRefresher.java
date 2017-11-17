@@ -1,4 +1,4 @@
-package com.moseeker.position.service.position.base;
+package com.moseeker.position.service.position.base.refresh;
 
 /**
  * 第三方职位字段刷新接口，
@@ -8,6 +8,6 @@ package com.moseeker.position.service.position.base;
  *
  * @author pyb
  */
-public interface ParamRefresh {
+public interface ParamRefresher {
     public void refresh();
 }
