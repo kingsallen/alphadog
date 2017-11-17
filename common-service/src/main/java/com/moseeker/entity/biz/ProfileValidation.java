@@ -56,7 +56,7 @@ public class ProfileValidation {
 				&& DateTime.parse(education.getStart_date()).getMillis()
 				> DateTime.parse(education.getEnd_date()).getMillis()
 				&& education.getEnd_until_now() != UnitlNow.NotUntilNow.getStatus()) {
-			vm.addFailedElement("项目时间", "开始时间大于或者等于结束时间");
+			vm.addFailedElement("时间", "开始时间大于结束时间");
 		}
 		return vm;
 	}
@@ -75,7 +75,7 @@ public class ProfileValidation {
 		if (education.getStart() != null && education.getEnd() != null
 				&& education.getStart().getTime() > education.getEnd().getTime()
 				&& education.getEndUntilNow() != UnitlNow.NotUntilNow.getStatus()) {
-			vm.addFailedElement("项目时间", "开始时间大于或者等于结束时间");
+			vm.addFailedElement("时间", "开始时间大于结束时间");
 		}
 		return vm;
 	}
@@ -108,7 +108,7 @@ public class ProfileValidation {
 				&& DateTime.parse(projectExp.getStart_date()).getMillis()
 				> DateTime.parse(projectExp.getEnd_date()).getMillis()
 				&& projectExp.getEnd_until_now() != UnitlNow.NotUntilNow.getStatus()) {
-			vm.addFailedElement("项目时间", "开始时间大于或者等于结束时间");
+			vm.addFailedElement("项目时间", "开始时间大于结束时间");
 		}
 		return vm;
 	}
@@ -124,7 +124,7 @@ public class ProfileValidation {
 		if (projectExp.getStart() != null && projectExp.getEnd() != null
 				&& projectExp.getStart().getTime() > projectExp.getEnd().getTime()
 				&& projectExp.getEndUntilNow()  != UnitlNow.NotUntilNow.getStatus()) {
-			vm.addFailedElement("项目时间", "开始时间大于或者等于结束时间");
+			vm.addFailedElement("项目时间", "开始时间大于结束时间");
 		}
 		return vm;
 	}
@@ -164,7 +164,7 @@ public class ProfileValidation {
 				&& DateTime.parse(workExp.getStart_date()).getMillis()
 				> DateTime.parse(workExp.getEnd_date()).getMillis()
 				&& workExp.getEnd_until_now()  != UnitlNow.NotUntilNow.getStatus()) {
-			vm.addFailedElement("项目时间", "开始时间大于或者等于结束时间");
+			vm.addFailedElement("工作时间", "开始时间大于结束时间");
 		}
 		return vm;
 	}
@@ -186,7 +186,7 @@ public class ProfileValidation {
 		if (workExp.getStart() != null && workExp.getEnd() != null
 				&& workExp.getStart().getTime() > workExp.getEnd().getTime()
 				&& workExp.getEndUntilNow()  != UnitlNow.NotUntilNow.getStatus()) {
-			vm.addFailedElement("项目时间", "开始时间大于或者等于结束时间");
+			vm.addFailedElement("工作时间", "开始时间大于结束时间");
 		}
 		return vm;
 	}
