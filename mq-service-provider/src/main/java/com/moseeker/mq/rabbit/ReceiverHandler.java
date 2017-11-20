@@ -107,7 +107,13 @@ public class ReceiverHandler {
                     messageTemplate.setEnable_qx_retry(Byte.parseByte(enable_qx_retry));
                 }
                 templateMsgProducer.messageTemplateNotice(messageTemplate);
-                personaRecomEntity.updateIsSendPersonaRecom(userId,companyId,1,20);
+                if(type==2){
+                    personaRecomEntity.updateIsSendPersonaRecom(userId,companyId,0,1,20);
+                }
+                if(type==3){
+                    personaRecomEntity.updateIsSendPersonaRecom(userId,companyId,1,1,20);
+                }
+
 
             }else{
                 this.handleTemplateLogDeadLetter(message,msgBody,"没有查到模板所需的具体内容");

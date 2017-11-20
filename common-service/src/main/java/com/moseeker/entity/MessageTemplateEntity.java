@@ -77,9 +77,9 @@ public class MessageTemplateEntity {
     public MessageTemplateNoticeStruct handlerTemplate(int userId,int companyId,int templateId,int type,String url){
 
         HrWxWechatDO DO= this.getHrWxWechatDOByCompanyId(companyId);
+        String wxSignture=DO.getSignature();
         if(type==1){
-            //https://platform.moseeker.com/m/user/survey?wechat_siganture=xxx
-            String wxSignture=DO.getSignature();
+
             url=url.replace("{}",wxSignture);
         }else if(type==2){
             //校验推送职位是否下架
@@ -87,12 +87,8 @@ public class MessageTemplateEntity {
             if(StringUtils.isNullOrEmpty(pids)){
                 return null;
             }
-            //https://platform-t.dqprism.com/m/user/ai-recom?wechat_signature=xxx
-            String wxSignture=DO.getSignature();
             url=url.replace("{}",wxSignture);
         }else if(type==4){
-            //https://platform-t.dqprism.com/m/employee/survey?wechat_signature={}
-            String wxSignture=DO.getSignature();
             url=url.replace("{}",wxSignture);
         }else if(type==3){
             //校验推送职位是否下架
@@ -100,7 +96,6 @@ public class MessageTemplateEntity {
            if(StringUtils.isNullOrEmpty(pids)){
                return null;
            }
-           String wxSignture=DO.getSignature();
 
         }
         MessageTemplateNoticeStruct messageTemplateNoticeStruct =new MessageTemplateNoticeStruct();

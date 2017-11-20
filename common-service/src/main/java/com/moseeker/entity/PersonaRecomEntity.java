@@ -53,8 +53,8 @@ public class PersonaRecomEntity {
     /*
         更新推荐职位数据是否已经推荐
      */
-    public int updateIsSendPersonaRecom(int userId,int companyId,int page,int pageSize){
-        Query query=new Query.QueryBuilder().where("user_id",userId).and("company_id",companyId).orderBy("create_time", Order.DESC).setPageNum(page).setPageSize(pageSize).buildQuery();
+    public int updateIsSendPersonaRecom(int userId,int companyId,int type,int page,int pageSize){
+        Query query=new Query.QueryBuilder().where("user_id",userId).and("company_id",companyId).and("type",(byte)type).orderBy("create_time", Order.DESC).setPageNum(page).setPageSize(pageSize).buildQuery();
         List<CampaignPersonaRecomRecord> list=campaignPersonaRecomDao.getRecords(query);
         if(StringUtils.isEmptyList(list)){
             return 1;
