@@ -1,6 +1,7 @@
 package com.moseeker.position.service.position.liepin;
 
 import com.moseeker.baseorm.dao.dictdb.DictCityMapDao;
+import com.moseeker.baseorm.dao.dictdb.DictLiepinOccupationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.util.query.Query;
@@ -19,11 +20,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class LiepinPositionTransfer extends PositionTransfer {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    @Autowired
+    DictLiepinOccupationDao occupationDao;
 
     @Override
     protected void setDepartment(ThirdPartyPosition form, JobPositionDO positionDO, ThirdPartyPositionForSynchronization position) {
@@ -32,11 +36,15 @@ public class LiepinPositionTransfer extends PositionTransfer {
 
     @Override
     protected void setOccupation(ThirdPartyPosition positionForm, ThirdPartyPositionForSynchronization position) {
-        List<String> list=new ArrayList<>();
-        if (positionForm.getOccupation() != null) {
-            positionForm.getOccupation().forEach(o -> list.add(o));
+        List<String> occupations=positionForm.getOccupation();
+        //临时操作，前台会出现只传3个occupation的情况，即丢失最高一层职位，遇到这种情况需要再查一遍，如果前台修改完成，可以去掉这段if
+        if(occupations !=null && occupations.size()==3){
+            occupations=occupationDao.getFullOccupations(occupations.get(2)).stream().map(o->o.otherCode).collect(Collectors.toList());
         }
-        position.setOccupation(list);
+        if (occupations != null) {
+            position.setOccupation(occupations);
+        }
+        logger.info("lieping position sync occupation {}",occupations);
     }
 
     @Override
