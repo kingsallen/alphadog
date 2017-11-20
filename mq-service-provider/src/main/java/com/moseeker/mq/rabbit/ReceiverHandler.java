@@ -133,8 +133,9 @@ public class ReceiverHandler {
             int userId=jsonObject.getIntValue("user_id");
             String positionIds=jsonObject.getString("position_ids");
             int companyId=jsonObject.getIntValue("company_id");
+            int type=jsonObject.getIntValue("type");
             if(userId!=0&&StringUtils.isNotEmpty(positionIds)){
-                int result=personaRecomEntity.handlePersonaRecomData(userId,positionIds,companyId);
+                int result=personaRecomEntity.handlePersonaRecomData(userId,positionIds,companyId,type);
             }
 
         }catch(Exception e){

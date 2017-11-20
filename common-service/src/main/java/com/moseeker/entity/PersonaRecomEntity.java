@@ -31,12 +31,12 @@ public class PersonaRecomEntity {
     //将推荐职位数据插入数据库
     @CounterIface
     @Transactional
-    public int handlePersonaRecomData(int userId,String positionIds,int companyId) throws TException {
-        int result=this.handlerHistoryData(userId,companyId);
+    public int handlePersonaRecomData(int userId,String positionIds,int companyId,int type) throws TException {
+        int result=this.handlerHistoryData(userId,companyId,type);
         if(result==0){
             throw new TException();
         }
-        int result1=upsertPersonRecom(userId,companyId,positionIds);
+        int result1=upsertPersonRecom(userId,companyId,positionIds,type);
         if(result1==0){
             throw new TException();
         }
@@ -72,7 +72,7 @@ public class PersonaRecomEntity {
     /*
      更新或者或者
      */
-    private int upsertPersonRecom(int userId,int companyId,String positionIds){
+    private int upsertPersonRecom(int userId,int companyId,String positionIds,int type){
         if(StringUtils.isNotNullOrEmpty(positionIds)){
             String[] ids=positionIds.split(",");
             List<CampaignPersonaRecomRecord> list=new ArrayList<>();
@@ -81,6 +81,7 @@ public class PersonaRecomEntity {
                 campaignPersonaRecomRecord.setUserId(userId);
                 campaignPersonaRecomRecord.setCompanyId(companyId);
                 campaignPersonaRecomRecord.setPositionId(Integer.parseInt(positionId));
+                campaignPersonaRecomRecord.setType((byte)type);
                 list.add(campaignPersonaRecomRecord);
             }
             if(!StringUtils.isEmptyList(list)){
@@ -96,8 +97,8 @@ public class PersonaRecomEntity {
     /*
      处理历史数据
      */
-    private int handlerHistoryData(int userId,int companyId){
-        List<CampaignPersonaRecomRecord> list=this.getCampaignPersonaRecomRecordByUserIdAndCompanyId(userId,companyId);
+    private int handlerHistoryData(int userId,int companyId,int type){
+        List<CampaignPersonaRecomRecord> list=this.getCampaignPersonaRecomRecordByUserIdAndCompanyId(userId,companyId,type);
         List<HistoryCampaignPersonaRecomRecord> hisList=this.convertToHistoryCampaignPersonaRecomPojo(list);
         if(StringUtils.isEmptyList(hisList)){
             return 1;
@@ -125,8 +126,8 @@ public class PersonaRecomEntity {
     /*
      根据user_id获取所有的campaign_persona_recom记录
      */
-    private List<CampaignPersonaRecomRecord>  getCampaignPersonaRecomRecordByUserIdAndCompanyId(int userId,int companyId){
-        Query query=new Query.QueryBuilder().where("user_id",userId).and("company_id",companyId).buildQuery();
+    private List<CampaignPersonaRecomRecord>  getCampaignPersonaRecomRecordByUserIdAndCompanyId(int userId,int companyId,int type){
+        Query query=new Query.QueryBuilder().where("user_id",userId).and("company_id",companyId).and("type",type).buildQuery();
         List<CampaignPersonaRecomRecord> list=campaignPersonaRecomDao.getRecords(query);
         return list;
     }
@@ -161,6 +162,7 @@ public class PersonaRecomEntity {
             historyCampaignPersonaRecomPojo.setUpdateTime(pojo.getUpdateTime());
             historyCampaignPersonaRecomPojo.setUserId(pojo.getUserId());
             historyCampaignPersonaRecomPojo.setCompanyId(pojo.getCompanyId());
+            historyCampaignPersonaRecomPojo.setType(pojo.getType());
             result.add(historyCampaignPersonaRecomPojo);
         }
         return result;

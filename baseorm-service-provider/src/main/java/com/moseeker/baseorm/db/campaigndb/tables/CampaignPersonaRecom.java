@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CampaignPersonaRecom extends TableImpl<CampaignPersonaRecomRecord> {
 
-    private static final long serialVersionUID = 1210915659;
+    private static final long serialVersionUID = -1507449928;
 
     /**
      * The reference instance of <code>campaigndb.campaign_persona_recom</code>
@@ -93,6 +93,11 @@ public class CampaignPersonaRecom extends TableImpl<CampaignPersonaRecomRecord> 
     public final TableField<CampaignPersonaRecomRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间\n");
 
     /**
+     * The column <code>campaigndb.campaign_persona_recom.type</code>.
+     */
+    public final TableField<CampaignPersonaRecomRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
+
+    /**
      * Create a <code>campaigndb.campaign_persona_recom</code> table reference
      */
     public CampaignPersonaRecom() {
@@ -143,7 +148,7 @@ public class CampaignPersonaRecom extends TableImpl<CampaignPersonaRecomRecord> 
      */
     @Override
     public List<UniqueKey<CampaignPersonaRecomRecord>> getKeys() {
-        return Arrays.<UniqueKey<CampaignPersonaRecomRecord>>asList(Keys.KEY_CAMPAIGN_PERSONA_RECOM_PRIMARY, Keys.KEY_CAMPAIGN_PERSONA_RECOM_CAMPAIGN_PERSONA_RECOM_USER_ID_POSITION_ID_COMPANY_ID_UINDEX);
+        return Arrays.<UniqueKey<CampaignPersonaRecomRecord>>asList(Keys.KEY_CAMPAIGN_PERSONA_RECOM_PRIMARY, Keys.KEY_CAMPAIGN_PERSONA_RECOM_CAMPAIGN_PERSONA_RECOM_UINDEX);
     }
 
     /**
