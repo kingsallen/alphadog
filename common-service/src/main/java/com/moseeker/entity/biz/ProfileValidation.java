@@ -2,10 +2,18 @@ package com.moseeker.entity.biz;
 
 import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
 import com.moseeker.baseorm.db.profiledb.tables.records.*;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.entity.Constant.UnitlNow;
 import com.moseeker.thrift.gen.profile.struct.*;
+import org.joda.time.DateTime;
+
+import java.sql.Timestamp;
 
 public class ProfileValidation {
+
+	private static long minTime = new DateTime("1900-01-01").getMillis();
+	private static long maxTime = new DateTime("2099-12-31").getMillis();
 
 	public static ValidationMessage<Credentials> verifyCredential(Credentials credentials) {
 		ValidationMessage<Credentials> vm = new ValidationMessage<>();
@@ -50,6 +58,19 @@ public class ProfileValidation {
 		if(StringUtils.isNullOrEmpty(education.getStart_date())) {
 			vm.addFailedElement("开始时间", "未选择开始时间");
 		}
+		if (education.getStart_date() != null && education.getEnd_date() != null
+				&& DateTime.parse(education.getStart_date()).getMillis()
+				> DateTime.parse(education.getEnd_date()).getMillis()
+				&& education.getEnd_until_now() != UnitlNow.NotUntilNow.getStatus()) {
+			vm.addFailedElement("时间", "开始时间大于结束时间");
+		}
+		if (!legalDate(education.getStart_date())) {
+			vm.addFailedElement("开始时间", "时间限制在1900-01-01~2099-12-31之间");
+		}
+		if (education.getEnd_date() != null && !legalDate(education.getEnd_date())) {
+			vm.addFailedElement("结束时间", "时间限制在1900-01-01~2099-12-31之间");
+		}
+
 		return vm;
 	}
 	
@@ -63,6 +84,18 @@ public class ProfileValidation {
 		}
 		if(education.getStart() == null) {
 			vm.addFailedElement("开始时间", "未选择开始时间");
+		}
+		if (education.getStart() != null && education.getEnd() != null
+				&& education.getStart().getTime() > education.getEnd().getTime()
+				&& (education.getEndUntilNow() == null
+				|| education.getEndUntilNow() != UnitlNow.NotUntilNow.getStatus())) {
+			vm.addFailedElement("时间", "开始时间大于结束时间");
+		}
+		if (!legalDate(education.getStart())) {
+			vm.addFailedElement("开始时间", "时间限制在1900-01-01~2099-12-31之间");
+		}
+		if (education.getEnd() != null && !legalDate(education.getEnd())) {
+			vm.addFailedElement("结束时间", "时间限制在1900-01-01~2099-12-31之间");
 		}
 		return vm;
 	}
@@ -91,6 +124,18 @@ public class ProfileValidation {
 		if(StringUtils.isNullOrEmpty(projectExp.getStart_date())) {
 			vm.addFailedElement("开始时间", "未填写开始时间");
 		}
+		if (projectExp.getStart_date() != null && projectExp.getEnd_date() != null
+				&& DateTime.parse(projectExp.getStart_date()).getMillis()
+				> DateTime.parse(projectExp.getEnd_date()).getMillis()
+				&& projectExp.getEnd_until_now() != UnitlNow.NotUntilNow.getStatus()) {
+			vm.addFailedElement("项目时间", "开始时间大于结束时间");
+		}
+		if (!lowerNow(projectExp.getStart_date())) {
+			vm.addFailedElement("开始时间", "时间限制在1900-01-01~2099-12-31之间");
+		}
+		if (projectExp.getEnd_date() != null && !lowerNow(projectExp.getEnd_date())) {
+			vm.addFailedElement("结束时间", "时间限制在1900-01-01~2099-12-31之间");
+		}
 		return vm;
 	}
 	
@@ -101,6 +146,18 @@ public class ProfileValidation {
 		}
 		if(projectExp.getStart() == null) {
 			vm.addFailedElement("开始时间", "未填写开始时间");
+		}
+		if (projectExp.getStart() != null && projectExp.getEnd() != null
+				&& projectExp.getStart().getTime() > projectExp.getEnd().getTime()
+				&& (projectExp.getEndUntilNow() == null
+				|| projectExp.getEndUntilNow()  != UnitlNow.NotUntilNow.getStatus())) {
+			vm.addFailedElement("项目时间", "开始时间大于结束时间");
+		}
+		if (!lowerNow(projectExp.getStart())) {
+			vm.addFailedElement("开始时间", "时间限制在1900-01-01~2099-12-31之间");
+		}
+		if (projectExp.getEnd() != null && !lowerNow(projectExp.getEnd())) {
+			vm.addFailedElement("结束时间", "时间限制在1900-01-01~2099-12-31之间");
 		}
 		return vm;
 	}
@@ -136,19 +193,17 @@ public class ProfileValidation {
 		if(StringUtils.isNullOrEmpty(workExp.getStart_date())) {
 			vm.addFailedElement("开始时间", "未填写开始时间");
 		}
-		return vm;
-	}
-	
-	public static ValidationMessage<ProfileWorkexpRecord> verifyWorkExp(ProfileWorkexpRecord workExp) {
-		ValidationMessage<ProfileWorkexpRecord> vm = new ValidationMessage<>();
-		if((workExp.getCompanyId() == null || workExp.getCompanyId().intValue() == 0)) {
-			vm.addFailedElement("就职公司", "未填写就职公司");
+		if (workExp.getStart_date() != null && workExp.getEnd_date() != null
+				&& DateTime.parse(workExp.getStart_date()).getMillis()
+				> DateTime.parse(workExp.getEnd_date()).getMillis()
+				&& workExp.getEnd_until_now()  != UnitlNow.NotUntilNow.getStatus()) {
+			vm.addFailedElement("工作时间", "开始时间大于结束时间");
 		}
-		if(StringUtils.isNullOrEmpty(workExp.getJob())) {
-			vm.addFailedElement("职位名称", "未填写职位名称");
+		if (!legalDate(workExp.getStart_date())) {
+			vm.addFailedElement("开始时间", "时间限制在1900-01-01~2099-12-31之间");
 		}
-		if(workExp.getStart() == null) {
-			vm.addFailedElement("开始时间", "未填写开始时间");
+		if (workExp.getEnd_date() != null && !legalDate(workExp.getEnd_date())) {
+			vm.addFailedElement("结束时间", "时间限制在1900-01-01~2099-12-31之间");
 		}
 		return vm;
 	}
@@ -167,6 +222,64 @@ public class ProfileValidation {
 		if(StringUtils.isNullOrEmpty(workExp.getDescription())) {
 			vm.addFailedElement("职位描述", "未对该职位做详细描述");
 		}
+		if (workExp.getStart() != null && workExp.getEnd() != null
+				&& workExp.getStart().getTime() > workExp.getEnd().getTime()
+				&& (workExp.getEndUntilNow() == null
+				|| workExp.getEndUntilNow()  != UnitlNow.NotUntilNow.getStatus())) {
+			vm.addFailedElement("工作时间", "开始时间大于结束时间");
+		}
+		if (!lowerNow(workExp.getStart())) {
+			vm.addFailedElement("开始时间", "时间限制在1900-01-01~2099-12-31之间");
+		}
+		if (workExp.getEnd() != null && !lowerNow(workExp.getEnd())) {
+			vm.addFailedElement("结束时间", "时间限制在1900-01-01~2099-12-31之间");
+		}
 		return vm;
+	}
+
+	public static boolean legalDate(String date) {
+		Timestamp timestamp = BeanUtils.convertToSQLTimestamp(date);
+		return legalDate(timestamp);
+	}
+
+	public static boolean legalDate(java.sql.Date timestamp) {
+		if (timestamp != null) {
+			if (timestamp.getTime() >= minTime && timestamp.getTime() <= maxTime) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static boolean legalDate(Timestamp timestamp) {
+		if (timestamp != null) {
+			if (timestamp.getTime() >= minTime && timestamp.getTime() <= maxTime) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static boolean lowerNow(String date) {
+		Timestamp timestamp = BeanUtils.convertToSQLTimestamp(date);
+		return lowerNow(timestamp);
+	}
+
+	public static boolean lowerNow(java.sql.Date timestamp) {
+		if (timestamp != null) {
+			if (timestamp.getTime() <= System.currentTimeMillis() && timestamp.getTime() >= minTime) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static boolean lowerNow(Timestamp timestamp) {
+		if (timestamp != null) {
+			if (timestamp.getTime() <= System.currentTimeMillis() && timestamp.getTime() >= minTime) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
