@@ -481,4 +481,18 @@ public class PositionServicesImpl implements Iface {
     public Response positionCvConf(int positionId) throws TException {
         return service.positionCvConf(positionId);
     }
+
+    @Override
+    public Response getEmployeeRecomPositionByIds(List<Integer> pids) throws TException {
+        try {
+            List<WechatPositionListData> result=service.getEmployeeRecomPositionList(pids);
+            if(StringUtils.isEmptyList(result)){
+                return  ResponseUtils.success("");
+            }
+            return  ResponseUtils.success(result);
+        }catch (Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
 }

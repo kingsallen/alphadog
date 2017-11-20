@@ -1278,7 +1278,7 @@ public class PositionService {
     /*
        微信端获取个人画像推送职位
      */
-
+    @CounterIface
     public List<WechatPositionListData> getPersonaRecomPosition(int userId,int companyId,int type,int pageNum,int pageSize) throws Exception{
         List<CampaignPersonaRecomRecord> list=this.getPersonaRecomPositionList(userId,companyId,type,pageNum,pageSize);
         List<Integer> pids=this.getRecomPositionIdList(list);
@@ -1292,6 +1292,11 @@ public class PositionService {
         }
         return result;
     }
+    @CounterIface
+    public List<WechatPositionListData> getEmployeeRecomPositionList(List<Integer> pids){
+        List<WechatPositionListData> result=this.getWxPosition(pids);
+        return result;
+    }
     /*
       通过user_id 获取 CampaignPersonaRecomPojo 的list集合
      */
@@ -1300,6 +1305,10 @@ public class PositionService {
         List<CampaignPersonaRecomRecord> list=campaignPersonaRecomDao.getRecords(query);
         return list;
     }
+
+    /*
+     根据userId，companyId，type，List<Integer> pid获取
+     */
     /*
       获取position.id的list
      */
