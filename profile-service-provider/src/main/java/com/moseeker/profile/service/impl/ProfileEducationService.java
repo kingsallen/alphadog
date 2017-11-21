@@ -191,6 +191,7 @@ public class ProfileEducationService {
         int result = 0;
 
         if (education != null) {
+
             if (education.getCollege_code() > 0) {
                 DictCollegeDO college = collegeDao.getCollegeByID(education.getCollege_code());
                 if (college != null) {
@@ -228,16 +229,7 @@ public class ProfileEducationService {
         if (structs != null && structs.size() > 0) {
 
             //添加信息校验
-            if (structs != null && structs.size() > 0) {
-                Iterator<Education> ie = structs.iterator();
-                while (ie.hasNext()) {
-                    Education education = ie.next();
-                    ValidationMessage<Education> vm = ProfileValidation.verifyEducation(education);
-                    if (!vm.isPass()) {
-                        ie.remove();
-                    }
-                }
-            }
+            removeIllegalEducation(structs);
 
             if (structs.size() > 0) {
 
@@ -262,6 +254,23 @@ public class ProfileEducationService {
             }
         }
         return resultDatas;
+    }
+
+    /**
+     * 过滤不合法的教育经历
+     * @param structs
+     */
+    private void removeIllegalEducation(List<Education> structs) {
+        if (structs != null && structs.size() > 0) {
+            Iterator<Education> ie = structs.iterator();
+            while (ie.hasNext()) {
+                Education education = ie.next();
+                ValidationMessage<Education> vm = ProfileValidation.verifyEducation(education);
+                if (!vm.isPass()) {
+                    ie.remove();
+                }
+            }
+        }
     }
 
     @Transactional

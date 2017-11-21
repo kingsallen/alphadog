@@ -33,6 +33,25 @@ public class ServerData implements ConfigCheck {
 		return false;
 	}
 
+	public ServerData copy() {
+		ServerData serverData = new ServerData();
+
+		serverData.setLanguage(this.getLanguage());
+		serverData.setWeight(this.getWeight());
+		serverData.setProtocol(this.getProtocol());
+		serverData.setServer_type(this.getServer_type());
+		serverData.setOwner(this.getOwner());
+		serverData.setInterval(this.getInterval());
+		serverData.setIp(this.getIp());
+		serverData.setMulti(this.getMulti());
+		serverData.setPort(this.getPort());
+		serverData.setSelector(this.getSelector());
+		serverData.setService(this.getService());
+		serverData.setWorker(this.getWorker());
+
+		return serverData;
+	}
+
 	public String getService() {
 		return service;
 	}

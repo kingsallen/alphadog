@@ -70,6 +70,11 @@ public abstract class EmployeeBinder {
 
     protected ThreadLocal<UserEmployeeDO> userEmployeeDOThreadLocal = new ThreadLocal<>();
 
+    /**
+     * 员工认证
+     * @param bindingParams 认证参数
+     * @return 认证结果
+     */
     public Result bind(BindingParams bindingParams) {
         log.info("bind param: BindingParams={}", bindingParams);
         Result response = new Result();
