@@ -170,10 +170,12 @@ public class ReceiverHandler {
         String url="";
         if(type==1){
             url=env.getProperty("message.template.fans.url");
-        }else if(type==2||type==3){
+        }else if(type==2){
             url=env.getProperty("message.template.recom.url");
         }else if(type==4){
             url=env.getProperty("message.template.new.employee.url");
+        }else if(type==3){
+            url=env.getProperty("message.template.recom.employee.url");
         }
         return url;
 
