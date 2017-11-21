@@ -103,8 +103,7 @@ public class MessageTemplateEntity {
                return null;
            }
            int recomId=this.addCampaignRecomPositionlist(companyId,pids);
-           url=url.replace("{recomPushId}",recomId+"").replace("{companyId}",companyId+"")
-                  .replace("{}",wxSignture);
+           url=url.replace("{recomPushId}",recomId+"").replace("{}",wxSignture);
 
         }
         MessageTemplateNoticeStruct messageTemplateNoticeStruct =new MessageTemplateNoticeStruct();
