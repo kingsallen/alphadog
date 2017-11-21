@@ -89,7 +89,7 @@ public class MessageTemplateEntity {
             url=url.replace("{}",wxSignture);
         }else if(type==2){
             //校验推送职位是否下架
-            String pids=this.handleEmployeeRecomPosition(userId,companyId,1);
+            String pids=this.handleEmployeeRecomPosition(userId,companyId,0);
             if(StringUtils.isNullOrEmpty(pids)){
                 return null;
             }
@@ -436,7 +436,7 @@ public class MessageTemplateEntity {
         }
         String pids="";
         for(Integer pid:list){
-            pids+=",";
+            pids+=pid+",";
         }
         if(StringUtils.isNotNullOrEmpty(pids)){
             pids=pids.substring(0,pids.lastIndexOf(","));
