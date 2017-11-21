@@ -97,6 +97,8 @@ service PositionServices {
     common_struct.Response getPersonaRecomPositionList(1:i32 userId,2:i32 companyId,3:i32 pageNum,4:i32 pageSize);
 
     common_struct.Response positionCvConf(1:i32 positionId);
+
+    common_struct.Response getEmployeeRecomPositionByIds(1:i32 recomPushId,2:i32 companyId,3:i32 type);
 }
 /*
 	查询第三方自定义职能
