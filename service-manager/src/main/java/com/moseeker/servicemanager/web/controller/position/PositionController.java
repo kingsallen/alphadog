@@ -801,7 +801,7 @@ public class PositionController {
     /*
          *获取alipay同步的职位
         */
-    @RequestMapping(value = "/position/pemployeerecom", method = RequestMethod.GET)
+    @RequestMapping(value = "/position/employeerecom", method = RequestMethod.GET)
     @ResponseBody
     public String employeeRecomPosition(HttpServletRequest request, HttpServletResponse response){
         try{
