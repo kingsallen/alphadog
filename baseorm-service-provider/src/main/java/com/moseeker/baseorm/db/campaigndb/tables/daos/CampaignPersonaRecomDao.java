@@ -73,6 +73,13 @@ public class CampaignPersonaRecomDao extends DAOImpl<CampaignPersonaRecomRecord,
     }
 
     /**
+     * Fetch records that have <code>company_id IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.campaigndb.tables.pojos.CampaignPersonaRecom> fetchByCompanyId(Integer... values) {
+        return fetch(CampaignPersonaRecom.CAMPAIGN_PERSONA_RECOM.COMPANY_ID, values);
+    }
+
+    /**
      * Fetch records that have <code>position_id IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.campaigndb.tables.pojos.CampaignPersonaRecom> fetchByPositionId(Integer... values) {

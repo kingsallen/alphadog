@@ -93,4 +93,16 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
             throw new SysBIZException();
         }
     }
+
+    @Override
+    public Response putUserEmployee(UserEmployeeStruct userEmployee) throws BIZException, TException {
+        try {
+            return employeeService.putResource(userEmployee);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
+    }
 }

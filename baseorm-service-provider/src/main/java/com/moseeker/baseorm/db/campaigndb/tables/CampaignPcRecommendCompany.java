@@ -151,6 +151,7 @@ public class CampaignPcRecommendCompany extends TableImpl<CampaignPcRecommendCom
     /**
      * Rename this table
      */
+
     public CampaignPcRecommendCompany rename(String name) {
         return new CampaignPcRecommendCompany(name, null);
     }

@@ -755,8 +755,9 @@ public class PositionController {
             String pageNum=params.getString("pageNum");
             String pageSize=params.getString("pageSize");
             String userId=params.getString("userId");
-            if(userId==null){
-                return ResponseLogNotification.fail(request, "userId不能为空");
+            String companyId=params.getString("companyId");
+            if(StringUtils.isNullOrEmpty(userId)||"0".equals(userId)||StringUtils.isNullOrEmpty(companyId)||"0".equals(companyId)){
+                return ResponseLogNotification.fail(request, "userId或者companyId不能为空或0");
             }
             if(pageNum==null){
                 pageNum="1";
@@ -764,7 +765,7 @@ public class PositionController {
             if(pageSize==null){
                 pageNum="20";
             }
-            Response result=positonServices.getPersonaRecomPositionList(Integer.parseInt(userId),Integer.parseInt(pageNum),Integer.parseInt(pageSize));
+            Response result=positonServices.getPersonaRecomPositionList(Integer.parseInt(userId),Integer.parseInt(companyId),Integer.parseInt(pageNum),Integer.parseInt(pageSize));
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
             logger.error(e.getMessage());

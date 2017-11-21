@@ -363,6 +363,7 @@ public class HistoryUserEmployee extends TableImpl<HistoryUserEmployeeRecord> {
     /**
      * Rename this table
      */
+
     public HistoryUserEmployee rename(String name) {
         return new HistoryUserEmployee(name, null);
     }

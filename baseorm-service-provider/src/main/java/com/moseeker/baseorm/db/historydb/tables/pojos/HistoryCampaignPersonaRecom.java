@@ -23,10 +23,11 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HistoryCampaignPersonaRecom implements Serializable {
 
-    private static final long serialVersionUID = 1093744251;
+    private static final long serialVersionUID = -1423553511;
 
     private Integer   id;
     private Integer   userId;
+    private Integer   companyId;
     private Integer   positionId;
     private Timestamp createTime;
     private Timestamp sendTime;
@@ -38,6 +39,7 @@ public class HistoryCampaignPersonaRecom implements Serializable {
     public HistoryCampaignPersonaRecom(HistoryCampaignPersonaRecom value) {
         this.id = value.id;
         this.userId = value.userId;
+        this.companyId = value.companyId;
         this.positionId = value.positionId;
         this.createTime = value.createTime;
         this.sendTime = value.sendTime;
@@ -48,6 +50,7 @@ public class HistoryCampaignPersonaRecom implements Serializable {
     public HistoryCampaignPersonaRecom(
         Integer   id,
         Integer   userId,
+        Integer   companyId,
         Integer   positionId,
         Timestamp createTime,
         Timestamp sendTime,
@@ -56,6 +59,7 @@ public class HistoryCampaignPersonaRecom implements Serializable {
     ) {
         this.id = id;
         this.userId = userId;
+        this.companyId = companyId;
         this.positionId = positionId;
         this.createTime = createTime;
         this.sendTime = sendTime;
@@ -77,6 +81,14 @@ public class HistoryCampaignPersonaRecom implements Serializable {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+
+    public Integer getCompanyId() {
+        return this.companyId;
+    }
+
+    public void setCompanyId(Integer companyId) {
+        this.companyId = companyId;
     }
 
     public Integer getPositionId() {
@@ -125,6 +137,7 @@ public class HistoryCampaignPersonaRecom implements Serializable {
 
         sb.append(id);
         sb.append(", ").append(userId);
+        sb.append(", ").append(companyId);
         sb.append(", ").append(positionId);
         sb.append(", ").append(createTime);
         sb.append(", ").append(sendTime);
