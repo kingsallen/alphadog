@@ -37021,3 +37021,1070 @@ public class PositionServices {
             if (isSetSuccess()) {
                 lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
                 if (lastComparison != 0) {
+                    return lastComparison;
+                }
+            }
+            return 0;
+        }
+
+        public _Fields fieldForId(int fieldId) {
+            return _Fields.findByThriftId(fieldId);
+        }
+
+        public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+            scheme(iprot).read(iprot, this);
+        }
+
+        public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+            scheme(oprot).write(oprot, this);
+        }
+
+        @Override
+        public java.lang.String toString() {
+            java.lang.StringBuilder sb = new java.lang.StringBuilder("positionCvConf_result(");
+            boolean first = true;
+
+            sb.append("success:");
+            if (this.success == null) {
+                sb.append("null");
+            } else {
+                sb.append(this.success);
+            }
+            first = false;
+            sb.append(")");
+            return sb.toString();
+        }
+
+        public void validate() throws org.apache.thrift.TException {
+            // check for required fields
+            // check for sub-struct validity
+            if (success != null) {
+                success.validate();
+            }
+        }
+
+        private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+            try {
+                write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+            } catch (org.apache.thrift.TException te) {
+                throw new java.io.IOException(te);
+            }
+        }
+
+        private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+            try {
+                read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+            } catch (org.apache.thrift.TException te) {
+                throw new java.io.IOException(te);
+            }
+        }
+
+        private static class positionCvConf_resultStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+            public positionCvConf_resultStandardScheme getScheme() {
+                return new positionCvConf_resultStandardScheme();
+            }
+        }
+
+        private static class positionCvConf_resultStandardScheme extends org.apache.thrift.scheme.StandardScheme<positionCvConf_result> {
+
+            public void read(org.apache.thrift.protocol.TProtocol iprot, positionCvConf_result struct) throws org.apache.thrift.TException {
+                org.apache.thrift.protocol.TField schemeField;
+                iprot.readStructBegin();
+                while (true)
+                {
+                    schemeField = iprot.readFieldBegin();
+                    if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
+                        break;
+                    }
+                    switch (schemeField.id) {
+                        case 0: // SUCCESS
+                            if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                                struct.success = new com.moseeker.thrift.gen.common.struct.Response();
+                                struct.success.read(iprot);
+                                struct.setSuccessIsSet(true);
+                            } else {
+                                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+                            }
+                            break;
+                        default:
+                            org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+                    }
+                    iprot.readFieldEnd();
+                }
+                iprot.readStructEnd();
+
+                // check for required fields of primitive type, which can't be checked in the validate method
+                struct.validate();
+            }
+
+            public void write(org.apache.thrift.protocol.TProtocol oprot, positionCvConf_result struct) throws org.apache.thrift.TException {
+                struct.validate();
+
+                oprot.writeStructBegin(STRUCT_DESC);
+                if (struct.success != null) {
+                    oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
+                    struct.success.write(oprot);
+                    oprot.writeFieldEnd();
+                }
+                oprot.writeFieldStop();
+                oprot.writeStructEnd();
+            }
+
+        }
+
+        private static class positionCvConf_resultTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+            public positionCvConf_resultTupleScheme getScheme() {
+                return new positionCvConf_resultTupleScheme();
+            }
+        }
+
+        private static class positionCvConf_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<positionCvConf_result> {
+
+            @Override
+            public void write(org.apache.thrift.protocol.TProtocol prot, positionCvConf_result struct) throws org.apache.thrift.TException {
+                org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+                java.util.BitSet optionals = new java.util.BitSet();
+                if (struct.isSetSuccess()) {
+                    optionals.set(0);
+                }
+                oprot.writeBitSet(optionals, 1);
+                if (struct.isSetSuccess()) {
+                    struct.success.write(oprot);
+                }
+            }
+
+            @Override
+            public void read(org.apache.thrift.protocol.TProtocol prot, positionCvConf_result struct) throws org.apache.thrift.TException {
+                org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+                java.util.BitSet incoming = iprot.readBitSet(1);
+                if (incoming.get(0)) {
+                    struct.success = new com.moseeker.thrift.gen.common.struct.Response();
+                    struct.success.read(iprot);
+                    struct.setSuccessIsSet(true);
+                }
+            }
+        }
+
+        private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+            return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+        }
+    }
+
+    public static class getEmployeeRecomPositionByIds_args implements org.apache.thrift.TBase<getEmployeeRecomPositionByIds_args, getEmployeeRecomPositionByIds_args._Fields>, java.io.Serializable, Cloneable, Comparable<getEmployeeRecomPositionByIds_args>   {
+        private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getEmployeeRecomPositionByIds_args");
+
+        private static final org.apache.thrift.protocol.TField RECOM_PUSH_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("recomPushId", org.apache.thrift.protocol.TType.I32, (short)1);
+        private static final org.apache.thrift.protocol.TField COMPANY_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("companyId", org.apache.thrift.protocol.TType.I32, (short)2);
+        private static final org.apache.thrift.protocol.TField TYPE_FIELD_DESC = new org.apache.thrift.protocol.TField("type", org.apache.thrift.protocol.TType.I32, (short)3);
+
+        private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getEmployeeRecomPositionByIds_argsStandardSchemeFactory();
+        private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getEmployeeRecomPositionByIds_argsTupleSchemeFactory();
+
+        public int recomPushId; // required
+        public int companyId; // required
+        public int type; // required
+
+        /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+        public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+            RECOM_PUSH_ID((short)1, "recomPushId"),
+            COMPANY_ID((short)2, "companyId"),
+            TYPE((short)3, "type");
+
+            private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+            static {
+                for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+                    byName.put(field.getFieldName(), field);
+                }
+            }
+
+            /**
+             * Find the _Fields constant that matches fieldId, or null if its not found.
+             */
+            public static _Fields findByThriftId(int fieldId) {
+                switch(fieldId) {
+                    case 1: // RECOM_PUSH_ID
+                        return RECOM_PUSH_ID;
+                    case 2: // COMPANY_ID
+                        return COMPANY_ID;
+                    case 3: // TYPE
+                        return TYPE;
+                    default:
+                        return null;
+                }
+            }
+
+            /**
+             * Find the _Fields constant that matches fieldId, throwing an exception
+             * if it is not found.
+             */
+            public static _Fields findByThriftIdOrThrow(int fieldId) {
+                _Fields fields = findByThriftId(fieldId);
+                if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+                return fields;
+            }
+
+            /**
+             * Find the _Fields constant that matches name, or null if its not found.
+             */
+            public static _Fields findByName(java.lang.String name) {
+                return byName.get(name);
+            }
+
+            private final short _thriftId;
+            private final java.lang.String _fieldName;
+
+            _Fields(short thriftId, java.lang.String fieldName) {
+                _thriftId = thriftId;
+                _fieldName = fieldName;
+            }
+
+            public short getThriftFieldId() {
+                return _thriftId;
+            }
+
+            public java.lang.String getFieldName() {
+                return _fieldName;
+            }
+        }
+
+        // isset id assignments
+        private static final int __RECOMPUSHID_ISSET_ID = 0;
+        private static final int __COMPANYID_ISSET_ID = 1;
+        private static final int __TYPE_ISSET_ID = 2;
+        private byte __isset_bitfield = 0;
+        public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+        static {
+            java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+            tmpMap.put(_Fields.RECOM_PUSH_ID, new org.apache.thrift.meta_data.FieldMetaData("recomPushId", org.apache.thrift.TFieldRequirementType.DEFAULT,
+                    new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+            tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("companyId", org.apache.thrift.TFieldRequirementType.DEFAULT,
+                    new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+            tmpMap.put(_Fields.TYPE, new org.apache.thrift.meta_data.FieldMetaData("type", org.apache.thrift.TFieldRequirementType.DEFAULT,
+                    new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+            metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+            org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getEmployeeRecomPositionByIds_args.class, metaDataMap);
+        }
+
+        public getEmployeeRecomPositionByIds_args() {
+        }
+
+        public getEmployeeRecomPositionByIds_args(
+                int recomPushId,
+                int companyId,
+                int type)
+        {
+            this();
+            this.recomPushId = recomPushId;
+            setRecomPushIdIsSet(true);
+            this.companyId = companyId;
+            setCompanyIdIsSet(true);
+            this.type = type;
+            setTypeIsSet(true);
+        }
+
+        /**
+         * Performs a deep copy on <i>other</i>.
+         */
+        public getEmployeeRecomPositionByIds_args(getEmployeeRecomPositionByIds_args other) {
+            __isset_bitfield = other.__isset_bitfield;
+            this.recomPushId = other.recomPushId;
+            this.companyId = other.companyId;
+            this.type = other.type;
+        }
+
+        public getEmployeeRecomPositionByIds_args deepCopy() {
+            return new getEmployeeRecomPositionByIds_args(this);
+        }
+
+        @Override
+        public void clear() {
+            setRecomPushIdIsSet(false);
+            this.recomPushId = 0;
+            setCompanyIdIsSet(false);
+            this.companyId = 0;
+            setTypeIsSet(false);
+            this.type = 0;
+        }
+
+        public int getRecomPushId() {
+            return this.recomPushId;
+        }
+
+        public getEmployeeRecomPositionByIds_args setRecomPushId(int recomPushId) {
+            this.recomPushId = recomPushId;
+            setRecomPushIdIsSet(true);
+            return this;
+        }
+
+        public void unsetRecomPushId() {
+            __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __RECOMPUSHID_ISSET_ID);
+        }
+
+        /** Returns true if field recomPushId is set (has been assigned a value) and false otherwise */
+        public boolean isSetRecomPushId() {
+            return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __RECOMPUSHID_ISSET_ID);
+        }
+
+        public void setRecomPushIdIsSet(boolean value) {
+            __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __RECOMPUSHID_ISSET_ID, value);
+        }
+
+        public int getCompanyId() {
+            return this.companyId;
+        }
+
+        public getEmployeeRecomPositionByIds_args setCompanyId(int companyId) {
+            this.companyId = companyId;
+            setCompanyIdIsSet(true);
+            return this;
+        }
+
+        public void unsetCompanyId() {
+            __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __COMPANYID_ISSET_ID);
+        }
+
+        /** Returns true if field companyId is set (has been assigned a value) and false otherwise */
+        public boolean isSetCompanyId() {
+            return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __COMPANYID_ISSET_ID);
+        }
+
+        public void setCompanyIdIsSet(boolean value) {
+            __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __COMPANYID_ISSET_ID, value);
+        }
+
+        public int getType() {
+            return this.type;
+        }
+
+        public getEmployeeRecomPositionByIds_args setType(int type) {
+            this.type = type;
+            setTypeIsSet(true);
+            return this;
+        }
+
+        public void unsetType() {
+            __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __TYPE_ISSET_ID);
+        }
+
+        /** Returns true if field type is set (has been assigned a value) and false otherwise */
+        public boolean isSetType() {
+            return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __TYPE_ISSET_ID);
+        }
+
+        public void setTypeIsSet(boolean value) {
+            __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __TYPE_ISSET_ID, value);
+        }
+
+        public void setFieldValue(_Fields field, java.lang.Object value) {
+            switch (field) {
+                case RECOM_PUSH_ID:
+                    if (value == null) {
+                        unsetRecomPushId();
+                    } else {
+                        setRecomPushId((java.lang.Integer)value);
+                    }
+                    break;
+
+                case COMPANY_ID:
+                    if (value == null) {
+                        unsetCompanyId();
+                    } else {
+                        setCompanyId((java.lang.Integer)value);
+                    }
+                    break;
+
+                case TYPE:
+                    if (value == null) {
+                        unsetType();
+                    } else {
+                        setType((java.lang.Integer)value);
+                    }
+                    break;
+
+            }
+        }
+
+        public java.lang.Object getFieldValue(_Fields field) {
+            switch (field) {
+                case RECOM_PUSH_ID:
+                    return getRecomPushId();
+
+                case COMPANY_ID:
+                    return getCompanyId();
+
+                case TYPE:
+                    return getType();
+
+            }
+            throw new java.lang.IllegalStateException();
+        }
+
+        /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+        public boolean isSet(_Fields field) {
+            if (field == null) {
+                throw new java.lang.IllegalArgumentException();
+            }
+
+            switch (field) {
+                case RECOM_PUSH_ID:
+                    return isSetRecomPushId();
+                case COMPANY_ID:
+                    return isSetCompanyId();
+                case TYPE:
+                    return isSetType();
+            }
+            throw new java.lang.IllegalStateException();
+        }
+
+        @Override
+        public boolean equals(java.lang.Object that) {
+            if (that == null)
+                return false;
+            if (that instanceof getEmployeeRecomPositionByIds_args)
+                return this.equals((getEmployeeRecomPositionByIds_args)that);
+            return false;
+        }
+
+        public boolean equals(getEmployeeRecomPositionByIds_args that) {
+            if (that == null)
+                return false;
+            if (this == that)
+                return true;
+
+            boolean this_present_recomPushId = true;
+            boolean that_present_recomPushId = true;
+            if (this_present_recomPushId || that_present_recomPushId) {
+                if (!(this_present_recomPushId && that_present_recomPushId))
+                    return false;
+                if (this.recomPushId != that.recomPushId)
+                    return false;
+            }
+
+            boolean this_present_companyId = true;
+            boolean that_present_companyId = true;
+            if (this_present_companyId || that_present_companyId) {
+                if (!(this_present_companyId && that_present_companyId))
+                    return false;
+                if (this.companyId != that.companyId)
+                    return false;
+            }
+
+            boolean this_present_type = true;
+            boolean that_present_type = true;
+            if (this_present_type || that_present_type) {
+                if (!(this_present_type && that_present_type))
+                    return false;
+                if (this.type != that.type)
+                    return false;
+            }
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int hashCode = 1;
+
+            hashCode = hashCode * 8191 + recomPushId;
+
+            hashCode = hashCode * 8191 + companyId;
+
+            hashCode = hashCode * 8191 + type;
+
+            return hashCode;
+        }
+
+        @Override
+        public int compareTo(getEmployeeRecomPositionByIds_args other) {
+            if (!getClass().equals(other.getClass())) {
+                return getClass().getName().compareTo(other.getClass().getName());
+            }
+
+            int lastComparison = 0;
+
+            lastComparison = java.lang.Boolean.valueOf(isSetRecomPushId()).compareTo(other.isSetRecomPushId());
+            if (lastComparison != 0) {
+                return lastComparison;
+            }
+            if (isSetRecomPushId()) {
+                lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.recomPushId, other.recomPushId);
+                if (lastComparison != 0) {
+                    return lastComparison;
+                }
+            }
+            lastComparison = java.lang.Boolean.valueOf(isSetCompanyId()).compareTo(other.isSetCompanyId());
+            if (lastComparison != 0) {
+                return lastComparison;
+            }
+            if (isSetCompanyId()) {
+                lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.companyId, other.companyId);
+                if (lastComparison != 0) {
+                    return lastComparison;
+                }
+            }
+            lastComparison = java.lang.Boolean.valueOf(isSetType()).compareTo(other.isSetType());
+            if (lastComparison != 0) {
+                return lastComparison;
+            }
+            if (isSetType()) {
+                lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.type, other.type);
+                if (lastComparison != 0) {
+                    return lastComparison;
+                }
+            }
+            return 0;
+        }
+
+        public _Fields fieldForId(int fieldId) {
+            return _Fields.findByThriftId(fieldId);
+        }
+
+        public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+            scheme(iprot).read(iprot, this);
+        }
+
+        public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+            scheme(oprot).write(oprot, this);
+        }
+
+        @Override
+        public java.lang.String toString() {
+            java.lang.StringBuilder sb = new java.lang.StringBuilder("getEmployeeRecomPositionByIds_args(");
+            boolean first = true;
+
+            sb.append("recomPushId:");
+            sb.append(this.recomPushId);
+            first = false;
+            if (!first) sb.append(", ");
+            sb.append("companyId:");
+            sb.append(this.companyId);
+            first = false;
+            if (!first) sb.append(", ");
+            sb.append("type:");
+            sb.append(this.type);
+            first = false;
+            sb.append(")");
+            return sb.toString();
+        }
+
+        public void validate() throws org.apache.thrift.TException {
+            // check for required fields
+            // check for sub-struct validity
+        }
+
+        private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+            try {
+                write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+            } catch (org.apache.thrift.TException te) {
+                throw new java.io.IOException(te);
+            }
+        }
+
+        private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+            try {
+                // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
+                __isset_bitfield = 0;
+                read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+            } catch (org.apache.thrift.TException te) {
+                throw new java.io.IOException(te);
+            }
+        }
+
+        private static class getEmployeeRecomPositionByIds_argsStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+            public getEmployeeRecomPositionByIds_argsStandardScheme getScheme() {
+                return new getEmployeeRecomPositionByIds_argsStandardScheme();
+            }
+        }
+
+        private static class getEmployeeRecomPositionByIds_argsStandardScheme extends org.apache.thrift.scheme.StandardScheme<getEmployeeRecomPositionByIds_args> {
+
+            public void read(org.apache.thrift.protocol.TProtocol iprot, getEmployeeRecomPositionByIds_args struct) throws org.apache.thrift.TException {
+                org.apache.thrift.protocol.TField schemeField;
+                iprot.readStructBegin();
+                while (true)
+                {
+                    schemeField = iprot.readFieldBegin();
+                    if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
+                        break;
+                    }
+                    switch (schemeField.id) {
+                        case 1: // RECOM_PUSH_ID
+                            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                                struct.recomPushId = iprot.readI32();
+                                struct.setRecomPushIdIsSet(true);
+                            } else {
+                                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+                            }
+                            break;
+                        case 2: // COMPANY_ID
+                            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                                struct.companyId = iprot.readI32();
+                                struct.setCompanyIdIsSet(true);
+                            } else {
+                                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+                            }
+                            break;
+                        case 3: // TYPE
+                            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                                struct.type = iprot.readI32();
+                                struct.setTypeIsSet(true);
+                            } else {
+                                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+                            }
+                            break;
+                        default:
+                            org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+                    }
+                    iprot.readFieldEnd();
+                }
+                iprot.readStructEnd();
+
+                // check for required fields of primitive type, which can't be checked in the validate method
+                struct.validate();
+            }
+
+            public void write(org.apache.thrift.protocol.TProtocol oprot, getEmployeeRecomPositionByIds_args struct) throws org.apache.thrift.TException {
+                struct.validate();
+
+                oprot.writeStructBegin(STRUCT_DESC);
+                oprot.writeFieldBegin(RECOM_PUSH_ID_FIELD_DESC);
+                oprot.writeI32(struct.recomPushId);
+                oprot.writeFieldEnd();
+                oprot.writeFieldBegin(COMPANY_ID_FIELD_DESC);
+                oprot.writeI32(struct.companyId);
+                oprot.writeFieldEnd();
+                oprot.writeFieldBegin(TYPE_FIELD_DESC);
+                oprot.writeI32(struct.type);
+                oprot.writeFieldEnd();
+                oprot.writeFieldStop();
+                oprot.writeStructEnd();
+            }
+
+        }
+
+        private static class getEmployeeRecomPositionByIds_argsTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+            public getEmployeeRecomPositionByIds_argsTupleScheme getScheme() {
+                return new getEmployeeRecomPositionByIds_argsTupleScheme();
+            }
+        }
+
+        private static class getEmployeeRecomPositionByIds_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<getEmployeeRecomPositionByIds_args> {
+
+            @Override
+            public void write(org.apache.thrift.protocol.TProtocol prot, getEmployeeRecomPositionByIds_args struct) throws org.apache.thrift.TException {
+                org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+                java.util.BitSet optionals = new java.util.BitSet();
+                if (struct.isSetRecomPushId()) {
+                    optionals.set(0);
+                }
+                if (struct.isSetCompanyId()) {
+                    optionals.set(1);
+                }
+                if (struct.isSetType()) {
+                    optionals.set(2);
+                }
+                oprot.writeBitSet(optionals, 3);
+                if (struct.isSetRecomPushId()) {
+                    oprot.writeI32(struct.recomPushId);
+                }
+                if (struct.isSetCompanyId()) {
+                    oprot.writeI32(struct.companyId);
+                }
+                if (struct.isSetType()) {
+                    oprot.writeI32(struct.type);
+                }
+            }
+
+            @Override
+            public void read(org.apache.thrift.protocol.TProtocol prot, getEmployeeRecomPositionByIds_args struct) throws org.apache.thrift.TException {
+                org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+                java.util.BitSet incoming = iprot.readBitSet(3);
+                if (incoming.get(0)) {
+                    struct.recomPushId = iprot.readI32();
+                    struct.setRecomPushIdIsSet(true);
+                }
+                if (incoming.get(1)) {
+                    struct.companyId = iprot.readI32();
+                    struct.setCompanyIdIsSet(true);
+                }
+                if (incoming.get(2)) {
+                    struct.type = iprot.readI32();
+                    struct.setTypeIsSet(true);
+                }
+            }
+        }
+
+        private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+            return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+        }
+    }
+
+    public static class getEmployeeRecomPositionByIds_result implements org.apache.thrift.TBase<getEmployeeRecomPositionByIds_result, getEmployeeRecomPositionByIds_result._Fields>, java.io.Serializable, Cloneable, Comparable<getEmployeeRecomPositionByIds_result>   {
+        private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getEmployeeRecomPositionByIds_result");
+
+        private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
+
+        private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getEmployeeRecomPositionByIds_resultStandardSchemeFactory();
+        private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getEmployeeRecomPositionByIds_resultTupleSchemeFactory();
+
+        public com.moseeker.thrift.gen.common.struct.Response success; // required
+
+        /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+        public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+            SUCCESS((short)0, "success");
+
+            private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+            static {
+                for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+                    byName.put(field.getFieldName(), field);
+                }
+            }
+
+            /**
+             * Find the _Fields constant that matches fieldId, or null if its not found.
+             */
+            public static _Fields findByThriftId(int fieldId) {
+                switch(fieldId) {
+                    case 0: // SUCCESS
+                        return SUCCESS;
+                    default:
+                        return null;
+                }
+            }
+
+            /**
+             * Find the _Fields constant that matches fieldId, throwing an exception
+             * if it is not found.
+             */
+            public static _Fields findByThriftIdOrThrow(int fieldId) {
+                _Fields fields = findByThriftId(fieldId);
+                if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+                return fields;
+            }
+
+            /**
+             * Find the _Fields constant that matches name, or null if its not found.
+             */
+            public static _Fields findByName(java.lang.String name) {
+                return byName.get(name);
+            }
+
+            private final short _thriftId;
+            private final java.lang.String _fieldName;
+
+            _Fields(short thriftId, java.lang.String fieldName) {
+                _thriftId = thriftId;
+                _fieldName = fieldName;
+            }
+
+            public short getThriftFieldId() {
+                return _thriftId;
+            }
+
+            public java.lang.String getFieldName() {
+                return _fieldName;
+            }
+        }
+
+        // isset id assignments
+        public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+        static {
+            java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+            tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
+                    new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
+            metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+            org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getEmployeeRecomPositionByIds_result.class, metaDataMap);
+        }
+
+        public getEmployeeRecomPositionByIds_result() {
+        }
+
+        public getEmployeeRecomPositionByIds_result(
+                com.moseeker.thrift.gen.common.struct.Response success)
+        {
+            this();
+            this.success = success;
+        }
+
+        /**
+         * Performs a deep copy on <i>other</i>.
+         */
+        public getEmployeeRecomPositionByIds_result(getEmployeeRecomPositionByIds_result other) {
+            if (other.isSetSuccess()) {
+                this.success = new com.moseeker.thrift.gen.common.struct.Response(other.success);
+            }
+        }
+
+        public getEmployeeRecomPositionByIds_result deepCopy() {
+            return new getEmployeeRecomPositionByIds_result(this);
+        }
+
+        @Override
+        public void clear() {
+            this.success = null;
+        }
+
+        public com.moseeker.thrift.gen.common.struct.Response getSuccess() {
+            return this.success;
+        }
+
+        public getEmployeeRecomPositionByIds_result setSuccess(com.moseeker.thrift.gen.common.struct.Response success) {
+            this.success = success;
+            return this;
+        }
+
+        public void unsetSuccess() {
+            this.success = null;
+        }
+
+        /** Returns true if field success is set (has been assigned a value) and false otherwise */
+        public boolean isSetSuccess() {
+            return this.success != null;
+        }
+
+        public void setSuccessIsSet(boolean value) {
+            if (!value) {
+                this.success = null;
+            }
+        }
+
+        public void setFieldValue(_Fields field, java.lang.Object value) {
+            switch (field) {
+                case SUCCESS:
+                    if (value == null) {
+                        unsetSuccess();
+                    } else {
+                        setSuccess((com.moseeker.thrift.gen.common.struct.Response)value);
+                    }
+                    break;
+
+            }
+        }
+
+        public java.lang.Object getFieldValue(_Fields field) {
+            switch (field) {
+                case SUCCESS:
+                    return getSuccess();
+
+            }
+            throw new java.lang.IllegalStateException();
+        }
+
+        /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+        public boolean isSet(_Fields field) {
+            if (field == null) {
+                throw new java.lang.IllegalArgumentException();
+            }
+
+            switch (field) {
+                case SUCCESS:
+                    return isSetSuccess();
+            }
+            throw new java.lang.IllegalStateException();
+        }
+
+        @Override
+        public boolean equals(java.lang.Object that) {
+            if (that == null)
+                return false;
+            if (that instanceof getEmployeeRecomPositionByIds_result)
+                return this.equals((getEmployeeRecomPositionByIds_result)that);
+            return false;
+        }
+
+        public boolean equals(getEmployeeRecomPositionByIds_result that) {
+            if (that == null)
+                return false;
+            if (this == that)
+                return true;
+
+            boolean this_present_success = true && this.isSetSuccess();
+            boolean that_present_success = true && that.isSetSuccess();
+            if (this_present_success || that_present_success) {
+                if (!(this_present_success && that_present_success))
+                    return false;
+                if (!this.success.equals(that.success))
+                    return false;
+            }
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int hashCode = 1;
+
+            hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
+            if (isSetSuccess())
+                hashCode = hashCode * 8191 + success.hashCode();
+
+            return hashCode;
+        }
+
+        @Override
+        public int compareTo(getEmployeeRecomPositionByIds_result other) {
+            if (!getClass().equals(other.getClass())) {
+                return getClass().getName().compareTo(other.getClass().getName());
+            }
+
+            int lastComparison = 0;
+
+            lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+            if (lastComparison != 0) {
+                return lastComparison;
+            }
+            if (isSetSuccess()) {
+                lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+                if (lastComparison != 0) {
+                    return lastComparison;
+                }
+            }
+            return 0;
+        }
+
+        public _Fields fieldForId(int fieldId) {
+            return _Fields.findByThriftId(fieldId);
+        }
+
+        public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+            scheme(iprot).read(iprot, this);
+        }
+
+        public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+            scheme(oprot).write(oprot, this);
+        }
+
+        @Override
+        public java.lang.String toString() {
+            java.lang.StringBuilder sb = new java.lang.StringBuilder("getEmployeeRecomPositionByIds_result(");
+            boolean first = true;
+
+            sb.append("success:");
+            if (this.success == null) {
+                sb.append("null");
+            } else {
+                sb.append(this.success);
+            }
+            first = false;
+            sb.append(")");
+            return sb.toString();
+        }
+
+        public void validate() throws org.apache.thrift.TException {
+            // check for required fields
+            // check for sub-struct validity
+            if (success != null) {
+                success.validate();
+            }
+        }
+
+        private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+            try {
+                write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+            } catch (org.apache.thrift.TException te) {
+                throw new java.io.IOException(te);
+            }
+        }
+
+        private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+            try {
+                read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+            } catch (org.apache.thrift.TException te) {
+                throw new java.io.IOException(te);
+            }
+        }
+
+        private static class getEmployeeRecomPositionByIds_resultStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+            public getEmployeeRecomPositionByIds_resultStandardScheme getScheme() {
+                return new getEmployeeRecomPositionByIds_resultStandardScheme();
+            }
+        }
+
+        private static class getEmployeeRecomPositionByIds_resultStandardScheme extends org.apache.thrift.scheme.StandardScheme<getEmployeeRecomPositionByIds_result> {
+
+            public void read(org.apache.thrift.protocol.TProtocol iprot, getEmployeeRecomPositionByIds_result struct) throws org.apache.thrift.TException {
+                org.apache.thrift.protocol.TField schemeField;
+                iprot.readStructBegin();
+                while (true)
+                {
+                    schemeField = iprot.readFieldBegin();
+                    if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
+                        break;
+                    }
+                    switch (schemeField.id) {
+                        case 0: // SUCCESS
+                            if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                                struct.success = new com.moseeker.thrift.gen.common.struct.Response();
+                                struct.success.read(iprot);
+                                struct.setSuccessIsSet(true);
+                            } else {
+                                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+                            }
+                            break;
+                        default:
+                            org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+                    }
+                    iprot.readFieldEnd();
+                }
+                iprot.readStructEnd();
+
+                // check for required fields of primitive type, which can't be checked in the validate method
+                struct.validate();
+            }
+
+            public void write(org.apache.thrift.protocol.TProtocol oprot, getEmployeeRecomPositionByIds_result struct) throws org.apache.thrift.TException {
+                struct.validate();
+
+                oprot.writeStructBegin(STRUCT_DESC);
+                if (struct.success != null) {
+                    oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
+                    struct.success.write(oprot);
+                    oprot.writeFieldEnd();
+                }
+                oprot.writeFieldStop();
+                oprot.writeStructEnd();
+            }
+
+        }
+
+        private static class getEmployeeRecomPositionByIds_resultTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+            public getEmployeeRecomPositionByIds_resultTupleScheme getScheme() {
+                return new getEmployeeRecomPositionByIds_resultTupleScheme();
+            }
+        }
+
+        private static class getEmployeeRecomPositionByIds_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<getEmployeeRecomPositionByIds_result> {
+
+            @Override
+            public void write(org.apache.thrift.protocol.TProtocol prot, getEmployeeRecomPositionByIds_result struct) throws org.apache.thrift.TException {
+                org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+                java.util.BitSet optionals = new java.util.BitSet();
+                if (struct.isSetSuccess()) {
+                    optionals.set(0);
+                }
+                oprot.writeBitSet(optionals, 1);
+                if (struct.isSetSuccess()) {
+                    struct.success.write(oprot);
+                }
+            }
+
+            @Override
+            public void read(org.apache.thrift.protocol.TProtocol prot, getEmployeeRecomPositionByIds_result struct) throws org.apache.thrift.TException {
+                org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+                java.util.BitSet incoming = iprot.readBitSet(1);
+                if (incoming.get(0)) {
+                    struct.success = new com.moseeker.thrift.gen.common.struct.Response();
+                    struct.success.read(iprot);
+                    struct.setSuccessIsSet(true);
+                }
+            }
+        }
+
+        private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+            return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+        }
+    }
+
+}
