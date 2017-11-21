@@ -89,7 +89,7 @@ public class MessageTemplateEntity {
             url=url.replace("{}",wxSignture);
         }else if(type==2){
             //校验推送职位是否下架
-            String pids=this.handleEmployeeRecomPosition(userId,companyId,1);
+            String pids=this.handleEmployeeRecomPosition(userId,companyId,0);
             if(StringUtils.isNullOrEmpty(pids)){
                 return null;
             }
@@ -436,7 +436,7 @@ public class MessageTemplateEntity {
         }
         String pids="";
         for(Integer pid:list){
-            pids+=",";
+            pids+=pid+",";
         }
         if(StringUtils.isNotNullOrEmpty(pids)){
             pids=pids.substring(0,pids.lastIndexOf(","));
@@ -447,7 +447,7 @@ public class MessageTemplateEntity {
      处理获取推送的数据
      */
     private String handleEmployeeRecomPosition(int userId,int companyId,int type){
-        List<CampaignPersonaRecomRecord> list=this.getCampaignPersonaRecomRecordList(userId,companyId,type,0,20);
+        List<CampaignPersonaRecomRecord> list=this.getCampaignPersonaRecomRecordList(userId,companyId,type,1,20);
         List<Integer> pids=this.getPidListByCampaignPersonaRecomRecord(list);
         int count=this.getPositionCount(pids);
         if(count>0){
