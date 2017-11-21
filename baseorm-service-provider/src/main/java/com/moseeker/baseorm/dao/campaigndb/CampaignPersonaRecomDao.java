@@ -10,11 +10,11 @@ import org.springframework.stereotype.Service;
  * Created by zztaiwll on 17/11/3.
  */
 @Service
-public class CampaignPersonaRecomDao extends JooqCrudImpl<com.moseeker.baseorm.db.campaigndb.tables.CampaignPersonaRecom,CampaignPersonaRecomRecord>{
+public class CampaignPersonaRecomDao extends JooqCrudImpl<com.moseeker.baseorm.db.campaigndb.tables.pojos.CampaignPersonaRecom,CampaignPersonaRecomRecord>{
     public CampaignPersonaRecomDao(){
-        super(CampaignPersonaRecom.CAMPAIGN_PERSONA_RECOM,com.moseeker.baseorm.db.campaigndb.tables.CampaignPersonaRecom.class);
+        super(CampaignPersonaRecom.CAMPAIGN_PERSONA_RECOM,com.moseeker.baseorm.db.campaigndb.tables.pojos.CampaignPersonaRecom.class);
     }
-    public CampaignPersonaRecomDao(TableImpl<CampaignPersonaRecomRecord> table, Class<com.moseeker.baseorm.db.campaigndb.tables.CampaignPersonaRecom> campaignPersonaRecomPojoClass) {
+    public CampaignPersonaRecomDao(TableImpl<CampaignPersonaRecomRecord> table, Class<com.moseeker.baseorm.db.campaigndb.tables.pojos.CampaignPersonaRecom> campaignPersonaRecomPojoClass) {
         super(table, campaignPersonaRecomPojoClass);
     }
 

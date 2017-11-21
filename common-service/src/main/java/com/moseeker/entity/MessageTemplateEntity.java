@@ -1,6 +1,7 @@
 package com.moseeker.entity;
 
 import com.moseeker.baseorm.dao.campaigndb.CampaignPersonaRecomDao;
+import com.moseeker.baseorm.dao.campaigndb.CampaignRecomPositionlistDao;
 import com.moseeker.baseorm.dao.configdb.ConfigSysTemplateMessageLibraryDao;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
@@ -10,6 +11,7 @@ import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignPersonaRecom;
+import com.moseeker.baseorm.db.campaigndb.tables.pojos.CampaignRecomPositionlist;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignPersonaRecomRecord;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
@@ -73,6 +75,9 @@ public class MessageTemplateEntity {
     @Autowired
     private JobPositionDao jobPositionDao;
 
+    @Autowired
+    private CampaignRecomPositionlistDao campaignRecomPositionlistDao;
+
 
     public MessageTemplateNoticeStruct handlerTemplate(int userId,int companyId,int templateId,int type,String url){
 
@@ -91,11 +96,14 @@ public class MessageTemplateEntity {
         }else if(type==4){
             url=url.replace("{}",wxSignture);
         }else if(type==3){
-            //校验推送职位是否下架
+            //校验推送职位是否下架,以及将数据加入推送的表中
            String pids=this.handleEmployeeRecomPosition(userId,companyId,1);
            if(StringUtils.isNullOrEmpty(pids)){
                return null;
            }
+           int recomId=this.addCampaignRecomPositionlist(companyId,pids);
+           url=url.replace("{recomPushId}",recomId+"").replace("{companyId}",companyId+"")
+                  .replace("{}",wxSignture);
 
         }
         MessageTemplateNoticeStruct messageTemplateNoticeStruct =new MessageTemplateNoticeStruct();
@@ -442,9 +450,19 @@ public class MessageTemplateEntity {
         List<Integer> pids=this.getPidListByCampaignPersonaRecomRecord(list);
         int count=this.getPositionCount(pids);
         if(count>0){
-            return  convertListToString(pids);
+            String  positionIds=convertListToString(pids);
+            return positionIds;
         }
         return "";
+    }
+
+    private int addCampaignRecomPositionlist(int companyId,String positionIds){
+        CampaignRecomPositionlist data=new CampaignRecomPositionlist();
+        data.setCompanyId(companyId);
+        data.setPositionIds(positionIds);
+        data.setType((byte)1);
+        CampaignRecomPositionlist campaignRecomPositionlist= campaignRecomPositionlistDao.addData(data);
+        return campaignRecomPositionlist.getId();
     }
 
 }

@@ -6,9 +6,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.PropertyFilter;
 import com.alibaba.fastjson.serializer.ValueFilter;
 import com.moseeker.baseorm.dao.campaigndb.CampaignPersonaRecomDao;
+import com.moseeker.baseorm.dao.campaigndb.CampaignRecomPositionlistDao;
 import com.moseeker.baseorm.dao.dictdb.*;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.*;
+import com.moseeker.baseorm.db.campaigndb.tables.pojos.CampaignRecomPositionlist;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignPersonaRecomRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictAlipaycampusCityRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictAlipaycampusJobcategoryRecord;
@@ -127,10 +129,10 @@ public class PositionService {
     private PositionEntity positionEntity;
     @Autowired
     private CampaignPersonaRecomDao campaignPersonaRecomDao;
-
+    @Autowired
+    private CampaignRecomPositionlistDao campaignRecomPositionlistDao;
     @Autowired
     private HrAppCvConfDao hrAppCvConfDao;
-
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
 
@@ -1293,9 +1295,46 @@ public class PositionService {
         return result;
     }
     @CounterIface
-    public List<WechatPositionListData> getEmployeeRecomPositionList(List<Integer> pids){
+    public List<WechatPositionListData> getEmployeeRecomPositionList(int recomPushId,int companyId,int type){
+        List<Integer> pids=this.handlerEmployeeRecom(recomPushId,companyId,type);
+        if(StringUtils.isEmptyList(pids)){
+            return null;
+        }
         List<WechatPositionListData> result=this.getWxPosition(pids);
         return result;
+    }
+    /*
+     处理推送数据，获取position.id的list
+     */
+    private List<Integer> handlerEmployeeRecom(int recomPushId,int companyId,int type){
+        CampaignRecomPositionlist campaignRecomPosition=getCampaignRecomPositionlistByIdAndCompanyType(recomPushId,companyId,type);
+        if(campaignRecomPosition==null){
+            return null;
+        }
+        List<Integer> list=this.convertStringToList(campaignRecomPosition.getPositionIds());
+        return list;
+    }
+    /*
+      获取推送的数据记录
+     */
+    private CampaignRecomPositionlist getCampaignRecomPositionlistByIdAndCompanyType(int recomPushId,int companyId,int type){
+        Query query=new Query.QueryBuilder().where("id",recomPushId).and("company_id",companyId).and("type",(byte)type).buildQuery();
+        CampaignRecomPositionlist data=campaignRecomPositionlistDao.getData(query);
+        return data;
+    }
+    /*
+     将String转化为list
+     */
+    private List<Integer> convertStringToList(String positionIds){
+        if(StringUtils.isNullOrEmpty(positionIds)){
+            return null;
+        }
+        List<Integer> pidList=new ArrayList<>();
+        String [] pidArray=positionIds.split(",");
+        for(String pid:pidArray){
+            pidList.add(Integer.parseInt(pid));
+        }
+        return pidList;
     }
     /*
       通过user_id 获取 CampaignPersonaRecomPojo 的list集合

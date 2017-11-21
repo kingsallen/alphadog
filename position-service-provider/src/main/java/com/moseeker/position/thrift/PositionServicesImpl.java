@@ -483,11 +483,11 @@ public class PositionServicesImpl implements Iface {
     }
 
     @Override
-    public Response getEmployeeRecomPositionByIds(List<Integer> pids) throws TException {
+    public Response getEmployeeRecomPositionByIds(int recomPushId,int company,int type) throws TException {
         try {
-            List<WechatPositionListData> result=service.getEmployeeRecomPositionList(pids);
+            List<WechatPositionListData> result=service.getEmployeeRecomPositionList(recomPushId,company,type);
             if(StringUtils.isEmptyList(result)){
-                return  ResponseUtils.success("");
+                return  ResponseUtils.fail(1,"您所查找的推送不存在");
             }
             return  ResponseUtils.success(result);
         }catch (Exception e){

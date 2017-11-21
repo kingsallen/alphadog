@@ -806,16 +806,19 @@ public class PositionController {
     public String employeeRecomPosition(HttpServletRequest request, HttpServletResponse response){
         try{
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            String positionIds=params.getString("positionIds");
-            if(StringUtils.isNullOrEmpty(positionIds)){
-                return ResponseLogNotification.fail(request, "职位列表id不能为空");
+            String recomPushId=params.getString("recomPushId");
+            String companyId=params.getString("companyId");
+            String type=params.getString("type");
+            if(StringUtils.isNullOrEmpty(recomPushId)){
+                return ResponseLogNotification.fail(request, "推荐id不能为空");
             }
-            List<Integer> pidList=new ArrayList<>();
-            String pids[]=positionIds.split(",");
-            for(String positionId:pids){
-                pidList.add(Integer.parseInt(positionId));
+            if(StringUtils.isNullOrEmpty(companyId)){
+                return ResponseLogNotification.fail(request, "公司不能为空");
             }
-            Response result=positonServices.getEmployeeRecomPositionByIds(pidList);
+            if(StringUtils.isNullOrEmpty(type)){
+                type="1";
+            }
+            Response result=positonServices.getEmployeeRecomPositionByIds(Integer.parseInt(recomPushId),Integer.parseInt(companyId),Integer.parseInt(type));
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
             logger.error(e.getMessage());

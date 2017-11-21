@@ -2,7 +2,6 @@ package com.moseeker.mq.rabbit;
 
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.logdb.LogDeadLetterDao;
-import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.MessageTemplateEntity;
 import com.moseeker.entity.PersonaRecomEntity;
@@ -48,6 +47,8 @@ public class ReceiverHandler {
 
     @Autowired
     private PersonaRecomEntity personaRecomEntity;
+
+
 
 
 
