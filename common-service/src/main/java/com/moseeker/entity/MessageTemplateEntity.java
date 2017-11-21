@@ -1,6 +1,7 @@
 package com.moseeker.entity;
 
 import com.moseeker.baseorm.dao.campaigndb.CampaignPersonaRecomDao;
+import com.moseeker.baseorm.dao.campaigndb.CampaignRecomPositionlistDao;
 import com.moseeker.baseorm.dao.configdb.ConfigSysTemplateMessageLibraryDao;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
@@ -10,12 +11,15 @@ import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignPersonaRecom;
+import com.moseeker.baseorm.db.campaigndb.tables.pojos.CampaignRecomPositionlist;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignPersonaRecomRecord;
+import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignRecomPositionlistRecord;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.pojo.JobPositionPojo;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
+import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.Constant.JobStatus;
@@ -72,22 +76,36 @@ public class MessageTemplateEntity {
     @Autowired
     private JobPositionDao jobPositionDao;
 
+    @Autowired
+    private CampaignRecomPositionlistDao campaignRecomPositionlistDao;
+
 
     public MessageTemplateNoticeStruct handlerTemplate(int userId,int companyId,int templateId,int type,String url){
 
         HrWxWechatDO DO= this.getHrWxWechatDOByCompanyId(companyId);
+        String wxSignture=DO.getSignature();
         if(type==1){
-            //https://platform.moseeker.com/m/user/survey?wechat_siganture=xxx
-            String wxSignture=DO.getSignature();
+
             url=url.replace("{}",wxSignture);
         }else if(type==2){
-            //https://platform-t.dqprism.com/m/user/ai-recom?wechat_signature=xxx
-            String wxSignture=DO.getSignature();
+            //校验推送职位是否下架
+            String pids=this.handleEmployeeRecomPosition(userId,companyId,1);
+            if(StringUtils.isNullOrEmpty(pids)){
+                return null;
+            }
             url=url.replace("{}",wxSignture);
         }else if(type==4){
-            //https://platform-t.dqprism.com/m/employee/survey?wechat_signature={}
-            String wxSignture=DO.getSignature();
             url=url.replace("{}",wxSignture);
+        }else if(type==3){
+            //校验推送职位是否下架,以及将数据加入推送的表中
+           String pids=this.handleEmployeeRecomPosition(userId,companyId,1);
+           if(StringUtils.isNullOrEmpty(pids)){
+               return null;
+           }
+           int recomId=this.addCampaignRecomPositionlist(companyId,pids);
+           url=url.replace("{recomPushId}",recomId+"").replace("{companyId}",companyId+"")
+                  .replace("{}",wxSignture);
+
         }
         MessageTemplateNoticeStruct messageTemplateNoticeStruct =new MessageTemplateNoticeStruct();
         Map<String,MessageTplDataCol> colMap=this.handleMessageTemplateData(userId,type,companyId);
@@ -103,8 +121,8 @@ public class MessageTemplateEntity {
         return messageTemplateNoticeStruct;
     }
 
-    private String getJobName(int userId,int companyId) {
-        Query query=new Query.QueryBuilder().where("user_id",userId).and("company_id",companyId).buildQuery();
+    private String getJobName(int userId,int companyId,int type) {
+        Query query=new Query.QueryBuilder().where("user_id",userId).and("company_id",companyId).and("type",(byte)type).buildQuery();
         CampaignPersonaRecomRecord record=campaignPersonaRecomDao.getRecord(query);
         if(record==null){
             return null;
@@ -116,28 +134,12 @@ public class MessageTemplateEntity {
             return null;
         }
         String jobName=jobPositionDO.getTitle();
-
-//        List<Integer> positionIdList = positionDao.getPositionIds(new ArrayList<Integer>(){{add(companyId);}});
-//        if (positionIdList != null && positionIdList.size() > 0) {
-//            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-//            queryBuilder.select(CampaignPersonaRecom.CAMPAIGN_PERSONA_RECOM.POSITION_ID.getName())
-//                    .where(new Condition(CampaignPersonaRecom.CAMPAIGN_PERSONA_RECOM.POSITION_ID.getName(), positionIdList, ValueOp.IN))
-//                    .setPageNum(1);
-//
-//            CampaignPersonaRecomRecord campaignPersonaRecom = campaignPersonaRecomDao.getRecord(queryBuilder.buildQuery());
-//            if (campaignPersonaRecom != null) {
-//                JobPositionPojo positionPojo = positionDao.getPosition(campaignPersonaRecom.getPositionId());
-//                if (positionPojo != null) {
-//                    return positionPojo.title+"等";
-//                }
-//            }
-//        }
         if(StringUtils.isNotNullOrEmpty(jobName)){
             jobName+="等";
         }
         return jobName;
     }
-
+    //获取公司的名称
     private String getCompanyName(int companyId) {
         String companyName = null;
         HrCompanyDO companyDO = getCompanyById(companyId);
@@ -199,10 +201,9 @@ public class MessageTemplateEntity {
     private Map<String,MessageTplDataCol> handleDataRecommendTemplate(int userId,int companyId,int type){
         Map<String,MessageTplDataCol> colMap =new HashMap<>();
         String jobName="";
-        String companyName="";
+        String companyName=this.getCompanyName(companyId);
         if(type==2){
-            companyName = this.getCompanyName(companyId);
-            jobName = this.getJobName(userId,companyId);
+            jobName = this.getJobName(userId,companyId,0);
             MessageTplDataCol first=new MessageTplDataCol();
             first.setColor("#173177");
             first.setValue("根据您的求职意愿，仟寻为您挑选了一些新机会。");
@@ -213,6 +214,7 @@ public class MessageTemplateEntity {
             colMap.put("remark",remark);
         }
         if(type==3){
+            jobName = this.getJobName(userId,companyId,1);
             MessageTplDataCol first=new MessageTplDataCol();
             first.setColor("#173177");
             first.setValue("以下职位虚位以待，赶快转发起来吧~");
@@ -392,4 +394,76 @@ public class MessageTemplateEntity {
         UserUserDO DO=userUserDao.getData(query);
         return DO;
     }
+    /*
+     获取对userid推送的职位列表
+     */
+    private List<CampaignPersonaRecomRecord> getCampaignPersonaRecomRecordList(int userId,int companyId,int type,int page,int pageSize){
+        Query query=new Query.QueryBuilder().where("user_id",userId).and("company_id",companyId).and("type",type).orderBy("create_time", Order.DESC)
+                .setPageNum(page).setPageSize(pageSize).buildQuery();
+        List<CampaignPersonaRecomRecord> list=campaignPersonaRecomDao.getRecords(query);
+        return list;
+    }
+    /*
+     处理CampaignPersonaRecomRecord 获取pid
+     */
+    private List<Integer> getPidListByCampaignPersonaRecomRecord(List<CampaignPersonaRecomRecord> list){
+        if(StringUtils.isEmptyList(list)){
+            return null;
+        }
+        List<Integer> result=new ArrayList<>();
+        for(CampaignPersonaRecomRecord record:list){
+            result.add(record.getPositionId());
+        }
+        return result;
+    }
+    /*
+     获取数据表中是否存在这些职位
+     */
+    private int getPositionCount(List<Integer> pids){
+        if(StringUtils.isEmptyList(pids)){
+            return 0;
+        }
+        Query query=new Query.QueryBuilder().where(new Condition("id",pids.toArray(),ValueOp.IN)).and("status",0).buildQuery();
+        int count=positionDao.getCount(query);
+        return count;
+    }
+    /*
+      将list转化为string
+     */
+    private String convertListToString(List<Integer> list){
+        if(StringUtils.isEmptyList(list)){
+            return "";
+        }
+        String pids="";
+        for(Integer pid:list){
+            pids+=",";
+        }
+        if(StringUtils.isNotNullOrEmpty(pids)){
+            pids=pids.substring(0,pids.lastIndexOf(","));
+        }
+        return pids;
+    }
+    /*
+     处理获取推送的数据
+     */
+    private String handleEmployeeRecomPosition(int userId,int companyId,int type){
+        List<CampaignPersonaRecomRecord> list=this.getCampaignPersonaRecomRecordList(userId,companyId,type,0,20);
+        List<Integer> pids=this.getPidListByCampaignPersonaRecomRecord(list);
+        int count=this.getPositionCount(pids);
+        if(count>0){
+            String  positionIds=convertListToString(pids);
+            return positionIds;
+        }
+        return "";
+    }
+
+    private int addCampaignRecomPositionlist(int companyId,String positionIds){
+        CampaignRecomPositionlistRecord data=new CampaignRecomPositionlistRecord();
+        data.setCompanyId(companyId);
+        data.setPositionIds(positionIds);
+        data.setType((byte)1);
+        CampaignRecomPositionlistRecord campaignRecomPositionlist= campaignRecomPositionlistDao.addRecord(data);
+        return campaignRecomPositionlist.getId();
+    }
+
 }

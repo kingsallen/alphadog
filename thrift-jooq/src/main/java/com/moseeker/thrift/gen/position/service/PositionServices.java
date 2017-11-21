@@ -87,7 +87,7 @@ public class PositionServices {
 
         public com.moseeker.thrift.gen.common.struct.Response putAlipayResult(int channel, int positionId, int alipayJobId) throws org.apache.thrift.TException;
 
-        public com.moseeker.thrift.gen.common.struct.Response getPersonaRecomPositionList(int userId, int companyId, int pageNum, int pageSize) throws org.apache.thrift.TException;
+        public com.moseeker.thrift.gen.common.struct.Response getPersonaRecomPositionList(int userId, int companyId, int type, int pageNum, int pageSize) throws org.apache.thrift.TException;
 
         public com.moseeker.thrift.gen.common.struct.Response positionCvConf(int positionId) throws org.apache.thrift.TException;
 
@@ -169,7 +169,7 @@ public class PositionServices {
 
         public void putAlipayResult(int channel, int positionId, int alipayJobId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
-        public void getPersonaRecomPositionList(int userId, int companyId, int pageNum, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+        public void getPersonaRecomPositionList(int userId, int companyId, int type, int pageNum, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
         public void positionCvConf(int positionId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
@@ -1062,17 +1062,18 @@ public class PositionServices {
             throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "putAlipayResult failed: unknown result");
         }
 
-        public com.moseeker.thrift.gen.common.struct.Response getPersonaRecomPositionList(int userId, int companyId, int pageNum, int pageSize) throws org.apache.thrift.TException
+        public com.moseeker.thrift.gen.common.struct.Response getPersonaRecomPositionList(int userId, int companyId, int type, int pageNum, int pageSize) throws org.apache.thrift.TException
         {
-            send_getPersonaRecomPositionList(userId, companyId, pageNum, pageSize);
+            send_getPersonaRecomPositionList(userId, companyId, type, pageNum, pageSize);
             return recv_getPersonaRecomPositionList();
         }
 
-        public void send_getPersonaRecomPositionList(int userId, int companyId, int pageNum, int pageSize) throws org.apache.thrift.TException
+        public void send_getPersonaRecomPositionList(int userId, int companyId, int type, int pageNum, int pageSize) throws org.apache.thrift.TException
         {
             getPersonaRecomPositionList_args args = new getPersonaRecomPositionList_args();
             args.setUserId(userId);
             args.setCompanyId(companyId);
+            args.setType(type);
             args.setPageNum(pageNum);
             args.setPageSize(pageSize);
             sendBase("getPersonaRecomPositionList", args);
@@ -2390,9 +2391,9 @@ public class PositionServices {
             }
         }
 
-        public void getPersonaRecomPositionList(int userId, int companyId, int pageNum, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+        public void getPersonaRecomPositionList(int userId, int companyId, int type, int pageNum, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
             checkReady();
-            getPersonaRecomPositionList_call method_call = new getPersonaRecomPositionList_call(userId, companyId, pageNum, pageSize, resultHandler, this, ___protocolFactory, ___transport);
+            getPersonaRecomPositionList_call method_call = new getPersonaRecomPositionList_call(userId, companyId, type, pageNum, pageSize, resultHandler, this, ___protocolFactory, ___transport);
             this.___currentMethod = method_call;
             ___manager.call(method_call);
         }
@@ -2400,12 +2401,14 @@ public class PositionServices {
         public static class getPersonaRecomPositionList_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
             private int userId;
             private int companyId;
+            private int type;
             private int pageNum;
             private int pageSize;
-            public getPersonaRecomPositionList_call(int userId, int companyId, int pageNum, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+            public getPersonaRecomPositionList_call(int userId, int companyId, int type, int pageNum, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
                 super(client, protocolFactory, transport, resultHandler, false);
                 this.userId = userId;
                 this.companyId = companyId;
+                this.type = type;
                 this.pageNum = pageNum;
                 this.pageSize = pageSize;
             }
@@ -2415,6 +2418,7 @@ public class PositionServices {
                 getPersonaRecomPositionList_args args = new getPersonaRecomPositionList_args();
                 args.setUserId(userId);
                 args.setCompanyId(companyId);
+                args.setType(type);
                 args.setPageNum(pageNum);
                 args.setPageSize(pageSize);
                 args.write(prot);
@@ -3306,7 +3310,7 @@ public class PositionServices {
 
             public getPersonaRecomPositionList_result getResult(I iface, getPersonaRecomPositionList_args args) throws org.apache.thrift.TException {
                 getPersonaRecomPositionList_result result = new getPersonaRecomPositionList_result();
-                result.success = iface.getPersonaRecomPositionList(args.userId, args.companyId, args.pageNum, args.pageSize);
+                result.success = iface.getPersonaRecomPositionList(args.userId, args.companyId, args.type, args.pageNum, args.pageSize);
                 return result;
             }
         }
@@ -5674,7 +5678,7 @@ public class PositionServices {
             }
 
             public void start(I iface, getPersonaRecomPositionList_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
-                iface.getPersonaRecomPositionList(args.userId, args.companyId, args.pageNum, args.pageSize,resultHandler);
+                iface.getPersonaRecomPositionList(args.userId, args.companyId, args.type, args.pageNum, args.pageSize,resultHandler);
             }
         }
 
@@ -35437,14 +35441,16 @@ public class PositionServices {
 
         private static final org.apache.thrift.protocol.TField USER_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("userId", org.apache.thrift.protocol.TType.I32, (short)1);
         private static final org.apache.thrift.protocol.TField COMPANY_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("companyId", org.apache.thrift.protocol.TType.I32, (short)2);
-        private static final org.apache.thrift.protocol.TField PAGE_NUM_FIELD_DESC = new org.apache.thrift.protocol.TField("pageNum", org.apache.thrift.protocol.TType.I32, (short)3);
-        private static final org.apache.thrift.protocol.TField PAGE_SIZE_FIELD_DESC = new org.apache.thrift.protocol.TField("pageSize", org.apache.thrift.protocol.TType.I32, (short)4);
+        private static final org.apache.thrift.protocol.TField TYPE_FIELD_DESC = new org.apache.thrift.protocol.TField("type", org.apache.thrift.protocol.TType.I32, (short)3);
+        private static final org.apache.thrift.protocol.TField PAGE_NUM_FIELD_DESC = new org.apache.thrift.protocol.TField("pageNum", org.apache.thrift.protocol.TType.I32, (short)4);
+        private static final org.apache.thrift.protocol.TField PAGE_SIZE_FIELD_DESC = new org.apache.thrift.protocol.TField("pageSize", org.apache.thrift.protocol.TType.I32, (short)5);
 
         private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getPersonaRecomPositionList_argsStandardSchemeFactory();
         private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getPersonaRecomPositionList_argsTupleSchemeFactory();
 
         public int userId; // required
         public int companyId; // required
+        public int type; // required
         public int pageNum; // required
         public int pageSize; // required
 
@@ -35452,8 +35458,9 @@ public class PositionServices {
         public enum _Fields implements org.apache.thrift.TFieldIdEnum {
             USER_ID((short)1, "userId"),
             COMPANY_ID((short)2, "companyId"),
-            PAGE_NUM((short)3, "pageNum"),
-            PAGE_SIZE((short)4, "pageSize");
+            TYPE((short)3, "type"),
+            PAGE_NUM((short)4, "pageNum"),
+            PAGE_SIZE((short)5, "pageSize");
 
             private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
@@ -35472,9 +35479,11 @@ public class PositionServices {
                         return USER_ID;
                     case 2: // COMPANY_ID
                         return COMPANY_ID;
-                    case 3: // PAGE_NUM
+                    case 3: // TYPE
+                        return TYPE;
+                    case 4: // PAGE_NUM
                         return PAGE_NUM;
-                    case 4: // PAGE_SIZE
+                    case 5: // PAGE_SIZE
                         return PAGE_SIZE;
                     default:
                         return null;
@@ -35518,8 +35527,9 @@ public class PositionServices {
         // isset id assignments
         private static final int __USERID_ISSET_ID = 0;
         private static final int __COMPANYID_ISSET_ID = 1;
-        private static final int __PAGENUM_ISSET_ID = 2;
-        private static final int __PAGESIZE_ISSET_ID = 3;
+        private static final int __TYPE_ISSET_ID = 2;
+        private static final int __PAGENUM_ISSET_ID = 3;
+        private static final int __PAGESIZE_ISSET_ID = 4;
         private byte __isset_bitfield = 0;
         public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
         static {
@@ -35527,6 +35537,8 @@ public class PositionServices {
             tmpMap.put(_Fields.USER_ID, new org.apache.thrift.meta_data.FieldMetaData("userId", org.apache.thrift.TFieldRequirementType.DEFAULT,
                     new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
             tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("companyId", org.apache.thrift.TFieldRequirementType.DEFAULT,
+                    new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+            tmpMap.put(_Fields.TYPE, new org.apache.thrift.meta_data.FieldMetaData("type", org.apache.thrift.TFieldRequirementType.DEFAULT,
                     new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
             tmpMap.put(_Fields.PAGE_NUM, new org.apache.thrift.meta_data.FieldMetaData("pageNum", org.apache.thrift.TFieldRequirementType.DEFAULT,
                     new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
@@ -35542,6 +35554,7 @@ public class PositionServices {
         public getPersonaRecomPositionList_args(
                 int userId,
                 int companyId,
+                int type,
                 int pageNum,
                 int pageSize)
         {
@@ -35550,6 +35563,8 @@ public class PositionServices {
             setUserIdIsSet(true);
             this.companyId = companyId;
             setCompanyIdIsSet(true);
+            this.type = type;
+            setTypeIsSet(true);
             this.pageNum = pageNum;
             setPageNumIsSet(true);
             this.pageSize = pageSize;
@@ -35563,6 +35578,7 @@ public class PositionServices {
             __isset_bitfield = other.__isset_bitfield;
             this.userId = other.userId;
             this.companyId = other.companyId;
+            this.type = other.type;
             this.pageNum = other.pageNum;
             this.pageSize = other.pageSize;
         }
@@ -35577,6 +35593,8 @@ public class PositionServices {
             this.userId = 0;
             setCompanyIdIsSet(false);
             this.companyId = 0;
+            setTypeIsSet(false);
+            this.type = 0;
             setPageNumIsSet(false);
             this.pageNum = 0;
             setPageSizeIsSet(false);
@@ -35627,6 +35645,29 @@ public class PositionServices {
 
         public void setCompanyIdIsSet(boolean value) {
             __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __COMPANYID_ISSET_ID, value);
+        }
+
+        public int getType() {
+            return this.type;
+        }
+
+        public getPersonaRecomPositionList_args setType(int type) {
+            this.type = type;
+            setTypeIsSet(true);
+            return this;
+        }
+
+        public void unsetType() {
+            __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __TYPE_ISSET_ID);
+        }
+
+        /** Returns true if field type is set (has been assigned a value) and false otherwise */
+        public boolean isSetType() {
+            return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __TYPE_ISSET_ID);
+        }
+
+        public void setTypeIsSet(boolean value) {
+            __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __TYPE_ISSET_ID, value);
         }
 
         public int getPageNum() {
@@ -35693,6 +35734,14 @@ public class PositionServices {
                     }
                     break;
 
+                case TYPE:
+                    if (value == null) {
+                        unsetType();
+                    } else {
+                        setType((java.lang.Integer)value);
+                    }
+                    break;
+
                 case PAGE_NUM:
                     if (value == null) {
                         unsetPageNum();
@@ -35720,6 +35769,9 @@ public class PositionServices {
                 case COMPANY_ID:
                     return getCompanyId();
 
+                case TYPE:
+                    return getType();
+
                 case PAGE_NUM:
                     return getPageNum();
 
@@ -35741,6 +35793,8 @@ public class PositionServices {
                     return isSetUserId();
                 case COMPANY_ID:
                     return isSetCompanyId();
+                case TYPE:
+                    return isSetType();
                 case PAGE_NUM:
                     return isSetPageNum();
                 case PAGE_SIZE:
@@ -35782,6 +35836,15 @@ public class PositionServices {
                     return false;
             }
 
+            boolean this_present_type = true;
+            boolean that_present_type = true;
+            if (this_present_type || that_present_type) {
+                if (!(this_present_type && that_present_type))
+                    return false;
+                if (this.type != that.type)
+                    return false;
+            }
+
             boolean this_present_pageNum = true;
             boolean that_present_pageNum = true;
             if (this_present_pageNum || that_present_pageNum) {
@@ -35810,6 +35873,8 @@ public class PositionServices {
             hashCode = hashCode * 8191 + userId;
 
             hashCode = hashCode * 8191 + companyId;
+
+            hashCode = hashCode * 8191 + type;
 
             hashCode = hashCode * 8191 + pageNum;
 
@@ -35842,6 +35907,16 @@ public class PositionServices {
             }
             if (isSetCompanyId()) {
                 lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.companyId, other.companyId);
+                if (lastComparison != 0) {
+                    return lastComparison;
+                }
+            }
+            lastComparison = java.lang.Boolean.valueOf(isSetType()).compareTo(other.isSetType());
+            if (lastComparison != 0) {
+                return lastComparison;
+            }
+            if (isSetType()) {
+                lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.type, other.type);
                 if (lastComparison != 0) {
                     return lastComparison;
                 }
@@ -35892,6 +35967,10 @@ public class PositionServices {
             if (!first) sb.append(", ");
             sb.append("companyId:");
             sb.append(this.companyId);
+            first = false;
+            if (!first) sb.append(", ");
+            sb.append("type:");
+            sb.append(this.type);
             first = false;
             if (!first) sb.append(", ");
             sb.append("pageNum:");
@@ -35962,7 +36041,15 @@ public class PositionServices {
                                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
                             }
                             break;
-                        case 3: // PAGE_NUM
+                        case 3: // TYPE
+                            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                                struct.type = iprot.readI32();
+                                struct.setTypeIsSet(true);
+                            } else {
+                                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+                            }
+                            break;
+                        case 4: // PAGE_NUM
                             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                                 struct.pageNum = iprot.readI32();
                                 struct.setPageNumIsSet(true);
@@ -35970,7 +36057,7 @@ public class PositionServices {
                                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
                             }
                             break;
-                        case 4: // PAGE_SIZE
+                        case 5: // PAGE_SIZE
                             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                                 struct.pageSize = iprot.readI32();
                                 struct.setPageSizeIsSet(true);
@@ -35998,6 +36085,9 @@ public class PositionServices {
                 oprot.writeFieldEnd();
                 oprot.writeFieldBegin(COMPANY_ID_FIELD_DESC);
                 oprot.writeI32(struct.companyId);
+                oprot.writeFieldEnd();
+                oprot.writeFieldBegin(TYPE_FIELD_DESC);
+                oprot.writeI32(struct.type);
                 oprot.writeFieldEnd();
                 oprot.writeFieldBegin(PAGE_NUM_FIELD_DESC);
                 oprot.writeI32(struct.pageNum);
@@ -36029,18 +36119,24 @@ public class PositionServices {
                 if (struct.isSetCompanyId()) {
                     optionals.set(1);
                 }
-                if (struct.isSetPageNum()) {
+                if (struct.isSetType()) {
                     optionals.set(2);
                 }
-                if (struct.isSetPageSize()) {
+                if (struct.isSetPageNum()) {
                     optionals.set(3);
                 }
-                oprot.writeBitSet(optionals, 4);
+                if (struct.isSetPageSize()) {
+                    optionals.set(4);
+                }
+                oprot.writeBitSet(optionals, 5);
                 if (struct.isSetUserId()) {
                     oprot.writeI32(struct.userId);
                 }
                 if (struct.isSetCompanyId()) {
                     oprot.writeI32(struct.companyId);
+                }
+                if (struct.isSetType()) {
+                    oprot.writeI32(struct.type);
                 }
                 if (struct.isSetPageNum()) {
                     oprot.writeI32(struct.pageNum);
@@ -36053,7 +36149,7 @@ public class PositionServices {
             @Override
             public void read(org.apache.thrift.protocol.TProtocol prot, getPersonaRecomPositionList_args struct) throws org.apache.thrift.TException {
                 org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-                java.util.BitSet incoming = iprot.readBitSet(4);
+                java.util.BitSet incoming = iprot.readBitSet(5);
                 if (incoming.get(0)) {
                     struct.userId = iprot.readI32();
                     struct.setUserIdIsSet(true);
@@ -36063,10 +36159,14 @@ public class PositionServices {
                     struct.setCompanyIdIsSet(true);
                 }
                 if (incoming.get(2)) {
+                    struct.type = iprot.readI32();
+                    struct.setTypeIsSet(true);
+                }
+                if (incoming.get(3)) {
                     struct.pageNum = iprot.readI32();
                     struct.setPageNumIsSet(true);
                 }
-                if (incoming.get(3)) {
+                if (incoming.get(4)) {
                     struct.pageSize = iprot.readI32();
                     struct.setPageSizeIsSet(true);
                 }

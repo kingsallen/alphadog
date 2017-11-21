@@ -2,7 +2,6 @@ package com.moseeker.mq.rabbit;
 
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.logdb.LogDeadLetterDao;
-import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.MessageTemplateEntity;
 import com.moseeker.entity.PersonaRecomEntity;
@@ -48,6 +47,8 @@ public class ReceiverHandler {
 
     @Autowired
     private PersonaRecomEntity personaRecomEntity;
+
+
 
 
 
@@ -107,7 +108,13 @@ public class ReceiverHandler {
                     messageTemplate.setEnable_qx_retry(Byte.parseByte(enable_qx_retry));
                 }
                 templateMsgProducer.messageTemplateNotice(messageTemplate);
-                personaRecomEntity.updateIsSendPersonaRecom(userId,companyId,1,20);
+                if(type==2){
+                    personaRecomEntity.updateIsSendPersonaRecom(userId,companyId,0,1,20);
+                }
+                if(type==3){
+                    personaRecomEntity.updateIsSendPersonaRecom(userId,companyId,1,1,20);
+                }
+
 
             }else{
                 this.handleTemplateLogDeadLetter(message,msgBody,"没有查到模板所需的具体内容");
@@ -133,8 +140,9 @@ public class ReceiverHandler {
             int userId=jsonObject.getIntValue("user_id");
             String positionIds=jsonObject.getString("position_ids");
             int companyId=jsonObject.getIntValue("company_id");
+            int type=jsonObject.getIntValue("type");
             if(userId!=0&&StringUtils.isNotEmpty(positionIds)){
-                int result=personaRecomEntity.handlePersonaRecomData(userId,positionIds,companyId);
+                int result=personaRecomEntity.handlePersonaRecomData(userId,positionIds,companyId,type);
             }
 
         }catch(Exception e){
@@ -162,10 +170,12 @@ public class ReceiverHandler {
         String url="";
         if(type==1){
             url=env.getProperty("message.template.fans.url");
-        }else if(type==2||type==3){
+        }else if(type==2){
             url=env.getProperty("message.template.recom.url");
         }else if(type==4){
             url=env.getProperty("message.template.new.employee.url");
+        }else if(type==3){
+            url=env.getProperty("message.template.recom.employee.url");
         }
         return url;
 

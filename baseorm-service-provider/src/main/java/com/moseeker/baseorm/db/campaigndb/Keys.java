@@ -14,6 +14,7 @@ import com.moseeker.baseorm.db.campaigndb.tables.CampaignPcBanner;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignPcRecommendCompany;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignPcRecommendPosition;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignPersonaRecom;
+import com.moseeker.baseorm.db.campaigndb.tables.CampaignRecomPositionlist;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignRecommendCompany;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignRecommendPosition;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignCompanySurveyRecord;
@@ -26,6 +27,7 @@ import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignPcBannerRecord;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignPcRecommendCompanyRecord;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignPcRecommendPositionRecord;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignPersonaRecomRecord;
+import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignRecomPositionlistRecord;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignRecommendCompanyRecord;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignRecommendPositionRecord;
 
@@ -66,6 +68,7 @@ public class Keys {
     public static final Identity<CampaignPersonaRecomRecord, Integer> IDENTITY_CAMPAIGN_PERSONA_RECOM = Identities0.IDENTITY_CAMPAIGN_PERSONA_RECOM;
     public static final Identity<CampaignRecommendCompanyRecord, Integer> IDENTITY_CAMPAIGN_RECOMMEND_COMPANY = Identities0.IDENTITY_CAMPAIGN_RECOMMEND_COMPANY;
     public static final Identity<CampaignRecommendPositionRecord, Integer> IDENTITY_CAMPAIGN_RECOMMEND_POSITION = Identities0.IDENTITY_CAMPAIGN_RECOMMEND_POSITION;
+    public static final Identity<CampaignRecomPositionlistRecord, Integer> IDENTITY_CAMPAIGN_RECOM_POSITIONLIST = Identities0.IDENTITY_CAMPAIGN_RECOM_POSITIONLIST;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
@@ -81,9 +84,10 @@ public class Keys {
     public static final UniqueKey<CampaignPcRecommendCompanyRecord> KEY_CAMPAIGN_PC_RECOMMEND_COMPANY_PRIMARY = UniqueKeys0.KEY_CAMPAIGN_PC_RECOMMEND_COMPANY_PRIMARY;
     public static final UniqueKey<CampaignPcRecommendPositionRecord> KEY_CAMPAIGN_PC_RECOMMEND_POSITION_PRIMARY = UniqueKeys0.KEY_CAMPAIGN_PC_RECOMMEND_POSITION_PRIMARY;
     public static final UniqueKey<CampaignPersonaRecomRecord> KEY_CAMPAIGN_PERSONA_RECOM_PRIMARY = UniqueKeys0.KEY_CAMPAIGN_PERSONA_RECOM_PRIMARY;
-    public static final UniqueKey<CampaignPersonaRecomRecord> KEY_CAMPAIGN_PERSONA_RECOM_CAMPAIGN_PERSONA_RECOM_USER_ID_POSITION_ID_COMPANY_ID_UINDEX = UniqueKeys0.KEY_CAMPAIGN_PERSONA_RECOM_CAMPAIGN_PERSONA_RECOM_USER_ID_POSITION_ID_COMPANY_ID_UINDEX;
+    public static final UniqueKey<CampaignPersonaRecomRecord> KEY_CAMPAIGN_PERSONA_RECOM_CAMPAIGN_PERSONA_RECOM_UINDEX = UniqueKeys0.KEY_CAMPAIGN_PERSONA_RECOM_CAMPAIGN_PERSONA_RECOM_UINDEX;
     public static final UniqueKey<CampaignRecommendCompanyRecord> KEY_CAMPAIGN_RECOMMEND_COMPANY_PRIMARY = UniqueKeys0.KEY_CAMPAIGN_RECOMMEND_COMPANY_PRIMARY;
     public static final UniqueKey<CampaignRecommendPositionRecord> KEY_CAMPAIGN_RECOMMEND_POSITION_PRIMARY = UniqueKeys0.KEY_CAMPAIGN_RECOMMEND_POSITION_PRIMARY;
+    public static final UniqueKey<CampaignRecomPositionlistRecord> KEY_CAMPAIGN_RECOM_POSITIONLIST_PRIMARY = UniqueKeys0.KEY_CAMPAIGN_RECOM_POSITIONLIST_PRIMARY;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -107,6 +111,7 @@ public class Keys {
         public static Identity<CampaignPersonaRecomRecord, Integer> IDENTITY_CAMPAIGN_PERSONA_RECOM = createIdentity(CampaignPersonaRecom.CAMPAIGN_PERSONA_RECOM, CampaignPersonaRecom.CAMPAIGN_PERSONA_RECOM.ID);
         public static Identity<CampaignRecommendCompanyRecord, Integer> IDENTITY_CAMPAIGN_RECOMMEND_COMPANY = createIdentity(CampaignRecommendCompany.CAMPAIGN_RECOMMEND_COMPANY, CampaignRecommendCompany.CAMPAIGN_RECOMMEND_COMPANY.ID);
         public static Identity<CampaignRecommendPositionRecord, Integer> IDENTITY_CAMPAIGN_RECOMMEND_POSITION = createIdentity(CampaignRecommendPosition.CAMPAIGN_RECOMMEND_POSITION, CampaignRecommendPosition.CAMPAIGN_RECOMMEND_POSITION.ID);
+        public static Identity<CampaignRecomPositionlistRecord, Integer> IDENTITY_CAMPAIGN_RECOM_POSITIONLIST = createIdentity(CampaignRecomPositionlist.CAMPAIGN_RECOM_POSITIONLIST, CampaignRecomPositionlist.CAMPAIGN_RECOM_POSITIONLIST.ID);
     }
 
     private static class UniqueKeys0 extends AbstractKeys {
@@ -120,8 +125,9 @@ public class Keys {
         public static final UniqueKey<CampaignPcRecommendCompanyRecord> KEY_CAMPAIGN_PC_RECOMMEND_COMPANY_PRIMARY = createUniqueKey(CampaignPcRecommendCompany.CAMPAIGN_PC_RECOMMEND_COMPANY, "KEY_campaign_pc_recommend_company_PRIMARY", CampaignPcRecommendCompany.CAMPAIGN_PC_RECOMMEND_COMPANY.ID);
         public static final UniqueKey<CampaignPcRecommendPositionRecord> KEY_CAMPAIGN_PC_RECOMMEND_POSITION_PRIMARY = createUniqueKey(CampaignPcRecommendPosition.CAMPAIGN_PC_RECOMMEND_POSITION, "KEY_campaign_pc_recommend_position_PRIMARY", CampaignPcRecommendPosition.CAMPAIGN_PC_RECOMMEND_POSITION.ID);
         public static final UniqueKey<CampaignPersonaRecomRecord> KEY_CAMPAIGN_PERSONA_RECOM_PRIMARY = createUniqueKey(CampaignPersonaRecom.CAMPAIGN_PERSONA_RECOM, "KEY_campaign_persona_recom_PRIMARY", CampaignPersonaRecom.CAMPAIGN_PERSONA_RECOM.ID);
-        public static final UniqueKey<CampaignPersonaRecomRecord> KEY_CAMPAIGN_PERSONA_RECOM_CAMPAIGN_PERSONA_RECOM_USER_ID_POSITION_ID_COMPANY_ID_UINDEX = createUniqueKey(CampaignPersonaRecom.CAMPAIGN_PERSONA_RECOM, "KEY_campaign_persona_recom_campaign_persona_recom_user_id_position_id_company_id_uindex", CampaignPersonaRecom.CAMPAIGN_PERSONA_RECOM.USER_ID, CampaignPersonaRecom.CAMPAIGN_PERSONA_RECOM.POSITION_ID, CampaignPersonaRecom.CAMPAIGN_PERSONA_RECOM.COMPANY_ID);
+        public static final UniqueKey<CampaignPersonaRecomRecord> KEY_CAMPAIGN_PERSONA_RECOM_CAMPAIGN_PERSONA_RECOM_UINDEX = createUniqueKey(CampaignPersonaRecom.CAMPAIGN_PERSONA_RECOM, "KEY_campaign_persona_recom_campaign_persona_recom_uindex", CampaignPersonaRecom.CAMPAIGN_PERSONA_RECOM.USER_ID, CampaignPersonaRecom.CAMPAIGN_PERSONA_RECOM.POSITION_ID, CampaignPersonaRecom.CAMPAIGN_PERSONA_RECOM.COMPANY_ID, CampaignPersonaRecom.CAMPAIGN_PERSONA_RECOM.TYPE);
         public static final UniqueKey<CampaignRecommendCompanyRecord> KEY_CAMPAIGN_RECOMMEND_COMPANY_PRIMARY = createUniqueKey(CampaignRecommendCompany.CAMPAIGN_RECOMMEND_COMPANY, "KEY_campaign_recommend_company_PRIMARY", CampaignRecommendCompany.CAMPAIGN_RECOMMEND_COMPANY.ID);
         public static final UniqueKey<CampaignRecommendPositionRecord> KEY_CAMPAIGN_RECOMMEND_POSITION_PRIMARY = createUniqueKey(CampaignRecommendPosition.CAMPAIGN_RECOMMEND_POSITION, "KEY_campaign_recommend_position_PRIMARY", CampaignRecommendPosition.CAMPAIGN_RECOMMEND_POSITION.ID);
+        public static final UniqueKey<CampaignRecomPositionlistRecord> KEY_CAMPAIGN_RECOM_POSITIONLIST_PRIMARY = createUniqueKey(CampaignRecomPositionlist.CAMPAIGN_RECOM_POSITIONLIST, "KEY_campaign_recom_positionlist_PRIMARY", CampaignRecomPositionlist.CAMPAIGN_RECOM_POSITIONLIST.ID);
     }
 }

@@ -756,16 +756,21 @@ public class PositionController {
             String pageSize=params.getString("pageSize");
             String userId=params.getString("userId");
             String companyId=params.getString("companyId");
+            String type=params.getString("type");
             if(StringUtils.isNullOrEmpty(userId)||"0".equals(userId)||StringUtils.isNullOrEmpty(companyId)||"0".equals(companyId)){
                 return ResponseLogNotification.fail(request, "userId或者companyId不能为空或0");
             }
             if(pageNum==null){
-                pageNum="1";
+                pageNum="0";
             }
             if(pageSize==null){
-                pageNum="20";
+                pageSize="20";
             }
-            Response result=positonServices.getPersonaRecomPositionList(Integer.parseInt(userId),Integer.parseInt(companyId),Integer.parseInt(pageNum),Integer.parseInt(pageSize));
+            if(StringUtils.isNullOrEmpty(type)){
+                type="0";
+            }
+            Response result=positonServices.getPersonaRecomPositionList(Integer.parseInt(userId),Integer.parseInt(companyId),Integer.parseInt(type),
+                    Integer.parseInt(pageNum),Integer.parseInt(pageSize));
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
             logger.error(e.getMessage());
@@ -793,5 +798,31 @@ public class PositionController {
         }
     }
 
-
+    /*
+         *获取alipay同步的职位
+        */
+    @RequestMapping(value = "/position/employeerecom", method = RequestMethod.GET)
+    @ResponseBody
+    public String employeeRecomPosition(HttpServletRequest request, HttpServletResponse response){
+        try{
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            String recomPushId=params.getString("recomPushId");
+            String companyId=params.getString("companyId");
+            String type=params.getString("type");
+            if(StringUtils.isNullOrEmpty(recomPushId)){
+                return ResponseLogNotification.fail(request, "推荐id不能为空");
+            }
+            if(StringUtils.isNullOrEmpty(companyId)){
+                return ResponseLogNotification.fail(request, "公司不能为空");
+            }
+            if(StringUtils.isNullOrEmpty(type)){
+                type="1";
+            }
+            Response result=positonServices.getEmployeeRecomPositionByIds(Integer.parseInt(recomPushId),Integer.parseInt(companyId),Integer.parseInt(type));
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 }
