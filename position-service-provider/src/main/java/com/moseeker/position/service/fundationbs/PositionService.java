@@ -12,6 +12,7 @@ import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.*;
 import com.moseeker.baseorm.db.campaigndb.tables.pojos.CampaignRecomPositionlist;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignPersonaRecomRecord;
+import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignRecomPositionlistRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictAlipaycampusCityRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictAlipaycampusJobcategoryRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityPostcodeRecord;
@@ -1307,7 +1308,7 @@ public class PositionService {
      处理推送数据，获取position.id的list
      */
     private List<Integer> handlerEmployeeRecom(int recomPushId,int companyId,int type){
-        CampaignRecomPositionlist campaignRecomPosition=getCampaignRecomPositionlistByIdAndCompanyType(recomPushId,companyId,type);
+        CampaignRecomPositionlistRecord campaignRecomPosition=this.getCampaignRecomPositionlistByIdAndCompanyType(recomPushId,companyId,type);
         if(campaignRecomPosition==null){
             return null;
         }
@@ -1317,9 +1318,9 @@ public class PositionService {
     /*
       获取推送的数据记录
      */
-    private CampaignRecomPositionlist getCampaignRecomPositionlistByIdAndCompanyType(int recomPushId,int companyId,int type){
+    private CampaignRecomPositionlistRecord getCampaignRecomPositionlistByIdAndCompanyType(int recomPushId,int companyId,int type){
         Query query=new Query.QueryBuilder().where("id",recomPushId).and("company_id",companyId).and("type",(byte)type).buildQuery();
-        CampaignRecomPositionlist data=campaignRecomPositionlistDao.getData(query);
+        CampaignRecomPositionlistRecord data=campaignRecomPositionlistDao.getRecord(query);
         return data;
     }
     /*

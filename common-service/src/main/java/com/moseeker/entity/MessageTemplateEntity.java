@@ -13,6 +13,7 @@ import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignPersonaRecom;
 import com.moseeker.baseorm.db.campaigndb.tables.pojos.CampaignRecomPositionlist;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignPersonaRecomRecord;
+import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignRecomPositionlistRecord;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.pojo.JobPositionPojo;
@@ -457,11 +458,11 @@ public class MessageTemplateEntity {
     }
 
     private int addCampaignRecomPositionlist(int companyId,String positionIds){
-        CampaignRecomPositionlist data=new CampaignRecomPositionlist();
+        CampaignRecomPositionlistRecord data=new CampaignRecomPositionlistRecord();
         data.setCompanyId(companyId);
         data.setPositionIds(positionIds);
         data.setType((byte)1);
-        CampaignRecomPositionlist campaignRecomPositionlist= campaignRecomPositionlistDao.addData(data);
+        CampaignRecomPositionlistRecord campaignRecomPositionlist= campaignRecomPositionlistDao.addRecord(data);
         return campaignRecomPositionlist.getId();
     }
 
