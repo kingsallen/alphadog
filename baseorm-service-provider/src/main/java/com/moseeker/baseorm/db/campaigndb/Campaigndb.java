@@ -14,6 +14,7 @@ import com.moseeker.baseorm.db.campaigndb.tables.CampaignPcBanner;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignPcRecommendCompany;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignPcRecommendPosition;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignPersonaRecom;
+import com.moseeker.baseorm.db.campaigndb.tables.CampaignRecomPositionlist;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignRecommendCompany;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignRecommendPosition;
 
@@ -41,7 +42,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Campaigndb extends SchemaImpl {
 
-    private static final long serialVersionUID = -991827028;
+    private static final long serialVersionUID = 547637954;
 
     /**
      * The reference instance of <code>campaigndb</code>
@@ -109,6 +110,11 @@ public class Campaigndb extends SchemaImpl {
     public final CampaignRecommendPosition CAMPAIGN_RECOMMEND_POSITION = com.moseeker.baseorm.db.campaigndb.tables.CampaignRecommendPosition.CAMPAIGN_RECOMMEND_POSITION;
 
     /**
+     * 职位推送记录，暂时用于个人画像，员工推送转发，也可用于其他有相同需求的地方
+     */
+    public final CampaignRecomPositionlist CAMPAIGN_RECOM_POSITIONLIST = com.moseeker.baseorm.db.campaigndb.tables.CampaignRecomPositionlist.CAMPAIGN_RECOM_POSITIONLIST;
+
+    /**
      * No further instances allowed
      */
     private Campaigndb() {
@@ -144,6 +150,7 @@ public class Campaigndb extends SchemaImpl {
             CampaignPcRecommendPosition.CAMPAIGN_PC_RECOMMEND_POSITION,
             CampaignPersonaRecom.CAMPAIGN_PERSONA_RECOM,
             CampaignRecommendCompany.CAMPAIGN_RECOMMEND_COMPANY,
-            CampaignRecommendPosition.CAMPAIGN_RECOMMEND_POSITION);
+            CampaignRecommendPosition.CAMPAIGN_RECOMMEND_POSITION,
+            CampaignRecomPositionlist.CAMPAIGN_RECOM_POSITIONLIST);
     }
 }

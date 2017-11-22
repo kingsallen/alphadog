@@ -113,4 +113,11 @@ public class CampaignPersonaRecomDao extends DAOImpl<CampaignPersonaRecomRecord,
     public List<com.moseeker.baseorm.db.campaigndb.tables.pojos.CampaignPersonaRecom> fetchByUpdateTime(Timestamp... values) {
         return fetch(CampaignPersonaRecom.CAMPAIGN_PERSONA_RECOM.UPDATE_TIME, values);
     }
+
+    /**
+     * Fetch records that have <code>type IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.campaigndb.tables.pojos.CampaignPersonaRecom> fetchByType(Byte... values) {
+        return fetch(CampaignPersonaRecom.CAMPAIGN_PERSONA_RECOM.TYPE, values);
+    }
 }
