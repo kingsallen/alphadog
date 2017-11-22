@@ -50,10 +50,7 @@ public class BindOperation {
         bindUtil.alreadyInRedis(thirdPartyAccount);  //验证是否正在绑定
 
         try {
-            thirdPartyAccount.setBinding((short)8);
-//            thirdPartyAccount.setBinding((short)9);
-//            thirdPartyAccount.setBinding((short)6);
-            HrThirdPartyAccountDO result = thirdPartyAccount;//chaosHandler.bind(thirdPartyAccount, extras);
+            HrThirdPartyAccountDO result = chaosHandler.bind(thirdPartyAccount, extras);
             if (result.getBinding() != 100) {
                 bindUtil.removeCache(thirdPartyAccount);
             }
