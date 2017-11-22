@@ -1,5 +1,7 @@
 package com.moseeker.dict.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.moseeker.baseorm.dao.dictdb.DictLiepinOccupationDao;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ChannelType;
@@ -8,6 +10,7 @@ import com.moseeker.dict.service.impl.occupation.Job51OccupationHandler;
 import com.moseeker.dict.service.impl.occupation.LiepinOccupationHandler;
 import com.moseeker.dict.service.impl.occupation.VeryEastOccupationHandler;
 import com.moseeker.dict.service.impl.occupation.ZhilianOccupationHandler;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
@@ -40,15 +43,6 @@ public class DictOccupationService {
 	 */
 	Logger logger = org.slf4j.LoggerFactory.getLogger(DictOccupationService.class);
 
-	@Autowired
-    private Dict51OccupationDao dict51OccupationDao;
-
-	@Autowired
-    private DictZpinOccupationDao dictZpinOccupationDao;
-
-	@Autowired
-	private DictLiepinOccupationDao dictLiepinOccupationDao;
-
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
 
@@ -63,39 +57,53 @@ public class DictOccupationService {
 	 * 查询第三方职位职能
 	 */
 	@CounterIface
-	public Response queryOccupation(String param){
+	public JSONArray queryOccupation(String param) throws BIZException {
 		logger.info("queryOccupation param :"+param);
 		JSONObject obj=JSONObject.parseObject(param);
 		int single_layer=obj.getIntValue("single_layer");
 		int channel=obj.getIntValue("channel");
 		try{
+			AbstractOccupationHandler occupationHandler=getOccuaptionHandler(channel);
 
-			OccupationChannel occupationChannel=OccupationChannel.getInstance(channel);
-			AbstractOccupationHandler occupationHandler=map.get(occupationChannel.clazz);
-
-			if(single_layer==1){
-				return ResponseUtils.success(occupationHandler.getSingle(obj));
-			}else{
-				String result=redisClient.get(Constant.APPID_ALPHADOG,ConstantEnum.JOB_OCCUPATION_KEY.toString(),occupationChannel.key);
-				logger.info("redis occupation :"+result);
-				if(!StringUtils.isEmpty(result)){
-					Response res=JSONObject.toJavaObject(JSONObject.parseObject(result), Response.class);
-					return res;
+			if(single_layer==1){	//获取单一职能链
+				return occupationHandler.getSingle(obj);
+			}else{	//获取所有职能
+				//先去redis查找缓存职位
+				JSONArray redisOccupation=getRedisOccupation(channel);
+				if(redisOccupation != null && !redisOccupation.isEmpty()){
+					return redisOccupation;
 				}else{
-					Response res=ResponseUtils.success(occupationHandler.getAll());
-					logger.info("occupation handle result : {}",res);
-					if(res.getStatus()==0&&!StringUtils.isEmpty(res.getData())&&!"[]".equals(res.getData())){
-						redisClient.set(Constant.APPID_ALPHADOG,ConstantEnum.JOB_OCCUPATION_KEY.toString(),occupationChannel.key,JSONObject.toJSONString(res));
-					}
-					return res;
+					//redis没有缓存职位，取数据库查询一遍并且缓存。
+					JSONArray allOccupation=occupationHandler.getAll();
+					logger.info("occupation handle result : {}",allOccupation);
+					setRedisOccupation(channel,allOccupation);
+					return allOccupation;
 				}
-
 			}
 		}catch(Exception e){
 			e.printStackTrace();
-			logger.error(e.getMessage(), e);
+			throw e;
 		}
-		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+	}
+
+	public JSONArray getRedisOccupation(int channel){
+		OccupationChannel occupationChannel=OccupationChannel.getInstance(channel);
+		String result=redisClient.get(Constant.APPID_ALPHADOG,ConstantEnum.JOB_OCCUPATION_KEY.toString(),occupationChannel.key);
+		logger.info("redis occupation : {}",result);
+		return JSON.parseArray(result);
+	}
+
+	public void setRedisOccupation(int channel,JSONArray array){
+		if(array!=null && !array.isEmpty()) {
+			OccupationChannel occupationChannel = OccupationChannel.getInstance(channel);
+			logger.info("set redis occupation : {}",array);
+			redisClient.set(Constant.APPID_ALPHADOG, ConstantEnum.JOB_OCCUPATION_KEY.toString(), occupationChannel.key, array.toJSONString());
+		}
+	}
+
+	public AbstractOccupationHandler getOccuaptionHandler(int channel){
+		OccupationChannel occupationChannel=OccupationChannel.getInstance(channel);
+		return map.get(occupationChannel.clazz);
 	}
 
 	private enum OccupationChannel{

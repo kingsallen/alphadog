@@ -39,8 +39,8 @@ public abstract class AbstractOccupationHandler<T> {
     }
 
     //获取单一职位
-    public List<JSONObject> getSingle(JSONObject obj){
-        List<JSONObject> allData=new ArrayList<>();
+    public JSONArray getSingle(JSONObject obj){
+        JSONArray allData=new JSONArray();
         List<T> list = getSingleOccupation(obj);
         if (list != null && list.size() > 0) {
             list.forEach(r -> {
