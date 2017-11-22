@@ -1,17 +1,13 @@
 package com.moseeker.position.service.position.liepin;
 
-import com.moseeker.baseorm.dao.dictdb.DictCityMapDao;
 import com.moseeker.baseorm.dao.dictdb.DictLiepinOccupationDao;
-import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.common.constants.ChannelType;
-import com.moseeker.common.util.query.Query;
 import com.moseeker.position.service.position.DegreeChangeUtil;
 import com.moseeker.position.service.position.WorkTypeChangeUtil;
 import com.moseeker.position.service.position.base.PositionTransfer;
 import com.moseeker.position.service.position.qianxun.Degree;
 import com.moseeker.position.service.position.qianxun.WorkType;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
-import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionCityDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
 import org.slf4j.Logger;
@@ -29,19 +25,17 @@ public class LiepinPositionTransfer extends PositionTransfer {
     @Autowired
     DictLiepinOccupationDao occupationDao;
 
+
     @Override
     protected void setDepartment(ThirdPartyPosition form, JobPositionDO positionDO, ThirdPartyPositionForSynchronization position) {
         position.setDepartment(form.getDepartmentName());
     }
 
     @Override
-    protected void setOccupation(ThirdPartyPosition positionForm, ThirdPartyPositionForSynchronization position) {
+    public void setOccupation(ThirdPartyPosition positionForm, ThirdPartyPositionForSynchronization position) {
         List<String> occupations=positionForm.getOccupation();
-        //临时操作，前台会出现只传3个occupation的情况，即丢失最高一层职位，遇到这种情况需要再查一遍，如果前台修改完成，可以去掉这段if
-        if(occupations !=null && occupations.size()==3){
-            occupations=occupationDao.getFullOccupations(occupations.get(2)).stream().map(o->o.otherCode).collect(Collectors.toList());
-        }
-        if (occupations != null) {
+        if (occupations != null && !occupations.isEmpty()) {
+            occupations=occupationDao.getFullOccupations(occupations.get(occupations.size()-1)).stream().map(o->o.otherCode).collect(Collectors.toList());
             position.setOccupation(occupations);
         }
         logger.info("lieping position sync occupation {}",occupations);
