@@ -344,12 +344,15 @@ public class UserHrAccountController {
             }
 
             List<Integer> hrIds = (List<Integer>) params.get("hr_ids");
+            logger.info("dispath account_id : {},hr_ids : {}",accountId,hrIds);
 
             if (hrIds == null) {
                 return ResponseLogNotification.fail(request, "hr_ids不能为空");
             }
 
             ThirdPartyAccountInfo accountInfo = userHrAccountService.dispatchThirdPartyAccount(accountId, hrIds);
+
+            logger.info("dispatch result : {}",accountInfo);
 
             return ResponseLogNotification.successJson(request, accountInfo);
         } catch (Exception e) {
