@@ -51,6 +51,36 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
         return getData(query);
     }
 
+    public List<HrThirdPartyAccountDO> getAccountsById(List<Integer> accountIds){
+        Query query = new Query.QueryBuilder()
+                .where(new Condition(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID.getName(), accountIds, ValueOp.IN))
+                .and(new Condition(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.BINDING.getName(), 0, ValueOp.NEQ))
+                .buildQuery();
+        return getDatas(query);
+    }
+
+    public HrThirdPartyAccountDO getEQThirdPartyAccount(HrThirdPartyAccountDO thirdPartyAccount){
+        Query.QueryBuilder qu = new Query.QueryBuilder();
+        qu.where("company_id", thirdPartyAccount.getCompanyId());
+        qu.and("channel", thirdPartyAccount.getChannel());
+        qu.and("username", thirdPartyAccount.getUsername());
+        qu.and(new Condition("binding", 0, ValueOp.NEQ));//有效的状态
+
+        List<HrThirdPartyAccountDO> datas = getDatas(qu.buildQuery());
+
+        HrThirdPartyAccountDO data = null;
+
+        for (HrThirdPartyAccountDO d : datas) {
+            ///数据库中username是不区分大小写的，如果大小写不同，那么认为不是一个账号
+            if (d.getUsername().equals(thirdPartyAccount.getUsername())) {
+                data = d;
+                break;
+            }
+        }
+
+        return data;
+    }
+
     public int upsertResource(HrThirdPartyAccountRecord record) {
         logger.info("HRThirdPartyAccountDao upsertResource");
         logger.info("HRThirdPartyAccountDao upsertResource channel:{}, company_id:{}", record.getChannel(), record.getCompanyId());
