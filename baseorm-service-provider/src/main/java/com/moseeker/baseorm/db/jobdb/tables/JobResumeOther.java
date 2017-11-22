@@ -127,6 +127,7 @@ public class JobResumeOther extends TableImpl<JobResumeOtherRecord> {
     /**
      * Rename this table
      */
+    @Override
     public JobResumeOther rename(String name) {
         return new JobResumeOther(name, null);
     }
