@@ -456,6 +456,20 @@ public abstract class RedisClient {
 	}
 
 	/**
+	 * 对存储在指定key的数值执行原子的加1操作。只是不存在时会设置为1
+	 * @param appId 调用方项目编号
+	 * @param key_identifier config_cacheconfig_rediskey.key_identifier 关键词标识符
+	 * @param str 替代第一个通配符的字符串
+	 * @throws CacheConfigNotExistException 关键词未配置的提示异常
+	 */
+	public Long incrIfNotExist(int appId, String key_identifier, String str)
+			throws CacheConfigNotExistException {
+		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
+		String cacheKey = String.format(redisKey.getPattern(), str);
+		return redisCluster.incr(cacheKey);
+	}
+
+	/**
 	 * 对key对应的数字做减1操作 
 	 * @param appId 调用方项目编号
 	 * @param key_identifier config_cacheconfig_rediskey.key_identifier 关键词标识符
