@@ -36,7 +36,7 @@ public class ChaosThriftService implements Iface {
     private ChaosServiceImpl chaosService;
 
     @Override
-    public HrThirdPartyAccountDO binding(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras) throws TException {
+    public String binding(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras) throws TException {
         try {
             return chaosService.bind(hrThirdPartyAccount, extras);
         } catch (Exception e) {
@@ -46,7 +46,7 @@ public class ChaosThriftService implements Iface {
     }
 
     @Override
-    public HrThirdPartyAccountDO bindConfirm(HrThirdPartyAccountDO thirdPartyAccount, Map<String, String> extras, boolean confirm) throws BIZException, TException {
+    public String bindConfirm(HrThirdPartyAccountDO thirdPartyAccount, Map<String, String> extras, boolean confirm) throws BIZException, TException {
         try {
             return chaosService.bindConfirm(thirdPartyAccount, extras,confirm);
         } catch (Exception e) {
@@ -56,27 +56,12 @@ public class ChaosThriftService implements Iface {
     }
 
     @Override
-    public HrThirdPartyAccountDO bindMessage(HrThirdPartyAccountDO thirdPartyAccount, Map<String, String> extras, String code) throws BIZException, TException {
+    public String bindMessage(HrThirdPartyAccountDO thirdPartyAccount, Map<String, String> extras, String code) throws BIZException, TException {
         try {
             return chaosService.bindMessage(thirdPartyAccount, extras,code);
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
             throw ExceptionUtils.convertException(e);
-        }
-    }
-
-    @Override
-    public HrThirdPartyAccountDO synchronization(HrThirdPartyAccountDO thirdPartyAccount, Map<String, String> extras) throws TException {
-        try {
-            return chaosService.synchronization(thirdPartyAccount, extras);
-        } catch (BIZException e) {
-            throw e;
-        } catch (ConnectException e) {
-            throw new BIZException(-1, "刷新失败，请稍后再试");
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-            throw new TException(e);
         }
     }
 

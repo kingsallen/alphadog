@@ -163,10 +163,7 @@ public class UserHrAccountService {
      */
     public boolean ifAddSubAccountAllowed(int hrId) throws CommonException {
 
-        UserHrAccountDO hrAccountDO = userHrAccountDao.getValidAccount(hrId);
-        if (hrAccountDO == null) {
-            throw HRException.USER_NOT_EXISTS;
-        }
+        UserHrAccountDO hrAccountDO = requiresNotNullAccount(hrId);
 
         Query query = new Query.QueryBuilder()
                 .where(HrSuperaccountApply.HR_SUPERACCOUNT_APPLY.COMPANY_ID.getName(), hrAccountDO.getCompanyId())
@@ -1513,4 +1510,11 @@ public class UserHrAccountService {
         return hrAppExportFieldsDOList.stream().filter(f -> f.showed == 1).collect(Collectors.toList());
     }
 
+    public UserHrAccountDO requiresNotNullAccount(int hrId){
+        UserHrAccountDO hrAccountDO = userHrAccountDao.getValidAccount(hrId);
+        if (hrAccountDO == null) {
+            throw HRException.USER_NOT_EXISTS;
+        }
+        return hrAccountDO;
+    }
 }

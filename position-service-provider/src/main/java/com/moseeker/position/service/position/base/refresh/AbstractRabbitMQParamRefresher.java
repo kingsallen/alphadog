@@ -73,6 +73,7 @@ public abstract class AbstractRabbitMQParamRefresher implements ParamRefresher {
             moseekerRegin.put("text",chain);
             moseekerReginArray.add(moseekerRegin);
         }
+        logger.info("refresh moseekerRegin {}",moseekerReginArray);
         return moseekerReginArray;
     }
 }

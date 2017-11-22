@@ -1,6 +1,6 @@
 package com.moseeker.function.config;
 
-import com.moseeker.function.constants.BindThirdPart;
+import com.moseeker.common.constants.BindThirdPart;
 import com.rabbitmq.client.ConnectionFactory;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;

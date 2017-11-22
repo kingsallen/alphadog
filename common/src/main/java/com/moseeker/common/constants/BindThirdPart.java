@@ -1,4 +1,4 @@
-package com.moseeker.function.constants;
+package com.moseeker.common.constants;
 
 public class BindThirdPart {
     public final static int APP_ID=0;

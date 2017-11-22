@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.service.thirdpartyaccount;
 
+import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.email.Email;
 import com.moseeker.common.util.ConfigPropertiesUtil;
@@ -9,6 +10,7 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -21,6 +23,8 @@ import java.util.Map;
  */
 @Component
 public class EmailNotification {
+    @Autowired
+    HrCompanyDao companyDao;
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -62,7 +66,8 @@ public class EmailNotification {
     }
 
     //发送同步失败的邮件
-    public void sendFailureMail(List<String> mails, HrThirdPartyAccountDO thirdPartyAccount, Map<String, String> extras, HrCompanyDO company) {
+    public void sendWebBindFailureMail(List<String> mails, HrThirdPartyAccountDO thirdPartyAccount) {
+        HrCompanyDO company = companyDao.getCompanyById(thirdPartyAccount.getCompanyId());
 
         if (mails == null || mails.size() == 0) {
             logger.error("没有配置同步邮箱地址!");
@@ -94,10 +99,6 @@ public class EmailNotification {
             messageBuilder.append("【帐号名】：").append(thirdPartyAccount.getUsername()).append(br);
             if (StringUtils.isNotNullOrEmpty(thirdPartyAccount.getMembername())) {
                 messageBuilder.append("【会员名】：").append(thirdPartyAccount.getMembername()).append(br);
-            }
-
-            if (extras != null && StringUtils.isNotNullOrEmpty(extras.get("company"))) {
-                messageBuilder.append("【子公司简称】:").append(extras.get("company")).append(br);
             }
 
             if (StringUtils.isNotNullOrEmpty(thirdPartyAccount.getErrorMessage())) {
