@@ -461,7 +461,7 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
             jobPositionPojoList = create.select().from(JobPosition.JOB_POSITION)
                     .where(condition).fetchInto(JobPositionPojo.class);
         }
-        return jobPositionPojoList != null ? jobPositionPojoList.get(0) : null;
+        return jobPositionPojoList != null && jobPositionPojoList.size() > 0 ? jobPositionPojoList.get(0) : null;
     }
 
     /*
