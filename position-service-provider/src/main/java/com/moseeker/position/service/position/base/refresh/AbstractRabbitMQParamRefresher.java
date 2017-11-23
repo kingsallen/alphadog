@@ -45,7 +45,7 @@ public abstract class AbstractRabbitMQParamRefresher implements ParamRefresher {
         addSendParam(jsonSend);
 
         String json=jsonSend.toJSONString();
-        logger.info("refresh param send RabbitMQ :"+json);
+        logger.info("refresh param send RabbitMQ channel : {}",getChannel().getValue());
 
         amqpTemplate.send(exchange(),routingKey(), createMsg(json));
         logger.info("send RabbitMQ success");
@@ -74,7 +74,7 @@ public abstract class AbstractRabbitMQParamRefresher implements ParamRefresher {
             moseekerRegin.put("text",chain);
             moseekerReginArray.add(moseekerRegin);
         }
-        logger.info("refresh moseekerRegin {}",moseekerReginArray);
+        logger.info("refresh moseekerRegin {}",moseekerReginArray.size());
         return moseekerReginArray;
     }
 }
