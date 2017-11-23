@@ -56,7 +56,7 @@ public class TestService {
 
         param.channel=OccupationChannel.VeryEast.code;
 
-        print(map.get(channel.clazz).handle());
+        print(map.get(channel.clazz).getAll());
 
         /*print(service.queryOccupation());
         print(ResponseUtils.success(map.get(channel.clazz).handle())));
