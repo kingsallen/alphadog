@@ -1,6 +1,8 @@
 package com.moseeker.useraccounts.config;
 
 import com.rabbitmq.client.ConnectionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
@@ -26,11 +28,18 @@ import java.util.List;
 @PropertySource("classpath:common.properties")
 @Import({com.moseeker.baseorm.config.AppConfig.class})
 public class AppConfig {
+
+    Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     private Environment env;
 
     @Bean
     public ConnectionFactory connectionFactory() {
+        logger.info("rabbitmq.host:{}, rabbitmq.port:{}, rabbitmq.username:{}, rabbitmq.password:{}",
+                env.getProperty("rabbitmq.host"), env.getProperty("rabbitmq.port"), env.getProperty("rabbitmq.username"),
+                env.getProperty("rabbitmq.password"));
+        logger.info("------------------------");
         ConnectionFactory cf = new ConnectionFactory();
         cf.setHost(env.getProperty("rabbitmq.host").trim());
         cf.setPort(Integer.valueOf(env.getProperty("rabbitmq.port").trim()));
@@ -41,6 +50,7 @@ public class AppConfig {
 
     @Bean
     public RabbitTemplate rabbitTemplate() {
+        logger.info("-----------before rabbitTemplate()-------------");
         RabbitTemplate rabbitTemplate = new RabbitTemplate(cachingConnectionFactory());
         RetryTemplate retryTemplate = new RetryTemplate();
         // 重试机制
@@ -50,6 +60,7 @@ public class AppConfig {
         backOffPolicy.setMaxInterval(10000);
         retryTemplate.setBackOffPolicy(backOffPolicy);
         rabbitTemplate.setRetryTemplate(retryTemplate);
+        logger.info("-----------end rabbitTemplate()-------------");
         return rabbitTemplate;
     }
 
@@ -72,10 +83,12 @@ public class AppConfig {
      */
     @Bean("rabbitListenerContainerFactory")
     public RabbitListenerContainerFactory rabbitListenerContainerFactory() {
+        logger.info("-----------before rabbitListenerContainerFactory()-------------");
         SimpleRabbitListenerContainerFactory listenerContainerFactory = new SimpleRabbitListenerContainerFactory();
         listenerContainerFactory.setConnectionFactory(cachingConnectionFactory());
         // 设置手动 ACK
         listenerContainerFactory.setAcknowledgeMode(AcknowledgeMode.MANUAL);
+        logger.info("-----------end rabbitListenerContainerFactory()-------------");
         return listenerContainerFactory;
     }
 
@@ -85,11 +98,13 @@ public class AppConfig {
      */
     @Bean
     public RabbitListenerContainerFactory rabbitListenerContainerFactoryAutoAck() {
+        logger.info("-----------before rabbitListenerContainerFactory()-------------");
         SimpleRabbitListenerContainerFactory listenerContainerFactory = new SimpleRabbitListenerContainerFactory();
         listenerContainerFactory.setConnectionFactory(cachingConnectionFactory());
 
         // 设置自动 ACK
         listenerContainerFactory.setAcknowledgeMode(AcknowledgeMode.AUTO);
+        logger.info("-----------end rabbitListenerContainerFactory()-------------");
         return listenerContainerFactory;
     }
 
