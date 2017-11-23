@@ -37,13 +37,13 @@ public class ThirdPartyAccountServiceTest {
     @Autowired
     ThridPartyAcountEntity thridPartyAcountEntity;
 
-    @Mock
-    ChaosHandler chaosHandler;
+    /*@Mock
+    ChaosHandler chaosHandler;*/
 
     @Autowired
     BindOperation bindOperation;
 
-    @Before
+    /*@Before
     public void init() throws Exception {
         MockitoAnnotations.initMocks(this);
         chaosHandler= Mockito.mock(ChaosHandler.class);
@@ -53,7 +53,7 @@ public class ThirdPartyAccountServiceTest {
         HrThirdPartyAccountDO thirdPartyAccount=new HrThirdPartyAccountDO();
         thirdPartyAccount.setBinding((short)10);
         Mockito.when(chaosHandler.bind(thirdPartyAccount,new HashMap<>())).thenReturn(thirdPartyAccount);
-    }
+    }*/
 
     @Test
     public void test() throws Exception {
