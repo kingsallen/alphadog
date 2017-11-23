@@ -89,10 +89,10 @@ public class HRThirdPartyAccountHrDao extends JooqCrudImpl<HrThirdPartyAccountHr
         return update(update);
     }
 
-    public int invalidByIdsAccountId(List<Integer> ids,int accountId){
+    public int invalidByHrIdsAccountId(List<Integer> hrIds,int accountId){
         Update update =new Update.UpdateBuilder()
                 .set(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.STATUS.getName(), 0)
-                .where(new Condition(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.ID.getName(), ids, ValueOp.IN))
+                .where(new Condition(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.HR_ACCOUNT_ID.getName(), hrIds, ValueOp.IN))
                 .and(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.THIRD_PARTY_ACCOUNT_ID.getName(), accountId)
                 .buildUpdate();
         return update(update);

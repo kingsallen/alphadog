@@ -51,6 +51,7 @@ public class DispatchOperation {
                 dispathTo(thirdPartyAccount, hrIds);
             } else {
                 Set<Integer> lastboundIds = binders.stream().map(item -> item.getHrAccountId()).collect(Collectors.toSet());
+                logger.info("lastboundIds : {}",lastboundIds);
 
                 //取消分配的hr
                 List<Integer> needCancelHrIds = lastboundIds.stream().filter(hrId-> !hrIds.contains(hrId)).collect(Collectors.toList());
@@ -95,7 +96,7 @@ public class DispatchOperation {
     private void cancelDispath(HrThirdPartyAccountDO thirdPartyAccount, List<Integer> hrIds) {
         logger.info("第三方帐号取消分配:{}:{}", thirdPartyAccount.getId(), hrIds);
         if (hrIds == null || hrIds.size() == 0) return;
-        thirdPartyAccountHrDao.invalidByIdsAccountId(hrIds,thirdPartyAccount.getId());
+        thirdPartyAccountHrDao.invalidByHrIdsAccountId(hrIds,thirdPartyAccount.getId());
     }
 
     /**
