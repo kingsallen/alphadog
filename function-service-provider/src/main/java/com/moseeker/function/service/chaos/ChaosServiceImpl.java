@@ -1,13 +1,9 @@
 package com.moseeker.function.service.chaos;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.*;
 import com.moseeker.common.util.ConfigPropertiesUtil;
-import com.moseeker.common.util.EmojiFilter;
-import com.moseeker.common.util.StringUtils;
-import com.moseeker.common.util.UrlUtil;
 import com.moseeker.function.service.chaos.position.Position51WithAccount;
 import com.moseeker.function.service.chaos.position.PositionLiepinWithAccount;
 import com.moseeker.function.service.chaos.position.PositionZhilianWithAccount;
@@ -25,7 +21,6 @@ import com.moseeker.function.config.AppConfig;
 
 
 import javax.annotation.Resource;
-import java.net.ConnectException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,17 +92,9 @@ public class ChaosServiceImpl {
      */
     public String bind(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras) throws Exception {
         logger.info("ChaosServiceImpl bind account:{},extras:{}",hrThirdPartyAccount,extras);
-        try {
-            String data=postBind(hrThirdPartyAccount,extras, BindThirdPart.BIND_SEND_ROUTING_KEY);
-            logger.info("ChaosServiceImpl bind result:"+data);
-            return data;
-        } catch (ConnectException e) {
-            logger.info("ChaosServiceImpl bind ConnectException");
-            //绑定超时发送邮件
-            hrThirdPartyAccount.setBinding((short)BindingStatus.ERROR.getValue());
-            hrThirdPartyAccount.setErrorMessage(BindThirdPart.BIND_TIMEOUT_MSG);
-            throw e;
-        }
+        String data=postBind(hrThirdPartyAccount,extras, BindThirdPart.BIND_SEND_ROUTING_KEY);
+        logger.info("ChaosServiceImpl bind result:"+data);
+        return data;
     }
 
 

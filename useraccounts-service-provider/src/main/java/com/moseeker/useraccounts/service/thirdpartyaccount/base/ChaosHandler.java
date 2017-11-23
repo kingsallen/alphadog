@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.net.ConnectException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,9 +24,17 @@ public class ChaosHandler {
     ChaosServices.Iface chaosService = ServiceManager.SERVICEMANAGER.getService(ChaosServices.Iface.class);
 
     public HrThirdPartyAccountDO bind(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras) throws Exception {
-        String data=chaosService.binding(hrThirdPartyAccount, extras);
-        logger.info("bind chaos result "+data);
-        return handleBind(hrThirdPartyAccount,data);
+        try {
+            String data=chaosService.binding(hrThirdPartyAccount, extras);
+            logger.info("bind chaos result "+data);
+            return handleBind(hrThirdPartyAccount,data);
+        } catch (Exception e) {
+            logger.info("ChaosServiceImpl bind ConnectException");
+            //绑定超时发送邮件
+            hrThirdPartyAccount.setBinding((short)BindingStatus.ERROR.getValue());
+            hrThirdPartyAccount.setErrorMessage(BindThirdPart.BIND_TIMEOUT_MSG);
+        }
+        return hrThirdPartyAccount;
     }
 
     public HrThirdPartyAccountDO bindConfirm(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras, boolean confirm) throws Exception {
