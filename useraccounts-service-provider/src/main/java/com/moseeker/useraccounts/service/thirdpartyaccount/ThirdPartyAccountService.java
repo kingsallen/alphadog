@@ -29,6 +29,7 @@ import com.moseeker.useraccounts.service.impl.UserHrAccountService;
 import com.moseeker.useraccounts.service.thirdpartyaccount.operation.BindOperation;
 import com.moseeker.useraccounts.service.thirdpartyaccount.util.BindCheck;
 import com.moseeker.useraccounts.service.thirdpartyaccount.base.ThirdPartyAccountContext;
+import com.moseeker.useraccounts.service.thirdpartyaccount.util.BindUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,6 +74,9 @@ public class ThirdPartyAccountService {
     @Autowired
     UserHrAccountService userHrAccountService;
 
+    @Autowired
+    BindUtil bindUtil;
+
     /**
      * 第三方账号绑定
      *
@@ -86,6 +90,8 @@ public class ThirdPartyAccountService {
 
         account.setCompanyId(hrAccount.getCompanyId());
         HrThirdPartyAccountDO oldAccount = thirdPartyAccountDao.getEQThirdPartyAccount(account);
+
+        bindUtil.alreadyInRedis(account);  //验证是否正在绑定
 
         if(BindCheck.isSubUserHrAccount(hrAccount)){
             if(bindOperation.isAlreadyBindOtherAccount(hrAccount.getId(),account.getChannel())) {

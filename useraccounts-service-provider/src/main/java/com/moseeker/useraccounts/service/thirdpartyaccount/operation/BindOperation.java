@@ -47,8 +47,6 @@ public class BindOperation {
 
         Map<String, String> extras = bindUtil.getBindExtra(hrAccount, thirdPartyAccount);
 
-        bindUtil.alreadyInRedis(thirdPartyAccount);  //验证是否正在绑定
-
         try {
             HrThirdPartyAccountDO result = chaosHandler.bind(thirdPartyAccount, extras);
             if (result.getBinding() != 100) {

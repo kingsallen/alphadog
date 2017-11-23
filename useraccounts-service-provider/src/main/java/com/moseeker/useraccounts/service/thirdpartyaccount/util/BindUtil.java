@@ -73,6 +73,7 @@ public class BindUtil {
             //绑定中
             throw new BIZException(-1, "正在尝试绑定该账号，请10分钟后再次尝试");
         }
+
         return false;
     }
 
