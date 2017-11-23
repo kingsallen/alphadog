@@ -5,6 +5,7 @@ package com.moseeker.baseorm.db.jobdb;
 
 
 import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
+import com.moseeker.baseorm.db.jobdb.tables.JobApplicationAts;
 import com.moseeker.baseorm.db.jobdb.tables.JobCustom;
 import com.moseeker.baseorm.db.jobdb.tables.JobOccupation;
 import com.moseeker.baseorm.db.jobdb.tables.JobPcAdvertisement;
@@ -14,6 +15,7 @@ import com.moseeker.baseorm.db.jobdb.tables.JobPcReported;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionCity;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionExt;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionRecomRecord;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionShareTplConf;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionTopic;
 import com.moseeker.baseorm.db.jobdb.tables.JobResumeOther;
@@ -39,6 +41,11 @@ public class Tables {
      * The table <code>jobdb.job_application</code>.
      */
     public static final JobApplication JOB_APPLICATION = com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION;
+
+    /**
+     * MoSeeker与ATS渠道申请编号对应关系
+     */
+    public static final JobApplicationAts JOB_APPLICATION_ATS = com.moseeker.baseorm.db.jobdb.tables.JobApplicationAts.JOB_APPLICATION_ATS;
 
     /**
      * 职位自定义字段配置表
@@ -84,6 +91,11 @@ public class Tables {
      * 职位信息扩展表
      */
     public static final JobPositionExt JOB_POSITION_EXT = com.moseeker.baseorm.db.jobdb.tables.JobPositionExt.JOB_POSITION_EXT;
+
+    /**
+     * 智能画像职位推送记录，用于微信转发
+     */
+    public static final JobPositionRecomRecord JOB_POSITION_RECOM_RECORD = com.moseeker.baseorm.db.jobdb.tables.JobPositionRecomRecord.JOB_POSITION_RECOM_RECORD;
 
     /**
      * 职位分享描述配置模板
