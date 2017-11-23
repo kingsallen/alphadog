@@ -136,6 +136,7 @@ public class HistoryCampaignBaiduUsers extends TableImpl<HistoryCampaignBaiduUse
     /**
      * Rename this table
      */
+
     public HistoryCampaignBaiduUsers rename(String name) {
         return new HistoryCampaignBaiduUsers(name, null);
     }

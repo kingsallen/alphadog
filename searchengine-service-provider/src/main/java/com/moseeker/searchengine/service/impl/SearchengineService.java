@@ -599,6 +599,17 @@ public class SearchengineService {
         return builder;
     }
 
+    /**
+     * 查找制定用户积分
+     * @param searchClient
+     * @param companyIds 公司列表
+     * @param employeeId 员工编号
+     * @param activation 是否激活
+     * @param pageSize 每页数量
+     * @param pageNum 页码
+     * @param timespan 时间跨度--月、季、年
+     * @return
+     */
     private SearchRequestBuilder getSearchRequestBuilder(TransportClient searchClient, List<Integer> companyIds, Integer employeeId, String activation, int pageSize, int pageNum, String timespan) {
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
@@ -641,7 +652,8 @@ public class SearchengineService {
             map.put("nickname", keyword);
             map.put("custom_field", keyword);
             map.put("cname", keyword);
-            searchUtil.matchPhrasePrefixQuery(map, query);
+//            searchUtil.matchPhrasePrefixQuery(map, query);
+            searchUtil.wildcardQuery(map, query);
         }
         SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query)
                 .addSort("activation", SortOrder.ASC)

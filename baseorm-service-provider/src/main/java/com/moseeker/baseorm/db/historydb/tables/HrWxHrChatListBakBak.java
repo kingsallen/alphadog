@@ -156,6 +156,7 @@ public class HrWxHrChatListBakBak extends TableImpl<HrWxHrChatListBakBakRecord> 
     /**
      * Rename this table
      */
+
     public HrWxHrChatListBakBak rename(String name) {
         return new HrWxHrChatListBakBak(name, null);
     }

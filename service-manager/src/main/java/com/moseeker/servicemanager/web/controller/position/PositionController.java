@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -754,16 +755,70 @@ public class PositionController {
             String pageNum=params.getString("pageNum");
             String pageSize=params.getString("pageSize");
             String userId=params.getString("userId");
-            if(userId==null){
-                return ResponseLogNotification.fail(request, "userId不能为空");
+            String companyId=params.getString("companyId");
+            String type=params.getString("type");
+            if(StringUtils.isNullOrEmpty(userId)||"0".equals(userId)||StringUtils.isNullOrEmpty(companyId)||"0".equals(companyId)){
+                return ResponseLogNotification.fail(request, "userId或者companyId不能为空或0");
             }
             if(pageNum==null){
-                pageNum="1";
+                pageNum="0";
             }
             if(pageSize==null){
-                pageNum="20";
+                pageSize="20";
             }
-            Response result=positonServices.getPersonaRecomPositionList(Integer.parseInt(userId),Integer.parseInt(pageNum),Integer.parseInt(pageSize));
+            if(StringUtils.isNullOrEmpty(type)){
+                type="0";
+            }
+            Response result=positonServices.getPersonaRecomPositionList(Integer.parseInt(userId),Integer.parseInt(companyId),Integer.parseInt(type),
+                    Integer.parseInt(pageNum),Integer.parseInt(pageSize));
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /*
+     * 获取职位自定义字段信息
+     */
+    @RequestMapping(value = "/position/cv/conf", method = RequestMethod.GET)
+    @ResponseBody
+    public String positionCvConf(HttpServletRequest request, HttpServletResponse response){
+        try{
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int positionId = params.getInt("positionId", 0);
+            if(positionId == 0){
+                return ResponseLogNotification.fail(request, "positionId不能为空");
+            }
+            Response result = positonServices.positionCvConf(positionId);
+           return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /*
+         *获取alipay同步的职位
+        */
+    @RequestMapping(value = "/position/employeerecom", method = RequestMethod.GET)
+    @ResponseBody
+    public String employeeRecomPosition(HttpServletRequest request, HttpServletResponse response){
+        try{
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            String recomPushId=params.getString("recomPushId");
+            String companyId=params.getString("companyId");
+            String type=params.getString("type");
+            if(StringUtils.isNullOrEmpty(recomPushId)){
+                return ResponseLogNotification.fail(request, "推荐id不能为空");
+            }
+            if(StringUtils.isNullOrEmpty(companyId)){
+                return ResponseLogNotification.fail(request, "公司不能为空");
+            }
+            if(StringUtils.isNullOrEmpty(type)){
+                type="1";
+            }
+            Response result=positonServices.getEmployeeRecomPositionByIds(Integer.parseInt(recomPushId),Integer.parseInt(companyId),Integer.parseInt(type));
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
             logger.error(e.getMessage());

@@ -36,20 +36,10 @@ import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.position.service.PositionServices.Iface;
-import com.moseeker.thrift.gen.position.struct.*;
-import org.apache.thrift.TException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class PositionServicesImpl implements Iface {
@@ -465,12 +455,17 @@ public class PositionServicesImpl implements Iface {
 
     }
     /*
-      获取只能回阿香推送的职位，用于在微信端展示
+      @auth zzt
+      @param userId用户id
+      @param companyId 公司id
+      @param type职位的类型
+      功能：获取推送的职位，用于在微信端展示
      */
+
     @Override
-    public Response getPersonaRecomPositionList(int userId, int pageNum, int pageSize) throws TException {
+    public Response getPersonaRecomPositionList(int userId,int companyId, int type,int pageNum, int pageSize) throws TException {
         try {
-            List<WechatPositionListData> result=service.getPersonaRecomPosition(userId,pageNum,pageSize);
+            List<WechatPositionListData> result=service.getPersonaRecomPosition(userId,companyId,type,pageNum,pageSize);
             if(StringUtils.isEmptyList(result)){
                 return  ResponseUtils.success("");
             }
@@ -480,5 +475,24 @@ public class PositionServicesImpl implements Iface {
             throw ExceptionUtils.convertException(e);
         }
 
+    }
+
+    @Override
+    public Response positionCvConf(int positionId) throws TException {
+        return service.positionCvConf(positionId);
+    }
+
+    @Override
+    public Response getEmployeeRecomPositionByIds(int recomPushId,int company,int type) throws TException {
+        try {
+            List<WechatPositionListData> result=service.getEmployeeRecomPositionList(recomPushId,company,type);
+            if(StringUtils.isEmptyList(result)){
+                return  ResponseUtils.fail(1,"您所查找的推送不存在");
+            }
+            return  ResponseUtils.success(result);
+        }catch (Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
     }
 }

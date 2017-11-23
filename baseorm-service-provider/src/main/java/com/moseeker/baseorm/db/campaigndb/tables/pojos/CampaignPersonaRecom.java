@@ -23,44 +23,52 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CampaignPersonaRecom implements Serializable {
 
-    private static final long serialVersionUID = -224526737;
+    private static final long serialVersionUID = 1947274711;
 
     private Integer   id;
     private Integer   userId;
+    private Integer   companyId;
     private Integer   positionId;
     private Timestamp createTime;
     private Timestamp sendTime;
     private Byte      isSend;
     private Timestamp updateTime;
+    private Byte      type;
 
     public CampaignPersonaRecom() {}
 
     public CampaignPersonaRecom(CampaignPersonaRecom value) {
         this.id = value.id;
         this.userId = value.userId;
+        this.companyId = value.companyId;
         this.positionId = value.positionId;
         this.createTime = value.createTime;
         this.sendTime = value.sendTime;
         this.isSend = value.isSend;
         this.updateTime = value.updateTime;
+        this.type = value.type;
     }
 
     public CampaignPersonaRecom(
         Integer   id,
         Integer   userId,
+        Integer   companyId,
         Integer   positionId,
         Timestamp createTime,
         Timestamp sendTime,
         Byte      isSend,
-        Timestamp updateTime
+        Timestamp updateTime,
+        Byte      type
     ) {
         this.id = id;
         this.userId = userId;
+        this.companyId = companyId;
         this.positionId = positionId;
         this.createTime = createTime;
         this.sendTime = sendTime;
         this.isSend = isSend;
         this.updateTime = updateTime;
+        this.type = type;
     }
 
     public Integer getId() {
@@ -77,6 +85,14 @@ public class CampaignPersonaRecom implements Serializable {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+
+    public Integer getCompanyId() {
+        return this.companyId;
+    }
+
+    public void setCompanyId(Integer companyId) {
+        this.companyId = companyId;
     }
 
     public Integer getPositionId() {
@@ -119,17 +135,27 @@ public class CampaignPersonaRecom implements Serializable {
         this.updateTime = updateTime;
     }
 
+    public Byte getType() {
+        return this.type;
+    }
+
+    public void setType(Byte type) {
+        this.type = type;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("CampaignPersonaRecom (");
 
         sb.append(id);
         sb.append(", ").append(userId);
+        sb.append(", ").append(companyId);
         sb.append(", ").append(positionId);
         sb.append(", ").append(createTime);
         sb.append(", ").append(sendTime);
         sb.append(", ").append(isSend);
         sb.append(", ").append(updateTime);
+        sb.append(", ").append(type);
 
         sb.append(")");
         return sb.toString();

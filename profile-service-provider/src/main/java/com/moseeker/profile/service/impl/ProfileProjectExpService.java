@@ -76,17 +76,25 @@ public class ProfileProjectExpService {
         }
     }
 
+    /**
+     * 过滤不合法的项目经验
+     * @param structs 项目经验
+     */
+    public void removeIllegalProjectExp(List<ProjectExp> structs) {
+        Iterator<ProjectExp> ipe = structs.iterator();
+        while (ipe.hasNext()) {
+            ProjectExp pe = ipe.next();
+            ValidationMessage<ProjectExp> vm = ProfileValidation.verifyProjectExp(pe);
+            if (!vm.isPass()) {
+                ipe.remove();
+            }
+        }
+    }
+
     @Transactional
     public Response postResources(List<ProjectExp> structs) throws TException {
         if (structs != null && structs.size() > 0) {
-            Iterator<ProjectExp> ipe = structs.iterator();
-            while (ipe.hasNext()) {
-                ProjectExp pe = ipe.next();
-                ValidationMessage<ProjectExp> vm = ProfileValidation.verifyProjectExp(pe);
-                if (!vm.isPass()) {
-                    ipe.remove();
-                }
-            }
+            removeIllegalProjectExp(structs);
         }
         if (structs != null && structs.size() > 0) {
             List<ProfileProjectexpRecord> records = dao.addAllRecord(structsToDBs(structs));
@@ -178,6 +186,12 @@ public class ProfileProjectExpService {
 
     @Transactional
     public Response putResource(ProjectExp struct) throws TException {
+
+        ValidationMessage<ProjectExp> vm = ProfileValidation.verifyProjectExp(struct);
+        if (!vm.isPass()) {
+            return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", vm.getResult()));
+        }
+
         int result = dao.updateRecord(structToDB(struct));
         if (result > 0) {
             updateUpdateTime(struct);

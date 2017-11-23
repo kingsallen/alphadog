@@ -73,6 +73,13 @@ public class HistoryCampaignPersonaRecomDao extends DAOImpl<HistoryCampaignPerso
     }
 
     /**
+     * Fetch records that have <code>company_id IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.historydb.tables.pojos.HistoryCampaignPersonaRecom> fetchByCompanyId(Integer... values) {
+        return fetch(HistoryCampaignPersonaRecom.HISTORY_CAMPAIGN_PERSONA_RECOM.COMPANY_ID, values);
+    }
+
+    /**
      * Fetch records that have <code>position_id IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.historydb.tables.pojos.HistoryCampaignPersonaRecom> fetchByPositionId(Integer... values) {
@@ -105,5 +112,12 @@ public class HistoryCampaignPersonaRecomDao extends DAOImpl<HistoryCampaignPerso
      */
     public List<com.moseeker.baseorm.db.historydb.tables.pojos.HistoryCampaignPersonaRecom> fetchByUpdateTime(Timestamp... values) {
         return fetch(HistoryCampaignPersonaRecom.HISTORY_CAMPAIGN_PERSONA_RECOM.UPDATE_TIME, values);
+    }
+
+    /**
+     * Fetch records that have <code>type IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.historydb.tables.pojos.HistoryCampaignPersonaRecom> fetchByType(Byte... values) {
+        return fetch(HistoryCampaignPersonaRecom.HISTORY_CAMPAIGN_PERSONA_RECOM.TYPE, values);
     }
 }

@@ -146,6 +146,7 @@ public class CampaignPcBanner extends TableImpl<CampaignPcBannerRecord> {
     /**
      * Rename this table
      */
+
     public CampaignPcBanner rename(String name) {
         return new CampaignPcBanner(name, null);
     }

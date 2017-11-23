@@ -146,6 +146,7 @@ public class CampaignCompanySurvey extends TableImpl<CampaignCompanySurveyRecord
     /**
      * Rename this table
      */
+
     public CampaignCompanySurvey rename(String name) {
         return new CampaignCompanySurvey(name, null);
     }

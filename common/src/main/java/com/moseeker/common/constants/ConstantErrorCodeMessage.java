@@ -14,7 +14,7 @@ public final class ConstantErrorCodeMessage {
     public static final String PROGRAM_POST_FAILED = "{'status':90011,'message':'添加失败！'}";
     public static final String PROGRAM_PUT_FAILED = "{'status':90012,'message':'保存失败!'}";
     public static final String PROGRAM_DEL_FAILED = "{'status':90013,'message':'删除失败!'}";
-    public static final String VALIDATE_FAILED = "{'errcode':90014, 'message':'{MESSAGE}'}";
+    public static final String VALIDATE_FAILED = "{'status':90014, 'message':'{MESSAGE}'}";
     public static final String PROGRAM_PARAM_NOTEXIST = "{'status':90015,'message':'参数不正确!'}";
     public static final String PROGRAM_CONFIG_INCOMPLETE = "{'status':90016,'message':'配置信息丢失!'}";
 
