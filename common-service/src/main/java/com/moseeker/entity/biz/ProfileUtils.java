@@ -321,6 +321,27 @@ public class ProfileUtils {
 //			record.setDevTool(record.getDevTool().substring(0, ProfileAttributeLengthLimit.ProjectExpDevTool.getLengthLimit()));
 			record.setDevTool(this.handlerOutLimitString(record.getDevTool(),ProfileAttributeLengthLimit.ProjectExpDevTool.getLengthLimit(),DEFAULT_FLAG));
 		}
+		if(StringUtils.isNotBlank(record.getAchievement())&&record.getAchievement().length()>ProfileAttributeLengthLimit.ProjectExpAchievement.getLengthLimit()){
+			record.setAchievement(this.handlerOutLimitString(record.getAchievement(),ProfileAttributeLengthLimit.ProjectExpAchievement.getLengthLimit(),DEFAULT_FLAG));
+		}
+
+		if(StringUtils.isNotBlank(record.getMember())&&record.getMember().length()>ProfileAttributeLengthLimit.ProjectExpMember.getLengthLimit()){
+			record.setMember(this.handlerOutLimitString(record.getMember(),ProfileAttributeLengthLimit.ProjectExpMember.getLengthLimit(),DEFAULT_FLAG));
+		}
+
+		if(StringUtils.isNotBlank(record.getHardware())&&record.getHardware().length()>ProfileAttributeLengthLimit.ProjectExpHardWare.getLengthLimit()){
+			record.setHardware(this.handlerOutLimitString(record.getHardware(),ProfileAttributeLengthLimit.ProjectExpHardWare.getLengthLimit(),DEFAULT_FLAG));
+		}
+		if(StringUtils.isNotBlank(record.getSoftware())&&record.getSoftware().length()>ProfileAttributeLengthLimit.ProjectSoftWare.getLengthLimit()){
+			record.setSoftware(this.handlerOutLimitString(record.getSoftware(),ProfileAttributeLengthLimit.ProjectSoftWare.getLengthLimit(),DEFAULT_FLAG));
+		}
+
+		if(StringUtils.isNotBlank(record.getUrl())&&record.getUrl().length()>ProfileAttributeLengthLimit.ProjectExpURL.getLengthLimit()){
+			record.setUrl(this.handlerOutLimitString(record.getUrl(),ProfileAttributeLengthLimit.ProjectExpURL.getLengthLimit(),DEFAULT_FLAG));
+		}
+		if(StringUtils.isNotBlank(record.getRole())&&record.getRole().length()>ProfileAttributeLengthLimit.ProjectExpRole.getLengthLimit()){
+			record.setRole(this.handlerOutLimitString(record.getRole(),ProfileAttributeLengthLimit.ProjectExpRole.getLengthLimit(),DEFAULT_FLAG));
+		}
 	}
 
 	public ProfileOtherRecord mapToOtherRecord(Map<String, Object> other) {
