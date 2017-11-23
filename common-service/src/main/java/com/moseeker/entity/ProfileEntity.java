@@ -231,12 +231,12 @@ public class ProfileEntity {
         if (workexpRecords != null && workexpRecords.size() > 0) {
             workExpDao.delWorkExpsByProfileId(profileId);
             List<ProfileWorkexpEntity> records = new ArrayList<>();
-
             workexpRecords.forEach(skill -> {
                 skill.setId(null);
                 skill.setProfileId((int) (profileId));
                 records.add(skill);
             });
+            logger.info(JSON.toJSONString(records)+"+++++++++++++++++++++++++++");
             workExpDao.postWordExps(records);
         }
     }
