@@ -95,9 +95,15 @@ public class ProfileUtils {
 
 	public List<ProfileWorkexpEntity> mapToWorkexpRecords(List<Map<String, Object>> workexps, int source) {
 		List<ProfileWorkexpEntity> workexpRecords = new ArrayList<>();
+		logger.info("==============================================");
+		logger.info(workexps.toString());
+		logger.info("==============================================");
 		if (workexps != null && workexps.size() > 0) {
 			workexps.forEach(workexp -> {
 				ProfileWorkexpEntity record = BeanUtils.MapToRecord(workexp, ProfileWorkexpEntity.class);
+				logger.info("==============================================");
+				logger.info(record.toString());
+				logger.info("==============================================");
 				if (record != null) {
 					if (workexp.get("start_date") != null) {
 						record.setStart(BeanUtils.convertToSQLDate(workexp.get("start_date")));
@@ -176,13 +182,22 @@ public class ProfileUtils {
 							record.setCompany(hrCompany);
 						}
 					}
+					logger.info("================7777777==============================");
+					logger.info(record.toString());
+					logger.info("==================77777============================");
 					ValidationMessage<ProfileWorkexpEntity> vm = ProfileValidation.verifyWorkExp(record);
+					logger.info("=================888=============================");
+					logger.info(JSON.toJSONString(vm));
+					logger.info("==================888============================");
 					if(vm.isPass()) {
 						workexpRecords.add(record);
 					}
 				}
 			});
 		}
+		logger.info("=================888=============================");
+		logger.info(workexpRecords.toString());
+		logger.info("==================888============================");
 		return workexpRecords;
 	}
 
