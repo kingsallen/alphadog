@@ -69,6 +69,10 @@ public class ScheduledTask {
             String data=new String(message.getBody(), "UTF-8");
             logger.info("成功获取同步职位结果数据:"+data);
             PositionForSyncResultPojo pojo=JSON.parseObject(data, PositionForSyncResultPojo.class);
+            if(pojo==null || pojo.getData()==null){
+                logger.info("position sync result null data : {}",data);
+                return ;
+            }
             positionSyncConsumer.positionSyncComplete(pojo);
         }catch (Exception e){
             logger.info("获取职位同步结果队列报错");
