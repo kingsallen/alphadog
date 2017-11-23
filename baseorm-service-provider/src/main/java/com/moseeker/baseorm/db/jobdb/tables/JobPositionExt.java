@@ -142,7 +142,7 @@ public class JobPositionExt extends TableImpl<JobPositionExtRecord> {
     /**
      * Rename this table
      */
-    @Override
+
     public JobPositionExt rename(String name) {
         return new JobPositionExt(name, null);
     }

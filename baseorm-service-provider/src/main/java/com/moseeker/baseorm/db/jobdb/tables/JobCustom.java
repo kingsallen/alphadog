@@ -151,7 +151,7 @@ public class JobCustom extends TableImpl<JobCustomRecord> {
     /**
      * Rename this table
      */
-    @Override
+
     public JobCustom rename(String name) {
         return new JobCustom(name, null);
     }

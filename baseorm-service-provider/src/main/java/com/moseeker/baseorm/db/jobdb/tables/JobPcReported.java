@@ -151,7 +151,7 @@ public class JobPcReported extends TableImpl<JobPcReportedRecord> {
     /**
      * Rename this table
      */
-    @Override
+
     public JobPcReported rename(String name) {
         return new JobPcReported(name, null);
     }

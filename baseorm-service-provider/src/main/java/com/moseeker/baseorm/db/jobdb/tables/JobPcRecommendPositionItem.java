@@ -146,7 +146,7 @@ public class JobPcRecommendPositionItem extends TableImpl<JobPcRecommendPosition
     /**
      * Rename this table
      */
-    @Override
+
     public JobPcRecommendPositionItem rename(String name) {
         return new JobPcRecommendPositionItem(name, null);
     }
