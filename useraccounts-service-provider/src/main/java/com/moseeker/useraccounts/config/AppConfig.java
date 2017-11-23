@@ -39,6 +39,7 @@ public class AppConfig {
         logger.info("rabbitmq.host:{}, rabbitmq.port:{}, rabbitmq.username:{}, rabbitmq.password:{}",
                 env.getProperty("rabbitmq.host"), env.getProperty("rabbitmq.port"), env.getProperty("rabbitmq.username"),
                 env.getProperty("rabbitmq.password"));
+        logger.info("------------------------");
         ConnectionFactory cf = new ConnectionFactory();
         cf.setHost(env.getProperty("rabbitmq.host").trim());
         cf.setPort(Integer.valueOf(env.getProperty("rabbitmq.port").trim()));
