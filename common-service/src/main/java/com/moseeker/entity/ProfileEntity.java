@@ -236,7 +236,9 @@ public class ProfileEntity {
                 skill.setProfileId((int) (profileId));
                 records.add(skill);
             });
-            logger.info(JSON.toJSONString(records)+"+++++++++++++++++++++++++++");
+            logger.info("+++++++++++++++++++++++++++");
+            logger.info(records.toString());
+            logger.info("+++++++++++++++++++++++++++");
             workExpDao.postWordExps(records);
         }
     }

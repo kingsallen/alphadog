@@ -464,7 +464,7 @@ public class WholeProfileService {
             ((Map<String, Object>) resume.get("profile")).put("origin", profileDB.getOrigin());
             ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord);
             logger.info("========================================");
-            logger.info(JSON.toJSONString(profilePojo));
+            logger.info(profilePojo.toString());
             logger.info("========================================");
             int profileId = profileDB.getId().intValue();
             profileEntity.improveUser(userRecord);
