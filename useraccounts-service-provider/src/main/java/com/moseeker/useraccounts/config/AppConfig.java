@@ -1,6 +1,8 @@
 package com.moseeker.useraccounts.config;
 
 import com.rabbitmq.client.ConnectionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
@@ -26,11 +28,17 @@ import java.util.List;
 @PropertySource("classpath:common.properties")
 @Import({com.moseeker.baseorm.config.AppConfig.class})
 public class AppConfig {
+
+    Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     private Environment env;
 
     @Bean
     public ConnectionFactory connectionFactory() {
+        logger.info("rabbitmq.host:{}, rabbitmq.port:{}, rabbitmq.username:{}, rabbitmq.password:{}",
+                env.getProperty("rabbitmq.host"), env.getProperty("rabbitmq.port"), env.getProperty("rabbitmq.username"),
+                env.getProperty("rabbitmq.password"));
         ConnectionFactory cf = new ConnectionFactory();
         cf.setHost(env.getProperty("rabbitmq.host").trim());
         cf.setPort(Integer.valueOf(env.getProperty("rabbitmq.port").trim()));
