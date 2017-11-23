@@ -1,37 +1,18 @@
 package com.moseeker.useraccounts.service.thirdpartyaccount.base;
 
-import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
-import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountHrDao;
-import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
-import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
-import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccountHr;
-import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
-import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.*;
-import com.moseeker.common.exception.CommonException;
-import com.moseeker.common.providerutils.ExceptionUtils;
-import com.moseeker.common.util.query.Condition;
-import com.moseeker.common.util.query.Query;
-import com.moseeker.common.util.query.Update;
-import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountHrDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
-import com.moseeker.thrift.gen.useraccounts.struct.ThirdPartyAccountHrInfo;
 import com.moseeker.thrift.gen.useraccounts.struct.ThirdPartyAccountInfo;
 import com.moseeker.useraccounts.service.impl.UserHrAccountService;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 @Component
 public class ThirdPartyAccountContext{
@@ -96,5 +77,8 @@ public class ThirdPartyAccountContext{
         return getBindState(accountId).dispatch(accountId, hrIds);
     }
 
+    public int updateBinding(HrThirdPartyAccountDO thirdPartyAccount) throws Exception {
+        return getBindState(thirdPartyAccount.getId()).updateBinding(thirdPartyAccount);
+    }
 
 }

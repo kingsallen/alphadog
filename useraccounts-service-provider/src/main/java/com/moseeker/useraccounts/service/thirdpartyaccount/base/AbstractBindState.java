@@ -1,17 +1,13 @@
 package com.moseeker.useraccounts.service.thirdpartyaccount.base;
 
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.useraccounts.struct.ThirdPartyAccountInfo;
 import com.moseeker.useraccounts.service.impl.UserHrAccountService;
 import com.moseeker.useraccounts.service.thirdpartyaccount.operation.BindConfirmOperation;
 import com.moseeker.useraccounts.service.thirdpartyaccount.operation.BindMessageOperation;
 import com.moseeker.useraccounts.service.thirdpartyaccount.operation.BindOperation;
 import com.moseeker.useraccounts.service.thirdpartyaccount.operation.DispatchOperation;
-import com.moseeker.useraccounts.service.thirdpartyaccount.util.BindCheck;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,8 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
-public abstract class AbastractBindState implements BindState{
-    Logger logger= LoggerFactory.getLogger(AbastractBindState.class);
+public abstract class AbstractBindState implements BindState{
+    Logger logger= LoggerFactory.getLogger(AbstractBindState.class);
 
     @Autowired
     ThirdPartyAccountContext context;
@@ -68,8 +64,8 @@ public abstract class AbastractBindState implements BindState{
     @Override
     public HrThirdPartyAccountDO bindMessage(int hrId, int accountId, String code) throws Exception {
         HrThirdPartyAccountDO result=bindMessageOperation.bindMessage(hrId, accountId, code);
-        context.getBindState(result.getId()).updateBinding(result);
-        context.getBindState(result.getId()).dispatch(result.getId(), Arrays.asList(hrId));
+        context.updateBinding(result);
+        context.dispatch(result.getId(), Arrays.asList(hrId));
         return result;
     }
 

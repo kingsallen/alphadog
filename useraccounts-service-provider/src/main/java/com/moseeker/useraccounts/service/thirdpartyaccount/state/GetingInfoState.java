@@ -4,15 +4,11 @@ import com.moseeker.common.constants.BindingStatus;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
-import com.moseeker.thrift.gen.useraccounts.struct.ThirdPartyAccountInfo;
-import com.moseeker.useraccounts.service.thirdpartyaccount.base.AbastractBindState;
+import com.moseeker.useraccounts.service.thirdpartyaccount.base.AbstractBindState;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Component
-public class GetingInfoState extends AbastractBindState{
+public class GetingInfoState extends AbstractBindState {
 
     @Override
     public HrThirdPartyAccountDO bind(int hrId, HrThirdPartyAccountDO thirdPartyAccountDO) throws Exception {
