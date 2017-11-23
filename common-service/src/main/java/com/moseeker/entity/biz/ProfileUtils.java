@@ -95,15 +95,9 @@ public class ProfileUtils {
 
 	public List<ProfileWorkexpEntity> mapToWorkexpRecords(List<Map<String, Object>> workexps, int source) {
 		List<ProfileWorkexpEntity> workexpRecords = new ArrayList<>();
-		logger.info("==============================================");
-		logger.info(workexps.toString());
-		logger.info("==============================================");
 		if (workexps != null && workexps.size() > 0) {
 			workexps.forEach(workexp -> {
 				ProfileWorkexpEntity record = BeanUtils.MapToRecord(workexp, ProfileWorkexpEntity.class);
-				logger.info("==============================================");
-				logger.info(record.toString());
-				logger.info("==============================================");
 				if (record != null) {
 					if (workexp.get("start_date") != null) {
 						record.setStart(BeanUtils.convertToSQLDate(workexp.get("start_date")));
@@ -127,12 +121,14 @@ public class ProfileUtils {
 							HrCompanyRecord hrCompany = new HrCompanyRecord();
 							if (company.get("company_name") != null) {
 							    String companyName=BeanUtils.converToString(company.get("company_name"));
+								hrCompany.setName(companyName);
 							    if(StringUtils.isNotBlank(companyName)&&companyName.length()>ProfileAttributeLengthLimit.CompanyName.getLengthLimit()){
                                     hrCompany.setName(this.handlerOutLimitString(companyName,ProfileAttributeLengthLimit.CompanyName.getLengthLimit(),DEFAULT_FLAG));
                                 }
 
 							} else if (company.get("companyName") != null) {
                                 String companyName=BeanUtils.converToString(company.get("companyName"));
+								hrCompany.setName(companyName);
                                 if(StringUtils.isNotBlank(companyName)&&companyName.length()>ProfileAttributeLengthLimit.CompanyName.getLengthLimit()){
                                     hrCompany.setName(this.handlerOutLimitString(companyName,ProfileAttributeLengthLimit.CompanyName.getLengthLimit(),DEFAULT_FLAG));
                                 }
@@ -140,20 +136,21 @@ public class ProfileUtils {
                             }
 							if (company.get("company_industry") != null) {
 							    String companyIndustry=BeanUtils.converToString(company.get("company_industry"));
+							    hrCompany.setIndustry(companyIndustry);
 							    if(StringUtils.isNotBlank(companyIndustry)&&companyIndustry.length()>ProfileAttributeLengthLimit.CompanyIndustry.getLengthLimit()){
 							        hrCompany.setIndustry(this.handlerOutLimitString(companyIndustry,ProfileAttributeLengthLimit.CompanyIndustry.getLengthLimit(),DEFAULT_FLAG));
                                 }
 //								hrCompany.setIndustry(BeanUtils.converToString(company.get("company_industry")));
 							} else if (company.get("companyIndustry") != null) {
                                 String companyIndustry=BeanUtils.converToString(company.get("companyIndustry"));
+								hrCompany.setIndustry(companyIndustry);
                                 if(StringUtils.isNotBlank(companyIndustry)&&companyIndustry.length()>ProfileAttributeLengthLimit.CompanyIndustry.getLengthLimit()){
                                     hrCompany.setIndustry(this.handlerOutLimitString(companyIndustry,ProfileAttributeLengthLimit.CompanyIndustry.getLengthLimit(),DEFAULT_FLAG));
                                 }
 //                                hrCompany.setIndustry(BeanUtils.converToString(company.get("companyIndustry")));
                             }
 							if (company.get("company_introduction") != null) {
-								hrCompany
-										.setIntroduction(BeanUtils.converToString(company.get("company_introduction")));
+								hrCompany.setIntroduction(BeanUtils.converToString(company.get("company_introduction")));
 							} else if (company.get("companyIntroduction") != null) {
                                 hrCompany
                                         .setIntroduction(BeanUtils.converToString(company.get("companyIntroduction")));
@@ -182,22 +179,14 @@ public class ProfileUtils {
 							record.setCompany(hrCompany);
 						}
 					}
-					logger.info("================7777777==============================");
-					logger.info(record.toString());
-					logger.info("==================77777============================");
+
 					ValidationMessage<ProfileWorkexpEntity> vm = ProfileValidation.verifyWorkExp(record);
-					logger.info("=================888=============================");
-					logger.info(JSON.toJSONString(vm));
-					logger.info("==================888============================");
 					if(vm.isPass()) {
 						workexpRecords.add(record);
 					}
 				}
 			});
 		}
-		logger.info("=================888=============================");
-		logger.info(workexpRecords.toString());
-		logger.info("==================888============================");
 		return workexpRecords;
 	}
 
@@ -402,6 +391,9 @@ public class ProfileUtils {
 		List<IntentionRecord> intentionRecords = new ArrayList<>();
 		if (intentions != null && intentions.size() > 0) {
 			intentions.forEach(intention -> {
+				logger.info("=========================");
+				logger.info(JSON.toJSONString(intention));
+				logger.info("=========================");
 				IntentionRecord record = BeanUtils.MapToRecord(intention, IntentionRecord.class);
 				record.getCities().clear();
 				record.getPositions().clear();
@@ -454,6 +446,9 @@ public class ProfileUtils {
 					}
 					this.intentionMaxLimit(record);
 					intentionRecords.add(record);
+					logger.info("=========================");
+					logger.info(record.toString());
+					logger.info("=========================");
 				}
 			});
 		}
