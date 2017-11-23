@@ -391,9 +391,6 @@ public class ProfileUtils {
 		List<IntentionRecord> intentionRecords = new ArrayList<>();
 		if (intentions != null && intentions.size() > 0) {
 			intentions.forEach(intention -> {
-				logger.info("=========================");
-				logger.info(JSON.toJSONString(intention));
-				logger.info("=========================");
 				IntentionRecord record = BeanUtils.MapToRecord(intention, IntentionRecord.class);
 				record.getCities().clear();
 				record.getPositions().clear();
@@ -446,9 +443,7 @@ public class ProfileUtils {
 					}
 					this.intentionMaxLimit(record);
 					intentionRecords.add(record);
-					logger.info("=========================");
-					logger.info(record.toString());
-					logger.info("=========================");
+
 				}
 			});
 		}
