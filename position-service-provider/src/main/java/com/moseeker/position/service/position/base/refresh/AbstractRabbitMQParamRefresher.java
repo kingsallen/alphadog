@@ -40,6 +40,7 @@ public abstract class AbstractRabbitMQParamRefresher implements ParamRefresher {
     public void refresh() {
         JSONObject jsonSend=new JSONObject();
 
+        jsonSend.put("account_id",1);
         jsonSend.put("channel",getChannel().getValue());
         addSendParam(jsonSend);
 
