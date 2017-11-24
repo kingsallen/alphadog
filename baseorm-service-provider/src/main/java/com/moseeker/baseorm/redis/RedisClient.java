@@ -691,4 +691,24 @@ public abstract class RedisClient {
 		logger.info("Redis中存在:"+key);
 		return true;
 	}
+
+	/**
+	 * 设置超时时间
+	 * @param appId 调用方项目编号
+	 * @param key_identifier config_cacheconfig_rediskey.key_identifier 关键词标识符
+	 * @param str 关键词
+	 * @param seconds
+	 * @return 更新涉及的列数
+	 */
+	public long expire(int appId, String key_identifier, String str,int seconds){
+		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
+		String cacheKey = String.format(redisKey.getPattern(), str);
+		if(exists(cacheKey)) {
+			long updateCount = redisCluster.expire(cacheKey, seconds);
+			logger.info("set key:{} expire:{} update:{}",cacheKey,seconds,updateCount);
+			return updateCount;
+		}
+
+		return 0;
+	}
 }
