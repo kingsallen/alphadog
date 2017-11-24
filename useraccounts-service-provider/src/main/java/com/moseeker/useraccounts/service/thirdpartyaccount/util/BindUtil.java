@@ -66,17 +66,6 @@ public class BindUtil {
         return account.getCompanyId() + "_" + account.getChannel() + "_" + account.getUsername();
     }
 
-    public boolean alreadyInRedis(HrThirdPartyAccountDO account) throws BIZException {
-        String cacheKey = getCacheKey(account);
-        long check= redisClient.incrIfNotExist(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_ACCOUNT_BINDING.toString(), cacheKey);
-        if (check>1) {
-            //绑定中
-            throw new BIZException(-1, "正在尝试绑定该账号，请10分钟后再次尝试");
-        }
-
-        return false;
-    }
-
     private void checkDispatch(HrThirdPartyAccountDO thirdPartyAccount, int hrId) {
         HrThirdPartyAccountDO bindingAccount = thirdPartyAccountDao.getThirdPartyAccountByUserId(hrId, thirdPartyAccount.getChannel());
         if (bindingAccount == null) {

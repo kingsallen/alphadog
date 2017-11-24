@@ -77,6 +77,9 @@ public class ThirdPartyAccountService {
     @Autowired
     BindUtil bindUtil;
 
+    @Autowired
+    BindCheck bindCheck;
+
     /**
      * 第三方账号绑定
      *
@@ -91,8 +94,6 @@ public class ThirdPartyAccountService {
         account.setCompanyId(hrAccount.getCompanyId());
         HrThirdPartyAccountDO oldAccount = thirdPartyAccountDao.getEQThirdPartyAccount(account);
 
-        bindUtil.alreadyInRedis(account);  //验证是否正在绑定
-
         if(BindCheck.isSubUserHrAccount(hrAccount)){
             if(bindOperation.isAlreadyBindOtherAccount(hrAccount.getId(),account.getChannel())) {
                 //已经绑定该渠道第三方账号，并且不是主账号，那么不允许绑定
@@ -106,6 +107,8 @@ public class ThirdPartyAccountService {
             }
         }
 
+        bindCheck.alreadyInRedis(account);  //验证是否正在绑定
+
         if ( BindCheck.isNotNullAccount(oldAccount) ) {
             logger.info("重新绑定:{}", oldAccount.getId());
             account = bindOperation.reuseOldThirdPartyAccount(account,oldAccount);
@@ -113,7 +116,17 @@ public class ThirdPartyAccountService {
             logger.info("账号{}之前没有被绑定过，可以在在数据库初始化一条新账号", account);
             account = bindOperation.useNewThirdPartyAccount(account);
         }
-        return stateContext.bind(hrId,account);
+
+        try{
+            HrThirdPartyAccountDO result = stateContext.bind(hrId,account);
+            if (result.getBinding() != 100) {
+                bindUtil.removeCache(account);
+            }
+            return result;
+        } catch (Exception e) {
+            bindUtil.removeCache(account);
+            throw e;
+        }
     }
 
     /**

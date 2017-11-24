@@ -47,16 +47,7 @@ public class BindOperation {
 
         Map<String, String> extras = bindUtil.getBindExtra(hrAccount, thirdPartyAccount);
 
-        try {
-            HrThirdPartyAccountDO result = chaosHandler.bind(thirdPartyAccount, extras);
-            if (result.getBinding() != 100) {
-                bindUtil.removeCache(thirdPartyAccount);
-            }
-            return result;
-        } catch (Exception e) {
-            bindUtil.removeCache(thirdPartyAccount);
-            throw e;
-        }
+        return chaosHandler.bind(thirdPartyAccount, extras);
     }
 
     public boolean isAlreadyBindOtherAccount(int userId,int channel){
