@@ -34,4 +34,7 @@ public class BindThirdPart {
 
     public final static String CHAOS_ACCOUNTID="accountId";
 
+    //绑定账号redis超时时间
+    public final static int BIND_REDIS_TIMEOUT=300;
+
 }
