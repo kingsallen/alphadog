@@ -14,6 +14,7 @@ import com.moseeker.baseorm.db.campaigndb.tables.CampaignPcBanner;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignPcRecommendCompany;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignPcRecommendPosition;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignPersonaRecom;
+import com.moseeker.baseorm.db.campaigndb.tables.CampaignRecomPositionlist;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignRecommendCompany;
 import com.moseeker.baseorm.db.campaigndb.tables.CampaignRecommendPosition;
 
@@ -92,4 +93,9 @@ public class Tables {
      * 推荐职位
      */
     public static final CampaignRecommendPosition CAMPAIGN_RECOMMEND_POSITION = com.moseeker.baseorm.db.campaigndb.tables.CampaignRecommendPosition.CAMPAIGN_RECOMMEND_POSITION;
+
+    /**
+     * 职位推送记录，暂时用于个人画像，员工推送转发，也可用于其他有相同需求的地方
+     */
+    public static final CampaignRecomPositionlist CAMPAIGN_RECOM_POSITIONLIST = com.moseeker.baseorm.db.campaigndb.tables.CampaignRecomPositionlist.CAMPAIGN_RECOM_POSITIONLIST;
 }

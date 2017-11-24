@@ -455,12 +455,17 @@ public class PositionServicesImpl implements Iface {
 
     }
     /*
-      获取只能回阿香推送的职位，用于在微信端展示
+      @auth zzt
+      @param userId用户id
+      @param companyId 公司id
+      @param type职位的类型
+      功能：获取推送的职位，用于在微信端展示
      */
+
     @Override
-    public Response getPersonaRecomPositionList(int userId,int companyId, int pageNum, int pageSize) throws TException {
+    public Response getPersonaRecomPositionList(int userId,int companyId, int type,int pageNum, int pageSize) throws TException {
         try {
-            List<WechatPositionListData> result=service.getPersonaRecomPosition(userId,companyId,pageNum,pageSize);
+            List<WechatPositionListData> result=service.getPersonaRecomPosition(userId,companyId,type,pageNum,pageSize);
             if(StringUtils.isEmptyList(result)){
                 return  ResponseUtils.success("");
             }
@@ -475,5 +480,19 @@ public class PositionServicesImpl implements Iface {
     @Override
     public Response positionCvConf(int positionId) throws TException {
         return service.positionCvConf(positionId);
+    }
+
+    @Override
+    public Response getEmployeeRecomPositionByIds(int recomPushId,int company,int type) throws TException {
+        try {
+            List<WechatPositionListData> result=service.getEmployeeRecomPositionList(recomPushId,company,type);
+            if(StringUtils.isEmptyList(result)){
+                return  ResponseUtils.fail(1,"您所查找的推送不存在");
+            }
+            return  ResponseUtils.success(result);
+        }catch (Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
     }
 }

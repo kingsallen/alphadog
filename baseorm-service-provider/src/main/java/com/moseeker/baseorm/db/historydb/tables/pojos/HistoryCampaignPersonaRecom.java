@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HistoryCampaignPersonaRecom implements Serializable {
 
-    private static final long serialVersionUID = -1423553511;
+    private static final long serialVersionUID = 244479843;
 
     private Integer   id;
     private Integer   userId;
@@ -33,6 +33,7 @@ public class HistoryCampaignPersonaRecom implements Serializable {
     private Timestamp sendTime;
     private Byte      isSend;
     private Timestamp updateTime;
+    private Byte      type;
 
     public HistoryCampaignPersonaRecom() {}
 
@@ -45,6 +46,7 @@ public class HistoryCampaignPersonaRecom implements Serializable {
         this.sendTime = value.sendTime;
         this.isSend = value.isSend;
         this.updateTime = value.updateTime;
+        this.type = value.type;
     }
 
     public HistoryCampaignPersonaRecom(
@@ -55,7 +57,8 @@ public class HistoryCampaignPersonaRecom implements Serializable {
         Timestamp createTime,
         Timestamp sendTime,
         Byte      isSend,
-        Timestamp updateTime
+        Timestamp updateTime,
+        Byte      type
     ) {
         this.id = id;
         this.userId = userId;
@@ -65,6 +68,7 @@ public class HistoryCampaignPersonaRecom implements Serializable {
         this.sendTime = sendTime;
         this.isSend = isSend;
         this.updateTime = updateTime;
+        this.type = type;
     }
 
     public Integer getId() {
@@ -131,6 +135,14 @@ public class HistoryCampaignPersonaRecom implements Serializable {
         this.updateTime = updateTime;
     }
 
+    public Byte getType() {
+        return this.type;
+    }
+
+    public void setType(Byte type) {
+        this.type = type;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HistoryCampaignPersonaRecom (");
@@ -143,6 +155,7 @@ public class HistoryCampaignPersonaRecom implements Serializable {
         sb.append(", ").append(sendTime);
         sb.append(", ").append(isSend);
         sb.append(", ").append(updateTime);
+        sb.append(", ").append(type);
 
         sb.append(")");
         return sb.toString();
