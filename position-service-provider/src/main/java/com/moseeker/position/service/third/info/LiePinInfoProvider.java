@@ -23,7 +23,7 @@ public class LiePinInfoProvider extends AbstractThirdInfoProvider {
         int accountId = getThirdPartyAccount(param).getThirdPartyAccountId();
 
         JSONObject obj=new JSONObject();
-        obj.put("department",departmentService.getDepartmentByAccountId(accountId));
+        obj.put(DEPARTMENT,departmentService.getDepartmentByAccountId(accountId));
 
         return StructSerializer.toString(obj);
     }

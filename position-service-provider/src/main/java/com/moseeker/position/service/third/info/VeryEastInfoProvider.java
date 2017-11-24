@@ -33,7 +33,7 @@ public class VeryEastInfoProvider extends AbstractThirdInfoProvider {
         JSONObject obj=new JSONObject();
 
         int accountId = getThirdPartyAccount(param).getThirdPartyAccountId();
-        obj.put("company",companyService.getCompanyByAccountId(accountId));
+        obj.put(COMPANY,companyService.getCompanyByAccountId(accountId));
 
         //获取redis中的字段(提供食宿、计算机能力、语言能力等等)
         String str=redisClient.get(VeryEastConstant.APP_ID, VeryEastConstant.REDIS_PARAM_KEY,"");
