@@ -54,8 +54,6 @@ public class PositionBS {
     @Autowired
     private HrCompanyDao hrCompanyDao;
     @Autowired
-    private HRThirdPartyPositionDao hRThirdPartyPositionDao;
-    @Autowired
     private HRThirdPartyPositionDao thirdPartyPositionDao;
     @Autowired
     private PositionSyncHandler positionSyncHandler;
@@ -78,9 +76,6 @@ public class PositionBS {
 
         //用来同步到chaos的职位列表
         List<ThirdPartyPositionForSynchronizationWithAccount>  positionsForSynchronizations=new ArrayList<>();
-
-        //查询职位对应城市
-//        HrCompanyDO company=positionSyncHandler.getCompany(moseekerPosition.getCompanyId());
 
         //这个循环检查需要同步的职位对应渠道下是否有绑定过的账号
         for (ThirdPartyPosition p : position.getChannels()) {
@@ -113,7 +108,7 @@ public class PositionBS {
 
         // 回写数据到第三方职位表表
         logger.info("write back to thirdpartyposition:{}",writeBackThirdPartyPositionList);
-        hRThirdPartyPositionDao.upsertThirdPartyPositions(writeBackThirdPartyPositionList);
+        thirdPartyPositionDao.upsertThirdPartyPositions(writeBackThirdPartyPositionList);
 
         //回写薪资到MoSeeker职位表
         positionSyncHandler.writeBackJobPositionField(moseekerJobPosition,positionsForSynchronizations);
