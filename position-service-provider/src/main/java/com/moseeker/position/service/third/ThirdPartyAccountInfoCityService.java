@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ThirdPartyAccountInfoCityService {
@@ -50,9 +51,12 @@ public class ThirdPartyAccountInfoCityService {
             city.setJobType(c.getJobtype());
             city.setRemainNum(c.getRemainNum());
             //遍历城市信息，获取对应code的城市名称
-            String citName=dictCityList.stream().filter(dc->dc.getCode().equals(c.getCode())).findFirst().get().getName();
-            city.setName(citName);
-            infoCity.add(city);
+            Optional<DictCityRecord> cityRecordOptional=dictCityList.stream().filter(dc->dc.getCode().equals(c.getCode())).findFirst();
+            if(cityRecordOptional.isPresent()){
+                String citName=cityRecordOptional.get().getName();
+                city.setName(citName);
+                infoCity.add(city);
+            }
         });
         logger.info(accountId+"对应的城市{}",infoCity);
 
