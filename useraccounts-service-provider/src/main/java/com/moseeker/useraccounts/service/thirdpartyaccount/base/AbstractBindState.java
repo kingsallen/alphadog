@@ -45,13 +45,14 @@ public abstract class AbstractBindState implements BindState{
 
         result.setUpdateTime((new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
         result.setSyncTime(result.getUpdateTime());
+        context.updateBinding(result);
 
 
         HrThirdPartyAccountDO bindingAccount = thirdPartyAccountDao.getThirdPartyAccountByUserId(hrId, thirdPartyAccount.getChannel());
         if (bindingAccount == null) {
-            context.updateBinding(result);
+            context.getBindState(result.getId()).dispatch(result.getId(), Arrays.asList(hrId));
         }
-        context.getBindState(result.getId()).dispatch(result.getId(), Arrays.asList(hrId));
+
 
         return result;
     }
