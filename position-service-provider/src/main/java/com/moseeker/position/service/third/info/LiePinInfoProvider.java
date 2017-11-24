@@ -3,6 +3,7 @@ package com.moseeker.position.service.third.info;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountHrDao;
 import com.moseeker.common.constants.ChannelType;
+import com.moseeker.common.util.StructSerializer;
 import com.moseeker.position.service.third.ThirdPartyAccountDepartmentService;
 import com.moseeker.position.service.third.base.AbstractThirdInfoProvider;
 import com.moseeker.thrift.gen.thirdpart.struct.ThirdPartyAccountInfoParam;
@@ -24,7 +25,7 @@ public class LiePinInfoProvider extends AbstractThirdInfoProvider {
         JSONObject obj=new JSONObject();
         obj.put("department",departmentService.getDepartmentByAccountId(accountId));
 
-        return obj.toJSONString();
+        return StructSerializer.toString(obj);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.moseeker.position.service.position.veryeast.refresh.handler;
 
 import com.moseeker.baseorm.dao.dictdb.DictVeryEastOccupationDao;
-import com.moseeker.position.service.position.base.refresh.handler.OccupationResultHandler;
+import com.moseeker.position.service.position.base.refresh.handler.AbstractOccupationResultHandler;
 import com.moseeker.position.utils.PositionRefreshUtils;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictVeryEastOccupationDO;
 import org.slf4j.Logger;
@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class VEOccupationResultHandler extends OccupationResultHandler<DictVeryEastOccupationDO> implements VEResultHandlerAdapter {
+public class VEOccupationResultHandler extends AbstractOccupationResultHandler<DictVeryEastOccupationDO> implements VEResultHandlerAdapter {
     Logger logger= LoggerFactory.getLogger(VEOccupationResultHandler.class);
 
     @Autowired

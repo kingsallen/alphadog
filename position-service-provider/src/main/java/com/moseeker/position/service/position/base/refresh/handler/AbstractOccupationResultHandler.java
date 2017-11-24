@@ -4,16 +4,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.position.utils.PositionRefreshUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public abstract class OccupationResultHandler<T> extends AbstractJsonResultHandler {
-    Logger logger= LoggerFactory.getLogger(OccupationResultHandler.class);
+public abstract class AbstractOccupationResultHandler<T> extends AbstractJsonResultHandler {
+    Logger logger= LoggerFactory.getLogger(AbstractOccupationResultHandler.class);
     //
     protected abstract T buildOccupation(List<String> texts,List<String> codes,Map<Integer, Integer> newCode);
     //持久化数据

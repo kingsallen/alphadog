@@ -1,16 +1,19 @@
 package com.moseeker.position.service.third;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.position.service.third.base.AbstractThirdInfoProvider;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.thirdpart.struct.*;
+import org.apache.thrift.TBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -44,22 +47,10 @@ public class ThirdPartyAccountInfoService {
         }
 
         String json=providers.get(channel).provide(param);
+
         info.setJson(json);
 
         logger.info("ThirdPartyInfo json result : "+json);
         return info;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
