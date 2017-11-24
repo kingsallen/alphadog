@@ -33,6 +33,7 @@ public abstract class AbstractRabbitMQParamRefresher implements ParamRefresher {
     public abstract String routingKey();
     //接受并处理刷新结果，需要加上{@RabbitListener}和{@RabbitHandler}两个注解
     public abstract void receiveAndHandle(String str);
+    public abstract void addUserParam(JSONObject jsonSend);
 
     public abstract ChannelType getChannel();
 
@@ -42,6 +43,8 @@ public abstract class AbstractRabbitMQParamRefresher implements ParamRefresher {
 
         jsonSend.put("account_id",1);
         jsonSend.put("channel",getChannel().getValue());
+
+        addUserParam(jsonSend);
         addSendParam(jsonSend);
 
         String json=jsonSend.toJSONString();

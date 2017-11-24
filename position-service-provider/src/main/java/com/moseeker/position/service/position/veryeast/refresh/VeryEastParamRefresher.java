@@ -39,6 +39,12 @@ public class VeryEastParamRefresher extends AbstractRabbitMQParamRefresher {
     }
 
     @Override
+    public void addUserParam(JSONObject jsonSend) {
+        jsonSend.put("user_name","");
+        jsonSend.put("password","");
+    }
+
+    @Override
     public String exchange() {
         return VeryEastConstant.EXCHANGE;
     }
