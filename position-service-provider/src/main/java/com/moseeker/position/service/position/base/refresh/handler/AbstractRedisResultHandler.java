@@ -4,16 +4,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.redis.RedisClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * 把部分参数存放到redis的处理策略
  */
-public abstract class RedisResultHandler extends AbstractJsonResultHandler {
-    Logger logger= LoggerFactory.getLogger(RedisResultHandler.class);
+public abstract class AbstractRedisResultHandler extends AbstractJsonResultHandler {
+    Logger logger= LoggerFactory.getLogger(AbstractRedisResultHandler.class);
 
     @Resource(name = "cacheClient")
     private RedisClient redisClient;

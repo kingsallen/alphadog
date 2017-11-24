@@ -2,6 +2,7 @@ package com.moseeker.position.service.third.info;
 
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.constants.ChannelType;
+import com.moseeker.common.util.StructSerializer;
 import com.moseeker.position.service.third.ThirdPartyAccountAddressService;
 import com.moseeker.position.service.third.ThirdPartyAccountCompanyService;
 import com.moseeker.position.service.third.base.AbstractThirdInfoProvider;
@@ -24,7 +25,7 @@ public class Job51InfoProvider extends AbstractThirdInfoProvider {
         obj.put("address",addressService.getCompanyAddressByAccountId(accountId));
         obj.put("company",companyService.getCompanyByAccountId(accountId));
 
-        return obj.toJSONString();
+        return StructSerializer.toString(obj);
     }
 
     @Override
