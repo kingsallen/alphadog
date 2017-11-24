@@ -49,7 +49,7 @@ public abstract class AbstractBindState implements BindState{
 
         HrThirdPartyAccountDO bindingAccount = thirdPartyAccountDao.getThirdPartyAccountByUserId(hrId, thirdPartyAccount.getChannel());
         if (bindingAccount == null) {
-            context.getBindState(result.getId()).updateBinding(result);
+            context.updateBinding(result);
         }
         context.getBindState(result.getId()).dispatch(result.getId(), Arrays.asList(hrId));
 

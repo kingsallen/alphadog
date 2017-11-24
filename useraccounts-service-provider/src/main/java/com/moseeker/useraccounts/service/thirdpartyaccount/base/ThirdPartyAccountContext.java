@@ -78,7 +78,10 @@ public class ThirdPartyAccountContext{
     }
 
     public int updateBinding(HrThirdPartyAccountDO thirdPartyAccount) throws Exception {
-        return getBindState(thirdPartyAccount.getId()).updateBinding(thirdPartyAccount);
+        if(thirdPartyAccount==null || thirdPartyAccount.getId()==0){
+            throw new IllegalArgumentException("cannot update null thirdPartyAccount");
+        }
+        return getBindStateByBindingState(thirdPartyAccount.getBinding()).updateBinding(thirdPartyAccount);
     }
 
 }
