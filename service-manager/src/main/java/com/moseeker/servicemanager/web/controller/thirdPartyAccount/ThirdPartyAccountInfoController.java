@@ -36,7 +36,8 @@ public class ThirdPartyAccountInfoController {
         try{
             ThirdPartyAccountInfoParam param=ParamUtils.initModelForm(request, ThirdPartyAccountInfoParam.class);
             ThirdPartyAccountInfo info=thirdPartyAccountInfoServices.getAllInfo(param);
-            return ResponseLogNotification.successJson(request,info);
+            logger.info("getAllInfo data:{}",info);
+            return ResponseLogNotification.successJson(request,info.getJson());
         }catch (Exception e){
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.failJson(request, e);

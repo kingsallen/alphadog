@@ -1,4 +1,4 @@
-package com.moseeker.function.constants;
+package com.moseeker.common.constants;
 
 public class BindThirdPart {
     public final static int APP_ID=0;
@@ -33,5 +33,8 @@ public class BindThirdPart {
     public final static String SYNC_POSITION_GET_QUEUE_NAME="publish.response.web";
 
     public final static String CHAOS_ACCOUNTID="accountId";
+
+    //绑定账号redis超时时间
+    public final static int BIND_REDIS_TIMEOUT=300;
 
 }

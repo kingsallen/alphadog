@@ -184,16 +184,6 @@ public class UserHrAccountServiceImpl implements Iface {
     }
 
     @Override
-    public HrThirdPartyAccountDO syncThirdPartyAccount(int hrId, int id, boolean sync) throws BIZException, TException {
-        try {
-            return thirdPartyAccountService.synchronizeThirdpartyAccount(hrId, id, sync);
-        } catch (Exception e) {
-            logger.info(e.getMessage(), e);
-            throw ExceptionUtils.convertException(e);
-        }
-    }
-
-    @Override
     public void unbindThirdPartyAccount(int accountId, int userId) throws BIZException, TException {
         try {
             thirdPartyAccountService.unbindingAccount(accountId, userId);

@@ -1,5 +1,6 @@
 package com.moseeker.dict.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.moseeker.dict.config.AppConfig;
 import com.moseeker.thrift.gen.common.struct.Response;
 import org.junit.Test;
@@ -22,7 +23,7 @@ public class DictOccupationServiceTest {
 
     //@Test
     public void queryOccupation() throws Exception {
-        Response response = service.queryOccupation("{\"level\":2, \"single_layer\":2, \"channel\":3}");
+        JSONArray response = service.queryOccupation("{\"level\":2, \"single_layer\":2, \"channel\":3}");
         System.out.println(response);
     }
 

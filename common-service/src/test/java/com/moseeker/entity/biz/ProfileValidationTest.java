@@ -35,6 +35,16 @@ public class ProfileValidationTest {
         education1.setCollege_name("中原工学院");
         ValidationMessage<Education> vm1 = ProfileValidation.verifyEducation(education1);
         assertEquals(StringUtils.isBlank(vm1.getResult()), true);
+
+        Education education2 = new Education();
+        education2.setStart_date("2007-09-01");
+        education2.setEnd_date("");
+        education2.setEnd_until_now((byte)1);
+        education2.setDegree(2);
+        education2.setCollege_name("中原工学院");
+        ValidationMessage<Education> vm2 = ProfileValidation.verifyEducation(education2);
+        System.out.println(vm2.getResult());
+        assertEquals(StringUtils.isBlank(vm2.getResult()), true);
     }
 
     @Test
@@ -98,6 +108,14 @@ public class ProfileValidationTest {
         projectExp2.setEnd_date("2021-07-01");
         ValidationMessage<ProjectExp> vm2 = ProfileValidation.verifyProjectExp(projectExp2);
         assertEquals(StringUtils.isBlank(vm2.getResult()), false);
+
+        ProjectExp projectExp3 = new ProjectExp();
+        projectExp3.setStart_date("2007-09-01");
+        projectExp3.setEnd_date("");
+        projectExp3.setEnd_until_now((byte)1);
+        projectExp3.setName("项目名称");
+        ValidationMessage<ProjectExp> vm3 = ProfileValidation.verifyProjectExp(projectExp3);
+        assertEquals(StringUtils.isBlank(vm3.getResult()), true);
     }
 
     @Test
@@ -164,6 +182,15 @@ public class ProfileValidationTest {
         workExp2.setJob("职位");
         ValidationMessage<WorkExp> vm2 = ProfileValidation.verifyWorkExp(workExp2);
         assertEquals(StringUtils.isBlank(vm2.getResult()), false);
+
+        WorkExp workExp3 = new WorkExp();
+        workExp3.setStart_date("2017-09-01");
+        workExp3.setEnd_date("");
+        workExp3.setEnd_until_now((byte)1);
+        workExp3.setCompany_name("公司名称");
+        workExp3.setJob("职位");
+        ValidationMessage<WorkExp> vm3 = ProfileValidation.verifyWorkExp(workExp3);
+        assertEquals(StringUtils.isBlank(vm3.getResult()), true);
     }
 
     @Test

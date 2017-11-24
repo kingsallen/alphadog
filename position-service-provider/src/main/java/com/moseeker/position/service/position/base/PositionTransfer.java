@@ -8,6 +8,7 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionCityDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import com.moseeker.thrift.gen.dict.service.DictOccupationService;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;

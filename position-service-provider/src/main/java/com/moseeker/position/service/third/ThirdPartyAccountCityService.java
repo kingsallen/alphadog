@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ThirdPartyAccountInfoCityService {
+public class ThirdPartyAccountCityService {
     Logger logger= LoggerFactory.getLogger(this.getClass());
 
     @Autowired
@@ -31,7 +31,7 @@ public class ThirdPartyAccountInfoCityService {
      * @return ThirdPartyAccountInfoCity列表
      * @throws TException
      */
-    public List<ThirdPartyAccountInfoCity> getInfoCity(int accountId) throws TException{
+    public List<ThirdPartyAccountInfoCity> getCityByAccountId(int accountId) throws TException{
         List<ThirdpartyAccountCityDO> cityList=cityDao.getCityByAccountId(accountId);
 
         //取出第三方账号对应城市的所有code
