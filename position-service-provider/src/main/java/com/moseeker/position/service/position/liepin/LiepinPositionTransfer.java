@@ -1,16 +1,13 @@
 package com.moseeker.position.service.position.liepin;
 
-import com.moseeker.baseorm.dao.dictdb.DictCityMapDao;
-import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
+import com.moseeker.baseorm.dao.dictdb.DictLiepinOccupationDao;
 import com.moseeker.common.constants.ChannelType;
-import com.moseeker.common.util.query.Query;
 import com.moseeker.position.service.position.DegreeChangeUtil;
 import com.moseeker.position.service.position.WorkTypeChangeUtil;
 import com.moseeker.position.service.position.base.PositionTransfer;
 import com.moseeker.position.service.position.qianxun.Degree;
 import com.moseeker.position.service.position.qianxun.WorkType;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
-import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionCityDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
 import org.slf4j.Logger;
@@ -19,10 +16,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class LiepinPositionTransfer extends PositionTransfer {
     Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    @Autowired
+    DictLiepinOccupationDao occupationDao;
 
 
     @Override
@@ -31,12 +32,13 @@ public class LiepinPositionTransfer extends PositionTransfer {
     }
 
     @Override
-    protected void setOccupation(ThirdPartyPosition positionForm, ThirdPartyPositionForSynchronization position) {
-        List<String> list=new ArrayList<>();
-        if (positionForm.getOccupation() != null) {
-            positionForm.getOccupation().forEach(o -> list.add(o));
+    public void setOccupation(ThirdPartyPosition positionForm, ThirdPartyPositionForSynchronization position) {
+        List<String> occupations=positionForm.getOccupation();
+        if (occupations != null && !occupations.isEmpty()) {
+            occupations=occupationDao.getFullOccupations(occupations.get(occupations.size()-1)).stream().map(o->o.otherCode).collect(Collectors.toList());
+            position.setOccupation(occupations);
         }
-        position.setOccupation(list);
+        logger.info("lieping position sync occupation {}",occupations);
     }
 
     @Override

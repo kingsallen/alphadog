@@ -102,16 +102,16 @@ public class ProfileUtils {
 					if (workexp.get("start_date") != null) {
 						record.setStart(BeanUtils.convertToSQLDate(workexp.get("start_date")));
 					} else if (workexp.get("startDate") != null) {
-                        record.setStart(BeanUtils.convertToSQLDate(workexp.get("startDate")));
-                    }
+						record.setStart(BeanUtils.convertToSQLDate(workexp.get("startDate")));
+					}
 					if (workexp.get("end_date") != null) {
 						record.setEnd(BeanUtils.convertToSQLDate(workexp.get("end_date")));
 					} else if (workexp.get("endDate") != null) {
-                        record.setEnd(BeanUtils.convertToSQLDate(workexp.get("endDate")));
-                    }
-                    if(workexp.get("end_until_now")==null){
-                        record.setEndUntilNow((byte)0);
-                    }
+						record.setEnd(BeanUtils.convertToSQLDate(workexp.get("endDate")));
+					}
+					if(workexp.get("end_until_now")==null){
+						record.setEndUntilNow((byte)0);
+					}
 					subWorkExpMaxLimit(record);
 
 					if (workexp.get("company") != null) {
@@ -120,48 +120,51 @@ public class ProfileUtils {
 						if (company != null) {
 							HrCompanyRecord hrCompany = new HrCompanyRecord();
 							if (company.get("company_name") != null) {
-							    String companyName=BeanUtils.converToString(company.get("company_name"));
-							    if(StringUtils.isNotBlank(companyName)&&companyName.length()>ProfileAttributeLengthLimit.CompanyName.getLengthLimit()){
-                                    hrCompany.setName(this.handlerOutLimitString(companyName,ProfileAttributeLengthLimit.CompanyName.getLengthLimit(),DEFAULT_FLAG));
-                                }
+								String companyName=BeanUtils.converToString(company.get("company_name"));
+								hrCompany.setName(companyName);
+								if(StringUtils.isNotBlank(companyName)&&companyName.length()>ProfileAttributeLengthLimit.CompanyName.getLengthLimit()){
+									hrCompany.setName(this.handlerOutLimitString(companyName,ProfileAttributeLengthLimit.CompanyName.getLengthLimit(),DEFAULT_FLAG));
+								}
 
 							} else if (company.get("companyName") != null) {
-                                String companyName=BeanUtils.converToString(company.get("companyName"));
-                                if(StringUtils.isNotBlank(companyName)&&companyName.length()>ProfileAttributeLengthLimit.CompanyName.getLengthLimit()){
-                                    hrCompany.setName(this.handlerOutLimitString(companyName,ProfileAttributeLengthLimit.CompanyName.getLengthLimit(),DEFAULT_FLAG));
-                                }
+								String companyName=BeanUtils.converToString(company.get("companyName"));
+								hrCompany.setName(companyName);
+								if(StringUtils.isNotBlank(companyName)&&companyName.length()>ProfileAttributeLengthLimit.CompanyName.getLengthLimit()){
+									hrCompany.setName(this.handlerOutLimitString(companyName,ProfileAttributeLengthLimit.CompanyName.getLengthLimit(),DEFAULT_FLAG));
+								}
 //                                hrCompany.setName(BeanUtils.converToString(company.get("companyName")));
-                            }
+							}
 							if (company.get("company_industry") != null) {
-							    String companyIndustry=BeanUtils.converToString(company.get("company_industry"));
-							    if(StringUtils.isNotBlank(companyIndustry)&&companyIndustry.length()>ProfileAttributeLengthLimit.CompanyIndustry.getLengthLimit()){
-							        hrCompany.setIndustry(this.handlerOutLimitString(companyIndustry,ProfileAttributeLengthLimit.CompanyIndustry.getLengthLimit(),DEFAULT_FLAG));
-                                }
+								String companyIndustry=BeanUtils.converToString(company.get("company_industry"));
+								hrCompany.setIndustry(companyIndustry);
+								if(StringUtils.isNotBlank(companyIndustry)&&companyIndustry.length()>ProfileAttributeLengthLimit.CompanyIndustry.getLengthLimit()){
+									hrCompany.setIndustry(this.handlerOutLimitString(companyIndustry,ProfileAttributeLengthLimit.CompanyIndustry.getLengthLimit(),DEFAULT_FLAG));
+								}
 //								hrCompany.setIndustry(BeanUtils.converToString(company.get("company_industry")));
 							} else if (company.get("companyIndustry") != null) {
-                                String companyIndustry=BeanUtils.converToString(company.get("companyIndustry"));
-                                if(StringUtils.isNotBlank(companyIndustry)&&companyIndustry.length()>ProfileAttributeLengthLimit.CompanyIndustry.getLengthLimit()){
-                                    hrCompany.setIndustry(this.handlerOutLimitString(companyIndustry,ProfileAttributeLengthLimit.CompanyIndustry.getLengthLimit(),DEFAULT_FLAG));
-                                }
+								String companyIndustry=BeanUtils.converToString(company.get("companyIndustry"));
+								hrCompany.setIndustry(companyIndustry);
+								if(StringUtils.isNotBlank(companyIndustry)&&companyIndustry.length()>ProfileAttributeLengthLimit.CompanyIndustry.getLengthLimit()){
+									hrCompany.setIndustry(this.handlerOutLimitString(companyIndustry,ProfileAttributeLengthLimit.CompanyIndustry.getLengthLimit(),DEFAULT_FLAG));
+								}
 //                                hrCompany.setIndustry(BeanUtils.converToString(company.get("companyIndustry")));
-                            }
+							}
 							if (company.get("company_introduction") != null) {
-								hrCompany
-										.setIntroduction(BeanUtils.converToString(company.get("company_introduction")));
+								hrCompany.setIntroduction(BeanUtils.converToString(company.get("company_introduction")));
 							} else if (company.get("companyIntroduction") != null) {
-                                hrCompany
-                                        .setIntroduction(BeanUtils.converToString(company.get("companyIntroduction")));
-                            }
+								hrCompany
+										.setIntroduction(BeanUtils.converToString(company.get("companyIntroduction")));
+							}
 							if (company.get("scale") != null) {
 								hrCompany.setScale(BeanUtils.converToByte(company.get("scale")));
 							} else if ((company.get("companyScale") != null)) {
-                                hrCompany.setScale(BeanUtils.converToByte(company.get("companyScale")));
-                            }
+								hrCompany.setScale(BeanUtils.converToByte(company.get("companyScale")));
+							}
 							if (company.get("company_property") != null) {
 								hrCompany.setProperty(BeanUtils.converToByte(company.get("company_property")));
 							} else if (company.get("companyProperty") != null) {
-                                hrCompany.setProperty(BeanUtils.converToByte(company.get("companyProperty")));
-                            }
+								hrCompany.setProperty(BeanUtils.converToByte(company.get("companyProperty")));
+							}
 							hrCompany.setType((byte)(Constant.COMPANY_TYPE_FREE));
 							switch(source) {
 								case Constant.PROFILE_SOURCE_WEIXIN_TEGETHER_IMPORT:
@@ -176,6 +179,7 @@ public class ProfileUtils {
 							record.setCompany(hrCompany);
 						}
 					}
+
 					ValidationMessage<ProfileWorkexpEntity> vm = ProfileValidation.verifyWorkExp(record);
 					if(vm.isPass()) {
 						workexpRecords.add(record);
@@ -251,7 +255,7 @@ public class ProfileUtils {
 	 处理技巧的超长字段
 	 */
 
-    /*
+	/*
         @author  zzt
         @param record
         简历中掌握的技巧的名称超过长度的截取操作
@@ -272,18 +276,18 @@ public class ProfileUtils {
 					if (projectexp.get("start_date") != null) {
 						record.setStart(BeanUtils.convertToSQLDate(projectexp.get("start_date")));
 					} else if (projectexp.get("startDate") != null) {
-                        record.setStart(BeanUtils.convertToSQLDate(projectexp.get("startDate")));
-                    }
+						record.setStart(BeanUtils.convertToSQLDate(projectexp.get("startDate")));
+					}
 					if (projectexp.get("end_date") != null) {
 						record.setEnd(BeanUtils.convertToSQLDate(projectexp.get("end_date")));
 					} else if (projectexp.get("endDate") != null) {
-                        record.setEnd(BeanUtils.convertToSQLDate(projectexp.get("endDate")));
-                    }
-                    if(projectexp.get("end_until_now")==null){
-                        record.setEndUntilNow((byte)0);
-                    }
+						record.setEnd(BeanUtils.convertToSQLDate(projectexp.get("endDate")));
+					}
+					if(projectexp.get("end_until_now")==null){
+						record.setEndUntilNow((byte)0);
+					}
 
-                    subProjectExpMaxLimit(record);
+					subProjectExpMaxLimit(record);
 
 					ValidationMessage<ProfileProjectexpRecord> vm = ProfileValidation.verifyProjectExp(record);
 					if(vm.isPass()) {
@@ -294,7 +298,7 @@ public class ProfileUtils {
 		}
 		return projectExpRecords;
 	}
-    /*
+	/*
            @author  zzt
            @param record
            简历中项目经历的中字段长度的截取操作
@@ -320,6 +324,27 @@ public class ProfileUtils {
 		if (StringUtils.isNotBlank(record.getDevTool()) && record.getDevTool().length() > ProfileAttributeLengthLimit.ProjectExpDevTool.getLengthLimit()) {
 //			record.setDevTool(record.getDevTool().substring(0, ProfileAttributeLengthLimit.ProjectExpDevTool.getLengthLimit()));
 			record.setDevTool(this.handlerOutLimitString(record.getDevTool(),ProfileAttributeLengthLimit.ProjectExpDevTool.getLengthLimit(),DEFAULT_FLAG));
+		}
+		if(StringUtils.isNotBlank(record.getAchievement())&&record.getAchievement().length()>ProfileAttributeLengthLimit.ProjectExpAchievement.getLengthLimit()){
+			record.setAchievement(this.handlerOutLimitString(record.getAchievement(),ProfileAttributeLengthLimit.ProjectExpAchievement.getLengthLimit(),DEFAULT_FLAG));
+		}
+
+		if(StringUtils.isNotBlank(record.getMember())&&record.getMember().length()>ProfileAttributeLengthLimit.ProjectExpMember.getLengthLimit()){
+			record.setMember(this.handlerOutLimitString(record.getMember(),ProfileAttributeLengthLimit.ProjectExpMember.getLengthLimit(),DEFAULT_FLAG));
+		}
+
+		if(StringUtils.isNotBlank(record.getHardware())&&record.getHardware().length()>ProfileAttributeLengthLimit.ProjectExpHardWare.getLengthLimit()){
+			record.setHardware(this.handlerOutLimitString(record.getHardware(),ProfileAttributeLengthLimit.ProjectExpHardWare.getLengthLimit(),DEFAULT_FLAG));
+		}
+		if(StringUtils.isNotBlank(record.getSoftware())&&record.getSoftware().length()>ProfileAttributeLengthLimit.ProjectSoftWare.getLengthLimit()){
+			record.setSoftware(this.handlerOutLimitString(record.getSoftware(),ProfileAttributeLengthLimit.ProjectSoftWare.getLengthLimit(),DEFAULT_FLAG));
+		}
+
+		if(StringUtils.isNotBlank(record.getUrl())&&record.getUrl().length()>ProfileAttributeLengthLimit.ProjectExpURL.getLengthLimit()){
+			record.setUrl(this.handlerOutLimitString(record.getUrl(),ProfileAttributeLengthLimit.ProjectExpURL.getLengthLimit(),DEFAULT_FLAG));
+		}
+		if(StringUtils.isNotBlank(record.getRole())&&record.getRole().length()>ProfileAttributeLengthLimit.ProjectExpRole.getLengthLimit()){
+			record.setRole(this.handlerOutLimitString(record.getRole(),ProfileAttributeLengthLimit.ProjectExpRole.getLengthLimit(),DEFAULT_FLAG));
 		}
 	}
 
@@ -350,11 +375,11 @@ public class ProfileUtils {
 		}
 		return languageRecords;
 	}
-  /*
-       @author  zzt
-       @param record
-       语言名称最大长度限制处理
-    */
+	/*
+         @author  zzt
+         @param record
+         语言名称最大长度限制处理
+      */
 	private void languageMaxLimit(ProfileLanguageRecord record){
 		if(StringUtils.isNotBlank(record.getName())&&record.getName().length()>ProfileAttributeLengthLimit.LanguageName.getLengthLimit()) {
 			record.setName(this.handlerOutLimitString(record.getName(), ProfileAttributeLengthLimit.LanguageName.getLengthLimit(), DEFAULT_FLAG));
@@ -418,6 +443,7 @@ public class ProfileUtils {
 					}
 					this.intentionMaxLimit(record);
 					intentionRecords.add(record);
+
 				}
 			});
 		}
@@ -425,11 +451,11 @@ public class ProfileUtils {
 	}
 
 
-    /*
+	/*
        @author  zzt
        @param record  IntentionRecord
        处理求职意向中的超出长度的字段
-	 */
+     */
 	private void intentionMaxLimit(IntentionRecord record){
 		if(StringUtils.isNotBlank(record.getTag())&&record.getTag().length()>ProfileAttributeLengthLimit.IntentionTag.getLengthLimit()){
 			record.setTag(this.handlerOutLimitString(record.getTag(),ProfileAttributeLengthLimit.IntentionTag.getLengthLimit(),DEFAULT_FLAG));
@@ -495,8 +521,8 @@ public class ProfileUtils {
 						record.setEnd(BeanUtils.convertToSQLDate(education.get("endDate")));
 					}
 					if(education.get("end_until_now")==null){
-                        record.setEndUntilNow((byte)0);
-                    }
+						record.setEndUntilNow((byte)0);
+					}
 
 					ValidationMessage<ProfileEducationRecord> vm = ProfileValidation.verifyEducation(record);
 					if(vm.isPass()) {
@@ -587,11 +613,11 @@ public class ProfileUtils {
 		return awardsRecords;
 	}
 
-    /*
+	/*
        @author  zzt
        @param record  ProfileAwardsRecord
        处理获取奖项的部分中某些字段的最大长度
-	 */
+     */
 	private  void awardsMaxLimit(ProfileAwardsRecord record){
 		if(StringUtils.isNotBlank(record.getName())&&record.getName().length()>ProfileAttributeLengthLimit.AwardName.getLengthLimit()){
 			record.setName(this.handlerOutLimitString(record.getName(),ProfileAttributeLengthLimit.AwardName.getLengthLimit(),DEFAULT_FLAG));
@@ -620,11 +646,11 @@ public class ProfileUtils {
 		}
 		return attchmentRecords;
 	}
-   /*
-       @author  zzt
-       @param record  ProfileAwardsRecord
-       附件超长字段处理
-	 */
+	/*
+        @author  zzt
+        @param record  ProfileAwardsRecord
+        附件超长字段处理
+      */
 	private void attachmentMaxLimit(ProfileAttachmentRecord record){
 		if(StringUtils.isNotBlank(record.getDescription())&&record.getDescription().length()>ProfileAttributeLengthLimit.AttachmentDescription.getLengthLimit()){
 			record.setDescription(this.handlerOutLimitString(record.getDescription(),ProfileAttributeLengthLimit.AttachmentDescription.getLengthLimit(),DEFAULT_FLAG));
@@ -650,11 +676,11 @@ public class ProfileUtils {
 		return record;
 	}
 
-   /*
-       @author  zzt
-       @param record  ProfileAwardsRecord
-       处理basic中的超长字段
-	 */
+	/*
+        @author  zzt
+        @param record  ProfileAwardsRecord
+        处理basic中的超长字段
+      */
 	private void basicMaxLimit(ProfileBasicRecord record){
 		if(StringUtils.isNotBlank(record.getName())&&record.getName().length()>ProfileAttributeLengthLimit.BasicName.getLengthLimit()){
 			record.setName(this.handlerOutLimitString(record.getName(),ProfileAttributeLengthLimit.BasicName.getLengthLimit(),DEFAULT_FLAG));
@@ -739,7 +765,7 @@ public class ProfileUtils {
 	}
 
 	public List<Map<String, Object>> buildImports(ProfileProfileRecord profileRecord,
-			List<ProfileImportRecord> records) {
+												  List<ProfileImportRecord> records) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		try {
 			if (profileRecord != null && records != null && records.size() > 0) {
@@ -770,7 +796,7 @@ public class ProfileUtils {
 	}
 
 	public List<Map<String, Object>> buildAttachments(ProfileProfileRecord profileRecord,
-			List<ProfileAttachmentRecord> records) {
+													  List<ProfileAttachmentRecord> records) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		try {
 			if (records != null && records.size() > 0) {

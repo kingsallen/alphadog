@@ -23,6 +23,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author xxx
@@ -42,16 +43,21 @@ public class ProfileIntentionDao extends JooqCrudImpl<ProfileIntentionDO, Profil
 
     public int updateProfileUpdateTime(HashSet<Integer> intentionIds) {
         int status = 0;
+        List<Integer> profileIdList = create.select(ProfileIntention.PROFILE_INTENTION.PROFILE_ID)
+                .from(ProfileIntention.PROFILE_INTENTION)
+                .where(ProfileIntention.PROFILE_INTENTION.ID.in(intentionIds))
+                .stream()
+                .map(integerRecord1 -> integerRecord1.value1())
+                .collect(Collectors.toList());
 
-        Timestamp updateTime = new Timestamp(System.currentTimeMillis());
-        status = create.update(ProfileProfile.PROFILE_PROFILE)
-                .set(ProfileProfile.PROFILE_PROFILE.UPDATE_TIME, updateTime)
-                .where(ProfileProfile.PROFILE_PROFILE.ID
-                        .in(create.select(ProfileIntention.PROFILE_INTENTION.PROFILE_ID)
-                                .from(ProfileIntention.PROFILE_INTENTION)
-                                .where(ProfileIntention.PROFILE_INTENTION.ID.in(intentionIds))))
-                .execute();
-
+        if (profileIdList != null && profileIdList.size() > 0) {
+            Timestamp updateTime = new Timestamp(System.currentTimeMillis());
+            status = create.update(ProfileProfile.PROFILE_PROFILE)
+                    .set(ProfileProfile.PROFILE_PROFILE.UPDATE_TIME, updateTime)
+                    .where(ProfileProfile.PROFILE_PROFILE.ID
+                            .in(profileIdList))
+                    .execute();
+        }
         return status;
     }
 
