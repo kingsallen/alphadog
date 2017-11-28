@@ -11,6 +11,7 @@ package com.moseeker.common.util;
  * @param <S>
  */
 public class Pagination {
+
 	private int pageNo;
 	private int pageSize;
 	private int totalPage;
