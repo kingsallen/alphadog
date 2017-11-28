@@ -292,11 +292,13 @@ public class JobApplicataionService {
                         com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.ID.getName(), jobApplication.getId())
                         .buildQuery());
         if (jobApplicationDO != null) {
-            ApplicationSource applicationSource = ApplicationSource.instaceFromInteger(jobApplication.getOrigin());
-            if (applicationSource == null) {
-                jobApplication.setOrigin(jobApplication.getOrigin() | jobApplication.getOrigin());
-            } else {
-                jobApplication.setOrigin(applicationSource.andSource(jobApplicationDO.getOrigin()));
+            if(jobApplication.isSetOrigin()) {
+                ApplicationSource applicationSource = ApplicationSource.instaceFromInteger(jobApplication.getOrigin());
+                if (applicationSource == null) {
+                    jobApplication.setOrigin(jobApplication.getOrigin());
+                } else {
+                    jobApplication.setOrigin(applicationSource.andSource(jobApplicationDO.getOrigin()));
+                }
             }
             // 更新申请
             JobApplicationRecord jobApplicationRecord = BeanUtils.structToDB(jobApplication, JobApplicationRecord.class);

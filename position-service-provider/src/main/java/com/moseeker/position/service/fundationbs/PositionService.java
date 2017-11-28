@@ -989,6 +989,13 @@ public class PositionService {
             HashMap cityMap = new LinkedHashMap();
             if (citys != null && citys.size() > 0 && pid != null) {
                 for (City city : citys) {
+                    //去空格
+                    if (org.apache.commons.lang.StringUtils.isNotBlank(city.getValue())) {
+                        city.setValue(city.getValue().trim());
+                    }
+                    if (org.apache.commons.lang.StringUtils.isNotBlank(city.getType())) {
+                        city.setType(city.getType().trim());
+                    }
                     // 查询DictCityPostCode条件
                     Query.QueryBuilder cityCodeQuery = new Query.QueryBuilder();
                     // 查询DictCity条件
