@@ -396,7 +396,11 @@ public class ProfileService {
         String password = propertiesUtils.get("GENERATE_USER_PASSWORD", String.class);
         logger.info("profilesByApplication:{}", JSON.toJSONString(profileApplicationForm));
         List<AbstractMap.SimpleEntry<Map<String, Object>, Map<String, Object>>>   positionApplications = dao.getResourceByApplication(downloadUrl, password, profileApplicationForm);
+        logger.info("原始数据=======================================");
+        logger.info(JSON.toJSONString(positionApplications));
+        logger.info("处理后的数据=======================================");
         positionApplications=handlerApplicationData(positionApplications);
+        logger.info("=================================================");
         List<Map<String, Object>> datas =dao.getRelatedDataByJobApplication( positionApplications, downloadUrl, password, profileApplicationForm.isRecommender(), profileApplicationForm.isDl_url_required(), profileApplicationForm.getFilter());
         return dao.handleResponse(datas);
     }
