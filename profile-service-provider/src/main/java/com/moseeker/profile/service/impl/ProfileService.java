@@ -237,7 +237,7 @@ public class ProfileService {
             return null;
         }
         Map<String,Object> paramData=this.getUserPositionData(datas);
-        if(paramData==null||!paramData.isEmpty()){
+        if(paramData==null||paramData.isEmpty()){
             return null;
         }
         List<Integer> userIdList= (List<Integer>) paramData.get("userIdList");
@@ -275,7 +275,7 @@ public class ProfileService {
             if(userIdSet==null||userIdSet.size()==0){
                 userIdSet=new HashSet<>();
             }
-            userIdSet.add(positionId);
+            userIdSet.add(userId);
             pidUserIdMap.put(positionId,userIdSet);
         }
         if(StringUtils.isEmptyList(userIdList)||pidUserIdMap==null||pidUserIdMap.isEmpty()){
