@@ -737,8 +737,8 @@ public class CompanyService {
             return ResponseUtils.fail(1,"此公司无配置");
         }
         int result=hrTalentPoolApplicationDao.inserOrUpdateTalentPoolApplication(hrId,companyId);
-        if(result>0){
-            return ResponseUtils.fail(1,"操作");
+        if(result==0){
+            return ResponseUtils.fail(1,"操作失败");
         }
         return ResponseUtils.success("");
     }
