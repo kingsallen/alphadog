@@ -327,31 +327,6 @@ public class PositionService {
     }
 
     /**
-     * 转成第三方渠道职位
-     */
-    public List<ThirdPartyPositionForSynchronization> changeToThirdPartyPosition(List<ThirdPartyPosition> forms,
-                                                                                 JobPositionDO position) {
-        List<ThirdPartyPositionForSynchronization> positions = new ArrayList<>();
-        if (forms != null && forms.size() > 0 && position != null && position.getId() > 0) {
-            forms.forEach(form -> {
-                positions.add(changeToThirdPartyPosition(form,position));
-            });
-        }
-        return positions;
-    }
-    /**
-     * 转成第三方渠道职位
-     */
-    public ThirdPartyPositionForSynchronization changeToThirdPartyPosition(ThirdPartyPosition form,
-                                                                                 JobPositionDO position) {
-        ThirdPartyPositionForSynchronization p= new ThirdPartyPositionForSynchronization();
-        if (form != null && position != null && position.getId() > 0) {
-                p = positionChangeUtil.changeToThirdPartyPosition(form, position);
-        }
-        return p;
-    }
-
-    /**
      * 该职位是否可以刷新
      *
      * @param positionId 职位编号
@@ -396,69 +371,6 @@ public class PositionService {
         logger.info("cache allow");
         return true;
     }
-
-    /**
-     * 创建刷新职位数据
-     *
-     * @param positionId 职位编号
-     * @param account_id 第三方账号ID
-     */
-    public ThirdPartyPositionForSynchronizationWithAccount createRefreshPosition(int positionId, int account_id) {
-        ThirdPartyPositionForSynchronizationWithAccount syncAccount = new ThirdPartyPositionForSynchronizationWithAccount();
-        Query findPosition = new Query.QueryBuilder().where("id", positionId).buildQuery();
-        JobPositionDO position = jobPositionDao.getData(findPosition);
-
-        if (position == null) {
-            logger.info("createRefreshPosition position null :{}", positionId, account_id);
-            return syncAccount;
-        }
-
-        HrThirdPartyPositionDO thirdPartyPosition = thirdpartyPositionDao.getThirdPartyPosition(positionId, account_id);
-
-        if (thirdPartyPosition == null) {
-            logger.info("createRefreshPosition thirdPartyPosition:{}:{}", positionId, account_id);
-            return syncAccount;
-        }
-
-        Query findAccount = new Query.QueryBuilder().where("id", account_id).buildQuery();
-        HrThirdPartyAccountDO thirdPartyAccount = thirdPartyAccountDao.getData(findAccount);
-
-        if (thirdPartyAccount == null) {
-            logger.info("createRefreshPosition thirdPartyAccount null:{}:{}", positionId, account_id);
-            return syncAccount;
-        }
-
-        HrCompanyDO subCompany = hrCompanyAccountDao.getHrCompany(position.getPublisher());
-
-        if (subCompany != null) {
-            syncAccount.setCompany_name(subCompany.getAbbreviation());
-        }
-
-        syncAccount.setUser_name(thirdPartyAccount.getUsername());
-        syncAccount.setMember_name(thirdPartyAccount.getMembername());
-        syncAccount.setPassword(thirdPartyAccount.getPassword());
-        syncAccount.setChannel(thirdPartyAccount.getChannel());
-        syncAccount.setPosition_id(positionId);
-        syncAccount.setAccount_id(account_id);
-
-        ThirdPartyPosition form = new ThirdPartyPosition();
-        form.setChannel((byte) thirdPartyAccount.getChannel());
-        form.setAddressName(thirdPartyPosition.getAddress());
-        //count,occupation暂时没有放进去，目前不需要
-        form.setDepartmentName(thirdPartyPosition.getDepartment());
-        form.setFeedbackPeriod(thirdPartyPosition.getFeedbackPeriod());
-        form.setSalaryBottom(thirdPartyPosition.getSalaryBottom());
-        form.setSalaryTop(thirdPartyPosition.getSalaryTop());
-        form.setSalaryDiscuss(thirdPartyPosition.getSalaryDiscuss() == 0 ? false : true);
-        form.setSalaryMonth(thirdPartyPosition.getSalaryMonth());
-        form.setUseCompanyAddress(thirdPartyPosition.getUseCompanyAddress() == 0 ? false : true);
-        form.setThirdPartyAccountId(thirdPartyAccount.getId());
-        ThirdPartyPositionForSynchronization p = positionChangeUtil.changeToThirdPartyPosition(form, position);
-        p.setJob_id(thirdPartyPosition.getThirdPartPositionId());
-        syncAccount.setPosition_info(p);
-        return syncAccount;
-    }
-
 
     /**
      * 批量处理修改职位
@@ -1713,7 +1625,7 @@ public class PositionService {
         PositionForAlipaycampusPojo positionForAlipaycampusPojo = new PositionForAlipaycampusPojo();
         positionForAlipaycampusPojo.setSource_id(positionRecord.getId().toString());
         positionForAlipaycampusPojo.setJob_name(positionRecord.getTitle());
-        positionForAlipaycampusPojo.setJob_desc(PositionChangeUtil.convertDescription(positionRecord.getAccountabilities(), positionRecord.getRequirement()));
+        positionForAlipaycampusPojo.setJob_desc(PositionUtil.convertDescription(positionRecord.getAccountabilities(), positionRecord.getRequirement()));
 
 
         // 职业分类

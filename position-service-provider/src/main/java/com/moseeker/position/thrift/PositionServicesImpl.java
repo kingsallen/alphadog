@@ -118,34 +118,12 @@ public class PositionServicesImpl implements Iface {
     }
 
     @Override
-    public List<ThirdPartyPositionForSynchronization> changeToThirdPartyPosition(List<ThirdPartyPosition> forms,
-                                                                                 JobPositionDO position) throws TException {
-        return service.changeToThirdPartyPosition(forms, position);
-    }
-
-    @Override
-    public ThirdPartyPositionForSynchronization changeOneToThirdPartyPosition(ThirdPartyPosition form, JobPositionDO position) throws TException {
-        return service.changeToThirdPartyPosition(form, position);
-    }
-
-    @Override
     public boolean ifAllowRefresh(int positionId, int account_id) {
         try {
             return service.ifAllowRefresh(positionId, account_id);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return false;
-        }
-    }
-
-    @Override
-    public ThirdPartyPositionForSynchronizationWithAccount createRefreshPosition(int positionId, int account_id)
-            throws TException {
-        try {
-            return service.createRefreshPosition(positionId, account_id);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return new ThirdPartyPositionForSynchronizationWithAccount();
         }
     }
 

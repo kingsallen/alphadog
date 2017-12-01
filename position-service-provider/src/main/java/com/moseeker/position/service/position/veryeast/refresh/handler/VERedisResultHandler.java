@@ -1,6 +1,6 @@
 package com.moseeker.position.service.position.veryeast.refresh.handler;
 
-import com.moseeker.position.constants.VeryEastConstant;
+import com.moseeker.position.constants.RefreshConstant;
 import com.moseeker.position.service.position.base.refresh.handler.AbstractRedisResultHandler;
 import org.springframework.stereotype.Component;
 
@@ -13,11 +13,11 @@ public class VERedisResultHandler extends AbstractRedisResultHandler implements 
 
     @Override
     protected int appId() {
-        return VeryEastConstant.APP_ID;
+        return RefreshConstant.APP_ID;
     }
 
     @Override
     protected String keyIdentifier() {
-        return VeryEastConstant.REDIS_PARAM_KEY;
+        return RefreshConstant.VERY_EAST_REDIS_PARAM_KEY;
     }
 }

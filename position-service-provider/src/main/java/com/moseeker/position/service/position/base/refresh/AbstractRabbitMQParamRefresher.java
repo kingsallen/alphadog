@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.common.constants.ChannelType;
+import com.moseeker.position.constants.RefreshConstant;
 import com.moseeker.position.service.position.base.refresh.handler.ResultHandler;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import org.slf4j.Logger;
@@ -29,8 +30,6 @@ public abstract class AbstractRabbitMQParamRefresher implements ParamRefresher {
 
     //发送消息去RabbitMQ
     public abstract void addSendParam(JSONObject jsonSend);
-    public abstract String exchange();
-    public abstract String routingKey();
     //接受并处理刷新结果，需要加上{@RabbitListener}和{@RabbitHandler}两个注解
     public abstract void receiveAndHandle(String str);
     public abstract void addUserParam(JSONObject jsonSend);
@@ -43,6 +42,7 @@ public abstract class AbstractRabbitMQParamRefresher implements ParamRefresher {
 
         jsonSend.put("account_id",1);
         jsonSend.put("channel",getChannel().getValue());
+        jsonSend.put("moseeker_region",moseekerRegin());
 
         addUserParam(jsonSend);
         addSendParam(jsonSend);
@@ -79,5 +79,12 @@ public abstract class AbstractRabbitMQParamRefresher implements ParamRefresher {
         }
         logger.info("refresh moseekerRegin {}",moseekerReginArray.size());
         return moseekerReginArray;
+    }
+
+    public String exchange() {
+        return RefreshConstant.EXCHANGE;
+    }
+    public String routingKey() {
+        return RefreshConstant.PARAM_SEND_ROUTING_KEY;
     }
 }

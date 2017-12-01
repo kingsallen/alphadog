@@ -1,5 +1,6 @@
 package com.moseeker.position.service.position.veryeast.refresh.handler;
 
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.dictdb.DictVeryEastOccupationDao;
 import com.moseeker.position.service.position.base.refresh.handler.AbstractOccupationResultHandler;
 import com.moseeker.position.utils.PositionRefreshUtils;
@@ -21,7 +22,7 @@ public class VEOccupationResultHandler extends AbstractOccupationResultHandler<D
     private DictVeryEastOccupationDao occupationDao;
 
     @Override
-    public DictVeryEastOccupationDO buildOccupation(List<String> texts,List<String> codes,Map<Integer, Integer> newCode) {
+    public DictVeryEastOccupationDO buildOccupation(List<String> texts,List<String> codes,Map<Integer, Integer> newCode,JSONObject msg) {
         DictVeryEastOccupationDO temp=new DictVeryEastOccupationDO();
 
         temp.setCodeOther(PositionRefreshUtils.lastCode(codes));

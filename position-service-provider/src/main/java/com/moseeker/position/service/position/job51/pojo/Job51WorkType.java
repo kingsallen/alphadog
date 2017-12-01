@@ -1,4 +1,4 @@
-package com.moseeker.position.service.position.job51;
+package com.moseeker.position.service.position.job51.pojo;
 
 public enum Job51WorkType {
 

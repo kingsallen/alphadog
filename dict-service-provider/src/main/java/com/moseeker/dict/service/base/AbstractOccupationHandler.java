@@ -3,6 +3,7 @@ package com.moseeker.dict.service.base;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.util.StructSerializer;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +26,9 @@ public abstract class AbstractOccupationHandler<T> {
     protected abstract List<T> getAllOccupation();
     protected abstract List<T> getSingleOccupation(JSONObject obj);
     //把职位转换成JsonObect
-    protected abstract JSONObject toJsonObject(T occupation);
+    protected JSONObject toJsonObject(T occupation){
+        return JSONObject.parseObject(StructSerializer.toString(occupation));
+    }
     //职位表中作为parentId的参数名称
     protected abstract String parentKeyName();
 

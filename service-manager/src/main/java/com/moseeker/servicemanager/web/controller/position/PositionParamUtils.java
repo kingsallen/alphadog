@@ -1,5 +1,6 @@
 package com.moseeker.servicemanager.web.controller.position;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.web.controller.util.Params;
@@ -25,13 +26,13 @@ public class PositionParamUtils extends ParamUtils {
             HashMap<String, Object> data = parseRequestParam(request);
             form.setAppid((Integer) data.get("appid"));
             form.setPositionId((Integer) data.get("positionId"));
-            List<ThirdPartyPosition> cs = new ArrayList<>();
+            List<String> cs = new ArrayList<>();
             List<HashMap<String, Object>> channels = (List<HashMap<String, Object>>) data.get("channels");
             if (channels != null) {
                 channels.forEach(channel -> {
                     try {
-                        ThirdPartyPosition c = ParamUtils.initModelForm(channel, ThirdPartyPosition.class);
-                        cs.add(c);
+//                        ThirdPartyPosition c = ParamUtils.initModelForm(channel, ThirdPartyPosition.class);
+                        cs.add(JSON.toJSONString(JSON.toJSONString(channel)));
                     } catch (Exception e) {
                         e.printStackTrace();
                         LoggerFactory.getLogger(PositionParamUtils.class).error(e.getMessage(), e);

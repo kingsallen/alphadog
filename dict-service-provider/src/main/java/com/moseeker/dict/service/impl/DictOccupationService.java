@@ -6,10 +6,7 @@ import com.moseeker.baseorm.dao.dictdb.DictLiepinOccupationDao;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.dict.service.base.AbstractOccupationHandler;
-import com.moseeker.dict.service.impl.occupation.Job51OccupationHandler;
-import com.moseeker.dict.service.impl.occupation.LiepinOccupationHandler;
-import com.moseeker.dict.service.impl.occupation.VeryEastOccupationHandler;
-import com.moseeker.dict.service.impl.occupation.ZhilianOccupationHandler;
+import com.moseeker.dict.service.impl.occupation.*;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -110,9 +107,10 @@ public class DictOccupationService {
 		Job51(ChannelType.JOB51.getValue(),"51JobList", Job51OccupationHandler.class),
 		ZhiLian(ChannelType.ZHILIAN.getValue(),"zPinList",ZhilianOccupationHandler.class),
 		LiePin(ChannelType.LIEPIN.getValue(),"liePinList",LiepinOccupationHandler.class),
-		VeryEast(ChannelType.VERYEAST.getValue(),"veryEastList",VeryEastOccupationHandler.class);
+		VeryEast(ChannelType.VERYEAST.getValue(),"veryEastList",VeryEastOccupationHandler.class),
+		Job1001(ChannelType.JOB1001.getValue(),"Job1001",Job1001OccupationHandler.class);
 
-		private OccupationChannel(int code,String key,Class<? extends AbstractOccupationHandler> clazz){
+		OccupationChannel(int code,String key,Class<? extends AbstractOccupationHandler> clazz){
 			this.code=code;
 			this.key=key;
 			this.clazz=clazz;

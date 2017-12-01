@@ -4,9 +4,11 @@ import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.*;
 import com.moseeker.common.util.ConfigPropertiesUtil;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.function.service.chaos.position.Position51WithAccount;
 import com.moseeker.function.service.chaos.position.PositionLiepinWithAccount;
 import com.moseeker.function.service.chaos.position.PositionZhilianWithAccount;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
 import org.joda.time.DateTime;
@@ -139,66 +141,25 @@ public class ChaosServiceImpl {
      * @param positions
      * @return
      */
-    public void synchronizePosition(List<ThirdPartyPositionForSynchronizationWithAccount> positions) throws Exception {
-        if (positions == null || positions.size() == 0) {
+    public void synchronizePosition(List<String> positions) throws Exception {
+        if (positions==null || positions.isEmpty()) {
             logger.warn("同步一个空的职位到第三方平台，跳过。");
             return;
         }
+        logger.info("send position to chaos rabbitMQ {}",positions);
 
-        String email = getConfigString("chaos.email");
-
-        int second = new DateTime().getSecondOfDay();
-
-        for (ThirdPartyPositionForSynchronizationWithAccount position : positions) {
-
-            position.getPosition_info().setEmail("cv_" + position.getPosition_id() + email);
-
-            logger.info("synchronize positions before change :" + positions);
-            String positionJson = null;
-
-            if (position.getChannel() == ChannelType.LIEPIN.getValue()) {
-                positionJson = JSON.toJSONString(PositionLiepinWithAccount.copyFromSyncPosition(position));
-            } else if (position.getChannel() == ChannelType.ZHILIAN.getValue()) {
-                positionJson = JSON.toJSONString(PositionZhilianWithAccount.copyFromSyncPosition(position));
-            } else if (position.getChannel() == ChannelType.JOB51.getValue()) {
-                positionJson = JSON.toJSONString(Position51WithAccount.copyFromSyncPosition(position));
-            }
-
-            logger.info("synchronize position:" + positionJson);
-
-            if (positionJson == null) {
-                logger.warn("不能识别的Channel类型:{}", position.getChannel());
+        for(String p:positions) {
+            if(StringUtils.isNullOrEmpty(p)){
+                logger.warn("同步一个空的渠道到第三方平台，跳过。");
                 continue;
             }
 
-//            redisClient.lpush(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_QUEUE.toString(), positionJson);
-
-            amqpTemplate.send(BindThirdPart.BIND_EXCHANGE_NAME, BindThirdPart.SYNC_POSITION_SEND_ROUTING_KEY, MessageBuilder.withBody(positionJson.getBytes()).build());
-
-            logger.info("成功将同步数据插入队列:{}", position.getPosition_id());
-
-            /*if (second < 60 * 60 * 24) {
-                redisClient.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH.toString(), String.valueOf(position.getPosition_id()), String.valueOf(position.getAccount_id()), "1", 60 * 60 * 24 - second);
-            }*/
-        }
-    }
-
-    public void refreshPosition(ThirdPartyPositionForSynchronizationWithAccount position) throws Exception {
-        String positionJson = null;
-
-        if (position.getChannel() == ChannelType.LIEPIN.getValue()) {
-            positionJson = JSON.toJSONString(PositionLiepinWithAccount.copyFromSyncPosition(position));
-        } else if (position.getChannel() == ChannelType.JOB51.getValue() || position.getChannel() == ChannelType.ZHILIAN.getValue()) {
-            positionJson = JSON.toJSONString(Position51WithAccount.copyFromSyncPosition(position));
-        }
-        logger.info("refresh position:" + positionJson);
-
-        redisClient.lpush(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH_QUEUE.toString(), positionJson);
-
-        DateTime dt = new DateTime();
-        int second = dt.getSecondOfDay();
-        if (second < 60 * 60 * 24) {
-            redisClient.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH.toString(), String.valueOf(position.getPosition_id()), String.valueOf(position.getAccount_id()), "1", 60 * 60 * 24 - second);
+            try {
+                amqpTemplate.send(BindThirdPart.BIND_EXCHANGE_NAME, BindThirdPart.SYNC_POSITION_SEND_ROUTING_KEY, MessageBuilder.withBody(p.getBytes()).build());
+            } catch (Exception e) {
+                logger.error("send position to chaos rabbitMQ failed {}", positions);
+                throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, "send position to chaos rabbitMQ failed");
+            }
         }
     }
 }

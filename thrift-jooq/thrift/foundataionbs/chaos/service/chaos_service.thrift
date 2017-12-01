@@ -17,8 +17,6 @@ service ChaosServices {
     string bindConfirm(1:hr_third_party_account_struct.HrThirdPartyAccountDO thirdPartyAccount,2:map<string,string> extras,3:bool confirm) throws (1: common_struct.BIZException e);
     string bindMessage(1:hr_third_party_account_struct.HrThirdPartyAccountDO thirdPartyAccount,2:map<string,string> extras,3:string code) throws (1: common_struct.BIZException e);
     //同步职位
-    void synchronizePosition(1:list<position_struct.ThirdPartyPositionForSynchronizationWithAccount> positions) throws (1: common_struct.BIZException e);
-    //刷新职位
-    void refreshPosition(1:position_struct.ThirdPartyPositionForSynchronizationWithAccount position) throws (1: common_struct.BIZException e);
+    void synchronizePosition(1:list<string> positions) throws (1: common_struct.BIZException e);
 }
 

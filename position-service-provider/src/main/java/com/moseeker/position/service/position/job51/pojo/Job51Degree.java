@@ -1,4 +1,4 @@
-package com.moseeker.position.service.position.job51;
+package com.moseeker.position.service.position.job51.pojo;
 
 /**
  * 51JOB学位
@@ -24,4 +24,6 @@ public enum Job51Degree {
 	public String getValue() {
 		return value;
 	}
+
+
 }

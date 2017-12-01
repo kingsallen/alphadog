@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 public abstract class AbstractOccupationResultHandler<T> extends AbstractJsonResultHandler {
     Logger logger= LoggerFactory.getLogger(AbstractOccupationResultHandler.class);
     //
-    protected abstract T buildOccupation(List<String> texts,List<String> codes,Map<Integer, Integer> newCode);
+    protected abstract T buildOccupation(List<String> texts,List<String> codes,Map<Integer, Integer> newCode,JSONObject msg);
     //持久化数据
     protected abstract void persistent(List<T> data);
     //职位在json中对应的key
@@ -45,7 +45,7 @@ public abstract class AbstractOccupationResultHandler<T> extends AbstractJsonRes
                 continue;
             }
 
-            T temp=buildOccupation(texts,codes,newCode);
+            T temp=buildOccupation(texts,codes,newCode,msg);
             if(temp!=null){
                 forInsert.add(temp);
             }

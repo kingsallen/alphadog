@@ -6,7 +6,7 @@ import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.util.StructSerializer;
-import com.moseeker.position.constants.VeryEastConstant;
+import com.moseeker.position.constants.RefreshConstant;
 import com.moseeker.position.service.third.ThirdPartyAccountCompanyService;
 import com.moseeker.position.service.third.base.AbstractThirdInfoProvider;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -36,10 +36,10 @@ public class VeryEastInfoProvider extends AbstractThirdInfoProvider {
         obj.put(COMPANY,companyService.getCompanyByAccountId(accountId));
 
         //获取redis中的字段(提供食宿、计算机能力、语言能力等等)
-        String str=redisClient.get(VeryEastConstant.APP_ID, VeryEastConstant.REDIS_PARAM_KEY,"");
+        String str=redisClient.get(RefreshConstant.APP_ID, RefreshConstant.VERY_EAST_REDIS_PARAM_KEY,"");
         logger.info("VeryEast redis param :"+str);
         if(str==null){
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,"最佳东方不存在提供食宿、计算机能力、语言能力等字段");
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,accountId+"在最佳东方不存在提供食宿、计算机能力、语言能力等字段");
         }
 
         //取出字段以后合并到obj中
