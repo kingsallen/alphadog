@@ -8,7 +8,6 @@ sourceCompatibility = 1.8
 dependencies {
     compile project(":rpc-center")
     compile project(":common")
-    compile project(":common-service")
     compile project(":baseorm-service-provider")
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }

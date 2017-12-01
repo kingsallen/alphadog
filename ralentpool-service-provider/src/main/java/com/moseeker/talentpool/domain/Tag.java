@@ -1,6 +1,7 @@
 package com.moseeker.talentpool.domain;
 
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.talentpool.domain.pojo.Pagination;
 
 /**
  * 标签
@@ -13,13 +14,13 @@ public interface Tag {
      * @param name 标签名称
      * @throws CommonException 业务异常
      */
-    void update(String name) throws CommonException;
+    void update(HR hr, String name) throws CommonException;
 
     /**
      * 删除标签
      * @throws CommonException 业务异常
      */
-    void destroy() throws CommonException;
+    void delete() throws CommonException;
 
     /**
      * 查找标签
@@ -27,7 +28,25 @@ public interface Tag {
      * @return 标签
      * @throws CommonException 业务异常
      */
-    Tag buildTag(int id) throws CommonException;
+    Tag getTag(int id) throws CommonException;
 
 
+    /**
+     * 创建标签(?)
+     * @param hr HR
+     * @param name 标签名称
+     * @return 标签
+     * @throws CommonException 业务异常
+     */
+    Tag createTag(HR hr, String name) throws CommonException;
+
+    /**
+     * 根据HR查找 HR创建的标签(?)
+     * @param hr HR
+     * @param pageNumber 页码
+     * @param pageSize 每页显示的数量
+     * @return 标签列表
+     * @throws CommonException
+     */
+    Pagination<Tag> getTagsByHR(HR hr, int pageNumber, int pageSize) throws CommonException;
 }
