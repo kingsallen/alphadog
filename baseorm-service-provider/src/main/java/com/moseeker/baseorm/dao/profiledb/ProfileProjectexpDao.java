@@ -9,7 +9,9 @@ import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author xxx
@@ -30,22 +32,27 @@ public class ProfileProjectexpDao extends JooqCrudImpl<ProfileProjectexpDO, Prof
     public int updateProfileUpdateTime(Set<Integer> projectExpIds) {
         int status = 0;
 
-        Timestamp updateTime = new Timestamp(System.currentTimeMillis());
-        status = create.update(ProfileProfile.PROFILE_PROFILE)
-                .set(ProfileProfile.PROFILE_PROFILE.UPDATE_TIME, updateTime)
-                .where(ProfileProfile.PROFILE_PROFILE.ID
-                        .in(create.select(ProfileProjectexp.PROFILE_PROJECTEXP.PROFILE_ID)
-                                .from(ProfileProjectexp.PROFILE_PROJECTEXP)
-                                .where(ProfileProjectexp.PROFILE_PROJECTEXP.ID.in(projectExpIds))))
-                .execute();
+        List<Integer> profileIdList = create.select(ProfileProjectexp.PROFILE_PROJECTEXP.PROFILE_ID)
+                .from(ProfileProjectexp.PROFILE_PROJECTEXP)
+                .where(ProfileProjectexp.PROFILE_PROJECTEXP.ID.in(projectExpIds))
+                .stream()
+                .map(integerRecord1 -> integerRecord1.value1())
+                .collect(Collectors.toList());
+        if (profileIdList != null && profileIdList.size() > 0) {
+            Timestamp updateTime = new Timestamp(System.currentTimeMillis());
+            status = create.update(ProfileProfile.PROFILE_PROFILE)
+                    .set(ProfileProfile.PROFILE_PROFILE.UPDATE_TIME, updateTime)
+                    .where(ProfileProfile.PROFILE_PROFILE.ID
+                            .in(profileIdList))
+                    .execute();
+        }
 
         return status;
     }
 
     public int delProjectExpByProfileId(int profileId) {
-        int count = 0;
-        count = create.delete(ProfileProjectexp.PROFILE_PROJECTEXP)
-                .where(ProfileProjectexp.PROFILE_PROJECTEXP.PROFILE_ID.equal((int) (profileId)))
+        int count = create.delete(ProfileProjectexp.PROFILE_PROJECTEXP)
+                .where(ProfileProjectexp.PROFILE_PROJECTEXP.PROFILE_ID.equal(profileId))
                 .execute();
 
         return count;
