@@ -692,7 +692,9 @@ public class SearchengineService {
 
     public Response queryAwardRanking(List<Integer> companyIds, String timespan, int pageSize, int pageNum, String keyword, int filter) {
         Map<String, Object> object = new HashMap<>();
-        try (TransportClient searchClient = searchUtil.getEsClient()) {
+        TransportClient searchClient=null
+        try{
+            searchClient = searchUtil.getEsClient()
             StringBuffer activation = new StringBuffer();
             if (filter == 0) {
                 activation.append("");
@@ -720,6 +722,11 @@ public class SearchengineService {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+        }finally{
+            if(searchClient!=null){
+                searchClient.close();
+                searchClient=null;
+            }
         }
         return ResponseUtils.success(object);
     }
@@ -727,7 +734,9 @@ public class SearchengineService {
     public Response queryAwardRankingInWx(List<Integer> companyIds, String timespan, Integer employeeId) {
         // 保证插入有序，使用linkedhashMap˚
         Map<Integer, JSONObject> data = new LinkedHashMap<>();
-        try (TransportClient searchClient = searchUtil.getEsClient()) {
+        TransportClient searchClient =null;
+        try{
+            searchClient = searchUtil.getEsClient();
             // 查找所有员工的积分排行
             SearchResponse response = getSearchRequestBuilder(searchClient, companyIds, null, "0", 20, 1, timespan).execute().actionGet();
             int index = 1;
@@ -782,6 +791,11 @@ public class SearchengineService {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+        }finally{
+            if(searchClient!=null){
+                searchClient.close();
+                searchClient=null;
+            }
         }
         return ResponseUtils.success(data);
     }
