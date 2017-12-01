@@ -16,7 +16,7 @@ import java.util.Map;
 public enum SpecialProvince {
 
     Hebeiheng("Hebeisheng", "Hebei", "河北省"),
-    ShanXiSheng("ShanXisheng", "Shanaxi", "山西省"),
+    ShanXiSheng("Shanxisheng", "Shanaxi", "山西省"),
     NeiMengGuZiZhiQu("Neimengguzizhiqu", "Neimenggu", "内蒙古自治区"),
     LiaoNingSheng("Liaoningsheng", "Liaoning", "辽宁省"),
     JiLinSheng("Jilinsheng", "Jilins", "吉林省"),
@@ -37,7 +37,7 @@ public enum SpecialProvince {
     GuiZhouSheng("Guizhousheng", "Guizhou", "贵州省"),
     YunNanSheng("Yunnansheng", "Yunnan", "云南省"),
     XiZangZiZhiQu("Xizangzizhiqu", "Xizang", "西藏自治区"),
-    ShanXisheng("Shanxisheng", "Shanxi", "陕西省"),
+    ShanXisheng("Shanxisheng", "Shaanxi", "陕西省"),
     GanSuSheng("Gansusheng", "Gansu", "甘肃省"),
     Qinghaisheng("Qinghaisheng", "Qinghai", "青海省"),
     NingXiaHuiZuZiZhiQu("Ningxiahuizuzizhiqu", "Ningxia", "宁夏回族自治区"),
@@ -50,7 +50,7 @@ public enum SpecialProvince {
 
     static {
         for (SpecialProvince specialCtiy : values()) {
-            specialProvinceMap.put(specialCtiy.mappingName, specialCtiy);
+            specialProvinceMap.put(specialCtiy.mappingName.toLowerCase(), specialCtiy);
         }
     }
 
