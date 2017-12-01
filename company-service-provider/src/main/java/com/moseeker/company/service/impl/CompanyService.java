@@ -30,12 +30,7 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.company.struct.CompanyCertConf;
-import com.moseeker.thrift.gen.company.struct.CompanyForVerifyEmployee;
-import com.moseeker.thrift.gen.company.struct.CompanyOptions;
-import com.moseeker.thrift.gen.company.struct.HrEmployeeCustomFieldsVO;
-import com.moseeker.thrift.gen.company.struct.HrImporterMonitorVO;
-import com.moseeker.thrift.gen.company.struct.Hrcompany;
+import com.moseeker.thrift.gen.company.struct.*;
 import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignPcBannerDO;
 import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
@@ -50,6 +45,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -737,6 +733,18 @@ public class CompanyService {
             return ResponseUtils.fail(1,"此公司无配置");
         }
         int result=hrTalentPoolApplicationDao.inserOrUpdateTalentPoolApplication(hrId,companyId);
+        if(result==0){
+            return ResponseUtils.fail(1,"操作失败");
+        }
+        return ResponseUtils.success("");
+    }
+    /*
+      修改hr_company_conf
+     */
+    @CounterIface
+    public Response updateHrCompanyConf(com.moseeker.thrift.gen.company.struct.HrCompanyConf hrCompanyConf){
+        HrCompanyConfRecord record=BeanUtils.structToDB(hrCompanyConf,HrCompanyConfRecord.class);
+        int result=hrCompanyConfDao.updateRecord(record);
         if(result==0){
             return ResponseUtils.fail(1,"操作失败");
         }

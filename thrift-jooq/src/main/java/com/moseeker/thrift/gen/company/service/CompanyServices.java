@@ -56,6 +56,8 @@ public class CompanyServices {
 
     public com.moseeker.thrift.gen.common.struct.Response upsertTalentPoolApp(int hrId, int companyId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
+    public com.moseeker.thrift.gen.common.struct.Response updateHrCompanyConf(com.moseeker.thrift.gen.company.struct.HrCompanyConf hrCompanyConf) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
+
   }
 
   public interface AsyncIface {
@@ -103,6 +105,8 @@ public class CompanyServices {
     public void getTalentPoolStatus(int hrId, int companyId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
     public void upsertTalentPoolApp(int hrId, int companyId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+
+    public void updateHrCompanyConf(com.moseeker.thrift.gen.company.struct.HrCompanyConf hrCompanyConf, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
   }
 
@@ -702,6 +706,32 @@ public class CompanyServices {
         throw result.e;
       }
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "upsertTalentPoolApp failed: unknown result");
+    }
+
+    public com.moseeker.thrift.gen.common.struct.Response updateHrCompanyConf(com.moseeker.thrift.gen.company.struct.HrCompanyConf hrCompanyConf) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    {
+      send_updateHrCompanyConf(hrCompanyConf);
+      return recv_updateHrCompanyConf();
+    }
+
+    public void send_updateHrCompanyConf(com.moseeker.thrift.gen.company.struct.HrCompanyConf hrCompanyConf) throws org.apache.thrift.TException
+    {
+      updateHrCompanyConf_args args = new updateHrCompanyConf_args();
+      args.setHrCompanyConf(hrCompanyConf);
+      sendBase("updateHrCompanyConf", args);
+    }
+
+    public com.moseeker.thrift.gen.common.struct.Response recv_updateHrCompanyConf() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    {
+      updateHrCompanyConf_result result = new updateHrCompanyConf_result();
+      receiveBase(result, "updateHrCompanyConf");
+      if (result.isSetSuccess()) {
+        return result.success;
+      }
+      if (result.e != null) {
+        throw result.e;
+      }
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "updateHrCompanyConf failed: unknown result");
     }
 
   }
@@ -1498,6 +1528,38 @@ public class CompanyServices {
       }
     }
 
+    public void updateHrCompanyConf(com.moseeker.thrift.gen.company.struct.HrCompanyConf hrCompanyConf, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+      checkReady();
+      updateHrCompanyConf_call method_call = new updateHrCompanyConf_call(hrCompanyConf, resultHandler, this, ___protocolFactory, ___transport);
+      this.___currentMethod = method_call;
+      ___manager.call(method_call);
+    }
+
+    public static class updateHrCompanyConf_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
+      private com.moseeker.thrift.gen.company.struct.HrCompanyConf hrCompanyConf;
+      public updateHrCompanyConf_call(com.moseeker.thrift.gen.company.struct.HrCompanyConf hrCompanyConf, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+        super(client, protocolFactory, transport, resultHandler, false);
+        this.hrCompanyConf = hrCompanyConf;
+      }
+
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("updateHrCompanyConf", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        updateHrCompanyConf_args args = new updateHrCompanyConf_args();
+        args.setHrCompanyConf(hrCompanyConf);
+        args.write(prot);
+        prot.writeMessageEnd();
+      }
+
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
+        }
+        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
+        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
+        return (new Client(prot)).recv_updateHrCompanyConf();
+      }
+    }
+
   }
 
   public static class Processor<I extends Iface> extends org.apache.thrift.TBaseProcessor<I> implements org.apache.thrift.TProcessor {
@@ -1533,6 +1595,7 @@ public class CompanyServices {
       processMap.put("companyPaidOrFortune", new companyPaidOrFortune());
       processMap.put("getTalentPoolStatus", new getTalentPoolStatus());
       processMap.put("upsertTalentPoolApp", new upsertTalentPoolApp());
+      processMap.put("updateHrCompanyConf", new updateHrCompanyConf());
       return processMap;
     }
 
@@ -2042,6 +2105,30 @@ public class CompanyServices {
       }
     }
 
+    public static class updateHrCompanyConf<I extends Iface> extends org.apache.thrift.ProcessFunction<I, updateHrCompanyConf_args> {
+      public updateHrCompanyConf() {
+        super("updateHrCompanyConf");
+      }
+
+      public updateHrCompanyConf_args getEmptyArgsInstance() {
+        return new updateHrCompanyConf_args();
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public updateHrCompanyConf_result getResult(I iface, updateHrCompanyConf_args args) throws org.apache.thrift.TException {
+        updateHrCompanyConf_result result = new updateHrCompanyConf_result();
+        try {
+          result.success = iface.updateHrCompanyConf(args.hrCompanyConf);
+        } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
+          result.e = e;
+        }
+        return result;
+      }
+    }
+
   }
 
   public static class AsyncProcessor<I extends AsyncIface> extends org.apache.thrift.TBaseAsyncProcessor<I> {
@@ -2077,6 +2164,7 @@ public class CompanyServices {
       processMap.put("companyPaidOrFortune", new companyPaidOrFortune());
       processMap.put("getTalentPoolStatus", new getTalentPoolStatus());
       processMap.put("upsertTalentPoolApp", new upsertTalentPoolApp());
+      processMap.put("updateHrCompanyConf", new updateHrCompanyConf());
       return processMap;
     }
 
@@ -3485,6 +3573,71 @@ public class CompanyServices {
 
       public void start(I iface, upsertTalentPoolApp_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
         iface.upsertTalentPoolApp(args.hrId, args.companyId,resultHandler);
+      }
+    }
+
+    public static class updateHrCompanyConf<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, updateHrCompanyConf_args, com.moseeker.thrift.gen.common.struct.Response> {
+      public updateHrCompanyConf() {
+        super("updateHrCompanyConf");
+      }
+
+      public updateHrCompanyConf_args getEmptyArgsInstance() {
+        return new updateHrCompanyConf_args();
+      }
+
+      public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
+        final org.apache.thrift.AsyncProcessFunction fcall = this;
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
+          public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
+            updateHrCompanyConf_result result = new updateHrCompanyConf_result();
+            result.success = o;
+            try {
+              fcall.sendResponse(fb, result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
+            } catch (org.apache.thrift.transport.TTransportException e) {
+              _LOGGER.error("TTransportException writing to internal frame buffer", e);
+              fb.close();
+            } catch (java.lang.Exception e) {
+              _LOGGER.error("Exception writing to internal frame buffer", e);
+              onError(e);
+            }
+          }
+          public void onError(java.lang.Exception e) {
+            byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
+            org.apache.thrift.TSerializable msg;
+            updateHrCompanyConf_result result = new updateHrCompanyConf_result();
+            if (e instanceof com.moseeker.thrift.gen.common.struct.BIZException) {
+              result.e = (com.moseeker.thrift.gen.common.struct.BIZException) e;
+              result.setEIsSet(true);
+              msg = result;
+            } else if (e instanceof org.apache.thrift.transport.TTransportException) {
+              _LOGGER.error("TTransportException inside handler", e);
+              fb.close();
+              return;
+            } else if (e instanceof org.apache.thrift.TApplicationException) {
+              _LOGGER.error("TApplicationException inside handler", e);
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = (org.apache.thrift.TApplicationException)e;
+            } else {
+              _LOGGER.error("Exception inside handler", e);
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
+            }
+            try {
+              fcall.sendResponse(fb,msg,msgType,seqid);
+            } catch (java.lang.Exception ex) {
+              _LOGGER.error("Exception writing to internal frame buffer", ex);
+              fb.close();
+            }
+          }
+        };
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public void start(I iface, updateHrCompanyConf_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+        iface.updateHrCompanyConf(args.hrCompanyConf,resultHandler);
       }
     }
 
@@ -23711,6 +23864,846 @@ public class CompanyServices {
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, upsertTalentPoolApp_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(2);
+        if (incoming.get(0)) {
+          struct.success = new com.moseeker.thrift.gen.common.struct.Response();
+          struct.success.read(iprot);
+          struct.setSuccessIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+          struct.e.read(iprot);
+          struct.setEIsSet(true);
+        }
+      }
+    }
+
+    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+    }
+  }
+
+  public static class updateHrCompanyConf_args implements org.apache.thrift.TBase<updateHrCompanyConf_args, updateHrCompanyConf_args._Fields>, java.io.Serializable, Cloneable, Comparable<updateHrCompanyConf_args>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("updateHrCompanyConf_args");
+
+    private static final org.apache.thrift.protocol.TField HR_COMPANY_CONF_FIELD_DESC = new org.apache.thrift.protocol.TField("hrCompanyConf", org.apache.thrift.protocol.TType.STRUCT, (short)1);
+
+    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new updateHrCompanyConf_argsStandardSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new updateHrCompanyConf_argsTupleSchemeFactory();
+
+    public com.moseeker.thrift.gen.company.struct.HrCompanyConf hrCompanyConf; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      HR_COMPANY_CONF((short)1, "hrCompanyConf");
+
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+      static {
+        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 1: // HR_COMPANY_CONF
+            return HR_COMPANY_CONF;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(java.lang.String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final java.lang.String _fieldName;
+
+      _Fields(short thriftId, java.lang.String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public java.lang.String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.HR_COMPANY_CONF, new org.apache.thrift.meta_data.FieldMetaData("hrCompanyConf", org.apache.thrift.TFieldRequirementType.DEFAULT,
+              new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.company.struct.HrCompanyConf.class)));
+      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(updateHrCompanyConf_args.class, metaDataMap);
+    }
+
+    public updateHrCompanyConf_args() {
+    }
+
+    public updateHrCompanyConf_args(
+            com.moseeker.thrift.gen.company.struct.HrCompanyConf hrCompanyConf)
+    {
+      this();
+      this.hrCompanyConf = hrCompanyConf;
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public updateHrCompanyConf_args(updateHrCompanyConf_args other) {
+      if (other.isSetHrCompanyConf()) {
+        this.hrCompanyConf = new com.moseeker.thrift.gen.company.struct.HrCompanyConf(other.hrCompanyConf);
+      }
+    }
+
+    public updateHrCompanyConf_args deepCopy() {
+      return new updateHrCompanyConf_args(this);
+    }
+
+    @Override
+    public void clear() {
+      this.hrCompanyConf = null;
+    }
+
+    public com.moseeker.thrift.gen.company.struct.HrCompanyConf getHrCompanyConf() {
+      return this.hrCompanyConf;
+    }
+
+    public updateHrCompanyConf_args setHrCompanyConf(com.moseeker.thrift.gen.company.struct.HrCompanyConf hrCompanyConf) {
+      this.hrCompanyConf = hrCompanyConf;
+      return this;
+    }
+
+    public void unsetHrCompanyConf() {
+      this.hrCompanyConf = null;
+    }
+
+    /** Returns true if field hrCompanyConf is set (has been assigned a value) and false otherwise */
+    public boolean isSetHrCompanyConf() {
+      return this.hrCompanyConf != null;
+    }
+
+    public void setHrCompanyConfIsSet(boolean value) {
+      if (!value) {
+        this.hrCompanyConf = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
+      switch (field) {
+        case HR_COMPANY_CONF:
+          if (value == null) {
+            unsetHrCompanyConf();
+          } else {
+            setHrCompanyConf((com.moseeker.thrift.gen.company.struct.HrCompanyConf)value);
+          }
+          break;
+
+      }
+    }
+
+    public java.lang.Object getFieldValue(_Fields field) {
+      switch (field) {
+        case HR_COMPANY_CONF:
+          return getHrCompanyConf();
+
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new java.lang.IllegalArgumentException();
+      }
+
+      switch (field) {
+        case HR_COMPANY_CONF:
+          return isSetHrCompanyConf();
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(java.lang.Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof updateHrCompanyConf_args)
+        return this.equals((updateHrCompanyConf_args)that);
+      return false;
+    }
+
+    public boolean equals(updateHrCompanyConf_args that) {
+      if (that == null)
+        return false;
+      if (this == that)
+        return true;
+
+      boolean this_present_hrCompanyConf = true && this.isSetHrCompanyConf();
+      boolean that_present_hrCompanyConf = true && that.isSetHrCompanyConf();
+      if (this_present_hrCompanyConf || that_present_hrCompanyConf) {
+        if (!(this_present_hrCompanyConf && that_present_hrCompanyConf))
+          return false;
+        if (!this.hrCompanyConf.equals(that.hrCompanyConf))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hashCode = 1;
+
+      hashCode = hashCode * 8191 + ((isSetHrCompanyConf()) ? 131071 : 524287);
+      if (isSetHrCompanyConf())
+        hashCode = hashCode * 8191 + hrCompanyConf.hashCode();
+
+      return hashCode;
+    }
+
+    @Override
+    public int compareTo(updateHrCompanyConf_args other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = java.lang.Boolean.valueOf(isSetHrCompanyConf()).compareTo(other.isSetHrCompanyConf());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetHrCompanyConf()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.hrCompanyConf, other.hrCompanyConf);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      scheme(iprot).read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      scheme(oprot).write(oprot, this);
+    }
+
+    @Override
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("updateHrCompanyConf_args(");
+      boolean first = true;
+
+      sb.append("hrCompanyConf:");
+      if (this.hrCompanyConf == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.hrCompanyConf);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+      if (hrCompanyConf != null) {
+        hrCompanyConf.validate();
+      }
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class updateHrCompanyConf_argsStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public updateHrCompanyConf_argsStandardScheme getScheme() {
+        return new updateHrCompanyConf_argsStandardScheme();
+      }
+    }
+
+    private static class updateHrCompanyConf_argsStandardScheme extends org.apache.thrift.scheme.StandardScheme<updateHrCompanyConf_args> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, updateHrCompanyConf_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
+            break;
+          }
+          switch (schemeField.id) {
+            case 1: // HR_COMPANY_CONF
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.hrCompanyConf = new com.moseeker.thrift.gen.company.struct.HrCompanyConf();
+                struct.hrCompanyConf.read(iprot);
+                struct.setHrCompanyConfIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, updateHrCompanyConf_args struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.hrCompanyConf != null) {
+          oprot.writeFieldBegin(HR_COMPANY_CONF_FIELD_DESC);
+          struct.hrCompanyConf.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class updateHrCompanyConf_argsTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public updateHrCompanyConf_argsTupleScheme getScheme() {
+        return new updateHrCompanyConf_argsTupleScheme();
+      }
+    }
+
+    private static class updateHrCompanyConf_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<updateHrCompanyConf_args> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, updateHrCompanyConf_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetHrCompanyConf()) {
+          optionals.set(0);
+        }
+        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetHrCompanyConf()) {
+          struct.hrCompanyConf.write(oprot);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, updateHrCompanyConf_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(1);
+        if (incoming.get(0)) {
+          struct.hrCompanyConf = new com.moseeker.thrift.gen.company.struct.HrCompanyConf();
+          struct.hrCompanyConf.read(iprot);
+          struct.setHrCompanyConfIsSet(true);
+        }
+      }
+    }
+
+    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+    }
+  }
+
+  public static class updateHrCompanyConf_result implements org.apache.thrift.TBase<updateHrCompanyConf_result, updateHrCompanyConf_result._Fields>, java.io.Serializable, Cloneable, Comparable<updateHrCompanyConf_result>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("updateHrCompanyConf_result");
+
+    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
+    private static final org.apache.thrift.protocol.TField E_FIELD_DESC = new org.apache.thrift.protocol.TField("e", org.apache.thrift.protocol.TType.STRUCT, (short)1);
+
+    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new updateHrCompanyConf_resultStandardSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new updateHrCompanyConf_resultTupleSchemeFactory();
+
+    public com.moseeker.thrift.gen.common.struct.Response success; // required
+    public com.moseeker.thrift.gen.common.struct.BIZException e; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      SUCCESS((short)0, "success"),
+      E((short)1, "e");
+
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+      static {
+        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 0: // SUCCESS
+            return SUCCESS;
+          case 1: // E
+            return E;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(java.lang.String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final java.lang.String _fieldName;
+
+      _Fields(short thriftId, java.lang.String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public java.lang.String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
+              new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
+              new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
+      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(updateHrCompanyConf_result.class, metaDataMap);
+    }
+
+    public updateHrCompanyConf_result() {
+    }
+
+    public updateHrCompanyConf_result(
+            com.moseeker.thrift.gen.common.struct.Response success,
+            com.moseeker.thrift.gen.common.struct.BIZException e)
+    {
+      this();
+      this.success = success;
+      this.e = e;
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public updateHrCompanyConf_result(updateHrCompanyConf_result other) {
+      if (other.isSetSuccess()) {
+        this.success = new com.moseeker.thrift.gen.common.struct.Response(other.success);
+      }
+      if (other.isSetE()) {
+        this.e = new com.moseeker.thrift.gen.common.struct.BIZException(other.e);
+      }
+    }
+
+    public updateHrCompanyConf_result deepCopy() {
+      return new updateHrCompanyConf_result(this);
+    }
+
+    @Override
+    public void clear() {
+      this.success = null;
+      this.e = null;
+    }
+
+    public com.moseeker.thrift.gen.common.struct.Response getSuccess() {
+      return this.success;
+    }
+
+    public updateHrCompanyConf_result setSuccess(com.moseeker.thrift.gen.common.struct.Response success) {
+      this.success = success;
+      return this;
+    }
+
+    public void unsetSuccess() {
+      this.success = null;
+    }
+
+    /** Returns true if field success is set (has been assigned a value) and false otherwise */
+    public boolean isSetSuccess() {
+      return this.success != null;
+    }
+
+    public void setSuccessIsSet(boolean value) {
+      if (!value) {
+        this.success = null;
+      }
+    }
+
+    public com.moseeker.thrift.gen.common.struct.BIZException getE() {
+      return this.e;
+    }
+
+    public updateHrCompanyConf_result setE(com.moseeker.thrift.gen.common.struct.BIZException e) {
+      this.e = e;
+      return this;
+    }
+
+    public void unsetE() {
+      this.e = null;
+    }
+
+    /** Returns true if field e is set (has been assigned a value) and false otherwise */
+    public boolean isSetE() {
+      return this.e != null;
+    }
+
+    public void setEIsSet(boolean value) {
+      if (!value) {
+        this.e = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
+      switch (field) {
+        case SUCCESS:
+          if (value == null) {
+            unsetSuccess();
+          } else {
+            setSuccess((com.moseeker.thrift.gen.common.struct.Response)value);
+          }
+          break;
+
+        case E:
+          if (value == null) {
+            unsetE();
+          } else {
+            setE((com.moseeker.thrift.gen.common.struct.BIZException)value);
+          }
+          break;
+
+      }
+    }
+
+    public java.lang.Object getFieldValue(_Fields field) {
+      switch (field) {
+        case SUCCESS:
+          return getSuccess();
+
+        case E:
+          return getE();
+
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new java.lang.IllegalArgumentException();
+      }
+
+      switch (field) {
+        case SUCCESS:
+          return isSetSuccess();
+        case E:
+          return isSetE();
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(java.lang.Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof updateHrCompanyConf_result)
+        return this.equals((updateHrCompanyConf_result)that);
+      return false;
+    }
+
+    public boolean equals(updateHrCompanyConf_result that) {
+      if (that == null)
+        return false;
+      if (this == that)
+        return true;
+
+      boolean this_present_success = true && this.isSetSuccess();
+      boolean that_present_success = true && that.isSetSuccess();
+      if (this_present_success || that_present_success) {
+        if (!(this_present_success && that_present_success))
+          return false;
+        if (!this.success.equals(that.success))
+          return false;
+      }
+
+      boolean this_present_e = true && this.isSetE();
+      boolean that_present_e = true && that.isSetE();
+      if (this_present_e || that_present_e) {
+        if (!(this_present_e && that_present_e))
+          return false;
+        if (!this.e.equals(that.e))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hashCode = 1;
+
+      hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
+      if (isSetSuccess())
+        hashCode = hashCode * 8191 + success.hashCode();
+
+      hashCode = hashCode * 8191 + ((isSetE()) ? 131071 : 524287);
+      if (isSetE())
+        hashCode = hashCode * 8191 + e.hashCode();
+
+      return hashCode;
+    }
+
+    @Override
+    public int compareTo(updateHrCompanyConf_result other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSuccess()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetE()).compareTo(other.isSetE());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetE()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.e, other.e);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      scheme(iprot).read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      scheme(oprot).write(oprot, this);
+    }
+
+    @Override
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("updateHrCompanyConf_result(");
+      boolean first = true;
+
+      sb.append("success:");
+      if (this.success == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.success);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("e:");
+      if (this.e == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.e);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+      if (success != null) {
+        success.validate();
+      }
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class updateHrCompanyConf_resultStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public updateHrCompanyConf_resultStandardScheme getScheme() {
+        return new updateHrCompanyConf_resultStandardScheme();
+      }
+    }
+
+    private static class updateHrCompanyConf_resultStandardScheme extends org.apache.thrift.scheme.StandardScheme<updateHrCompanyConf_result> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, updateHrCompanyConf_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
+            break;
+          }
+          switch (schemeField.id) {
+            case 0: // SUCCESS
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.success = new com.moseeker.thrift.gen.common.struct.Response();
+                struct.success.read(iprot);
+                struct.setSuccessIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 1: // E
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+                struct.e.read(iprot);
+                struct.setEIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, updateHrCompanyConf_result struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.success != null) {
+          oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
+          struct.success.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        if (struct.e != null) {
+          oprot.writeFieldBegin(E_FIELD_DESC);
+          struct.e.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class updateHrCompanyConf_resultTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public updateHrCompanyConf_resultTupleScheme getScheme() {
+        return new updateHrCompanyConf_resultTupleScheme();
+      }
+    }
+
+    private static class updateHrCompanyConf_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<updateHrCompanyConf_result> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, updateHrCompanyConf_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetSuccess()) {
+          optionals.set(0);
+        }
+        if (struct.isSetE()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
+        if (struct.isSetSuccess()) {
+          struct.success.write(oprot);
+        }
+        if (struct.isSetE()) {
+          struct.e.write(oprot);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, updateHrCompanyConf_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {

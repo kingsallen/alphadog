@@ -15,11 +15,7 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices;
-import com.moseeker.thrift.gen.company.struct.CompanyCertConf;
-import com.moseeker.thrift.gen.company.struct.CompanyForVerifyEmployee;
-import com.moseeker.thrift.gen.company.struct.CompanyOptions;
-import com.moseeker.thrift.gen.company.struct.HrEmployeeCustomFieldsVO;
-import com.moseeker.thrift.gen.company.struct.Hrcompany;
+import com.moseeker.thrift.gen.company.struct.*;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrImporterMonitorDO;
 import com.moseeker.thrift.gen.employee.struct.RewardConfig;
 import com.moseeker.thrift.gen.position.service.PositionServices;
@@ -580,6 +576,23 @@ public class CompanyController {
                 ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
             }
             Response result = companyServices.upsertTalentPoolApp(Integer.parseInt(hrId),Integer.parseInt(companyId));
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /*
+       修改hr_company_conf
+   */
+    @RequestMapping(value = "/api/hrcompany/conf", method = RequestMethod.PATCH)
+    @ResponseBody
+    public String updateCompanyConf(HttpServletRequest request) throws Exception {
+        try {
+            Map<String, Object> data = ParamUtils.parseRequestParam(request);
+            HrCompanyConf companyConf = ParamUtils.initModelForm(data, HrCompanyConf.class);
+            Response result = companyServices.updateHrCompanyConf(companyConf);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
             logger.info(e.getMessage(),e);

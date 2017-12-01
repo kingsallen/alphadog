@@ -11,9 +11,7 @@ import com.moseeker.company.service.impl.CompanyPcService;
 import com.moseeker.entity.CompanyConfigEntity;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.SysBIZException;
-import com.moseeker.thrift.gen.company.struct.CompanyCertConf;
-import com.moseeker.thrift.gen.company.struct.CompanyForVerifyEmployee;
-import com.moseeker.thrift.gen.company.struct.HrEmployeeCustomFieldsVO;
+import com.moseeker.thrift.gen.company.struct.*;
 import com.moseeker.thrift.gen.employee.struct.RewardConfig;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -24,8 +22,6 @@ import com.moseeker.company.service.impl.CompanyService;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices.Iface;
-import com.moseeker.thrift.gen.company.struct.CompanyOptions;
-import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrImporterMonitorDO;
 import java.util.ArrayList;
@@ -353,6 +349,17 @@ public class CompanyServicesImpl implements Iface {
         try{
             Response result=service.upsertTalentPoolApplication(hrId,companyId);
             return result;
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
+    @Override
+    public Response updateHrCompanyConf(HrCompanyConf hrCompanyConf) throws BIZException, TException {
+        try{
+            return service.updateHrCompanyConf(hrCompanyConf);
+
         }catch(Exception e){
             logger.info(e.getMessage(),e);
             throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
