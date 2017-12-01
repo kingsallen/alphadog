@@ -14,11 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * Created by lucky8987 on 17/5/10.
  */
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(classes = AppConfig.class)
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = AppConfig.class)
 public class CompanyServiceTest {
 
-//    @Autowired
+    @Autowired
     private CompanyService service;
 
     //@Test
@@ -56,32 +56,28 @@ public class CompanyServiceTest {
         System.out.println(response);
     }
 
-//
-//    @Test
-//    public void getGroupCompanies() {
-//        try {
-//            List<CompanyForVerifyEmployee> employeeList = service.getGroupCompanies(3);
-//            System.out.println(employeeList);
-//        } catch (Exception e) {
-//            logger.error(e.getMessage(), e);
-//        }
-//    }
-//
-//    @Test
-//    public void bindingSwitch() {
-//        try {
-//            Response response = service.bindingSwitch(3, 1);
-//            System.out.println(response);
-//        } catch (Exception e) {
-//            logger.error(e.getMessage(), e);
-//        }
-//    }
     @Test
     public void getBannerTest() throws Exception{
     	int page=1;
     	int pagesize=10;
     	Response res=service.getPcBannerByPage(page, pagesize);
     	System.out.println(res);
+    }
+
+    @Test
+    public void testGetTalentPooleStatus(){
+        int hrId=82752;
+        int companyId=39978;
+        int result=service.getTalentPoolSwitch(hrId,companyId);
+        System.out.println(result);
+    }
+
+    @Test
+    public  void testUpsertApplication(){
+        int hrId=82752;
+        int companyId=39978;
+        int result=service.upsertTalentPoolApplication(hrId,companyId);
+        System.out.println(result);
     }
 
 }

@@ -29,6 +29,7 @@ import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrImporterMonitorDO;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -317,6 +318,51 @@ public class CompanyServicesImpl implements Iface {
                 return ResponseUtils.success("");
             }
             return ResponseUtils.success(list);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
+    @Override
+    public Response getTalentPoolStatus(int hrId, int companyId) throws BIZException, TException {
+        try{
+            int result=service.getTalentPoolSwitch(hrId,companyId);
+            Map<String,Object> map=new HashMap<>();
+            if(result==0){
+                map.put("open",false);
+                return ResponseUtils.success(map);
+            }
+            if(result==2){
+                return ResponseUtils.fail(1,"此账号不是此公司的主账号");
+            }
+            if(result==3){
+                return ResponseUtils.fail(1,"此公司无配置");
+            }
+            map.put("open",true);
+            return ResponseUtils.success(map);
+
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
+    @Override
+    public Response upsertTalentPoolApp(int hrId, int companyId) throws BIZException, TException {
+        try{
+            int result=service.upsertTalentPoolApplication(hrId,companyId);
+            Map<String,Object> map=new HashMap<>();
+            if(result==0){
+                return ResponseUtils.fail(1,"操作失败");
+            }
+            if(result==2){
+                return ResponseUtils.fail(1,"此账号不是此公司的主账号");
+            }
+            if(result==3){
+                return ResponseUtils.fail(1,"此公司无配置");
+            }
+            return ResponseUtils.success("");
         }catch(Exception e){
             logger.info(e.getMessage(),e);
             throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
