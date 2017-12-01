@@ -727,17 +727,19 @@ public class CompanyService {
       修改开启人才库的申请记录
      */
     @CounterIface
-    public int upsertTalentPoolApplication(int hrId,int companyId){
+    public Response upsertTalentPoolApplication(int hrId,int companyId){
         int count=this.validateHrAndCompany(hrId,companyId);
         if(count==0){
-            return 2;
+            return ResponseUtils.fail(1,"此账号不是主账号");
         }
         HrCompanyConfRecord record=this.getHrCompanyConfRecordByCompanyId(companyId);
         if(record==null){
-            return 3;
+            return ResponseUtils.fail(1,"此公司无配置");
         }
         int result=hrTalentPoolApplicationDao.inserOrUpdateTalentPoolApplication(hrId,companyId);
-
-        return result;
+        if(result>0){
+            return ResponseUtils.fail(1,"操作");
+        }
+        return ResponseUtils.success("");
     }
 }

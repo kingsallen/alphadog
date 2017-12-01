@@ -351,18 +351,8 @@ public class CompanyServicesImpl implements Iface {
     @Override
     public Response upsertTalentPoolApp(int hrId, int companyId) throws BIZException, TException {
         try{
-            int result=service.upsertTalentPoolApplication(hrId,companyId);
-            Map<String,Object> map=new HashMap<>();
-            if(result==0){
-                return ResponseUtils.fail(1,"操作失败");
-            }
-            if(result==2){
-                return ResponseUtils.fail(1,"此账号不是此公司的主账号");
-            }
-            if(result==3){
-                return ResponseUtils.fail(1,"此公司无配置");
-            }
-            return ResponseUtils.success("");
+            Response result=service.upsertTalentPoolApplication(hrId,companyId);
+            return result;
         }catch(Exception e){
             logger.info(e.getMessage(),e);
             throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
