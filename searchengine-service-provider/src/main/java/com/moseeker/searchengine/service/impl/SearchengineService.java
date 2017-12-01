@@ -692,9 +692,9 @@ public class SearchengineService {
 
     public Response queryAwardRanking(List<Integer> companyIds, String timespan, int pageSize, int pageNum, String keyword, int filter) {
         Map<String, Object> object = new HashMap<>();
-        TransportClient searchClient=null
+        TransportClient searchClient=null;
         try{
-            searchClient = searchUtil.getEsClient()
+            searchClient = searchUtil.getEsClient();
             StringBuffer activation = new StringBuffer();
             if (filter == 0) {
                 activation.append("");
