@@ -74,11 +74,11 @@ public class ChaosServiceImpl {
     }
 
 
-    private String postBind(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras, String routingKey) throws Exception {
+    private String postBind(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, Object> extras, String routingKey) throws Exception {
         //推送需要绑定第三方账号的信息到rabbitMQ中
         String param=ChaosTool.getParams(hrThirdPartyAccount, extras);
         String account_Id=hrThirdPartyAccount.getId()+"";
-        logger.info("准备推送"+account_Id+"数据到RabbitMQ的RoutingKey："+routingKey);
+        logger.info("准备推送"+account_Id+"数据到RabbitMQ的RoutingKey："+routingKey+" {"+param+"}");
         amqpTemplate.send(BindThirdPart.BIND_EXCHANGE_NAME, routingKey, MessageBuilder.withBody(param.getBytes()).build());
         logger.info("推送RabbitMQ成功");
 
@@ -105,7 +105,7 @@ public class ChaosServiceImpl {
         logger.info("ChaosServiceImpl bind");
         try {
 //            String data = "{\"status\":100,\"message\":\"182****3365\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
-            String data=postBind(hrThirdPartyAccount,extras, BindThirdPart.BIND_SEND_ROUTING_KEY);
+            String data=postBind(hrThirdPartyAccount,new HashMap<>(extras), BindThirdPart.BIND_SEND_ROUTING_KEY);
 
             JSONObject jsonObject = JSONObject.parseObject(data);
             int status = jsonObject.getIntValue("status");
@@ -162,7 +162,7 @@ public class ChaosServiceImpl {
         paramsMap.putAll(extras);
         paramsMap.put("confirm", confirm);
 
-        String data=postBind(hrThirdPartyAccount,extras, BindThirdPart.BIND_CONFIRM_SEND_ROUTING_KEY);
+        String data=postBind(hrThirdPartyAccount,paramsMap, BindThirdPart.BIND_CONFIRM_SEND_ROUTING_KEY);
 
         JSONObject jsonObject = JSONObject.parseObject(data);
 
@@ -189,7 +189,7 @@ public class ChaosServiceImpl {
         paramsMap.putAll(extras);
         paramsMap.put("code", code);
 
-        String data=postBind(hrThirdPartyAccount,extras, BindThirdPart.BIND_CODE_SEND_ROUTING_KEY);
+        String data=postBind(hrThirdPartyAccount,paramsMap, BindThirdPart.BIND_CODE_SEND_ROUTING_KEY);
 
         JSONObject jsonObject = JSONObject.parseObject(data);
         int status = jsonObject.getIntValue("status");
