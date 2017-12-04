@@ -95,14 +95,14 @@ public class SearchengineEntity {
         logger.info(cluster_name);
         String es_connection = propertiesReader.get("es.connection", String.class);
         Integer es_port = propertiesReader.get("es.port", Integer.class);
-        Settings settings = Settings.settingsBuilder()
-                .put("cluster.name", cluster_name)
-                .put("client.transport.sniff", true)
+        Settings settings = Settings.settingsBuilder().put("cluster.name", cluster_name)
                 .build();
         TransportClient client = null;
         try {
             client = TransportClient.builder().settings(settings).build()
-                    .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port));
+                    .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port))
+                    .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("es2-t.dqprism.com"), es_port))
+            ;
         } catch (Exception e) {
             logger.error(e.getMessage());
             try {
@@ -137,9 +137,7 @@ public class SearchengineEntity {
         logger.info(cluster_name);
         String es_connection = propertiesReader.get("es.connection", String.class);
         Integer es_port = propertiesReader.get("es.port", Integer.class);
-        Settings settings = Settings.settingsBuilder()
-                .put("cluster.name", cluster_name)
-                .put("client.transport.sniff", true)
+        Settings settings = Settings.settingsBuilder().put("cluster.name", cluster_name)
                 .build();
         TransportClient client = null;
         BulkRequestBuilder bulkRequest = null;
