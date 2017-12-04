@@ -45,7 +45,9 @@ public class SearchUtil {
         Integer es_port = propertiesReader.get("es.port", Integer.class);
         TransportClient client = null;
         try{
-       	 Settings settings = Settings.settingsBuilder().put("cluster.name", cluster_name)
+       	 Settings settings = Settings.settingsBuilder()
+                 .put("cluster.name", cluster_name)
+                 .put("client.transport.sniff", true)
                     .build();
             client = TransportClient.builder().settings(settings).build()
                     .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port));

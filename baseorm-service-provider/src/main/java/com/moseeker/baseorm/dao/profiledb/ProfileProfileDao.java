@@ -1,7 +1,6 @@
 package com.moseeker.baseorm.dao.profiledb;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializeFilter;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.serializer.ValueFilter;
@@ -25,21 +24,23 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.*;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
 import org.jooq.*;
+import org.jooq.Condition;
 import org.jooq.impl.TableImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
-
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
-
 import static com.moseeker.baseorm.util.BeanUtils.jooqMapfilter;
 import static com.moseeker.baseorm.util.BeanUtils.profilter;
 
@@ -1015,7 +1016,9 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
         return pageSize;
     }
 
-    public Response getResourceByApplication(String downloadApi, String password, ProfileApplicationForm profileApplicationForm) {
+
+
+    public List<AbstractMap.SimpleEntry<Map<String, Object>, Map<String, Object>>>  getResourceByApplication(String downloadApi, String password, ProfileApplicationForm profileApplicationForm) {
         logger.info("getResourceByApplication:=============={}:{}", "start", 0);
         long startTime = System.currentTimeMillis();
 
@@ -1037,22 +1040,11 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                 .stream()
                 .map(record -> new AbstractMap.SimpleEntry<>(record.into(jobposition).intoMap(), record.into(jobApplication).intoMap()))
                 .collect(Collectors.toList());
-        List<Integer> appIdList = positionApplications.stream().map(entry -> (Integer) entry.getValue().get("id")).collect(Collectors.toList());
-        List<JobApplicationAtsRecord> atsRecordList = create.select()
-                .from(JobApplicationAts.JOB_APPLICATION_ATS)
-                .where(JobApplicationAts.JOB_APPLICATION_ATS.APP_ID.in(appIdList))
-                .fetchInto(JobApplicationAts.JOB_APPLICATION_ATS);
-        if (atsRecordList != null && atsRecordList.size() > 0) {
-            Map<Integer, String> map = atsRecordList.stream().collect(Collectors.toMap(JobApplicationAtsRecord::getAppId, JobApplicationAtsRecord::getAtsAppId));
-            positionApplications.stream().forEach(mapMapSimpleEntry -> {
-                if (map.get(mapMapSimpleEntry.getValue().get("id")) != null) {
-                    mapMapSimpleEntry.getValue().put("l_application_id", map.get(mapMapSimpleEntry.getValue().get("id")));
-                }
-            });
-        }
-
-        List<Map<String, Object>> datas = getRelatedDataByJobApplication(create, positionApplications, downloadApi, password, profileApplicationForm.isRecommender(), profileApplicationForm.isDl_url_required(), profileApplicationForm.getFilter());
         logger.info("getResourceByApplication:=============={}:{}", "end", System.currentTimeMillis() - startTime);
+        return positionApplications;
+    }
+
+    public Response handleResponse(List<Map<String, Object>> datas){
         return ResponseUtils.successWithoutStringify(JSON.toJSONString(datas, new SerializeFilter[]{
                         valueFilter,
                         profilter,
@@ -1062,8 +1054,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                 SerializerFeature.WriteNullListAsEmpty, SerializerFeature.DisableCircularReferenceDetect));
     }
 
-    public List<Map<String, Object>> getRelatedDataByJobApplication(DSLContext create,
-                                                                    List<AbstractMap.SimpleEntry<Map<String, Object>, Map<String, Object>>> positonApplicatons,
+    public List<Map<String, Object>> getRelatedDataByJobApplication(List<AbstractMap.SimpleEntry<Map<String, Object>, Map<String, Object>>> positonApplicatons,
                                                                     String downloadApi, String password,
                                                                     boolean recommender,
                                                                     boolean dl_url_required,
