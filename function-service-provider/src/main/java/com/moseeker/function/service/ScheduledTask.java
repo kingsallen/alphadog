@@ -3,7 +3,7 @@ package com.moseeker.function.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.redis.RedisClient;
-import com.moseeker.function.constants.BindThirdPart;
+import com.moseeker.common.constants.BindThirdPart;
 import com.moseeker.function.service.chaos.ChaosServiceImpl;
 import com.moseeker.function.service.chaos.PositionForSyncResultPojo;
 import com.moseeker.function.service.chaos.PositionSyncConsumer;
@@ -56,6 +56,12 @@ public class ScheduledTask {
         }
     }
 
+    /**
+     * 职位同步结果监听队列
+     * @param message   队列消息
+     * @param channel
+     * @throws UnsupportedEncodingException
+     */
     @RabbitListener(queues = {BindThirdPart.SYNC_POSITION_GET_QUEUE_NAME}, containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
     public void positionSyncListener(Message message, Channel channel) throws UnsupportedEncodingException {
@@ -63,6 +69,10 @@ public class ScheduledTask {
             String data=new String(message.getBody(), "UTF-8");
             logger.info("成功获取同步职位结果数据:"+data);
             PositionForSyncResultPojo pojo=JSON.parseObject(data, PositionForSyncResultPojo.class);
+            if(pojo==null || pojo.getData()==null){
+                logger.info("position sync result null data : {}",data);
+                return ;
+            }
             positionSyncConsumer.positionSyncComplete(pojo);
         }catch (Exception e){
             logger.info("获取职位同步结果队列报错");

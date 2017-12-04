@@ -315,9 +315,10 @@ public class UserHrAccountController {
                 return ResponseLogNotification.fail(request, "user_id不能为空");
             }
 
-            HrThirdPartyAccountDO hrThirdPartyAccountDO = userHrAccountService.syncThirdPartyAccount(userId, id, params.getBoolean("sync", false));
+            throw new UnsupportedOperationException("Abandoned function!!!");
+//            HrThirdPartyAccountDO hrThirdPartyAccountDO = userHrAccountService.syncThirdPartyAccount(userId, id, params.getBoolean("sync", false));
 
-            return ResponseLogNotification.success(request, ResponseUtils.success(thirdpartyAccountToMap(hrThirdPartyAccountDO)));
+//            return ResponseLogNotification.success(request, ResponseUtils.success(thirdpartyAccountToMap(hrThirdPartyAccountDO)));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseLogNotification.fail(request, e.getMessage());
@@ -359,12 +360,15 @@ public class UserHrAccountController {
             }
 
             List<Integer> hrIds = (List<Integer>) params.get("hr_ids");
+            logger.info("dispath account_id : {},hr_ids : {}",accountId,hrIds);
 
             if (hrIds == null) {
                 return ResponseLogNotification.fail(request, "hr_ids不能为空");
             }
 
             ThirdPartyAccountInfo accountInfo = userHrAccountService.dispatchThirdPartyAccount(accountId, hrIds);
+
+            logger.info("dispatch result : {}",accountInfo);
 
             return ResponseLogNotification.successJson(request, accountInfo);
         } catch (Exception e) {

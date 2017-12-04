@@ -446,7 +446,7 @@ public class MessageTemplateEntity {
      处理获取推送的数据
      */
     private String handleEmployeeRecomPosition(int userId,int companyId,int type){
-        List<CampaignPersonaRecomRecord> list=this.getCampaignPersonaRecomRecordList(userId,companyId,type,0,20);
+        List<CampaignPersonaRecomRecord> list=this.getCampaignPersonaRecomRecordList(userId,companyId,type,1,20);
         List<Integer> pids=this.getPidListByCampaignPersonaRecomRecord(list);
         int count=this.getPositionCount(pids);
         if(count>0){

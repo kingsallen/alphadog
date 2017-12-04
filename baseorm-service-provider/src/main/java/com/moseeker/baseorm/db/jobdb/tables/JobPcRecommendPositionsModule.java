@@ -141,6 +141,7 @@ public class JobPcRecommendPositionsModule extends TableImpl<JobPcRecommendPosit
     /**
      * Rename this table
      */
+
     public JobPcRecommendPositionsModule rename(String name) {
         return new JobPcRecommendPositionsModule(name, null);
     }

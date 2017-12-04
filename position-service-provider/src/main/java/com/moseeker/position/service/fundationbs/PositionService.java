@@ -1191,7 +1191,9 @@ public class PositionService {
     }
 
     public List<HrThirdPartyPositionDO> getThirdPartyPositions(Query query) {
-        return thirdpartyPositionDao.getDatas(query);
+        List<HrThirdPartyPositionDO> list=thirdpartyPositionDao.getDatas(query);
+
+        return list;
 
     }
 

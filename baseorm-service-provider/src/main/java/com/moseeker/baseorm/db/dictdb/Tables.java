@@ -17,6 +17,7 @@ import com.moseeker.baseorm.db.dictdb.tables.DictIndustryType;
 import com.moseeker.baseorm.db.dictdb.tables.DictLiepinOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictMajor;
 import com.moseeker.baseorm.db.dictdb.tables.DictPosition;
+import com.moseeker.baseorm.db.dictdb.tables.DictVeryeastOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictZhilianOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.Dict_51jobOccupation;
 
@@ -72,7 +73,7 @@ public class Tables {
     public static final DictCollege DICT_COLLEGE = com.moseeker.baseorm.db.dictdb.tables.DictCollege.DICT_COLLEGE;
 
     /**
-     * 常量字典表
+     * The table <code>dictdb.dict_constant</code>.
      */
     public static final DictConstant DICT_CONSTANT = com.moseeker.baseorm.db.dictdb.tables.DictConstant.DICT_CONSTANT;
 
@@ -82,7 +83,7 @@ public class Tables {
     public static final DictCountry DICT_COUNTRY = com.moseeker.baseorm.db.dictdb.tables.DictCountry.DICT_COUNTRY;
 
     /**
-     * 行业二级分类字典表
+     * The table <code>dictdb.dict_industry</code>.
      */
     public static final DictIndustry DICT_INDUSTRY = com.moseeker.baseorm.db.dictdb.tables.DictIndustry.DICT_INDUSTRY;
 
@@ -105,6 +106,11 @@ public class Tables {
      * 职能分类字典表
      */
     public static final DictPosition DICT_POSITION = com.moseeker.baseorm.db.dictdb.tables.DictPosition.DICT_POSITION;
+
+    /**
+     * 最佳东方的职位表
+     */
+    public static final DictVeryeastOccupation DICT_VERYEAST_OCCUPATION = com.moseeker.baseorm.db.dictdb.tables.DictVeryeastOccupation.DICT_VERYEAST_OCCUPATION;
 
     /**
      * 智联的职位表

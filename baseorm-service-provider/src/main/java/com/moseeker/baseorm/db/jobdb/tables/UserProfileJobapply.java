@@ -130,6 +130,7 @@ public class UserProfileJobapply extends TableImpl<UserProfileJobapplyRecord> {
     /**
      * Rename this table
      */
+
     public UserProfileJobapply rename(String name) {
         return new UserProfileJobapply(name, null);
     }

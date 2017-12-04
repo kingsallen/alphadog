@@ -11,10 +11,9 @@ import com.moseeker.baseorm.db.dictdb.tables.*;
 import com.moseeker.baseorm.db.dictdb.tables.records.*;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
-import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
-import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
-import com.moseeker.baseorm.db.jobdb.tables.JobPositionExt;
-import com.moseeker.baseorm.db.jobdb.tables.JobResumeOther;
+import com.moseeker.baseorm.db.jobdb.tables.*;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationAtsRecord;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.profiledb.tables.*;
 import com.moseeker.baseorm.db.profiledb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.*;
@@ -1041,7 +1040,6 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                 .stream()
                 .map(record -> new AbstractMap.SimpleEntry<>(record.into(jobposition).intoMap(), record.into(jobApplication).intoMap()))
                 .collect(Collectors.toList());
-
         logger.info("getResourceByApplication:=============={}:{}", "end", System.currentTimeMillis() - startTime);
         return positionApplications;
     }

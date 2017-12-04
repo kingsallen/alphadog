@@ -108,6 +108,7 @@ public class JobPositionCity extends TableImpl<JobPositionCityRecord> {
     /**
      * Rename this table
      */
+
     public JobPositionCity rename(String name) {
         return new JobPositionCity(name, null);
     }

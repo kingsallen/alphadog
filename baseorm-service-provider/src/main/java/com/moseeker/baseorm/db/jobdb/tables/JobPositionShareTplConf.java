@@ -155,6 +155,7 @@ public class JobPositionShareTplConf extends TableImpl<JobPositionShareTplConfRe
     /**
      * Rename this table
      */
+
     public JobPositionShareTplConf rename(String name) {
         return new JobPositionShareTplConf(name, null);
     }

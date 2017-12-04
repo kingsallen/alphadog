@@ -455,11 +455,7 @@ public class PositionServicesImpl implements Iface {
 
     }
     /*
-      @auth zzt
-      @param userId用户id
-      @param companyId 公司id
-      @param type职位的类型
-      功能：获取推送的职位，用于在微信端展示
+      获取只能回阿香推送的职位，用于在微信端展示
      */
 
     @Override

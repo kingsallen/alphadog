@@ -246,10 +246,7 @@ public class UserHrAccountService {
      */
     public boolean ifAddSubAccountAllowed(int hrId) throws CommonException {
 
-        UserHrAccountDO hrAccountDO = userHrAccountDao.getValidAccount(hrId);
-        if (hrAccountDO == null) {
-            throw HRException.USER_NOT_EXISTS;
-        }
+        UserHrAccountDO hrAccountDO = requiresNotNullAccount(hrId);
 
         return allowAddSubAccount(hrAccountDO.getCompanyId());
 
@@ -1064,11 +1061,13 @@ public class UserHrAccountService {
             }
 
         }
+
         // 查询总条数
         int counts = userEmployeeDao.getCount(queryBuilder.buildQuery());
         if (counts == 0) {
             throw UserAccountException.USEREMPLOYEES_EMPTY;
         }
+
         // 分页数据
         if (pageNumber > 0 && pageSize > 0) {
             // 取的数据超过了分页数，取最最后一页数据
@@ -1081,9 +1080,9 @@ public class UserHrAccountService {
                 }
                 queryBuilder.setPageNum(pageNumber);
             } else {
-                queryBuilder.setPageNum(pageNumber);
-                queryBuilder.setPageSize(pageSize);
-            }
+            queryBuilder.setPageNum(pageNumber);
+            queryBuilder.setPageSize(pageSize);
+        }
         }
 
         // 不管ES中有没有数据，员工的分页数据用于一样
@@ -1112,10 +1111,12 @@ public class UserHrAccountService {
         // ES取到数据
         if (response != null && response.getStatus() == 0) {
             logger.info("ES date:{}", response.getData());
-             EmployeeRankObj rankObj = JSONObject.parseObject(response.getData(), EmployeeRankObj.class);
+            EmployeeRankObj rankObj = JSONObject.parseObject(response.getData(), EmployeeRankObj.class);
             List<EmployeeRank> employeeRankList = rankObj.getData();
             if (employeeRankList != null && employeeRankList.size() > 0) {
                 logger.info("ES Data Size:{}", employeeRankList.size());
+                // 根据totalHits 条件命中条数重新设置分页信息
+                userEmployeeVOPageVO.setTotalRow(rankObj.getTotal());
                 // 封装查询条件
                 LinkedHashMap<Integer, Integer> employeeMap = new LinkedHashMap();
                 List<Integer> employeeIds = new ArrayList<>();
@@ -1603,5 +1604,13 @@ public class UserHrAccountService {
             }
         }
         return hrAppExportFieldsDOList.stream().filter(f -> f.showed == 1).collect(Collectors.toList());
+    }
+
+    public UserHrAccountDO requiresNotNullAccount(int hrId){
+        UserHrAccountDO hrAccountDO = userHrAccountDao.getValidAccount(hrId);
+        if (hrAccountDO == null) {
+            throw HRException.USER_NOT_EXISTS;
+        }
+        return hrAccountDO;
     }
 }

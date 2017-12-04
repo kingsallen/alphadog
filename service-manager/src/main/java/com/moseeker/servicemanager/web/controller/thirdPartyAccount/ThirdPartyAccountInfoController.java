@@ -1,6 +1,7 @@
 package com.moseeker.servicemanager.web.controller.thirdPartyAccount;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
@@ -36,7 +37,8 @@ public class ThirdPartyAccountInfoController {
         try{
             ThirdPartyAccountInfoParam param=ParamUtils.initModelForm(request, ThirdPartyAccountInfoParam.class);
             ThirdPartyAccountInfo info=thirdPartyAccountInfoServices.getAllInfo(param);
-            return ResponseLogNotification.successJson(request,info);
+            logger.info("getAllInfo data:{}",info);
+            return ResponseLogNotification.successJson(request, JSONObject.parseObject(info.getJson()));
         }catch (Exception e){
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.failJson(request, e);

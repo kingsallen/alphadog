@@ -1,29 +1,29 @@
 package com.moseeker.chat.service.entity;
 
-import com.moseeker.baseorm.dao.hrdb.HrChatUnreadCountDao;
-import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
-import com.moseeker.baseorm.dao.hrdb.HrWxHrChatDao;
-import com.moseeker.baseorm.dao.hrdb.HrWxHrChatListDao;
+import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.chat.constant.ChatSpeakerType;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Order;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrChatUnreadCountDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatListDO;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +60,9 @@ public class ChatDao {
 
     @Autowired
     JobPositionDao jobPositionDao;
+
+    @Autowired
+    HrCompanyAccountDao hrCompanyAccountDao;
 
     ThreadPool threadPool = ThreadPool.Instance;
 
@@ -174,26 +177,20 @@ public class ChatDao {
      * @param hrIdArray hr编号
      * @return 公司信息集合
      */
-    public List<HrCompanyDO> listCompany(int[] hrIdArray) {
-        List<HrCompanyDO> companyDOList = null;
-
-        String idStr = StringUtils.converFromArrayToStr(hrIdArray);
-        QueryUtil queryUtil = new QueryUtil();
-        queryUtil.addSelectAttribute("company_id");
-        queryUtil.addEqualFilter("id", idStr);
-        List<UserHrAccountDO> userHrAccountDOList = null;
-        userHrAccountDOList = userHrAccountDao.getDatas(queryUtil);
-        if(userHrAccountDOList != null && userHrAccountDOList.size() > 0) {
-            int[] companyIds = userHrAccountDOList.stream().filter(hr -> hr.getCompanyId() > 0).mapToInt(hr -> hr.getCompanyId()).toArray();
-
-            String hrId = StringUtils.converFromArrayToStr(companyIds);
-            QueryUtil findCompanyInfo = new QueryUtil();
-            findCompanyInfo.addSelectAttribute("id").addSelectAttribute("name").addSelectAttribute("abbreviation")
-                    .addSelectAttribute("logo");
-            findCompanyInfo.addEqualFilter("id", hrId);
-            companyDOList = hrCompanyDao.getDatas(findCompanyInfo);
+    public Map<Integer, HrCompanyDO> listCompany(int[] hrIdArray) {
+        Query.QueryBuilder query = new Query.QueryBuilder();
+        query.where(new Condition("account_id", Arrays.stream(hrIdArray).map(Integer::valueOf).collect(ArrayList::new, List::add, List::addAll), ValueOp.IN));
+        List<HrCompanyAccountDO> hrCompanyAccountDOList = hrCompanyAccountDao.getDatas(query.buildQuery());
+        if(hrCompanyAccountDOList != null && hrCompanyAccountDOList.size() > 0) {
+            Map<Integer, Object> hrCompanyMap = hrCompanyAccountDOList.stream().collect(Collectors.toMap(k -> k.getAccountId(), v -> v.getCompanyId(), (n, o) -> n));
+            query.clear();
+            query.select("id").select("name").select("abbreviation").select("logo");
+            query.where(new Condition("id", new ArrayList<>(hrCompanyMap.values()), ValueOp.IN));
+            List<HrCompanyDO> companyDOList = hrCompanyDao.getDatas(query.buildQuery());
+            Map<Integer, HrCompanyDO> companyMap = companyDOList.stream().collect(Collectors.toMap(k -> k.getId(), v -> v));
+            return hrCompanyMap.keySet().stream().collect(Collectors.toMap(k -> k, v -> companyMap.getOrDefault(hrCompanyMap.get(v), new HrCompanyDO())));
         }
-        return companyDOList;
+        return null;
     }
 
     /**
@@ -262,32 +259,16 @@ public class ChatDao {
             }
 
             /** 查找公司信息 */
-            if(companyIdArray.length > 0) {
-                String companyIdStr = StringUtils.converFromArrayToStr(companyIdArray);
-                QueryUtil findCompany = new QueryUtil();
-                findCompany.addSelectAttribute("id").addSelectAttribute("logo");
-                findCompany.addEqualFilter("id",companyIdStr);
-                Future companyFuture = threadPool.startTast(() -> hrCompanyDao.getDatas(queryUtil));
-
-
-                /** 过滤头像不存在的HR，匹配公司logo*/
-                userHrAccountDOList.stream()
-                        .filter(userHrAccountDO -> StringUtils.isNullOrEmpty(userHrAccountDO.getHeadimgurl()))
-                        .forEach(userHrAccountDO -> {
-                            try {
-                                List<HrCompanyDO> companyDOList = (List<HrCompanyDO>) companyFuture.get();
-                                if(companyDOList != null && companyDOList.size() > 0) {
-                                    companyDOList.forEach(companyDO -> {
-                                        if(userHrAccountDO.getCompanyId() == companyDO.getId()) {
-                                            userHrAccountDO.setHeadimgurl(companyDO.getLogo());
-                                        }
-                                    });
-                                }
-                            } catch (InterruptedException | ExecutionException e) {
-                                logger.error(e.getMessage(), e);
-                            }
-                        });
-            }
+            Map<Integer, HrCompanyDO> companyDOMap = listCompany(hrIdArray);
+            logger.info("companyDOMap:{}", companyDOMap);
+            /** 过滤头像不存在的HR，匹配公司logo*/
+            userHrAccountDOList.stream().filter(userHrAccountDO -> StringUtils.isNullOrEmpty(userHrAccountDO.getHeadimgurl()))
+                                        .forEach(userHrAccountDO -> {
+                                            if(companyDOMap != null && companyDOMap.get(userHrAccountDO.getId()).getId() > 0) {
+                                                logger.info("hrId:{}, logo:{}", userHrAccountDO.getId(), companyDOMap.get(userHrAccountDO.getId()).getLogo());
+                                                userHrAccountDO.setHeadimgurl(companyDOMap.get(userHrAccountDO.getId()).getLogo());
+                                            }
+                                        });
 
         }
         return userHrAccountDOList;
@@ -347,13 +328,16 @@ public class ChatDao {
 
     /**
      * 根据HR查找HR所属公司的信息
-     * @param companyId 公司编号
+     * @param publisherId 发布人账号
      * @return 公司信息
      */
-    public HrCompanyDO getCompany(int companyId) {
-        QueryUtil findCompany = new QueryUtil();
-        findCompany.addEqualFilter("id", companyId);
-        return hrCompanyDao.getData(findCompany);
+    public HrCompanyDO getCompany(int publisherId) {
+        Query.QueryBuilder query = new Query.QueryBuilder();
+        query.where("account_id", publisherId);
+        HrCompanyAccountDO hrCompanyAccountDO = hrCompanyAccountDao.getData(query.buildQuery());
+        query.clear();
+        query.where("id", hrCompanyAccountDO.getCompanyId());
+        return hrCompanyDao.getData(query.buildQuery());
     }
 
     /**
@@ -407,10 +391,13 @@ public class ChatDao {
             }
             /** 查找公司的logo */
             if(userHrAccountDO.getCompanyId() > 0) {
-                QueryUtil findCompany = new QueryUtil();
-                findCompany.addSelectAttribute("id").addSelectAttribute("logo");
-                findCompany.addEqualFilter("id", userHrAccountDO.getCompanyId());
-                companyFuture = threadPool.startTast(() -> hrCompanyDao.getData(findCompany));
+                Query.QueryBuilder query = new Query.QueryBuilder();
+                query.where("account_id", userHrAccountDO.getId());
+                HrCompanyAccountDO hrCompanyAccountDO = hrCompanyAccountDao.getData(query.buildQuery());
+                query.clear();
+                query.where("id", hrCompanyAccountDO.getCompanyId());
+                query.select("id").select("logo");
+                companyFuture = threadPool.startTast(() -> hrCompanyDao.getData(query.buildQuery()));
             }
 
             if(wxUserFuture != null) {

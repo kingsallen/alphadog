@@ -146,6 +146,7 @@ public class JobOccupation extends TableImpl<JobOccupationRecord> {
     /**
      * Rename this table
      */
+
     public JobOccupation rename(String name) {
         return new JobOccupation(name, null);
     }

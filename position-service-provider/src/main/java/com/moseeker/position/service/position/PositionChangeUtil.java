@@ -67,14 +67,11 @@ public class PositionChangeUtil {
     public ThirdPartyPositionForSynchronization changeToThirdPartyPosition(ThirdPartyPosition form, JobPositionDO positionDB) {
         logger.info("changeToThirdPartyPosition---------------------");
 
-
-        ThirdPartyPositionForSynchronization position = null;
-
         ChannelType channelType = ChannelType.instaceFromInteger(form.getChannel());
 
         PositionTransfer transfer=transferSimpleFactory(channelType);
 
-        position=transfer.changeToThirdPartyPosition(form,positionDB);
+        ThirdPartyPositionForSynchronization position=transfer.changeToThirdPartyPosition(form,positionDB);
         logger.info("转换结果:{}",position);
 
         return position;
@@ -106,15 +103,7 @@ public class PositionChangeUtil {
     public static String convertDescription(String accounTabilities, String requirement) {
         StringBuffer descript = new StringBuffer();
         if (StringUtils.isNotNullOrEmpty(accounTabilities)) {
-            StringBuffer tablities = new StringBuffer();
-            if (accounTabilities.contains("\n")) {
-                String results[] = accounTabilities.split("\n");
-                for (String result : results) {
-                    tablities.append("<p>  " + result + "</p>");
-                }
-            } else {
-                tablities.append("<p>  " + accounTabilities + "</p>");
-            }
+            StringBuffer tablities = replaceLineBreakToTagP(accounTabilities);
             if (accounTabilities.contains("职位描述")) {
                 descript.append(tablities.toString());
             } else {
@@ -122,15 +111,7 @@ public class PositionChangeUtil {
             }
         }
         if (StringUtils.isNotNullOrEmpty(requirement)) {
-            StringBuffer require = new StringBuffer();
-            if (requirement.contains("\n")) {
-                String results1[] = requirement.split("\n");
-                for (String result : results1) {
-                    require.append("<p>  " + result + "</p>");
-                }
-            } else {
-                require.append("<p>  " + requirement + "</p>");
-            }
+            StringBuffer require = replaceLineBreakToTagP(requirement);
             if (requirement.contains("职位要求")) {
                 descript.append(require.toString());
             } else {
@@ -139,5 +120,18 @@ public class PositionChangeUtil {
         }
 
         return descript.toString();
+    }
+
+    public static StringBuffer replaceLineBreakToTagP(String str){
+        StringBuffer require = new StringBuffer();
+        if (str.contains("\n")) {
+            String results1[] = str.split("\n");
+            for (String result : results1) {
+                require.append("<p>  " + result + "</p>");
+            }
+        } else {
+            require.append("<p>  " + str + "</p>");
+        }
+        return require;
     }
 }
