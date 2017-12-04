@@ -112,7 +112,7 @@ public class SearchengineService {
         TransportClient client = null;
         try {
 
-            Settings settings = Settings.settingsBuilder().put("cluster.name", cluster_name)
+            Settings settings = Settings.settingsBuilder().put("cluster.name", cluster_name).put("client.transport.sniff", true)
                     .build();
 
             client = TransportClient.builder().settings(settings).build()
@@ -363,6 +363,7 @@ public class SearchengineService {
         String es_connection = propertiesReader.get("es.connection", String.class);
         Integer es_port = propertiesReader.get("es.port", Integer.class);
         Settings settings = Settings.settingsBuilder().put("cluster.name", cluster_name)
+                .put("client.transport.sniff", true)
                 .build();
         String idx = "" + id;
         TransportClient client = null;
@@ -404,7 +405,9 @@ public class SearchengineService {
         logger.info(cluster_name);
         String es_connection = propertiesReader.get("es.connection", String.class);
         Integer es_port = propertiesReader.get("es.port", Integer.class);
-        Settings settings = Settings.settingsBuilder().put("cluster.name", cluster_name)
+        Settings settings = Settings.settingsBuilder()
+                .put("cluster.name", cluster_name)
+                .put("client.transport.sniff", true)
                 .build();
         TransportClient client = null;
         BulkRequestBuilder bulkRequest = null;
@@ -549,7 +552,9 @@ public class SearchengineService {
         logger.info(cluster_name);
         String es_connection = propertiesReader.get("es.connection", String.class);
         Integer es_port = propertiesReader.get("es.port", Integer.class);
-        Settings settings = Settings.settingsBuilder().put("cluster.name", cluster_name)
+        Settings settings = Settings.settingsBuilder()
+                .put("cluster.name", cluster_name)
+                .put("client.transport.sniff", true)
                 .build();
         TransportClient client = null;
         BulkRequestBuilder bulkRequest = null;
