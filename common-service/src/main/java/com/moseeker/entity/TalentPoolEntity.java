@@ -8,6 +8,7 @@ import com.moseeker.baseorm.dao.talentpooldb.TalentpoolTalentDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolHrTalentRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolTalentRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
@@ -15,11 +16,14 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.thrift.gen.profile.struct.Intention;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by zztaiwll on 17/12/1.
@@ -46,7 +50,7 @@ public class TalentPoolEntity {
         3，该人未投递过此hr，无法操作
      */
     public int validateHrTalent(int hrId,int userId,int companyId){
-        int result=this.validateHr(hrId,companyId);
+        int result=validateHr(hrId,companyId);
         if(result==0){
             return 2;
         }
@@ -60,7 +64,7 @@ public class TalentPoolEntity {
     /*
      验证这个hr是否是这家公司的
      */
-    private int validateHr(int hrId,int companyId){
+    public int validateHr(int hrId,int companyId){
         List<UserHrAccountRecord> hrList=getCompanyHrList(companyId);
         List<Integer> hrIdList=this.getIdListByUserHrAccountList(hrList);
         if(StringUtils.isEmptyList(hrList)){
@@ -79,11 +83,11 @@ public class TalentPoolEntity {
         if(result1>0){
             return  this.valicateCompanyApplication(userId,companyId);
         }else{
-            int result2=this.validatePublisheruserApp(hrId,userId);
+            int result2=this.validatePublisherUserApp(hrId,userId);
             return result2;
         }
     }
-    private int validatePublisheruserApp(int hrId,int userId){
+    private int validatePublisherUserApp(int hrId,int userId){
 
         Query query=new Query.QueryBuilder().where("publisher",hrId).and("applier_id",userId).buildQuery();
         int result=jobApplicationDao.getCount(query);
@@ -300,6 +304,69 @@ public class TalentPoolEntity {
         return result;
     }
 
+    private List<JobApplicationRecord> getJobApplicationByPublisherAndApplierId(List<Integer> userIdList,int hrId){
+        Query query=new Query.QueryBuilder().where("publisher",hrId).and(new Condition("applier_id",userIdList.toArray(),ValueOp.IN))
+                .buildQuery();
+        List<JobApplicationRecord> list=jobApplicationDao.getRecords(query);
+        return list;
+    }
 
+    private List<JobApplicationRecord> getJobApplicationByCompanyIdAndApplierId(List<Integer> userIdList,int companyId){
+        Query query=new Query.QueryBuilder().where("company_id",companyId).and(new Condition("applier_id",userIdList.toArray(),ValueOp.IN))
+                .buildQuery();
+        List<JobApplicationRecord> list=jobApplicationDao.getRecords(query);
+        return list;
+    }
+    /*
+     处理批量传输的人才，获取其中有效的和无效的
+     */
+    public Map<String,Object> handlerApplierId(int hrId,List<Integer> userIdList,int companyId){
+        int flag= this.valiadteMainAccount(hrId,companyId);
+        List<Integer> unUsedApplierIdList=new ArrayList<>();
+        List<Integer> applierIdList=new ArrayList<>();
+        if(flag>0){
+            List<JobApplicationRecord> list=this.getJobApplicationByPublisherAndApplierId(userIdList,hrId);
+            applierIdList=this.getIdListByApplicationList(list);
+        }else{
+            List<JobApplicationRecord> list=this.getJobApplicationByCompanyIdAndApplierId(userIdList,hrId);
+            applierIdList=this.getIdListByApplicationList(list);
+        }
+        unUsedApplierIdList= this.filterIdList(userIdList,applierIdList);
+        Map<String,Object> result=new HashMap<>();
+        result.put("unuse",unUsedApplierIdList);
+        result.put("use",applierIdList);
+        return result;
+    }
+    /*
+      获取applierId
+     */
+    private List<Integer> getIdListByApplicationList(List<JobApplicationRecord> list){
+        if(StringUtils.isEmptyList(list)){
+            return null;
+        }
+        List<Integer> result=new ArrayList<>();
+        for(JobApplicationRecord record:list){
+            result.add(record.getApplierId());
+        }
+        return result;
+    }
+    /*
+      过滤出来不符合操作权限的applier_id
+     */
+    public List<Integer> filterIdList(List<Integer> userIdList,List<Integer> list){
+        if(StringUtils.isEmptyList(list)){
+            return null;
+        }
+        List<Integer> result=new ArrayList<>();
+        for(Integer userId:userIdList){
+            for(Integer id:list){
+               if(userId==id){
+                   break;
+               }
+               result.add(userId);
+            }
+        }
+        return result;
+    }
 
 }
