@@ -141,6 +141,7 @@ public class CampaignEdmCampaign extends TableImpl<CampaignEdmCampaignRecord> {
     /**
      * Rename this table
      */
+
     public CampaignEdmCampaign rename(String name) {
         return new CampaignEdmCampaign(name, null);
     }

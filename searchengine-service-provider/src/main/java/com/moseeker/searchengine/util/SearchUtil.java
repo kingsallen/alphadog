@@ -51,6 +51,13 @@ public class SearchUtil {
                     .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port));
         } catch (Exception e) {
             logger.info(e.getMessage(), e);
+            try {
+                if (client != null) {
+                    client.close();
+                }
+            } catch (Exception e1) {
+                logger.error(e1.getMessage(), e1);
+            }
             client = null;
         }
         return client;
@@ -270,6 +277,23 @@ public class SearchUtil {
 
     }
 
+    /*
+     * wildcard
+     * @param map
+     * @param query
+     */
+    public void wildcardQuery(Map<String, Object> map, QueryBuilder query) {
+        if (map != null && !map.isEmpty()) {
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            for (String key : map.keySet()) {
+                QueryBuilder fullf = QueryBuilders.wildcardQuery(key, "*"+map.get(key)+"*");
+                ((BoolQueryBuilder) keyand).should(fullf);
+            }
+            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+            ((BoolQueryBuilder) query).must(keyand);
+        }
+
+    }
     /**
      * term查询，查询的值包含单个值
      *

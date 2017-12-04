@@ -103,6 +103,13 @@ public class SearchengineEntity {
                     .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port));
         } catch (Exception e) {
             logger.error(e.getMessage());
+            try {
+                if (client != null) {
+                    client.close();
+                }
+            } catch (Exception e1) {
+                logger.error(e1.getMessage(), e1);
+            }
         }
         return client;
     }

@@ -50,6 +50,8 @@ public class ReceiverHandler {
 
 
 
+
+
     @RabbitListener(queues = "#{addAwardQue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
     public void addAwardHandler(Message message, Channel channel) {
@@ -87,32 +89,37 @@ public class ReceiverHandler {
             int companyId=jsonObject.getIntValue("company_id");
             int type=jsonObject.getIntValue("type");
             int templateId;
-            switch (type) {
-                case 1: templateId = 56; break;
-                case 2: templateId = 57; break;
-                case 3: templateId = 58; break;
-                case 4: templateId = 57; break;
-                default: templateId = 0;
-            }
-            //int templateId=jsonObject.getIntValue("template_id");
-            String url=jsonObject.getString("url");
-            String jobName=jsonObject.getString("job_name");
-            String companyName=jsonObject.getString("company_name");
-            if(StringUtils.isEmpty(url)){
-                url=handlerUrl(type);
-            }
-            String enable_qx_retry=jsonObject.getString("enable_qx_retry");
-            MessageTemplateNoticeStruct messageTemplate=messageTemplateEntity.handlerTemplate(userId,companyId,templateId,type,url,jobName,companyName);
-            log.info("messageTemplate========"+JSONObject.toJSONString(messageTemplate));
-            if(messageTemplate!=null){
-                if(StringUtils.isNotEmpty(enable_qx_retry)){
-                    messageTemplate.setEnable_qx_retry(Byte.parseByte(enable_qx_retry));
+            if(type!=0){
+                switch (type) {
+                    case 1: templateId = 58; break;
+                    case 2: templateId = 57; break;
+                    case 3: templateId = 57; break;
+                    case 4: templateId = 56; break;
+                    default: templateId = 0;
                 }
-                templateMsgProducer.messageTemplateNotice(messageTemplate);
-                personaRecomEntity.updateIsSendPersonaRecom(userId,1,20);
+                String url=jsonObject.getString("url");
+                if(StringUtils.isEmpty(url)){
+                    url=handlerUrl(type);
+                }
+                String enable_qx_retry=jsonObject.getString("enable_qx_retry");
+                MessageTemplateNoticeStruct messageTemplate=messageTemplateEntity.handlerTemplate(userId,companyId,templateId,type,url);
+                log.info("messageTemplate========"+JSONObject.toJSONString(messageTemplate));
+                if(messageTemplate!=null){
+                    if(StringUtils.isNotEmpty(enable_qx_retry)){
+                        messageTemplate.setEnable_qx_retry(Byte.parseByte(enable_qx_retry));
+                    }
+                    templateMsgProducer.messageTemplateNotice(messageTemplate);
+                    if(type==2){
+                        personaRecomEntity.updateIsSendPersonaRecom(userId,companyId,0,1,20);
+                    }
+                    if(type==3){
+                        personaRecomEntity.updateIsSendPersonaRecom(userId,companyId,1,1,20);
+                    }
 
-            }else{
-                this.handleTemplateLogDeadLetter(message,msgBody,"没有查到模板所需的具体内容");
+
+                }else{
+                    this.handleTemplateLogDeadLetter(message,msgBody,"没有查到模板所需的具体内容");
+                }
             }
         }catch(Exception e){
             this.handleTemplateLogDeadLetter(message,msgBody,"没有查到模板所需的具体内容");
@@ -134,8 +141,10 @@ public class ReceiverHandler {
             log.info("推送职位的rabitmq的参数是========"+jsonObject.toJSONString());
             int userId=jsonObject.getIntValue("user_id");
             String positionIds=jsonObject.getString("position_ids");
+            int companyId=jsonObject.getIntValue("company_id");
+            int type=jsonObject.getIntValue("type");
             if(userId!=0&&StringUtils.isNotEmpty(positionIds)){
-                int result=personaRecomEntity.handlePersonaRecomData(userId,positionIds);
+                int result=personaRecomEntity.handlePersonaRecomData(userId,positionIds,companyId,type);
             }
 
         }catch(Exception e){
@@ -163,13 +172,15 @@ public class ReceiverHandler {
         String url="";
         if(type==1){
             url=env.getProperty("message.template.fans.url");
-        }else if(type==2||type==3){
+        }else if(type==2){
             url=env.getProperty("message.template.recom.url");
         }else if(type==4){
-
+            url=env.getProperty("message.template.new.employee.url");
+        }else if(type==3){
+            url=env.getProperty("message.template.recom.employee.url");
         }
         return url;
-    }
 
+    }
 
 }

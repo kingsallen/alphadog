@@ -8,10 +8,13 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.web.controller.util.Params;
+import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.useraccounts.service.UserEmployeeService;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
+import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * Created by eddie on 2017/3/7.
@@ -29,7 +33,7 @@ import java.util.Map;
 @Controller
 @CounterIface
 public class UserEmployeeController {
-
+    org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
     UserEmployeeService.Iface service = ServiceManager.SERVICEMANAGER.getService(UserEmployeeService.Iface.class);
 
     @RequestMapping(value = "/user/employee", method = RequestMethod.DELETE)
@@ -37,7 +41,6 @@ public class UserEmployeeController {
     public String deleteUserEmployee(HttpServletRequest request, HttpServletResponse response) {
         try {
             CommonQuery commonQuery = ParamUtils.initCommonQuery(request, CommonQuery.class);
-
             if (commonQuery.getEqualFilter() == null) commonQuery.setEqualFilter(new HashMap<>());
             String companyId = commonQuery.getEqualFilter().get("company_id");
             String customField = commonQuery.getEqualFilter().get("custom_field");
@@ -120,6 +123,18 @@ public class UserEmployeeController {
                 boolean result = service.isEmployee(userId, companyId);
                 return ResponseLogNotification.success(request, ResponseUtils.success(new HashMap<String, Object>(){{put("result", result);}}));
             }
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value="/user/employee", method = RequestMethod.PUT)
+    @ResponseBody
+    public String putUserEmployee(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            UserEmployeeStruct userEmployee=ParamUtils.initModelForm(request, UserEmployeeStruct.class);
+            Response res=service.putUserEmployee(userEmployee);
+            return ResponseLogNotification.success(request,res);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
         }

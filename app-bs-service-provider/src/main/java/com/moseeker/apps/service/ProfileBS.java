@@ -1,6 +1,7 @@
 package com.moseeker.apps.service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.apps.constants.ResultMessage;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
@@ -127,7 +128,7 @@ public class ProfileBS {
                         Response response = applicationService.postApplication(application);
                         return response;
                     }
-                    return ResultMessage.SUCCESS.toResponse();
+                    return ResultMessage.SUCCESS.toResponse(new JSONObject());
                 } else {
                     return improveProfile;
                 }
@@ -140,7 +141,7 @@ public class ProfileBS {
                     if (getApplyResult.getStatus() == 0 && !Boolean.valueOf(getApplyResult.getData())) {
                         applicationService.postApplication(application);
                     }
-                    return ResultMessage.SUCCESS.toResponse();
+                    return ResultMessage.SUCCESS.toResponse(new JSONObject());
                 } else {
                     return response;
                 }
@@ -173,7 +174,7 @@ public class ProfileBS {
                     if (getApplyResult.getStatus() == 0 && !Boolean.valueOf(getApplyResult.getData())) {
                         applicationService.postApplication(application);
                     }
-                    return ResultMessage.SUCCESS.toResponse();
+                    return ResultMessage.SUCCESS.toResponse(new JSONObject());
                 } else {
                     return response;
                 }
@@ -185,7 +186,7 @@ public class ProfileBS {
 //		} finally {
 //			//do nothing
 //		}
-        return ResponseUtils.success(null);
+        return ResponseUtils.success(new JSONObject());
     }
 
 

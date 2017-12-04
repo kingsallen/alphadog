@@ -3,12 +3,16 @@ package com.moseeker.position.service.fundationbs;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.PropertyFilter;
 import com.alibaba.fastjson.serializer.ValueFilter;
 import com.moseeker.baseorm.dao.campaigndb.CampaignPersonaRecomDao;
+import com.moseeker.baseorm.dao.campaigndb.CampaignRecomPositionlistDao;
 import com.moseeker.baseorm.dao.dictdb.*;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.*;
+import com.moseeker.baseorm.db.campaigndb.tables.pojos.CampaignRecomPositionlist;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignPersonaRecomRecord;
+import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignRecomPositionlistRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictAlipaycampusCityRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictAlipaycampusJobcategoryRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityPostcodeRecord;
@@ -42,16 +46,20 @@ import com.moseeker.position.service.position.qianxun.Degree;
 import com.moseeker.position.service.position.qianxun.WorkType;
 import com.moseeker.position.utils.CommonPositionUtils;
 import com.moseeker.position.utils.SpecialCtiy;
+import com.moseeker.position.utils.SpecialProvince;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
+import com.moseeker.thrift.gen.config.ConfigCustomMetaVO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
+import com.moseeker.thrift.gen.dao.struct.dictdb.DictConstantDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobOccupationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.position.struct.*;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
+import org.apache.log4j.spi.LoggerRepository;
 import org.apache.thrift.TException;
 import org.jooq.Field;
 import org.slf4j.Logger;
@@ -123,7 +131,10 @@ public class PositionService {
     private PositionEntity positionEntity;
     @Autowired
     private CampaignPersonaRecomDao campaignPersonaRecomDao;
-
+    @Autowired
+    private CampaignRecomPositionlistDao campaignRecomPositionlistDao;
+    @Autowired
+    private HrAppCvConfDao hrAppCvConfDao;
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
 
@@ -186,6 +197,7 @@ public class PositionService {
         // NullPoint check
         JobPositionPojo jobPositionPojo = jobPositionDao.getPosition(positionId);
         if (jobPositionPojo == null) {
+            logger.error("无法根据ID查找到职位。 positionId:{}", positionId);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
         jobPositionPojo.team_name = "";
@@ -978,6 +990,13 @@ public class PositionService {
             HashMap cityMap = new LinkedHashMap();
             if (citys != null && citys.size() > 0 && pid != null) {
                 for (City city : citys) {
+                    //去空格
+                    if (org.apache.commons.lang.StringUtils.isNotBlank(city.getValue())) {
+                        city.setValue(city.getValue().trim());
+                    }
+                    if (org.apache.commons.lang.StringUtils.isNotBlank(city.getType())) {
+                        city.setType(city.getType().trim());
+                    }
                     // 查询DictCityPostCode条件
                     Query.QueryBuilder cityCodeQuery = new Query.QueryBuilder();
                     // 查询DictCity条件
@@ -997,6 +1016,10 @@ public class PositionService {
                         if (isChinese(city.getValue())) { // 是中文
                             cityQuery.where("name", city.getValue());
                         } else { // 英文
+                            SpecialProvince province = SpecialProvince.instanceOfMappingName(city.getValue().toLowerCase());
+                            if (province != null) {
+                                city.setValue(province.getName());
+                            }
                             cityQuery.where("ename", city.getValue());
                         }
                         try {
@@ -1271,8 +1294,9 @@ public class PositionService {
     /*
        微信端获取个人画像推送职位
      */
-    public List<WechatPositionListData> getPersonaRecomPosition(int userId,int pageNum,int pageSize) throws Exception{
-        List<CampaignPersonaRecomRecord> list=this.getPersonaRecomPositionList(userId,pageNum,pageSize);
+    @CounterIface
+    public List<WechatPositionListData> getPersonaRecomPosition(int userId,int companyId,int type,int pageNum,int pageSize) throws Exception{
+        List<CampaignPersonaRecomRecord> list=this.getPersonaRecomPositionList(userId,companyId,type,pageNum,pageSize);
         List<Integer> pids=this.getRecomPositionIdList(list);
         if(StringUtils.isEmptyList(pids)){
             return null;
@@ -1284,14 +1308,60 @@ public class PositionService {
         }
         return result;
     }
+    @CounterIface
+    public List<WechatPositionListData> getEmployeeRecomPositionList(int recomPushId,int companyId,int type){
+        List<Integer> pids=this.handlerEmployeeRecom(recomPushId,companyId,type);
+        if(StringUtils.isEmptyList(pids)){
+            return null;
+        }
+        List<WechatPositionListData> result=this.getWxPosition(pids);
+        return result;
+    }
+    /*
+     处理推送数据，获取position.id的list
+     */
+    private List<Integer> handlerEmployeeRecom(int recomPushId,int companyId,int type){
+        CampaignRecomPositionlistRecord campaignRecomPosition=this.getCampaignRecomPositionlistByIdAndCompanyType(recomPushId,companyId,type);
+        if(campaignRecomPosition==null){
+            return null;
+        }
+        List<Integer> list=this.convertStringToList(campaignRecomPosition.getPositionIds());
+        return list;
+    }
+    /*
+      获取推送的数据记录
+     */
+    private CampaignRecomPositionlistRecord getCampaignRecomPositionlistByIdAndCompanyType(int recomPushId,int companyId,int type){
+        Query query=new Query.QueryBuilder().where("id",recomPushId).and("company_id",companyId).and("type",(byte)type).buildQuery();
+        CampaignRecomPositionlistRecord data=campaignRecomPositionlistDao.getRecord(query);
+        return data;
+    }
+    /*
+     将String转化为list
+     */
+    private List<Integer> convertStringToList(String positionIds){
+        if(StringUtils.isNullOrEmpty(positionIds)){
+            return null;
+        }
+        List<Integer> pidList=new ArrayList<>();
+        String [] pidArray=positionIds.split(",");
+        for(String pid:pidArray){
+            pidList.add(Integer.parseInt(pid));
+        }
+        return pidList;
+    }
     /*
       通过user_id 获取 CampaignPersonaRecomPojo 的list集合
      */
-    private  List<CampaignPersonaRecomRecord> getPersonaRecomPositionList(int userId, int pageNum, int pageSize){
-        Query query=new Query.QueryBuilder().where("user_id",userId).orderBy("create_time", Order.DESC).setPageNum(pageNum).setPageSize(pageSize).buildQuery();
+    private  List<CampaignPersonaRecomRecord> getPersonaRecomPositionList(int userId,int companyId,int type, int pageNum, int pageSize){
+        Query query=new Query.QueryBuilder().where("user_id",userId).and("company_id",companyId).and("type",(byte)type).orderBy("create_time", Order.DESC).setPageNum(pageNum).setPageSize(pageSize).buildQuery();
         List<CampaignPersonaRecomRecord> list=campaignPersonaRecomDao.getRecords(query);
         return list;
     }
+
+    /*
+     根据userId，companyId，type，List<Integer> pid获取
+     */
     /*
       获取position.id的list
      */
@@ -1329,7 +1399,7 @@ public class PositionService {
         List<WechatPositionListData> dataList = new ArrayList<>();
         logger.info("jdIdList: " + jdIdList);
         Condition con = new Condition("id", jdIdList.toArray(), ValueOp.IN);
-        Query q = new Query.QueryBuilder().where(con).buildQuery();
+        Query q = new Query.QueryBuilder().where(con).and("status",0).buildQuery();
         List<JobPositionRecord> jobRecords = positionEntity.getPositions(q);
         //List<JobPositionRecord> jobRecords = jobPositionDao.getRecords(q);
         //Map<Integer, Set<String>> cityMap = commonPositionUtils.handlePositionCity(jdIdList);
@@ -1952,6 +2022,38 @@ public class PositionService {
                 logger.error(e.getMessage(), e);
             }
         }
+    }
+
+    public Response positionCvConf(int positionId) {
+        int appCvConfId = positionEntity.getAppCvConfigIdByPosition(positionId);
+        if (appCvConfId != 0) {
+            Query.QueryBuilder query = new Query.QueryBuilder();
+            query.where("id", appCvConfId);
+            HrAppCvConfDO hrAppCvConfDO = hrAppCvConfDao.getData(query.buildQuery());
+            if (hrAppCvConfDO != null && StringUtils.isNotNullOrEmpty(hrAppCvConfDO.getFieldValue())) {
+                List<ConfigCustomMetaVO> configCustomMetaVOList = JSONArray.parseArray(hrAppCvConfDO.getFieldValue()).stream().flatMap(fm -> JSON.parseObject(String.valueOf(fm)).getJSONArray("fields").stream()).
+                        map(m -> JSONObject.parseObject(String.valueOf(m), ConfigCustomMetaVO.class)).collect(Collectors.toList());
+                configCustomMetaVOList.stream().filter(f -> f.getConstantParentCode() != 0).forEach(e -> {
+                    query.clear();
+                    query.where("parent_code", e.getConstantParentCode());
+                    List<DictConstantDO> dictConstantDO = dictConstantDao.getDatas(query.buildQuery());
+                    String dictconstantValue = JSON.toJSONString(dictConstantDO, new PropertyFilter() {
+                                @Override
+                                public boolean apply(Object object, String name, Object value) {
+                                    if ("code".equals(name) || "name".equals(name)){
+                                        return true;
+                                    }
+                                    return false;
+                                }
+                            }
+                    );
+                    e.setConstantValue(dictconstantValue);
+                });
+                return ResponseUtils.success(configCustomMetaVOList);
+            }
+        }
+        logger.error("自定义配置为空，positionId:{}, appCvConfId:{}", positionId, appCvConfId);
+        return ResponseUtils.fail(1,"自定义配置为空");
     }
 
 

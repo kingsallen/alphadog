@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HistoryCampaignPersonaRecom extends TableImpl<HistoryCampaignPersonaRecomRecord> {
 
-    private static final long serialVersionUID = 538638932;
+    private static final long serialVersionUID = 1052452121;
 
     /**
      * The reference instance of <code>historydb.history_campaign_persona_recom</code>
@@ -60,6 +60,11 @@ public class HistoryCampaignPersonaRecom extends TableImpl<HistoryCampaignPerson
      * The column <code>historydb.history_campaign_persona_recom.user_id</code>. 用户id user_user.id
      */
     public final TableField<HistoryCampaignPersonaRecomRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "用户id user_user.id");
+
+    /**
+     * The column <code>historydb.history_campaign_persona_recom.company_id</code>. 企业id
+     */
+    public final TableField<HistoryCampaignPersonaRecomRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "企业id");
 
     /**
      * The column <code>historydb.history_campaign_persona_recom.position_id</code>. 职位id job_position.id
@@ -86,6 +91,11 @@ public class HistoryCampaignPersonaRecom extends TableImpl<HistoryCampaignPerson
 
      */
     public final TableField<HistoryCampaignPersonaRecomRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间\n");
+
+    /**
+     * The column <code>historydb.history_campaign_persona_recom.type</code>.
+     */
+    public final TableField<HistoryCampaignPersonaRecomRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
      * Create a <code>historydb.history_campaign_persona_recom</code> table reference
@@ -152,6 +162,7 @@ public class HistoryCampaignPersonaRecom extends TableImpl<HistoryCampaignPerson
     /**
      * Rename this table
      */
+
     public HistoryCampaignPersonaRecom rename(String name) {
         return new HistoryCampaignPersonaRecom(name, null);
     }

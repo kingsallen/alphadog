@@ -16,6 +16,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * 简历工具类
+ */
 public class ProfilePojo {
 
 	Logger logger = LoggerFactory.getLogger(this.getClass());
