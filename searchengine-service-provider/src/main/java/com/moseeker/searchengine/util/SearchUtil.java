@@ -49,8 +49,8 @@ public class SearchUtil {
                  .put("cluster.name", cluster_name)
                  .put("client.transport.sniff", true)
                     .build();
-            client = TransportClient.builder().settings(settings).build();
-                    //.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port));
+            client = TransportClient.builder().settings(settings).build()
+                    .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port));
         } catch (Exception e) {
             logger.info(e.getMessage(), e);
             try {
