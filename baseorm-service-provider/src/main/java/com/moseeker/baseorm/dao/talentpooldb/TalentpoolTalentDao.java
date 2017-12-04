@@ -18,4 +18,14 @@ public class TalentpoolTalentDao extends JooqCrudImpl<com.moseeker.baseorm.db.ta
     public TalentpoolTalentDao(TableImpl<TalentpoolTalentRecord> table, Class<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolTalent> talentpoolTalentClass) {
         super(table, talentpoolTalentClass);
     }
+
+    public int updateNum(int userId,int companyId,int pubNum,int collectNum ){
+        int result=create.update(TalentpoolTalent.TALENTPOOL_TALENT)
+                .set(TalentpoolTalent.TALENTPOOL_TALENT.PUBLIC_NUM,TalentpoolTalent.TALENTPOOL_TALENT.PUBLIC_NUM.add(pubNum))
+                .set(TalentpoolTalent.TALENTPOOL_TALENT.COLLECT_NUM,TalentpoolTalent.TALENTPOOL_TALENT.COLLECT_NUM.add(collectNum))
+                .where(TalentpoolTalent.TALENTPOOL_TALENT.USER_ID.eq(userId))
+                .and(TalentpoolTalent.TALENTPOOL_TALENT.COMPANY_ID.eq(companyId))
+                .execute();
+        return result;
+    }
 }
