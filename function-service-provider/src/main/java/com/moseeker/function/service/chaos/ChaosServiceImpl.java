@@ -67,7 +67,7 @@ public class ChaosServiceImpl {
         //推送需要绑定第三方账号的信息到rabbitMQ中
         String param=ChaosTool.getParams(hrThirdPartyAccount, extras);
         String account_Id=hrThirdPartyAccount.getId()+"";
-        logger.info("准备推送"+account_Id+"数据到RabbitMQ的RoutingKey："+routingKey);
+        logger.info("准备推送"+account_Id+"数据到RabbitMQ的RoutingKey："+routingKey+" {"+param+"}");
         amqpTemplate.send(BindThirdPart.BIND_EXCHANGE_NAME, routingKey, MessageBuilder.withBody(param.getBytes()).build());
         logger.info("推送RabbitMQ成功");
 
