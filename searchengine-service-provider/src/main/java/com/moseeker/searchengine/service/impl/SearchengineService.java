@@ -569,7 +569,7 @@ public class SearchengineService {
                 return ResponseUtils.fail(9999, bulkResponse.buildFailureMessage());
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         } finally {
             client.close();
         }
