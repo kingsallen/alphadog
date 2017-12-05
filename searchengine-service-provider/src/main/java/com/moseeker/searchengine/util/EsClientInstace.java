@@ -28,7 +28,6 @@ public class EsClientInstace {
                 if(client!=null){
                     return client;
                 }else {
-                    System.out.println("111111111111111");
                     try {
                         ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
                         propertiesReader.loadResource("es.properties");
