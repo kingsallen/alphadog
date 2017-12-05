@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.SynchronousQueue;
@@ -27,6 +28,7 @@ public class EsClientInstace {
                 if(client!=null){
                     return client;
                 }else {
+                    System.out.println("111111111111111");
                     try {
                         ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
                         propertiesReader.loadResource("es.properties");
@@ -48,4 +50,12 @@ public class EsClientInstace {
 
         return client;
     }
+    public static void closeEsClient(){
+        if(client!=null){
+            client.close();
+            client=null;
+        }
+
+    }
+
 }

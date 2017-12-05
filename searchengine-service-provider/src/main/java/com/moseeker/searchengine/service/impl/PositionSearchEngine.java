@@ -59,8 +59,7 @@ public class PositionSearchEngine {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            client.close();
-            client=null;
+            EsClientInstace.closeEsClient();
         } finally{
 //            if(client!=null){
 //                client.close();
