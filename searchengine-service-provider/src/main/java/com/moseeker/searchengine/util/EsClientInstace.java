@@ -17,27 +17,35 @@ import java.util.concurrent.SynchronousQueue;
  * Created by zztaiwll on 17/12/5.
  */
 public class EsClientInstace {
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+
     private static TransportClient client=null;
-    public synchronized static  TransportClient getClient() throws Exception {
+    public  static  TransportClient getClient() throws Exception {
         if(client!=null){
             return client;
+        }else{
+            synchronized(EsClientInstace.class) {
+                if(client!=null){
+                    return client;
+                }else {
+                    try {
+                        ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
+                        propertiesReader.loadResource("es.properties");
+                        String cluster_name = propertiesReader.get("es.cluster.name", String.class);
+                        String es_connection = propertiesReader.get("es.connection", String.class);
+                        Integer es_port = propertiesReader.get("es.port", Integer.class);
+                        Settings settings = Settings.settingsBuilder().put("cluster.name", cluster_name)
+                                .build();
+                        client = TransportClient.builder().settings(settings).build()
+                                .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        client.close();
+                        client = null;
+                    }
+                }
+            }
         }
-        try {
-            ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
-            propertiesReader.loadResource("es.properties");
-            String cluster_name = propertiesReader.get("es.cluster.name", String.class);
-            String es_connection = propertiesReader.get("es.connection", String.class);
-            Integer es_port = propertiesReader.get("es.port", Integer.class);
-            Settings settings = Settings.settingsBuilder().put("cluster.name", cluster_name)
-                    .build();
-            client = TransportClient.builder().settings(settings).build()
-                    .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port));
-        }catch(Exception e){
-            e.printStackTrace();
-            client.close();
-            client=null;
-        }
+
         return client;
     }
 }
