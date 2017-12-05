@@ -50,12 +50,11 @@ public class EsClientInstace {
 
         return client;
     }
-    public static void closeEsClient(){
+    public synchronized static void closeEsClient(){
         if(client!=null){
             client.close();
             client=null;
         }
-
     }
 
 }
