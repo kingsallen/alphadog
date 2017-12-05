@@ -142,6 +142,7 @@ public class TalentpoolTalent extends TableImpl<TalentpoolTalentRecord> {
     /**
      * Rename this table
      */
+
     public TalentpoolTalent rename(String name) {
         return new TalentpoolTalent(name, null);
     }

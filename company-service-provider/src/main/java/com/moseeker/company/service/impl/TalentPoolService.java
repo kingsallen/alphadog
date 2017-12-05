@@ -246,7 +246,7 @@ public class TalentPoolService {
         if(valdateNum==2){
             return ResponseUtils.fail(1,"hr不属于本公司无法操作");
         }else if(valdateNum==3){
-            return ResponseUtils.fail(1,"该人未投递过此hr，无法操作");
+            return ResponseUtils.fail(1,"所有人未投递过此hr，无法操作");
         }
         return null;
     }

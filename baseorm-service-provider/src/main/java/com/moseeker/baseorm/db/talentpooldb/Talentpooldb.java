@@ -4,6 +4,7 @@
 package com.moseeker.baseorm.db.talentpooldb;
 
 
+import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolApplication;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolComment;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolHrTalent;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolTag;
@@ -34,12 +35,17 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Talentpooldb extends SchemaImpl {
 
-    private static final long serialVersionUID = 84029430;
+    private static final long serialVersionUID = 1582510667;
 
     /**
      * The reference instance of <code>talentpooldb</code>
      */
     public static final Talentpooldb TALENTPOOLDB = new Talentpooldb();
+
+    /**
+     * hr申请人才库记录表
+     */
+    public final TalentpoolApplication TALENTPOOL_APPLICATION = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolApplication.TALENTPOOL_APPLICATION;
 
     /**
      * 人才库人HR与标签的关系
@@ -91,6 +97,7 @@ public class Talentpooldb extends SchemaImpl {
 
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
+            TalentpoolApplication.TALENTPOOL_APPLICATION,
             TalentpoolComment.TALENTPOOL_COMMENT,
             TalentpoolHrTalent.TALENTPOOL_HR_TALENT,
             TalentpoolTag.TALENTPOOL_TAG,

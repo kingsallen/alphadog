@@ -4,11 +4,13 @@
 package com.moseeker.baseorm.db.talentpooldb;
 
 
+import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolApplication;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolComment;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolHrTalent;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolTag;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolTalent;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolUserTag;
+import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolApplicationRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolCommentRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolHrTalentRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolTagRecord;
@@ -42,18 +44,17 @@ public class Keys {
 
     public static final Identity<TalentpoolCommentRecord, Integer> IDENTITY_TALENTPOOL_COMMENT = Identities0.IDENTITY_TALENTPOOL_COMMENT;
     public static final Identity<TalentpoolTagRecord, Integer> IDENTITY_TALENTPOOL_TAG = Identities0.IDENTITY_TALENTPOOL_TAG;
-    public static final Identity<TalentpoolUserTagRecord, Integer> IDENTITY_TALENTPOOL_USER_TAG = Identities0.IDENTITY_TALENTPOOL_USER_TAG;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
+    public static final UniqueKey<TalentpoolApplicationRecord> KEY_TALENTPOOL_APPLICATION_PRIMARY = UniqueKeys0.KEY_TALENTPOOL_APPLICATION_PRIMARY;
     public static final UniqueKey<TalentpoolCommentRecord> KEY_TALENTPOOL_COMMENT_PRIMARY = UniqueKeys0.KEY_TALENTPOOL_COMMENT_PRIMARY;
     public static final UniqueKey<TalentpoolHrTalentRecord> KEY_TALENTPOOL_HR_TALENT_PRIMARY = UniqueKeys0.KEY_TALENTPOOL_HR_TALENT_PRIMARY;
     public static final UniqueKey<TalentpoolTagRecord> KEY_TALENTPOOL_TAG_PRIMARY = UniqueKeys0.KEY_TALENTPOOL_TAG_PRIMARY;
     public static final UniqueKey<TalentpoolTalentRecord> KEY_TALENTPOOL_TALENT_PRIMARY = UniqueKeys0.KEY_TALENTPOOL_TALENT_PRIMARY;
     public static final UniqueKey<TalentpoolUserTagRecord> KEY_TALENTPOOL_USER_TAG_PRIMARY = UniqueKeys0.KEY_TALENTPOOL_USER_TAG_PRIMARY;
-    public static final UniqueKey<TalentpoolUserTagRecord> KEY_TALENTPOOL_USER_TAG_TALENTPOOL_USER_TAG_TAG_ID_USER_ID_UINDEX = UniqueKeys0.KEY_TALENTPOOL_USER_TAG_TALENTPOOL_USER_TAG_TAG_ID_USER_ID_UINDEX;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -67,15 +68,14 @@ public class Keys {
     private static class Identities0 extends AbstractKeys {
         public static Identity<TalentpoolCommentRecord, Integer> IDENTITY_TALENTPOOL_COMMENT = createIdentity(TalentpoolComment.TALENTPOOL_COMMENT, TalentpoolComment.TALENTPOOL_COMMENT.ID);
         public static Identity<TalentpoolTagRecord, Integer> IDENTITY_TALENTPOOL_TAG = createIdentity(TalentpoolTag.TALENTPOOL_TAG, TalentpoolTag.TALENTPOOL_TAG.ID);
-        public static Identity<TalentpoolUserTagRecord, Integer> IDENTITY_TALENTPOOL_USER_TAG = createIdentity(TalentpoolUserTag.TALENTPOOL_USER_TAG, TalentpoolUserTag.TALENTPOOL_USER_TAG.ID);
     }
 
     private static class UniqueKeys0 extends AbstractKeys {
+        public static final UniqueKey<TalentpoolApplicationRecord> KEY_TALENTPOOL_APPLICATION_PRIMARY = createUniqueKey(TalentpoolApplication.TALENTPOOL_APPLICATION, "KEY_talentpool_application_PRIMARY", TalentpoolApplication.TALENTPOOL_APPLICATION.HR_ID, TalentpoolApplication.TALENTPOOL_APPLICATION.COMPANY_ID);
         public static final UniqueKey<TalentpoolCommentRecord> KEY_TALENTPOOL_COMMENT_PRIMARY = createUniqueKey(TalentpoolComment.TALENTPOOL_COMMENT, "KEY_talentpool_comment_PRIMARY", TalentpoolComment.TALENTPOOL_COMMENT.ID);
         public static final UniqueKey<TalentpoolHrTalentRecord> KEY_TALENTPOOL_HR_TALENT_PRIMARY = createUniqueKey(TalentpoolHrTalent.TALENTPOOL_HR_TALENT, "KEY_talentpool_hr_talent_PRIMARY", TalentpoolHrTalent.TALENTPOOL_HR_TALENT.HR_ID, TalentpoolHrTalent.TALENTPOOL_HR_TALENT.USER_ID);
         public static final UniqueKey<TalentpoolTagRecord> KEY_TALENTPOOL_TAG_PRIMARY = createUniqueKey(TalentpoolTag.TALENTPOOL_TAG, "KEY_talentpool_tag_PRIMARY", TalentpoolTag.TALENTPOOL_TAG.ID);
         public static final UniqueKey<TalentpoolTalentRecord> KEY_TALENTPOOL_TALENT_PRIMARY = createUniqueKey(TalentpoolTalent.TALENTPOOL_TALENT, "KEY_talentpool_talent_PRIMARY", TalentpoolTalent.TALENTPOOL_TALENT.USER_ID, TalentpoolTalent.TALENTPOOL_TALENT.COMPANY_ID);
-        public static final UniqueKey<TalentpoolUserTagRecord> KEY_TALENTPOOL_USER_TAG_PRIMARY = createUniqueKey(TalentpoolUserTag.TALENTPOOL_USER_TAG, "KEY_talentpool_user_tag_PRIMARY", TalentpoolUserTag.TALENTPOOL_USER_TAG.ID);
-        public static final UniqueKey<TalentpoolUserTagRecord> KEY_TALENTPOOL_USER_TAG_TALENTPOOL_USER_TAG_TAG_ID_USER_ID_UINDEX = createUniqueKey(TalentpoolUserTag.TALENTPOOL_USER_TAG, "KEY_talentpool_user_tag_talentpool_user_tag_tag_id_user_id_uindex", TalentpoolUserTag.TALENTPOOL_USER_TAG.TAG_ID, TalentpoolUserTag.TALENTPOOL_USER_TAG.USER_ID);
+        public static final UniqueKey<TalentpoolUserTagRecord> KEY_TALENTPOOL_USER_TAG_PRIMARY = createUniqueKey(TalentpoolUserTag.TALENTPOOL_USER_TAG, "KEY_talentpool_user_tag_PRIMARY", TalentpoolUserTag.TALENTPOOL_USER_TAG.USER_ID, TalentpoolUserTag.TALENTPOOL_USER_TAG.TAG_ID);
     }
 }

@@ -75,6 +75,7 @@ public class TalentPoolEntity {
         }
         return 1;
     }
+
     /*
      验证user_id是否投递过这个hr
      */
@@ -105,7 +106,9 @@ public class TalentPoolEntity {
         int result=jobApplicationDao.getCount(query);
         return result;
     }
-
+    /*
+     获取一个人才被这个公司下hr的收藏情况
+     */
     public List<UserHrAccountRecord>  getHrAboutTalent(int userId,int companyId){
        List<UserHrAccountRecord> userHrList=this.getCompanyHrList(companyId);
        List<Integer> hrAccountIdList=this.getIdListByUserHrAccountList(userHrList);
@@ -113,6 +116,28 @@ public class TalentPoolEntity {
        List<Integer> hrIdList=this.getIdListByTalentpoolHrTalentList(talentpoolHrList);
        List<UserHrAccountRecord> result=this.getHrList(hrIdList,userHrList);
        return result;
+    }
+    /*
+      获取多个人被这家公司下hr的收藏情况
+     */
+    public List<UserHrAccountRecord> getBatchAboutTalent(List<Integer> userIdList,int companyId){
+        List<UserHrAccountRecord> userHrList=this.getCompanyHrList(companyId);
+        List<Integer> hrAccountIdList=this.getIdListByUserHrAccountList(userHrList);
+        return null;
+    }
+
+    private Map<Integer,List<UserHrAccountRecord>> handlerTalentAndHr(List<Integer> userIdList,List<Integer> hrAccountIdList,List<UserHrAccountRecord> userHrList){
+        List<TalentpoolHrTalentRecord> talentpoolHrList=this.getTalentpoolHrTalentByuserIdListAndhrIdList(userIdList,hrAccountIdList);
+        if(StringUtils.isEmptyList(talentpoolHrList)){
+            return null;
+        }
+        for(Integer userId:userIdList){
+            for(TalentpoolHrTalentRecord record:talentpoolHrList){
+
+            }
+
+        }
+        return null;
     }
     /*
       获取公司下所有的hr信息
@@ -133,6 +158,17 @@ public class TalentPoolEntity {
             return null;
         }
         Query query=new Query.QueryBuilder().where("user_id",userId).and(new Condition("hr_id",hrIdList.toArray(),ValueOp.IN)).buildQuery();
+        List<TalentpoolHrTalentRecord> list=talentpoolHrTalentDao.getRecords(query);
+        return list;
+    }
+    /*
+     通过user集合和hr集合获取人才库记录
+     */
+    private List<TalentpoolHrTalentRecord> getTalentpoolHrTalentByuserIdListAndhrIdList(List<Integer> userIdList,List<Integer> hrIdList){
+        if(StringUtils.isEmptyList(hrIdList)||StringUtils.isEmptyList(userIdList)){
+            return null;
+        }
+        Query query=new Query.QueryBuilder().where(new Condition("user_id",userIdList.toArray(),ValueOp.IN)).and(new Condition("hr_id",hrIdList.toArray(),ValueOp.IN)).buildQuery();
         List<TalentpoolHrTalentRecord> list=talentpoolHrTalentDao.getRecords(query);
         return list;
     }

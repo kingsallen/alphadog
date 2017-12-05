@@ -80,10 +80,10 @@ public class TalentpoolCommentDao extends DAOImpl<TalentpoolCommentRecord, com.m
     }
 
     /**
-     * Fetch records that have <code>talent_id IN (values)</code>
+     * Fetch records that have <code>user_id IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolComment> fetchByTalentId(Integer... values) {
-        return fetch(TalentpoolComment.TALENTPOOL_COMMENT.TALENT_ID, values);
+    public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolComment> fetchByUserId(Integer... values) {
+        return fetch(TalentpoolComment.TALENTPOOL_COMMENT.USER_ID, values);
     }
 
     /**
@@ -98,5 +98,12 @@ public class TalentpoolCommentDao extends DAOImpl<TalentpoolCommentRecord, com.m
      */
     public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolComment> fetchByUpdateTime(Timestamp... values) {
         return fetch(TalentpoolComment.TALENTPOOL_COMMENT.UPDATE_TIME, values);
+    }
+
+    /**
+     * Fetch records that have <code>company_id IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolComment> fetchByCompanyId(Integer... values) {
+        return fetch(TalentpoolComment.TALENTPOOL_COMMENT.COMPANY_ID, values);
     }
 }

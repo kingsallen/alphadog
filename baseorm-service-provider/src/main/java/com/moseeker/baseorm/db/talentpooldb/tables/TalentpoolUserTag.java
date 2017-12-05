@@ -15,7 +15,6 @@ import java.util.List;
 import javax.annotation.Generated;
 
 import org.jooq.Field;
-import org.jooq.Identity;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -36,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolUserTag extends TableImpl<TalentpoolUserTagRecord> {
 
-    private static final long serialVersionUID = -976335339;
+    private static final long serialVersionUID = 653768925;
 
     /**
      * The reference instance of <code>talentpooldb.talentpool_user_tag</code>
@@ -52,29 +51,19 @@ public class TalentpoolUserTag extends TableImpl<TalentpoolUserTagRecord> {
     }
 
     /**
-     * The column <code>talentpooldb.talentpool_user_tag.id</code>.
+     * The column <code>talentpooldb.talentpool_user_tag.user_id</code>. 用户编号
      */
-    public final TableField<TalentpoolUserTagRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<TalentpoolUserTagRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "用户编号");
 
     /**
-     * The column <code>talentpooldb.talentpool_user_tag.tag_id</code>. 标签id
+     * The column <code>talentpooldb.talentpool_user_tag.tag_id</code>. 标签
      */
-    public final TableField<TalentpoolUserTagRecord, Integer> TAG_ID = createField("tag_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "标签id");
+    public final TableField<TalentpoolUserTagRecord, Integer> TAG_ID = createField("tag_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "标签");
 
     /**
-     * The column <code>talentpooldb.talentpool_user_tag.user_id</code>. user_user.id
+     * The column <code>talentpooldb.talentpool_user_tag.create_time</code>. 创建时间
      */
-    public final TableField<TalentpoolUserTagRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "user_user.id");
-
-    /**
-     * The column <code>talentpooldb.talentpool_user_tag.disable</code>. 是否有效，0有效，1无效
-     */
-    public final TableField<TalentpoolUserTagRecord, Byte> DISABLE = createField("disable", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否有效，0有效，1无效");
-
-    /**
-     * The column <code>talentpooldb.talentpool_user_tag.create_time</code>.
-     */
-    public final TableField<TalentpoolUserTagRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<TalentpoolUserTagRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
 
     /**
      * The column <code>talentpooldb.talentpool_user_tag.update_time</code>.
@@ -115,14 +104,6 @@ public class TalentpoolUserTag extends TableImpl<TalentpoolUserTagRecord> {
      * {@inheritDoc}
      */
     @Override
-    public Identity<TalentpoolUserTagRecord, Integer> getIdentity() {
-        return Keys.IDENTITY_TALENTPOOL_USER_TAG;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public UniqueKey<TalentpoolUserTagRecord> getPrimaryKey() {
         return Keys.KEY_TALENTPOOL_USER_TAG_PRIMARY;
     }
@@ -132,7 +113,7 @@ public class TalentpoolUserTag extends TableImpl<TalentpoolUserTagRecord> {
      */
     @Override
     public List<UniqueKey<TalentpoolUserTagRecord>> getKeys() {
-        return Arrays.<UniqueKey<TalentpoolUserTagRecord>>asList(Keys.KEY_TALENTPOOL_USER_TAG_PRIMARY, Keys.KEY_TALENTPOOL_USER_TAG_TALENTPOOL_USER_TAG_TAG_ID_USER_ID_UINDEX);
+        return Arrays.<UniqueKey<TalentpoolUserTagRecord>>asList(Keys.KEY_TALENTPOOL_USER_TAG_PRIMARY);
     }
 
     /**
@@ -146,7 +127,6 @@ public class TalentpoolUserTag extends TableImpl<TalentpoolUserTagRecord> {
     /**
      * Rename this table
      */
-    @Override
     public TalentpoolUserTag rename(String name) {
         return new TalentpoolUserTag(name, null);
     }

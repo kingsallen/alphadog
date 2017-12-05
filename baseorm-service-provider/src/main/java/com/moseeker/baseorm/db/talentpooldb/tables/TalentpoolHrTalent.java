@@ -132,7 +132,7 @@ public class TalentpoolHrTalent extends TableImpl<TalentpoolHrTalentRecord> {
     /**
      * Rename this table
      */
-    @Override
+
     public TalentpoolHrTalent rename(String name) {
         return new TalentpoolHrTalent(name, null);
     }
