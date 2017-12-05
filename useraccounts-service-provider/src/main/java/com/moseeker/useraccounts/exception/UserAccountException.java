@@ -28,6 +28,8 @@ public class UserAccountException extends CommonException {
     public static final UserAccountException ILLEGAL_MOBILE = new UserAccountException(42017, "手机号码格式不合法!");
     public static final UserAccountException HR_UPDATEMOBILE_FAILED = new UserAccountException(42020, "手机号码修改失败!");
     public static final UserAccountException THIRD_PARTY_ACCOUNT_NOTEXIST = new UserAccountException(42021, "第三方账号信息错误!");
+    public static final UserAccountException NOT_ALLOWED_ADD_SUBACCOUNT = new UserAccountException(42022, "不允许继续添加子账号!");
+    public static final UserAccountException HRACCOUNT_EXIST = new UserAccountException(42023, "HR账号已经存在!");
 
     private final int code;
 

@@ -46,6 +46,7 @@ import com.moseeker.position.service.position.qianxun.Degree;
 import com.moseeker.position.service.position.qianxun.WorkType;
 import com.moseeker.position.utils.CommonPositionUtils;
 import com.moseeker.position.utils.SpecialCtiy;
+import com.moseeker.position.utils.SpecialProvince;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -1015,6 +1016,10 @@ public class PositionService {
                         if (isChinese(city.getValue())) { // 是中文
                             cityQuery.where("name", city.getValue());
                         } else { // 英文
+                            SpecialProvince province = SpecialProvince.instanceOfMappingName(city.getValue().toLowerCase());
+                            if (province != null) {
+                                city.setValue(province.getName());
+                            }
                             cityQuery.where("ename", city.getValue());
                         }
                         try {

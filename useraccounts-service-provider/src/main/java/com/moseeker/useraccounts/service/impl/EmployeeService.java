@@ -274,7 +274,7 @@ public class EmployeeService {
         log.info("setEmployeeCustomInfo param: employeeId={}, customValues={}", employeeId, customValues);
         Result response = new Result();
         Query.QueryBuilder query = new Query.QueryBuilder();
-        query.where("employeeid", String.valueOf(employeeId));
+        query.where("id", String.valueOf(employeeId));
         List<UserEmployeeDO> userEmployeesDO = employeeDao.getDatas(query.buildQuery());
         log.info("select userEmployee by: {}, result = {}", query, Arrays.toString(userEmployeesDO.toArray()));
         if (StringUtils.isEmptyList(userEmployeesDO)) {
