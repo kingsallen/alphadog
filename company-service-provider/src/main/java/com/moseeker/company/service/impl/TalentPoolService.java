@@ -187,43 +187,12 @@ public class TalentPoolService {
      批量添加标签
      */
     public Response addBatchTalentTag(int hrId,List<Integer> userIdList,List<Integer> tagIdList,int companyId){
-        int flag=talentPoolEntity.validateHr(hrId,companyId);
-        if(flag==0){
-            return ResponseUtils.fail(1,"该hr不属于该company_id");
+        Map<String,Object> validateResult=this.validateAddTag(hrId, userIdList, tagIdList, companyId);
+        if(validateResult.get("result")!=null){
+            return (Response)validateResult.get("result");
         }
-        Map<String,Object> validateResult=this.validateUserIdTag(hrId,userIdList,tagIdList,companyId);
-        List<Integer> idList= (List<Integer>) validateResult.get("use");
-        if(StringUtils.isEmptyList(idList)){
-            return ResponseUtils.fail(1,"该无权操作这些人才");
-        }
-        boolean validateTag=this.validateTag(idList,hrId);
-        if(!validateTag){
-            return ResponseUtils.fail(1,"不满足批量操作条件");
-        }
-
-        return null;
-    }
-    /*
-     删除标签
-     */
-    public Response cancaleTalentTag(int hrId,List<Integer> userIdList,List<Integer> tagIdList,int companyId){
-        int flag=talentPoolEntity.validateHr(hrId,companyId);
-        if(flag==0){
-            return ResponseUtils.fail(1,"该hr不属于该company_id");
-        }
-        Map<String,Object> validateResult=this.validateUserIdTag(hrId,userIdList,tagIdList,companyId);
-        List<Integer> idList= (List<Integer>) validateResult.get("use");
-        if(StringUtils.isEmptyList(idList)){
-            return ResponseUtils.fail(1,"该无权操作这些人才");
-        }
-        boolean validateTag=this.validateTag(idList,hrId);
-        if(!validateTag){
-            return ResponseUtils.fail(1,"不满足批量操作条件");
-        }
-        boolean validateOperTag=this.validateOperatorTag(hrId,tagIdList,idList);
-        if(!validateOperTag){
-            return ResponseUtils.fail(1,"操作的标签不是hr定义的标签");
-        }
+        List<Integer> idList= (List<Integer>) validateResult.get("idList");
+        List<Integer> nouseList= (List<Integer>)validateResult.get("nouseList");
         List<TalentpoolUserTagRecord> recordList=new ArrayList<>();
         for(Integer id:idList){
             for(Integer tagId:tagIdList){
@@ -238,10 +207,101 @@ public class TalentPoolService {
         for(Integer tagId:tagIdList){
             talentpoolTagDao.updateTagNum(tagId,idList.size());
         }
+        return null;
+    }
+    /*
+     删除标签
+     */
+    public Response cancaleTalentTag(int hrId,List<Integer> userIdList,List<Integer> tagIdList,int companyId){
+
+        Map<String,Object> validateResult=this.validateCancleTag(hrId, userIdList, tagIdList, companyId);
+        if(validateResult.get("result")!=null){
+            return (Response)validateResult.get("result");
+        }
+        List<Integer> idList= (List<Integer>) validateResult.get("idList");
+        List<Integer> nouseList= (List<Integer>)validateResult.get("nouseList");
+        List<TalentpoolUserTagRecord> recordList=new ArrayList<>();
+        for(Integer id:idList){
+            for(Integer tagId:tagIdList){
+                TalentpoolUserTagRecord record=new TalentpoolUserTagRecord();
+                record.setUserId(id);
+                record.setTagId(tagId);
+                recordList.add(record);
+            }
+
+        }
+        talentpoolUserTagDao.deleteRecords(recordList);
+        for(Integer tagId:tagIdList){
+            talentpoolTagDao.updateTagNum(tagId,0-idList.size());
+        }
+
+
 
         return null;
     }
 
+    private Map<String,Object> validateCancleTag(int hrId,List<Integer> userIdList,List<Integer> tagIdList,int companyId){
+        Map<String,Object> result=new HashMap<>();
+        int flag=talentPoolEntity.validateHr(hrId,companyId);
+        if(flag==0){
+            result.put("result",ResponseUtils.fail(1,"该hr不属于该company_id"));
+            return result;
+        }
+        Map<String,Object> validateResult=this.validateUserIdTag(hrId,userIdList,tagIdList,companyId);
+        List<Integer> idList= (List<Integer>) validateResult.get("use");
+        if(StringUtils.isEmptyList(idList)){
+            result.put("result",ResponseUtils.fail(1,"该无权操作这些人才"));
+            return result;
+        }
+        Map<String,Object> validateTag=this.validateTag(idList,hrId);
+        boolean flagTag= (boolean) validateTag.get("result");
+        if(!flagTag){
+            result.put("result",ResponseUtils.fail(1,"不满足批量操作条件"));
+            return result;
+        }
+        List<TalentpoolTagRecord> hrTagList= (List<TalentpoolTagRecord>) validateResult.get("hrTagIdList");
+        List<Integer> userTagList= (List<Integer>) validateResult.get("userTagIdList");
+        boolean validateOperTag=this.validateCancleOperatorTag(this.getIdByTagList(hrTagList),tagIdList,userTagList);
+        if(!validateOperTag){
+            result.put("result",ResponseUtils.fail(1,"操作的标签不是hr定义的标签"));
+            return result;
+        }
+        result.put("hrTagList",hrTagList);
+        result.put("idList",idList);
+        result.put("nouseList",(List<Integer>)validateResult.get("nouse"));
+        return result;
+    }
+    private Map<String,Object> validateAddTag(int hrId,List<Integer> userIdList,List<Integer> tagIdList,int companyId){
+        Map<String,Object> result=new HashMap<>();
+        int flag=talentPoolEntity.validateHr(hrId,companyId);
+        if(flag==0){
+            result.put("result",ResponseUtils.fail(1,"该hr不属于该company_id"));
+            return result;
+        }
+        Map<String,Object> validateResult=this.validateUserIdTag(hrId,userIdList,tagIdList,companyId);
+        List<Integer> idList= (List<Integer>) validateResult.get("use");
+        if(StringUtils.isEmptyList(idList)){
+            result.put("result",ResponseUtils.fail(1,"该无权操作这些人才"));
+            return result;
+        }
+        Map<String,Object> validateTag=this.validateTag(idList,hrId);
+        boolean flagTag= (boolean) validateTag.get("result");
+        if(!flagTag){
+            result.put("result",ResponseUtils.fail(1,"不满足批量操作条件"));
+            return result;
+        }
+        List<TalentpoolTagRecord> hrTagList= (List<TalentpoolTagRecord>) validateResult.get("hrTagIdList");
+        List<Integer> userTagList= (List<Integer>) validateResult.get("userTagIdList");
+        boolean validateOperTag=this.validateAddOperatorTag(this.getIdByTagList(hrTagList),tagIdList,userTagList);
+        if(!validateOperTag){
+            result.put("result",ResponseUtils.fail(1,"操作的标签不是hr定义的标签"));
+            return result;
+        }
+        result.put("hrTagList",hrTagList);
+        result.put("idList",idList);
+        result.put("nouseList",(List<Integer>)validateResult.get("nouse"));
+        return result;
+    }
     private Map<String,Object> validateUserIdTag(int hrId,List<Integer> userIdList,List<Integer> tagIdList,int companyId){
         Map<String,Object> validateMap=talentPoolEntity.handlerApplierId(hrId,userIdList,companyId);
         List<Integer> unUseList= (List<Integer>) validateMap.get("unuse");
@@ -270,59 +330,81 @@ public class TalentPoolService {
     /*
      判断是否可以打标签
      */
-    public boolean validateTag(List<Integer> userIdList,int hrId){
+    public Map<String,Object> validateTag(List<Integer> userIdList,int hrId){
+        Map<String,Object> result=new HashMap<>();
+        //获取hr下所有的tag
         List<TalentpoolTagRecord> hrTagList=this.getTagByHr(hrId);
+        //获取hr下所有的tagId
         List<Integer> hrTagIdList=this.getIdByTagList(hrTagList);
         if(StringUtils.isEmptyList(hrTagIdList)){
-            return false;
+            result.put("result",false);
+            return result;
         }
         List<Integer> tagIdList=this.getUserTagIdList(userIdList.get(0),hrTagIdList);
         if(StringUtils.isEmptyList(tagIdList)){
-            return false;
+            result.put("result",false);
+            return result;
         }
         List<TalentpoolUserTagRecord> tagList=this.getUserTagByUserIdListAndTagId(userIdList,tagIdList);
         if(StringUtils.isEmptyList(tagList)){
-            return false;
+            result.put("result",false);
+            return result;
         }
         if(userIdList.size()*tagIdList.size()!=tagList.size()){
-            return false;
+            result.put("result",false);
+            return result;
         }
         for(TalentpoolUserTagRecord record:tagList){
             int tagId=record.getTagId();
             if(!tagIdList.contains(tagId)){
-                return false;
+                result.put("result",false);
+                return result;
             }
         }
-
-        return true;
+        result.put("result",true);
+        result.put("hrTagList",hrTagList);
+        result.put("userTagIdList",tagIdList);
+        return result;
     }
     /*
-     验证标签是否符合操作条件
+     验证添加标签是否符合操作条件
      */
-    private boolean validateOperatorTag(int hrId,List<Integer> tagIdList,List<Integer> userIdList){
-        if(StringUtils.isEmptyList(tagIdList)||StringUtils.isEmptyList(userIdList)){
-            return false;
-        }
-        List<TalentpoolTagRecord> hrTagList=this.getTagByHr(hrId);
-        List<Integer> hrTagIdList=this.getIdByTagList(hrTagList);
+    private boolean validateAddOperatorTag(List<Integer> hrTagIdList,List<Integer> tagIdList, List<Integer> userTagIdList){
+
         for(Integer id:tagIdList){
            if(!hrTagIdList.contains(id)) {
                return false;
            }
         }
-        List<Integer> userTagIdList=getUserTagIdList(userIdList.get(0),hrTagIdList);
-        if(!StringUtils.isEmptyList(userIdList)){
+        if(!StringUtils.isEmptyList(userTagIdList)){
             for(Integer id:tagIdList){
                if(userTagIdList.contains(id)){
                    return false;
                }
             }
         }
-
-
         return true;
     }
-
+    /*
+        验证添加标签是否符合操作条件
+        */
+    private boolean validateCancleOperatorTag(List<Integer> hrTagIdList,List<Integer> tagIdList, List<Integer> userTagIdList){
+        for(Integer id:tagIdList){
+            if(!hrTagIdList.contains(id)) {
+                return false;
+            }
+        }
+        if(!StringUtils.isEmptyList(userTagIdList)){
+            for(Integer id:tagIdList){
+                if(!userTagIdList.contains(id)){
+                    return false;
+                }
+            }
+        }else{
+            return false;
+        }
+        return true;
+    }
     /*
       查询hr下所有的标签
      */

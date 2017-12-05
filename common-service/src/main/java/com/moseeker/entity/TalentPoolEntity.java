@@ -190,6 +190,7 @@ public class TalentPoolEntity {
         return result;
     }
 
+
     /*
      验证user_id是否投递过这个hr
      */
