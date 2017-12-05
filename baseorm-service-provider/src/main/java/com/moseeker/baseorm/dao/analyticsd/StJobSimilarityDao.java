@@ -21,5 +21,4 @@ public class StJobSimilarityDao extends JooqCrudImpl<StJobSimilarityDO, StJobSim
     public StJobSimilarityDao(TableImpl<StJobSimilarityRecord> table, Class<StJobSimilarityDO> StJobSimilarityDOClass) {
         super(table, StJobSimilarityDOClass);
     }
-
 }

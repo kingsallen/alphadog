@@ -132,7 +132,7 @@ public class PositionSyncFailedNotification {
 
         StringBuilder emailMessgeBuilder = new StringBuilder();
 
-        ChannelType channelType = ChannelType.instaceFromInteger(Integer.valueOf(pojo.getChannel()));
+        ChannelType channelType = ChannelType.instaceFromInteger(Integer.valueOf(pojo.getData().getChannel()));
 
         String channelName = channelType.getAlias();
 
@@ -142,8 +142,8 @@ public class PositionSyncFailedNotification {
             emailTitle.append("【").append(companyDO.getName()).append("】");
         }
         emailTitle.append(":【渠道:").append(channelName).append("】");
-        emailTitle.append(":【仟寻职位:").append(pojo.getPosition_id()).append("】");
-        emailTitle.append(":【").append(channelName).append("职位:").append(pojo.getJob_id()).append("】");
+        emailTitle.append(":【仟寻职位:").append(pojo.getData().getPositionId()).append("】");
+        emailTitle.append(":【").append(channelName).append("职位:").append(pojo.getData().getJobId()).append("】");
 
         String divider = "<br/>";
         if (companyDO != null) {
@@ -154,8 +154,8 @@ public class PositionSyncFailedNotification {
             emailMessgeBuilder.append("【子公司简称】：").append(subCompany.getAbbreviation()).append(divider);
         }
         emailMessgeBuilder.append("【同步记录ID】：").append(thirdPartyPositionDO.getId()).append(divider);
-        emailMessgeBuilder.append("【职位ID】：").append(pojo.getPosition_id()).append(divider);
-        emailMessgeBuilder.append("【第三方帐号ID】：").append(pojo.getAccount_id()).append(divider);
+        emailMessgeBuilder.append("【职位ID】：").append(pojo.getData().getPositionId()).append(divider);
+        emailMessgeBuilder.append("【第三方帐号ID】：").append(pojo.getData().getAccountId()).append(divider);
         emailMessgeBuilder.append("【").append(channelName).append("职位编号】：").append(thirdPartyPositionDO.getThirdPartPositionId()).append(divider);
         emailMessgeBuilder.append("【职位标题】：").append(moseekerPosition.getTitle()).append(divider);
         emailMessgeBuilder.append(divider).append("<hr>").append(divider);
@@ -210,9 +210,9 @@ public class PositionSyncFailedNotification {
         if (companyDO != null) {
             emailTitle.append("【").append(companyDO.getName()).append("】");
         }
-        ChannelType channelType = ChannelType.instaceFromInteger(Integer.valueOf(pojo.getChannel()));
+        ChannelType channelType = ChannelType.instaceFromInteger(Integer.valueOf(pojo.getData().getChannel()));
         emailTitle.append(":【渠道:").append(channelType.getAlias()).append("】")
-                .append(":【仟寻职位:").append(pojo.getPosition_id()).append("】");
+                .append(":【仟寻职位:").append(pojo.getData().getPositionId()).append("】");
 
         String divider = "<br/>";
 
@@ -226,8 +226,8 @@ public class PositionSyncFailedNotification {
         }
 
         emailMessgeBuilder.append("【同步记录ID】：").append(thirdPartyPositionDO.getId()).append(divider);
-        emailMessgeBuilder.append("【职位ID】：").append(pojo.getPosition_id()).append(divider);
-        emailMessgeBuilder.append("【第三方帐号ID】：").append(pojo.getAccount_id()).append(divider);
+        emailMessgeBuilder.append("【职位ID】：").append(pojo.getData().getPositionId()).append(divider);
+        emailMessgeBuilder.append("【第三方帐号ID】：").append(pojo.getData().getAccountId()).append(divider);
         emailMessgeBuilder.append("【招聘类型】：").append(moseekerPosition.getCandidateSource() == 1 ? "校招" : "社招").append(divider);
         emailMessgeBuilder.append("【标题】：").append(moseekerPosition.getTitle()).append(divider);
         emailMessgeBuilder.append("【城市】：").append(getCitys(moseekerPosition.getId())).append(divider);

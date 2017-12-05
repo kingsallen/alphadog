@@ -9,7 +9,9 @@ import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author xxx
@@ -29,14 +31,22 @@ public class ProfileSkillDao extends JooqCrudImpl<ProfileSkillDO, ProfileSkillRe
 
     public int updateProfileUpdateTime(Set<Integer> skillIds) {
         int status = 0;
-        Timestamp updateTime = new Timestamp(System.currentTimeMillis());
-        status = create.update(ProfileProfile.PROFILE_PROFILE)
-                .set(ProfileProfile.PROFILE_PROFILE.UPDATE_TIME, updateTime)
-                .where(ProfileProfile.PROFILE_PROFILE.ID
-                        .in(create.select(ProfileSkill.PROFILE_SKILL.PROFILE_ID)
-                                .from(ProfileSkill.PROFILE_SKILL)
-                                .where(ProfileSkill.PROFILE_SKILL.ID.in(skillIds))))
-                .execute();
+
+        List<Integer> profileIdList = create.select(ProfileSkill.PROFILE_SKILL.PROFILE_ID)
+                .from(ProfileSkill.PROFILE_SKILL)
+                .where(ProfileSkill.PROFILE_SKILL.ID.in(skillIds))
+                .stream()
+                .map(integerRecord1 -> integerRecord1.value1())
+                .collect(Collectors.toList());
+
+        if (profileIdList != null && profileIdList.size() > 0) {
+            Timestamp updateTime = new Timestamp(System.currentTimeMillis());
+            status = create.update(ProfileProfile.PROFILE_PROFILE)
+                    .set(ProfileProfile.PROFILE_PROFILE.UPDATE_TIME, updateTime)
+                    .where(ProfileProfile.PROFILE_PROFILE.ID
+                            .in(profileIdList))
+                    .execute();
+        }
 
         return status;
     }

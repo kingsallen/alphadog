@@ -102,8 +102,29 @@ public class AppConfig {
     }
 
     @Bean
+    public Queue sendTemplateQue() {
+        Queue queue = new Queue("send_template_que", true, false, false);
+        return queue;
+    }
+    //数据组推送职位队列
+    @Bean
+    public Queue personaRecomQue() {
+        Queue queue = new Queue("persona_recom_que", true, false, false);
+        return queue;
+    }
+    @Bean
     public TopicExchange topicExchange() {
         TopicExchange topicExchange = new TopicExchange("user_action_topic_exchange", true, false);
+        return topicExchange;
+    }
+    @Bean
+    public TopicExchange templateExchange() {
+        TopicExchange topicExchange = new TopicExchange("message_template_exchange", true, false);
+        return topicExchange;
+    }
+    @Bean
+    public TopicExchange personaRecomExchange() {
+        TopicExchange topicExchange = new TopicExchange("person_recom_exchange", true, false);
         return topicExchange;
     }
 
@@ -111,6 +132,8 @@ public class AppConfig {
     public List<Binding> binding() {
         return new ArrayList<Binding>(){{
             add(BindingBuilder.bind(addAwardQue()).to(topicExchange()).with("sharejd.#"));
+            add(BindingBuilder.bind(sendTemplateQue()).to(templateExchange()).with("messagetemplate.#"));
+            add(BindingBuilder.bind(personaRecomQue()).to(personaRecomExchange()).with("personarecom.#"));
         }};
     }
 }

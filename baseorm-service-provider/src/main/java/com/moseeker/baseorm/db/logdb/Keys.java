@@ -4,18 +4,12 @@
 package com.moseeker.baseorm.db.logdb;
 
 
-import com.moseeker.baseorm.db.logdb.tables.LogCronjob;
-import com.moseeker.baseorm.db.logdb.tables.LogDeadLetter;
-import com.moseeker.baseorm.db.logdb.tables.LogEmailSendrecord;
-import com.moseeker.baseorm.db.logdb.tables.LogHrOperationRecord;
-import com.moseeker.baseorm.db.logdb.tables.LogSmsSendrecord;
-import com.moseeker.baseorm.db.logdb.tables.LogWxMenuRecord;
-import com.moseeker.baseorm.db.logdb.tables.LogWxMessageRecord;
-import com.moseeker.baseorm.db.logdb.tables.LogWxTemplateMessageSendrecord;
+import com.moseeker.baseorm.db.logdb.tables.*;
 import com.moseeker.baseorm.db.logdb.tables.records.LogCronjobRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogDeadLetterRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogEmailSendrecordRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogHrOperationRecordRecord;
+import com.moseeker.baseorm.db.logdb.tables.records.LogResumeRecordRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogSmsSendrecordRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogWxMenuRecordRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogWxMessageRecordRecord;
@@ -50,6 +44,7 @@ public class Keys {
     public static final Identity<LogDeadLetterRecord, Integer> IDENTITY_LOG_DEAD_LETTER = Identities0.IDENTITY_LOG_DEAD_LETTER;
     public static final Identity<LogEmailSendrecordRecord, Integer> IDENTITY_LOG_EMAIL_SENDRECORD = Identities0.IDENTITY_LOG_EMAIL_SENDRECORD;
     public static final Identity<LogHrOperationRecordRecord, Integer> IDENTITY_LOG_HR_OPERATION_RECORD = Identities0.IDENTITY_LOG_HR_OPERATION_RECORD;
+    public static final Identity<LogResumeRecordRecord, Integer> IDENTITY_LOG_RESUME_RECORD = Identities0.IDENTITY_LOG_RESUME_RECORD;
     public static final Identity<LogSmsSendrecordRecord, Integer> IDENTITY_LOG_SMS_SENDRECORD = Identities0.IDENTITY_LOG_SMS_SENDRECORD;
     public static final Identity<LogWxMenuRecordRecord, Integer> IDENTITY_LOG_WX_MENU_RECORD = Identities0.IDENTITY_LOG_WX_MENU_RECORD;
     public static final Identity<LogWxMessageRecordRecord, Integer> IDENTITY_LOG_WX_MESSAGE_RECORD = Identities0.IDENTITY_LOG_WX_MESSAGE_RECORD;
@@ -63,6 +58,7 @@ public class Keys {
     public static final UniqueKey<LogDeadLetterRecord> KEY_LOG_DEAD_LETTER_PRIMARY = UniqueKeys0.KEY_LOG_DEAD_LETTER_PRIMARY;
     public static final UniqueKey<LogEmailSendrecordRecord> KEY_LOG_EMAIL_SENDRECORD_PRIMARY = UniqueKeys0.KEY_LOG_EMAIL_SENDRECORD_PRIMARY;
     public static final UniqueKey<LogHrOperationRecordRecord> KEY_LOG_HR_OPERATION_RECORD_PRIMARY = UniqueKeys0.KEY_LOG_HR_OPERATION_RECORD_PRIMARY;
+    public static final UniqueKey<LogResumeRecordRecord> KEY_LOG_RESUME_RECORD_PRIMARY = UniqueKeys0.KEY_LOG_RESUME_RECORD_PRIMARY;
     public static final UniqueKey<LogSmsSendrecordRecord> KEY_LOG_SMS_SENDRECORD_PRIMARY = UniqueKeys0.KEY_LOG_SMS_SENDRECORD_PRIMARY;
     public static final UniqueKey<LogWxMenuRecordRecord> KEY_LOG_WX_MENU_RECORD_PRIMARY = UniqueKeys0.KEY_LOG_WX_MENU_RECORD_PRIMARY;
     public static final UniqueKey<LogWxMessageRecordRecord> KEY_LOG_WX_MESSAGE_RECORD_PRIMARY = UniqueKeys0.KEY_LOG_WX_MESSAGE_RECORD_PRIMARY;
@@ -82,6 +78,7 @@ public class Keys {
         public static Identity<LogDeadLetterRecord, Integer> IDENTITY_LOG_DEAD_LETTER = createIdentity(LogDeadLetter.LOG_DEAD_LETTER, LogDeadLetter.LOG_DEAD_LETTER.ID);
         public static Identity<LogEmailSendrecordRecord, Integer> IDENTITY_LOG_EMAIL_SENDRECORD = createIdentity(LogEmailSendrecord.LOG_EMAIL_SENDRECORD, LogEmailSendrecord.LOG_EMAIL_SENDRECORD.ID);
         public static Identity<LogHrOperationRecordRecord, Integer> IDENTITY_LOG_HR_OPERATION_RECORD = createIdentity(LogHrOperationRecord.LOG_HR_OPERATION_RECORD, LogHrOperationRecord.LOG_HR_OPERATION_RECORD.ID);
+        public static Identity<LogResumeRecordRecord, Integer> IDENTITY_LOG_RESUME_RECORD = createIdentity(LogResumeRecord.LOG_RESUME_RECORD, LogResumeRecord.LOG_RESUME_RECORD.ID);
         public static Identity<LogSmsSendrecordRecord, Integer> IDENTITY_LOG_SMS_SENDRECORD = createIdentity(LogSmsSendrecord.LOG_SMS_SENDRECORD, LogSmsSendrecord.LOG_SMS_SENDRECORD.ID);
         public static Identity<LogWxMenuRecordRecord, Integer> IDENTITY_LOG_WX_MENU_RECORD = createIdentity(LogWxMenuRecord.LOG_WX_MENU_RECORD, LogWxMenuRecord.LOG_WX_MENU_RECORD.ID);
         public static Identity<LogWxMessageRecordRecord, Integer> IDENTITY_LOG_WX_MESSAGE_RECORD = createIdentity(LogWxMessageRecord.LOG_WX_MESSAGE_RECORD, LogWxMessageRecord.LOG_WX_MESSAGE_RECORD.ID);
@@ -93,6 +90,7 @@ public class Keys {
         public static final UniqueKey<LogDeadLetterRecord> KEY_LOG_DEAD_LETTER_PRIMARY = createUniqueKey(LogDeadLetter.LOG_DEAD_LETTER, "KEY_log_dead_letter_PRIMARY", LogDeadLetter.LOG_DEAD_LETTER.ID);
         public static final UniqueKey<LogEmailSendrecordRecord> KEY_LOG_EMAIL_SENDRECORD_PRIMARY = createUniqueKey(LogEmailSendrecord.LOG_EMAIL_SENDRECORD, "KEY_log_email_sendrecord_PRIMARY", LogEmailSendrecord.LOG_EMAIL_SENDRECORD.ID);
         public static final UniqueKey<LogHrOperationRecordRecord> KEY_LOG_HR_OPERATION_RECORD_PRIMARY = createUniqueKey(LogHrOperationRecord.LOG_HR_OPERATION_RECORD, "KEY_log_hr_operation_record_PRIMARY", LogHrOperationRecord.LOG_HR_OPERATION_RECORD.ID);
+        public static final UniqueKey<LogResumeRecordRecord> KEY_LOG_RESUME_RECORD_PRIMARY = createUniqueKey(LogResumeRecord.LOG_RESUME_RECORD, "KEY_log_resume_record_PRIMARY", LogResumeRecord.LOG_RESUME_RECORD.ID);
         public static final UniqueKey<LogSmsSendrecordRecord> KEY_LOG_SMS_SENDRECORD_PRIMARY = createUniqueKey(LogSmsSendrecord.LOG_SMS_SENDRECORD, "KEY_log_sms_sendrecord_PRIMARY", LogSmsSendrecord.LOG_SMS_SENDRECORD.ID);
         public static final UniqueKey<LogWxMenuRecordRecord> KEY_LOG_WX_MENU_RECORD_PRIMARY = createUniqueKey(LogWxMenuRecord.LOG_WX_MENU_RECORD, "KEY_log_wx_menu_record_PRIMARY", LogWxMenuRecord.LOG_WX_MENU_RECORD.ID);
         public static final UniqueKey<LogWxMessageRecordRecord> KEY_LOG_WX_MESSAGE_RECORD_PRIMARY = createUniqueKey(LogWxMessageRecord.LOG_WX_MESSAGE_RECORD, "KEY_log_wx_message_record_PRIMARY", LogWxMessageRecord.LOG_WX_MESSAGE_RECORD.ID);

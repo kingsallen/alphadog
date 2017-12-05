@@ -480,20 +480,23 @@ public class PcRevisionEntity {
                 List<Integer> moduleIdList=(List<Integer>) map.get("moduleId");
                 Map<String,Object> data=(Map<String, Object>) map.get("data");
                 List<Map<String,Object>> moduleDataList=(List<Map<String, Object>>) data.get("moduleData");
-                for(Map<String,Object> moduleData:moduleDataList){
-                    int mapModuleId=(int) moduleData.get("id");
-                    if(mapModuleId==moduleId){
-                        String mediaDataString=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
-                        Map<String,Object> mediaData=JSON.parseObject(mediaDataString, Map.class);
-                        List<Map<String,Object>> mediaDataList=new ArrayList<Map<String,Object>>();
-                        if(moduleData.get("mediaData")!=null){
-                            mediaDataList=(List<Map<String, Object>>) moduleData.get("mediaData");
+                if(!StringUtils.isEmptyList(moduleDataList)){
+                    for(Map<String,Object> moduleData:moduleDataList){
+                        int mapModuleId=(int) moduleData.get("id");
+                        if(mapModuleId==moduleId){
+                            String mediaDataString=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
+                            Map<String,Object> mediaData=JSON.parseObject(mediaDataString, Map.class);
+                            List<Map<String,Object>> mediaDataList=new ArrayList<Map<String,Object>>();
+                            if(moduleData.get("mediaData")!=null){
+                                mediaDataList=(List<Map<String, Object>>) moduleData.get("mediaData");
+                            }
+                            mediaDataList.add(mediaData);
+                            moduleData.put("mediaData",mediaDataList);
                         }
-                        mediaDataList.add(mediaData);
-                        moduleData.put("mediaData",mediaDataList);
                     }
                 }
-                if(resId!=0){
+
+                if(resId!=0&&!StringUtils.isEmptyList(moduleIdList)){
                     for(Integer mapModuleId:moduleIdList){
                         if(mapModuleId==moduleId){
                             List<Integer> resIdList=new ArrayList<Integer>();
@@ -532,13 +535,9 @@ public class PcRevisionEntity {
                         if(map3.get("imgUrl")!=null){
                             break;
                         }
-
                     }
                 }
-
             }
-
-
         }
     }
     //处理hrresource的数据，将之放在map

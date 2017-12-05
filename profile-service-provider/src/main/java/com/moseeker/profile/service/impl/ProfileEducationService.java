@@ -16,9 +16,10 @@ import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.OrderBy;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
-import com.moseeker.profile.constants.ValidationMessage;
-import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
-import com.moseeker.profile.utils.ProfileValidation;
+import com.moseeker.entity.ProfileEntity;
+import com.moseeker.entity.biz.ProfileValidation;
+import com.moseeker.entity.biz.ValidationMessage;
+import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCollegeDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictMajorDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileEducationDO;
@@ -60,7 +61,7 @@ public class ProfileEducationService {
     private ProfileProfileDao profileDao;
 
     @Autowired
-    private ProfileCompletenessImpl completenessImpl;
+    private ProfileEntity profileEntity;
 
     public List<Education> getResources(Query query) throws TException {
         // 按照结束时间倒序
@@ -133,7 +134,7 @@ public class ProfileEducationService {
         int totalRow = dao.getCount(query);
         List<?> datas = dao.getDatas(query);
 
-        return ProfileUtils.getPagination(totalRow, query.getPageNum(), query.getPageSize(), datas);
+        return ProfileExtUtils.getPagination(totalRow, query.getPageNum(), query.getPageSize(), datas);
     }
 
     /**
@@ -178,7 +179,7 @@ public class ProfileEducationService {
                 profileDao.updateUpdateTime(profileIds);
                 
 				/* 计算profile完整度 */
-                completenessImpl.reCalculateProfileEducation(education.getProfile_id(), 0);
+                profileEntity.reCalculateProfileEducation(education.getProfile_id(), 0);
             }
         }
         return result;
@@ -190,6 +191,7 @@ public class ProfileEducationService {
         int result = 0;
 
         if (education != null) {
+
             if (education.getCollege_code() > 0) {
                 DictCollegeDO college = collegeDao.getCollegeByID(education.getCollege_code());
                 if (college != null) {
@@ -213,7 +215,7 @@ public class ProfileEducationService {
             if (result > 0) {
                 updateUpdateTime(education);
             /* 计算profile完整度 */
-                completenessImpl.reCalculateProfileEducation(education.getProfile_id(), education.getId());
+                profileEntity.reCalculateProfileEducation(education.getProfile_id(), education.getId());
             }
         }
         return result;
@@ -227,16 +229,7 @@ public class ProfileEducationService {
         if (structs != null && structs.size() > 0) {
 
             //添加信息校验
-            if (structs != null && structs.size() > 0) {
-                Iterator<Education> ie = structs.iterator();
-                while (ie.hasNext()) {
-                    Education education = ie.next();
-                    ValidationMessage<Education> vm = ProfileValidation.verifyEducation(education);
-                    if (!vm.isPass()) {
-                        ie.remove();
-                    }
-                }
-            }
+            removeIllegalEducation(structs);
 
             if (structs.size() > 0) {
 
@@ -256,11 +249,28 @@ public class ProfileEducationService {
 
                 profileIds.forEach(profileId -> {
                     /* 计算profile完整度 */
-                    completenessImpl.reCalculateProfileEducation(profileId, 0);
+                    profileEntity.reCalculateProfileEducation(profileId, 0);
                 });
             }
         }
         return resultDatas;
+    }
+
+    /**
+     * 过滤不合法的教育经历
+     * @param structs
+     */
+    private void removeIllegalEducation(List<Education> structs) {
+        if (structs != null && structs.size() > 0) {
+            Iterator<Education> ie = structs.iterator();
+            while (ie.hasNext()) {
+                Education education = ie.next();
+                ValidationMessage<Education> vm = ProfileValidation.verifyEducation(education);
+                if (!vm.isPass()) {
+                    ie.remove();
+                }
+            }
+        }
     }
 
     @Transactional
@@ -281,7 +291,7 @@ public class ProfileEducationService {
             updateUpdateTime(updatedDatas);
             updatedDatas.forEach(struct -> {
                 /* 计算profile完整度 */
-                completenessImpl.reCalculateProfileEducation(struct.getProfile_id(), struct.getId());
+                profileEntity.reCalculateProfileEducation(struct.getProfile_id(), struct.getId());
             });
         }
         return result;
@@ -307,7 +317,7 @@ public class ProfileEducationService {
                 //更新对应的profile更新时间
                 profileDao.updateUpdateTime(deleteDatas.stream().map(data -> data.getProfileId()).collect(Collectors.toSet()));
                 for (ProfileEducationDO data : deleteDatas) {
-                    completenessImpl.reCalculateProfileEducation(data.getProfileId(), 0);
+                    profileEntity.reCalculateProfileEducation(data.getProfileId(), 0);
                 }
             }
             return result;
@@ -331,7 +341,7 @@ public class ProfileEducationService {
                 if (result > 0) {
                     updateUpdateTime(struct);
                     /* 计算profile完整度 */
-                    completenessImpl.reCalculateProfileEducation(deleteData.getProfileId(), 0);
+                    profileEntity.reCalculateProfileEducation(deleteData.getProfileId(), 0);
                 }
             }
         }

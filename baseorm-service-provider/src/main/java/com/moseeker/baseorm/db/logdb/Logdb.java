@@ -8,6 +8,7 @@ import com.moseeker.baseorm.db.logdb.tables.LogCronjob;
 import com.moseeker.baseorm.db.logdb.tables.LogDeadLetter;
 import com.moseeker.baseorm.db.logdb.tables.LogEmailSendrecord;
 import com.moseeker.baseorm.db.logdb.tables.LogHrOperationRecord;
+import com.moseeker.baseorm.db.logdb.tables.LogResumeRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogSmsSendrecord;
 import com.moseeker.baseorm.db.logdb.tables.LogWxMenuRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogWxMessageRecord;
@@ -37,7 +38,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Logdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 1125099976;
+    private static final long serialVersionUID = 1753307782;
 
     /**
      * The reference instance of <code>logdb</code>
@@ -63,6 +64,11 @@ public class Logdb extends SchemaImpl {
      * HR操作记录表
      */
     public final LogHrOperationRecord LOG_HR_OPERATION_RECORD = com.moseeker.baseorm.db.logdb.tables.LogHrOperationRecord.LOG_HR_OPERATION_RECORD;
+
+    /**
+     * The table <code>logdb.log_resume_record</code>.
+     */
+    public final LogResumeRecord LOG_RESUME_RECORD = com.moseeker.baseorm.db.logdb.tables.LogResumeRecord.LOG_RESUME_RECORD;
 
     /**
      * 短信发送记录表
@@ -113,6 +119,7 @@ public class Logdb extends SchemaImpl {
             LogDeadLetter.LOG_DEAD_LETTER,
             LogEmailSendrecord.LOG_EMAIL_SENDRECORD,
             LogHrOperationRecord.LOG_HR_OPERATION_RECORD,
+            LogResumeRecord.LOG_RESUME_RECORD,
             LogSmsSendrecord.LOG_SMS_SENDRECORD,
             LogWxMenuRecord.LOG_WX_MENU_RECORD,
             LogWxMessageRecord.LOG_WX_MESSAGE_RECORD,

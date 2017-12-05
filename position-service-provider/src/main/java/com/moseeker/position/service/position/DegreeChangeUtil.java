@@ -95,9 +95,6 @@ public class DegreeChangeUtil {
             case SpecicalSecondarySchool:
                 liepinDegree = LiepinDegree.MiddleCollege;
                 break;
-            case HighSchool:
-                liepinDegree = LiepinDegree.HighSchool;
-                break;
             case JuniorCollege:
                 liepinDegree = LiepinDegree.JuniorCollege;
                 break;
@@ -115,9 +112,6 @@ public class DegreeChangeUtil {
                 break;
             case PostDoctor:
                 liepinDegree = LiepinDegree.PostDoctor;
-                break;
-            case Junior:
-                liepinDegree = LiepinDegree.Junior;
                 break;
             default:
                 liepinDegree = LiepinDegree.NotRequired;

@@ -1,5 +1,6 @@
 package com.moseeker.servicemanager.web.controller.useraccounts;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,58 +29,63 @@ public class UserEmailPositionController {
 	@RequestMapping(value = "/user/email/recommendposition", method=RequestMethod.GET)
 	@ResponseBody
 	public String sendEmailPosition(HttpServletRequest request, HttpServletResponse response) {
-		Map<String, Object> reqParams = null;
-		try{
-			reqParams = ParamUtils.parseRequestParam(request);
-			logger.info(JSON.toJSONString(reqParams)+"++++++++++++++++++");
-			int userId=Integer.parseInt(reqParams.get("userId")+"");
-			logger.info("向user_id为{}的用户发送职位推荐邮件",userId);
-			Response res=userQxService.sendRecommendPosition(userId);
-			return ResponseLogNotification.success(request,res);
-		}catch(Exception e){
-			logger.info(e.getMessage(),e);
-			return ResponseLogNotification.fail(request, e.getMessage());
-		}
+		 Map<String, Object> reqParams = null;
+    	 try{
+    		 reqParams = ParamUtils.parseRequestParam(request);
+    		 logger.info(JSON.toJSONString(reqParams)+"++++++++++++++++++");
+    		 int userId=Integer.parseInt(reqParams.get("userId")+"");
+    		 logger.info("向user_id为{}的用户发送职位推荐邮件",userId);
+    		 Response res=userQxService.sendRecommendPosition(userId);
+    		 return ResponseLogNotification.success(request,res);
+    	 }catch(Exception e){
+    		 logger.info(e.getMessage(),e);
+    		 return ResponseLogNotification.fail(request, e.getMessage());
+    	 }
 	}
-
+	
 	@RequestMapping(value = "/user/email/validate", method=RequestMethod.GET)
 	@ResponseBody
 	public String sendEmailvalidate(HttpServletRequest request, HttpServletResponse response) {
-		Map<String, Object> reqParams = null;
-		try{
-			reqParams = ParamUtils.parseRequestParam(request);
-			logger.info(reqParams+"+++++++++++++++++++/user/email/validate");
-			int userId=Integer.parseInt(reqParams.get("userId")+"");
-			String email= (String) reqParams.get("email");
-			String conditions= (String) reqParams.get("conditions");
-			String urls=(String) reqParams.get("url");
-			logger.info("向user_id为{}的用户发送邮箱验证邮件",userId);
-			Response res=userQxService.sendValiddateEmail(email, userId, conditions,urls);
-			return ResponseLogNotification.success(request,res);
-		}catch(Exception e){
-			logger.info(e.getMessage(),e);
-			return ResponseLogNotification.fail(request, e.getMessage());
-		}
+		 Map<String, Object> reqParams = null;
+	   	 try{
+	   		 reqParams = ParamUtils.parseRequestParam(request);
+	   		 logger.info(reqParams+"+++++++++++++++++++/user/email/validate");
+			 int userId=Integer.parseInt(reqParams.get("userId")+"");
+	   		 String email= (String) reqParams.get("email");
+			 String conditions=(String)reqParams.get("conditions");
+			 logger.info("conditions==={}==",conditions);
+			 if(!StringUtils.isNotNullOrEmpty(conditions)){
+				 conditions="";
+			 }
+			 String urls=(String) reqParams.get("url");
+	   		 logger.info("向user_id为{}的用户发送邮箱验证邮件",userId);
+	   		 Response res=userQxService.sendValiddateEmail(email, userId, conditions,urls);
+	   		 return ResponseLogNotification.success(request,res);
+	   	 }catch(Exception e){
+	   		 logger.info(e.getMessage(),e);
+	   		 return ResponseLogNotification.fail(request, e.getMessage());
+	   	 }
 	}
-
+	
 	@RequestMapping(value = "/emailposition", method=RequestMethod.POST)
 	@ResponseBody
 	public String PostUserEmailPosition(HttpServletRequest request, HttpServletResponse response) {
 		Map<String, Object> reqParams = null;
-		try{
-			reqParams = ParamUtils.parseRequestParam(request);
-			logger.info("参数reqParams===={}",reqParams);
-			int userId=Integer.parseInt(reqParams.get("userId")+"");
-			String conditions=(String) reqParams.get("conditions");
-			if(conditions==null){
-				conditions="";
-			}
-			logger.info("将user_id为{}的用户查询条件为{"+conditions+"}保存或者更新到数据库",userId);
-			Response res=userQxService.postUserEmailPosition(userId, conditions);
-			return ResponseLogNotification.success(request,res);
-		}catch(Exception e){
-			logger.info(e.getMessage(),e);
-			return ResponseLogNotification.fail(request, e.getMessage());
-		}
+	   	 try{
+	   		 reqParams = ParamUtils.parseRequestParam(request);
+	   		 logger.info("参数reqParams===={}",reqParams);
+			 int userId=Integer.parseInt(reqParams.get("userId")+"");
+			 String conditions=(String)reqParams.get("conditions");
+			 logger.info("conditions==={}==",conditions);
+			 if(!StringUtils.isNotNullOrEmpty(conditions)){
+				 conditions="";
+			 }
+	   		 logger.info("将user_id为{}的用户查询条件为{"+conditions+"}保存或者更新到数据库",userId);
+	   		 Response res=userQxService.postUserEmailPosition(userId, conditions);
+	   		 return ResponseLogNotification.success(request,res);
+	   	 }catch(Exception e){
+	   		 logger.info(e.getMessage(),e);
+	   		 return ResponseLogNotification.fail(request, e.getMessage());
+	   	 }
 	}
 }

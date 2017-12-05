@@ -2,7 +2,6 @@ package com.moseeker.profile.thrift;
 
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.profile.service.impl.ProfileCompletenessImpl;
 import com.moseeker.profile.service.impl.ProfileLanguageService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -24,9 +23,6 @@ public class ProfileLanguageServicesImpl implements Iface {
 
     @Autowired
     private ProfileLanguageService service;
-
-    @Autowired
-    private ProfileCompletenessImpl completenessImpl;
 
     @Override
     public Response postResources(List<Language> structs) throws TException {

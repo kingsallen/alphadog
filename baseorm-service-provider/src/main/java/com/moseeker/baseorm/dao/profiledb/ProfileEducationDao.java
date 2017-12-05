@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author xxx
@@ -34,14 +35,22 @@ public class ProfileEducationDao extends JooqCrudImpl<ProfileEducationDO, Profil
 
     public int updateProfileUpdateTime(HashSet<Integer> educationIds) {
         int status = 0;
-        Timestamp updateTime = new Timestamp(System.currentTimeMillis());
-        status = create.update(ProfileProfile.PROFILE_PROFILE)
-                .set(ProfileProfile.PROFILE_PROFILE.UPDATE_TIME, updateTime)
-                .where(ProfileProfile.PROFILE_PROFILE.ID
-                        .in(create.select(ProfileEducation.PROFILE_EDUCATION.PROFILE_ID)
-                                .from(ProfileEducation.PROFILE_EDUCATION)
-                                .where(ProfileEducation.PROFILE_EDUCATION.ID.in(educationIds))))
-                .execute();
+
+        List<Integer> profileIdList = create.select(ProfileEducation.PROFILE_EDUCATION.PROFILE_ID)
+                .from(ProfileEducation.PROFILE_EDUCATION)
+                .where(ProfileEducation.PROFILE_EDUCATION.ID.in(educationIds))
+                .stream()
+                .map(integerRecord1 -> integerRecord1.value1())
+                .collect(Collectors.toList());
+
+        if (profileIdList != null && profileIdList.size() > 0) {
+            Timestamp updateTime = new Timestamp(System.currentTimeMillis());
+            status = create.update(ProfileProfile.PROFILE_PROFILE)
+                    .set(ProfileProfile.PROFILE_PROFILE.UPDATE_TIME, updateTime)
+                    .where(ProfileProfile.PROFILE_PROFILE.ID
+                            .in(profileIdList))
+                    .execute();
+        }
 
         return status;
     }

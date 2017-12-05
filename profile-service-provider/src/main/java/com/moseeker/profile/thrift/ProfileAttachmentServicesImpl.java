@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ProfileAttachmentServicesImpl implements AttachmentServices.Iface {
@@ -184,6 +185,21 @@ public class ProfileAttachmentServicesImpl implements AttachmentServices.Iface {
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
+            if (e instanceof BIZException) {
+                return ResponseUtils.fail(((BIZException) e).getCode(), e.getMessage());
+            }
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
+    }
+
+
+    @Override
+    public Response delPcResource(int id) throws BIZException, TException {
+        try{
+            Response res=service.delPcAttachment(id);
+            return res;
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
             if (e instanceof BIZException) {
                 return ResponseUtils.fail(((BIZException) e).getCode(), e.getMessage());
             }

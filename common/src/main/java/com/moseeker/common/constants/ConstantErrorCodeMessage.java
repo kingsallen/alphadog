@@ -14,7 +14,7 @@ public final class ConstantErrorCodeMessage {
     public static final String PROGRAM_POST_FAILED = "{'status':90011,'message':'添加失败！'}";
     public static final String PROGRAM_PUT_FAILED = "{'status':90012,'message':'保存失败!'}";
     public static final String PROGRAM_DEL_FAILED = "{'status':90013,'message':'删除失败!'}";
-    public static final String VALIDATE_FAILED = "{'errcode':90014, 'message':'{MESSAGE}'}";
+    public static final String VALIDATE_FAILED = "{'status':90014, 'message':'{MESSAGE}'}";
     public static final String PROGRAM_PARAM_NOTEXIST = "{'status':90015,'message':'参数不正确!'}";
     public static final String PROGRAM_CONFIG_INCOMPLETE = "{'status':90016,'message':'配置信息丢失!'}";
 
@@ -112,6 +112,7 @@ public final class ConstantErrorCodeMessage {
     public static final String POSITION_DATA_ALLCITY_ERROR = "{'status':51015,'message':'全国职位暂不同步到支付宝'}";
     public static final String POSITION_DATA_NOCITYCODE_ERROR = "{'status':51016,'message':'无city code的职位暂不同步到支付宝'}";
     public static final String CITY_TOO_LONG = "{'status':51017,'message':'城市信息太长，无法入库'}";
+    public static final int NO_BIND_THIRD_PARTY_ACCOUNT_STATUS = 51018;
 
 
     //APPBS错误代码61000

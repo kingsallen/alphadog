@@ -1,17 +1,24 @@
 package com.moseeker.useraccounts.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.AopTargetUtils;
 import com.moseeker.entity.EmployeeEntity;
+import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
 import com.moseeker.thrift.gen.employee.struct.*;
+import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.moseeker.useraccounts.config.AppConfig;
 import com.moseeker.useraccounts.service.EmployeeBinder;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import org.apache.thrift.TException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +31,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
-import sun.jvm.hotspot.runtime.Thread;
+//import sun.jvm.hotspot.runtime.Thread;
 
 /**
  * Created by lucky8987 on 17/5/17.
@@ -43,16 +50,19 @@ public class EmployeeServiceTest {
     EmployeeEntity employeeEntity;
 
 //    @Mock
-//    RedisClient client;
+//    SearchengineServices.Iface searchService;
 
 //    @Before
 //    public void init() throws Exception {
 //        MockitoAnnotations.initMocks(this);
-//        // EmployeeService 是通过aop代理的bean对象，所以要通过AopTargetUtils获取bean本身然后将mock的对象设置进去
-//        ReflectionTestUtils.setField(AopTargetUtils.getTarget(service), "client", client);
-//        Mockito.when(client.set(Mockito.anyInt(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("insert success");
-//        Mockito.when(client.get(Mockito.anyInt(), Mockito.anyString(), Mockito.anyString())).thenReturn(null);
+//        ReflectionTestUtils.setField(AopTargetUtils.getTarget(service), "searchService", searchService);
+//        Mockito.when(searchService.queryAwardRankingInWx(Mockito.anyList(), Mockito.anyString(), Mockito.anyInt())).thenReturn(ResponseUtils.success(
+//                new HashMap<Integer, JSONObject>(){{
+//                   put(29157, JSON.parseObject("{\"award\":0,\"ranking\":1}"));
+//                }}
+//        ));
 //    }
+
 
     @Test
     public void getEmployee() throws Exception {
@@ -112,10 +122,10 @@ public class EmployeeServiceTest {
     }
 
 //    @Test
-    public void awardRankingTest() {
-        List<EmployeeAward> response = service.awardRanking(45082, 39978, "2017-08");
-        System.out.println(response);
-    }
+//    public void awardRankingTest() {
+//        List<EmployeeAward> response = service.awardRanking(782667, 39978, "2017");
+//        System.out.println(JSONObject.toJSONString(response));
+//    }
 
 //    @Test
 //    @Commit
@@ -124,7 +134,7 @@ public class EmployeeServiceTest {
      * 线程池
      */
      ExecutorService threadPool = new ThreadPoolExecutor(10, 15, 60L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 20; i++) {
             Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
@@ -132,16 +142,24 @@ public class EmployeeServiceTest {
                     ueprDo.setAward(1);
                     ueprDo.setEmployeeId(677720);
                     ueprDo.setReason("加积分");
-                    int total = 0;
                     try {
-                        total = employeeEntity.addReward(677720, 96, ueprDo);
+                        employeeEntity.addReward(677720, 96, ueprDo);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    System.out.println("用户："+ueprDo.getEmployeeId()+", 积分："+total);
                 }
             };
             threadPool.submit(runnable);
+            threadPool.submit(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        employeeEntity.addAwardBefore(677720, 96, 233, 7, 112, 0);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
         }
 
         threadPool.shutdown();
@@ -164,4 +182,12 @@ public class EmployeeServiceTest {
         Result result = service.setCacheEmployeeCustomInfo(2376, 2878, "[{\"a\":2}]");
         System.out.println(result);
     }
+//    @Test
+//    public void convertCandidatePerson(){
+//        bindByEmail.convertCandidatePerson(391471,2878);
+//    }
+//    @Test
+//    public void cancelCandidate(){
+//        bindByEmail.cancelCandidate(391471,2878);
+//    }
 }

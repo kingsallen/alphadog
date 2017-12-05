@@ -2,9 +2,14 @@
 
 namespace java com.moseeker.thrift.gen.useraccounts.struct
 include "../../dao/struct/userdb/user_employee_struct.thrift"
+include "../../dao/struct/userdb/user_hr_account_struct.thrift"
 
 typedef string Timestamp
 
+struct UserHRAccountAddAccountForm {
+    1: optional i32 id,
+    2: optional user_hr_account_struct.UserHrAccountDO hrAccount 
+}
 
 struct Userloginreq {
     1: optional string unionid,
@@ -51,7 +56,7 @@ struct User {
     24: optional i64        parentid             // 合并到了新用户的id
     25: optional i32        email_verified  ,    // 邮箱是否认证
     26: optional string     nickname,       	 // 用户昵称
-    27: optional string     countryCode="86"
+    27: optional string     countryCode
 }
 
 
@@ -199,7 +204,11 @@ struct UserEmployeeStruct {
 	47: optional i8 email_isvalid,
 	48: optional i8 auth_method,
 	49: optional string custom_field_values,
-	50: optional string departmentname
+	50: optional string departmentname,
+	51: optional i32 team_id,
+	52: optional i8 job_grade,
+	53: optional i32 city_code,
+	54: optional i8 degree
 }
 
 struct UserEmployeeBatchForm{

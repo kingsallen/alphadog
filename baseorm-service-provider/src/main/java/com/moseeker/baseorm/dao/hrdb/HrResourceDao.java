@@ -38,6 +38,7 @@ public class HrResourceDao extends JooqCrudImpl<HrResourceDO, HrResourceRecord> 
              }
 			Query query=new Query.QueryBuilder().where(new Condition("id",ids.toArray(),ValueOp.IN)).buildQuery();
 		    List<HrResourceDO> list=this.getDatas(query);
+
 			return list;
 	 }
 }

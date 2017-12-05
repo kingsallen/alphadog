@@ -23,6 +23,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author xxx
@@ -40,13 +41,25 @@ public class ProfileWorkexpDao extends JooqCrudImpl<ProfileWorkexpDO, ProfileWor
         super(table, profileWorkexpDOClass);
     }
 
+    /*
+        最近工作算法： 有至今的优先，如果有2个至今，选最新添加的。 没有至今的， 选择截止时间最晚的。
+     */
     public ProfileWorkexpRecord getLastWorkExp(int profileId) {
         ProfileWorkexpRecord record = null;
         if (profileId > 0) {
             Result<ProfileWorkexpRecord> result = create.selectFrom(ProfileWorkexp.PROFILE_WORKEXP)
                     .where(ProfileWorkexp.PROFILE_WORKEXP.PROFILE_ID.equal((int) (profileId)))
-                    .orderBy(ProfileWorkexp.PROFILE_WORKEXP.END_UNTIL_NOW.desc(), ProfileWorkexp.PROFILE_WORKEXP.END.desc())
+                    .and(ProfileWorkexp.PROFILE_WORKEXP.END_UNTIL_NOW.isTrue())
+                    .orderBy(ProfileWorkexp.PROFILE_WORKEXP.ID.desc())
                     .limit(1).fetch();
+
+            if (result == null || result.size() == 0) {
+                result = create.selectFrom(ProfileWorkexp.PROFILE_WORKEXP)
+                        .where(ProfileWorkexp.PROFILE_WORKEXP.PROFILE_ID.equal((int) (profileId)))
+                        .orderBy(ProfileWorkexp.PROFILE_WORKEXP.END.desc())
+                        .limit(1).fetch();
+            }
+
             if (result != null && result.size() > 0) {
                 record = result.get(0);
             }
@@ -57,14 +70,21 @@ public class ProfileWorkexpDao extends JooqCrudImpl<ProfileWorkexpDO, ProfileWor
     public int updateProfileUpdateTime(Set<Integer> workExpIds) {
         int status = 0;
 
-        Timestamp updateTime = new Timestamp(System.currentTimeMillis());
-        status = create.update(ProfileProfile.PROFILE_PROFILE)
-                .set(ProfileProfile.PROFILE_PROFILE.UPDATE_TIME, updateTime)
-                .where(ProfileProfile.PROFILE_PROFILE.ID
-                        .in(create.select(ProfileWorkexp.PROFILE_WORKEXP.PROFILE_ID)
-                                .from(ProfileWorkexp.PROFILE_WORKEXP)
-                                .where(ProfileWorkexp.PROFILE_WORKEXP.ID.in(workExpIds))))
-                .execute();
+        List<Integer> profileIdList = create.select(ProfileWorkexp.PROFILE_WORKEXP.PROFILE_ID)
+                .from(ProfileWorkexp.PROFILE_WORKEXP)
+                .where(ProfileWorkexp.PROFILE_WORKEXP.ID.in(workExpIds))
+                .stream()
+                .map(integerRecord1 -> integerRecord1.value1())
+                .collect(Collectors.toList());
+
+        if (profileIdList != null && profileIdList.size() > 0) {
+            Timestamp updateTime = new Timestamp(System.currentTimeMillis());
+            status = create.update(ProfileProfile.PROFILE_PROFILE)
+                    .set(ProfileProfile.PROFILE_PROFILE.UPDATE_TIME, updateTime)
+                    .where(ProfileProfile.PROFILE_PROFILE.ID
+                            .in(profileIdList))
+                    .execute();
+        }
 
         return status;
     }

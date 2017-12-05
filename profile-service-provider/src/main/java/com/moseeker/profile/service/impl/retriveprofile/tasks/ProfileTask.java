@@ -3,12 +3,11 @@ package com.moseeker.profile.service.impl.retriveprofile.tasks;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.entity.ProfileEntity;
+import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.profile.constants.StatisticsForChannelmportVO;
-import com.moseeker.profile.entity.ProfileEntity;
-import com.moseeker.profile.service.impl.ProfileCompletenessImpl;
 import com.moseeker.profile.service.impl.retriveprofile.Task;
-import com.moseeker.profile.service.impl.serviceutils.ProfilePojo;
-import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
+import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,13 +28,10 @@ public class ProfileTask implements Task<ProfilePojo, Integer> {
     private ProfileProfileDao profileDao;
 
     @Autowired
-    ProfileUtils profileUtils;
+    ProfileExtUtils profileUtils;
 
     @Autowired
     ProfileEntity profileEntity;
-
-    @Autowired
-    private ProfileCompletenessImpl completenessImpl;
 
     public Integer handler(ProfilePojo profilePojo) throws CommonException {
         if (profilePojo != null && profilePojo.getUserRecord() != null) {
@@ -101,7 +97,7 @@ public class ProfileTask implements Task<ProfilePojo, Integer> {
         profileEntity.improveSkill(profilePojo.getSkillRecords(), profileId);
         profileEntity.improveWorkexp(profilePojo.getWorkexpRecords(), profileId);
         profileEntity.improveWorks(profilePojo.getWorksRecords(), profileId);
-        completenessImpl.getCompleteness1(0, null, profileId);
+        profileEntity.getCompleteness(0, null, profileId);
     }
 
     /**

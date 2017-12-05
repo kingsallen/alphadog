@@ -1,6 +1,7 @@
 package com.moseeker.baseorm.dao.profiledb;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializeFilter;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.serializer.ValueFilter;
@@ -21,6 +22,7 @@ import com.moseeker.baseorm.db.userdb.tables.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserSettingsRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.util.StringUtils;
@@ -69,14 +71,14 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
 
             if (userId > 0) {
                 if (condition == null) {
-                    condition = ProfileProfile.PROFILE_PROFILE.USER_ID.equal((int) (userId));
+                    condition = ProfileProfile.PROFILE_PROFILE.USER_ID.equal(userId);
                 }
             }
             if (profileId > 0) {
                 if (condition == null) {
-                    condition = ProfileProfile.PROFILE_PROFILE.ID.equal((int) (profileId));
+                    condition = ProfileProfile.PROFILE_PROFILE.ID.equal(profileId);
                 } else {
-                    condition = condition.or(ProfileProfile.PROFILE_PROFILE.ID.equal((int) (profileId)));
+                    condition = condition.or(ProfileProfile.PROFILE_PROFILE.ID.equal(profileId));
                 }
             }
             if (!StringUtils.isNullOrEmpty(uuid)) {
@@ -476,7 +478,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
         }
         return profileId;
     }
-
+    @CounterIface
     public int saveProfile(ProfileProfileRecord profileRecord, ProfileBasicRecord basicRecord,
                            List<ProfileAttachmentRecord> attachmentRecords, List<ProfileAwardsRecord> awardsRecords,
                            List<ProfileCredentialsRecord> credentialsRecords, List<ProfileEducationRecord> educationRecords,
@@ -1532,6 +1534,14 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
 
             Integer profileId = null;
 
+            for (Map<String, Object> mp : allProfile) {
+                Integer user_id = (Integer) mp.get("user_id");
+                if (user_id != null && user_id.intValue() > 0 && user_id.intValue() == applierId.intValue()) {
+                    profileId = (Integer) mp.get("id");
+                    break;
+                }
+            }
+
             //all from profiledb.profile_profile
             if (!filterTable(filter, "profile_profile")) {
                 buildMap(filter, map, "profile_profile", new HashMap<>());
@@ -1577,7 +1587,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                 }
             }
 
-            if (profileId != null) {
+            if (profileId!=null) {
                 //all from profiledb.profile_attachment
                 if (!filterTable(filter, "profile_attachment")) {
                     buildMap(filter, map, "profile_attachment", new HashMap<>());

@@ -6,17 +6,17 @@ package com.moseeker.entity.pojos;
  */
 public class City {
 
-    private int amout;
+    private int amount;
     private String area;
     private String expiryDate;
     private String jobType;
 
-    public int getAmout() {
-        return amout;
+    public int getAmount() {
+        return amount;
     }
 
-    public void setAmout(int amout) {
-        this.amout = amout;
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
 
     public String getArea() {

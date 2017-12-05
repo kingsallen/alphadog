@@ -94,6 +94,8 @@ service UserHrAccountService {
     void updateMobile(1:i32 hrId,2:string mobile) throws (1: common_struct.BIZException e);
     //添加帐号
     user_hr_account_struct.UserHrAccountDO addAccount(1:user_hr_account_struct.UserHrAccountDO hrAccount) throws (1: common_struct.BIZException e);
+    //添加子账号
+    i32 addSubAccount(1:user_hr_account_struct.UserHrAccountDO hrAccount) throws (1: common_struct.BIZException e);
     //是否可以添加子帐号
     bool ifAddSubAccountAllowed(1:i32 hrId) throws (1: common_struct.BIZException e);
 
@@ -215,4 +217,6 @@ service UserEmployeeService {
     common_struct.Response postPutUserEmployeeBatch(1:useraccounts_struct.UserEmployeeBatchForm batchForm);
 
     bool isEmployee(1: i32 userId, 2: i32 companyId) throws (1: common_struct.BIZException e);
+
+    common_struct.Response putUserEmployee(1:useraccounts_struct.UserEmployeeStruct userEmployee) throws (1: common_struct.BIZException e);
 }

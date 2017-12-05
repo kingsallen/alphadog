@@ -42,6 +42,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserAliUserDO;
 
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -127,6 +128,17 @@ public class JobApplicataionService {
             if (responseJob.status > 0) {
                 return responseJob;
             }
+//            long userId=(long)jobApplication.getApplier_id();
+//            int companyId=jobPositionRecord.getCompanyId();
+//            Query queryEmployee=new Query.QueryBuilder().where("sysuser_id",userId)
+//                    .and("company_id",companyId)
+//                    .and("disable",0)
+//                    .and("activation",0)
+//                    .buildQuery();
+//            UserEmployeeDO userEmployeeDO=userEmployeedao.getEmployee(queryEmployee);
+//            if(userEmployeeDO!=null){
+//                return ResponseUtils.fail(1,"申请人已经是该公司的员工，所以无法申请该职位");
+//            }
             if (checkApplicationCountAtCompany(jobApplication.getApplier_id(), jobPositionRecord.getCompanyId())) {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_VALIDATE_COUNT_CHECK);
             }
@@ -280,11 +292,13 @@ public class JobApplicataionService {
                         com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION.ID.getName(), jobApplication.getId())
                         .buildQuery());
         if (jobApplicationDO != null) {
-            ApplicationSource applicationSource = ApplicationSource.instaceFromInteger(jobApplication.getOrigin());
-            if (applicationSource == null) {
-                jobApplication.setOrigin(jobApplication.getOrigin() | jobApplication.getOrigin());
-            } else {
-                jobApplication.setOrigin(applicationSource.andSource(jobApplicationDO.getOrigin()));
+            if(jobApplication.isSetOrigin()) {
+                ApplicationSource applicationSource = ApplicationSource.instaceFromInteger(jobApplication.getOrigin());
+                if (applicationSource == null) {
+                    jobApplication.setOrigin(jobApplication.getOrigin());
+                } else {
+                    jobApplication.setOrigin(applicationSource.andSource(jobApplicationDO.getOrigin()));
+                }
             }
             // 更新申请
             JobApplicationRecord jobApplicationRecord = BeanUtils.structToDB(jobApplication, JobApplicationRecord.class);
@@ -833,13 +847,13 @@ public class JobApplicataionService {
 
     private int saveJobApplication(JobApplicationRecord jobApplicationRecord, JobPositionRecord jobPositionRecord) throws TException {
         // TODO Auto-generated method stub
-        int appId = 0;
+        int appId;
         try {
             if (jobApplicationRecord.getRecommenderUserId() != null && jobApplicationRecord.getRecommenderUserId().intValue() > 0) {
                 boolean existUserEmployee = employeeEntity.isEmployee(jobApplicationRecord.getRecommenderUserId(), jobApplicationRecord.getCompanyId());
                 logger.info("JobApplicataionService saveJobApplication existUserEmployee:{}", existUserEmployee);
                 if (!existUserEmployee) {
-                    logger.info("JobApplicataionService saveJobApplication not employee");
+                    logger.info("JobApplicataionService saveJobAp plication not employee");
                     jobApplicationRecord.setRecommenderUserId(0);
                 }
                 if (jobApplicationRecord.getApplierId() != null && jobApplicationRecord.getApplierId().intValue() == jobApplicationRecord.getRecommenderUserId().intValue()) {
@@ -849,8 +863,9 @@ public class JobApplicataionService {
 
             }
             logger.info("JobApplicataionService saveJobApplication jobApplicationRecord:{}", jobApplicationRecord);
-            jobApplicationDao.addRecord(jobApplicationRecord);
-            appId = jobApplicationRecord.getId();
+//            jobApplicationDao.addRecord(jobApplicationRecord);
+//            appId = jobApplicationRecord.getId();
+            appId = jobApplicationDao.addIfNotExists(jobApplicationRecord);
             if (appId > 0) {
                 HrOperationRecordRecord hrOperationRecord = getHrOperationRecordRecord(appId, jobApplicationRecord, jobPositionRecord);
                 hrOperationRecordDao.addRecord(hrOperationRecord);
@@ -876,11 +891,11 @@ public class JobApplicataionService {
 
     private int saveApplicationIfNotExist(JobApplicationRecord jobApplicationRecord, JobPositionRecord jobPositionRecord) throws TException {
         // TODO Auto-generated method stub
-        int appId = 0;
+        int appId;
         try {
             HrOperationRecordRecord hrOperationRecord = null;
-            jobApplicationDao.addRecord(jobApplicationRecord);
-            appId = jobApplicationRecord.getId().intValue();
+//            jobApplicationDao.addRecord(jobApplicationRecord);
+            appId = jobApplicationDao.addIfNotExists(jobApplicationRecord);
             if (appId > 0) {
                 hrOperationRecord = getHrOperationRecordRecord(appId, jobApplicationRecord, jobPositionRecord);
                 hrOperationRecordDao.addRecord(hrOperationRecord);

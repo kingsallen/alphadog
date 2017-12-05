@@ -41,7 +41,7 @@
 //	PositionServices.Iface positionServices;
 //	@Mock
 //	ChaosServices.Iface chaosService;
-//	@Rule 
+//	@Rule
 //	public MockitoRule mockitoRule = MockitoJUnit.rule();
 //	@Autowired
 //	private PositionBS positionBS;

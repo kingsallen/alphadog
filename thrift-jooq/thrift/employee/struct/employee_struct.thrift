@@ -95,7 +95,7 @@ struct RewardConfig {
 
 struct RewardsResponse {
     1: optional i32 total,
-    2: optional list<Reward> rewards,
+    2: optional list<RewardVO> rewards,
     3: optional list<RewardConfig> rewardConfigs
 }
 

@@ -11,9 +11,10 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.OrderBy;
 import com.moseeker.common.util.query.Query;
-import com.moseeker.profile.constants.ValidationMessage;
-import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
-import com.moseeker.profile.utils.ProfileValidation;
+import com.moseeker.entity.ProfileEntity;
+import com.moseeker.entity.biz.ProfileValidation;
+import com.moseeker.entity.biz.ValidationMessage;
+import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.struct.ProjectExp;
 import org.apache.commons.lang.ArrayUtils;
@@ -39,7 +40,7 @@ public class ProfileProjectExpService {
     private ProfileProfileDao profileDao;
 
     @Autowired
-    private ProfileCompletenessImpl completenessImpl;
+    private ProfileEntity profileEntity;
 
     public Response getResource(Query query) throws TException {
         ProfileProjectexpRecord record = dao.getRecord(query);
@@ -57,7 +58,7 @@ public class ProfileProjectExpService {
         List<ProfileProjectexpRecord> recordList = dao.getRecords(query);
         List<ProjectExp> datas = recordsToStructs(recordList);
 
-        return ResponseUtils.success(ProfileUtils.getPagination(totalRow, query.getPageNum(), query.getPageSize(), datas));
+        return ResponseUtils.success(ProfileExtUtils.getPagination(totalRow, query.getPageNum(), query.getPageSize(), datas));
     }
 
     public Response getResources(Query query) throws TException {
@@ -75,17 +76,25 @@ public class ProfileProjectExpService {
         }
     }
 
+    /**
+     * 过滤不合法的项目经验
+     * @param structs 项目经验
+     */
+    public void removeIllegalProjectExp(List<ProjectExp> structs) {
+        Iterator<ProjectExp> ipe = structs.iterator();
+        while (ipe.hasNext()) {
+            ProjectExp pe = ipe.next();
+            ValidationMessage<ProjectExp> vm = ProfileValidation.verifyProjectExp(pe);
+            if (!vm.isPass()) {
+                ipe.remove();
+            }
+        }
+    }
+
     @Transactional
     public Response postResources(List<ProjectExp> structs) throws TException {
         if (structs != null && structs.size() > 0) {
-            Iterator<ProjectExp> ipe = structs.iterator();
-            while (ipe.hasNext()) {
-                ProjectExp pe = ipe.next();
-                ValidationMessage<ProjectExp> vm = ProfileValidation.verifyProjectExp(pe);
-                if (!vm.isPass()) {
-                    ipe.remove();
-                }
-            }
+            removeIllegalProjectExp(structs);
         }
         if (structs != null && structs.size() > 0) {
             List<ProfileProjectexpRecord> records = dao.addAllRecord(structsToDBs(structs));
@@ -99,7 +108,7 @@ public class ProfileProjectExpService {
 
             profileIds.forEach(profileId -> {
                 /* 计算profile完成度 */
-                completenessImpl.reCalculateProfileProjectExpByProfileId(profileId);
+                profileEntity.reCalculateProfileProjectExpByProfileId(profileId);
             });
             return ResponseUtils.success("1");
         } else {
@@ -116,7 +125,7 @@ public class ProfileProjectExpService {
 
             structs.forEach(struct -> {
                 /* 计算profile完成度 */
-                completenessImpl.reCalculateProfileProjectExpByProjectExpId(struct.getId());
+                profileEntity.reCalculateProfileProjectExpByProjectExpId(struct.getId());
             });
 
             return ResponseUtils.success("1");
@@ -152,7 +161,7 @@ public class ProfileProjectExpService {
 
                 profileIds.forEach(profileId -> {
                 /* 计算profile完成度 */
-                    completenessImpl.reCalculateProfileProjectExp(profileId, 0);
+                    profileEntity.reCalculateProfileProjectExp(profileId, 0);
                 });
                 return ResponseUtils.success("1");
             }
@@ -171,17 +180,23 @@ public class ProfileProjectExpService {
         profileIds.add(struct.getProfile_id());
         profileDao.updateUpdateTime(profileIds);
             /* 计算profile完成度 */
-        completenessImpl.reCalculateProfileProjectExpByProfileId(struct.getProfile_id());
+        profileEntity.reCalculateProfileProjectExpByProfileId(struct.getProfile_id());
         return ResponseUtils.success(String.valueOf(record.getId()));
     }
 
     @Transactional
     public Response putResource(ProjectExp struct) throws TException {
+
+        ValidationMessage<ProjectExp> vm = ProfileValidation.verifyProjectExp(struct);
+        if (!vm.isPass()) {
+            return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", vm.getResult()));
+        }
+
         int result = dao.updateRecord(structToDB(struct));
         if (result > 0) {
             updateUpdateTime(struct);
             /* 计算profile完成度 */
-            completenessImpl.reCalculateProfileProjectExpByProjectExpId(struct.getId());
+            profileEntity.reCalculateProfileProjectExpByProjectExpId(struct.getId());
             return ResponseUtils.success("1");
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
@@ -198,7 +213,7 @@ public class ProfileProjectExpService {
             if (result > 0) {
                 updateUpdateTime(struct);
             /* 计算profile完成度 */
-                completenessImpl.reCalculateProfileProjectExp(projectExpRecord.getProfileId().intValue(),
+                profileEntity.reCalculateProfileProjectExp(projectExpRecord.getProfileId().intValue(),
                         projectExpRecord.getId().intValue());
                 return ResponseUtils.success("1");
             }

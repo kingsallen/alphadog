@@ -7,6 +7,7 @@ include "../../dao/struct/campaignrvo_struct.thrift"
 include "../../dao/struct/jobdb/job_position_struct.thrift"
 include "../struct/third_position_struct.thrift"
 include "../../dao/struct/hrdb/hr_third_party_account_struct.thrift"
+include "../../dao/struct/jobdb/job_pc_reported_struct.thrift"
 
 namespace java com.moseeker.thrift.gen.position.service
 /*
@@ -20,8 +21,10 @@ service PositionServices {
     common_struct.Response getPositionById(1:i32 positionId);  
     //获取公司两种自定义的字段
     common_struct.Response CustomField(1:string param);    
-    //转成第三方同步职位数据    
+    //转成第三方同步职位数据
     list<position_struct.ThirdPartyPositionForSynchronization> changeToThirdPartyPosition(1:list<appbs_struct.ThirdPartyPosition> form, 2:job_position_struct.JobPositionDO position);
+    //转成第三方同步职位数据
+    position_struct.ThirdPartyPositionForSynchronization changeOneToThirdPartyPosition(1:appbs_struct.ThirdPartyPosition form, 2:job_position_struct.JobPositionDO position);
     //生成第三方同步职位数据
     position_struct.ThirdPartyPositionForSynchronizationWithAccount createRefreshPosition(1: i32 positionId, 2: i32 account_id);
     //是否可以刷新
@@ -65,14 +68,38 @@ service PositionServices {
     position_struct.PositionDetailsListVO similarityPositionDetailsList(1:i32 pid, 2:i32 page, 3:i32 per_age);
 
     third_position_struct.ThirdPartyPositionResult getThirdPartyPositionInfo(1:third_position_struct.ThirdPartyPositionInfoForm infoForm ) throws (1: common_struct.BIZException e);
+
     i32 updateThirdPartyPosition(1:hr_third_party_position_struct.HrThirdPartyPositionDO thirdPartyPosition) throws (1: common_struct.BIZException e);
+
     i32 updateThirdPartyPositionWithAccount(1:hr_third_party_position_struct.HrThirdPartyPositionDO thirdPartyPosition,2:hr_third_party_account_struct.HrThirdPartyAccountDO thirdPartyAccount) throws (1: common_struct.BIZException e);
+
     //获取pc端职位推荐
     common_struct.Response getPcRecommand(1:i32 page,2:i32 pageSize);
+
     common_struct.Response getPcRecommandCompany(1:i32 page,2:i32 pageSize);
+
     common_struct.Response getPcRecommandCompanyAll(1:i32 page,2:i32 pageSize);
+
     common_struct.Response getPcPositionDetail(1:i32 positionId);
+
     common_struct.Response getPcRecommendPosition(1:i32 positionId,2:i32 page,3:i32 pageSize);
+
+    common_struct.Response addPcReport(1:job_pc_reported_struct.JobPcReportedDO jobPcReportedDO);
+
+    common_struct.Response getPcAdvertisement(1:i32 page,2:i32 pageSize);
+
+    common_struct.Response getPositionRecommendByModuleId(1:i32 page,2:i32 pageSize,3:i32 moduleId);
+
+    common_struct.Response getThirdpartySyncedPositions(1:i32 channel,2:i32 publisher,3:i32 companyId,4:i32 candidateSource,5:i32 page,6:i32 pageSize);
+
+    common_struct.Response putAlipayResult(1:i32 channel,2:i32 positionId,3:i32 alipayJobId );
+
+    common_struct.Response getPersonaRecomPositionList(1:i32 userId,2:i32 companyId,3:i32 type,4:i32 pageNum,5:i32 pageSize);
+
+    common_struct.Response positionCvConf(1:i32 positionId);
+
+    common_struct.Response getEmployeeRecomPositionByIds(1:i32 recomPushId,2:i32 companyId,3:i32 type);
+
 }
 /*
 	查询第三方自定义职能

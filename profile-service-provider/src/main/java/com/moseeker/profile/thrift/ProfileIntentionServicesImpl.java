@@ -1,24 +1,22 @@
 package com.moseeker.profile.thrift;
 
-import java.util.List;
-
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.Pagination;
+import com.moseeker.profile.service.impl.ProfileIntentionService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.profile.service.IntentionServices.Iface;
+import com.moseeker.thrift.gen.profile.struct.Intention;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.moseeker.profile.service.impl.ProfileCompletenessImpl;
-import com.moseeker.profile.service.impl.ProfileIntentionService;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.profile.service.IntentionServices.Iface;
-import com.moseeker.thrift.gen.profile.struct.Intention;
+import java.util.List;
 
 @Service
 public class ProfileIntentionServicesImpl implements Iface {
@@ -27,9 +25,6 @@ public class ProfileIntentionServicesImpl implements Iface {
 
     @Autowired
     private ProfileIntentionService service;
-
-    @Autowired
-    private ProfileCompletenessImpl completenessImpl;
 
     @Override
     public Response getResources(CommonQuery query) throws TException {

@@ -39,22 +39,22 @@ public class WordpressUserPostDao
 	}
 
 
-	public long getReadedPostId(int userId,long id ) throws TException {
-		long postId = 0;
-		Query.QueryBuilder qu = new Query.QueryBuilder();
-		qu.where("user_id", String.valueOf(userId)).and("object_id",id);
-		try {
-			WordpressUserPostRecord record = getRecord(qu.buildQuery());
-			if(record != null) {
-				postId = record.getObjectId().longValue();
-			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			logger.error(e.getMessage(), e);
-		} finally {
-			//do nothing
-		}
-		return postId;
-	}
+    public long getReadedPostId(int userId,long id ) throws TException {
+        long postId = 0;
+        Query.QueryBuilder qu = new Query.QueryBuilder();
+        qu.where("user_id", String.valueOf(userId)).and("object_id",id);
+        try {
+            WordpressUserPostRecord record = getRecord(qu.buildQuery());
+            if(record != null) {
+                postId = record.getObjectId().longValue();
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+        } finally {
+            //do nothing
+        }
+        return postId;
+    }
 }

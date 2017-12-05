@@ -241,4 +241,20 @@ public class ProfileServicesImplTest {
         System.out.println(response);
     }
 
+    @Test
+    public void profileParserTest() {
+        try {
+            Response response = profileService.profileParser(1707240, "77559bba-ad7d-11e7-9d40-00163e000f58.pdf", "");
+            System.out.println(response);
+        } catch (TException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void otherFieldCheckTest() {
+        Response response = profileService.otherFieldsCheck(985, "{\"salary\": 0, \"residence\": \"天水\", \"gmat\": \"\", \"PoliticalStatus\": \"共青团员\", \"majorrank\": \"5%\", \"height\": \"184\", \"idnumber\": \"62052319920207199X\", \"gre\": \"\", \"ielts\": \"\", \"location\": \"兰州\", \"secondexpectedlocation\": \"深圳\", \"marriage\": \"未婚\", \"schooljob\": [{\"schooljob_end_until_now\": 1, \"schooljob_description_hidden\": \"主要负责横向课题\", \"schooljob_end\": null, \"schooljob_start\": \"2016-11-05\", \"schooljob_job\": \"项目负责人\"}], \"workyears\": \"1\", \"toefl\": \"\"}");
+        System.out.println(response);
+    }
+
 }

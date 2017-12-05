@@ -3,7 +3,6 @@ package com.moseeker.servicemanager.web.controller.useraccounts;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
@@ -180,7 +179,7 @@ public class UseraccountsController {
 		try {
 			Map<String,Object> map=ParamUtils.parseRequestParam(request);
 			Object mobile = map.get("mobile");
-			String countryCode= (String)map.get("countryCode");
+			String countryCode= (String) map.get("countryCode");
 			if(StringUtils.isNullOrEmpty(countryCode)){
 				countryCode="86";
 			}
@@ -328,7 +327,7 @@ public class UseraccountsController {
 	public String postusersendpasswordforgotcode(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			Map<String,Object> map=ParamUtils.parseRequestParam(request);
-			Object mobile =map.get("mobile");
+			Object mobile = map.get("mobile");
 			String countryCode= (String) map.get("countryCode");
 			if(StringUtils.isNullOrEmpty(countryCode)){
 				countryCode="86";
@@ -1019,7 +1018,7 @@ public class UseraccountsController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "/user/position/status", method = {RequestMethod.GET,RequestMethod.POST}, produces = "application/json; charset=utf-8")
+    @RequestMapping(value = "/user/position/status", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
     @ResponseBody
     public String userPositionStatus(HttpServletRequest request) {
         try {
@@ -1033,8 +1032,9 @@ public class UseraccountsController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
 	/**
-	 * 批量查询用户职位状态。pc用
+	 * 批量查询用户职位状态
 	 * @param request
 	 * @return
 	 */

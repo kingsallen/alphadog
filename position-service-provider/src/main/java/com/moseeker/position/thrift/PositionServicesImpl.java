@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.position.service.fundationbs.PositionPcService;
-import com.moseeker.position.service.fundationbs.PositionQxService;
+import com.moseeker.position.service.fundationbs.*;
 import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPcReportedDO;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.position.struct.RpExtInfo;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
@@ -31,26 +31,15 @@ import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.position.service.JobOccupationService;
 import com.moseeker.position.service.fundationbs.PositionQxService;
-import com.moseeker.position.service.fundationbs.PositionService;
 import com.moseeker.position.service.third.ThirdPositionService;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.position.service.PositionServices.Iface;
-import com.moseeker.thrift.gen.position.struct.*;
-import org.apache.thrift.TException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class PositionServicesImpl implements Iface {
@@ -68,6 +57,8 @@ public class PositionServicesImpl implements Iface {
     private ThirdPositionService thirdPositionService;
     @Autowired
     private PositionPcService positionPcService;
+    @Autowired
+    private PositionThridService positionThridService;
 
     /**
      * 获取推荐职位
@@ -130,6 +121,11 @@ public class PositionServicesImpl implements Iface {
     public List<ThirdPartyPositionForSynchronization> changeToThirdPartyPosition(List<ThirdPartyPosition> forms,
                                                                                  JobPositionDO position) throws TException {
         return service.changeToThirdPartyPosition(forms, position);
+    }
+
+    @Override
+    public ThirdPartyPositionForSynchronization changeOneToThirdPartyPosition(ThirdPartyPosition form, JobPositionDO position) throws TException {
+        return service.changeToThirdPartyPosition(form, position);
     }
 
     @Override
@@ -325,6 +321,7 @@ public class PositionServicesImpl implements Iface {
             List<Map<String, Object>> list = positionPcService.getRecommendPosition(positionId,page,pageSize);
             if(StringUtils.isEmptyList(list)){
                 Response res= ResponseUtils.success("");
+                return res;
             }
             Response res= ResponseUtils.success(list);
             return res;
@@ -334,6 +331,11 @@ public class PositionServicesImpl implements Iface {
         }
 
     }
+
+
+
+
+
 
     @Override
     public ThirdPartyPositionResult getThirdPartyPositionInfo(ThirdPartyPositionInfoForm infoForm) throws BIZException, TException {
@@ -378,6 +380,118 @@ public class PositionServicesImpl implements Iface {
         try {
             return thirdPositionService.updateThirdPartyPositionWithAccount(thirdPartyPosition, thirdPartyAccount);
         } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public Response addPcReport(JobPcReportedDO jobPcReportedDO) throws TException {
+        try{
+            Response result=positionPcService.addPositionReport(jobPcReportedDO);
+            return result;
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public Response getPcAdvertisement(int page, int pageSize) throws TException {
+        try{
+            List<Map<String,Object>> list=positionPcService.getAdvertisement(page,pageSize);
+            if(StringUtils.isEmptyList(list)){
+                Response res= ResponseUtils.success("");
+                return res;
+            }
+            Response res= ResponseUtils.success(list);
+            return res;
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public Response getPositionRecommendByModuleId(int page, int pageSize, int moduleId) throws TException {
+        try {
+            Map<String,Object> result=positionPcService.getModuleRecommendPosition(page, pageSize, moduleId);
+            if(result==null||result.isEmpty()){
+                return ResponseUtils.fail(1,"模块不存在或者模块已失效");
+            }
+            Response res= ResponseUtils.success(result);
+            return res;
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public Response getThirdpartySyncedPositions(int channel, int publisher, int companyId, int candidateSource,int page,int pageSize) throws TException {
+        try{
+            Map<String,Object> map=positionThridService.getThridPositionAlipay(publisher,companyId,candidateSource,page,pageSize);
+            if(map==null||map.isEmpty()){
+                return  ResponseUtils.success("");
+            }
+            return  ResponseUtils.success(map);
+        }catch (Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public Response putAlipayResult(int channel, int positionId, int alipayJobId) throws TException {
+        try {
+            int result=positionThridService.putAlipayPositionResult(channel,positionId,alipayJobId);
+            if(result>0){
+                return  ResponseUtils.success("");
+            }else
+                return  ResponseUtils.fail(1,"alipay同步结果保存失败");
+        }catch (Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+
+    }
+    /*
+      @auth zzt
+      @param userId用户id
+      @param companyId 公司id
+      @param type职位的类型
+      功能：获取推送的职位，用于在微信端展示
+     */
+
+    @Override
+    public Response getPersonaRecomPositionList(int userId,int companyId, int type,int pageNum, int pageSize) throws TException {
+        try {
+            List<WechatPositionListData> result=service.getPersonaRecomPosition(userId,companyId,type,pageNum,pageSize);
+            if(StringUtils.isEmptyList(result)){
+                return  ResponseUtils.success("");
+            }
+            return  ResponseUtils.success(result);
+        }catch (Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+
+    }
+
+    @Override
+    public Response positionCvConf(int positionId) throws TException {
+        return service.positionCvConf(positionId);
+    }
+
+    @Override
+    public Response getEmployeeRecomPositionByIds(int recomPushId,int company,int type) throws TException {
+        try {
+            List<WechatPositionListData> result=service.getEmployeeRecomPositionList(recomPushId,company,type);
+            if(StringUtils.isEmptyList(result)){
+                return  ResponseUtils.fail(1,"您所查找的推送不存在");
+            }
+            return  ResponseUtils.success(result);
+        }catch (Exception e){
+            logger.info(e.getMessage(),e);
             throw ExceptionUtils.convertException(e);
         }
     }

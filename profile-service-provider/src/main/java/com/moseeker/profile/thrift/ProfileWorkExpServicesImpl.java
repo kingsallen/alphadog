@@ -1,23 +1,20 @@
 package com.moseeker.profile.thrift;
 
-import java.util.List;
-
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.profile.service.impl.ProfileWorkExpService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
-
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.profile.service.WorkExpServices.Iface;
+import com.moseeker.thrift.gen.profile.struct.WorkExp;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.moseeker.profile.service.impl.ProfileCompletenessImpl;
-import com.moseeker.profile.service.impl.ProfileWorkExpService;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.profile.service.WorkExpServices.Iface;
-import com.moseeker.thrift.gen.profile.struct.WorkExp;
+import java.util.List;
 
 @Service
 public class ProfileWorkExpServicesImpl implements Iface {

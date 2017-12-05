@@ -9,9 +9,10 @@ import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.query.Query;
-import com.moseeker.profile.constants.ValidationMessage;
-import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
-import com.moseeker.profile.utils.ProfileValidation;
+import com.moseeker.entity.ProfileEntity;
+import com.moseeker.entity.biz.ProfileValidation;
+import com.moseeker.entity.biz.ValidationMessage;
+import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.struct.Awards;
 import com.moseeker.thrift.gen.profile.struct.Language;
@@ -40,7 +41,7 @@ public class ProfileLanguageService {
     private ProfileProfileDao profileDao;
 
     @Autowired
-    private ProfileCompletenessImpl completenessImpl;
+    private ProfileEntity profileEntity;
 
     @Transactional
     public Response postResources(List<Language> structs) throws TException {
@@ -64,7 +65,7 @@ public class ProfileLanguageService {
 
         profileIds.forEach(profileId -> {
             //计算profile完整度
-            completenessImpl.recalculateprofileLanguage(profileId, 0);
+            profileEntity.recalculateprofileLanguage(profileId, 0);
         });
 
         profileDao.updateUpdateTime(profileIds);
@@ -78,7 +79,7 @@ public class ProfileLanguageService {
             updateUpdateTime(structs);
             structs.forEach(struct -> {
                 //计算profile完整度
-                completenessImpl.recalculateprofileLanguage(0, struct.getId());
+                profileEntity.recalculateprofileLanguage(0, struct.getId());
             });
             return ResponseUtils.success("1");
         }
@@ -112,7 +113,7 @@ public class ProfileLanguageService {
                     updateUpdateTime(structs);
                     profileIds.forEach(profileId -> {
                         //计算profile完整度
-                        completenessImpl.recalculateprofileLanguage(profileId, 0);
+                        profileEntity.recalculateprofileLanguage(profileId, 0);
                     });
 
                     return ResponseUtils.success("1");
@@ -136,7 +137,7 @@ public class ProfileLanguageService {
         profileIds.add(struct.getProfile_id());
         profileDao.updateUpdateTime(profileIds);
 
-        completenessImpl.recalculateprofileLanguage(struct.getProfile_id(), struct.getId());
+        profileEntity.recalculateprofileLanguage(struct.getProfile_id(), struct.getId());
         return ResponseUtils.success(String.valueOf(record.getId()));
     }
 
@@ -145,7 +146,7 @@ public class ProfileLanguageService {
         int result = dao.updateRecord(BeanUtils.structToDB(struct, ProfileLanguageRecord.class));
         if (result > 0) {
             updateUpdateTime(struct);
-            completenessImpl.recalculateprofileLanguage(struct.getProfile_id(), struct.getId());
+            profileEntity.recalculateprofileLanguage(struct.getProfile_id(), struct.getId());
             return ResponseUtils.success("1");
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
@@ -162,7 +163,7 @@ public class ProfileLanguageService {
 
             if (result > 0) {
                 updateUpdateTime(struct);
-                completenessImpl.recalculateprofileLanguage(struct.getProfile_id(), struct.getId());
+                profileEntity.recalculateprofileLanguage(struct.getProfile_id(), struct.getId());
                 return ResponseUtils.success("1");
             }
         }
@@ -171,12 +172,12 @@ public class ProfileLanguageService {
 
 
     protected Language DBToStruct(ProfileLanguageRecord r) {
-        return (Language) BeanUtils.DBToStruct(Language.class, r);
+        return BeanUtils.DBToStruct(Language.class, r);
     }
 
 
     protected ProfileLanguageRecord structToDB(Language language) throws ParseException {
-        return (ProfileLanguageRecord) BeanUtils.structToDB(language, ProfileLanguageRecord.class);
+        return BeanUtils.structToDB(language, ProfileLanguageRecord.class);
     }
 
     private void updateUpdateTime(List<Language> languages) {
@@ -216,6 +217,6 @@ public class ProfileLanguageService {
         int totalRow = dao.getCount(query);
         List<?> datas = dao.getDatas(query);
 
-        return ResponseUtils.success(ProfileUtils.getPagination(totalRow, query.getPageNum(), query.getPageSize(), datas));
+        return ResponseUtils.success(ProfileExtUtils.getPagination(totalRow, query.getPageNum(), query.getPageSize(), datas));
     }
 }

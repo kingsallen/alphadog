@@ -1,5 +1,6 @@
 package com.moseeker.servicemanager.web.controller.position;
 
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
@@ -23,7 +24,7 @@ public class PositionParamUtils extends ParamUtils {
         try {
             HashMap<String, Object> data = parseRequestParam(request);
             form.setAppid((Integer) data.get("appid"));
-            form.setPosition_id((Integer) data.get("position_id"));
+            form.setPositionId((Integer) data.get("positionId"));
             List<ThirdPartyPosition> cs = new ArrayList<>();
             List<HashMap<String, Object>> channels = (List<HashMap<String, Object>>) data.get("channels");
             if (channels != null) {
@@ -53,7 +54,7 @@ public class PositionParamUtils extends ParamUtils {
         HashMap<String, Object> data = parseRequestParam(request);
         batchHandlerDate.setFields_nohash((String) data.get("fields_nohash"));
         batchHandlerDate.setFields_nooverwrite((String) data.get("fields_nooverwrite"));
-        if (data.get("nodelete") == null) {
+        if (StringUtils.isEmptyObject(data.get("nodelete"))) {
             batchHandlerDate.setNodelete(false);
         } else {
             batchHandlerDate.setNodelete((Boolean) data.get("nodelete"));
@@ -130,11 +131,8 @@ public class PositionParamUtils extends ParamUtils {
             if (positions != null && positions.size() > 0) {
                 positions.forEach(position -> {
                     int positionId = (Integer) position.get("position_id");
-                    List<Integer> channels = (List<Integer>) position.get("channels");
-                    if (channels == null ||channels.size() ==0) {
-	                    if(positionId!=0){
-	                    	paramList.add(positionId);
-	                    }
+                    if(positionId!=0){
+                        paramList.add(positionId);
                     }
                 });
             }

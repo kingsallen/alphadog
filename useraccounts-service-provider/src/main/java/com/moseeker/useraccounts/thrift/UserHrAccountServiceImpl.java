@@ -75,6 +75,18 @@ public class UserHrAccountServiceImpl implements Iface {
     }
 
     @Override
+    public int addSubAccount(UserHrAccountDO hrAccount) throws BIZException, TException {
+        try {
+            return service.addSubAccount(hrAccount);
+        } catch (CommonException e1) {
+            throw ExceptionConvertUtil.convertCommonException(e1);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
+    }
+
+    @Override
     public boolean ifAddSubAccountAllowed(int hrId) throws TException {
         try {
             return service.ifAddSubAccountAllowed(hrId);
@@ -572,7 +584,8 @@ public class UserHrAccountServiceImpl implements Iface {
     @Override
     public Response updateUserEmployee(String cname, String mobile, String email, String customField, int userEmployeeId, int companyId, String customFieldValues) throws BIZException, TException {
         try {
-            return service.updateUserEmployee(cname, mobile, email, customField, userEmployeeId, companyId, customFieldValues);        } catch (CommonException e) {
+            return service.updateUserEmployee(cname, mobile, email, customField, userEmployeeId, companyId, customFieldValues);
+        } catch (CommonException e) {
             throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

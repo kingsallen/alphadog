@@ -42,6 +42,7 @@ public class SearchengineServiceImpl implements Iface {
 		return service.updateposition(position, id);
 	}
 
+
 	@Override
 	public Response companyQuery(String keyWords, String citys, String industry, String scale, int page, int pageSize){
 		// TODO Auto-generated method stub
@@ -60,10 +61,10 @@ public class SearchengineServiceImpl implements Iface {
 
 	@Override
 	public Response positionQuery(String keyWords, String citys, String industry, String salaryCode, int page,
-								  int pageSize, String startTime, String endTime,int companyId,int teamId,int motherCompanyId,int order) throws TException {
+								  int pageSize, String startTime, String endTime,int companyId,int teamId,int motherCompanyId,int order,int moduleId) throws TException {
 		// TODO Auto-generated method stub
 		try{
-			Map<String,Object> res=positionSearchEngine.search(keyWords, industry, salaryCode, page, pageSize, citys, startTime, endTime,companyId,teamId,motherCompanyId,order);
+			Map<String,Object> res=positionSearchEngine.search(keyWords, industry, salaryCode, page, pageSize, citys, startTime, endTime,companyId,teamId,motherCompanyId,order,moduleId);
 			if(res==null){
 				return ResponseUtils.success("");
 			}
@@ -73,6 +74,7 @@ public class SearchengineServiceImpl implements Iface {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
 		}
 	}
+
 
     @Override
     public Response queryAwardRanking(List<Integer> employeeIds, String timespan, int pageSize, int pageNum, String keyword, int filter) throws TException {

@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrAppExportFields extends TableImpl<HrAppExportFieldsRecord> {
 
-    private static final long serialVersionUID = 2115163066;
+    private static final long serialVersionUID = -2103984201;
 
     /**
      * The reference instance of <code>hrdb.hr_app_export_fields</code>
@@ -58,7 +58,7 @@ public class HrAppExportFields extends TableImpl<HrAppExportFieldsRecord> {
     /**
      * The column <code>hrdb.hr_app_export_fields.field_name</code>. 属性含义
      */
-    public final TableField<HrAppExportFieldsRecord, String> FIELD_NAME = createField("field_name", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "属性含义");
+    public final TableField<HrAppExportFieldsRecord, String> FIELD_NAME = createField("field_name", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "属性含义");
 
     /**
      * The column <code>hrdb.hr_app_export_fields.field_title</code>. 属性标题
@@ -76,9 +76,9 @@ public class HrAppExportFields extends TableImpl<HrAppExportFieldsRecord> {
     public final TableField<HrAppExportFieldsRecord, Integer> SELECTED = createField("selected", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "是否选中;0: 未选中, 1: 选中");
 
     /**
-     * The column <code>hrdb.hr_app_export_fields.showed</code>. 默认显示;0: 显示, 1: 隐藏
+     * The column <code>hrdb.hr_app_export_fields.showed</code>. 默认隐藏;0: 隐藏, 1: 显示
      */
-    public final TableField<HrAppExportFieldsRecord, Integer> SHOWED = createField("showed", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "默认显示;0: 显示, 1: 隐藏");
+    public final TableField<HrAppExportFieldsRecord, Integer> SHOWED = createField("showed", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "默认隐藏;0: 隐藏, 1: 显示");
 
     /**
      * The column <code>hrdb.hr_app_export_fields.sample</code>. 示例

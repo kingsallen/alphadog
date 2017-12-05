@@ -17,7 +17,8 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
-import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
+import com.moseeker.entity.ProfileEntity;
+import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileBasicDO;
 import com.moseeker.thrift.gen.profile.struct.Basic;
@@ -54,7 +55,7 @@ public class ProfileBasicService {
     ProfileProfileDao profileDao;
 
     @Autowired
-    private ProfileCompletenessImpl completenessImpl;
+    private ProfileEntity profileEntity;
 
     public List<Basic> getResources(Query query) {
         List<Basic> basics = dao.getDatas(query, Basic.class);
@@ -170,7 +171,7 @@ public class ProfileBasicService {
                         profileDao.updateRealName(resultStruct.getProfile_id(), struct.getName());
                     }
                 /* 计算用户基本信息的简历完整度 */
-                    completenessImpl.reCalculateUserUser(struct.getProfile_id());
+                    profileEntity.reCalculateUserUser(struct.getProfile_id());
                     return resultStruct;
                 }
             }
@@ -215,8 +216,8 @@ public class ProfileBasicService {
                 }
 
 				/* 计算用户基本信息的简历完整度 */
-                completenessImpl.reCalculateUserUser(struct.getProfile_id());
-                completenessImpl.reCalculateProfileBasic(struct.getProfile_id());
+                profileEntity.reCalculateUserUser(struct.getProfile_id());
+                profileEntity.reCalculateProfileBasic(struct.getProfile_id());
             }
         }
         return i;
@@ -243,8 +244,8 @@ public class ProfileBasicService {
             profileDao.updateUpdateTime(profileIds);
             profileIds.forEach(profileId -> {
                 /* 计算用户基本信息的简历完整度 */
-                completenessImpl.reCalculateUserUser(profileId);
-                completenessImpl.reCalculateProfileBasic(profileId);
+                profileEntity.reCalculateUserUser(profileId);
+                profileEntity.reCalculateProfileBasic(profileId);
             });
         }
 
@@ -268,8 +269,8 @@ public class ProfileBasicService {
             profileDao.updateUpdateTime(profileIds);
             profileIds.forEach(profileId -> {
                 /* 计算用户基本信息的简历完整度 */
-                completenessImpl.reCalculateUserUser(profileId);
-                completenessImpl.reCalculateProfileBasic(profileId);
+                profileEntity.reCalculateUserUser(profileId);
+                profileEntity.reCalculateProfileBasic(profileId);
             });
             return putResult;
         } else {
@@ -293,8 +294,8 @@ public class ProfileBasicService {
                     updateUpdateTime(struct);
 
                 /* 计算用户基本信息的简历完整度 */
-                    completenessImpl.reCalculateUserUser(struct.getProfile_id());
-                    completenessImpl.reCalculateProfileBasic(struct.getProfile_id());
+                    profileEntity.reCalculateUserUser(struct.getProfile_id());
+                    profileEntity.reCalculateProfileBasic(struct.getProfile_id());
                 }
             }
         }
@@ -325,8 +326,8 @@ public class ProfileBasicService {
                 profileDao.updateUpdateTime(deleteDatas.stream().map(data -> data.getProfileId()).collect(Collectors.toSet()));
 
                 for (ProfileBasicDO data : deleteDatas) {
-                    completenessImpl.reCalculateUserUser(data.getProfileId());
-                    completenessImpl.reCalculateProfileBasic(data.getProfileId());
+                    profileEntity.reCalculateUserUser(data.getProfileId());
+                    profileEntity.reCalculateProfileBasic(data.getProfileId());
                 }
             }
 
@@ -350,6 +351,6 @@ public class ProfileBasicService {
         int totalRow = dao.getCount(query);
         List<?> datas = dao.getDatas(query);
 
-        return ProfileUtils.getPagination(totalRow, query.getPageNum(), query.getPageSize(), datas);
+        return ProfileExtUtils.getPagination(totalRow, query.getPageNum(), query.getPageSize(), datas);
     }
 }

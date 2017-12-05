@@ -1,7 +1,7 @@
 package com.moseeker.useraccounts.service.impl;
 
-import com.moseeker.entity.SearchengineEntity;
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.entity.SearchengineEntity;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
@@ -21,6 +21,7 @@ public class UserHrAccountServiceTest {
 
     @Autowired
     private UserHrAccountService userHrAccountService;
+
 
     @Autowired
     private SearchengineEntity searchengineEntity;

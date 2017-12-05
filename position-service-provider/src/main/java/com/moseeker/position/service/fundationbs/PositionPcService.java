@@ -10,16 +10,20 @@ import com.moseeker.baseorm.dao.dictdb.DictIndustryDao;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.*;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
+import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.db.jobdb.tables.JobPcRecommendPositionItem;
+import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.query.SelectOp;
+import com.moseeker.common.util.query.*;
 import com.moseeker.entity.PcRevisionEntity;
 import com.moseeker.thrift.gen.dao.struct.analytics.StJobSimilarityDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictIndustryDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
-import com.moseeker.thrift.gen.dao.struct.jobdb.JobCustomDO;
-import com.moseeker.thrift.gen.dao.struct.jobdb.JobOccupationDO;
-import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionExtDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import org.apache.thrift.TException;
 import org.apache.thrift.TSerializer;
 import org.apache.thrift.protocol.TSimpleJSONProtocol;
@@ -35,14 +39,11 @@ import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.common.util.query.Condition;
-import com.moseeker.common.util.query.Query;
-import com.moseeker.common.util.query.Select;
-import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignPcRecommendCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignPcRecommendPositionDO;
-import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+
+import javax.annotation.Resource;
 
 /*
  * create by zzt
@@ -83,6 +84,19 @@ public class PositionPcService {
 	private JobOccupationDao  jobOccupationDao;
 	@Autowired
 	private DictIndustryDao dictIndustryDao;
+	@Autowired
+	private  JobPcReportedDao jobPcReportedDao;
+	@Resource(name = "cacheClient")
+	private RedisClient redisClient;
+	private static final String POSITION_PC_REPORT = "POSITION_PC_REPORT";
+	@Autowired
+	private UserUserDao userUserDao;
+	@Autowired
+	private JobPcAdvertisementDao jobPcAdvertisementDao;
+	@Autowired
+	private JobPcRecommendPositionsModuleDao jobPcRecommendPositionsModuleDao;
+	@Autowired
+	private JobPcRecommendPositionItemDao jobPcRecommendPositionItemDao;
 	/*
      * 获取pc首页职位推荐
      */
@@ -176,6 +190,171 @@ public class PositionPcService {
 
 		return map;
 	}
+	//添加举报信息
+	@CounterIface
+	public  Response addPositionReport(JobPcReportedDO DO){
+		String positionReport = redisClient.get(Constant.APPID_ALPHADOG, POSITION_PC_REPORT,
+				String.valueOf(DO.getUserId()), String.valueOf(DO.getPositionId()));
+		if(positionReport!=null){
+			return ResponseUtils.fail(1,"举报职位过度频繁");
+		}
+		int userId=DO.getUserId();
+		Query query=new Query.QueryBuilder().where("id",userId).and("is_disable",0).buildQuery();
+		UserUserDO userUserDO=userUserDao.getData(query);
+		if(userUserDO==null){
+			return ResponseUtils.fail(1,"该用户不存在");
+		}
+		Query query1=new Query.QueryBuilder().where("id",DO.getPositionId()).and("status",0).buildQuery();
+		JobPositionDO PositionDO=jobPositionDao.getData(query1);
+		if(PositionDO==null){
+			return ResponseUtils.fail(1,"该职位不存在");
+		}
+		JobPcReportedDO reportDO=jobPcReportedDao.addData(DO);
+		if(reportDO!=null&&reportDO.getId()>0){
+			redisClient.set(Constant.APPID_ALPHADOG, POSITION_PC_REPORT,
+					String.valueOf(DO.getUserId()), String.valueOf(DO.getPositionId()),JSON.toJSONString(reportDO));
+			return ResponseUtils.success("");
+		}
+		return ResponseUtils.fail(1,"举报职位失败");
+	}
+	/*
+	  获取pc端的广告位
+	 */
+	@CounterIface
+	public List<Map<String,Object>> getAdvertisement(int page,int pageSize) throws TException {
+		List<Map<String,Object>> result=new ArrayList<Map<String, Object>>();
+		Query query=new Query.QueryBuilder().setPageNum(page).setPageSize(pageSize).buildQuery();
+		List<JobPcAdvertisementDO> list=jobPcAdvertisementDao.getDatas(query);
+		if(StringUtils.isEmptyList(list)){
+			return result;
+		}
+		for(JobPcAdvertisementDO DO:list){
+			String DOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(DO);
+			Map<String,Object> jobPcAdvertisementDOs= JSON.parseObject(DOs, Map.class);
+			result.add(jobPcAdvertisementDOs);
+		}
+		return result;
+	}
+	/*
+	 根据模块id获取职位信息
+	 */
+	@CounterIface
+	public Map<String,Object> getModuleRecommendPosition(int page,int pageSize,int moduleId) throws TException {
+		Map<String,Object> map=new HashMap<>();
+		JobPcRecommendPositionsModuleDO jobPcRecommendPositionsModuleDO=getJobPcRecommendPositionsModuleDOById(moduleId);
+		if(jobPcRecommendPositionsModuleDO==null){
+			return map;
+		}
+		Map<String,Object> positionMap=handleModuleRecommendPosition(page,pageSize,moduleId);
+		if(positionMap==null&&positionMap.isEmpty()){
+			return null;
+		}
+		String DOs=new TSerializer(new TSimpleJSONProtocol.Factory()).toString(jobPcRecommendPositionsModuleDO);
+		Map<String,Object> ModuleDOMap= JSON.parseObject(DOs, Map.class);
+//		int totalnum=handleModulePositionNum(moduleId);
+		List<Map<String,Object>> positionList= (List<Map<String, Object>>) positionMap.get("list");
+		map.put("module",ModuleDOMap);
+		map.put("position",positionList);
+		map.put("totalnum",positionMap.get("num"));
+		return map;
+	}
+	/*
+	  根据id获取模块内容
+	 */
+	public JobPcRecommendPositionsModuleDO getJobPcRecommendPositionsModuleDOById(int moduleId){
+		Query query=new Query.QueryBuilder().where("id",moduleId).and("status",1).buildQuery();
+		JobPcRecommendPositionsModuleDO jobPcRecommendPositionsModuleDO=jobPcRecommendPositionsModuleDao.getData(query);
+		return jobPcRecommendPositionsModuleDO;
+	}
+	/*
+		获取该模块下所有的items
+	 */
+	public List<JobPcRecommendPositionItemDO> getJobPcRecommendPositionItemDOByModuleId(int moduleId){
+		Query query=new Query.QueryBuilder().where("module_id",moduleId).and("status",1).orderBy("id", Order.DESC).buildQuery();
+		List<JobPcRecommendPositionItemDO> list=jobPcRecommendPositionItemDao.getDatas(query);
+		return list;
+	}
+	/*
+		获取所有的positionid
+	 */
+	public List<Integer> getPositionIdByJobPcRecommendPositionItemDOList(List<JobPcRecommendPositionItemDO> list){
+		if(StringUtils.isEmptyList(list)){
+			return null;
+		}
+		List<Integer> result=new ArrayList<>();
+		for(JobPcRecommendPositionItemDO DO:list){
+			result.add(DO.getPositionId());
+		}
+		return result;
+	}
+	/*
+		处理推荐模块获取职位信息
+	 */
+	public Map<String,Object> handleModuleRecommendPosition(int page,int pageSize,int moduleId) throws TException {
+		List<JobPcRecommendPositionItemDO> itemsList=getJobPcRecommendPositionItemDOByModuleId(moduleId);
+		List<Integer> positionIdList=getPositionIdByJobPcRecommendPositionItemDOList(itemsList);
+		List<Map<String,Object>> result=handleDataJDAndPosition(positionIdList,3);
+		List<Map<String,Object>> list=new ArrayList<>();
+		Map<String,Object> map=new HashMap<>();
+		if(StringUtils.isEmptyList(result)){
+			return null;
+		}
+		if(result.size()>=page*pageSize){
+			for(int i=(page-1)*pageSize;i<page*pageSize;i++){
+				list.add(result.get(i));
+			}
+		}else{
+			if((page-1)*pageSize>result.size()){
+				return null;
+			}else{
+				for(int i=(page-1)*pageSize;i<result.size();i++){
+					list.add(result.get(i));
+				}
+			}
+		}
+		map.put("list",list);
+		map.put("num",result.size());
+		return map;
+	}
+	/*
+	 获取该模块的item的总数
+	 */
+	public int handleModulePositionNum(int moduleId){
+		List<JobPcRecommendPositionItemDO> jobPcRecommendPositionItemDOS=getRecommendPositionItemByModuleId(moduleId);
+		List<Integer> positionIdList=getPositionIdByJobPcRecommendPositionItemDOs(jobPcRecommendPositionItemDOS);
+		return getPositionNumByIdList(positionIdList);
+	}
+	/*
+	 获取推荐职位模块下的具体推荐项
+	 */
+	public List<JobPcRecommendPositionItemDO> getRecommendPositionItemByModuleId(int moduleId){
+		Query query=new Query.QueryBuilder().where("module_id",moduleId).and("status",1).buildQuery();
+		List<JobPcRecommendPositionItemDO> jobPcRecommendPositionItemDOs=jobPcRecommendPositionItemDao.getDatas(query);
+		return jobPcRecommendPositionItemDOs;
+	}
+	//根据JobPcRecommendPositionItemDO的list获取positionid
+
+	public List<Integer> getPositionIdByJobPcRecommendPositionItemDOs(List<JobPcRecommendPositionItemDO> list){
+		if(StringUtils.isEmptyList(list)){
+			return null;
+		}
+		List<Integer> result=new ArrayList<Integer>();
+		for(JobPcRecommendPositionItemDO DO:list){
+			result.add(DO.getPositionId());
+		}
+		return result;
+	}
+	/*
+	根据position。id获取position的数量
+	 */
+	public int getPositionNumByIdList(List<Integer> positionIdList){
+		if(StringUtils.isEmptyList(positionIdList)){
+			return 0;
+		}
+		Query query=new Query.QueryBuilder().where(new Condition("id",positionIdList.toArray(),ValueOp.IN)).and("status",0).buildQuery();
+		int num=jobPositionDao.getCount(query);
+		return num;
+	}
 	//获取自定义字段
 	public Map<String,Object> handleCustomField(int positionId,int companyId){
 		Map<String,Object> map=new HashMap<String,Object>();
@@ -238,21 +417,18 @@ public class PositionPcService {
 		}
 		return occupationMap;
 	}
-
 	//获取Job_Position_Ext
 	private JobPositionExtDO getJobPositionExt(int positionId){
 		Query query=new Query.QueryBuilder().where("pid",positionId).buildQuery();
 		JobPositionExtDO DO=jobPositionExtDao.getData(query);
 		return DO;
 	}
-
 	//获取job_position_custom
 	public JobCustomDO getJobCustom(int customId){
 		Query query=new Query.QueryBuilder().where("id",customId).and("status",1).buildQuery();
 		JobCustomDO DO=jobCustomDao.getData(query);
 		return DO;
 	}
-
 	//获取job_position_custom
 	public JobOccupationDO getJobOccupation(int occupationId){
 		Query query=new Query.QueryBuilder().where("id",occupationId).and("status",1).buildQuery();
@@ -267,8 +443,6 @@ public class PositionPcService {
 		int num=jobPositionDao.getCount(query);
 		return num;
 	}
-
-
 	/*
        获取推荐职位的信息
      */
@@ -633,7 +807,7 @@ public class PositionPcService {
 				for(int j=0;j<companyList.size();j++){
 					HrCompanyDO companyDO=companyList.get(j);
 					int companyId=companyDO.getId();
-
+					int parentId=companyDO.getParentId();
 					// 本处如此做是为了过滤掉已经删除的子公司的信息
 					if(!StringUtils.isEmptyList(publisherAndCompanyId)){
 						for(int z=0;z<publisherAndCompanyId.size();z++){
@@ -713,7 +887,6 @@ public class PositionPcService {
 		}
 		return result;
 	}
-
 	/*
        处理position 或者 Team jd页数据，获取首张图片
      */
@@ -724,7 +897,6 @@ public class PositionPcService {
 		List<Map<String,Object>> list=pcRevisionEntity.HandleCmsResource(jdTeamids,type);
 		return list;
 	}
-
 	/*
      总体上处理数据
       */
@@ -826,9 +998,6 @@ public class PositionPcService {
 		List<Map<String,Object>> result=handleRecommendPcCompanyData(companyIdList);
 		return result;
 	}
-
-
-
 	//获取所有公司
 	public List<Integer> getAllCompanyIds(Map<Integer,Set<Integer>> data){
 		if(data==null||data.isEmpty()){
@@ -1017,8 +1186,6 @@ public class PositionPcService {
 		}
 		return map;
 	}
-
-
 	//处理企业信息的组合问题
 	public List<Map<String,Object>> handleDataForCompanyRecommend( List<HrCompanyDO> companyList,
 																   Map<Integer,List<Integer>> companyPulisher,Map<Integer,Integer> mapTeamNum
@@ -1150,8 +1317,6 @@ public class PositionPcService {
 		}
 		return list;
 	}
-
-
 	//获取企业行业list <String>
 	private List<String> getIndustryName(List<HrCompanyDO> list){
 		if(StringUtils.isEmptyList(list)){
@@ -1178,5 +1343,37 @@ public class PositionPcService {
 		Query query=new Query.QueryBuilder().where("name",name).buildQuery();
 		DictIndustryDO DO=dictIndustryDao.getData(query);
 		return DO;
+	}
+	//根据company_ids获取hr_company_conf的列表
+	public List<HrCompanyConfDO> getHrCompanyConfDOList(List<Integer> companyIdList){
+		if(StringUtils.isEmptyList(companyIdList)){
+			return null;
+		}
+		Query query=new Query.QueryBuilder().where(new Condition("company_id",companyIdList.toArray(),ValueOp.IN)).buildQuery();
+		List<HrCompanyConfDO> list=hrCompanyConfDao.getDatas(query);
+		return list;
+	}
+	//获取公司列表中所有公司的母公司的列表
+	public List<Integer> getAllMotherCompanyIdList(List<HrCompanyDO> list){
+		List<Integer> result=new ArrayList<>();
+		if(StringUtils.isEmptyList(list)){
+			return result;
+		}
+		for(HrCompanyDO DO:list){
+			int id=DO.getId();
+			int parentId=DO.getParentId();
+			if(parentId>0){
+				result.add(parentId);
+			}else{
+				result.add(id);
+			}
+		}
+		return result;
+	}
+	//获取hr_company_conf的数据
+	private List<HrCompanyConfDO> getHrCompanyConfData(List<HrCompanyDO> list){
+		List<Integer> idList=this.getAllMotherCompanyIdList(list);
+		List<HrCompanyConfDO> confList=this.getHrCompanyConfDOList(idList);
+		return confList;
 	}
 }
