@@ -16,14 +16,10 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
-import com.moseeker.thrift.gen.profile.struct.Intention;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by zztaiwll on 17/12/1.
@@ -75,6 +71,124 @@ public class TalentPoolEntity {
         }
         return 1;
     }
+    /*
+         通过TalentpoolHrTalentRecord 的集合获取hr_id的list
+         */
+    public List<Integer> getIdListByTalentpoolHrTalentList(List<TalentpoolHrTalentRecord> list){
+        if(StringUtils.isEmptyList(list)){
+            return null;
+        }
+        List<Integer> hrIdList=new ArrayList<>();
+        for(TalentpoolHrTalentRecord record:list){
+            hrIdList.add(record.getHrId());
+        }
+        return hrIdList;
+    }
+    /*
+     获取一个人才被这个公司下hr的收藏情况
+     */
+    public List<UserHrAccountRecord>  getHrAboutTalent(int userId,int companyId){
+        List<UserHrAccountRecord> userHrList=this.getCompanyHrList(companyId);
+        List<Integer> hrAccountIdList=this.getIdListByUserHrAccountList(userHrList);
+        List<TalentpoolHrTalentRecord> talentpoolHrList=this.getTalentpoolHrTalentByuserIdAndhrIdList(userId,hrAccountIdList);
+        List<Integer> hrIdList=this.getIdListByTalentpoolHrTalentList(talentpoolHrList);
+        List<UserHrAccountRecord> result=this.getHrList(hrIdList,userHrList);
+        return result;
+    }
+    /*
+      获取多个人被这家公司下hr的收藏情况
+     */
+    public Map<Integer,Set<UserHrAccountRecord>> getBatchAboutTalent(List<Integer> userIdList,List<UserHrAccountRecord >userHrList){
+        if(StringUtils.isEmptyList(userIdList)||StringUtils.isEmptyList(userHrList)){
+            return null;
+        }
+        List<Integer> hrAccountIdList=this.getIdListByUserHrAccountList(userHrList);
+        Map<Integer,Set<UserHrAccountRecord>> result=this.handlerTalentAndHr(userIdList,hrAccountIdList,userHrList);
+        return result;
+    }
+
+    /*
+       处理talentpool_talent
+     */
+    public void handlerTalentpoolTalent(int userId,int companyId,int upload,int publicNum,int collectNum){
+        TalentpoolTalentRecord record=this.getTalentpoolTalentRecord(companyId,userId);
+        if(record==null){
+            if(publicNum>0 || collectNum>0) {
+                addTalentpoolTalent(userId, companyId, upload);
+            }
+        }else{
+            int originCollection=record.getCollectNum();
+            if(collectNum<0&&Math.abs(collectNum)>originCollection){
+                this.deleteTalentpoolTalent(userId,companyId);
+            }else{
+                this.updateTalentpoolTalentNum(userId,companyId,publicNum,collectNum);
+            }
+        }
+    }
+    /*
+      过滤出来不符合操作权限的applier_id
+     */
+    public List<Integer> filterIdList(List<Integer> userIdList,List<Integer> list){
+        if(StringUtils.isEmptyList(list)){
+            return null;
+        }
+        List<Integer> result=new ArrayList<>();
+        for(Integer userId:userIdList){
+            for(Integer id:list){
+                if(userId==id){
+                    break;
+                }
+                result.add(userId);
+            }
+        }
+        return result;
+    }
+    /*
+      处理批量处理标签的公开人才部分的校验
+     */
+    public Map<String,Object> filterNoPowerUserId(List<Integer> userIdList,int companyId){
+        if(StringUtils.isEmptyList(userIdList)){
+            return null;
+        }
+        Map<String,Object> result=new HashMap<>();
+        List<TalentpoolTalentRecord> talentList=this.getTalentpoolTalentByCompanyId(companyId);
+        List<Integer> talentIdList=this.getUserIdListByTalentpoolTalent(talentList);
+        if(StringUtils.isEmptyList(talentIdList)){
+            result.put("nopower",userIdList);
+            result.put("use",null);
+        }
+        List<Integer> noUseIdList=new ArrayList<>();
+        for(Integer userId:userIdList){
+            if(!talentIdList.contains(userId)){
+                noUseIdList.add(userId);
+            }
+        }
+        result.put("nopower",noUseIdList);
+        result.put("use",talentIdList);
+        return result;
+    }
+    /*
+     获取一个公司下所有的公开的人才
+     */
+    private List<TalentpoolTalentRecord> getTalentpoolTalentByCompanyId(int companyId){
+        Query query=new Query.QueryBuilder().where("company_id",companyId).and(new Condition("public_num",0,ValueOp.GT)).buildQuery();
+        List<TalentpoolTalentRecord> list=talentpoolTalentDao.getRecords(query);
+        return list;
+    }
+
+    /*
+      根据TalentpoolTalentRecord获取userId
+     */
+    public List<Integer> getUserIdListByTalentpoolTalent(List<TalentpoolTalentRecord> list){
+        if(StringUtils.isEmptyList(list)){
+            return null;
+        }
+        List<Integer> result=new ArrayList<>();
+        for(TalentpoolTalentRecord record:list){
+            result.add(record.getUserId());
+        }
+        return result;
+    }
 
     /*
      验证user_id是否投递过这个hr
@@ -106,43 +220,79 @@ public class TalentPoolEntity {
         int result=jobApplicationDao.getCount(query);
         return result;
     }
-    /*
-     获取一个人才被这个公司下hr的收藏情况
-     */
-    public List<UserHrAccountRecord>  getHrAboutTalent(int userId,int companyId){
-       List<UserHrAccountRecord> userHrList=this.getCompanyHrList(companyId);
-       List<Integer> hrAccountIdList=this.getIdListByUserHrAccountList(userHrList);
-       List<TalentpoolHrTalentRecord> talentpoolHrList=this.getTalentpoolHrTalentByuserIdAndhrIdList(userId,hrAccountIdList);
-       List<Integer> hrIdList=this.getIdListByTalentpoolHrTalentList(talentpoolHrList);
-       List<UserHrAccountRecord> result=this.getHrList(hrIdList,userHrList);
-       return result;
-    }
-    /*
-      获取多个人被这家公司下hr的收藏情况
-     */
-    public List<UserHrAccountRecord> getBatchAboutTalent(List<Integer> userIdList,int companyId){
-        List<UserHrAccountRecord> userHrList=this.getCompanyHrList(companyId);
-        List<Integer> hrAccountIdList=this.getIdListByUserHrAccountList(userHrList);
-        return null;
-    }
 
-    private Map<Integer,List<UserHrAccountRecord>> handlerTalentAndHr(List<Integer> userIdList,List<Integer> hrAccountIdList,List<UserHrAccountRecord> userHrList){
+
+    private  Map<Integer,Set<UserHrAccountRecord>> handlerTalentAndHr(List<Integer> userIdList,List<Integer> hrAccountIdList,List<UserHrAccountRecord> userHrList){
+        if(StringUtils.isEmptyList(userIdList)||StringUtils.isEmptyList(hrAccountIdList)||StringUtils.isEmptyList(userHrList)){
+            return null;
+        }
         List<TalentpoolHrTalentRecord> talentpoolHrList=this.getTalentpoolHrTalentByuserIdListAndhrIdList(userIdList,hrAccountIdList);
         if(StringUtils.isEmptyList(talentpoolHrList)){
             return null;
         }
+        Map<Integer,Set<Integer>> userIdHrMap=this.handleTalentAndRecord(userIdList,talentpoolHrList);
+        if(userIdHrMap==null||userIdHrMap.isEmpty()){
+            return null;
+        }
+        Map<Integer,Set<UserHrAccountRecord>> result=this.handleDataResult(userIdHrMap,userHrList);
+        return result;
+    }
+    /*
+      处理人才和人才库记录的数据，获取map的数据map<人才id，hr的set集合>
+     */
+    private Map<Integer,Set<Integer>> handleTalentAndRecord(List<Integer> userIdList,List<TalentpoolHrTalentRecord> talentpoolHrList){
+        Map<Integer,Set<Integer>> userIdHrMap=new HashMap<>();
         for(Integer userId:userIdList){
             for(TalentpoolHrTalentRecord record:talentpoolHrList){
-
+                int applierId=record.getUserId();
+                int hrId=record.getHrId();
+                if(userId==applierId){
+                    if(userIdHrMap.get(userId)==null){
+                        Set<Integer> hrIdSet=new HashSet<>();
+                        hrIdSet.add(hrId);
+                        userIdHrMap.put(userId,hrIdSet);
+                    }else{
+                        Set<Integer> hrIdSet=userIdHrMap.get(userId);
+                        hrIdSet.add(hrId);
+                        userIdHrMap.put(userId,hrIdSet);
+                    }
+                }
             }
-
         }
-        return null;
+        return userIdHrMap;
+    }
+    /*
+      根据map<人才id，hr的set集合> 处理hr的记录，获取map<人才id,hr记录的集合>
+     */
+    private Map<Integer,Set<UserHrAccountRecord>>  handleDataResult(Map<Integer,Set<Integer>> userIdHrMap,List<UserHrAccountRecord> userHrList){
+        if(userIdHrMap==null||userIdHrMap.isEmpty()||StringUtils.isEmptyList(userHrList)){
+            return null;
+        }
+        Map<Integer,Set<UserHrAccountRecord>> result=new HashMap<>();
+        for(Integer key:userIdHrMap.keySet()){
+            Set<Integer> hrIdSet=userIdHrMap.get(key);
+            if(hrIdSet==null||hrIdSet.size()==0){
+                result.put(key,null);
+                break;
+            }
+            Set<UserHrAccountRecord> hrSet=new HashSet<>();
+            for(Integer hrId:hrIdSet){
+                for(UserHrAccountRecord record:userHrList){
+                    int id=record.getId();
+                    if(hrId==id){
+                        hrSet.add(record);
+                        break;
+                    }
+                }
+            }
+            result.put(key,hrSet);
+        }
+        return result;
     }
     /*
       获取公司下所有的hr信息
      */
-    private List<UserHrAccountRecord> getCompanyHrList(int companyId){
+    public List<UserHrAccountRecord> getCompanyHrList(int companyId){
         List<HrCompanyRecord> companyList= this.getChildCompany(companyId);
         List<Integer> companyIdList=this.getCompanyIdList(companyId,companyList);
         List<HrCompanyAccountRecord> companyAccountList=this.getHrCompanyAccountById(companyIdList);
@@ -198,7 +348,7 @@ public class TalentPoolEntity {
     /*
      根据公司列表，获取公司id的列表
      */
-    public List<Integer> getCompanyIdList(int companyId,List<HrCompanyRecord> list){
+    private List<Integer> getCompanyIdList(int companyId,List<HrCompanyRecord> list){
         List<Integer> hrIdList=new ArrayList<>();
         hrIdList.add(companyId);
         if(StringUtils.isEmptyList(list)){
@@ -223,7 +373,7 @@ public class TalentPoolEntity {
     /*
      通过HrCompanyAccountRecord获取hrId list
      */
-    public List<Integer> getHrIdByCompanyAccountList(List<HrCompanyAccountRecord> list){
+    private List<Integer> getHrIdByCompanyAccountList(List<HrCompanyAccountRecord> list){
         List<Integer> hrIdList=new ArrayList<>();
 
         if(StringUtils.isEmptyList(list)){
@@ -238,7 +388,7 @@ public class TalentPoolEntity {
     /*
       通过user_Hr_Account的list获取hrList
      */
-    public List<Integer> getIdListByUserHrAccountList(List<UserHrAccountRecord> list){
+    private List<Integer> getIdListByUserHrAccountList(List<UserHrAccountRecord> list){
         if(StringUtils.isEmptyList(list)){
            return null;
         }
@@ -250,23 +400,9 @@ public class TalentPoolEntity {
     }
 
     /*
-     通过TalentpoolHrTalentRecord 的集合获取hr_id的list
-     */
-    public List<Integer> getIdListByTalentpoolHrTalentList(List<TalentpoolHrTalentRecord> list){
-        if(StringUtils.isEmptyList(list)){
-            return null;
-        }
-        List<Integer> hrIdList=new ArrayList<>();
-        for(TalentpoolHrTalentRecord record:list){
-            hrIdList.add(record.getHrId());
-        }
-        return hrIdList;
-    }
-
-    /*
      通过hr_id list获取hrd的信息
      */
-    public List<UserHrAccountRecord> getHrList(List<Integer> hrIdList,List<UserHrAccountRecord> hrList){
+    private List<UserHrAccountRecord> getHrList(List<Integer> hrIdList,List<UserHrAccountRecord> hrList){
         if(StringUtils.isEmptyList(hrList)||StringUtils.isEmptyList(hrIdList)){
             return null;
         }
@@ -283,24 +419,7 @@ public class TalentPoolEntity {
         return result;
     }
 
-    /*
-       处理talentpool_talent
-     */
-    public void handlerTalentpoolTalent(int userId,int companyId,int upload,int publicNum,int collectNum){
-        TalentpoolTalentRecord record=this.getTalentpoolTalentRecord(companyId,userId);
-        if(record==null){
-            if(publicNum>0 || collectNum>0) {
-                addTalentpoolTalent(userId, companyId, upload);
-            }
-        }else{
-            int originCollection=record.getCollectNum();
-            if(collectNum<0&&Math.abs(collectNum)>originCollection){
-                this.deleteTalentpoolTalent(userId,companyId);
-            }else{
-                this.updateTalentpoolTalentNum(userId,companyId,publicNum,collectNum);
-            }
-        }
-    }
+
     /*
       获取talentpool_talent
      */
@@ -386,23 +505,6 @@ public class TalentPoolEntity {
         }
         return result;
     }
-    /*
-      过滤出来不符合操作权限的applier_id
-     */
-    public List<Integer> filterIdList(List<Integer> userIdList,List<Integer> list){
-        if(StringUtils.isEmptyList(list)){
-            return null;
-        }
-        List<Integer> result=new ArrayList<>();
-        for(Integer userId:userIdList){
-            for(Integer id:list){
-               if(userId==id){
-                   break;
-               }
-               result.add(userId);
-            }
-        }
-        return result;
-    }
+
 
 }

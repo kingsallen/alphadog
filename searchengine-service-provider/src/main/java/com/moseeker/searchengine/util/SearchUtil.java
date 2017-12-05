@@ -33,7 +33,7 @@ import com.moseeker.common.util.ConfigPropertiesUtil;
 public class SearchUtil {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
     //启动es客户端
-    public TransportClient getEsClient() {
+    public  TransportClient getEsClient() {
         ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
         try {
             propertiesReader.loadResource("es.properties");
