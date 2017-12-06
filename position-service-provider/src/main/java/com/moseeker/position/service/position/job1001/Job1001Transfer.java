@@ -1,26 +1,31 @@
 package com.moseeker.position.service.position.job1001;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.dictdb.DictJob1001OccupationDao;
 import com.moseeker.common.constants.ChannelType;
-import com.moseeker.position.service.position.base.PositionTransfer;
+import com.moseeker.common.constants.PositionSync;
+import com.moseeker.position.service.position.base.sync.PositionTransfer;
 import com.moseeker.position.service.position.job1001.pojo.PositionJob1001;
 import com.moseeker.position.service.position.job1001.pojo.PositionJob1001Form;
 import com.moseeker.position.service.position.job1001.pojo.PositionJob1001WithAccount;
 import com.moseeker.position.service.position.job1001.pojo.TransferStrategy;
-import com.moseeker.position.service.position.liepin.pojo.PositionLiepin;
-import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyJob1001PositionDO;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
-public class Job1001Transfer extends PositionTransfer<PositionJob1001Form,PositionJob1001WithAccount,PositionJob1001>{
+public class Job1001Transfer extends PositionTransfer<PositionJob1001Form,PositionJob1001WithAccount,PositionJob1001,ThirdpartyJob1001PositionDO>{
     Logger logger= LoggerFactory.getLogger(Job1001Transfer.class);
 
     @Autowired
@@ -45,6 +50,8 @@ public class Job1001Transfer extends PositionTransfer<PositionJob1001Form,Positi
         positionWithAccount.setPosition_id(String.valueOf(positionDB.getId()));
         positionWithAccount.setChannel(String.valueOf(positionForm.getChannel()));
         positionWithAccount.setAccount_id(String.valueOf(account.getId()));
+        positionWithAccount.setSafe_code(account.getExt());
+        positionWithAccount.setSubsite(positionForm.getSubsite());
         return positionWithAccount;
     }
 
@@ -73,8 +80,6 @@ public class Job1001Transfer extends PositionTransfer<PositionJob1001Form,Positi
         positionInfo.setMin_salary(getSalaryBottom(positionForm.getSalaryBottom()));
         positionInfo.setMax_salary(getSalaryTop(positionForm.getSalaryTop()));
 
-
-
         return positionInfo;
     }
 
@@ -88,6 +93,54 @@ public class Job1001Transfer extends PositionTransfer<PositionJob1001Form,Positi
         return PositionJob1001Form.class;
     }
 
+    @Override
+    public HrThirdPartyPositionDO toThirdPartyPosition(PositionJob1001Form position, PositionJob1001WithAccount pwa) {
+        HrThirdPartyPositionDO data = new HrThirdPartyPositionDO();
+
+        PositionJob1001 p=pwa.getPosition_info();
+
+        String syncTime = (new DateTime()).toString("yyyy-MM-dd HH:mm:ss");
+        data.setSyncTime(syncTime);
+        data.setUpdateTime(syncTime);
+        data.setPositionId(Integer.parseInt(pwa.getPosition_id()));
+        data.setThirdPartyAccountId(Integer.parseInt(pwa.getAccount_id()));
+        data.setChannel(getChannel().getValue());
+        data.setIsSynchronization((byte) PositionSync.binding.getValue());
+
+
+        //将最后一个职能的Code存到数据库
+        if (!p.getOccupation().isEmpty() && p.getOccupation().size() > 0) {
+            data.setOccupation(p.getOccupation().get(p.getOccupation().size() - 1));
+        }
+        data.setCompanyName(position.getCompanyName());
+        data.setCompanyId(Integer.parseInt(position.getCompanyId()));
+        data.setSalaryBottom(position.getSalaryBottom());
+        data.setSalaryTop(position.getSalaryTop());
+
+        logger.info("回写到第三方职位对象:{}",data);
+        return data;
+    }
+
+    @Override
+    public ThirdpartyJob1001PositionDO toExtThirdPartyPosition(PositionJob1001Form positionJob1001Form, PositionJob1001WithAccount positionJob1001WithAccount) {
+        ThirdpartyJob1001PositionDO thirdpartyJob1001PositionDO=new ThirdpartyJob1001PositionDO();
+        thirdpartyJob1001PositionDO.setSubsite(positionJob1001Form.getSubsite());
+        thirdpartyJob1001PositionDO.setCreateTime(sdf.format(new Date()));
+        thirdpartyJob1001PositionDO.setStatus((byte) 0);
+        return thirdpartyJob1001PositionDO;
+    }
+
+    @Override
+    public ThirdpartyJob1001PositionDO toExtThirdPartyPosition(Map<String, String> data) {
+        ThirdpartyJob1001PositionDO result=JSON.parseObject(JSON.toJSONString(data),ThirdpartyJob1001PositionDO.class);
+        return result;
+    }
+
+    @Override
+    public JobPositionDO toWriteBackPosition(PositionJob1001Form positionJob1001Form, JobPositionDO positionDB, PositionJob1001WithAccount positionJob1001WithAccount) {
+        return null;
+    }
+
     public void setOccupation(PositionJob1001Form positionForm, PositionJob1001 position) {
         DecimalFormat df = new DecimalFormat("000");
         List<String> list=new ArrayList<>();
@@ -96,5 +149,4 @@ public class Job1001Transfer extends PositionTransfer<PositionJob1001Form,Positi
         }
         position.setOccupation(list);
     }
-
 }

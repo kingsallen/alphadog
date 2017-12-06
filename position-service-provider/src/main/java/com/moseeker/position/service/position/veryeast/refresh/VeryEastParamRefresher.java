@@ -2,7 +2,7 @@ package com.moseeker.position.service.position.veryeast.refresh;
 
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.constants.ChannelType;
-import com.moseeker.position.constants.RefreshConstant;
+import com.moseeker.common.constants.RefreshConstant;
 import com.moseeker.position.service.position.base.refresh.AbstractRabbitMQParamRefresher;
 import com.moseeker.position.service.position.veryeast.refresh.handler.VEResultHandlerAdapter;
 import org.slf4j.Logger;
@@ -37,8 +37,8 @@ public class VeryEastParamRefresher extends AbstractRabbitMQParamRefresher {
 
     @Override
     public void addUserParam(JSONObject jsonSend) {
-        jsonSend.put("user_name","");
-        jsonSend.put("password","");
+        jsonSend.put("user_name",getConfig("veryeast.username"));
+        jsonSend.put("password",getConfig("veryeast.password"));
     }
 
     @Override

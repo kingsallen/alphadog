@@ -1,12 +1,14 @@
 package com.moseeker.position.service.position.liepin;
 
+import com.moseeker.baseorm.base.EmptyExtThirdPartyPosition;
 import com.moseeker.baseorm.dao.dictdb.DictLiepinOccupationDao;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.constants.PositionSync;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.position.service.position.DegreeChangeUtil;
 import com.moseeker.position.service.position.WorkTypeChangeUtil;
-import com.moseeker.position.service.position.base.PositionTransfer;
+import com.moseeker.position.service.position.base.sync.PositionTransfer;
 import com.moseeker.position.service.position.liepin.pojo.PositionLiepin;
 import com.moseeker.position.service.position.liepin.pojo.PositionLiepinWithAccount;
 import com.moseeker.position.service.position.qianxun.Degree;
@@ -14,7 +16,9 @@ import com.moseeker.position.service.position.qianxun.WorkType;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +28,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class LiepinPositionTransfer extends PositionTransfer<ThirdPartyPosition,PositionLiepinWithAccount,PositionLiepin> {
+public class LiepinPositionTransfer extends PositionTransfer<ThirdPartyPosition,PositionLiepinWithAccount,PositionLiepin,EmptyExtThirdPartyPosition> {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
@@ -146,5 +150,77 @@ public class LiepinPositionTransfer extends PositionTransfer<ThirdPartyPosition,
     @Override
     public Class<ThirdPartyPosition> getFormClass() {
         return ThirdPartyPosition.class;
+    }
+
+    @Override
+    public HrThirdPartyPositionDO toThirdPartyPosition(ThirdPartyPosition position, PositionLiepinWithAccount pwa) {
+        HrThirdPartyPositionDO data = new HrThirdPartyPositionDO();
+
+        PositionLiepin p=pwa.getPosition_info();
+
+        String syncTime = (new DateTime()).toString("yyyy-MM-dd HH:mm:ss");
+        data.setSyncTime(syncTime);
+        data.setUpdateTime(syncTime);
+        data.setPositionId(pwa.getPosition_id());
+        data.setThirdPartyAccountId(pwa.getAccount_id());
+        data.setChannel(getChannel().getValue());
+        data.setIsSynchronization((byte) PositionSync.binding.getValue());
+
+
+        //将最后一个职能的Code存到数据库
+        if (!p.getOccupation().isEmpty() && p.getOccupation().size() > 0) {
+            data.setOccupation(p.getOccupation().get(p.getOccupation().size() - 1));
+        }
+        data.setDepartmentName(position.getDepartmentName());
+        data.setDepartmentId(position.getDepartmentId());
+        data.setSalaryBottom(Integer.parseInt(p.getSalary_low()));
+        data.setSalaryTop(Integer.parseInt(p.getSalary_high()));
+        data.setSalaryMonth(Integer.parseInt(p.getSalary_month()));
+
+        logger.info("回写到第三方职位对象:{}",data);
+        return data;
+    }
+
+    @Override
+    public EmptyExtThirdPartyPosition toExtThirdPartyPosition(ThirdPartyPosition position, PositionLiepinWithAccount positionLiepinWithAccount) {
+        return EmptyExtThirdPartyPosition.EMPTY;
+    }
+
+    @Override
+    public EmptyExtThirdPartyPosition toExtThirdPartyPosition(Map<String, String> data) {
+        return EmptyExtThirdPartyPosition.EMPTY;
+    }
+
+    @Override
+    public JobPositionDO toWriteBackPosition(ThirdPartyPosition position, JobPositionDO positionDB, PositionLiepinWithAccount positionLiepinWithAccount) {
+        if(positionDB==null || positionDB.getId()==0){
+            return null;
+        }
+        //假如是同步到猎聘并且是面议那么不回写到数据库
+        if(position.isSalaryDiscuss()){
+            return null;
+        }
+
+        JobPositionDO updateData=new JobPositionDO();
+        PositionLiepin p=positionLiepinWithAccount.getPosition_info();
+
+        boolean needWriteBackToPositin = false;
+        int salay_top=Integer.parseInt(p.getSalary_high());
+        int salary_bottom=Integer.parseInt(p.getSalary_low());
+
+        if (salay_top > 0 && salay_top != positionDB.getSalaryTop() * 1000) {
+            updateData.setSalaryTop(salay_top / 1000);
+            needWriteBackToPositin = true;
+        }
+        if (salary_bottom > 0 && salary_bottom != positionDB.getSalaryBottom() * 1000) {
+            updateData.setSalaryBottom(salary_bottom / 1000);
+            needWriteBackToPositin = true;
+        }
+        if (needWriteBackToPositin) {
+            logger.info("needWriteBackToPositin : {} " ,updateData);
+            return updateData;
+        }
+
+        return null;
     }
 }

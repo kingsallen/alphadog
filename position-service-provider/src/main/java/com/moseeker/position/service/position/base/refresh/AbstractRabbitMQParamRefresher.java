@@ -4,8 +4,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.common.constants.ChannelType;
-import com.moseeker.position.constants.RefreshConstant;
-import com.moseeker.position.service.position.base.refresh.handler.ResultHandler;
+import com.moseeker.common.util.ConfigPropertiesUtil;
+import com.moseeker.common.constants.RefreshConstant;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +31,7 @@ public abstract class AbstractRabbitMQParamRefresher implements ParamRefresher {
     //发送消息去RabbitMQ
     public abstract void addSendParam(JSONObject jsonSend);
     //接受并处理刷新结果，需要加上{@RabbitListener}和{@RabbitHandler}两个注解
-    public abstract void receiveAndHandle(String str);
+    public abstract void receiveAndHandle(String json);
     public abstract void addUserParam(JSONObject jsonSend);
 
     public abstract ChannelType getChannel();
@@ -79,6 +79,18 @@ public abstract class AbstractRabbitMQParamRefresher implements ParamRefresher {
         }
         logger.info("refresh moseekerRegin {}",moseekerReginArray.size());
         return moseekerReginArray;
+    }
+
+    protected String getConfig(String key) {
+        try {
+            ConfigPropertiesUtil configUtils = ConfigPropertiesUtil.getInstance();
+            configUtils.loadResource("setting.properties");
+            return configUtils.get(key, String.class);
+        } catch (Exception e) {
+            logger.info("get setting error");
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public String exchange() {

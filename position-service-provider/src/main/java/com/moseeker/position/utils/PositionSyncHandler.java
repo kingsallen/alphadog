@@ -78,36 +78,14 @@ public class PositionSyncHandler {
     }
 
     //回写到jobPosition需要的字段
-    public void writeBackJobPositionField(JobPositionDO moseekerPosition, List<ThirdPartyPositionForSynchronizationWithAccount> positions){
-        ThirdPartyPositionForSynchronization p = null;
-        for(ThirdPartyPositionForSynchronizationWithAccount positionWithAccount : positions){
-            ThirdPartyPositionForSynchronization thirdPartyPositionForSynchronization=positionWithAccount.getPosition_info();
-            //假如是同步到猎聘并且是面议那么不回写到数据库
-            if(thirdPartyPositionForSynchronization.isSalary_discuss() && thirdPartyPositionForSynchronization.getChannel() == ChannelType.LIEPIN.getValue()){
-                continue;
-            }
-            p = thirdPartyPositionForSynchronization;
-            break;
+    public void writeBackJobPositionField(List<JobPositionDO> list){
+        if(list==null || list.isEmpty()){
+            logger.info("noting need to Write Back To Mossker Position");
+            return;
         }
-        if(p != null) {
-            boolean needWriteBackToPositin = false;
-            if (p.getSalary_top() > 0 && p.getSalary_top() != moseekerPosition.getSalaryTop() * 1000) {
-                moseekerPosition.setSalaryTop(p.getSalary_top() / 1000);
-                needWriteBackToPositin = true;
-            }
-            if (p.getSalary_bottom() > 0 && p.getSalary_bottom() != moseekerPosition.getSalaryBottom() * 1000) {
-                moseekerPosition.setSalaryBottom(p.getSalary_bottom() / 1000);
-                needWriteBackToPositin = true;
-            }
-            if (p.getQuantity() != moseekerPosition.getCount()) {
-                moseekerPosition.setCount(Integer.valueOf(p.getQuantity()));
-                needWriteBackToPositin = true;
-            }
-            if (needWriteBackToPositin) {
-                logger.info("needWriteBackToPositin :" + JSON.toJSONString(moseekerPosition));
-                jobPositionDao.updateData(moseekerPosition);
-            }
-        }
+        JobPositionDO moseekerPosition=list.get(0);
+        logger.info("need to Write Back To Mossker Position : {}" ,moseekerPosition);
+        jobPositionDao.updateData(moseekerPosition);
     }
 
     //根据同步职位数据，创建插入数据库第三方职位表hr_third_party_position的数据

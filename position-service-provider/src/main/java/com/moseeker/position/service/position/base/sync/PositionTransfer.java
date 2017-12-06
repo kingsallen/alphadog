@@ -1,4 +1,4 @@
-package com.moseeker.position.service.position.base;
+package com.moseeker.position.service.position.base.sync;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -14,10 +14,12 @@ import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionCityDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
+import org.apache.commons.lang.time.FastDateFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +27,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.text.DecimalFormat;
 import java.util.*;
 
-public abstract class PositionTransfer<Form,R,Info> {
+public abstract class PositionTransfer<Form,R,Info,ExtP> {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
+    protected FastDateFormat sdf = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss");
 
     @Autowired
     private JobPositionCityDao jobPositionCityDao;
@@ -46,14 +49,27 @@ public abstract class PositionTransfer<Form,R,Info> {
      * @param account
      * @return
      */
-    public R changeToThirdPartyPosition(JSONObject jsonForm, JobPositionDO positionDB,HrThirdPartyAccountDO account) throws Exception{
+    public TransferResult changeToThirdPartyPosition(JSONObject jsonForm, JobPositionDO positionDB,HrThirdPartyAccountDO account) throws Exception{
         logger.info("change To ThirdPartyPosition start : jsonForm : {},  positionDB : {}, account : {}",jsonForm,positionDB,account);
         if(jsonForm==null || positionDB==null || account==null){
             logger.error("change To ThirdPartyPosition param empty");
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,"change To ThirdPartyPosition param error");
         }
+        TransferResult result=new TransferResult();
+
         Form positionForm=parseJsonForm(jsonForm);
-        R result=changeToThirdPartyPosition(positionForm,positionDB,account);
+
+
+        R positionWithAccount=changeToThirdPartyPosition(positionForm,positionDB,account);
+        HrThirdPartyPositionDO hrThirdPartyPositionDO=toThirdPartyPosition(positionForm,positionWithAccount);
+        ExtP extPosition=toExtThirdPartyPosition(positionForm,positionWithAccount);
+        JobPositionDO writeBackPosition=toWriteBackPosition(positionForm,positionDB,positionWithAccount);
+
+        result.setExtPosition(positionWithAccount);
+        result.setThirdPartyPositionDO(hrThirdPartyPositionDO);
+        result.setExtPosition(extPosition);
+        result.setWriteBackPosition(writeBackPosition);
+
         logger.info("change To ThirdPartyPosition result {}",result);
         return result;
     }
@@ -78,6 +94,7 @@ public abstract class PositionTransfer<Form,R,Info> {
 
 
     /**========================抽象方法，让每个渠道去实现自己的逻辑========================*/
+    public abstract R changeToThirdPartyPosition(Form positionForm, JobPositionDO positionDB,HrThirdPartyAccountDO account) throws Exception;
     //生成并且初始化需要同步的账号信息
     protected abstract R createAndInitAccountInfo(Form positionForm, JobPositionDO positionDB,HrThirdPartyAccountDO account);
     //生成并且初始化需要同步的职位信息
@@ -86,7 +103,12 @@ public abstract class PositionTransfer<Form,R,Info> {
     public abstract ChannelType getChannel();
     //获取前台表单对应类型class
     public abstract Class<Form> getFormClass();
-    public abstract R changeToThirdPartyPosition(Form positionForm, JobPositionDO positionDB,HrThirdPartyAccountDO account) throws Exception;
+    //转换成额外的第三方职位
+    public abstract HrThirdPartyPositionDO toThirdPartyPosition(Form form,R pwa);
+    public abstract ExtP toExtThirdPartyPosition(Form form,R r);
+    public abstract ExtP toExtThirdPartyPosition(Map<String,String> data);
+    public abstract JobPositionDO toWriteBackPosition(Form form,JobPositionDO positionDB,R r);
+
 
     /**========================每个渠道共用的逻辑，当然也可以覆盖实现自己的逻辑========================*/
     protected static int getSalaryBottom(int salaryBottom) {
@@ -252,5 +274,44 @@ public abstract class PositionTransfer<Form,R,Info> {
         ConfigPropertiesUtil configUtils = ConfigPropertiesUtil.getInstance();
         configUtils.loadResource("chaos.properties");
         return configUtils.get(key, String.class);
+    }
+
+    public static class TransferResult<R,ExtP>{
+        private R positionWithAccount;
+        private ExtP extPosition;
+        private HrThirdPartyPositionDO thirdPartyPositionDO;
+        private JobPositionDO writeBackPosition;
+
+        public ExtP getExtPosition() {
+            return extPosition;
+        }
+
+        public void setExtPosition(ExtP extPosition) {
+            this.extPosition = extPosition;
+        }
+
+        public HrThirdPartyPositionDO getThirdPartyPositionDO() {
+            return thirdPartyPositionDO;
+        }
+
+        public void setThirdPartyPositionDO(HrThirdPartyPositionDO thirdPartyPositionDO) {
+            this.thirdPartyPositionDO = thirdPartyPositionDO;
+        }
+
+        public JobPositionDO getWriteBackPosition() {
+            return writeBackPosition;
+        }
+
+        public void setWriteBackPosition(JobPositionDO writeBackPosition) {
+            this.writeBackPosition = writeBackPosition;
+        }
+
+        public R getPositionWithAccount() {
+            return positionWithAccount;
+        }
+
+        public void setPositionWithAccount(R positionWithAccount) {
+            this.positionWithAccount = positionWithAccount;
+        }
     }
 }

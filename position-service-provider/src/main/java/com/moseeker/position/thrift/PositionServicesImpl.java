@@ -120,7 +120,7 @@ public class PositionServicesImpl implements Iface {
     @Override
     public boolean ifAllowRefresh(int positionId, int account_id) {
         try {
-            return service.ifAllowRefresh(positionId, account_id);
+            return false;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return false;
@@ -190,7 +190,7 @@ public class PositionServicesImpl implements Iface {
     }
 
     @Override
-    public List<HrThirdPartyPositionDO> getThirdPartyPositions(CommonQuery query) throws TException {
+    public List<Map<String,String>> getThirdPartyPositions(CommonQuery query) throws TException {
         try {
             return service.getThirdPartyPositions(QueryConvert.commonQueryConvertToQuery(query));
         } catch (Exception e) {
@@ -345,18 +345,18 @@ public class PositionServicesImpl implements Iface {
 
 
     @Override
-    public int updateThirdPartyPosition(HrThirdPartyPositionDO thirdPartyPosition) throws BIZException, TException {
+    public int updateThirdPartyPosition(HrThirdPartyPositionDO thirdPartyPosition,Map<String,String> extData) throws BIZException, TException {
         try {
-            return thirdPositionService.updateThirdPartyPosition(thirdPartyPosition);
+            return thirdPositionService.updateThirdPartyPosition(thirdPartyPosition,extData);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }
     }
 
     @Override
-    public int updateThirdPartyPositionWithAccount(HrThirdPartyPositionDO thirdPartyPosition, HrThirdPartyAccountDO thirdPartyAccount) throws BIZException, TException {
+    public int updateThirdPartyPositionWithAccount(HrThirdPartyPositionDO thirdPartyPosition, HrThirdPartyAccountDO thirdPartyAccount,Map<String,String> extData) throws BIZException, TException {
         try {
-            return thirdPositionService.updateThirdPartyPositionWithAccount(thirdPartyPosition, thirdPartyAccount);
+            return thirdPositionService.updateThirdPartyPositionWithAccount(thirdPartyPosition, thirdPartyAccount,extData);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }

@@ -2,21 +2,23 @@ package com.moseeker.position.service.position;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
+import com.moseeker.baseorm.base.EmptyExtThirdPartyPosition;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.util.StringUtils;
-import com.moseeker.position.service.position.base.PositionTransfer;
-import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
+import com.moseeker.common.util.StructSerializer;
+import com.moseeker.position.service.position.base.sync.PositionTransfer;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
-import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 职位转换
@@ -39,7 +41,7 @@ public class PositionChangeUtil {
      * @param account
      * @return
      */
-    public JSONObject changeToThirdPartyPosition(JSONObject jsonForm, JobPositionDO positionDB,HrThirdPartyAccountDO account) throws Exception {
+    public PositionTransfer.TransferResult changeToThirdPartyPosition(JSONObject jsonForm, JobPositionDO positionDB, HrThirdPartyAccountDO account) throws Exception {
         logger.info("changeToThirdPartyPosition---------------------jsonForm : {},positionDB : {}, account : {}",jsonForm,positionDB,account);
 
         int channel=jsonForm.getIntValue("channel");
@@ -52,11 +54,24 @@ public class PositionChangeUtil {
 
         PositionTransfer transfer=transferSimpleFactory(channelType);
 
-        String jsonPosition=JSON.toJSONString(transfer.changeToThirdPartyPosition(jsonForm,positionDB,account));
-        logger.info("changeToThirdPartyPosition result:{}",jsonPosition);
-        JSONObject position=JSONObject.parseObject(jsonPosition);
+        PositionTransfer.TransferResult result=transfer.changeToThirdPartyPosition(jsonForm,positionDB,account);
+        logger.info("changeToThirdPartyPosition result:{}",result);
 
-        return position;
+        return result;
+    }
+
+    public Object toThirdPartyPosition(int channel,Map<String,String> data) throws BIZException {
+        ChannelType channelType = ChannelType.instaceFromInteger(channel);
+        if(channelType==null){
+            logger.error("change To ThirdPartyPosition no matched channelType : {}",channel);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,"change To ThirdPartyPosition no matched channelType");
+        }
+
+        PositionTransfer transfer=transferSimpleFactory(channelType);
+
+        Object ThirdParty=transfer.toExtThirdPartyPosition(data);
+
+        return ThirdParty;
     }
 
     public PositionTransfer transferSimpleFactory(ChannelType channelType) throws BIZException {
@@ -77,5 +92,17 @@ public class PositionChangeUtil {
             logger.info("try to parse json form failed : {}",json);
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,"try to parse json form failed");
         }
+    }
+
+    public static Map<String,String> objectToMap(Object object){
+        if(object== EmptyExtThirdPartyPosition.EMPTY){
+            return new HashMap<>();
+        }
+        String json= StructSerializer.toString(object);
+        TypeReference<HashMap<String,String>> typeRef
+                = new TypeReference<HashMap<String,String>>() {};
+        HashMap<String,String> result=JSON.parseObject(json,typeRef);
+
+        return result;
     }
 }

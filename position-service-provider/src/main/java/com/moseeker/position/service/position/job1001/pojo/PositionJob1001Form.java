@@ -11,6 +11,15 @@ public class PositionJob1001Form {
     private int salaryBottom;
     private String addressName;
     private int addressId;
+    private String subsite;
+
+    public String getSubsite() {
+        return subsite;
+    }
+
+    public void setSubsite(String subsite) {
+        this.subsite = subsite;
+    }
 
     public String getCompanyId() {
         return companyId;

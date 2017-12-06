@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class YLOccupationResultHandler extends AbstractOccupationResultHandler<DictJob1001OccupationDO> implements VEResultHandlerAdapter {
+public class YLOccupationResultHandler extends AbstractOccupationResultHandler<DictJob1001OccupationDO> implements YLResultHandlerAdapter {
     Logger logger= LoggerFactory.getLogger(YLOccupationResultHandler.class);
 
     @Autowired

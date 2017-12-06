@@ -24,6 +24,7 @@ import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.records.*;
 import com.moseeker.baseorm.pojo.JobPositionPojo;
 import com.moseeker.baseorm.pojo.RecommendedPositonPojo;
+import com.moseeker.baseorm.pojo.TwoParam;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
@@ -48,6 +49,7 @@ import com.moseeker.position.utils.CommonPositionUtils;
 import com.moseeker.position.utils.SpecialCtiy;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.config.ConfigCustomMetaVO;
@@ -324,52 +326,6 @@ public class PositionService {
      */
     public boolean verifySynchronizePosition(PositionForSynchronizationPojo position) {
         return false;
-    }
-
-    /**
-     * 该职位是否可以刷新
-     *
-     * @param positionId 职位编号
-     * @param account_id 第三方账号ID
-     * @return bool
-     */
-    @CounterIface
-    public boolean ifAllowRefresh(int positionId, int account_id) {
-        logger.info("ifAllowRefresh");
-        Query findPositionById = new Query.QueryBuilder().where("id", positionId).buildQuery();
-        logger.info("search position");
-        JobPositionDO position = jobPositionDao.getData(findPositionById);
-        logger.info("position:" + JSON.toJSONString(position));
-
-        if (position == null || position.getId() == 0) return false;
-
-        Query queryUtil = new Query.QueryBuilder().where("id", account_id).buildQuery();
-
-        HrThirdPartyAccountDO account = thirdPartyAccountDao.getData(queryUtil);
-
-        if (account == null || account.binding == AccountSync.unbind.getValue()
-                || account.binding == AccountSync.accountpasserror.getValue()
-                || account.binding == AccountSync.error.getValue()
-                || account.binding == AccountSync.bingdingerror.getValue()) {
-            return false;
-        }
-
-        logger.info("ifAllowRefresh third party account:" + JSON.toJSONString(account));
-        HrThirdPartyPositionDO thirdPartyPosition = thirdpartyPositionDao.getThirdPartyPosition(positionId, account_id);
-        logger.info("thirdparyposition" + JSON.toJSONString(thirdPartyPosition));
-
-        if (thirdPartyPosition == null || thirdPartyPosition.getIsSynchronization() != PositionSync.bound.getValue()) {
-            return false;
-        }
-
-
-        logger.info("data allow");
-        String str = redisClient.get(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH.toString(), String.valueOf(positionId), String.valueOf(account_id));
-        if (StringUtils.isNotNullOrEmpty(str)) {
-            return false;
-        }
-        logger.info("cache allow");
-        return true;
     }
 
     /**
@@ -1090,10 +1046,16 @@ public class PositionService {
         return stringBuffer.toString();
     }
 
-    public List<HrThirdPartyPositionDO> getThirdPartyPositions(Query query) {
-        List<HrThirdPartyPositionDO> list=thirdpartyPositionDao.getDatas(query);
+    public List<Map<String,String>> getThirdPartyPositions(Query query) throws BIZException {
+        List<TwoParam<HrThirdPartyPositionDO, Object>> list=thirdpartyPositionDao.getDatas(query);
 
-        return list;
+        List<Map<String,String>> result=list.stream().map(p->{
+            Map<String,String> map=PositionChangeUtil.objectToMap(p.getR1());
+            map.putAll(PositionChangeUtil.objectToMap(p.getR2()));
+            return map;
+        }).collect(Collectors.toList());
+
+        return result;
 
     }
 

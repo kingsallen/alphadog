@@ -6,17 +6,17 @@ import com.moseeker.position.service.position.qianxun.WorkType;
 public class TransferStrategy {
     public enum Job1001Degree{
         //0:无 1:大专 2:本科 3:硕士 4:MBA 5:博士 6:中专 7:高中 8: 博士后 9:初中',
-        DEGREE0("0","不限", Degree.None),
-        DEGREE1("90","博士后",Degree.PostDoctor),
-        DEGREE2("80","博士",Degree.Doctor),
-        DEGREE3("75","MBA",Degree.MBA),
-        DEGREE4("70","硕士",Degree.Master),
-        DEGREE5("60","本科",Degree.College),
-        DEGREE6("50","大专",Degree.JuniorCollege),
-        DEGREE7("40","中专",Degree.SpecicalSecondarySchool),
-        DEGREE8("30","中技",null),
-        DEGREE9("20","高中",null),
-        DEGREE10("10","初中",null)
+        None("0","不限", Degree.None),
+        PostDoctor("90","博士后",Degree.PostDoctor),
+        Doctor("80","博士",Degree.Doctor),
+        MBA("75","MBA",Degree.MBA),
+        Master("70","硕士",Degree.Master),
+        College("60","本科",Degree.College),
+        JuniorCollege("50","大专",Degree.JuniorCollege),
+        SpecicalSecondarySchool("40","中专",Degree.SpecicalSecondarySchool),
+        DEGREE1("30","中技",null),
+        DEGREE2("20","高中",null),
+        DEGREE3("10","初中",null)
         ;
 
         Job1001Degree(String code, String text, Degree degree) {

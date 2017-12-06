@@ -6,7 +6,7 @@ import com.moseeker.position.service.position.veryeast.refresh.handler.VEResultH
 import org.springframework.stereotype.Component;
 
 @Component
-public class YLRegionResultHandler extends AbstractRegionResultHandler implements VEResultHandlerAdapter {
+public class YLRegionResultHandler extends AbstractRegionResultHandler implements YLResultHandlerAdapter {
 
     @Override
     public ChannelType channelType() {

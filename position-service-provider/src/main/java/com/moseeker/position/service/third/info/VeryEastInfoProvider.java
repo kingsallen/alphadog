@@ -6,7 +6,7 @@ import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.util.StructSerializer;
-import com.moseeker.position.constants.RefreshConstant;
+import com.moseeker.common.constants.RefreshConstant;
 import com.moseeker.position.service.third.ThirdPartyAccountCompanyService;
 import com.moseeker.position.service.third.base.AbstractThirdInfoProvider;
 import com.moseeker.thrift.gen.common.struct.BIZException;

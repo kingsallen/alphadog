@@ -1,6 +1,6 @@
 package com.moseeker.position.config;
 
-import com.moseeker.position.constants.RefreshConstant;
+import com.moseeker.common.constants.RefreshConstant;
 import com.rabbitmq.client.ConnectionFactory;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;

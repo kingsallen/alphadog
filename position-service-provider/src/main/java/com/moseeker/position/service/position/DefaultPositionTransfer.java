@@ -2,7 +2,6 @@ package com.moseeker.position.service.position;
 
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.common.constants.ChannelType;
-import com.moseeker.position.service.position.base.PositionTransfer;
 import com.moseeker.position.service.position.qianxun.WorkType;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;

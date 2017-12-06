@@ -6,6 +6,7 @@ import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.pojo.TwoParam;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.PositionRefreshType;
 import com.moseeker.common.util.StringUtils;
@@ -14,6 +15,7 @@ import com.moseeker.common.util.query.Query.QueryBuilder;
 import com.moseeker.position.constants.ResultMessage;
 import com.moseeker.position.pojo.PositionSyncResultPojo;
 import com.moseeker.position.service.position.PositionChangeUtil;
+import com.moseeker.position.service.position.base.sync.PositionTransfer;
 import com.moseeker.position.thrift.PositionServicesImpl;
 import com.moseeker.position.utils.PositionSyncHandler;
 import com.moseeker.rpccenter.client.ServiceManager;
@@ -40,6 +42,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 职位业务层
@@ -54,11 +57,7 @@ public class PositionBS {
     ChaosServices.Iface chaosService = ServiceManager.SERVICEMANAGER.getService(ChaosServices.Iface.class);
 
     @Autowired
-    private PositionServicesImpl positionServices;
-    @Autowired
     private JobPositionDao jobPositionDao;
-    @Autowired
-    private HRThirdPartyAccountDao hRThirdPartyAccountDao;
     @Autowired
     private HrCompanyDao hrCompanyDao;
     @Autowired
@@ -82,13 +81,17 @@ public class PositionBS {
         List<PositionSyncResultPojo> results = new ArrayList<>();
 
         //第三方职位列表，用来回写写到第三方职位表
-        List<HrThirdPartyPositionDO> writeBackThirdPartyPositionList = new ArrayList<>();
+        List<TwoParam<HrThirdPartyPositionDO,Object>> writeBackThirdPartyPositionList = new ArrayList<>();
 
         //用来同步到chaos的职位列表
         List<String>  positionsForSynchronizations=new ArrayList<>();
 
+        //回写到MoSeeker职位
+        List<JobPositionDO> writeBackMoseekerPositionList=new ArrayList<>();
+
         //这个循环检查需要同步的职位对应渠道下是否有绑定过的账号
-        for (String json: position.getChannels()) {
+        for (Map<String,String> temp: position.getChannels()) {
+            String json= JSON.toJSONString(temp);
             JSONObject p=JSON.parseObject(json);
             int channel=p.getIntValue("channel");
             int thirdPartyAccountId=p.getIntValue("thirdPartyAccountId");
@@ -101,11 +104,13 @@ public class PositionBS {
                 p.put("thirdPartyAccountId",avaliableAccount.getId());
             }
             // 转成第三方渠道职位
-            JSONObject pos = positionChangeUtil.changeToThirdPartyPosition(p, moseekerJobPosition,avaliableAccount);
+            PositionTransfer.TransferResult result= positionChangeUtil.changeToThirdPartyPosition(p, moseekerJobPosition,avaliableAccount);
 
-            positionsForSynchronizations.add(pos.toJSONString());
-
-            writeBackThirdPartyPositionList.add(positionSyncHandler.createHrThirdPartyPositionDO(pos,p));
+            positionsForSynchronizations.add(JSON.toJSONString(result.getPositionWithAccount()));
+            if(result.getWriteBackPosition()!=null) {
+                writeBackMoseekerPositionList.add(result.getWriteBackPosition());
+            }
+            writeBackThirdPartyPositionList.add(new TwoParam(result.getThirdPartyPositionDO(),result.getExtPosition()));
 
             results.add(positionSyncHandler.createNormalResult(channel,avaliableAccount.getId()));
         }
@@ -119,7 +124,7 @@ public class PositionBS {
         thirdPartyPositionDao.upsertThirdPartyPositions(writeBackThirdPartyPositionList);
 
         //回写薪资到MoSeeker职位表
-        positionSyncHandler.writeBackJobPositionField(moseekerJobPosition,positionsForSynchronizations);
+        positionSyncHandler.writeBackJobPositionField(writeBackMoseekerPositionList);
 
         return ResultMessage.SUCCESS.toResponse(results);
     }
@@ -169,15 +174,7 @@ public class PositionBS {
         //更新仟寻职位的修改时间
         writeBackToQX(positionId);
 
-        HrThirdPartyPositionDO p = new HrThirdPartyPositionDO();
-        p.setChannel(channel);
-        p.setPositionId(positionId);
-        p.setIsRefresh((byte) PositionRefreshType.refreshing.getValue());
-        p.setRefreshTime((new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
-
-        thirdPartyPositionDao.upsertThirdPartyPosition(p);
         result.put("is_refresh", PositionRefreshType.refreshing.getValue());
-        result.put("sync_time", p.getSyncTime());
         return ResultMessage.SUCCESS.toResponse(result);
     }
 
