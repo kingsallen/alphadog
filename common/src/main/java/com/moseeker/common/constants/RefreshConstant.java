@@ -1,4 +1,4 @@
-package com.moseeker.position.constants;
+package com.moseeker.common.constants;
 
 public class RefreshConstant {
     public final static int APP_ID=0;

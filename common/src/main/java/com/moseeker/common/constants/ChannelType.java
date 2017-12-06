@@ -110,7 +110,7 @@ public enum ChannelType {
 	}
 	};
 
-	private ChannelType(int value, String name,String alias,String retriveName) {
+	ChannelType(int value, String name,String alias,String retriveName) {
 		this.value = value;
 		this.name = name;
 		this.alias = alias;
