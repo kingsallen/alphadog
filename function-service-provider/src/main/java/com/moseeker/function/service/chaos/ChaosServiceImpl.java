@@ -1,17 +1,11 @@
 package com.moseeker.function.service.chaos;
 
-import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.*;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.function.service.chaos.position.Position51WithAccount;
-import com.moseeker.function.service.chaos.position.PositionLiepinWithAccount;
-import com.moseeker.function.service.chaos.position.PositionZhilianWithAccount;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
-import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
