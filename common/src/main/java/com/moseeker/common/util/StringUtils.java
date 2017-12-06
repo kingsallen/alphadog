@@ -60,7 +60,16 @@ public class StringUtils {
             return true;
         }
     }
-
+    /*
+     判断set是否为空
+     */
+    public static boolean isEmptySet(Set set) {
+        if (set != null && set.size() > 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
     /**
      * 生成随机字符串， 作为密码等。
      *
