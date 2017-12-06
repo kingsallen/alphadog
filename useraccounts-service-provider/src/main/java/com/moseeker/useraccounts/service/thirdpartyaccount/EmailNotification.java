@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 邮件通知工具
@@ -26,11 +25,14 @@ public class EmailNotification {
     @Autowired
     HrCompanyDao companyDao;
 
+
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     static List<String> devMails = new ArrayList<>();
 
     static List<String> mails = new ArrayList<>();
+
+    static String br = "<br/>";
 
     static {
         mails = getEmails("account_sync.email");
@@ -89,17 +91,13 @@ public class EmailNotification {
             titleBuilder.append(":【").append(channelType.getAlias()).append("】");
             titleBuilder.append(":【").append(thirdPartyAccount.getId()).append("】");
 
-            String br = "<br/>";
-
             StringBuilder messageBuilder = new StringBuilder();
             if (company != null) {
                 messageBuilder.append("【所属公司】：").append(company.getName()).append(br);
             }
             messageBuilder.append("【第三方帐号ID】：").append(thirdPartyAccount.getId()).append(br);
             messageBuilder.append("【帐号名】：").append(thirdPartyAccount.getUsername()).append(br);
-            if (StringUtils.isNotNullOrEmpty(thirdPartyAccount.getMembername())) {
-                messageBuilder.append("【会员名】：").append(thirdPartyAccount.getMembername()).append(br);
-            }
+            appendExt(thirdPartyAccount,messageBuilder);
 
             if (StringUtils.isNotNullOrEmpty(thirdPartyAccount.getErrorMessage())) {
                 messageBuilder.append("【失败信息】:").append(br);
@@ -150,18 +148,11 @@ public class EmailNotification {
             titleBuilder.append(":【").append(channelType.getAlias()).append("】");
             titleBuilder.append(":【").append(accountDO.getId()).append("】");
 
-            String br = "<br/>";
-
             StringBuilder messageBuilder = new StringBuilder();
 
             messageBuilder.append("【第三方帐号ID】：").append(accountDO.getId()).append(br);
-            if (accountDO == null) {
-
-            }
             messageBuilder.append("【帐号名】：").append(accountDO.getUsername()).append(br);
-            if (StringUtils.isNotNullOrEmpty(accountDO.getMembername())) {
-                messageBuilder.append("【会员名】：").append(accountDO.getMembername()).append(br);
-            }
+            appendExt(accountDO,messageBuilder);
 
             if (StringUtils.isNotNullOrEmpty(message)) {
                 messageBuilder.append("【失败信息】:").append(br);
@@ -206,15 +197,11 @@ public class EmailNotification {
 
             titleBuilder.append(":【").append(thirdPartyAccount.getId()).append("】");
 
-            String br = "<br/>";
-
             StringBuilder messageBuilder = new StringBuilder();
 
             messageBuilder.append("【第三方帐号ID】：").append(thirdPartyAccount.getId()).append(br);
             messageBuilder.append("【帐号名】：").append(thirdPartyAccount.getUsername()).append(br);
-            if (StringUtils.isNotNullOrEmpty(thirdPartyAccount.getMembername())) {
-                messageBuilder.append("【会员名】：").append(thirdPartyAccount.getMembername()).append(br);
-            }
+            appendExt(thirdPartyAccount,messageBuilder);
 
             if (StringUtils.isNotNullOrEmpty(thirdPartyAccount.getErrorMessage())) {
                 messageBuilder.append("【失败信息】:").append(br);
@@ -243,6 +230,20 @@ public class EmailNotification {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
         }
+    }
+
+    public void appendExt(HrThirdPartyAccountDO thirdPartyAccount,StringBuilder messageBuilder){
+        ChannelType channelType=ChannelType.instaceFromInteger(thirdPartyAccount.getChannel());
+
+        switch (channelType){
+            case JOB51:
+                messageBuilder.append("【会员名】：").append(thirdPartyAccount.getExt()).append(br);
+                break;
+            case JOB1001:
+                messageBuilder.append("【安全码】：").append(thirdPartyAccount.getExt()).append(br);
+                break;
+        }
+
     }
 
     public List<String> getDevMails() {
