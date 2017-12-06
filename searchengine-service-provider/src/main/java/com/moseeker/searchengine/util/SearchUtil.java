@@ -42,13 +42,23 @@ public class SearchUtil {
         }
         String cluster_name = propertiesReader.get("es.cluster.name", String.class);
         String es_connection = propertiesReader.get("es.connection", String.class);
+
         Integer es_port = propertiesReader.get("es.port", Integer.class);
         TransportClient client = null;
         try{
        	 Settings settings = Settings.settingsBuilder().put("cluster.name", cluster_name)
+                    .put("client.transport.sniff", true)
                     .build();
-            client = TransportClient.builder().settings(settings).build()
-                    .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port));
+       	 String es_alternate = propertiesReader.get("es.alternate", String.class);
+       	 if(StringUtils.isNotBlank(es_alternate)){
+             client = TransportClient.builder().settings(settings).build()
+                     .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port))
+                     .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_alternate), es_port));
+         }else{
+             client = TransportClient.builder().settings(settings).build()
+                     .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port));
+         }
+
         } catch (Exception e) {
             logger.info(e.getMessage(), e);
             try {
