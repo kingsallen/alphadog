@@ -44,7 +44,7 @@ public class ChaosTool {
 
         switch (channelType){
             case JOB51:
-                pramas.put("member_name", accountDO.getMembername());
+                pramas.put("member_name", accountDO.getExt());
                 break;
             case JOB1001:
                 pramas.put("safe_code", accountDO.getExt());

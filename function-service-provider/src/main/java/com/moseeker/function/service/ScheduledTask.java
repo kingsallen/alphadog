@@ -21,7 +21,7 @@ import java.io.UnsupportedEncodingException;
 
 /**
  * 第三方相关功能中使用的rabbitMq监听类
- * @author PanYongBing
+ * @author PYB
  */
 @Component
 public class ScheduledTask {
