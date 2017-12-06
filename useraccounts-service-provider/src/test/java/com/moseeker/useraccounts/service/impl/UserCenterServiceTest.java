@@ -4,9 +4,10 @@ import com.moseeker.thrift.gen.useraccounts.struct.ApplicationDetailVO;
 import com.moseeker.thrift.gen.useraccounts.struct.ApplicationRecordsForm;
 import com.moseeker.thrift.gen.useraccounts.struct.FavPositionForm;
 import com.moseeker.thrift.gen.useraccounts.struct.RecommendationVO;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.Arrays;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 
 //@RunWith(SpringJUnit4ClassRunner.class)
 //@ContextConfiguration(classes = AppConfig.class)
@@ -33,9 +34,8 @@ public class UserCenterServiceTest {
         System.out.println(recommendationVO);
     }
 
-    //@Test
     public void getApplicationDetail() throws Exception {
-        ApplicationDetailVO applicationDetail = service.getApplicationDetail(1122611, 107102);
+        ApplicationDetailVO applicationDetail = service.getApplicationDetail(2193224, 462287);
         System.out.println(applicationDetail);
     }
 

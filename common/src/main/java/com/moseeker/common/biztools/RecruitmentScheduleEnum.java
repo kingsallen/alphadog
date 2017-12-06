@@ -102,8 +102,9 @@ public enum RecruitmentScheduleEnum {
             case 9:
             case 10:
             case 2:
-            case 5: value = 2; break;
             case 12 :
+            case 5: value = 2; break;
+
             case 11 :
             case 3: value = 3; break;
             case 4:
@@ -120,9 +121,9 @@ public enum RecruitmentScheduleEnum {
                     case 10:
                     case 2:
                     case 5:
+                    case 12:
                         value = 2;
                         break;
-                    case 12:
                     case 11:
                     case 3:
                         value = 3;
@@ -160,7 +161,18 @@ public enum RecruitmentScheduleEnum {
                 if(emailStatus != EmailStatus.NOMAIL.getValue()) {
                     value = 0;
                 } else {
-                    value = 1;
+                    switch (this.id) {
+                        case 8:
+                        case 9:
+                        case 10:
+                        case 2:
+                            value = 0;
+                            break;
+                        case 12:
+                            value = 1;
+                            break;
+                        default: value = 0;
+                    }
                 }
                 break;
             default: value = 0;
