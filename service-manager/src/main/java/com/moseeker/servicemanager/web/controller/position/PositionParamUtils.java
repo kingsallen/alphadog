@@ -1,10 +1,11 @@
 package com.moseeker.servicemanager.web.controller.position;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.StructSerializer;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.web.controller.util.Params;
-import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
 import com.moseeker.thrift.gen.position.struct.BatchHandlerJobPostion;
 import com.moseeker.thrift.gen.position.struct.City;
@@ -26,13 +27,12 @@ public class PositionParamUtils extends ParamUtils {
             HashMap<String, Object> data = parseRequestParam(request);
             form.setAppid((Integer) data.get("appid"));
             form.setPositionId((Integer) data.get("positionId"));
-            List<String> cs = new ArrayList<>();
+            List<Map<String,String>> cs = new ArrayList<>();
             List<HashMap<String, Object>> channels = (List<HashMap<String, Object>>) data.get("channels");
             if (channels != null) {
                 channels.forEach(channel -> {
                     try {
-//                        ThirdPartyPosition c = ParamUtils.initModelForm(channel, ThirdPartyPosition.class);
-                        cs.add(JSON.toJSONString(JSON.toJSONString(channel)));
+                        cs.add(toExtThirdPartyPosition(channel));
                     } catch (Exception e) {
                         e.printStackTrace();
                         LoggerFactory.getLogger(PositionParamUtils.class).error(e.getMessage(), e);
@@ -144,5 +144,14 @@ public class PositionParamUtils extends ParamUtils {
             //do nothing
         }
         return paramList;
+    }
+
+    public static Map<String,String> toExtThirdPartyPosition(HashMap<String, Object> params) throws Exception {
+        String json= JSON.toJSONString(params);
+        TypeReference<HashMap<String,String>> typeRef
+                = new TypeReference<HashMap<String,String>>() {};
+        HashMap<String,String> result=JSON.parseObject(json,typeRef);
+
+        return result;
     }
 }

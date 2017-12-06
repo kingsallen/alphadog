@@ -13,7 +13,6 @@ import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
-import com.moseeker.servicemanager.web.controller.position.bean.ThirdPartyPositionVO;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.apps.positionbs.service.PositionBS;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
@@ -244,17 +243,16 @@ public class PositionController {
     public String thirdpartyposition(HttpServletRequest request, HttpServletResponse response) {
         try {
             CommonQuery qu = ParamUtils.initCommonQuery(request, CommonQuery.class);
-            List<HrThirdPartyPositionDO> datas = positonServices.getThirdPartyPositions(qu);
+            List<Map<String,String>> datas = positonServices.getThirdPartyPositions(qu);
 
             if (datas == null) datas = new ArrayList<>();
 
-            List<ThirdPartyPositionVO> vos = new ArrayList<>();
-
-            for (HrThirdPartyPositionDO positionDO : datas) {
-                vos.add(new ThirdPartyPositionVO().copyDO(positionDO));
+            for (Map<String,String> positionDO : datas) {
+                positionDO.put("position_id",positionDO.get("positionId"));
+                positionDO.put("accountId",positionDO.get("thirdPartyAccountId"));
             }
 
-            Response result = ResponseUtils.success(vos);
+            Response result = ResponseUtils.success(datas);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -563,6 +561,7 @@ public class PositionController {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             HrThirdPartyAccountDO thirdPartyAccount = ParamUtils.initModelForm(params, HrThirdPartyAccountDO.class);
             HrThirdPartyPositionDO thirdPartyPosition = ParamUtils.initModelForm(params, HrThirdPartyPositionDO.class);
+            Map<String,String> extThirdPartyPosition = PositionParamUtils.toExtThirdPartyPosition(params);
 
             if (thirdPartyAccount == null || thirdPartyPosition == null) {
                 throw new CommonException(2201, "参数错误");
@@ -570,7 +569,7 @@ public class PositionController {
 
             thirdPartyAccount.setId(0);
             thirdPartyAccount.unsetId();
-            positonServices.updateThirdPartyPositionWithAccount(thirdPartyPosition, thirdPartyAccount);
+            positonServices.updateThirdPartyPositionWithAccount(thirdPartyPosition, thirdPartyAccount,extThirdPartyPosition);
             return ResponseLogNotification.successJson(request, 1);
         } catch (Exception e) {
             logger.error(e.getMessage());
