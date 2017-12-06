@@ -1,29 +1,15 @@
 package com.moseeker.dict.service.impl.occupation;
 
 import com.alibaba.fastjson.JSONObject;
-import com.moseeker.baseorm.dao.dictdb.DictLiepinOccupationDao;
+import com.moseeker.common.constants.ChannelType;
 import com.moseeker.dict.service.base.AbstractOccupationHandler;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictLiepinOccupationDO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
 public class LiepinOccupationHandler  extends AbstractOccupationHandler<DictLiepinOccupationDO> {
-    @Autowired
-    DictLiepinOccupationDao occupationDao;
-
-    @Override
-    protected List<DictLiepinOccupationDO> getAllOccupation() {
-        return occupationDao.getAllOccupation();
-    }
-
-    @Override
-    protected List<DictLiepinOccupationDO> getSingleOccupation(JSONObject obj) {
-        return occupationDao.getSingle(obj);
-    }
-
     @Override
     public JSONObject toJsonObject(DictLiepinOccupationDO occupation) {
         JSONObject obj=new JSONObject();
@@ -41,5 +27,10 @@ public class LiepinOccupationHandler  extends AbstractOccupationHandler<DictLiep
     @Override
     public String parentKeyName() {
         return "parent_id";
+    }
+
+    @Override
+    public ChannelType getChannelType() {
+        return ChannelType.LIEPIN;
     }
 }

@@ -2,11 +2,16 @@ package com.moseeker.dict.service.base;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.base.AbstractDictOccupationDao;
+import com.moseeker.baseorm.util.OccupationUtil;
+import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.iface.IChannelType;
 import com.moseeker.common.util.StructSerializer;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public abstract class AbstractOccupationHandler<T> {
+public abstract class AbstractOccupationHandler<T> implements IChannelType {
     Logger logger= LoggerFactory.getLogger(AbstractOccupationHandler.class);
 
     private static final String PARENT_ID_CODE="parent_id_code";
@@ -22,27 +27,38 @@ public abstract class AbstractOccupationHandler<T> {
     private static final String CODE="code";
     private static final String CODE_OTHER="code_other";
 
+    @Autowired
+    OccupationUtil occupationUtil;
+
+    //职位表中作为parentId的参数名称
+    protected abstract String parentKeyName();
+
     //获取职位
-    protected abstract List<T> getAllOccupation();
-    protected abstract List<T> getSingleOccupation(JSONObject obj);
+    protected List<T> getAllOccupation() throws BIZException {
+        AbstractDictOccupationDao dao=occupationUtil.getOccupationDaoInstance(getChannelType());
+        return dao.getAllOccupation();
+    }
+    protected List<T> getSingleOccupation(JSONObject obj) throws BIZException {
+        AbstractDictOccupationDao dao=occupationUtil.getOccupationDaoInstance(getChannelType());
+        return dao.getSingle(obj);
+    }
+
     //把职位转换成JsonObect
     protected JSONObject toJsonObject(T occupation){
         return JSONObject.parseObject(StructSerializer.toString(occupation));
     }
-    //职位表中作为parentId的参数名称
-    protected abstract String parentKeyName();
 
     //在放入结果集中做一些特殊操作
     protected void doBeforeAddResult(JSONObject son,JSONObject father){
-           if(father==null){
-               son.put(PARENT_ID_CODE,0);
-           }else{
-               son.put(PARENT_ID_CODE,father.get(CODE_OTHER));
-           }
+       if(father==null){
+           son.put(PARENT_ID_CODE,0);
+       }else{
+           son.put(PARENT_ID_CODE,father.get(CODE_OTHER));
+       }
     }
 
     //获取单一职位
-    public JSONArray getSingle(JSONObject obj){
+    public JSONArray getSingle(JSONObject obj) throws BIZException {
         JSONArray allData=new JSONArray();
         List<T> list = getSingleOccupation(obj);
         if (list != null && list.size() > 0) {

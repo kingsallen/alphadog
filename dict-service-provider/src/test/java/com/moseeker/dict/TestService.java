@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.dictdb.Dict51OccupationDao;
 import com.moseeker.baseorm.dao.dictdb.DictLiepinOccupationDao;
-import com.moseeker.baseorm.dao.dictdb.DictZpinOccupationDao;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.dict.service.base.AbstractOccupationHandler;
@@ -27,7 +26,6 @@ public class TestService {
 
     @Autowired
     DictOccupationService service;
-
 
 
     @Autowired

@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.dictdb.Dict51OccupationDao;
 import com.moseeker.baseorm.dao.dictdb.DictLiepinOccupationDao;
-import com.moseeker.baseorm.dao.dictdb.DictZpinOccupationDao;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.dict.config.AppConfig;
 import com.moseeker.dict.service.base.AbstractOccupationHandler;
