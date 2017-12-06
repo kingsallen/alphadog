@@ -14,7 +14,6 @@ import com.moseeker.baseorm.pojo.EmployeePointsRecordPojo;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.ConverTools;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
@@ -24,7 +23,6 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
@@ -33,8 +31,6 @@ import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -52,8 +48,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -98,26 +92,9 @@ public class SearchengineService {
         if (page_size == 0) {
             page_size = 20;
         }
-        ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
-        try {
-            propertiesReader.loadResource("es.properties");
-        } catch (Exception e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
-        String cluster_name = propertiesReader.get("es.cluster.name", String.class);
-        String es_connection = propertiesReader.get("es.connection", String.class);
-        Integer es_port = propertiesReader.get("es.port", Integer.class);
-
         TransportClient client = null;
         try {
-
-            Settings settings = Settings.settingsBuilder().put("cluster.name", cluster_name)
-                    .build();
-
-            client = TransportClient.builder().settings(settings).build()
-                    .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port));
-
+            client=searchUtil.getEsClient();
             QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
             QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
 
@@ -351,29 +328,16 @@ public class SearchengineService {
 
 
     public Response updateposition(String position, int id) throws TException {
-        ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
-        try {
-            propertiesReader.loadResource("es.properties");
-        } catch (Exception e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
-        String cluster_name = propertiesReader.get("es.cluster.name", String.class);
-        logger.info(cluster_name);
-        String es_connection = propertiesReader.get("es.connection", String.class);
-        Integer es_port = propertiesReader.get("es.port", Integer.class);
-        Settings settings = Settings.settingsBuilder().put("cluster.name", cluster_name)
-                .build();
+
         String idx = "" + id;
         TransportClient client = null;
         try {
-            client = TransportClient.builder().settings(settings).build()
-                    .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port));
+            client=searchUtil.getEsClient();
             IndexResponse response = client.prepareIndex("index", "fulltext", idx)
                     .setSource(position)
                     .execute()
                     .actionGet();
-        } catch (UnknownHostException e) {
+        } catch (Exception e) {
             logger.error("error in update", e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         } catch (Error error) {
@@ -394,18 +358,7 @@ public class SearchengineService {
      * @throws TException
      */
     public Response updateEmployeeAwards(List<Integer> employeeIds) throws TException {
-        ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
-        try {
-            propertiesReader.loadResource("es.properties");
-        } catch (Exception e1) {
-            logger.error(e1.getMessage());
-        }
-        String cluster_name = propertiesReader.get("es.cluster.name", String.class);
-        logger.info(cluster_name);
-        String es_connection = propertiesReader.get("es.connection", String.class);
-        Integer es_port = propertiesReader.get("es.port", Integer.class);
-        Settings settings = Settings.settingsBuilder().put("cluster.name", cluster_name)
-                .build();
+
         TransportClient client = null;
         BulkRequestBuilder bulkRequest = null;
         if (employeeIds != null && employeeIds.size() > 0) {
@@ -435,8 +388,7 @@ public class SearchengineService {
             userUerMap.putAll(userUserDOS.stream().collect(Collectors.toMap(UserUserDO::getId, Function.identity())));
             try {
                 // 连接ES
-                client = TransportClient.builder().settings(settings).build()
-                        .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port));
+                client=searchUtil.getEsClient();
                 bulkRequest = client.prepareBulk();
                 // 更新数据
                 for (UserEmployeeDO userEmployeeDO : userEmployeeDOList) {
@@ -519,7 +471,7 @@ public class SearchengineService {
                 if (bulkResponse.buildFailureMessage() != null) {
                     return ResponseUtils.fail(9999, bulkResponse.buildFailureMessage());
                 }
-            } catch (UnknownHostException e) {
+            } catch (Exception e) {
                 logger.error("error in update", e);
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
             } catch (Error error) {
@@ -539,25 +491,12 @@ public class SearchengineService {
      * @throws TException
      */
     public Response deleteEmployeeDO(List<Integer> employeeIds) throws TException {
-        ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
-        try {
-            propertiesReader.loadResource("es.properties");
-        } catch (Exception e1) {
-            logger.error(e1.getMessage());
-        }
-        String cluster_name = propertiesReader.get("es.cluster.name", String.class);
-        logger.info(cluster_name);
-        String es_connection = propertiesReader.get("es.connection", String.class);
-        Integer es_port = propertiesReader.get("es.port", Integer.class);
-        Settings settings = Settings.settingsBuilder().put("cluster.name", cluster_name)
-                .build();
         TransportClient client = null;
         BulkRequestBuilder bulkRequest = null;
         BulkResponse bulkResponse = null;
         try {
             // 连接ES
-            client = TransportClient.builder().settings(settings).build()
-                    .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port));
+            client=searchUtil.getEsClient();
             bulkRequest = client.prepareBulk();
             if (employeeIds != null && employeeIds.size() > 0) {
                 for (Integer id : employeeIds) {
