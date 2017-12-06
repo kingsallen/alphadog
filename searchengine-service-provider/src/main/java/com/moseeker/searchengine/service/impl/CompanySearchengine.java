@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.moseeker.common.util.EsClientInstance;
 import com.moseeker.searchengine.util.SearchUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
@@ -59,12 +60,15 @@ public class CompanySearchengine {
 				map=searchUtil.handleData(hits,"companies");
 //				logger.info(map.toString());
 			}
-		}finally{
+		}catch(Exception e){
+			logger.info(e.getMessage(),e);
 			if(client!=null){
 				client.close();
 				client=null;
 			}
+			EsClientInstance.closeEsClient();
 		}
+
 		return map;
 
 	}

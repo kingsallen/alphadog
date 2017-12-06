@@ -19,6 +19,7 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.DateUtils;
+import com.moseeker.common.util.EsClientInstance;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
@@ -87,41 +88,7 @@ public class SearchengineEntity {
      * @return
      */
     private TransportClient getTransportClient() {
-        ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
-        try {
-            propertiesReader.loadResource("es.properties");
-        } catch (Exception e1) {
-            logger.error(e1.getMessage());
-        }
-        String cluster_name = propertiesReader.get("es.cluster.name", String.class);
-        logger.info(cluster_name);
-        String es_connection = propertiesReader.get("es.connection", String.class);
-        Integer es_port = propertiesReader.get("es.port", Integer.class);
-        Settings settings = Settings.settingsBuilder().put("cluster.name", cluster_name)
-                .put("client.transport.sniff", true)
-                .build();
-        TransportClient client = null;
-        try {
-            String es_alternate = propertiesReader.get("es.alternate", String.class);
-            if(StringUtils.isNotBlank(es_alternate)){
-                client = TransportClient.builder().settings(settings).build()
-                        .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port))
-                        .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_alternate), es_port));
-            }else{
-                client = TransportClient.builder().settings(settings).build()
-                        .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port));
-            }
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            try {
-                if (client != null) {
-                    client.close();
-                }
-            } catch (Exception e1) {
-                logger.error(e1.getMessage(), e1);
-            }
-        }
-        return client;
+        return EsClientInstance.getClient();
     }
 
 

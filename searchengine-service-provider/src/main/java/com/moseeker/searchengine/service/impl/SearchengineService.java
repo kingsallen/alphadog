@@ -15,6 +15,7 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.ConverTools;
+import com.moseeker.common.util.EsClientInstance;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
@@ -342,8 +343,13 @@ public class SearchengineService {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         } catch (Error error) {
             logger.error(error.getMessage());
+            if(client!=null){
+                client.close();
+                client=null;
+            }
+            EsClientInstance.closeEsClient();
         } finally {
-            client.close();
+
         }
 
         return ResponseUtils.success("");
@@ -473,11 +479,19 @@ public class SearchengineService {
                 }
             } catch (Exception e) {
                 logger.error("error in update", e);
+                if(client!=null){
+                    client.close();
+                    client=null;
+                }
+                EsClientInstance.closeEsClient();
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
             } catch (Error error) {
                 logger.error(error.getMessage());
-            } finally {
-                client.close();
+                if(client!=null){
+                    client.close();
+                    client=null;
+                }
+                EsClientInstance.closeEsClient();
             }
         }
         return ResponseUtils.success("");
@@ -509,8 +523,11 @@ public class SearchengineService {
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-        } finally {
-            client.close();
+            if(client!=null){
+                client.close();
+                client=null;
+            }
+            EsClientInstance.closeEsClient();
         }
 
         return ResponseUtils.success("");
@@ -631,7 +648,9 @@ public class SearchengineService {
 
     public Response queryAwardRanking(List<Integer> companyIds, String timespan, int pageSize, int pageNum, String keyword, int filter) {
         Map<String, Object> object = new HashMap<>();
-        try (TransportClient searchClient = searchUtil.getEsClient()) {
+        TransportClient searchClient =null;
+        try {
+            searchClient=searchUtil.getEsClient();
             StringBuffer activation = new StringBuffer();
             if (filter == 0) {
                 activation.append("");
@@ -658,6 +677,11 @@ public class SearchengineService {
             object.put("data", data);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
+            if(searchClient!=null){
+                searchClient.close();
+                searchClient=null;
+            }
+            EsClientInstance.closeEsClient();
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
         return ResponseUtils.success(object);
@@ -666,8 +690,10 @@ public class SearchengineService {
     public Response queryAwardRankingInWx(List<Integer> companyIds, String timespan, Integer employeeId) {
         // 保证插入有序，使用linkedhashMap˚
         Map<Integer, JSONObject> data = new LinkedHashMap<>();
-        try (TransportClient searchClient = searchUtil.getEsClient()) {
-            // 查找所有员工的积分排行
+        TransportClient searchClient =null;
+        try {
+            searchClient =searchUtil.getEsClient();
+                    // 查找所有员工的积分排行
             SearchResponse response = getSearchRequestBuilder(searchClient, companyIds, null, "0", 20, 1, timespan).execute().actionGet();
             int index = 1;
             for (SearchHit searchHit : response.getHits().getHits()) {
@@ -720,6 +746,11 @@ public class SearchengineService {
             data = resultList.stream().collect(Collectors.toMap(k -> TypeUtils.castToInt(k.remove("employee_id")), v -> v, (oldKey, newKey) -> newKey));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
+            if(searchClient!=null){
+                searchClient.close();
+                searchClient=null;
+            }
+            EsClientInstance.closeEsClient();
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
         return ResponseUtils.success(data);
