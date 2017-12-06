@@ -151,7 +151,6 @@ public class DictJob1001Occupation extends TableImpl<DictJob1001OccupationRecord
     /**
      * Rename this table
      */
-    @Override
     public DictJob1001Occupation rename(String name) {
         return new DictJob1001Occupation(name, null);
     }

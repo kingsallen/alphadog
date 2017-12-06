@@ -39,7 +39,6 @@ public class AppConfig {
 
     @Bean(destroyMethod = "close")
     public DataSource getDataSource() {
-        logger.info("-----------before getDataSource()-------------");
         ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
         String driverClass = propertiesReader.get("mycat.classname", String.class);
         String url = propertiesReader.get("mycat.url", String.class);
@@ -63,7 +62,6 @@ public class AppConfig {
         boneCPDataSource.setIdleMaxAgeInMinutes(idleMaxAgeInMinutes);
         boneCPDataSource.setAcquireRetryDelayInMs(acquireRetryDelayInMs);
         boneCPDataSource.setAcquireRetryAttempts(acquireRetryAttempts);
-        logger.info("-----------end getDataSource()-------------");
         return boneCPDataSource;
     }
 
@@ -94,7 +92,6 @@ public class AppConfig {
 
     @Bean
     public DefaultConfiguration configuration() {
-        logger.info("-----------before configuration()-------------");
         DefaultConfiguration jooqConfiguration = new DefaultConfiguration();
 
         jooqConfiguration.set(connectionProvider());
@@ -108,7 +105,6 @@ public class AppConfig {
         logger.info("sqlDialectName:" + sqlDialectName);
         SQLDialect dialect = SQLDialect.valueOf(sqlDialectName);
         jooqConfiguration.set(dialect);
-        logger.info("-----------end configuration()-------------");
         return jooqConfiguration;
     }
 

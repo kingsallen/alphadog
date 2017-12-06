@@ -1,12 +1,15 @@
 package com.moseeker.baseorm.dao.dictdb;
 
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.base.AbstractDictOccupationDao;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.dictdb.tables.DictLiepinOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.Dict_51jobOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictLiepinOccupationRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.Dict_51jobOccupationRecord;
+import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.dao.struct.dictdb.Dict51jobOccupationDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictLiepinOccupationDO;
@@ -16,7 +19,7 @@ import org.springframework.stereotype.Repository;
 import java.util.*;
 
 @Repository
-public class DictLiepinOccupationDao extends JooqCrudImpl<DictLiepinOccupationDO, DictLiepinOccupationRecord> {
+public class DictLiepinOccupationDao extends AbstractDictOccupationDao<DictLiepinOccupationDO, DictLiepinOccupationRecord> {
 
     public DictLiepinOccupationDao() {
         super(DictLiepinOccupation.DICT_LIEPIN_OCCUPATION, DictLiepinOccupationDO.class);
@@ -26,60 +29,37 @@ public class DictLiepinOccupationDao extends JooqCrudImpl<DictLiepinOccupationDO
         super(table, dictLiepinOccupationDO);
     }
 
-    public List<DictLiepinOccupationDO> getAllOccupation(){
-        Query query = new Query.QueryBuilder().where(DictLiepinOccupation.DICT_LIEPIN_OCCUPATION.STATUS.getName(), 1).buildQuery();
-        return getDatas(query);
+    @Override
+    protected Condition statusCondition() {
+        return new Condition(DictLiepinOccupation.DICT_LIEPIN_OCCUPATION.STATUS.getName(), 1);
     }
 
-    public List<DictLiepinOccupationDO> getSingle(JSONObject obj) {
-        Integer level = obj.getInteger("level");
-        Integer id = obj.getInteger("code");
-        Integer parentId = obj.getInteger("parent_id");
-        Query.QueryBuilder build = new Query.QueryBuilder();
-        build.where(DictLiepinOccupation.DICT_LIEPIN_OCCUPATION.STATUS.getName(), 1);
-        if (id != null) {
-            build.and(DictLiepinOccupation.DICT_LIEPIN_OCCUPATION.CODE.getName(), id);
-        }
-        if (parentId != null) {
-            build.and(DictLiepinOccupation.DICT_LIEPIN_OCCUPATION.PARENT_ID.getName(), parentId);
-        }
-        if (level != null) {
-            build.and(DictLiepinOccupation.DICT_LIEPIN_OCCUPATION.LEVEL.getName(), level);
-        }
-        return getDatas(build.buildQuery());
+    @Override
+    protected Map<String, Object> queryEQParam(JSONObject obj) {
+        Map<String, Object> paramMap=new HashMap<>();
+        paramMap.put(DictLiepinOccupation.DICT_LIEPIN_OCCUPATION.CODE.getName(), obj.getInteger("code"));
+        paramMap.put(DictLiepinOccupation.DICT_LIEPIN_OCCUPATION.PARENT_ID.getName(), obj.getInteger("parent_id"));
+        paramMap.put(DictLiepinOccupation.DICT_LIEPIN_OCCUPATION.LEVEL.getName(), obj.getInteger("level"));
+        return paramMap;
     }
 
-    public List<DictLiepinOccupationDO> getFullOccupations(String occupation) {
-        List<DictLiepinOccupationDO> fullOccupations = new ArrayList<>();
+    @Override
+    protected boolean isTopOccupation(DictLiepinOccupationDO dictLiepinOccupationDO) {
+        return dictLiepinOccupationDO!=null && dictLiepinOccupationDO.getId()>0 && dictLiepinOccupationDO.getParentId()>0;
+    }
 
-        if (StringUtils.isNullOrEmpty(occupation)) return fullOccupations;
+    @Override
+    protected Condition conditionToSearchFather(DictLiepinOccupationDO dictLiepinOccupationDO) {
+        return new Condition(DictLiepinOccupation.DICT_LIEPIN_OCCUPATION.CODE.getName(),dictLiepinOccupationDO.getParentId());
+    }
 
-        String currentField = DictLiepinOccupation.DICT_LIEPIN_OCCUPATION.OTHER_CODE.getName();
-        Object currentValue = occupation;
+    @Override
+    protected String otherCodeName() {
+        return DictLiepinOccupation.DICT_LIEPIN_OCCUPATION.OTHER_CODE.getName();
+    }
 
-        Query query = null;
-
-        DictLiepinOccupationDO dictLiepinOccupationDO;
-
-        for (int i = 0; i < 4; i++) {
-
-            query = new Query.QueryBuilder().where(currentField, currentValue).buildQuery();
-
-            dictLiepinOccupationDO = getData(query);
-
-            if (dictLiepinOccupationDO == null) {
-                break;
-            } else {
-                fullOccupations.add(0, dictLiepinOccupationDO);
-                if (dictLiepinOccupationDO.getParentId() == 0) {
-                    break;
-                }
-                currentField = DictLiepinOccupation.DICT_LIEPIN_OCCUPATION.CODE.getName();
-                currentValue = dictLiepinOccupationDO.getParentId();
-            }
-        }
-
-        return fullOccupations;
-
+    @Override
+    public ChannelType getChannelType() {
+        return ChannelType.LIEPIN;
     }
 }
