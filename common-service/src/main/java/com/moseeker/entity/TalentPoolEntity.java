@@ -3,6 +3,7 @@ package com.moseeker.entity;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
+import com.moseeker.baseorm.dao.talentpooldb.TalentpoolCommentDao;
 import com.moseeker.baseorm.dao.talentpooldb.TalentpoolHrTalentDao;
 import com.moseeker.baseorm.dao.talentpooldb.TalentpoolTalentDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
@@ -38,6 +39,8 @@ public class TalentPoolEntity {
     private TalentpoolHrTalentDao talentpoolHrTalentDao;
     @Autowired
     private HrCompanyAccountDao hrCompanyAccountDao;
+    @Autowired
+    private TalentpoolCommentDao talentpoolCommentDao;
 
     /*
         验证hr操作user_id是否合法
@@ -83,6 +86,32 @@ public class TalentPoolEntity {
             hrIdList.add(record.getHrId());
         }
         return hrIdList;
+    }
+    /*
+     验证是否能够添加或者删除备注
+     */
+    public int validateComment(int hrId,int companyId,int userId){
+        int count=this.valiadteMainAccount(hrId,companyId);
+        if(count>0){
+            return this.valicateCompanyApplication(userId,companyId);
+        }
+        int result2=this.validatePublisherUserApp(hrId,userId);
+        if(result2>0){
+            return result2;
+        }
+        List<TalentpoolTalentRecord> list=getTalentpoolTalentByCompanyId(companyId);
+        List<Integer> userIdList=getUserIdListByTalentpoolTalent(list);
+        if(!StringUtils.isEmptyList(userIdList)){
+            if(userIdList.contains(userId)){
+                return 1;
+            }
+        }
+        return 0;
+    }
+    public int validateUserComment(int id,int userId,int hrId){
+        Query query=new Query.QueryBuilder().where("hrId",hrId).and("id",id).and("user_id",userId).buildQuery();
+        int count=talentpoolCommentDao.getCount(query);
+        return count;
     }
     /*
      获取一个人才被这个公司下hr的收藏情况
@@ -209,12 +238,16 @@ public class TalentPoolEntity {
         int result=jobApplicationDao.getCount(query);
         return result;
     }
-
+    /*
+     验证是否是主账号
+     */
     private int valiadteMainAccount(int hrId,int companyId){
         Query query=new Query.QueryBuilder().where("id",hrId).and("company_id",companyId).and("account_type",0).buildQuery();
         int result=userHrAccountDao.getCount(query);
         return result;
     }
+
+
 
     private int valicateCompanyApplication(int userId,int companyId){
         Query query=new Query.QueryBuilder().where("company_id",companyId).and("applier_id",userId).buildQuery();
