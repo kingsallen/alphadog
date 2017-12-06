@@ -29,4 +29,9 @@ public class EsTest {
     public void updateAwardsTest() throws TException {
         service.updateEmployeeAwards(Arrays.asList(69826));
     }
+
+    @Test
+    public void testAnd() {
+        System.out.println(32|64);
+    }
 }
