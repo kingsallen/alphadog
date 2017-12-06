@@ -204,8 +204,10 @@ public class ProfileProcessBS {
                 //  对所有的
                 if (processStatus || progressStatus == 13 || progressStatus == 99) {
                 	List<HrAwardConfigTemplate> recruitProcesses=configSysPointsConfTplDao.findRecruitProcesses(companyId);
+                	logger.info("ProfileProcessBS processProfile excuteRecruitRewardOperation recruitOrder:{}, " +
+                            "progressStatus:{}, recruitProcesses:{}", recruitOrder, processStatus, recruitProcesses);
                     RecruitmentResult result = BusinessUtil.excuteRecruitRewardOperation(recruitOrder, progressStatus, recruitProcesses);
-                    logger.info("ProfileProcessBS processProfile result:{}", result);
+                    logger.info("ProfileProcessBS processProfile result:{}", JSON.toJSONString(result));
                     if (result.getStatus() == 0) {
                         List<Integer> recommenderIds = new ArrayList<Integer>();
                         List<RewardsToBeAddBean> rewardsToBeAdd = new ArrayList<RewardsToBeAddBean>();
@@ -215,7 +217,7 @@ public class ProfileProcessBS {
                         HrOperationRecordDO turnToCVChecked = null;
                         for (ProcessValidationStruct record : list) {
                             RecruitmentResult result1 = BusinessUtil.excuteRecruitRewardOperation(record.getRecruit_order(), progressStatus, recruitProcesses);
-                            logger.info("ProfileProcessBS processProfile result1:{}", result1);
+                            logger.info("ProfileProcessBS processProfile result1:{}", JSON.toJSONString(result1));
                             reward = new RewardsToBeAddBean();
                             reward.setAccount_id(accountId);
                             reward.setEmployee_id(0);
