@@ -42,7 +42,7 @@ public class VeryEastParamRefresher extends AbstractRabbitMQParamRefresher {
     }
 
     @Override
-    public ChannelType getChannel() {
+    public ChannelType getChannelType() {
         return ChannelType.VERYEAST;
     }
 

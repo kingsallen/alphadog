@@ -28,7 +28,7 @@ public abstract class YLParamRefresher extends AbstractRabbitMQParamRefresher{
     }
 
     @Override
-    public ChannelType getChannel() {
+    public ChannelType getChannelType() {
         return ChannelType.JOB1001;
     }
 }

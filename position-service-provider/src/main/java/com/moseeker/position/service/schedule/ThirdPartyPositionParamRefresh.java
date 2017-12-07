@@ -32,6 +32,12 @@ public class ThirdPartyPositionParamRefresh {
 
     @Scheduled(cron = "* * 1 * * SAT")
     public void refresh(){
-        refreshList.forEach(r->r.refresh());
+        refreshList.forEach(r->{
+            try {
+                r.refresh();
+            }catch (Exception e){
+                logger.error("refresh error");
+            }
+        });
     }
 }

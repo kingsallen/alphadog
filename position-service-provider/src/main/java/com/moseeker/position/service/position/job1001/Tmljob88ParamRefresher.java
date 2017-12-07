@@ -8,9 +8,9 @@ import org.springframework.stereotype.Component;
 public class Tmljob88ParamRefresher extends YLParamRefresher{
     @Override
     public void addUserParam(JSONObject jsonSend) {
-        jsonSend.put("user_name",getConfig("job1001.username"));
-        jsonSend.put("password",getConfig("job1001.password"));
-        jsonSend.put("safe_code",getConfig("job1001.safecode"));
+        jsonSend.put("user_name",getConfig("tmjob88.username"));
+        jsonSend.put("password",getConfig("tmjob88.password"));
+        jsonSend.put("safe_code",getConfig("tmjob88.safecode"));
         jsonSend.put("subsite",getConfig("tmjob88.subsite"));
     }
 }

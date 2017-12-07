@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.common.constants.ChannelType;
+import com.moseeker.common.iface.IChannelType;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.constants.RefreshConstant;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
@@ -19,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public abstract class AbstractRabbitMQParamRefresher implements ParamRefresher {
+public abstract class AbstractRabbitMQParamRefresher implements ParamRefresher,IChannelType {
     Logger logger= LoggerFactory.getLogger(AbstractRabbitMQParamRefresher.class);
 
     @Autowired
@@ -34,21 +35,19 @@ public abstract class AbstractRabbitMQParamRefresher implements ParamRefresher {
     public abstract void receiveAndHandle(String json);
     public abstract void addUserParam(JSONObject jsonSend);
 
-    public abstract ChannelType getChannel();
-
     @Override
     public void refresh() {
         JSONObject jsonSend=new JSONObject();
 
         jsonSend.put("account_id",1);
-        jsonSend.put("channel",getChannel().getValue());
+        jsonSend.put("channel",getChannelType().getValue());
         jsonSend.put("moseeker_region",moseekerRegin());
 
         addUserParam(jsonSend);
         addSendParam(jsonSend);
 
         String json=jsonSend.toJSONString();
-        logger.info("refresh param send RabbitMQ channel : {}",getChannel().getValue());
+        logger.info("refresh param send RabbitMQ channel : {}",getChannelType().getValue());
 
         amqpTemplate.send(exchange(),routingKey(), createMsg(json));
         logger.info("send RabbitMQ success");
