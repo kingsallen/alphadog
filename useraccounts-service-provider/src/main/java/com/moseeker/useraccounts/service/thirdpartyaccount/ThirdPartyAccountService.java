@@ -87,7 +87,6 @@ public class ThirdPartyAccountService {
      * @param account
      * @return
      */
-    @CounterIface
     public HrThirdPartyAccountDO bindThirdAccount(int hrId, HrThirdPartyAccountDO account,boolean sync) throws Exception {
         UserHrAccountDO hrAccount = userHrAccountService.requiresNotNullAccount(hrId);
 

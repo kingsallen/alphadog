@@ -41,7 +41,10 @@ public class YLOccupationResultHandler extends AbstractOccupationResultHandler<D
     @Override
     @Transactional
     public void persistent(List<DictJob1001OccupationDO> data) {
-        int delCount=occupationDao.deleteAll();
+        if(data==null || data.isEmpty()){
+            return;
+        }
+        int delCount=occupationDao.deleteAllBySubsite(data.get(0).getSubsite());
         logger.info("job1001 delete old Occupation "+delCount);
         occupationDao.addAllData(data);
         logger.info("job1001 insert success");

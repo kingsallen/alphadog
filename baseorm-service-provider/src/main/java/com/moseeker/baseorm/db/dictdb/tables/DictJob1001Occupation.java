@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictJob1001Occupation extends TableImpl<DictJob1001OccupationRecord> {
 
-    private static final long serialVersionUID = 644060564;
+    private static final long serialVersionUID = 34569608;
 
     /**
      * The reference instance of <code>dictdb.dict_job1001_occupation</code>
@@ -85,6 +85,11 @@ public class DictJob1001Occupation extends TableImpl<DictJob1001OccupationRecord
      * The column <code>dictdb.dict_job1001_occupation.createTime</code>. 创建时间
      */
     public final TableField<DictJob1001OccupationRecord, Timestamp> CREATETIME = createField("createTime", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
+
+    /**
+     * The column <code>dictdb.dict_job1001_occupation.subsite</code>. 所属发布网站
+     */
+    public final TableField<DictJob1001OccupationRecord, String> SUBSITE = createField("subsite", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false), this, "所属发布网站");
 
     /**
      * Create a <code>dictdb.dict_job1001_occupation</code> table reference

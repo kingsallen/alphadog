@@ -6,10 +6,7 @@ import com.moseeker.baseorm.dao.dictdb.DictCityMapDao;
 import com.moseeker.baseorm.dao.thirdpartydb.*;
 import com.moseeker.baseorm.db.dictdb.tables.DictCity;
 import com.moseeker.baseorm.db.dictdb.tables.DictCityMap;
-import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountCity;
-import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountCompany;
-import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountCompanyAddress;
-import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountDepartment;
+import com.moseeker.baseorm.db.thirdpartydb.tables.*;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
@@ -185,7 +182,7 @@ public class ThridPartyAcountEntity {
         }
 
         if(data.getSubsites() != null && !data.getSubsites().isEmpty()){
-            Condition deleteCondition = new Condition(ThirdpartyAccountDepartment.THIRDPARTY_ACCOUNT_DEPARTMENT.ACCOUNT_ID.getName(), data.getAccountId());
+            Condition deleteCondition = new Condition(ThirdpartyAccountSubsite.THIRDPARTY_ACCOUNT_SUBSITE.ACCOUNT_ID.getName(), data.getAccountId());
             subsiteDao.delete(deleteCondition);
 
             List<ThirdpartyAccountSubsiteDO> subsiteDOList= data.getSubsites()

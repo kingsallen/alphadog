@@ -66,4 +66,9 @@ public class DictJob1001OccupationDao extends AbstractDictOccupationDao<DictJob1
     public ChannelType getChannelType() {
         return ChannelType.JOB1001;
     }
+
+
+    public int deleteAllBySubsite(String subsite){
+        return delete(new Condition(DictJob1001Occupation.DICT_JOB1001_OCCUPATION.SUBSITE.getName(),subsite));
+    }
 }
