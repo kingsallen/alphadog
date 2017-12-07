@@ -2,6 +2,7 @@ package com.moseeker.position;
 
 import com.moseeker.position.config.AppConfig;
 import com.moseeker.position.service.position.liepin.LiepinPositionTransfer;
+import com.moseeker.position.service.position.liepin.pojo.PositionLiepin;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
 import org.junit.Test;
@@ -24,7 +25,7 @@ public class PositionTest {
     @Test
     public void test(){
         ThirdPartyPosition positionForm =new ThirdPartyPosition();
-        ThirdPartyPositionForSynchronization position=new ThirdPartyPositionForSynchronization();
+        PositionLiepin position=new PositionLiepin();
         positionForm.setOccupation(new ArrayList<>(Arrays.asList("cate-01","cate-01-05","662","360331")));
         transfer.setOccupation(positionForm,position);
     }

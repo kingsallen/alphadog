@@ -1,6 +1,6 @@
 package com.moseeker.position.config;
 
-import com.moseeker.position.constants.VeryEastConstant;
+import com.moseeker.common.constants.RefreshConstant;
 import com.rabbitmq.client.ConnectionFactory;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
@@ -97,7 +97,7 @@ public class AppConfig {
     //设置rabbitMQ的Exchange
     @Bean
     public TopicExchange exchange() {
-        TopicExchange exchange = new TopicExchange(VeryEastConstant.EXCHANGE, true, false);
+        TopicExchange exchange = new TopicExchange(RefreshConstant.EXCHANGE, true, false);
         return exchange;
     }
 
@@ -105,13 +105,13 @@ public class AppConfig {
     //绑定第一次推送第三方账号队列(即推送需要绑定的账号和密码)
     @Bean
     public Queue paramQueue() {
-        Queue queue = new Queue(VeryEastConstant.PARAM_GET_QUEUE, true, false, false);
+        Queue queue = new Queue(RefreshConstant.PARAM_GET_QUEUE, true, false, false);
         return queue;
     }
     @Bean
     public List<Binding> bindingParamQueue() {
         return new ArrayList<Binding>(){{
-            add(BindingBuilder.bind(paramQueue()).to(exchange()).with(VeryEastConstant.PARAM_GET_ROUTING_KEY));
+            add(BindingBuilder.bind(paramQueue()).to(exchange()).with(RefreshConstant.PARAM_GET_ROUTING_KEY));
         }};
     }
 }

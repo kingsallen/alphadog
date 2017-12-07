@@ -1,6 +1,6 @@
 package com.moseeker.position.service.position;
 
-import com.moseeker.position.service.position.job51.Job51EmployeeType;
+import com.moseeker.position.service.position.job51.pojo.Job51EmployeeType;
 import com.moseeker.position.service.position.qianxun.EmployeeType;
 import com.moseeker.position.service.position.zhilian.ZhilianEmployeeType;
 

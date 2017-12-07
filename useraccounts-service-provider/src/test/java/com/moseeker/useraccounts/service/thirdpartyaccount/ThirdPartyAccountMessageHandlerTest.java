@@ -30,7 +30,7 @@ import java.util.ArrayList;
 @ContextConfiguration(classes = AppConfig.class)
 public class ThirdPartyAccountMessageHandlerTest {
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    /*Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private AmqpTemplate amqpTemplate;
@@ -113,5 +113,5 @@ public class ThirdPartyAccountMessageHandlerTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 }

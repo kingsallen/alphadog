@@ -1,39 +1,24 @@
 package com.moseeker.position.service.position;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.moseeker.baseorm.dao.dictdb.DictCityMapDao;
-import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
-import com.moseeker.baseorm.dao.hrdb.HrTeamDao;
-import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
-import com.moseeker.baseorm.db.dictdb.tables.DictCityMap;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
+import com.moseeker.baseorm.base.EmptyExtThirdPartyPosition;
 import com.moseeker.common.constants.ChannelType;
-import com.moseeker.common.util.StringUtils;
-import com.moseeker.common.util.query.Query;
-import com.moseeker.position.service.position.base.PositionTransfer;
-import com.moseeker.position.service.position.job51.Job51PositionTransfer;
-import com.moseeker.position.service.position.liepin.LiepinPositionTransfer;
-import com.moseeker.position.service.position.qianxun.Degree;
-import com.moseeker.position.service.position.qianxun.WorkType;
-import com.moseeker.position.service.position.zhilian.ZhilianPositionTransfer;
-import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
-import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityMapDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrTeamDO;
-import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionCityDO;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.util.StructSerializer;
+import com.moseeker.position.service.position.base.sync.PositionTransfer;
+import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
-import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 /**
  * 职位转换
@@ -43,95 +28,81 @@ import java.util.Set;
 @Service
 public class PositionChangeUtil {
 
-    Logger logger = LoggerFactory.getLogger(PositionChangeUtil.class);
+    private static Logger logger = LoggerFactory.getLogger(PositionChangeUtil.class);
 
     @Autowired
-    private Job51PositionTransfer job51PositionTransfer;
-
-    @Autowired
-    private ZhilianPositionTransfer zhilianPositionTransfer;
-
-    @Autowired
-    private LiepinPositionTransfer liepinPositionTransfer;
-
-    @Autowired
-    private DefaultPositionTransfer defaultPositionTransfer;
+    List<PositionTransfer> transferList;
 
     /**
      * 将仟寻职位转成第卅方职位
      *
-     * @param form
+     * @param jsonForm
      * @param positionDB
+     * @param account
      * @return
      */
-    public ThirdPartyPositionForSynchronization changeToThirdPartyPosition(ThirdPartyPosition form, JobPositionDO positionDB) {
-        logger.info("changeToThirdPartyPosition---------------------");
+    public PositionTransfer.TransferResult changeToThirdPartyPosition(JSONObject jsonForm, JobPositionDO positionDB, HrThirdPartyAccountDO account) throws Exception {
+        logger.info("changeToThirdPartyPosition---------------------jsonForm : {},positionDB : {}, account : {}",jsonForm,positionDB,account);
 
-        ChannelType channelType = ChannelType.instaceFromInteger(form.getChannel());
+        int channel=jsonForm.getIntValue("channel");
+
+        ChannelType channelType = ChannelType.instaceFromInteger(channel);
+        if(channelType==null){
+            logger.error("change To ThirdPartyPosition no matched channelType : {}",channel);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,"change To ThirdPartyPosition no matched channelType");
+        }
 
         PositionTransfer transfer=transferSimpleFactory(channelType);
 
-        ThirdPartyPositionForSynchronization position=transfer.changeToThirdPartyPosition(form,positionDB);
-        logger.info("转换结果:{}",position);
+        PositionTransfer.TransferResult result=transfer.changeToThirdPartyPosition(jsonForm,positionDB,account);
+        logger.info("changeToThirdPartyPosition result:{}",result);
 
-        return position;
+        return result;
     }
 
-    public PositionTransfer transferSimpleFactory(ChannelType channelType){
-        PositionTransfer transfer=null;
-        switch (channelType){
-            case ZHILIAN:
-                logger.info("进入智联转换");
-                transfer=zhilianPositionTransfer;
-                break;
-            case JOB51:
-                logger.info("进入51转换");
-                transfer=job51PositionTransfer;
-                break;
-            case LIEPIN:
-                logger.info("进入猎聘转换");
-                transfer=liepinPositionTransfer;
-                break;
-            default:
-                logger.info("默认职位转换，channelType为"+channelType.getValue());
-                transfer=defaultPositionTransfer;
-                break;
+    public Object toThirdPartyPosition(int channel,Map<String,String> data) throws BIZException {
+        ChannelType channelType = ChannelType.instaceFromInteger(channel);
+        if(channelType==null){
+            logger.error("change To ThirdPartyPosition no matched channelType : {}",channel);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,"change To ThirdPartyPosition no matched channelType");
         }
-        return transfer;
+
+        PositionTransfer transfer=transferSimpleFactory(channelType);
+
+        Object ThirdParty=transfer.toExtThirdPartyPosition(data);
+
+        return ThirdParty;
     }
 
-    public static String convertDescription(String accounTabilities, String requirement) {
-        StringBuffer descript = new StringBuffer();
-        if (StringUtils.isNotNullOrEmpty(accounTabilities)) {
-            StringBuffer tablities = replaceLineBreakToTagP(accounTabilities);
-            if (accounTabilities.contains("职位描述")) {
-                descript.append(tablities.toString());
-            } else {
-                descript.append("<p>职位描述：</p>" + tablities.toString());
+    public PositionTransfer transferSimpleFactory(ChannelType channelType) throws BIZException {
+        for(PositionTransfer transfer:transferList){
+            if(channelType==transfer.getChannel()){
+                return transfer;
             }
         }
-        if (StringUtils.isNotNullOrEmpty(requirement)) {
-            StringBuffer require = replaceLineBreakToTagP(requirement);
-            if (requirement.contains("职位要求")) {
-                descript.append(require.toString());
-            } else {
-                descript.append("<p>职位要求：</p>" + require.toString());
-            }
-        }
-
-        return descript.toString();
+        logger.error("no matched PositionTransfer {}",channelType);
+        throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,"no matched PositionTransfer");
     }
 
-    public static StringBuffer replaceLineBreakToTagP(String str){
-        StringBuffer require = new StringBuffer();
-        if (str.contains("\n")) {
-            String results1[] = str.split("\n");
-            for (String result : results1) {
-                require.append("<p>  " + result + "</p>");
-            }
-        } else {
-            require.append("<p>  " + str + "</p>");
+    public static JSONObject tryToParseJsonForm(String json) throws BIZException {
+        try {
+            JSONObject obj=JSONObject.parseObject(json);
+            return obj;
+        }catch (Exception e){
+            logger.info("try to parse json form failed : {}",json);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,"try to parse json form failed");
         }
-        return require;
+    }
+
+    public static Map<String,String> objectToMap(Object object){
+        if(object== EmptyExtThirdPartyPosition.EMPTY){
+            return new HashMap<>();
+        }
+        String json= StructSerializer.toString(object);
+        TypeReference<HashMap<String,String>> typeRef
+                = new TypeReference<HashMap<String,String>>() {};
+        HashMap<String,String> result=JSON.parseObject(json,typeRef);
+
+        return result;
     }
 }

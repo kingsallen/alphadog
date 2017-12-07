@@ -27,8 +27,8 @@ public class ZhiLianInfoProvider extends AbstractThirdInfoProvider {
         int accountId = getThirdPartyAccount(param).getThirdPartyAccountId();
 
         JSONObject obj=new JSONObject();
-        obj.put("company",companyService.getCompanyByAccountId(accountId));
-        obj.put("address",addressService.getCompanyAddressByAccountId(accountId));
+        obj.put(COMPANY,companyService.getCompanyByAccountId(accountId));
+        obj.put(ADDRESS,addressService.getCompanyAddressByAccountId(accountId));
 
         return StructSerializer.toString(obj);
     }

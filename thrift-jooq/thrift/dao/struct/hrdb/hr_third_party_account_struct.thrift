@@ -16,6 +16,6 @@ struct HrThirdPartyAccountDO {
 	10: optional string updateTime,	//数据更新时间
 	11: optional string createTime,	//创建时间
 	12: optional i32 remainProfileNum,	//第三方账号剩余简历数
-	13: optional string errorMessage    //同步刷新失败的理由
-
+	13: optional string errorMessage,    //同步刷新失败的理由
+    14: optional string ext //扩展字段，以防在登录时需要除了账号密码以外的信息。例如：一揽人才：安全码
 }

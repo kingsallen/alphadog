@@ -19,6 +19,10 @@ import java.util.Map;
 public abstract class AbstractThirdInfoProvider implements JsonThirdPartyInfoProvider {
     Logger logger= LoggerFactory.getLogger(this.getClass());
 
+    protected final static String COMPANY="company";
+    protected final static String ADDRESS="address";
+    protected final static String DEPARTMENT="department";
+
     @Autowired
     HRThirdPartyAccountHrDao hrThirdPartyAccountHrDao;
 

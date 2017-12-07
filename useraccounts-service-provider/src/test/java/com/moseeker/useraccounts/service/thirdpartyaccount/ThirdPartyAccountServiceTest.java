@@ -60,9 +60,10 @@ public class ThirdPartyAccountServiceTest {
         String str="{" +
                 "  \"username\": \"peter62277\"," +
                 "  \"appid\": 4," +
-                "  \"user_id\": 82690," +
-                "  \"channel\": 6," +
-                " \"password\": \"123\""+
+                "  \"user_id\": 82694," +
+                "  \"channel\": 7," +
+                " \"password\": \"123\","+
+                " \"ext\": \"123\""+
                 "}";
         JSONObject obj=JSON.parseObject(str);
         HrThirdPartyAccountDO thirdPartyAccount= JSON.toJavaObject(obj,HrThirdPartyAccountDO.class);
@@ -74,9 +75,10 @@ public class ThirdPartyAccountServiceTest {
             e.printStackTrace();
         }
 
-        /*//测试已存在
-        thirdPartyAccount.setUsername("dqwl805");
+        //测试已存在
+        thirdPartyAccount.setUsername("peter62277");
         thirdPartyAccount.setChannel((short)1);
+        thirdPartyAccount.setExt("sc930524");
         try {
             print(service.bindThirdAccount(obj.getIntValue("user_id"),thirdPartyAccount,false));
         }catch (Exception e){
@@ -91,7 +93,7 @@ public class ThirdPartyAccountServiceTest {
             print(service.bindThirdAccount(82690,thirdPartyAccount,false));
         }catch (Exception e){
             e.printStackTrace();
-        }*/
+        }
 
         //测试正常流程
         /*new Thread(){

@@ -24,7 +24,8 @@ public class ThirdPartyAccountMessageHandlerTest {
     @Commit
     public void test() throws UnsupportedEncodingException {
         String msgBody=
-                "{data:{\"accountId\":230,\"departments\":[\"Admin\",\"BIE\",\"CHC\",\"CNS\",\"Commercial\",\"Commercial &Emerging business\",\"Commercial Excellence\",\"Communication\",\"CV\",\"财务\",\"DBU\",\"法务部\",\"Genzyme\",\"Gx & Outsource\",\"核心产品事业部\",\"IA\",\"IS\",\"基层医疗事业部\",\"KA\",\"Maketing\",\"ONCO\",\"PAMA\",\"Pasteur 巴斯德\",\"PC\",\"Pharma\",\"Procurement 采购\",\"R&D\",\"人力资源\",\"Sales\",\"Specialty Care\",\"Strategic Marketing Department\",\"Support Functions\",\"赛诺菲美华美\",\"TBA\",\"特药事业部\",\"销售部\",\"行政\",\"医学部\",\"招投标\",\"质量\",\"注册\"],\"operationType\":2}}";
+//                "{data:{\"accountId\":230,\"departments\":[\"Admin\",\"BIE\",\"CHC\",\"CNS\",\"Commercial\",\"Commercial &Emerging business\",\"Commercial Excellence\",\"Communication\",\"CV\",\"财务\",\"DBU\",\"法务部\",\"Genzyme\",\"Gx & Outsource\",\"核心产品事业部\",\"IA\",\"IS\",\"基层医疗事业部\",\"KA\",\"Maketing\",\"ONCO\",\"PAMA\",\"Pasteur 巴斯德\",\"PC\",\"Pharma\",\"Procurement 采购\",\"R&D\",\"人力资源\",\"Sales\",\"Specialty Care\",\"Strategic Marketing Department\",\"Support Functions\",\"赛诺菲美华美\",\"TBA\",\"特药事业部\",\"销售部\",\"行政\",\"医学部\",\"招投标\",\"质量\",\"注册\"],\"operationType\":2}}";
+        "{data:{\"accountId\":651,\"companies\":[],\"operationType\":1,\"subsites\":[{\"site\":\"yp.yl1001.com\",\"text\":\"监理英才网\"}]}}";
 
         ThirdPartyAccountExt accountExt = JSON.parseObject(msgBody, ThirdPartyAccountExt.class);
         thirdPartyAccountService.thirdPartyAccountExtHandler(accountExt);

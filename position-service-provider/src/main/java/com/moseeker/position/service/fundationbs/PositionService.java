@@ -24,6 +24,7 @@ import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.records.*;
 import com.moseeker.baseorm.pojo.JobPositionPojo;
 import com.moseeker.baseorm.pojo.RecommendedPositonPojo;
+import com.moseeker.baseorm.pojo.TwoParam;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
@@ -49,6 +50,7 @@ import com.moseeker.position.utils.SpecialCtiy;
 import com.moseeker.position.utils.SpecialProvince;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.config.ConfigCustomMetaVO;
@@ -326,140 +328,6 @@ public class PositionService {
     public boolean verifySynchronizePosition(PositionForSynchronizationPojo position) {
         return false;
     }
-
-    /**
-     * 转成第三方渠道职位
-     */
-    public List<ThirdPartyPositionForSynchronization> changeToThirdPartyPosition(List<ThirdPartyPosition> forms,
-                                                                                 JobPositionDO position) {
-        List<ThirdPartyPositionForSynchronization> positions = new ArrayList<>();
-        if (forms != null && forms.size() > 0 && position != null && position.getId() > 0) {
-            forms.forEach(form -> {
-                positions.add(changeToThirdPartyPosition(form,position));
-            });
-        }
-        return positions;
-    }
-    /**
-     * 转成第三方渠道职位
-     */
-    public ThirdPartyPositionForSynchronization changeToThirdPartyPosition(ThirdPartyPosition form,
-                                                                                 JobPositionDO position) {
-        ThirdPartyPositionForSynchronization p= new ThirdPartyPositionForSynchronization();
-        if (form != null && position != null && position.getId() > 0) {
-                p = positionChangeUtil.changeToThirdPartyPosition(form, position);
-        }
-        return p;
-    }
-
-    /**
-     * 该职位是否可以刷新
-     *
-     * @param positionId 职位编号
-     * @param account_id 第三方账号ID
-     * @return bool
-     */
-    @CounterIface
-    public boolean ifAllowRefresh(int positionId, int account_id) {
-        logger.info("ifAllowRefresh");
-        Query findPositionById = new Query.QueryBuilder().where("id", positionId).buildQuery();
-        logger.info("search position");
-        JobPositionDO position = jobPositionDao.getData(findPositionById);
-        logger.info("position:" + JSON.toJSONString(position));
-
-        if (position == null || position.getId() == 0) return false;
-
-        Query queryUtil = new Query.QueryBuilder().where("id", account_id).buildQuery();
-
-        HrThirdPartyAccountDO account = thirdPartyAccountDao.getData(queryUtil);
-
-        if (account == null || account.binding == AccountSync.unbind.getValue()
-                || account.binding == AccountSync.accountpasserror.getValue()
-                || account.binding == AccountSync.error.getValue()
-                || account.binding == AccountSync.bingdingerror.getValue()) {
-            return false;
-        }
-
-        logger.info("ifAllowRefresh third party account:" + JSON.toJSONString(account));
-        HrThirdPartyPositionDO thirdPartyPosition = thirdpartyPositionDao.getThirdPartyPosition(positionId, account_id);
-        logger.info("thirdparyposition" + JSON.toJSONString(thirdPartyPosition));
-
-        if (thirdPartyPosition == null || thirdPartyPosition.getIsSynchronization() != PositionSync.bound.getValue()) {
-            return false;
-        }
-
-
-        logger.info("data allow");
-        String str = redisClient.get(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH.toString(), String.valueOf(positionId), String.valueOf(account_id));
-        if (StringUtils.isNotNullOrEmpty(str)) {
-            return false;
-        }
-        logger.info("cache allow");
-        return true;
-    }
-
-    /**
-     * 创建刷新职位数据
-     *
-     * @param positionId 职位编号
-     * @param account_id 第三方账号ID
-     */
-    public ThirdPartyPositionForSynchronizationWithAccount createRefreshPosition(int positionId, int account_id) {
-        ThirdPartyPositionForSynchronizationWithAccount syncAccount = new ThirdPartyPositionForSynchronizationWithAccount();
-        Query findPosition = new Query.QueryBuilder().where("id", positionId).buildQuery();
-        JobPositionDO position = jobPositionDao.getData(findPosition);
-
-        if (position == null) {
-            logger.info("createRefreshPosition position null :{}", positionId, account_id);
-            return syncAccount;
-        }
-
-        HrThirdPartyPositionDO thirdPartyPosition = thirdpartyPositionDao.getThirdPartyPosition(positionId, account_id);
-
-        if (thirdPartyPosition == null) {
-            logger.info("createRefreshPosition thirdPartyPosition:{}:{}", positionId, account_id);
-            return syncAccount;
-        }
-
-        Query findAccount = new Query.QueryBuilder().where("id", account_id).buildQuery();
-        HrThirdPartyAccountDO thirdPartyAccount = thirdPartyAccountDao.getData(findAccount);
-
-        if (thirdPartyAccount == null) {
-            logger.info("createRefreshPosition thirdPartyAccount null:{}:{}", positionId, account_id);
-            return syncAccount;
-        }
-
-        HrCompanyDO subCompany = hrCompanyAccountDao.getHrCompany(position.getPublisher());
-
-        if (subCompany != null) {
-            syncAccount.setCompany_name(subCompany.getAbbreviation());
-        }
-
-        syncAccount.setUser_name(thirdPartyAccount.getUsername());
-        syncAccount.setMember_name(thirdPartyAccount.getMembername());
-        syncAccount.setPassword(thirdPartyAccount.getPassword());
-        syncAccount.setChannel(thirdPartyAccount.getChannel());
-        syncAccount.setPosition_id(positionId);
-        syncAccount.setAccount_id(account_id);
-
-        ThirdPartyPosition form = new ThirdPartyPosition();
-        form.setChannel((byte) thirdPartyAccount.getChannel());
-        form.setAddressName(thirdPartyPosition.getAddress());
-        //count,occupation暂时没有放进去，目前不需要
-        form.setDepartmentName(thirdPartyPosition.getDepartment());
-        form.setFeedbackPeriod(thirdPartyPosition.getFeedbackPeriod());
-        form.setSalaryBottom(thirdPartyPosition.getSalaryBottom());
-        form.setSalaryTop(thirdPartyPosition.getSalaryTop());
-        form.setSalaryDiscuss(thirdPartyPosition.getSalaryDiscuss() == 0 ? false : true);
-        form.setSalaryMonth(thirdPartyPosition.getSalaryMonth());
-        form.setUseCompanyAddress(thirdPartyPosition.getUseCompanyAddress() == 0 ? false : true);
-        form.setThirdPartyAccountId(thirdPartyAccount.getId());
-        ThirdPartyPositionForSynchronization p = positionChangeUtil.changeToThirdPartyPosition(form, position);
-        p.setJob_id(thirdPartyPosition.getThirdPartPositionId());
-        syncAccount.setPosition_info(p);
-        return syncAccount;
-    }
-
 
     /**
      * 批量处理修改职位
@@ -1190,10 +1058,16 @@ public class PositionService {
         return stringBuffer.toString();
     }
 
-    public List<HrThirdPartyPositionDO> getThirdPartyPositions(Query query) {
-        List<HrThirdPartyPositionDO> list=thirdpartyPositionDao.getDatas(query);
+    public List<Map<String,String>> getThirdPartyPositions(Query query) throws BIZException {
+        List<TwoParam<HrThirdPartyPositionDO, Object>> list=thirdpartyPositionDao.getDatas(query);
 
-        return list;
+        List<Map<String,String>> result=list.stream().map(p->{
+            Map<String,String> map=PositionChangeUtil.objectToMap(p.getR1());
+            map.putAll(PositionChangeUtil.objectToMap(p.getR2()));
+            return map;
+        }).collect(Collectors.toList());
+
+        return result;
 
     }
 
@@ -1725,7 +1599,7 @@ public class PositionService {
         PositionForAlipaycampusPojo positionForAlipaycampusPojo = new PositionForAlipaycampusPojo();
         positionForAlipaycampusPojo.setSource_id(positionRecord.getId().toString());
         positionForAlipaycampusPojo.setJob_name(positionRecord.getTitle());
-        positionForAlipaycampusPojo.setJob_desc(PositionChangeUtil.convertDescription(positionRecord.getAccountabilities(), positionRecord.getRequirement()));
+        positionForAlipaycampusPojo.setJob_desc(PositionUtil.convertDescription(positionRecord.getAccountabilities(), positionRecord.getRequirement()));
 
 
         // 职业分类

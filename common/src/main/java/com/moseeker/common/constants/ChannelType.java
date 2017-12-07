@@ -103,9 +103,14 @@ public enum ChannelType {
 		public String getOrigin(String origin) {
 			return null;
 		}
+	}, JOB1001(7,"job1001","一览英才","common_retrieval_flow"){
+		@Override
+		public String getOrigin(String origin) {
+		return null;
+	}
 	};
 
-	private ChannelType(int value, String name,String alias,String retriveName) {
+	ChannelType(int value, String name,String alias,String retriveName) {
 		this.value = value;
 		this.name = name;
 		this.alias = alias;

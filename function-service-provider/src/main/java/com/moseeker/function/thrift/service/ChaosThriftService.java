@@ -66,7 +66,7 @@ public class ChaosThriftService implements Iface {
     }
 
     @Override
-    public void synchronizePosition(List<ThirdPartyPositionForSynchronizationWithAccount> positions) throws TException {
+    public void synchronizePosition(List<String> positions) throws TException {
         try {
             chaosService.synchronizePosition(positions);
         } catch (BIZException e) {
@@ -78,17 +78,4 @@ public class ChaosThriftService implements Iface {
         }
     }
 
-    @Override
-    public void refreshPosition(ThirdPartyPositionForSynchronizationWithAccount position) throws TException {
-        // TODO Auto-generated method stub
-        try {
-            chaosService.refreshPosition(position);
-        } catch (BIZException e) {
-            throw e;
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-            throw new TException(e);
-        }
-    }
 }

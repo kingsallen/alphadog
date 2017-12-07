@@ -21,15 +21,9 @@ service PositionServices {
     common_struct.Response getPositionById(1:i32 positionId);  
     //获取公司两种自定义的字段
     common_struct.Response CustomField(1:string param);    
-    //转成第三方同步职位数据
-    list<position_struct.ThirdPartyPositionForSynchronization> changeToThirdPartyPosition(1:list<appbs_struct.ThirdPartyPosition> form, 2:job_position_struct.JobPositionDO position);
-    //转成第三方同步职位数据
-    position_struct.ThirdPartyPositionForSynchronization changeOneToThirdPartyPosition(1:appbs_struct.ThirdPartyPosition form, 2:job_position_struct.JobPositionDO position);
-    //生成第三方同步职位数据
-    position_struct.ThirdPartyPositionForSynchronizationWithAccount createRefreshPosition(1: i32 positionId, 2: i32 account_id);
     //是否可以刷新
     bool ifAllowRefresh(1:i32 positionId, 2: i32 account_id);
-    list<hr_third_party_position_struct.HrThirdPartyPositionDO> getThirdPartyPositions(1: common_struct.CommonQuery query);
+    list<map<string,string>> getThirdPartyPositions(1: common_struct.CommonQuery query);
 
     // 批量修改职位
     common_struct.Response batchHandlerJobPostion(1:position_struct.BatchHandlerJobPostion batchHandlerJobPostion);
@@ -69,9 +63,9 @@ service PositionServices {
 
     third_position_struct.ThirdPartyPositionResult getThirdPartyPositionInfo(1:third_position_struct.ThirdPartyPositionInfoForm infoForm ) throws (1: common_struct.BIZException e);
 
-    i32 updateThirdPartyPosition(1:hr_third_party_position_struct.HrThirdPartyPositionDO thirdPartyPosition) throws (1: common_struct.BIZException e);
+    i32 updateThirdPartyPosition(1:hr_third_party_position_struct.HrThirdPartyPositionDO thirdPartyPosition,2:map<string,string> extData) throws (1: common_struct.BIZException e);
 
-    i32 updateThirdPartyPositionWithAccount(1:hr_third_party_position_struct.HrThirdPartyPositionDO thirdPartyPosition,2:hr_third_party_account_struct.HrThirdPartyAccountDO thirdPartyAccount) throws (1: common_struct.BIZException e);
+    i32 updateThirdPartyPositionWithAccount(1:hr_third_party_position_struct.HrThirdPartyPositionDO thirdPartyPosition,2:hr_third_party_account_struct.HrThirdPartyAccountDO thirdPartyAccount,3:map<string,string> extData) throws (1: common_struct.BIZException e);
 
     //获取pc端职位推荐
     common_struct.Response getPcRecommand(1:i32 page,2:i32 pageSize);

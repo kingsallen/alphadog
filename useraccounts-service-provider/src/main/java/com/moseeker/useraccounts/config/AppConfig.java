@@ -134,19 +134,6 @@ public class AppConfig {
     }
 
     @Bean
-    public TopicExchange presetExchange() {
-        TopicExchange topicExchange = new TopicExchange("chaos.preset.response.exchange", true, false);
-        return topicExchange;
-    }
-
-    @Bean
-    public List<Binding> bindingPreset() {
-        return new ArrayList<Binding>(){{
-            add(BindingBuilder.bind(presetQueue()).to(presetExchange()).with("chaos.preset.response.#"));
-        }};
-    }
-
-    @Bean
     public TopicExchange webPresetExchange() {
         TopicExchange topicExchange = new TopicExchange("chaos", true, false);
         return topicExchange;

@@ -1,5 +1,7 @@
 package com.moseeker.entity.Constant;
 
+import com.moseeker.common.constants.ChannelType;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,7 +12,7 @@ public enum ApplicationSource {
 
     PC(1, 1), ENTERPRISE(2, 10), GATHER(4, 100), JOB51(8, 1000), ZHILIAN(16, 10000), LIEPIN(32, 100000),
     ALIPAY(64, 1000000), PROXOYAPPLICATION(128, 10000000), DELEGATE(256, 100000000),
-    ProgramImport(512, 1000000000), EmailApply(1024, 10000000000l);
+    ProgramImport(512, 1000000000), EmailApply(1024, 10000000000l),VERYEAST(2048,100000000000l),JOB1001(4096,1000000000000l);
 
     private int value;
     private long flag;
@@ -92,21 +94,25 @@ public enum ApplicationSource {
      */
     public static int channelToOrigin(int channel) {
         int origin = 0;
-        switch (channel) {
-            case 1:
+        ChannelType channelType=ChannelType.instaceFromInteger(channel);
+        switch (channelType) {
+            case JOB51:
                 origin = 8;
                 break;
-            case 2:
-                origin = 32;
-                break;
-            case 3:
+            case ZHILIAN:
                 origin = 16;
                 break;
-            case 4:
-                origin = 512;
+            case LIEPIN:
+                origin = 32;
                 break;
-            case 5:
+            case ALIPAY:
                 origin = 64;
+                break;
+            case VERYEAST:
+                origin = 2048;
+                break;
+            case JOB1001:
+                origin = 4096;
                 break;
             default:
         }

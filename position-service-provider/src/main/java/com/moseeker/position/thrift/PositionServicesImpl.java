@@ -118,34 +118,12 @@ public class PositionServicesImpl implements Iface {
     }
 
     @Override
-    public List<ThirdPartyPositionForSynchronization> changeToThirdPartyPosition(List<ThirdPartyPosition> forms,
-                                                                                 JobPositionDO position) throws TException {
-        return service.changeToThirdPartyPosition(forms, position);
-    }
-
-    @Override
-    public ThirdPartyPositionForSynchronization changeOneToThirdPartyPosition(ThirdPartyPosition form, JobPositionDO position) throws TException {
-        return service.changeToThirdPartyPosition(form, position);
-    }
-
-    @Override
     public boolean ifAllowRefresh(int positionId, int account_id) {
         try {
-            return service.ifAllowRefresh(positionId, account_id);
+            return false;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return false;
-        }
-    }
-
-    @Override
-    public ThirdPartyPositionForSynchronizationWithAccount createRefreshPosition(int positionId, int account_id)
-            throws TException {
-        try {
-            return service.createRefreshPosition(positionId, account_id);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return new ThirdPartyPositionForSynchronizationWithAccount();
         }
     }
 
@@ -212,7 +190,7 @@ public class PositionServicesImpl implements Iface {
     }
 
     @Override
-    public List<HrThirdPartyPositionDO> getThirdPartyPositions(CommonQuery query) throws TException {
+    public List<Map<String,String>> getThirdPartyPositions(CommonQuery query) throws TException {
         try {
             return service.getThirdPartyPositions(QueryConvert.commonQueryConvertToQuery(query));
         } catch (Exception e) {
@@ -367,18 +345,18 @@ public class PositionServicesImpl implements Iface {
 
 
     @Override
-    public int updateThirdPartyPosition(HrThirdPartyPositionDO thirdPartyPosition) throws BIZException, TException {
+    public int updateThirdPartyPosition(HrThirdPartyPositionDO thirdPartyPosition,Map<String,String> extData) throws BIZException, TException {
         try {
-            return thirdPositionService.updateThirdPartyPosition(thirdPartyPosition);
+            return thirdPositionService.updateThirdPartyPosition(thirdPartyPosition,extData);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }
     }
 
     @Override
-    public int updateThirdPartyPositionWithAccount(HrThirdPartyPositionDO thirdPartyPosition, HrThirdPartyAccountDO thirdPartyAccount) throws BIZException, TException {
+    public int updateThirdPartyPositionWithAccount(HrThirdPartyPositionDO thirdPartyPosition, HrThirdPartyAccountDO thirdPartyAccount,Map<String,String> extData) throws BIZException, TException {
         try {
-            return thirdPositionService.updateThirdPartyPositionWithAccount(thirdPartyPosition, thirdPartyAccount);
+            return thirdPositionService.updateThirdPartyPositionWithAccount(thirdPartyPosition, thirdPartyAccount,extData);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }

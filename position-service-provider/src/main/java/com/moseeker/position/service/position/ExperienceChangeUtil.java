@@ -1,6 +1,6 @@
 package com.moseeker.position.service.position;
 
-import com.moseeker.position.service.position.job51.Job51Experience;
+import com.moseeker.position.service.position.job51.pojo.Job51Experience;
 import com.moseeker.position.service.position.zhilian.ZhilianExperience;
 
 /**
