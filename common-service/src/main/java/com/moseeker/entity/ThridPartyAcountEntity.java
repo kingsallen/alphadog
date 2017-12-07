@@ -190,8 +190,8 @@ public class ThridPartyAcountEntity {
                     .map(subsite -> {
                         ThirdpartyAccountSubsiteDO subsiteDO=new ThirdpartyAccountSubsiteDO();
                         subsiteDO.setAccountId(data.getAccountId());
-                        subsiteDO.setSite(subsite.getSite());
-                        subsiteDO.setText(subsite.getText());
+                        subsiteDO.setSite(subsite);
+                        subsiteDO.setText(subsite);
                         subsiteDO.setCreateTime(currentTime);
                         subsiteDO.setUpdateTime(currentTime);
                         return subsiteDO;
