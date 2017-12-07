@@ -211,10 +211,4 @@ public class ThridPartyAcountEntity {
     static {
         specialCity.put("基层岗位",111111);
     }
-
-    private static final HashMap<String,Integer> specialCity=new HashMap<>();
-
-    static {
-        specialCity.put("基层岗位",111111);
-    }
 }
