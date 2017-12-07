@@ -179,7 +179,7 @@ public class TalentpoolController {
             int companyId=(int) data.get("company_id");
             List<Integer> userIdList=(List<Integer>)data.get("user_ids");
             List<Integer> tagIdList=(List<Integer>)data.get("tag_ids");
-            Response result = service.batchAddTalentTag(hrId,userIdList,tagIdList,companyId);
+            Response result = service.batchNewAddTalentTag(hrId,userIdList,tagIdList,companyId);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
