@@ -100,7 +100,7 @@ public class TalentPoolService {
       取消收藏人才
      */
     @CounterIface
-    public Response cancleTalent(int hrId, int userId, int companyId)throws TException{
+    public Response cancelTalent(int hrId, int userId, int companyId)throws TException{
         Response res=validateHrAndUser(hrId,userId,companyId);
         if(res!=null){
             return res;
@@ -128,7 +128,7 @@ public class TalentPoolService {
       批量取消人才
      */
     @CounterIface
-    public Response batchCancleTalent(int hrId, Set<Integer> userIdList, int companyId)throws TException{
+    public Response batchCancelTalent(int hrId, Set<Integer> userIdList, int companyId)throws TException{
         //验证hr
         int flag=talentPoolEntity.validateHr(hrId,companyId);
         if(flag==0){
@@ -212,7 +212,7 @@ public class TalentPoolService {
      */
     @CounterIface
     public Response addBatchTalentTag(int hrId,Set<Integer> userIdList,Set<Integer> tagIdList,int companyId)throws TException{
-        Map<String,Object> validateResult=this.validateAddTag(hrId, userIdList, tagIdList, companyId);
+        Map<String,Object> validateResult=this.validateAddTag(hrId, userIdList, tagIdList, companyId,0);
         if(validateResult.get("result")!=null){
             return (Response)validateResult.get("result");
         }
@@ -243,11 +243,64 @@ public class TalentPoolService {
         result.put("use",usertagMap);
         return ResponseUtils.success(result);
     }
+
+
+    /*
+    批量添加标签
+    */
+    @CounterIface
+    public Response addNewBatchTalentTag(int hrId,Set<Integer> userIdList,Set<Integer> tagIdList,int companyId)throws TException{
+        Map<String,Object> validateResult=this.validateAddTag(hrId, userIdList, tagIdList, companyId,1);
+        if(validateResult.get("result")!=null){
+            return (Response)validateResult.get("result");
+        }
+        Set<Integer> idList= (Set<Integer>) validateResult.get("userIdList");
+        Set<Integer> nouseList= (Set<Integer>)validateResult.get("nouseList");
+        Set<Integer> userTagIdList= (Set<Integer>)validateResult.get("userTagIdList");
+        //先删除所有的标签
+        if(!StringUtils.isEmptySet(userTagIdList)){
+            List<TalentpoolUserTagRecord> recordList=new ArrayList<>();
+            for(Integer id:idList){
+                for(Integer tagId:userTagIdList){
+                    TalentpoolUserTagRecord record=new TalentpoolUserTagRecord();
+                    record.setUserId(id);
+                    record.setTagId(tagId);
+                    recordList.add(record);
+                }
+            }
+            talentpoolUserTagDao.deleteRecords(recordList);
+        }
+        //添加新的标签
+        List<TalentpoolUserTagRecord> recordList=new ArrayList<>();
+        for(Integer id:idList){
+            for(Integer tagId:tagIdList){
+                TalentpoolUserTagRecord record=new TalentpoolUserTagRecord();
+                record.setUserId(id);
+                record.setTagId(tagId);
+                recordList.add(record);
+            }
+
+        }
+        talentpoolUserTagDao.addAllRecord(recordList);
+        for(Integer tagId:tagIdList){
+            talentpoolTagDao.updateTagNum(tagId,idList.size());
+        }
+        List<Map<String,Object>> hrTagList=(List<Map<String,Object>>) validateResult.get("hrTagList");
+        userTagIdList=tagIdList;
+        Map<Integer,Object> usertagMap=handlerUserTagResult(hrTagList,userTagIdList,idList,tagIdList,1);
+        if(usertagMap==null||userIdList.isEmpty()){
+            ResponseUtils.fail(1,"操作失败");
+        }
+        Map<String,Object> result=new HashMap<>();
+        result.put("nopower",nouseList);
+        result.put("use",usertagMap);
+        return ResponseUtils.success(result);
+    }
     /*
      删除标签
      */
     @CounterIface
-    public Response cancaleBatchTalentTag(int hrId,Set<Integer> userIdList,Set<Integer> tagIdList,int companyId)throws TException{
+    public Response batchCancelTalentTag(int hrId,Set<Integer> userIdList,Set<Integer> tagIdList,int companyId)throws TException{
 
         Map<String,Object> validateResult=this.validateCancleTag(hrId, userIdList, tagIdList, companyId);
         if(validateResult.get("result")!=null){
@@ -462,7 +515,7 @@ public class TalentPoolService {
      批量取消公开
      */
     @CounterIface
-    public Response cancleBatchPublicTalent(int hrId,int companyId,Set<Integer> userIdList)throws TException{
+    public Response cancelBatchPublicTalent(int hrId,int companyId,Set<Integer> userIdList)throws TException{
         int flag=talentPoolEntity.validateHr(hrId,companyId);
         if(flag==0){
             return ResponseUtils.fail(1,"该hr不属于该company_id");
@@ -486,12 +539,12 @@ public class TalentPoolService {
     }
     //获取公司下所有公开
     @CounterIface
-    public Response getCompanyPublic(int hrId,int companyId){
+    public Response getCompanyPublic(int hrId,int companyId,int pageNum,int pageSize){
         int flag=talentPoolEntity.validateHr(hrId,companyId);
         if(flag==0){
             return ResponseUtils.fail(1,"该hr不属于该company_id");
         }
-        List<Map<String,Object>> list=getPublicTalentByCompanyId(companyId);
+        List<Map<String,Object>> list=getPublicTalentByCompanyId(companyId,pageNum,pageSize);
         if(StringUtils.isEmptyList(list)){
             return ResponseUtils.success("");
         }
@@ -646,7 +699,7 @@ public class TalentPoolService {
     /*
       校验批量添加标签
      */
-    private Map<String,Object> validateAddTag(int hrId,Set<Integer> userIdList,Set<Integer> tagIdList,int companyId){
+    private Map<String,Object> validateAddTag(int hrId,Set<Integer> userIdList,Set<Integer> tagIdList,int companyId,int type){
         Map<String,Object> result=new HashMap<>();
         int flag=talentPoolEntity.validateHr(hrId,companyId);
         if(flag==0){
@@ -667,7 +720,7 @@ public class TalentPoolService {
         }
         List<Map<String,Object>> hrTagList= (List<Map<String,Object>>) validateTag.get("hrTagList");
         Set<Integer> userTagIdList= (Set<Integer>) validateTag.get("userTagIdList");
-        boolean validateOperTag=this.validateAddOperatorTag(this.getIdByTagList(hrTagList),tagIdList,userTagIdList);
+        boolean validateOperTag=this.validateAddOperatorTag(this.getIdByTagList(hrTagList),tagIdList,userTagIdList, type);
         if(!validateOperTag){
             result.put("result",ResponseUtils.fail(1,"操作的标签不是hr定义的标签"));
             return result;
@@ -762,7 +815,7 @@ public class TalentPoolService {
     /*
      验证添加标签是否符合操作条件
      */
-    private boolean validateAddOperatorTag(Set<Integer> hrTagIdList,Set<Integer> tagIdList, Set<Integer> userTagIdList){
+    private boolean validateAddOperatorTag(Set<Integer> hrTagIdList,Set<Integer> tagIdList, Set<Integer> userTagIdList,int type){
         if(StringUtils.isEmptySet(hrTagIdList)){
             return false;
         }
@@ -771,15 +824,19 @@ public class TalentPoolService {
                return false;
            }
         }
-        if(!StringUtils.isEmptySet(userTagIdList)){
-            for(Integer id:tagIdList){
-               if(userTagIdList.contains(id)){
-                   return false;
-               }
+        if(type==0){
+            if(!StringUtils.isEmptySet(userTagIdList)){
+                for(Integer id:tagIdList){
+                    if(userTagIdList.contains(id)){
+                        return false;
+                    }
+                }
             }
         }
+
         return true;
     }
+
     /*
         验证添加标签是否符合操作条件
         */
@@ -904,8 +961,8 @@ public class TalentPoolService {
     /*
       获取公司下所有的人才
      */
-    private List<Map<String,Object>> getPublicTalentByCompanyId(int companyId){
-        Query query=new Query.QueryBuilder().where("company_id",companyId).buildQuery();
+    private List<Map<String,Object>> getPublicTalentByCompanyId(int companyId,int pageNum,int pageSize){
+        Query query=new Query.QueryBuilder().where("company_id",companyId).setPageNum(pageNum).setPageSize(pageSize).buildQuery();
         List<Map<String,Object>> list=talentpoolTalentDao.getMaps(query);
         return list;
     }
