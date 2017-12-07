@@ -23,6 +23,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author xxx
@@ -69,14 +70,21 @@ public class ProfileWorkexpDao extends JooqCrudImpl<ProfileWorkexpDO, ProfileWor
     public int updateProfileUpdateTime(Set<Integer> workExpIds) {
         int status = 0;
 
-        Timestamp updateTime = new Timestamp(System.currentTimeMillis());
-        status = create.update(ProfileProfile.PROFILE_PROFILE)
-                .set(ProfileProfile.PROFILE_PROFILE.UPDATE_TIME, updateTime)
-                .where(ProfileProfile.PROFILE_PROFILE.ID
-                        .in(create.select(ProfileWorkexp.PROFILE_WORKEXP.PROFILE_ID)
-                                .from(ProfileWorkexp.PROFILE_WORKEXP)
-                                .where(ProfileWorkexp.PROFILE_WORKEXP.ID.in(workExpIds))))
-                .execute();
+        List<Integer> profileIdList = create.select(ProfileWorkexp.PROFILE_WORKEXP.PROFILE_ID)
+                .from(ProfileWorkexp.PROFILE_WORKEXP)
+                .where(ProfileWorkexp.PROFILE_WORKEXP.ID.in(workExpIds))
+                .stream()
+                .map(integerRecord1 -> integerRecord1.value1())
+                .collect(Collectors.toList());
+
+        if (profileIdList != null && profileIdList.size() > 0) {
+            Timestamp updateTime = new Timestamp(System.currentTimeMillis());
+            status = create.update(ProfileProfile.PROFILE_PROFILE)
+                    .set(ProfileProfile.PROFILE_PROFILE.UPDATE_TIME, updateTime)
+                    .where(ProfileProfile.PROFILE_PROFILE.ID
+                            .in(profileIdList))
+                    .execute();
+        }
 
         return status;
     }

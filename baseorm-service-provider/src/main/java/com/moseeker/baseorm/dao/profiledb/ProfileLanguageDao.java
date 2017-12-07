@@ -9,7 +9,9 @@ import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author xxx
@@ -30,14 +32,20 @@ public class ProfileLanguageDao extends JooqCrudImpl<ProfileLanguageDO, ProfileL
     public int updateProfileUpdateTime(Set<Integer> languageIds) {
         int status = 0;
 
-        Timestamp updateTime = new Timestamp(System.currentTimeMillis());
-        status = create.update(ProfileProfile.PROFILE_PROFILE)
-                .set(ProfileProfile.PROFILE_PROFILE.UPDATE_TIME, updateTime)
-                .where(ProfileProfile.PROFILE_PROFILE.ID
-                        .in(create.select(ProfileLanguage.PROFILE_LANGUAGE.PROFILE_ID)
-                                .from(ProfileLanguage.PROFILE_LANGUAGE)
-                                .where(ProfileLanguage.PROFILE_LANGUAGE.ID.in(languageIds))))
-                .execute();
+        List<Integer> profileIdList = create.select(ProfileLanguage.PROFILE_LANGUAGE.PROFILE_ID)
+                .from(ProfileLanguage.PROFILE_LANGUAGE)
+                .where(ProfileLanguage.PROFILE_LANGUAGE.ID.in(languageIds))
+                .stream()
+                .map(integerRecord1 -> integerRecord1.value1())
+                .collect(Collectors.toList());
+        if (profileIdList != null && profileIdList.size() > 0) {
+            Timestamp updateTime = new Timestamp(System.currentTimeMillis());
+            status = create.update(ProfileProfile.PROFILE_PROFILE)
+                    .set(ProfileProfile.PROFILE_PROFILE.UPDATE_TIME, updateTime)
+                    .where(ProfileProfile.PROFILE_PROFILE.ID
+                            .in(profileIdList))
+                    .execute();
+        }
 
         return status;
     }

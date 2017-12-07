@@ -51,6 +51,13 @@ public class SearchUtil {
                     .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port));
         } catch (Exception e) {
             logger.info(e.getMessage(), e);
+            try {
+                if (client != null) {
+                    client.close();
+                }
+            } catch (Exception e1) {
+                logger.error(e1.getMessage(), e1);
+            }
             client = null;
         }
         return client;

@@ -47,6 +47,7 @@ import com.moseeker.position.service.position.qianxun.Degree;
 import com.moseeker.position.service.position.qianxun.WorkType;
 import com.moseeker.position.utils.CommonPositionUtils;
 import com.moseeker.position.utils.SpecialCtiy;
+import com.moseeker.position.utils.SpecialProvince;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -857,6 +858,13 @@ public class PositionService {
             HashMap cityMap = new LinkedHashMap();
             if (citys != null && citys.size() > 0 && pid != null) {
                 for (City city : citys) {
+                    //去空格
+                    if (org.apache.commons.lang.StringUtils.isNotBlank(city.getValue())) {
+                        city.setValue(city.getValue().trim());
+                    }
+                    if (org.apache.commons.lang.StringUtils.isNotBlank(city.getType())) {
+                        city.setType(city.getType().trim());
+                    }
                     // 查询DictCityPostCode条件
                     Query.QueryBuilder cityCodeQuery = new Query.QueryBuilder();
                     // 查询DictCity条件
@@ -876,6 +884,10 @@ public class PositionService {
                         if (isChinese(city.getValue())) { // 是中文
                             cityQuery.where("name", city.getValue());
                         } else { // 英文
+                            SpecialProvince province = SpecialProvince.instanceOfMappingName(city.getValue().toLowerCase());
+                            if (province != null) {
+                                city.setValue(province.getName());
+                            }
                             cityQuery.where("ename", city.getValue());
                         }
                         try {

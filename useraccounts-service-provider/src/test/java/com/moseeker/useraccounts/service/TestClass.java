@@ -105,9 +105,11 @@ public class TestClass {
 
     public  static void main(String arg[]){
 
-        GrandFather f=new Son();
+        System.out.println(JSON.toJSONString(new HrThirdPartyAccountDO()));
 
-        System.out.println(f.getClass().getName());
+        /*GrandFather f=new Son();
+
+        System.out.println(f.getClass().getName());*/
 
 //        System.out.println(100/1000);
 
