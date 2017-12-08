@@ -67,6 +67,11 @@ import org.springframework.transaction.annotation.Transactional;
 import static com.moseeker.baseorm.util.BeanUtils.jooqMapfilter;
 import static com.moseeker.baseorm.util.BeanUtils.profilter;
 
+import java.text.ParseException;
+import java.util.*;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
 @Service
 @CounterIface
 public class ProfileService {
@@ -802,18 +807,18 @@ public class ProfileService {
                         String[] mappingStr = mappingFiled.split("\\.", 2);
                         customResult = mappingStr[0].startsWith("user") ? (userDao.customSelect(mappingStr[0], mappingStr[1], profileProfile.getUserId())) : (profileOtherDao.customSelect(mappingStr[0], mappingStr[1], "profile_id", profileProfile.getId()));
                     } else {
-                        return ResponseUtils.success(new HashMap<String, Object>(){{put("result",false);put("resultMsg","自定义字段"+appCvConfig.getString("field_name")+"为空");}});
+                        return ResponseUtils.success(new HashMap<String, Object>(){{put("result",false);put("resultMsg","自定义字段#"+appCvConfig.getString("field_name") + "#" + appCvConfig.getString("field_title") + "为空");}});
                     }
                 } else {
                     // 普通字段校验
                     if (profileOtherJson.containsKey(appCvConfig.getString("field_name"))) {
                         customResult = profileOtherJson.get(appCvConfig.getString("field_name"));
                     } else {
-                        return ResponseUtils.success(new HashMap<String, Object>(){{put("result",false);put("resultMsg","自定义字段"+appCvConfig.getString("field_name")+"为空");}});
+                        return ResponseUtils.success(new HashMap<String, Object>(){{put("result",false);put("resultMsg","自定义字段#"+appCvConfig.getString("field_name") + "#" + appCvConfig.getString("field_title") + "为空");}});
                     }
                 }
                 if (!Pattern.matches(org.apache.commons.lang.StringUtils.defaultIfEmpty(appCvConfig.getString("validate_re"), ""), String.valueOf(customResult))) {
-                    return ResponseUtils.success(new HashMap<String, Object>(){{put("result",false);put("resultMsg","自定义字段"+appCvConfig.getString("field_name")+"校验失败");}});
+                    return ResponseUtils.success(new HashMap<String, Object>(){{put("result",false);put("resultMsg","自定义字段#"+appCvConfig.getString("field_name") + "#" + appCvConfig.getString("field_title") + "校验失败");}});
                 }
             }
         }
