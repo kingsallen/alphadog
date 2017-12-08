@@ -53,8 +53,8 @@ service HrTeamServices {
 }
 
 service TalentpoolServices {
-    common_struct.Response getTalentAllComment(1:i32 hr_id,2:i32 company_id,3:i32 user_id)throws(1: common_struct.BIZException e)
-    common_struct.Response getHrTag(1:i32 hr_id,2:i32 company_id,3:i32 page_num,4:i32 page_size) throws (1: common_struct.BIZException e)
+    common_struct.Response getTalentAllComment(1:i32 hr_id,2:i32 company_id,3:i32 user_id,4: i32 page_number,5:i32 page_size)throws(1: common_struct.BIZException e)
+    common_struct.Response getHrTag(1:i32 hr_id,2:i32 company_id,3:i32 page_number,4:i32 page_size) throws (1: common_struct.BIZException e)
     common_struct.Response batchAddTalent(1:i32 hr_id,2:list<i32> user_ids,3:i32 company_id) throws (1: common_struct.BIZException e)
     common_struct.Response batchCancelTalent(1:i32 hr_id,2:list<i32> user_ids,3:i32 company_id) throws (1: common_struct.BIZException e)
     common_struct.Response hrAddTag(1:i32 hr_id,2:i32 company_id,3:string name) throws (1: common_struct.BIZException e)
@@ -66,6 +66,6 @@ service TalentpoolServices {
     common_struct.Response hrDelComment(1:i32 hr_id,2:i32 company_id,3:i32 user_id,4:i32 comment_id) throws (1: common_struct.BIZException e)
     common_struct.Response batchAddPublicTalent(1:i32 hr_id,2:i32 company_id,3:list<i32> user_ids) throws (1: common_struct.BIZException e)
     common_struct.Response batchCancelPublicTalent(1:i32 hr_id,2:i32 company_id,3:list<i32> user_ids) throws (1: common_struct.BIZException e)
-    common_struct.Response getCompanyPulicTalent(1:i32 hr_id,2:i32 company_id,3:i32 page_num,4: i32 page_size)throws(1: common_struct.BIZException e)
+    common_struct.Response getCompanyPulicTalent(1:i32 hr_id,2:i32 company_id,3:i32 page_number,4: i32 page_size)throws(1: common_struct.BIZException e)
     common_struct.Response batchNewAddTalentTag(1:i32 hr_id,2:list<i32> user_ids,3:list<i32> tag_ids,4:i32 company_id) throws (1: common_struct.BIZException e)
 }

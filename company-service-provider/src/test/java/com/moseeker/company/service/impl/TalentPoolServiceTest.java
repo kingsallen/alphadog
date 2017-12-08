@@ -53,7 +53,7 @@ public class TalentPoolServiceTest {
     public void testAddTag() throws TException {
         int hrId=82752;
         int companyId=39978;
-        String name="xxxx";
+        String name="jjj";
         Response res=talentPoolService.addHrTag(hrId,companyId,name);
         System.out.println(res);
 
@@ -73,7 +73,7 @@ public class TalentPoolServiceTest {
         int hrId=82752;
         int companyId=39978;
         int tagId =1;
-        String name="ssss";
+        String name="mmmm";
         Response res=talentPoolService.updateHrTag(hrId,companyId,tagId,name);
         System.out.println(res);
 
@@ -113,7 +113,7 @@ public class TalentPoolServiceTest {
         userIdList.add(2191558);
         Set<Integer> tagIdList=new HashSet<>();
         tagIdList.add(1);
-        tagIdList.add(2);
+        tagIdList.add(3);
         Response res=talentPoolService.addBatchTalentTag(hrId,userIdList,tagIdList,companyId);
         System.out.println(res);
     }
@@ -122,7 +122,7 @@ public class TalentPoolServiceTest {
         int hrId=82752;
         int companyId=39978;
         int userId=2191508;
-        String content="xxxxxx";
+        String content="eeeee";
         Response res=talentPoolService.addTalentComment(hrId,companyId,userId,content);
         System.out.println(res);
     }
@@ -158,7 +158,6 @@ public class TalentPoolServiceTest {
         userIdList.add(2191513);
         userIdList.add(2191525);
         userIdList.add(2191558);
-        userIdList.add(12234);
         Set<Integer> set=new HashSet<>();
         set.addAll(userIdList);
         Response res=talentPoolService.cancelBatchPublicTalent(hrId,companyId,set);
@@ -178,7 +177,7 @@ public class TalentPoolServiceTest {
         int userId=2191508;
         int hrId=82752;
         int companyId=39978;
-        Response res=talentPoolService.getAllTalentComment(hrId,companyId,userId);
+        Response res=talentPoolService.getAllTalentComment(hrId,companyId,userId,1,10);
         System.out.println(res);
     }
 }

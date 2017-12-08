@@ -78,6 +78,7 @@ public class TalentPoolEntity {
         }
         return 1;
     }
+
     /*
          通过TalentpoolHrTalentRecord 的集合获取User_id的list
          */
@@ -434,7 +435,7 @@ public class TalentPoolEntity {
     /*
       通过user_Hr_Account的list获取hrList
      */
-    private Set<Integer> getIdListByUserHrAccountList(List<Map<String,Object>> list){
+    public Set<Integer> getIdListByUserHrAccountList(List<Map<String,Object>> list){
         if(StringUtils.isEmptyList(list)){
            return null;
         }

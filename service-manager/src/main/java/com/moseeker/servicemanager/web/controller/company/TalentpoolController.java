@@ -130,7 +130,7 @@ public class TalentpoolController {
             Map<String, Object> data = ParamUtils.parseRequestParam(request);
             int hrId=(int) data.get("hr_id");
             int companyId=(int) data.get("company_id");
-            String page=String.valueOf(data.get("page_num"));
+            String page=String.valueOf(data.get("page_number"));
             int pageNum=0;
             if(StringUtils.isNullOrEmpty(page)){
                 pageNum=Integer.parseInt(page);
@@ -231,7 +231,7 @@ public class TalentpoolController {
             Map<String, Object> data = ParamUtils.parseRequestParam(request);
             int hrId=(int) data.get("hr_id");
             int companyId=(int) data.get("company_id");
-            String page=String.valueOf(data.get("page_num"));
+            String page=String.valueOf(data.get("page_number"));
             int pageNum=0;
             if(StringUtils.isNullOrEmpty(page)){
                 pageNum=Integer.parseInt(page);
@@ -314,7 +314,19 @@ public class TalentpoolController {
             int hrId=(int) data.get("hr_id");
             int companyId=(int) data.get("company_id");
             int userId=(int)data.get("user_id");
-            Response result = service.getTalentAllComment(hrId,companyId,userId);
+            String page=String.valueOf(data.get("page_number"));
+            int pageNum=0;
+            if(StringUtils.isNullOrEmpty(page)){
+                pageNum=Integer.parseInt(page);
+
+            }
+            String size=String.valueOf(data.get("page_size"));
+            int pageSize=10;
+            if(StringUtils.isNullOrEmpty(size)){
+                pageSize=Integer.parseInt(size);
+
+            }
+            Response result = service.getTalentAllComment(hrId,companyId,userId,pageNum,pageSize);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

@@ -27,9 +27,9 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
     @Autowired
     private TalentPoolService talentPoolService;
     @Override
-    public Response getTalentAllComment(int hr_id, int company_id, int user_id) throws BIZException, TException {
+    public Response getTalentAllComment(int hr_id, int company_id, int user_id,int page_number,int page_size) throws BIZException, TException {
         try{
-            return talentPoolService.getAllTalentComment(hr_id,company_id,user_id);
+            return talentPoolService.getAllTalentComment(hr_id,company_id,user_id,page_number,page_size);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
             throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
@@ -37,9 +37,9 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
     }
 
     @Override
-    public Response getHrTag(int hr_id, int company_id, int page_num, int page_size) throws BIZException, TException {
+    public Response getHrTag(int hr_id, int company_id, int page_number, int page_size) throws BIZException, TException {
         try{
-            return talentPoolService.getAllHrTag(hr_id,company_id,page_num,page_size);
+            return talentPoolService.getAllHrTag(hr_id,company_id,page_number,page_size);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
             throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
@@ -151,9 +151,9 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
         }    }
 
     @Override
-    public Response getCompanyPulicTalent(int hr_id, int company_id, int page_num, int page_size) throws BIZException, TException {
+    public Response getCompanyPulicTalent(int hr_id, int company_id, int page_number, int page_size) throws BIZException, TException {
         try{
-            return talentPoolService.getCompanyPublic(hr_id,company_id,page_num,page_size);
+            return talentPoolService.getCompanyPublic(hr_id,company_id,page_number,page_size);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
             throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
