@@ -180,4 +180,11 @@ public class TalentPoolServiceTest {
         Response res=talentPoolService.getAllTalentComment(hrId,companyId,userId,1,10);
         System.out.println(res);
     }
+    @Test
+    public void testGetTalentState(){
+        int hrId=82752;
+        int companyId=39978;
+        Response res=talentPoolService.getTalentState(hrId,companyId,0);
+        System.out.println(res);
+    }
 }

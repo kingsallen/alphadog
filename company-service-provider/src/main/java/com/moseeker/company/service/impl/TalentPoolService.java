@@ -420,7 +420,7 @@ public class TalentPoolService {
      处理hr下分页获取人才数据
      */
     private Map<String,Object> handleTagData(int hrId,int pageNum,int pageSize){
-        int count=getAllHrTalent(hrId);
+        int count=this.getTagByHrCount(hrId);
         double page=((double)count)/pageSize;
         int total= (int) Math.ceil(page);
         List<Map<String,Object>> hrTagList=this.getTagByHr(hrId,pageNum,pageSize);
@@ -439,6 +439,7 @@ public class TalentPoolService {
     /*
      添加备注
      */
+
     public Response addTalentComment(int hrId,int companyId,int userId,String content)throws TException{
 
         if(StringUtils.isNullOrEmpty(content)){
@@ -461,6 +462,57 @@ public class TalentPoolService {
         List<Map<String,Object>> list=this.getAllComment(companyId,userId);
         return ResponseUtils.success(list);
     }
+
+    /*
+      获取人才库首页的统计
+      0，所有的统计
+      1，hr公布的人才的数量
+      2，收藏的人才数量
+      3，公司下所有被公开的人才数量
+      4，标签下的人才的数量
+     */
+    public Response getTalentState(int hrId,int companyId,int type){
+        int flag=talentPoolEntity.validateHr(hrId,companyId);
+        if(flag==0){
+            return ResponseUtils.fail(1,"该hr不属于该company_id");
+        }
+        Map<String,Object> result=new HashMap<>();
+        int talentNum=this.getAllHrTalent(hrId);
+        int companyPublicNum=this.getPublicTalentCount(companyId);
+        int hrPublicNum=this.getHrPublicTalent(hrId);
+        Map<String,Object> talentTagNum=handlerTagTalentNum(hrId);
+        if(type==0){
+            result.put("allpublic",companyPublicNum);
+            result.put("hrpublic",hrPublicNum);
+            result.put("talent",talentNum);
+            result.put("tag",talentTagNum);
+        }else if(type==1){
+            result.put("hrpublic",hrPublicNum);
+        }else if(type==2){
+            result.put("talent",talentNum);
+        }else if(type==3){
+            result.put("allpublic",companyPublicNum);
+        }else if(type==4){
+            result.put("tag",talentTagNum);
+        }
+        return ResponseUtils.success(result);
+    }
+    /*
+     获得标签下的人才数量
+     */
+    private Map<String,Object> handlerTagTalentNum(int hrId){
+        List<Map<String,Object>> list=this.getTagByHr(hrId,0,Integer.MAX_VALUE);
+        Map<String,Object> tagResult=new HashMap<>();
+        if(!StringUtils.isEmptyList(list)){
+            for(Map<String,Object> map:list){
+                int num=(int)map.get("talent_num");
+                String name=(String)map.get("name");
+                tagResult.put(name,num);
+            }
+        }
+        return tagResult;
+    }
+    @CounterIface
     /*
      获取这个人在这家公司下所有的备注
      */
@@ -1023,6 +1075,15 @@ public class TalentPoolService {
         List<Map<String,Object>> list= talentpoolTagDao.getMaps(query);
         return list;
     }
+
+    /*
+      查询hr下所有的标签
+     */
+    private int getTagByHrCount(int hrId){
+        Query query=new Query.QueryBuilder().where("hr_id",hrId).buildQuery();
+        int count= talentpoolTagDao.getCount(query);
+        return count;
+    }
     /*
      获取TalentpoolTagRecord 集合的id
      */
@@ -1134,6 +1195,14 @@ public class TalentPoolService {
      */
     private int getAllHrTalent(int hrId){
         Query query=new Query.QueryBuilder().where("hr_id",hrId).buildQuery();
+        int count=talentpoolHrTalentDao.getCount(query);
+        return count;
+    }
+    /*
+     获取hr下公开的人才数量
+     */
+    private int getHrPublicTalent(int hrId){
+        Query query=new Query.QueryBuilder().where("hr_id",hrId).and("public",1).buildQuery();
         int count=talentpoolHrTalentDao.getCount(query);
         return count;
     }

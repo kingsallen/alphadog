@@ -335,6 +335,22 @@ public class TalentpoolController {
             // do nothing
         }
     }
-
+    @RequestMapping(value = "/api/talentpool/stats", method = RequestMethod.GET)
+    @ResponseBody
+    public String getTalentStat(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String, Object> data = ParamUtils.parseRequestParam(request);
+            int hrId=(int) data.get("hr_id");
+            int companyId=(int) data.get("company_id");
+            int type=(int)data.get("type");
+            Response result = service.getTalentStat(hrId,companyId,type);
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        } finally {
+            // do nothing
+        }
+    }
 
 }

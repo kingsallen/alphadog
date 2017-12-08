@@ -170,6 +170,16 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
         }
     }
 
+    @Override
+    public Response getTalentStat(int hr_id, int company_id, int type) throws BIZException, TException {
+        try{
+            return talentPoolService.getTalentState(hr_id,company_id,type);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
     private Set<Integer> ConvertListToSet(List<Integer> list){
         Set<Integer> param=new HashSet<>();
         for(Integer id :list){
