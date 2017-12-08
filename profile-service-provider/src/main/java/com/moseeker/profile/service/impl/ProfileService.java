@@ -240,11 +240,14 @@ public class ProfileService {
         if(paramData==null||paramData.isEmpty()){
             return null;
         }
+        //获取投递人的id
         List<Integer> userIdList= (List<Integer>) paramData.get("userIdList");
+        //获取职位和投递人之间的关系
         Map<Integer,Set<Integer>> pidUserIdMap= (Map<Integer, Set<Integer>>) paramData.get("pidUserIdMap");
         if(StringUtils.isEmptyList(userIdList)||pidUserIdMap==null||pidUserIdMap.isEmpty()){
             return null;
         }
+        //获取投递人的具体信息
         List<UserUserDO> userList=this.getUserUserByIdList(userIdList);
         if(StringUtils.isEmptyList(userList)){
             return null;
@@ -267,6 +270,8 @@ public class ProfileService {
         Map<Integer,Set<Integer>> pidUserIdMap=new HashMap<>();
         List<Integer> userIdList=new ArrayList<>();
         List<Integer> userIds=new ArrayList<>();
+        //遍历查询得到的data数据
+        //获取用户的集合和<positionid,投递此position的人>的集合
         for (AbstractMap.SimpleEntry<Map<String, Object>, Map<String, Object>> entry : datas) {
             int userId=(int)entry.getValue().get("applier_id");
             int positionId=(int)entry.getKey().get("id");
@@ -281,6 +286,8 @@ public class ProfileService {
         if(StringUtils.isEmptyList(userIdList)||pidUserIdMap==null||pidUserIdMap.isEmpty()){
             return null;
         }
+        //加入到自定义的map中，返回
+
         Map<String,Object> result=new HashMap<>();
         result.put("userIdList",userIdList);
         result.put("pidUserIdMap",pidUserIdMap);
@@ -302,7 +309,9 @@ public class ProfileService {
     private Map<Integer,Set<Integer>> handleUserPosition(List<UserUserDO> list,Map<Integer,Set<Integer>> datas){
         Map<Integer,Set<Integer>> result=new HashMap<>();
         for(Integer key:datas.keySet()){
+            //获取投递该职位的人的id
             Set<Integer> userIdSet=datas.get(key);
+            //创建set存放处理后的结果
             Set<Integer> userList=new HashSet<>();
             Map<Long,UserUserDO> map=new HashMap<>();
             for(Integer userId:userIdSet){
@@ -311,13 +320,16 @@ public class ProfileService {
                         continue;
                     }
                     long mobile=userDO.getMobile();
+                    //将userId为空的直接存放
                     if(mobile==0L){
                         userList.add(userId);
                         break;
                     }
+                    //如果mobile没有，那么直接存放
                     if(map.get(mobile)==null){
                         map.put(mobile,userDO);
                     }else{
+                        //如果存在，那么选出有username的
                         String userName=userDO.getUsername();
                         UserUserDO DO=map.get(mobile);
                         String nowUserName=DO.getUsername();
@@ -362,6 +374,7 @@ public class ProfileService {
     //过滤数据
     private List<AbstractMap.SimpleEntry<Map<String, Object>, Map<String, Object>>>  filteroriginData(List<AbstractMap.SimpleEntry<Map<String, Object>, Map<String, Object>>> datas,
                                   Map<Integer,Set<Integer>> map){
+        //根据先前的获得的职位和员工的对应关系，过滤掉老数据中无用的数据
         List<AbstractMap.SimpleEntry<Map<String, Object>, Map<String, Object>>> result=new ArrayList<>();
         for(AbstractMap.SimpleEntry<Map<String, Object>, Map<String, Object>> entry : datas){
             int positionId=(int)entry.getKey().get("id");
