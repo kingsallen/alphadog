@@ -4,18 +4,13 @@ import com.moseeker.thrift.gen.useraccounts.struct.ApplicationDetailVO;
 import com.moseeker.thrift.gen.useraccounts.struct.ApplicationRecordsForm;
 import com.moseeker.thrift.gen.useraccounts.struct.FavPositionForm;
 import com.moseeker.thrift.gen.useraccounts.struct.RecommendationVO;
-import com.moseeker.useraccounts.config.AppConfig;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Arrays;
 import java.util.List;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = AppConfig.class)
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(classes = AppConfig.class)
 public class UserCenterServiceTest {
 
     @Autowired
@@ -39,7 +34,7 @@ public class UserCenterServiceTest {
         System.out.println(recommendationVO);
     }
 
-    @Test
+    //@Test
     public void getApplicationDetail() throws Exception {
         ApplicationDetailVO applicationDetail = service.getApplicationDetail(2193839, 462455);
         System.out.println(applicationDetail);
