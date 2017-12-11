@@ -114,22 +114,20 @@ public enum RecruitmentScheduleEnum {
                 switch (lastID) {
                     case 1:
                     case 6:
-                        value = 1;
-                        break;
                     case 8:
                     case 9:
                     case 10:
                     case 2:
                     case 5:
-                    case 12:
                         value = 2;
                         break;
+                    case 12:
                     case 11:
                     case 3:
                         value = 3;
                         break;
                     case 4:
-                    default: value = 1;
+                    default: value = 2;
                 }
                 break;
             default: value = 0;
