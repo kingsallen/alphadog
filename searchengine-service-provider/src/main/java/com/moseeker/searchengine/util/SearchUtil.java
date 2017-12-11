@@ -99,6 +99,12 @@ public class SearchUtil {
         logger.info("组合的条件是==================" + query.toString() + "===========");
     }
 
+    public void hanleRange(long conditions, QueryBuilder query, String conditionField) {
+        QueryBuilder cityfilter = QueryBuilders.rangeQuery(conditionField).gt(conditions);
+        ((BoolQueryBuilder) query).must(cityfilter);
+        logger.info("组合的条件是==================" + query.toString() + "===========");
+    }
+
     //处理聚合的结果
     public Map<String,Object> handleAggs(Aggregations aggs){
     	List<Aggregation> list=aggs.asList();
@@ -377,6 +383,21 @@ public class SearchUtil {
         }
         return null;
     }
-
+    /*
+     处理范围数据的查询语句
+     */
+    public void shoudRangeAgeOrDegreeList(List<Map<String,Integer>> list,QueryBuilder query,String conditionField){
+        if(list!=null&&list.size()>0){
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            for(Map<String,Integer> map:list){
+                int max=  map.get("max");
+                int min=  map.get("min");
+                QueryBuilder fullf = QueryBuilders.rangeQuery(conditionField).gt(min).lt(max);
+                ((BoolQueryBuilder) keyand).should(fullf);
+            }
+            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+            ((BoolQueryBuilder) query).must(keyand);
+        }
+    }
 
 }

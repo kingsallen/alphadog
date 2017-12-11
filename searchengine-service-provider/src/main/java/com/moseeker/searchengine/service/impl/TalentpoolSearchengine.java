@@ -1,5 +1,6 @@
 package com.moseeker.searchengine.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.searchengine.util.SearchUtil;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
@@ -8,9 +9,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by zztaiwll on 17/12/8.
@@ -148,25 +147,41 @@ public class TalentpoolSearchengine {
     /*
       按照年龄查询
      */
-    private void queryAge(){
-
+    private void queryAge(String ages,QueryBuilder queryBuilder){
+        List<Map<String,Integer>> list=this.convertParams(ages);
+        searchUtil.shoudRangeAgeOrDegreeList(list,queryBuilder,"user.age");
     }
+    /*
+     将字符串转换成SON
+     */
     private List<Map<String,Integer>> convertParams(String params){
-
-        return null;
+        List<Map<String,Integer>> list= (List<Map<String, Integer>>) JSON.toJSON(params);
+        return list;
     }
 
     /*
       按照曾任职务查询
      */
-
+    private void queryWorkJob(String works,QueryBuilder queryBuilder){
+        Map<String,Object> queryMap=new HashMap<>();
+        queryMap.put("user.profiles.recent_job.job",works);
+        queryMap.put("user.profiles.workexps.job",works);
+        searchUtil.shouldTermsQuery(queryMap,queryBuilder);
+    }
     /*
       按照性别查询
      */
-
+    private void queryGender(String gender,QueryBuilder queryBuilder){
+        searchUtil.handleTerm(gender,queryBuilder,"user.profiles.basic.gender");
+    }
     /*
       按照投递时间查询
      */
+    private void querySubmitTime(String submitTime,QueryBuilder queryBuilder){
+        Date date=new Date(submitTime);
+        Long datetime=date.getTime();
+        searchUtil.hanleRange(datetime,queryBuilder,"user.profiles.basic.gender");
+    }
 
     /*
       按照工作年限查新

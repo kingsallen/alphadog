@@ -483,23 +483,28 @@ public class TalentPoolService {
             return ResponseUtils.fail(1,"该hr不属于该company_id");
         }
         Map<String,Object> result=new HashMap<>();
-        int talentNum=this.getAllHrTalent(hrId);
-        int companyPublicNum=this.getPublicTalentCount(companyId);
-        int hrPublicNum=this.getHrPublicTalent(hrId);
-        Map<String,Object> talentTagNum=handlerTagTalentNum(hrId);
+
         if(type==0){
+            int talentNum=this.getAllHrTalent(hrId);
+            int companyPublicNum=this.getPublicTalentCount(companyId);
+            int hrPublicNum=this.getHrPublicTalent(hrId);
+            List<Map<String,Object>> list=this.getTagByHr(hrId,0,Integer.MAX_VALUE);
             result.put("allpublic",companyPublicNum);
             result.put("hrpublic",hrPublicNum);
             result.put("talent",talentNum);
-            result.put("tag",talentTagNum);
+            result.put("tag",list);
         }else if(type==1){
+            int hrPublicNum=this.getHrPublicTalent(hrId);
             result.put("hrpublic",hrPublicNum);
         }else if(type==2){
+            int talentNum=this.getAllHrTalent(hrId);
             result.put("talent",talentNum);
         }else if(type==3){
+            int companyPublicNum=this.getPublicTalentCount(companyId);
             result.put("allpublic",companyPublicNum);
         }else if(type==4){
-            result.put("tag",talentTagNum);
+            List<Map<String,Object>> list=this.getTagByHr(hrId,0,Integer.MAX_VALUE);
+            result.put("tag",list);
         }
         return ResponseUtils.success(result);
     }
@@ -509,13 +514,6 @@ public class TalentPoolService {
     private Map<String,Object> handlerTagTalentNum(int hrId){
         List<Map<String,Object>> list=this.getTagByHr(hrId,0,Integer.MAX_VALUE);
         Map<String,Object> tagResult=new HashMap<>();
-        if(!StringUtils.isEmptyList(list)){
-            for(Map<String,Object> map:list){
-                int num=(int)map.get("talent_num");
-                String name=(String)map.get("name");
-                tagResult.put(name,num);
-            }
-        }
         return tagResult;
     }
     @CounterIface
