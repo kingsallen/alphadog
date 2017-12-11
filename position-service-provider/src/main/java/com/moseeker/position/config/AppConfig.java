@@ -3,6 +3,7 @@ package com.moseeker.position.config;
 import com.moseeker.common.constants.RefreshConstant;
 import com.rabbitmq.client.ConnectionFactory;
 import org.springframework.amqp.core.*;
+import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
@@ -22,6 +23,7 @@ import java.util.List;
  * Created by lucky8987 on 17/5/11.
  */
 @Configuration
+@EnableRabbit
 @EnableScheduling
 @ComponentScan({"com.moseeker.position", "com.moseeker.common.aop.iface", "com.moseeker.entity"})
 @Import({com.moseeker.baseorm.config.AppConfig.class})
