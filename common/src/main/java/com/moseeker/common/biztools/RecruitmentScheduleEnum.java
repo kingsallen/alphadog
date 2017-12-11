@@ -149,10 +149,11 @@ public enum RecruitmentScheduleEnum {
         switch (this.id) {
             case 4:
                 value = 2;break;
-            case 2:
             case 8:
             case 9:
             case 10:
+                value = 0;break;
+            case 2:
             case 1:
             case 6:
             case 5:
