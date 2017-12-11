@@ -1,5 +1,6 @@
 package com.moseeker.company.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.talentpooldb.*;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
@@ -13,6 +14,8 @@ import com.moseeker.entity.TalentPoolEntity;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.struct.Intention;
 import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +28,7 @@ import java.util.*;
 @Service
 @Transactional
 public class TalentPoolService {
+    Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private TalentpoolHrTalentDao talentpoolHrTalentDao;
     @Autowired
@@ -414,6 +418,7 @@ public class TalentPoolService {
             return ResponseUtils.fail(1,"该hr不属于该company_id");
         }
         Map<String,Object> result=this.handleTagData(hrId,pageNum,pageSize);
+        logger.info(JSON.toJSONString(result));
         return ResponseUtils.success(result);
     }
     /*

@@ -78,28 +78,39 @@ public class TalentpoolSearchengine {
     }
 
     /*
-      构建是否公开的查询语句
+      构建是否公开的查询语句,注意这个位置要做成nest的查询
      */
     private void queryByPublic(int isPublic,QueryBuilder queryBuilder){
-
+        searchUtil.handleMatch(isPublic,queryBuilder,"user.talent_pool.is_public");
     }
 
     /*
       构建收藏人的查询语句
      */
+    private void queryByCollectid(String hrIds,QueryBuilder queryBuilder){
+        searchUtil.handleTerms(hrIds,queryBuilder,"user.talent_pool.hr_id");
+    }
 
     /*
       构建按招标签的查询语句
      */
+    private void queryByTagId(String tagIds,QueryBuilder queryBuilder){
+        searchUtil.handleTerms(tagIds,queryBuilder,"user.talent_pool.tag.tag_id");
+    }
 
     /*
       构建按照期望城市名称的查询语句
      */
+    private void queryByIntentionCity(String cityNames,QueryBuilder queryBuilder){
+        searchUtil.handleTerms(cityNames,queryBuilder,"user.profiles.intentions.city");
+    }
 
     /*
       按照公司名称查询
      */
-
+    private void queryByIntentionSalaryCode(String salaryCodes,QueryBuilder queryBuilder){
+        searchUtil.handleTerms(salaryCodes,queryBuilder,"user.profiles.intentions.city");
+    }
     /*
       按照学历查询
      */
