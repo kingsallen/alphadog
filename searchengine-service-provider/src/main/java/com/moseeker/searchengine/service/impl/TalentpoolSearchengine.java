@@ -33,9 +33,158 @@ public class TalentpoolSearchengine {
 
         return null;
     }
-
+    /*
+     创建按照hr查询的索引语句
+     */
     private void queryByPublisher(String publisherIds,QueryBuilder queryBuilder){
         searchUtil.handleTerms(publisherIds,queryBuilder,"user.applications.publisher");
+    }
+    /*
+     构建按照关键词查询的索引语句
+     */
+    private void queryByKeyWord(String keyWord,QueryBuilder queryBuilder){
+        List<String> fieldList=this.getFieldList();
+        List<Integer> boostList=this.getBoostList();
+        searchUtil.keyWordforQueryStringPropery(keyWord,queryBuilder,fieldList,boostList);
+    }
+    /*
+       构建招聘类型的查询语句
+     */
+    private void queryByCandidateSource(int source,QueryBuilder queryBuilder){
+        searchUtil.handleMatch(source,queryBuilder,"user.applications.candidate_source");
+    }
+
+    /*
+      构建是否内推的查询语句
+     */
+    private void queryByRecom(int source,QueryBuilder queryBuilder){
+        searchUtil.hanleRange(0,queryBuilder,"user.applications.recommender_user_id");
+    }
+
+    /*
+      构建简历来源的查询语句
+     */
+    private void queryByOrigin(String condition1,String condition2,QueryBuilder queryBuilder){
+
+    }
+
+
+    /*
+      构建通过职位来查询的语句
+     */
+
+    private void queryByPosition(String positionIds,QueryBuilder queryBuilder ){
+        searchUtil.handleTerms(positionIds,queryBuilder,"user.applications.position_id");
+    }
+
+    /*
+      构建是否公开的查询语句
+     */
+    private void queryByPublic(int isPublic,QueryBuilder queryBuilder){
+
+    }
+
+    /*
+      构建收藏人的查询语句
+     */
+
+    /*
+      构建按招标签的查询语句
+     */
+
+    /*
+      构建按照期望城市名称的查询语句
+     */
+
+    /*
+      按照公司名称查询
+     */
+
+    /*
+      按照学历查询
+     */
+
+    /*
+      按照最后工作的公司查询
+     */
+
+    /*
+      按照最后工作的职位名称查询
+     */
+
+    /*
+      按照现居住地查询
+     */
+
+    /*
+      按照期望薪资查询
+     */
+
+    /*
+      按照年龄查询
+     */
+
+    /*
+      按照曾任职务查询
+     */
+
+    /*
+      按照性别查询
+     */
+
+    /*
+      按照投递时间查询
+     */
+
+    /*
+      按照工作年限查新
+     */
+
+    /*
+      按照招聘进度查询
+     */
+
+
+
+    /*
+        组装全文检索查询的条件
+     */
+    private List<String> getFieldList(){
+        List<String> fieldList=new ArrayList<>();
+        fieldList.add("user.profiles.basic.name");
+        fieldList.add("user.profiles.recent_job.company_name");
+        fieldList.add("user.profiles.recent_job.department_name");
+        fieldList.add("user.profiles.recent_job.job");
+        fieldList.add("user.profiles.other_workexps.company_name");
+        fieldList.add("user.profiles.other_workexps.department_name");
+        fieldList.add("user.profiles.other_workexps.job");
+        fieldList.add("user.profiles.other_workexps.description");
+        fieldList.add("user.profiles.educations.description");
+        fieldList.add("user.profiles.projectexps.name");
+        fieldList.add("user.profiles.projectexps.description");
+        fieldList.add("user.profiles.skills");
+        fieldList.add("user.profiles.credentials.name");
+        return fieldList;
+    }
+    /*
+        组装全文检索查询的权重
+   */
+    private List<Integer> getBoostList(){
+        List<Integer> boostList=new ArrayList<>();
+        boostList.add(20);
+        boostList.add(10);
+        boostList.add(10);
+        boostList.add(10);
+        boostList.add(8);
+        boostList.add(8);
+        boostList.add(8);
+        boostList.add(5);
+        boostList.add(5);
+        boostList.add(3);
+        boostList.add(3);
+        boostList.add(1);
+        boostList.add(1);
+        return boostList;
     }
 
 }

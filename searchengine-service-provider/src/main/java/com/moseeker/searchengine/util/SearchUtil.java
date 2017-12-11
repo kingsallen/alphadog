@@ -160,6 +160,31 @@ public class SearchUtil {
             ((BoolQueryBuilder) query).must(keyand);
         }
    }
+    //组装query_string关键字带权重查询语句
+    public void keyWordforQueryStringPropery(String keywords,QueryBuilder query,List<String> fieldList,List<Integer> properyList){
+        if(StringUtils.isNotEmpty(keywords)){
+            String words[]=keywords.split(",");
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            StringBuffer sb=new StringBuffer();
+            for(int i=0;i<words.length;i++){
+                if(i==words.length-1){
+                    sb.append(words[i]);
+                }else{
+                    sb.append(words[i]+" or ");
+                }
+            }
+            String condition=sb.toString();
+            QueryStringQueryBuilder fullf = QueryBuilders.queryStringQuery(condition);
+            if(fieldList!=null&&fieldList.size()>0){
+                for(int i=0;i<fieldList.size();i++){
+                    fullf.field(fieldList.get(i),properyList.get(i));
+                }
+            }
+            ((BoolQueryBuilder) keyand).must(fullf);
+
+            ((BoolQueryBuilder) query).must(keyand);
+        }
+    }
     public AbstractAggregationBuilder handle(String fieldName,String name){
     	StringBuffer sb=new StringBuffer();
     	sb.append("scale=");

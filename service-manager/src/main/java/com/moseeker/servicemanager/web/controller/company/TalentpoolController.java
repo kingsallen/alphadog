@@ -128,13 +128,12 @@ public class TalentpoolController {
     public String getTag(HttpServletRequest request, HttpServletResponse response) {
         try {
             Map<String, Object> data = ParamUtils.parseRequestParam(request);
-            int hrId=(int) data.get("hr_id");
-            int companyId=(int) data.get("company_id");
+            int hrId=Integer.parseInt(String.valueOf(data.get("hr_id"))) ;
+            int companyId=Integer.parseInt(String.valueOf(data.get("company_id")));
             String page=String.valueOf(data.get("page_number"));
             int pageNum=0;
             if(StringUtils.isNullOrEmpty(page)){
                 pageNum=Integer.parseInt(page);
-
             }
             String size=String.valueOf(data.get("page_size"));
             int pageSize=10;
@@ -229,8 +228,8 @@ public class TalentpoolController {
     public String getPublicTalent(HttpServletRequest request, HttpServletResponse response) {
         try {
             Map<String, Object> data = ParamUtils.parseRequestParam(request);
-            int hrId=(int) data.get("hr_id");
-            int companyId=(int) data.get("company_id");
+            int hrId=Integer.parseInt(String.valueOf(data.get("hr_id")));
+            int companyId=Integer.parseInt(String.valueOf( data.get("company_id")));
             String page=String.valueOf(data.get("page_number"));
             int pageNum=0;
             if(StringUtils.isNullOrEmpty(page)){
@@ -311,9 +310,9 @@ public class TalentpoolController {
     public String getTalentComment(HttpServletRequest request, HttpServletResponse response) {
         try {
             Map<String, Object> data = ParamUtils.parseRequestParam(request);
-            int hrId=(int) data.get("hr_id");
-            int companyId=(int) data.get("company_id");
-            int userId=(int)data.get("user_id");
+            int hrId=Integer.parseInt(String.valueOf(data.get("hr_id")));
+            int companyId=Integer.parseInt(String.valueOf(data.get("company_id")));
+            int userId=Integer.parseInt(String.valueOf(data.get("user_id")));
             String page=String.valueOf(data.get("page_number"));
             int pageNum=0;
             if(StringUtils.isNullOrEmpty(page)){
@@ -340,9 +339,9 @@ public class TalentpoolController {
     public String getTalentStat(HttpServletRequest request, HttpServletResponse response) {
         try {
             Map<String, Object> data = ParamUtils.parseRequestParam(request);
-            int hrId=(int) data.get("hr_id");
-            int companyId=(int) data.get("company_id");
-            int type=(int)data.get("type");
+            int hrId=Integer.parseInt(String.valueOf(data.get("hr_id")));
+            int companyId=Integer.parseInt(String.valueOf(data.get("company_id")));
+            int type=Integer.parseInt(String.valueOf(data.get("type")));
             Response result = service.getTalentStat(hrId,companyId,type);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
