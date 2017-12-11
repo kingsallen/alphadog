@@ -432,12 +432,4 @@ public class JobPosition extends TableImpl<JobPositionRecord> {
     public JobPosition as(String alias) {
         return new JobPosition(alias, this);
     }
-
-    /**
-     * Rename this table
-     */
-
-    public JobPosition rename(String name) {
-        return new JobPosition(name, null);
-    }
 }

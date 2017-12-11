@@ -142,12 +142,4 @@ public class JobPcRecommendPositionItem extends TableImpl<JobPcRecommendPosition
     public JobPcRecommendPositionItem as(String alias) {
         return new JobPcRecommendPositionItem(alias, this);
     }
-
-    /**
-     * Rename this table
-     */
-
-    public JobPcRecommendPositionItem rename(String name) {
-        return new JobPcRecommendPositionItem(name, null);
-    }
 }

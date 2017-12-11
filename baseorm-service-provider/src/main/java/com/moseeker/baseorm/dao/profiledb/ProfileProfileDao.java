@@ -13,7 +13,6 @@ import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.jobdb.tables.*;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationAtsRecord;
-import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.profiledb.tables.*;
 import com.moseeker.baseorm.db.profiledb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.*;
@@ -24,23 +23,24 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.common.util.query.*;
-import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
-import org.jooq.*;
 import org.jooq.Condition;
+import org.jooq.Record1;
+import org.jooq.Record2;
+import org.jooq.Result;
 import org.jooq.impl.TableImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
+
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
+
 import static com.moseeker.baseorm.util.BeanUtils.jooqMapfilter;
 import static com.moseeker.baseorm.util.BeanUtils.profilter;
 
@@ -1040,6 +1040,21 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                 .stream()
                 .map(record -> new AbstractMap.SimpleEntry<>(record.into(jobposition).intoMap(), record.into(jobApplication).intoMap()))
                 .collect(Collectors.toList());
+
+        List<Integer> appIdList = positionApplications.stream().map(entry -> (Integer) entry.getValue().get("id")).collect(Collectors.toList());
+        List<JobApplicationAtsRecord> atsRecordList = create.select()
+                .from(JobApplicationAts.JOB_APPLICATION_ATS)
+                .where(JobApplicationAts.JOB_APPLICATION_ATS.APP_ID.in(appIdList))
+                .fetchInto(JobApplicationAts.JOB_APPLICATION_ATS);
+        if (atsRecordList != null && atsRecordList.size() > 0) {
+            Map<Integer, String> map = atsRecordList.stream().collect(Collectors.toMap(JobApplicationAtsRecord::getAppId, JobApplicationAtsRecord::getAtsAppId));
+            positionApplications.stream().forEach(mapMapSimpleEntry -> {
+                if (map.get(mapMapSimpleEntry.getValue().get("id")) != null) {
+                    mapMapSimpleEntry.getValue().put("l_application_id", map.get(mapMapSimpleEntry.getValue().get("id")));
+                }
+            });
+        }
+        List<Map<String, Object>> datas = getRelatedDataByJobApplication(positionApplications, downloadApi, password, profileApplicationForm.isRecommender(), profileApplicationForm.isDl_url_required(), profileApplicationForm.getFilter());
         logger.info("getResourceByApplication:=============={}:{}", "end", System.currentTimeMillis() - startTime);
         return positionApplications;
     }

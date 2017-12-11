@@ -126,12 +126,4 @@ public class UserProfileJobapply extends TableImpl<UserProfileJobapplyRecord> {
     public UserProfileJobapply as(String alias) {
         return new UserProfileJobapply(alias, this);
     }
-
-    /**
-     * Rename this table
-     */
-
-    public UserProfileJobapply rename(String name) {
-        return new UserProfileJobapply(name, null);
-    }
 }

@@ -124,11 +124,4 @@ public class JobResumeOther extends TableImpl<JobResumeOtherRecord> {
         return new JobResumeOther(alias, this);
     }
 
-    /**
-     * Rename this table
-     */
-
-    public JobResumeOther rename(String name) {
-        return new JobResumeOther(name, null);
-    }
 }

@@ -147,12 +147,4 @@ public class JobCustom extends TableImpl<JobCustomRecord> {
     public JobCustom as(String alias) {
         return new JobCustom(alias, this);
     }
-
-    /**
-     * Rename this table
-     */
-
-    public JobCustom rename(String name) {
-        return new JobCustom(name, null);
-    }
 }
