@@ -72,4 +72,5 @@ service TalentpoolServices {
     common_struct.Response getCompanyUserPublic(1:i32 hr_id,2:i32 company_id,3:i32 user_id) throws (1: common_struct.BIZException e)
     common_struct.Response getCompanyTalent(1:i32 hr_id,2:i32 company_id,3:i32 user_id) throws (1: common_struct.BIZException e)
     common_struct.Response getHrUserTag(1:i32 hr_id,2:i32 company_id,3:i32 user_id) throws (1: common_struct.BIZException e)
+    common_struct.Response getUserOrigin(1:i32 hr_id,2:i32 company_id,3:i32 user_id) throws (1: common_struct.BIZException e)
 }

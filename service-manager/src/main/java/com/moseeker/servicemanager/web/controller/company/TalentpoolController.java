@@ -404,5 +404,21 @@ public class TalentpoolController {
             // do nothing
         }
     }
-
+    @RequestMapping(value = "/api/talentpool/user/origin", method = RequestMethod.GET)
+    @ResponseBody
+    public String getUserOrigin(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String, Object> data = ParamUtils.parseRequestParam(request);
+            int hrId=Integer.parseInt(String.valueOf(data.get("hr_id")));
+            int companyId=Integer.parseInt(String.valueOf(data.get("company_id")));
+            int userId=Integer.parseInt(String.valueOf(data.get("user_id")));
+            Response result = service.getUserOrigin(hrId,companyId,userId);
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        } finally {
+            // do nothing
+        }
+    }
 }

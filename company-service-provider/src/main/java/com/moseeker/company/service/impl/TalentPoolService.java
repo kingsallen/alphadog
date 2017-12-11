@@ -1,7 +1,9 @@
 package com.moseeker.company.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.talentpooldb.*;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
@@ -41,6 +43,8 @@ public class TalentPoolService {
     private TalentpoolCommentDao talentpoolCommentDao;
     @Autowired
     private TalentpoolTalentDao talentpoolTalentDao;
+    @Autowired
+    private JobApplicationDao jobApplicationDao;
     /*
      添加人才到人才库
      */
@@ -1279,6 +1283,46 @@ public class TalentPoolService {
         Query query=new Query.QueryBuilder().where("hr_id",hrId).and("public",1).buildQuery();
         int count=talentpoolHrTalentDao.getCount(query);
         return count;
+    }
+
+    /*
+     来源
+     */
+    @CounterIface
+    public Response getuserOrigin(int hrId,int companyId,int userId){
+        Response res=validateHrAndUser(hrId,userId,companyId);
+        if(res!=null){
+            return res;
+        }
+        Map<String,Object> result=new HashMap<>();
+        int count=this.isUploadTalent(companyId,userId);
+        if(count>0){
+            result.put("isupload",1);
+        }else{
+            result.put("isupload",0);
+            int origin=this.getApplicationOrigin(companyId,userId);
+            result.put("origin",origin);
+        }
+        return  ResponseUtils.success(result);
+    }
+    /*
+     是否是上传
+     */
+    private int isUploadTalent(int companyId,int userId){
+        Query query=new Query.QueryBuilder().where("upload",1).and("company_id",companyId).and("user_id",userId).buildQuery();
+        int count=talentpoolTalentDao.getCount(query);
+        return count;
+    }
+    /*
+     获取用户来源
+     */
+    private int getApplicationOrigin(int companyId,int userId){
+        Query query=new Query.QueryBuilder().where("company_id",companyId).and("applier_id",userId).buildQuery();
+        JobApplicationRecord  record=jobApplicationDao.getRecord(query);
+        if(record==null){
+            return 0;
+        }
+        return record.getOrigin();
     }
 
 }

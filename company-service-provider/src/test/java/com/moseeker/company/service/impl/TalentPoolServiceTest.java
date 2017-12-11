@@ -211,6 +211,14 @@
 //        Response res=talentPoolService.getCompanyUserPublic(hrId,companyId,userId);
 //        System.out.println(res);
 //    }
+//    @Test
+//    public void testGetOrigin(){
+//        int hrId=82752;
+//        int companyId=39978;
+//        int userId=2191508;
+//        Response res=talentPoolService.getuserOrigin(hrId,companyId,userId);
+//        System.out.println(res);
+//    }
 //
 //
 //}

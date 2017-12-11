@@ -209,6 +209,16 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
         }
     }
 
+    @Override
+    public Response getUserOrigin(int hr_id, int company_id, int user_id) throws BIZException, TException {
+        try{
+            return talentPoolService.getuserOrigin(hr_id,company_id,user_id);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
     private Set<Integer> ConvertListToSet(List<Integer> list){
         Set<Integer> param=new HashSet<>();
         for(Integer id :list){

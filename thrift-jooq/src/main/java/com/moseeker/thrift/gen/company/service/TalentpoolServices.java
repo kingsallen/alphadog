@@ -50,6 +50,8 @@ public class TalentpoolServices {
 
     public com.moseeker.thrift.gen.common.struct.Response getHrUserTag(int hr_id, int company_id, int user_id) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
+    public com.moseeker.thrift.gen.common.struct.Response getUserOrigin(int hr_id, int company_id, int user_id) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
+
   }
 
   public interface AsyncIface {
@@ -91,6 +93,8 @@ public class TalentpoolServices {
     public void getCompanyTalent(int hr_id, int company_id, int user_id, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
     public void getHrUserTag(int hr_id, int company_id, int user_id, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+
+    public void getUserOrigin(int hr_id, int company_id, int user_id, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
   }
 
@@ -653,6 +657,34 @@ public class TalentpoolServices {
         throw result.e;
       }
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getHrUserTag failed: unknown result");
+    }
+
+    public com.moseeker.thrift.gen.common.struct.Response getUserOrigin(int hr_id, int company_id, int user_id) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    {
+      send_getUserOrigin(hr_id, company_id, user_id);
+      return recv_getUserOrigin();
+    }
+
+    public void send_getUserOrigin(int hr_id, int company_id, int user_id) throws org.apache.thrift.TException
+    {
+      getUserOrigin_args args = new getUserOrigin_args();
+      args.setHr_id(hr_id);
+      args.setCompany_id(company_id);
+      args.setUser_id(user_id);
+      sendBase("getUserOrigin", args);
+    }
+
+    public com.moseeker.thrift.gen.common.struct.Response recv_getUserOrigin() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    {
+      getUserOrigin_result result = new getUserOrigin_result();
+      receiveBase(result, "getUserOrigin");
+      if (result.isSetSuccess()) {
+        return result.success;
+      }
+      if (result.e != null) {
+        throw result.e;
+      }
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getUserOrigin failed: unknown result");
     }
 
   }
@@ -1422,6 +1454,44 @@ public class TalentpoolServices {
       }
     }
 
+    public void getUserOrigin(int hr_id, int company_id, int user_id, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+      checkReady();
+      getUserOrigin_call method_call = new getUserOrigin_call(hr_id, company_id, user_id, resultHandler, this, ___protocolFactory, ___transport);
+      this.___currentMethod = method_call;
+      ___manager.call(method_call);
+    }
+
+    public static class getUserOrigin_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
+      private int hr_id;
+      private int company_id;
+      private int user_id;
+      public getUserOrigin_call(int hr_id, int company_id, int user_id, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+        super(client, protocolFactory, transport, resultHandler, false);
+        this.hr_id = hr_id;
+        this.company_id = company_id;
+        this.user_id = user_id;
+      }
+
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("getUserOrigin", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        getUserOrigin_args args = new getUserOrigin_args();
+        args.setHr_id(hr_id);
+        args.setCompany_id(company_id);
+        args.setUser_id(user_id);
+        args.write(prot);
+        prot.writeMessageEnd();
+      }
+
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
+        }
+        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
+        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
+        return (new Client(prot)).recv_getUserOrigin();
+      }
+    }
+
   }
 
   public static class Processor<I extends Iface> extends org.apache.thrift.TBaseProcessor<I> implements org.apache.thrift.TProcessor {
@@ -1454,6 +1524,7 @@ public class TalentpoolServices {
       processMap.put("getCompanyUserPublic", new getCompanyUserPublic());
       processMap.put("getCompanyTalent", new getCompanyTalent());
       processMap.put("getHrUserTag", new getHrUserTag());
+      processMap.put("getUserOrigin", new getUserOrigin());
       return processMap;
     }
 
@@ -1913,6 +1984,30 @@ public class TalentpoolServices {
       }
     }
 
+    public static class getUserOrigin<I extends Iface> extends org.apache.thrift.ProcessFunction<I, getUserOrigin_args> {
+      public getUserOrigin() {
+        super("getUserOrigin");
+      }
+
+      public getUserOrigin_args getEmptyArgsInstance() {
+        return new getUserOrigin_args();
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public getUserOrigin_result getResult(I iface, getUserOrigin_args args) throws org.apache.thrift.TException {
+        getUserOrigin_result result = new getUserOrigin_result();
+        try {
+          result.success = iface.getUserOrigin(args.hr_id, args.company_id, args.user_id);
+        } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
+          result.e = e;
+        }
+        return result;
+      }
+    }
+
   }
 
   public static class AsyncProcessor<I extends AsyncIface> extends org.apache.thrift.TBaseAsyncProcessor<I> {
@@ -1945,6 +2040,7 @@ public class TalentpoolServices {
       processMap.put("getCompanyUserPublic", new getCompanyUserPublic());
       processMap.put("getCompanyTalent", new getCompanyTalent());
       processMap.put("getHrUserTag", new getHrUserTag());
+      processMap.put("getUserOrigin", new getUserOrigin());
       return processMap;
     }
 
@@ -3180,6 +3276,71 @@ public class TalentpoolServices {
 
       public void start(I iface, getHrUserTag_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
         iface.getHrUserTag(args.hr_id, args.company_id, args.user_id,resultHandler);
+      }
+    }
+
+    public static class getUserOrigin<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, getUserOrigin_args, com.moseeker.thrift.gen.common.struct.Response> {
+      public getUserOrigin() {
+        super("getUserOrigin");
+      }
+
+      public getUserOrigin_args getEmptyArgsInstance() {
+        return new getUserOrigin_args();
+      }
+
+      public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
+        final org.apache.thrift.AsyncProcessFunction fcall = this;
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() {
+          public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
+            getUserOrigin_result result = new getUserOrigin_result();
+            result.success = o;
+            try {
+              fcall.sendResponse(fb, result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
+            } catch (org.apache.thrift.transport.TTransportException e) {
+              _LOGGER.error("TTransportException writing to internal frame buffer", e);
+              fb.close();
+            } catch (java.lang.Exception e) {
+              _LOGGER.error("Exception writing to internal frame buffer", e);
+              onError(e);
+            }
+          }
+          public void onError(java.lang.Exception e) {
+            byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
+            org.apache.thrift.TSerializable msg;
+            getUserOrigin_result result = new getUserOrigin_result();
+            if (e instanceof com.moseeker.thrift.gen.common.struct.BIZException) {
+              result.e = (com.moseeker.thrift.gen.common.struct.BIZException) e;
+              result.setEIsSet(true);
+              msg = result;
+            } else if (e instanceof org.apache.thrift.transport.TTransportException) {
+              _LOGGER.error("TTransportException inside handler", e);
+              fb.close();
+              return;
+            } else if (e instanceof org.apache.thrift.TApplicationException) {
+              _LOGGER.error("TApplicationException inside handler", e);
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = (org.apache.thrift.TApplicationException)e;
+            } else {
+              _LOGGER.error("Exception inside handler", e);
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
+            }
+            try {
+              fcall.sendResponse(fb,msg,msgType,seqid);
+            } catch (java.lang.Exception ex) {
+              _LOGGER.error("Exception writing to internal frame buffer", ex);
+              fb.close();
+            }
+          }
+        };
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public void start(I iface, getUserOrigin_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+        iface.getUserOrigin(args.hr_id, args.company_id, args.user_id,resultHandler);
       }
     }
 
@@ -24060,6 +24221,1029 @@ public class TalentpoolServices {
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, getHrUserTag_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(2);
+        if (incoming.get(0)) {
+          struct.success = new com.moseeker.thrift.gen.common.struct.Response();
+          struct.success.read(iprot);
+          struct.setSuccessIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+          struct.e.read(iprot);
+          struct.setEIsSet(true);
+        }
+      }
+    }
+
+    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+    }
+  }
+
+  public static class getUserOrigin_args implements org.apache.thrift.TBase<getUserOrigin_args, getUserOrigin_args._Fields>, java.io.Serializable, Cloneable, Comparable<getUserOrigin_args>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getUserOrigin_args");
+
+    private static final org.apache.thrift.protocol.TField HR_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("hr_id", org.apache.thrift.protocol.TType.I32, (short)1);
+    private static final org.apache.thrift.protocol.TField COMPANY_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("company_id", org.apache.thrift.protocol.TType.I32, (short)2);
+    private static final org.apache.thrift.protocol.TField USER_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("user_id", org.apache.thrift.protocol.TType.I32, (short)3);
+
+    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getUserOrigin_argsStandardSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getUserOrigin_argsTupleSchemeFactory();
+
+    public int hr_id; // required
+    public int company_id; // required
+    public int user_id; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      HR_ID((short)1, "hr_id"),
+      COMPANY_ID((short)2, "company_id"),
+      USER_ID((short)3, "user_id");
+
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+      static {
+        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 1: // HR_ID
+            return HR_ID;
+          case 2: // COMPANY_ID
+            return COMPANY_ID;
+          case 3: // USER_ID
+            return USER_ID;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(java.lang.String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final java.lang.String _fieldName;
+
+      _Fields(short thriftId, java.lang.String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public java.lang.String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    private static final int __HR_ID_ISSET_ID = 0;
+    private static final int __COMPANY_ID_ISSET_ID = 1;
+    private static final int __USER_ID_ISSET_ID = 2;
+    private byte __isset_bitfield = 0;
+    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.HR_ID, new org.apache.thrift.meta_data.FieldMetaData("hr_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
+              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
+              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.USER_ID, new org.apache.thrift.meta_data.FieldMetaData("user_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
+              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getUserOrigin_args.class, metaDataMap);
+    }
+
+    public getUserOrigin_args() {
+    }
+
+    public getUserOrigin_args(
+            int hr_id,
+            int company_id,
+            int user_id)
+    {
+      this();
+      this.hr_id = hr_id;
+      setHr_idIsSet(true);
+      this.company_id = company_id;
+      setCompany_idIsSet(true);
+      this.user_id = user_id;
+      setUser_idIsSet(true);
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public getUserOrigin_args(getUserOrigin_args other) {
+      __isset_bitfield = other.__isset_bitfield;
+      this.hr_id = other.hr_id;
+      this.company_id = other.company_id;
+      this.user_id = other.user_id;
+    }
+
+    public getUserOrigin_args deepCopy() {
+      return new getUserOrigin_args(this);
+    }
+
+    @Override
+    public void clear() {
+      setHr_idIsSet(false);
+      this.hr_id = 0;
+      setCompany_idIsSet(false);
+      this.company_id = 0;
+      setUser_idIsSet(false);
+      this.user_id = 0;
+    }
+
+    public int getHr_id() {
+      return this.hr_id;
+    }
+
+    public getUserOrigin_args setHr_id(int hr_id) {
+      this.hr_id = hr_id;
+      setHr_idIsSet(true);
+      return this;
+    }
+
+    public void unsetHr_id() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __HR_ID_ISSET_ID);
+    }
+
+    /** Returns true if field hr_id is set (has been assigned a value) and false otherwise */
+    public boolean isSetHr_id() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __HR_ID_ISSET_ID);
+    }
+
+    public void setHr_idIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __HR_ID_ISSET_ID, value);
+    }
+
+    public int getCompany_id() {
+      return this.company_id;
+    }
+
+    public getUserOrigin_args setCompany_id(int company_id) {
+      this.company_id = company_id;
+      setCompany_idIsSet(true);
+      return this;
+    }
+
+    public void unsetCompany_id() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __COMPANY_ID_ISSET_ID);
+    }
+
+    /** Returns true if field company_id is set (has been assigned a value) and false otherwise */
+    public boolean isSetCompany_id() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __COMPANY_ID_ISSET_ID);
+    }
+
+    public void setCompany_idIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __COMPANY_ID_ISSET_ID, value);
+    }
+
+    public int getUser_id() {
+      return this.user_id;
+    }
+
+    public getUserOrigin_args setUser_id(int user_id) {
+      this.user_id = user_id;
+      setUser_idIsSet(true);
+      return this;
+    }
+
+    public void unsetUser_id() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __USER_ID_ISSET_ID);
+    }
+
+    /** Returns true if field user_id is set (has been assigned a value) and false otherwise */
+    public boolean isSetUser_id() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __USER_ID_ISSET_ID);
+    }
+
+    public void setUser_idIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __USER_ID_ISSET_ID, value);
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
+      switch (field) {
+        case HR_ID:
+          if (value == null) {
+            unsetHr_id();
+          } else {
+            setHr_id((java.lang.Integer)value);
+          }
+          break;
+
+        case COMPANY_ID:
+          if (value == null) {
+            unsetCompany_id();
+          } else {
+            setCompany_id((java.lang.Integer)value);
+          }
+          break;
+
+        case USER_ID:
+          if (value == null) {
+            unsetUser_id();
+          } else {
+            setUser_id((java.lang.Integer)value);
+          }
+          break;
+
+      }
+    }
+
+    public java.lang.Object getFieldValue(_Fields field) {
+      switch (field) {
+        case HR_ID:
+          return getHr_id();
+
+        case COMPANY_ID:
+          return getCompany_id();
+
+        case USER_ID:
+          return getUser_id();
+
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new java.lang.IllegalArgumentException();
+      }
+
+      switch (field) {
+        case HR_ID:
+          return isSetHr_id();
+        case COMPANY_ID:
+          return isSetCompany_id();
+        case USER_ID:
+          return isSetUser_id();
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(java.lang.Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof getUserOrigin_args)
+        return this.equals((getUserOrigin_args)that);
+      return false;
+    }
+
+    public boolean equals(getUserOrigin_args that) {
+      if (that == null)
+        return false;
+      if (this == that)
+        return true;
+
+      boolean this_present_hr_id = true;
+      boolean that_present_hr_id = true;
+      if (this_present_hr_id || that_present_hr_id) {
+        if (!(this_present_hr_id && that_present_hr_id))
+          return false;
+        if (this.hr_id != that.hr_id)
+          return false;
+      }
+
+      boolean this_present_company_id = true;
+      boolean that_present_company_id = true;
+      if (this_present_company_id || that_present_company_id) {
+        if (!(this_present_company_id && that_present_company_id))
+          return false;
+        if (this.company_id != that.company_id)
+          return false;
+      }
+
+      boolean this_present_user_id = true;
+      boolean that_present_user_id = true;
+      if (this_present_user_id || that_present_user_id) {
+        if (!(this_present_user_id && that_present_user_id))
+          return false;
+        if (this.user_id != that.user_id)
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hashCode = 1;
+
+      hashCode = hashCode * 8191 + hr_id;
+
+      hashCode = hashCode * 8191 + company_id;
+
+      hashCode = hashCode * 8191 + user_id;
+
+      return hashCode;
+    }
+
+    @Override
+    public int compareTo(getUserOrigin_args other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = java.lang.Boolean.valueOf(isSetHr_id()).compareTo(other.isSetHr_id());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetHr_id()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.hr_id, other.hr_id);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetCompany_id()).compareTo(other.isSetCompany_id());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetCompany_id()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.company_id, other.company_id);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetUser_id()).compareTo(other.isSetUser_id());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetUser_id()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.user_id, other.user_id);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      scheme(iprot).read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      scheme(oprot).write(oprot, this);
+    }
+
+    @Override
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("getUserOrigin_args(");
+      boolean first = true;
+
+      sb.append("hr_id:");
+      sb.append(this.hr_id);
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("company_id:");
+      sb.append(this.company_id);
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("user_id:");
+      sb.append(this.user_id);
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+      try {
+        // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
+        __isset_bitfield = 0;
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class getUserOrigin_argsStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public getUserOrigin_argsStandardScheme getScheme() {
+        return new getUserOrigin_argsStandardScheme();
+      }
+    }
+
+    private static class getUserOrigin_argsStandardScheme extends org.apache.thrift.scheme.StandardScheme<getUserOrigin_args> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, getUserOrigin_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
+            break;
+          }
+          switch (schemeField.id) {
+            case 1: // HR_ID
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.hr_id = iprot.readI32();
+                struct.setHr_idIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 2: // COMPANY_ID
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.company_id = iprot.readI32();
+                struct.setCompany_idIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 3: // USER_ID
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.user_id = iprot.readI32();
+                struct.setUser_idIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, getUserOrigin_args struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        oprot.writeFieldBegin(HR_ID_FIELD_DESC);
+        oprot.writeI32(struct.hr_id);
+        oprot.writeFieldEnd();
+        oprot.writeFieldBegin(COMPANY_ID_FIELD_DESC);
+        oprot.writeI32(struct.company_id);
+        oprot.writeFieldEnd();
+        oprot.writeFieldBegin(USER_ID_FIELD_DESC);
+        oprot.writeI32(struct.user_id);
+        oprot.writeFieldEnd();
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class getUserOrigin_argsTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public getUserOrigin_argsTupleScheme getScheme() {
+        return new getUserOrigin_argsTupleScheme();
+      }
+    }
+
+    private static class getUserOrigin_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<getUserOrigin_args> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, getUserOrigin_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetHr_id()) {
+          optionals.set(0);
+        }
+        if (struct.isSetCompany_id()) {
+          optionals.set(1);
+        }
+        if (struct.isSetUser_id()) {
+          optionals.set(2);
+        }
+        oprot.writeBitSet(optionals, 3);
+        if (struct.isSetHr_id()) {
+          oprot.writeI32(struct.hr_id);
+        }
+        if (struct.isSetCompany_id()) {
+          oprot.writeI32(struct.company_id);
+        }
+        if (struct.isSetUser_id()) {
+          oprot.writeI32(struct.user_id);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, getUserOrigin_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(3);
+        if (incoming.get(0)) {
+          struct.hr_id = iprot.readI32();
+          struct.setHr_idIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.company_id = iprot.readI32();
+          struct.setCompany_idIsSet(true);
+        }
+        if (incoming.get(2)) {
+          struct.user_id = iprot.readI32();
+          struct.setUser_idIsSet(true);
+        }
+      }
+    }
+
+    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+    }
+  }
+
+  public static class getUserOrigin_result implements org.apache.thrift.TBase<getUserOrigin_result, getUserOrigin_result._Fields>, java.io.Serializable, Cloneable, Comparable<getUserOrigin_result>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getUserOrigin_result");
+
+    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
+    private static final org.apache.thrift.protocol.TField E_FIELD_DESC = new org.apache.thrift.protocol.TField("e", org.apache.thrift.protocol.TType.STRUCT, (short)1);
+
+    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getUserOrigin_resultStandardSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getUserOrigin_resultTupleSchemeFactory();
+
+    public com.moseeker.thrift.gen.common.struct.Response success; // required
+    public com.moseeker.thrift.gen.common.struct.BIZException e; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      SUCCESS((short)0, "success"),
+      E((short)1, "e");
+
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+      static {
+        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 0: // SUCCESS
+            return SUCCESS;
+          case 1: // E
+            return E;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(java.lang.String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final java.lang.String _fieldName;
+
+      _Fields(short thriftId, java.lang.String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public java.lang.String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
+              new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
+              new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
+      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getUserOrigin_result.class, metaDataMap);
+    }
+
+    public getUserOrigin_result() {
+    }
+
+    public getUserOrigin_result(
+            com.moseeker.thrift.gen.common.struct.Response success,
+            com.moseeker.thrift.gen.common.struct.BIZException e)
+    {
+      this();
+      this.success = success;
+      this.e = e;
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public getUserOrigin_result(getUserOrigin_result other) {
+      if (other.isSetSuccess()) {
+        this.success = new com.moseeker.thrift.gen.common.struct.Response(other.success);
+      }
+      if (other.isSetE()) {
+        this.e = new com.moseeker.thrift.gen.common.struct.BIZException(other.e);
+      }
+    }
+
+    public getUserOrigin_result deepCopy() {
+      return new getUserOrigin_result(this);
+    }
+
+    @Override
+    public void clear() {
+      this.success = null;
+      this.e = null;
+    }
+
+    public com.moseeker.thrift.gen.common.struct.Response getSuccess() {
+      return this.success;
+    }
+
+    public getUserOrigin_result setSuccess(com.moseeker.thrift.gen.common.struct.Response success) {
+      this.success = success;
+      return this;
+    }
+
+    public void unsetSuccess() {
+      this.success = null;
+    }
+
+    /** Returns true if field success is set (has been assigned a value) and false otherwise */
+    public boolean isSetSuccess() {
+      return this.success != null;
+    }
+
+    public void setSuccessIsSet(boolean value) {
+      if (!value) {
+        this.success = null;
+      }
+    }
+
+    public com.moseeker.thrift.gen.common.struct.BIZException getE() {
+      return this.e;
+    }
+
+    public getUserOrigin_result setE(com.moseeker.thrift.gen.common.struct.BIZException e) {
+      this.e = e;
+      return this;
+    }
+
+    public void unsetE() {
+      this.e = null;
+    }
+
+    /** Returns true if field e is set (has been assigned a value) and false otherwise */
+    public boolean isSetE() {
+      return this.e != null;
+    }
+
+    public void setEIsSet(boolean value) {
+      if (!value) {
+        this.e = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
+      switch (field) {
+        case SUCCESS:
+          if (value == null) {
+            unsetSuccess();
+          } else {
+            setSuccess((com.moseeker.thrift.gen.common.struct.Response)value);
+          }
+          break;
+
+        case E:
+          if (value == null) {
+            unsetE();
+          } else {
+            setE((com.moseeker.thrift.gen.common.struct.BIZException)value);
+          }
+          break;
+
+      }
+    }
+
+    public java.lang.Object getFieldValue(_Fields field) {
+      switch (field) {
+        case SUCCESS:
+          return getSuccess();
+
+        case E:
+          return getE();
+
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new java.lang.IllegalArgumentException();
+      }
+
+      switch (field) {
+        case SUCCESS:
+          return isSetSuccess();
+        case E:
+          return isSetE();
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(java.lang.Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof getUserOrigin_result)
+        return this.equals((getUserOrigin_result)that);
+      return false;
+    }
+
+    public boolean equals(getUserOrigin_result that) {
+      if (that == null)
+        return false;
+      if (this == that)
+        return true;
+
+      boolean this_present_success = true && this.isSetSuccess();
+      boolean that_present_success = true && that.isSetSuccess();
+      if (this_present_success || that_present_success) {
+        if (!(this_present_success && that_present_success))
+          return false;
+        if (!this.success.equals(that.success))
+          return false;
+      }
+
+      boolean this_present_e = true && this.isSetE();
+      boolean that_present_e = true && that.isSetE();
+      if (this_present_e || that_present_e) {
+        if (!(this_present_e && that_present_e))
+          return false;
+        if (!this.e.equals(that.e))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hashCode = 1;
+
+      hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
+      if (isSetSuccess())
+        hashCode = hashCode * 8191 + success.hashCode();
+
+      hashCode = hashCode * 8191 + ((isSetE()) ? 131071 : 524287);
+      if (isSetE())
+        hashCode = hashCode * 8191 + e.hashCode();
+
+      return hashCode;
+    }
+
+    @Override
+    public int compareTo(getUserOrigin_result other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSuccess()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetE()).compareTo(other.isSetE());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetE()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.e, other.e);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      scheme(iprot).read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      scheme(oprot).write(oprot, this);
+    }
+
+    @Override
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("getUserOrigin_result(");
+      boolean first = true;
+
+      sb.append("success:");
+      if (this.success == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.success);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("e:");
+      if (this.e == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.e);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+      if (success != null) {
+        success.validate();
+      }
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class getUserOrigin_resultStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public getUserOrigin_resultStandardScheme getScheme() {
+        return new getUserOrigin_resultStandardScheme();
+      }
+    }
+
+    private static class getUserOrigin_resultStandardScheme extends org.apache.thrift.scheme.StandardScheme<getUserOrigin_result> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, getUserOrigin_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
+            break;
+          }
+          switch (schemeField.id) {
+            case 0: // SUCCESS
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.success = new com.moseeker.thrift.gen.common.struct.Response();
+                struct.success.read(iprot);
+                struct.setSuccessIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 1: // E
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+                struct.e.read(iprot);
+                struct.setEIsSet(true);
+              } else {
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, getUserOrigin_result struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.success != null) {
+          oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
+          struct.success.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        if (struct.e != null) {
+          oprot.writeFieldBegin(E_FIELD_DESC);
+          struct.e.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class getUserOrigin_resultTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public getUserOrigin_resultTupleScheme getScheme() {
+        return new getUserOrigin_resultTupleScheme();
+      }
+    }
+
+    private static class getUserOrigin_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<getUserOrigin_result> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, getUserOrigin_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetSuccess()) {
+          optionals.set(0);
+        }
+        if (struct.isSetE()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
+        if (struct.isSetSuccess()) {
+          struct.success.write(oprot);
+        }
+        if (struct.isSetE()) {
+          struct.e.write(oprot);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, getUserOrigin_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
