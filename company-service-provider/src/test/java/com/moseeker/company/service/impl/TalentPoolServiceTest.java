@@ -80,8 +80,8 @@ public class TalentPoolServiceTest {
     }
     @Test
     public void testGetAllHrTag() throws TException {
-        int hrId=82752;
-        int companyId=39978;
+        int hrId=82690;
+        int companyId=4;
         Response res=talentPoolService.getAllHrTag(hrId,companyId,1,100);
         System.out.println(res);
 

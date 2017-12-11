@@ -114,15 +114,22 @@ public class TalentpoolSearchengine {
     /*
       按照学历查询
      */
-
+    private void QueryByDegree(String degrees,QueryBuilder queryBuilder){
+        searchUtil.handleTerms(degrees,queryBuilder,"user.profiles.basic.gender");
+    }
     /*
       按照最后工作的公司查询
      */
+    private void queryLastCompany(String companys,QueryBuilder queryBuilder){
+        searchUtil.handleTerms(companys,queryBuilder,"user.profiles.recent_job.company_name");
+    }
 
     /*
       按照最后工作的职位名称查询
      */
-
+    private void queryLastPositions(String positions,QueryBuilder queryBuilder){
+        searchUtil.handleTerms(positions,queryBuilder,"user.profiles.recent_job.job");
+    }
     /*
       按照现居住地查询
      */

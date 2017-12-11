@@ -418,6 +418,7 @@ public class TalentPoolService {
             return ResponseUtils.fail(1,"该hr不属于该company_id");
         }
         Map<String,Object> result=this.handleTagData(hrId,pageNum,pageSize);
+        logger.info("======================");
         logger.info(JSON.toJSONString(result));
         return ResponseUtils.success(result);
     }
