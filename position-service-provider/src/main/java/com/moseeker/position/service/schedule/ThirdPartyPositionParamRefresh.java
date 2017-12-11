@@ -26,13 +26,13 @@ public class ThirdPartyPositionParamRefresh {
     private List<AbstractRabbitMQParamRefresher> refreshList=new ArrayList<>();
 
     //服务启动先刷新一次
-    @PostConstruct
+//    @PostConstruct
     public void init(){
         logger.info("Refresh third party position param when server start");
         refresh();
     }
 
-    @Scheduled(cron = "0 20 19 ? * MON")
+    @Scheduled(cron = "0 37 19 * * MON")
     public void refresh(){
         refreshList.forEach(r->{
             try {
@@ -46,7 +46,7 @@ public class ThirdPartyPositionParamRefresh {
     @RabbitListener(queues = {RefreshConstant.PARAM_GET_QUEUE}, containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
     public void handle(String json){
-        logger.info("receive json:{}" ,json);
+        logger.info("receive json" );
 
         JSONObject obj=JSONObject.parseObject(json);
         int channel=obj.getJSONObject("data").getIntValue("channel");
