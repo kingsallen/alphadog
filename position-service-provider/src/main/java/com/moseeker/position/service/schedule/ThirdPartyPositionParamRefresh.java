@@ -32,7 +32,7 @@ public class ThirdPartyPositionParamRefresh {
         refresh();
     }
 
-    @Scheduled(cron = "0 37 19 * * MON")
+    @Scheduled(cron = "0 0 1 * * SAT")
     public void refresh(){
         refreshList.forEach(r->{
             try {
