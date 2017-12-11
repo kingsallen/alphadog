@@ -611,9 +611,12 @@ public class TalentPoolService {
         if(flag==0){
             return ResponseUtils.fail(1,"该hr不属于该company_id");
         }
-        boolean validate=this.validatePublic(hrId,userIdList);
-        if(!validate){
+        int validate=this.validatePublic(hrId,userIdList);
+        if(validate==0){
             return ResponseUtils.fail(1,"无法满足批量操作的条件");
+        }
+        if(validate==2){
+            return ResponseUtils.fail(1,"在公开的人员中存在以公开的人员");
         }
         List<TalentpoolHrTalentRecord> list=new ArrayList<>();
         for(Integer userId:userIdList){
@@ -837,12 +840,18 @@ public class TalentPoolService {
     /*
       验证是否可以公开
      */
-    private  boolean validatePublic(int hrId,Set<Integer> userIdList){
+    private  int validatePublic(int hrId,Set<Integer> userIdList){
         List<Map<String,Object>> list=getTalentpoolHrTalentByIdList(hrId,userIdList);
         if(!StringUtils.isEmptyList(list)&&list.size()==userIdList.size()){
-            return true;
+            for(Map<String,Object> map:list){
+                int ispublic= (int) map.get("public");
+                if(ispublic==1){
+                    return 2;
+                }
+            }
+            return 1;
         }
-        return false;
+        return 0;
     }
     /*
      验证是否可以取消公开
