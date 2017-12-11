@@ -18,13 +18,16 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+@Component
 public class Job1001Transfer extends PositionTransfer<PositionJob1001Form,PositionJob1001WithAccount,PositionJob1001,ThirdpartyJob1001PositionDO>{
     Logger logger= LoggerFactory.getLogger(Job1001Transfer.class);
 
@@ -38,7 +41,7 @@ public class Job1001Transfer extends PositionTransfer<PositionJob1001Form,Positi
         PositionJob1001 positionJob1001=createAndInitPositionInfo(positionForm,positionDB);
         positionJob1001WithAccount.setPosition_info(positionJob1001);
 
-        return null;
+        return positionJob1001WithAccount;
     }
 
     @Override
@@ -52,6 +55,7 @@ public class Job1001Transfer extends PositionTransfer<PositionJob1001Form,Positi
         positionWithAccount.setAccount_id(String.valueOf(account.getId()));
         positionWithAccount.setSafe_code(account.getExt());
         positionWithAccount.setSubsite(positionForm.getSubsite());
+
         return positionWithAccount;
     }
 
@@ -79,6 +83,9 @@ public class Job1001Transfer extends PositionTransfer<PositionJob1001Form,Positi
         setOccupation(positionForm,positionInfo);
         positionInfo.setMin_salary(getSalaryBottom(positionForm.getSalaryBottom()));
         positionInfo.setMax_salary(getSalaryTop(positionForm.getSalaryTop()));
+
+        positionInfo.setDescription(getDescription(positionDB.getAccountabilities(),positionDB.getRequirement()));
+
 
         return positionInfo;
     }
@@ -136,17 +143,12 @@ public class Job1001Transfer extends PositionTransfer<PositionJob1001Form,Positi
         return result;
     }
 
-    @Override
-    public JobPositionDO toWriteBackPosition(PositionJob1001Form positionJob1001Form, JobPositionDO positionDB, PositionJob1001WithAccount positionJob1001WithAccount) {
-        return null;
-    }
-
     public void setOccupation(PositionJob1001Form positionForm, PositionJob1001 position) {
-        DecimalFormat df = new DecimalFormat("000");
-        List<String> list=new ArrayList<>();
-        if (positionForm.getOccupation() != null) {
-            positionForm.getOccupation().forEach(o -> list.add(df.format(Integer.valueOf(o))));
+        List<String> occupations=positionForm.getOccupation();
+        if (occupations != null && !occupations.isEmpty()) {
+            occupations=occupationDao.getFullOccupations(occupations.get(occupations.size()-1)).stream().map(o->o.getName()).collect(Collectors.toList());
+            position.setOccupation(occupations);
         }
-        position.setOccupation(list);
+        logger.info("job1001 position sync occupation {}",occupations);
     }
 }

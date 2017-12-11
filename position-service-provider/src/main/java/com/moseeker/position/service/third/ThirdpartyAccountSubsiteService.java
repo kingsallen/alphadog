@@ -20,7 +20,7 @@ public class ThirdpartyAccountSubsiteService {
     //把ThirdpartyAccountDepartmentDO转换成传给前台的类型ThirdPartyAccountInfoDepartment
     public List<ThirdpartyAccountSubsiteDO> getSubsiteByAccountId(int accountId) throws TException {
         List<ThirdpartyAccountSubsiteDO> subsiteList=subsiteDao.getAddressByAccountId(accountId);
-        logger.info("infoDepartmentList: {}",subsiteList);
+        logger.info("infoSubsiteList: {}",subsiteList);
         return subsiteList;
     }
 }

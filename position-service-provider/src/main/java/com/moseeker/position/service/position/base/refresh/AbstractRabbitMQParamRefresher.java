@@ -49,12 +49,8 @@ public abstract class AbstractRabbitMQParamRefresher implements ParamRefresher,I
         String json=jsonSend.toJSONString();
         logger.info("refresh param send RabbitMQ channel : {}",getChannelType().getValue());
 
-        amqpTemplate.send(exchange(),routingKey(), createMsg(json));
+        amqpTemplate.convertAndSend(exchange(),routingKey(), json);
         logger.info("send RabbitMQ success");
-    }
-
-    public Message createMsg(String str){
-        return MessageBuilder.withBody(str.getBytes()).build();
     }
 
     /**

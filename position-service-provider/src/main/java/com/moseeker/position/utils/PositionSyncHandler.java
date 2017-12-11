@@ -77,17 +77,6 @@ public class PositionSyncHandler {
         return department;
     }
 
-    //回写到jobPosition需要的字段
-    public void writeBackJobPositionField(List<JobPositionDO> list){
-        if(list==null || list.isEmpty()){
-            logger.info("noting need to Write Back To Mossker Position");
-            return;
-        }
-        JobPositionDO moseekerPosition=list.get(0);
-        logger.info("need to Write Back To Mossker Position : {}" ,moseekerPosition);
-        jobPositionDao.updateData(moseekerPosition);
-    }
-
     //根据同步职位数据，创建插入数据库第三方职位表hr_third_party_position的数据
     public HrThirdPartyPositionDO createHrThirdPartyPositionDO(ThirdPartyPositionForSynchronization p,ThirdPartyPosition position){
         HrThirdPartyPositionDO data = new HrThirdPartyPositionDO();

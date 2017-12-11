@@ -1,5 +1,6 @@
 package com.moseeker.baseorm.base;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.common.iface.IChannelType;
@@ -77,7 +78,7 @@ public abstract class AbstractDictOccupationDao<S,R extends UpdatableRecord<R>> 
                 condition=conditionToSearchFather(s);
             }
         }
-
+        logger.info("get Full Occupations ", JSON.toJSONString(fullOccupations));
         return fullOccupations;
     }
 

@@ -1058,13 +1058,13 @@ public class PositionService {
         return stringBuffer.toString();
     }
 
-    public List<Map<String,String>> getThirdPartyPositions(Query query) throws BIZException {
+    public List<String> getThirdPartyPositions(Query query) throws BIZException {
         List<TwoParam<HrThirdPartyPositionDO, Object>> list=thirdpartyPositionDao.getDatas(query);
 
-        List<Map<String,String>> result=list.stream().map(p->{
-            Map<String,String> map=PositionChangeUtil.objectToMap(p.getR1());
+        List<String> result=list.stream().map(p->{
+            Map<String,Object> map=PositionChangeUtil.objectToMap(p.getR1());
             map.putAll(PositionChangeUtil.objectToMap(p.getR2()));
-            return map;
+            return JSON.toJSONString(map);
         }).collect(Collectors.toList());
 
         return result;

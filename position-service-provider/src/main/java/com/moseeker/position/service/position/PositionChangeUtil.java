@@ -6,6 +6,7 @@ import com.alibaba.fastjson.TypeReference;
 import com.moseeker.baseorm.base.EmptyExtThirdPartyPosition;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.util.JsonToMap;
 import com.moseeker.common.util.StructSerializer;
 import com.moseeker.position.service.position.base.sync.PositionTransfer;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -69,9 +70,13 @@ public class PositionChangeUtil {
 
         PositionTransfer transfer=transferSimpleFactory(channelType);
 
-        Object ThirdParty=transfer.toExtThirdPartyPosition(data);
-
-        return ThirdParty;
+        try {
+            Object ThirdParty=transfer.toExtThirdPartyPosition(data);
+            return ThirdParty;
+        }catch (Exception e){
+            logger.error("to ExtThirdPartyPosition error channel:{},data:{}",channel,JSON.toJSONString(data));
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,"to ExtThirdPartyPosition error");
+        }
     }
 
     public PositionTransfer transferSimpleFactory(ChannelType channelType) throws BIZException {
@@ -84,25 +89,22 @@ public class PositionChangeUtil {
         throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,"no matched PositionTransfer");
     }
 
-    public static JSONObject tryToParseJsonForm(String json) throws BIZException {
-        try {
-            JSONObject obj=JSONObject.parseObject(json);
-            return obj;
-        }catch (Exception e){
-            logger.info("try to parse json form failed : {}",json);
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,"try to parse json form failed");
-        }
-    }
-
-    public static Map<String,String> objectToMap(Object object){
+    public static Map<String,Object> objectToMap(Object object){
         if(object== EmptyExtThirdPartyPosition.EMPTY){
             return new HashMap<>();
         }
         String json= StructSerializer.toString(object);
-        TypeReference<HashMap<String,String>> typeRef
-                = new TypeReference<HashMap<String,String>>() {};
-        HashMap<String,String> result=JSON.parseObject(json,typeRef);
+        Map<String,Object> result= JsonToMap.parseJSON2Map(json);
 
         return result;
+    }
+
+    public static String objectToStr(Object object){
+        if(object== EmptyExtThirdPartyPosition.EMPTY){
+            return "";
+        }
+        String json= StructSerializer.toString(object);
+
+        return json;
     }
 }

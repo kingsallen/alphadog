@@ -207,33 +207,4 @@ public class Job51PositionTransfer extends PositionTransfer<ThirdPartyPosition,P
         return EmptyExtThirdPartyPosition.EMPTY;
     }
 
-    @Override
-    public JobPositionDO toWriteBackPosition(ThirdPartyPosition position, JobPositionDO positionDB, Position51WithAccount pwa) {
-        if(positionDB==null || positionDB.getId()==0){
-            return null;
-        }
-        JobPositionDO updateData=new JobPositionDO();
-        Position51 p=pwa.getPosition_info();
-
-        boolean needWriteBackToPositin = false;
-        int salay_top=Integer.parseInt(p.getSalary_high());
-        int salary_bottom=Integer.parseInt(p.getSalary_low());
-
-        if (salay_top > 0 && salay_top != positionDB.getSalaryTop() * 1000) {
-            updateData.setSalaryTop(salay_top / 1000);
-            needWriteBackToPositin = true;
-        }
-        if (salary_bottom > 0 && salary_bottom != positionDB.getSalaryBottom() * 1000) {
-            updateData.setSalaryBottom(salary_bottom / 1000);
-            needWriteBackToPositin = true;
-        }
-        if (needWriteBackToPositin) {
-            logger.info("needWriteBackToPositin : {} " ,updateData);
-            return updateData;
-        }
-
-        return null;
-    }
-
-
 }

@@ -7,7 +7,7 @@ public class TransferStrategy {
     public enum Job1001Degree{
         //0:无 1:大专 2:本科 3:硕士 4:MBA 5:博士 6:中专 7:高中 8: 博士后 9:初中',
         None("0","不限", Degree.None),
-        PostDoctor("90","博士后",Degree.PostDoctor),
+        PostDoctor("90","博士后",null),
         Doctor("80","博士",Degree.Doctor),
         MBA("75","MBA",Degree.MBA),
         Master("70","硕士",Degree.Master),
@@ -15,7 +15,7 @@ public class TransferStrategy {
         JuniorCollege("50","大专",Degree.JuniorCollege),
         SpecicalSecondarySchool("40","中专",Degree.SpecicalSecondarySchool),
         DEGREE1("30","中技",null),
-        DEGREE2("20","高中",null),
+        DEGREE2("20","高中",Degree.HighSchool),
         DEGREE3("10","初中",null)
         ;
 
@@ -99,7 +99,7 @@ public class TransferStrategy {
     public enum Target{
         TARGET0(0,"应届生",1),
         TARGET1(1,"社会人才",0),
-        TARGET2(2,"社会人才或应届生均可",-1)
+        TARGET2(2,"社会人才或应届生均可",2)
         ;
 
         Target(int code, String text, int candidate_source) {

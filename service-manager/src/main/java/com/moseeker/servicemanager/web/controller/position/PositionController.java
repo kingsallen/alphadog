@@ -1,6 +1,7 @@
 package com.moseeker.servicemanager.web.controller.position;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.jobdb.JobOccupationDao;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ChannelType;
@@ -25,7 +26,6 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPcReportedDO;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.position.struct.*;
-import org.jooq.tools.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -243,16 +243,19 @@ public class PositionController {
     public String thirdpartyposition(HttpServletRequest request, HttpServletResponse response) {
         try {
             CommonQuery qu = ParamUtils.initCommonQuery(request, CommonQuery.class);
-            List<Map<String,String>> datas = positonServices.getThirdPartyPositions(qu);
+            List<String> datas = positonServices.getThirdPartyPositions(qu);
 
             if (datas == null) datas = new ArrayList<>();
 
-            for (Map<String,String> positionDO : datas) {
+            List<Map<String,Object>> mapResult=new ArrayList<>();
+            for (String json : datas) {
+                Map<String,Object> positionDO=JSON.parseObject(json);
                 positionDO.put("position_id",positionDO.get("positionId"));
                 positionDO.put("accountId",positionDO.get("thirdPartyAccountId"));
+                mapResult.add(positionDO);
             }
 
-            Response result = ResponseUtils.success(datas);
+            Response result = ResponseUtils.success(mapResult);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

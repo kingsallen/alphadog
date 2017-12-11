@@ -86,12 +86,8 @@ public class PositionBS {
         //用来同步到chaos的职位列表
         List<String>  positionsForSynchronizations=new ArrayList<>();
 
-        //回写到MoSeeker职位
-        List<JobPositionDO> writeBackMoseekerPositionList=new ArrayList<>();
-
         //这个循环检查需要同步的职位对应渠道下是否有绑定过的账号
-        for (Map<String,String> temp: position.getChannels()) {
-            String json= JSON.toJSONString(temp);
+        for (String json: position.getChannels()) {
             JSONObject p=JSON.parseObject(json);
             int channel=p.getIntValue("channel");
             int thirdPartyAccountId=p.getIntValue("thirdPartyAccountId");
@@ -107,9 +103,6 @@ public class PositionBS {
             PositionTransfer.TransferResult result= positionChangeUtil.changeToThirdPartyPosition(p, moseekerJobPosition,avaliableAccount);
 
             positionsForSynchronizations.add(JSON.toJSONString(result.getPositionWithAccount()));
-            if(result.getWriteBackPosition()!=null) {
-                writeBackMoseekerPositionList.add(result.getWriteBackPosition());
-            }
             writeBackThirdPartyPositionList.add(new TwoParam(result.getThirdPartyPositionDO(),result.getExtPosition()));
 
             results.add(positionSyncHandler.createNormalResult(channel,avaliableAccount.getId()));
@@ -122,9 +115,6 @@ public class PositionBS {
         // 回写数据到第三方职位表表
         logger.info("write back to thirdpartyposition:{}",writeBackThirdPartyPositionList);
         thirdPartyPositionDao.upsertThirdPartyPositions(writeBackThirdPartyPositionList);
-
-        //回写薪资到MoSeeker职位表
-        positionSyncHandler.writeBackJobPositionField(writeBackMoseekerPositionList);
 
         return ResultMessage.SUCCESS.toResponse(results);
     }

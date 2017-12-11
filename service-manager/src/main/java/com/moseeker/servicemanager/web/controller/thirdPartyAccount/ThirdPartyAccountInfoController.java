@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 @CounterIface
 public class ThirdPartyAccountInfoController {
 
-    private Logger logger = LoggerFactory.getLogger(ThirdPartyAccountInfoController.class);
+    Logger logger = LoggerFactory.getLogger(ThirdPartyAccountInfoController.class);
 
     private ThirdPartyAccountInfoService.Iface thirdPartyAccountInfoServices = ServiceManager.SERVICEMANAGER.getService(ThirdPartyAccountInfoService.Iface.class);
 

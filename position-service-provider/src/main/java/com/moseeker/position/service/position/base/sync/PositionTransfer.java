@@ -61,16 +61,19 @@ public abstract class PositionTransfer<Form,R,Info,ExtP> {
 
 
         R positionWithAccount=changeToThirdPartyPosition(positionForm,positionDB,account);
-        HrThirdPartyPositionDO hrThirdPartyPositionDO=toThirdPartyPosition(positionForm,positionWithAccount);
-        ExtP extPosition=toExtThirdPartyPosition(positionForm,positionWithAccount);
-        JobPositionDO writeBackPosition=toWriteBackPosition(positionForm,positionDB,positionWithAccount);
+        logger.info("change To positionWithAccount {}", JSON.toJSONString(positionWithAccount));
 
-        result.setExtPosition(positionWithAccount);
+        HrThirdPartyPositionDO hrThirdPartyPositionDO=toThirdPartyPosition(positionForm,positionWithAccount);
+        logger.info("change To hrThirdPartyPositionDO {}", JSON.toJSONString(hrThirdPartyPositionDO));
+
+        ExtP extPosition=toExtThirdPartyPosition(positionForm,positionWithAccount);
+        logger.info("change To extPosition {}", JSON.toJSONString(extPosition));
+
+        result.setPositionWithAccount(positionWithAccount);
         result.setThirdPartyPositionDO(hrThirdPartyPositionDO);
         result.setExtPosition(extPosition);
-        result.setWriteBackPosition(writeBackPosition);
 
-        logger.info("change To ThirdPartyPosition result {}",result);
+
         return result;
     }
 
@@ -84,7 +87,7 @@ public abstract class PositionTransfer<Form,R,Info,ExtP> {
         logger.info("parse json form json : {}",json);
         try {
             Form form= JSONObject.toJavaObject(json,getFormClass());
-            logger.info("parse json form form : {}",form);
+            logger.info("parse json form form : {}",JSON.toJSONString(form));
             return form;
         }catch (Exception e){
             logger.info("parse json form error : {}",json);
@@ -107,7 +110,6 @@ public abstract class PositionTransfer<Form,R,Info,ExtP> {
     public abstract HrThirdPartyPositionDO toThirdPartyPosition(Form form,R pwa);
     public abstract ExtP toExtThirdPartyPosition(Form form,R r);
     public abstract ExtP toExtThirdPartyPosition(Map<String,String> data);
-    public abstract JobPositionDO toWriteBackPosition(Form form,JobPositionDO positionDB,R r);
 
 
     /**========================每个渠道共用的逻辑，当然也可以覆盖实现自己的逻辑========================*/
@@ -251,6 +253,9 @@ public abstract class PositionTransfer<Form,R,Info,ExtP> {
      * @throws BIZException
      */
     public int experienceToInt(String e) throws BIZException {
+        if(StringUtils.isNullOrEmpty(e)){
+            return 0;
+        }
         //工作经验要求
         Integer experience = null;
         try {
@@ -272,7 +277,7 @@ public abstract class PositionTransfer<Form,R,Info,ExtP> {
 
     protected String getConfigString(String key) throws Exception {
         ConfigPropertiesUtil configUtils = ConfigPropertiesUtil.getInstance();
-        configUtils.loadResource("chaos.properties");
+        configUtils.loadResource("setting.properties");
         return configUtils.get(key, String.class);
     }
 
@@ -280,7 +285,6 @@ public abstract class PositionTransfer<Form,R,Info,ExtP> {
         private R positionWithAccount;
         private ExtP extPosition;
         private HrThirdPartyPositionDO thirdPartyPositionDO;
-        private JobPositionDO writeBackPosition;
 
         public ExtP getExtPosition() {
             return extPosition;
@@ -296,14 +300,6 @@ public abstract class PositionTransfer<Form,R,Info,ExtP> {
 
         public void setThirdPartyPositionDO(HrThirdPartyPositionDO thirdPartyPositionDO) {
             this.thirdPartyPositionDO = thirdPartyPositionDO;
-        }
-
-        public JobPositionDO getWriteBackPosition() {
-            return writeBackPosition;
-        }
-
-        public void setWriteBackPosition(JobPositionDO writeBackPosition) {
-            this.writeBackPosition = writeBackPosition;
         }
 
         public R getPositionWithAccount() {
