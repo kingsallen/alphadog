@@ -120,10 +120,11 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
         }    }
 
+
     @Override
-    public Response hrDelComment(int hr_id, int company_id, int user_id, int comment_id) throws BIZException, TException {
+    public Response hrDelComment(int hr_id, int company_id, int comment_id) throws BIZException, TException {
         try{
-            return talentPoolService.delTalentComment(hr_id,company_id,user_id,comment_id);
+            return talentPoolService.delTalentComment(hr_id,company_id,comment_id);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
             throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
@@ -172,6 +173,36 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
     public Response getTalentStat(int hr_id, int company_id, int type) throws BIZException, TException {
         try{
             return talentPoolService.getTalentState(hr_id,company_id,type);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
+    @Override
+    public Response getCompanyUserPublic(int hr_id, int company_id, int user_id) throws BIZException, TException {
+        try{
+            return talentPoolService.getCompanyUserPublic(hr_id,company_id,user_id);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
+    @Override
+    public Response getCompanyTalent(int hr_id, int company_id, int user_id) throws BIZException, TException {
+        try{
+            return talentPoolService.getCompanyTalent(hr_id,company_id,user_id);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
+        }
+    }
+
+    @Override
+    public Response getHrUserTag(int hr_id, int company_id, int user_id) throws BIZException, TException {
+        try{
+            return talentPoolService.getHrUserTag(hr_id,company_id,user_id);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
             throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);

@@ -539,8 +539,8 @@ public class TalentPoolService {
      删除备注
      */
     @CounterIface
-    public Response delTalentComment(int hrId,int companyId,int userId,int comId)throws TException{
-        int count=talentPoolEntity.validateUserComment(comId,userId,hrId);
+    public Response delTalentComment(int hrId,int companyId,int comId)throws TException{
+        int count=talentPoolEntity.validateUserComment(comId,hrId);
         if(count==0){
             return ResponseUtils.fail(1,"该备注不属于这个hr下的这个人才");
         }
@@ -548,15 +548,15 @@ public class TalentPoolService {
         if(flag==0){
             return ResponseUtils.fail(1,"该hr不属于该company_id");
         }
-        int validate=talentPoolEntity.validateComment(hrId,companyId,userId);
-        if(validate==0){
-            return ResponseUtils.fail(1,"该hr无权操作此简历");
-        }
+//        int validate=talentPoolEntity.validateComment(hrId,companyId,userId);
+//        if(validate==0){
+//            return ResponseUtils.fail(1,"该hr无权操作此简历");
+//        }
         TalentpoolCommentRecord record=new TalentpoolCommentRecord();
         record.setId(comId);
         talentpoolCommentDao.deleteRecord(record);
-        List<Map<String,Object>> list=this.getAllComment(companyId,userId);
-        return ResponseUtils.success(list);
+//        List<Map<String,Object>> list=this.getAllComment(companyId,userId);
+        return ResponseUtils.success("");
     }
 
 
@@ -728,6 +728,66 @@ public class TalentPoolService {
         }
         Map<String,Object> result=this.handlePublicTalentData(companyId,pageNum,pageSize);
         return ResponseUtils.success(result);
+    }
+    /*
+     获取该用户在这个公司下被公开的记录
+     */
+    @CounterIface
+    public Response getCompanyUserPublic(int hrId,int companyId,int userId){
+        int flag=talentPoolEntity.validateHr(hrId,companyId);
+        if(flag==0){
+            return ResponseUtils.fail(1,"该hr不属于该company_id");
+        }
+        Set<Integer> set=new HashSet<>();
+        set.add(userId);
+        Map<Integer,Object> map=this.handlePublicTalentData(set,companyId);
+        List<Object> result= (List<Object>) map.get(userId);
+        if(StringUtils.isEmptyList(result)){
+            return  ResponseUtils.success("");
+        }
+        return ResponseUtils.success(result);
+
+    }
+
+    /*
+     根据user_id获取这个人在这个公司下的被收藏的记录
+     */
+    @CounterIface
+    public Response getCompanyTalent(int hrId,int companyId,int userId){
+        int flag=talentPoolEntity.validateHr(hrId,companyId);
+        if(flag==0){
+            return ResponseUtils.fail(1,"该hr不属于该company_id");
+        }
+        Set<Integer> idList=new HashSet<>();
+        idList.add(userId);
+        List<Map<String,Object>> userHrList=talentPoolEntity.getCompanyHrList(companyId);
+        Map<Integer,Set<Map<String,Object>>> hrSet=talentPoolEntity.getBatchAboutTalent(idList,userHrList);
+        Set<Map<String,Object>> result=hrSet.get(userId);
+        if(StringUtils.isEmptySet(result)){
+            return  ResponseUtils.success("");
+        }
+        return ResponseUtils.success(result);
+    }
+
+    /*
+     获取这个人在这个hr下的所有标签
+     */
+    @CounterIface
+    public  Response getHrUserTag(int hrId,int companyId,int userId){
+        int flag=talentPoolEntity.validateHr(hrId,companyId);
+        if(flag==0){
+            return ResponseUtils.fail(1,"该hr不属于该company_id");
+        }
+        //获取hr下所有的tag
+        List<Map<String,Object>> hrTagList=this.getTagByHr(hrId,0,Integer.MAX_VALUE);
+        //获取hr下所有的tagId
+        Set<Integer> hrTagIdList=this.getIdByTagList(hrTagList);
+        Set<Integer> tagIdList=this.getUserTagIdList(userId,hrTagIdList);
+        List<Map<String,Object>> allTagList=this.getUserTagByUserIdAndTagIdMap(userId,hrTagIdList);
+        if(StringUtils.isEmptyList(allTagList)){
+            return ResponseUtils.success("");
+        }
+        return  ResponseUtils.success(allTagList);
     }
     /*
      分页获取数据
@@ -1122,7 +1182,17 @@ public class TalentPoolService {
         List<TalentpoolUserTagRecord> list=talentpoolUserTagDao.getRecords(query);
         return list;
     }
-
+    /*
+       获取一个人才在这个hr下拥有的标签map
+    */
+    private List<Map<String,Object>> getUserTagByUserIdAndTagIdMap(int userId,Set<Integer> tagIdList){
+        if(StringUtils.isEmptySet(tagIdList)){
+            return null;
+        }
+        Query query=new Query.QueryBuilder().where("user_id",userId).and(new Condition("tag_id",tagIdList.toArray(),ValueOp.IN)).buildQuery();
+        List<Map<String,Object>> list=talentpoolUserTagDao.getMaps(query);
+        return list;
+    }
     /*
      获取TalentpoolTagRecord 集合的id
      */

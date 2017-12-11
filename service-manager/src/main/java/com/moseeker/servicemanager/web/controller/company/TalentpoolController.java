@@ -294,9 +294,8 @@ public class TalentpoolController {
             Map<String, Object> data = ParamUtils.parseRequestParam(request);
             int hrId=Integer.parseInt(String.valueOf( data.get("hr_id")));
             int companyId=Integer.parseInt(String.valueOf( data.get("company_id")));
-            int userId=Integer.parseInt(String.valueOf(data.get("user_id")));
             int commentId=Integer.parseInt(String.valueOf(data.get("comment_id")));
-            Response result = service.hrDelComment(hrId,companyId,userId,commentId);
+            Response result = service.hrDelComment(hrId,companyId,commentId);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -343,6 +342,60 @@ public class TalentpoolController {
             int companyId=Integer.parseInt(String.valueOf(data.get("company_id")));
             int type=Integer.parseInt(String.valueOf(data.get("type")));
             Response result = service.getTalentStat(hrId,companyId,type);
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        } finally {
+            // do nothing
+        }
+    }
+
+    @RequestMapping(value = "/api/talentpool/user/tag", method = RequestMethod.GET)
+    @ResponseBody
+    public String getHrUserTag(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String, Object> data = ParamUtils.parseRequestParam(request);
+            int hrId=Integer.parseInt(String.valueOf(data.get("hr_id")));
+            int companyId=Integer.parseInt(String.valueOf(data.get("company_id")));
+            int userId=Integer.parseInt(String.valueOf(data.get("user_id")));
+            Response result = service.getHrUserTag(hrId,companyId,userId);
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        } finally {
+            // do nothing
+        }
+    }
+
+    @RequestMapping(value = "/api/talentpool/user/public", method = RequestMethod.GET)
+    @ResponseBody
+    public String getCompanyUserPublic(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String, Object> data = ParamUtils.parseRequestParam(request);
+            int hrId=Integer.parseInt(String.valueOf(data.get("hr_id")));
+            int companyId=Integer.parseInt(String.valueOf(data.get("company_id")));
+            int userId=Integer.parseInt(String.valueOf(data.get("user_id")));
+            Response result = service.getCompanyUserPublic(hrId,companyId,userId);
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        } finally {
+            // do nothing
+        }
+    }
+
+    @RequestMapping(value = "/api/talentpool/user/talent", method = RequestMethod.GET)
+    @ResponseBody
+    public String getUserHrTag(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String, Object> data = ParamUtils.parseRequestParam(request);
+            int hrId=Integer.parseInt(String.valueOf(data.get("hr_id")));
+            int companyId=Integer.parseInt(String.valueOf(data.get("company_id")));
+            int userId=Integer.parseInt(String.valueOf(data.get("user_id")));
+            Response result = service.getCompanyTalent(hrId,companyId,userId);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

@@ -113,8 +113,8 @@ public class TalentPoolEntity {
         }
         return 0;
     }
-    public int validateUserComment(int id,int userId,int hrId){
-        Query query=new Query.QueryBuilder().where("hr_id",hrId).and("id",id).and("user_id",userId).buildQuery();
+    public int validateUserComment(int id,int hrId){
+        Query query=new Query.QueryBuilder().where("hr_id",hrId).and("id",id).buildQuery();
         int count=talentpoolCommentDao.getCount(query);
         return count;
     }

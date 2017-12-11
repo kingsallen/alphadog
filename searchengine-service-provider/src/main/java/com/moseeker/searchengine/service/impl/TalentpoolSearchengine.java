@@ -134,13 +134,27 @@ public class TalentpoolSearchengine {
       按照现居住地查询
      */
 
+    private void queryByHome(String home,QueryBuilder queryBuilder){
+        searchUtil.handleTerm(home,queryBuilder,"user.profiles.basic.city_name");
+    }
+
     /*
       按照期望薪资查询
      */
+    private void querySlalryCode(String salaryCode,QueryBuilder queryBuilder){
+        searchUtil.handleTerms(salaryCode,queryBuilder,"user.profiles.intentions.salary_code");
+    }
 
     /*
       按照年龄查询
      */
+    private void queryAge(){
+
+    }
+    private List<Map<String,Integer>> convertParams(String params){
+
+        return null;
+    }
 
     /*
       按照曾任职务查询
