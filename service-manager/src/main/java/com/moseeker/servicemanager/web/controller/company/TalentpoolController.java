@@ -55,9 +55,9 @@ public class TalentpoolController {
     public String cancelTalent(HttpServletRequest request, HttpServletResponse response) {
         try {
             Map<String, Object> data = ParamUtils.parseRequestParam(request);
-            int hrId=(int) data.get("hr_id");
-            int companyId=(int) data.get("company_id");
-            List<Integer> userIdList=(List<Integer>)data.get("user_ids");
+            int hrId=Integer.parseInt(String.valueOf( data.get("hr_id")));
+            int companyId=Integer.parseInt(String.valueOf(data.get("company_id")));
+            List<Integer> userIdList=ParamUtils.convertIntList(String.valueOf(data.get("user_ids")));
             Response result = service.batchCancelTalent(hrId,userIdList,companyId);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
@@ -91,9 +91,9 @@ public class TalentpoolController {
     public String delTag(HttpServletRequest request, HttpServletResponse response) {
         try {
             Map<String, Object> data = ParamUtils.parseRequestParam(request);
-            int hrId=(int) data.get("hr_id");
-            int companyId=(int) data.get("company_id");
-            int tagId=(int) data.get("tag_id");
+            int hrId=Integer.parseInt(String.valueOf(data.get("hr_id")));
+            int companyId=Integer.parseInt(String.valueOf(data.get("company_id")));
+            int tagId=Integer.parseInt(String.valueOf( data.get("tag_id")));
             Response result = service.hrDelTag(hrId,companyId,tagId);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
@@ -109,10 +109,10 @@ public class TalentpoolController {
     public String updateTag(HttpServletRequest request, HttpServletResponse response) {
         try {
             Map<String, Object> data = ParamUtils.parseRequestParam(request);
-            int hrId=(int) data.get("hr_id");
-            int companyId=(int) data.get("company_id");
-            int tagId=(int) data.get("tag_id");
-            String name=(String)data.get("name");
+            int hrId=Integer.parseInt(String.valueOf( data.get("hr_id")));
+            int companyId=Integer.parseInt(String.valueOf( data.get("company_id")));
+            int tagId=Integer.parseInt(String.valueOf( data.get("tag_id")));
+            String name=String.valueOf(data.get("name"));
             Response result = service.hrUpdateTag(hrId,companyId,tagId,name);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
@@ -192,10 +192,10 @@ public class TalentpoolController {
     public String batchDelTalent(HttpServletRequest request, HttpServletResponse response) {
         try {
             Map<String, Object> data = ParamUtils.parseRequestParam(request);
-            int hrId=(int) data.get("hr_id");
-            int companyId=(int) data.get("company_id");
-            List<Integer> userIdList=(List<Integer>)data.get("user_ids");
-            List<Integer> tagIdList=(List<Integer>)data.get("tag_ids");
+            int hrId=Integer.parseInt(String.valueOf( data.get("hr_id")));
+            int companyId=Integer.parseInt(String.valueOf( data.get("company_id")));
+            List<Integer> userIdList=ParamUtils.convertIntList(String.valueOf(data.get("user_ids")));
+            List<Integer> tagIdList=ParamUtils.convertIntList(String.valueOf(data.get("tag_ids")));
             Response result = service.batchCancleTalentTag(hrId,userIdList,tagIdList,companyId);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
@@ -257,9 +257,9 @@ public class TalentpoolController {
     public String batchCancelPublicTalent(HttpServletRequest request, HttpServletResponse response) {
         try {
             Map<String, Object> data = ParamUtils.parseRequestParam(request);
-            int hrId=(int) data.get("hr_id");
-            int companyId=(int) data.get("company_id");
-            List<Integer> userIdList=(List<Integer>)data.get("user_ids");
+            int hrId=Integer.parseInt(String.valueOf(data.get("hr_id")));
+            int companyId=Integer.parseInt(String.valueOf( data.get("company_id")));
+            List<Integer> userIdList=ParamUtils.convertIntList(String.valueOf(data.get("user_ids")));
             Response result = service.batchCancelPublicTalent(hrId,companyId,userIdList);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
@@ -292,10 +292,10 @@ public class TalentpoolController {
     public String delTalentComment(HttpServletRequest request, HttpServletResponse response) {
         try {
             Map<String, Object> data = ParamUtils.parseRequestParam(request);
-            int hrId=(int) data.get("hr_id");
-            int companyId=(int) data.get("company_id");
-            int userId=(int)data.get("user_id");
-            int commentId=(int)data.get("comment_id");
+            int hrId=Integer.parseInt(String.valueOf( data.get("hr_id")));
+            int companyId=Integer.parseInt(String.valueOf( data.get("company_id")));
+            int userId=Integer.parseInt(String.valueOf(data.get("user_id")));
+            int commentId=Integer.parseInt(String.valueOf(data.get("comment_id")));
             Response result = service.hrDelComment(hrId,companyId,userId,commentId);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
