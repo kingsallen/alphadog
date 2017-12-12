@@ -509,6 +509,7 @@ public class TalentPoolService {
       @return response(status:0,message:"success,data:[])
              response(status:1,message:"xxxxxx")
      */
+    @CounterIface
     public Response getTalentState(int hrId,int companyId,int type){
         int flag=talentPoolEntity.validateHr(hrId,companyId);
         if(flag==0){
@@ -520,11 +521,13 @@ public class TalentPoolService {
             int talentNum=this.getAllHrTalent(hrId);
             int companyPublicNum=this.getPublicTalentCount(companyId);
             int hrPublicNum=this.getHrPublicTalent(hrId);
+            int allTalentNum=this.getCompanyTalentCount(companyId);
             List<Map<String,Object>> list=this.getTagByHr(hrId,0,Integer.MAX_VALUE);
             result.put("allpublic",companyPublicNum);
             result.put("hrpublic",hrPublicNum);
             result.put("talent",talentNum);
             result.put("tag",list);
+            result.put("alltalent",allTalentNum);
         }else if(type==1){
             int hrPublicNum=this.getHrPublicTalent(hrId);
             result.put("hrpublic",hrPublicNum);
@@ -1444,10 +1447,18 @@ public class TalentPoolService {
         return list;
     }
     /*
-      获取公司下所有的人才
+      获取公司下所有公开的人才
      */
     private int getPublicTalentCount(int companyId){
         Query query=new Query.QueryBuilder().where("company_id",companyId).and(new Condition("public_num",1,ValueOp.GE)).buildQuery();
+        int count=talentpoolTalentDao.getCount(query);
+        return count;
+    }
+    /*
+    获取公司下所有人才
+     */
+    private int getCompanyTalentCount(int companyId){
+        Query query=new Query.QueryBuilder().where("company_id",companyId).buildQuery();
         int count=talentpoolTalentDao.getCount(query);
         return count;
     }
