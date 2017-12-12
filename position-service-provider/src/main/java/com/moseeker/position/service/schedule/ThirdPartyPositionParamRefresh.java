@@ -9,6 +9,7 @@ import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.constants.RefreshConstant;
 import com.moseeker.position.service.position.base.refresh.AbstractRabbitMQParamRefresher;
 import com.moseeker.position.service.position.base.refresh.ParamRefresher;
+import com.moseeker.position.service.position.base.refresh.RefresherFactory;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +35,9 @@ public class ThirdPartyPositionParamRefresh {
 
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
+
+    @Autowired
+    RefresherFactory refresherFactory;
 
     //服务启动先刷新一次
     @PostConstruct
@@ -63,25 +67,29 @@ public class ThirdPartyPositionParamRefresh {
 
     @RabbitListener(queues = {RefreshConstant.PARAM_GET_QUEUE}, containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
-    public void handle(Message message) throws UnsupportedEncodingException {
-        String json=new String(message.getBody(), "UTF-8");
-        logger.info("receive json"+json );
+    public void handle(Message message) {
+        String json="";
+        try {
+            json=new String(message.getBody(), "UTF-8");
+            logger.info("receive json" );
 
-        JSONObject obj=JSONObject.parseObject(json);
-        int channel=obj.getJSONObject("data").getIntValue("channel");
-
-        ChannelType channelType=ChannelType.instaceFromInteger(channel);
-
-        if(channelType==null){
-            logger.error("wrong channel type when handle refresh result");
-        }else{
-            for(AbstractRabbitMQParamRefresher refresher:refreshList){
-                if(refresher.getChannelType()==channelType){
-                    refresher.receiveAndHandle(json);
-                    return;
-                }
+            JSONObject obj=JSONObject.parseObject(json);
+            Integer status=obj.getInteger("status");
+            if(status!=0){
+                logger.error("refresh error message : {}",obj.getString("message"));
+                return;
             }
-            logger.error("no refresher to handle result");
+            int channel=obj.getJSONObject("data").getIntValue("channel");
+
+            AbstractRabbitMQParamRefresher refresher=refresherFactory.getRabbitMQParamRefresher(channel);
+
+            if(refresher==null){
+                logger.error("no refresher to handle result {}",channel);
+            }else{
+                refresher.receiveAndHandle(json);
+            }
+        }catch (Exception e){
+            logger.error("handle refresh result Error : {}, message :{}",e.getMessage(),json);
         }
     }
 
