@@ -237,7 +237,7 @@ public class UserQxService {
                     form.setUpdate_time(positionDO.getUpdateTime());
                     form.setStatus((byte) positionDO.getStatus());
                     if (org.apache.commons.lang.StringUtils.isNotBlank(signatureMap.get(positionDO.getCompanyId()))) {
-                        form.setSignature(signatureMap.get(positionDO.getCompanyId());
+                        form.setSignature(signatureMap.get(positionDO.getCompanyId()));
                     }
                     positionFormList.add(form);
                 });
