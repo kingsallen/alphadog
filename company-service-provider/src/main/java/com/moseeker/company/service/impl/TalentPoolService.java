@@ -11,6 +11,7 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
+import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.TalentPoolEntity;
@@ -494,7 +495,12 @@ public class TalentPoolService {
         record.setUserId(userId);
         record.setContent(content);
         talentpoolCommentDao.addRecord(record);
-        List<Map<String,Object>> list=this.getAllComment(companyId,userId);
+        Map<String,Object> map=this.getAllComment(companyId,userId);
+        if(map==null||map.isEmpty()){
+            return ResponseUtils.success("");
+        }
+        List<Map<String,Object>> list=new ArrayList<>();
+        list.add(map);
         list=this.handlerHrCommentData(list);
         return ResponseUtils.success(list);
     }
@@ -915,7 +921,6 @@ public class TalentPoolService {
 
                 if(userId==applierId){
                     if(userHrPublicMap.get(userId)==null){
-
                         set.add(hrId);
                         userHrPublicMap.put(userId,set);
                     }else{
@@ -1535,9 +1540,9 @@ public class TalentPoolService {
    /*
     获取这个人在这家公司下所有的备注
      */
-    private List<Map<String,Object>> getAllComment(int companyId,int userId){
-        Query query=new Query.QueryBuilder().where("company_id",companyId).and("user_id",userId).buildQuery();
-        List<Map<String,Object>> list=talentpoolCommentDao.getMaps(query);
+    private Map<String,Object> getAllComment(int companyId,int userId){
+        Query query=new Query.QueryBuilder().where("company_id",companyId).and("user_id",userId).orderBy("create_time", Order.DESC).buildQuery();
+        Map<String,Object> list=talentpoolCommentDao.getMap(query);
         return list;
     }
     /*
