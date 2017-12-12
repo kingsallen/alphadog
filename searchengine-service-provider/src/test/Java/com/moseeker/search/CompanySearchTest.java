@@ -14,7 +14,7 @@
 //import com.moseeker.searchengine.service.impl.CompanySearchengine;
 //@RunWith(SpringJUnit4ClassRunner.class)
 //@ContextConfiguration(classes =AppConfig.class)
-//public class CompanyIndexTest {
+//public class CompanySearchTest {
 //	@Autowired
 //	private CompanySearchengine companySearchengine;
 //	@Autowired

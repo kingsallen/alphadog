@@ -7,6 +7,8 @@ import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolTagRecord;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+
 /**
  * Created by zztaiwll on 17/12/1.
  */
@@ -22,6 +24,14 @@ public class TalentpoolTagDao extends JooqCrudImpl<com.moseeker.baseorm.db.talen
         int result=create.update(TalentpoolTag.TALENTPOOL_TAG)
                 .set(TalentpoolTag.TALENTPOOL_TAG.TALENT_NUM,TalentpoolTag.TALENTPOOL_TAG.TALENT_NUM.add(tagNum))
                 .where(TalentpoolTag.TALENTPOOL_TAG.ID.eq(id))
+                .execute();
+        return result;
+    }
+
+    public int updateTagListNum(Set<Integer> idList, int tagNum ){
+        int result=create.update(TalentpoolTag.TALENTPOOL_TAG)
+                .set(TalentpoolTag.TALENTPOOL_TAG.TALENT_NUM,TalentpoolTag.TALENTPOOL_TAG.TALENT_NUM.add(tagNum))
+                .where(TalentpoolTag.TALENTPOOL_TAG.ID.in(idList))
                 .execute();
         return result;
     }

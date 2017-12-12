@@ -3,6 +3,7 @@ package com.moseeker.company.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.talentpooldb.*;
+import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
@@ -45,6 +46,8 @@ public class TalentPoolService {
     private TalentpoolTalentDao talentpoolTalentDao;
     @Autowired
     private JobApplicationDao jobApplicationDao;
+    @Autowired
+    private UserHrAccountDao userHrAccountDao;
     /*
         添加人才到人才库
         @auth:zzt
@@ -278,6 +281,7 @@ public class TalentPoolService {
                 }
             }
             talentpoolUserTagDao.deleteRecords(recordList);
+            talentpoolTagDao.updateTagListNum(userTagIdList,0-idList.size());
         }
         //添加新的标签
         List<TalentpoolUserTagRecord> recordList=new ArrayList<>();
@@ -291,9 +295,7 @@ public class TalentPoolService {
 
         }
         talentpoolUserTagDao.addAllRecord(recordList);
-        for(Integer tagId:tagIdList){
-            talentpoolTagDao.updateTagNum(tagId,idList.size());
-        }
+        talentpoolTagDao.updateTagListNum(tagIdList,idList.size());
         List<Map<String,Object>> hrTagList=(List<Map<String,Object>>) validateResult.get("hrTagList");
         userTagIdList=tagIdList;
         Map<Integer,Object> usertagMap=handlerUserTagResult(hrTagList,userTagIdList,idList,tagIdList,1);
@@ -493,6 +495,7 @@ public class TalentPoolService {
         record.setContent(content);
         talentpoolCommentDao.addRecord(record);
         List<Map<String,Object>> list=this.getAllComment(companyId,userId);
+        list=this.handlerHrCommentData(list);
         return ResponseUtils.success(list);
     }
 
@@ -759,12 +762,7 @@ public class TalentPoolService {
 
     /*
      获取这个人在这个hr下的所有标签
-     @auth:zzt
-     @params:  hrId      hr编号
-               companyId 公司的编号
-               userId    user编号
-     @return response(status:0,message:"success,data:[])
-             response(status:1,message:"xxxxxx")
+
      */
     @CounterIface
     public  Response getHrUserTag(int hrId,int companyId,int userId){
@@ -841,6 +839,7 @@ public class TalentPoolService {
         double page=((double)count)/pageSize;
         int total= (int) Math.ceil(page);
         List<Map<String,Object>> list=this.getAllCommentByPage(companyId,userId,pageNum,pageSize);
+        list=this.handlerHrCommentData(list);
         Map<String,Object> result=new HashMap<>();
         result.put("page_number",pageNum);
         result.put("page_size",pageSize);
@@ -848,6 +847,40 @@ public class TalentPoolService {
         result.put("total_row",count);
         result.put("data",list);
         return result;
+    }
+
+    private List<Map<String,Object>> handlerHrCommentData(List<Map<String,Object>> list){
+        Set<Integer> hrIdSet=new HashSet<>();
+        if(!StringUtils.isEmptyList(list)){
+            for(Map<String,Object> map:list){
+                int hrId= (int) map.get("hr_id");
+                hrIdSet.add(hrId);
+            }
+        }
+        if(!StringUtils.isEmptySet(hrIdSet)){
+            List<Map<String,Object>> userHrList=this.getUserHrAccountList(hrIdSet);
+            if(!StringUtils.isEmptyList(userHrList)){
+                for(Map<String,Object> map:userHrList){
+                    int id= (int) map.get("id");
+                    for(Map<String,Object> map1:list){
+                        int hrId= (int) map1.get("hr_id");
+                        if(id==hrId){
+                            map1.put("hr",map);
+                        }
+                    }
+
+                }
+            }
+
+        }
+        return list;
+    }
+
+    private List<Map<String,Object>> getUserHrAccountList(Set<Integer> hrIdList){
+        Query query=new Query.QueryBuilder().where(new Condition("id",hrIdList.toArray(),ValueOp.IN))
+                .and("activation",1).and("disable",1).buildQuery();
+        List<Map<String,Object>> list=userHrAccountDao.getMaps(query);
+        return list;
     }
     /*
      获取公司下这个人的备注数量
