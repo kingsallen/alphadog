@@ -80,8 +80,8 @@ public class TalentPoolEntity {
     }
 
     /*
-         通过TalentpoolHrTalentRecord 的集合获取User_id的list
-         */
+     通过TalentpoolHrTalentRecord 的集合获取User_id的list
+     */
     public Set<Integer> getIdListByTalentpoolHrTalentList(List<Map<String,Object>> list){
         if(StringUtils.isEmptyList(list)){
             return null;
@@ -113,6 +113,9 @@ public class TalentPoolEntity {
         }
         return 0;
     }
+    /*
+      获取这个备注是否属于这个hr
+     */
     public int validateUserComment(int id,int hrId){
         Query query=new Query.QueryBuilder().where("hr_id",hrId).and("id",id).buildQuery();
         int count=talentpoolCommentDao.getCount(query);
@@ -231,10 +234,53 @@ public class TalentPoolEntity {
         }
         return result;
     }
-
+    /*
+     处理批量传输的人才，获取其中有效的和无效的
+     */
+    public Map<String,Object> handlerApplierId(int hrId,Set<Integer> userIdList,int companyId){
+        int flag= this.valiadteMainAccount(hrId,companyId);
+        Set<Integer> unUsedApplierIdList=new HashSet<>();
+        Set<Integer> applierIdList=new HashSet<>();
+        if(flag==0){
+            List<JobApplicationRecord> list=this.getJobApplicationByPublisherAndApplierId(userIdList,hrId);
+            applierIdList=this.getIdListByApplicationList(list);
+        }else{
+            List<JobApplicationRecord> list=this.getJobApplicationByCompanyIdAndApplierId(userIdList,companyId);
+            applierIdList=this.getIdListByApplicationList(list);
+        }
+        unUsedApplierIdList= this.filterIdList(userIdList,applierIdList);
+        Map<String,Object> result=new HashMap<>();
+        result.put("unuse",unUsedApplierIdList);
+        result.put("use",applierIdList);
+        return result;
+    }
+    /*
+      获取公司下所有的hr信息
+     */
+    public List<Map<String,Object>> getCompanyHrList(int companyId){
+        List<Map<String,Object>> companyList= this.getChildCompany(companyId);
+        Set<Integer> companyIdList=this.getCompanyIdList(companyId,companyList);
+        List<Map<String,Object>> companyAccountList=this.getHrCompanyAccountById(companyIdList);
+        Set<Integer> accountIdList=this.getHrIdByCompanyAccountList(companyAccountList);
+        List<Map<String,Object>> userHrList=this.getHrByhrIdListAndCompanyId(companyId,accountIdList);
+        return userHrList;
+    }
 
     /*
-     验证user_id是否投递过这个hr
+     通过user_Hr_Account的list获取hrIdList
+    */
+    public Set<Integer> getIdListByUserHrAccountList(List<Map<String,Object>> list){
+        if(StringUtils.isEmptyList(list)){
+            return null;
+        }
+        Set<Integer> hrIdList=new HashSet<>();
+        for(Map<String,Object> record:list){
+            hrIdList.add((int)record.get("id"));
+        }
+        return hrIdList;
+    }
+    /*
+      验证user_id是否投递过这个hr
      */
     private int validateApplication(int hrId,int userId,int companyId){
         int result1=this.valiadteMainAccount(hrId,companyId);
@@ -245,6 +291,9 @@ public class TalentPoolEntity {
             return result2;
         }
     }
+    /*
+      获取这个人才是否投递了这个hr
+     */
     private int validatePublisherUserApp(int hrId,int userId){
 
         Query query=new Query.QueryBuilder().where("publisher",hrId).and("applier_id",userId).buildQuery();
@@ -252,7 +301,7 @@ public class TalentPoolEntity {
         return result;
     }
     /*
-     验证是否是主账号
+      验证是否是主账号
      */
     private int valiadteMainAccount(int hrId,int companyId){
         Query query=new Query.QueryBuilder().where("id",hrId).and("company_id",companyId).and("account_type",0).buildQuery();
@@ -261,14 +310,18 @@ public class TalentPoolEntity {
     }
 
 
-
+    /*
+      获取user在公司申请的数量
+     */
     private int valicateCompanyApplication(int userId,int companyId){
         Query query=new Query.QueryBuilder().where("company_id",companyId).and("applier_id",userId).buildQuery();
         int result=jobApplicationDao.getCount(query);
         return result;
     }
 
-
+    /*
+      处理userid被hr收藏的关系
+     */
     private  Map<Integer,Set<Map<String,Object>>> handlerTalentAndHr(Set<Integer> userIdList,Set<Integer> hrAccountIdList,List<Map<String,Object>> userHrList){
         if(StringUtils.isEmptySet(userIdList)||StringUtils.isEmptySet(hrAccountIdList)||StringUtils.isEmptyList(userHrList)){
             return null;
@@ -336,17 +389,7 @@ public class TalentPoolEntity {
         }
         return result;
     }
-    /*
-      获取公司下所有的hr信息
-     */
-    public List<Map<String,Object>> getCompanyHrList(int companyId){
-        List<Map<String,Object>> companyList= this.getChildCompany(companyId);
-        Set<Integer> companyIdList=this.getCompanyIdList(companyId,companyList);
-        List<Map<String,Object>> companyAccountList=this.getHrCompanyAccountById(companyIdList);
-        Set<Integer> accountIdList=this.getHrIdByCompanyAccountList(companyAccountList);
-        List<Map<String,Object>> userHrList=this.getHrByhrIdListAndCompanyId(companyId,accountIdList);
-        return userHrList;
-    }
+
     /*
       获取在本公司内搜藏这个人才的记录
      */
@@ -433,20 +476,6 @@ public class TalentPoolEntity {
     }
 
     /*
-      通过user_Hr_Account的list获取hrList
-     */
-    public Set<Integer> getIdListByUserHrAccountList(List<Map<String,Object>> list){
-        if(StringUtils.isEmptyList(list)){
-           return null;
-        }
-        Set<Integer> hrIdList=new HashSet<>();
-        for(Map<String,Object> record:list){
-            hrIdList.add((int)record.get("id"));
-        }
-        return hrIdList;
-    }
-
-    /*
      通过hr_id list获取hrd的信息
      */
     private List<Map<String,Object>> getHrList(Set<Integer> hrIdList,List<Map<String,Object>> hrList){
@@ -465,8 +494,6 @@ public class TalentPoolEntity {
         }
         return result;
     }
-
-
     /*
       获取talentpool_talent
      */
@@ -497,7 +524,6 @@ public class TalentPoolEntity {
     /*
      移除talentpool_talent
      */
-
     private int deleteTalentpoolTalent(int userId,int companyId){
         TalentpoolTalentRecord talentpoolTalentRecord=new TalentpoolTalentRecord();
         talentpoolTalentRecord.setCompanyId(companyId);
@@ -514,8 +540,8 @@ public class TalentPoolEntity {
         List<JobPositionRecord> list=jobPositionDao.getRecords(query);
         return list;
     }
-    /*List
-     获取职位id
+    /*
+     获取职位id List
      */
     private Set<Integer> getPidList(List<JobPositionRecord> list){
         if(StringUtils.isEmptyList(list)){
@@ -527,11 +553,17 @@ public class TalentPoolEntity {
         }
         return result;
     }
+    /*
+      获取hr下发布的所有职位
+     */
     private Set<Integer> getPositionIdByPublisher(int hrId){
         List<JobPositionRecord> list=this.getJobPositionList(hrId);
         Set<Integer> result=this.getPidList(list);
         return result;
     }
+    /*
+      获取userIdList在这个hr下所有的申请
+     */
     private List<JobApplicationRecord> getJobApplicationByPublisherAndApplierId(Set<Integer> userIdList,int hrId){
         Set<Integer> pidList=this.getPositionIdByPublisher(hrId);
         if(StringUtils.isEmptySet(pidList)){
@@ -544,7 +576,6 @@ public class TalentPoolEntity {
      根据职位id和投递人id获取投递信息
      */
     public List<JobApplicationRecord> getJobApplication(Set<Integer> userIdList,Set<Integer> positionIdList){
-
         if(StringUtils.isEmptySet(positionIdList)){
             return null;
         }
@@ -554,32 +585,16 @@ public class TalentPoolEntity {
         return list;
 
     }
+    /*
+     获取所有投递这个公司下职位的用户
+     */
     private List<JobApplicationRecord> getJobApplicationByCompanyIdAndApplierId(Set<Integer> userIdList,int companyId){
         Query query=new Query.QueryBuilder().where("company_id",companyId).and(new Condition("applier_id",userIdList.toArray(),ValueOp.IN))
                 .buildQuery();
         List<JobApplicationRecord> list=jobApplicationDao.getRecords(query);
         return list;
     }
-    /*
-     处理批量传输的人才，获取其中有效的和无效的
-     */
-    public Map<String,Object> handlerApplierId(int hrId,Set<Integer> userIdList,int companyId){
-        int flag= this.valiadteMainAccount(hrId,companyId);
-        Set<Integer> unUsedApplierIdList=new HashSet<>();
-        Set<Integer> applierIdList=new HashSet<>();
-        if(flag==0){
-            List<JobApplicationRecord> list=this.getJobApplicationByPublisherAndApplierId(userIdList,hrId);
-            applierIdList=this.getIdListByApplicationList(list);
-        }else{
-            List<JobApplicationRecord> list=this.getJobApplicationByCompanyIdAndApplierId(userIdList,companyId);
-            applierIdList=this.getIdListByApplicationList(list);
-        }
-        unUsedApplierIdList= this.filterIdList(userIdList,applierIdList);
-        Map<String,Object> result=new HashMap<>();
-        result.put("unuse",unUsedApplierIdList);
-        result.put("use",applierIdList);
-        return result;
-    }
+
     /*
       获取applierId
      */

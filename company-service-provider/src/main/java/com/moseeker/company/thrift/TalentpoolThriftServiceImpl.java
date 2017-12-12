@@ -212,7 +212,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
     @Override
     public Response getUserOrigin(int hr_id, int company_id, int user_id) throws BIZException, TException {
         try{
-            return talentPoolService.getuserOrigin(hr_id,company_id,user_id);
+            return talentPoolService.getUserOrigin(hr_id,company_id,user_id);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
             throw ExceptionFactory.buildException(Category.PROGRAM_EXCEPTION);
