@@ -622,7 +622,8 @@ public class ProfileService {
                     }
                 } else {
                     // 普通字段校验
-                    if (profileOtherJson.containsKey(appCvConfig.getString("field_name"))) {
+                    customResult = profileOtherJson.get(appCvConfig.getString("field_name"));
+                    if (!StringUtils.isJsonNullOrEmpty(customResult)) {
                         customResult = profileOtherJson.get(appCvConfig.getString("field_name"));
                     } else {
                         return ResponseUtils.success(new HashMap<String, Object>(){{put("result",false);put("resultMsg","自定义字段"+appCvConfig.getString("field_name")+"为空");}});

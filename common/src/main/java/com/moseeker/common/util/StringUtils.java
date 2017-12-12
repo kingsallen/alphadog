@@ -246,4 +246,21 @@ public class StringUtils {
         }
         return false;
     }
+
+    /**
+     * 校验是否是JSON中的空字符
+     * @param obj
+     * @return
+     */
+    public static boolean isJsonNullOrEmpty(Object obj) {
+        if (obj instanceof String) {
+            if (org.apache.commons.lang.StringUtils.isNotBlank((String) obj) && !obj.equals("[]") && !obj.equals("{}") && !obj.equals("null")) {
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            return obj == null;
+        }
+    }
 }
