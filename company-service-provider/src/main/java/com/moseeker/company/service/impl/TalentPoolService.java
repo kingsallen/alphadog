@@ -868,7 +868,7 @@ public class TalentPoolService {
                     for(Map<String,Object> map1:list){
                         int hrId= (int) map1.get("hr_id");
                         if(id==hrId){
-                            map1.put("hr",map);
+                            map1.put("hr",JSON.toJSONString(map));
                         }
                     }
 
