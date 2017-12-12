@@ -35,6 +35,13 @@ public class ThirdPartyPositionParamRefresh {
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
 
+    //服务启动先刷新一次
+    @PostConstruct
+    public void init() throws BIZException {
+        logger.info("Refresh third party position param when server start");
+        refresh();
+    }
+
     @Scheduled(cron = "0 0 1 * * SAT")
     public void refresh() throws BIZException {
         long check= redisClient.incrIfNotExist(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.REFRESH_THIRD_PARTY_PARAM.toString(), "");
