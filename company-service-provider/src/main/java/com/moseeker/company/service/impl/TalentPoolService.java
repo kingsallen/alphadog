@@ -642,7 +642,7 @@ public class TalentPoolService {
             return ResponseUtils.fail(1,"无法满足批量操作的条件");
         }
         if(validate==2){
-            return ResponseUtils.fail(1,"在公开的人员中存在以公开的人员");
+            return ResponseUtils.fail(1,"在公开的人员中存在已公开的人员");
         }
         List<TalentpoolHrTalentRecord> list=new ArrayList<>();
         for(Integer userId:userIdList){
