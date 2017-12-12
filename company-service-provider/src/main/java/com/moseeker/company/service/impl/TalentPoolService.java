@@ -1003,7 +1003,7 @@ public class TalentPoolService {
         List<Map<String,Object>> list=getTalentpoolHrTalentByIdList(hrId,userIdList);
         if(!StringUtils.isEmptyList(list)&&list.size()==userIdList.size()){
             for(Map<String,Object> map:list){
-                int ispublic= (int) map.get("public");
+                byte ispublic= (byte) map.get("public");
                 if(ispublic==1){
                     return 2;
                 }
