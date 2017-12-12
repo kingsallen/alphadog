@@ -513,30 +513,26 @@ public class TalentPoolService {
         return ResponseUtils.success(result);
     }
     /*
-     获得标签下的人才数量
+     来源
      */
-    private Map<String,Object> handlerTagTalentNum(int hrId){
-        List<Map<String,Object>> list=this.getTagByHr(hrId,0,Integer.MAX_VALUE);
-        Map<String,Object> tagResult=new HashMap<>();
-        return tagResult;
-    }
     @CounterIface
-    /*
-     获取这个人在这家公司下所有的备注
-     */
-    private List<Map<String,Object>> getAllComment(int companyId,int userId){
-        Query query=new Query.QueryBuilder().where("company_id",companyId).and("user_id",userId).buildQuery();
-        List<Map<String,Object>> list=talentpoolCommentDao.getMaps(query);
-        return list;
+    public Response getuserOrigin(int hrId,int companyId,int userId){
+        int flag=talentPoolEntity.validateHr(hrId,companyId);
+        if(flag==0){
+            return ResponseUtils.fail(1,"该hr不属于该company_id");
+        }
+        Map<String,Object> result=new HashMap<>();
+        Map<String,Object> hrMap=handleUpLoadHr(companyId,userId);
+        if(hrMap!=null){
+            result=hrMap;
+        }else{
+            result.put("isupload",0);
+            int origin=this.getApplicationOrigin(companyId,userId);
+            result.put("origin",origin);
+        }
+        return  ResponseUtils.success(result);
     }
-    /*
-     分页获取这个人在这家公司下所有的备注
-     */
-    private List<Map<String,Object>> getAllCommentByPage(int companyId,int userId,int pageNum,int pageSize){
-        Query query=new Query.QueryBuilder().where("company_id",companyId).and("user_id",userId).setPageNum(pageNum).setPageSize(pageSize).buildQuery();
-        List<Map<String,Object>> list=talentpoolCommentDao.getMaps(query);
-        return list;
-    }
+
     /*
      删除备注
      */
@@ -578,6 +574,17 @@ public class TalentPoolService {
         Map<String,Object> result=this.handleCommentData(companyId,userId,pageNum,pageSize);
         return ResponseUtils.success(result);
     }
+    /*
+     获得标签下的人才数量
+     */
+    private Map<String,Object> handlerTagTalentNum(int hrId){
+        List<Map<String,Object>> list=this.getTagByHr(hrId,0,Integer.MAX_VALUE);
+        Map<String,Object> tagResult=new HashMap<>();
+        return tagResult;
+    }
+    /*
+
+
     /*
      处理分页数据
      */
@@ -633,12 +640,6 @@ public class TalentPoolService {
     }
 
 
-
-    /*
-
-     */
-
-
     /*
      批量取消公开
      */
@@ -665,65 +666,7 @@ public class TalentPoolService {
         Map<Integer,Object> result=this.handlePublicTalentData(userIdList,companyId);
         return ResponseUtils.success(result);
     }
-    /*
-     根据useridlist 和公司获取公司下所有公布useridlist的情况
-     */
-    private Map<Integer,Object> handlePublicTalentData(Set<Integer> userIds,int companyId){
-        List<Map<String,Object>> hrList=talentPoolEntity.getCompanyHrList(companyId);
-        Set<Integer> hrIdList=talentPoolEntity.getIdListByUserHrAccountList(hrList);
-        if(StringUtils.isEmptySet(hrIdList)){
-            return null;
-        }
-        List<Map<String,Object>> resultList=this.getTalentpoolPublicByHrListAndUserIdList(hrIdList,userIds);
-        if(StringUtils.isEmptyList(resultList)){
-            return null;
-        }
-        Map<Integer,Set<Integer>> userHrPublicMap=new HashMap<>();
-        for(Integer userId:userIds){
-            Set<Integer> set=new HashSet<>();
-            for(Map<String,Object> record:resultList){
-                int applierId=(int)record.get("user_id");
-                int hrId=(int)record.get("hr_id");
 
-                if(userId==applierId){
-                    if(userHrPublicMap.get(userId)==null){
-
-                        set.add(hrId);
-                        userHrPublicMap.put(userId,set);
-                    }else{
-                        set=userHrPublicMap.get(userId);
-                        set.add(hrId);
-
-                    }
-                }
-            }
-            userHrPublicMap.put(userId,set);
-        }
-        if(userHrPublicMap==null||userHrPublicMap.isEmpty()){
-            return null;
-        }
-        Map<Integer,Object> result=new HashMap<>();
-        for(Integer key:userHrPublicMap.keySet()){
-            Set<Integer> hrIdSet=userHrPublicMap.get(key);
-            if(StringUtils.isEmptySet(hrIdSet)){
-                result.put(key,"");
-            }else{
-                List<Object> list=new ArrayList<>();
-                for(Integer hrId:hrIdSet){
-                    for(Map<String,Object> map:hrList){
-                        int id=(int)map.get("id");
-                        if(id==hrId){
-                            list.add(map);
-                        }
-                    }
-                }
-                result.put(key,list);
-
-            }
-
-        }
-        return result;
-    }
     //获取公司下所有公开
     @CounterIface
     public Response getCompanyPublic(int hrId,int companyId,int pageNum,int pageSize){
@@ -794,6 +737,66 @@ public class TalentPoolService {
         }
         return  ResponseUtils.success(allTagList);
     }
+    /*
+     根据useridlist 和公司获取公司下所有公布useridlist的情况
+     */
+    private Map<Integer,Object> handlePublicTalentData(Set<Integer> userIds,int companyId){
+        List<Map<String,Object>> hrList=talentPoolEntity.getCompanyHrList(companyId);
+        Set<Integer> hrIdList=talentPoolEntity.getIdListByUserHrAccountList(hrList);
+        if(StringUtils.isEmptySet(hrIdList)){
+            return null;
+        }
+        List<Map<String,Object>> resultList=this.getTalentpoolPublicByHrListAndUserIdList(hrIdList,userIds);
+        if(StringUtils.isEmptyList(resultList)){
+            return null;
+        }
+        Map<Integer,Set<Integer>> userHrPublicMap=new HashMap<>();
+        for(Integer userId:userIds){
+            Set<Integer> set=new HashSet<>();
+            for(Map<String,Object> record:resultList){
+                int applierId=(int)record.get("user_id");
+                int hrId=(int)record.get("hr_id");
+
+                if(userId==applierId){
+                    if(userHrPublicMap.get(userId)==null){
+
+                        set.add(hrId);
+                        userHrPublicMap.put(userId,set);
+                    }else{
+                        set=userHrPublicMap.get(userId);
+                        set.add(hrId);
+
+                    }
+                }
+            }
+            userHrPublicMap.put(userId,set);
+        }
+        if(userHrPublicMap==null||userHrPublicMap.isEmpty()){
+            return null;
+        }
+        Map<Integer,Object> result=new HashMap<>();
+        for(Integer key:userHrPublicMap.keySet()){
+            Set<Integer> hrIdSet=userHrPublicMap.get(key);
+            if(StringUtils.isEmptySet(hrIdSet)){
+                result.put(key,"");
+            }else{
+                List<Object> list=new ArrayList<>();
+                for(Integer hrId:hrIdSet){
+                    for(Map<String,Object> map:hrList){
+                        int id=(int)map.get("id");
+                        if(id==hrId){
+                            list.add(map);
+                        }
+                    }
+                }
+                result.put(key,list);
+
+            }
+
+        }
+        return result;
+    }
+
     /*
      分页获取数据
      */
@@ -1294,26 +1297,7 @@ public class TalentPoolService {
         return count;
     }
 
-    /*
-     来源
-     */
-    @CounterIface
-    public Response getuserOrigin(int hrId,int companyId,int userId){
-        Response res=validateHrAndUser(hrId,userId,companyId);
-        if(res!=null){
-            return res;
-        }
-        Map<String,Object> result=new HashMap<>();
-        int count=this.isUploadTalent(companyId,userId);
-        if(count>0){
-            result.put("isupload",1);
-        }else{
-            result.put("isupload",0);
-            int origin=this.getApplicationOrigin(companyId,userId);
-            result.put("origin",origin);
-        }
-        return  ResponseUtils.success(result);
-    }
+
     /*
      是否是上传
      */
@@ -1329,9 +1313,57 @@ public class TalentPoolService {
         Query query=new Query.QueryBuilder().where("company_id",companyId).and("applier_id",userId).buildQuery();
         JobApplicationRecord  record=jobApplicationDao.getRecord(query);
         if(record==null){
-            return 0;
+            return -1;
         }
         return record.getOrigin();
     }
-
+    /*
+      处理上传人的接口
+     */
+    private Map<String,Object> handleUpLoadHr(int companyId,int userId){
+        TalentpoolTalentRecord record=this.getTalentUpload(companyId,userId);
+        if(record==null){
+            return null;
+        }
+        Map<String,Object> result=new HashMap<>();
+        result.put("isupload",1);
+        TalentpoolHrTalentRecord hrTalent=this.getUploadHr(userId);
+        if(hrTalent==null){
+            return null;
+        }
+        result.put("hr",hrTalent.getHrId());
+        return result;
+    }
+    /*
+    获取上传talent的人的信息
+     */
+    private TalentpoolTalentRecord getTalentUpload(int companyId,int userId){
+        Query query=new Query.QueryBuilder().where("upload",1).and("company_id",companyId).and("user_id",userId).buildQuery();
+        TalentpoolTalentRecord record=talentpoolTalentDao.getRecord(query);
+        return record;
+    }
+    /*
+     根据上传的user_id获取上传的hr
+     */
+    private TalentpoolHrTalentRecord getUploadHr(int userId){
+        Query query=new Query.QueryBuilder().where("user_id",userId).buildQuery();
+        TalentpoolHrTalentRecord record=talentpoolHrTalentDao.getRecord(query);
+        return record;
+    }
+   /*
+    获取这个人在这家公司下所有的备注
+     */
+    private List<Map<String,Object>> getAllComment(int companyId,int userId){
+        Query query=new Query.QueryBuilder().where("company_id",companyId).and("user_id",userId).buildQuery();
+        List<Map<String,Object>> list=talentpoolCommentDao.getMaps(query);
+        return list;
+    }
+    /*
+     分页获取这个人在这家公司下所有的备注
+     */
+    private List<Map<String,Object>> getAllCommentByPage(int companyId,int userId,int pageNum,int pageSize){
+        Query query=new Query.QueryBuilder().where("company_id",companyId).and("user_id",userId).setPageNum(pageNum).setPageSize(pageSize).buildQuery();
+        List<Map<String,Object>> list=talentpoolCommentDao.getMaps(query);
+        return list;
+    }
 }
