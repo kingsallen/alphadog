@@ -2,12 +2,17 @@ package com.moseeker.position.service.schedule;
 
 
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.ChannelType;
+import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.constants.RefreshConstant;
 import com.moseeker.position.service.position.base.refresh.AbstractRabbitMQParamRefresher;
 import com.moseeker.position.service.position.base.refresh.ParamRefresher;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +20,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,15 +32,18 @@ public class ThirdPartyPositionParamRefresh {
     @Autowired
     private List<AbstractRabbitMQParamRefresher> refreshList=new ArrayList<>();
 
-    //服务启动先刷新一次
-//    @PostConstruct
-    public void init(){
-        logger.info("Refresh third party position param when server start");
-        refresh();
-    }
+    @Resource(name = "cacheClient")
+    private RedisClient redisClient;
 
     @Scheduled(cron = "0 0 1 * * SAT")
-    public void refresh(){
+    public void refresh() throws BIZException {
+        long check= redisClient.incrIfNotExist(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.REFRESH_THIRD_PARTY_PARAM.toString(), "");
+        if (check>1) {
+            //绑定中
+            throw new BIZException(-1, "已经开始刷新");
+        }
+        redisClient.expire(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.REFRESH_THIRD_PARTY_PARAM.toString(), "", RefreshConstant.REFRESH_THIRD_PARTY_PARAM_TIMEOUT);
+
         refreshList.forEach(r->{
             try {
                 r.refresh();
@@ -41,12 +51,14 @@ public class ThirdPartyPositionParamRefresh {
                 logger.error("refresh error");
             }
         });
+        redisClient.del(AppId.APPID_ALPHADOG.getValue(),KeyIdentifier.REFRESH_THIRD_PARTY_PARAM.toString(),"");
     }
 
     @RabbitListener(queues = {RefreshConstant.PARAM_GET_QUEUE}, containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
-    public void handle(String json){
-        logger.info("receive json" );
+    public void handle(Message message) throws UnsupportedEncodingException {
+        String json=new String(message.getBody(), "UTF-8");
+        logger.info("receive json"+json );
 
         JSONObject obj=JSONObject.parseObject(json);
         int channel=obj.getJSONObject("data").getIntValue("channel");

@@ -6,6 +6,7 @@ import com.moseeker.baseorm.dao.jobdb.JobOccupationDao;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
@@ -189,6 +190,28 @@ public class PositionController {
             Response result = ResponseUtils.success(occuPationdao.getDatas(query.buildQuery(), com.moseeker.thrift.gen.position.struct.dao.JobOccupationCustom.class));
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/position/refreshThirdPartyParam", method = RequestMethod.GET)
+    @ResponseBody
+    public String refreshThirdPartyParam(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String, Object> map = ParamUtils.parseRequestParam(request);
+            if(!"moseeker.com".equals(map.get("refreshKey"))){
+                throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,"wrong request param!");
+            }
+            logger.info("-----------refresh Third Party Param start------------");
+            Response result = positionBS.refreshThirdPartyParam();
+            logger.info("result:" + JSON.toJSONString(result));
+            logger.info("-----------refresh Third Party Param end------------");
+            return ResponseLogNotification.success(request, result);
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }

@@ -2,6 +2,7 @@ package com.moseeker.position.thrift;
 
 import com.moseeker.position.constants.ResultMessage;
 import com.moseeker.position.service.appbs.PositionBS;
+import com.moseeker.position.service.schedule.ThirdPartyPositionParamRefresh;
 import com.moseeker.thrift.gen.apps.positionbs.service.PositionBS.Iface;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -21,6 +22,9 @@ public class PositionBSThriftService implements Iface {
 
     @Autowired
     private PositionBS positionBS;
+
+    @Autowired
+    private ThirdPartyPositionParamRefresh refresher;
 
     /**
      * 同步第三方职位
@@ -61,6 +65,18 @@ public class PositionBSThriftService implements Iface {
             return positionBS.refreshPositionQX(positionIds);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
+            return ResultMessage.PROGRAM_EXCEPTION.toResponse();
+        }
+
+    }
+
+    @Override
+    public Response refreshThirdPartyParam() throws BIZException, TException {
+        try {
+            refresher.refresh();
+            return ResultMessage.SUCCESS.toResponse(null);
+        }catch (Exception e){
+            logger.error("refresh Third Party Param error {}",e.getMessage());
             return ResultMessage.PROGRAM_EXCEPTION.toResponse();
         }
 
