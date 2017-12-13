@@ -781,12 +781,26 @@ public class TalentPoolService {
         }
         //获取hr下所有的tag
         List<Map<String,Object>> hrTagList=this.getTagByHr(hrId,0,Integer.MAX_VALUE);
+        if(StringUtils.isEmptyList(hrTagList)){
+            return ResponseUtils.success("");
+        }
         //获取hr下所有的tagId
         Set<Integer> hrTagIdList=this.getIdByTagList(hrTagList);
         Set<Integer> tagIdList=this.getUserTagIdList(userId,hrTagIdList);
         List<Map<String,Object>> allTagList=this.getUserTagByUserIdAndTagIdMap(userId,hrTagIdList);
         if(StringUtils.isEmptyList(allTagList)){
             return ResponseUtils.success("");
+        }else{
+            for(Map<String,Object> map:allTagList){
+                int tagId= (int) map.get("tag_id");
+                for(Map<String,Object> map1:hrTagList){
+                    int id= (int) map1.get("id");
+                    String name=(String)map1.get("name");
+                    if(id==tagId){
+                        map.put("name",name);
+                    }
+                }
+            }
         }
         return  ResponseUtils.success(allTagList);
     }
@@ -1330,7 +1344,10 @@ public class TalentPoolService {
       查询hr下所有的标签
      */
     private List<Map<String,Object>> getTagByHr(int hrId,int pageNum,int pageSize){
-        Query query=new Query.QueryBuilder().where("hr_id",hrId).setPageNum(pageNum).setPageSize(pageSize).buildQuery();
+        Query query=new Query.QueryBuilder().where("hr_id",hrId)
+                .setPageNum(pageNum).setPageSize(pageSize)
+                .orderBy("create_time",Order.DESC)
+                .buildQuery();
         List<Map<String,Object>> list= talentpoolTagDao.getMaps(query);
         return list;
     }
@@ -1382,7 +1399,7 @@ public class TalentPoolService {
         if(StringUtils.isEmptySet(tagIdList)){
             return null;
         }
-        Query query=new Query.QueryBuilder().where("user_id",userId).and(new Condition("tag_id",tagIdList.toArray(),ValueOp.IN)).buildQuery();
+        Query query=new Query.QueryBuilder().where("user_id",userId).and(new Condition("tag_id",tagIdList.toArray(),ValueOp.IN)).orderBy("create_time",Order.DESC).buildQuery();
         List<Map<String,Object>> list=talentpoolUserTagDao.getMaps(query);
         return list;
     }
@@ -1447,7 +1464,8 @@ public class TalentPoolService {
       获取公司下所有的人才
      */
     private List<Map<String,Object>> getPublicTalentByCompanyId(int companyId,int pageNum,int pageSize){
-        Query query=new Query.QueryBuilder().where("company_id",companyId).and(new Condition("public_num",0,ValueOp.GT)).setPageNum(pageNum).setPageSize(pageSize).buildQuery();
+        Query query=new Query.QueryBuilder().where("company_id",companyId).and(new Condition("public_num",0,ValueOp.GT))
+                .setPageNum(pageNum).setPageSize(pageSize).buildQuery();
         List<Map<String,Object>> list=talentpoolTalentDao.getMaps(query);
         return list;
     }
@@ -1549,7 +1567,8 @@ public class TalentPoolService {
      分页获取这个人在这家公司下所有的备注
      */
     private List<Map<String,Object>> getAllCommentByPage(int companyId,int userId,int pageNum,int pageSize){
-        Query query=new Query.QueryBuilder().where("company_id",companyId).and("user_id",userId).setPageNum(pageNum).setPageSize(pageSize).buildQuery();
+        Query query=new Query.QueryBuilder().where("company_id",companyId).and("user_id",userId)
+                .setPageNum(pageNum).setPageSize(pageSize).orderBy("create_time",Order.DESC).buildQuery();
         List<Map<String,Object>> list=talentpoolCommentDao.getMaps(query);
         return list;
     }
