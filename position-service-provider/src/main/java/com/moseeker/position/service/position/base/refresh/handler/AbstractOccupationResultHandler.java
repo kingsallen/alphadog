@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.position.utils.PositionRefreshUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -13,7 +14,7 @@ public abstract class AbstractOccupationResultHandler<T> extends AbstractJsonRes
     Logger logger= LoggerFactory.getLogger(AbstractOccupationResultHandler.class);
     //
     protected abstract T buildOccupation(List<String> texts,List<String> codes,Map<Integer, Integer> newCode,JSONObject msg);
-    //持久化数据
+    //持久化数据,需要加上@Transactional注解
     protected abstract void persistent(List<T> data);
     //职位在json中对应的key
     protected abstract String occupationKey();
@@ -30,7 +31,7 @@ public abstract class AbstractOccupationResultHandler<T> extends AbstractJsonRes
             return;
         }
         List<Occupation> occupationList=splitOccupation(toList(msg));
-        logger.info("occupationList:{}",occupationList);
+        logger.info("occupationList:{}",JSON.toJSONString(occupationList));
 
         //为第三方code生成对应的本地code，作为主键,同时方便查询 第三方code的父code对应的 本地code
         List<Integer> cityCodes=occupationList.stream().map(o-> PositionRefreshUtils.lastCode(o.getCode())).collect(Collectors.toList());
