@@ -112,19 +112,19 @@ public class SearchengineService {
         TransportClient client = null;
         try {
 
-            Settings settings = Settings.settingsBuilder().put("cluster.name", cluster_name)
-                    .put("client.transport.sniff", true)
-                    .build();
-            String es_alternate = propertiesReader.get("es.alternate", String.class);
-            if(org.apache.commons.lang.StringUtils.isNotBlank(es_alternate)){
-                client = TransportClient.builder().settings(settings).build()
-                        .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port))
-                        .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_alternate), es_port));
-            }else{
-                client = TransportClient.builder().settings(settings).build()
-                        .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port));
-            }
-
+//            Settings settings = Settings.settingsBuilder().put("cluster.name", cluster_name)
+//                    .put("client.transport.sniff", true)
+//                    .build();
+//            String es_alternate = null;//propertiesReader.get("es.alternate", String.class);
+//            if(org.apache.commons.lang.StringUtils.isNotBlank(es_alternate)){
+//                client = TransportClient.builder().settings(settings).build()
+//                        .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port))
+//                        .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_alternate), es_port));
+//            }else{
+//                client = TransportClient.builder().settings(settings).build()
+//                        .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port));
+//            }
+            client=EsClientInstance.getClient();
             QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
             QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
 
@@ -316,9 +316,12 @@ public class SearchengineService {
 
         } catch (Exception e) {
             logger.error("error in search", e);
+            client.close();
+            client=null;
+            EsClientInstance.closeEsClient();
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         } finally {
-            client.close();
+//            client.close();
         }
 
         Map<String, List> res = new HashMap<String, List>();
