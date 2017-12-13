@@ -249,7 +249,7 @@ public class PositionService {
                     jobPositionPojo.custom = jobCustomRecord.getName();
                 }
             }
-            if (jobPositionExtRecord.getJobCustomId() > 0) {
+            if (jobPositionExtRecord.getJobOccupationId() > 0) {
                 JobOccupationRecord jobOccupationRecord =
                         jobOccupationDao.getRecord(new Query.QueryBuilder().where("id", jobPositionExtRecord.getJobOccupationId()).buildQuery());
                 if (jobOccupationRecord != null && com.moseeker.common.util.StringUtils.isNotNullOrEmpty(jobOccupationRecord.getName())) {
