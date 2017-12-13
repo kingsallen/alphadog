@@ -5,14 +5,22 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.searchengine.util.SearchUtil;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.xcontent.ToXContent;
+import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.ScriptQueryBuilder;
 import org.elasticsearch.script.Script;
+import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.metrics.MetricsAggregationBuilder;
+import org.elasticsearch.search.sort.ScriptSortBuilder;
 import org.elasticsearch.search.sort.SortBuilder;
+import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -434,12 +442,153 @@ public class TalentpoolSearchengine {
         return boostList;
     }
     /*
-     组装查询语句
-
+     组装排序语句按照得分
      */
-    private SortBuilder handlerOrderScript(String publisherIds,String hrId){
+    private SortBuilder handlerScoreOrderScript(String publisherIds){
+        List<Integer> publisherIdList=this.convertStringToList(publisherIds);
+        StringBuffer sb=new StringBuffer();
+        sb.append("double score = _score;int values=1;");
+        sb.append("for (val in _source.user.applications){");
+        sb.append("if((val.publisher in "+publisherIdList.toArray()+") && val.not_suitable==0){values=0;break;}};");
+        sb.append("if(values==1){score=score/10};return score;");
+        Script script=new Script(sb.toString());
+        SortBuilder builder=new ScriptSortBuilder(script,"number");
+        builder.order(SortOrder.DESC);
+        return builder;
+    }
+    /*
+     组装获取所有数量统计语句
+     */
 
-        return null;
+    private AbstractAggregationBuilder handleAllcountAgg(Map<String,String> params){
+        MetricsAggregationBuilder build= AggregationBuilders.scriptedMetric("all_count")
+                .initScript(new Script(getAggInitScript()))
+                .mapScript(new Script(this.getAggMapScript(params,null,0)))
+                .reduceScript(new Script(this.getAggReduceScript()))
+                .combineScript(new Script(this.getAggCombineScript()));
+        return build;
+    }
+    /*
+       简历被查看的统计
+     */
+    private AbstractAggregationBuilder handleIsViewedCountAgg(Map<String,String> params){
+        MetricsAggregationBuilder build= AggregationBuilders.scriptedMetric("is_viewed_count")
+                .initScript(new Script(getAggInitScript()))
+                .mapScript(new Script(this.getAggMapScript(params,"4",0)))
+                .reduceScript(new Script(this.getAggReduceScript()))
+                .combineScript(new Script(this.getAggCombineScript()));
+        return build;
+    }
+    /*
+        初试通过的统计
+     */
+    private AbstractAggregationBuilder handleFirstTrialOkCountAgg(Map<String,String> params){
+        MetricsAggregationBuilder build= AggregationBuilders.scriptedMetric("first_trial_ok_count")
+                .initScript(new Script(getAggInitScript()))
+                .mapScript(new Script(this.getAggMapScript(params,"7",0)))
+                .reduceScript(new Script(this.getAggReduceScript()))
+                .combineScript(new Script(this.getAggCombineScript()));
+        return build;
+    }
+    /*
+        入职的统计
+     */
+    private AbstractAggregationBuilder handleEntryCountAgg(Map<String,String> params){
+        MetricsAggregationBuilder build= AggregationBuilders.scriptedMetric("entry_count")
+                .initScript(new Script(getAggInitScript()))
+                .mapScript(new Script(this.getAggMapScript(params,"12",0)))
+                .reduceScript(new Script(this.getAggReduceScript()))
+                .combineScript(new Script(this.getAggCombineScript()));
+        return build;
+    }
+    /*
+        面试通过的统计
+     */
+    private AbstractAggregationBuilder handleInterviewOkCountAgg(Map<String,String> params){
+        MetricsAggregationBuilder build= AggregationBuilders.scriptedMetric("interview_ok_count")
+                .initScript(new Script(getAggInitScript()))
+                .mapScript(new Script(this.getAggMapScript(params,"10",0)))
+                .reduceScript(new Script(this.getAggReduceScript()))
+                .combineScript(new Script(this.getAggCombineScript()));
+        return build;
+    }
+    /*
+        所有申请的统计
+     */
+    private AbstractAggregationBuilder handleAllApplicationCountAgg(Map<String,String> params){
+        MetricsAggregationBuilder build= AggregationBuilders.scriptedMetric("all_application_count")
+                .initScript(new Script(getAggInitScript()))
+                .mapScript(new Script(this.getAggMapScript(params,null,1)))
+                .reduceScript(new Script(this.getAggReduceScript()))
+                .combineScript(new Script(this.getAggCombineScript()));
+        return build;
+    }
+    /*
+      未查看简历数量的统计
+     */
+    private AbstractAggregationBuilder handleNotViewedCountAgg(Map<String,String> params){
+        MetricsAggregationBuilder build= AggregationBuilders.scriptedMetric("not_viewed_count")
+                .initScript(new Script(getAggInitScript()))
+                .mapScript(new Script(this.getAggMapScript(params,"3",0)))
+                .reduceScript(new Script(this.getAggReduceScript()))
+                .combineScript(new Script(this.getAggCombineScript()));
+        return build;
+    }
+    /*
+     根据不同的条件组装聚合语句
+     */
+    private String getAggMapScript(Map<String,String> params,String progressStatus,int type){
+        String publishIds=params.get("publisher_ids");
+        String submitTime=params.get("submit_time");
+        String positionIds=params.get("position_id");
+        List<Integer> publisherIdList=this.convertStringToList(publishIds);
+        StringBuffer sb=new StringBuffer();
+        sb.append("int i = 0; for ( val in _source.user.applications)");
+        sb.append("{if((val.publisher in "+publisherIdList.toArray()+") &&");
+        if(StringUtils.isNotNullOrEmpty(progressStatus)){
+            sb.append("val.progress_status=="+progressStatus+"&&");
+        }
+        if(StringUtils.isNotNullOrEmpty(submitTime)){
+            sb.append("val.submit_time>"+submitTime+"&&");
+        }
+        if(StringUtils.isNotNullOrEmpty(positionIds)){
+            List<Integer> positionIdList=this.convertStringToList(positionIds);
+            sb.append("val.position_id in"+positionIdList.toArray()+"&&");
+        }
+        sb=sb.deleteCharAt(sb.lastIndexOf("&"));
+        sb=sb.deleteCharAt(sb.lastIndexOf("&"));
+        sb.append("){i=i+1;");
+        if(type==0){
+            sb.append("break;");
+        }
+        sb.append(";};_agg['transactions'].add(i)");
+        return sb.toString();
+    }
+    /*
+     获取talentpool的reduce_script
+     */
+    private String getAggReduceScript(){
+        StringBuffer sb=new StringBuffer();
+        sb.append("profit = 0; for (a in _aggs) { profit += a }; return profit");
+        return sb.toString();
+    }
+
+    /*
+     获取talentpool的init_script
+     */
+    private String getAggInitScript(){
+        StringBuffer sb=new StringBuffer();
+        sb.append("_agg['transactions'] = []");
+        return sb.toString();
+    }
+
+    /*
+     获取talentpool的combine_script
+     */
+    private String getAggCombineScript(){
+        StringBuffer sb=new StringBuffer();
+        sb.append("profit = 0; for (t in _agg.transactions) { profit += t }; return profit");
+        return sb.toString();
     }
 
 }
