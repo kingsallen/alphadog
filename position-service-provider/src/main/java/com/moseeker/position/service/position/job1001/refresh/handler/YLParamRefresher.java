@@ -18,6 +18,8 @@ public abstract class YLParamRefresher extends AbstractRabbitMQParamRefresher{
     @Autowired
     List<YLResultHandlerAdapter> refreshList;
 
+    public abstract String getSubSite();
+
     @Override
     public void addSendParam(JSONObject jsonSend) {
 
@@ -28,6 +30,7 @@ public abstract class YLParamRefresher extends AbstractRabbitMQParamRefresher{
         //调用所有处理策略
         refreshList.forEach(r->r.handle(json));
     }
+
 
     @Override
     public ChannelType getChannelType() {

@@ -34,8 +34,8 @@ public abstract class AbstractOccupationResultHandler<T> extends AbstractJsonRes
         logger.info("occupationList:{}",JSON.toJSONString(occupationList));
 
         //为第三方code生成对应的本地code，作为主键,同时方便查询 第三方code的父code对应的 本地code
-        List<Integer> cityCodes=occupationList.stream().map(o-> PositionRefreshUtils.lastCode(o.getCode())).collect(Collectors.toList());
-        Map<Integer, Integer> newCode= PositionRefreshUtils.generateNewKey(cityCodes.iterator());
+        List<Integer> otherCodes=occupationList.stream().map(o-> PositionRefreshUtils.lastCode(o.getCode())).collect(Collectors.toList());
+        Map<Integer, Integer> newCode=generateNewKey(otherCodes,msg);
         newCode.put(0,0);   //是为了在查询到第一层第三方code(即无父code)时，设置父code为0
 
         List<T> forInsert=new ArrayList<>();
@@ -57,6 +57,11 @@ public abstract class AbstractOccupationResultHandler<T> extends AbstractJsonRes
         //持久化操作
         persistent(forInsert);
     }
+
+    protected Map<Integer,Integer> generateNewKey(List<Integer> otherCodes,JSONObject msg) {
+        return PositionRefreshUtils.generateNewKey(otherCodes.iterator());
+    }
+
 
     public List<Occupation> splitOccupation(List<Occupation> occupationList){
         //Map<第几层，Map<第几层职的某个位职能文字,对应生成的code>>

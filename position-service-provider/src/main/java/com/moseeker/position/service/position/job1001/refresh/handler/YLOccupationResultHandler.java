@@ -6,6 +6,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.moseeker.baseorm.dao.dictdb.DictJob1001OccupationDao;
 import com.moseeker.position.service.position.base.refresh.handler.AbstractOccupationResultHandler;
+import com.moseeker.position.service.position.job1001.Jljob88ParamRefresher;
+import com.moseeker.position.service.position.job1001.Job1001ParamRefresher;
+import com.moseeker.position.service.position.job1001.Tmljob88ParamRefresher;
 import com.moseeker.position.service.position.veryeast.refresh.handler.VEResultHandlerAdapter;
 import com.moseeker.position.utils.PositionRefreshUtils;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictJob1001OccupationDO;
@@ -23,6 +26,29 @@ public class YLOccupationResultHandler extends AbstractOccupationResultHandler<D
 
     @Autowired
     private DictJob1001OccupationDao occupationDao;
+
+    @Autowired
+    Jljob88ParamRefresher jljob88ParamRefresher;
+
+    @Autowired
+    Job1001ParamRefresher job1001ParamRefresher;
+
+    @Autowired
+    Tmljob88ParamRefresher tmljob88ParamRefresher;
+
+    @Override
+    protected Map<Integer, Integer> generateNewKey(List<Integer> otherCodes,JSONObject msg) {
+        int DEFAULT_KEY_SEED=100000;
+        String subsite=msg.getString("subsite");
+        if(subsite.equals(job1001ParamRefresher.getSubSite())){
+            DEFAULT_KEY_SEED=100000;
+        } else if(subsite.equals(jljob88ParamRefresher.getSubSite())){
+            DEFAULT_KEY_SEED=200000;
+        } else if(subsite.equals(tmljob88ParamRefresher.getSubSite())){
+            DEFAULT_KEY_SEED=300000;
+        }
+        return PositionRefreshUtils.generateNewKey(otherCodes.iterator(),DEFAULT_KEY_SEED,otherCodes.size());
+    }
 
     @Override
     public DictJob1001OccupationDO buildOccupation(List<String> texts,List<String> codes,Map<Integer, Integer> newCode,JSONObject msg) {

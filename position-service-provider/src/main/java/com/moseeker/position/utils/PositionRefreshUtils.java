@@ -11,16 +11,16 @@ import java.util.Map;
 public class PositionRefreshUtils {
     private static Logger logger= LoggerFactory.getLogger(PositionRefreshUtils.class);
 
-    private static int defaultKeySeed=100000;
-    private static int defaultKeySize=16;
+    private static final int DEFAULT_KEY_SEED=100000;
+    private static final int DEFAULT_KEY_SIZE=16;
 
     private PositionRefreshUtils(){}
 
     public static <K> Map<K,Integer> generateNewKey(Iterator<K> it){
-        return generateNewKey(it,defaultKeySeed,defaultKeySize);
+        return generateNewKey(it,DEFAULT_KEY_SEED,DEFAULT_KEY_SIZE);
     }
     public static <K> Map<K,Integer> generateNewKey(Iterator<K> it,int size){
-        return generateNewKey(it,defaultKeySeed,size);
+        return generateNewKey(it,DEFAULT_KEY_SEED,size);
     }
     /**
      * 生成自己的key
