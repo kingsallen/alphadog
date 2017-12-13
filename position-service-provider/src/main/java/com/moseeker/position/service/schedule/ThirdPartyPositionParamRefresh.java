@@ -10,6 +10,7 @@ import com.moseeker.common.constants.RefreshConstant;
 import com.moseeker.position.service.position.base.refresh.AbstractRabbitMQParamRefresher;
 import com.moseeker.position.service.position.base.refresh.ParamRefresher;
 import com.moseeker.position.service.position.base.refresh.RefresherFactory;
+import com.moseeker.position.utils.PositionEmailNotification;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +39,9 @@ public class ThirdPartyPositionParamRefresh {
 
     @Autowired
     RefresherFactory refresherFactory;
+
+    @Autowired
+    PositionEmailNotification emailNotification;
 
     //服务启动先刷新一次
     @PostConstruct
@@ -69,6 +73,7 @@ public class ThirdPartyPositionParamRefresh {
     @RabbitHandler
     public void handle(Message message) {
         String json="";
+        AbstractRabbitMQParamRefresher refresher=null;
         try {
             json=new String(message.getBody(), "UTF-8");
             logger.info("receive json" );
@@ -81,7 +86,7 @@ public class ThirdPartyPositionParamRefresh {
             }
             int channel=obj.getJSONObject("data").getIntValue("channel");
 
-            AbstractRabbitMQParamRefresher refresher=refresherFactory.getRabbitMQParamRefresher(channel);
+            refresher=refresherFactory.getRabbitMQParamRefresher(channel);
 
             if(refresher==null){
                 logger.error("no refresher to handle result {}",channel);
@@ -90,6 +95,7 @@ public class ThirdPartyPositionParamRefresh {
             }
         }catch (Exception e){
             logger.error("handle refresh result Error : {}, message :{}",e.getMessage(),json);
+            emailNotification.sendRefreshFailureMail(json,refresher,e);
         }
     }
 
