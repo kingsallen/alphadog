@@ -23,6 +23,8 @@ import java.util.stream.Collectors;
 public abstract class AbstractRabbitMQParamRefresher implements ParamRefresher,IChannelType {
     Logger logger= LoggerFactory.getLogger(AbstractRabbitMQParamRefresher.class);
 
+
+
     @Autowired
     DictCityDao cityDao;
 
@@ -35,11 +37,13 @@ public abstract class AbstractRabbitMQParamRefresher implements ParamRefresher,I
     public abstract void receiveAndHandle(String json);
     public abstract void addUserParam(JSONObject jsonSend);
 
+    private int account_id=1;
+
     @Override
     public void refresh() {
         JSONObject jsonSend=new JSONObject();
 
-        jsonSend.put("account_id",1);
+        jsonSend.put("account_id",account_id++);
         jsonSend.put("channel",getChannelType().getValue());
         jsonSend.put("moseeker_region",moseekerRegin());
 
