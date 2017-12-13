@@ -1054,7 +1054,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                 }
             });
         }
-        List<Map<String, Object>> datas = getRelatedDataByJobApplication(positionApplications, downloadApi, password, profileApplicationForm.isRecommender(), profileApplicationForm.isDl_url_required(), profileApplicationForm.getFilter());
+
         logger.info("getResourceByApplication:=============={}:{}", "end", System.currentTimeMillis() - startTime);
         return positionApplications;
     }

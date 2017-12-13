@@ -32,6 +32,7 @@ import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.PositionEntity;
 import com.moseeker.entity.ProfileEntity;
 import com.moseeker.entity.pojo.profile.*;
+import com.moseeker.entity.pojo.profile.User;
 import com.moseeker.entity.pojo.resume.*;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.profile.utils.DegreeSource;
@@ -46,6 +47,10 @@ import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.profile.struct.Profile;
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
+import java.text.ParseException;
+import java.util.*;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.thrift.TException;
@@ -54,11 +59,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.text.ParseException;
-import java.util.*;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+import static com.moseeker.baseorm.util.BeanUtils.jooqMapfilter;
+import static com.moseeker.baseorm.util.BeanUtils.profilter;
 
 @Service
 @CounterIface
