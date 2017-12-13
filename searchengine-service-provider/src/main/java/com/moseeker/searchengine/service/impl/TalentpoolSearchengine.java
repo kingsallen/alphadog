@@ -27,42 +27,80 @@ public class TalentpoolSearchengine {
         String pageSize=params.get("page_size");
         return null;
     }
-
+    /*
+     组装查询语句
+     */
     /*
      组装基本部分的查询条件
      */
-    private QueryBuilder queryCommon(Map<String,String> params){
+    private QueryBuilder queryCommons(Map<String,String> params){
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
         String keyword=params.get("keyword");
+        String lastCompany=params.get("in_last_job_company");
+        String lastPosition=params.get("in_last_job_position");
+        String cityName=params.get("city_name");
+        String companyName=params.get("company_name");
+        String pastPosition=params.get("past_position");
+        String intentionCity=params.get("intention_city_name");
+        if(StringUtils.isNotNullOrEmpty(intentionCity)){
+            this.queryByIntentionCity(intentionCity,query);
+        }
+        if(StringUtils.isNotNullOrEmpty(keyword)){
+            this.queryByKeyWord(keyword,query);
+        }
+        if(StringUtils.isNotNullOrEmpty(cityName)){
+            this.queryByHome(cityName,query);
+        }
+        if(StringUtils.isNotNullOrEmpty(companyName)){
+            this.queryByCompany(companyName,query);
+        }
+
+        if(StringUtils.isNotNullOrEmpty(lastCompany)){
+            this.queryByLastCompany(lastCompany,query);
+        }
+        if(StringUtils.isNotNullOrEmpty(lastPosition)){
+            this.queryByLastPositions(lastPosition,query);
+        }
+        if(StringUtils.isNotNullOrEmpty(pastPosition)){
+            this.queryByWorkJob(pastPosition,query);
+        }
         return query;
     }
     /*
      组装简历部分查询条件
      */
-    private QueryBuilder queryProfile(Map<String,String> params){
+    private QueryBuilder queryProfiles(Map<String,String> params){
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
-        String city_name=params.get("city_name");
-        String company_name=params.get("company_name");
         String degree=params.get("degree");
-        String lastCompany=params.get("in_last_job_company");
-        String lastPosition=params.get("in_last_job_position");
-        String intentionCity=params.get("intention_city_name");
         String intentionSalaryCode=params.get("intention_salary_code");
-        String pastPosition=params.get("past_position");
         String sex=params.get("sex");
         String workYears=params.get("work_years");
-        String updateTime=params.get("update_time");
-
+        String ages=params.get("work_years");
+        String updateTime=params.get("ages");
+        if(StringUtils.isNotNullOrEmpty(degree)){
+            this.QueryByDegree(degree,query);
+        }
+        if(StringUtils.isNotNullOrEmpty(intentionSalaryCode)){
+            this.queryByIntentionSalaryCode(intentionSalaryCode,query);
+        }
+        if(StringUtils.isNotNullOrEmpty(sex)){
+            this.queryByGender(sex,query);
+        }
+        if(StringUtils.isNotNullOrEmpty(workYears)){
+            this.queryByWorkYear(workYears,query);
+        }
         if(StringUtils.isNotNullOrEmpty(updateTime)){
             this.queryByProfileUpDateTime(updateTime,query);
         }
-
+        if(StringUtils.isNotNullOrEmpty(ages)){
+            this.queryByAge(ages,query);
+        }
         return query;
     }
 
-    private QueryBuilder queryApplication(Map<String,String> params){
+    private QueryBuilder queryApplications(Map<String,String> params){
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
         String publisherIds=params.get("publisher_ids");
@@ -113,6 +151,21 @@ public class TalentpoolSearchengine {
         query=QueryBuilders.nestedQuery("user.talent_pool",query);
         return query;
     }
+
+    /*
+      使用script的方式组装对application的查询
+     */
+
+    private String queryScript(Map<String,String> params){
+        String publisherIds=params.get("publisher_ids");
+        String candidateSource=params.get("candidate_source");
+        String recommend=params.get("only_recommend");
+        String origins=params.get("origins");
+        String submitTime=params.get("submit_time");
+        String progressStatus=params.get("progress_status");
+
+        return null;
+    }
     /*
      根据简历的更新时间查询
      */
@@ -157,9 +210,12 @@ public class TalentpoolSearchengine {
     /*
       构建通过职位来查询的语句
      */
-    private void queryByPosition(String positionIds,QueryBuilder queryBuilder ){
+    private void queryByPositionId(String positionIds,QueryBuilder queryBuilder ){
         searchUtil.handleTerms(positionIds,queryBuilder,"user.applications.position_id");
     }
+
+    /*
+
     /*
       构建是否公开的查询语句,注意这个位置要做成nest的查询
      */
@@ -242,6 +298,15 @@ public class TalentpoolSearchengine {
         Map<String,Object> queryMap=new HashMap<>();
         queryMap.put("user.profiles.recent_job.job",works);
         queryMap.put("user.profiles.workexps.job",works);
+        searchUtil.shouldTermsQuery(queryMap,queryBuilder);
+    }
+    /*
+     构建通过曾经工作的公司查询
+     */
+    private void queryByCompany(String companys,QueryBuilder queryBuilder){
+        Map<String,Object> queryMap=new HashMap<>();
+        queryMap.put("user.profiles.recent_job.company_name",companys);
+        queryMap.put("user.profiles.workexps.company_name",companys);
         searchUtil.shouldTermsQuery(queryMap,queryBuilder);
     }
     /*

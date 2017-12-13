@@ -534,7 +534,7 @@ public class TalentPoolService {
             int companyPublicNum=this.getPublicTalentCount(companyId);
             int hrPublicNum=this.getHrPublicTalent(hrId);
             int allTalentNum=this.getCompanyTalentCount(companyId);
-            List<Map<String,Object>> list=this.getTagByHr(hrId,0,Integer.MAX_VALUE);
+            List<Map<String,Object>> list=this.getTagByHrNoOrder(hrId,0,Integer.MAX_VALUE);
             result.put("allpublic",companyPublicNum);
             result.put("hrpublic",hrPublicNum);
             result.put("talent",talentNum);
@@ -1365,6 +1365,15 @@ public class TalentPoolService {
       查询hr下所有的标签
      */
     private List<Map<String,Object>> getTagByHr(int hrId,int pageNum,int pageSize){
+        Query query=new Query.QueryBuilder().where("hr_id",hrId)
+                .setPageNum(pageNum).setPageSize(pageSize)
+                .orderBy("create_time",Order.DESC)
+                .buildQuery();
+        List<Map<String,Object>> list= talentpoolTagDao.getMaps(query);
+        return list;
+    }
+
+    private List<Map<String,Object>> getTagByHrNoOrder(int hrId,int pageNum,int pageSize){
         Query query=new Query.QueryBuilder().where("hr_id",hrId)
                 .setPageNum(pageNum).setPageSize(pageSize)
                 .orderBy("create_time",Order.DESC)
