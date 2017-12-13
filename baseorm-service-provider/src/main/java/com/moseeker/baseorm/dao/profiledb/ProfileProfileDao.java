@@ -11,10 +11,8 @@ import com.moseeker.baseorm.db.dictdb.tables.*;
 import com.moseeker.baseorm.db.dictdb.tables.records.*;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
-import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
-import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
-import com.moseeker.baseorm.db.jobdb.tables.JobPositionExt;
-import com.moseeker.baseorm.db.jobdb.tables.JobResumeOther;
+import com.moseeker.baseorm.db.jobdb.tables.*;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationAtsRecord;
 import com.moseeker.baseorm.db.profiledb.tables.*;
 import com.moseeker.baseorm.db.profiledb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.*;
@@ -1041,6 +1039,20 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                 .stream()
                 .map(record -> new AbstractMap.SimpleEntry<>(record.into(jobposition).intoMap(), record.into(jobApplication).intoMap()))
                 .collect(Collectors.toList());
+
+        List<Integer> appIdList = positionApplications.stream().map(entry -> (Integer) entry.getValue().get("id")).collect(Collectors.toList());
+        List<JobApplicationAtsRecord> atsRecordList = create.select()
+                .from(JobApplicationAts.JOB_APPLICATION_ATS)
+                .where(JobApplicationAts.JOB_APPLICATION_ATS.APP_ID.in(appIdList))
+                .fetchInto(JobApplicationAts.JOB_APPLICATION_ATS);
+        if (atsRecordList != null && atsRecordList.size() > 0) {
+            Map<Integer, String> map = atsRecordList.stream().collect(Collectors.toMap(JobApplicationAtsRecord::getAppId, JobApplicationAtsRecord::getAtsAppId));
+            positionApplications.stream().forEach(mapMapSimpleEntry -> {
+                if (map.get(mapMapSimpleEntry.getValue().get("id")) != null) {
+                    mapMapSimpleEntry.getValue().put("l_application_id", map.get(mapMapSimpleEntry.getValue().get("id")));
+                }
+            });
+        }
 
         logger.info("getResourceByApplication:=============={}:{}", "end", System.currentTimeMillis() - startTime);
         return positionApplications;
