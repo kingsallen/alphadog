@@ -1,6 +1,9 @@
 package com.moseeker.position.service.position.job1001.refresh.handler;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.moseeker.baseorm.dao.dictdb.DictJob1001OccupationDao;
 import com.moseeker.position.service.position.base.refresh.handler.AbstractOccupationResultHandler;
 import com.moseeker.position.service.position.veryeast.refresh.handler.VEResultHandlerAdapter;
@@ -12,8 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class YLOccupationResultHandler extends AbstractOccupationResultHandler<DictJob1001OccupationDO> implements YLResultHandlerAdapter {
@@ -55,4 +57,24 @@ public class YLOccupationResultHandler extends AbstractOccupationResultHandler<D
         return "occupation";
     }
 
+    @Override
+    protected List<Occupation> toList(JSONObject msg) {
+        TypeReference<List<List<String>>> typeRef
+                = new TypeReference<List<List<String>>>() {};
+
+        List<List<String>> occupations=JSON.parseObject(msg.getString(occupationKey()),typeRef);
+
+        List<Occupation> result=new ArrayList<>();
+        for(List<String> text:occupations){
+            Occupation occupation=new Occupation();
+            occupation.setText(text);
+            occupation.setCode(new ArrayList<>());
+            result.add(occupation);
+        }
+
+        generateNewCode(result);
+
+        return result;
+
+    }
 }

@@ -1,13 +1,12 @@
 package com.moseeker.position.service.position.base.refresh.handler;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.position.utils.PositionRefreshUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class AbstractOccupationResultHandler<T> extends AbstractJsonResultHandler {
@@ -18,6 +17,8 @@ public abstract class AbstractOccupationResultHandler<T> extends AbstractJsonRes
     protected abstract void persistent(List<T> data);
     //职位在json中对应的key
     protected abstract String occupationKey();
+
+    protected abstract List<Occupation> toList(JSONObject msg);
     /**
      * 处理最佳东方职位信息
      * @param msg
@@ -28,7 +29,7 @@ public abstract class AbstractOccupationResultHandler<T> extends AbstractJsonRes
             logger.info("very east param does not has occupation!");
             return;
         }
-        List<Occupation> occupationList=msg.getJSONArray(occupationKey()).toJavaList(Occupation.class);
+        List<Occupation> occupationList=splitOccupation(toList(msg));
         logger.info("occupationList:{}",occupationList);
 
         //为第三方code生成对应的本地code，作为主键,同时方便查询 第三方code的父code对应的 本地code
@@ -51,14 +52,69 @@ public abstract class AbstractOccupationResultHandler<T> extends AbstractJsonRes
             }
         }
 
-        logger.info("occupation for persistent : {}",forInsert);
+        logger.info("occupation for persistent : {}", JSON.toJSONString(forInsert));
         //持久化操作
         persistent(forInsert);
     }
 
+    public List<Occupation> splitOccupation(List<Occupation> occupationList){
+        //Map<第几层，Map<第几层职的某个位职能文字,对应生成的code>>
 
+        Set<Occupation> result=new HashSet<>();
+        for(int i=0,size=occupationList.size();i<size;i++){
+            Occupation o=occupationList.get(i);
 
-    private static class Occupation {
+            List<String> texts=o.getText();
+            List<String> codes=o.getCode();
+
+            if(PositionRefreshUtils.notEmptyAndSizeMatch(texts,codes)){
+                logger.info("Invalid Occupation: text:{},code:{} ",texts,codes);
+                continue;
+            }
+
+            for(int j=codes.size();j>0;j--){
+                List<String> splitTexts=texts.subList(0,j);
+                List<String> splitCodes=codes.subList(0,j);
+
+                Occupation occupation=new Occupation();
+                occupation.setCode(splitCodes);
+                occupation.setText(splitTexts);
+                result.add(occupation);
+            }
+        }
+
+        return new ArrayList<>(result);
+    }
+
+    public Map<String,String> getOrInitIfNotExist(Map<Integer,Map<String,String>> allLevelOccupation,Integer j){
+        if(!allLevelOccupation.containsKey(j)){
+            allLevelOccupation.put(j,new HashMap<>());
+        }
+        return allLevelOccupation.get(j);
+    }
+
+    public void generateNewCode(List<Occupation> occupationList){
+        Map<Integer,Map<String,String>> allLevelOccupation=new HashMap<>();
+        int count=1000;
+        for(int i=0;i<occupationList.size();i++) {
+            Occupation o=occupationList.get(i);
+
+            List<String> texts=o.getText();
+            List<String> codes=o.getCode();
+
+            for (int j = 0; j < texts.size(); j++) {
+                String occupationText = texts.get(j);
+                Map<String, String> oneLevelOccupation = getOrInitIfNotExist(allLevelOccupation, j);
+                if (!oneLevelOccupation.containsKey(texts.get(j))) {
+                    oneLevelOccupation.put(occupationText, count + "");
+                }
+                codes.add(oneLevelOccupation.get(occupationText).toString());
+                count++;
+            }
+        }
+    }
+
+    public static class Occupation {
         private List<String> text;
         private List<String> code;
 
@@ -76,6 +132,24 @@ public abstract class AbstractOccupationResultHandler<T> extends AbstractJsonRes
 
         public void setCode(List<String> code) {
             this.code = code;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Occupation that = (Occupation) o;
+
+            if (!text.equals(that.text)) return false;
+            return code.equals(that.code);
+        }
+
+        @Override
+        public int hashCode() {
+            int result = text.hashCode();
+            result = 31 * result + code.hashCode();
+            return result;
         }
     }
 }

@@ -89,7 +89,13 @@ public class PositionRefreshUtils {
      * @param list2
      * @return
      */
-    public static boolean notEmptyAndSizeMatch(List list1,List list2){
-        return list1==null || list2==null || list1.isEmpty() || list2.isEmpty() || list1.size() != list2.size();
+    public static boolean notEmptyAndSizeMatch(List<?> list1,List<?> list2){
+        return isNullOrEmpty(list1)|| isNullOrEmpty(list2) || list1.size() != list2.size();
     }
+
+    public static boolean isNullOrEmpty(List<?> list){
+        return list==null || list.isEmpty();
+    }
+
+
 }
