@@ -23,7 +23,7 @@ public class PositionEmailNotification {
     static String br = "<br/>";
 
     static {
-        devMails = getEmails("account_sync.email.dev");
+        devMails = getEmails("position_sync.email.dev");
     }
 
     private static String getConfigString(String key) {
