@@ -48,8 +48,8 @@ public class YLOccupationResultHandler extends AbstractOccupationResultHandler<D
         }
         int delCount=occupationDao.deleteAllBySubsite(data.get(0).getSubsite());
         logger.info("job1001 delete old Occupation "+delCount);
-        occupationDao.addAllData(data);
-        logger.info("job1001 insert success");
+        List<DictJob1001OccupationDO> insertData=occupationDao.addAllData(data);
+        logger.info("job1001 insert success size: {}",insertData.size());
     }
 
     @Override

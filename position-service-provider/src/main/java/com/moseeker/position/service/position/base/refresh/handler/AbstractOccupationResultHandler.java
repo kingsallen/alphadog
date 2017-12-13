@@ -87,7 +87,7 @@ public abstract class AbstractOccupationResultHandler<T> extends AbstractJsonRes
         return new ArrayList<>(result);
     }
 
-    public Map<String,String> getOrInitIfNotExist(Map<Integer,Map<String,String>> allLevelOccupation,Integer j){
+    public Map<List<String>,String> getOrInitIfNotExist(Map<Integer,Map<List<String>,String>> allLevelOccupation,Integer j){
         if(!allLevelOccupation.containsKey(j)){
             allLevelOccupation.put(j,new HashMap<>());
         }
@@ -95,7 +95,7 @@ public abstract class AbstractOccupationResultHandler<T> extends AbstractJsonRes
     }
 
     public void generateNewCode(List<Occupation> occupationList){
-        Map<Integer,Map<String,String>> allLevelOccupation=new HashMap<>();
+        Map<Integer,Map<List<String>,String>> allLevelOccupation=new HashMap<>();
         int count=1000;
         for(int i=0;i<occupationList.size();i++) {
             Occupation o=occupationList.get(i);
@@ -103,10 +103,10 @@ public abstract class AbstractOccupationResultHandler<T> extends AbstractJsonRes
             List<String> texts=o.getText();
             List<String> codes=o.getCode();
 
-            for (int j = 0; j < texts.size(); j++) {
-                String occupationText = texts.get(j);
-                Map<String, String> oneLevelOccupation = getOrInitIfNotExist(allLevelOccupation, j);
-                if (!oneLevelOccupation.containsKey(texts.get(j))) {
+            for (int j = 1; j <= texts.size(); j++) {
+                List<String> occupationText = texts.subList(0,j);
+                Map<List<String>,String> oneLevelOccupation = getOrInitIfNotExist(allLevelOccupation, j);
+                if (!oneLevelOccupation.containsKey(occupationText)) {
                     oneLevelOccupation.put(occupationText, count + "");
                 }
                 codes.add(oneLevelOccupation.get(occupationText).toString());
