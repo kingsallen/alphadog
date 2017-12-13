@@ -117,6 +117,9 @@ public class TalentPoolService {
             }
         }
         Map<String,Object> result=this.handlerBatchTalentResult(unUseList,unApplierIdList,idList,companyId);
+        if(result==null||result.isEmpty()){
+            return  ResponseUtils.success("");
+        }
         return ResponseUtils.success(result);
     }
 
@@ -202,6 +205,9 @@ public class TalentPoolService {
             this.handleCancleTag(hrId,idList);
         }
         Map<String,Object> result=this.handlerBatchTalentResult(unUseList,unApplierIdList,idList,companyId);
+        if(result==null||result.isEmpty()){
+            return  ResponseUtils.success("");
+        }
         return ResponseUtils.success(result);
     }
 
@@ -625,6 +631,9 @@ public class TalentPoolService {
             return ResponseUtils.fail(1,"该hr无权操作此简历");
         }
         Map<String,Object> result=this.handleCommentData(companyId,userId,pageNum,pageSize);
+        if(result==null||result.isEmpty()){
+            return  ResponseUtils.success("");
+        }
         return ResponseUtils.success(result);
     }
 
@@ -661,6 +670,9 @@ public class TalentPoolService {
         talentpoolHrTalentDao.updateRecords(list);
         talentpoolTalentDao.batchUpdateNum(new ArrayList<>(userIdList),companyId,1,0);
         Map<Integer,Object> result=this.handlePublicTalentData(userIdList,companyId);
+        if(result==null||result.isEmpty()){
+            return  ResponseUtils.success("");
+        }
         return ResponseUtils.success(result);
     }
 
@@ -695,6 +707,9 @@ public class TalentPoolService {
         talentpoolHrTalentDao.updateRecords(list);
         talentpoolTalentDao.batchUpdateNum(new ArrayList<>(userIdList),companyId,-1,0);
         Map<Integer,Object> result=this.handlePublicTalentData(userIdList,companyId);
+        if(result==null||result.isEmpty()){
+            return  ResponseUtils.success("");
+        }
         return ResponseUtils.success(result);
     }
 
@@ -715,6 +730,9 @@ public class TalentPoolService {
             return ResponseUtils.fail(1,"该hr不属于该company_id");
         }
         Map<String,Object> result=this.handlePublicTalentData(companyId,pageNum,pageSize);
+        if(result==null||result.isEmpty()){
+            return  ResponseUtils.success("");
+        }
         return ResponseUtils.success(result);
     }
     /*
@@ -735,6 +753,9 @@ public class TalentPoolService {
         Set<Integer> set=new HashSet<>();
         set.add(userId);
         Map<Integer,Object> map=this.handlePublicTalentData(set,companyId);
+        if(map==null||map.isEmpty()){
+            return  ResponseUtils.success("");
+        }
         List<Object> result= (List<Object>) map.get(userId);
         if(StringUtils.isEmptyList(result)){
             return  ResponseUtils.success("");
