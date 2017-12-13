@@ -37,7 +37,7 @@ public abstract class AbstractRabbitMQParamRefresher implements ParamRefresher,I
     public abstract void receiveAndHandle(String json);
     public abstract void addUserParam(JSONObject jsonSend);
 
-    private int account_id=1;
+    private static int account_id=1;
 
     @Override
     public void refresh() {

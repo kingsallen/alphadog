@@ -44,7 +44,6 @@ public class ThirdPartyPositionParamRefresh {
     PositionEmailNotification emailNotification;
 
     //服务启动先刷新一次
-    @PostConstruct
     public void init() throws BIZException {
         logger.info("Refresh third party position param when server start");
         refresh();
@@ -55,7 +54,8 @@ public class ThirdPartyPositionParamRefresh {
         long check= redisClient.incrIfNotExist(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.REFRESH_THIRD_PARTY_PARAM.toString(), "");
         if (check>1) {
             //绑定中
-            throw new BIZException(-1, "已经开始刷新");
+            logger.info("已经开始刷新");
+            return;
         }
         redisClient.expire(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.REFRESH_THIRD_PARTY_PARAM.toString(), "", RefreshConstant.REFRESH_THIRD_PARTY_PARAM_TIMEOUT);
 
