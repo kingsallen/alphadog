@@ -74,7 +74,7 @@ public class TransferStrategy {
     public enum Sex{
         MIS("mis","女",0),
         SIR("sir","男",1),
-        UNLI("unli","不限",1)
+        UNLI("unli","不限",2)
         ;
         Sex(String code, String text, int gender) {
             this.code = code;
