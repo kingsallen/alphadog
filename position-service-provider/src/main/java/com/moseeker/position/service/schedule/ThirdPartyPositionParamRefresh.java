@@ -81,7 +81,7 @@ public class ThirdPartyPositionParamRefresh {
             JSONObject obj=JSONObject.parseObject(json);
             Integer status=obj.getInteger("status");
             if(status!=0){
-                logger.error("refresh error message : {}",obj.getString("message"));
+                logger.error("refresh error message : {} ,json :{}",obj.getString("message"),json);
                 return;
             }
             int channel=obj.getJSONObject("data").getIntValue("channel");
