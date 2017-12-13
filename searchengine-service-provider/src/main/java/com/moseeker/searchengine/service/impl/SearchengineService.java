@@ -14,6 +14,7 @@ import com.moseeker.baseorm.pojo.EmployeePointsRecordPojo;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.ConverTools;
 import com.moseeker.common.util.EsClientInstance;
 import com.moseeker.common.util.query.Condition;
@@ -32,6 +33,8 @@ import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -49,6 +52,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.net.InetAddress;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -93,9 +98,33 @@ public class SearchengineService {
         if (page_size == 0) {
             page_size = 20;
         }
+        ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
+        try {
+            propertiesReader.loadResource("es.properties");
+        } catch (Exception e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+        String cluster_name = propertiesReader.get("es.cluster.name", String.class);
+        String es_connection = propertiesReader.get("es.connection", String.class);
+        Integer es_port = propertiesReader.get("es.port", Integer.class);
+
         TransportClient client = null;
         try {
-            client=searchUtil.getEsClient();
+
+            Settings settings = Settings.settingsBuilder().put("cluster.name", cluster_name)
+                    .put("client.transport.sniff", true)
+                    .build();
+            String es_alternate = propertiesReader.get("es.alternate", String.class);
+            if(org.apache.commons.lang.StringUtils.isNotBlank(es_alternate)){
+                client = TransportClient.builder().settings(settings).build()
+                        .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port))
+                        .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_alternate), es_port));
+            }else{
+                client = TransportClient.builder().settings(settings).build()
+                        .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port));
+            }
+
             QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
             QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
 
