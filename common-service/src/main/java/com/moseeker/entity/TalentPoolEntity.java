@@ -100,9 +100,12 @@ public class TalentPoolEntity {
         if(count>0){
             return this.valicateCompanyApplication(userId,companyId);
         }
-        int result2=this.validatePublisherUserApp(hrId,userId);
-        if(result2>0){
-            return result2;
+
+        Set<Integer> userIdSet=new HashSet<>();
+        userIdSet.add(userId);
+        List<JobApplicationRecord> applist=this.getJobApplicationByPublisherAndApplierId(userIdSet,hrId);
+        if(StringUtils.isEmptyList(applist)){
+            return applist.size();
         }
         List<TalentpoolTalentRecord> list=getTalentpoolTalentByCompanyId(companyId);
         Set<Integer> userIdList=getUserIdListByTalentpoolTalent(list);

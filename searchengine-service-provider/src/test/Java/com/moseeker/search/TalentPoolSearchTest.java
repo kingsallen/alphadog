@@ -3,6 +3,7 @@ package com.moseeker.search;
 import com.moseeker.searchengine.config.AppConfig;
 import com.moseeker.searchengine.service.impl.TalentpoolSearchengine;
 import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.ScriptQueryBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,5 +28,18 @@ public class TalentPoolSearchTest {
         map.put("hr_ids","1,2,3,4");
         QueryBuilder builder= talentpoolSearchengine.queryNest(map);
         System.out.println(builder.toString());
+    }
+
+    @Test
+    public void testScript(){
+        Map<String,String> map=new HashMap<>();
+        map.put("publisher_ids","1,2,3,4");
+        map.put("candidate_source","0");
+        map.put("only_recommend","1");
+        map.put("origins","2");
+        map.put("submit_time","2010-12-12");
+        map.put("progress_status","1");
+        ScriptQueryBuilder scriptQueryBuilder=talentpoolSearchengine.queryScript(map);
+        System.out.println(scriptQueryBuilder.toString());
     }
 }

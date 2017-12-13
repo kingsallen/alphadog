@@ -7,6 +7,9 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.ScriptQueryBuilder;
+import org.elasticsearch.script.Script;
+import org.elasticsearch.search.sort.SortBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -156,15 +159,63 @@ public class TalentpoolSearchengine {
       使用script的方式组装对application的查询
      */
 
-    private String queryScript(Map<String,String> params){
+    public ScriptQueryBuilder queryScript(Map<String,String> params){
         String publisherIds=params.get("publisher_ids");
         String candidateSource=params.get("candidate_source");
         String recommend=params.get("only_recommend");
         String origins=params.get("origins");
         String submitTime=params.get("submit_time");
         String progressStatus=params.get("progress_status");
+        if(StringUtils.isNullOrEmpty(publisherIds)
+                &&StringUtils.isNullOrEmpty(progressStatus)
+                &&StringUtils.isNullOrEmpty(candidateSource)
+                &&StringUtils.isNullOrEmpty(recommend)
+                &&StringUtils.isNullOrEmpty(origins)
+                &&StringUtils.isNullOrEmpty(submitTime)){
+            return null;
 
-        return null;
+        }
+        StringBuffer sb=new StringBuffer();
+        sb.append("origin=0;profile=_source.user.profiles.profile;if(profile){origin=profile.origin};for ( val in _source.user.applications) {");
+        if(StringUtils.isNotNullOrEmpty(publisherIds)){
+            List<Integer> publisherIdList=this.convertStringToList(publisherIds);
+            if(!StringUtils.isEmptyList(publisherIdList)){
+                sb.append("if(val.publisher in "+publisherIdList.toArray()+"&&");
+            }
+        }
+        if(StringUtils.isNotNullOrEmpty(candidateSource)){
+            sb.append("val.candidate_source="+candidateSource+"&&");
+        }
+        if(StringUtils.isNotNullOrEmpty(recommend)){
+            sb.append("val.recommender_user_id>0 &&");
+        }
+        if(StringUtils.isNotNullOrEmpty(origins)){
+            sb.append("(val.origin="+origins+" or origin="+origins+")&&");
+        }
+
+        if(StringUtils.isNotNullOrEmpty(submitTime)){
+            sb.append(" val.submit_time>"+submitTime+"&&");
+        }
+        if(StringUtils.isNotNullOrEmpty(progressStatus)){
+            sb.append(" val.progress_status="+progressStatus+"&&");
+        }
+        sb=sb.deleteCharAt(sb.lastIndexOf("&"));
+        sb=sb.deleteCharAt(sb.lastIndexOf("&"));
+        sb.append("){return true}");
+        ScriptQueryBuilder script=new ScriptQueryBuilder(new Script(sb.toString()));
+        return script;
+    }
+
+    private List<Integer> convertStringToList(String params){
+        if(StringUtils.isNotNullOrEmpty(params)){
+            return null;
+        }
+        List<Integer> list=new ArrayList<>();
+        String[] arr=params.split(",");
+        for(String item:arr){
+            list.add(Integer.parseInt(item));
+        }
+        return list;
     }
     /*
      根据简历的更新时间查询
@@ -381,6 +432,14 @@ public class TalentpoolSearchengine {
         boostList.add(1);
         boostList.add(1);
         return boostList;
+    }
+    /*
+     组装查询语句
+
+     */
+    private SortBuilder handlerOrderScript(String publisherIds,String hrId){
+
+        return null;
     }
 
 }
