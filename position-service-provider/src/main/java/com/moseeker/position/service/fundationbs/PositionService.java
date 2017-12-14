@@ -250,6 +250,10 @@ public class PositionService {
                 }
             }
             if (jobPositionExtRecord.getJobOccupationId() > 0) {
+                if(jobPositionExtRecord.getJobOccupationId()==25171){
+                    logger.info("=====================================");
+                    logger.info("=====================================");
+                }
                 JobOccupationRecord jobOccupationRecord =
                         jobOccupationDao.getRecord(new Query.QueryBuilder().where("id", jobPositionExtRecord.getJobOccupationId()).buildQuery());
                 if (jobOccupationRecord != null && com.moseeker.common.util.StringUtils.isNotNullOrEmpty(jobOccupationRecord.getName())) {
