@@ -9,5 +9,6 @@ public class TestEvent extends ApplicationEvent {
 
     public TestEvent(final Object object) {
         super(object);
+        System.out.println("create TestEvent");
     }
 }

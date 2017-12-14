@@ -9,6 +9,7 @@ repositories {
 
 dependencies {
     compile project(":common")
+    testCompile deps['spring-test']
 }
 
 project.description = '''
