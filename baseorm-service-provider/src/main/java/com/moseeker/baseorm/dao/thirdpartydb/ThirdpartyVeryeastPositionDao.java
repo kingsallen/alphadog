@@ -30,7 +30,9 @@ public class ThirdpartyVeryeastPositionDao extends JooqCrudImpl<ThirdpartyVeryEa
 
     @Override
     public TwoParam<HrThirdPartyPositionDO, ThirdpartyVeryEastPositionDO> getData(HrThirdPartyPositionDO thirdPartyPositionDO) {
-        Query query=new Query.QueryBuilder().where("pid", thirdPartyPositionDO.getId()).buildQuery();
+        Query query=new Query.QueryBuilder()
+                .where(ThirdpartyVeryeastPosition.THIRDPARTY_VERYEAST_POSITION.PID.getName(), thirdPartyPositionDO.getId())
+                .and(ThirdpartyVeryeastPosition.THIRDPARTY_VERYEAST_POSITION.STATUS.getName(),0).buildQuery();
         ThirdpartyVeryEastPositionDO job1001=getData(query);
         TwoParam<HrThirdPartyPositionDO, ThirdpartyVeryEastPositionDO> result=new TwoParam<>(thirdPartyPositionDO,job1001);
         return result;
@@ -66,5 +68,12 @@ public class ThirdpartyVeryeastPositionDao extends JooqCrudImpl<ThirdpartyVeryEa
         thirdpartyVeryEastPositionDO.setPid(thirdPartyPositionDO.getId());
         thirdpartyVeryEastPositionDO=addData(thirdpartyVeryEastPositionDO);
         return new TwoParam<>(thirdPartyPositionDO,thirdpartyVeryEastPositionDO);
+    }
+
+    @Override
+    public ThirdpartyVeryEastPositionDO setId(HrThirdPartyPositionDO thirdPartyPositionDO, ThirdpartyVeryEastPositionDO thirdpartyVeryEastPositionDO) {
+        TwoParam<HrThirdPartyPositionDO, ThirdpartyVeryEastPositionDO> result=getData(thirdPartyPositionDO);
+        thirdpartyVeryEastPositionDO.setId(result.getR2().getId());
+        return thirdpartyVeryEastPositionDO;
     }
 }

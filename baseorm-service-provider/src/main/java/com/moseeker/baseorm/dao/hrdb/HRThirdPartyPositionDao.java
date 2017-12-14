@@ -179,7 +179,11 @@ public class HRThirdPartyPositionDao  {
         if(p== EmptyExtThirdPartyPosition.EMPTY){
             return result;
         }
-        int extResult=thirdPartyPositionDao(s.getChannel()).updateData(p);
+        IThirdPartyPositionDao extDao=thirdPartyPositionDao(s.getChannel());
+        //设置下ExtThirdpartyPosition的id
+        extDao.setId(s,p);
+
+        int extResult=extDao.updateData(p);
         if(result!=extResult){
             logger.error("update Position and ExtPosition not EQ HrThirdPartyPositionDO:{}，P:{}",s,p);
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,"update Position and ExtPosition not EQ ");

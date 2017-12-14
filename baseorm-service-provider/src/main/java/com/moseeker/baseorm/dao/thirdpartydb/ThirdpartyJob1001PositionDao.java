@@ -29,7 +29,9 @@ public class ThirdpartyJob1001PositionDao  extends JooqCrudImpl<ThirdpartyJob100
 
     @Override
     public TwoParam<HrThirdPartyPositionDO, ThirdpartyJob1001PositionDO> getData(HrThirdPartyPositionDO thirdPartyPositionDO) {
-        Query query=new Query.QueryBuilder().where(ThirdpartyJob1001Position.THIRDPARTY_JOB1001_POSITION.PID.getName(), thirdPartyPositionDO.getId()).buildQuery();
+        Query query=new Query.QueryBuilder()
+                .where(ThirdpartyJob1001Position.THIRDPARTY_JOB1001_POSITION.PID.getName(), thirdPartyPositionDO.getId())
+                .and(ThirdpartyJob1001Position.THIRDPARTY_JOB1001_POSITION.STATUS.getName(),0).buildQuery();
         ThirdpartyJob1001PositionDO job1001=getData(query);
         TwoParam<HrThirdPartyPositionDO, ThirdpartyJob1001PositionDO> result=new TwoParam<>(thirdPartyPositionDO,job1001);
         return result;
@@ -65,6 +67,13 @@ public class ThirdpartyJob1001PositionDao  extends JooqCrudImpl<ThirdpartyJob100
         thirdpartyJob1001PositionDO.setPid(thirdPartyPositionDO.getId());
         thirdpartyJob1001PositionDO=addData(thirdpartyJob1001PositionDO);
         return new TwoParam<>(thirdPartyPositionDO,thirdpartyJob1001PositionDO);
+    }
+
+    @Override
+    public ThirdpartyJob1001PositionDO setId(HrThirdPartyPositionDO thirdPartyPositionDO, ThirdpartyJob1001PositionDO thirdpartyJob1001PositionDO) {
+        TwoParam<HrThirdPartyPositionDO, ThirdpartyJob1001PositionDO> result=getData(thirdPartyPositionDO);
+        thirdpartyJob1001PositionDO.setId(result.getR2().getId());
+        return thirdpartyJob1001PositionDO;
     }
 
 }
