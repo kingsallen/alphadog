@@ -1,5 +1,6 @@
 package com.moseeker.chat.service;
 
+import com.moseeker.chat.constant.ChatOrigin;
 import com.moseeker.chat.constant.ChatSpeakerType;
 import com.moseeker.chat.service.entity.ChatDao;
 import com.moseeker.chat.utils.Page;
@@ -271,6 +272,16 @@ public class ChatService {
                     chatVO.setCreate_time(chatDO.getCreateTime());
                     byte speaker = chatDO.getSpeaker();
                     chatVO.setSpeaker(speaker);
+
+                    Optional<ChatOrigin> chatOriginOptional = ChatOrigin.instanceFromValue(chatDO.getOrigin());
+                    if (chatOriginOptional.isPresent()) {
+                        chatVO.setOrigin(chatOriginOptional.get().getValue());
+                        chatVO.setOriginStr(chatOriginOptional.get().getName());
+                    } else {
+                        chatVO.setOrigin(ChatOrigin.Human.getValue());
+                        chatVO.setOriginStr(ChatOrigin.Human.getName());
+                    }
+
                     chatVOList.add(chatVO);
                 });
                 //Lists.reverse(chatDOList);
@@ -290,8 +301,9 @@ public class ChatService {
      * @param content 聊天内容
      * @param positionId 职位编号
      * @param speaker 消息发送人标记
+     * @param origin 来源
      */
-    public void saveChat(int roomId, String content, int positionId, byte speaker) {
+    public void saveChat(int roomId, String content, int positionId, byte speaker, byte origin) {
         logger.info("saveChat roomId:{} content:{}, positionId:{} speaker:{}", roomId, content, positionId, speaker);
         HrWxHrChatDO chatDO = new HrWxHrChatDO();
         String date = new DateTime().toString("yyyy-MM-dd HH:mm:ss");
@@ -300,6 +312,7 @@ public class ChatService {
         chatDO.setPid(positionId);
         chatDO.setSpeaker(speaker);
         chatDO.setChatlistId(roomId);
+        chatDO.setOrigin(origin);
         logger.info("saveChat before saveChat chatDO:{}", chatDO);
         chaoDao.saveChat(chatDO);
         logger.info("saveChat after saveChat chatDO:{}", chatDO);
@@ -468,6 +481,7 @@ public class ChatService {
         HrWxHrChatDO chatDO = new HrWxHrChatDO();
         chatDO.setChatlistId(resultOfSaveRoomVO.getRoomId());
         chatDO.setSpeaker((byte)1);
+        chatDO.setOrigin(ChatOrigin.System.getValue());
         String createTime = new DateTime().toString("yyyy-MM-dd HH:mm:ss");
         chatDO.setCreateTime(createTime);
         String content;
