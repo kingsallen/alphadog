@@ -33,7 +33,7 @@ import com.moseeker.common.util.ConfigPropertiesUtil;
 public class SearchUtil {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
     //启动es客户端
-    public TransportClient getEsClient() {
+    public  TransportClient getEsClient() {
         ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
         try {
             propertiesReader.loadResource("es.properties");
@@ -80,15 +80,65 @@ public class SearchUtil {
         }
     }
     /*
+     * 拼接city
+     */
+    public void handleTermsFilter(String conditions,QueryBuilder query,String conditionField){
+        if (StringUtils.isNotEmpty(conditions)) {
+            List<Object> codes = new ArrayList<Object>();
+            String[] conditions_list = conditions.split(",");
+            for(String code:conditions_list){
+                codes.add(code);
+            }
+            QueryBuilder cityfilter = QueryBuilders.termsQuery(conditionField, codes);
+            ((BoolQueryBuilder) query).filter(cityfilter);
+        }
+    }
+
+    /*
+     * 拼接city
+     */
+    public void handleTerm(String condition,QueryBuilder query,String conditionField){
+        if (StringUtils.isNotEmpty(condition)) {
+            QueryBuilder cityfilter = QueryBuilders.termsQuery(conditionField, condition);
+            ((BoolQueryBuilder) query).must(cityfilter);
+        }
+    }
+    /*
+     使用 filter的方式处理查询语句
+     */
+    public void handleTermFilter(String condition,QueryBuilder query,String conditionField){
+        if (StringUtils.isNotEmpty(condition)) {
+            QueryBuilder cityfilter = QueryBuilders.termsQuery(conditionField, condition);
+            ((BoolQueryBuilder) query).filter(cityfilter);
+        }
+    }
+    /*
         处理match的查询
      */
     public void handleMatch(int conditions,QueryBuilder query,String conditionField ){
         QueryBuilder cityfilter = QueryBuilders.matchQuery(conditionField, conditions);
         ((BoolQueryBuilder) query).must(cityfilter);
     }
+
+    public void handleMatchFilter(int conditions,QueryBuilder query,String conditionField ){
+        QueryBuilder cityfilter = QueryBuilders.matchQuery(conditionField, conditions);
+        ((BoolQueryBuilder) query).filter(cityfilter);
+    }
     public void hanleRange(int conditions, QueryBuilder query, String conditionField) {
         QueryBuilder cityfilter = QueryBuilders.rangeQuery(conditionField).gt(conditions);
         ((BoolQueryBuilder) query).must(cityfilter);
+        logger.info("组合的条件是==================" + query.toString() + "===========");
+    }
+
+    public void hanleRange(long conditions, QueryBuilder query, String conditionField) {
+        QueryBuilder cityfilter = QueryBuilders.rangeQuery(conditionField).gt(conditions);
+        ((BoolQueryBuilder) query).must(cityfilter);
+        logger.info("组合的条件是==================" + query.toString() + "===========");
+    }
+
+    public void hanleRangeFilter(long conditions, QueryBuilder query, String conditionField) {
+        QueryBuilder cityfilter = QueryBuilders.rangeQuery(conditionField).gt(conditions);
+        ((BoolQueryBuilder) query).filter(cityfilter);
         logger.info("组合的条件是==================" + query.toString() + "===========");
     }
 
@@ -163,6 +213,29 @@ public class SearchUtil {
             ((BoolQueryBuilder) query).must(keyand);
         }
    }
+    //组装query_string关键字带权重查询语句
+    public void keyWordforQueryStringPropery(String keywords,QueryBuilder query,List<String> fieldList,List<Integer> properyList){
+        if(StringUtils.isNotEmpty(keywords)){
+            String words[]=keywords.split(",");
+            StringBuffer sb=new StringBuffer();
+            for(int i=0;i<words.length;i++){
+                if(i==words.length-1){
+                    sb.append(words[i]);
+                }else{
+                    sb.append(words[i]+" or ");
+                }
+            }
+            String condition=sb.toString();
+            QueryStringQueryBuilder fullf = QueryBuilders.queryStringQuery(condition);
+            if(fieldList!=null&&fieldList.size()>0){
+                for(int i=0;i<fieldList.size();i++){
+                    fullf.field(fieldList.get(i),properyList.get(i));
+                }
+            }
+
+            ((BoolQueryBuilder) query).must(fullf);
+        }
+    }
     public AbstractAggregationBuilder handle(String fieldName,String name){
     	StringBuffer sb=new StringBuffer();
     	sb.append("scale=");
@@ -344,6 +417,22 @@ public class SearchUtil {
             return list;
         }
         return null;
+    }
+    /*
+     处理范围数据的查询语句
+     */
+    public void shoudRangeAgeOrDegreeListFilter(List<Map<String,Integer>> list,QueryBuilder query,String conditionField){
+        if(list!=null&&list.size()>0){
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            for(Map<String,Integer> map:list){
+                int max=  map.get("max");
+                int min=  map.get("min");
+                QueryBuilder fullf = QueryBuilders.rangeQuery(conditionField).gt(min).lt(max);
+                ((BoolQueryBuilder) keyand).should(fullf);
+            }
+            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+            ((BoolQueryBuilder) query).filter(keyand);
+        }
     }
 
 }
