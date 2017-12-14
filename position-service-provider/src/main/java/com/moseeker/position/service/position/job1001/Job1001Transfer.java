@@ -118,7 +118,7 @@ public class Job1001Transfer extends PositionTransfer<PositionJob1001Form,Positi
 
         //将最后一个职能的Code存到数据库
         if (!position.getOccupation().isEmpty() && position.getOccupation().size() > 0) {
-            data.setOccupation(position.getOccupation().get(p.getOccupation().size() - 1));
+            data.setOccupation(position.getOccupation().get(position.getOccupation().size() - 1));
         }
         data.setCompanyName(position.getCompanyName());
         if(!StringUtils.isNullOrEmpty(position.getCompanyId())) {

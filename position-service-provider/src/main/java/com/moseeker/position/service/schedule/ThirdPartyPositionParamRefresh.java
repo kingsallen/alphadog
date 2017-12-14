@@ -64,6 +64,7 @@ public class ThirdPartyPositionParamRefresh {
                 r.refresh();
             }catch (Exception e){
                 logger.error("refresh error {}",e.getMessage());
+                emailNotification.sendRefreshFailureMail("refresh push error",r,e);
             }
         });
         redisClient.del(AppId.APPID_ALPHADOG.getValue(),KeyIdentifier.REFRESH_THIRD_PARTY_PARAM.toString(),"");
