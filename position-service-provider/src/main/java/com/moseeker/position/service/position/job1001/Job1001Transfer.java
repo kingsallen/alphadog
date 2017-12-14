@@ -124,8 +124,8 @@ public class Job1001Transfer extends PositionTransfer<PositionJob1001Form,Positi
         if(!StringUtils.isNullOrEmpty(position.getCompanyId())) {
             data.setCompanyId(Integer.parseInt(position.getCompanyId()));
         }
-        data.setSalaryBottom(position.getSalaryBottom());
-        data.setSalaryTop(position.getSalaryTop());
+        data.setSalaryBottom(p.getMin_salary());
+        data.setSalaryTop(p.getMax_salary());
 
         logger.info("回写到第三方职位对象:{}",data);
         return data;
